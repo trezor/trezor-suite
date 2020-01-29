@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { UI } from 'trezor-connect';
-import { SUITE } from '@suite-actions/constants';
 import { FIRMWARE } from '@firmware-actions/constants';
 
 const { getSuiteDevice, getDeviceFeatures } = global.JestMocks;
@@ -29,7 +28,6 @@ export const firmwareUpdate = [
         result: {
             actions: [
                 { type: FIRMWARE.RESET_REDUCER },
-                { type: SUITE.LOCK_UI, payload: true },
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'downloading' },
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
 
@@ -69,7 +67,6 @@ export const firmwareUpdate = [
         result: {
             actions: [
                 { type: FIRMWARE.RESET_REDUCER },
-                { type: SUITE.LOCK_UI, payload: true },
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'downloading' },
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'unplug' },
@@ -171,11 +168,9 @@ export const firmwareUpdate = [
         result: {
             actions: [
                 { type: FIRMWARE.RESET_REDUCER },
-                { type: SUITE.LOCK_UI, payload: true },
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'downloading' },
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
                 { type: FIRMWARE.SET_ERROR, payload: 'foo' },
-                { type: SUITE.LOCK_UI, payload: false },
             ],
         },
     },

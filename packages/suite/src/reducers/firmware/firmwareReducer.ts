@@ -1,6 +1,7 @@
 import produce from 'immer';
 import { UI } from 'trezor-connect';
 import { FIRMWARE } from '@firmware-actions/constants';
+import { SUITE } from '@suite-actions/constants';
 import { Action } from '@suite-types';
 
 const INITIAL = 'initial';
@@ -11,10 +12,8 @@ const WAITING_FOR_CONFIRMATION = 'waiting-for-confirmation';
 const INSTALLING = 'installing';
 const PARTIALLY_DONE = 'partially-done';
 const DONE = 'done';
-
 const WAIT_FOR_REBOOT = 'wait-for-reboot';
 const UNPLUG = 'unplug';
-
 const ERROR = 'error';
 
 export type AnyStatus =
@@ -54,8 +53,8 @@ const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Actio
                 draft.status = 'error';
                 draft.error = action.payload;
                 break;
-            case UI.REQUEST_BUTTON:
-                if (action.payload && action.payload.code === 'ButtonRequest_FirmwareUpdate') {
+            case SUITE.ADD_BUTTON_REQUEST:
+                if (action.payload === 'ButtonRequest_FirmwareUpdate') {
                     draft.status = WAITING_FOR_CONFIRMATION;
                 }
                 break;

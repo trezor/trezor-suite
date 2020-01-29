@@ -2,7 +2,6 @@ import { MiddlewareAPI } from 'redux';
 import { DEVICE } from 'trezor-connect';
 import { SUITE } from '@suite-actions/constants';
 import * as firmwareActions from '@firmware-actions/firmwareActions';
-import * as suiteActions from '@suite-actions/suiteActions';
 import { AppState, Action, Dispatch } from '@suite-types';
 
 const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
@@ -30,10 +29,8 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
             ) {
                 if (action.payload.firmware === 'valid') {
                     api.dispatch(firmwareActions.setStatus('done'));
-                    api.dispatch(suiteActions.lockUI(false));
                 } else if (['outdated', 'required'].includes(action.payload.firmware)) {
                     api.dispatch(firmwareActions.setStatus('partially-done'));
-                    api.dispatch(suiteActions.lockUI(false));
                 }
             }
             break;

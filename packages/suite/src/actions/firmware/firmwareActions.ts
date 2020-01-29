@@ -1,7 +1,6 @@
 import TrezorConnect from 'trezor-connect';
 import Rollout from '@trezor/rollout';
 
-import { lockUI } from '@suite-actions/suiteActions';
 import { FIRMWARE } from '@firmware-actions/constants';
 import { AnyStatus } from '@firmware-reducers/firmwareReducer';
 import { Dispatch, GetState, Action } from '@suite-types';
@@ -48,8 +47,6 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
 
     const model = device.features.major_version;
 
-    dispatch(lockUI(true));
-
     dispatch(setStatus('downloading'));
 
     const rollout = Rollout({
@@ -82,9 +79,7 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
     const updateResponse = await TrezorConnect.firmwareUpdate(payload);
 
     if (!updateResponse.success) {
-        dispatch({ type: FIRMWARE.SET_ERROR, payload: updateResponse.payload.error });
-
-        return dispatch(lockUI(false));
+        return dispatch({ type: FIRMWARE.SET_ERROR, payload: updateResponse.payload.error });
     }
 
     dispatch(setStatus(model === 1 ? 'unplug' : 'wait-for-reboot'));

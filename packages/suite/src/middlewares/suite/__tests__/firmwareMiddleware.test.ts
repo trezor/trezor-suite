@@ -105,7 +105,6 @@ describe('firmware middleware', () => {
         expect(result).toEqual([
             { type: SUITE.SELECT_DEVICE, payload: getSuiteDevice({ firmware: 'valid' }) },
             { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'done' },
-            { type: SUITE.LOCK_UI, payload: false },
         ]);
     });
 
@@ -126,7 +125,6 @@ describe('firmware middleware', () => {
         expect(result).toEqual([
             { type: SUITE.SELECT_DEVICE, payload: getSuiteDevice({ firmware: 'outdated' }) },
             { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'partially-done' },
-            { type: SUITE.LOCK_UI, payload: false },
         ]);
     });
 

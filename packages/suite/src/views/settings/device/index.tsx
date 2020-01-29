@@ -11,7 +11,7 @@ import { SuiteLayout } from '@suite-components';
 import { Menu as SettingsMenu } from '@settings-components';
 // import { getFwVersion } from '@suite-utils/device';
 import { SEED_MANUAL_URL, DRY_RUN_URL, PASSPHRASE_URL } from '@suite-constants/urls';
-import { AcquiredDevice } from '@suite-types';
+// import { AcquiredDevice } from '@suite-types';
 
 import { Props } from './Container';
 
@@ -58,15 +58,15 @@ const Settings = ({
         setLabel(device.label);
     }, [device]);
 
-    // any idea how to write this in a sane way
-    let features: any;
-    if (device && device.features) {
-        /* eslint-disable no-unused-expressions */
-        (features = device.features) as AcquiredDevice['features'];
-    }
+    const DISPLAY_ROTATIONS = [
+        { label: <Translation {...messages.TR_NORTH} />, value: 0 },
+        { label: <Translation {...messages.TR_EAST} />, value: 90 },
+        { label: <Translation {...messages.TR_SOUTH} />, value: 180 },
+        { label: <Translation {...messages.TR_WEST} />, value: 270 },
+    ] as const;
 
     const startCheckSeed = () => {
-        if (features.major_version === 1) {
+        if (device && device.features && device.features.major_version === 1) {
             // T1 needs to input some more information from suite. TT does everything on device.
             goto('seed-input-index', { cancelable: true });
         } else {
@@ -74,12 +74,15 @@ const Settings = ({
         }
     };
 
-    const DISPLAY_ROTATIONS = [
-        { label: <Translation {...messages.TR_NORTH} />, value: 0 },
-        { label: <Translation {...messages.TR_EAST} />, value: 90 },
-        { label: <Translation {...messages.TR_SOUTH} />, value: 180 },
-        { label: <Translation {...messages.TR_WEST} />, value: 270 },
-    ] as const;
+    if (!device?.features) {
+        return (
+            <SuiteLayout title="Settings" secondaryMenu={<SettingsMenu />}>
+                no device connected
+            </SuiteLayout>
+        );
+    }
+
+    const { features } = device;
 
     return (
         <SuiteLayout title="Settings" secondaryMenu={<SettingsMenu />}>
