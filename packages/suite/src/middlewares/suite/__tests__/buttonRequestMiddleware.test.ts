@@ -84,13 +84,6 @@ const initStore = (state: State) => {
         buttonRequestMiddleware,
     ]);
     const store = mockStore(state);
-    // store.subscribe(() => {
-    //     const action = store.getActions().pop();
-    //     const { suite } = store.getState();
-
-    //     // add action back to stack
-    //     store.getActions().push(action);
-    // });
     return store;
 };
 
