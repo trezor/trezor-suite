@@ -477,12 +477,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Download latest Bridge {version}',
         id: 'TR_DOWNLOAD_LATEST_BRIDGE',
     },
-    TR_EMAIL_SKIPPED: {
-        defaultMessage:
-            'You chose not to provide your email. This is Ok. If you want, you might still follow us on socials:',
-        description: 'Displayed after user skips contact email',
-        id: 'TR_EMAIL_SKIPPED',
-    },
     TR_ENABLE_NETWORK_BUTTON: {
         defaultMessage: 'Find my {networkName} accounts',
         id: 'TR_ENABLE_NETWORK_BUTTON',
@@ -913,16 +907,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'New Trezor firmware is available.',
         id: 'TR_NEW_TREZOR_FIRMWARE_IS_AVAILABLE_DOT',
     },
-    TR_NEWSLETTER_HEADING: {
-        defaultMessage: 'Stay in touch',
-        description: 'Heading in newsletter step',
-        id: 'TR_NEWSLETTER_HEADING',
-    },
-    TR_NEWSLETTER_SUBHEADING: {
-        defaultMessage: 'Receive information on important security updates',
-        description: 'Subheading in newsletter step',
-        id: 'TR_NEWSLETTER_SUBHEADING',
-    },
     TR_OOPS_SOMETHING_WENT_WRONG: {
         defaultMessage: 'Oops! Something went wrong!',
         id: 'TR_OOPS_SOMETHING_WENT_WRONG',
@@ -1247,11 +1231,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Stellar wallet',
         id: 'TR_STELLAR_WALLET',
     },
-    TR_SUBMIT: {
-        defaultMessage: 'Submit',
-        description: 'Button text',
-        id: 'TR_SUBMIT',
-    },
     TR_TAKE_ME_BACK_TO_WALLET: {
         defaultMessage: 'Take me back to the wallet',
         id: 'TR_TAKE_ME_BACK_TO_WALLET',
@@ -1264,12 +1243,6 @@ const definedMessages = defineMessages({
     TR_TEZOS_WALLET: {
         defaultMessage: 'Tezos wallet',
         id: 'TR_TEZOS_WALLET',
-    },
-    TR_THANK_YOU_FOR_EMAIL: {
-        defaultMessage:
-            'Thank you for providing your email. To complete subscription, please click on the link we sent to your email. You can also follow us on socials:',
-        description: 'Displayed after user submits contact email',
-        id: 'TR_THANK_YOU_FOR_EMAIL',
     },
     TR_THE_ACCOUNT_BALANCE_IS_HIDDEN: {
         defaultMessage: 'The account balance is hidden.',
@@ -1454,11 +1427,6 @@ const definedMessages = defineMessages({
         defaultMessage: '{count} words',
         description: 'Number of words. For example: 12 words',
         id: 'TR_WORDS',
-    },
-    TR_WRONG_EMAIL_FORMAT: {
-        defaultMessage: 'Wrong email format',
-        description: 'Validation text displayed under email input',
-        id: 'TR_WRONG_EMAIL_FORMAT',
     },
     TR_XRP_DESTINATION_TAG: {
         defaultMessage: 'Destination tag',
