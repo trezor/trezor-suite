@@ -1,6 +1,7 @@
 import colors from '@trezor/components/lib/config/colors'; // TODO: fix this import, jest fails on svg parsing
 import { WrappedComponentProps } from 'react-intl';
 import messages from '@suite/support/messages';
+import { Device } from 'trezor-connect';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
 
 export const getStatus = (device: TrezorDevice): string => {
@@ -101,40 +102,36 @@ export const getStatusColor = (deviceStatus: string): string => {
     }
 };
 
-/*
-TODO: is this util used anywhere?
-export const isDisabled = (
-    selectedDevice: TrezorDevice,
-    devices: TrezorDevice[],
-    transport: Transport,
-) => {
-    if (isWebUSB(transport)) return false; // always enabled if webusb
-    if (devices.length < 1) return true; // no devices
-    if (devices.length === 1) {
-        if (!selectedDevice.features) return true; // unacquired, unreadable
-        if (selectedDevice.mode !== 'normal') return true; // bootloader, not initialized, seedless
-        if (selectedDevice.firmware === 'required') return true;
-    }
-    return false; // default
-};
-*/
-
-export const isDeviceRemembered = (device?: TrezorDevice): device is AcquiredDevice => {
-    return !!device && !!device.features && device.remember;
-};
+export const isDeviceRemembered = (device?: TrezorDevice): boolean =>
+    device ? !!device.remember : false;
 
 export const isDeviceAccessible = (device?: TrezorDevice) => {
     if (!device || !device.features) return false;
     return device.mode === 'normal' && device.firmware !== 'required';
 };
 
-export const isSelectedDevice = (selected?: TrezorDevice, device?: TrezorDevice) =>
+export const isSelectedInstance = (selected?: TrezorDevice, device?: TrezorDevice) =>
     !!(
         selected &&
         device &&
-        selected.path === device.path &&
+        selected.features &&
+        device.features &&
+        device.features.device_id &&
+        selected.features.device_id === device.features.device_id &&
         selected.instance === device.instance
     );
+
+export const isSelectedDevice = (selected?: TrezorDevice, device?: TrezorDevice) => {
+    if (!selected || !device) return false;
+    if (!selected.features && !device.features) return selected.path === device.path;
+    return !!(
+        selected.features &&
+        selected.features.device_id &&
+        device.features &&
+        device.features.device_id &&
+        selected.features.device_id === device.features.device_id
+    );
+};
 
 export const getVersion = (device: TrezorDevice) => {
     const { features } = device;
@@ -152,7 +149,8 @@ export const getFwVersion = (device: AcquiredDevice) => {
  * @param {AcquiredDevice} device
  * @returns number
  */
-export const getNewInstanceNumber = (devices: TrezorDevice[], device: AcquiredDevice) => {
+export const getNewInstanceNumber = (devices: TrezorDevice[], device: TrezorDevice | Device) => {
+    if (!device.features) return undefined;
     // find all instances with device "device_id"
     // and sort them by instance number
     const affectedDevices = devices

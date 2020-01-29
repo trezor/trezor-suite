@@ -3,7 +3,7 @@ import * as variables from './config/variables';
 
 import { Button, ButtonProps } from './components/buttons/Button';
 import { Input, InputProps } from './components/inputs/Input';
-import { Textarea, TextareaProps } from './components/Textarea';
+import { Textarea, TextareaProps } from './components/inputs/Textarea';
 import { Select, SelectProps } from './components/Select';
 import { Checkbox, CheckboxProps } from './components/Checkbox';
 import { Switch, SwitchProps } from './components/Switch';

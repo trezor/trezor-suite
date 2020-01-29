@@ -86,7 +86,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                 onClick={() => onboardingActions.goToSubStep(null)}
                                 data-test="button-back"
                             >
-                                Back
+                                Show hologram again
                             </OnboardingButton.Alt>
 
                             <Link href={SUPPORT_URL} target="_self">

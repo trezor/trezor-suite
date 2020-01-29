@@ -35,6 +35,15 @@ describe('isSelectedDevice', () => {
     });
 });
 
+describe('isSelectedInstance', () => {
+    fixtures.isSelectedInstance.forEach(f => {
+        it(f.description, () => {
+            const instance = utils.isSelectedInstance(f.selected, f.device);
+            expect(instance).toEqual(f.result);
+        });
+    });
+});
+
 describe('getVersion', () => {
     fixtures.getVersion.forEach(f => {
         it(f.description, () => {

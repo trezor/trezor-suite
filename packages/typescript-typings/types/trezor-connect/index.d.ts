@@ -248,8 +248,9 @@ declare module 'trezor-connect' {
         passphrase_protection?: boolean;
         pin_protection?: boolean;
         label?: string;
-        type?: number;
+        type?: 0 | 1;
         dry_run?: boolean;
+        word_count?: 12 | 18 | 24;
         // there are more of them but dont have a valid usecase now
     }
 
@@ -351,6 +352,13 @@ declare module 'trezor-connect' {
 
     export type DeviceFirmwareStatus = 'valid' | 'outdated' | 'required' | 'unknown' | 'none';
 
+    export type UnavailableCapability =
+        | 'no-capability'
+        | 'no-support'
+        | 'update-required'
+        | 'trezor-connect-outdated'
+        | string[];
+
     export interface FirmwareRelease {
         required: boolean;
         version: number[];
@@ -393,6 +401,9 @@ declare module 'trezor-connect' {
         unfinished_backup: boolean;
         vendor: string;
         recovery_mode?: boolean;
+        session_id?: string;
+        passphrase_always_on_device?: boolean;
+        capabilities?: string[];
     }
 
     export type Device =
@@ -406,6 +417,7 @@ declare module 'trezor-connect' {
               mode: DeviceMode;
               state?: string;
               features: Features;
+              unavailableCapabilities: { [key: string]: UnavailableCapability };
           }
         | {
               type: 'unacquired' | 'unreadable';
@@ -792,6 +804,7 @@ declare module 'trezor-connect' {
               payload: {
                   save: boolean;
                   value: string;
+                  passphraseOnDevice?: boolean;
               };
           };
 

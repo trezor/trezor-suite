@@ -45,17 +45,22 @@ const PinInput = (props: Props) => {
 
     const [pin, setPin] = useState('');
 
+    const onPinBackspace = useCallback(() => {
+        setPin(prevPin => prevPin.substring(0, prevPin.length - 1));
+    }, []);
+
     const onPinAdd = useCallback(
         (input: string) => {
             if (pin.length < 9) {
                 setPin(pin + input);
             }
         },
-        [pin, setPin],
+        [pin],
     );
 
-    const onPinBackspace = () => {
-        setPin(prevPin => prevPin.substring(0, prevPin.length - 1));
+    const submit = () => {
+        onPinSubmit(pin);
+        setPin('');
     };
 
     useEffect(() => {
@@ -118,7 +123,7 @@ const PinInput = (props: Props) => {
         return () => {
             window.removeEventListener('keydown', keyboardHandler, false);
         };
-    }, [pin, onPinSubmit, onPinAdd]);
+    }, [pin, onPinSubmit, onPinAdd, onPinBackspace]);
 
     return (
         <Wrapper>
@@ -142,7 +147,7 @@ const PinInput = (props: Props) => {
             </PinRow>
 
             <PinFooter>
-                <Button onClick={() => onPinSubmit(pin)}>
+                <Button onClick={submit}>
                     <Translation {...messages.TR_ENTER_PIN} />
                 </Button>
             </PinFooter>

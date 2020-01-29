@@ -1,10 +1,9 @@
 export const infoOptions = {
-    header: false,
+    header: true,
     inline: true,
     styles: {
         infoStory: {
-            background: '#f5f5f5',
-            padding: '20px 40px',
+            padding: '0 40px',
         },
     },
 };

@@ -17,7 +17,7 @@ export default [
         },
         action: () => onboardingActions.goToNextStep(),
         expect: {
-            toMatchObject: { activeStepId: STEP.ID_NEW_OR_USED },
+            toMatchObject: { activeStepId: STEP.ID_SKIP_STEP },
         },
     },
     {
@@ -53,7 +53,7 @@ export default [
         },
         action: () => onboardingActions.goToPreviousStep(),
         expect: {
-            toMatchObject: { activeStepId: STEP.ID_WELCOME_STEP },
+            toMatchObject: { activeStepId: STEP.ID_CREATE_OR_RECOVER },
         },
     },
     {
@@ -334,34 +334,6 @@ export const deviceCallsSpecific = [
             connectResponse: connectSuccessResponse,
         },
         action: () => connectActions.changePin(),
-    },
-    {
-        description: 'recoverDevice t2',
-        initialState: {
-            suite: {
-                device: getSuiteDevice({
-                    features: getDeviceFeatures({ major_version: 2 }),
-                }),
-            },
-        },
-        mocks: {
-            connectResponse: connectSuccessResponse,
-        },
-        action: () => connectActions.recoveryDevice(),
-    },
-    {
-        description: 'recoverDevice - t1',
-        initialState: {
-            suite: {
-                device: getSuiteDevice({
-                    features: getDeviceFeatures({ major_version: 1 }),
-                }),
-            },
-        },
-        mocks: {
-            connectResponse: connectSuccessResponse,
-        },
-        action: () => connectActions.recoveryDevice(),
     },
     {
         description: 'wipeDevice',

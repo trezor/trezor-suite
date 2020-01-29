@@ -11,6 +11,7 @@ import { AppState, Dispatch } from '@suite-types';
 
 import Firmware from '@firmware-views';
 import Onboarding from '@onboarding-views';
+import SeedInput from '@seed-input-views';
 import {
     Bridge,
     DeviceAcquire,
@@ -44,6 +45,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
         dispatch(discoveryActions.getDiscoveryAuthConfirmationStatus()),
     goto: bindActionCreators(routerActions.goto, dispatch),
     closeModalApp: bindActionCreators(routerActions.closeModalApp, dispatch),
+    getBackgroundRoute: () => dispatch(routerActions.getBackgroundRoute()),
 });
 
 type Props = ReturnType<typeof mapStateToProps> &
@@ -105,6 +107,8 @@ const getModalApplication = (route: Props['router']['route']) => {
             return Version;
         case 'switch-device':
             return SwitchDevice;
+        case 'seed-input':
+            return SeedInput;
         default:
             break;
     }
@@ -125,7 +129,6 @@ const Preloader = (props: Props) => {
     }
 
     const hasActionModal = actionModalContext !== '@modal/context-none';
-
     // check if current route is a "modal application" and display it above requested physical route (route in url)
     // pass params to "modal application" and set "cancelable" conditionally
     const ApplicationModal = getModalApplication(router.route);
@@ -139,6 +142,7 @@ const Preloader = (props: Props) => {
                     <ApplicationModal
                         cancelable={cancelable}
                         closeModalApp={props.closeModalApp}
+                        getBackgroundRoute={props.getBackgroundRoute}
                         modal={hasActionModal ? <Modals background={false} /> : null}
                     />
                 </ModalComponent>

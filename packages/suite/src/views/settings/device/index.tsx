@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import TrezorConnect from 'trezor-connect';
 import { H2, P, Switch, Link, colors } from '@trezor/components-v2';
 
 import { SUITE } from '@suite-actions/constants';
@@ -12,6 +11,7 @@ import { SuiteLayout } from '@suite-components';
 import { Menu as SettingsMenu } from '@settings-components';
 import { getFwVersion } from '@suite-utils/device';
 import { SEED_MANUAL_URL, DRY_RUN_URL, PASSPHRASE_URL } from '@suite-constants/urls';
+// import { AcquiredDevice } from '@suite-types';
 
 import { Props } from './Container';
 
@@ -45,6 +45,7 @@ const Settings = ({
     wipeDevice,
     backupDevice,
     openModal,
+    checkSeed,
     goto,
 }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
@@ -57,18 +58,31 @@ const Settings = ({
         setLabel(device.label);
     }, [device]);
 
-    if (!device || !device.features) {
-        return null;
-    }
-
-    const { features } = device;
-
     const DISPLAY_ROTATIONS = [
         { label: <Translation {...messages.TR_NORTH} />, value: 0 },
         { label: <Translation {...messages.TR_EAST} />, value: 90 },
         { label: <Translation {...messages.TR_SOUTH} />, value: 180 },
         { label: <Translation {...messages.TR_WEST} />, value: 270 },
     ] as const;
+
+    const startCheckSeed = () => {
+        if (device && device.features && device.features.major_version === 1) {
+            // T1 needs to input some more information from suite. TT does everything on device.
+            goto('seed-input-index', { cancelable: true });
+        } else {
+            checkSeed();
+        }
+    };
+
+    if (!device?.features) {
+        return (
+            <SuiteLayout title="Settings" secondaryMenu={<SettingsMenu />}>
+                no device connected
+            </SuiteLayout>
+        );
+    }
+
+    const { features } = device;
 
     return (
         <SuiteLayout title="Settings" secondaryMenu={<SettingsMenu />}>
@@ -87,7 +101,7 @@ const Settings = ({
                         />
                         <ActionColumn>
                             <ActionButton
-                                onClick={() => backupDevice({})}
+                                onClick={() => backupDevice({ device })}
                                 isDisabled={
                                     uiLocked || !features.needs_backup || features.unfinished_backup
                                 }
@@ -128,9 +142,9 @@ const Settings = ({
                             />
                             <ActionColumn>
                                 <ActionButton
-                                    onClick={() =>
-                                        TrezorConnect.recoveryDevice({ dry_run: true, device })
-                                    }
+                                    onClick={() => {
+                                        startCheckSeed();
+                                    }}
                                     isDisabled={
                                         uiLocked ||
                                         features.needs_backup ||
@@ -161,10 +175,17 @@ const Settings = ({
                             <ActionButton
                                 variant="secondary"
                                 onClick={() => goto('firmware-index', { cancelable: true })}
-                                isDisabled={uiLocked}
                                 data-test="@suite/settings/device/update-button"
+                                isDisabled={
+                                    uiLocked
+                                    // TODO: for development and testing purposes is disable disabled
+                                    // || (device && !['required', 'outdated'].includes(device.firmware))
+                                }
                             >
-                                <Translation {...messages.TR_CHECK_FOR_UPDATES} />
+                                {device &&
+                                    ['required', 'outdated'].includes(device.firmware) &&
+                                    'Update available'}
+                                {device && device.firmware === 'valid' && 'Up to date'}
                             </ActionButton>
                         </ActionColumn>
                     </Row>
@@ -183,7 +204,7 @@ const Settings = ({
 
                         <ActionColumn>
                             <Switch
-                                checked={features.pin_protection}
+                                checked={!!features.pin_protection}
                                 onChange={() => changePin({ remove: features.pin_protection })}
                                 // isDisabled={uiLocked}
                             />
@@ -211,7 +232,7 @@ const Settings = ({
                         />
                         <ActionColumn>
                             <Switch
-                                checked={features.passphrase_protection}
+                                checked={!!features.passphrase_protection}
                                 onChange={() =>
                                     applySettings({
                                         use_passphrase: !features.passphrase_protection,
@@ -276,7 +297,6 @@ const Settings = ({
                                     {messages.TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE}
                                 </Translation>
                             </ActionButton>
-
                             <ActionButton
                                 onClick={() =>
                                     openModal({
@@ -310,7 +330,9 @@ const Settings = ({
                                         key={variant.value}
                                         variant="secondary"
                                         onClick={() =>
-                                            applySettings({ display_rotation: variant.value })
+                                            applySettings({
+                                                display_rotation: variant.value,
+                                            })
                                         }
                                         data-test={`@suite/settings/device/rotation-button/${variant.value}`}
                                         isDisabled={uiLocked}

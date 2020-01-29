@@ -95,6 +95,11 @@ export default (state: State = initialState, action: Action | WalletAction): Sta
                 // gather transactions from account.create action
                 add(draft, action.payload.history.transactions || [], action.payload, 1);
                 break;
+            case ACCOUNT.REMOVE:
+                action.payload.forEach(a => {
+                    delete draft.transactions[getAccountKey(a.descriptor, a.symbol, a.deviceState)];
+                });
+                break;
             case TRANSACTION.ADD:
                 add(draft, action.transactions, action.account, action.page);
                 break;

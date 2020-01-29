@@ -61,7 +61,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                 ? resolveStaticPath('connect/')
                 : // : 'https://connect.trezor.io/8/';
                   // 'https://localhost:8088/';
-                  'https://connect.corp.sldev.cz/fix/missing-messages/';
+                  'https://connect.corp.sldev.cz/feature/fw-passphrase-redesign/';
 
         await TrezorConnect.init({
             connectSrc,

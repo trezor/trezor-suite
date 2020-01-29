@@ -59,12 +59,17 @@ type Props = {
     ReturnType<typeof mapDispatchToProps>;
 
 const Passphrase = (props: Props) => {
-    const authConfirmation = props.getDiscoveryAuthConfirmationStatus() || props.device.authConfirm;
-    const stateConfirmation = !!props.device.state;
+    const { device } = props;
+    const authConfirmation = props.getDiscoveryAuthConfirmationStatus() || device.authConfirm;
+    const stateConfirmation = !!device.state;
     const hasEmptyPassphraseWallet = deviceUtils
-        .getDeviceInstances(props.device, props.devices)
+        .getDeviceInstances(device, props.devices)
         .find(d => d.useEmptyPassphrase);
     const noPassphraseOffer = !hasEmptyPassphraseWallet && !stateConfirmation;
+    const onDeviceOffer =
+        device.features &&
+        device.features.capabilities &&
+        device.features.capabilities.includes('Capability_PassphraseEntry');
 
     const [submitted, setSubmitted] = useState(false);
     const [enabled, setEnabled] = useState(!authConfirmation);
@@ -84,10 +89,10 @@ const Passphrase = (props: Props) => {
         return <Loading />;
     }
 
-    const submit = () => {
+    const submit = (passphraseOnDevice?: boolean) => {
         if (!enabled) return;
         setSubmitted(true);
-        props.onPassphraseSubmit(value);
+        props.onPassphraseSubmit(value, passphraseOnDevice);
     };
 
     if (enterPressed) {
@@ -120,7 +125,7 @@ const Passphrase = (props: Props) => {
                         To access standard (no-passphrase) Wallet click the button below.
                     </Content>
                     <Actions>
-                        <Button variant="primary" onClick={submit}>
+                        <Button variant="primary" onClick={() => submit()}>
                             Access standard Wallet
                         </Button>
                     </Actions>
@@ -158,9 +163,18 @@ const Passphrase = (props: Props) => {
                     </Checkbox>
                 </Content>
                 <Actions>
-                    <Button isDisabled={!enabled} variant="secondary" onClick={submit}>
+                    <Button isDisabled={!enabled} variant="secondary" onClick={() => submit()}>
                         {BUTTON}
                     </Button>
+                    {onDeviceOffer && (
+                        <Button
+                            isDisabled={!enabled}
+                            variant="secondary"
+                            onClick={() => submit(true)}
+                        >
+                            Enter passphrase on device
+                        </Button>
+                    )}
                 </Actions>
             </Col>
         </Wrapper>

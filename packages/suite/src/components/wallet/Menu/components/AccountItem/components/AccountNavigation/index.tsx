@@ -68,7 +68,8 @@ const AccountNavigation = (props: Props) => {
                 }
                 return null;
             })}
-            {moreItemsActive &&
+            {/* {moreItemsActive &&
+                HIDDEN_ITEMS.length > 0 &&
                 HIDDEN_ITEMS.map(item => {
                     if (!item.isHidden(account.symbol)) {
                         return (
@@ -85,13 +86,15 @@ const AccountNavigation = (props: Props) => {
                         );
                     }
                     return null;
-                })}
-            <StyledNavLink onClick={() => setMoreItemsActive(!moreItemsActive)}>
-                <IconWrapper>
-                    <Icon size={12} icon={moreItemsActive ? 'CROSS' : 'PLUS'} />
-                </IconWrapper>
-                <Text>Show {moreItemsActive ? 'less' : 'more'}</Text>
-            </StyledNavLink>
+                })} */}
+            {HIDDEN_ITEMS.length > 0 && (
+                <StyledNavLink onClick={() => setMoreItemsActive(!moreItemsActive)}>
+                    <IconWrapper>
+                        <Icon size={12} icon={moreItemsActive ? 'CROSS' : 'PLUS'} />
+                    </IconWrapper>
+                    <Text>Show {moreItemsActive ? 'less' : 'more'}</Text>
+                </StyledNavLink>
+            )}
         </Wrapper>
     );
 };

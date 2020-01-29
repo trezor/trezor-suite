@@ -7,8 +7,6 @@ import { UI } from 'trezor-connect';
 import { Modal as ModalComponent } from '@trezor/components';
 
 import * as modalActions from '@suite-actions/modalActions';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
-import * as receiveActions from '@wallet-actions/receiveActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { MODAL } from '@suite-actions/constants';
 import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
@@ -20,6 +18,7 @@ import PassphraseSource from './PassphraseSource';
 import PassphraseOnDevice from './PassphraseOnDevice';
 import ConfirmAction from './confirm/Action';
 import Word from './Word';
+import WordAdvanced from './WordAdvanced';
 // import ConfirmAddress from './confirm/Address';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ConfirmSignTx from './confirm/SignTx';
@@ -35,9 +34,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    sendFormActions: bindActionCreators(sendFormActions, dispatch),
     modalActions: bindActionCreators(modalActions, dispatch),
-    receiveActions: bindActionCreators(receiveActions, dispatch),
     goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
@@ -65,13 +62,15 @@ const getDeviceContextModal = (props: Props) => {
 
         case 'WordRequestType_Plain':
             return <Word />;
-
-        // used in TT legacy firmware
-        // TT legacy firmware
+        case 'WordRequestType_Matrix6':
+            return <WordAdvanced count={6} />;
+        case 'WordRequestType_Matrix9':
+            return <WordAdvanced count={9} />;
         case 'ButtonRequest_PassphraseType':
             return <PassphraseSource device={device} />;
         // TT firmware
         case UI.REQUEST_PASSPHRASE_ON_DEVICE:
+        case 'ButtonRequest_PassphraseEntry':
             return <PassphraseOnDevice device={device} />;
 
         // Button requests
