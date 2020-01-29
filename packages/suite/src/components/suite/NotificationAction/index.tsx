@@ -23,4 +23,3 @@ const notify = (
 };
 
 export { notify };
-export default NotificationsContainer;
