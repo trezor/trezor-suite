@@ -1,7 +1,7 @@
 import { css } from 'styled-components';
 import { colors } from '@trezor/components-v2';
 
-export const notificationStyles = css`
+export const notifications = css`
     .Toastify__toast-container {
         z-index: 9999;
         position: fixed;

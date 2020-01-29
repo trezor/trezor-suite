@@ -1,18 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
 import { Notification } from '@trezor/components-v2';
-import { notificationStyles } from '@suite-support/styles/notifications';
-import { ToastContainer as NotificationContainer, toast } from 'react-toastify';
-
-const Wrapper = styled.div`
-    ${notificationStyles}
-`;
-
-const NotificationsContainer = () => (
-    <Wrapper>
-        <NotificationContainer />
-    </Wrapper>
-);
+import { toast } from 'react-toastify';
 
 const notify = (
     title: string,
