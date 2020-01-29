@@ -63,6 +63,7 @@ const SwitchDeviceModal = (props: Props) => {
                 </Description>
                 {sortedDevices.map(device => (
                     <DeviceItem
+                        key={device.path}
                         device={device}
                         instances={deviceUtils.getDeviceInstances(device, devices)}
                         backgroundRoute={backgroundRoute}
