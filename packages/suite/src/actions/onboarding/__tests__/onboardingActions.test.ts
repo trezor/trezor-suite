@@ -5,11 +5,11 @@ import thunk from 'redux-thunk';
 
 import onboardingReducer from '@onboarding-reducers/onboardingReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
-import recoveryReducer from '@onboarding-reducers/recoveryReducer';
 import fixtures, {
     deviceCallsSpecific,
     deviceCallsGeneral,
 } from '../__fixtures__/onboardingActions';
+import recoveryReducer from '@settings-reducers/recoveryReducer';
 
 import { Action } from '@suite-types';
 

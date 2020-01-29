@@ -1,50 +1,32 @@
-import * as connectActions from '@onboarding-actions/connectActions';
-import { RECOVER_DEVICE } from '@onboarding-actions/constants/calls';
-import {
-    WORD_REQUEST_MATRIX6,
-    WORD_REQUEST_MATRIX9,
-    WORD_REQUEST_PLAIN,
-} from '@onboarding-actions/constants/events';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import * as recoveryActions from '@onboarding-actions/recoveryActions';
-import { BlindMatrix, OnboardingButton, Option, Text, Wrapper } from '@onboarding-components';
-import { RECOVERY_MODEL_ONE_URL } from '@suite-constants/urls';
-import { Translation, WordInput } from '@suite-components';
-import { AppState, Dispatch } from '@suite-types';
-import messages from '@suite/support/messages';
-import { Link, P } from '@trezor/components-v2';
 import React, { useState } from 'react';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
+import * as recoveryActions from '@settings-actions/recoveryActions';
+import { OnboardingButton, Option, Text, Wrapper } from '@onboarding-components';
+import { RECOVERY_MODEL_ONE_URL } from '@suite-constants/urls';
+import { Translation } from '@suite-components';
+import { AppState, Dispatch } from '@suite-types';
+import messages from '@suite/support/messages';
+import { Link } from '@trezor/components-v2';
 
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
     deviceCall: state.onboarding.deviceCall,
-    uiInteraction: state.onboarding.uiInteraction,
-    recovery: state.onboarding.recovery,
+    recovery: state.settings.recovery,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    onboardingActions: {
-        goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
-        goToSubStep: bindActionCreators(onboardingActions.goToSubStep, dispatch),
-        goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
-    },
-    recoveryActions: {
-        setWordsCount: bindActionCreators(recoveryActions.setWordsCount, dispatch),
-        submit: bindActionCreators(recoveryActions.submit, dispatch),
-        setAdvancedRecovery: bindActionCreators(recoveryActions.setAdvancedRecovery, dispatch),
-    },
-    connectActions: {
-        recoveryDevice: bindActionCreators(connectActions.recoveryDevice, dispatch),
-        resetCall: bindActionCreators(connectActions.resetCall, dispatch),
-    },
+    goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
+    goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
+    setWordsCount: bindActionCreators(recoveryActions.setWordsCount, dispatch),
+    setAdvancedRecovery: bindActionCreators(recoveryActions.setAdvancedRecovery, dispatch),
+    recoverDevice: bindActionCreators(recoveryActions.recoverDevice, dispatch),
 });
 
-type Props = ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps> &
-    WrappedComponentProps;
+type Props = { modal: React.ReactNode } & ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps>;
 
 type Status = null | 'select-advanced-recovery';
 
@@ -52,13 +34,15 @@ const RecoveryStepModelOne = (props: Props) => {
     const [status, setStatus] = useState<Status>(null);
 
     const {
-        recoveryActions,
+        goToNextStep,
+        goToPreviousStep,
+        setWordsCount,
+        setAdvancedRecovery,
+        recoverDevice,
         recovery,
         device,
-        uiInteraction,
         deviceCall,
-        connectActions,
-        onboardingActions,
+        modal,
     } = props;
 
     if (!device || !device.features) {
@@ -66,32 +50,16 @@ const RecoveryStepModelOne = (props: Props) => {
     }
 
     const getStatus = () => {
-        if (deviceCall.result && deviceCall.name === RECOVER_DEVICE) {
+        if (recovery.success) {
             return 'success';
         }
-        if (
-            deviceCall.error &&
-            // todo: typescript
-            // @ts-ignore
-            !(deviceCall.error.code && deviceCall.error.code !== 'Failure_ActionCancelled') &&
-            deviceCall.name === RECOVER_DEVICE
-        ) {
+        if (recovery.error) {
             return 'error';
         }
-        if (uiInteraction.name === WORD_REQUEST_PLAIN) {
+        if (modal) {
             return 'recovering';
         }
-        if (
-            uiInteraction.name === WORD_REQUEST_MATRIX6 ||
-            uiInteraction.name === WORD_REQUEST_MATRIX9
-        ) {
-            return 'recovering-advanced';
-        }
         return status;
-    };
-
-    const recoveryDevice = () => {
-        connectActions.recoveryDevice();
     };
 
     return (
@@ -104,165 +72,154 @@ const RecoveryStepModelOne = (props: Props) => {
                 {getStatus() === 'error' && 'Recovery failed'}
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
-                {getStatus() === null && (
-                    <>
-                        <Text>
-                            <Translation {...messages.TR_RECOVER_SUBHEADING} />
-                        </Text>
-                        <Wrapper.Options>
-                            <Option
-                                isSelected={recovery.wordsCount === 12}
-                                onClick={() => {
-                                    recoveryActions.setWordsCount(12);
-                                }}
-                            >
-                                <P>
-                                    <Translation {...messages.TR_WORDS} values={{ count: '12' }} />
-                                </P>
-                            </Option>
-                            <Option
-                                isSelected={recovery.wordsCount === 18}
-                                onClick={() => {
-                                    recoveryActions.setWordsCount(18);
-                                }}
-                            >
-                                <P>
-                                    <Translation {...messages.TR_WORDS} values={{ count: '18' }} />
-                                </P>
-                            </Option>
-                            <Option
-                                isSelected={recovery.wordsCount === 24}
-                                onClick={() => {
-                                    recoveryActions.setWordsCount(24);
-                                }}
-                            >
-                                <P>
-                                    <Translation {...messages.TR_WORDS} values={{ count: '24' }} />
-                                </P>
-                            </Option>
-                        </Wrapper.Options>
+                {modal && modal}
 
-                        <Wrapper.Controls>
-                            <OnboardingButton.Cta
-                                isDisabled={recovery.wordsCount === null}
-                                onClick={() => {
-                                    setStatus('select-advanced-recovery');
-                                }}
-                            >
-                                <Translation {...messages.TR_CONTINUE} />
-                            </OnboardingButton.Cta>
-                        </Wrapper.Controls>
-                    </>
-                )}
-                {getStatus() === 'select-advanced-recovery' && (
+                {!modal && (
                     <>
-                        <Text>
-                            <Translation
-                                {...messages.TR_RECOVERY_TYPES_DESCRIPTION}
-                                values={{
-                                    TR_LEARN_MORE_LINK: (
-                                        <Link href={RECOVERY_MODEL_ONE_URL}>
-                                            <Translation {...messages.TR_LEARN_MORE_LINK} />
-                                        </Link>
-                                    ),
-                                }}
-                            />
-                        </Text>
-                        <Wrapper.Options>
-                            <Option
-                                isSelected={recovery.advancedRecovery === false}
-                                onClick={() => {
-                                    recoveryActions.setAdvancedRecovery(false);
-                                }}
-                            >
-                                <P>
-                                    <Translation {...messages.TR_BASIC_RECOVERY_OPTION} />
-                                </P>
-                            </Option>
-                            <Option
-                                isSelected={recovery.advancedRecovery === true}
-                                onClick={() => {
-                                    recoveryActions.setAdvancedRecovery(true);
-                                }}
-                            >
-                                <P>
-                                    <Translation {...messages.TR_ADVANCED_RECOVERY_OPTION} />
-                                </P>
-                            </Option>
-                        </Wrapper.Options>
+                        {getStatus() === null && (
+                            <>
+                                <Text>
+                                    <Translation {...messages.TR_RECOVER_SUBHEADING} />
+                                </Text>
+                                <Wrapper.Options>
+                                    <Option
+                                        action={() => {
+                                            setWordsCount(12);
+                                            setStatus('select-advanced-recovery');
+                                        }}
+                                        title="??"
+                                        text={
+                                            <Translation
+                                                {...messages.TR_WORDS}
+                                                values={{ count: '12' }}
+                                            />
+                                        }
+                                        button="???"
+                                    />
+                                    <Option
+                                        action={() => {
+                                            setWordsCount(18);
+                                            setStatus('select-advanced-recovery');
+                                        }}
+                                        title="??"
+                                        text={
+                                            <Translation
+                                                {...messages.TR_WORDS}
+                                                values={{ count: '18' }}
+                                            />
+                                        }
+                                        button="???"
+                                    />
 
-                        <Wrapper.Controls>
-                            <OnboardingButton.Cta
-                                onClick={() => {
-                                    recoveryDevice();
-                                }}
-                            >
-                                <Translation {...messages.TR_START_RECOVERY} />
-                            </OnboardingButton.Cta>
+                                    <Option
+                                        action={() => {
+                                            setWordsCount(24);
+                                            setStatus('select-advanced-recovery');
+                                        }}
+                                        title="??"
+                                        text={
+                                            <Translation
+                                                {...messages.TR_WORDS}
+                                                values={{ count: '24' }}
+                                            />
+                                        }
+                                        button="???"
+                                    />
+                                </Wrapper.Options>
+                            </>
+                        )}
+                        {getStatus() === 'select-advanced-recovery' && (
+                            <>
+                                <Text>
+                                    <Translation
+                                        {...messages.TR_RECOVERY_TYPES_DESCRIPTION}
+                                        values={{
+                                            TR_LEARN_MORE_LINK: (
+                                                <Link href={RECOVERY_MODEL_ONE_URL}>
+                                                    <Translation {...messages.TR_LEARN_MORE_LINK} />
+                                                </Link>
+                                            ),
+                                        }}
+                                    />
+                                </Text>
+                                <Wrapper.Options>
+                                    <Option
+                                        action={() => {
+                                            setAdvancedRecovery(false);
+                                            recoverDevice();
+                                        }}
+                                        title="??"
+                                        text={
+                                            <Translation {...messages.TR_BASIC_RECOVERY_OPTION} />
+                                        }
+                                        button="???"
+                                    />
 
-                            <OnboardingButton.Alt
-                                onClick={() => {
-                                    //  props.onboardingActions.goToSubStep(null);
-                                    setStatus(null);
-                                }}
-                            >
-                                <Translation {...messages.TR_BACK} />
-                            </OnboardingButton.Alt>
-                        </Wrapper.Controls>
-                    </>
-                )}
-                {getStatus() === 'recovering' && (
-                    <WordInput
-                        counter={{ total: recovery.wordsCount, current: uiInteraction.counter }}
-                        onSubmit={recoveryActions.submit}
-                    />
-                )}
-                {getStatus() === 'recovering-advanced' && (
-                    <>
-                        <BlindMatrix
-                            count={uiInteraction.name === WORD_REQUEST_MATRIX9 ? 9 : 6}
-                            onSubmit={recoveryActions.submit}
-                        />
-                    </>
-                )}
-                {getStatus() === 'success' && (
-                    <Wrapper.Controls>
-                        <OnboardingButton.Cta onClick={() => onboardingActions.goToNextStep()}>
-                            Continue
-                        </OnboardingButton.Cta>
-                    </Wrapper.Controls>
-                )}
-                {getStatus() === 'error' && (
-                    <>
-                        <Text>
-                            {/* TODO: device disconnected error is returned as string, other connect errors are objects */}
-                            <Translation
-                                {...messages.TR_RECOVERY_ERROR}
-                                values={{
-                                    error:
-                                        typeof deviceCall.error === 'string'
-                                            ? deviceCall.error
-                                            : '',
-                                }}
-                            />
-                        </Text>
-                        <OnboardingButton.Cta
-                            onClick={() => {
-                                props.connectActions.resetCall();
-                                setStatus(null);
-                            }}
-                        >
-                            <Translation {...messages.TR_RETRY} />
-                        </OnboardingButton.Cta>
+                                    <Option
+                                        action={() => {
+                                            setAdvancedRecovery(true);
+                                            recoverDevice();
+                                        }}
+                                        title="??"
+                                        text={
+                                            <Translation
+                                                {...messages.TR_ADVANCED_RECOVERY_OPTION}
+                                            />
+                                        }
+                                        button="???"
+                                    />
+                                </Wrapper.Options>
+
+                                <Wrapper.Controls>
+                                    <OnboardingButton.Alt
+                                        onClick={() => {
+                                            setStatus(null);
+                                        }}
+                                    >
+                                        <Translation {...messages.TR_BACK} />
+                                    </OnboardingButton.Alt>
+                                </Wrapper.Controls>
+                            </>
+                        )}
+                        {getStatus() === 'success' && (
+                            <Wrapper.Controls>
+                                <OnboardingButton.Cta onClick={() => goToNextStep()}>
+                                    Continue
+                                </OnboardingButton.Cta>
+                            </Wrapper.Controls>
+                        )}
+                        {getStatus() === 'error' && (
+                            <>
+                                <Text>
+                                    {/* TODO: device disconnected error is returned as string, other connect errors are objects */}
+                                    <Translation
+                                        {...messages.TR_RECOVERY_ERROR}
+                                        values={{
+                                            error:
+                                                typeof deviceCall.error === 'string'
+                                                    ? deviceCall.error
+                                                    : '',
+                                        }}
+                                    />
+                                </Text>
+                                <OnboardingButton.Cta
+                                    onClick={() => {
+                                        // todo:
+                                        // props.connectActions.resetCall();
+                                        setStatus(null);
+                                    }}
+                                >
+                                    <Translation {...messages.TR_RETRY} />
+                                </OnboardingButton.Cta>
+                            </>
+                        )}
                     </>
                 )}
             </Wrapper.StepBody>
 
             <Wrapper.StepFooter>
                 {getStatus() == null && (
-                    <OnboardingButton.Back
-                        onClick={() => props.onboardingActions.goToPreviousStep()}
-                    >
+                    <OnboardingButton.Back onClick={() => goToPreviousStep()}>
                         Back
                     </OnboardingButton.Back>
                 )}
@@ -271,4 +228,4 @@ const RecoveryStepModelOne = (props: Props) => {
     );
 };
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(RecoveryStepModelOne));
+export default connect(mapStateToProps, mapDispatchToProps)(RecoveryStepModelOne);

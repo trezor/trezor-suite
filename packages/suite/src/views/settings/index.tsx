@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { H2 } from '@trezor/components-v2';
+import { H2, Switch } from '@trezor/components-v2';
 
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
@@ -21,6 +21,7 @@ import { AppState, Dispatch } from '@suite-types';
 import { FIAT, LANGUAGES } from '@suite-config';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as languageActions from '@settings-actions/languageActions';
+import * as analyticsActions from '@suite-actions/analyticsActions';
 
 const buildCurrencyOption = (currency: string) => {
     return {
@@ -34,11 +35,13 @@ const mapStateToProps = (state: AppState) => ({
     locks: state.suite.locks,
     wallet: state.wallet,
     language: state.suite.language,
+    analytics: state.suite.analytics,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     setLocalCurrency: bindActionCreators(walletSettingsActions.setLocalCurrency, dispatch),
     fetchLocale: bindActionCreators(languageActions.fetchLocale, dispatch),
+    toggleAnalytics: bindActionCreators(analyticsActions.toggleAnalytics, dispatch),
 });
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
@@ -47,7 +50,15 @@ const BottomContainer = styled.div`
     margin-top: auto;
 `;
 
-const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Props) => {
+const Settings = ({
+    locks,
+    wallet,
+    language,
+    analytics,
+    setLocalCurrency,
+    fetchLocale,
+    toggleAnalytics,
+}: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
 
     return (
@@ -115,6 +126,26 @@ const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Pr
                             >
                                 <Translation>{messages.TR_CONNECT_DROPBOX}</Translation>
                             </ActionButton>
+                        </ActionColumn>
+                    </Row>
+                </Section>
+
+                <Section borderless>
+                    <Row>
+                        <TextColumn
+                            title={<Translation>{messages.TR_ALLOW_ANALYTICS}</Translation>}
+                            description={
+                                <Translation>{messages.TR_ALLOW_ANALYTICS_DESCRIPTION}</Translation>
+                            }
+                            learnMore="todo some link"
+                        />
+                        <ActionColumn>
+                            <Switch
+                                checked={analytics}
+                                onChange={toggleAnalytics}
+                                // todo: does not work (components)
+                                // isDisabled={uiLocked}
+                            />
                         </ActionColumn>
                     </Row>
                 </Section>

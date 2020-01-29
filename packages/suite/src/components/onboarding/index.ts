@@ -1,9 +1,7 @@
-import BlindMatrix from './BlindMatrix';
 import Key from './Key';
 import Option from './Option';
 import PinMatrix from './PinMatrix';
-import Preloader from './Preloader';
-import ProgressSteps from './ProgressSteps';
+import ProgressBar from './ProgressBar';
 import Text from './Text';
 import UnexpectedState from './UnexpectedState';
 
@@ -54,14 +52,12 @@ const Wrapper = {
 };
 
 export {
-    BlindMatrix,
     OnboardingButton,
     OnboardingIcon,
     Key,
     Loaders,
     PinMatrix,
-    Preloader,
-    ProgressSteps,
+    ProgressBar,
     Text,
     UnexpectedState,
     Wrapper,

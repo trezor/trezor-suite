@@ -26,3 +26,4 @@ export const LOCK_TYPE = {
     DEVICE: 2, // restricted device call (TrezorConnect)
     UI: 3, // restricted most of the UI actions (buttons, keyboard etc.)
 } as const;
+export const TOGGLE_ANALYTICS = '@suite/toggle-analytics';

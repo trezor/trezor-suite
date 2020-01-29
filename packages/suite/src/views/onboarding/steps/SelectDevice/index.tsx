@@ -1,13 +1,9 @@
 import React from 'react';
-import { Translation } from '@suite-components/Translation';
-import { TrezorImage } from '@trezor/components';
-import { P } from '@trezor/components-v2';
-import { Wrapper, OnboardingButton, Option } from '@onboarding-components';
+import { Translation } from '@suite-components';
+import { Wrapper, Text, OnboardingButton, Option } from '@onboarding-components';
 
 import messages from '@suite/support/messages';
 import { Props } from './Container';
-
-const DEVICE_HEIGHT = 130;
 
 const SelectDeviceStep = ({ onboardingActions }: Props) => {
     return (
@@ -16,31 +12,33 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                 <Translation {...messages.TR_SELECT_YOUR_DEVICE_HEADING} />
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
+                <Text>
+                    Trezor One features two buttons and a monochromatic screen, Trezor T is the
+                    high-end model featuring touch-screen display.
+                </Text>
                 <Wrapper.Options>
                     <Option
                         data-test="@onboarding/option-model-one-path"
-                        onClick={() => {
+                        action={() => {
                             onboardingActions.selectTrezorModel(1);
                             onboardingActions.goToNextStep();
                         }}
-                    >
-                        <TrezorImage style={{ margin: '15px' }} model={1} height={DEVICE_HEIGHT} />
-                        <P weight="bold">
-                            <Translation {...messages.TR_MODEL_ONE} />
-                        </P>
-                    </Option>
+                        title="Trezor One"
+                        text={<Translation {...messages.TR_MODEL_ONE} />}
+                        button="Select Trezor One"
+                        imgSrc="images/onboarding/model-1.svg"
+                    />
                     <Option
                         data-test="@onboarding/option-model-t-path"
-                        onClick={() => {
+                        action={() => {
                             onboardingActions.selectTrezorModel(2);
                             onboardingActions.goToNextStep();
                         }}
-                    >
-                        <TrezorImage style={{ margin: '15px' }} model={2} height={DEVICE_HEIGHT} />
-                        <P weight="bold">
-                            <Translation {...messages.TR_MODEL_T} />
-                        </P>
-                    </Option>
+                        title="Trezor One"
+                        text={<Translation {...messages.TR_MODEL_T} />}
+                        button="Select Trezor T"
+                        imgSrc="images/onboarding/model-2.svg"
+                    />
                 </Wrapper.Options>
             </Wrapper.StepBody>
             <Wrapper.StepFooter>

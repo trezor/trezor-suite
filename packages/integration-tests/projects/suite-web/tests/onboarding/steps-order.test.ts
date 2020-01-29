@@ -9,7 +9,9 @@ describe('Steps order - slightly differs under certain circumstances', () => {
         cy.viewport(1024, 768).resetDb();
         cy.visit('')
             .goToOnboarding()
-            .onboardingShouldLoad();
+            .onboardingShouldLoad()
+            .getTestElement('@onboarding/button-begin')
+            .click();
     });
 
     describe('new device', () => {

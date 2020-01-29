@@ -1,26 +1,23 @@
-import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
-import { Translation } from '@suite-components/Translation';
-import WebusbButton from '@suite-components/WebusbButton';
-import messages from '@suite/support/messages';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 
-import Bridge from './components/Bridge/Container';
-import Connect from './components/Connect';
-import TroubleshootBootloader from './components/Connect/TroubleshootBootloader';
-import TroubleshootInitialized from './components/Connect/TroubleshootInitialized';
-import TroubleshootSearchingTooLong from './components/Connect/TroubleshootTooLong';
-import { Props } from './Container';
+import { OnboardingButton, Text, Wrapper, Loaders } from '@onboarding-components';
+import { Translation } from '@suite-components';
+import WebusbButton from '@suite-components/WebusbButton';
 import { isWebUSB } from '@suite-utils/transport';
+import messages from '@suite/support/messages';
+import { resolveStaticPath } from '@suite-utils/nextjs';
+
+import Bridge from './components/Bridge/Container';
+import { Props } from './Container';
 
 const WebusbButtonWrapper = styled.div`
     width: 200px;
 `;
 
 const PairDeviceStep = (props: Props) => {
-    const { device, transport, model } = props;
-    const [showTroubleshoot, setShowTroubleshoot] = useState(false);
+    const { device, transport } = props;
 
     const isInBlWithFwPresent = () => {
         if (!device) {
@@ -51,39 +48,24 @@ const PairDeviceStep = (props: Props) => {
         return 'ok';
     };
 
-    useEffect(() => {
-        if (transport && transport.type) {
-            setShowTroubleshoot(false);
-        }
-    }, [transport]);
-
-    const actualModel = device && device.features && device.features.major_version;
-
     return (
         <Wrapper.Step data-test="@onboarding/pair-device-step">
-            <Wrapper.StepHeading>Pair device</Wrapper.StepHeading>
+            <Wrapper.StepHeading>
+                Connect Trezor to continue
+                {!isDetectingDevice() && <Loaders.Dots />}
+            </Wrapper.StepHeading>
             <Wrapper.StepBody>
-                {!showTroubleshoot && !hasNoTransport() && (
+                {!hasNoTransport() && (
                     <>
-                        <Connect
-                            model={actualModel || model}
-                            deviceIsConnected={isDetectingDevice()}
+                        <img
+                            alt=""
+                            src={resolveStaticPath('images/onboarding/connect-device.svg')}
                         />
-
                         {isDetectingDevice() && (
                             <>
-                                {getConnectedDeviceStatus() === 'in-bootloader' && (
-                                    <TroubleshootBootloader />
-                                )}
-                                {getConnectedDeviceStatus() === 'initialized' && (
+                                {/* {getConnectedDeviceStatus() === 'initialized' && (
                                     <TroubleshootInitialized />
-                                )}
-                                {getConnectedDeviceStatus() === 'seedles' && (
-                                    <div>
-                                        Device is in a seedles mode and is not allowed to be used
-                                        here.
-                                    </div>
-                                )}
+                                )} */}
                                 {getConnectedDeviceStatus() === 'ok' && (
                                     <>
                                         <Text>
@@ -101,7 +83,10 @@ const PairDeviceStep = (props: Props) => {
                                         </Wrapper.Controls>
                                     </>
                                 )}
-                                {getConnectedDeviceStatus() === 'unreadable' && (
+                                {/* ???? */}
+                                {/* todo todo todo: we had a nice logic for disabling webusb. maybe implement
+                                into common unreadable modal? */}
+                                {/* {getConnectedDeviceStatus() === 'unreadable' && (
                                     <>
                                         <Text>
                                             Your device is connected properly, but web interface can
@@ -115,7 +100,7 @@ const PairDeviceStep = (props: Props) => {
                                             Try bridge
                                         </OnboardingButton.Cta>
                                     </>
-                                )}
+                                )} */}
                             </>
                         )}
 
@@ -129,32 +114,19 @@ const PairDeviceStep = (props: Props) => {
                                                     <WebusbButton ready />
                                                 </WebusbButtonWrapper>
                                                 <OnboardingButton.Alt
-                                                    onClick={() => setShowTroubleshoot(true)}
+                                                    onClick={() => TrezorConnect.disableWebUSB()}
                                                 >
-                                                    Troubleshoot
+                                                    Try bridge
                                                 </OnboardingButton.Alt>
                                             </Wrapper.Controls>
                                         )}
                                     </>
-                                )}
-                                {!isWebUSB(transport) && (
-                                    <Wrapper.Controls>
-                                        <OnboardingButton.Alt
-                                            onClick={() => setShowTroubleshoot(true)}
-                                        >
-                                            Troubleshoot
-                                        </OnboardingButton.Alt>
-                                    </Wrapper.Controls>
                                 )}
                             </>
                         )}
                     </>
                 )}
                 {hasNoTransport() && <Bridge />}
-
-                {showTroubleshoot && !hasNoTransport() && (
-                    <TroubleshootSearchingTooLong webusb={isWebUSB(transport)} />
-                )}
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
                 <Wrapper.Controls>
