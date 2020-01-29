@@ -4,7 +4,7 @@ image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:54b807728aa04176
 cache:
     untracked: true
     policy: pull
-    key: node_modules-across-the-monorepo-universe
+    key: ${CI_COMMIT_REF_SLUG}
     paths:
         - .yarn
         # modules
