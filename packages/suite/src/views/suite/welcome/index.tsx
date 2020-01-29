@@ -17,8 +17,7 @@ const Wrapper = styled.div`
     margin: 0 auto;
     padding: 90px;
     justify-content: center;
-    width: 780px;
-    height: 680px;
+    min-height: 60vh;
 `;
 
 const StyledImg = styled.img`
