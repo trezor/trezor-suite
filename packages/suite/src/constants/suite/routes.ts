@@ -25,6 +25,12 @@ const routes = [
         isModal: true,
     },
     {
+        name: 'suite-analytics',
+        pattern: '/analytics',
+        app: 'analytics',
+        isModal: true,
+    },
+    {
         name: 'suite-index',
         pattern: '/',
         app: 'dashboard',

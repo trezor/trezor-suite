@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
@@ -7,7 +7,8 @@ import { Button, P, H2 } from '@trezor/components-v2';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import * as routerActions from '@suite-actions/routerActions';
 import { Dispatch, InjectedModalApplicationProps } from '@suite-types';
-import { Analytics } from '@suite-components/Settings';
+import { Translation } from '@suite-components';
+import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -27,43 +28,18 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 type Props = ReturnType<typeof mapDispatchToProps> & InjectedModalApplicationProps;
 
 const Index = (props: Props) => {
-    // evaluate: this modal has two steps. should we just simply use local state for that or make
-    // another separate "analytics modal" and use goto() to switch views?
-    const [showAnalytics, setShowAnalytics] = useState(false);
-
-    if (!showAnalytics) {
-        return (
-            <Wrapper>
-                <H2 data-test="welcome-message">Welcome to Trezor Suite!</H2>
-                <P size="tiny">Lorem ipsum...</P>
-                <img alt="" src={resolveStaticPath('images/welcome/welcome.svg')} />
-
-                <Button data-test="@button/continue" onClick={() => setShowAnalytics(true)}>
-                    Let's begin!
-                </Button>
-            </Wrapper>
-        );
-    }
-
     return (
         <Wrapper>
-            <H2>Help Trezor Suite get better</H2>
+            <H2 data-test="welcome-message">
+                <Translation>{messages.TR_WELCOME_TO_TREZOR}</Translation>
+            </H2>
             <P size="tiny">
-                Help Trezor Suite become a better product by sending us anonymous analytics data.
-                Trezor Suite does NOT track any balance-related or personal data.
+                <Translation>{messages.TR_WELCOME_TO_TREZOR_TEXT}</Translation>
             </P>
+            <img alt="" src={resolveStaticPath('images/welcome/welcome.svg')} />
 
-            <img alt="" src={resolveStaticPath('images/welcome/analytics.svg')} />
-            <Analytics />
-
-            <Button
-                onClick={() => props.goto('onboarding-index')}
-                data-test="@button/go-to-onboarding"
-            >
-                Continue
-            </Button>
-            <Button onClick={() => props.closeModalApp()} data-test="@suite/welcome/go-to-suite">
-                I want to use suite now!
+            <Button data-test="@button/continue" onClick={() => props.goto('suite-analytics')}>
+                <Translation>{messages.TR_BEGIN}</Translation>
             </Button>
         </Wrapper>
     );

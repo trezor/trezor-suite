@@ -1693,6 +1693,46 @@ const definedMessages = defineMessages({
             'Trezor Suite does NOT track any balance-related or personal data, all anonymously',
         id: 'TR_ALLOW_ANALYTICS_DESCRIPTION',
     },
+    TR_HELP_TREZOR_SUITE: {
+        defaultMessage: 'Help Trezor Suite get better',
+        id: 'TR_HELP_TREZOR_SUITE',
+    },
+    TR_HELP_TREZOR_SUITE_TEXT_1: {
+        defaultMessage:
+            'Help Trezor Suite become a better product by sending us {TR_HELP_TREZOR_SUITE_TEXT_1_FAT}.',
+        id: 'TR_HELP_TREZOR_SUITE_TEXT_1',
+    },
+    TR_HELP_TREZOR_SUITE_TEXT_1_FAT: {
+        defaultMessage:
+            'anonymous analytics data.',
+        id: 'TR_HELP_TREZOR_SUITE_TEXT_1_FAT',
+    },
+    TR_HELP_TREZOR_SUITE_TEXT_2: {
+        defaultMessage:
+            'Trezor Suite does NOT track any balance-related or personal data.',
+        id: 'TR_HELP_TREZOR_SUITE_TEXT_2',
+    },
+    TR_TOS_INFORMATION: {
+        defaultMessage:
+            'Oh, by the way, we had to pay a hell lot of money to our lawyers to create some {TR_TOS_LINK}',
+        id: 'TR_HELP_TREZOR_SUITE_TEXT',
+    },
+    TR_TOS_LINK: {
+        defaultMessage: 'Terms & Conditions.',
+        id: 'TR_TOS_LINK',
+    },
+    TR_WELCOME_TO_TREZOR: {
+        defaultMessage: 'Welcome to Trezor Suite!',
+        id: 'TR_WELCOME_TO_TREZOR', 
+    },
+    TR_WELCOME_TO_TREZOR_TEXT: {
+        defaultMessage: 'Cyka blyat davai trezora',
+        id: 'TR_WELCOME_TO_TREZOR_TEXT', 
+    },
+    TR_BEGIN: {
+        defaultMessage: "Let's begin!",
+        id: 'TR_BEGIN',
+    },
 });
 
 export default definedMessages;
