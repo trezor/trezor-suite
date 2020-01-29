@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { UI } from 'trezor-connect';
 import { FIRMWARE } from '@firmware-actions/constants';
+import { SUITE } from '@suite-actions/constants';
 
 const { getSuiteDevice, getDeviceFeatures } = global.JestMocks;
 
@@ -99,18 +100,6 @@ export const firmwareUpdate = [
             },
         },
     },
-    // {
-    //     description: 'Fails for more than 1 connected devices',
-    //     initialState: {
-    //         suite: {
-    //             device: bootloaderDevice,
-    //         },
-    //         devices: [bootloaderDevice, testDevice],
-    //     },
-    //     result: {
-    //         state: { firmware: { status: 'error' } },
-    //     },
-    // },
     {
         description: 'Downloading fails for whatever reason thrown in rollout',
         initialState: {
@@ -179,13 +168,11 @@ export const firmwareUpdate = [
 // various cases to test reducer through actions
 export const reducerActions = [
     {
-        description: 'UI.REQUEST_BUTTON, code=ButtonRequest_FirmwareUpdate',
+        description: 'SUITE.ADD_BUTTON_REQUEST, type=ButtonRequest_FirmwareUpdate',
         initialState: {},
         action: {
-            type: UI.REQUEST_BUTTON,
-            payload: {
-                code: 'ButtonRequest_FirmwareUpdate',
-            },
+            type: SUITE.ADD_BUTTON_REQUEST,
+            payload: 'ButtonRequest_FirmwareUpdate',
         },
         result: {
             state: {
