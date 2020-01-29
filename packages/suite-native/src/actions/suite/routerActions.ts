@@ -259,3 +259,7 @@ export const initialRedirection = () => async (dispatch: Dispatch, getState: Get
         await dispatch(onLocationChange(getRoute('suite-welcome')));
     }
 };
+
+export const closeModalApp = () => (dispatch: Dispatch) => {
+    dispatch(back());
+};

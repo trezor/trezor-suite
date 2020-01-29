@@ -1033,7 +1033,7 @@ const forget = [
                     device_id: 'ignored-device-id',
                 },
             },
-            { 
+            {
                 ...SUITE_DEVICE,
                 state: undefined,
                 useEmptyPassphrase: false,

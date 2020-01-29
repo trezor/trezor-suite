@@ -326,7 +326,7 @@ const addButtonRequest = (
 ) => {
     // only acquired devices
     if (!device || !device.features) return;
-    const index = findInstanceIndex(draft, device);
+    const index = deviceUtils.findInstanceIndex(draft, device);
     if (!draft[index]) return;
     // update state
     if (!buttonRequest) {
