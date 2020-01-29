@@ -1,5 +1,5 @@
-import colors from '@trezor/components/lib/config/colors'; // TODO: fix this import, jest fails on svg parsing
 import { WrappedComponentProps } from 'react-intl';
+import { colors } from '@trezor/components-v2';
 import messages from '@suite/support/messages';
 import { Device } from 'trezor-connect';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
@@ -82,9 +82,9 @@ export const getStatusName = (
 export const getStatusColor = (deviceStatus: string): string => {
     switch (deviceStatus) {
         case 'connected':
-            return colors.GREEN_PRIMARY;
+            return colors.GREEN;
         case 'disconnected':
-            return colors.ERROR_PRIMARY;
+            return colors.BLACK50;
         case 'bootloader':
         case 'initialize':
         case 'seedless':
@@ -92,13 +92,13 @@ export const getStatusColor = (deviceStatus: string): string => {
         case 'used-in-other-window':
         case 'was-used-in-other-window':
         case 'unacquired':
-            return colors.WARNING_PRIMARY;
+            return colors.BLACK50;
         case 'firmware-required':
         case 'unavailable':
         case 'unreadable':
-            return colors.ERROR_PRIMARY;
+            return colors.RED;
         default:
-            return colors.TEXT_PRIMARY;
+            return colors.BLACK50;
     }
 };
 

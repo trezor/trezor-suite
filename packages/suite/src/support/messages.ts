@@ -1490,10 +1490,6 @@ const definedMessages = defineMessages({
         defaultMessage:
             'This is a place to see all your devices. You can further set them up in Settings but here you can switch between devices and see their statuses.',
     },
-    TR_FORGET: {
-        id: 'TR_FORGET',
-        defaultMessage: 'Forget',
-    },
     TR_UNDISCOVERED_WALLET: {
         id: 'TR_UNDISCOVERED_WALLET',
         defaultMessage: 'Undiscovered wallet',

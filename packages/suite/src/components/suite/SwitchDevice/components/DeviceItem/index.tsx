@@ -8,6 +8,8 @@ import * as deviceUtils from '@suite-utils/device';
 import messages from '@suite/support/messages';
 import WalletInstance from '../WalletInstance/Container';
 import { Props } from './Container';
+import ColHeader from './components/ColHeader';
+import DeviceImage from '@suite-components/images/DeviceImage';
 
 const DeviceWrapper = styled.div`
     display: flex;
@@ -15,25 +17,27 @@ const DeviceWrapper = styled.div`
     border-radius: 6px;
     background-color: ${colors.BLACK96};
     width: 100%;
+    padding: 24px 30px;
 
     & + & {
-        margin-top: 10px;
+        margin-top: 20px;
     }
 `;
 
 const Device = styled.div`
     display: flex;
-    padding: 24px;
     flex-direction: row;
     align-items: center;
+    margin-bottom: 8px;
 `;
 
 const DeviceTitle = styled.span`
     font-size: ${variables.FONT_SIZE.NORMAL};
+    margin-bottom: 6px;
 `;
 
 const DeviceStatus = styled.span<{ color: string }>`
-    font-size: ${variables.FONT_SIZE.BODY};
+    font-size: ${variables.FONT_SIZE.TINY};
     font-weight: 600;
     color: ${props => props.color};
 `;
@@ -50,27 +54,56 @@ const ChooseDevice = styled(Button)`
 `;
 
 const WalletsWrapper = styled.div<{ enabled: boolean }>`
-    padding: 0px 24px;
     opacity: ${props => (props.enabled ? 1 : 0.5)};
     pointer-events: ${props => (props.enabled ? 'unset' : 'none')};
     padding-bottom: ${props => (props.enabled ? '0px' : '24px')};
 `;
 
 const WalletsTooltips = styled.div`
-    padding: 10px 24px;
-    flex-direction: column;
+    /* padding: 10px 24px; */
+    /* flex-direction: column; */
+    display: flex;
     justify-content: flex-end;
+    padding-bottom: 12px;
 `;
 
 const InstancesWrapper = styled(Card)`
-    display: block;
-    background-color: ${colors.WHITE};
+    flex-direction: column;
+    border-radius: 3px;
+    background-color: #f5f5f5;
+    margin-bottom: 20px;
+    box-shadow: 0px 3px 20px 6px #e6e6e6;
+`;
+
+const StyledWalletInstance = styled(WalletInstance)`
+    & + & {
+        border-top: 2px solid ${colors.BLACK96};
+    }
 `;
 
 const AddWallet = styled.div`
     display: flex;
-    padding: 10px 24px;
     justify-content: flex-end;
+`;
+
+const DeviceHeader = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+const DeviceImageWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+`;
+
+// TODO: this is going to be a problem with different col headers length since they won't be aligned with the columns inside WalletInstance
+const RememberWallet = styled(ColHeader)``;
+const HideWallet = styled(ColHeader)`
+    margin-left: 32px;
+    margin-right: 16px;
 `;
 
 const UnknownDevice = (props: Props & WrappedComponentProps) => {
@@ -79,12 +112,17 @@ const UnknownDevice = (props: Props & WrappedComponentProps) => {
     return (
         <DeviceWrapper>
             <Device>
-                <Col>
-                    <DeviceTitle>{device.label}</DeviceTitle>
-                    <DeviceStatus color={deviceUtils.getStatusColor(deviceStatus)}>
-                        {deviceUtils.getStatusName(deviceStatus, props.intl)}
-                    </DeviceStatus>
-                </Col>
+                <DeviceHeader>
+                    <DeviceImageWrapper>
+                        <DeviceImage device={device} />
+                    </DeviceImageWrapper>
+                    <Col>
+                        <DeviceTitle>{device.label}</DeviceTitle>
+                        <DeviceStatus color={deviceUtils.getStatusColor(deviceStatus)}>
+                            {deviceUtils.getStatusName(deviceStatus, props.intl)}
+                        </DeviceStatus>
+                    </Col>
+                </DeviceHeader>
                 {device.type === 'unacquired' && (
                     <Button
                         variant="tertiary"
@@ -124,12 +162,17 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
     return (
         <DeviceWrapper key={device.path}>
             <Device>
-                <Col grow={1}>
-                    <DeviceTitle>{device.label}</DeviceTitle>
-                    <DeviceStatus color={deviceUtils.getStatusColor(deviceStatus)}>
-                        {deviceUtils.getStatusName(deviceStatus, props.intl)}
-                    </DeviceStatus>
-                </Col>
+                <DeviceHeader>
+                    <DeviceImageWrapper>
+                        <DeviceImage device={device} />
+                    </DeviceImageWrapper>
+                    <Col grow={1}>
+                        <DeviceTitle>{device.label}</DeviceTitle>
+                        <DeviceStatus color={deviceUtils.getStatusColor(deviceStatus)}>
+                            {deviceUtils.getStatusName(deviceStatus, props.intl)}
+                        </DeviceStatus>
+                    </Col>
+                </DeviceHeader>
                 {hasDeviceSelection && (
                     <Col>
                         <ChooseDevice
@@ -145,13 +188,18 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
             <WalletsWrapper enabled={isWalletContext}>
                 {isWalletContext && (
                     <WalletsTooltips>
-                        <Col>Remember wallet (i)</Col>
-                        <Col>Hide wallet (i)</Col>
+                        <RememberWallet
+                            tooltipContent="Remember allows you to access any wallet
+in watch-only mode without connected device."
+                        >
+                            Remember wallet
+                        </RememberWallet>
+                        <HideWallet tooltipContent="blabla">Hide wallet</HideWallet>
                     </WalletsTooltips>
                 )}
                 <InstancesWrapper>
                     {props.instances.map(instance => (
-                        <WalletInstance
+                        <StyledWalletInstance
                             key={`${instance.label}-${instance.instance}-${instance.state}`}
                             instance={instance}
                             enabled={isWalletContext}

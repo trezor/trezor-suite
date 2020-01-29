@@ -9,13 +9,26 @@ import messages from '@suite/support/messages';
 
 const Wrapper = styled.div<{ selected: boolean }>`
     display: flex;
-    padding: 10px 24px;
+    width: 100%;
+    padding: 18px 20px;
     align-items: center;
     flex-direction: row;
+
     cursor: pointer;
+    background: ${colors.WHITE};
 
     &:hover {
         background: ${colors.BLACK96};
+    }
+
+    &:first-of-type {
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+    }
+
+    &:last-of-type {
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
     }
 
     ${props =>
@@ -26,15 +39,15 @@ const Wrapper = styled.div<{ selected: boolean }>`
 `;
 
 const InstanceTitle = styled.div`
-    color: ${colors.BLACK50};
+    color: ${colors.BLACK25};
     font-weight: 600;
-    font-size: ${variables.FONT_SIZE.TINY};
-    text-transform: uppercase;
+    font-size: ${variables.FONT_SIZE.NORMAL};
 `;
+
 const InstanceType = styled.div`
-    color: ${colors.BLACK50};
+    margin-top: 6px;
+    color: ${colors.BLACK25};
     font-size: ${variables.FONT_SIZE.TINY};
-    /* text-transform: uppercase; */
 `;
 
 const Col = styled.div<{ grow?: number }>`
@@ -59,38 +72,25 @@ const WalletInstance = ({
     fiat,
     localCurrency,
     getDiscovery,
+    ...rest
 }: Props) => {
     const discoveryProcess = instance.state ? getDiscovery(instance.state) : null;
     const deviceAccounts = accountUtils.getAllAccounts(instance.state, accounts);
     const coinsCount = accountUtils.countUniqueCoins(deviceAccounts);
     const accountsCount = deviceAccounts.length;
     const instanceBalance = accountUtils.getTotalBalance(deviceAccounts, localCurrency, fiat);
-    let instanceType = instance.useEmptyPassphrase ? 'No passphrase' : 'Passphrase';
-    if (!discoveryProcess) {
-        instanceType = ' ';
-    }
+    const noPassphraseInstance = instance.useEmptyPassphrase!!;
 
     return (
         <Wrapper
             key={`${instance.label}${instance.instance}${instance.state}`}
             selected={enabled && selected && !!discoveryProcess}
+            {...rest}
         >
             <Col grow={1} onClick={() => selectDeviceInstance(instance)}>
                 {discoveryProcess && (
                     <InstanceTitle>
-                        <Translation
-                            {...messages.TR_NUM_ACCOUNTS_NUM_COINS_FIAT_VALUE}
-                            values={{
-                                accountsCount,
-                                coinsCount,
-                                fiatValue: (
-                                    <FormattedNumber
-                                        value={instanceBalance.toString()}
-                                        currency={localCurrency}
-                                    />
-                                ),
-                            }}
-                        />
+                        {noPassphraseInstance ? 'No passphrase' : 'Passphrase'}
                     </InstanceTitle>
                 )}
                 {!discoveryProcess && (
@@ -98,10 +98,24 @@ const WalletInstance = ({
                         <Translation {...messages.TR_UNDISCOVERED_WALLET} />
                     </InstanceTitle>
                 )}
-                <InstanceType>{instanceType}</InstanceType>
+                <InstanceType>
+                    <Translation
+                        {...messages.TR_NUM_ACCOUNTS_NUM_COINS_FIAT_VALUE}
+                        values={{
+                            accountsCount,
+                            coinsCount,
+                            fiatValue: (
+                                <FormattedNumber
+                                    value={instanceBalance.toString()}
+                                    currency={localCurrency}
+                                />
+                            ),
+                        }}
+                    />
+                </InstanceType>
             </Col>
             {enabled && discoveryProcess && (
-                <Col>
+                <Col grow={1}>
                     <Switch
                         checked={instance.remember}
                         onChange={() => rememberDevice(instance)}
@@ -116,7 +130,7 @@ const WalletInstance = ({
                         variant="secondary"
                         onClick={() => forgetDevice(instance)}
                     >
-                        <Translation {...messages.TR_FORGET} />
+                        Hide wallet
                     </ForgetButton>
                 </Col>
             )}
