@@ -1,6 +1,5 @@
 import Key from './Key';
 import Option from './Option';
-import PinMatrix from './PinMatrix';
 import ProgressBar from './ProgressBar';
 import Text from './Text';
 import UnexpectedState from './UnexpectedState';
@@ -56,7 +55,6 @@ export {
     OnboardingIcon,
     Key,
     Loaders,
-    PinMatrix,
     ProgressBar,
     Text,
     UnexpectedState,

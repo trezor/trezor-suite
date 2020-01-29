@@ -17,6 +17,7 @@ export const SET_LANGUAGE = '@suite/set-language';
 export const SET_DEBUG_MODE = '@suite/set-debug-mode';
 export const ONLINE_STATUS = '@suite/online-status';
 export const APP_CHANGED = '@suite/app-changed';
+export const ADD_BUTTON_REQUEST = '@suite/add-button-request';
 export const LOCK_UI = '@suite/lock-ui';
 export const LOCK_DEVICE = '@suite/lock-device';
 export const LOCK_ROUTER = '@suite/lock-router';

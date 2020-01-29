@@ -34,7 +34,12 @@ export type SuiteActions =
     | { type: typeof SUITE.LOCK_DEVICE; payload: boolean }
     | { type: typeof SUITE.LOCK_ROUTER; payload: boolean }
     | { type: typeof SUITE.APP_CHANGED; payload: AppState['router']['app'] }
-    | { type: typeof SUITE.TOGGLE_ANALYTICS };
+    | { type: typeof SUITE.TOGGLE_ANALYTICS }
+    | {
+          type: typeof SUITE.ADD_BUTTON_REQUEST;
+          device: TrezorDevice | undefined;
+          payload?: string;
+      };
 
 /**
  * @returns {Action|void}
@@ -256,6 +261,7 @@ const actions = [
     SUITE.SELECT_DEVICE,
     SUITE.RECEIVE_AUTH_CONFIRM,
     SUITE.UPDATE_PASSPHRASE_MODE,
+    SUITE.ADD_BUTTON_REQUEST,
     ...Object.values(DEVICE).filter(v => typeof v === 'string'),
 ];
 

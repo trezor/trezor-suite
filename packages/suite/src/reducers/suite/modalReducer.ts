@@ -9,7 +9,6 @@ export type State =
           context: typeof MODAL.CONTEXT_DEVICE;
           device: TrezorDevice | Device;
           windowType?: string;
-          addressPath?: string;
       }
     | {
           context: typeof MODAL.CONTEXT_DEVICE_CONFIRMATION;

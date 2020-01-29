@@ -105,6 +105,7 @@ const getSuiteDevice = (dev?: Partial<TrezorDevice>, feat?: Partial<Features>): 
             authConfirm: false,
             instance: undefined,
             ts: 0,
+            buttonRequests: [],
             ...dev,
             ...device,
         };
@@ -187,3 +188,9 @@ global.JestMocks = {
 };
 
 global.BroadcastChannel = BroadcastChannel;
+
+// this helps with debugging - find unhandled promise rejections in jest
+
+// process.on('unhandledRejection', (reason, p) => {
+//     console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+// });
