@@ -114,7 +114,7 @@ describe('buttonRequest middleware', () => {
             { type: UI.REQUEST_PIN },
             { type: SUITE.ADD_BUTTON_REQUEST, payload: UI.REQUEST_PIN, device },
             { type: SUITE.LOCK_DEVICE, payload: false },
-            { type: SUITE.ADD_BUTTON_REQUEST, payload: null, device },
+            { type: SUITE.ADD_BUTTON_REQUEST, device },
         ]);
     });
 });

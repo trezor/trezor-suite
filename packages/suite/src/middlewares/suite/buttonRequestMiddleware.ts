@@ -24,13 +24,12 @@ const buttonRequest = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatc
                 payload: action.payload.code,
             });
             break;
-        // on suite unlock device action, send null in payload and erase buttonRequests field on TrezorDevice
         case SUITE.LOCK_DEVICE:
             if (!action.payload) {
                 api.dispatch({
                     type: SUITE.ADD_BUTTON_REQUEST,
                     device: api.getState().suite.device,
-                    payload: null,
+                    // no payload empties TrezorDevice.buttonRequests[] field
                 });
             }
 

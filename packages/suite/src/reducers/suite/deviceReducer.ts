@@ -339,14 +339,14 @@ const forgetInstance = (draft: State, device: TrezorDevice) => {
 const addButtonRequest = (
     draft: State,
     device: TrezorDevice | undefined,
-    buttonRequest: string | null,
+    buttonRequest?: string,
 ) => {
     // only acquired devices
     if (!device || !device.features) return;
     const index = findInstanceIndex(draft, device);
-    if (!draft[index] || !draft[index].features) return;
+    if (!draft[index]) return;
     // update state
-    if (buttonRequest === null) {
+    if (!buttonRequest) {
         draft[index].buttonRequests = [];
         return;
     }

@@ -38,7 +38,7 @@ export type SuiteActions =
     | {
           type: typeof SUITE.ADD_BUTTON_REQUEST;
           device: TrezorDevice | undefined;
-          payload: string | null;
+          payload?: string;
       };
 
 /**
