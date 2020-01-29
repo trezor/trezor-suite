@@ -10,7 +10,7 @@ describe('Device settings', () => {
 
         cy.visit('/');
 
-        cy.goToSuite();
+        cy.passThroughInitialRun();
         // make sure suite already sees device
         cy.getTestElement('@modal/connect-device').should('not.exist');
         cy.dashboardShouldLoad();
