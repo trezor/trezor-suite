@@ -1,12 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, colors, variables } from '@trezor/components-v2';
-import * as deviceUtils from '@suite-utils/device';
-import { Props } from './Container';
-import DeviceItem from './components/DeviceItem';
-import { TrezorDevice, AcquiredDevice } from '@suite-types';
+import { colors, variables } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
+import * as deviceUtils from '@suite-utils/device';
+import DeviceItem from './components/DeviceItem/Container';
 import messages from '@suite/support/messages';
+import { Props } from './Container';
 
 const Wrapper = styled.div`
     position: relative;
@@ -37,31 +36,22 @@ const In = styled.div`
     min-width: 400px;
 `;
 
-const ModalActions = styled.div`
-    margin-top: 20px;
-`;
-
 const SwitchDeviceModal = (props: Props) => {
-    const { devices, selectedDevice, closeModalApp } = props;
-    const sortedDevices = deviceUtils.getFirstDeviceInstance(devices);
+    const { devices, selectedDevice, modal } = props;
+    // return action modal, it could be requested by Trezor while enabling passphrase encryption
+    if (modal) return modal;
+    // exclude selectedDevice from list, because other devices could have a higher priority
+    // and we want to have selectedDevice on top
+    const sortedDevices = deviceUtils
+        .getFirstDeviceInstance(devices)
+        .filter(d => !deviceUtils.isSelectedDevice(selectedDevice, d));
 
-    const onSelectInstance = async (instance: TrezorDevice) => {
-        await props.selectDevice(instance);
-        closeModalApp();
-    };
+    // append selectedDevice at top of the list
+    if (selectedDevice) {
+        sortedDevices.unshift(selectedDevice);
+    }
 
-    const onAddHiddenWallet = async (instance: TrezorDevice) => {
-        // props.closeModal();
-        // TODO: if we really want to auto-enable passphrase feature,
-        // we need to wait for the device to trigger 'confirm on device' modal,
-        // then for the user to confirm it and only then we can fire up adding a new hidden wallet
-        // if (instance.features && !instance.features.passphrase_protection) {
-        //     // eslint-disable-next-line @typescript-eslint/camelcase
-        //     props.applySettings({ use_passphrase: true });
-        // }
-        await props.createDeviceInstance(instance as AcquiredDevice);
-        closeModalApp();
-    };
+    const backgroundRoute = props.getBackgroundRoute();
 
     return (
         <Wrapper>
@@ -74,23 +64,12 @@ const SwitchDeviceModal = (props: Props) => {
                 </Description>
                 {sortedDevices.map(device => (
                     <DeviceItem
-                        key={device.path}
                         device={device}
-                        selectedDevice={selectedDevice}
-                        goto={props.goto}
                         instances={deviceUtils.getDeviceInstances(device, devices)}
-                        addHiddenWallet={onAddHiddenWallet}
-                        selectInstance={onSelectInstance}
-                        rememberDevice={props.rememberDevice}
-                        forgetDevice={props.forgetDevice}
-                        accounts={props.accounts}
+                        backgroundRoute={backgroundRoute}
+                        closeModalApp={props.closeModalApp}
                     />
                 ))}
-                <ModalActions>
-                    <Button variant="secondary" onClick={props.closeModalApp}>
-                        <Translation {...messages.TR_CLOSE} />
-                    </Button>
-                </ModalActions>
             </In>
         </Wrapper>
     );

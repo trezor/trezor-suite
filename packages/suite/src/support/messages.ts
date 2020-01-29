@@ -176,10 +176,6 @@ const definedMessages = defineMessages({
         description: 'Clear form button',
         id: 'TR_CLEAR',
     },
-    TR_CLOSE: {
-        defaultMessage: 'Close',
-        id: 'TR_CLOSE',
-    },
     TR_CONFIRM_ACTION_ON_YOUR: {
         defaultMessage: 'Confirm action on your "{deviceLabel}" device.',
         id: 'TR_CONFIRM_ACTION_ON_YOUR',
@@ -1071,10 +1067,6 @@ const definedMessages = defineMessages({
         description: 'There are two methods of recovery for T1. This is a short explanation text.',
         id: 'TR_RECOVERY_TYPES_DESCRIPTION',
     },
-    TR_REMEMBER_DEVICE: {
-        defaultMessage: 'Remember device',
-        id: 'TR_REMEMBER_DEVICE',
-    },
     TR_RESELLERS_LINK: {
         defaultMessage: 'a trusted reseller',
         description:
@@ -1505,10 +1497,6 @@ const definedMessages = defineMessages({
     TR_UNDISCOVERED_WALLET: {
         id: 'TR_UNDISCOVERED_WALLET',
         defaultMessage: 'Undiscovered wallet',
-    },
-    TR_CONNECT_TO_DISCOVER: {
-        id: 'TR_CONNECT_TO_DISCOVER',
-        defaultMessage: 'Connect to discover',
     },
     TR_NUM_ACCOUNTS_NUM_COINS_FIAT_VALUE: {
         id: 'TR_NUM_ACCOUNTS_NUM_COINS_FIAT_VALUE',

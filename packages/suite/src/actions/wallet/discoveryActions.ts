@@ -259,7 +259,7 @@ export const create = (deviceState: string, useEmptyPassphrase = false) => (
     });
 };
 
-export const remove = (deviceState: string) => ({
+export const remove = (deviceState: string): DiscoveryActions => ({
     type: DISCOVERY.REMOVE,
     payload: {
         deviceState,

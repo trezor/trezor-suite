@@ -197,7 +197,7 @@ describe('Suite Actions', () => {
             const state = getInitialState(f.state);
             const store = initStore(state);
             store.dispatch(init()); // trezorConnectActions.init needs to be called in order to wrap "getFeatures" with lockUi action
-            await store.dispatch(suiteActions.acquireDevice());
+            await store.dispatch(suiteActions.acquireDevice(f.requestedDevice));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -259,13 +259,5 @@ describe('Suite Actions', () => {
             payload: SUITE_DEVICE,
         };
         expect(suiteActions.forgetDevice(SUITE_DEVICE)).toEqual(expectedAction);
-    });
-
-    it('forgetDeviceInstance', () => {
-        const expectedAction = {
-            type: SUITE.FORGET_DEVICE_INSTANCE,
-            payload: SUITE_DEVICE,
-        };
-        expect(suiteActions.forgetDeviceInstance(SUITE_DEVICE)).toEqual(expectedAction);
     });
 });
