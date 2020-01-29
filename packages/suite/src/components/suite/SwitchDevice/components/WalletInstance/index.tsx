@@ -54,7 +54,7 @@ const WalletInstance = ({
     selected,
     selectDeviceInstance,
     rememberDevice,
-    forgetDeviceInstance,
+    forgetDevice,
     accounts,
     fiat,
     localCurrency,
@@ -114,7 +114,7 @@ const WalletInstance = ({
                     <ForgetButton
                         size="small"
                         variant="secondary"
-                        onClick={() => forgetDeviceInstance(instance)}
+                        onClick={() => forgetDevice(instance)}
                     >
                         <Translation {...messages.TR_FORGET} />
                     </ForgetButton>

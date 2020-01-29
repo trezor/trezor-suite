@@ -260,12 +260,4 @@ describe('Suite Actions', () => {
         };
         expect(suiteActions.forgetDevice(SUITE_DEVICE)).toEqual(expectedAction);
     });
-
-    it('forgetDeviceInstance', () => {
-        const expectedAction = {
-            type: SUITE.FORGET_DEVICE_INSTANCE,
-            payload: SUITE_DEVICE,
-        };
-        expect(suiteActions.forgetDeviceInstance(SUITE_DEVICE)).toEqual(expectedAction);
-    });
 });

@@ -22,15 +22,11 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
 
     switch (action.type) {
         case SUITE.REMEMBER_DEVICE:
-            api.dispatch(storageActions.rememberDevice(action.payload));
+            api.dispatch(storageActions.rememberDevice(action.payload, action.remember));
             break;
 
         case SUITE.FORGET_DEVICE:
             api.dispatch(storageActions.forgetDevice(action.payload));
-            break;
-
-        case SUITE.FORGET_DEVICE_INSTANCE:
-            api.dispatch(storageActions.forgetDeviceInstance(action.payload));
             break;
 
         case ACCOUNT.CREATE:

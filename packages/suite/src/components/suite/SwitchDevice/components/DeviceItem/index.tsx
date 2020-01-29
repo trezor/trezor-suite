@@ -109,6 +109,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
         (backgroundRoute.app === 'wallet' || backgroundRoute.app === 'dashboard');
     const hasDeviceSelection =
         !isWalletContext && !deviceUtils.isSelectedDevice(selectedDevice, device);
+    const hasAtLeastOneWallet = props.instances.find(d => d.state);
 
     const selectDeviceInstance = async (instance: Props['device']) => {
         await props.selectDevice(instance);
@@ -164,7 +165,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                         <Button
                             variant="tertiary"
                             icon="PLUS"
-                            disabled={!device.connected} // TODO: tooltip?
+                            disabled={!device.connected || !hasAtLeastOneWallet} // TODO: tooltip?
                             onClick={async () => addDeviceInstance(device)}
                         >
                             <Translation {...messages.TR_ADD_HIDDEN_WALLET} />

@@ -21,8 +21,7 @@ export type SuiteActions =
     | { type: typeof SUITE.RECEIVE_AUTH_CONFIRM; payload: TrezorDevice; success: boolean }
     | { type: typeof SUITE.CREATE_DEVICE_INSTANCE; payload: TrezorDevice }
     | { type: typeof SUITE.FORGET_DEVICE; payload: TrezorDevice }
-    | { type: typeof SUITE.FORGET_DEVICE_INSTANCE; payload: TrezorDevice }
-    | { type: typeof SUITE.REMEMBER_DEVICE; payload: TrezorDevice }
+    | { type: typeof SUITE.REMEMBER_DEVICE; payload: TrezorDevice; remember: boolean }
     | {
           type: typeof SUITE.SET_LANGUAGE;
           locale: typeof LANGUAGES[number]['code'];
@@ -153,15 +152,11 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
 export const rememberDevice = (payload: TrezorDevice): Action => ({
     type: SUITE.REMEMBER_DEVICE,
     payload,
+    remember: !payload.remember,
 });
 
 export const forgetDevice = (payload: TrezorDevice): Action => ({
     type: SUITE.FORGET_DEVICE,
-    payload,
-});
-
-export const forgetDeviceInstance = (payload: TrezorDevice): Action => ({
-    type: SUITE.FORGET_DEVICE_INSTANCE,
     payload,
 });
 
@@ -171,10 +166,10 @@ export const forgetDeviceInstance = (payload: TrezorDevice): Action => ({
  */
 export const createDeviceInstance = (device: TrezorDevice, useEmptyPassphrase = false) => async (
     dispatch: Dispatch,
+    getState: GetState,
 ) => {
     if (!device.features) return;
     if (!device.features.passphrase_protection) {
-        // TODO: enable passphrase
         const response = await TrezorConnect.applySettings({
             device,
             // eslint-disable-next-line @typescript-eslint/camelcase
@@ -192,6 +187,7 @@ export const createDeviceInstance = (device: TrezorDevice, useEmptyPassphrase = 
         payload: {
             ...device,
             useEmptyPassphrase,
+            instance: deviceUtils.getNewInstanceNumber(getState().devices, device),
         },
     });
 };
@@ -258,6 +254,7 @@ const actions = [
     SUITE.RECEIVE_AUTH_CONFIRM,
     SUITE.UPDATE_PASSPHRASE_MODE,
     SUITE.ADD_BUTTON_REQUEST,
+    SUITE.FORGET_DEVICE,
     ...Object.values(DEVICE).filter(v => typeof v === 'string'),
 ];
 

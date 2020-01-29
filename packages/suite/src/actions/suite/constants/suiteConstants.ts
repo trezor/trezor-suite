@@ -11,7 +11,6 @@ export const REQUEST_AUTH_CONFIRM = '@suite/request-auth-confirm';
 export const RECEIVE_AUTH_CONFIRM = '@suite/receive-auth-confirm';
 export const CREATE_DEVICE_INSTANCE = '@suite/create-device-instance';
 export const FORGET_DEVICE = '@suite/forget-device';
-export const FORGET_DEVICE_INSTANCE = '@suite/forget-device-instance';
 export const REMEMBER_DEVICE = '@suite/remember-device';
 export const SET_LANGUAGE = '@suite/set-language';
 export const SET_DEBUG_MODE = '@suite/set-debug-mode';

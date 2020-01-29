@@ -19,6 +19,10 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
         prevDiscovery.status > DISCOVERY.STATUS.IDLE &&
         prevDiscovery.status < DISCOVERY.STATUS.STOPPING;
 
+    if (action.type === SUITE.FORGET_DEVICE && action.payload.state) {
+        api.dispatch(discoveryActions.remove(action.payload.state));
+    }
+
     // temporary workaround, needs to be changed in trezor-connect
     // BLOCK action propagation (via next() function) and respond to trezor-connect
     // otherwise devices without backup will receive several "confirmation" modals during discovery process
