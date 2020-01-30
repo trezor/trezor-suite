@@ -14,7 +14,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     text-align: center;
     width: 100%;
-    max-width: 600px;
+    max-width: 720px;
 `;
 
 const Title = styled(H2)``;

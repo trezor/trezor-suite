@@ -50,11 +50,11 @@ const InstanceTitle = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
-const Col = styled.div<{ grow?: number }>`
+const Col = styled.div<{ grow?: number; centerItems?: boolean }>`
     display: flex;
     flex-grow: ${props => props.grow || 0};
-    align-items: flex-start;
     flex-direction: column;
+    align-items: ${props => (props.centerItems ? 'center' : 'flex-start')};
 `;
 
 const ForgetButton = styled(Button)`
@@ -119,24 +119,24 @@ const WalletInstance = ({
                 </InstanceTitle>
             </Col>
             {enabled && discoveryProcess && (
-                <Col grow={1}>
-                    <Switch
-                        checked={instance.remember}
-                        onChange={() => rememberDevice(instance)}
-                        data-test="@suite/settings/device/passphrase-switch"
-                    />
-                </Col>
-            )}
-            {enabled && discoveryProcess && (
-                <Col>
-                    <ForgetButton
-                        size="small"
-                        variant="secondary"
-                        onClick={() => forgetDevice(instance)}
-                    >
-                        <Translation {...messages.TR_HIDE_WALLET} />
-                    </ForgetButton>
-                </Col>
+                <>
+                    <Col grow={1} centerItems>
+                        <Switch
+                            checked={instance.remember}
+                            onChange={() => rememberDevice(instance)}
+                            data-test="@suite/settings/device/passphrase-switch"
+                        />
+                    </Col>
+                    <Col>
+                        <ForgetButton
+                            size="small"
+                            variant="secondary"
+                            onClick={() => forgetDevice(instance)}
+                        >
+                            <Translation {...messages.TR_HIDE_WALLET} />
+                        </ForgetButton>
+                    </Col>
+                </>
             )}
         </Wrapper>
     );
