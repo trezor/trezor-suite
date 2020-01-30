@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { colors, variables, CoinLogo } from '@trezor/components-v2';
 import Card from '@suite-components/Card';
 import { AppState } from '@suite/types/suite';
@@ -63,6 +63,18 @@ const Row = styled.div`
     margin-bottom: 4px;
 `;
 
+const FlickerAnimation = keyframes`
+    0% { 
+        opacity: 1;
+    }
+    50% { 
+        opacity: 0;
+    }
+    100% { 
+        opacity: 1;
+    }
+`;
+
 const Live = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
@@ -70,6 +82,7 @@ const Live = styled.div`
     color: ${colors.GREEN};
     align-items: center;
     text-transform: uppercase;
+    animation: ${FlickerAnimation} 2s 3;
 `;
 
 const Dot = styled.div`
@@ -110,7 +123,7 @@ const PricePanel = (props: Props) => {
                         </TickerTitle>
 
                         {fiatRateValue ? (
-                            <Live>
+                            <Live key={props.account.symbol}>
                                 <Dot /> Live
                             </Live>
                         ) : (
