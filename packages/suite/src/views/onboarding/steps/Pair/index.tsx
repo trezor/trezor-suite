@@ -57,10 +57,7 @@ const PairDeviceStep = (props: Props) => {
             <Wrapper.StepBody>
                 {!hasNoTransport() && (
                     <>
-                        <img
-                            alt=""
-                            src={resolveStaticPath('images/onboarding/connect-device.svg')}
-                        />
+                        <img alt="" src={resolveStaticPath('images/suite/connect-device.svg')} />
                         {isDetectingDevice() && (
                             <>
                                 {/* {getConnectedDeviceStatus() === 'initialized' && (
