@@ -60,13 +60,13 @@ const ControlsLink = styled(Link)`
     display: flex;
     text-decoration: none;
     align-items: center;
+    
+    & + & {
+        margin-left: 24px;
+    }
 
     &:hover {
         text-decoration: none;
-    }
-
-    & + & {
-        margin-left: 24px;
     }
 `;
 
