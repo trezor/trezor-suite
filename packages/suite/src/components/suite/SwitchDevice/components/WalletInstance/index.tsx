@@ -38,13 +38,13 @@ const Wrapper = styled.div<{ selected: boolean }>`
         `}
 `;
 
-const InstanceTitle = styled.div`
+const InstanceType = styled.div`
     color: ${colors.BLACK25};
     font-weight: 600;
     font-size: ${variables.FONT_SIZE.NORMAL};
 `;
 
-const InstanceType = styled.div`
+const InstanceTitle = styled.div`
     margin-top: 6px;
     color: ${colors.BLACK25};
     font-size: ${variables.FONT_SIZE.TINY};
@@ -89,16 +89,16 @@ const WalletInstance = ({
         >
             <Col grow={1} onClick={() => selectDeviceInstance(instance)}>
                 {discoveryProcess && (
-                    <InstanceTitle>
-                        {noPassphraseInstance ? 'No passphrase' : 'Passphrase'}
-                    </InstanceTitle>
+                    <InstanceType>
+                        {noPassphraseInstance ? 'No-passphrase wallet' : 'Passphrase wallet'}
+                    </InstanceType>
                 )}
                 {!discoveryProcess && (
-                    <InstanceTitle>
+                    <InstanceType>
                         <Translation {...messages.TR_UNDISCOVERED_WALLET} />
-                    </InstanceTitle>
+                    </InstanceType>
                 )}
-                <InstanceType>
+                <InstanceTitle>
                     <Translation
                         {...messages.TR_NUM_ACCOUNTS_NUM_ASSETS_FIAT_VALUE}
                         values={{
@@ -112,7 +112,7 @@ const WalletInstance = ({
                             ),
                         }}
                     />
-                </InstanceType>
+                </InstanceTitle>
             </Col>
             {enabled && discoveryProcess && (
                 <Col grow={1}>
