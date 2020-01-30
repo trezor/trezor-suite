@@ -1784,6 +1784,14 @@ const definedMessages = defineMessages({
         id: 'TR_HIDE_WALLET',
         defaultMessage: 'Hide wallet',
     },
+"TR_REMEMBER_ALLOWS_YOU_TO": {
+        "id": "TR_REMEMBER_ALLOWS_YOU_TO",
+        "defaultMessage": "Remember allows you to access any wallet in watch-only mode without connected device."
+    },
+"TR_HIDE_WALLET_EXPLANATION": {
+        "id": "TR_HIDE_WALLET_EXPLANATION",
+        "defaultMessage": "Explanation what the 'hide wallet' button does"
+    },
 });
 
 export default definedMessages;

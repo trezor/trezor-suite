@@ -190,12 +190,15 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                 {isWalletContext && (
                     <WalletsTooltips>
                         <RememberWallet
-                            tooltipContent="Remember allows you to access any wallet
-in watch-only mode without connected device."
+                            tooltipContent={<Translation {...messages.TR_REMEMBER_ALLOWS_YOU_TO} />}
                         >
                             <Translation {...messages.TR_REMEMBER_WALLET} />
                         </RememberWallet>
-                        <HideWallet tooltipContent="Explanation what the 'hide wallet' button does">
+                        <HideWallet
+                            tooltipContent={
+                                <Translation {...messages.TR_HIDE_WALLET_EXPLANATION} />
+                            }
+                        >
                             <Translation {...messages.TR_HIDE_WALLET} />
                         </HideWallet>
                     </WalletsTooltips>
