@@ -11,7 +11,7 @@
         "lint:js": "eslint '**/*{.ts,.tsx}'",
         "lint:styles": "npx stylelint './src/**/*{.tsx,.ts}'",
         "lint-fix": "npx eslint ./src --fix",
-        "build:libX": "rimraf lib && babel --extensions '.ts,.tsx' src -d lib && babel-node ./scripts/build.js && yarn tsc -p tsconfig.json",
+        "build:lib": "rimraf lib && babel --extensions '.ts,.tsx' src -d lib && babel-node ./scripts/build.js && yarn tsc -p tsconfig.json",
         "type-check": "tsc --project tsconfig.types.json",
         "type-check:watch": "yarn type-check -- --watch",
         "prepublishOnly": "npm run build:lib",
