@@ -5,14 +5,14 @@ import { Icon, Tooltip, TooltipProps, colors, variables } from '@trezor/componen
 const Wrapper = styled.div`
     display: flex;
     color: ${colors.BLACK50};
-    font-weight: 600;
-    font-size: ${variables.FONT_SIZE.TINY};
-    text-transform: uppercase;
     align-items: center;
 `;
 
 const Text = styled.span`
     margin-right: 0.5ch;
+    font-weight: 600;
+    font-size: ${variables.FONT_SIZE.TINY};
+    text-transform: uppercase;
 `;
 
 const StyledIcon = styled(Icon)`
