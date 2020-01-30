@@ -1494,8 +1494,8 @@ const definedMessages = defineMessages({
         id: 'TR_UNDISCOVERED_WALLET',
         defaultMessage: 'Undiscovered wallet',
     },
-    TR_NUM_ACCOUNTS_NUM_COINS_FIAT_VALUE: {
-        id: 'TR_NUM_ACCOUNTS_NUM_COINS_FIAT_VALUE',
+    TR_NUM_ACCOUNTS_NUM_ASSETS_FIAT_VALUE: {
+        id: 'TR_NUM_ACCOUNTS_NUM_ASSETS_FIAT_VALUE',
         defaultMessage:
             '{accountsCount} {accountsCount, plural, one {account} other {accounts}} • {assetsCount} {assetsCount, plural, one {asset} other {assets}} • {fiatValue}',
         description: 'Used as title for a wallet instance in Switch Device modal',
