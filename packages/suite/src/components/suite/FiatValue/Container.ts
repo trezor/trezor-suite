@@ -1,7 +1,6 @@
-import React from 'react';
 import Component from './index';
 import { AppState } from '@suite-types';
-import { Account } from '@wallet-types';
+import { Network } from '@wallet-types';
 import { connect } from 'react-redux';
 
 const mapStateToProps = (state: AppState) => ({
@@ -11,7 +10,7 @@ const mapStateToProps = (state: AppState) => ({
 
 type OwnProps = {
     amount: string;
-    symbol: Account['symbol'];
+    symbol: Network['symbol'];
     fiatCurrency?: string;
 };
 

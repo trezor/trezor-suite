@@ -291,35 +291,40 @@ const TransactionItem = React.memo(
                     )}
                 </Row>
                 {isExpanded &&
-                    targets.map((target, i) => (
-                        // eslint-disable-next-line react/no-array-index-key
-                        <Row key={i}>
-                            <Timestamp />
-                            <ExpandedWrapper>
-                                <Targets>
-                                    <Target key={i}>
-                                        {target.addresses &&
-                                            target.addresses.map(addr => (
-                                                <Addr key={addr}>{addr}</Addr>
-                                            ))}
-                                    </Target>
-                                </Targets>
-                                <Balance partial>
-                                    <Amount>
-                                        {type === 'recv' && '+'}
-                                        {type !== 'recv' && '-'}
-                                        {target.amount}&nbsp;
-                                    </Amount>
-                                    <Symbol>{symbol.toUpperCase()}</Symbol>
-                                </Balance>
-                                <FiatBalance partial>
-                                    <SmallBadge>
-                                        <FiatAmount amount={target.amount} symbol={symbol} />
-                                    </SmallBadge>
-                                </FiatBalance>
-                            </ExpandedWrapper>
-                        </Row>
-                    ))}
+                    targets.map((target, i) => {
+                        const fiatValue = (
+                            <FiatValue amount={target.amount || '0'} symbol={symbol} />
+                        );
+                        return (
+                            // eslint-disable-next-line react/no-array-index-key
+                            <Row key={i}>
+                                <Timestamp />
+                                <ExpandedWrapper>
+                                    <Targets>
+                                        <Target key={i}>
+                                            {target.addresses &&
+                                                target.addresses.map(addr => (
+                                                    <Addr key={addr}>{addr}</Addr>
+                                                ))}
+                                        </Target>
+                                    </Targets>
+                                    <Balance partial>
+                                        <Amount>
+                                            {type === 'recv' && '+'}
+                                            {type !== 'recv' && '-'}
+                                            {target.amount}&nbsp;
+                                        </Amount>
+                                        <Symbol>{symbol.toUpperCase()}</Symbol>
+                                    </Balance>
+                                    {fiatValue && (
+                                        <FiatBalance partial>
+                                            <SmallBadge>{fiatValue}</SmallBadge>
+                                        </FiatBalance>
+                                    )}
+                                </ExpandedWrapper>
+                            </Row>
+                        );
+                    })}
             </Wrapper>
         );
     },

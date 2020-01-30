@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, variables, H2, Button } from '@trezor/components-v2';
-import { Account } from '@wallet-types';
 import { resolveStaticPath } from '@suite-utils/nextjs';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -47,11 +48,7 @@ const ActionButton = styled(Button)`
     min-width: 160px;
 `;
 
-interface Props {
-    account: Account;
-}
-
-const NoTransactions = (props: Props) => {
+const NoTransactions = () => {
     return (
         <Wrapper>
             <Content>

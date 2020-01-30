@@ -77,9 +77,7 @@ const Transactions = (props: Props) => {
                     </LoaderText>
                 </LoaderWrapper>
             )}
-            {accountTransactions.length === 0 && !transactions.isLoading && (
-                <NoTransactions account={account} />
-            )}
+            {accountTransactions.length === 0 && !transactions.isLoading && <NoTransactions />}
             {accountTransactions.length > 0 && (
                 <TransactionList
                     explorerUrl={network.explorer.tx}
