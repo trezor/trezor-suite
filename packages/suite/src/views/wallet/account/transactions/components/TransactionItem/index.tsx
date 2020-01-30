@@ -301,7 +301,7 @@ const TransactionItem = React.memo(
                                 <Timestamp />
                                 <ExpandedWrapper>
                                     <Targets>
-                                        <Target key={i}>
+                                        <Target>
                                             {target.addresses &&
                                                 target.addresses.map(addr => (
                                                     <Addr key={addr}>{addr}</Addr>
