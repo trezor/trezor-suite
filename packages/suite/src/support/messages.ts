@@ -1500,10 +1500,6 @@ const definedMessages = defineMessages({
             '{accountsCount} {accountsCount, plural, one {account} other {accounts}} • {assetsCount} {assetsCount, plural, one {asset} other {assets}} • {fiatValue}',
         description: 'Used as title for a wallet instance in Switch Device modal',
     },
-    TR_CONNECT_TO_DISCOVER: {
-        id: 'TR_CONNECT_TO_DISCOVER',
-        defaultMessage: 'Connect to discover',
-    },
     TR_ADD_HIDDEN_WALLET: {
         id: 'TR_ADD_HIDDEN_WALLET',
         defaultMessage: 'Add hidden wallet',
