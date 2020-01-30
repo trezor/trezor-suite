@@ -1793,6 +1793,14 @@ const definedMessages = defineMessages({
         id: 'TR_HIDE_WALLET_EXPLANATION',
         defaultMessage: "Explanation what the 'hide wallet' button does",
     },
+    TR_NO_PASSPHRASE_WALLET: {
+        id: 'TR_NO_PASSPHRASE_WALLET',
+        defaultMessage: 'No-passphrase wallet',
+    },
+    TR_PASSPHRASE_WALLET: {
+        id: 'TR_PASSPHRASE_WALLET',
+        defaultMessage: 'Passphrase wallet',
+    },
 });
 
 export default definedMessages;

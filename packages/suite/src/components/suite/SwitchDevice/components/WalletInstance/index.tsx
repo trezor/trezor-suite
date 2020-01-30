@@ -90,7 +90,11 @@ const WalletInstance = ({
             <Col grow={1} onClick={() => selectDeviceInstance(instance)}>
                 {discoveryProcess && (
                     <InstanceType>
-                        {noPassphraseInstance ? 'No-passphrase wallet' : 'Passphrase wallet'}
+                        {noPassphraseInstance ? (
+                            <Translation {...messages.TR_NO_PASSPHRASE_WALLET} />
+                        ) : (
+                            <Translation {...messages.TR_PASSPHRASE_WALLET} />
+                        )}
                     </InstanceType>
                 )}
                 {!discoveryProcess && (
