@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { Translation } from '@suite-components/Translation';
 import { variables, colors, Button } from '@trezor/components-v2';
@@ -11,15 +11,21 @@ import Badge from '@suite/components/suite/Badge';
 import FiatValue from '@suite-components/FiatValue/Container';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ isExpanded: boolean }>`
     display: flex;
     background: ${colors.WHITE};
     padding: 12px 16px;
     flex-direction: column;
 
-    & + & {
-        border-top: 2px solid ${colors.BLACK96};
-    }
+    max-height: 100px;
+    transition: max-height 0.3s ease-in;
+
+    ${({ isExpanded }) =>
+        isExpanded &&
+        css`
+            max-height: 500px;
+            transition: max-height 0.3s ease-in;
+        `}
 `;
 
 const Timestamp = styled.div`
@@ -39,6 +45,23 @@ const Row = styled.div`
     flex: 1;
     justify-content: space-between;
     align-items: center;
+`;
+
+const SlideAnimation = keyframes`
+    0% {
+        transform: ScaleY(0.5);
+    }
+    100% {
+        transform: ScaleY(1);
+    }
+`;
+
+const ExpandedList = styled.div`
+    display: flex;
+    flex-direction: column;
+    animation: ${SlideAnimation} 0.2s ease-in;
+    transform-origin: top;
+    overflow: hidden;
 `;
 
 const Col = styled.div`
@@ -216,7 +239,7 @@ const TransactionItem = React.memo(
         // eg. tx with eth smart contract that creates a new token has no valid target
         const isUnknown = type === 'sent' && targets.length === 1 && targets[0].addresses === null;
         return (
-            <Wrapper>
+            <Wrapper isExpanded={isExpanded}>
                 <Row>
                     <Timestamp>
                         {blockHeight !== 0 && blockTime && blockTime > 0 && (
@@ -290,41 +313,44 @@ const TransactionItem = React.memo(
                         </>
                     )}
                 </Row>
-                {isExpanded &&
-                    targets.map((target, i) => {
-                        const fiatValue = (
-                            <FiatValue amount={target.amount || '0'} symbol={symbol} />
-                        );
-                        return (
-                            // eslint-disable-next-line react/no-array-index-key
-                            <Row key={i}>
-                                <Timestamp />
-                                <ExpandedWrapper>
-                                    <Targets>
-                                        <Target>
-                                            {target.addresses &&
-                                                target.addresses.map(addr => (
-                                                    <Addr key={addr}>{addr}</Addr>
-                                                ))}
-                                        </Target>
-                                    </Targets>
-                                    <Balance partial>
-                                        <Amount>
-                                            {type === 'recv' && '+'}
-                                            {type !== 'recv' && '-'}
-                                            {target.amount}&nbsp;
-                                        </Amount>
-                                        <Symbol>{symbol.toUpperCase()}</Symbol>
-                                    </Balance>
-                                    {fiatValue && (
-                                        <FiatBalance partial>
-                                            <SmallBadge>{fiatValue}</SmallBadge>
-                                        </FiatBalance>
-                                    )}
-                                </ExpandedWrapper>
-                            </Row>
-                        );
-                    })}
+                {isExpanded && (
+                    <ExpandedList>
+                        {targets.map((target, i) => {
+                            const fiatValue = (
+                                <FiatValue amount={target.amount || '0'} symbol={symbol} />
+                            );
+                            return (
+                                // eslint-disable-next-line react/no-array-index-key
+                                <Row key={i}>
+                                    <Timestamp />
+                                    <ExpandedWrapper>
+                                        <Targets>
+                                            <Target>
+                                                {target.addresses &&
+                                                    target.addresses.map(addr => (
+                                                        <Addr key={addr}>{addr}</Addr>
+                                                    ))}
+                                            </Target>
+                                        </Targets>
+                                        <Balance partial>
+                                            <Amount>
+                                                {type === 'recv' && '+'}
+                                                {type !== 'recv' && '-'}
+                                                {target.amount}&nbsp;
+                                            </Amount>
+                                            <Symbol>{symbol.toUpperCase()}</Symbol>
+                                        </Balance>
+                                        {fiatValue && (
+                                            <FiatBalance partial>
+                                                <SmallBadge>{fiatValue}</SmallBadge>
+                                            </FiatBalance>
+                                        )}
+                                    </ExpandedWrapper>
+                                </Row>
+                            );
+                        })}
+                    </ExpandedList>
+                )}
             </Wrapper>
         );
     },
