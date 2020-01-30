@@ -1,22 +1,9 @@
 import React from 'react';
-import styled from 'styled-components';
-import { variables } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
 
-import * as STEP from '@onboarding-constants/steps';
-import { OnboardingButton, Text, Option, Wrapper } from '@onboarding-components';
-import { Props } from './Container';
+import { Translation } from '@suite-components';
+import { Text, Option, Wrapper } from '@onboarding-components';
 import messages from '@suite/support/messages';
-
-const Small = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    margin-bottom: 5px;
-`;
-
-const Base = styled.div`
-    font-size: ${variables.FONT_SIZE.BASE};
-    margin-bottom: 5px;
-`;
+import { Props } from './Container';
 
 const WelcomeStep = (props: Props) => {
     return (
@@ -32,36 +19,27 @@ const WelcomeStep = (props: Props) => {
 
                 <Wrapper.Options>
                     <Option
-                        data-test="@onboarding/button-path-create"
-                        onClick={() => {
-                            props.addPath(STEP.PATH_CREATE);
-                            props.goToNextStep();
+                        data-test="@onboarding/button-begin"
+                        action={() => {
+                            props.goToNextStep('create-or-recover');
                         }}
-                    >
-                        <Base>Create new Wallet</Base>
-                        <Small>if you never had any Wallet</Small>
-                        <OnboardingButton.Cta>Create a new Wallet</OnboardingButton.Cta>
-                    </Option>
+                        title="I'm new to all this"
+                        text="I want to be guided through onboarding process"
+                        button="Begin onboarding"
+                        imgSrc="images/onboarding/new-user.svg"
+                    />
                     <Option
-                        data-test="button-path-recovery"
-                        onClick={() => {
-                            props.addPath(STEP.PATH_RECOVERY);
-                            props.goToNextStep();
+                        data-test="@onboarding/button-skip"
+                        action={() => {
+                            props.goToNextStep('skip');
                         }}
-                    >
-                        <Base>Restore existing wallet</Base>
-                        <Small>using your backup seed</Small>
-
-                        <OnboardingButton.Alt>Restore existing</OnboardingButton.Alt>
-                    </Option>
+                        title="I have initialized device"
+                        text="My device is initialized and I used Wallet or Suite before"
+                        button="Skip onboarding"
+                        imgSrc="images/onboarding/existing-user.svg"
+                    />
                 </Wrapper.Options>
             </Wrapper.StepBody>
-            <Wrapper.StepFooter>
-                <OnboardingButton.Back data-test="button-use-wallet" onClick={props.closeModalApp}>
-                    {/* TODO proper texts, I dunno */}
-                    <Translation {...messages.TR_BACK} />
-                </OnboardingButton.Back>
-            </Wrapper.StepFooter>
         </Wrapper.Step>
     );
 };

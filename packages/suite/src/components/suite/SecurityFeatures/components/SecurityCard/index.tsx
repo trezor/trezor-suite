@@ -99,6 +99,9 @@ const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Pro
                         variant="tertiary"
                         size="small"
                         onClick={cta.action}
+                        {...(variant === 'secondary'
+                            ? { icon: 'ARROW_RIGHT', alignIcon: 'right' }
+                            : {})}
                     >
                         {cta.label}
                     </Button>

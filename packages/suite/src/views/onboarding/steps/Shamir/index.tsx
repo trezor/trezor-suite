@@ -6,7 +6,8 @@ import { TOS_URL } from '@suite-constants/urls';
 import { Props } from './Container';
 
 const ShamirStep = (props: Props) => {
-    const { device } = props;
+    const { device, onboarding } = props;
+    const { deviceCall } = onboarding;
 
     // this step expects device
     if (!device || !device.features) {
@@ -38,29 +39,32 @@ const ShamirStep = (props: Props) => {
                     <Wrapper.Options>
                         <Option
                             data-test="@onboarding/button-standard-backup"
-                            onClick={() => {
+                            action={() => {
                                 props.setBackupType(0);
                                 props.callActionAndGoToNextStep(
                                     () => props.resetDevice(),
                                     STEP.ID_SECURITY_STEP,
                                 );
                             }}
-                        >
-                            <Text>Standard backup</Text>
-                        </Option>
+                            title="Single seed"
+                            text="Security level: Standard. Distributable: No"
+                            button="Select single seed"
+                            imgSrc="images/onboarding/seed-card-single.svg"
+                        />
 
                         <Option
-                            data-test="button-shamir-backup"
-                            onClick={() => {
+                            action={() => {
                                 props.setBackupType(1);
                                 props.callActionAndGoToNextStep(
                                     () => props.resetDevice(),
                                     STEP.ID_SECURITY_STEP,
                                 );
                             }}
-                        >
-                            <Text>Shamir backup</Text>
-                        </Option>
+                            title="Shamir seed"
+                            text="Security level: Advanced Distributable: Yes"
+                            button="Select Shamir seed"
+                            imgSrc="images/onboarding/seed-card-shamir.svg"
+                        />
                     </Wrapper.Options>
                 )}
                 {getModel() === 1 && (
@@ -77,6 +81,7 @@ const ShamirStep = (props: Props) => {
                         </OnboardingButton.Cta>
                     </Wrapper.Controls>
                 )}
+                {deviceCall.error && <>Error: {deviceCall.error} </>}
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
                 <OnboardingButton.Back onClick={() => props.goToPreviousStep()}>

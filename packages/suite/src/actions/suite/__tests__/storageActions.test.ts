@@ -278,14 +278,15 @@ describe('Storage actions', () => {
         store.dispatch(transactionActions.add([tx2], acc2));
 
         // remember devices
-        await store.dispatch(storageActions.rememberDevice(dev1));
-        await store.dispatch(storageActions.rememberDevice(dev2));
+        await store.dispatch(storageActions.rememberDevice(dev1, true));
+        await store.dispatch(storageActions.rememberDevice(dev2, true));
+        await store.dispatch(storageActions.rememberDevice(dev2Instance1, true));
 
         await store.dispatch(storageActions.loadStorage());
 
         // stored devices
         expect(getLastAction(store).payload.devices.length).toEqual(3);
-        expect(getLastAction(store).payload.devices[0]).toEqual(dev1);
+        expect(getLastAction(store).payload.devices[0]).toEqual({ ...dev1, path: '' });
         // stored txs
         const acc1Txs = getAccountTransactions(
             getLastAction(store).payload.wallet.transactions.transactions,
@@ -312,11 +313,11 @@ describe('Storage actions', () => {
         expect(getLastAction(store).payload.wallet.accounts[1]).toEqual(acc2);
 
         // forget dev1
-        await store.dispatch(storageActions.forgetDeviceInstance(dev1));
+        await store.dispatch(storageActions.forgetDevice(dev1));
         await store.dispatch(storageActions.loadStorage());
         // device deleted, dev2 and dev2Instance1 should still be there
         expect(getLastAction(store).payload.devices.length).toEqual(2);
-        expect(getLastAction(store).payload.devices[0]).toEqual(dev2);
+        expect(getLastAction(store).payload.devices[0]).toEqual({ ...dev2, path: '' });
         // txs deleted
         const deletedAcc1Txs = getAccountTransactions(
             getLastAction(store).payload.wallet.transactions.transactions,
@@ -329,8 +330,9 @@ describe('Storage actions', () => {
         // acc1 deleted
         expect(getLastAction(store).payload.wallet.accounts.length).toEqual(1);
         expect(getLastAction(store).payload.wallet.accounts[0].deviceState).toEqual(dev2.state);
-        // forget whole device dev1 along with its instances
-        await store.dispatch(storageActions.forgetDevice(dev2));
+        // forget device dev1 along with its instances
+        await store.dispatch(storageActions.rememberDevice(dev2, false));
+        await store.dispatch(storageActions.rememberDevice(dev2Instance1, false));
         await store.dispatch(storageActions.loadStorage());
         expect(getLastAction(store).payload.devices.length).toEqual(0);
     });
@@ -351,8 +353,8 @@ describe('Storage actions', () => {
         store.dispatch(transactionActions.add([tx2], acc2));
 
         // store in db
-        await store.dispatch(storageActions.rememberDevice(dev1));
-        await store.dispatch(storageActions.rememberDevice(dev2));
+        await store.dispatch(storageActions.rememberDevice(dev1, true));
+        await store.dispatch(storageActions.rememberDevice(dev2, true));
 
         // remove txs for acc 1
         await storageActions.removeAccountTransactions(acc1);
@@ -372,8 +374,8 @@ describe('Storage actions', () => {
             acc2,
         );
         expect(acc2Txs.length).toEqual(1);
-        await store.dispatch(storageActions.forgetDeviceInstance(dev1));
-        await store.dispatch(storageActions.forgetDeviceInstance(dev2));
+        await store.dispatch(storageActions.forgetDevice(dev1));
+        await store.dispatch(storageActions.forgetDevice(dev2));
     });
 
     it('should update device settings in the db', async () => {
@@ -391,7 +393,7 @@ describe('Storage actions', () => {
         updateStore(store);
 
         // store device in db
-        await store.dispatch(storageActions.rememberDevice(dev1));
+        await store.dispatch(storageActions.rememberDevice(dev1, true));
 
         // Change device label inside a reducer
         await store.dispatch({

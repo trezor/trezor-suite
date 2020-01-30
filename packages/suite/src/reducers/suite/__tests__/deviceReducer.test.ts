@@ -118,7 +118,7 @@ describe('SUITE.CREATE_DEVICE_INSTANCE', () => {
     });
 });
 
-describe('SUITE.FORGET_DEVICE + SUITE.FORGET_DEVICE_INSTANCE', () => {
+describe('SUITE.FORGET_DEVICE', () => {
     fixtures.forget.forEach(f => {
         it(f.description, () => {
             let state: State = f.initialState;

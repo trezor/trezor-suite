@@ -1,1 +1,0 @@
-export const STEP_ANIMATION_DURATION = 400;

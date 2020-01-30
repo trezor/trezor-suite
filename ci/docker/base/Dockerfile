@@ -10,13 +10,14 @@ RUN apt-get update && apt-get install -y \
     libgconf-2-4 \
     libnss3 \
     libxss1 \
-    libasound2 \ 
+    libasound2 \
     # required by core/emulator
     scons \
     libsdl2-dev \
     libsdl2-image-dev \
     # why not
-    zip
+    zip \
+    rsync
 
 
 RUN apt-get install -y \

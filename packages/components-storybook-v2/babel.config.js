@@ -21,7 +21,7 @@ module.exports = api => {
             {
                 regenerator: true,
             },
-        ]
+        ],
     ];
 
     return {

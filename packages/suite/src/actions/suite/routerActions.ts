@@ -3,7 +3,6 @@
  * Use override for react-native (@trezor/suite-native/src/actions)
  */
 import Router from 'next/router';
-import { Route } from '@suite-constants/routes';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { SUITE, ROUTER } from '@suite-actions/constants';
 import {
@@ -13,7 +12,7 @@ import {
     findRouteByName,
     RouteParams,
 } from '@suite-utils/router';
-import { Dispatch, GetState } from '@suite-types';
+import { Dispatch, GetState, Route } from '@suite-types';
 
 interface LocationChange {
     type: typeof ROUTER.LOCATION_CHANGE;
@@ -98,12 +97,19 @@ export const goto = (
 
 /**
  * Used only in application modal.
+ * Returns Route of application beneath the application modal. (real nextjs/Router value)
+ */
+export const getBackgroundRoute = () => () => findRoute(Router.pathname + window.location.hash);
+
+/**
+ * Used only in application modal.
  * Application modal does not push route into router history, it changes it only in reducer (see goto action).
  * Reverse operation (again without touching history) needs to be done in back action.
  */
 export const closeModalApp = () => async (dispatch: Dispatch) => {
     dispatch(suiteActions.lockRouter(false));
-    const route = findRoute(Router.pathname + window.location.hash);
+    // const route = findRoute(Router.pathname + window.location.hash);
+    const route = dispatch(getBackgroundRoute());
     // if user enters route of modal app manually, back would redirect him again to the same route and he would remain stuck
     // so we need a fallback to suite-index
     if (route && route.isModal) {

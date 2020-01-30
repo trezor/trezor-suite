@@ -8,10 +8,12 @@ import {
     DeviceStatus,
     DeviceMode,
     DeviceFirmwareStatus,
+    UnavailableCapability,
     FirmwareRelease,
     BlockchainEvent,
 } from 'trezor-connect';
 import { RouterActions } from '@suite-actions/routerActions';
+import { Route as Route$ } from '@suite-constants/routes';
 import { AppState as AppState$ } from '@suite/reducers/store';
 import { StorageActions } from '@suite-actions/storageActions';
 import { SuiteActions } from '@suite-actions/suiteActions';
@@ -21,6 +23,7 @@ import { LogActions } from '@suite-actions/logActions';
 import { NotificationActions } from '@suite-actions/notificationActions';
 import OnboardingActions from '@onboarding-types/actions';
 import { SettingsActions } from '@settings-types';
+import { FirmwareActions } from '@firmware-types';
 import { ExtendedMessageDescriptor as ExtendedMessageDescriptor$ } from '@suite-support/ConnectedIntlProvider';
 import { WalletAction } from '@wallet-types';
 
@@ -35,6 +38,8 @@ type TrezorConnectEvents =
 
 export type AppState = AppState$;
 
+export type Route = Route$;
+
 // all actions from all apps used to properly type Dispatch.
 export type Action =
     | TrezorConnectEvents
@@ -47,6 +52,7 @@ export type Action =
     | NotificationActions
     | WalletAction
     | OnboardingActions
+    | FirmwareActions
     | SettingsActions;
 
 // export type Dispatch = ReduxDispatch<Action>;
@@ -63,6 +69,7 @@ export interface AcquiredDevice {
     status: DeviceStatus;
     mode: DeviceMode;
     state?: string;
+    unavailableCapabilities: { [key: string]: UnavailableCapability };
 
     // suite specific
     useEmptyPassphrase: boolean;
@@ -72,6 +79,7 @@ export interface AcquiredDevice {
     authConfirm: boolean; // device cannot be used because passphrase was not confirmed
     instance?: number;
     ts: number;
+    buttonRequests: string[];
 }
 
 export interface UnknownDevice {
@@ -88,6 +96,7 @@ export interface UnknownDevice {
     authConfirm?: undefined;
     state?: string;
     ts: number;
+    buttonRequests: string[];
 }
 
 export type TrezorDevice = AcquiredDevice | UnknownDevice;
@@ -95,7 +104,8 @@ export type TrezorDevice = AcquiredDevice | UnknownDevice;
 export type Store = ReduxStore<AppState, Action>;
 
 export type InjectedModalApplicationProps = {
-    modal: React.ReactNode;
+    modal: JSX.Element | null;
     cancelable: boolean;
     closeModalApp: () => void;
+    getBackgroundRoute: () => Route$ | typeof undefined;
 };

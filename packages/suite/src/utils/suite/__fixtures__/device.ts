@@ -137,13 +137,52 @@ const isSelectedDevice = [
         result: false,
     },
     {
-        description: `Device is not selected (device path is different)`,
-        selected: SUITE_DEVICE,
-        device: getSuiteDevice({ path: '1' }),
+        description: `Device is not selected (currently selected is unacquired)`,
+        selected: getSuiteDevice({ type: 'unacquired' }),
+        device: SUITE_DEVICE,
         result: false,
     },
     {
-        description: `Device is not selected (device instance is different)`,
+        description: `Device is not selected (device is unacquired)`,
+        selected: SUITE_DEVICE,
+        device: getSuiteDevice({ type: 'unacquired' }),
+        result: false,
+    },
+    {
+        description: `Device is not selected (device_id is different)`,
+        selected: SUITE_DEVICE,
+        device: getSuiteDevice(undefined, { device_id: 'different' }),
+        result: false,
+    },
+];
+
+const isSelectedInstance = [
+    {
+        description: `Device instance is selected`,
+        selected: SUITE_DEVICE,
+        device: SUITE_DEVICE,
+        result: true,
+    },
+    {
+        description: `Device instance is not selected (currently selected is not defined)`,
+        selected: undefined,
+        device: SUITE_DEVICE,
+        result: false,
+    },
+    {
+        description: `Device instance is not selected (device is not defined)`,
+        selected: SUITE_DEVICE,
+        device: undefined,
+        result: false,
+    },
+    {
+        description: `Device instance is not selected (device_id is different)`,
+        selected: SUITE_DEVICE,
+        device: getSuiteDevice(undefined, { device_id: 'different' }),
+        result: false,
+    },
+    {
+        description: `Device instance is not selected (instance is different)`,
         selected: SUITE_DEVICE,
         device: getSuiteDevice({ instance: 1 }),
         result: false,
@@ -440,6 +479,7 @@ export default {
     getStatus,
     isDeviceAccessible,
     isSelectedDevice,
+    isSelectedInstance,
     getVersion,
     getNewInstanceNumber,
     findInstanceIndex,

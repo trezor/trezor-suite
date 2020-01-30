@@ -1,5 +1,5 @@
 import Bridge from '@suite-views/bridge';
-import DeviceAcquire from '@suite-views/device-acquire';
+import DeviceAcquire from '@suite-views/device-acquire/Container';
 import DeviceBootloader from '@suite-views/device-bootloader';
 import DeviceConnect from '@suite-views/device-connect';
 import DeviceInitialize from '@suite-views/device-initialize';

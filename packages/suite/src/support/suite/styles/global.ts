@@ -1,5 +1,6 @@
 import { colors } from '@trezor/components';
 import animations from './animations';
+import { notifications } from './notifications';
 
 export default `
     #__next {
@@ -39,4 +40,5 @@ export default `
     }
 
     ${animations}
+    ${notifications}
 `;

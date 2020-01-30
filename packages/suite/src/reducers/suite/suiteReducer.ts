@@ -24,6 +24,7 @@ export interface SuiteState {
     messages: { [key: string]: any };
     locks: Lock[];
     debug: DebugModeOptions;
+    analytics: boolean;
 }
 
 interface Transport {
@@ -53,6 +54,7 @@ const initialState: SuiteState = {
     debug: {
         translationMode: false,
     },
+    analytics: false,
 };
 
 const changeLock = (draft: SuiteState, lock: Lock, enabled: boolean) => {
@@ -105,6 +107,10 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 draft.debug = { ...draft.debug, ...action.payload };
                 break;
 
+            case SUITE.TOGGLE_ANALYTICS:
+                draft.analytics = !state.analytics;
+                break;
+
             case TRANSPORT.START:
                 draft.transport = action.payload;
                 break;
@@ -138,6 +144,7 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
             case DISCOVERY.COMPLETE:
                 changeLock(draft, SUITE.LOCK_TYPE.DEVICE, false);
                 break;
+
             // no default
         }
     });

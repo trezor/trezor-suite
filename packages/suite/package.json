@@ -42,6 +42,7 @@
         "react-qr-svg": "^2.2.1",
         "react-redux": "^7.1.3",
         "react-scale-text": "^1.2.2",
+        "react-toastify": "^5.5.0",
         "react-transition-group": "^4.2.2",
         "react-window": "^1.8.4",
         "recharts": "^2.0.0-beta.1",

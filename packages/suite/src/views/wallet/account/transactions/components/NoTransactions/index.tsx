@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors, variables, H2, Button } from '@trezor/components-v2';
 import { Account } from '@wallet-types';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const Wrapper = styled.div`
     display: flex;
@@ -30,10 +31,9 @@ const Description = styled.div`
     margin-bottom: 10px;
 `;
 
-const Image = styled.div`
+const Image = styled.img`
     width: 340px;
     height: 280px;
-    background: #f5f5f5;
     margin-bottom: 40px;
 `;
 
@@ -61,7 +61,7 @@ const NoTransactions = (props: Props) => {
                     then, wanna buy some crypto? Click the button below to begin your shopping
                     spree!
                 </Description>
-                <Image />
+                <Image src={resolveStaticPath(`images/wallet/wallet-empty.svg`)} />
                 <Actions>
                     <ActionButton variant="secondary">Receive BTC</ActionButton>
                     <ActionButton variant="primary">Buy BTC</ActionButton>
