@@ -1,15 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
-import { variables } from '@trezor/components-v2';
 import WalletNotifications from '@wallet-components/Notifications';
 import Content from '@wallet-components/Content';
 import DiscoveryProgress from '@wallet-components/DiscoveryProgress';
 import { AppState } from '@suite-types';
 import { SuiteLayout } from '@suite-components';
 import Menu from '@wallet-components/Menu';
-
-const { SCREEN_SIZE } = variables;
 
 const mapStateToProps = (state: AppState) => ({
     router: state.router,

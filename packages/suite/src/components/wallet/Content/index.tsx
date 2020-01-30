@@ -33,7 +33,7 @@ interface TitleProps {
 }
 
 const Title = styled(H2)`
-    color: ${(props: TitleProps) => (props.type === 'progress' ? colors.TEXT_SECONDARY : '')};
+    color: ${(props: TitleProps) => (props.type === 'progress' ? colors.BLACK50 : '')};
     padding: 0;
 `;
 
