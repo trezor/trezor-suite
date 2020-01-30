@@ -1776,6 +1776,15 @@ const definedMessages = defineMessages({
             'Trezor Suite does NOT track any balance-related or personal data, all anonymously',
         id: 'TR_ALLOW_ANALYTICS_DESCRIPTION',
     },
+    TR_ONCE_YOU_SEND_OR_RECEIVE: {
+        id: 'TR_ONCE_YOU_SEND_OR_RECEIVE',
+        defaultMessage:
+            'Once you send or receive your first transaction it will show up here. Until then, wanna buy some crypto? Click the button below to begin your shopping spree!',
+    },
+    TR_ACCOUNT_IS_EMPTY: {
+        id: 'TR_ACCOUNT_IS_EMPTY',
+        defaultMessage: 'The account is empty',
+    },
 });
 
 export default definedMessages;

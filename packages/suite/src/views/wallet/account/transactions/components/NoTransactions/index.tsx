@@ -55,11 +55,11 @@ const NoTransactions = (props: Props) => {
     return (
         <Wrapper>
             <Content>
-                <Title>The account is empty</Title>
+                <Title>
+                    <Translation {...messages.TR_ACCOUNT_IS_EMPTY} />
+                </Title>
                 <Description>
-                    Once you send or receive your first transaction it will show up here. Until
-                    then, wanna buy some crypto? Click the button below to begin your shopping
-                    spree!
+                    <Translation {...messages.TR_ONCE_YOU_SEND_OR_RECEIVE} />
                 </Description>
                 <Image src={resolveStaticPath(`images/wallet/wallet-empty.svg`)} />
                 <Actions>
