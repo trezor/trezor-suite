@@ -1205,16 +1205,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Tezos wallet',
         id: 'TR_TEZOS_WALLET',
     },
-    TR_THANK_YOU_FOR_EMAIL: {
-        defaultMessage:
-            'Thank you for providing your email. To complete subscription, please click on the link we sent to your email. You can also follow us on socials:',
-        description: 'Displayed after user submits contact email',
-        id: 'TR_THANK_YOU_FOR_EMAIL',
-    },
-    TR_THE_ACCOUNT_BALANCE_IS_HIDDEN: {
-        defaultMessage: 'The account balance is hidden.',
-        id: 'TR_THE_ACCOUNT_BALANCE_IS_HIDDEN',
-    },
     TR_THE_PIN_LAYOUT_IS_DISPLAYED: {
         defaultMessage: 'The PIN layout is displayed on your Trezor.',
         id: 'TR_THE_PIN_LAYOUT_IS_DISPLAYED',
