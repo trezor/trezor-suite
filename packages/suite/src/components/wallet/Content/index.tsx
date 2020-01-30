@@ -1,7 +1,6 @@
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { colors, Loader, variables } from '@trezor/components';
-import { H2, P } from '@trezor/components-v2';
+import { H2, P, colors, Loader, variables } from '@trezor/components-v2';
 import { ExceptionPage, Loader as LoaderInterface } from '@wallet-reducers/selectedAccountReducer';
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';

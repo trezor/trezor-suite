@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Loader } from '@trezor/components';
+import { Loader } from '@trezor/components-v2';
 
 const LoaderWrapper = styled.div`
     display: flex;

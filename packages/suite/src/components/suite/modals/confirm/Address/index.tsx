@@ -1,7 +1,8 @@
 import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
-import { P, Prompt, colors, variables } from '@trezor/components';
+import { Prompt } from '@trezor/components';
+import { P, colors, variables } from '@trezor/components-v2';
 import { TrezorDevice } from '@suite-types';
 import { Account, Network } from '@wallet-types';
 import messages from '@suite/support/messages';
@@ -23,14 +24,14 @@ const Header = styled.div`
 `;
 
 const Content = styled.div`
-    border-top: 1px solid ${colors.DIVIDER};
-    background: ${colors.MAIN};
+    border-top: 1px solid ${colors.BLACK92};
+    background: ${colors.WHITE};
     padding: 24px 48px;
 `;
 
 const Label = styled.div`
-    font-size: ${FONT_SIZE.SMALL};
-    color: ${colors.TEXT_SECONDARY};
+    font-size: ${FONT_SIZE.TINY};
+    color: ${colors.BLACK25};
 `;
 
 const ConfirmAddress: FunctionComponent<Props> = ({ device, account, network }) => {

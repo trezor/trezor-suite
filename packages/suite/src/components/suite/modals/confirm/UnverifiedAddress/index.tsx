@@ -4,8 +4,7 @@ import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import { Translation } from '@suite-components/Translation';
-import { colors } from '@trezor/components';
-import { Button, P, H2, Link } from '@trezor/components-v2';
+import { Button, P, H2, Link, colors } from '@trezor/components-v2';
 import { useKeyPress } from '@suite-utils/dom';
 import { TrezorDevice, Dispatch } from '@suite-types';
 import messages from '@suite/support/messages';
@@ -28,7 +27,7 @@ const StyledP = styled(P)`
 const Divider = styled.div`
     width: 100%;
     height: 1px;
-    background: ${colors.DIVIDER};
+    background: ${colors.BLACK92};
     margin: 20px 0px;
 `;
 

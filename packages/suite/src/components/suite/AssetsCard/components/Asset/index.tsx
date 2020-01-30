@@ -1,10 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Network } from '@wallet-types';
-import { CoinLogo } from '@trezor/components';
+import { CoinLogo, variables } from '@trezor/components-v2';
 import BigNumber from 'bignumber.js';
 import { FormattedNumber, NoRatesTooltip } from '@suite-components';
-import { variables } from '@trezor/components-v2';
 import { AreaChart, Area, ResponsiveContainer } from 'recharts';
 import Badge from '@suite-components/Badge';
 

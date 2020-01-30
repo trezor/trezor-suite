@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
-import { colors, variables, Loader } from '@trezor/components';
+import { colors, variables, Loader } from '@trezor/components-v2';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
@@ -25,8 +25,8 @@ const LoadingWrapper = styled.div`
 `;
 
 const LoadingText = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${colors.TEXT_SECONDARY};
+    font-size: ${variables.FONT_SIZE.TINY};
+    color: ${colors.BLACK50};
     padding-left: 10px;
 `;
 

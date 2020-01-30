@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { Input, TextArea, colors, variables } from '@trezor/components';
-import { Button } from '@trezor/components-v2';
+import { Input, Button, Textarea, colors, variables } from '@trezor/components-v2';
 import Title from '@wallet-components/Title';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 import * as signVerifyActions from '@wallet-actions/signVerifyActions';
@@ -129,7 +128,7 @@ class SignVerify extends Component<Props> {
                             />
                         </Row>
                         <Row>
-                            <TextArea
+                            <Textarea
                                 topLabel={intl.formatMessage(messages.TR_MESSAGE)}
                                 name="signMessage"
                                 value={signMessage}
@@ -140,7 +139,7 @@ class SignVerify extends Component<Props> {
                             />
                         </Row>
                         <Row>
-                            <TextArea
+                            <Textarea
                                 topLabel={intl.formatMessage(messages.TR_SIGNATURE)}
                                 name="signSignature"
                                 value={signSignature}
@@ -185,7 +184,7 @@ class SignVerify extends Component<Props> {
                             />
                         </Row>
                         <Row>
-                            <TextArea
+                            <Textarea
                                 topLabel={intl.formatMessage(messages.TR_MESSAGE)}
                                 name="verifyMessage"
                                 value={verifyMessage}
@@ -196,7 +195,7 @@ class SignVerify extends Component<Props> {
                             />
                         </Row>
                         <Row>
-                            <TextArea
+                            <Textarea
                                 topLabel={intl.formatMessage(messages.TR_SIGNATURE)}
                                 name="verifySignature"
                                 value={verifySignature}
