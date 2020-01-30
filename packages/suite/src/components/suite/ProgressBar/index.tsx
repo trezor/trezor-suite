@@ -49,16 +49,12 @@ interface Props {
 
 const ProgressBar = (props: Props) => {
     const { total, current } = props;
-
-    let progress = (100 / total) * current;
-    if (total === current) {
-        progress = 100;
-    }
+    const progress = (100 / total) * current;
 
     return (
         <Wrapper>
             <BarContainer>
-                <GreenBar width={`${Math.min(progress - 5, 100)}%`} />
+                <GreenBar width={`${Math.min(Math.max(progress - 5, 0), 100)}%`} />
                 <GrayBar width={`${Math.min(progress, 100)}%`} />
                 <BackgroundBar />
             </BarContainer>
