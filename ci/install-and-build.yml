@@ -2,7 +2,7 @@ install and build:
     cache:
         untracked: true
         policy: push
-        key: node_modules-across-the-monorepo-universe
+        key: ${CI_COMMIT_REF_SLUG}
         paths:
             # modules
             - node_modules/

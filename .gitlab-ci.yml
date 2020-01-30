@@ -6,7 +6,6 @@ cache:
     policy: pull
     key: ${CI_COMMIT_REF_SLUG}
     paths:
-        - .yarn
         # modules
         - node_modules/
         - packages/blockchain-link/node_modules/
