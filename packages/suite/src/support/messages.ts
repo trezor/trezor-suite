@@ -1497,8 +1497,12 @@ const definedMessages = defineMessages({
     TR_NUM_ACCOUNTS_NUM_COINS_FIAT_VALUE: {
         id: 'TR_NUM_ACCOUNTS_NUM_COINS_FIAT_VALUE',
         defaultMessage:
-            '{accountsCount} {accountsCount, plural, one {account} other {accounts}} - {coinsCount} {coinsCount, plural, one {coin} other {coins}} - {fiatValue}',
+            '{accountsCount} {accountsCount, plural, one {account} other {accounts}} • {assetsCount} {assetsCount, plural, one {asset} other {assets}} • {fiatValue}',
         description: 'Used as title for a wallet instance in Switch Device modal',
+    },
+    TR_CONNECT_TO_DISCOVER: {
+        id: 'TR_CONNECT_TO_DISCOVER',
+        defaultMessage: 'Connect to discover',
     },
     TR_ADD_HIDDEN_WALLET: {
         id: 'TR_ADD_HIDDEN_WALLET',
@@ -1771,6 +1775,18 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Trezor Suite does NOT track any balance-related or personal data, all anonymously',
         id: 'TR_ALLOW_ANALYTICS_DESCRIPTION',
+    },
+    TR_SELECT_DEVICE: {
+        id: 'TR_SELECT_DEVICE',
+        defaultMessage: 'Select device',
+    },
+    TR_REMEMBER_WALLET: {
+        id: 'TR_REMEMBER_WALLET',
+        defaultMessage: 'Remember wallet',
+    },
+    TR_HIDE_WALLET: {
+        id: 'TR_HIDE_WALLET',
+        defaultMessage: 'Hide wallet',
     },
 });
 

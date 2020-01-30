@@ -100,10 +100,10 @@ const WalletInstance = ({
                 )}
                 <InstanceType>
                     <Translation
-                        {...messages.TR_NUM_ACCOUNTS_NUM_COINS_FIAT_VALUE}
+                        {...messages.TR_NUM_ACCOUNTS_NUM_ASSETS_FIAT_VALUE}
                         values={{
                             accountsCount,
-                            coinsCount,
+                            assetsCount: coinsCount,
                             fiatValue: (
                                 <FormattedNumber
                                     value={instanceBalance.toString()}
@@ -130,7 +130,7 @@ const WalletInstance = ({
                         variant="secondary"
                         onClick={() => forgetDevice(instance)}
                     >
-                        Hide wallet
+                        <Translation {...messages.TR_HIDE_WALLET} />
                     </ForgetButton>
                 </Col>
             )}

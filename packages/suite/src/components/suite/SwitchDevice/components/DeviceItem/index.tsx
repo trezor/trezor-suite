@@ -117,22 +117,23 @@ const UnknownDevice = (props: Props & WrappedComponentProps) => {
                     <DeviceImageWrapper>
                         <DeviceImage device={device} />
                     </DeviceImageWrapper>
-                    <Col>
+                    <Col grow={1}>
                         <DeviceTitle>{device.label}</DeviceTitle>
                         <DeviceStatus color={deviceUtils.getStatusColor(deviceStatus)}>
                             {deviceUtils.getStatusName(deviceStatus, props.intl)}
                         </DeviceStatus>
                     </Col>
+                    {device.type === 'unacquired' && (
+                        <Button
+                            variant="secondary"
+                            size="small"
+                            icon="REFRESH"
+                            onClick={() => props.acquireDevice(device)}
+                        >
+                            Acquire
+                        </Button>
+                    )}
                 </DeviceHeader>
-                {device.type === 'unacquired' && (
-                    <Button
-                        variant="tertiary"
-                        icon="PLUS"
-                        onClick={() => props.acquireDevice(device)}
-                    >
-                        Acquire!
-                    </Button>
-                )}
             </Device>
         </DeviceWrapper>
     );
@@ -180,7 +181,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                             variant="secondary"
                             onClick={() => selectDeviceInstance(device)}
                         >
-                            Choose device
+                            <Translation {...messages.TR_SELECT_DEVICE} />
                         </ChooseDevice>
                     )}
                 </DeviceHeader>
@@ -192,9 +193,11 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                             tooltipContent="Remember allows you to access any wallet
 in watch-only mode without connected device."
                         >
-                            Remember wallet
+                            <Translation {...messages.TR_REMEMBER_WALLET} />
                         </RememberWallet>
-                        <HideWallet tooltipContent="blabla">Hide wallet</HideWallet>
+                        <HideWallet tooltipContent="Explanation what the 'hide wallet' button does">
+                            <Translation {...messages.TR_HIDE_WALLET} />
+                        </HideWallet>
                     </WalletsTooltips>
                 )}
                 <InstancesWrapper>
