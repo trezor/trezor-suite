@@ -1,13 +1,4 @@
-import {
-    SET_STEP_ACTIVE,
-    GO_TO_SUBSTEP,
-    SELECT_TREZOR_MODEL,
-    ADD_PATH,
-    REMOVE_PATH,
-    RESET_ONBOARDING,
-    ENABLE_ONBOARDING_REDUCER,
-    SET_BACKUP_TYPE,
-} from '@onboarding-types/onboarding';
+import { ONBOARDING } from '@onboarding-actions/constants';
 import * as STEP from '@onboarding-constants/steps';
 import { AnyStepId, AnyPath } from '@onboarding-types/steps';
 import steps from '@onboarding-config/steps';
@@ -16,35 +7,72 @@ import { findNextStep, findPrevStep, isStepInPath } from '@onboarding-utils/step
 
 import { GetState, Dispatch, Action } from '@suite-types';
 
+export type OnboardingActionTypes =
+    | {
+          type: typeof ONBOARDING.SET_BACKUP_TYPE;
+          payload: number;
+      }
+    | {
+          type: typeof ONBOARDING.ENABLE_ONBOARDING_REDUCER;
+          payload: boolean;
+      }
+    | {
+          type: typeof ONBOARDING.RESET_ONBOARDING;
+      }
+    | {
+          type: typeof ONBOARDING.REMOVE_PATH;
+          payload: AnyPath[];
+      }
+    | {
+          type: typeof ONBOARDING.ADD_PATH;
+          payload: AnyPath;
+      }
+    | {
+          type: typeof ONBOARDING.SELECT_TREZOR_MODEL;
+          model: 1 | 2;
+      }
+    | {
+          type: typeof ONBOARDING.GO_TO_SUBSTEP;
+          subStepId: string | null;
+      }
+    | {
+          type: typeof ONBOARDING.SET_STEP_RESOLVED;
+          stepId: AnyStepId;
+      }
+    | {
+          type: typeof ONBOARDING.SET_STEP_ACTIVE;
+          stepId: AnyStepId;
+      };
+
 const goToStep = (stepId: AnyStepId) => (dispatch: Dispatch) => {
     dispatch({
-        type: SET_STEP_ACTIVE,
+        type: ONBOARDING.SET_STEP_ACTIVE,
         stepId,
     });
 };
 
 const goToSubStep = (subStepId: string | null) => (dispatch: Dispatch) => {
     dispatch({
-        type: GO_TO_SUBSTEP,
+        type: ONBOARDING.GO_TO_SUBSTEP,
         subStepId,
     });
 };
 
 const selectTrezorModel = (model: number) => ({
-    type: SELECT_TREZOR_MODEL,
+    type: ONBOARDING.SELECT_TREZOR_MODEL,
     model,
 });
 
 const addPath = (payload: AnyPath) => (dispatch: Dispatch) => {
     dispatch({
-        type: ADD_PATH,
+        type: ONBOARDING.ADD_PATH,
         payload,
     });
 };
 
 const removePath = (payload: AnyPath[]) => (dispatch: Dispatch) => {
     dispatch({
-        type: REMOVE_PATH,
+        type: ONBOARDING.REMOVE_PATH,
         payload,
     });
 };
@@ -88,7 +116,7 @@ const goToPreviousStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: 
  */
 const resetOnboarding = () => (dispatch: Dispatch) => {
     dispatch({
-        type: RESET_ONBOARDING,
+        type: ONBOARDING.RESET_ONBOARDING,
     });
 };
 
@@ -98,7 +126,7 @@ const resetOnboarding = () => (dispatch: Dispatch) => {
  */
 
 const enableOnboardingReducer = (payload: boolean): Action => ({
-    type: ENABLE_ONBOARDING_REDUCER,
+    type: ONBOARDING.ENABLE_ONBOARDING_REDUCER,
     payload,
 });
 
@@ -109,7 +137,7 @@ const retryBackup = () => async (dispatch: Dispatch) => {
 };
 
 const setBackupType = (payload: number): Action => ({
-    type: SET_BACKUP_TYPE,
+    type: ONBOARDING.SET_BACKUP_TYPE,
     payload,
 });
 
