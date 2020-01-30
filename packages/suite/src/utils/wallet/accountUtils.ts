@@ -286,7 +286,7 @@ export const enhanceTransaction = (
     };
 };
 
-export const getAccountBalance = (account: Account, localCurrency: string, fiat: Fiat[]) => {
+export const getAccountFiatBalance = (account: Account, localCurrency: string, fiat: Fiat[]) => {
     const fiatRates = fiat.find(f => f.symbol === account.symbol);
     if (fiatRates) {
         const fiatBalance = toFiatCurrency(account.balance, localCurrency, fiatRates);
@@ -296,10 +296,14 @@ export const getAccountBalance = (account: Account, localCurrency: string, fiat:
     }
 };
 
-export const getTotalBalance = (deviceAccounts: Account[], localCurrency: string, fiat: Fiat[]) => {
+export const getTotalFiatBalance = (
+    deviceAccounts: Account[],
+    localCurrency: string,
+    fiat: Fiat[],
+) => {
     const instanceBalance = new BigNumber(0);
     deviceAccounts.forEach(a => {
-        getAccountBalance(a, localCurrency, fiat);
+        getAccountFiatBalance(a, localCurrency, fiat);
     });
     return instanceBalance;
 };

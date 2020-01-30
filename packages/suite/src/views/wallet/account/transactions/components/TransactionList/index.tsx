@@ -13,7 +13,7 @@ import Pagination from '../Pagination';
 import messages from '@suite/support/messages';
 import Card from '@suite-components/Card';
 import Badge from '@suite-components/Badge';
-import FiatAmount from '@suite-components/FiatAmount/Container';
+import FiatValue from '@suite-components/FiatValue/Container';
 
 const Wrapper = styled.div``;
 
@@ -28,6 +28,7 @@ const Transactions = styled.div`
 const DayHeading = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
+    min-height: 35px; /* same as height of baddge with fiat value plus padding */
     color: ${colors.BLACK50};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     padding: 5px 16px;
@@ -113,6 +114,9 @@ const TransactionList = ({
                 <Transactions>
                     {Object.keys(transactionsByDate).map(dateKey => {
                         const totalAmountPerDay = sumTransactions(transactionsByDate[dateKey]);
+                        const fiatValue = (
+                            <FiatValue amount={totalAmountPerDay.toFixed()} symbol={props.symbol} />
+                        );
                         return (
                             <React.Fragment key={dateKey}>
                                 <DayHeading>
@@ -136,14 +140,11 @@ const TransactionList = ({
                                                     {totalAmountPerDay.toFixed()}{' '}
                                                     {props.symbol.toUpperCase()}
                                                 </DayAmount>
-                                                <FiatDayAmount>
-                                                    <Badge>
-                                                        <FiatAmount
-                                                            amount={totalAmountPerDay.toFixed()}
-                                                            symbol={props.symbol}
-                                                        />
-                                                    </Badge>
-                                                </FiatDayAmount>
+                                                {fiatValue && (
+                                                    <FiatDayAmount>
+                                                        <Badge>{fiatValue}</Badge>
+                                                    </FiatDayAmount>
+                                                )}
                                             </DayAmountWrapper>
                                         </>
                                     )}

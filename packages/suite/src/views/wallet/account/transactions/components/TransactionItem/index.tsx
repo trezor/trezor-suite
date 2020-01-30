@@ -8,7 +8,7 @@ import messages from '@suite/support/messages';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import TransactionTypeIcon from '../TransactionTypeIcon';
 import Badge from '@suite/components/suite/Badge';
-import FiatAmount from '@suite-components/FiatAmount/Container';
+import FiatValue from '@suite-components/FiatValue/Container';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 
 const Wrapper = styled.div`
@@ -284,7 +284,7 @@ const TransactionItem = React.memo(
                             </Balance>
                             <FiatBalance>
                                 <SmallBadge>
-                                    <FiatAmount amount={amount} symbol={symbol} />
+                                    <FiatValue amount={amount} symbol={symbol} />
                                 </SmallBadge>
                             </FiatBalance>
                         </>

@@ -12,9 +12,9 @@ const mapStateToProps = (state: AppState) => ({
 type OwnProps = {
     amount: string;
     symbol: Account['symbol'];
-    fiatCurrency: string;
+    fiatCurrency?: string;
 };
 
 export type Props = ReturnType<typeof mapStateToProps> & OwnProps;
 
-export default connect(mapStateToProps, null)(Component);
+export default connect(mapStateToProps)(Component);
