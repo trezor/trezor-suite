@@ -11,9 +11,7 @@
     "scripts": {
         "copy-static-files": "ts-node ./index.ts"
     },
-    "dependencies": {
-        "rimraf": "^3.0.0"
-    },
+    "dependencies": {},
     "devDependencies": {
         "@types/fs-extra": "^8.0.0",
         "copy-webpack-plugin": "^5.1.1",
