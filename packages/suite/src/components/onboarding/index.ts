@@ -1,5 +1,4 @@
 import Option from './Option';
-import ProgressBar from './ProgressBar';
 import Text from './Text';
 import UnexpectedState from './UnexpectedState';
 
@@ -47,7 +46,6 @@ export {
     OnboardingButton,
     OnboardingIcon,
     Loaders,
-    ProgressBar,
     Text,
     UnexpectedState,
     Wrapper,

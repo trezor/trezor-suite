@@ -1,9 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import steps from '@onboarding-config/steps';
-import { AppState } from '@suite-types';
-
 const Wrapper = styled.div`
     width: 100%;
     height: 30px;
@@ -46,15 +43,15 @@ const GreenBar = styled(Bar)<BarProps>`
 `;
 
 interface Props {
-    activeStepId: AppState['onboarding']['activeStepId'];
+    total: number;
+    current: number;
 }
 
 const ProgressBar = (props: Props) => {
-    const { activeStepId } = props;
+    const { total, current } = props;
 
-    const activeStepIndex = steps.findIndex(step => activeStepId === step.id);
-    let progress = (100 / steps.filter(s => s.progress).length) * activeStepIndex;
-    if (activeStepIndex === steps.length) {
+    let progress = (100 / total) * current;
+    if (total === current) {
         progress = 100;
     }
 
