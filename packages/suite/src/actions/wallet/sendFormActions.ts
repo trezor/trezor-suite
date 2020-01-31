@@ -74,7 +74,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                 data: { value: null, error: null },
             },
             selectedFee: firstFeeLevel,
-            ...cachedState,
+            // ...cachedState,
         },
         localCurrency,
     });
