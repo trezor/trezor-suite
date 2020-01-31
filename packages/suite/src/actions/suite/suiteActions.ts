@@ -17,6 +17,7 @@ export type SuiteActions =
     | { type: typeof SUITE.UPDATE_SELECTED_DEVICE; payload: TrezorDevice }
     | { type: typeof SUITE.UPDATE_PASSPHRASE_MODE; payload: TrezorDevice; hidden: boolean }
     | { type: typeof SUITE.AUTH_DEVICE; payload: TrezorDevice; state: string }
+    | { type: typeof SUITE.AUTH_FAILED; payload: TrezorDevice }
     | { type: typeof SUITE.REQUEST_AUTH_CONFIRM }
     | { type: typeof SUITE.RECEIVE_AUTH_CONFIRM; payload: TrezorDevice; success: boolean }
     | { type: typeof SUITE.CREATE_DEVICE_INSTANCE; payload: TrezorDevice }
@@ -256,6 +257,7 @@ export const handleDeviceDisconnect = (device: Device) => (
  */
 const actions = [
     SUITE.AUTH_DEVICE,
+    SUITE.AUTH_FAILED,
     SUITE.SELECT_DEVICE,
     SUITE.RECEIVE_AUTH_CONFIRM,
     SUITE.UPDATE_PASSPHRASE_MODE,
@@ -359,6 +361,7 @@ export const authorizeDevice = () => async (
         });
         return true;
     }
+    dispatch({ type: SUITE.AUTH_FAILED, payload: device });
     // TODO: notification with translations
     dispatch(
         addNotification({
