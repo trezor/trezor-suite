@@ -9,16 +9,21 @@ import { getDateWithTimeZone } from '@suite-utils/date';
 import TransactionTypeIcon from '../TransactionTypeIcon';
 import Badge from '@suite/components/suite/Badge';
 import FiatValue from '@suite-components/FiatValue/Container';
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import { Props } from './Container';
 
 const Wrapper = styled.div<{ isExpanded: boolean }>`
     display: flex;
     background: ${colors.WHITE};
     padding: 12px 16px;
     flex-direction: column;
+    cursor: pointer;
 
     max-height: 100px;
     transition: max-height 0.3s ease-in;
+
+    &:hover {
+        background: ${colors.BLACK96};
+    }
 
     ${({ isExpanded }) =>
         isExpanded &&
@@ -178,10 +183,6 @@ const SmallBadge = styled(Badge)`
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
-type Props = {
-    explorerUrl: string;
-} & WalletAccountTransaction;
-
 const TokenTransfer = (transfer: ArrayElement<Props['tokens']>) => {
     if (transfer.type === 'self') {
         return (
@@ -223,137 +224,147 @@ const TokenTransfer = (transfer: ArrayElement<Props['tokens']>) => {
     );
 };
 
-const TransactionItem = React.memo(
-    ({ explorerUrl, symbol, type, blockTime, blockHeight, amount, targets, tokens }: Props) => {
-        const [isExpanded, setIsExpanded] = useState(false);
+const TransactionItem = React.memo((props: Props) => {
+    const { symbol, type, blockTime, blockHeight, amount, targets, tokens } = props.transaction;
+    const [isExpanded, setIsExpanded] = useState(false);
 
-        const targetsList = targets.map((target, i) => (
-            // It is ok to ignore eslint. the list is never reordered/filtered, items have no ids, list/items do not change
-            // eslint-disable-next-line react/no-array-index-key
-            <Target key={i}>
-                {target.addresses && target.addresses.map(addr => <Addr key={addr}>{addr}</Addr>)}
-            </Target>
-        ));
+    const targetsList = targets.map((target, i) => (
+        // It is ok to ignore eslint. the list is never reordered/filtered, items have no ids, list/items do not change
+        // eslint-disable-next-line react/no-array-index-key
+        <Target key={i}>
+            {target.addresses && target.addresses.map(addr => <Addr key={addr}>{addr}</Addr>)}
+        </Target>
+    ));
 
-        // blockbook cannot parse some txs
-        // eg. tx with eth smart contract that creates a new token has no valid target
-        const isUnknown = type === 'sent' && targets.length === 1 && targets[0].addresses === null;
-        return (
-            <Wrapper isExpanded={isExpanded}>
-                <Row>
-                    <Timestamp>
-                        {blockHeight !== 0 && blockTime && blockTime > 0 && (
-                            <FormattedDate
-                                value={getDateWithTimeZone(blockTime * 1000)}
-                                hour="numeric"
-                                minute="numeric"
-                            />
-                        )}
-                    </Timestamp>
-                    <Targets>
-                        {type === 'self' && (
-                            <Target>
-                                <Addr>
-                                    <Translation {...messages.TR_SENT_TO_SELF} />
-                                </Addr>
-                            </Target>
-                        )}
-                        {isUnknown && (
-                            <Target>
-                                <Addr>
-                                    <Translation {...messages.TR_UNKNOWN_TRANSACTION} />
-                                </Addr>
-                            </Target>
-                        )}
+    // blockbook cannot parse some txs
+    // eg. tx with eth smart contract that creates a new token has no valid target
+    const isUnknown = type === 'sent' && targets.length === 1 && targets[0].addresses === null;
+    return (
+        <Wrapper
+            isExpanded={isExpanded}
+            onClick={() => {
+                props.openModal({
+                    type: 'transaction-detail',
+                    tx: props.transaction,
+                });
+            }}
+            className={props.className}
+        >
+            <Row>
+                <Timestamp>
+                    {blockHeight !== 0 && blockTime && blockTime > 0 && (
+                        <FormattedDate
+                            value={getDateWithTimeZone(blockTime * 1000)}
+                            hour="numeric"
+                            minute="numeric"
+                        />
+                    )}
+                </Timestamp>
+                <Targets>
+                    {type === 'self' && (
+                        <Target>
+                            <Addr>
+                                <Translation {...messages.TR_SENT_TO_SELF} />
+                            </Addr>
+                        </Target>
+                    )}
+                    {isUnknown && (
+                        <Target>
+                            <Addr>
+                                <Translation {...messages.TR_UNKNOWN_TRANSACTION} />
+                            </Addr>
+                        </Target>
+                    )}
 
-                        {targets && targets.length === 1 && (
-                            <>
-                                <TxIconWrapper>
-                                    <TransactionTypeIcon type={type} />
-                                </TxIconWrapper>
-                                {targetsList}
-                            </>
-                        )}
-                        {targets && targets.length > 1 && (
-                            <>
-                                <TxIconWrapper>
-                                    <TransactionTypeIcon type={type} />
-                                </TxIconWrapper>
-                                <ExpandButton
-                                    variant="tertiary"
-                                    size="small"
-                                    icon={isExpanded ? 'ARROW_UP' : 'ARROW_DOWN'}
-                                    onClick={() => {
-                                        setIsExpanded(!isExpanded);
-                                    }}
-                                >
-                                    {targets.length} addressess
-                                </ExpandButton>
-                            </>
-                        )}
-
-                        {tokens &&
-                            tokens.map(token => <TokenTransfer key={token.address} {...token} />)}
-                    </Targets>
-                    {amount !== '0' && (
+                    {targets && targets.length === 1 && (
                         <>
-                            <Balance>
-                                <Amount>
-                                    {type === 'recv' && '+'}
-                                    {type !== 'recv' && '-'}
-                                    {amount}&nbsp;
-                                </Amount>
-                                <Symbol>{symbol.toUpperCase()}</Symbol>
-                            </Balance>
-                            <FiatBalance>
-                                <SmallBadge>
-                                    <FiatValue amount={amount} symbol={symbol} />
-                                </SmallBadge>
-                            </FiatBalance>
+                            <TxIconWrapper>
+                                <TransactionTypeIcon type={type} />
+                            </TxIconWrapper>
+                            {targetsList}
                         </>
                     )}
-                </Row>
-                {isExpanded && (
-                    <ExpandedList>
-                        {targets.map((target, i) => {
-                            const fiatValue = (
-                                <FiatValue amount={target.amount || '0'} symbol={symbol} />
-                            );
-                            return (
-                                // eslint-disable-next-line react/no-array-index-key
-                                <Row key={i}>
-                                    <Timestamp />
-                                    <ExpandedWrapper>
-                                        <Targets>
-                                            <Target>
-                                                {target.addresses &&
-                                                    target.addresses.map(addr => (
-                                                        <Addr key={addr}>{addr}</Addr>
-                                                    ))}
-                                            </Target>
-                                        </Targets>
-                                        <Balance partial>
-                                            <Amount>
-                                                {type === 'recv' && '+'}
-                                                {type !== 'recv' && '-'}
-                                                {target.amount}&nbsp;
-                                            </Amount>
-                                            <Symbol>{symbol.toUpperCase()}</Symbol>
-                                        </Balance>
-                                        {fiatValue && (
-                                            <FiatBalance partial>
-                                                <SmallBadge>{fiatValue}</SmallBadge>
-                                            </FiatBalance>
-                                        )}
-                                    </ExpandedWrapper>
-                                </Row>
-                            );
-                        })}
-                    </ExpandedList>
+                    {targets && targets.length > 1 && (
+                        <>
+                            <TxIconWrapper>
+                                <TransactionTypeIcon type={type} />
+                            </TxIconWrapper>
+                            <ExpandButton
+                                variant="tertiary"
+                                size="small"
+                                icon={isExpanded ? 'ARROW_UP' : 'ARROW_DOWN'}
+                                onClick={e => {
+                                    setIsExpanded(!isExpanded);
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                }}
+                            >
+                                {targets.length} addressess
+                            </ExpandButton>
+                        </>
+                    )}
+
+                    {tokens &&
+                        tokens.map(token => <TokenTransfer key={token.address} {...token} />)}
+                </Targets>
+                {amount !== '0' && (
+                    <>
+                        <Balance>
+                            <Amount>
+                                {type === 'recv' && '+'}
+                                {type !== 'recv' && '-'}
+                                {amount}&nbsp;
+                            </Amount>
+                            <Symbol>{symbol.toUpperCase()}</Symbol>
+                        </Balance>
+                        <FiatBalance>
+                            <SmallBadge>
+                                <FiatValue amount={amount} symbol={symbol} />
+                            </SmallBadge>
+                        </FiatBalance>
+                    </>
                 )}
-            </Wrapper>
-        );
-    },
-);
+            </Row>
+            {isExpanded && (
+                <ExpandedList>
+                    {targets.map((target, i) => {
+                        const fiatValue = (
+                            <FiatValue amount={target.amount || '0'} symbol={symbol} />
+                        );
+                        return (
+                            // eslint-disable-next-line react/no-array-index-key
+                            <Row key={i}>
+                                <Timestamp />
+                                <ExpandedWrapper>
+                                    <Targets>
+                                        <Target>
+                                            {target.addresses &&
+                                                target.addresses.map(addr => (
+                                                    <Addr key={addr}>{addr}</Addr>
+                                                ))}
+                                        </Target>
+                                    </Targets>
+                                    <Balance partial>
+                                        <Amount>
+                                            {type === 'recv' && '+'}
+                                            {type !== 'recv' && '-'}
+                                            {target.amount}&nbsp;
+                                        </Amount>
+                                        <Symbol>{symbol.toUpperCase()}</Symbol>
+                                    </Balance>
+                                    {fiatValue && (
+                                        <FiatBalance partial>
+                                            <SmallBadge>{fiatValue}</SmallBadge>
+                                        </FiatBalance>
+                                    )}
+                                </ExpandedWrapper>
+                            </Row>
+                        );
+                    })}
+                </ExpandedList>
+            )}
+        </Wrapper>
+    );
+});
 
 export default TransactionItem;

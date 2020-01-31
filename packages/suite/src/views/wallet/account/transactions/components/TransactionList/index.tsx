@@ -8,7 +8,7 @@ import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { groupTransactionsByDate, parseKey, sumTransactions } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
 import { Account } from '@wallet-types';
-import TransactionItem from '../TransactionItem';
+import TransactionItem from '../TransactionItem/Container';
 import Pagination from '../Pagination';
 import messages from '@suite/support/messages';
 import Card from '@suite-components/Card';
@@ -23,6 +23,12 @@ const StyledCard = styled(Card)`
 
 const Transactions = styled.div`
     flex-direction: column;
+`;
+
+const StyledTransactionItem = styled(TransactionItem)`
+    & + & {
+        border-top: 2px solid ${colors.BLACK96};
+    }
 `;
 
 const DayHeading = styled.div`
@@ -150,9 +156,9 @@ const TransactionList = ({
                                     )}
                                 </DayHeading>
                                 {transactionsByDate[dateKey].map((tx: WalletAccountTransaction) => (
-                                    <TransactionItem
+                                    <StyledTransactionItem
                                         key={tx.txid}
-                                        {...tx}
+                                        transaction={tx}
                                         explorerUrl={`${explorerUrl}${tx.txid}`}
                                     />
                                 ))}
