@@ -15,10 +15,15 @@ const Wrapper = styled.div`
 
 const AdvancedFormRipple = ({ send, account }: Props) => {
     if (!send || !account) return null;
+    const { transactionInfo } = send.networkTypeRipple;
 
     return (
         <Wrapper>
-            <Layout left={<Fee />} right={<DestinationTag />} bottom={<TransactionInfo />} />
+            <Layout
+                left={<Fee />}
+                right={<DestinationTag />}
+                bottom={transactionInfo?.type === 'final' ? <TransactionInfo /> : null}
+            />
         </Wrapper>
     );
 };

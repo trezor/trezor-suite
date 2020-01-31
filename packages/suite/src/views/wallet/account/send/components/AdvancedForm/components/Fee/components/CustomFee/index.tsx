@@ -19,7 +19,7 @@ const ItemWrapper = styled.div`
     padding-right: 10px;
 `;
 
-const getErrorMessage = (
+const getError = (
     error: State['customFee']['error'],
     maxFee: State['feeInfo']['maxFee'],
     minFee: State['feeInfo']['minFee'],
@@ -61,8 +61,8 @@ const CustomFee = ({ send, sendFormActions, account }: Props) => {
                 <Input
                     display="block"
                     variant="small"
-                    state={getInputState(error, value)}
-                    bottomText={getErrorMessage(error, maxFee, minFee)}
+                    state={getInputState(error, value, true)}
+                    bottomText={getError(error, maxFee, minFee)}
                     value={value || ''}
                     onChange={e => {
                         sendFormActions.handleCustomFeeValueChange(e.target.value);

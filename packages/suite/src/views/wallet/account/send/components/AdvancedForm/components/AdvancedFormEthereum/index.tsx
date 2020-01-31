@@ -21,15 +21,18 @@ const Row = styled.div`
 
 const AdvancedFormEthereum = ({ send, account }: Props) => {
     if (!send || !account) return null;
+    const { transactionInfo } = send.networkTypeEthereum;
 
     return (
         <Wrapper>
             <Layout
                 left={
+                    <Row>
+                        <Fee />
+                    </Row>
+                }
+                right={
                     <>
-                        <Row>
-                            <Fee />
-                        </Row>
                         <Row>
                             <GasLimit />
                         </Row>
@@ -38,9 +41,8 @@ const AdvancedFormEthereum = ({ send, account }: Props) => {
                         </Row>
                     </>
                 }
-                right={null}
                 middle={<Data />}
-                bottom={<TransactionInfo />}
+                bottom={transactionInfo?.type === 'final' ? <TransactionInfo /> : null}
             />
         </Wrapper>
     );

@@ -35,7 +35,7 @@ const Wrapper = styled.div`
 `;
 
 const Top = styled.div`
-    padding: 10px 0 10px 0;
+    padding: 0 0 10px 0;
     display: flex;
     width: 100%;
 `;
@@ -74,6 +74,14 @@ const OptionWrapper = styled.div`
 const OptionValue = styled(P)`
     min-width: 70px;
     margin-right: 5px;
+    display: flex;
+    justify-content: flex-start;
+    text-indent: 1ch;
+    align-items: center;
+    padding-top: 2px;
+
+    font-size: ${variables.FONT_SIZE.TINY};
+    color: ${colors.BLACK50};
 `;
 
 const OptionLabel = styled(P)`
@@ -138,13 +146,14 @@ const FeeComponent = ({ sendFormActions, send, account, settings, fiat }: Props)
                     </Help>
                 </Top>
                 <StyledSelect
-                    display="block"
+                    variant="small"
+                    isSearchable={false}
                     value={selectedFee}
                     onChange={sendFormActions.handleFeeValueChange}
                     options={feeLevels}
                     formatOptionLabel={(option: FeeLevel) => (
                         <OptionWrapper>
-                            <OptionLabel>{capitalizeFirstLetter(option.label)}</OptionLabel>
+                            <OptionLabel>{capitalizeFirstLetter(option.label)} </OptionLabel>
                             {option.value !== '0' && (
                                 <OptionValue>{getValue(networkType, option, symbol)}</OptionValue>
                             )}

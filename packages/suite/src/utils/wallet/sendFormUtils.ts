@@ -82,9 +82,14 @@ export const getTransactionInfo = (networkType: Account['networkType'], send: St
 export const getInputState = (
     error: typeof VALIDATION_ERRORS[keyof typeof VALIDATION_ERRORS] | null,
     value: string | null,
+    noSuccess?: boolean,
 ) => {
     if (error) {
         return 'error';
+    }
+
+    if (noSuccess) {
+        return undefined;
     }
 
     if (value && !error) {

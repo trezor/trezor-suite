@@ -27,7 +27,6 @@ const TransactionInfo = ({ account, send }: Props) => {
     if (!account || !send) return null;
     const { networkType, symbol } = account;
     const transactionInfo = getTransactionInfo(networkType, send);
-    if (transactionInfo?.type !== 'final') return null;
 
     return (
         <Wrapper>
@@ -45,11 +44,11 @@ const TransactionInfo = ({ account, send }: Props) => {
             )}
             <Item>
                 <Title>Inputs:</Title>
-                <Value>xxx</Value>
+                <Value>xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx</Value>
             </Item>
             <Item>
                 <Title>Outputs:</Title>
-                <Value>yyy</Value>
+                <Value>yyy yyy yyy yyy yyy yyy yyy yyy yyy yyy yyy yyy yyy</Value>
             </Item>
         </Wrapper>
     );

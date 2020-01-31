@@ -15,11 +15,9 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const Content = styled.div``;
-
 const Row = styled.div`
     display: flex;
-    margin-bottom: 25px;
+    margin-bottom: 35px;
 
     &:last-child {
         margin-bottom: 0;
@@ -28,13 +26,14 @@ const Row = styled.div`
 
 const AdvancedFormBitcoin = ({ send }: Props) => {
     if (!send) return null;
-    const { customFee } = send;
+    const { customFee, networkTypeBitcoin } = send;
+    const { transactionInfo } = networkTypeBitcoin;
 
     return (
         <Wrapper>
             <Layout
                 left={
-                    <Content>
+                    <>
                         <Row>
                             <Fee />
                         </Row>
@@ -45,19 +44,19 @@ const AdvancedFormBitcoin = ({ send }: Props) => {
                                 />
                             </Row>
                         )}
-                    </Content>
+                    </>
                 }
                 right={
-                    <Content>
+                    <>
                         <Row>
                             <ReplaceByFee />
                         </Row>
                         <Row>
                             <Locktime />
                         </Row>
-                    </Content>
+                    </>
                 }
-                bottom={<TransactionInfo />}
+                bottom={transactionInfo?.type === 'final' ? <TransactionInfo /> : null}
             />
         </Wrapper>
     );

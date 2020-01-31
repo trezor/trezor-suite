@@ -4,7 +4,7 @@ import { Props } from '../../Container';
 import { Select } from '@trezor/components-v2';
 
 const Wrapper = styled.div`
-    min-width: 80px;
+    min-width: 90px;
 `;
 
 const StyledSelect = styled(Select)``;
@@ -18,10 +18,10 @@ interface ComponentProps {
 const Add = (props: ComponentProps) => (
     <Wrapper>
         <StyledSelect
-            display="block"
+            variant="small"
             isSearchable={false}
             isClearable={false}
-            value={{ value: 'Add', label: 'Add' }}
+            value={{ value: 'Add', label: 'Add...' }}
             onChange={(change: { label: string; value: string }) => {
                 if (change.value === 'RECIPIENT') {
                     props.addRecipient();

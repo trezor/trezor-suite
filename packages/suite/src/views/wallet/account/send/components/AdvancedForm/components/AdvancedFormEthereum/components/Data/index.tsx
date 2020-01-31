@@ -8,7 +8,7 @@ import React from 'react';
 
 import { Props } from './Container';
 
-const getErrorData = (error: State['networkTypeEthereum']['data']['error']) => {
+const getError = (error: State['networkTypeEthereum']['data']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.NOT_HEX:
             return <Translation>{messages.TR_ETH_DATA_NOT_HEX}</Translation>;
@@ -17,7 +17,7 @@ const getErrorData = (error: State['networkTypeEthereum']['data']['error']) => {
     }
 };
 
-const GasPrice = ({ send, sendFormActionsEthereum, account }: Props) => {
+export default ({ send, sendFormActionsEthereum, account }: Props) => {
     if (!send || !account) return null;
     const { data } = send.networkTypeEthereum;
     const { error, value } = data;
@@ -26,12 +26,9 @@ const GasPrice = ({ send, sendFormActionsEthereum, account }: Props) => {
         <Textarea
             state={getInputState(error, value)}
             value={value || ''}
-            display="block"
-            bottomText={getErrorData(error)}
+            bottomText={getError(error)}
             onChange={e => sendFormActionsEthereum.handleData(e.target.value)}
-            topLabel={'Data'}
+            topLabel="Data"
         />
     );
 };
-
-export default GasPrice;

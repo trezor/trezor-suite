@@ -8,7 +8,7 @@ import React from 'react';
 
 import { Props } from './Container';
 
-const getErrorGasPrice = (error: State['networkTypeEthereum']['gasPrice']['error']) => {
+const getError = (error: State['networkTypeEthereum']['gasPrice']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.NOT_NUMBER:
             return <Translation>{messages.TR_ETH_GAS_PRICE_NOT_NUMBER}</Translation>;
@@ -17,21 +17,20 @@ const getErrorGasPrice = (error: State['networkTypeEthereum']['gasPrice']['error
     }
 };
 
-const GasPrice = ({ send, sendFormActionsEthereum, account }: Props) => {
+export default ({ send, sendFormActionsEthereum, account }: Props) => {
     if (!send || !account) return null;
     const { gasPrice } = send.networkTypeEthereum;
+    const { value, error } = gasPrice;
 
     return (
         <Input
             variant="small"
             display="block"
-            state={getInputState(gasPrice.error, gasPrice.value)}
-            topLabel={'Gas Price'}
-            bottomText={getErrorGasPrice(gasPrice.error)}
-            value={gasPrice.value || ''}
+            state={getInputState(error, value, true)}
+            topLabel="Gas Price"
+            bottomText={getError(error)}
+            value={value || ''}
             onChange={e => sendFormActionsEthereum.handleGasPrice(e.target.value)}
         />
     );
 };
-
-export default GasPrice;

@@ -23,7 +23,7 @@ const EstimatedMiningTime = ({ seconds }: Props) => {
     return (
         <Wrapper>
             <Translation {...messages.TR_ESTIMATED_TIME} />
-            <Bold>~ {formatDuration(seconds)}</Bold>
+            <Bold>{formatDuration(seconds)}</Bold>
         </Wrapper>
     );
 };

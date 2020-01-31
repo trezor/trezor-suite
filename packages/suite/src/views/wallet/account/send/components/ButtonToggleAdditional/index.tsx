@@ -9,17 +9,20 @@ const Wrapper = styled.div`
     display: flex;
     min-height: 41px;
     align-items: center;
+    justify-content: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.BODY};
     color: ${colors.BLACK17};
 `;
 
 const ToggleIcon = styled(Icon)`
-    margin-left: 10px;
-    margin-right: 6px;
+    margin-left: 8px;
 `;
 
 const Text = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
 `;
 
