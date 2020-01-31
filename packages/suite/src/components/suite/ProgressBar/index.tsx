@@ -50,7 +50,6 @@ interface Props {
 const ProgressBar = (props: Props) => {
     const { total, current } = props;
     const progress = (100 / total) * current;
-
     return (
         <Wrapper>
             <BarContainer>

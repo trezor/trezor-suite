@@ -42,12 +42,4 @@ const Wrapper = {
     Step: StepWrapper,
 };
 
-export {
-    OnboardingButton,
-    OnboardingIcon,
-    Loaders,
-    Text,
-    UnexpectedState,
-    Wrapper,
-    Option,
-};
+export { OnboardingButton, OnboardingIcon, Loaders, Text, UnexpectedState, Wrapper, Option };

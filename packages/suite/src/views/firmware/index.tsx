@@ -2,7 +2,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { Button, H2, P, colors } from '@trezor/components-v2';
+import { Button, ButtonProps, H2, P, colors } from '@trezor/components-v2';
 
 import * as firmwareActions from '@firmware-actions/firmwareActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -47,6 +47,17 @@ const StyledButton = styled(Button)`
     margin-bottom: 16px;
 `;
 
+const CloseButton = (props: ButtonProps) => (
+    <StyledButton
+        {...props}
+        data-test="@modal/firmware/exit-button"
+        variant="tertiary"
+        icon="CROSS"
+    >
+        Exit
+    </StyledButton>
+);
+
 const mapStateToProps = (state: AppState) => ({
     firmware: state.firmware,
     device: state.suite.device,
@@ -71,12 +82,35 @@ const Firmware = ({
     device,
     setStatus,
 }: Props) => {
+    const onClose = () => {
+        closeModalApp();
+        resetReducer();
+    };
+
     if (!device || !device.features) {
-        return <Wrapper>No device</Wrapper>;
+        return (
+            <Wrapper>
+                <H2>No device</H2>
+                <Buttons>
+                    <Col>
+                        <CloseButton onClick={onClose} />
+                    </Col>
+                </Buttons>
+            </Wrapper>
+        );
     }
 
     if (!device.firmwareRelease) {
-        return <Wrapper>Firmware is up to date.</Wrapper>;
+        return (
+            <Wrapper>
+                <H2>Firmware is up to date.</H2>
+                <Buttons>
+                    <Col>
+                        <CloseButton onClick={onClose} />
+                    </Col>
+                </Buttons>
+            </Wrapper>
+        );
     }
 
     const { firmwareRelease } = device;
@@ -105,39 +139,48 @@ const Firmware = ({
             {firmware.status === 'initial' && (
                 <>
                     <H2>Firmware update</H2>
-                    <P size="tiny">
-                        To keep your Trezor up to date we recommend updating your device. Check
-                        what’s new:
-                    </P>
-                    {getFwVersion(device)} -> {firmwareRelease.version.join('.')}
-                    <ChangesSummary>
-                        {device.firmwareRelease.changelog.split('*').map(r => (
-                            <P key={r} size="tiny">
-                                {r}
+
+                    {/* we can not show changelog if device is in bootloader mode */}
+                    {device.mode === 'bootloader' && (
+                        <>
+                            <P size="tiny">
+                                Your device is in bootloader mode. Reconnect it to normal mode to
+                                continue.
                             </P>
-                        ))}
-                    </ChangesSummary>
-                    <Buttons>
-                        <Col>
-                            <StyledButton
-                                onClick={() => setStatus('check-seed')}
-                                data-test="@modal/firmware/start-button"
-                            >
-                                Start
-                            </StyledButton>
-                            <StyledButton
-                                onClick={() => {
-                                    closeModalApp();
-                                    resetReducer();
-                                }}
-                                data-test="@modal/firmware/exit-button"
-                                variant="tertiary"
-                                icon="CROSS"
-                            >
-                                Exit
-                            </StyledButton>
-                        </Col>
-                    </Buttons>
+                            <Buttons>
+                                <Col>
+                                    <CloseButton onClick={onClose} />
+                                </Col>
+                            </Buttons>
+                        </>
+                    )}
+                    {device.mode !== 'bootloader' && (
+                        <>
+                            <P size="tiny">
+                                To keep your Trezor up to date we recommend updating your device.
+                                Check what’s new:
+                            </P>
+                            {getFwVersion(device)} -> {firmwareRelease.version.join('.')}
+                            <ChangesSummary>
+                                {device.firmwareRelease.changelog.split('*').map(r => (
+                                    <P key={r} size="tiny">
+                                        {r}
+                                    </P>
+                                ))}
+                            </ChangesSummary>
+                            <Buttons>
+                                <Col>
+                                    <StyledButton
+                                        onClick={() => setStatus('check-seed')}
+                                        data-test="@modal/firmware/start-button"
+                                    >
+                                        Start
+                                    </StyledButton>
+                                    <CloseButton onClick={onClose} />
+                                </Col>
+                            </Buttons>
+                        </>
+                    )}
                 </>
             )}
 
@@ -157,17 +200,7 @@ const Firmware = ({
                             >
                                 Start
                             </StyledButton>
-                            <StyledButton
-                                onClick={() => {
-                                    closeModalApp();
-                                    resetReducer();
-                                }}
-                                data-test="@modal/firmware/exit-button"
-                                variant="tertiary"
-                                icon="CROSS"
-                            >
-                                Cancel update
-                            </StyledButton>
+                            <CloseButton onClick={onClose} />
                         </Col>
                     </Buttons>
                 </>
@@ -197,17 +230,7 @@ const Firmware = ({
                                 >
                                     Start
                                 </StyledButton>
-                                <StyledButton
-                                    onClick={() => {
-                                        closeModalApp();
-                                        resetReducer();
-                                    }}
-                                    data-test="@modal/firmware/exit-button"
-                                    variant="tertiary"
-                                    icon="CROSS"
-                                >
-                                    Exit
-                                </StyledButton>
+                                <CloseButton onClick={onClose} />
                             </Col>
                         </Buttons>
                     </>
