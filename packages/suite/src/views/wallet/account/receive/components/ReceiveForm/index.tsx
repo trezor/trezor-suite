@@ -4,7 +4,6 @@ import { Translation } from '@suite-components/Translation';
 import { AccountAddresses } from 'trezor-connect';
 import { colors, Icon } from '@trezor/components';
 import { Button, P, Link } from '@trezor/components-v2';
-
 import { selectText } from '@suite-utils/dom';
 import { parseBIP44Path, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { showAddress } from '@wallet-actions/receiveActions';
