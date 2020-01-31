@@ -28,10 +28,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Add fresh address',
         id: 'TR_ADD_FRESH_ADDRESS',
     },
-    TR_ADD_MORE_COINS: {
-        defaultMessage: 'Add more coins',
-        id: 'TR_ADD_MORE_COINS',
-    },
     TR_ADD_NEW_ACCOUNT: {
         defaultMessage: 'Add new account',
         id: 'TR_ADD_NEW_ACCOUNT',
@@ -117,10 +113,6 @@ const definedMessages = defineMessages({
             'Backup seed consisting of words is the ultimate key to your Wallet and all the important data. Trezor will generate the seed and you should write it down and store it securely.',
         description: 'Explanation what recovery seed is',
         id: 'TR_BACKUP_SUBHEADING_1',
-    },
-    TR_BALANCE: {
-        defaultMessage: 'Balance',
-        id: 'TR_BALANCE',
     },
     TR_BASIC_RECOVERY_OPTION: {
         defaultMessage: 'Basic recovery (2 minutes)',
@@ -259,11 +251,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Continue',
         description: 'Continue button',
         id: 'TR_CONTINUE',
-    },
-    TR_CONTRIBUTION: {
-        defaultMessage: 'contribution',
-        description: 'Part of the sentence: We thank our translators for their contribution',
-        id: 'TR_CONTRIBUTION',
     },
     TR_COPIED: {
         defaultMessage: 'Copied!',
@@ -514,10 +501,6 @@ const definedMessages = defineMessages({
     TR_ESTIMATED_TIME: {
         defaultMessage: 'Estimated time',
         id: 'TR_ESTIMATED_TIME',
-    },
-    TR_EXCHANGE_RATES_BY: {
-        defaultMessage: 'Exchange rates by {service}',
-        id: 'TR_EXCHANGE_RATES_BY',
     },
     TR_FEE: {
         defaultMessage: 'Fee',
@@ -802,10 +785,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'NEM wallet',
         id: 'TR_NEM_WALLET',
     },
-    TR_NETWORK_AND_TOKENS: {
-        defaultMessage: '{network} and tokens',
-        id: 'TR_NETWORK_AND_TOKENS',
-    },
     TR_NETWORK_BITCOIN: {
         defaultMessage: 'Bitcoin',
         id: 'TR_NETWORK_BITCOIN',
@@ -994,10 +973,6 @@ const definedMessages = defineMessages({
             'User is instructed to enter words from seed (backup) into the form in browser',
         id: 'TR_RANDOM_SEED_WORDS_DISCLAIMER',
     },
-    TR_RATE: {
-        defaultMessage: 'Rate',
-        id: 'TR_RATE',
-    },
     TR_RECEIVE_NETWORK: {
         defaultMessage: 'Receive {network}',
         id: 'TR_RECEIVE_NETWORK',
@@ -1057,11 +1032,6 @@ const definedMessages = defineMessages({
             'Part of sentence TR_DID_YOU_PURCHASE. Link to page with trusted resellers list',
         id: 'TR_RESELLERS_LINK',
     },
-    TR_RESERVE: {
-        defaultMessage: 'Reserve',
-        description: 'Label for minimal XRP account reserve',
-        id: 'TR_RESERVE',
-    },
     TR_RETRY: {
         defaultMessage: 'Retry',
         description: 'Retry button',
@@ -1091,10 +1061,6 @@ const definedMessages = defineMessages({
             'Your Trezor has been successfully initialized and is ready to be used. Your Wallet has been successfully created and is ready to be used as well. Wheeee!',
         description: 'Text in security page',
         id: 'TR_SECURITY_SUBHEADING',
-    },
-    TR_SEE_FULL_TRANSACTION_HISTORY: {
-        defaultMessage: 'See full transaction history',
-        id: 'TR_SEE_FULL_TRANSACTION_HISTORY',
     },
     TR_SEED_MANUAL_LINK: {
         defaultMessage: 'recovery seed',
@@ -1235,18 +1201,9 @@ const definedMessages = defineMessages({
         defaultMessage: 'Take me back to the wallet',
         id: 'TR_TAKE_ME_BACK_TO_WALLET',
     },
-    TR_TERMS: {
-        defaultMessage: 'Terms',
-        description: 'As in Terms and Conditions, In the bottom footer',
-        id: 'TR_TERMS',
-    },
     TR_TEZOS_WALLET: {
         defaultMessage: 'Tezos wallet',
         id: 'TR_TEZOS_WALLET',
-    },
-    TR_THE_ACCOUNT_BALANCE_IS_HIDDEN: {
-        defaultMessage: 'The account balance is hidden.',
-        id: 'TR_THE_ACCOUNT_BALANCE_IS_HIDDEN',
     },
     TR_THE_PIN_LAYOUT_IS_DISPLAYED: {
         defaultMessage: 'The PIN layout is displayed on your Trezor.',
@@ -1410,10 +1367,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Reload session',
         description: 'Device status',
         id: 'TR_WAS_USED_IN_ANOTHER_WINDOW',
-    },
-    TR_WE_THANK_OUR_TRANSLATORS: {
-        defaultMessage: 'We thank our translators for their {TR_CONTRIBUTION}',
-        id: 'TR_WE_THANK_OUR_TRANSLATORS',
     },
     TR_WELCOME_TO_TREZOR: {
         defaultMessage: 'First-time user or an ol’ Trezor fella?',
@@ -1588,10 +1541,6 @@ const definedMessages = defineMessages({
     TR_CUSTOM_FEE_IS_NOT_NUMBER: {
         defaultMessage: 'Fee is not a number',
         id: 'TR_CUSTOM_FEE_IS_NOT_NUMBER',
-    },
-    TR_TOKENS: {
-        defaultMessage: 'Tokens',
-        id: 'TR_TOKENS',
     },
     TR_NORTH: {
         id: 'TR_NORTH',

@@ -9,7 +9,6 @@ describe('Device settings', () => {
         cy.viewport(1024, 768).resetDb();
 
         cy.visit('/');
- 
 
         cy.goToSuite();
         // make sure suite already sees device
@@ -60,20 +59,20 @@ describe('Device settings', () => {
         cy.task('sendDecision', { method: 'applySettings' });
         cy.getConfirmActionOnDeviceModal().should('not.exist');
 
-        cy.log('open firmware modal and close it again');
-        cy.getTestElement('@suite/settings/device/update-button')
-            .click()
-            .getTestElement('@modal/close')
-            .click()
-            .getTestElement('@modal/close')
-            .should('not.exist');
+        // cy.log('open firmware modal and close it again');
+        // cy.getTestElement('@suite/settings/device/update-button')
+        //     .click()
+        //     .getTestElement('@modal/close')
+        //     .click()
+        //     .getTestElement('@modal/close')
+        //     .should('not.exist');
 
-        cy.log('wipe device');
-        cy.getTestElement('@suite/settings/device/wipe-button')
-            .click()
-            .getConfirmActionOnDeviceModal();
-        cy.task('sendDecision', { method: 'wipeDevice' });
-        cy.goToOnboarding().onboardingShouldLoad();
+        // cy.log('wipe device');
+        // cy.getTestElement('@suite/settings/device/wipe-button')
+        //     .click()
+        //     .getConfirmActionOnDeviceModal();
+        // cy.task('sendDecision', { method: 'wipeDevice' });
+        // cy.goToOnboarding().onboardingShouldLoad();
     });
 
     // TODO: upload custom image

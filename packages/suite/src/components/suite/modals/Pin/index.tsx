@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { variables as oldVariables } from '@trezor/components';
 import { H2, Link, variables, colors } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import Loading from '@suite-components/Loading';
@@ -13,15 +12,14 @@ import { URLS } from '@suite-constants';
 import * as modalActions from '@suite-actions/modalActions';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 
-const { FONT_SIZE } = variables;
-const { SCREEN_SIZE } = oldVariables;
+const { FONT_SIZE, SCREEN_SIZE } = variables;
 
 const ModalWrapper = styled.div`
     padding: 30px 45px;
     display: flex;
     flex-direction: row;
 
-    @media only screen and (max-width: ${SCREEN_SIZE.SM}) {
+    @media only screen and (max-width: ${SCREEN_SIZE.MD}) {
         flex-direction: column;
     }
 `;

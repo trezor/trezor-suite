@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { ToastContainer as NotificationsContainer } from 'react-toastify';
 import { bindActionCreators } from 'redux';
 import { SUITE } from '@suite-actions/constants';
-import { Modal as ModalComponent } from '@trezor/components';
+import { Modal as ModalComponent } from '@trezor/components-v2';
 import Loading from '@suite-components/Loading';
 import Modals from '@suite-components/modals';
 import * as routerActions from '@suite-actions/routerActions';

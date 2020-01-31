@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import * as routerActions from '@suite-actions/routerActions';
-import { P } from '@trezor/components';
-import { Button } from '@trezor/components-v2';
+import { Button, P } from '@trezor/components-v2';
 import { Dispatch, InjectedModalApplicationProps } from '@suite-types';
 
 const Wrapper = styled.div`

@@ -1,7 +1,5 @@
 import Backdrop from './Backdrop';
-import Footer from './Footer';
 import DeviceIcon from './images/DeviceIcon';
-import WalletTypeIcon from './images/WalletType';
 import Link from './Link';
 import Log from './Log';
 import Preloader from './Preloader';
@@ -17,9 +15,7 @@ import { Translation } from './Translation';
 
 export {
     Backdrop,
-    Footer,
     DeviceIcon,
-    WalletTypeIcon,
     Link,
     Log,
     Preloader,
