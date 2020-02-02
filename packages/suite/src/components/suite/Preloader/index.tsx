@@ -14,6 +14,7 @@ import Firmware from '@firmware-views';
 import Onboarding from '@onboarding-views';
 import SeedInput from '@seed-input-views';
 import {
+    Analytics,
     Bridge,
     DeviceAcquire,
     DeviceBootloader,
@@ -98,6 +99,8 @@ const getModalApplication = (route: Props['router']['route']) => {
     switch (route.app) {
         case 'welcome':
             return Welcome;
+        case 'analytics':
+            return Analytics;
         case 'firmware':
             return Firmware;
         case 'onboarding':
