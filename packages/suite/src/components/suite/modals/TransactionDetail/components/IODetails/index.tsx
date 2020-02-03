@@ -55,12 +55,13 @@ const IOBox = styled.div`
     }
 `;
 
-const IOBoxPath = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.BLACK50};
-    margin-bottom: 10px;
-`;
+// const IOBoxPath = styled.div`
+//     display: flex;
+//     font-size: ${variables.FONT_SIZE.TINY};
+//     color: ${colors.BLACK50};
+//     margin-bottom: 10px;
+// `;
+
 const IOBoxAmountWrapper = styled.div`
     display: flex;
     justify-content: space-between;
@@ -78,6 +79,8 @@ const IOBoxAddress = styled.div`
     color: ${colors.BLACK17};
     overflow: hidden;
     text-overflow: ellipsis;
+
+    margin-bottom: 10px;
 `;
 
 interface Props {
@@ -102,7 +105,7 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                                         <IOBoxAddress>
                                             {input.addresses.map((addr: string) => addr)}
                                         </IOBoxAddress>
-                                        <IOBoxPath>placeholder</IOBoxPath>
+                                        {/* <IOBoxPath>placeholder</IOBoxPath> */}
                                         <IOBoxAmountWrapper>
                                             <Amount>{`${inputAmount} ${tx.symbol.toUpperCase()}`}</Amount>
                                             <Badge>
@@ -130,7 +133,7 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                                         <IOBoxAddress>
                                             {output.addresses.map((addr: string) => addr)}
                                         </IOBoxAddress>
-                                        <IOBoxPath>todo: bip44 path</IOBoxPath>
+                                        {/* <IOBoxPath>todo: bip44 path</IOBoxPath> */}
                                         <IOBoxAmountWrapper>
                                             <Amount>{`${outputAmount} ${tx.symbol.toUpperCase()}`}</Amount>
                                             <Badge>
