@@ -9,8 +9,7 @@ import { Output } from '@wallet-types/sendForm';
 import { getAccountDevice, isAddressInAccount } from '@wallet-utils/accountUtils';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
-import { DispatchProps } from '../../Container';
+import { Props } from './Container';
 
 const StyledIcon = styled(Icon)`
     cursor: pointer;
@@ -22,21 +21,10 @@ const Label = styled.div`
     align-items: center;
 `;
 
-interface Props extends WrappedComponentProps {
-    outputId: Output['id'];
-    error: Output['address']['error'];
-    networkType: Network['networkType'];
-    devices: AppState['devices'];
-    accounts: Account[];
-    address: Output['address']['value'];
-    sendFormActions: DispatchProps['sendFormActions'];
-    openModal: DispatchProps['openModal'];
-}
-
 const getMessage = (
     error: Output['address']['error'],
     networkType: Network['networkType'],
-    address: string | null,
+    address: Output['address']['value'],
     accounts: Account[],
     devices: AppState['devices'],
 ) => {
@@ -62,36 +50,46 @@ const getMessage = (
     }
 };
 
-const Address = (props: Props) => (
-    <Input
-        state={getInputState(props.error, props.address)}
-        display="block"
-        monospace
-        topLabel={
-            <Label>
-                {props.intl.formatMessage(messages.TR_RECIPIENT_ADDRESS)}
-                <StyledIcon size={12} color={colors.BLACK50} icon="QUESTION" />
-            </Label>
-        }
-        bottomText={getMessage(
-            props.error,
-            props.networkType,
-            props.address,
-            props.accounts,
-            props.devices,
-        )}
-        button={{
-            icon: 'QR',
-            onClick: () =>
-                props.openModal({
-                    type: 'qr-reader',
-                    outputId: props.outputId,
-                }),
-            text: 'Scan',
-        }}
-        value={props.address || ''}
-        onChange={e => props.sendFormActions.handleAddressChange(props.outputId, e.target.value)}
-    />
-);
+const Address = ({
+    output,
+    intl,
+    account,
+    accounts,
+    devices,
+    openModal,
+    sendFormActions,
+}: Props) => {
+    if (!account) return null;
 
-export default injectIntl(Address);
+    const { networkType } = account;
+    const { address, id } = output;
+    const { value, error } = address;
+
+    return (
+        <Input
+            state={getInputState(error, value)}
+            display="block"
+            monospace
+            topLabel={
+                <Label>
+                    {intl.formatMessage(messages.TR_RECIPIENT_ADDRESS)}
+                    <StyledIcon size={12} color={colors.BLACK50} icon="QUESTION" />
+                </Label>
+            }
+            bottomText={getMessage(error, networkType, value, accounts, devices)}
+            button={{
+                icon: 'QR',
+                onClick: () =>
+                    openModal({
+                        type: 'qr-reader',
+                        outputId: id,
+                    }),
+                text: 'Scan',
+            }}
+            value={value || ''}
+            onChange={e => sendFormActions.handleAddressChange(id, e.target.value)}
+        />
+    );
+};
+
+export default Address;

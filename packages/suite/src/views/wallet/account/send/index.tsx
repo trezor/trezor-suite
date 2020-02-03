@@ -8,7 +8,7 @@ import React, { useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
 import Add from './components/Add/Container';
-import Address from './components/Address';
+import Address from './components/Address/Container';
 import AdditionalForm from './components/AdvancedForm';
 import Amount from './components/Amount';
 import ButtonToggleAdditional from './components/ButtonToggleAdditional';
@@ -68,15 +68,12 @@ const AdditionalFormHeader = styled.div`
 
 const Send = ({
     device,
-    devices,
     send,
     fees,
     fiat,
-    openModal,
     selectedAccount,
     sendFormActions,
     sendFormActionsBitcoin,
-    accounts,
 }: Props) => {
     useEffect(() => {
         sendFormActions.init();
@@ -114,20 +111,11 @@ const Send = ({
                         </SlimRow>
                     )}
                     <Row>
-                        <Address
-                            accounts={accounts}
-                            devices={devices}
-                            networkType={account.networkType}
-                            outputId={output.id}
-                            address={output.address.value}
-                            error={output.address.error}
-                            sendFormActions={sendFormActions}
-                            openModal={openModal}
-                        />
+                        <Address output={output} />
                     </Row>
                     <Row>
                         <Amount
-                            outputId={output.id}
+                            output={output}
                             amount={output.amount.value}
                             canSetMax={(output.amount.value || 0) >= account.availableBalance}
                             symbol={account.symbol}
