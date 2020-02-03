@@ -8,7 +8,6 @@ import {
     enhanceTransaction,
     getAccountDevice,
 } from '@wallet-utils/accountUtils';
-import * as suiteActions from '@suite-actions/suiteActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as notificationActions from '@suite-actions/notificationActions';
@@ -18,7 +17,6 @@ import { NETWORKS } from '@wallet-config';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 import { BLOCKCHAIN } from './constants';
-import { goto } from '@suite-actions/routerActions';
 
 // Conditionally subscribe to blockchain backend
 // called after TrezorConnect.init successfully emits TRANSPORT.START event
@@ -292,30 +290,7 @@ export const onNotification = (payload: BlockchainNotification) => async (
 
     // don't dispatch sent and self notifications
     if (accountDevice && enhancedTx.type !== 'sent' && enhancedTx.type !== 'self') {
-        dispatch(
-            notificationActions.add({
-                id: enhancedTx.txid,
-                variant: 'info',
-                title: `Transaction ${enhancedTx.type}`,
-                cancelable: true,
-                message: `txid: ${enhancedTx.txid}`,
-                actions: [
-                    {
-                        label: 'See the transaction detail',
-                        callback: () => {
-                            dispatch(suiteActions.selectDevice(accountDevice));
-                            dispatch(
-                                goto('wallet-index', {
-                                    symbol: account.symbol,
-                                    accountIndex: account.index,
-                                    accountType: account.accountType,
-                                }),
-                            );
-                        },
-                    },
-                ],
-            }),
-        );
+        dispatch(notificationActions.add({ type: 'tx-confirmed', txid: enhancedTx.txid }));
     }
 
     // fetch account info and update the account (txs count,...)

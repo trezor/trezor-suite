@@ -10,27 +10,14 @@ export const backupDevice = (params: BackupDeviceParams = {}) => async (
     if (!device) {
         return dispatch(
             notificationActions.add({
-                variant: 'error',
-                title: 'no device connected',
-                cancelable: true,
+                type: 'error',
+                error: 'Device not connected',
             }),
         );
     }
     const result = await TrezorConnect.backupDevice({ ...params, device });
     if (result.success) {
-        return dispatch(
-            notificationActions.add({
-                variant: 'success',
-                title: 'backup successful',
-                cancelable: true,
-            }),
-        );
+        return dispatch(notificationActions.add({ type: 'backup-success' }));
     }
-    dispatch(
-        notificationActions.add({
-            variant: 'error',
-            title: 'backup failed',
-            cancelable: true,
-        }),
-    );
+    dispatch(notificationActions.add({ type: 'backup-failed' }));
 };

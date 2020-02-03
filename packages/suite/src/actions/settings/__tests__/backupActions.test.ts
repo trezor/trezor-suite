@@ -76,7 +76,7 @@ describe('Backup Actions', () => {
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: false });
         expect(store.getActions().shift()).toMatchObject({
             type: '@notification/add',
-            payload: { variant: 'success' },
+            payload: { type: 'backup-success' },
         });
     });
 
@@ -95,7 +95,7 @@ describe('Backup Actions', () => {
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: false });
         expect(store.getActions().shift()).toMatchObject({
             type: '@notification/add',
-            payload: { variant: 'error' },
+            payload: { type: 'backup-failed' },
         });
     });
 });

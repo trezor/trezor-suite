@@ -15,13 +15,11 @@ export const applySettings = (params: ApplySettingsParams) => async (
         ...params,
     });
 
-    dispatch(
-        addNotification({
-            variant: result.success ? 'success' : 'error',
-            title: result.success ? result.payload.message : result.payload.error,
-            cancelable: true,
-        }),
-    );
+    if (result.success) {
+        dispatch(addNotification({ type: 'settings-applied' }));
+    } else {
+        dispatch(addNotification({ type: 'error', error: result.payload.error }));
+    }
 };
 
 export const changePin = (params: ChangePinParams) => async (
@@ -34,13 +32,11 @@ export const changePin = (params: ChangePinParams) => async (
         ...params,
     });
 
-    dispatch(
-        addNotification({
-            variant: result.success ? 'success' : 'error',
-            title: result.success ? result.payload.message : result.payload.error,
-            cancelable: true,
-        }),
-    );
+    if (result.success) {
+        dispatch(addNotification({ type: 'pin-changed' }));
+    } else {
+        dispatch(addNotification({ type: 'error', error: result.payload.error }));
+    }
 };
 
 export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) => {
@@ -49,13 +45,11 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
         device,
     });
 
-    dispatch(
-        addNotification({
-            variant: result.success ? 'success' : 'error',
-            title: result.success ? result.payload.message : result.payload.error,
-            cancelable: true,
-        }),
-    );
+    if (result.success) {
+        dispatch(addNotification({ type: 'device-wiped' }));
+    } else {
+        dispatch(addNotification({ type: 'error', error: result.payload.error }));
+    }
 
     // todo: evaluate in future, see https://github.com/trezor/trezor-suite/issues/1064
     // if (result.success && device && device.features) {
