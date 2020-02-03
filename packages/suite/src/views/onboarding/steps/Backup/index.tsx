@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Checkbox } from '@trezor/components';
-import { Link, P, variables, colors } from '@trezor/components-v2';
+import { Link, P, variables, colors, Checkbox } from '@trezor/components-v2';
 
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import { Translation } from '@suite-components';

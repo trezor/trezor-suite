@@ -11,6 +11,7 @@ const SectionWrapper = styled.div<SectionProps>`
     border-radius: 6px;
     margin-top: 16px;
     margin-bottom: 30px;
+    text-align: left;
 
     ${({ borderless }) =>
         !borderless &&

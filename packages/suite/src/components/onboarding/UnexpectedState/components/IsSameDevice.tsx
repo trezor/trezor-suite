@@ -1,5 +1,5 @@
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
-import { Translation } from '@suite-components/Translation';
+import { Translation } from '@suite-components';
 import { Dispatch } from '@suite-types';
 import { resetOnboarding } from '@onboarding-actions/onboardingActions';
 import messages from '@suite/support/messages';

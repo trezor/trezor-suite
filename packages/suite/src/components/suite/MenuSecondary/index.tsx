@@ -2,8 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Backdrop from '@suite-components/Backdrop';
-import { variables } from '@trezor/components';
-import { colors } from '@trezor/components-v2';
+import { colors, variables } from '@trezor/components-v2';
 
 import { AppState } from '@suite-types';
 

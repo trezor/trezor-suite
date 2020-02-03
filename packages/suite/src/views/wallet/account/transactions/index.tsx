@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
-import { Loader, colors } from '@trezor/components';
+import { Loader, colors } from '@trezor/components-v2';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import LayoutAccount from '@wallet-components/LayoutAccount';
 // import AccountName from '@wallet-components/AccountName';
@@ -23,7 +23,7 @@ const LoaderWrapper = styled.div`
     align-items: center;
 `;
 const LoaderText = styled.div`
-    color: ${colors.TEXT_SECONDARY};
+    color: ${colors.BLACK50};
     text-align: center;
 `;
 
