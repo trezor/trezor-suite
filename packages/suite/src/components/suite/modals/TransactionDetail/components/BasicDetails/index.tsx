@@ -61,6 +61,8 @@ interface Props {
     txDetails: any;
     tx: WalletAccountTransaction;
     isFetching: boolean;
+    totalInput?: string;
+    totalOutput?: string;
     explorerUrl?: string;
 }
 
@@ -79,10 +81,15 @@ const getHumanReadableTxType = (tx: WalletAccountTransaction) => {
     }
 };
 
-const BasicDetails = ({ tx, txDetails, isFetching, explorerUrl }: Props) => {
+const BasicDetails = ({
+    tx,
+    txDetails,
+    isFetching,
+    explorerUrl,
+    totalInput,
+    totalOutput,
+}: Props) => {
     const isConfirmed = tx.blockHeight !== 0 && tx.blockTime && tx.blockTime > 0;
-    const totalInput = tx.amount;
-    const totalOutput = new BigNumber(tx.amount).minus(tx.fee);
     const assetSymbol = tx.symbol.toUpperCase();
 
     return (
@@ -151,8 +158,10 @@ const BasicDetails = ({ tx, txDetails, isFetching, explorerUrl }: Props) => {
             </Box>
 
             <Box>
-                <BoxRow title="Total Input">{`${totalInput} ${assetSymbol}`}</BoxRow>
-                <BoxRow title="Total Output">{`${totalOutput} ${assetSymbol}`}</BoxRow>
+                <BoxRow title="Total Input">{totalInput && `${totalInput} ${assetSymbol}`}</BoxRow>
+                <BoxRow title="Total Output">
+                    {totalOutput && `${totalOutput} ${assetSymbol}`}
+                </BoxRow>
                 <BoxRow title="Fee">{`${tx.fee} ${assetSymbol}`}</BoxRow>
                 {/* TODO: BlockchainLink doesn't return size/vsize field */}
                 {/* {txDetails?.size && <BoxRow title="Size">{`${txDetails.size} B`}</BoxRow>} */}

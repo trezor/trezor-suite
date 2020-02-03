@@ -1,9 +1,6 @@
-
-import React from 'react';
 import styled from 'styled-components';
-import { colors } from '@trezor/components-v2';
 
-const COLOR_BORDER = colors.BLACK96;
+const COLOR_BORDER = '#E6E6E6';
 
 const Box = styled.div`
     border-radius: 3px;

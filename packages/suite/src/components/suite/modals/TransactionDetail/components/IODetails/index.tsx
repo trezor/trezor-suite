@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 const Col = styled.div<{ direction: 'column' | 'row' }>`
     display: flex;
     flex-direction: ${props => props.direction};
-    flex: 1 1 auto;
+    flex: 1 1 calc(50% - 16px);
     overflow: hidden;
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -90,7 +90,6 @@ interface Props {
 }
 
 const IODetails = ({ tx, txDetails, isFetching }: Props) => {
-    console.log(txDetails);
     return (
         <Wrapper>
             {!txDetails && isFetching && <Loader size={32} />}
@@ -99,7 +98,8 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                     <Col direction="column">
                         {txDetails &&
                             txDetails.vin.map((input: any) => {
-                                const inputAmount = formatNetworkAmount(input.value, tx.symbol);
+                                let inputAmount = formatNetworkAmount(input.value, tx.symbol);
+                                inputAmount = inputAmount === '-1' ? '0' : inputAmount;
                                 return (
                                     <IOBox key={input.hex}>
                                         <IOBoxAddress>
@@ -127,7 +127,8 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                     <Col direction="column">
                         {txDetails &&
                             txDetails.vout.map((output: any) => {
-                                const outputAmount = formatNetworkAmount(output.value, tx.symbol);
+                                let outputAmount = formatNetworkAmount(output.value, tx.symbol);
+                                outputAmount = outputAmount === '-1' ? '0' : outputAmount;
                                 return (
                                     <IOBox key={output.hex}>
                                         <IOBoxAddress>

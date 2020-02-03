@@ -120,6 +120,7 @@ export const networkAmountToSatoshi = (amount: string | null, symbol: Account['s
         }
         return bAmount.times(10 ** network.decimals).toString(10);
     } catch (error) {
+        // TODO: return null, so we can decide how to handle missing value in caller component
         return '-1';
     }
 };

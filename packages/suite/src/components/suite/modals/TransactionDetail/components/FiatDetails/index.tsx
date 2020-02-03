@@ -41,11 +41,10 @@ const Col = styled.div<{ direction: 'column' | 'row' }>`
 interface Props {
     tx: WalletAccountTransaction;
     fiat: AppState['wallet']['fiat'];
+    totalOutput?: string;
 }
 
-const FiatDetails = ({ tx, fiat }: Props) => {
-    console.log(tx);
-    const totalOutput = new BigNumber(tx.amount).minus(tx.fee);
+const FiatDetails = ({ tx, fiat, totalOutput }: Props) => {
     // TODO: FiatValue component could just return multiple props
     const fiatRates = fiat.find(f => f.symbol === tx.symbol);
     const currentFiatRateTimestamp = fiatRates?.timestamp;
@@ -73,7 +72,7 @@ const FiatDetails = ({ tx, fiat }: Props) => {
                 </BoxHeading>
                 <Box>
                     <BoxRow title="Total Output" alignContent="right">
-                        <FiatValue amount={totalOutput.toFixed()} symbol={tx.symbol} />
+                        {totalOutput && <FiatValue amount={totalOutput} symbol={tx.symbol} />}
                     </BoxRow>
                     <BoxRow title="Fee" alignContent="right">
                         <FiatValue amount={tx.fee} symbol={tx.symbol} />

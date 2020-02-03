@@ -11,6 +11,8 @@ import NETWORKS from '@wallet-config/networks';
 import BasicDetails from './components/BasicDetails';
 import FiatDetails from './components/FiatDetails';
 import IODetails from './components/IODetails';
+import BigNumber from 'bignumber.js';
+import { formatNetworkAmount } from '@suite/utils/wallet/accountUtils';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -48,8 +50,29 @@ const TransactionDetail = (props: Props) => {
     const explorerBaseUrl = NETWORKS.find(n => n.symbol === tx.symbol)?.explorer.tx;
     const explorerUrl = explorerBaseUrl ? `${explorerBaseUrl}${tx.txid}` : undefined;
 
+    // txDetails stores response from blockchainGetTransactions()
     const [txDetails, setTxDetails] = useState<any>(null);
     const [isFetching, setIsFetching] = useState(true);
+
+    // sum of all inputs
+    const totalInput: BigNumber | undefined = txDetails?.vin.reduce(
+        (acc: BigNumber, input: any) => acc.plus(input.value),
+        new BigNumber('0'),
+    );
+
+    // sum of all outputs
+    const totalOutput: BigNumber | undefined = txDetails?.vout.reduce(
+        (acc: BigNumber, output: any) => acc.plus(output.value),
+        new BigNumber('0'),
+    );
+
+    // formatNetworkAmount returns "-1" in case of an error, thus can't be used in reduce above
+    const formattedTotalInput = totalInput
+        ? formatNetworkAmount(totalInput.toFixed(), tx.symbol)
+        : undefined;
+    const formattedTotalOutput = totalOutput
+        ? formatNetworkAmount(totalOutput.toFixed(), tx.symbol)
+        : undefined;
 
     useEffect(() => {
         // fetch tx details and store them inside the local state 'txDetails'
@@ -62,8 +85,7 @@ const TransactionDetail = (props: Props) => {
             });
 
             if (res.success && res.payload.length > 0) {
-                const txDetail = res.payload[0];
-                setTxDetails(txDetail.tx);
+                setTxDetails(res.payload[0].tx);
             }
             setIsFetching(false);
         };
@@ -79,9 +101,11 @@ const TransactionDetail = (props: Props) => {
                 txDetails={txDetails}
                 isFetching={isFetching}
                 explorerUrl={explorerUrl}
+                totalInput={formattedTotalInput}
+                totalOutput={formattedTotalOutput}
             />
             <Divider />
-            <FiatDetails tx={tx} fiat={props.fiat} />
+            <FiatDetails tx={tx} fiat={props.fiat} totalOutput={formattedTotalOutput} />
             <Divider />
             <IODetails tx={tx} txDetails={txDetails} isFetching={isFetching} />
             <Buttons>

@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { variables, colors } from '@trezor/components-v2';
 
-const COLOR_BORDER = colors.BLACK96;
+const COLOR_BORDER = '#E6E6E6';
 const COLOR_TEXT_SECONDARY = colors.BLACK25;
 const COLOR_TEXT_PRIMARY = colors.BLACK0;
 
