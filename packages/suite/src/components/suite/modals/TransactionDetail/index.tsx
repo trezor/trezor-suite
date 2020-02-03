@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 // import { Translation } from '@suite-components/Translation';
 import { H2, Link, Button } from '@trezor/components-v2';
-import { Dispatch } from '@suite-types';
+import { AppState } from '@suite-types';
 import { WalletAccountTransaction } from '@suite/reducers/wallet/transactionReducer';
 import TrezorConnect from 'trezor-connect';
 import NETWORKS from '@wallet-config/networks';
@@ -34,14 +34,14 @@ const Buttons = styled.div`
     margin-top: 40px;
 `;
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    // onScan: bindActionCreators(sendFormActions.onQrScan, dispatch),
+const mapStateToProps = (state: AppState) => ({
+    fiat: state.wallet.fiat,
 });
 
 type Props = {
     tx: WalletAccountTransaction;
     onCancel: () => void;
-} & ReturnType<typeof mapDispatchToProps>;
+} & ReturnType<typeof mapStateToProps>;
 
 const TransactionDetail = (props: Props) => {
     const { tx } = props;
@@ -81,7 +81,7 @@ const TransactionDetail = (props: Props) => {
                 explorerUrl={explorerUrl}
             />
             <Divider />
-            <FiatDetails tx={tx} />
+            <FiatDetails tx={tx} fiat={props.fiat} />
             <Divider />
             <IODetails tx={tx} txDetails={txDetails} isFetching={isFetching} />
             <Buttons>
@@ -98,4 +98,4 @@ const TransactionDetail = (props: Props) => {
     );
 };
 
-export default connect(null, mapDispatchToProps)(TransactionDetail);
+export default connect(mapStateToProps)(TransactionDetail);

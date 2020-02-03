@@ -1,12 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, colors, variables } from '@trezor/components-v2';
+import { colors, variables } from '@trezor/components-v2';
 import FiatValue from '@suite-components/FiatValue/Container';
 import Badge from '@suite-components/Badge';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import BigNumber from 'bignumber.js';
 import Box from '../Box';
 import BoxRow from '../BoxRow';
+import { AppState } from '@suite-types';
+import { FormattedDate } from 'react-intl';
 
 const Grid = styled.div`
     display: grid;
@@ -38,16 +40,33 @@ const Col = styled.div<{ direction: 'column' | 'row' }>`
 
 interface Props {
     tx: WalletAccountTransaction;
+    fiat: AppState['wallet']['fiat'];
 }
 
-const FiatDetails = ({ tx }: Props) => {
+const FiatDetails = ({ tx, fiat }: Props) => {
+    console.log(tx);
     const totalOutput = new BigNumber(tx.amount).minus(tx.fee);
+    // TODO: FiatValue component could just return multiple props
+    const fiatRates = fiat.find(f => f.symbol === tx.symbol);
+    const currentFiatRateTimestamp = fiatRates?.timestamp;
 
     return (
         <Grid>
             <Col direction="column">
                 <BoxHeading>
-                    Current Value ()
+                    Current Value{' '}
+                    {currentFiatRateTimestamp && (
+                        <>
+                            (
+                            <FormattedDate
+                                value={currentFiatRateTimestamp}
+                                year="numeric"
+                                month="2-digit"
+                                day="2-digit"
+                            />
+                            )
+                        </>
+                    )}
                     <Badge>
                         <FiatValue amount="1" symbol={tx.symbol} />
                     </Badge>

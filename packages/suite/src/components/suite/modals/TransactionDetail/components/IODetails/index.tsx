@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, colors, variables } from '@trezor/components-v2';
+import { Icon, colors, variables, Loader } from '@trezor/components-v2';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import FiatValue from '@suite-components/FiatValue/Container';
@@ -9,6 +9,7 @@ import Badge from '@suite-components/Badge';
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
+    justify-content: center;
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: column;
@@ -19,6 +20,11 @@ const Col = styled.div<{ direction: 'column' | 'row' }>`
     display: flex;
     flex-direction: ${props => props.direction};
     flex: 1 1 auto;
+    overflow: hidden;
+
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        width: 100%;
+    }
 `;
 
 const IconWrapper = styled.div`
@@ -27,6 +33,8 @@ const IconWrapper = styled.div`
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         width: 100%;
+        justify-content: center;
+        transform: rotate(90deg);
     }
 `;
 
@@ -40,6 +48,10 @@ const IOBox = styled.div`
 
     & + & {
         margin-top: 10px;
+    }
+
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        width: 100%;
     }
 `;
 
@@ -64,6 +76,8 @@ const Amount = styled.div`
 const IOBoxAddress = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${colors.BLACK17};
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 interface Props {
@@ -76,50 +90,62 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
     console.log(txDetails);
     return (
         <Wrapper>
-            <Col direction="column">
-                {txDetails &&
-                    txDetails.vin.map((input: any) => {
-                        const inputAmount = formatNetworkAmount(input.value, tx.symbol);
-                        return (
-                            <IOBox key={input.hex}>
-                                <IOBoxAddress>
-                                    {input.addresses.map((addr: string) => addr)}
-                                </IOBoxAddress>
-                                <IOBoxPath>placeholder</IOBoxPath>
-                                <IOBoxAmountWrapper>
-                                    <Amount>{`${inputAmount} ${tx.symbol.toUpperCase()}`}</Amount>
-                                    <Badge>
-                                        <FiatValue amount={inputAmount} symbol={tx.symbol} />
-                                    </Badge>
-                                </IOBoxAmountWrapper>
-                            </IOBox>
-                        );
-                    })}
-            </Col>
+            {!txDetails && isFetching && <Loader size={32} />}
+            {txDetails && (
+                <>
+                    <Col direction="column">
+                        {txDetails &&
+                            txDetails.vin.map((input: any) => {
+                                const inputAmount = formatNetworkAmount(input.value, tx.symbol);
+                                return (
+                                    <IOBox key={input.hex}>
+                                        <IOBoxAddress>
+                                            {input.addresses.map((addr: string) => addr)}
+                                        </IOBoxAddress>
+                                        <IOBoxPath>placeholder</IOBoxPath>
+                                        <IOBoxAmountWrapper>
+                                            <Amount>{`${inputAmount} ${tx.symbol.toUpperCase()}`}</Amount>
+                                            <Badge>
+                                                <FiatValue
+                                                    amount={inputAmount}
+                                                    symbol={tx.symbol}
+                                                />
+                                            </Badge>
+                                        </IOBoxAmountWrapper>
+                                    </IOBox>
+                                );
+                            })}
+                    </Col>
 
-            <IconWrapper>
-                <Icon icon="ARROW_RIGHT" size={16} />
-            </IconWrapper>
-            <Col direction="column">
-                {txDetails &&
-                    txDetails.vout.map((output: any) => {
-                        const outputAmount = formatNetworkAmount(output.value, tx.symbol);
-                        return (
-                            <IOBox key={output.hex}>
-                                <IOBoxAddress>
-                                    {output.addresses.map((addr: string) => addr)}
-                                </IOBoxAddress>
-                                <IOBoxPath>todo: bip44 path</IOBoxPath>
-                                <IOBoxAmountWrapper>
-                                    <Amount>{`${outputAmount} ${tx.symbol.toUpperCase()}`}</Amount>
-                                    <Badge>
-                                        <FiatValue amount={outputAmount} symbol={tx.symbol} />
-                                    </Badge>
-                                </IOBoxAmountWrapper>
-                            </IOBox>
-                        );
-                    })}
-            </Col>
+                    <IconWrapper>
+                        <Icon icon="ARROW_RIGHT" size={16} />
+                    </IconWrapper>
+
+                    <Col direction="column">
+                        {txDetails &&
+                            txDetails.vout.map((output: any) => {
+                                const outputAmount = formatNetworkAmount(output.value, tx.symbol);
+                                return (
+                                    <IOBox key={output.hex}>
+                                        <IOBoxAddress>
+                                            {output.addresses.map((addr: string) => addr)}
+                                        </IOBoxAddress>
+                                        <IOBoxPath>todo: bip44 path</IOBoxPath>
+                                        <IOBoxAmountWrapper>
+                                            <Amount>{`${outputAmount} ${tx.symbol.toUpperCase()}`}</Amount>
+                                            <Badge>
+                                                <FiatValue
+                                                    amount={outputAmount}
+                                                    symbol={tx.symbol}
+                                                />
+                                            </Badge>
+                                        </IOBoxAmountWrapper>
+                                    </IOBox>
+                                );
+                            })}
+                    </Col>
+                </>
+            )}
         </Wrapper>
     );
 };
