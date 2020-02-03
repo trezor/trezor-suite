@@ -2,22 +2,27 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { Button, ButtonProps, H2, P, colors } from '@trezor/components-v2';
+import { Button, ButtonProps, H2, P, Link, colors } from '@trezor/components-v2';
 
+import { resolveStaticPath } from '@suite-utils/nextjs';
 import * as firmwareActions from '@firmware-actions/firmwareActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { InjectedModalApplicationProps, Dispatch, AppState } from '@suite-types';
 import { getFwVersion } from '@suite-utils/device';
 import { ProgressBar } from '@suite-components';
 import { InitImg, SuccessImg } from '@firmware-components';
+import { Loaders } from '@onboarding-components';
 
 const Wrapper = styled.div`
     width: 60vw;
     min-height: 500px;
     display: flex;
-    justify-content: space-between;
     flex-direction: column;
-    padding: 60px;
+`;
+
+// todo: aaarghhh this should be in some abstract modal container
+const ProgressBarWrapper = styled.div`
+    margin-bottom: 40px;
 `;
 
 const Row = styled.div`
@@ -32,6 +37,7 @@ const Col = styled.div`
 
 const Buttons = styled(Row)`
     justify-content: center;
+    margin-top: auto;
 `;
 
 const ChangesSummary = styled.div`
@@ -45,6 +51,11 @@ const ChangesSummary = styled.div`
 const StyledButton = styled(Button)`
     width: 226px;
     margin-bottom: 16px;
+`;
+
+const SeedImg = styled.img`
+    height: 250px;
+    padding: 30px;
 `;
 
 const CloseButton = (props: ButtonProps) => (
@@ -87,10 +98,77 @@ const Firmware = ({
         resetReducer();
     };
 
+    const statesInProgessBar = [
+        'initial',
+        'check-seed',
+        'waiting-for-bootloader',
+        ['waiting-for-confirmation', 'installing', 'started', 'downloading'],
+        ['done', 'partially-done', 'error'],
+    ];
+
+    const getTextForStatus = () => {
+        switch (firmware.status) {
+            case 'waiting-for-confirmation':
+                return 'waiting for confirmation';
+            case 'installing':
+                return 'installing';
+            case 'started':
+                return 'started';
+            case 'downloading':
+                return 'downloading';
+            default:
+                throw new Error('this state does not have human readable variant');
+        }
+    };
+
+    const getCurrentStep = () => {
+        return statesInProgessBar.findIndex(s => {
+            if (Array.isArray(s)) {
+                return s.includes(firmware.status);
+            }
+            return s === firmware.status;
+        });
+    };
+
+    // first of all, handle if there is error
+    if (firmware.status === 'error') {
+        return (
+            <Wrapper>
+                <H2>Holy guacamole! We got an error!</H2>
+                <P size="tiny">{firmware.error}</P>
+                <Buttons>
+                    <Col>
+                        <StyledButton onClick={onClose} data-test="@modal/firmware/exit-button">
+                            Exit
+                        </StyledButton>
+                    </Col>
+                </Buttons>
+            </Wrapper>
+        );
+    }
+
     if (!device || !device.features) {
         return (
             <Wrapper>
-                <H2>No device</H2>
+                {firmware.status === 'waiting-for-bootloader' && (
+                    <>
+                        <ProgressBarWrapper>
+                            <ProgressBar
+                                total={statesInProgessBar.length}
+                                current={getCurrentStep()}
+                            />
+                        </ProgressBarWrapper>
+                        <H2>Reconnect your device in bootloader mode</H2>
+                        <P size="tiny">Ok, now disconnect your device</P>
+                        <InitImg />
+                    </>
+                )}
+                {firmware.status !== 'waiting-for-bootloader' && (
+                    <>
+                        <H2>No device</H2>
+                        <P size="tiny">No device connected :( </P>
+                    </>
+                )}
                 <Buttons>
                     <Col>
                         <CloseButton onClick={onClose} />
@@ -104,9 +182,19 @@ const Firmware = ({
         return (
             <Wrapper>
                 <H2>Firmware is up to date.</H2>
+                <P size="tiny">
+                    Great! Your firmware is up to date and no further action is needed. Check our
+                    blog for updates or come here later.
+                </P>
+                <P size="normal" weight="bold">
+                    version: {getFwVersion(device)}
+                </P>
+                <Link href="todo todo todo">Whats new</Link>
                 <Buttons>
                     <Col>
-                        <CloseButton onClick={onClose} />
+                        <StyledButton onClick={onClose} data-test="@modal/firmware/exit-button">
+                            Exit
+                        </StyledButton>
                     </Col>
                 </Buttons>
             </Wrapper>
@@ -115,26 +203,11 @@ const Firmware = ({
 
     const { firmwareRelease } = device;
 
-    const statesInProgessBar = [
-        'initial',
-        'check-seed',
-        'waiting-for-bootloader',
-        ['waiting-for-confirmation', 'installing', 'started', 'downloading'],
-        ['done', 'partially-done', 'error'],
-    ];
-
-    const getCurrentStep = () => {
-        return statesInProgessBar.findIndex(s => {
-            if (Array.isArray(s)) {
-                return s.includes(firmware.status);
-            }
-            return s === firmware.status;
-        });
-    };
-
     return (
         <Wrapper>
-            <ProgressBar total={statesInProgessBar.length} current={getCurrentStep()} />
+            <ProgressBarWrapper>
+                <ProgressBar total={statesInProgessBar.length} current={getCurrentStep()} />
+            </ProgressBarWrapper>
 
             {firmware.status === 'initial' && (
                 <>
@@ -192,6 +265,10 @@ const Firmware = ({
                         seed. Either safely stored or even with you as of now. In any case of
                         improbable emergency.
                     </P>
+                    <SeedImg
+                        src={resolveStaticPath('images/onboarding/recover-from-seed.svg')}
+                        alt=""
+                    />
                     <Buttons>
                         <Col>
                             <StyledButton
@@ -206,14 +283,19 @@ const Firmware = ({
                 </>
             )}
 
-            {firmware.status === 'waiting-for-bootloader' &&
-                device &&
-                device.mode !== 'bootloader' && (
-                    <>
-                        <P size="tiny">waiting for bootloader</P>
-                        <InitImg />
-                    </>
-                )}
+            {firmware.status === 'waiting-for-bootloader' && (
+                <>
+                    {device && device.mode !== 'bootloader' && (
+                        <>
+                            <H2>Connect your device in bootloader mode</H2>
+                            <P size="tiny">
+                                swipe your finger accross the touchscreen while connecting cable
+                            </P>
+                            <InitImg />
+                        </>
+                    )}
+                </>
+            )}
 
             {firmware.status === 'waiting-for-bootloader' &&
                 device &&
@@ -240,22 +322,26 @@ const Firmware = ({
                 firmware.status,
             ) && (
                 <>
-                    <H2>{firmware.status}</H2>
+                    <H2>
+                        {getTextForStatus()}
+                        <Loaders.Dots />
+                    </H2>
                 </>
             )}
 
-            {['done', 'partially-done'].includes(firmware.status) && (
+            {firmware.status === 'partially-done' && (
                 <>
-                    <H2>{firmware.status}</H2>
+                    <H2>Firmware partially upgraded</H2>
+                    <P>But there is still another upgrade ahead!</P>
                     <SuccessImg />
 
                     <Buttons>
                         <Col>
                             <StyledButton
-                                onClick={() => closeModalApp()}
-                                data-test="@modal/firmware/start-button"
+                                onClick={() => resetReducer()}
+                                data-test="@modal/firmware/reset-button"
                             >
-                                Finish
+                                Ok let's do it
                             </StyledButton>
                         </Col>
                     </Buttons>
