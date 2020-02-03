@@ -86,8 +86,17 @@ const Menu = ({ device, accounts, selectedAccount, getDiscoveryForDevice, openMo
         return <DiscoveryStatus />;
     }
     const discoveryIsRunning = discovery.status <= DISCOVERY.STATUS.STOPPING;
+    const failed: any[] = discovery.failed.map(f => ({
+        ...f,
+        path: 'path',
+        descriptor: f.index + f.accountType,
+        visible: true,
+        balance: '0',
+        availableBalance: '0',
+        formattedBalance: '0',
+    }));
 
-    const list = sortByCoin(accounts.filter(a => a.deviceState === device.state));
+    const list = sortByCoin(accounts.filter(a => a.deviceState === device.state).concat(failed));
     // always show first "normal" account even if they are empty
     const normalAccounts = list.filter(
         a => a.accountType === 'normal' && (a.index === 0 || !a.empty || a.visible),
