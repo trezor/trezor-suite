@@ -18,19 +18,9 @@ const Wrapper = styled.div<{ isExpanded: boolean }>`
     flex-direction: column;
     cursor: pointer;
 
-    max-height: 100px;
-    transition: max-height 0.3s ease-in;
-
     &:hover {
         background: ${colors.BLACK96};
     }
-
-    ${({ isExpanded }) =>
-        isExpanded &&
-        css`
-            max-height: 500px;
-            transition: max-height 0.3s ease-in;
-        `}
 `;
 
 const Timestamp = styled.div`
@@ -52,19 +42,9 @@ const Row = styled.div`
     align-items: center;
 `;
 
-const SlideAnimation = keyframes`
-    0% {
-        transform: ScaleY(0.5);
-    }
-    100% {
-        transform: ScaleY(1);
-    }
-`;
-
 const ExpandedList = styled.div`
     display: flex;
     flex-direction: column;
-    animation: ${SlideAnimation} 0.2s ease-in;
     transform-origin: top;
     overflow: hidden;
 `;
