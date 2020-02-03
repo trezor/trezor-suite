@@ -85,7 +85,6 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     const { send, selectedAccount } = getState().wallet;
     if (!send) return;
     const { account } = selectedAccount;
-    // Fee must be in the range of 10 to 10,000 drops
     const { selectedFee, outputs, networkTypeRipple } = send;
     const { destinationTag } = networkTypeRipple;
     const selectedDevice = getState().suite.device;

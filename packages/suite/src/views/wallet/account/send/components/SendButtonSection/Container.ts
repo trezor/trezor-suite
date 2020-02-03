@@ -1,7 +1,7 @@
 import { AppState, Dispatch } from '@suite-types';
-import * as sendFormActionsBitcoin from '@wallet-actions/sendFormSpecific/bitcoinActions';
-import * as sendFormActionsEthereum from '@wallet-actions/sendFormSpecific/ethereumActions';
-import * as sendFormActionsRipple from '@wallet-actions/sendFormSpecific/rippleActions';
+import * as sendFormActionsBitcoin from '@wallet-actions/send/sendFormBitcoinActions';
+import * as sendFormActionsEthereum from '@wallet-actions/send/sendFormEthereumActions';
+import * as sendFormActionsRipple from '@wallet-actions/send/sendFormRippleActions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 

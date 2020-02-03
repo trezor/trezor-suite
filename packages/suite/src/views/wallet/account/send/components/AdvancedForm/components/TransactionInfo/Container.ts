@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
-import * as sendFormActionsRipple from '@wallet-actions/sendFormSpecific/rippleActions';
+import * as sendFormActions from '@wallet-actions/send/sendFormActions';
 
 import { AppState, Dispatch } from '@suite-types';
 import AdditionalFormXrp from './index';
@@ -13,7 +12,6 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     sendFormActions: bindActionCreators(sendFormActions, dispatch),
-    sendFormActionsRipple: bindActionCreators(sendFormActionsRipple, dispatch),
 });
 
 export type StateProps = ReturnType<typeof mapStateToProps>;

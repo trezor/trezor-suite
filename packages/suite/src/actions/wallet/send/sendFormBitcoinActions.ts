@@ -8,7 +8,7 @@ import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import TrezorConnect from 'trezor-connect';
 
-import * as sendFormActions from '../sendFormActions';
+import * as sendFormActions from './sendFormActions';
 
 /*
     Compose transaction

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
-import * as sendFormActionsRipple from '@wallet-actions/sendFormSpecific/rippleActions';
+import * as sendFormActions from '@wallet-actions/send/sendFormActions';
+import * as sendFormActionsRipple from '@wallet-actions/send/sendFormRippleActions';
 
 import { AppState, Dispatch } from '@suite-types';
 import Component from './index';

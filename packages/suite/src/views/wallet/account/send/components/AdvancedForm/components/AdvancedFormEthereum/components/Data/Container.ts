@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as sendFormActionsEthereum from '@wallet-actions/sendFormSpecific/ethereumActions';
+import * as sendFormActionsEthereum from '@wallet-actions/send/sendFormEthereumActions';
 
 import { AppState, Dispatch } from '@suite-types';
 import Component from './index';

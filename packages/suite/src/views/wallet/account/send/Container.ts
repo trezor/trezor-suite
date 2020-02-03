@@ -2,10 +2,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl } from 'react-intl';
 import * as modalActions from '@suite-actions/modalActions';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
-import * as sendFormActionsBitcoin from '@wallet-actions/sendFormSpecific/bitcoinActions';
-import * as sendFormActionsEthereum from '@wallet-actions/sendFormSpecific/ethereumActions';
-import * as sendFormActionsRipple from '@wallet-actions/sendFormSpecific/rippleActions';
+import * as sendFormActions from '@wallet-actions/send/sendFormActions';
+import * as sendFormActionsBitcoin from '@wallet-actions/send/sendFormBitcoinActions';
+import * as sendFormActionsEthereum from '@wallet-actions/send/sendFormEthereumActions';
+import * as sendFormActionsRipple from '@wallet-actions/send/sendFormRippleActions';
 
 import { AppState, Dispatch } from '@suite-types';
 import SendIndex from './index';

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
+import * as sendFormActions from '@wallet-actions/send/sendFormActions';
 import { AppState, Dispatch } from '@suite-types';
 import AdditionalFormBitcoin from './index';
 

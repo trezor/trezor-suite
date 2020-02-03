@@ -1,6 +1,7 @@
 import { Dispatch, GetState } from '@suite-types';
 import { SEND } from '@wallet-actions/constants';
-import { applyChange } from '../sendFormActions';
+import { applyChange } from './sendFormActions';
+// @ts-ignore
 import ethUnits from 'ethereumjs-units';
 import TrezorConnect from 'trezor-connect';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';

@@ -12,9 +12,9 @@ import BigNumber from 'bignumber.js';
 // @ts-ignore
 import ethUnits from 'ethereumjs-units';
 
-import * as bitcoinActions from './sendFormSpecific/bitcoinActions';
-import * as ethereumActions from './sendFormSpecific/ethereumActions';
-import * as rippleActions from './sendFormSpecific/rippleActions';
+import * as bitcoinActions from './sendFormBitcoinActions';
+import * as ethereumActions from './sendFormEthereumActions';
+import * as rippleActions from './sendFormRippleActions';
 
 /**
  * Initialize current form, load values from session storage
@@ -74,7 +74,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                 data: { value: null, error: null },
             },
             selectedFee: firstFeeLevel,
-            // ...cachedState,
+            ...cachedState,
         },
         localCurrency,
     });

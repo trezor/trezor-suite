@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import * as modalActions from '@suite-actions/modalActions';
 import { Output } from '@wallet-types/sendForm';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
+import * as sendFormActions from '@wallet-actions/send/sendFormActions';
 
 import { AppState, Dispatch } from '@suite-types';
 import Component from './index';
