@@ -7,7 +7,6 @@ import Box from '../Box';
 import BoxRow from '../BoxRow';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
-import BigNumber from 'bignumber.js';
 
 const COLOR_TEXT_PRIMARY = colors.BLACK0;
 

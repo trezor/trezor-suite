@@ -5,7 +5,7 @@ import { AppState, Dispatch } from '@suite-types';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import Component from './index';
 
-const mapStateToProps = (state: AppState) => ({});
+const mapStateToProps = (_state: AppState) => ({});
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     openModal: bindActionCreators(modalActions.openModal, dispatch),

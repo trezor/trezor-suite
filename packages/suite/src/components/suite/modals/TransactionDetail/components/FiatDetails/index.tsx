@@ -4,7 +4,6 @@ import { colors, variables } from '@trezor/components-v2';
 import FiatValue from '@suite-components/FiatValue/Container';
 import Badge from '@suite-components/Badge';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
-import BigNumber from 'bignumber.js';
 import Box from '../Box';
 import BoxRow from '../BoxRow';
 import { AppState } from '@suite-types';

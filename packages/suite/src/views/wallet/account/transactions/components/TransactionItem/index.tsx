@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled, { keyframes, css } from 'styled-components';
+import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { Translation } from '@suite-components/Translation';
 import { variables, colors, Button } from '@trezor/components-v2';
@@ -163,7 +163,7 @@ const SmallBadge = styled(Badge)`
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
-const TokenTransfer = (transfer: ArrayElement<Props['tokens']>) => {
+const TokenTransfer = (transfer: ArrayElement<Props['transaction']['tokens']>) => {
     if (transfer.type === 'self') {
         return (
             <Token>
