@@ -18,9 +18,9 @@ const Wrapper = styled.div<{ isExpanded: boolean }>`
     flex-direction: column;
     cursor: pointer;
 
-    &:hover {
+    /* &:hover {
         background: ${colors.BLACK96};
-    }
+    } */
 `;
 
 const Timestamp = styled.div`
