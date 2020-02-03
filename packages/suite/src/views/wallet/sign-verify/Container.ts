@@ -7,6 +7,7 @@ import { AppState, Dispatch } from '@suite-types';
 import SignVerify from './index';
 
 const mapStateToProps = (state: AppState) => ({
+    selectedAccount: state.wallet.selectedAccount,
     signVerify: state.wallet.signVerify,
 });
 

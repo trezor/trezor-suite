@@ -4,8 +4,7 @@ import { bindActionCreators } from 'redux';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 
 import AccountName from '@wallet-components/AccountName';
-import LayoutAccount from '@wallet-components/LayoutAccount';
-import Content from '@wallet-components/Content';
+import { WalletLayout } from '@wallet-components';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Dispatch } from '@suite-types';
@@ -31,12 +30,7 @@ type Props = WrappedComponentProps &
 const AccountReceive = (props: Props) => {
     const { device } = props;
     if (!device || props.selectedAccount.status !== 'loaded') {
-        const { loader, exceptionPage } = props.selectedAccount;
-        return (
-            <LayoutAccount title="Receive">
-                <Content loader={loader} exceptionPage={exceptionPage} isLoading />
-            </LayoutAccount>
-        );
+        return <WalletLayout title="Receive" account={props.selectedAccount} />;
     }
     const { account, network } = props.selectedAccount;
 
@@ -70,7 +64,7 @@ const AccountReceive = (props: Props) => {
             : messages.TR_RECEIVE_NETWORK;
 
     return (
-        <LayoutAccount title="Receive">
+        <WalletLayout title="Receive" account={props.selectedAccount}>
             <ReceiveForm
                 showButtonDisabled={showButtonDisabled}
                 account={account}
@@ -81,7 +75,7 @@ const AccountReceive = (props: Props) => {
                 networkType={network.networkType}
                 title={<AccountName account={account} message={accountNameMessage} />}
             />
-        </LayoutAccount>
+        </WalletLayout>
     );
 };
 

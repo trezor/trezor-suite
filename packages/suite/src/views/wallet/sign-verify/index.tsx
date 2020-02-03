@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Input, Button, Textarea, colors, variables } from '@trezor/components-v2';
 import Title from '@wallet-components/Title';
-import LayoutAccount from '@wallet-components/LayoutAccount';
+import { WalletLayout } from '@wallet-components';
 import * as signVerifyActions from '@wallet-actions/signVerifyActions';
 import { WrappedComponentProps } from 'react-intl';
 import { Translation } from '@suite-components/Translation';
@@ -60,6 +60,7 @@ const Verify = styled(Column)`
 `;
 
 interface Props extends WrappedComponentProps {
+    selectedAccount: StateProps['selectedAccount'];
     signVerify: StateProps['signVerify'];
     signVerifyActions: DispatchProps['signVerifyActions'];
 }
@@ -87,17 +88,9 @@ class SignVerify extends Component<Props> {
     };
 
     render() {
-        // const { devices, selectedDevice } = props;
-        // const device = this.props.wallet.selectedDevice;
-        // const { account, discovery, shouldRender } = this.props.selectedAccount;
-
-        // if (!device || !account || !discovery || !shouldRender) {
-        //     const { loader, exceptionPage } = this.props.selectedAccount;
-        //     return <Content loader={loader} exceptionPage={exceptionPage} isLoading />;
-        // }
-
         const {
             intl,
+            selectedAccount,
             signVerifyActions,
             signVerify: {
                 signMessage,
@@ -111,7 +104,7 @@ class SignVerify extends Component<Props> {
 
         const verifyAddressError = this.getError('verifyAddress');
         return (
-            <LayoutAccount title="SIgn & Verify">
+            <WalletLayout title="Sign & Verify" account={selectedAccount}>
                 <Wrapper>
                     <Sign>
                         <Title>
@@ -227,7 +220,7 @@ class SignVerify extends Component<Props> {
                         </RowButtons>
                     </Verify>
                 </Wrapper>
-            </LayoutAccount>
+            </WalletLayout>
         );
     }
 }

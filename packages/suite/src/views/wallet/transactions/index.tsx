@@ -3,11 +3,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
-import { Loader, colors } from '@trezor/components-v2';
+import { colors, Loader } from '@trezor/components-v2';
 import * as transactionActions from '@wallet-actions/transactionActions';
-import LayoutAccount from '@wallet-components/LayoutAccount';
+import { WalletLayout } from '@wallet-components';
 // import AccountName from '@wallet-components/AccountName';
-import Content from '@wallet-components/Content';
 import { getAccountTransactions } from '@wallet-utils/accountUtils';
 import { SETTINGS } from '@suite-config';
 import { AppState, Dispatch } from '@suite-types';
@@ -22,7 +21,7 @@ const LoaderWrapper = styled.div`
     align-items: center;
 `;
 const LoaderText = styled.div`
-    color: ${colors.BLACK50};
+    color: ${colors.BLACK0};
     text-align: center;
 `;
 
@@ -42,12 +41,7 @@ const Transactions = (props: Props) => {
     const [selectedPage, setSelectedPage] = useState(1);
 
     if (selectedAccount.status !== 'loaded') {
-        const { loader, exceptionPage } = selectedAccount;
-        return (
-            <LayoutAccount title="Transactions">
-                <Content loader={loader} exceptionPage={exceptionPage} isLoading />
-            </LayoutAccount>
-        );
+        return <WalletLayout title="Transactions" account={props.selectedAccount} />;
     }
 
     const { account, network } = selectedAccount;
@@ -66,7 +60,7 @@ const Transactions = (props: Props) => {
     //         : messages.TR_TRANSACTIONS;
 
     return (
-        <LayoutAccount title="Transactions">
+        <WalletLayout title="Transactions" account={props.selectedAccount}>
             {/* <AccountName account={account} message={accountNameMessage} /> */}
             {transactions.isLoading && (
                 <LoaderWrapper>
@@ -89,7 +83,7 @@ const Transactions = (props: Props) => {
                     perPage={SETTINGS.TXS_PER_PAGE}
                 />
             )}
-        </LayoutAccount>
+        </WalletLayout>
     );
 };
 

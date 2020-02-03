@@ -5,7 +5,7 @@ import { Output } from '@wallet-types/sendForm';
 import AccountName from '@wallet-components/AccountName';
 
 import { StateProps, DispatchProps } from './Container';
-import { Content, LayoutAccount } from '@wallet-components';
+import { WalletLayout } from '@wallet-components';
 import messages from '@suite/support/messages';
 
 import {
@@ -69,12 +69,7 @@ const Send = (props: StateProps & DispatchProps) => {
     }, [props.selectedAccount]);
 
     if (!device || !send || !fees || props.selectedAccount.status !== 'loaded') {
-        const { loader, exceptionPage } = props.selectedAccount;
-        return (
-            <LayoutAccount title="Send">
-                <Content loader={loader} exceptionPage={exceptionPage} isLoading />
-            </LayoutAccount>
-        );
+        return <WalletLayout title="Send" account={props.selectedAccount} />;
     }
 
     const { account, network } = props.selectedAccount;
@@ -84,7 +79,7 @@ const Send = (props: StateProps & DispatchProps) => {
             : messages.TR_SEND_NETWORK;
 
     return (
-        <LayoutAccount title="Send">
+        <WalletLayout title="Send" account={props.selectedAccount}>
             <AccountName account={account} message={accountNameMessage} />
             {send.outputs.map((output: Output) => (
                 <OutputWrapper key={output.id}>
@@ -154,7 +149,7 @@ const Send = (props: StateProps & DispatchProps) => {
                     sendFormActionsRipple={sendFormActionsRipple}
                 />
             </Row>
-        </LayoutAccount>
+        </WalletLayout>
     );
 };
 
