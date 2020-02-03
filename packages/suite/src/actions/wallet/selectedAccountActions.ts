@@ -1,4 +1,3 @@
-import messages from '@suite/support/messages';
 import { ROUTER, SUITE } from '@suite-actions/constants';
 import { ACCOUNT, DISCOVERY, BLOCKCHAIN } from '@wallet-actions/constants';
 import { NETWORKS } from '@wallet-config';
@@ -6,116 +5,65 @@ import { NETWORKS } from '@wallet-config';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as reducerUtils from '@suite-utils/reducerUtils';
 import * as accountUtils from '@wallet-utils/accountUtils';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 
 import { Action, Dispatch, GetState } from '@suite-types';
-import {
-    AccountNotification,
-    State as SelectedAccountState,
-} from '@wallet-reducers/selectedAccountReducer';
+import { State, AccountWatchOnlyMode } from '@wallet-reducers/selectedAccountReducer';
 
 export type SelectedAccountActions =
     | { type: typeof ACCOUNT.DISPOSE }
-    | { type: typeof ACCOUNT.UPDATE_SELECTED_ACCOUNT; payload: SelectedAccountState };
+    | { type: typeof ACCOUNT.UPDATE_SELECTED_ACCOUNT; payload: State };
 
 export const dispose = (): Action => ({
     type: ACCOUNT.DISPOSE,
 });
 
-export const update = (payload: SelectedAccountState): Action => ({
+export const update = (payload: State): Action => ({
     type: ACCOUNT.UPDATE_SELECTED_ACCOUNT,
     payload,
 });
 
 // Add notification to loaded SelectedAccountState
-const getAccountStateWithNotification = (selectedAccount: SelectedAccountState) => (
-    dispatch: Dispatch,
+const getAccountStateWithMode = (selectedAccount?: State) => (
+    _dispatch: Dispatch,
     getState: GetState,
-): SelectedAccountState => {
+): AccountWatchOnlyMode[] | undefined => {
     const state = getState();
-    const { device } = state.suite;
-    if (!device || selectedAccount.status !== 'loaded') return selectedAccount;
-    const { account, discovery } = selectedAccount;
+    const { device, loaded } = state.suite;
+    if (!device || !loaded) return;
 
-    const wrap = (notification: AccountNotification) => ({
-        ...selectedAccount,
-        notification,
-    });
+    // From this point there could be multiple loaders
+    const mode: AccountWatchOnlyMode[] = [];
 
-    // // case 1: backend status
-    // const blockchain = state.blockchain.find(b => b.symbol === network.symbol);
-    // if (blockchain && !blockchain.connected) {
-    //     return {
-    //         type: 'backend',
-    //         variant: 'error',
-    //         title: `${network.name} backend is not connected`,
-    //         shouldRender: false,
-    //     };
-    // }
+    if (selectedAccount && selectedAccount.status === 'loaded') {
+        const { account, discovery, network } = selectedAccount;
+        // Account does exists and it's visible but shouldn't be active
+        if (account && discovery && discovery.status !== DISCOVERY.STATUS.COMPLETED) {
+            mode.push('account-loading-others');
+        }
 
-    if (device.authConfirm) {
-        return wrap({
-            type: 'auth',
-            variant: 'warning',
-            title: 'does-not-matter',
-            shouldRender: true,
-        });
+        // Backend status
+        const blockchain = state.wallet.blockchain[network.symbol];
+        if (!blockchain.connected) {
+            mode.push('backend-disconnected');
+        }
     }
 
-    // case 2: account does exists and it's visible but shouldn't be active
-    if (account && discovery && discovery.status !== DISCOVERY.STATUS.COMPLETED) {
-        return wrap({
-            type: 'info',
-            variant: 'info',
-            title: messages.TR_LOADING_OTHER_ACCOUNTS,
-            shouldRender: true,
-        });
-    }
-
-    // case 3: account does exists and device is disconnected
+    // Account cannot be accessed
     if (!device.connected) {
-        return wrap({
-            type: 'info',
-            variant: 'info',
-            title: {
-                ...messages.TR_DEVICE_LABEL_IS_DISCONNECTED,
-                values: { deviceLabel: device.label },
-            },
-            shouldRender: true,
-        });
+        // device is disconnected
+        mode.push('device-disconnected');
+    } else if (device.authConfirm) {
+        // device needs auth confirmation (empty wallet)
+        mode.push('auth-confirm-failed');
+    } else if (!device.available) {
+        // device is unavailable (created with different passphrase settings)
+        mode.push('device-unavailable');
     }
 
-    // case 4: account does exists and device is unavailable (created with different passphrase settings) account cannot be accessed
-    // this is related to device instance in url, it's not used for now (device clones are disabled)
-    if (!device.available) {
-        return wrap({
-            type: 'info',
-            variant: 'info',
-            title: {
-                ...messages.TR_DEVICE_LABEL_IS_UNAVAILABLE,
-                values: { deviceLabel: device.label },
-            },
-            message: messages.TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE,
-            actions: [
-                {
-                    label: messages.TR_DEVICE_SETTINGS,
-                    callback: () => {
-                        // eslint-disable-next-line @typescript-eslint/camelcase
-                        dispatch(deviceSettingsActions.applySettings({ use_passphrase: true }));
-                    },
-                },
-            ],
-            shouldRender: true,
-        });
-    }
-
-    return selectedAccount;
+    return mode.length > 0 ? mode : undefined;
 };
 
-const getAccountState = () => (
-    dispatch: Dispatch,
-    getState: GetState,
-): SelectedAccountState | void => {
+const getAccountState = () => (dispatch: Dispatch, getState: GetState): State => {
     const state = getState();
 
     const { device } = state.suite;
@@ -124,10 +72,14 @@ const getAccountState = () => (
     if (!device) {
         return {
             status: 'loading',
-            loader: {
-                type: 'progress',
-                title: messages.TR_LOADING_DEVICE_DOT_DOT_DOT,
-            },
+            loader: 'waiting-for-device',
+        };
+    }
+
+    if (device.authFailed) {
+        return {
+            status: 'exception',
+            loader: 'auth-failed',
         };
     }
 
@@ -136,21 +88,18 @@ const getAccountState = () => (
     if (!device.state || !discovery) {
         return {
             status: 'loading',
-            loader: {
-                type: 'progress',
-                title: messages.TR_AUTHENTICATING_DEVICE,
-            },
+            loader: 'auth',
         };
     }
+
+    const mode = dispatch(getAccountStateWithMode());
 
     // account cannot exists since there are no selected networks in settings/wallet
     if (discovery.networks.length === 0) {
         return {
             status: 'exception',
-            loader: {
-                type: 'progress',
-                title: 'Discovery without network...',
-            },
+            loader: 'discovery-empty',
+            mode,
         };
     }
 
@@ -172,37 +121,10 @@ const getAccountState = () => (
     if (!discovery.networks.find(n => n === network.symbol)) {
         return {
             status: 'exception',
-            loader: {
-                type: 'progress',
-                title: 'Requested network is not selected in settings',
-            },
-        };
-    }
-
-    // get selected account
-    const account = accountUtils.getSelectedAccount(device.state, state.wallet.accounts, params);
-
-    // Success! account does exist
-    if (account) {
-        return dispatch(
-            getAccountStateWithNotification({
-                status: 'loaded',
-                account,
-                network,
-                discovery,
-            }),
-        );
-    }
-
-    // account doesn't exist (yet?) checking why...
-    // discovery is still running
-    if (discovery.status !== DISCOVERY.STATUS.COMPLETED) {
-        return {
-            status: 'loading',
-            loader: {
-                type: 'progress',
-                title: messages.TR_LOADING_ACCOUNT,
-            },
+            loader: 'account-not-enabled',
+            network,
+            discovery,
+            mode,
         };
     }
 
@@ -211,19 +133,48 @@ const getAccountState = () => (
     if (failed) {
         return {
             status: 'exception',
-            loader: {
-                type: 'info',
-                title: `Discovery ${network.symbol} failed...`,
-            },
+            loader: 'account-not-loaded',
+            network,
+            discovery,
+            mode,
+        };
+    }
+
+    // get selected account
+    const account = accountUtils.getSelectedAccount(device.state, state.wallet.accounts, params);
+
+    // account does exist
+    if (account && account.visible) {
+        // Success!
+        const loadedState = {
+            status: 'loaded',
+            account,
+            network,
+            discovery,
+            mode: undefined,
+        } as const;
+        const loadedMode = dispatch(getAccountStateWithMode(loadedState));
+        return {
+            ...loadedState,
+            mode: loadedMode,
+        };
+    }
+
+    // account doesn't exist (yet?) checking why...
+    // discovery is still running
+    if (discovery.status !== DISCOVERY.STATUS.COMPLETED) {
+        return {
+            status: 'loading',
+            loader: 'account-loading',
         };
     }
 
     return {
         status: 'exception',
-        loader: {
-            type: 'info',
-            title: messages.TR_ACCOUNT_DOES_NOT_EXIST,
-        },
+        loader: 'account-not-exists',
+        network,
+        discovery,
+        mode,
     };
 };
 

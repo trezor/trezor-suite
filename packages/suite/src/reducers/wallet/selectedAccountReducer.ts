@@ -1,26 +1,53 @@
 import { ACCOUNT } from '@wallet-actions/constants';
-import { Props as NotificationProps } from '@suite-components/Notification';
-import { Action, ExtendedMessageDescriptor } from '@suite-types';
+import { Action } from '@suite-types';
 import { Network, Account, Discovery } from '@wallet-types';
 
-export interface Loader {
-    type: string;
-    title: string | ExtendedMessageDescriptor;
-    message?: string | ExtendedMessageDescriptor;
-    actions?: NotificationProps['actions'];
+// Context notifications view
+// Account is in "watch only" mode
+export type AccountWatchOnlyMode =
+    | 'account-loading-others'
+    | 'auth-confirm-failed' // Empty wallet confirmation failed
+    | 'device-disconnected'
+    | 'device-unavailable' // Device has passphrase_protection disabled
+    | 'backend-disconnected';
+
+// 100% view
+// // Account loaders
+export interface AccountLoading {
+    status: 'loading';
+    loader:
+        | 'waiting-for-device' // No selectedDevice
+        | 'auth' // Waiting for device.state
+        | 'account-loading'; // Waiting for account
+    account?: undefined;
 }
 
-export interface ExceptionPage {
-    type?: string;
-    title?: string | ExtendedMessageDescriptor;
-    message?: string | ExtendedMessageDescriptor;
-    symbol: string;
-}
-
-export interface AccountNotification extends NotificationProps {
-    type: 'info' | 'auth' | 'backend';
-    shouldRender: boolean;
-}
+// 100% view
+// Account exception views
+export type AccountException =
+    | {
+          status: 'exception';
+          loader:
+              | 'auth-failed'
+              | 'discovery-error' // TODO: Discovery failed on something different than expected "bundle exception"
+              | 'discovery-empty'; // No network enabled in settings
+          mode?: AccountWatchOnlyMode[];
+          network?: Network;
+          discovery?: Discovery;
+          account?: undefined;
+      }
+    | {
+          status: 'exception';
+          loader:
+              | 'discovery-error' // TODO: Discovery failed on something different than expected "bundle exception"
+              | 'account-not-loaded' // Account discovery failed
+              | 'account-not-enabled' // Requested account network is not enabled in settings
+              | 'account-not-exists'; // Requested account network is not listed in NETWORKS
+          mode?: AccountWatchOnlyMode[];
+          network: Network;
+          discovery: Discovery;
+          account?: undefined;
+      };
 
 export type State =
     | {
@@ -28,17 +55,18 @@ export type State =
           account: Account;
           network: Network;
           discovery: Discovery;
-          // blockchain?: any; // TODO:
+          blockchain?: any; // TODO:
           // transactions?: any; // TODO:
-          notification?: AccountNotification;
-          loader?: Loader;
-          exceptionPage?: ExceptionPage;
+          mode: AccountWatchOnlyMode[] | undefined;
+          loader?: undefined;
       }
+    | AccountLoading
+    | AccountException
     | {
-          status: 'loading' | 'exception' | 'none';
-          account?: Account;
-          loader?: Loader;
-          exceptionPage?: ExceptionPage;
+          status: 'none';
+          account?: undefined;
+          loader?: undefined;
+          mode?: undefined;
       };
 
 export const initialState: State = {
