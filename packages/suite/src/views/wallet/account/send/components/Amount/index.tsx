@@ -1,15 +1,14 @@
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { Account, Fiat, Network } from '@wallet-types';
+import { Account, Network } from '@wallet-types';
 import React from 'react';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
 import { Output } from '@wallet-types/sendForm';
 import { Input, colors, Icon } from '@trezor/components-v2';
 import { VALIDATION_ERRORS, LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 
-import { DispatchProps } from '../../Container';
+import { Props } from './Container';
 import CurrencySelect from './components/CurrencySelect';
 import FiatComponent from './components/Fiat';
 
@@ -52,19 +51,6 @@ const EqualsSign = styled.div`
     padding: ${LABEL_HEIGHT + 15}px 20px 0;
 `;
 
-interface Props extends WrappedComponentProps {
-    outputId: Output['id'];
-    fiatValue: Output['fiatValue']['value'];
-    fiat: Fiat[];
-    amount: Output['amount']['value'];
-    symbol: Account['symbol'];
-    canSetMax: boolean;
-    decimals: Network['decimals'];
-    localCurrency: Output['localCurrency']['value'];
-    error: Output['amount']['error'];
-    sendFormActions: DispatchProps['sendFormActions'];
-}
-
 const getMessage = (error: Output['amount']['error'], decimals: Network['decimals']) => {
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
@@ -94,6 +80,7 @@ const hasRates = (
 
     if (fiatNetwork) {
         const rate = fiatNetwork.rates[localCurrency.value].toString();
+
         if (rate) {
             return true;
         }
@@ -102,48 +89,54 @@ const hasRates = (
     return false;
 };
 
-const Amount = (props: Props) => (
-    <Wrapper>
-        <Left>
-            <StyledInput
-                state={getInputState(props.error, props.amount)}
-                topLabel={
-                    <Label>
-                        {props.intl.formatMessage(messages.TR_AMOUNT)}
-                        <StyledIcon size={12} color={colors.BLACK50} icon="QUESTION" />
-                    </Label>
-                }
-                button={{
-                    icon: 'SEND',
-                    onClick: () => props.sendFormActions.setMax(props.outputId),
-                    text: 'Send max',
-                }}
-                align="right"
-                display="block"
-                value={props.amount || ''}
-                onChange={e =>
-                    props.sendFormActions.handleAmountChange(props.outputId, e.target.value)
-                }
-                bottomText={getMessage(props.error, props.decimals)}
-            />
-            <CurrencySelect key="currency-select" symbol={props.symbol} />
-        </Left>
-        {hasRates(props.fiat, props.localCurrency, props.symbol) && (
-            <>
-                <EqualsSign>=</EqualsSign>
-                <Right>
-                    <FiatComponent
-                        outputId={props.outputId}
-                        key="fiat-input"
-                        state={props.error ? 'error' : undefined}
-                        sendFormActions={props.sendFormActions}
-                        value={props.fiatValue}
-                        localCurrency={props.localCurrency}
-                    />
-                </Right>
-            </>
-        )}
-    </Wrapper>
-);
+export default ({ fiat, sendFormActions, intl, output, selectedAccount }: Props) => {
+    if (selectedAccount.status !== 'loaded') return null;
 
-export default injectIntl(Amount);
+    const { account, network } = selectedAccount;
+    const { symbol } = account;
+    const { decimals } = network;
+    const { id, amount, fiatValue, localCurrency } = output;
+    const { value, error } = amount;
+
+    return (
+        <Wrapper>
+            <Left>
+                <StyledInput
+                    state={getInputState(error, value)}
+                    topLabel={
+                        <Label>
+                            {intl.formatMessage(messages.TR_AMOUNT)}
+                            <StyledIcon size={12} color={colors.BLACK50} icon="QUESTION" />
+                        </Label>
+                    }
+                    button={{
+                        icon: 'SEND',
+                        onClick: () => sendFormActions.setMax(id),
+                        text: 'Send max',
+                    }}
+                    align="right"
+                    display="block"
+                    value={value || ''}
+                    onChange={e => sendFormActions.handleAmountChange(id, e.target.value)}
+                    bottomText={getMessage(error, decimals)}
+                />
+                <CurrencySelect key="currency-select" symbol={symbol} />
+            </Left>
+            {hasRates(fiat, localCurrency.value, symbol) && (
+                <>
+                    <EqualsSign>=</EqualsSign>
+                    <Right>
+                        <FiatComponent
+                            outputId={id}
+                            key="fiat-input"
+                            state={error ? 'error' : undefined}
+                            sendFormActions={sendFormActions}
+                            value={fiatValue.value}
+                            localCurrency={localCurrency.value}
+                        />
+                    </Right>
+                </>
+            )}
+        </Wrapper>
+    );
+};

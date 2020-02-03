@@ -14,11 +14,8 @@ const mapStateToProps = (state: AppState) => ({
     selectedAccount: state.wallet.selectedAccount,
     send: state.wallet.send,
     accounts: state.wallet.accounts,
-    fiat: state.wallet.fiat,
     fees: state.wallet.fees,
-    suite: state.suite,
     device: state.suite.device,
-    devices: state.devices,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

@@ -10,7 +10,7 @@ import styled, { css } from 'styled-components';
 import Add from './components/Add/Container';
 import Address from './components/Address/Container';
 import AdditionalForm from './components/AdvancedForm';
-import Amount from './components/Amount';
+import Amount from './components/Amount/Container';
 import ButtonToggleAdditional from './components/ButtonToggleAdditional';
 import Clear from './components/Clear';
 import SendButtonSection from './components/SendButtonSection/Container';
@@ -70,7 +70,6 @@ const Send = ({
     device,
     send,
     fees,
-    fiat,
     selectedAccount,
     sendFormActions,
     sendFormActionsBitcoin,
@@ -114,18 +113,7 @@ const Send = ({
                         <Address output={output} />
                     </Row>
                     <Row>
-                        <Amount
-                            output={output}
-                            amount={output.amount.value}
-                            canSetMax={(output.amount.value || 0) >= account.availableBalance}
-                            symbol={account.symbol}
-                            error={output.amount.error}
-                            fiatValue={output.fiatValue.value}
-                            fiat={fiat}
-                            decimals={network.decimals}
-                            localCurrency={output.localCurrency.value}
-                            sendFormActions={sendFormActions}
-                        />
+                        <Amount output={output} />
                     </Row>
                 </OutputWrapper>
             ))}
