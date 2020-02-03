@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Translation } from '@suite-components/Translation';
@@ -42,6 +42,13 @@ const Transactions = (props: Props) => {
     const { selectedAccount, transactions } = props;
     const [selectedPage, setSelectedPage] = useState(1);
 
+    const descriptor = selectedAccount.account?.descriptor;
+    const symbol = selectedAccount.account?.symbol;
+    useEffect(() => {
+        // reset page on account change
+        setSelectedPage(1);
+    }, [descriptor, symbol]);
+
     if (selectedAccount.status !== 'loaded') {
         const { loader, exceptionPage } = selectedAccount;
         return (
@@ -60,11 +67,6 @@ const Transactions = (props: Props) => {
         setSelectedPage(page);
         props.fetchTransactions(account, page, size);
     };
-
-    // const accountNameMessage =
-    //     account.networkType === 'ethereum'
-    //         ? messages.TR_TRANSACTIONS_AND_TOKENS
-    //         : messages.TR_TRANSACTIONS;
 
     return (
         <LayoutAccount title="Transactions">
