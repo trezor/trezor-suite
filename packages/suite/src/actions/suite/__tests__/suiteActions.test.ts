@@ -35,19 +35,6 @@ jest.mock('trezor-connect', () => {
                         state: '0123456',
                     },
                 },
-            getAddress: () => {
-                if (fixture && Array.isArray(fixture) && fixture.length > 0) {
-                    const f = fixture[0];
-                    fixture.splice(0, 1);
-                    if (f) return f;
-                }
-                return {
-                    success: true,
-                    payload: {
-                        address: '1234567890address',
-                    },
-                };
-            },
         },
         DEVICE: {
             CONNECT: 'device-connect',
@@ -233,7 +220,7 @@ describe('Suite Actions', () => {
 
     fixtures.authConfirm.forEach(f => {
         it(`authConfirm: ${f.description}`, async () => {
-            require('trezor-connect').setTestFixtures(f.getAddress);
+            require('trezor-connect').setTestFixtures(f.getDeviceState);
             const state = getInitialState(f.state);
             const store = initStore(state);
             await store.dispatch(suiteActions.authConfirm());

@@ -313,14 +313,7 @@ export const acquireDevice = (requestedDevice?: TrezorDevice) => async (
     });
 
     if (!response.success) {
-        // TODO: notification with translations
-        dispatch(
-            addNotification({
-                variant: 'error',
-                title: 'Acquire device error',
-                cancelable: true,
-            }),
-        );
+        dispatch(addNotification({ type: 'acquire-error' }));
     }
 };
 
@@ -361,22 +354,9 @@ export const authorizeDevice = () => async (
         });
         return true;
     }
+
     dispatch({ type: SUITE.AUTH_FAILED, payload: device });
-    // TODO: notification with translations
-    dispatch(
-        addNotification({
-            variant: 'error',
-            title: 'Authorize device error',
-            message: response.payload.error,
-            cancelable: true,
-            actions: [
-                {
-                    label: 'Retry',
-                    callback: () => dispatch(authorizeDevice()),
-                },
-            ],
-        }),
-    );
+    dispatch(addNotification({ type: 'auth-failed', error: response.payload.error }));
     return false;
 };
 
@@ -411,15 +391,9 @@ export const retryAuthConfirm = () => async (dispatch: Dispatch, getState: GetSt
 
     // TODO: add code to trezor-connect
     if (response.payload.error !== 'Passphrase is incorrect') {
-        // TODO: notification with translations
-        dispatch(
-            addNotification({
-                variant: 'error',
-                title: 'Passphrase confirmation failed',
-                message: response.payload.error,
-                cancelable: true,
-            }),
-        );
+        dispatch(addNotification({ type: 'auth-confirm-error' }));
+    } else {
+        dispatch(addNotification({ type: 'auth-confirm-error', error: response.payload.error }));
     }
 };
 
@@ -430,61 +404,23 @@ export const authConfirm = () => async (dispatch: Dispatch, getState: GetState) 
     const { device } = getState().suite;
     if (!device) return false;
 
-    // Fetch current state first bitcoin address to have some value to compare
-    // TODO: with new passphrase design call .getDeviceState
-    const currentAddress = await TrezorConnect.getAddress({
+    const response = await TrezorConnect.getDeviceState({
         device: {
             path: device.path,
-            instance: device.instance,
-            state: device.state,
+            instance: undefined,
+            state: undefined,
         },
-        path: "m/49'/0'/0'/0/0",
-        showOnTrezor: false,
-        useEmptyPassphrase: false,
-        keepSession: false, // reset session, next request will enforce passphrase
+        keepSession: false,
+        // useEmptyPassphrase: device.useEmptyPassphrase,
     });
 
-    if (!currentAddress.success) {
-        // TODO: notification translations
-        dispatch(
-            addNotification({
-                variant: 'error',
-                title: 'Passphrase confirmation failed',
-                message: currentAddress.payload.error,
-                cancelable: true,
-            }),
-        );
+    if (!response.success) {
+        dispatch(addNotification({ type: 'auth-confirm-error', error: response.payload.error }));
         dispatch(receiveAuthConfirm(device, false));
         return;
     }
 
-    // Fetch first bitcoin address this time reset device.state to enforce passphrase
-    const confirmedAddress = await TrezorConnect.getAddress({
-        device: {
-            path: device.path,
-            instance: device.instance,
-            state: undefined, // reset state
-        },
-        path: "m/49'/0'/0'/0/0",
-        showOnTrezor: false,
-        useEmptyPassphrase: false,
-    });
-
-    if (!confirmedAddress.success) {
-        // TODO: notification translations
-        dispatch(
-            addNotification({
-                variant: 'error',
-                title: 'Passphrase confirmation failed',
-                message: confirmedAddress.payload.error,
-                cancelable: true,
-            }),
-        );
-        dispatch(receiveAuthConfirm(device, false));
-        return;
-    }
-
-    if (currentAddress.payload.address !== confirmedAddress.payload.address) {
+    if (response.payload.state !== device.state) {
         dispatch(receiveAuthConfirm(device, false));
         return;
     }
