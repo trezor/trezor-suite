@@ -155,7 +155,7 @@ const BasicDetails = ({ tx, txDetails, isFetching, explorerUrl }: Props) => {
                 <BoxRow title="Total Output">{`${totalOutput} ${assetSymbol}`}</BoxRow>
                 <BoxRow title="Fee">{`${tx.fee} ${assetSymbol}`}</BoxRow>
                 {/* TODO: BlockchainLink doesn't return size/vsize field */}
-                {/* <BoxRow title="Size">blabla</BoxRow> */}
+                {/* {txDetails?.size && <BoxRow title="Size">{`${txDetails.size} B`}</BoxRow>} */}
             </Box>
         </>
     );
