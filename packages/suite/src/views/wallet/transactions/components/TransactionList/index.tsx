@@ -120,9 +120,6 @@ const TransactionList = ({
                 <Transactions>
                     {Object.keys(transactionsByDate).map(dateKey => {
                         const totalAmountPerDay = sumTransactions(transactionsByDate[dateKey]);
-                        const fiatValue = (
-                            <FiatValue amount={totalAmountPerDay.toFixed()} symbol={props.symbol} />
-                        );
                         return (
                             <React.Fragment key={dateKey}>
                                 <DayHeading>
@@ -146,11 +143,18 @@ const TransactionList = ({
                                                     {totalAmountPerDay.toFixed()}{' '}
                                                     {props.symbol.toUpperCase()}
                                                 </DayAmount>
-                                                {fiatValue && (
-                                                    <FiatDayAmount>
-                                                        <Badge>{fiatValue}</Badge>
-                                                    </FiatDayAmount>
-                                                )}
+                                                <FiatValue
+                                                    amount={totalAmountPerDay.toFixed()}
+                                                    symbol={props.symbol}
+                                                >
+                                                    {fiatValue =>
+                                                        fiatValue && (
+                                                            <FiatDayAmount>
+                                                                <Badge>{fiatValue}</Badge>
+                                                            </FiatDayAmount>
+                                                        ) 
+                                                    }
+                                                </FiatValue>
                                             </DayAmountWrapper>
                                         </>
                                     )}

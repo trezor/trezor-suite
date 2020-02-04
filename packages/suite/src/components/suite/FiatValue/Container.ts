@@ -12,6 +12,11 @@ type OwnProps = {
     amount: string;
     symbol: Network['symbol'];
     fiatCurrency?: string;
+    children?: (
+        fiatValue: JSX.Element,
+        fiatRateValue?: number | null,
+        timestamp?: number | null,
+    ) => React.ReactElement;
 };
 
 export type Props = ReturnType<typeof mapStateToProps> & OwnProps;

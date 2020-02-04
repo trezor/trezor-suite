@@ -102,7 +102,6 @@ interface OwnProps {
 const PricePanel = (props: Props) => {
     const { localCurrency } = props.settings;
     const fiatBalance = getAccountFiatBalance(props.account, localCurrency, props.fiat) || 0;
-    const fiatRateValue = <FiatValue amount="1" symbol={props.account.symbol} />;
 
     return (
         <Wrapper>
@@ -123,16 +122,23 @@ const PricePanel = (props: Props) => {
                                 <Translation {...getTitleForNetwork(props.account.symbol)} /> price
                                 ({props.account.symbol.toUpperCase()})
                             </TickerTitle>
-
-                            {fiatRateValue ? (
-                                <Live key={props.account.symbol}>
-                                    <Dot /> Live
-                                </Live>
-                            ) : (
-                                <NoRatesTooltip />
-                            )}
+                            <FiatValue amount="1" symbol={props.account.symbol}>
+                                {(fiatValue, _timestamp) =>
+                                    fiatValue ? (
+                                        <Live key={props.account.symbol}>
+                                            <Dot /> Live
+                                        </Live>
+                                    ) : (
+                                        <NoRatesTooltip />
+                                    )
+                                }
+                            </FiatValue>
                         </Row>
-                        <TickerPrice>{fiatRateValue ?? <>N/A</>}</TickerPrice>
+                        <TickerPrice>
+                            <FiatValue amount="1" symbol={props.account.symbol}>
+                                {(fiatValue, _timestamp) => fiatValue ?? <>n/a</>}
+                            </FiatValue>
+                        </TickerPrice>
                     </Ticker>
                 </Col>
             )}

@@ -105,7 +105,7 @@ const TransactionDetail = (props: Props) => {
                 totalOutput={formattedTotalOutput}
             />
             <Divider />
-            <FiatDetails tx={tx} fiat={props.fiat} totalOutput={formattedTotalOutput} />
+            <FiatDetails tx={tx} totalOutput={formattedTotalOutput} />
             <Divider />
             <IODetails tx={tx} txDetails={txDetails} isFetching={isFetching} />
             <Buttons>

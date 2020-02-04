@@ -39,42 +39,50 @@ const Col = styled.div<{ direction: 'column' | 'row' }>`
 
 interface Props {
     tx: WalletAccountTransaction;
-    fiat: AppState['wallet']['fiat'];
     totalOutput?: string;
 }
 
-const FiatDetails = ({ tx, fiat, totalOutput }: Props) => {
-    // TODO: FiatValue component could just return multiple props
-    const fiatRates = fiat.find(f => f.symbol === tx.symbol);
-    const currentFiatRateTimestamp = fiatRates?.timestamp;
-
+const FiatDetails = ({ tx, totalOutput }: Props) => {
     return (
         <Grid>
             <Col direction="column">
                 <BoxHeading>
                     Current Value{' '}
-                    {currentFiatRateTimestamp && (
-                        <>
-                            (
-                            <FormattedDate
-                                value={currentFiatRateTimestamp}
-                                year="numeric"
-                                month="2-digit"
-                                day="2-digit"
-                            />
-                            )
-                        </>
-                    )}
+                    {/* such a weird syntax, but basically all I want is show date in parentheses: (formattedDate) */}
+                    <FiatValue amount="1" symbol={tx.symbol}>
+                        {(_fiatValue, _fiatRate, currentFiatRateTimestamp) => (
+                            <>
+                                {currentFiatRateTimestamp && (
+                                    <>
+                                        (
+                                        <FormattedDate
+                                            value={currentFiatRateTimestamp}
+                                            year="numeric"
+                                            month="2-digit"
+                                            day="2-digit"
+                                        />
+                                        )
+                                    </>
+                                )}
+                            </>
+                        )}
+                    </FiatValue>
                     <Badge>
                         <FiatValue amount="1" symbol={tx.symbol} />
                     </Badge>
                 </BoxHeading>
                 <Box>
                     <BoxRow title="Total Output" alignContent="right">
-                        {totalOutput && <FiatValue amount={totalOutput} symbol={tx.symbol} />}
+                        {totalOutput && (
+                            <FiatValue amount={totalOutput} symbol={tx.symbol}>
+                                {fiatValue => fiatValue}
+                            </FiatValue>
+                        )}
                     </BoxRow>
                     <BoxRow title="Fee" alignContent="right">
-                        <FiatValue amount={tx.fee} symbol={tx.symbol} />
+                        <FiatValue amount={tx.fee} symbol={tx.symbol}>
+                            {(fiatValue, _timestamp) => fiatValue}
+                        </FiatValue>
                     </BoxRow>
                 </Box>
             </Col>
@@ -82,7 +90,9 @@ const FiatDetails = ({ tx, fiat, totalOutput }: Props) => {
                 <BoxHeading>
                     Historical Value ()
                     <HistoricalBadge>
-                        <FiatValue amount="1" symbol={tx.symbol} />
+                        <FiatValue amount="1" symbol={tx.symbol}>
+                            {(fiatValue, _timestamp) => fiatValue}
+                        </FiatValue>
                     </HistoricalBadge>
                 </BoxHeading>
                 <Box>

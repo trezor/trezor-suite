@@ -297,20 +297,21 @@ const TransactionItem = React.memo((props: Props) => {
                             </Amount>
                             <Symbol>{symbol.toUpperCase()}</Symbol>
                         </Balance>
-                        <FiatBalance>
-                            <SmallBadge>
-                                <FiatValue amount={amount} symbol={symbol} />
-                            </SmallBadge>
-                        </FiatBalance>
+                        <FiatValue amount={amount} symbol={symbol}>
+                            {fiatValue =>
+                                fiatValue && (
+                                    <FiatBalance>
+                                        <SmallBadge>{fiatValue}</SmallBadge>
+                                    </FiatBalance>
+                                )
+                            }
+                        </FiatValue>
                     </>
                 )}
             </Row>
             {isExpanded && (
                 <ExpandedList>
                     {targets.map((target, i) => {
-                        const fiatValue = (
-                            <FiatValue amount={target.amount || '0'} symbol={symbol} />
-                        );
                         return (
                             // eslint-disable-next-line react/no-array-index-key
                             <Row key={i}>
@@ -332,11 +333,15 @@ const TransactionItem = React.memo((props: Props) => {
                                         </Amount>
                                         <Symbol>{symbol.toUpperCase()}</Symbol>
                                     </Balance>
-                                    {fiatValue && (
-                                        <FiatBalance partial>
-                                            <SmallBadge>{fiatValue}</SmallBadge>
-                                        </FiatBalance>
-                                    )}
+                                    <FiatValue amount={target.amount || '0'} symbol={symbol}>
+                                        {fiatValue =>
+                                            fiatValue && (
+                                                <FiatBalance partial>
+                                                    <SmallBadge>{fiatValue}</SmallBadge>
+                                                </FiatBalance>
+                                            )
+                                        }
+                                    </FiatValue>
                                 </ExpandedWrapper>
                             </Row>
                         );
