@@ -17,9 +17,9 @@ import * as rippleActions from './sendFormSpecific/rippleActions';
  * Initialize current form, load values from session storage
  */
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { settings } = getState().wallet;
-    const { account } = getState().wallet.selectedAccount;
-    if (!account) return;
+    const { settings, selectedAccount } = getState().wallet;
+    if (selectedAccount.status !== 'loaded') return;
+    const { account } = selectedAccount;
 
     let cachedState = null;
     const feeInfo = getState().wallet.fees[account.symbol];

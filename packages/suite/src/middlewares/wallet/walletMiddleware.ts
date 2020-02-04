@@ -37,9 +37,9 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
 
     // leaving wallet app, reset account reducers
     if (prevRouter.app === 'wallet' && action.type === SUITE.APP_CHANGED) {
-        api.dispatch(selectedAccountActions.dispose());
-        api.dispatch(sendFormActions.dispose());
-        api.dispatch(receiveActions.dispose());
+        // api.dispatch(selectedAccountActions.dispose());
+        // api.dispatch(sendFormActions.dispose());
+        // api.dispatch(receiveActions.dispose());
     }
 
     const nextRouter = api.getState().router;

@@ -1,11 +1,11 @@
 import TrezorConnect from 'trezor-connect';
+import * as notificationActions from '@suite-actions/notificationActions';
 import { calculateTotal, getOutput, calculateMax } from '@wallet-utils/sendFormUtils';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { XRP_FLAG } from '@wallet-constants/sendForm';
 import { SEND } from '@wallet-actions/constants';
 import Bignumber from 'bignumber.js';
 import { PrecomposedTransactionXrp } from '@wallet-types/sendForm';
-import { NOTIFICATION } from '@suite-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 
 export type SendFormRippleActions =
@@ -16,9 +16,9 @@ export type SendFormRippleActions =
     Compose xrp transaction
  */
 export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { send } = getState().wallet;
-    const { account } = getState().wallet.selectedAccount;
-    if (!send || !account) return null;
+    const { send, selectedAccount } = getState().wallet;
+    if (!send || selectedAccount.status !== 'loaded') return null;
+    const { account } = selectedAccount;
 
     const output = getOutput(send.outputs, 0);
     const amountInSatoshi = networkAmountToSatoshi(output.amount.value, account.symbol).toString();
@@ -88,7 +88,7 @@ interface Payment {
  */
 export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     const { send, selectedAccount } = getState().wallet;
-    if (!send) return;
+    if (!send || selectedAccount.status !== 'loaded') return;
     const { account } = selectedAccount;
     // Fee must be in the range of 10 to 10,000 drops
     const { selectedFee, outputs, networkTypeRipple } = send;
@@ -124,16 +124,12 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 
     if (!signedTransaction || !signedTransaction.success) {
-        dispatch({
-            type: NOTIFICATION.ADD,
-            payload: {
-                variant: 'error',
-                title: 'Sign tx error', // TODO
-                message: signedTransaction.payload.error,
-                cancelable: true,
-                actions: [],
-            },
-        });
+        dispatch(
+            notificationActions.add({
+                type: 'sign-tx-error',
+                error: signedTransaction.payload.error,
+            }),
+        );
         return;
     }
 
@@ -143,28 +139,18 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 
     if (!push.success) {
-        dispatch({
-            type: NOTIFICATION.ADD,
-            payload: {
-                variant: 'error',
-                title: 'Error', // TODO
-                message: push.payload.error,
-                cancelable: true,
-                actions: [],
-            },
-        });
+        dispatch(
+            notificationActions.add({
+                type: 'sign-tx-error',
+                error: push.payload.error,
+            }),
+        );
     } else {
-        const { txid } = push.payload;
-
-        dispatch({
-            type: NOTIFICATION.ADD,
-            payload: {
-                variant: 'success',
-                title: 'success',
-                message: txid,
-                cancelable: true,
-                actions: [],
-            },
-        });
+        dispatch(
+            notificationActions.add({
+                type: 'sign-tx-success',
+                txid: push.payload.txid,
+            }),
+        );
     }
 };

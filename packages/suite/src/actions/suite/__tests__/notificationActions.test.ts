@@ -1,80 +1,66 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import notificationReducer, { NotificationEntry } from '@suite-reducers/notificationReducer';
+import suiteReducer from '@suite-reducers/suiteReducer';
+import notificationReducer from '@suite-reducers/notificationReducer';
 import * as notificationActions from '../notificationActions';
 
-const getInitialState = (): { notifications: NotificationEntry[] } => ({
-    notifications: [],
-});
+type SuiteState = ReturnType<typeof suiteReducer>;
+type NotificationState = ReturnType<typeof notificationReducer>;
+interface InitialState {
+    suite?: Partial<SuiteState>;
+    notifications?: NotificationState;
+}
 
-const getNotificationPayload = (data?: any) => ({
-    title: 'title',
-    variant: 'success',
-    id: 'foo-id',
-    cancelable: true,
-    ...data,
-});
+export const getInitialState = (state: InitialState | undefined) => {
+    const suite = state ? state.suite : undefined;
+    const notifications = state ? state.notifications : undefined;
+    return {
+        suite: {
+            ...suiteReducer(undefined, { type: 'foo' } as any),
+            ...suite,
+        },
+        notifications: notifications || notificationReducer(undefined, { type: 'foo' } as any),
+    };
+};
 
-const mockStore = configureStore<ReturnType<typeof getInitialState>, any>([thunk]);
+type State = ReturnType<typeof getInitialState>;
+const mockStore = configureStore<State, any>([thunk]);
 
-const updateStore = (store: ReturnType<typeof mockStore>) => {
+const initStore = (state: State) => {
+    const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { notifications } = store.getState();
+        const { suite, notifications } = store.getState();
+        store.getState().suite = suiteReducer(suite, action);
         store.getState().notifications = notificationReducer(notifications, action);
+        // add action back to stack
         store.getActions().push(action);
     });
+    return store;
 };
 
 describe('Notifications Actions', () => {
     it('add notifications', () => {
-        const store = mockStore(getInitialState());
-        updateStore(store);
-        store.dispatch(
-            notificationActions.add(getNotificationPayload({ title: 'first', variant: 'error' })),
-        );
+        const store = initStore(getInitialState(undefined));
+        store.dispatch(notificationActions.add({ type: 'tx-confirmed', txid: 'abcd' }));
         expect(store.getState().notifications.length).toEqual(1);
-        store.dispatch(
-            notificationActions.add(
-                getNotificationPayload({ title: 'second', variant: 'success', id: 'some-id' }),
-            ),
-        );
+        store.dispatch(notificationActions.add({ type: 'tx-confirmed', txid: 'xyz0' }));
         expect(store.getState().notifications.length).toEqual(2);
     });
 
     it('close notification by id', () => {
-        const store = mockStore(getInitialState());
-        updateStore(store);
-        store.getState().notifications = [
-            getNotificationPayload({ id: 'some-id' }),
-            getNotificationPayload({ id: 'other-id' }),
-        ];
-        store.dispatch(notificationActions.close({ id: 'some-id' }));
-        expect(store.getState().notifications.length).toEqual(1);
-        expect(store.getState().notifications[0]).toMatchObject({ id: 'other-id' });
-    });
-
-    it('close notification by devicePath', () => {
-        const store = mockStore(getInitialState());
-        updateStore(store);
-        store.getState().notifications = [
-            getNotificationPayload({ devicePath: '1' }),
-            getNotificationPayload({ devicePath: '2' }),
-        ];
-        store.dispatch(notificationActions.close({ devicePath: '1' }));
-        expect(store.getState().notifications.length).toEqual(1);
-        expect(store.getState().notifications[0]).toMatchObject({ devicePath: '2' });
-    });
-
-    it('close notification by key', () => {
-        const store = mockStore(getInitialState());
-        updateStore(store);
-        store.getState().notifications = [
-            getNotificationPayload({ key: '1' }),
-            getNotificationPayload({ key: '2' }),
-        ];
-        store.dispatch(notificationActions.close({ key: '1' }));
-        expect(store.getState().notifications.length).toEqual(1);
-        expect(store.getState().notifications[0]).toMatchObject({ key: '2' });
+        const store = initStore(
+            getInitialState({
+                notifications: [
+                    { id: 1, type: 'tx-confirmed', txid: 'abcd', device: undefined },
+                    { id: 2, type: 'tx-confirmed', txid: 'xyz0', device: undefined },
+                ],
+            }),
+        );
+        store.dispatch(notificationActions.close(1));
+        store.dispatch(notificationActions.close(10)); // does not exists
+        const { notifications } = store.getState();
+        expect(notifications.filter(n => !n.hidden).length).toEqual(1);
+        expect(notifications.filter(n => n.hidden).length).toEqual(1);
     });
 });

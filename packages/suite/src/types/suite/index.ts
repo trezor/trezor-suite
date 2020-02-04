@@ -77,6 +77,7 @@ export interface AcquiredDevice {
     connected: boolean; // device is connected
     available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
     authConfirm: boolean; // device cannot be used because passphrase was not confirmed
+    authFailed?: boolean; // device cannot be used because authorization process failed
     instance?: number;
     ts: number;
     buttonRequests: string[];
@@ -94,6 +95,7 @@ export interface UnknownDevice {
     // types below are here just for type compatibility with AcquiredDevice
     remember?: boolean;
     authConfirm?: undefined;
+    authFailed?: undefined;
     state?: string;
     ts: number;
     buttonRequests: string[];

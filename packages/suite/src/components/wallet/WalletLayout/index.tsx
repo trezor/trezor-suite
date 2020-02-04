@@ -1,41 +1,68 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
-import WalletNotifications from '@wallet-components/Notifications';
-import Content from '@wallet-components/Content';
-import DiscoveryProgress from '@wallet-components/DiscoveryProgress';
-import { AppState } from '@suite-types';
 import { SuiteLayout } from '@suite-components';
-import Menu from '@wallet-components/Menu';
+import { Menu, DiscoveryProgress } from '@wallet-components';
+import Loading from './components/Loading';
+import Exception from '@wallet-components/AccountException';
+import AccountMode from '@wallet-components/AccountMode';
+import AccountAnnouncement from '@wallet-components/AccountAnnouncement';
+import { AppState } from '@suite-types';
 
-const mapStateToProps = (state: AppState) => ({
-    router: state.router,
-    suite: state.suite,
-    wallet: state.wallet,
-});
+const Wrapper = styled.div<{ noPadding?: boolean }>`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 0px 32px 32px 32px;
+    padding-top: ${props => (props.noPadding ? '8px' : '16px')};
+    max-width: 1024px;
+`;
 
 type Props = {
     title?: string;
     children?: React.ReactNode;
-} & ReturnType<typeof mapStateToProps>;
-
-const ContentWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 0%;
-    overflow: auto;
-`;
+    account: AppState['wallet']['selectedAccount'];
+};
 
 const WalletLayout = (props: Props) => {
-    return (
-        <SuiteLayout title={props.title || 'Trezor Suite | Wallet'} secondaryMenu={<Menu />}>
-            <ContentWrapper>
+    const { account } = props;
+    const title = props.title || 'Trezor Suite | Wallet';
+
+    if (account.status === 'loading') {
+        return (
+            <SuiteLayout title={title} secondaryMenu={<Menu />}>
+                <Loading type={account.loader} />
+            </SuiteLayout>
+        );
+    }
+
+    if (account.status === 'exception') {
+        return (
+            <SuiteLayout title={title} secondaryMenu={<Menu />}>
                 <DiscoveryProgress />
-                <WalletNotifications />
-                <Content>{props.children}</Content>
-            </ContentWrapper>
+                <AccountMode mode={account.mode} />
+                <AccountAnnouncement selectedAccount={account} />
+                <Wrapper noPadding={!!account.mode}>
+                    <Exception account={account} />
+                </Wrapper>
+            </SuiteLayout>
+        );
+    }
+
+    // if (account.imported) {
+    // TODO
+    // }
+
+    return (
+        <SuiteLayout title={title} secondaryMenu={<Menu />}>
+            <DiscoveryProgress />
+            <AccountMode mode={account.mode} />
+            <AccountAnnouncement selectedAccount={account} />
+            <Wrapper noPadding={!!account.mode}>
+                {/* <WalletNotifications /> */}
+                {props.children}
+            </Wrapper>
         </SuiteLayout>
     );
 };
 
-export default connect(mapStateToProps)(WalletLayout);
+export default WalletLayout;

@@ -126,6 +126,8 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
         if (
             device &&
             device.connected &&
+            !device.authFailed &&
+            !device.authConfirm &&
             discovery &&
             (discovery.status === DISCOVERY.STATUS.IDLE ||
                 discovery.status >= DISCOVERY.STATUS.STOPPED)
