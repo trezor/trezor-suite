@@ -10,8 +10,11 @@ export const applySettings = (params: ApplySettingsParams) => async (
     getState: GetState,
 ) => {
     const { device } = getState().suite;
+    if (!device) return;
     const result = await TrezorConnect.applySettings({
-        device,
+        device: {
+            path: device.path,
+        },
         ...params,
     });
 
@@ -27,8 +30,11 @@ export const changePin = (params: ChangePinParams) => async (
     getState: GetState,
 ) => {
     const { device } = getState().suite;
+    if (!device) return;
     const result = await TrezorConnect.changePin({
-        device,
+        device: {
+            path: device.path,
+        },
         ...params,
     });
 
@@ -41,8 +47,11 @@ export const changePin = (params: ChangePinParams) => async (
 
 export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
+    if (!device) return;
     const result = await TrezorConnect.wipeDevice({
-        device,
+        device: {
+            path: device.path,
+        },
     });
 
     if (result.success) {
