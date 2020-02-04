@@ -18,7 +18,7 @@ const DeviceStatus = styled.div``;
 const DeviceRow = styled.div`
     height: 36px;
     color: ${colors.WHITE};
-    margin: 10px 0 0 0;
+    margin-top: 14px;
     display: flex;
     font-weight: bold;
     font-size: 90%;

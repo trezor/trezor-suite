@@ -1,39 +1,24 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
-import { colors, variables, Loader } from '@trezor/components-v2';
+import { Loader } from '@trezor/components-v2';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { sortByCoin } from '@wallet-utils/accountUtils';
 import { AppState, Dispatch } from '@suite-types';
 import { Account } from '@wallet-types';
+import { Translation } from '@suite-components';
 import AccountItem from './components/AccountItem/Container';
 import AddAccountButton from './components/AddAccount';
 import ToggleLegacyAccounts from './components/ToggleLegacyAccounts';
 import messages from '@suite/support/messages';
 
-const Wrapper = styled.div``;
-
-const LoadingWrapper = styled.div`
-    display: flex;
-    padding: 15px;
-    justify-content: center;
-    align-items: center;
-`;
-
-const LoadingText = styled.div`
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.BLACK50};
-    padding-left: 10px;
-`;
-
 const TitleWrapper = styled.div`
     display: flex;
     justify-content: space-between;
-    margin: 36px 0px 16px 0px;
+    margin: 24px 0px 16px 0px;
     padding: 0px 12px;
 `;
 
@@ -67,24 +52,22 @@ interface State {
     legacyVisible: boolean;
 }
 
-const DiscoveryStatus = () => (
-    <Wrapper>
-        <LoadingWrapper>
-            <Loader size={15} />
-            <LoadingText>
-                <Translation {...messages.TR_LOADING_ACCOUNTS} />
-                {/* todo: if you want dots "..." use Loader.Dots from onboarding */}
-            </LoadingText>
-        </LoadingWrapper>
-    </Wrapper>
-);
-
 const Menu = ({ device, accounts, selectedAccount, getDiscoveryForDevice, openModal }: Props) => {
     const [legacyVisibleState, setLegacyVisibleState] = useState<State['legacyVisible']>(false);
     const discovery = getDiscoveryForDevice();
     if (!device || !discovery) {
-        return <DiscoveryStatus />;
+        return (
+            <TitleWrapper>
+                <TitleText>
+                    <Translation {...messages.TR_ACCOUNTS_MENU_TITLE} />
+                </TitleText>{' '}
+                <TitleActions>
+                    <Loader size={16} />
+                </TitleActions>
+            </TitleWrapper>
+        );
     }
+
     const discoveryIsRunning = discovery.status <= DISCOVERY.STATUS.STOPPING;
     const failed: any[] = discovery.failed.map(f => ({
         ...f,
@@ -118,24 +101,31 @@ const Menu = ({ device, accounts, selectedAccount, getDiscoveryForDevice, openMo
         legacyVisible = !!legacyAccountIsSelected;
     }
 
+    // TODO: add more cases when adding account is not possible
+    const addAccountVisible = !discoveryIsRunning;
+
     return (
-        <Wrapper>
+        <>
             <TitleWrapper>
-                <TitleText>Accounts</TitleText>{' '}
+                <TitleText>
+                    <Translation {...messages.TR_ACCOUNTS_MENU_TITLE} />
+                </TitleText>{' '}
                 <TitleActions>
-                    <AddAccountButton
-                        onClick={() =>
-                            openModal({
-                                type: 'add-account',
-                                device,
-                            })
-                        }
-                        disabled={discovery.status !== DISCOVERY.STATUS.COMPLETED}
-                        tooltipContent={<Translation {...messages.TR_ADD_ACCOUNT} />}
-                    />
+                    {discoveryIsRunning && <Loader size={16} />}
+                    {addAccountVisible && (
+                        <AddAccountButton
+                            onClick={() =>
+                                openModal({
+                                    type: 'add-account',
+                                    device,
+                                })
+                            }
+                            disabled={discovery.status !== DISCOVERY.STATUS.COMPLETED}
+                            tooltipContent={<Translation {...messages.TR_ADD_ACCOUNT} />}
+                        />
+                    )}
                 </TitleActions>
             </TitleWrapper>
-            {discoveryIsRunning && list.length === 0 && <DiscoveryStatus />}
             {normalAccounts.map(account => (
                 <AccountItem
                     account={account}
@@ -143,7 +133,6 @@ const Menu = ({ device, accounts, selectedAccount, getDiscoveryForDevice, openMo
                     key={`${account.descriptor}-${account.symbol}`}
                 />
             ))}
-            {discoveryIsRunning && list.length > 0 && <DiscoveryStatus />}
             {legacyAccounts.length > 0 && (
                 <ToggleLegacyAccounts
                     onToggle={() => setLegacyVisibleState(!legacyVisible)}
@@ -158,7 +147,7 @@ const Menu = ({ device, accounts, selectedAccount, getDiscoveryForDevice, openMo
                         key={`${account.descriptor}-${account.symbol}`}
                     />
                 ))}
-        </Wrapper>
+        </>
     );
 };
 
