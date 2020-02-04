@@ -194,7 +194,7 @@ const Button = ({
         <Wrapper
             variant={variant}
             size={size}
-            onChange={isDisabled ? () => {} : onChange}
+            onChange={onChange}
             isDisabled={isDisabled}
             disabled={isDisabled || isLoading}
             fullWidth={fullWidth}
