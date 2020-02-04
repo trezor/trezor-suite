@@ -8,11 +8,12 @@ import AccountMode from '@wallet-components/AccountMode';
 import AccountAnnouncement from '@wallet-components/AccountAnnouncement';
 import { AppState } from '@suite-types';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ noPadding?: boolean }>`
     display: flex;
     flex: 1;
     flex-direction: column;
-    padding: 40px 35px 40px 35px;
+    padding: 0px 32px 32px 32px;
+    padding-top: ${props => (props.noPadding ? '8px' : '16px')};
     max-width: 1024px;
 `;
 
@@ -29,9 +30,7 @@ const WalletLayout = (props: Props) => {
     if (account.status === 'loading') {
         return (
             <SuiteLayout title={title} secondaryMenu={<Menu />}>
-                <Wrapper>
-                    <Loading type={account.loader} />
-                </Wrapper>
+                <Loading type={account.loader} />
             </SuiteLayout>
         );
     }
@@ -42,19 +41,23 @@ const WalletLayout = (props: Props) => {
                 <DiscoveryProgress />
                 <AccountMode mode={account.mode} />
                 <AccountAnnouncement selectedAccount={account} />
-                <Wrapper>
+                <Wrapper noPadding={!!account.mode}>
                     <Exception account={account} />
                 </Wrapper>
             </SuiteLayout>
         );
     }
 
+    // if (account.imported) {
+    // TODO
+    // }
+
     return (
         <SuiteLayout title={title} secondaryMenu={<Menu />}>
             <DiscoveryProgress />
             <AccountMode mode={account.mode} />
             <AccountAnnouncement selectedAccount={account} />
-            <Wrapper>
+            <Wrapper noPadding={!!account.mode}>
                 {/* <WalletNotifications /> */}
                 {props.children}
             </Wrapper>

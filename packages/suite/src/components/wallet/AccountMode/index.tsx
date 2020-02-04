@@ -1,16 +1,11 @@
 import React from 'react';
-import styled from 'styled-components';
-import { H2 } from '@trezor/components-v2';
 import { AccountWatchOnlyMode } from '@wallet-reducers/selectedAccountReducer';
-import AuthConfirm from './AuthConfirm';
 
-const Content = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 520px;
-    background: red;
-`;
+import AuthConfirmFailed from './AuthConfirmFailed';
+import DeviceDisconnected from './DeviceDisconnected';
+import LoadingOtherAccounts from './LoadingOtherAccounts';
+import BackendDisconnected from './BackendDisconnected';
+import DeviceUnavailable from './DeviceUnavailable';
 
 interface Props {
     mode: AccountWatchOnlyMode[] | undefined;
@@ -18,17 +13,25 @@ interface Props {
 
 export default (props: Props) => {
     if (!props.mode) return null;
-    const badges = props.mode.map(m => {
-        switch (m) {
-            case 'auth-confirm-failed':
-                return <AuthConfirm />;
-            default:
-                return (
-                    <Content key={m}>
-                        <H2>{m}</H2>
-                    </Content>
-                );
-        }
-    });
-    return <>{badges}</>;
+    return (
+        <>
+            {props.mode.map(m => {
+                switch (m) {
+                    case 'auth-confirm-failed':
+                        return <AuthConfirmFailed key={m} />;
+                    case 'account-loading-others':
+                        return <LoadingOtherAccounts key={m} />;
+                    case 'device-disconnected':
+                        return <DeviceDisconnected key={m} />;
+                    case 'backend-disconnected':
+                        return <BackendDisconnected key={m} />;
+                    case 'device-unavailable':
+                        return <DeviceUnavailable key={m} />;
+                    default:
+                        // return <>{m} not implemented</>;
+                        return null;
+                }
+            })}
+        </>
+    );
 };
