@@ -48,7 +48,6 @@ interface Props {
 
 const Layout = (props: Props) => (
     <Wrapper>
-        {console.log('props.bottom', props.bottom)}
         <Row>
             <Left>{props.left}</Left>
             <Right>{props.right || ''}</Right>

@@ -8,7 +8,7 @@ import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import TrezorConnect from 'trezor-connect';
 
-import * as sendFormActions from './sendFormActions';
+import * as commonActions from './sendFormCommonActions';
 
 /*
     Compose transaction
@@ -116,7 +116,7 @@ export const addRecipient = () => (dispatch: Dispatch, getState: GetState) => {
         newOutput,
     });
 
-    dispatch(sendFormActions.cache());
+    dispatch(commonActions.cache());
 };
 
 /**
@@ -128,7 +128,7 @@ export const removeRecipient = (outputId: number) => (dispatch: Dispatch, getSta
     if (!send || !account) return null;
 
     dispatch({ type: SEND.BTC_REMOVE_RECIPIENT, outputId });
-    dispatch(sendFormActions.cache());
+    dispatch(commonActions.cache());
 };
 
 /*
@@ -164,7 +164,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 
     if (resp.success) {
-        dispatch(sendFormActions.clear());
+        dispatch(commonActions.clear());
         dispatch(
             notificationActions.add({
                 variant: 'success',

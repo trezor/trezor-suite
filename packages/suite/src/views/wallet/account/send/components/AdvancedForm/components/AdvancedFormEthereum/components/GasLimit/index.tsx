@@ -19,14 +19,14 @@ const getError = (error: State['networkTypeEthereum']['gasLimit']['error']) => {
 
 export default ({ send, sendFormActionsEthereum, account }: Props) => {
     if (!send || !account) return null;
-    const { label } = send.selectedFee;
-    const { gasLimit } = send.networkTypeEthereum;
+    const { selectedFee } = send;
+    const { gasLimit, data } = send.networkTypeEthereum;
     const { error, value } = gasLimit;
 
     return (
         <Input
             variant="small"
-            disabled={label === 'custom'}
+            disabled={selectedFee.label === 'custom' && data.value !== null}
             state={getInputState(error, value, true)}
             topLabel="Gas limit"
             bottomText={getError(error)}

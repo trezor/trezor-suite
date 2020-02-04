@@ -15,25 +15,30 @@ import ethUnits from 'ethereumjs-units';
 import * as bitcoinActions from './sendFormBitcoinActions';
 import * as ethereumActions from './sendFormEthereumActions';
 import * as rippleActions from './sendFormRippleActions';
+import * as commonActions from './sendFormCommonActions';
 
 /**
  * Initialize current form, load values from session storage
  */
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
+    // const { settings, send } = getState().wallet;
     const { settings } = getState().wallet;
     const { account } = getState().wallet.selectedAccount;
     if (!account) return;
 
-    let cachedState = null;
+    // let cachedState = null;
     const convertedEthLevels: FeeLevel[] = [];
     const feeInfo = getState().wallet.fees[account.symbol];
 
-    const initialLevels: FeeLevel[] = feeInfo.levels.concat({
-        label: 'custom',
-        feePerUnit: '0',
-        value: '0',
-        blocks: 0,
-    });
+    const initialLevels: FeeLevel[] =
+        account.networkType === 'ethereum'
+            ? feeInfo.levels
+            : feeInfo.levels.concat({
+                  label: 'custom',
+                  feePerUnit: '0',
+                  value: '0',
+                  blocks: 0,
+              });
 
     if (account.networkType === 'ethereum') {
         initialLevels.forEach(level =>
@@ -46,10 +51,10 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     const levels = account.networkType === 'ethereum' ? convertedEthLevels : initialLevels;
     const firstFeeLevel = levels.find(l => l.label === 'normal') || levels[0];
-    const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
-    const cachedItem = await storageActions.loadSendForm(accountKey);
+    // const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
+    // const cachedItem = await storageActions.loadSendForm(accountKey);
 
-    cachedState = cachedItem;
+    // cachedState = cachedItem;
 
     const localCurrency = getLocalCurrency(settings.localCurrency);
 
@@ -74,20 +79,10 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                 data: { value: null, error: null },
             },
             selectedFee: firstFeeLevel,
-            ...cachedState,
+            // ...cachedState,
         },
         localCurrency,
     });
-};
-
-export const cache = () => async (_dispatch: Dispatch, getState: GetState) => {
-    const { account } = getState().wallet.selectedAccount;
-    const { send } = getState().wallet;
-    if (!account || !send) return null;
-
-    const id = getAccountKey(account.descriptor, account.symbol, account.deviceState);
-    const sendFormState = send;
-    storageActions.saveSendForm(sendFormState, id);
 };
 
 export const compose = (setMax = false) => async (dispatch: Dispatch, getState: GetState) => {
@@ -108,7 +103,7 @@ export const compose = (setMax = false) => async (dispatch: Dispatch, getState: 
     }
 };
 
-export const applyChange = (composeBy?: 'address' | 'amount') => (
+export const composeChange = (composeBy?: 'address' | 'amount') => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -131,7 +126,7 @@ export const applyChange = (composeBy?: 'address' | 'amount') => (
         }
     }
 
-    dispatch(cache());
+    dispatch(commonActions.cache());
 };
 
 /*
@@ -153,7 +148,7 @@ export const handleAddressChange = (outputId: number, address: string) => (
         currentAccountAddress: account.descriptor,
     });
 
-    dispatch(applyChange('address'));
+    dispatch(composeChange('address'));
 };
 
 /*
@@ -191,7 +186,7 @@ export const handleAmountChange = (outputId: number, amount: string) => (
         availableBalance: account.formattedBalance,
     });
 
-    dispatch(applyChange('amount'));
+    dispatch(composeChange('amount'));
 };
 
 /*
@@ -237,7 +232,7 @@ export const handleSelectCurrencyChange = (
         localCurrency,
     });
 
-    dispatch(applyChange('amount'));
+    dispatch(composeChange('amount'));
 };
 
 /*
@@ -274,7 +269,7 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
         availableBalance: account.formattedBalance,
     });
 
-    dispatch(applyChange('amount'));
+    dispatch(composeChange('amount'));
 };
 
 /*
@@ -285,7 +280,6 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
 
     if (!fiat || !send || selectedAccount.status !== 'loaded') return null;
     const { account, network } = selectedAccount;
-
     const composedTransaction = await dispatch(compose(true));
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
@@ -337,7 +331,7 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
         });
     }
 
-    dispatch(applyChange('amount'));
+    dispatch(composeChange('amount'));
 };
 
 /*
@@ -362,7 +356,7 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
         });
     }
 
-    dispatch(applyChange());
+    dispatch(composeChange());
 };
 
 /*
@@ -391,7 +385,7 @@ export const handleCustomFeeValueChange = (customFee: string) => (
         },
     });
 
-    dispatch(applyChange());
+    dispatch(composeChange());
 };
 
 /*
@@ -403,25 +397,7 @@ export const toggleAdditionalFormVisibility = () => (dispatch: Dispatch, getStat
     if (!send || !account) return;
 
     dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
-    dispatch(cache());
-};
-
-/*
-    Clear to default state
-*/
-export const clear = () => (dispatch: Dispatch, getState: GetState) => {
-    const { send, settings } = getState().wallet;
-    const { account } = getState().wallet.selectedAccount;
-    if (!send || !account) return;
-
-    const localCurrency = getLocalCurrency(settings.localCurrency);
-
-    dispatch({ type: SEND.CLEAR, localCurrency });
-    // remove sendForm from the DB here or in storageMiddleware on SEND.CLEAR?
-    storageActions.removeSendForm(
-        getAccountKey(account.descriptor, account.symbol, account.deviceState),
-    );
-    dispatch(cache());
+    dispatch(commonActions.cache());
 };
 
 export const dispose = () => (dispatch: Dispatch, _getState: GetState) => {
@@ -439,4 +415,12 @@ export const onQrScan = (parsedUri: ParsedURI, outputId: number) => (dispatch: D
     if (amount) {
         dispatch(handleAmountChange(outputId, amount));
     }
+};
+
+/*
+    Clear to default state
+*/
+export const clear = () => (dispatch: Dispatch) => {
+    dispatch(commonActions.clear());
+    dispatch(init());
 };

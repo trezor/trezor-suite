@@ -1,17 +1,18 @@
 import { Dispatch, GetState } from '@suite-types';
 import { SEND } from '@wallet-actions/constants';
-import { applyChange } from './sendFormActions';
-// @ts-ignore
-import ethUnits from 'ethereumjs-units';
-import TrezorConnect from 'trezor-connect';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import {
+    prepareEthereumTransaction,
+    calculateEthFee,
     calculateMax,
     calculateTotal,
     getOutput,
-    calculateEthFee,
 } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
+// @ts-ignore
+import ethUnits from 'ethereumjs-units';
+import TrezorConnect from 'trezor-connect';
+import { composeChange } from './sendFormActions';
 
 /*
     Compose eth transaction
@@ -70,8 +71,63 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
 /*
     Sign transaction
  */
-export const send = () => async () => {
-    console.log('send');
+export const send = () => async (dispatch: Dispatch, getState: GetState) => {
+    const { selectedAccount, send } = getState().wallet;
+    const selectedDevice = getState().suite.device;
+    if (selectedAccount.status !== 'loaded' || !send || !selectedDevice) return null;
+    const { account, network } = selectedAccount;
+    if (account.networkType !== 'ethereum') return null;
+
+    const output = getOutput(send.outputs, 0);
+    const { address, amount } = output;
+    const { networkTypeEthereum } = send;
+    const { data, gasPrice, gasLimit } = networkTypeEthereum;
+
+    const transaction = prepareEthereumTransaction({
+        network: network.symbol,
+        token: null,
+        from: account.descriptor,
+        to: address.value,
+        amount: amount.value,
+        data: data.value,
+        gasLimit: gasLimit.value,
+        gasPrice: gasPrice.value,
+        nonce: account.misc.nonce,
+    });
+
+    console.log('transaction', transaction);
+
+    // // @ts-ignore
+    // const response = await TrezorConnect.ethereumSignTransaction({
+    //     device: {
+    //         path: selectedDevice.path,
+    //         instance: selectedDevice.instance,
+    //         state: selectedDevice.state,
+    //     },
+    //     useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
+    //     path: account.path,
+    //     transaction,
+    // });
+
+    // if (response.success) {
+    //     dispatch(commonActions.clear());
+    //     dispatch(
+    //         notificationActions.add({
+    //             variant: 'success',
+    //             title: `Success: ${response.payload.txid}`,
+    //             cancelable: true,
+    //         }),
+    //     );
+    //     dispatch(accountActions.fetchAndUpdateAccount(account));
+    // } else {
+    //     dispatch(
+    //         notificationActions.add({
+    //             variant: 'error',
+    //             title: `Error: ${resp.payload.error}`,
+    //             cancelable: true,
+    //         }),
+    //     );
+    // }
 };
 
 /*
@@ -102,7 +158,7 @@ export const handleGasPrice = (gasPrice: string) => (dispatch: Dispatch, getStat
         },
     });
 
-    dispatch(applyChange());
+    dispatch(composeChange());
 };
 
 /*
@@ -128,7 +184,7 @@ export const handleGasLimit = (gasLimit: string) => (dispatch: Dispatch, getStat
         },
     });
 
-    dispatch(applyChange());
+    dispatch(composeChange());
 };
 
 /*
@@ -156,6 +212,7 @@ export const handleData = (data: string) => async (dispatch: Dispatch, getState:
         },
     });
 
+    // @ts-ignore
     const level = newFeeLevels.payload.levels[0];
     const gasLimit = level.feeLimit;
     const gasPrice = ethUnits.convert(level.feePerUnit, 'wei', 'gwei');

@@ -31,7 +31,7 @@ cache:
         - packages/translations-manager/lib
 
 variables:
-    DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
+    DEV_SERVER_URL: "https://suite.corp.sldev.cz"
     PACKAGE_PATH_COMPONENTS: packages/components-storybook
     PACKAGE_PATH_SUITE_DESKTOP: packages/suite-desktop
     PACKAGE_PATH_SUITE_NATIVE: packages/suite-native

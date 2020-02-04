@@ -120,7 +120,7 @@ export default ({ fiat, sendFormActions, intl, output, selectedAccount }: Props)
                     onChange={e => sendFormActions.handleAmountChange(id, e.target.value)}
                     bottomText={getMessage(error, decimals)}
                 />
-                <CurrencySelect key="currency-select" symbol={symbol} />
+                <CurrencySelect key="currency-select" symbol={symbol} tokens={account.tokens} />
             </Left>
             {hasRates(fiat, localCurrency.value, symbol) && (
                 <>

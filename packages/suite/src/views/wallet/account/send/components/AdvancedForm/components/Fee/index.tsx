@@ -116,7 +116,11 @@ const getValue = (
 
     if (networkType === 'ethereum') {
         const fee = calculateEthFee(option.feePerUnit, option.feeLimit || '0');
-        return `${ethUnits.convert(fee, 'gwei', 'eth')} ${symbol.toUpperCase()}`;
+        try {
+            return `${ethUnits.convert(fee, 'gwei', 'eth')} ${symbol.toUpperCase()}`;
+        } catch (err) {
+            return option.value;
+        }
     }
 
     return `${formatNetworkAmount(option.value, symbol)} ${symbol.toUpperCase()}`;
