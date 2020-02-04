@@ -152,7 +152,7 @@ const TransactionList = ({
                                                             <FiatDayAmount>
                                                                 <Badge>{fiatValue}</Badge>
                                                             </FiatDayAmount>
-                                                        ) 
+                                                        )
                                                     }
                                                 </FiatValue>
                                             </DayAmountWrapper>

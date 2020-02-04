@@ -16,7 +16,7 @@ type OwnProps = {
         fiatValue: JSX.Element | null,
         fiatRateValue?: number | null,
         timestamp?: number | null,
-    ) => React.ReactElement;
+    ) => React.ReactElement | null;
 };
 
 export type Props = ReturnType<typeof mapStateToProps> & OwnProps;
