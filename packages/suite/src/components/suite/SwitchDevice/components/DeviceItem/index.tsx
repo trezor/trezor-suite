@@ -169,8 +169,8 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                     </DeviceImageWrapper>
                     <Col grow={1}>
                         <DeviceTitle>{device.label}</DeviceTitle>
-                        <DeviceStatus color={deviceUtils.getStatusColor(deviceStatus)}>
-                            {deviceUtils.getStatusName(deviceStatus, props.intl)}
+                        <DeviceStatus color={device.connected ? colors.GREEN : colors.BLACK50}>
+                            {device.connected ? messages.TR_CONNECTED : messages.TR_DISCONNECTED}
                         </DeviceStatus>
                     </Col>
 

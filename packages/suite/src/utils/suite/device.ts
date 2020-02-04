@@ -1,6 +1,3 @@
-import { WrappedComponentProps } from 'react-intl';
-import { colors } from '@trezor/components-v2';
-import messages from '@suite/support/messages';
 import { Device } from 'trezor-connect';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
 
@@ -43,51 +40,6 @@ export const getStatus = (device: TrezorDevice): string => {
         return 'unreadable';
     }
     return 'unknown';
-};
-
-export const getStatusName = (
-    deviceStatus: string,
-    intl: WrappedComponentProps['intl'],
-): string => {
-    switch (deviceStatus) {
-        case 'connected':
-        case 'bootloader':
-        case 'initialize':
-        case 'seedless':
-        case 'firmware-required':
-        case 'firmware-recommended':
-        case 'used-in-other-window':
-        case 'was-used-in-other-window':
-        case 'unacquired':
-        case 'unavailable':
-        case 'unreadable':
-            return intl.formatMessage(messages.TR_CONNECTED);
-        case 'disconnected':
-            return intl.formatMessage(messages.TR_DISCONNECTED);
-        default:
-            return intl.formatMessage(messages.TR_STATUS_UNKNOWN);
-    }
-};
-
-export const getStatusColor = (deviceStatus: string): string => {
-    switch (deviceStatus) {
-        case 'connected':
-        case 'bootloader':
-        case 'initialize':
-        case 'seedless':
-        case 'firmware-recommended':
-        case 'used-in-other-window':
-        case 'was-used-in-other-window':
-        case 'unacquired':
-        case 'firmware-required':
-        case 'unavailable':
-        case 'unreadable':
-            return colors.GREEN;
-        case 'disconnected':
-            return colors.BLACK50;
-        default:
-            return colors.BLACK50;
-    }
 };
 
 export const deviceNeedsAttention = (deviceStatus: string): boolean => {

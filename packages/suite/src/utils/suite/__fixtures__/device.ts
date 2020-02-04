@@ -12,80 +12,69 @@ const getStatus = [
         device: SUITE_DEVICE,
         status: 'disconnected',
         name: messages.TR_DISCONNECTED.defaultMessage,
-        color: colors.BLACK50,
     },
     {
         device: getSuiteDevice({ connected: true, available: false }),
         status: 'unavailable',
         name: messages.TR_UNAVAILABLE.defaultMessage,
-        color: colors.RED,
     },
     {
         device: getSuiteDevice({ ...connected, mode: 'bootloader' }),
         status: 'bootloader',
         name: messages.TR_CONNECTED_BOOTLOADER.defaultMessage,
-        color: colors.BLACK50,
     },
     {
         device: getSuiteDevice({ ...connected, mode: 'initialize' }),
         status: 'initialize',
         name: messages.TR_CONNECTED_NOT_INITIALIZED.defaultMessage,
-        color: colors.BLACK50,
     },
     {
         device: getSuiteDevice({ ...connected, mode: 'seedless' }),
         status: 'seedless',
         name: messages.TR_CONNECTED_SEEDLESS.defaultMessage,
-        color: colors.BLACK50,
     },
     {
         device: getSuiteDevice({ ...connected, firmware: 'required' }),
         status: 'firmware-required',
         name: messages.TR_CONNECTED_UPDATE_REQUIRED.defaultMessage,
-        color: colors.RED,
     },
     {
         device: getSuiteDevice({ ...connected, status: 'occupied' }),
         status: 'used-in-other-window',
         name: messages.TR_USED_IN_ANOTHER_WINDOW.defaultMessage,
-        color: colors.BLACK50,
+        color: colors.GREEN,
     },
     {
         device: getSuiteDevice({ ...connected, status: 'used' }),
         status: 'was-used-in-other-window',
         name: messages.TR_WAS_USED_IN_ANOTHER_WINDOW.defaultMessage,
-        color: colors.BLACK50,
+        color: colors.GREEN,
     },
     {
         device: getSuiteDevice({ ...connected, firmware: 'outdated' }),
         status: 'firmware-recommended',
         name: messages.TR_CONNECTED_UPDATE_RECOMMENDED.defaultMessage,
-        color: colors.BLACK50,
     },
     {
         device: getSuiteDevice(connected),
         status: 'connected',
         name: messages.TR_CONNECTED.defaultMessage,
-        color: colors.GREEN,
     },
     {
         device: getSuiteDevice({ type: 'unacquired' }),
         status: 'unacquired',
         name: messages.TR_USED_IN_ANOTHER_WINDOW.defaultMessage,
-        color: colors.BLACK50,
     },
     {
         device: getSuiteDevice({ type: 'unreadable' }),
         status: 'unreadable',
         name: messages.TR_UNREADABLE.defaultMessage,
-        color: colors.RED,
     },
     {
         // @ts-ignore: invalid type
         device: getSuiteDevice({ type: 'unknown' }),
         status: 'unknown',
         name: messages.TR_STATUS_UNKNOWN.defaultMessage,
-        color: colors.BLACK50,
     },
 ];
 
