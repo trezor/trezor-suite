@@ -39,6 +39,7 @@ const getIcon = (variant: Props['variant']) => {
 };
 
 const Wrapper = styled(Card)<{ variant: Props['variant'] }>`
+    max-width: 1024px;
     border: 1px solid ${props => getBorderColor(props.variant)};
     color: ${props => getTextColor(props.variant)};
     margin: 8px 32px;
