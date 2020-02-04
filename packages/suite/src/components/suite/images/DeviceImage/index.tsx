@@ -14,7 +14,7 @@ const getDeviceImage = (majorVersion: number) => {
         case 2:
             return 'T2';
         default:
-            return 'T2';
+            return 'TUnknown';
     }
 };
 
