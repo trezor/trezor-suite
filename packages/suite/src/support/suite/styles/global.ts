@@ -1,4 +1,3 @@
-import { colors } from '@trezor/components';
 import animations from './animations';
 import { notifications } from './notifications';
 
@@ -14,7 +13,7 @@ export default `
     }
 
     body, html {
-      background: ${colors.WHITE};
+      background: white;
       font-size: 14px;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;

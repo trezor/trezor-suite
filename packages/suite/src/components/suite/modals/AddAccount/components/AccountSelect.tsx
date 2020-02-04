@@ -1,7 +1,6 @@
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { colors, variables } from '@trezor/components';
-import { Button } from '@trezor/components-v2';
+import { Button, colors, variables } from '@trezor/components-v2';
 import { NETWORKS } from '@wallet-config';
 import { Account, ExternalNetwork, Network } from '@wallet-types';
 import { getTypeForNetwork } from '@wallet-utils/accountUtils';
@@ -27,8 +26,8 @@ const AccountNameWrapper = styled.div`
 `;
 
 const AccountName = styled.div`
-    font-size: ${variables.FONT_SIZE.BIG};
-    color: ${colors.TEXT_PRIMARY};
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    color: ${colors.BLACK50};
     text-transform: uppercase;
 `;
 

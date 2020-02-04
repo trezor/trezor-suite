@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { P, Prompt } from '@trezor/components';
+import { Prompt } from '@trezor/components';
+import { P } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { Dispatch, TrezorDevice } from '@suite-types';

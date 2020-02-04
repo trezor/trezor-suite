@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { ToastContainer as NotificationsContainer } from 'react-toastify';
 import { bindActionCreators } from 'redux';
 import { SUITE } from '@suite-actions/constants';
-import { Modal as ModalComponent } from '@trezor/components';
+import { Modal as ModalComponent } from '@trezor/components-v2';
 import Loading from '@suite-components/Loading';
 import Modals from '@suite-components/modals';
 import * as routerActions from '@suite-actions/routerActions';
@@ -14,6 +14,7 @@ import Firmware from '@firmware-views';
 import Onboarding from '@onboarding-views';
 import SeedInput from '@seed-input-views';
 import {
+    Analytics,
     Bridge,
     DeviceAcquire,
     DeviceBootloader,
@@ -98,6 +99,8 @@ const getModalApplication = (route: Props['router']['route']) => {
     switch (route.app) {
         case 'welcome':
             return Welcome;
+        case 'analytics':
+            return Analytics;
         case 'firmware':
             return Firmware;
         case 'onboarding':

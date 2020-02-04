@@ -11,7 +11,6 @@ import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as connectActions from '@onboarding-actions/connectActions';
 import * as STEP from '@onboarding-constants/steps';
 import steps from '@onboarding-config/steps';
-import { STEP_HEIGHT, STEP_HEIGHT_UNIT } from '@onboarding-config/layout';
 import { getFnForRule } from '@onboarding-utils/rules';
 import { URLS } from '@suite-constants';
 
@@ -67,7 +66,7 @@ const IconsWrapper = styled.div`
 const ComponentWrapper = styled.div`
     display: flex;
     justify-content: center;
-    min-height: ${`${STEP_HEIGHT}${STEP_HEIGHT_UNIT}`};
+    min-height: 65vh;
 `;
 
 // used to position modal to center

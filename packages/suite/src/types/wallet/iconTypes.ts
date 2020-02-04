@@ -1,4 +1,4 @@
-import { IconProps } from '@trezor/components';
+import { IconProps } from '@trezor/components-v2';
 
 export interface Icon {
     size: number;
