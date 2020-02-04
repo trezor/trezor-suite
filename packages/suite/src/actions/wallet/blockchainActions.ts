@@ -15,7 +15,7 @@ import { State as FeeState } from '@wallet-reducers/feesReducer';
 import { SETTINGS } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
 import { Dispatch, GetState } from '@suite-types';
-import { Account } from '@wallet-types';
+import { Account, Network } from '@wallet-types';
 import { BLOCKCHAIN } from './constants';
 
 // Conditionally subscribe to blockchain backend
@@ -149,6 +149,17 @@ export const subscribe = () => async (_dispatch: Dispatch, getState: GetState) =
     });
 
     return Promise.all(promises);
+};
+
+export const reconnect = (symbol: Network['symbol']) => async (
+    _dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { accounts } = getState().wallet;
+    return TrezorConnect.blockchainSubscribe({
+        accounts: accounts.filter(a => a.symbol === symbol),
+        coin: symbol,
+    });
 };
 
 const isAccountOutdated = (account: Account, accountInfo: AccountInfo) => (

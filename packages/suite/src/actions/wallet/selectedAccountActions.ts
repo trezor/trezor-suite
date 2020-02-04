@@ -1,3 +1,4 @@
+import { BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN } from 'trezor-connect';
 import { ROUTER, SUITE } from '@suite-actions/constants';
 import { ACCOUNT, DISCOVERY, BLOCKCHAIN } from '@wallet-actions/constants';
 import { NETWORKS } from '@wallet-config';
@@ -189,6 +190,7 @@ const actions = [
             typeof v === 'string' && v !== ACCOUNT.UPDATE_SELECTED_ACCOUNT && v !== ACCOUNT.DISPOSE,
     ), // exported values got unwanted "__esModule: true" as first element
     ...Object.values(BLOCKCHAIN).filter(v => typeof v === 'string'),
+    ...Object.values(TREZOR_CONNECT_BLOCKCHAIN).filter(v => typeof v === 'string'),
     ...Object.values(DISCOVERY).filter(v => typeof v === 'string'),
 ];
 
