@@ -746,10 +746,6 @@ const definedMessages = defineMessages({
         description: 'Used as a label for message input field in Sign and Verify form',
         id: 'TR_MESSAGE',
     },
-    TR_MINIMUM_ACCOUNT_RESERVE_REQUIRED: {
-        defaultMessage: 'Minimum account reserve required',
-        id: 'TR_MINIMUM_ACCOUNT_RESERVE_REQUIRED',
-    },
     TR_MODEL_ONE: {
         defaultMessage: 'Model one',
         description: 'Name of Trezor model 1',
@@ -1046,10 +1042,25 @@ const definedMessages = defineMessages({
         defaultMessage: 'Retrying...',
         id: 'TR_RETRYING_DOT_DOT',
     },
-    TR_RIPPLE_ADDRESSES_REQUIRE_MINIMUM_BALANCE: {
+    TR_XRP_RESERVE_INFO: {
         defaultMessage:
             'Ripple addresses require a minimum balance of {minBalance} XRP to activate and maintain the account. {TR_LEARN_MORE}',
-        id: 'TR_RIPPLE_ADDRESSES_REQUIRE_MINIMUM_BALANCE',
+        id: 'TR_XRP_RESERVE_INFO',
+    },
+    TR_LTC_ADDRESS_INFO: {
+        defaultMessage:
+            'Litecoin changed the format of addresses. Find more info about how to convert your address on our blog. {TR_LEARN_MORE}',
+        id: 'TR_LTC_ADDRESS_INFO',
+    },
+    TR_BCH_ADDRESS_INFO: {
+        defaultMessage:
+            'Bitcoin Cash changed the format of addresses to cashaddr. Use external tool to convert legacy addresses to the new format. {TR_LEARN_MORE}',
+        id: 'TR_BCH_ADDRESS_INFO',
+    },
+    TR_ACCOUNT_IMPORTED_ANNOUNCEMENT: {
+        defaultMessage:
+            'A watch-only account is a public address you’ve imported into your wallet, allowing the wallet to watch for outputs but not spend them.',
+        id: 'TR_ACCOUNT_IMPORTED_ANNOUNCEMENT',
     },
     TR_SCAN_QR_CODE: {
         defaultMessage: 'Scan QR code',
