@@ -194,7 +194,7 @@ const Button = ({
             size={size}
             onChange={isDisabled ? () => {} : onChange}
             isDisabled={isDisabled}
-            disabled={isDisabled}
+            disabled={isDisabled || isLoading}
             fullWidth={fullWidth}
             {...rest}
         >
