@@ -170,21 +170,9 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
 
     if (resp.success) {
         dispatch(sendFormActions.clear());
-        dispatch(
-            notificationActions.add({
-                variant: 'success',
-                title: `Success: ${resp.payload.txid}`,
-                cancelable: true,
-            }),
-        );
+        dispatch(notificationActions.add({ type: 'sign-tx-success', txid: resp.payload.txid }));
         dispatch(accountActions.fetchAndUpdateAccount(account));
     } else {
-        dispatch(
-            notificationActions.add({
-                variant: 'error',
-                title: `Error: ${resp.payload.error}`,
-                cancelable: true,
-            }),
-        );
+        dispatch(notificationActions.add({ type: 'sign-tx-error', error: resp.payload.error }));
     }
 };

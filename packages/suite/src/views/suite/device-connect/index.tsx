@@ -5,12 +5,13 @@ import styled from 'styled-components';
 import * as routerActions from '@suite-actions/routerActions';
 import { Translation } from '@suite-components/Translation';
 import { Prompt, colors, variables, animations } from '@trezor/components';
-import { Link, P, H1 } from '@trezor/components-v2';
+import { Link, P, H2 } from '@trezor/components-v2';
 import WebusbButton from '@suite-components/WebusbButton';
 import messages from '@suite/support/messages';
 import { URLS } from '@suite-constants';
 import { Dispatch, AppState } from '@suite-types';
 import { isWebUSB } from '@suite-utils/transport';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const StyledConnectDevice = styled.div`
     padding: 0px 48px;
@@ -91,10 +92,12 @@ const Index = (props: Props) => {
     return (
         <StyledConnectDevice data-test="@modal/connect-device">
             <Title>
-                <H1>
+                <H2>
                     <Translation {...messages.TR_CONNECT_TREZOR} />
-                </H1>
+                </H2>
             </Title>
+            <img alt="" src={resolveStaticPath('images/suite/connect-device.svg')} />
+
             <Wrapper>
                 <ConnectTrezorWrapper>
                     <PromptWrapper>

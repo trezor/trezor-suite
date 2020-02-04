@@ -28,8 +28,8 @@ import BackupStep from '@onboarding-views/steps/Backup/Container';
 import SecurityStep from '@onboarding-views/steps/Security/Container';
 import SetPinStep from '@onboarding-views/steps/Pin/Container';
 import FinalStep from '@onboarding-views/steps/Final/Container';
-import { UnexpectedState, ProgressBar } from '@onboarding-components';
-
+import { UnexpectedState } from '@onboarding-components';
+import { ProgressBar } from '@suite-components';
 import { AppState, Dispatch, InjectedModalApplicationProps } from '@suite-types';
 
 const Wrapper = styled.div`
@@ -182,7 +182,12 @@ const Onboarding = (props: Props) => {
             </Head>
 
             <ProgressBarWrapper>
-                {getStep().progress && <ProgressBar activeStepId={activeStepId} />}
+                {getStep().progress && (
+                    <ProgressBar
+                        total={steps.filter(s => s.progress).length}
+                        current={steps.findIndex(step => activeStepId === step.id)}
+                    />
+                )}
             </ProgressBarWrapper>
             <IconsWrapper>
                 {getStep().buy ? <BuyButton /> : <div />}

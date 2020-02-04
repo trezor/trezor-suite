@@ -9,8 +9,7 @@ export type FirmwareActions =
     | { type: typeof FIRMWARE.SET_UPDATE_STATUS; payload: AnyStatus }
     | { type: typeof FIRMWARE.RESET_REDUCER }
     | { type: typeof FIRMWARE.ENABLE_REDUCER; payload: boolean }
-    | { type: typeof FIRMWARE.SET_ERROR; payload: string | undefined }
-    | { type: typeof FIRMWARE.CONFIRM_SEED; payload: boolean };
+    | { type: typeof FIRMWARE.SET_ERROR; payload: string | undefined };
 
 export const resetReducer = () => (dispatch: Dispatch) => {
     dispatch({
@@ -20,11 +19,6 @@ export const resetReducer = () => (dispatch: Dispatch) => {
 
 export const setStatus = (payload: AnyStatus): Action => ({
     type: FIRMWARE.SET_UPDATE_STATUS,
-    payload,
-});
-
-export const confirmSeed = (payload: boolean): Action => ({
-    type: FIRMWARE.CONFIRM_SEED,
     payload,
 });
 

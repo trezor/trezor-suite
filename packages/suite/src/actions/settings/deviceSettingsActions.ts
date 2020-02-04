@@ -10,18 +10,19 @@ export const applySettings = (params: ApplySettingsParams) => async (
     getState: GetState,
 ) => {
     const { device } = getState().suite;
+    if (!device) return;
     const result = await TrezorConnect.applySettings({
-        device,
+        device: {
+            path: device.path,
+        },
         ...params,
     });
 
-    dispatch(
-        addNotification({
-            variant: result.success ? 'success' : 'error',
-            title: result.success ? result.payload.message : result.payload.error,
-            cancelable: true,
-        }),
-    );
+    if (result.success) {
+        dispatch(addNotification({ type: 'settings-applied' }));
+    } else {
+        dispatch(addNotification({ type: 'error', error: result.payload.error }));
+    }
 };
 
 export const changePin = (params: ChangePinParams) => async (
@@ -29,33 +30,35 @@ export const changePin = (params: ChangePinParams) => async (
     getState: GetState,
 ) => {
     const { device } = getState().suite;
+    if (!device) return;
     const result = await TrezorConnect.changePin({
-        device,
+        device: {
+            path: device.path,
+        },
         ...params,
     });
 
-    dispatch(
-        addNotification({
-            variant: result.success ? 'success' : 'error',
-            title: result.success ? result.payload.message : result.payload.error,
-            cancelable: true,
-        }),
-    );
+    if (result.success) {
+        dispatch(addNotification({ type: 'pin-changed' }));
+    } else {
+        dispatch(addNotification({ type: 'error', error: result.payload.error }));
+    }
 };
 
 export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
+    if (!device) return;
     const result = await TrezorConnect.wipeDevice({
-        device,
+        device: {
+            path: device.path,
+        },
     });
 
-    dispatch(
-        addNotification({
-            variant: result.success ? 'success' : 'error',
-            title: result.success ? result.payload.message : result.payload.error,
-            cancelable: true,
-        }),
-    );
+    if (result.success) {
+        dispatch(addNotification({ type: 'device-wiped' }));
+    } else {
+        dispatch(addNotification({ type: 'error', error: result.payload.error }));
+    }
 
     // todo: evaluate in future, see https://github.com/trezor/trezor-suite/issues/1064
     // if (result.success && device && device.features) {

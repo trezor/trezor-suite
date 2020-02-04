@@ -7,7 +7,7 @@ export default [
         action: () => deviceSettingsActions.wipeDevice(),
         mocks: { success: true, payload: { message: 'huraa' } },
         result: {
-            actions: [{ type: NOTIFICATION.ADD }],
+            actions: [{ type: NOTIFICATION.ADD, payload: { type: 'device-wiped' } }],
         },
     },
     {
@@ -15,7 +15,7 @@ export default [
         action: () => deviceSettingsActions.wipeDevice(),
         mocks: { success: false, payload: { error: 'fuuu' } },
         result: {
-            actions: [{ type: NOTIFICATION.ADD, payload: { variant: 'error' } }],
+            actions: [{ type: NOTIFICATION.ADD, payload: { type: 'error', error: 'fuuu' } }],
         },
     },
     {
@@ -23,7 +23,7 @@ export default [
         action: () => deviceSettingsActions.applySettings({ label: 'foo' }),
         mocks: { success: true, payload: { message: 'huraa' } },
         result: {
-            actions: [{ type: NOTIFICATION.ADD, payload: { variant: 'success' } }],
+            actions: [{ type: NOTIFICATION.ADD, payload: { type: 'settings-applied' } }],
         },
     },
     {
@@ -31,7 +31,7 @@ export default [
         action: () => deviceSettingsActions.applySettings({ label: 'foo' }),
         mocks: { success: false, payload: { error: 'eeeh' } },
         result: {
-            actions: [{ type: NOTIFICATION.ADD, payload: { variant: 'error' } }],
+            actions: [{ type: NOTIFICATION.ADD, payload: { type: 'error', error: 'eeeh' } }],
         },
     },
     {
@@ -39,7 +39,7 @@ export default [
         action: () => deviceSettingsActions.changePin({}),
         mocks: { success: true, payload: { message: 'huraa' } },
         result: {
-            actions: [{ type: NOTIFICATION.ADD, payload: { variant: 'success' } }],
+            actions: [{ type: NOTIFICATION.ADD, payload: { type: 'pin-changed' } }],
         },
     },
     {
@@ -47,7 +47,7 @@ export default [
         action: () => deviceSettingsActions.changePin({}),
         mocks: { success: false, payload: { error: 'eeeh' } },
         result: {
-            actions: [{ type: NOTIFICATION.ADD, payload: { variant: 'error' } }],
+            actions: [{ type: NOTIFICATION.ADD, payload: { type: 'error', error: 'eeeh' } }],
         },
     },
 ];

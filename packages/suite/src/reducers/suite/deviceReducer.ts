@@ -244,6 +244,21 @@ const authDevice = (draft: State, device: TrezorDevice, state: string) => {
     if (!draft[index]) return;
     // update state
     draft[index].state = state;
+    delete draft[index].authFailed;
+};
+
+/**
+ * Action handler: SUITE.AUTH_FAILED
+ * @param {State} draft
+ * @param {TrezorDevice} device
+ * @returns
+ */
+const authFailed = (draft: State, device: TrezorDevice) => {
+    // only acquired devices
+    if (!device || !device.features) return;
+    const index = deviceUtils.findInstanceIndex(draft, device);
+    if (!draft[index]) return;
+    draft[index].authFailed = true;
 };
 
 /**
@@ -359,6 +374,9 @@ export default (state: State = initialState, action: Action): State => {
                 break;
             case SUITE.AUTH_DEVICE:
                 authDevice(draft, action.payload, action.state);
+                break;
+            case SUITE.AUTH_FAILED:
+                authFailed(draft, action.payload);
                 break;
             case SUITE.RECEIVE_AUTH_CONFIRM:
                 authConfirm(draft, action.payload, action.success);

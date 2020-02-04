@@ -110,7 +110,7 @@ const Attention = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: 600;
-    color: ${colors.RED2};
+    color: ${colors.RED_ERROR};
     margin-right: 20px;
 `;
 
@@ -179,7 +179,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                             <Attention>
                                 <AttentionIconWrapper>
                                     {/* TODO: warning icon */}
-                                    <Icon icon="INFO" size={14} color={colors.RED2} />
+                                    <Icon icon="INFO" size={14} color={colors.RED_ERROR} />
                                 </AttentionIconWrapper>
                                 Device needs attention
                             </Attention>

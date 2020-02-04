@@ -763,37 +763,16 @@ const authConfirm = [
         result: undefined,
     },
     {
-        description: `failed first getAddress`,
+        description: `failed getDeviceState`,
         state: {
             device: getSuiteDevice(),
         },
-        getAddress: [
-            {
-                success: false,
-                payload: {
-                    error: 'getAddress error',
-                },
-            },
-        ],
-        result: {
-            type: SUITE.RECEIVE_AUTH_CONFIRM,
+        getDeviceState: {
             success: false,
-        },
-    },
-    {
-        description: `failed second getAddress`,
-        state: {
-            device: getSuiteDevice(),
-        },
-        getAddress: [
-            undefined,
-            {
-                success: false,
-                payload: {
-                    error: 'second getAddress error',
-                },
+            payload: {
+                error: 'getAddress error',
             },
-        ],
+        },
         result: {
             type: SUITE.RECEIVE_AUTH_CONFIRM,
             success: false,
@@ -802,16 +781,8 @@ const authConfirm = [
     {
         description: `mismatch`,
         state: {
-            device: getSuiteDevice(),
+            device: getSuiteDevice({ state: 'ABCD' }),
         },
-        getAddress: [
-            {
-                success: true,
-                payload: {
-                    address: 'current-address',
-                },
-            },
-        ],
         result: {
             type: SUITE.RECEIVE_AUTH_CONFIRM,
             success: false,
@@ -820,7 +791,7 @@ const authConfirm = [
     {
         description: `success`,
         state: {
-            device: getSuiteDevice(),
+            device: getSuiteDevice({ state: '0123456' }),
         },
         result: {
             type: SUITE.RECEIVE_AUTH_CONFIRM,
@@ -859,7 +830,7 @@ const retryAuthConfirm = [
                 error: 'Passphrase is incorrect',
             },
         },
-        result: undefined,
+        result: NOTIFICATION.ADD,
     },
     {
         description: `success`,

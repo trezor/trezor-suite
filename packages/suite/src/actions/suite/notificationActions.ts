@@ -1,39 +1,53 @@
-// import { NotificationProps } from '@trezor/components';
-import { RequiredKey } from '@suite/types/utils';
-import { NotificationEntry } from '@suite-reducers/notificationReducer';
 import { NOTIFICATION } from './constants';
-
-export type NotificationAddPayload = Omit<NotificationEntry, 'key'>;
-
-interface CloseProps {
-    key?: string;
-    id?: string;
-    devicePath?: string;
-}
-
-export type NotificationClosePayload =
-    | RequiredKey<CloseProps, 'devicePath'>
-    | RequiredKey<CloseProps, 'id'>
-    | RequiredKey<CloseProps, 'key'>;
+import { Dispatch, GetState } from '@suite-types';
+import { NotificationPayload, NotificationEntry } from '@suite-reducers/notificationReducer';
 
 export type NotificationActions =
     | {
           type: typeof NOTIFICATION.ADD;
-          payload: NotificationAddPayload;
+          payload: NotificationEntry;
       }
     | {
           type: typeof NOTIFICATION.CLOSE;
-          payload?: NotificationClosePayload;
+          payload: number;
       };
 
-export const add = (payload: NotificationAddPayload): NotificationActions => ({
-    type: NOTIFICATION.ADD,
-    payload,
-});
+// type Single = Omit<NotificationPayload['type'], 'acquire-error|auth-failed'>;
+// type Single = Exclude<NotificationPayload['type'], 'acquire-error' | 'auth-failed' | 'auth-confirm-error'>;
+// type WithoutPayload = 'settings-applied' | 'pin-changed' | 'device-wiped' | 'backup-success';
+// Generate this from NotificationPayload
 
-export const close = (payload: NotificationClosePayload): NotificationActions => ({
+// type Add = {
+//     (type: 'auth-failed', payload: string): any;
+//     (type: 'auth-failed2', error: number): any;
+// };
+
+// export const add2: Add = (type: any, payload?: any) => (dispatch: Dispatch, getState: GetState) => {
+//     dispatch({
+//         type: NOTIFICATION.ADD,
+//         payload: {
+//             id: new Date().getTime(),
+//             device: getState().suite.device,
+//             type,
+//             payload,
+//         },
+//     });
+// };
+
+export const add = (payload: NotificationPayload) => (dispatch: Dispatch, getState: GetState) => {
+    dispatch({
+        type: NOTIFICATION.ADD,
+        payload: {
+            id: new Date().getTime(),
+            device: getState().suite.device,
+            ...payload,
+        },
+    });
+};
+
+export const close = (id: number): NotificationActions => ({
     type: NOTIFICATION.CLOSE,
-    payload,
+    payload: id,
 });
 
 // TODO: didnt touch it right now. imho not used anywhere now. relates to route handling probably.
