@@ -14,6 +14,7 @@ import walletReducers from '@wallet-reducers';
 import onboardingReducers from '@onboarding-reducers';
 import settingsReducers from '@settings-reducers';
 import firmwareReducers from '@firmware-reducers';
+import backupReducers from '@backup-reducers';
 
 const rootReducer = combineReducers({
     ...suiteReducers,
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
     wallet: walletReducers,
     settings: settingsReducers,
     firmware: firmwareReducers,
+    backup: backupReducers,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;

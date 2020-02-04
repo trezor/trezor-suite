@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as connectActions from '@onboarding-actions/connectActions';
 import * as routerActions from '@suite-actions/routerActions';
-import * as backupActions from '@settings-actions/backupActions';
+import * as backupActions from '@backup-actions/backupActions';
 
 import { Dispatch, AppState } from '@suite-types';
 

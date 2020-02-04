@@ -1,65 +1,16 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { Link, P, variables, colors, Checkbox } from '@trezor/components-v2';
+import React from 'react';
+import { Link, P } from '@trezor/components-v2';
 
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import { Translation } from '@suite-components';
+// import { CheckItem } from '@backup-components';
 
 import { SEED_MANUAL_URL } from '@suite-constants/urls';
 import messages from '@suite/support/messages';
-
 import { Props } from './Container';
-
-const { FONT_SIZE } = variables;
-
-const StyledCheckbox = styled(Checkbox)`
-    margin-bottom: 22px;
-`;
-
-const CheckboxRight = styled.div`
-    text-align: left;
-`;
-
-const CheckboxTitle = styled.div``;
-
-const CheckboxText = styled.div`
-    font-size: ${FONT_SIZE.TINY};
-    color: ${colors.BLACK50};
-    max-width: 360px;
-`;
-
-interface CheckItemProps {
-    title: React.ReactNode;
-    description: React.ReactNode;
-    isChecked: boolean;
-    onClick: () => void;
-}
-
-const CheckItem = ({ title, description, isChecked, onClick }: CheckItemProps) => {
-    return (
-        <StyledCheckbox isChecked={isChecked} onClick={onClick}>
-            <CheckboxRight>
-                <CheckboxTitle>{title}</CheckboxTitle>
-                <CheckboxText>{description}</CheckboxText>
-            </CheckboxRight>
-        </StyledCheckbox>
-    );
-};
 
 const BackupStep = (props: Props) => {
     const { device } = props;
-
-    const [checkboxValuesBefore, setCheckboxValuesBefore] = useState({
-        hasTime: false,
-        isInPrivate: false,
-        understands: false,
-    });
-
-    const [checkboxValuesAfter, setCheckboxValuesAfter] = useState({
-        wroteProperly: false,
-        noDigitalCopy: false,
-        willHide: false,
-    });
 
     if (!device || !device.features) {
         return null;
@@ -80,8 +31,10 @@ const BackupStep = (props: Props) => {
         return null;
     };
 
-    const canStart = () => Object.values(checkboxValuesBefore).every(v => v === true);
-    const canContinue = () => Object.values(checkboxValuesAfter).every(v => v === true);
+    // const canStart = () => Object.values(checkboxValuesBefore).every(v => v === true);
+    // const canContinue = () => Object.values(checkboxValuesAfter).every(v => v === true);
+    const canStart = () => true;
+    const canContinue = () => true;
 
     return (
         <Wrapper.Step>
@@ -106,7 +59,7 @@ const BackupStep = (props: Props) => {
                             />
                         </Text>
 
-                        <Wrapper.Checkbox>
+                        {/* <CheckboxWrapper>
                             <CheckItem
                                 onClick={() =>
                                     setCheckboxValuesBefore({
@@ -140,7 +93,7 @@ const BackupStep = (props: Props) => {
                                 description="Backup seed is the ultimate key to your Wallet and funds. Once you lose it, it’s gone forever and there is no way to restore lost seed."
                                 isChecked={checkboxValuesBefore.understands}
                             />
-                        </Wrapper.Checkbox>
+                        </CheckboxWrapper> */}
 
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
@@ -193,7 +146,7 @@ const BackupStep = (props: Props) => {
                             <Translation {...messages.TR_BACKUP_FINISHED_TEXT} />
                         </Text>
 
-                        <Wrapper.Checkbox>
+                        {/* <Wrapper.Checkbox>
                             <CheckItem
                                 onClick={() =>
                                     setCheckboxValuesAfter({
@@ -228,7 +181,7 @@ const BackupStep = (props: Props) => {
                                 description="Hide your seed properly and/or use further accessories to ensure maximum security of your seed."
                                 isChecked={checkboxValuesAfter.willHide}
                             />
-                        </Wrapper.Checkbox>
+                        </Wrapper.Checkbox> */}
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 onClick={() => props.goToNextStep()}

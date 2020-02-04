@@ -43,7 +43,6 @@ const Settings = ({
     applySettings,
     changePin,
     wipeDevice,
-    backupDevice,
     openModal,
     checkSeed,
     goto,
@@ -101,7 +100,7 @@ const Settings = ({
                         />
                         <ActionColumn>
                             <ActionButton
-                                onClick={() => backupDevice({ device })}
+                                onClick={() => goto('backup-index', { cancelable: true })}
                                 isDisabled={
                                     uiLocked || !features.needs_backup || features.unfinished_backup
                                 }

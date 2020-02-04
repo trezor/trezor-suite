@@ -12,6 +12,7 @@ import { AppState, Dispatch } from '@suite-types';
 import Firmware from '@firmware-views';
 import Onboarding from '@onboarding-views';
 import SeedInput from '@seed-input-views';
+import Backup from '@backup-views';
 import {
     Analytics,
     Bridge,
@@ -112,6 +113,8 @@ const getModalApplication = (route: Props['router']['route']) => {
             return SwitchDevice;
         case 'seed-input':
             return SeedInput;
+        case 'backup':
+            return Backup;
         default:
             break;
     }

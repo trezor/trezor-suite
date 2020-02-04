@@ -7,7 +7,7 @@ import { mergeObj } from '@suite-utils/mergeObj';
 import { init } from '@suite-actions/trezorConnectActions';
 import { SUITE } from '@suite-actions/constants';
 
-import * as backupActions from '../backupActions';
+import * as backupActions from '../../backup/backupActions';
 
 jest.mock('trezor-connect', () => {
     let fixture: any;
