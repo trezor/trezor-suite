@@ -10,7 +10,7 @@ export default () => (
             {...messages.TR_LTC_ADDRESS_INFO}
             values={{
                 TR_LEARN_MORE: (
-                    <Link href={URLS.LTC_ADDRESS_INFO_URL}>
+                    <Link variant="nostyle" href={URLS.LTC_ADDRESS_INFO_URL}>
                         <Translation {...messages.TR_LEARN_MORE_LINK} />
                     </Link>
                 ),

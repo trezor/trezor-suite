@@ -15,7 +15,7 @@ export default ({ reserve }: Props) => (
             values={{
                 minBalance: reserve,
                 TR_LEARN_MORE: (
-                    <Link href={URLS.XRP_MANUAL_URL}>
+                    <Link variant="nostyle" href={URLS.XRP_MANUAL_URL}>
                         <Translation {...messages.TR_LEARN_MORE_LINK} />
                     </Link>
                 ),

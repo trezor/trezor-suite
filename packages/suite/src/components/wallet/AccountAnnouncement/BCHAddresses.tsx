@@ -10,7 +10,7 @@ export default () => (
             {...messages.TR_BCH_ADDRESS_INFO}
             values={{
                 TR_LEARN_MORE: (
-                    <Link href={URLS.BCH_ADDRESS_TOOL}>
+                    <Link variant="nostyle" href={URLS.BCH_ADDRESS_TOOL}>
                         <Translation {...messages.TR_LEARN_MORE_LINK} />
                     </Link>
                 ),
