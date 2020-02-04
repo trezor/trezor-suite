@@ -21,8 +21,6 @@ const Wrapper = styled.div`
     margin: 0 auto;
     padding: 90px 90px 40px 90px;
     justify-content: center;
-    width: 780px;
-    /* height: 680px; */
     height: 90vh;
 `;
 
