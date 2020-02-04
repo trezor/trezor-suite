@@ -18,7 +18,6 @@ atexit.register(cleanup)
 
 # Called for every client connecting (after handshake)
 
-
 def new_client(client, server):
     welcome = json.dumps({"type": "client", "id": client['id']})
     server.send_message_to_all(welcome)
@@ -60,6 +59,9 @@ def message_received(client, server, message):
         elif cmdType == "emulator-decision":
             emulator.decision()
             response = {"success": True}
+        elif cmdType == "emulator-click":
+            emulator.click()
+            response = {"success": True}    
         elif cmdType == "emulator-wipe":
             emulator.wipe_device()
             response = {"success": True}

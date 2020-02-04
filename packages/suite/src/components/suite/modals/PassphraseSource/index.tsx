@@ -32,7 +32,7 @@ const PassphraseSource = ({ device, getDiscoveryAuthConfirmationStatus }: Props)
 
     if (authConfirmation) {
         return (
-            <Wrapper>
+            <Wrapper data-test="@modals/passhprase-source">
                 <Prompt model={majorVersion} size={32}>
                     Confirm empty hidden wallet passphrase source on "{device.label}" device.
                 </Prompt>
@@ -46,7 +46,7 @@ const PassphraseSource = ({ device, getDiscoveryAuthConfirmationStatus }: Props)
     }
 
     return (
-        <Wrapper>
+        <Wrapper data-test="@modals/passhprase-source">
             <Prompt model={majorVersion} size={32}>
                 Choose passphrase source on "{device.label}" device.
             </Prompt>

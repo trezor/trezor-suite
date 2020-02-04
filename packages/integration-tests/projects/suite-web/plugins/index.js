@@ -105,5 +105,12 @@ module.exports = on => {
             await controller.disconnect();
             return null;
         },
+        clickEmu: async method => {
+            console.log('cklick in js');
+            await controller.connect();
+            await controller.send({ type: 'emulator-click', method });
+            await controller.disconnect();
+            return null;
+        },
     });
 };
