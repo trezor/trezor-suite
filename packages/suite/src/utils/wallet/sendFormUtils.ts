@@ -1,7 +1,8 @@
 import { Output, State } from '@wallet-types/sendForm';
 import { Account } from '@wallet-types';
-import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
+import { VALIDATION_ERRORS, TOKEN_ABI } from '@wallet-constants/sendForm';
 import BigNumber from 'bignumber.js';
+import { toHex } from 'web3-utils';
 import { Transaction } from 'ethereumjs-tx';
 // @ts-ignore
 import ethUnits from 'ethereumjs-units';
@@ -115,7 +116,7 @@ export const calculateEthFee = (gasPrice: string | null, gasLimit: string | null
     }
 };
 
-interface PreparedEthTx {
+interface EthTransaction {
     network: Account['symbol'];
     token: any; // TODO fix ts
     from: Output['address']['value'];
@@ -127,12 +128,7 @@ interface PreparedEthTx {
     nonce: any; // TODO fix ts
 }
 
-export const prepareEthereumTransaction = (txInfo: PreparedEthTx) => {
-    console.log('prepare');
-    // let data: string = ethUtils.sanitizeHex(tx.data);
-    // let value: string = toHex(EthereumjsUnits.convert(tx.amount, 'ether', 'wei'));
-    // let to: string = tx.to; // eslint-disable-line prefer-destructuring
-
+export const prepareEthereumTransaction = (txInfo: EthTransaction) => {
     // if (token) {
     //     // smart contract transaction
     //     const contract = instance.erc20.clone();
@@ -145,18 +141,18 @@ export const prepareEthereumTransaction = (txInfo: PreparedEthTx) => {
     //     to = token.address;
     // }
 
-    // return {
-    //     to,
-    //     value,
-    //     data,
-    //     chainId: instance.chainId,
-    //     nonce: toHex(tx.nonce),
-    //     gasLimit: toHex(tx.gasLimit),
-    //     gasPrice: toHex(EthereumjsUnits.convert(tx.gasPrice, 'gwei', 'wei')),
-    //     r: '',
-    //     s: '',
-    //     v: '',
-    // };
+    return {
+        to: txInfo.to,
+        value: toHex(ethUnits.convert(txInfo.amount, 'ether', 'wei')),
+        data: txInfo.data,
+        chainId: 1,
+        nonce: toHex(txInfo.nonce),
+        gasLimit: toHex(txInfo.gasLimit),
+        gasPrice: toHex(ethUnits.convert(txInfo.gasPrice, 'gwei', 'wei')),
+        r: '',
+        s: '',
+        v: '',
+    };
 };
 
 export const serializeEthereumTransaction = (transaction: {

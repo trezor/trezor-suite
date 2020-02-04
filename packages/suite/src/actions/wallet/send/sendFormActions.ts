@@ -356,6 +356,19 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
         });
     }
 
+    // // eth update gas price and gas limit
+    // if (account.networkType === 'ethereum') {
+    //     dispatch({
+    //         type: SEND.ETH_HANDLE_GAS_LIMIT,
+    //         gasLimit: fee.feeLimit || '0',
+    //     });
+
+    //     dispatch({
+    //         type: SEND.ETH_HANDLE_GAS_PRICE,
+    //         gasPrice: fee.feePerUnit || '0',
+    //     });
+    // }
+
     dispatch(composeChange());
 };
 
