@@ -29,3 +29,16 @@ export type State = State$;
 export type FeeLevel = FeeLevel$;
 export type PrecomposedTransactionXrp = PrecomposedTransactionXrp$;
 export type PrecomposedTransactionEth = PrecomposedTransactionEth$;
+
+export type EthTransaction = {
+    network: Account['symbol'];
+    token: any; // TODO fix ts
+    chainId: number;
+    from: Output['address']['value'];
+    to: Output['address']['value'];
+    amount: Output['amount']['value'];
+    data: State['networkTypeEthereum']['data']['value'];
+    gasLimit: State['networkTypeEthereum']['data']['value'];
+    gasPrice: State['networkTypeEthereum']['data']['value'];
+    nonce: number;
+};

@@ -18,9 +18,9 @@ import { composeChange } from './sendFormActions';
     Compose eth transaction
  */
 export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { send } = getState().wallet;
-    const { account } = getState().wallet.selectedAccount;
-    if (!send || !account) return null;
+    const { selectedAccount, send } = getState().wallet;
+    if (selectedAccount.status !== 'loaded' || !send) return null;
+    const { account } = selectedAccount;
 
     let tx;
     const output = getOutput(send.outputs, 0);
@@ -76,7 +76,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     const selectedDevice = getState().suite.device;
     if (selectedAccount.status !== 'loaded' || !send || !selectedDevice) return null;
     const { account, network } = selectedAccount;
-    if (account.networkType !== 'ethereum') return null;
+    if (account.networkType !== 'ethereum' || !network.chainId) return null;
 
     const output = getOutput(send.outputs, 0);
     const { address, amount } = output;
@@ -85,29 +85,30 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
 
     const transaction = prepareEthereumTransaction({
         network: network.symbol,
+        chainId: network.chainId,
         token: null,
         from: account.descriptor,
         to: address.value,
         amount: amount.value,
-        data: data.value,
+        data: data.value || '0',
         gasLimit: gasLimit.value,
         gasPrice: gasPrice.value,
         nonce: account.misc.nonce,
     });
 
-    console.log('transaction', transaction);
+    // @ts-ignore
+    const response = await TrezorConnect.ethereumSignTransaction({
+        device: {
+            path: selectedDevice.path,
+            instance: selectedDevice.instance,
+            state: selectedDevice.state,
+        },
+        useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
+        path: account.path,
+        transaction,
+    });
 
-    // // @ts-ignore
-    // const response = await TrezorConnect.ethereumSignTransaction({
-    //     device: {
-    //         path: selectedDevice.path,
-    //         instance: selectedDevice.instance,
-    //         state: selectedDevice.state,
-    //     },
-    //     useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
-    //     path: account.path,
-    //     transaction,
-    // });
+    console.log('response', response);
 
     // if (response.success) {
     //     dispatch(commonActions.clear());
