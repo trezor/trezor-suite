@@ -322,19 +322,23 @@ const Settings = ({
                                     onUploadHomescreen(e.target.files);
                                 }}
                             />
-                            <ActionButton
-                                onClick={() => {
-                                    if (fileInputElement.current) {
-                                        fileInputElement.current.click();
-                                    }
-                                }}
-                                isDisabled={uiLocked}
-                                variant="secondary"
-                            >
-                                <Translation>
-                                    {messages.TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE}
-                                </Translation>
-                            </ActionButton>
+                            {/* only available for model T at the moment. It works quite well there */}
+                            {features.major_version === 2 && (
+                                <ActionButton
+                                    onClick={() => {
+                                        if (fileInputElement.current) {
+                                            fileInputElement.current.click();
+                                        }
+                                    }}
+                                    isDisabled={uiLocked}
+                                    variant="secondary"
+                                >
+                                    <Translation>
+                                        {messages.TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE}
+                                    </Translation>
+                                </ActionButton>
+                            )}
+
                             <ActionButton
                                 onClick={() =>
                                     openModal({
@@ -352,21 +356,29 @@ const Settings = ({
                             </ActionButton>
                         </ActionColumn>
                     </Row>
+
                     {customHomescreen && (
                         <Row>
                             <Col>
                                 <img
+                                    width="144px"
                                     alt="custom homescreen"
                                     id="custom-image"
                                     src={customHomescreen}
                                 />
                             </Col>
 
-                            <Col>
+                            <ActionColumn>
                                 <ActionButton onClick={() => onSelectCustomHomescreen()}>
                                     Change homescreen
                                 </ActionButton>
-                            </Col>
+                                <ActionButton
+                                    variant="secondary"
+                                    onClick={() => setCustomHomescreen('')}
+                                >
+                                    Drop image
+                                </ActionButton>
+                            </ActionColumn>
                         </Row>
                     )}
 
