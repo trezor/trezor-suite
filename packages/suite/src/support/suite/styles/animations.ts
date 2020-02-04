@@ -1,8 +1,6 @@
-import { css } from 'styled-components';
-
 const STEP_ANIMATION_DURATION = 500;
 
-const animationStyles = css`
+const animationStyles = `
     .slide-left-enter {
         transform: translate(100%);
         pointer-events: none;

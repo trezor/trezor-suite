@@ -1,15 +1,13 @@
-import { css } from 'styled-components';
 import { colors } from '@trezor/components-v2';
 
-export const notifications = css`
+export const notifications = `
     .Toastify__toast-container {
-        z-index: 9999;
+        z-index: 10001;
         position: fixed;
         padding: 4px;
         width: 320px;
         box-sizing: border-box;
         border-radius: 6px;
-        color: #fff;
     }
 
     .Toastify__toast-container--top-left {
@@ -69,7 +67,7 @@ export const notifications = css`
 
     .Toastify__toast {
         position: relative;
-        min-height: 64px;
+        min-height: 50px;
         box-sizing: border-box;
         margin-bottom: 1rem;
         padding: 8px;
@@ -89,24 +87,24 @@ export const notifications = css`
     }
 
     .Toastify__toast--default {
-        background: #fff;
-        color: ${colors.BLACK0};
+        background: ${colors.BLACK17};
+        color: ${colors.WHITE};
     }
 
     .Toastify__toast--info {
-        background: ${colors.WHITE};
+        background: ${colors.BLUE};
     }
 
     .Toastify__toast--success {
-        background: ${colors.WHITE};
+        background: ${colors.GREEN};
     }
 
     .Toastify__toast--warning {
-        background: ${colors.WHITE};
+        background: ${colors.YELLOW};
     }
 
     .Toastify__toast--error {
-        background: ${colors.WHITE};
+        background: ${colors.RED};
     }
 
     .Toastify__toast-body {
@@ -159,7 +157,7 @@ export const notifications = css`
         bottom: 0;
         left: 0;
         width: 100%;
-        height: 5px;
+        height: 2px;
         z-index: 9999;
         opacity: 0.7;
         background-color: rgba(255, 255, 255, 0.7);
@@ -181,7 +179,7 @@ export const notifications = css`
     }
 
     .Toastify__progress-bar--default {
-        background: linear-gradient(to right, #4cd964, #5ac8fa, #007aff, #34aadc, #5856d6, #ff2d55);
+        background: ${colors.WHITE};
     }
 
     @keyframes Toastify__bounceInRight {

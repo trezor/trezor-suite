@@ -1,8 +1,7 @@
 import TrezorConnect, { UI } from 'trezor-connect';
 import { RECEIVE } from '@wallet-actions/constants';
-import { NOTIFICATION } from '@suite-actions/constants';
 import * as modalActions from '@suite-actions/modalActions';
-import messages from '@suite/support/messages';
+import * as notificationActions from '@suite-actions/notificationActions';
 import { GetState, Dispatch } from '@suite-types';
 import { WalletAction } from '@wallet-types';
 
@@ -99,22 +98,11 @@ export const showAddress = (path: string) => async (
         // special case: device no-backup permissions not granted
         if (response.payload.code === 403) return;
 
-        dispatch({
-            type: NOTIFICATION.ADD,
-            payload: {
-                variant: 'error',
-                title: messages.TR_VERIFYING_ADDRESS_ERROR,
-                message: response.payload.error,
-                cancelable: true,
-                actions: [
-                    {
-                        label: messages.TR_TRY_AGAIN,
-                        callback: () => {
-                            dispatch(showAddress(path));
-                        },
-                    },
-                ],
-            },
-        });
+        dispatch(
+            notificationActions.add({
+                type: 'verify-address-error',
+                error: response.payload.error,
+            }),
+        );
     }
 };

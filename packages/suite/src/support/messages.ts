@@ -5,10 +5,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Cannot send to myself',
         id: 'CANNOT_SEND_TO_MYSELF',
     },
-    TR_ACCOUNT_DOES_NOT_EXIST: {
-        defaultMessage: 'Account does not exist',
-        id: 'TR_ACCOUNT_DOES_NOT_EXIST',
-    },
+    // TODO: Account exceptions
+    // TR_ACCOUNT_DOES_NOT_EXIST: {
+    //     defaultMessage: 'Account does not exist',
+    //     id: 'TR_ACCOUNT_DOES_NOT_EXIST',
+    // },
     TR_ACCOUNT_HASH: {
         defaultMessage: 'Account #{number}',
         description: 'Used in auto-generated account label',
@@ -141,9 +142,13 @@ const definedMessages = defineMessages({
         defaultMessage: 'Cardano wallet',
         id: 'TR_CARDANO_WALLET',
     },
-    TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE: {
+    TR_ACCOUNT_PASSPHRASE_DISABLED: {
         defaultMessage: 'Change passphrase settings to use this device',
-        id: 'TR_CHANGE_PASSPHRASE_SETTINGS_TO_USE',
+        id: 'TR_ACCOUNT_PASSPHRASE_DISABLED',
+    },
+    TR_ACCOUNT_ENABLE_PASSPHRASE: {
+        defaultMessage: 'Enable passphrase',
+        id: 'TR_ACCOUNT_ENABLE_PASSPHRASE',
     },
     TR_CHANGELOG: {
         defaultMessage: 'Changelog',
@@ -176,9 +181,13 @@ const definedMessages = defineMessages({
         defaultMessage: 'Confirm transaction on "{deviceLabel}" device',
         id: 'TR_CONFIRM_TRANSACTION_ON',
     },
-    TR_CONNECT_TO_BACKEND: {
+    TR_BACKEND_DISCONNECTED: {
+        defaultMessage: 'Backend is disconnected',
+        id: 'TR_BACKEND_DISCONNECTED',
+    },
+    TR_BACKEND_CONNECT: {
         defaultMessage: 'Connect',
-        id: 'TR_CONNECT_TO_BACKEND',
+        id: 'TR_BACKEND_CONNECT',
     },
     TR_CONNECT_TREZOR: {
         defaultMessage: 'Connect Trezor to continue...',
@@ -464,6 +473,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Download latest Bridge {version}',
         id: 'TR_DOWNLOAD_LATEST_BRIDGE',
     },
+    TR_ACCOUNTS_MENU_TITLE: {
+        defaultMessage: 'Accounts',
+        id: 'TR_ACCOUNTS_MENU_TITLE',
+    },
     TR_ENABLE_NETWORK_BUTTON: {
         defaultMessage: 'Find my {networkName} accounts',
         id: 'TR_ENABLE_NETWORK_BUTTON',
@@ -648,10 +661,6 @@ const definedMessages = defineMessages({
         description: 'Used in auto-generated label for imported accounts',
         id: 'TR_IMPORTED_ACCOUNT_HASH',
     },
-    TR_INITIALIZING_ACCOUNTS: {
-        defaultMessage: 'Initializing accounts',
-        id: 'TR_INITIALIZING_ACCOUNTS',
-    },
     TR_INSTALL: {
         defaultMessage: 'Install',
         description: 'Install button',
@@ -701,10 +710,6 @@ const definedMessages = defineMessages({
     TR_LOADING_ACCOUNT: {
         defaultMessage: 'Loading account',
         id: 'TR_LOADING_ACCOUNT',
-    },
-    TR_LOADING_ACCOUNTS: {
-        defaultMessage: 'Loading accounts',
-        id: 'TR_LOADING_ACCOUNTS',
     },
     TR_LOADING_DEVICE_DOT_DOT_DOT: {
         defaultMessage: 'Loading device...',
@@ -1145,19 +1150,21 @@ const definedMessages = defineMessages({
         description: 'Header for the Sign and Verify form',
         id: 'TR_SIGN_MESSAGE',
     },
-    TR_SIGN_MESSAGE_ERROR: {
-        defaultMessage: 'Failed to sign message',
-        id: 'TR_SIGN_MESSAGE_ERROR',
-    },
+    // TODO: Toast notification
+    // TR_SIGN_MESSAGE_ERROR: {
+    //     defaultMessage: 'Failed to sign message',
+    //     id: 'TR_SIGN_MESSAGE_ERROR',
+    // },
     TR_SIGNATURE: {
         defaultMessage: 'Signature',
         description: 'Used as a label for signature input field in Sign and Verify form',
         id: 'TR_SIGNATURE',
     },
-    TR_SIGNATURE_IS_VALID: {
-        defaultMessage: 'Signature is valid',
-        id: 'TR_SIGNATURE_IS_VALID',
-    },
+    // TODO: Toast notification
+    // TR_SIGNATURE_IS_VALID: {
+    //     defaultMessage: 'Signature is valid',
+    //     id: 'TR_SIGNATURE_IS_VALID',
+    // },
     TR_SKIP: {
         defaultMessage: 'Skip',
         description: 'Button. Skip one step',
@@ -1307,18 +1314,19 @@ const definedMessages = defineMessages({
         description: 'Header for the Sign and Verify form',
         id: 'TR_VERIFY_MESSAGE',
     },
-    TR_VERIFY_MESSAGE_ERROR: {
-        defaultMessage: 'Failed to verify message',
-        id: 'TR_VERIFY_MESSAGE_ERROR',
-    },
-    TR_VERIFY_MESSAGE_SUCCESS: {
-        defaultMessage: 'Message has been successfully verified',
-        id: 'TR_VERIFY_MESSAGE_SUCCESS',
-    },
-    TR_VERIFYING_ADDRESS_ERROR: {
-        defaultMessage: 'Verifying address error',
-        id: 'TR_VERIFYING_ADDRESS_ERROR',
-    },
+    // TODO: Toast notification
+    // TR_VERIFY_MESSAGE_ERROR: {
+    //     defaultMessage: 'Failed to verify message',
+    //     id: 'TR_VERIFY_MESSAGE_ERROR',
+    // },
+    // TR_VERIFY_MESSAGE_SUCCESS: {
+    //     defaultMessage: 'Message has been successfully verified',
+    //     id: 'TR_VERIFY_MESSAGE_SUCCESS',
+    // },
+    // TR_VERIFYING_ADDRESS_ERROR: {
+    //     defaultMessage: 'Verifying address error',
+    //     id: 'TR_VERIFYING_ADDRESS_ERROR',
+    // },
     TR_VERSION_IS_LOADING: {
         defaultMessage: 'Version is loading',
         id: 'TR_VERSION_IS_LOADING',

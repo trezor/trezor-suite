@@ -1,7 +1,6 @@
 import TrezorConnect from 'trezor-connect';
 import { validateAddress } from '@wallet-utils/ethUtils';
-import { NOTIFICATION } from '@suite-actions/constants';
-import messages from '@suite/support/messages';
+import * as notificationActions from '@suite-actions/notificationActions';
 import { SIGN_VERIFY } from './constants';
 import { Dispatch, GetState } from '@suite-types';
 
@@ -47,15 +46,12 @@ export const sign = (path: [number], message: string, hex = false) => async (
             signSignature: response.payload.signature,
         });
     } else {
-        dispatch({
-            type: NOTIFICATION.ADD,
-            payload: {
-                variant: 'error',
-                title: messages.TR_SIGN_MESSAGE_ERROR,
-                message: response.payload.error,
-                cancelable: true,
-            },
-        });
+        dispatch(
+            notificationActions.add({
+                type: 'sign-message-error',
+                error: response.payload.error,
+            }),
+        );
     }
 };
 
@@ -91,25 +87,18 @@ export const verify = (address: string, message: string, signature: string, hex 
         });
 
         if (response && response.success) {
-            dispatch({
-                type: NOTIFICATION.ADD,
-                payload: {
-                    variant: 'success',
-                    title: messages.TR_VERIFY_MESSAGE_SUCCESS,
-                    message: messages.TR_SIGNATURE_IS_VALID,
-                    cancelable: true,
-                },
-            });
+            dispatch(
+                notificationActions.add({
+                    type: 'verify-message-success',
+                }),
+            );
         } else {
-            dispatch({
-                type: NOTIFICATION.ADD,
-                payload: {
-                    variant: 'error',
-                    title: messages.TR_VERIFY_MESSAGE_ERROR,
-                    message: response.payload.error,
-                    cancelable: true,
-                },
-            });
+            dispatch(
+                notificationActions.add({
+                    type: 'verify-message-error',
+                    error: response.payload.error,
+                }),
+            );
         }
     }
 };

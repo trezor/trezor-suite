@@ -35,7 +35,7 @@ const Wrapper = styled.button<WrapperProps>`
     border-radius: 3px;
     font-size: ${props => getFontSize(props.variant, props.size)}; 
     font-weight: ${props => (props.variant === 'primary' ? 600 : 500)};
-    color: ${colors.BLACK25};
+    color: ${props => (props.color ? props.color : colors.BLACK25)};
     outline: none;
     padding: ${props => (props.variant === 'tertiary' ? '0px 4px' : BUTTON_PADDING[props.size])};
     height: ${props => (props.variant === 'tertiary' ? '20px' : 'auto')};
@@ -150,6 +150,7 @@ interface WrapperProps {
     size: ButtonSize;
     isDisabled: boolean;
     fullWidth: boolean;
+    color: string | undefined;
 }
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -167,6 +168,7 @@ const Button = ({
     variant = 'primary',
     size = 'large',
     icon,
+    color,
     fullWidth = false,
     isDisabled = false,
     isLoading = false,
@@ -179,23 +181,24 @@ const Button = ({
             <Icon
                 icon={icon}
                 size={size === 'large' ? 10 : 8}
-                color={getIconColor(variant, isDisabled)}
+                color={color || getIconColor(variant, isDisabled)}
             />
         </IconWrapper>
     ) : null;
     const Loader = (
         <IconWrapper alignIcon={alignIcon}>
-            <FluidSpinner size={10} />
+            <FluidSpinner size={10} color={color} />
         </IconWrapper>
     );
     return (
         <Wrapper
             variant={variant}
             size={size}
-            onChange={isDisabled ? () => {} : onChange}
+            onChange={onChange}
             isDisabled={isDisabled}
-            disabled={isDisabled}
+            disabled={isDisabled || isLoading}
             fullWidth={fullWidth}
+            color={color}
             {...rest}
         >
             {!isLoading && alignIcon === 'left' && IconComponent}
