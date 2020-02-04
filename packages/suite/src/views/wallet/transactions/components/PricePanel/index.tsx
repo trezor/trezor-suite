@@ -3,7 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import { colors, variables, CoinLogo } from '@trezor/components-v2';
 import Card from '@suite-components/Card';
 import { AppState } from '@suite/types/suite';
-import { getAccountFiatBalance, getTitleForNetwork } from '@wallet-utils/accountUtils';
+import { getAccountFiatBalance, getTitleForNetwork, isTestnet } from '@wallet-utils/accountUtils';
 import Badge from '@suite-components/Badge';
 import { Account } from '@wallet-types';
 import FormattedNumber from '@suite-components/FormattedNumber';
@@ -14,6 +14,7 @@ import FiatValue from '@suite-components/FiatValue/Container';
 
 const Wrapper = styled(Card)`
     width: 100%;
+    min-height: 95px;
     border-radius: 6px;
     margin-bottom: 26px;
     padding: 20px;
@@ -46,7 +47,7 @@ const Ticker = styled.div`
 
 const TickerTitle = styled.div`
     text-transform: uppercase;
-    font-size: ${variables.FONT_SIZE.SMALL};
+    font-size: ${variables.FONT_SIZE.TINY};
     color: #a0a0a0;
 `;
 
@@ -114,25 +115,27 @@ const PricePanel = (props: Props) => {
                     <FormattedNumber value={fiatBalance} currency={localCurrency} />
                 </Badge>
             </Col>
-            <Col>
-                <Ticker>
-                    <Row>
-                        <TickerTitle>
-                            <Translation {...getTitleForNetwork(props.account.symbol)} /> price (
-                            {props.account.symbol.toUpperCase()})
-                        </TickerTitle>
+            {!isTestnet(props.account.symbol) && (
+                <Col>
+                    <Ticker>
+                        <Row>
+                            <TickerTitle>
+                                <Translation {...getTitleForNetwork(props.account.symbol)} /> price
+                                ({props.account.symbol.toUpperCase()})
+                            </TickerTitle>
 
-                        {fiatRateValue ? (
-                            <Live key={props.account.symbol}>
-                                <Dot /> Live
-                            </Live>
-                        ) : (
-                            <NoRatesTooltip />
-                        )}
-                    </Row>
-                    <TickerPrice>{fiatRateValue ?? <>N/A</>}</TickerPrice>
-                </Ticker>
-            </Col>
+                            {fiatRateValue ? (
+                                <Live key={props.account.symbol}>
+                                    <Dot /> Live
+                                </Live>
+                            ) : (
+                                <NoRatesTooltip />
+                            )}
+                        </Row>
+                        <TickerPrice>{fiatRateValue ?? <>N/A</>}</TickerPrice>
+                    </Ticker>
+                </Col>
+            )}
         </Wrapper>
     );
 };

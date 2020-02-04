@@ -308,3 +308,8 @@ export const getTotalFiatBalance = (
     });
     return instanceBalance;
 };
+
+export const isTestnet = (symbol: Account['symbol']) => {
+    const net = NETWORKS.find(n => n.symbol === symbol);
+    return net?.testnet ?? false;
+};
