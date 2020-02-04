@@ -1223,14 +1223,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Total received: {amount}',
         id: 'TR_TOTAL_RECEIVED',
     },
-    TR_TRANSACTIONS: {
-        defaultMessage: '{network} Transactions',
-        id: 'TR_TRANSACTIONS',
-    },
-    TR_TRANSACTIONS_AND_TOKENS: {
-        defaultMessage: '{network} and tokens transactions',
-        id: 'TR_TRANSACTIONS_AND_TOKENS',
-    },
     TR_TREZOR: {
         defaultMessage: 'Trezor',
         description: 'Link in header navigation',
