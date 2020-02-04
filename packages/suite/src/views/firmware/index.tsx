@@ -2,7 +2,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { Button, ButtonProps, H2, P, Link, colors } from '@trezor/components-v2';
+import { Button, ButtonProps, H2, P, Link, colors, variables } from '@trezor/components-v2';
 
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import * as firmwareActions from '@firmware-actions/firmwareActions';
@@ -12,6 +12,9 @@ import { getFwVersion } from '@suite-utils/device';
 import { ProgressBar } from '@suite-components';
 import { InitImg, SuccessImg } from '@firmware-components';
 import { Loaders } from '@onboarding-components';
+import { CHANGELOG_URL } from '@suite-constants/urls';
+
+const { FONT_SIZE, FONT_WEIGHT } = variables;
 
 const Wrapper = styled.div`
     width: 60vw;
@@ -43,7 +46,6 @@ const Buttons = styled(Row)`
 const ChangesSummary = styled.div`
     background-color: ${colors.BLACK96};
     border: 1px solid ${colors.BLACK80};
-    margin: 34px 0;
     padding: 20px;
     max-width: 600px;
 `;
@@ -57,6 +59,61 @@ const SeedImg = styled.img`
     height: 250px;
     padding: 30px;
 `;
+
+const FromVersionToVersion = styled.div`
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    font-size: ${FONT_SIZE.NORMAL};
+`;
+
+const FromVersion = styled.div`
+    color: ${colors.BLACK50};
+`;
+
+const BetweenVersionArrow = styled.div`
+    margin: 0 8px;
+    color: ${colors.BLACK50};
+`;
+
+const ToVersion = styled.div`
+    font-weight: ${FONT_WEIGHT.REGULAR};
+    color: ${colors.BLACK0};
+`;
+
+const NewBadge = styled.div`
+    height: 18px;
+    font-size: 10px;
+    font-weight: ${FONT_WEIGHT.DEMI_BOLD};
+    color: ${colors.BLACK50};
+    background-color: ${colors.BLACK92};
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    padding: 2px 4px 0 4px;
+    margin: 0 4px;
+`;
+
+const StyledP = styled(P)`
+    color: ${colors.BLACK50};
+    font-size: ${FONT_SIZE.SMALL};
+    margin: 20px 0;
+`;
+
+const WhatsNewLink = styled(Link)`
+    color: ${colors.BLACK50};
+    font-size: ${FONT_SIZE.SMALL};
+    font-weight: ${FONT_WEIGHT.MEDIUM};
+    margin-top: 12px;
+`;
+
+const UniSuccessImg = () => (
+    <img
+        src={resolveStaticPath('images/suite/uni-success.svg')}
+        alt=""
+        style={{ marginTop: 'auto' }}
+    />
+);
 
 const CloseButton = (props: ButtonProps) => (
     <StyledButton
@@ -135,7 +192,7 @@ const Firmware = ({
         return (
             <Wrapper>
                 <H2>Holy guacamole! We got an error!</H2>
-                <P size="tiny">{firmware.error}</P>
+                <StyledP>{firmware.error}</StyledP>
                 <Buttons>
                     <Col>
                         <StyledButton onClick={onClose} data-test="@modal/firmware/exit-button">
@@ -159,14 +216,14 @@ const Firmware = ({
                             />
                         </ProgressBarWrapper>
                         <H2>Reconnect your device in bootloader mode</H2>
-                        <P size="tiny">Ok, now disconnect your device</P>
+                        <StyledP>Ok, now disconnect your device</StyledP>
                         <InitImg />
                     </>
                 )}
                 {firmware.status !== 'waiting-for-bootloader' && (
                     <>
                         <H2>No device</H2>
-                        <P size="tiny">No device connected :( </P>
+                        <StyledP>No device connected :( </StyledP>
                     </>
                 )}
                 <Buttons>
@@ -182,14 +239,14 @@ const Firmware = ({
         return (
             <Wrapper>
                 <H2>Firmware is up to date.</H2>
-                <P size="tiny">
+                <StyledP>
                     Great! Your firmware is up to date and no further action is needed. Check our
                     blog for updates or come here later.
-                </P>
-                <P size="normal" weight="bold">
-                    version: {getFwVersion(device)}
-                </P>
-                <Link href="todo todo todo">Whats new</Link>
+                </StyledP>
+                <P size="normal">version {getFwVersion(device)}</P>
+
+                <WhatsNewLink href={CHANGELOG_URL}>What's new</WhatsNewLink>
+                <UniSuccessImg />
                 <Buttons>
                     <Col>
                         <StyledButton onClick={onClose} data-test="@modal/firmware/exit-button">
@@ -216,10 +273,10 @@ const Firmware = ({
                     {/* we can not show changelog if device is in bootloader mode */}
                     {device.mode === 'bootloader' && (
                         <>
-                            <P size="tiny">
+                            <StyledP>
                                 Your device is in bootloader mode. Reconnect it to normal mode to
                                 continue.
-                            </P>
+                            </StyledP>
                             <Buttons>
                                 <Col>
                                     <CloseButton onClick={onClose} />
@@ -229,14 +286,19 @@ const Firmware = ({
                     )}
                     {device.mode !== 'bootloader' && (
                         <>
-                            <P size="tiny">
+                            <StyledP>
                                 To keep your Trezor up to date we recommend updating your device.
                                 Check what’s new:
-                            </P>
-                            {getFwVersion(device)} -> {firmwareRelease.version.join('.')}
+                            </StyledP>
+                            <FromVersionToVersion>
+                                <FromVersion>version {getFwVersion(device)}</FromVersion>
+                                <BetweenVersionArrow>→</BetweenVersionArrow>
+                                <ToVersion>version {firmwareRelease.version.join('.')}</ToVersion>
+                                <NewBadge>NEW</NewBadge>
+                            </FromVersionToVersion>
                             <ChangesSummary>
                                 {device.firmwareRelease.changelog.split('*').map(r => (
-                                    <P key={r} size="tiny">
+                                    <P key={r} size="small">
                                         {r}
                                     </P>
                                 ))}
@@ -260,11 +322,11 @@ const Firmware = ({
             {firmware.status === 'check-seed' && (
                 <>
                     <H2>Security checkpoint - got a seed?</H2>
-                    <P size="tiny">
+                    <StyledP>
                         Before any further actions, please make sure that you have your recovery
                         seed. Either safely stored or even with you as of now. In any case of
                         improbable emergency.
-                    </P>
+                    </StyledP>
                     <SeedImg
                         src={resolveStaticPath('images/onboarding/recover-from-seed.svg')}
                         alt=""
@@ -288,35 +350,36 @@ const Firmware = ({
                     {device && device.mode !== 'bootloader' && (
                         <>
                             <H2>Connect your device in bootloader mode</H2>
-                            <P size="tiny">
+                            <StyledP>
                                 swipe your finger accross the touchscreen while connecting cable
-                            </P>
-                            <InitImg />
+                            </StyledP>
+                            <img
+                                alt=""
+                                src={resolveStaticPath('images/suite/connect-device.svg')}
+                            />
                         </>
                     )}
+                    {device && device.mode === 'bootloader' && (
+                        <>
+                            <H2>Let's unleash the kraken</H2>
+                            <InitImg />
+
+                            <Buttons>
+                                <Col>
+                                    <StyledButton
+                                        onClick={() => firmwareUpdate()}
+                                        data-test="@modal/firmware/start-button"
+                                    >
+                                        Start
+                                    </StyledButton>
+                                    <CloseButton onClick={onClose} />
+                                </Col>
+                            </Buttons>
+                        </>
+                    )}
+                    }
                 </>
             )}
-
-            {firmware.status === 'waiting-for-bootloader' &&
-                device &&
-                device.mode === 'bootloader' && (
-                    <>
-                        <H2>Let's unleash the kraken</H2>
-                        <InitImg />
-
-                        <Buttons>
-                            <Col>
-                                <StyledButton
-                                    onClick={() => firmwareUpdate()}
-                                    data-test="@modal/firmware/start-button"
-                                >
-                                    Start
-                                </StyledButton>
-                                <CloseButton onClick={onClose} />
-                            </Col>
-                        </Buttons>
-                    </>
-                )}
 
             {['waiting-for-confirmation', 'installing', 'started', 'downloading'].includes(
                 firmware.status,
@@ -332,7 +395,7 @@ const Firmware = ({
             {firmware.status === 'partially-done' && (
                 <>
                     <H2>Firmware partially upgraded</H2>
-                    <P>But there is still another upgrade ahead!</P>
+                    <StyledP>But there is still another upgrade ahead!</StyledP>
                     <SuccessImg />
 
                     <Buttons>

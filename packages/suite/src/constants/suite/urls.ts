@@ -28,3 +28,4 @@ export const TRANSLATIONS_MANUAL_URL =
 export const RIPPLE_MANUAL_URL = 'https://wiki.trezor.io/Ripple_(XRP)';
 export const BRIDGE_CHANGELOG_URL = 'https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md';
 export const WIKI_QR_CODE = 'https://wiki.trezor.io/QR_code';
+export const CHANGELOG_URL = 'https://wiki.trezor.io/Firmware_changelog';
