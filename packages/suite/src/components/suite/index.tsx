@@ -11,6 +11,7 @@ import PinInput from './PinInput';
 import NoRatesTooltip from './NoRatesTooltip';
 import WordInput from './WordInput';
 import WordInputAdvanced from './WordInputAdvanced';
+import ProgressBar from './ProgressBar';
 
 import { Translation } from './Translation';
 
@@ -29,4 +30,5 @@ export {
     Translation,
     WordInput,
     WordInputAdvanced,
+    ProgressBar,
 };

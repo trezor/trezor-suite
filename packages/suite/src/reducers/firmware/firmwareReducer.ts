@@ -5,6 +5,7 @@ import { SUITE } from '@suite-actions/constants';
 import { Action } from '@suite-types';
 
 const INITIAL = 'initial';
+const CHECK_SEED = 'check-seed';
 const WAITING_FOR_BOOTLOADER = 'waiting-for-bootloader';
 const STARTED = 'started';
 const DOWNLOADING = 'downloading';
@@ -18,6 +19,7 @@ const ERROR = 'error';
 
 export type AnyStatus =
     | typeof INITIAL
+    | typeof CHECK_SEED
     | typeof WAITING_FOR_BOOTLOADER
     | typeof STARTED
     | typeof DOWNLOADING
@@ -33,14 +35,12 @@ export interface FirmwareUpdateState {
     status: AnyStatus;
     installingProgress?: number;
     error?: string;
-    userConfirmedSeed: boolean;
 }
 
 const initialState: FirmwareUpdateState = {
     status: INITIAL,
     installingProgress: undefined,
     error: undefined,
-    userConfirmedSeed: false,
 };
 
 const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Action) => {
@@ -64,10 +64,6 @@ const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Actio
                 break;
             case FIRMWARE.RESET_REDUCER:
                 return initialState;
-            case FIRMWARE.CONFIRM_SEED:
-                draft.userConfirmedSeed = action.payload;
-                draft.status = WAITING_FOR_BOOTLOADER;
-                break;
             default:
             // no default
         }

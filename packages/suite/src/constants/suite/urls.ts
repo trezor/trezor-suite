@@ -31,3 +31,4 @@ export const LTC_ADDRESS_INFO_URL =
     'https://blog.trezor.io/litecoins-new-p2sh-segwit-addresses-843633e3e707';
 export const BRIDGE_CHANGELOG_URL = 'https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md';
 export const WIKI_QR_CODE = 'https://wiki.trezor.io/QR_code';
+export const CHANGELOG_URL = 'https://wiki.trezor.io/Firmware_changelog';
