@@ -13,7 +13,7 @@ type OwnProps = {
     symbol: Network['symbol'];
     fiatCurrency?: string;
     children?: (
-        fiatValue: JSX.Element,
+        fiatValue: JSX.Element | null,
         fiatRateValue?: number | null,
         timestamp?: number | null,
     ) => React.ReactElement;

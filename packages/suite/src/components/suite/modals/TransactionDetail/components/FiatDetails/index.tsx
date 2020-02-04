@@ -6,7 +6,6 @@ import Badge from '@suite-components/Badge';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import Box from '../Box';
 import BoxRow from '../BoxRow';
-import { AppState } from '@suite-types';
 import { FormattedDate } from 'react-intl';
 
 const Grid = styled.div`
