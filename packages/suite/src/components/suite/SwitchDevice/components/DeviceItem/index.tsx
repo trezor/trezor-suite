@@ -181,7 +181,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                                     {/* TODO: warning icon */}
                                     <Icon icon="INFO" size={14} color={colors.RED2} />
                                 </AttentionIconWrapper>
-                                Device needs attention ({deviceStatus})
+                                Device needs attention
                             </Attention>
                             <Button
                                 variant="secondary"
