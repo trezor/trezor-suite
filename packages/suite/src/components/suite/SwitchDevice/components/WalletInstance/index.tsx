@@ -76,7 +76,6 @@ const WalletInstance = ({
 }: Props) => {
     const discoveryProcess = instance.state ? getDiscovery(instance.state) : null;
     const deviceAccounts = accountUtils.getAllAccounts(instance.state, accounts);
-    const coinsCount = accountUtils.countUniqueCoins(deviceAccounts);
     const accountsCount = deviceAccounts.length;
     const instanceBalance = accountUtils.getTotalBalance(deviceAccounts, localCurrency, fiat);
     const noPassphraseInstance = instance.useEmptyPassphrase!!;
@@ -104,10 +103,9 @@ const WalletInstance = ({
                 )}
                 <InstanceTitle>
                     <Translation
-                        {...messages.TR_NUM_ACCOUNTS_NUM_ASSETS_FIAT_VALUE}
+                        {...messages.TR_NUM_ACCOUNTS_FIAT_VALUE}
                         values={{
                             accountsCount,
-                            assetsCount: coinsCount,
                             fiatValue: (
                                 <FormattedNumber
                                     value={instanceBalance.toString()}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
-import { Button, colors, variables } from '@trezor/components-v2';
+import { Button, colors, variables, Icon } from '@trezor/components-v2';
 import { Translation } from '@suite-components';
 import Card from '@suite-components/Card';
 import * as deviceUtils from '@suite-utils/device';
@@ -40,6 +40,12 @@ const DeviceStatus = styled.span<{ color: string }>`
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: 600;
     color: ${props => props.color};
+`;
+
+const Row = styled.div<{ grow?: number }>`
+    display: flex;
+    flex-grow: ${props => props.grow || 0};
+    align-items: center;
 `;
 
 const Col = styled.div<{ grow?: number }>`
@@ -100,6 +106,18 @@ const DeviceImageWrapper = styled.div`
     height: 60px;
 `;
 
+const Attention = styled.div`
+    display: flex;
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: 600;
+    color: ${colors.RED2};
+    margin-right: 20px;
+`;
+
+const AttentionIconWrapper = styled.div`
+    margin-right: 1ch;
+`;
+
 // TODO: this is going to be a problem with different col headers length since they won't be aligned with the columns inside WalletInstance
 const RememberWallet = styled(ColHeader)``;
 const HideWallet = styled(ColHeader)`
@@ -107,43 +125,16 @@ const HideWallet = styled(ColHeader)`
     margin-right: 16px;
 `;
 
-const UnknownDevice = (props: Props & WrappedComponentProps) => {
-    const { device } = props;
-    const deviceStatus = deviceUtils.getStatus(device);
-    return (
-        <DeviceWrapper>
-            <Device>
-                <DeviceHeader>
-                    <DeviceImageWrapper>
-                        <DeviceImage device={device} />
-                    </DeviceImageWrapper>
-                    <Col grow={1}>
-                        <DeviceTitle>{device.label}</DeviceTitle>
-                        <DeviceStatus color={deviceUtils.getStatusColor(deviceStatus)}>
-                            {deviceUtils.getStatusName(deviceStatus, props.intl)}
-                        </DeviceStatus>
-                    </Col>
-                    {device.type === 'unacquired' && (
-                        <Button
-                            variant="secondary"
-                            size="small"
-                            icon="REFRESH"
-                            onClick={() => props.acquireDevice(device)}
-                        >
-                            Acquire
-                        </Button>
-                    )}
-                </DeviceHeader>
-            </Device>
-        </DeviceWrapper>
-    );
-};
-
 const DeviceItem = (props: Props & WrappedComponentProps) => {
     const { device, selectedDevice, backgroundRoute } = props;
-    if (device.type !== 'acquired') return <UnknownDevice {...props} />;
-
     const deviceStatus = deviceUtils.getStatus(device);
+    const isUnknown = device.type !== 'acquired';
+    const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
+    const needsAcquire =
+        device.type === 'unacquired' ||
+        deviceStatus === 'used-in-other-window' ||
+        deviceStatus === 'was-used-in-other-window';
+
     const isWalletContext =
         !!backgroundRoute &&
         (backgroundRoute.app === 'wallet' || backgroundRoute.app === 'dashboard');
@@ -161,6 +152,14 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
         props.closeModalApp();
     };
 
+    const onSolveIssueClick = () => {
+        if (needsAcquire) {
+            props.acquireDevice(device);
+        } else {
+            selectDeviceInstance(device);
+        }
+    };
+
     return (
         <DeviceWrapper>
             <Device>
@@ -175,7 +174,27 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                         </DeviceStatus>
                     </Col>
 
-                    {hasDeviceSelection && (
+                    {needsAttention && (
+                        <Row>
+                            <Attention>
+                                <AttentionIconWrapper>
+                                    {/* TODO: warning icon */}
+                                    <Icon icon="INFO" size={14} color={colors.RED2} />
+                                </AttentionIconWrapper>
+                                Device needs attention ({deviceStatus})
+                            </Attention>
+                            <Button
+                                variant="secondary"
+                                size="small"
+                                // icon="REFRESH"
+                                onClick={() => onSolveIssueClick()}
+                            >
+                                Solve issue
+                            </Button>
+                        </Row>
+                    )}
+
+                    {!isUnknown && hasDeviceSelection && (
                         <ChooseDevice
                             size="small"
                             variant="secondary"
@@ -186,47 +205,51 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                     )}
                 </DeviceHeader>
             </Device>
-            <WalletsWrapper enabled={isWalletContext}>
-                {isWalletContext && (
-                    <WalletsTooltips>
-                        <RememberWallet
-                            tooltipContent={<Translation {...messages.TR_REMEMBER_ALLOWS_YOU_TO} />}
-                        >
-                            <Translation {...messages.TR_REMEMBER_WALLET} />
-                        </RememberWallet>
-                        <HideWallet
-                            tooltipContent={
-                                <Translation {...messages.TR_HIDE_WALLET_EXPLANATION} />
-                            }
-                        >
-                            <Translation {...messages.TR_HIDE_WALLET} />
-                        </HideWallet>
-                    </WalletsTooltips>
-                )}
-                <InstancesWrapper>
-                    {props.instances.map(instance => (
-                        <StyledWalletInstance
-                            key={`${instance.label}-${instance.instance}-${instance.state}`}
-                            instance={instance}
-                            enabled={isWalletContext}
-                            selected={deviceUtils.isSelectedInstance(selectedDevice, instance)}
-                            selectDeviceInstance={selectDeviceInstance}
-                        />
-                    ))}
-                </InstancesWrapper>
-                {isWalletContext && (
-                    <AddWallet>
-                        <Button
-                            variant="tertiary"
-                            icon="PLUS"
-                            disabled={!device.connected || !hasAtLeastOneWallet} // TODO: tooltip?
-                            onClick={async () => addDeviceInstance(device)}
-                        >
-                            <Translation {...messages.TR_ADD_HIDDEN_WALLET} />
-                        </Button>
-                    </AddWallet>
-                )}
-            </WalletsWrapper>
+            {!isUnknown && (
+                <WalletsWrapper enabled={isWalletContext}>
+                    {isWalletContext && (
+                        <WalletsTooltips>
+                            <RememberWallet
+                                tooltipContent={
+                                    <Translation {...messages.TR_REMEMBER_ALLOWS_YOU_TO} />
+                                }
+                            >
+                                <Translation {...messages.TR_REMEMBER_WALLET} />
+                            </RememberWallet>
+                            <HideWallet
+                                tooltipContent={
+                                    <Translation {...messages.TR_HIDE_WALLET_EXPLANATION} />
+                                }
+                            >
+                                <Translation {...messages.TR_HIDE_WALLET} />
+                            </HideWallet>
+                        </WalletsTooltips>
+                    )}
+                    <InstancesWrapper>
+                        {props.instances.map(instance => (
+                            <StyledWalletInstance
+                                key={`${instance.label}-${instance.instance}-${instance.state}`}
+                                instance={instance}
+                                enabled={isWalletContext}
+                                selected={deviceUtils.isSelectedInstance(selectedDevice, instance)}
+                                selectDeviceInstance={selectDeviceInstance}
+                            />
+                        ))}
+                    </InstancesWrapper>
+                    {isWalletContext && (
+                        <AddWallet>
+                            <Button
+                                variant="tertiary"
+                                icon="PLUS"
+                                disabled={!device.connected || !hasAtLeastOneWallet} // TODO: tooltip?
+                                onClick={async () => addDeviceInstance(device)}
+                            >
+                                <Translation {...messages.TR_ADD_HIDDEN_WALLET} />
+                            </Button>
+                        </AddWallet>
+                    )}
+                </WalletsWrapper>
+            )}
         </DeviceWrapper>
     );
 };

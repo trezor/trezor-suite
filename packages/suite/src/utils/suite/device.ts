@@ -51,29 +51,19 @@ export const getStatusName = (
 ): string => {
     switch (deviceStatus) {
         case 'connected':
+        case 'bootloader':
+        case 'initialize':
+        case 'seedless':
+        case 'firmware-required':
+        case 'firmware-recommended':
+        case 'used-in-other-window':
+        case 'was-used-in-other-window':
+        case 'unacquired':
+        case 'unavailable':
+        case 'unreadable':
             return intl.formatMessage(messages.TR_CONNECTED);
         case 'disconnected':
             return intl.formatMessage(messages.TR_DISCONNECTED);
-        case 'bootloader':
-            return intl.formatMessage(messages.TR_CONNECTED_BOOTLOADER);
-        case 'initialize':
-            return intl.formatMessage(messages.TR_CONNECTED_NOT_INITIALIZED);
-        case 'seedless':
-            return intl.formatMessage(messages.TR_CONNECTED_SEEDLESS);
-        case 'firmware-required':
-            return intl.formatMessage(messages.TR_CONNECTED_UPDATE_REQUIRED);
-        case 'firmware-recommended':
-            return intl.formatMessage(messages.TR_CONNECTED_UPDATE_RECOMMENDED);
-        case 'used-in-other-window':
-            return intl.formatMessage(messages.TR_USED_IN_ANOTHER_WINDOW);
-        case 'was-used-in-other-window':
-            return intl.formatMessage(messages.TR_WAS_USED_IN_ANOTHER_WINDOW);
-        case 'unacquired':
-            return intl.formatMessage(messages.TR_USED_IN_ANOTHER_WINDOW);
-        case 'unavailable':
-            return intl.formatMessage(messages.TR_UNAVAILABLE);
-        case 'unreadable':
-            return intl.formatMessage(messages.TR_UNREADABLE);
         default:
             return intl.formatMessage(messages.TR_STATUS_UNKNOWN);
     }
@@ -82,9 +72,6 @@ export const getStatusName = (
 export const getStatusColor = (deviceStatus: string): string => {
     switch (deviceStatus) {
         case 'connected':
-            return colors.GREEN;
-        case 'disconnected':
-            return colors.BLACK50;
         case 'bootloader':
         case 'initialize':
         case 'seedless':
@@ -92,13 +79,32 @@ export const getStatusColor = (deviceStatus: string): string => {
         case 'used-in-other-window':
         case 'was-used-in-other-window':
         case 'unacquired':
-            return colors.BLACK50;
         case 'firmware-required':
         case 'unavailable':
         case 'unreadable':
-            return colors.RED;
+            return colors.GREEN;
+        case 'disconnected':
+            return colors.BLACK50;
         default:
             return colors.BLACK50;
+    }
+};
+
+export const deviceNeedsAttention = (deviceStatus: string): boolean => {
+    switch (deviceStatus) {
+        // case 'firmware-recommended':
+        case 'bootloader':
+        case 'initialize':
+        case 'seedless':
+        case 'used-in-other-window':
+        case 'was-used-in-other-window':
+        case 'unacquired':
+        case 'firmware-required':
+        case 'unavailable':
+        case 'unreadable':
+            return true;
+        default:
+            return false;
     }
 };
 
