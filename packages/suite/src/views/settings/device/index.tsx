@@ -100,6 +100,7 @@ const Settings = ({
                         />
                         <ActionColumn>
                             <ActionButton
+                                data-test="@settings/device/create-backup-button"
                                 onClick={() => goto('backup-index', { cancelable: true })}
                                 isDisabled={
                                     uiLocked || !features.needs_backup || features.unfinished_backup
@@ -117,7 +118,7 @@ const Settings = ({
                     </Row>
 
                     {features.unfinished_backup && (
-                        <BackupFailedRow>
+                        <BackupFailedRow data-test="@settings/device/failed-backup-row">
                             <P size="tiny">
                                 <Translation>{messages.TR_BACKUP_FAILED}</Translation>
                             </P>
@@ -141,6 +142,7 @@ const Settings = ({
                             />
                             <ActionColumn>
                                 <ActionButton
+                                    data-test="@settings/device/check-seed-button"
                                     onClick={() => {
                                         startCheckSeed();
                                     }}
@@ -174,7 +176,7 @@ const Settings = ({
                             <ActionButton
                                 variant="secondary"
                                 onClick={() => goto('firmware-index', { cancelable: true })}
-                                data-test="@suite/settings/device/update-button"
+                                data-test="@settings/device/update-button"
                                 isDisabled={
                                     uiLocked
                                     // TODO: for development and testing purposes is disable disabled
@@ -237,7 +239,7 @@ const Settings = ({
                                         use_passphrase: !features.passphrase_protection,
                                     })
                                 }
-                                data-test="@suite/settings/device/passphrase-switch"
+                                data-test="@settings/device/passphrase-switch"
                                 // isDisabled={uiLocked}
                             />
                         </ActionColumn>
@@ -259,12 +261,12 @@ const Settings = ({
                                 onChange={(event: React.FormEvent<HTMLInputElement>) =>
                                     setLabel(event.currentTarget.value)
                                 }
-                                data-test="@suite/settings/device/label-input"
+                                data-test="@settings/device/label-input"
                             />
                             <ActionButton
                                 onClick={() => applySettings({ label })}
                                 isDisabled={uiLocked}
-                                data-test="@suite/settings/device/label-submit"
+                                data-test="@settings/device/label-submit"
                             >
                                 <Translation>
                                     {messages.TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL}
@@ -304,7 +306,7 @@ const Settings = ({
                                     })
                                 }
                                 isDisabled={uiLocked}
-                                data-test="@suite/settings/device/select-from-gallery"
+                                data-test="@settings/device/select-from-gallery"
                                 variant="secondary"
                             >
                                 <Translation>
@@ -333,7 +335,7 @@ const Settings = ({
                                                 display_rotation: variant.value,
                                             })
                                         }
-                                        data-test={`@suite/settings/device/rotation-button/${variant.value}`}
+                                        data-test={`@settings/device/rotation-button/${variant.value}`}
                                         isDisabled={uiLocked}
                                     >
                                         {variant.label}
@@ -361,7 +363,7 @@ const Settings = ({
                                 variant="danger"
                                 onClick={() => wipeDevice()}
                                 isDisabled={uiLocked}
-                                data-test="@suite/settings/device/wipe-button"
+                                data-test="@settings/device/wipe-button"
                             >
                                 <Translation>
                                     {messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}

@@ -28,9 +28,9 @@ interface CheckItemProps {
     onClick: () => void;
 }
 
-const CheckItem = ({ title, description, isChecked, onClick }: CheckItemProps) => {
+const CheckItem = ({ title, description, isChecked, onClick, ...rest }: CheckItemProps) => {
     return (
-        <StyledCheckbox isChecked={isChecked} onClick={onClick}>
+        <StyledCheckbox isChecked={isChecked} onClick={onClick} {...rest}>
             <CheckboxRight>
                 <CheckboxTitle>{title}</CheckboxTitle>
                 <CheckboxText>{description}</CheckboxText>

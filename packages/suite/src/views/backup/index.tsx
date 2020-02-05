@@ -106,6 +106,7 @@ const Backup = (props: Props) => {
                     <Buttons>
                         <Col>
                             <StyledButton
+                                data-test="@backup/start-button"
                                 onClick={() => backupDevice()}
                                 isDisabled={
                                     !checkboxesBefore.every(e => backup.userConfirmed.includes(e))
@@ -113,7 +114,7 @@ const Backup = (props: Props) => {
                             >
                                 Create backup seed
                             </StyledButton>
-                            <Button icon="CROSS" variant="tertiary" onClick={onClose}>
+                            <Button data-test="@backup/close-button" icon="CROSS" variant="tertiary" onClick={onClose}>
                                 Cancel backup process
                             </Button>
                         </Col>
@@ -136,7 +137,7 @@ const Backup = (props: Props) => {
                                     !checkboxesAfter.every(e => backup.userConfirmed.includes(e))
                                 }
                                 onClick={onClose}
-                                data-test="@modal/firmware/exit-button"
+                                data-test="@backup/close-button"
                             >
                                 Close
                             </StyledButton>
