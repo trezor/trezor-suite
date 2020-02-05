@@ -179,6 +179,7 @@ const Modal = (props: Props) => {
                 // if modal has onCancel action set cancelable to true and pass the onCancel action
                 cancelable={modalComponent.props.onCancel}
                 onCancel={modalComponent.props.onCancel}
+                padding="0px"
             >
                 <FocusLock>{modalComponent}</FocusLock>
             </ModalComponent>

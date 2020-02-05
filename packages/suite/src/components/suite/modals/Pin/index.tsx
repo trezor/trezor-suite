@@ -14,7 +14,7 @@ import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const { FONT_SIZE, SCREEN_SIZE } = variables;
 
-const ModalWrapper = styled.div`
+const Wrapper = styled.div`
     /* padding: 40px 40px 20px 40px; */
     display: flex;
     flex-direction: row;
@@ -30,6 +30,10 @@ const Col = styled.div<{ gray?: boolean }>`
     align-items: center;
     width: 405px;
     padding: 40px 40px 20px 40px;
+
+    @media only screen and (max-width: ${SCREEN_SIZE.MD}) {
+        align-self: center;
+    }
 
     ${props =>
         props.gray &&
@@ -93,7 +97,7 @@ const Pin = ({ device, onPinSubmit }: Props) => {
 
     // TODO: figure out responsive design
     return (
-        <ModalWrapper>
+        <Wrapper>
             {!features?.pin_protection && (
                 <Col gray>
                     <H2>Set up new PIN</H2>
@@ -138,7 +142,7 @@ const Pin = ({ device, onPinSubmit }: Props) => {
                     </BottomMessage>
                 )}
             </Col>
-        </ModalWrapper>
+        </Wrapper>
     );
 };
 

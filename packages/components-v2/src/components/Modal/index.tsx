@@ -21,9 +21,11 @@ const ModalContainer = styled.div`
 `;
 
 const ModalWindow = styled.div<Props>`
+    display: flex;
+    justify-content: center;
     margin: auto;
     position: relative;
-    border-radius: 4px;
+    border-radius: 6px;
     background-color: ${colors.WHITE};
     box-shadow: 0 10px 60px 0 ${colors.BLACK25};
     text-align: center;
@@ -32,14 +34,6 @@ const ModalWindow = styled.div<Props>`
 
     @media only screen and (max-width: 800px) {
         width: 90%;
-    }
-`;
-
-const Wrapper = styled.div`
-    margin: 40px;
-
-    @media only screen and (max-width: 800px) {
-        margin: 20px;
     }
 `;
 
@@ -89,15 +83,13 @@ const Modal = ({
     return (
         <ModalContainer {...rest}>
             <ModalWindow padding={padding}>
-                <Wrapper>
-                    {cancelable && (
-                        <StyledLink onClick={onCancel}>
-                            {cancelText || ''}
-                            <StyledIcon size={8} color={colors.BLACK25} icon="CROSS" />
-                        </StyledLink>
-                    )}
-                    {children}
-                </Wrapper>
+                {cancelable && (
+                    <StyledLink onClick={onCancel}>
+                        {cancelText || ''}
+                        <StyledIcon size={8} color={colors.BLACK25} icon="CROSS" />
+                    </StyledLink>
+                )}
+                {children}
             </ModalWindow>
         </ModalContainer>
     );

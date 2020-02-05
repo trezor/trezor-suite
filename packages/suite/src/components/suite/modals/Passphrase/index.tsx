@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { useKeyPress } from '@suite-utils/dom';
 import styled, { css } from 'styled-components';
-import { Button, H2, Modal, colors, variables, Input, Checkbox } from '@trezor/components-v2';
+import { Button, H2, colors, variables, Input, Checkbox } from '@trezor/components-v2';
 // import { Translation } from '@suite-components/Translation';
 import Loading from '@suite-components/Loading';
 import * as modalActions from '@suite-actions/modalActions';
@@ -12,6 +12,7 @@ import * as deviceUtils from '@suite-utils/device';
 // import messages from '@suite/support/messages';
 import { AppState, Dispatch, TrezorDevice } from '@suite-types';
 import Link from '../../Link';
+import ModalWrapper from '@suite-components/ModalWrapper';
 import { PASSPHRASE_URL } from '@suite-constants/urls';
 
 const Wrapper = styled.div<{ authConfirmation?: boolean }>`
@@ -193,6 +194,7 @@ const Passphrase = (props: Props) => {
                             display="block"
                             variant="small"
                             button={{
+                                iconSize: 18,
                                 icon: showPassword ? 'HIDE' : 'SHOW',
                                 onClick: () => setShowPassword(!showPassword),
                             }}
@@ -225,7 +227,7 @@ const Passphrase = (props: Props) => {
 
     // show 2-column modal for selecting between standard and hidden wallets
     return (
-        <Modal>
+        <ModalWrapper>
             <Wrapper>
                 <H2>Select a wallet to access</H2>
                 <Description>
@@ -302,7 +304,7 @@ const Passphrase = (props: Props) => {
                     </Col>
                 </WalletsWrapper>
             </Wrapper>
-        </Modal>
+        </ModalWrapper>
     );
 };
 
