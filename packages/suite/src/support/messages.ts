@@ -7,7 +7,7 @@ const definedMessages = defineMessages({
     },
     TR_ACCOUNT_EXCEPTION_NOT_EXIST: {
         defaultMessage: 'Account does not exist',
-        id: 'TR_ACCOUNT_DOES_NOT_EXIST',
+        id: 'TR_ACCOUNT_EXCEPTION_NOT_EXIST',
     },
     TR_ACCOUNT_EXCEPTION_NOT_ENABLED: {
         defaultMessage: '{networkName} not enabled in settings.',
