@@ -17,8 +17,6 @@ const Wrapper = styled.div`
     max-width: 720px;
 `;
 
-const Title = styled(H2)``;
-
 const Description = styled.div`
     font-size: ${variables.FONT_SIZE.BODY};
     line-height: 1.43;
@@ -55,9 +53,9 @@ const SwitchDeviceModal = (props: Props) => {
     return (
         <Wrapper>
             <In>
-                <Title>
+                <H2>
                     <Translation {...messages.TR_SWITCH_DEVICE} />
-                </Title>
+                </H2>
                 <Description>
                     <Translation {...messages.TR_THIS_IS_PLACE_TO_SEE_ALL} />
                 </Description>
