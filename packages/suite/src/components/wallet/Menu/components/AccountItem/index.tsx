@@ -5,7 +5,7 @@ import { getRoute } from '@suite-utils/router';
 import {
     getTitleForNetwork,
     getTypeForNetwork,
-    getAccountBalance,
+    getAccountFiatBalance,
 } from '@wallet-utils/accountUtils';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
@@ -111,7 +111,7 @@ const StyledBadge = styled(Badge)`
 const AccountItem = React.memo((props: Props) => {
     const { account, selected } = props;
     const accountType = getTypeForNetwork(account.accountType);
-    const fiatBalance = getAccountBalance(account, props.localCurrency, props.fiat);
+    const fiatBalance = getAccountFiatBalance(account, props.localCurrency, props.fiat);
 
     const accountName = (
         <>

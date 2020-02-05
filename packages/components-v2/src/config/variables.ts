@@ -93,6 +93,7 @@ export const ICONS: IconType[] = [
     'TRANSACTIONS',
     'TREZOR',
     'WALLET',
+    'EXTERNAL_LINK',
     'T1',
     'T2',
 ];

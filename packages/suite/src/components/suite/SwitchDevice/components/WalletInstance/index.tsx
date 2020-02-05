@@ -64,7 +64,7 @@ const WalletInstance = ({
     const deviceAccounts = accountUtils.getAllAccounts(instance.state, accounts);
     const coinsCount = accountUtils.countUniqueCoins(deviceAccounts);
     const accountsCount = deviceAccounts.length;
-    const instanceBalance = accountUtils.getTotalBalance(deviceAccounts, localCurrency, fiat);
+    const instanceBalance = accountUtils.getTotalFiatBalance(deviceAccounts, localCurrency, fiat);
     let instanceType = instance.useEmptyPassphrase ? 'No passphrase' : 'Passphrase';
     if (!discoveryProcess) {
         instanceType = ' ';

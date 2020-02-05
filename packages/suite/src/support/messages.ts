@@ -1241,14 +1241,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Total received: {amount}',
         id: 'TR_TOTAL_RECEIVED',
     },
-    TR_TRANSACTIONS: {
-        defaultMessage: '{network} Transactions',
-        id: 'TR_TRANSACTIONS',
-    },
-    TR_TRANSACTIONS_AND_TOKENS: {
-        defaultMessage: '{network} and tokens transactions',
-        id: 'TR_TRANSACTIONS_AND_TOKENS',
-    },
     TR_TREZOR: {
         defaultMessage: 'Trezor',
         description: 'Link in header navigation',
@@ -1711,6 +1703,15 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Trezor Suite does NOT track any balance-related or personal data, all anonymously',
         id: 'TR_ALLOW_ANALYTICS_DESCRIPTION',
+    },
+    TR_ONCE_YOU_SEND_OR_RECEIVE: {
+        id: 'TR_ONCE_YOU_SEND_OR_RECEIVE',
+        defaultMessage:
+            'Once you send or receive your first transaction it will show up here. Until then, wanna buy some crypto? Click the button below to begin your shopping spree!',
+    },
+    TR_ACCOUNT_IS_EMPTY: {
+        id: 'TR_ACCOUNT_IS_EMPTY',
+        defaultMessage: 'The account is empty',
     },
     TR_HELP_TREZOR_SUITE: {
         defaultMessage: 'Help Trezor Suite get better',

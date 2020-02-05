@@ -3,7 +3,7 @@ import { AccountTransaction } from 'trezor-connect';
 import { ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
 import { getAccountKey, enhanceTransaction } from '@wallet-utils/accountUtils';
 import { SETTINGS } from '@suite-config';
-import { Account, WalletAction } from '@wallet-types';
+import { Account, WalletAction, Network } from '@wallet-types';
 import { Action } from '@suite-types';
 import { STORAGE } from '@suite-actions/constants';
 
@@ -12,7 +12,7 @@ export interface WalletAccountTransaction extends AccountTransaction {
     page?: number;
     deviceState: string;
     descriptor: string;
-    symbol: string;
+    symbol: Network['symbol'];
 }
 
 export interface State {

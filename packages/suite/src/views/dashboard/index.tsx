@@ -48,7 +48,7 @@ const Dashboard = (props: Props) => {
     });
 
     const deviceAccounts = device ? accountUtils.getAllAccounts(device.state, props.accounts) : [];
-    const instanceBalance = accountUtils.getTotalBalance(
+    const instanceBalance = accountUtils.getTotalFiatBalance(
         deviceAccounts,
         props.localCurrency,
         props.fiat,
