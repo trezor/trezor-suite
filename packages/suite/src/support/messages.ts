@@ -1719,6 +1719,20 @@ const definedMessages = defineMessages({
         defaultMessage: 'Help Trezor Suite get better',
         id: 'TR_HELP_TREZOR_SUITE',
     },
+    TR_CUSTOM_FEE_IS_NOT_VALID: {
+        defaultMessage: 'Fee is not valid',
+        id: 'TR_CUSTOM_FEE_IS_NOT_VALID',
+    },
+    TR_HIDE_ADVANCED_OPTIONS: {
+        defaultMessage: 'Hide advanced options',
+        description: 'Hide advanced sending form',
+        id: 'TR_HIDE_ADVANCED_OPTIONS',
+    },
+    TR_SHOW_ADVANCED_OPTIONS: {
+        defaultMessage: 'Show advanced options',
+        description: 'Shows advanced sending form',
+        id: 'TR_SHOW_ADVANCED_OPTIONS',
+    },
     TR_HELP_TREZOR_SUITE_TEXT_1: {
         defaultMessage:
             'Help Trezor Suite become a better product by sending us {TR_HELP_TREZOR_SUITE_TEXT_1_FAT}.',
@@ -1727,6 +1741,18 @@ const definedMessages = defineMessages({
     TR_HELP_TREZOR_SUITE_TEXT_1_FAT: {
         defaultMessage: 'anonymous analytics data.',
         id: 'TR_HELP_TREZOR_SUITE_TEXT_1_FAT',
+    },
+    TR_ETH_DATA_NOT_HEX: {
+        defaultMessage: 'Data is not hex',
+        id: 'TR_ETH_DATA_NOT_HEX',
+    },
+    TR_ETH_GAS_LIMIT_NOT_NUMBER: {
+        defaultMessage: 'Gas limit is not a number',
+        id: 'TR_ETH_GAS_LIMIT_NOT_NUMBER',
+    },
+    TR_ETH_GAS_PRICE_NOT_NUMBER: {
+        defaultMessage: 'Gas price is not a number',
+        id: 'TR_ETH_GAS_PRICE_NOT_NUMBER',
     },
     TR_RECIPIENT_ADDRESS: {
         defaultMessage: 'Recipient address',

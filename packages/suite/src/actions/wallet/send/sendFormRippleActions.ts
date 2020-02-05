@@ -1,4 +1,4 @@
-import { NOTIFICATION } from '@suite-actions/constants';
+import * as notificationActions from '@suite-actions/notificationActions';
 import { Dispatch, GetState } from '@suite-types';
 import { SEND } from '@wallet-actions/constants';
 import { XRP_FLAG } from '@wallet-constants/sendForm';
@@ -118,16 +118,12 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 
     if (!signedTransaction || !signedTransaction.success) {
-        dispatch({
-            type: NOTIFICATION.ADD,
-            payload: {
-                variant: 'error',
-                title: 'Sign tx error', // TODO
-                message: signedTransaction.payload.error,
-                cancelable: true,
-                actions: [],
-            },
-        });
+        dispatch(
+            notificationActions.add({
+                type: 'sign-tx-error',
+                error: signedTransaction.payload.error,
+            }),
+        );
         return;
     }
 
@@ -137,28 +133,18 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 
     if (!push.success) {
-        dispatch({
-            type: NOTIFICATION.ADD,
-            payload: {
-                variant: 'error',
-                title: 'Error', // TODO
-                message: push.payload.error,
-                cancelable: true,
-                actions: [],
-            },
-        });
+        dispatch(
+            notificationActions.add({
+                type: 'sign-tx-error',
+                error: push.payload.error,
+            }),
+        );
     } else {
-        const { txid } = push.payload;
-
-        dispatch({
-            type: NOTIFICATION.ADD,
-            payload: {
-                variant: 'success',
-                title: 'success',
-                message: txid,
-                cancelable: true,
-                actions: [],
-            },
-        });
+        dispatch(
+            notificationActions.add({
+                type: 'sign-tx-success',
+                txid: push.payload.txid,
+            }),
+        );
     }
 };
