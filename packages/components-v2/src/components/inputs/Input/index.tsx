@@ -231,7 +231,7 @@ const Input = ({
                             {button.icon && (
                                 <StyledIcon
                                     icon={button.icon}
-                                    size={10}
+                                    size={button.iconSize || 10}
                                     color={buttonHover ? colors.BLACK0 : colors.BLACK25}
                                 />
                             )}

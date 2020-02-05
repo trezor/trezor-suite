@@ -94,7 +94,7 @@ const Pin = ({ device, onPinSubmit }: Props) => {
     // TODO: figure out responsive design
     return (
         <ModalWrapper>
-            {features?.pin_protection && (
+            {!features?.pin_protection && (
                 <Col gray>
                     <H2>Set up new PIN</H2>
                     <Text>
