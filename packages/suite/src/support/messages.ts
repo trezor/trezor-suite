@@ -1728,6 +1728,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'anonymous analytics data.',
         id: 'TR_HELP_TREZOR_SUITE_TEXT_1_FAT',
     },
+    TR_RECIPIENT_ADDRESS: {
+        defaultMessage: 'Recipient address',
+        id: 'TR_RECIPIENT_ADDRESS',
+    },
     TR_HELP_TREZOR_SUITE_TEXT_2: {
         defaultMessage: 'Trezor Suite does NOT track any balance-related or personal data.',
         id: 'TR_HELP_TREZOR_SUITE_TEXT_2',
