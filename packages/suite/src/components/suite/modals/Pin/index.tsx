@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { H2, Link, variables, colors } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import Loading from '@suite-components/Loading';
@@ -15,7 +15,7 @@ import { resolveStaticPath } from '@suite-utils/nextjs';
 const { FONT_SIZE, SCREEN_SIZE } = variables;
 
 const ModalWrapper = styled.div`
-    padding: 30px 45px;
+    /* padding: 40px 40px 20px 40px; */
     display: flex;
     flex-direction: row;
 
@@ -24,17 +24,35 @@ const ModalWrapper = styled.div`
     }
 `;
 
-const Col = styled.div`
-    width: 356px;
+const Col = styled.div<{ gray?: boolean }>`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 405px;
+    padding: 40px 40px 20px 40px;
+
+    ${props =>
+        props.gray &&
+        css`
+            background: ${colors.BLACK96};
+        `}
 `;
 
-const Text = styled.div`
+const Expand = styled.div`
+    flex: 1;
+`;
+
+const Description = styled.div`
     color: ${colors.BLACK50};
     font-size: ${FONT_SIZE.SMALL};
+    text-align: center;
+`;
+
+const Text = styled(Description)`
     margin-bottom: 15px;
 `;
 
-const BottomMessage = styled(Text)`
+const BottomMessage = styled(Description)`
     margin: 20px 30px 0;
 `;
 
@@ -73,25 +91,26 @@ const Pin = ({ device, onPinSubmit }: Props) => {
         return <Loading />;
     }
 
+    // TODO: figure out responsive design
     return (
         <ModalWrapper>
-            {!features?.pin_protection && (
-                <Col>
+            {features?.pin_protection && (
+                <Col gray>
                     <H2>Set up new PIN</H2>
                     <Text>
                         Set up a strong PIN to protect your device from unauthorized access. The
                         keypad layout is displayed on your connected Trezor device.
                     </Text>
                     <Text>Maximum length is 9 digits.</Text>
-                    <StyledImg src={resolveStaticPath('images/suite/set-up-pin-dialog.svg')} />
-                    {!features?.pin_protection && (
-                        <Text>
-                            <Translation {...messages.TR_HOW_PIN_WORKS} />{' '}
-                            <Link href={URLS.PIN_MANUAL_URL}>
-                                <Translation {...messages.TR_LEARN_MORE_LINK} />
-                            </Link>
-                        </Text>
-                    )}
+                    <Expand>
+                        <StyledImg src={resolveStaticPath('images/suite/set-up-pin-dialog.svg')} />
+                    </Expand>
+                    <Description>
+                        <Translation {...messages.TR_HOW_PIN_WORKS} />{' '}
+                        <Link href={URLS.PIN_MANUAL_URL}>
+                            <Translation {...messages.TR_LEARN_MORE_LINK} />
+                        </Link>
+                    </Description>
                 </Col>
             )}
             <Col>
@@ -106,9 +125,9 @@ const Pin = ({ device, onPinSubmit }: Props) => {
                     )}
                     {counter > 1 && <Translation {...messages.TR_CONFIRM_PIN} />}
                 </H2>
-                <Text>
+                <Description>
                     <Translation {...messages.TR_THE_PIN_LAYOUT_IS_DISPLAYED} />
-                </Text>
+                </Description>
                 <PinInput onPinSubmit={submit} />
                 {features?.pin_protection && (
                     <BottomMessage>
