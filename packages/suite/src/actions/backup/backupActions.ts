@@ -11,12 +11,38 @@ export type ConfirmKey =
     | 'wrote-seed-properly'
     | 'made-no-digital-copy'
     | 'will-hide-seed';
-export type BackupActions = { type: typeof BACKUP.TOGGLE_CHECKBOX_BY_KEY; payload: ConfirmKey };
+
+export type BackupStatus = 'initial' | 'in-progress' | 'finished';
+export type BackupActions =
+    | { type: typeof BACKUP.RESET_REDUCER }
+    | { type: typeof BACKUP.TOGGLE_CHECKBOX_BY_KEY; payload: ConfirmKey }
+    | { type: typeof BACKUP.SET_STATUS; payload: BackupStatus }
+    | { type: typeof BACKUP.SET_ERROR; payload: string };
 
 export const toggleCheckboxByKey = (key: ConfirmKey) => (dispatch: Dispatch) => {
-    dispatch({
+    return dispatch({
         type: BACKUP.TOGGLE_CHECKBOX_BY_KEY,
         payload: key,
+    });
+};
+
+export const setStatus = (status: BackupStatus) => (dispatch: Dispatch) => {
+    return dispatch({
+        type: BACKUP.SET_STATUS,
+        payload: status,
+    });
+};
+
+export const setError = (error: string) => (dispatch: Dispatch) => {
+    return dispatch({
+        type: BACKUP.SET_ERROR,
+        payload: error,
+    });
+};
+
+export const resetReducer = () => (dispatch: Dispatch) => {
+    return dispatch({
+        type: BACKUP.RESET_REDUCER,
     });
 };
 
@@ -33,9 +59,24 @@ export const backupDevice = (params: BackupDeviceParams = {}) => async (
             }),
         );
     }
+
+    dispatch({
+        type: BACKUP.SET_STATUS,
+        payload: 'in-progress',
+    });
+
     const result = await TrezorConnect.backupDevice({ ...params, device });
-    if (result.success) {
-        return dispatch(notificationActions.add({ type: 'backup-success' }));
+    if (!result.success) {
+        dispatch(notificationActions.add({ type: 'backup-failed' }));
+        dispatch({
+            type: BACKUP.SET_ERROR,
+            payload: result.payload.error,
+        });
+    } else {
+        dispatch(notificationActions.add({ type: 'backup-success' }));
     }
-    dispatch(notificationActions.add({ type: 'backup-failed' }));
+    dispatch({
+        type: BACKUP.SET_STATUS,
+        payload: 'finished',
+    });
 };

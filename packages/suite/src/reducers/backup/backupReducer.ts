@@ -1,14 +1,17 @@
 import produce from 'immer';
 import { BACKUP } from '@backup-actions/constants';
-import { ConfirmKey } from '@backup-actions/backupActions';
+import { ConfirmKey, BackupStatus } from '@backup-actions/backupActions';
 import { Action } from '@suite-types';
 
 interface BackupState {
     userConfirmed: ConfirmKey[];
+    status: BackupStatus;
+    error?: string;
 }
 
 const initialState: BackupState = {
     userConfirmed: [],
+    status: 'initial',
 };
 
 const handleToggleCheckboxByKey = (draft: BackupState, key: ConfirmKey) => {
@@ -28,6 +31,14 @@ const backup = (state: BackupState = initialState, action: Action) => {
             case BACKUP.TOGGLE_CHECKBOX_BY_KEY:
                 handleToggleCheckboxByKey(draft, action.payload);
                 break;
+            case BACKUP.SET_STATUS:
+                draft.status = action.payload;
+                break;
+            case BACKUP.SET_ERROR:
+                draft.error = action.payload;
+                break;
+            case BACKUP.RESET_REDUCER:
+                return initialState;
             default:
             // no default
         }
