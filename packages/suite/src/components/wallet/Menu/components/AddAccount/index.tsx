@@ -32,16 +32,17 @@ const Wrapper = styled.div`
 // `;
 
 const AddAccountButton = ({ onClick, tooltipContent, disabled }: Props) => {
+    const clickHandler = !disabled ? onClick : undefined;
     const ButtonRow = (
-        <Wrapper onClick={onClick}>
+        <Wrapper onClick={clickHandler}>
             {/* <RowAddAccountWrapper disabled={disabled}> */}
-            <Icon icon="PLUS" size={16} color={disabled ? colors.BLACK50 : colors.BLACK17} />
+            <Icon icon="PLUS" size={16} color={disabled ? colors.BLACK92 : colors.BLACK17} />
             {/* <Translation {...messages.TR_ADD_ACCOUNT} /> */}
             {/* </RowAddAccountWrapper> */}
         </Wrapper>
     );
 
-    if (tooltipContent) {
+    if (tooltipContent && !disabled) {
         return (
             <Tooltip maxWidth={200} content={tooltipContent} placement="bottom">
                 {ButtonRow}
