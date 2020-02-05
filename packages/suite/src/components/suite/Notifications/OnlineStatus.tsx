@@ -10,7 +10,7 @@ interface Props {
 export default ({ isOnline }: Props) => {
     if (isOnline) return null;
     return (
-        <Wrapper variant="info">
+        <Wrapper variant="warning">
             <Translation {...messages.TR_YOU_WERE_DISCONNECTED_DOT} />
         </Wrapper>
     );

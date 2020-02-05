@@ -26,7 +26,6 @@ const getIcon = (variant: Props['variant']) => {
 
 const Wrapper = styled.div<{ variant: Props['variant'] }>`
     display: flex;
-    max-width: 1024px;
     background: ${props => getBgColor(props.variant)};
     color: ${colors.WHITE};
     padding: 16px;
