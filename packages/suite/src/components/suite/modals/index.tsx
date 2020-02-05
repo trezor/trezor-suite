@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import FocusLock from 'react-focus-lock';
 
 import { UI } from 'trezor-connect';
-import { Modal as ModalComponent } from '@trezor/components';
+import { Modal as ModalComponent } from '@trezor/components-v2';
 
 import * as modalActions from '@suite-actions/modalActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -26,6 +26,7 @@ import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
 import AddAccount from './AddAccount';
 import QrScanner from './QrScanner';
 import BackgroundGallery from './BackgroundGallery';
+import TransactionDetail from './TransactionDetail';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -142,6 +143,8 @@ const getUserContextModal = (props: Props) => {
             );
         case 'qr-reader':
             return <QrScanner outputId={payload.outputId} onCancel={modalActions.onCancel} />;
+        case 'transaction-detail':
+            return <TransactionDetail tx={payload.tx} onCancel={modalActions.onCancel} />;
         default:
             return null;
     }

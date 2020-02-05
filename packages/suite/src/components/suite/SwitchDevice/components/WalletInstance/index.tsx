@@ -77,8 +77,8 @@ const WalletInstance = ({
     const discoveryProcess = instance.state ? getDiscovery(instance.state) : null;
     const deviceAccounts = accountUtils.getAllAccounts(instance.state, accounts);
     const accountsCount = deviceAccounts.length;
-    const instanceBalance = accountUtils.getTotalBalance(deviceAccounts, localCurrency, fiat);
     const noPassphraseInstance = instance.useEmptyPassphrase!!;
+    const instanceBalance = accountUtils.getTotalFiatBalance(deviceAccounts, localCurrency, fiat);
 
     return (
         <Wrapper

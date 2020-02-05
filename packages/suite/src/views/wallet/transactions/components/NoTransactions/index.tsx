@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, variables, H2, Button } from '@trezor/components-v2';
-import { Account } from '@wallet-types';
-import PricePanel from '../PricePanel';
 import { resolveStaticPath } from '@suite-utils/nextjs';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -48,20 +48,15 @@ const ActionButton = styled(Button)`
     min-width: 160px;
 `;
 
-interface Props {
-    account: Account;
-}
-
-const NoTransactions = (props: Props) => {
+const NoTransactions = () => {
     return (
         <Wrapper>
-            <PricePanel account={props.account} />
             <Content>
-                <Title>The account is empty</Title>
+                <Title>
+                    <Translation {...messages.TR_ACCOUNT_IS_EMPTY} />
+                </Title>
                 <Description>
-                    Once you send or receive your first transaction it will show up here. Until
-                    then, wanna buy some crypto? Click the button below to begin your shopping
-                    spree!
+                    <Translation {...messages.TR_ONCE_YOU_SEND_OR_RECEIVE} />
                 </Description>
                 <Image src={resolveStaticPath(`images/wallet/wallet-empty.svg`)} />
                 <Actions>

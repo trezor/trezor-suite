@@ -223,4 +223,12 @@ describe('account utils', () => {
             ),
         ).toBeNull();
     });
+
+    it('isTestnet', () => {
+        expect(accountUtils.isTestnet('test')).toEqual(true);
+        expect(accountUtils.isTestnet('trop')).toEqual(true);
+        expect(accountUtils.isTestnet('txrp')).toEqual(true);
+        expect(accountUtils.isTestnet('btc')).toEqual(false);
+        expect(accountUtils.isTestnet('ltc')).toEqual(false);
+    });
 });
