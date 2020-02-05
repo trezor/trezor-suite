@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import messages from '@suite/support/messages';
 import { colors, Icon } from '@trezor/components-v2';
-import { Content, LayoutAccount } from '@wallet-components';
+import { WalletLayout } from '@wallet-components';
 import AccountName from '@wallet-components/AccountName';
 import { Output } from '@wallet-types/sendForm';
 import React, { useEffect } from 'react';
@@ -79,12 +79,7 @@ const Send = ({
     }, [selectedAccount]);
 
     if (!device || !send || !fees || selectedAccount.status !== 'loaded') {
-        const { loader, exceptionPage } = selectedAccount;
-        return (
-            <LayoutAccount title="Send">
-                <Content loader={loader} exceptionPage={exceptionPage} isLoading />
-            </LayoutAccount>
-        );
+        return <WalletLayout title="Send" account={selectedAccount} />;
     }
 
     const { account, network } = selectedAccount;
@@ -94,7 +89,7 @@ const Send = ({
             : messages.TR_SEND_NETWORK;
 
     return (
-        <LayoutAccount title="Send">
+        <WalletLayout title="Send" account={selectedAccount}>
             <AccountName account={account} message={accountNameMessage} />
             {send.outputs.map((output: Output) => (
                 <OutputWrapper key={output.id}>
@@ -132,7 +127,7 @@ const Send = ({
                 </Row>
             </AdditionalInfoWrapper>
             <SendButtonSection />
-        </LayoutAccount>
+        </WalletLayout>
     );
 };
 
