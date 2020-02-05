@@ -31,10 +31,6 @@ const ModalWindow = styled.div<Props>`
     text-align: center;
     padding: ${props => props.padding};
     overflow-x: hidden; /* retains border-radius when using background in child component */
-
-    @media only screen and (max-width: 800px) {
-        width: 90%;
-    }
 `;
 
 const StyledLink = styled(Link)`
