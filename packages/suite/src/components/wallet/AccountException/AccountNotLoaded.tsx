@@ -1,56 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import styled from 'styled-components';
-import { colors, H2, Button } from '@trezor/components-v2';
+import { Button } from '@trezor/components-v2';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Dispatch } from '@suite-types';
 import { Network, Discovery } from '@wallet-types';
-
-const Content = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 520px;
-`;
-
-const Title = styled(H2)`
-    display: flex;
-    text-align: center;
-    color: ${colors.BLACK0};
-`;
-
-// const Description = styled.div`
-//     display: flex;
-//     font-size: ${variables.FONT_SIZE.TINY};
-//     text-align: center;
-//     color: ${colors.BLACK50};
-//     margin-bottom: 10px;
-// `;
-
-const Image = styled.img`
-    width: 340px;
-    height: 280px;
-    margin-bottom: 40px;
-`;
-
-const Actions = styled.div`
-    display: flex;
-    justify-content: center;
-    width: 100%;
-`;
-
-const ActionButton = styled(Button)`
-    min-width: 160px;
-`;
+import { Translation } from '@suite-components';
+import messages from '@suite/support/messages';
+import Wrapper from './components/Wrapper';
 
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
-    locked:
-        state.suite.locks.includes(SUITE.LOCK_TYPE.DEVICE) ||
-        state.suite.locks.includes(SUITE.LOCK_TYPE.UI),
+    locks: state.suite.locks,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -67,26 +30,26 @@ type Props = ReturnType<typeof mapStateToProps> &
  * Account couldn't be loaded for multiple reasons:
  * - Discovery throws bundle-exception with code or runtime error
  * - Other trezor-connect runtime error
- * @returns
  */
 const AccountNotLoaded = (props: Props) => {
-    const { locked, restart } = props;
+    const { locks, restart } = props;
+    const locked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
+    // check device unsupported capabilities
+    // const failed = props.discovery.failed.find(f => f.symbol === network.symbol);
+    // const cap = device?.unavailableCapabilities[network.symbol];
+    // console.warn("CAP!", cap, device?.unavailableCapabilities, failed)
+    // if (device?.features && device.unavailableCapabilities)
 
     return (
-        <Content>
-            <Title>Discovery error</Title>
-            <Image src={resolveStaticPath(`images/wallet/wallet-empty.svg`)} />
-            <Actions>
-                <ActionButton
-                    variant="primary"
-                    isLoading={locked}
-                    disabled={locked}
-                    onClick={restart}
-                >
-                    Retry
-                </ActionButton>
-            </Actions>
-        </Content>
+        <Wrapper
+            title={<Translation {...messages.TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR} />}
+            description="TODO: Error message from discovery field"
+            image={resolveStaticPath(`images/wallet/wallet-empty.svg`)}
+        >
+            <Button variant="primary" icon="PLUS" isLoading={locked} onClick={restart}>
+                <Translation {...messages.TR_RETRY} />
+            </Button>
+        </Wrapper>
     );
 };
 
