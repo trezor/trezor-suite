@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { SuiteLayout } from '@suite-components';
-import { Menu, DiscoveryProgress } from '@wallet-components';
+import { Menu } from '@wallet-components';
 import Loading from './components/Loading';
 import Exception from '@wallet-components/AccountException';
 import AccountMode from '@wallet-components/AccountMode';
@@ -38,7 +38,6 @@ const WalletLayout = (props: Props) => {
     if (account.status === 'exception') {
         return (
             <SuiteLayout title={title} secondaryMenu={<Menu />}>
-                <DiscoveryProgress />
                 <AccountMode mode={account.mode} />
                 <AccountAnnouncement selectedAccount={account} />
                 <Wrapper noPadding={!!account.mode}>
@@ -54,7 +53,6 @@ const WalletLayout = (props: Props) => {
 
     return (
         <SuiteLayout title={title} secondaryMenu={<Menu />}>
-            <DiscoveryProgress />
             <AccountMode mode={account.mode} />
             <AccountAnnouncement selectedAccount={account} />
             <Wrapper noPadding={!!account.mode}>

@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
 import * as routerActions from '@suite-actions/routerActions';
 import { AppState, Dispatch } from '@suite-types';
-import OnlineStatus from './components/OnlineStatus';
-import UpdateBridge from './components/UpdateBridge';
-import UpdateFirmware from './components/UpdateFirmware';
-import NoBackup from './components/NoBackup';
+import OnlineStatus from './OnlineStatus';
+import UpdateBridge from './UpdateBridge';
+import UpdateFirmware from './UpdateFirmware';
+import NoBackup from './NoBackup';
 
 const mapStateToProps = (state: AppState) => ({
     suite: state.suite,
@@ -23,7 +22,7 @@ export type Props = {
 } & ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps>;
 
-const Notifications = (props: Props & WrappedComponentProps) => (
+const Notifications = (props: Props) => (
     <>
         <OnlineStatus isOnline={props.suite.online} />
         <UpdateBridge transport={props.suite.transport} goto={props.goto} />
@@ -38,4 +37,4 @@ const Notifications = (props: Props & WrappedComponentProps) => (
     </>
 );
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(Notifications));
+export default connect(mapStateToProps, mapDispatchToProps)(Notifications);

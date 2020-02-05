@@ -64,7 +64,7 @@ export const onPassphraseSubmit = (value: string, passphraseOnDevice?: boolean) 
     const { device } = getState().suite;
     if (!device) return;
 
-    if (!passphraseOnDevice && value === '') {
+    if (!passphraseOnDevice && value === '' && !device.authConfirm) {
         // set standard wallet type if passphrase is blank
         dispatch({
             type: SUITE.UPDATE_PASSPHRASE_MODE,

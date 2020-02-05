@@ -44,7 +44,7 @@ const getAccountStateWithMode = (selectedAccount?: State) => (
 
         // Backend status
         const blockchain = state.wallet.blockchain[network.symbol];
-        if (!blockchain.connected) {
+        if (!blockchain.connected && state.suite.online) {
             mode.push('backend-disconnected');
         }
     }

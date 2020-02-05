@@ -407,11 +407,10 @@ export const authConfirm = () => async (dispatch: Dispatch, getState: GetState) 
     const response = await TrezorConnect.getDeviceState({
         device: {
             path: device.path,
-            instance: undefined,
+            instance: device.instance,
             state: undefined,
         },
         keepSession: false,
-        // useEmptyPassphrase: device.useEmptyPassphrase,
     });
 
     if (!response.success) {
