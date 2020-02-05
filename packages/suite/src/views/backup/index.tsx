@@ -114,7 +114,12 @@ const Backup = (props: Props) => {
                             >
                                 Create backup seed
                             </StyledButton>
-                            <Button data-test="@backup/close-button" icon="CROSS" variant="tertiary" onClick={onClose}>
+                            <Button
+                                data-test="@backup/close-button"
+                                icon="CROSS"
+                                variant="tertiary"
+                                onClick={onClose}
+                            >
                                 Cancel backup process
                             </Button>
                         </Col>
