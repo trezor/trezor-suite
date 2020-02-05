@@ -34,4 +34,5 @@ export const ICONS = {
     PORTFOLIO: require('../../images/icons/portfolio.svg'),
     T1: require('../../images/icons/t1.svg'),
     T2: require('../../images/icons/t2.svg'),
+    SHOW: require('../../images/icons/show.svg'),
 };
