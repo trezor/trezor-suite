@@ -1,5 +1,8 @@
 import { Dispatch, GetState } from '@suite-types';
 import { SEND } from '@wallet-actions/constants';
+import * as commonActions from './sendFormCommonActions';
+import * as notificationActions from '@suite-actions/notificationActions';
+import * as accountActions from '@wallet-actions/accountActions';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import {
     prepareEthereumTransaction,
@@ -72,7 +75,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
 /*
     Sign transaction
  */
-export const send = () => async (_dispatch: Dispatch, getState: GetState) => {
+export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount, send } = getState().wallet;
     const selectedDevice = getState().suite.device;
     if (selectedAccount.status !== 'loaded' || !send || !selectedDevice) return null;
@@ -116,13 +119,18 @@ export const send = () => async (_dispatch: Dispatch, getState: GetState) => {
     transaction.v = signedTransaction.payload.v;
 
     const serializedTx = serializeEthereumTx(transaction);
-    const response = await TrezorConnect.pushTransaction({
+
+    const res = await TrezorConnect.pushTransaction({
         tx: serializedTx,
         coin: network.symbol,
     });
 
-    if (response.success) {
-        console.log('success');
+    if (res.success) {
+        dispatch(commonActions.clear());
+        dispatch(notificationActions.add({ type: 'sign-tx-success', txid: res.payload.txid }));
+        dispatch(accountActions.fetchAndUpdateAccount(account));
+    } else {
+        dispatch(notificationActions.add({ type: 'sign-tx-error', error: res.payload.error }));
     }
 };
 
@@ -166,7 +174,6 @@ export const handleGasLimit = (gasLimit: string) => (dispatch: Dispatch, getStat
     if (!send || !account) return null;
 
     const gasPrice = send.networkTypeEthereum.gasPrice.value || '0';
-    const fee = calculateEthFee(gasPrice, gasLimit);
 
     dispatch({
         type: SEND.HANDLE_FEE_VALUE_CHANGE,
@@ -176,7 +183,6 @@ export const handleGasLimit = (gasLimit: string) => (dispatch: Dispatch, getStat
             feeLimit: gasLimit,
             feePerTx: '1',
             blocks: 1,
-            value: fee,
         },
     });
 
@@ -208,11 +214,10 @@ export const handleData = (data: string) => async (dispatch: Dispatch, getState:
         },
     });
 
-    // @ts-ignore
+    // @ts-ignore // TODO FIX
     const level = newFeeLevels.payload.levels[0];
     const gasLimit = level.feeLimit;
     const gasPrice = ethUnits.convert(level.feePerUnit, 'wei', 'gwei');
-    const fee = calculateEthFee(gasPrice, gasLimit);
 
     // update custom fee
     dispatch({
@@ -223,7 +228,6 @@ export const handleData = (data: string) => async (dispatch: Dispatch, getState:
             feeLimit: gasLimit,
             feePerTx: '1',
             blocks: 1,
-            value: fee,
         },
     });
 

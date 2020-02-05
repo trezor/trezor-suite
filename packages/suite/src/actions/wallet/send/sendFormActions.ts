@@ -434,5 +434,4 @@ export const onQrScan = (parsedUri: ParsedURI, outputId: number) => (dispatch: D
 */
 export const clear = () => (dispatch: Dispatch) => {
     dispatch(commonActions.clear());
-    dispatch(init());
 };
