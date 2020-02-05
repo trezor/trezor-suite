@@ -170,7 +170,11 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                     <Col grow={1}>
                         <DeviceTitle>{device.label}</DeviceTitle>
                         <DeviceStatus color={device.connected ? colors.GREEN : colors.BLACK50}>
-                            {device.connected ? messages.TR_CONNECTED : messages.TR_DISCONNECTED}
+                            {device.connected ? (
+                                <Translation {...messages.TR_CONNECTED} />
+                            ) : (
+                                <Translation {...messages.TR_DISCONNECTED} />
+                            )}
                         </DeviceStatus>
                     </Col>
 
