@@ -1,5 +1,6 @@
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { getDateWithTimeZone } from '../suite/date';
+import BigNumber from 'bignumber.js';
 
 /**
  * Returns object with transactions grouped by a date. Key is a string in YYYY-MM-DD format.
@@ -24,6 +25,26 @@ export const groupTransactionsByDate = (
         r[key].push(item);
     });
     return r;
+};
+
+/**
+ * Returns a sum of sent/recv txs amounts as a BigNumber.
+ * Amounts of sent transactions are added, amounts of recv transactions are subtracted
+ *
+ * @param {WalletAccountTransaction[]} transactions
+ */
+export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
+    let totalAmount = new BigNumber(0);
+    transactions.forEach(tx => {
+        // count only recv/sent txs
+        if (tx.type === 'sent') {
+            totalAmount = totalAmount.minus(tx.amount);
+        }
+        if (tx.type === 'recv') {
+            totalAmount = totalAmount.plus(tx.amount);
+        }
+    });
+    return totalAmount;
 };
 
 /**

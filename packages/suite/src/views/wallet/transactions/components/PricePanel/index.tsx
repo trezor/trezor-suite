@@ -1,20 +1,22 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { colors, variables, CoinLogo } from '@trezor/components-v2';
 import Card from '@suite-components/Card';
 import { AppState } from '@suite/types/suite';
-import { getAccountBalance, getTitleForNetwork } from '@wallet-utils/accountUtils';
+import { getAccountFiatBalance, getTitleForNetwork, isTestnet } from '@wallet-utils/accountUtils';
 import Badge from '@suite-components/Badge';
 import { Account } from '@wallet-types';
 import FormattedNumber from '@suite-components/FormattedNumber';
 import NoRatesTooltip from '@suite-components/NoRatesTooltip';
 import { Translation } from '@suite-components/Translation';
 import { connect } from 'react-redux';
+import FiatValue from '@suite-components/FiatValue/Container';
 
 const Wrapper = styled(Card)`
     width: 100%;
+    min-height: 95px;
     border-radius: 6px;
-    margin-bottom: 80px;
+    margin-bottom: 26px;
     padding: 20px;
     align-items: center;
     justify-content: space-between;
@@ -45,7 +47,7 @@ const Ticker = styled.div`
 
 const TickerTitle = styled.div`
     text-transform: uppercase;
-    font-size: ${variables.FONT_SIZE.SMALL};
+    font-size: ${variables.FONT_SIZE.TINY};
     color: #a0a0a0;
 `;
 
@@ -62,6 +64,18 @@ const Row = styled.div`
     margin-bottom: 4px;
 `;
 
+const FlickerAnimation = keyframes`
+    0% { 
+        opacity: 1;
+    }
+    50% { 
+        opacity: 0;
+    }
+    100% { 
+        opacity: 1;
+    }
+`;
+
 const Live = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
@@ -69,6 +83,7 @@ const Live = styled.div`
     color: ${colors.GREEN};
     align-items: center;
     text-transform: uppercase;
+    animation: ${FlickerAnimation} 2s 3;
 `;
 
 const Dot = styled.div`
@@ -86,9 +101,7 @@ interface OwnProps {
 
 const PricePanel = (props: Props) => {
     const { localCurrency } = props.settings;
-    const fiatBalance = getAccountBalance(props.account, localCurrency, props.fiat) || 0;
-    const fiatRates = props.fiat.find(f => f.symbol === props.account.symbol);
-    const fiatRateValue = fiatRates ? fiatRates.rates[localCurrency] : null;
+    const fiatBalance = getAccountFiatBalance(props.account, localCurrency, props.fiat) || 0;
 
     return (
         <Wrapper>
@@ -101,31 +114,34 @@ const PricePanel = (props: Props) => {
                     <FormattedNumber value={fiatBalance} currency={localCurrency} />
                 </Badge>
             </Col>
-            <Col>
-                <Ticker>
-                    <Row>
-                        <TickerTitle>
-                            <Translation {...getTitleForNetwork(props.account.symbol)} /> price (
-                            {props.account.symbol.toUpperCase()})
-                        </TickerTitle>
-
-                        {fiatRateValue ? (
-                            <Live>
-                                <Dot /> Live
-                            </Live>
-                        ) : (
-                            <NoRatesTooltip />
-                        )}
-                    </Row>
-                    <TickerPrice>
-                        {fiatRateValue ? (
-                            <FormattedNumber value={fiatRateValue} currency={localCurrency} />
-                        ) : (
-                            <>N/A</>
-                        )}
-                    </TickerPrice>
-                </Ticker>
-            </Col>
+            {!isTestnet(props.account.symbol) && (
+                <Col>
+                    <Ticker>
+                        <Row>
+                            <TickerTitle>
+                                <Translation {...getTitleForNetwork(props.account.symbol)} /> price
+                                ({props.account.symbol.toUpperCase()})
+                            </TickerTitle>
+                            <FiatValue amount="1" symbol={props.account.symbol}>
+                                {(fiatValue, _timestamp) =>
+                                    fiatValue ? (
+                                        <Live key={props.account.symbol}>
+                                            <Dot /> Live
+                                        </Live>
+                                    ) : (
+                                        <NoRatesTooltip />
+                                    )
+                                }
+                            </FiatValue>
+                        </Row>
+                        <TickerPrice>
+                            <FiatValue amount="1" symbol={props.account.symbol}>
+                                {(fiatValue, _timestamp) => fiatValue ?? <>n/a</>}
+                            </FiatValue>
+                        </TickerPrice>
+                    </Ticker>
+                </Col>
+            )}
         </Wrapper>
     );
 };

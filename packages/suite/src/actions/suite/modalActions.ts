@@ -1,6 +1,7 @@
 import TrezorConnect, { UI } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
 import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
+import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 
 export type UserContextPayload =
     | {
@@ -22,7 +23,7 @@ export type UserContextPayload =
       }
     | {
           type: 'transaction-detail';
-          txid: string;
+          tx: WalletAccountTransaction;
       }
     | {
           type: 'log';
@@ -63,7 +64,7 @@ export const onPassphraseSubmit = (value: string, passphraseOnDevice?: boolean) 
     const { device } = getState().suite;
     if (!device) return;
 
-    if (!passphraseOnDevice && value === '') {
+    if (!passphraseOnDevice && value === '' && !device.authConfirm) {
         // set standard wallet type if passphrase is blank
         dispatch({
             type: SUITE.UPDATE_PASSPHRASE_MODE,

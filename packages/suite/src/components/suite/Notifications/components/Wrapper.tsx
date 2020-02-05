@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import Card from '@suite-components/Card';
-import { Icon, Loader, colors } from '@trezor/components-v2';
+import { Icon, colors } from '@trezor/components-v2';
 
-const getBorderColor = (variant: Props['variant']) => {
+const getBgColor = (variant: Props['variant']) => {
     switch (variant) {
         case 'info':
             return colors.BLUE_INFO;
@@ -14,36 +13,25 @@ const getBorderColor = (variant: Props['variant']) => {
     }
 };
 
-const getTextColor = (variant: Props['variant']) => {
-    switch (variant) {
-        case 'info':
-            return colors.BLUE_INFO;
-        case 'warning':
-            return colors.RED_ERROR;
-        default:
-            return colors.BLACK50;
-    }
-};
-
 const getIcon = (variant: Props['variant']) => {
     switch (variant) {
-        case 'loader':
-            return <Loader size={16} />;
         case 'info':
-            return <Icon icon="INFO" size={16} color={colors.BLUE_INFO} />;
+            return <Icon icon="INFO" size={16} color={colors.WHITE} />;
         case 'warning':
-            return <Icon icon="WARNING" size={16} color={colors.RED_ERROR} />;
+            return <Icon icon="WARNING" size={16} color={colors.WHITE} />;
         default:
             return null;
     }
 };
 
-const Wrapper = styled(Card)<{ variant: Props['variant'] }>`
-    max-width: 1024px;
-    border: 1px solid ${props => getBorderColor(props.variant)};
-    color: ${props => getTextColor(props.variant)};
-    margin: 8px 32px;
+const Wrapper = styled.div<{ variant: Props['variant'] }>`
+    display: flex;
+    background: ${props => getBgColor(props.variant)};
+    color: ${colors.WHITE};
     padding: 16px;
+    & + & {
+        border-top: 1px solid ${colors.WHITE};
+    }
 `;
 
 const IconWrapper = styled.div`
@@ -58,7 +46,7 @@ const Body = styled.div`
 
 interface Props {
     children: React.ReactNode;
-    variant: 'loader' | 'info' | 'warning';
+    variant: 'info' | 'warning';
 }
 
 export default ({ variant, children }: Props) => {

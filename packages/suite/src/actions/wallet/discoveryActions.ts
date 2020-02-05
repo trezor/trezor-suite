@@ -298,7 +298,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
 
     // discovery process complete
     if (bundle.length === 0) {
-        if (discovery.status === DISCOVERY.STATUS.RUNNING && selectedDevice.connected) {
+        if (discovery.status <= DISCOVERY.STATUS.RUNNING && selectedDevice.connected) {
             // call getFeatures to release device session
             if (!discovery.authConfirm) {
                 await TrezorConnect.getFeatures({

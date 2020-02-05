@@ -5,7 +5,6 @@ import Log from './Log';
 import Preloader from './Preloader';
 import FormattedNumber from './FormattedNumber';
 import SuiteLayout from './SuiteLayout';
-import Notification from './Notification';
 import NotificationCard from './NotificationCard';
 import PinInput from './PinInput';
 import NoRatesTooltip from './NoRatesTooltip';
@@ -23,7 +22,6 @@ export {
     Preloader,
     FormattedNumber,
     SuiteLayout,
-    Notification,
     NotificationCard,
     PinInput,
     NoRatesTooltip,

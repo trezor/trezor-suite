@@ -723,11 +723,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Passphrase mismatch!',
         id: 'TR_AUTH_CONFIRM_FAILED_TITLE',
     },
-    TR_AUTH_CONFIRM_FAILED_MESSAGE: {
-        defaultMessage:
-            'Passphrase entered on the first step does not match with passphrase confirmation.',
-        id: 'TR_AUTH_CONFIRM_FAILED_MESSAGE',
-    },
     TR_AUTH_CONFIRM_FAILED_RETRY: {
         defaultMessage: 'Retry',
         id: 'TR_AUTH_CONFIRM_FAILED_RETRY',
@@ -954,10 +949,6 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Please enable passphrase settings to continue with the verification process.',
         id: 'TR_PLEASE_ENABLE_PASSPHRASE',
-    },
-    TR_PLEASE_RELOAD_THE_PAGE_DOT: {
-        defaultMessage: 'Please check your Internet connection and reload the page.',
-        id: 'TR_PLEASE_RELOAD_THE_PAGE_DOT',
     },
     TR_PREVIOUS_ADDRESSES: {
         defaultMessage: 'Previous addresses',
@@ -1241,14 +1232,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Total received: {amount}',
         id: 'TR_TOTAL_RECEIVED',
     },
-    TR_TRANSACTIONS: {
-        defaultMessage: '{network} Transactions',
-        id: 'TR_TRANSACTIONS',
-    },
-    TR_TRANSACTIONS_AND_TOKENS: {
-        defaultMessage: '{network} and tokens transactions',
-        id: 'TR_TRANSACTIONS_AND_TOKENS',
-    },
     TR_TREZOR: {
         defaultMessage: 'Trezor',
         description: 'Link in header navigation',
@@ -1294,10 +1277,6 @@ const definedMessages = defineMessages({
     TR_UNVERIFIED_ADDRESS_COMMA_SHOW: {
         defaultMessage: 'Unverified address, show on Trezor.',
         id: 'TR_UNVERIFIED_ADDRESS_COMMA_SHOW',
-    },
-    TR_UPGRADE_FOR_THE_NEWEST_FEATURES_DOT: {
-        defaultMessage: 'Upgrade for the newest features.',
-        id: 'TR_UPGRADE_FOR_THE_NEWEST_FEATURES_DOT',
     },
     TR_USED_IN_ANOTHER_WINDOW: {
         defaultMessage: 'Used in other window',
@@ -1711,6 +1690,15 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Trezor Suite does NOT track any balance-related or personal data, all anonymously',
         id: 'TR_ALLOW_ANALYTICS_DESCRIPTION',
+    },
+    TR_ONCE_YOU_SEND_OR_RECEIVE: {
+        id: 'TR_ONCE_YOU_SEND_OR_RECEIVE',
+        defaultMessage:
+            'Once you send or receive your first transaction it will show up here. Until then, wanna buy some crypto? Click the button below to begin your shopping spree!',
+    },
+    TR_ACCOUNT_IS_EMPTY: {
+        id: 'TR_ACCOUNT_IS_EMPTY',
+        defaultMessage: 'The account is empty',
     },
     TR_HELP_TREZOR_SUITE: {
         defaultMessage: 'Help Trezor Suite get better',

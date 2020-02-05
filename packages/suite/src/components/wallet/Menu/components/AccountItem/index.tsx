@@ -5,7 +5,7 @@ import { getRoute } from '@suite-utils/router';
 import {
     getTitleForNetwork,
     getTypeForNetwork,
-    getAccountBalance,
+    getAccountFiatBalance,
 } from '@wallet-utils/accountUtils';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
@@ -88,21 +88,6 @@ const AccountHeader = styled.div<{ selected: boolean }>`
         `}
 `;
 
-// todo make no style link component
-const StyledLink = styled(Link)`
-    color: ${colors.BLACK50};
-
-    /* TODO: remove and use nostyle Link */
-    &:focus,
-    &:hover,
-    &:visited,
-    &:link,
-    &:active {
-        color: ${colors.BLACK50} !important;
-        text-decoration: none !important;
-    }
-`;
-
 const StyledBadge = styled(Badge)`
     font-size: ${variables.FONT_SIZE.TINY};
     background: #ebebeb;
@@ -111,7 +96,7 @@ const StyledBadge = styled(Badge)`
 const AccountItem = React.memo((props: Props) => {
     const { account, selected } = props;
     const accountType = getTypeForNetwork(account.accountType);
-    const fiatBalance = getAccountBalance(account, props.localCurrency, props.fiat);
+    const fiatBalance = getAccountFiatBalance(account, props.localCurrency, props.fiat);
 
     const accountName = (
         <>
@@ -132,7 +117,8 @@ const AccountItem = React.memo((props: Props) => {
 
     return (
         <Wrapper selected={selected}>
-            <StyledLink
+            <Link
+                variant="nostyle"
                 href={getRoute('wallet-index', {
                     symbol: account.symbol,
                     accountIndex: account.index,
@@ -162,7 +148,7 @@ const AccountItem = React.memo((props: Props) => {
                         </Balance>
                     </Right>
                 </AccountHeader>
-            </StyledLink>
+            </Link>
             {selected && <AccountNavigation />}
         </Wrapper>
     );

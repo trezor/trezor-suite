@@ -18,6 +18,7 @@ const A = styled.a<Props>`
         props.variant === 'nostyle' &&
         css`
             color: inherit;
+            font-weight: inherit;
             &:visited,
             &:active,
             &:hover {
