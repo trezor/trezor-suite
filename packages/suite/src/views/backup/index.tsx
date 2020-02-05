@@ -7,8 +7,9 @@ import { H2, P, Button, colors } from '@trezor/components-v2';
 import * as backupActions from '@suite/actions/backup/backupActions';
 import { Dispatch, AppState, InjectedModalApplicationProps } from '@suite-types';
 import { ProgressBar } from '@suite-components';
-import PreBackupCheckboxes from './components/PreBackupCheckboxes';
-import AfterBackupCheckboxes from './components/AfterBackupCheckboxes';
+import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
+import { canStart, canContinue } from '@backup-utils';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const Wrapper = styled.div`
     width: 60vw;
@@ -56,44 +57,19 @@ type Props = ReturnType<typeof mapDispatchToProps> &
 
 const Backup = (props: Props) => {
     const { backup, closeModalApp, modal, backupDevice } = props;
+
     const onClose = () => closeModalApp();
 
-    const statesInProgessBar = [
-        'checkboxes-before',
-        'backup-progress',
-        'checkboxes-after',
-    ] as const;
-
-    const getCurrentState = (): typeof statesInProgessBar[number] => {
-        if (backup.status === 'in-progress') {
-            return 'backup-progress';
-        }
-        if (backup.status === 'finished') {
-            return 'checkboxes-after';
-        }
-        return 'checkboxes-before';
-    };
-
-    const checkboxesBefore = [
-        'has-enough-time',
-        'is-in-private',
-        'understands-what-seed-is',
-    ] as const;
-
-    const checkboxesAfter = [
-        'wrote-seed-properly',
-        'made-no-digital-copy',
-        'will-hide-seed',
-    ] as const;
+    const backupStatuses = ['initial', 'in-progress', 'finished'] as const;
 
     return (
         <Wrapper>
             <ProgressBar
                 showHelp
-                total={statesInProgessBar.length - 1}
-                current={statesInProgessBar.findIndex(s => s === getCurrentState())}
+                total={backupStatuses.length}
+                current={backupStatuses.findIndex(s => s === backup.status)}
             />
-            {getCurrentState() === 'checkboxes-before' && (
+            {backup.status === 'initial' && (
                 <>
                     <H2>Create a backup seed</H2>
                     <StyledP size="small">
@@ -108,9 +84,7 @@ const Backup = (props: Props) => {
                             <StyledButton
                                 data-test="@backup/start-button"
                                 onClick={() => backupDevice()}
-                                isDisabled={
-                                    !checkboxesBefore.every(e => backup.userConfirmed.includes(e))
-                                }
+                                isDisabled={!canStart(backup.userConfirmed)}
                             >
                                 Create backup seed
                             </StyledButton>
@@ -127,8 +101,8 @@ const Backup = (props: Props) => {
                 </>
             )}
 
-            {getCurrentState() === 'backup-progress' && <>{modal && modal}</>}
-            {getCurrentState() === 'checkboxes-after' && (
+            {backup.status === 'in-progress' && <>{modal && modal}</>}
+            {backup.status === 'finished' && !backup.error && (
                 <>
                     <H2>Backup successfully created!</H2>
                     <StyledP>
@@ -138,12 +112,24 @@ const Backup = (props: Props) => {
                     <Buttons>
                         <Col>
                             <StyledButton
-                                isDisabled={
-                                    !checkboxesAfter.every(e => backup.userConfirmed.includes(e))
-                                }
+                                isDisabled={!canContinue(backup.userConfirmed)}
                                 onClick={onClose}
                                 data-test="@backup/close-button"
                             >
+                                Close
+                            </StyledButton>
+                        </Col>
+                    </Buttons>
+                </>
+            )}
+            {backup.status === 'finished' && backup.error && (
+                <>
+                    <H2>Backup failed!</H2>
+                    <StyledP>{backup.error}</StyledP>
+                    <img src={resolveStaticPath('images/suite/uni-error.svg')} alt="" />
+                    <Buttons>
+                        <Col>
+                            <StyledButton onClick={onClose} data-test="@backup/close-button">
                                 Close
                             </StyledButton>
                         </Col>

@@ -65,7 +65,12 @@ export const backupDevice = (params: BackupDeviceParams = {}) => async (
         payload: 'in-progress',
     });
 
-    const result = await TrezorConnect.backupDevice({ ...params, device });
+    const result = await TrezorConnect.backupDevice({
+        ...params,
+        device: {
+            path: device.path,
+        },
+    });
     if (!result.success) {
         dispatch(notificationActions.add({ type: 'backup-failed' }));
         dispatch({

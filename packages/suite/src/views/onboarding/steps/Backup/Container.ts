@@ -12,16 +12,13 @@ import Step from './index';
 
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
+    backup: state.backup,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goToSubStep: bindActionCreators(onboardingActions.goToSubStep, dispatch),
     goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
     wipeDevice: bindActionCreators(connectActions.wipeDevice, dispatch),
-    callActionAndGoToNextStep: bindActionCreators(
-        connectActions.callActionAndGoToNextStep,
-        dispatch,
-    ),
     resetDevice: bindActionCreators(connectActions.resetDevice, dispatch),
     resetCall: bindActionCreators(connectActions.resetCall, dispatch),
     backupDevice: bindActionCreators(backupActions.backupDevice, dispatch),
