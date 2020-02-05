@@ -1,3 +1,4 @@
+import { Account, Network } from '@wallet-types';
 import {
     SendFormActions as SendFormActions$,
     SendFormBtcActions as SendFormBtcActions$,
@@ -32,13 +33,16 @@ export type PrecomposedTransactionEth = PrecomposedTransactionEth$;
 
 export type EthTransaction = {
     network: Account['symbol'];
-    token: any; // TODO fix ts
-    chainId: number;
+    token?: string | boolean;
+    chainId: Network['chainId'];
     from: Output['address']['value'];
     to: Output['address']['value'];
     amount: Output['amount']['value'];
     data: State['networkTypeEthereum']['data']['value'];
     gasLimit: State['networkTypeEthereum']['data']['value'];
     gasPrice: State['networkTypeEthereum']['data']['value'];
-    nonce: number;
+    nonce: string;
+    r: string;
+    s: string;
+    v: string;
 };

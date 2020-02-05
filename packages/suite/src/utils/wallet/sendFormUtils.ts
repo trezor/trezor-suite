@@ -3,6 +3,7 @@ import { Account } from '@wallet-types';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import BigNumber from 'bignumber.js';
 import { toHex } from 'web3-utils';
+import { Transaction } from 'ethereumjs-tx';
 // @ts-ignore
 import ethUnits from 'ethereumjs-units';
 
@@ -102,7 +103,7 @@ export const getInputState = (
 
 const padLeftEven = (hex: string): string => (hex.length % 2 !== 0 ? `0${hex}` : hex);
 
-export const sanitizeHex = ($hex): string => {
+export const sanitizeHex = ($hex: string): string => {
     const hex = $hex.toLowerCase().substring(0, 2) === '0x' ? $hex.substring(2) : $hex;
     if (hex === '') return '';
     return `0x${padLeftEven(hex)}`;
@@ -128,10 +129,20 @@ export const prepareEthereumTransaction = (txInfo: EthTransaction) => {
     return {
         to: txInfo.to,
         value: toHex(ethUnits.convert(txInfo.amount, 'ether', 'wei')),
-        data: sanitizeHex(txInfo.data),
         chainId: txInfo.chainId,
+        token: null,
+        // @ts-ignore
+        data: sanitizeHex(txInfo.data),
         nonce: toHex(txInfo.nonce),
         gasLimit: toHex(txInfo.gasLimit),
         gasPrice: toHex(ethUnits.convert(txInfo.gasPrice, 'gwei', 'wei')),
+        r: txInfo.r,
+        s: txInfo.s,
+        v: txInfo.v,
     };
+};
+
+export const serializeEthereumTx = (tx: any) => {
+    const ethTx = new Transaction(tx, { chain: tx.chainId });
+    return `0x${ethTx.serialize().toString('hex')}`;
 };

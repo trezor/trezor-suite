@@ -3,6 +3,7 @@ import { SEND } from '@wallet-actions/constants';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import {
     prepareEthereumTransaction,
+    serializeEthereumTx,
     calculateEthFee,
     calculateMax,
     calculateTotal,
@@ -71,7 +72,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
 /*
     Sign transaction
  */
-export const send = () => async (dispatch: Dispatch, getState: GetState) => {
+export const send = () => async (_dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount, send } = getState().wallet;
     const selectedDevice = getState().suite.device;
     if (selectedAccount.status !== 'loaded' || !send || !selectedDevice) return null;
@@ -86,7 +87,6 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     const transaction = prepareEthereumTransaction({
         network: network.symbol,
         chainId: network.chainId,
-        token: null,
         from: account.descriptor,
         to: address.value,
         amount: amount.value,
@@ -94,10 +94,13 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         gasLimit: gasLimit.value,
         gasPrice: gasPrice.value,
         nonce: account.misc.nonce,
+        r: '',
+        s: '',
+        v: '',
     });
 
     // @ts-ignore
-    const response = await TrezorConnect.ethereumSignTransaction({
+    const signedTransaction = await TrezorConnect.ethereumSignTransaction({
         device: {
             path: selectedDevice.path,
             instance: selectedDevice.instance,
@@ -108,27 +111,19 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         transaction,
     });
 
-    console.log('response', response);
+    transaction.r = signedTransaction.payload.r;
+    transaction.s = signedTransaction.payload.s;
+    transaction.v = signedTransaction.payload.v;
 
-    // if (response.success) {
-    //     dispatch(commonActions.clear());
-    //     dispatch(
-    //         notificationActions.add({
-    //             variant: 'success',
-    //             title: `Success: ${response.payload.txid}`,
-    //             cancelable: true,
-    //         }),
-    //     );
-    //     dispatch(accountActions.fetchAndUpdateAccount(account));
-    // } else {
-    //     dispatch(
-    //         notificationActions.add({
-    //             variant: 'error',
-    //             title: `Error: ${resp.payload.error}`,
-    //             cancelable: true,
-    //         }),
-    //     );
-    // }
+    const serializedTx = serializeEthereumTx(transaction);
+    const response = await TrezorConnect.pushTransaction({
+        tx: serializedTx,
+        coin: network.symbol,
+    });
+
+    if (response.success) {
+        console.log('success');
+    }
 };
 
 /*

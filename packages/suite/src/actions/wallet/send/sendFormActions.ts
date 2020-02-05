@@ -1,10 +1,11 @@
-import * as storageActions from '@suite-actions/storageActions';
+// import * as storageActions from '@suite-actions/storageActions';
 import { Dispatch, GetState } from '@suite-types';
 import { SEND } from '@wallet-actions/constants';
 import { ETH_DEFAULT_GAS_LIMIT, ETH_DEFAULT_GAS_PRICE } from '@wallet-constants/sendForm';
 import { Account } from '@wallet-types';
 import { FeeLevel, Output } from '@wallet-types/sendForm';
-import { formatNetworkAmount, getAccountKey, getFiatValue } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount, getFiatValue } from '@wallet-utils/accountUtils';
+// import { formatNetworkAmount, getAccountKey, getFiatValue } from '@wallet-utils/accountUtils';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
 import { getOutput, hasDecimals, shouldComposeBy } from '@wallet-utils/sendFormUtils';
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
