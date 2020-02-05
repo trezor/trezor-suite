@@ -11,9 +11,9 @@ import TrezorConnect from 'trezor-connect';
     Compose xrp transaction
  */
 export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { send } = getState().wallet;
-    const { account } = getState().wallet.selectedAccount;
-    if (!send || !account) return null;
+    const { send, selectedAccount } = getState().wallet;
+    if (!send || selectedAccount.status !== 'loaded') return;
+    const { account } = selectedAccount;
 
     const output = getOutput(send.outputs, 0);
     const amountInSatoshi = networkAmountToSatoshi(output.amount.value, account.symbol).toString();
@@ -83,13 +83,14 @@ interface Payment {
  */
 export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     const { send, selectedAccount } = getState().wallet;
-    if (!send) return;
+    const selectedDevice = getState().suite.device;
+    if (!send || !selectedDevice || selectedAccount.status !== 'loaded') return;
+
     const { account } = selectedAccount;
     const { selectedFee, outputs, networkTypeRipple } = send;
     const { destinationTag } = networkTypeRipple;
-    const selectedDevice = getState().suite.device;
-    if (!account || account.networkType !== 'ripple' || !selectedDevice || !destinationTag)
-        return null;
+
+    if (account.networkType !== 'ripple' || !destinationTag) return null;
 
     const payment: Payment = {
         destination: outputs[0].address.value,

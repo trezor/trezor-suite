@@ -338,9 +338,9 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
     Change value in select "Fee"
  */
 export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getState: GetState) => {
-    const { send } = getState().wallet;
-    const { account } = getState().wallet.selectedAccount;
-    if (!send || !account) return;
+    const { send, selectedAccount } = getState().wallet;
+    if (!send || selectedAccount.status !== 'loaded') return;
+    const { account } = selectedAccount;
     if (send.selectedFee.label === fee.label) return;
 
     if (fee.label === 'custom') {
