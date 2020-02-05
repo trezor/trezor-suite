@@ -37,7 +37,6 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             : feeInfo.levels.concat({
                   label: 'custom',
                   feePerUnit: '0',
-                  value: '0',
                   blocks: 0,
               });
 
@@ -347,7 +346,7 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
     if (fee.label === 'custom') {
         dispatch({
             type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
-            customFee: send.selectedFee.value,
+            customFee: send.selectedFee.feePerUnit,
         });
     } else {
         dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
@@ -357,18 +356,18 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
         });
     }
 
-    // // eth update gas price and gas limit
-    // if (account.networkType === 'ethereum') {
-    //     dispatch({
-    //         type: SEND.ETH_HANDLE_GAS_LIMIT,
-    //         gasLimit: fee.feeLimit || '0',
-    //     });
+    // eth update gas price and gas limit
+    if (account.networkType === 'ethereum') {
+        dispatch({
+            type: SEND.ETH_HANDLE_GAS_LIMIT,
+            gasLimit: fee.feeLimit || '0',
+        });
 
-    //     dispatch({
-    //         type: SEND.ETH_HANDLE_GAS_PRICE,
-    //         gasPrice: fee.feePerUnit || '0',
-    //     });
-    // }
+        dispatch({
+            type: SEND.ETH_HANDLE_GAS_PRICE,
+            gasPrice: fee.feePerUnit || '0',
+        });
+    }
 
     dispatch(composeChange());
 };
@@ -395,7 +394,6 @@ export const handleCustomFeeValueChange = (customFee: string) => (
         fee: {
             ...fee,
             feePerUnit: customFee,
-            value: customFee,
         },
     });
 

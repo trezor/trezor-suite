@@ -18,7 +18,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     const output = getOutput(send.outputs, 0);
     const amountInSatoshi = networkAmountToSatoshi(output.amount.value, account.symbol).toString();
     const { availableBalance } = account;
-    const feeInSatoshi = send.selectedFee.value;
+    const feeInSatoshi = send.selectedFee.feePerUnit;
     let tx;
     const totalSpentBig = new Bignumber(calculateTotal(amountInSatoshi, feeInSatoshi));
 

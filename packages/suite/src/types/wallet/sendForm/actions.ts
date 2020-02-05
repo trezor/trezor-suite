@@ -1,13 +1,9 @@
 import { SEND } from '@wallet-actions/constants';
 import { Account } from '@wallet-types';
-import { FeeLevel as FeeLevelBase, PrecomposedTransaction } from 'trezor-connect';
+import { FeeLevel, PrecomposedTransaction } from 'trezor-connect';
 import { PrecomposedTransactionXrp, PrecomposedTransactionEth } from './transactions';
 import { Output } from './output';
 import { InitialState } from './state';
-
-export interface FeeLevel extends FeeLevelBase {
-    value: string;
-}
 
 export type SendFormActions =
     | {

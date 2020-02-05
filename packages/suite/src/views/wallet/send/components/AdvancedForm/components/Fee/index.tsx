@@ -110,20 +110,22 @@ const getValue = (
     option: FeeLevel,
     symbol: Account['symbol'],
 ) => {
+    const { feePerUnit, feeLimit } = option;
+
     if (networkType === 'bitcoin') {
-        return `${option.value} sat/B`;
+        return `${feePerUnit} sat/B`;
     }
 
     if (networkType === 'ethereum') {
-        const fee = calculateEthFee(option.feePerUnit, option.feeLimit || '0');
+        const fee = calculateEthFee(feePerUnit, feeLimit || '0');
         try {
             return `${ethUnits.convert(fee, 'gwei', 'eth')} ${symbol.toUpperCase()}`;
         } catch (err) {
-            return option.value;
+            return feePerUnit;
         }
     }
 
-    return `${formatNetworkAmount(option.value, symbol)} ${symbol.toUpperCase()}`;
+    return `${formatNetworkAmount(feePerUnit, symbol)} ${symbol.toUpperCase()}`;
 };
 
 const FeeComponent = ({ sendFormActions, send, account, settings, fiat }: Props) => {
@@ -158,7 +160,7 @@ const FeeComponent = ({ sendFormActions, send, account, settings, fiat }: Props)
                     formatOptionLabel={(option: FeeLevel) => (
                         <OptionWrapper>
                             <OptionLabel>{capitalizeFirstLetter(option.label)} </OptionLabel>
-                            {option.value !== '0' && (
+                            {option.feePerUnit !== '0' && (
                                 <OptionValue>{getValue(networkType, option, symbol)}</OptionValue>
                             )}
                         </OptionWrapper>
