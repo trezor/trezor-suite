@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { colors } from '@trezor/components';
+import { colors } from '@trezor/components-v2';
 import SuiteNotifications from '@suite-components/Notifications';
 import Head from 'next/head';
 import Menu from '@suite-components/Menu/Container';
@@ -31,6 +31,7 @@ const Columns = styled.div`
     display: flex;
     flex-direction: row;
     overflow: hidden;
+    height: 100%;
 `;
 
 const AppWrapper = styled.div`

@@ -72,7 +72,7 @@ const Menu = ({ device, accounts, selectedAccount, getDiscoveryForDevice, openMo
     const failed: any[] = discovery.failed.map(f => ({
         ...f,
         path: 'path',
-        descriptor: f.index + f.accountType,
+        descriptor: f.index + f.symbol + f.accountType,
         visible: true,
         balance: '0',
         availableBalance: '0',
@@ -88,8 +88,8 @@ const Menu = ({ device, accounts, selectedAccount, getDiscoveryForDevice, openMo
     const legacyHasBalance = legacyAccounts.find(a => a.availableBalance !== '0');
 
     const isSelected = (account: Account) => {
-        if (selectedAccount.account && selectedAccount.account === account) {
-            return true;
+        if (selectedAccount.account) {
+            return selectedAccount.account === account;
         }
         return false;
     };
@@ -102,7 +102,7 @@ const Menu = ({ device, accounts, selectedAccount, getDiscoveryForDevice, openMo
     }
 
     // TODO: add more cases when adding account is not possible
-    const addAccountVisible = !discoveryIsRunning;
+    const addAccountDisabled = !device.connected || device.authConfirm || device.authFailed;
 
     return (
         <>
@@ -112,7 +112,7 @@ const Menu = ({ device, accounts, selectedAccount, getDiscoveryForDevice, openMo
                 </TitleText>{' '}
                 <TitleActions>
                     {discoveryIsRunning && <Loader size={16} />}
-                    {addAccountVisible && (
+                    {!discoveryIsRunning && (
                         <AddAccountButton
                             onClick={() =>
                                 openModal({
@@ -120,7 +120,7 @@ const Menu = ({ device, accounts, selectedAccount, getDiscoveryForDevice, openMo
                                     device,
                                 })
                             }
-                            disabled={discovery.status !== DISCOVERY.STATUS.COMPLETED}
+                            disabled={addAccountDisabled}
                             tooltipContent={<Translation {...messages.TR_ADD_ACCOUNT} />}
                         />
                     )}

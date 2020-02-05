@@ -6,6 +6,7 @@ import { AccountException } from '@wallet-reducers/selectedAccountReducer';
 import AuthFailed from './AuthFailed';
 import DiscoveryFailed from './DiscoveryFailed';
 import DiscoveryEmpty from './DiscoveryEmpty';
+import AccountNotEnabled from './AccountNotEnabled';
 import AccountNotLoaded from './AccountNotLoaded';
 import AccountNotExists from './AccountNotExists';
 
@@ -13,6 +14,8 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    height: 100%;
 `;
 
 const Title = styled(H2)`
@@ -33,6 +36,8 @@ const getExceptionPage = ({ account }: Props) => {
             return <DiscoveryFailed />;
         case 'discovery-empty':
             return <DiscoveryEmpty />;
+        case 'account-not-enabled':
+            return <AccountNotEnabled network={account.network} discovery={account.discovery} />;
         case 'account-not-loaded':
             return <AccountNotLoaded network={account.network} discovery={account.discovery} />;
         case 'account-not-exists':
