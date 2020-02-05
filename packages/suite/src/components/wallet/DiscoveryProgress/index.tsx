@@ -8,13 +8,18 @@ import { Discovery } from '@wallet-types';
 import { AppState, Dispatch } from '@suite-types';
 
 const Wrapper = styled.div`
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 100%;
-    height: 1px;
+    height: 2px;
     z-index: 1;
+    background: ${colors.WHITE};
+    overflow: hidden;
 `;
 
 const Line = styled.div<{ progress: number }>`
-    height: 1px;
+    height: 2px;
     display: flex;
     background: ${colors.GREEN};
     width: ${props => props.progress}%;

@@ -7,6 +7,7 @@ import Head from 'next/head';
 import Menu from '@suite-components/Menu/Container';
 import { AppState } from '@suite-types';
 import MenuSecondary from '@suite-components/MenuSecondary';
+import { DiscoveryProgress } from '@wallet-components';
 
 const PageWrapper = styled.div`
     display: flex;
@@ -17,12 +18,12 @@ const PageWrapper = styled.div`
 `;
 
 const Body = styled.div`
+    position: relative;
     display: flex;
     flex-direction: column;
     flex: 1 1 0%;
     overflow: auto;
     height: 100vh;
-    flex: 1 1 0%;
 `;
 
 // AppWrapper and MenuSecondary creates own scrollbars independently
@@ -60,6 +61,7 @@ const SuiteLayout = (props: Props) => {
             {props.layoutSize !== 'small' && <Menu />}
 
             <Body>
+                <DiscoveryProgress />
                 <SuiteNotifications />
                 <Columns>
                     {props.secondaryMenu && <MenuSecondary>{props.secondaryMenu}</MenuSecondary>}

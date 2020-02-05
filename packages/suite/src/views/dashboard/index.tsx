@@ -8,7 +8,6 @@ import ConnectionStatusCard from '@suite-components/ConnectionStatusCard';
 import PortfolioCard from '@suite-components/PortfolioCard';
 import NewsFeed from '@suite-components/NewsFeed';
 import AuthConfirmFailed from '@wallet-components/AccountMode/AuthConfirmFailed';
-import ProgressBar from '@wallet-components/DiscoveryProgress';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { Account } from '@wallet-types';
@@ -60,7 +59,6 @@ const Dashboard = (props: Props) => {
         <SuiteLayout>
             {device && device.authConfirm && <AuthConfirmFailed />}
             <Wrapper data-test="@dashboard/index">
-                <ProgressBar />
                 <PortfolioCard
                     portfolioValue={instanceBalance}
                     localCurrency={props.localCurrency}
