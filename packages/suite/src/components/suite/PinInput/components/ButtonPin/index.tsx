@@ -7,7 +7,6 @@ const Button = styled.button`
     /* flex: 1 1 auto; */
     width: 100px;
     height: 100px;
-    background: ${colors.WHITE};
     transition: all 0.3s;
     position: relative;
     cursor: pointer;

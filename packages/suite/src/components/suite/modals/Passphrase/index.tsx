@@ -69,7 +69,6 @@ const Col = styled.div<{ secondary?: boolean }>`
     border-radius: 6px;
     justify-self: center;
 
-
     ${props =>
         props.secondary &&
         css`
