@@ -1424,18 +1424,14 @@ const definedMessages = defineMessages({
         defaultMessage:
             'This is a place to see all your devices. You can further set them up in Settings but here you can switch between devices and see their statuses.',
     },
-    TR_FORGET: {
-        id: 'TR_FORGET',
-        defaultMessage: 'Forget',
-    },
     TR_UNDISCOVERED_WALLET: {
         id: 'TR_UNDISCOVERED_WALLET',
         defaultMessage: 'Undiscovered wallet',
     },
-    TR_NUM_ACCOUNTS_NUM_COINS_FIAT_VALUE: {
-        id: 'TR_NUM_ACCOUNTS_NUM_COINS_FIAT_VALUE',
+    TR_NUM_ACCOUNTS_FIAT_VALUE: {
+        id: 'TR_NUM_ACCOUNTS_FIAT_VALUE',
         defaultMessage:
-            '{accountsCount} {accountsCount, plural, one {account} other {accounts}} - {coinsCount} {coinsCount, plural, one {coin} other {coins}} - {fiatValue}',
+            '{accountsCount} {accountsCount, plural, one {account} other {accounts}} • {fiatValue}',
         description: 'Used as title for a wallet instance in Switch Device modal',
     },
     TR_ADD_HIDDEN_WALLET: {
@@ -1705,6 +1701,35 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Trezor Suite does NOT track any balance-related or personal data, all anonymously',
         id: 'TR_ALLOW_ANALYTICS_DESCRIPTION',
+    },
+    TR_SELECT_DEVICE: {
+        id: 'TR_SELECT_DEVICE',
+        defaultMessage: 'Select device',
+    },
+    TR_REMEMBER_WALLET: {
+        id: 'TR_REMEMBER_WALLET',
+        defaultMessage: 'Remember wallet',
+    },
+    TR_HIDE_WALLET: {
+        id: 'TR_HIDE_WALLET',
+        defaultMessage: 'Hide wallet',
+    },
+    TR_REMEMBER_ALLOWS_YOU_TO: {
+        id: 'TR_REMEMBER_ALLOWS_YOU_TO',
+        defaultMessage:
+            'Remember allows you to access any wallet in watch-only mode without connected device.',
+    },
+    TR_HIDE_WALLET_EXPLANATION: {
+        id: 'TR_HIDE_WALLET_EXPLANATION',
+        defaultMessage: "Explanation what the 'hide wallet' button does",
+    },
+    TR_NO_PASSPHRASE_WALLET: {
+        id: 'TR_NO_PASSPHRASE_WALLET',
+        defaultMessage: 'No-passphrase wallet',
+    },
+    TR_PASSPHRASE_WALLET: {
+        id: 'TR_PASSPHRASE_WALLET',
+        defaultMessage: 'Passphrase wallet',
     },
     TR_ONCE_YOU_SEND_OR_RECEIVE: {
         id: 'TR_ONCE_YOU_SEND_OR_RECEIVE',

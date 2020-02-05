@@ -9,13 +9,26 @@ import messages from '@suite/support/messages';
 
 const Wrapper = styled.div<{ selected: boolean }>`
     display: flex;
-    padding: 10px 24px;
+    width: 100%;
+    padding: 18px 20px;
     align-items: center;
     flex-direction: row;
+
     cursor: pointer;
+    background: ${colors.WHITE};
 
     &:hover {
         background: ${colors.BLACK96};
+    }
+
+    &:first-of-type {
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+    }
+
+    &:last-of-type {
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
     }
 
     ${props =>
@@ -25,23 +38,23 @@ const Wrapper = styled.div<{ selected: boolean }>`
         `}
 `;
 
-const InstanceTitle = styled.div`
-    color: ${colors.BLACK50};
-    font-weight: 600;
-    font-size: ${variables.FONT_SIZE.TINY};
-    text-transform: uppercase;
-`;
 const InstanceType = styled.div`
-    color: ${colors.BLACK50};
-    font-size: ${variables.FONT_SIZE.TINY};
-    /* text-transform: uppercase; */
+    color: ${colors.BLACK25};
+    font-weight: 600;
+    font-size: ${variables.FONT_SIZE.NORMAL};
 `;
 
-const Col = styled.div<{ grow?: number }>`
+const InstanceTitle = styled.div`
+    margin-top: 6px;
+    color: ${colors.BLACK25};
+    font-size: ${variables.FONT_SIZE.TINY};
+`;
+
+const Col = styled.div<{ grow?: number; centerItems?: boolean }>`
     display: flex;
     flex-grow: ${props => props.grow || 0};
-    align-items: flex-start;
     flex-direction: column;
+    align-items: ${props => (props.centerItems ? 'center' : 'flex-start')};
 `;
 
 const ForgetButton = styled(Button)`
@@ -59,66 +72,69 @@ const WalletInstance = ({
     fiat,
     localCurrency,
     getDiscovery,
+    ...rest
 }: Props) => {
     const discoveryProcess = instance.state ? getDiscovery(instance.state) : null;
     const deviceAccounts = accountUtils.getAllAccounts(instance.state, accounts);
-    const coinsCount = accountUtils.countUniqueCoins(deviceAccounts);
     const accountsCount = deviceAccounts.length;
+    const noPassphraseInstance = instance.useEmptyPassphrase!!;
     const instanceBalance = accountUtils.getTotalFiatBalance(deviceAccounts, localCurrency, fiat);
-    let instanceType = instance.useEmptyPassphrase ? 'No passphrase' : 'Passphrase';
-    if (!discoveryProcess) {
-        instanceType = ' ';
-    }
 
     return (
         <Wrapper
             key={`${instance.label}${instance.instance}${instance.state}`}
             selected={enabled && selected && !!discoveryProcess}
+            {...rest}
         >
             <Col grow={1} onClick={() => selectDeviceInstance(instance)}>
                 {discoveryProcess && (
-                    <InstanceTitle>
-                        <Translation
-                            {...messages.TR_NUM_ACCOUNTS_NUM_COINS_FIAT_VALUE}
-                            values={{
-                                accountsCount,
-                                coinsCount,
-                                fiatValue: (
-                                    <FormattedNumber
-                                        value={instanceBalance.toString()}
-                                        currency={localCurrency}
-                                    />
-                                ),
-                            }}
-                        />
-                    </InstanceTitle>
+                    <InstanceType>
+                        {noPassphraseInstance ? (
+                            <Translation {...messages.TR_NO_PASSPHRASE_WALLET} />
+                        ) : (
+                            <Translation {...messages.TR_PASSPHRASE_WALLET} />
+                        )}
+                    </InstanceType>
                 )}
                 {!discoveryProcess && (
-                    <InstanceTitle>
+                    <InstanceType>
                         <Translation {...messages.TR_UNDISCOVERED_WALLET} />
-                    </InstanceTitle>
+                    </InstanceType>
                 )}
-                <InstanceType>{instanceType}</InstanceType>
+                <InstanceTitle>
+                    <Translation
+                        {...messages.TR_NUM_ACCOUNTS_FIAT_VALUE}
+                        values={{
+                            accountsCount,
+                            fiatValue: (
+                                <FormattedNumber
+                                    value={instanceBalance.toString()}
+                                    currency={localCurrency}
+                                />
+                            ),
+                        }}
+                    />
+                </InstanceTitle>
             </Col>
             {enabled && discoveryProcess && (
-                <Col>
-                    <Switch
-                        checked={instance.remember}
-                        onChange={() => rememberDevice(instance)}
-                        data-test="@suite/settings/device/passphrase-switch"
-                    />
-                </Col>
-            )}
-            {enabled && discoveryProcess && (
-                <Col>
-                    <ForgetButton
-                        size="small"
-                        variant="secondary"
-                        onClick={() => forgetDevice(instance)}
-                    >
-                        <Translation {...messages.TR_FORGET} />
-                    </ForgetButton>
-                </Col>
+                <>
+                    <Col grow={1} centerItems>
+                        <Switch
+                            checked={instance.remember}
+                            onChange={() => rememberDevice(instance)}
+                            data-test="@suite/settings/device/passphrase-switch"
+                        />
+                    </Col>
+                    <Col>
+                        <ForgetButton
+                            size="small"
+                            variant="secondary"
+                            onClick={() => forgetDevice(instance)}
+                        >
+                            <Translation {...messages.TR_HIDE_WALLET} />
+                        </ForgetButton>
+                    </Col>
+                </>
             )}
         </Wrapper>
     );
