@@ -5,11 +5,26 @@ const definedMessages = defineMessages({
         defaultMessage: 'Cannot send to myself',
         id: 'CANNOT_SEND_TO_MYSELF',
     },
-    // TODO: Account exceptions
-    // TR_ACCOUNT_DOES_NOT_EXIST: {
-    //     defaultMessage: 'Account does not exist',
-    //     id: 'TR_ACCOUNT_DOES_NOT_EXIST',
-    // },
+    TR_ACCOUNT_EXCEPTION_NOT_EXIST: {
+        defaultMessage: 'Account does not exist',
+        id: 'TR_ACCOUNT_DOES_NOT_EXIST',
+    },
+    TR_ACCOUNT_EXCEPTION_NOT_ENABLED: {
+        defaultMessage: '{networkName} not enabled in settings.',
+        id: 'TR_ACCOUNT_EXCEPTION_NOT_ENABLED',
+    },
+    TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY: {
+        defaultMessage: 'There are no coins enabled in settings.',
+        id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY',
+    },
+    TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR: {
+        defaultMessage: 'Discovery error.',
+        id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR',
+    },
+    TR_ACCOUNT_EXCEPTION_AUTH_ERROR: {
+        defaultMessage: 'Authorization error.',
+        id: 'TR_ACCOUNT_EXCEPTION_AUTH_ERROR',
+    },
     TR_ACCOUNT_HASH: {
         defaultMessage: 'Account #{number}',
         description: 'Used in auto-generated account label',
