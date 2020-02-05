@@ -1,16 +1,18 @@
+/* eslint-disable @typescript-eslint/camelcase */
+
 describe('Passhprase', () => {
     before(() => {
         cy.task('startEmu');
         cy.task('setupEmu', { passphrase_protection: true });
+        cy.task('setPasshpraseSourceEmu', 2);
         cy.viewport(1024, 768).resetDb();
     });
 
-    it('?', () => {
+    it('Enter no passphrase wallet', () => {
         cy.visit('/');
         cy.passThroughInitialRun();
-        cy.getTestElement('@modals/passhprase-source');
-        cy.wait(500);
-        cy.task('clickEmu');
+        cy.getTestElement('@modal/passphrase');
+        cy.getTestElement('@modal/passhprase/no-passphrase-button').click();
     });
 
     // it('enable all networks', () => {

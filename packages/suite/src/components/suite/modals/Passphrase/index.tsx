@@ -117,7 +117,7 @@ const Passphrase = (props: Props) => {
     }
 
     return (
-        <Wrapper>
+        <Wrapper data-test="@modal/passphrase">
             {noPassphraseOffer && (
                 <Col>
                     <H2>No-passphrase Wallet</H2>
@@ -125,7 +125,11 @@ const Passphrase = (props: Props) => {
                         To access standard (no-passphrase) Wallet click the button below.
                     </Content>
                     <Actions>
-                        <Button variant="primary" onClick={() => submit()}>
+                        <Button
+                            variant="primary"
+                            onClick={() => submit()}
+                            data-test="@modal/passhprase/no-passphrase-button"
+                        >
                             Access standard Wallet
                         </Button>
                     </Actions>

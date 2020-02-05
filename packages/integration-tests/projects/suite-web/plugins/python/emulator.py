@@ -14,26 +14,6 @@ from trezorlib.transport.bridge import BridgeTransport
 proc = None
 # log.enable_debug_output()
 
-DISPLAY_WIDTH = 240
-DISPLAY_HEIGHT = 240
-
-def grid(dim, grid_cells, cell):
-    step = dim // grid_cells
-    ofs = step // 2
-    return cell * step + ofs
-
-
-LEFT = grid(DISPLAY_WIDTH, 3, 0)
-MID = grid(DISPLAY_WIDTH, 3, 1)
-RIGHT = grid(DISPLAY_WIDTH, 3, 2)
-
-TOP = grid(DISPLAY_HEIGHT, 4, 0)
-BOTTOM = grid(DISPLAY_HEIGHT, 4, 3)
-
-OK = (RIGHT, BOTTOM)
-CANCEL = (LEFT, BOTTOM)
-INFO = (MID, BOTTOM)
-
 def start():
     global proc
     if proc is None:
@@ -88,7 +68,6 @@ def get_bridge_device():
 
 
 def setup_device(mnemonic, pin, passphrase_protection, label):
-    print("setup DEVIIIIIIIIIIIIIIIIIIIIICE")
     # Setup link
     # transport = get_udp_device()
     # TODO:
@@ -113,6 +92,14 @@ def wipe_device():
     device.wipe(client)
     client.close()
 
+def set_passphrase_source(passphrase_source):
+    transport = get_bridge_device()
+    print(transport)
+    client = TrezorClientDebugLink(transport)
+    client.open()
+    device.apply_settings(client, passphrase_source=passphrase_source)
+    client.close()
+
 
 def decision():
     # TODO:
@@ -129,14 +116,11 @@ def decision():
     client.close()
 
 def click():
-    print("klikklikklik")
-
     transport = get_bridge_device()
     print(transport)
     client = DebugLink(transport.find_debug())
     client.open()
     time.sleep(0.6)  # trezord needs time to populate changes
-    print("klikklikklik")
     client.click((MID, BOTTOM))
     client.close()
 

@@ -65,6 +65,9 @@ def message_received(client, server, message):
         elif cmdType == "emulator-wipe":
             emulator.wipe_device()
             response = {"success": True}
+        elif cmdType == "emulator-set-passhphrase-source":
+            emulator.set_passphrase_source(cmd['passphrase_source'])
+            response = {"success": True}
         elif cmdType == "emulator-erase":
             emulator.erase_device()
             response = {"success": True}

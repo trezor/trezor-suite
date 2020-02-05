@@ -99,6 +99,15 @@ module.exports = on => {
             await controller.disconnect();
             return null;
         },
+        setPasshpraseSourceEmu: async passhpraseSource => {
+            await controller.connect();
+            const response = await controller.send({
+                type: 'emulator-set-passhphrase-source',
+                passphrase_source: passhpraseSource,
+            });
+            await controller.disconnect();
+            return null;
+        },
         sendDecision: async method => {
             await controller.connect();
             await controller.send({ type: 'emulator-decision', method });
@@ -106,7 +115,6 @@ module.exports = on => {
             return null;
         },
         clickEmu: async method => {
-            console.log('cklick in js');
             await controller.connect();
             await controller.send({ type: 'emulator-click', method });
             await controller.disconnect();
