@@ -5,7 +5,7 @@ import { Account } from '@wallet-types';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 
 const Wrapper = styled.div`
-    width: 120px;
+    width: 100px;
     margin-left: 10px;
 `;
 

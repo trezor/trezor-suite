@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 `;
 
 const Row = styled.div`
-    margin-bottom: 15px;
+    margin-bottom: 25px;
 `;
 
 const AdvancedFormEthereum = ({ send, account }: Props) => {

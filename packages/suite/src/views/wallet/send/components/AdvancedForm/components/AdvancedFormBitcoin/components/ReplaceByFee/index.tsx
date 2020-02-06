@@ -39,7 +39,7 @@ const ReplaceByFee = () => {
                 </Description>
             </Left>
             <Right>
-                <Switch checked onChange={() => console.log('change')} />
+                <Switch checked={false} onChange={() => console.log('change')} />
             </Right>
         </Wrapper>
     );

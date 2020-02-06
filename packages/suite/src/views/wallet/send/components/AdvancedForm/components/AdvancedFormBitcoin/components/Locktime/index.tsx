@@ -1,4 +1,4 @@
-import { colors, Input, Switch, variables } from '@trezor/components-v2';
+import { colors, Switch, variables, Input } from '@trezor/components-v2';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -49,7 +49,7 @@ const SwitchItem = () => {
                     </Description>
                 </Left>
                 <Right>
-                    <Switch checked onChange={() => console.log('change')} />
+                    <Switch checked={false} onChange={() => console.log('change')} />
                 </Right>
             </Row>
             <StyledInput display="block" value="" variant="small" />

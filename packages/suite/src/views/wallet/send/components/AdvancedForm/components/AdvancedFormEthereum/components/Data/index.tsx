@@ -1,12 +1,23 @@
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { Textarea } from '@trezor/components-v2';
+import styled from 'styled-components';
+import { Textarea, colors, Icon } from '@trezor/components-v2';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { State } from '@wallet-types/sendForm';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
-
 import { Props } from './Container';
+
+const Label = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
+    display: flex;
+    padding-left: 5px;
+`;
 
 const getError = (error: State['networkTypeEthereum']['data']['error']) => {
     switch (error) {
@@ -28,7 +39,12 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
             value={value || ''}
             bottomText={getError(error)}
             onChange={e => sendFormActionsEthereum.handleData(e.target.value)}
-            topLabel="Data"
+            topLabel={
+                <Label>
+                    Data
+                    <StyledIcon size={12} color={colors.BLACK50} icon="QUESTION" />
+                </Label>
+            }
         />
     );
 };

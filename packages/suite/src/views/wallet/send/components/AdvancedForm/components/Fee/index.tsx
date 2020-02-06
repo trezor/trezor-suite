@@ -38,6 +38,7 @@ const Top = styled.div`
     padding: 0 0 10px 0;
     display: flex;
     width: 100%;
+    justify-content: space-between;
 `;
 
 const Column = styled.div`
@@ -51,11 +52,6 @@ const Label = styled(Column)`
 `;
 
 const Refresh = styled(Column)`
-    color: ${colors.BLACK0};
-    justify-content: center;
-`;
-
-const Help = styled(Column)`
     color: ${colors.BLACK0};
     justify-content: flex-end;
 `;
@@ -142,14 +138,12 @@ const FeeComponent = ({ sendFormActions, send, account, settings, fiat }: Props)
                 <Top>
                     <Label>
                         <Translation {...messages.TR_FEE} />
+                        <StyledIcon size={12} color={colors.BLACK50} icon="QUESTION" />
                     </Label>
                     <Refresh>
                         <StyledIcon icon="REFRESH" color={colors.BLACK50} size={10} />
                         <RefreshText>Refresh</RefreshText>
                     </Refresh>
-                    <Help>
-                        <StyledIcon icon="QUESTION" color={colors.BLACK50} size={12} />
-                    </Help>
                 </Top>
                 <StyledSelect
                     variant="small"

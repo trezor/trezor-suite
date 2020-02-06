@@ -48,10 +48,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Add new account',
         id: 'TR_ADD_NEW_ACCOUNT',
     },
-    TR_ADD_RECIPIENT: {
-        defaultMessage: 'Add recipient',
-        id: 'TR_ADD_RECIPIENT',
-    },
+    // TR_ADD_RECIPIENT: {
+    //     defaultMessage: 'Add recipient',
+    //     id: 'TR_ADD_RECIPIENT',
+    // },
     TR_ADDRESS: {
         defaultMessage: 'Address',
         description: 'Used as label for receive/send address input',
@@ -301,14 +301,14 @@ const definedMessages = defineMessages({
         defaultMessage: 'Allowed fee is between {minFee} and {maxFee}',
         id: 'TR_CUSTOM_FEE_NOT_IN_RANGE',
     },
-    TR_DATA: {
-        defaultMessage: 'Data',
-        id: 'TR_DATA',
-    },
-    TR_DATA_IS_USUALLY_USED: {
-        defaultMessage: 'Data is usually used when you send transactions to contracts.',
-        id: 'TR_DATA_IS_USUALLY_USED',
-    },
+    // TR_DATA: {
+    //     defaultMessage: 'Data',
+    //     id: 'TR_DATA',
+    // },
+    // TR_DATA_IS_USUALLY_USED: {
+    //     defaultMessage: 'Data is usually used when you send transactions to contracts.',
+    //     id: 'TR_DATA_IS_USUALLY_USED',
+    // },
     TR_DESTINATION_TAG_IS_NOT_NUMBER: {
         defaultMessage: 'Destination tag is not a number',
         id: 'TR_DESTINATION_TAG_IS_NOT_NUMBER',
@@ -594,32 +594,32 @@ const definedMessages = defineMessages({
         defaultMessage: 'Fresh address',
         id: 'TR_FRESH_ADDRESS',
     },
-    TR_GAS_LIMIT: {
-        defaultMessage: 'Gas limit',
-        id: 'TR_GAS_LIMIT',
-    },
-    TR_GAS_LIMIT_REFERS_TO: {
-        defaultMessage:
-            'Gas limit refers to the maximum amount of gas user is willing to spend on a particular transaction. {TR_GAS_QUOTATION}. Increasing the gas limit will not get the transaction confirmed sooner. Default value for sending {gasLimitTooltipCurrency} is {gasLimitTooltipValue}.',
-        id: 'TR_GAS_LIMIT_REFERS_TO',
-    },
-    TR_GAS_PRICE: {
-        defaultMessage: 'Gas price',
-        id: 'TR_GAS_PRICE',
-    },
-    TR_GAS_PRICE_QUOTATION: {
-        defaultMessage: 'Transaction fee = gas limit * gas price',
-        id: 'TR_GAS_PRICE_QUOTATION',
-    },
-    TR_GAS_PRICE_REFERS_TO: {
-        defaultMessage:
-            'Gas price refers to the amount of ether you are willing to pay for every unit of gas, and is usually measured in “Gwei”. {TR_GAS_PRICE_QUOTATION}. Increasing the gas price will get the transaction confirmed sooner but makes it more expensive. The recommended gas price is {recommendedGasPrice} GWEI.',
-        id: 'TR_GAS_PRICE_REFERS_TO',
-    },
-    TR_GAS_QUOTATION: {
-        defaultMessage: 'Transaction fee = gas limit * gas price',
-        id: 'TR_GAS_QUOTATION',
-    },
+    // TR_GAS_LIMIT: {
+    //     defaultMessage: 'Gas limit',
+    //     id: 'TR_GAS_LIMIT',
+    // },
+    // TR_GAS_LIMIT_REFERS_TO: {
+    //     defaultMessage:
+    //         'Gas limit refers to the maximum amount of gas user is willing to spend on a particular transaction. {TR_GAS_QUOTATION}. Increasing the gas limit will not get the transaction confirmed sooner. Default value for sending {gasLimitTooltipCurrency} is {gasLimitTooltipValue}.',
+    //     id: 'TR_GAS_LIMIT_REFERS_TO',
+    // },
+    // TR_GAS_PRICE: {
+    //     defaultMessage: 'Gas price',
+    //     id: 'TR_GAS_PRICE',
+    // },
+    // TR_GAS_PRICE_QUOTATION: {
+    //     defaultMessage: 'Transaction fee = gas limit * gas price',
+    //     id: 'TR_GAS_PRICE_QUOTATION',
+    // },
+    // TR_GAS_PRICE_REFERS_TO: {
+    //     defaultMessage:
+    //         'Gas price refers to the amount of ether you are willing to pay for every unit of gas, and is usually measured in “Gwei”. {TR_GAS_PRICE_QUOTATION}. Increasing the gas price will get the transaction confirmed sooner but makes it more expensive. The recommended gas price is {recommendedGasPrice} GWEI.',
+    //     id: 'TR_GAS_PRICE_REFERS_TO',
+    // },
+    // TR_GAS_QUOTATION: {
+    //     defaultMessage: 'Transaction fee = gas limit * gas price',
+    //     id: 'TR_GAS_QUOTATION',
+    // },
     TR_GATHERING_INFO: {
         defaultMessage: 'Gathering information, please wait...',
         id: 'TR_GATHERING_INFO',
@@ -1115,15 +1115,11 @@ const definedMessages = defineMessages({
         defaultMessage: '(Sent to self)',
         id: 'TR_SENT_TO_SELF',
     },
-    TR_SET_DEFAULT: {
-        defaultMessage: 'Set default',
-        id: 'TR_SET_DEFAULT',
-    },
-    TR_SET_MAX: {
-        defaultMessage: 'Set max',
-        description: 'Used for setting maximum amount in Send form',
-        id: 'TR_SET_MAX',
-    },
+    // TR_SET_MAX: {
+    //     defaultMessage: 'Set max',
+    //     description: 'Used for setting maximum amount in Send form',
+    //     id: 'TR_SET_MAX',
+    // },
     TR_SET_PIN: {
         defaultMessage: 'Set pin',
         description: 'Button text',
@@ -1398,11 +1394,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Destination tag',
         id: 'TR_XRP_DESTINATION_TAG',
     },
-    TR_XRP_DESTINATION_TAG_EXPLAINED: {
-        defaultMessage:
-            'Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.',
-        id: 'TR_XRP_DESTINATION_TAG_EXPLAINED',
-    },
+    // TR_XRP_DESTINATION_TAG_EXPLAINED: {
+    //     defaultMessage:
+    //         'Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.',
+    //     id: 'TR_XRP_DESTINATION_TAG_EXPLAINED',
+    // },
     TR_YOU_WERE_DISCONNECTED_DOT: {
         defaultMessage: 'You were disconnected.',
         id: 'TR_YOU_WERE_DISCONNECTED_DOT',
@@ -1551,10 +1547,10 @@ const definedMessages = defineMessages({
         description: 'Option to click when troubleshooting initialized device.',
         id: 'TR_USER_HAS_WORKED_WITH_THIS_DEVICE',
     },
-    TR_CUSTOM_FEE_IS_NOT_NUMBER: {
-        defaultMessage: 'Fee is not a number',
-        id: 'TR_CUSTOM_FEE_IS_NOT_NUMBER',
-    },
+    // TR_CUSTOM_FEE_IS_NOT_NUMBER: {
+    //     defaultMessage: 'Fee is not a number',
+    //     id: 'TR_CUSTOM_FEE_IS_NOT_NUMBER',
+    // },
     TR_NORTH: {
         id: 'TR_NORTH',
         defaultMessage: 'North',

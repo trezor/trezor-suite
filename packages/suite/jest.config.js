@@ -58,6 +58,7 @@ module.exports = {
         'node_modules',
         '<rootDir>/src/utils/suite/dom',
         '<rootDir>/src/utils/wallet/promiseUtils',
+        '<rootDir>/src/utils/wallet/sendFormUtils', // TODO write tests
     ],
     transformIgnorePatterns: [
         '/node_modules/',
