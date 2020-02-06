@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 
 import { H2, P, Button, colors } from '@trezor/components-v2';
-import * as backupActions from '@suite/actions/backup/backupActions';
+import * as backupActions from '@backup-actions/backupActions';
 import { Dispatch, AppState, InjectedModalApplicationProps } from '@suite-types';
 import { ProgressBar } from '@suite-components';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
@@ -34,7 +34,7 @@ const Buttons = styled(Row)`
 `;
 
 const StyledButton = styled(Button)`
-    width: 226px;
+    min-width: 224px;
     margin-bottom: 16px;
 `;
 
