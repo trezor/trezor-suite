@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { SUITE } from '@suite-actions/constants';
 import { Modal as ModalComponent } from '@trezor/components-v2';
 import Loading from '@suite-components/Loading';
+import DiscoveryLoader from '@suite-components/DiscoveryLoader';
 import Modals from '@suite-components/modals';
 import * as routerActions from '@suite-actions/routerActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
@@ -90,7 +91,7 @@ const getSuiteApplicationState = (props: Props) => {
 
     // account discovery in progress and didn't find any used account yet
     const authConfirmation = getDiscoveryAuthConfirmationStatus();
-    if (authConfirmation) return Loading;
+    if (authConfirmation) return DiscoveryLoader;
 };
 
 const getModalApplication = (route: Props['router']['route']) => {
