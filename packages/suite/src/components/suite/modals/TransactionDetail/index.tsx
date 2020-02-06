@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 // import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 // import { Translation } from '@suite-components/Translation';
+import ModalWrapper from '@suite-components/ModalWrapper';
 import { H2, Link, Button } from '@trezor/components-v2';
 import { AppState } from '@suite-types';
-import { WalletAccountTransaction } from '@suite/reducers/wallet/transactionReducer';
+import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import TrezorConnect from 'trezor-connect';
 import NETWORKS from '@wallet-config/networks';
 import BasicDetails from './components/BasicDetails';
@@ -14,7 +15,7 @@ import IODetails from './components/IODetails';
 import BigNumber from 'bignumber.js';
 import { formatNetworkAmount } from '@suite/utils/wallet/accountUtils';
 
-const Wrapper = styled.div`
+const Wrapper = styled(ModalWrapper)`
     width: 100%;
     max-width: 720px;
     flex-direction: column;
@@ -55,13 +56,13 @@ const TransactionDetail = (props: Props) => {
     const [isFetching, setIsFetching] = useState(true);
 
     // sum of all inputs
-    const totalInput: BigNumber | undefined = txDetails?.vin.reduce(
+    const totalInput: BigNumber | undefined = txDetails?.vin?.reduce(
         (acc: BigNumber, input: any) => acc.plus(input.value),
         new BigNumber('0'),
     );
 
     // sum of all outputs
-    const totalOutput: BigNumber | undefined = txDetails?.vout.reduce(
+    const totalOutput: BigNumber | undefined = txDetails?.vout?.reduce(
         (acc: BigNumber, output: any) => acc.plus(output.value),
         new BigNumber('0'),
     );

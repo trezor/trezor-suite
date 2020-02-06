@@ -9,7 +9,7 @@ import { Props } from './Container';
 
 const Wrapper = styled.div`
     position: relative;
-    padding: 30px 24px;
+    margin: 30px 24px;
     display: flex;
     flex-direction: column;
     text-align: center;

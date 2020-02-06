@@ -79,6 +79,7 @@ const Coin = ({ network }: { network: Network | ExternalNetwork }) => (
 );
 
 const AdvancedSettings = styled.div`
+    display: flex;
     cursor: pointer;
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${colors.BLACK25};
@@ -140,7 +141,7 @@ const CoinsGroup = ({
                     <Coin network={n} />
                     <ActionColumn>
                         <AdvancedSettings>
-                            <SettingsIcon icon="SETTINGS" size={12} />
+                            <SettingsIcon icon="SETTINGS" size={12} color={colors.BLACK25} />
                             <Translation {...messages.TR_ADVANCED_SETTINGS} />
                         </AdvancedSettings>
                         <Switch

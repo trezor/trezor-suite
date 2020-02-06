@@ -1,29 +1,28 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { Button, ButtonPin, InputPin } from '@trezor/components';
-
+import { Button } from '@trezor/components-v2';
+import ButtonPin from './components/ButtonPin';
+import InputPin from './components/InputPin';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
-    max-width: 240px;
-    margin-left: auto;
-    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 325px;
 `;
 
 const InputWrapper = styled.div`
     margin-top: 12px;
     margin-bottom: 12px;
+    width: 100%;
 `;
 
 const PinRow = styled.div`
     display: flex;
+    width: 100%;
     justify-content: space-between;
-    button {
-        width: 30%;
-        height: 0;
-        padding-bottom: 30%;
-    }
 
     & + & {
         margin-top: 10px;
@@ -31,8 +30,9 @@ const PinRow = styled.div`
 `;
 
 const PinFooter = styled.div`
-    margin: 20px 0 10px 0;
     display: flex;
+    width: 100%;
+    margin: 20px 0 10px 0;
     flex-direction: column;
 `;
 
@@ -147,7 +147,7 @@ const PinInput = (props: Props) => {
             </PinRow>
 
             <PinFooter>
-                <Button onClick={submit}>
+                <Button variant="primary" fullWidth onClick={submit}>
                     <Translation {...messages.TR_ENTER_PIN} />
                 </Button>
             </PinFooter>
