@@ -18,6 +18,7 @@ const SecurityStep = (props: Props) => (
             <img alt="" src={resolveStaticPath('images/onboarding/t-device-initialized.svg')} />
             <Wrapper.Controls>
                 <OnboardingButton.Cta
+                    data-test="@onboarding/continue-to-security-button"
                     onClick={() => {
                         props.goToNextStep();
                     }}
@@ -30,7 +31,7 @@ const SecurityStep = (props: Props) => (
         <Wrapper.StepFooter>
             <OnboardingButton.Back
                 icon="CROSS"
-                data-test="button-exit-app"
+                data-test="@onboarding/exit-app-button"
                 onClick={props.closeModalApp}
             >
                 <Translation {...messages.TR_SKIP_SECURITY} />

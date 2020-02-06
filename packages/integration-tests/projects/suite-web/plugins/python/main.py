@@ -60,6 +60,12 @@ def message_received(client, server, message):
         elif cmdType == "emulator-decision":
             emulator.decision()
             response = {"success": True}
+        elif cmdType == "emulator-input":
+            emulator.input(cmd['word'])
+            response = {"success": True}
+        elif cmdType == "emulator-swipe":
+            emulator.swipe(cmd["direction"])
+            response = {"success": True}
         elif cmdType == "emulator-wipe":
             emulator.wipe_device()
             response = {"success": True}

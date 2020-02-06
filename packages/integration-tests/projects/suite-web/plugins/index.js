@@ -105,5 +105,18 @@ module.exports = on => {
             await controller.disconnect();
             return null;
         },
+        swipeEmu: async direction => {
+            await controller.connect();
+            await controller.send({ type: 'emulator-swipe', direction });
+            await controller.disconnect();
+            return null;
+        },
+        inputEmu: async word => {
+            await controller.connect();
+            await controller.send({ type: 'emulator-input', word });
+            await controller.disconnect();
+            return null;
+        },
+
     });
 };

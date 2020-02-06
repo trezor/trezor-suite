@@ -73,8 +73,12 @@ const getDeviceContextModal = (props: Props) => {
         case UI.REQUEST_PASSPHRASE_ON_DEVICE:
         case 'ButtonRequest_PassphraseEntry':
             return <PassphraseOnDevice device={device} />;
-
+        case 'ButtonRequest_SignTx': {
+            return <ConfirmSignTx device={device} />;
+        }
         // Button requests
+        // todo: consider fallback (if windowType.cointains('ButtonRequest'))
+        case 'ButtonRequest_Success':
         case 'ButtonRequest_ProtectCall':
         case 'ButtonRequest_Other':
         case 'ButtonRequest_ResetDevice': // dispatched on BackupDevice call for model T, weird but true
@@ -83,10 +87,6 @@ const getDeviceContextModal = (props: Props) => {
         case 'ButtonRequest_WipeDevice':
             // case 'ButtonRequest_FirmwareUpdate': // ? fake UI event, see firmwareActions
             return <ConfirmAction device={device} />;
-        case 'ButtonRequest_SignTx': {
-            return <ConfirmSignTx device={device} />;
-        }
-
         default:
             return null;
     }
