@@ -12,6 +12,8 @@ import NoRatesTooltip from './NoRatesTooltip';
 import WordInput from './WordInput';
 import WordInputAdvanced from './WordInputAdvanced';
 import ProgressBar from './ProgressBar';
+import ModalWrapper from './ModalWrapper';
+import Loading from './Loading';
 
 import { Translation } from './Translation';
 
@@ -31,4 +33,6 @@ export {
     WordInput,
     WordInputAdvanced,
     ProgressBar,
+    ModalWrapper,
+    Loading,
 };

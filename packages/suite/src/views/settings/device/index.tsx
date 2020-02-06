@@ -52,7 +52,6 @@ const Settings = ({
     changePin,
     wipeDevice,
     openModal,
-    checkSeed,
     goto,
 }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);

@@ -5,7 +5,7 @@ import { URLS } from '@suite-constants';
 
 const Wrapper = styled.div`
     width: 100%;
-    height: 30px;
+    height: 6px;
     justify-content: center;
     align-items: center;
     margin-bottom: 40px;
@@ -27,10 +27,11 @@ const BackgroundBar = styled(Bar)`
     background-color: initial;
     border: solid 2px #ebebeb;
     width: 100%;
+    bottom: 12px;
 `;
 
 const GrayBar = styled(Bar)<BarProps>`
-    top: 6px;
+    bottom: 6px;
     background-color: #ebebeb;
     border: solid 2px #ebebeb;
     width: ${props => props.width};
@@ -38,7 +39,7 @@ const GrayBar = styled(Bar)<BarProps>`
 `;
 
 const GreenBar = styled(Bar)<BarProps>`
-    top: 12px;
+    /* top: 12px; */
     background-color: #30c100;
     border: solid 2px #30c100;
     width: ${props => props.width};

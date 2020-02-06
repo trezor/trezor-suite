@@ -78,6 +78,7 @@ const getDeviceContextModal = (props: Props) => {
         }
         // Button requests
         // todo: consider fallback (if windowType.cointains('ButtonRequest')). but add also possibility to blacklist some buttonRequests
+        case 'ButtonRequest_Warning':
         case 'ButtonRequest_Success':
         case 'ButtonRequest_RecoveryHomepage':
         case 'ButtonRequest_MnemonicWordCount':
