@@ -22,6 +22,7 @@ const ModalContainer = styled.div`
 
 const ModalWindow = styled.div<Props>`
     display: flex;
+    flex-direction: column;
     justify-content: center;
     margin: auto;
     position: relative;
