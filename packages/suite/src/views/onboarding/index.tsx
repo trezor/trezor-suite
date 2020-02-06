@@ -5,14 +5,12 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { variables } from '@trezor/components';
-import { Button, Link } from '@trezor/components-v2';
 import { AnyStepDisallowedState, Step } from '@onboarding-types/steps';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as connectActions from '@onboarding-actions/connectActions';
 import * as STEP from '@onboarding-constants/steps';
 import steps from '@onboarding-config/steps';
 import { getFnForRule } from '@onboarding-utils/rules';
-import { URLS } from '@suite-constants';
 
 import WelcomeStep from '@onboarding-views/steps/Welcome/Container';
 import SkipStep from '@onboarding-views/steps/Skip/Container';
@@ -56,13 +54,6 @@ const ProgressBarWrapper = styled.div`
     flex-direction: column;
 `;
 
-const IconsWrapper = styled.div`
-    height: 30px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-`;
-
 const ComponentWrapper = styled.div`
     display: flex;
     justify-content: center;
@@ -75,18 +66,6 @@ const ActionModalWrapper = styled.div`
     justify-content: center;
     align-items: center;
 `;
-
-const BuyButton = () => (
-    <Button variant="tertiary" icon="TREZOR" size="small" style={{ backgroundColor: 'initial' }}>
-        <Link href={URLS.SHOP_URL}>Buy Trezor</Link>
-    </Button>
-);
-
-const HelpButton = () => (
-    <Button variant="tertiary" icon="SUPPORT" size="small" style={{ backgroundColor: 'initial' }}>
-        <Link href={URLS.SUPPORT_URL}>Help</Link>
-    </Button>
-);
 
 const mapStateToProps = (state: AppState) => {
     return {
@@ -186,14 +165,12 @@ const Onboarding = (props: Props) => {
                     <ProgressBar
                         total={steps.filter(s => s.progress).length}
                         current={steps.findIndex(step => activeStepId === step.id)}
+                        showBuy={getStep().buy}
+                        showHelp={getStep().help}
                     />
                 )}
             </ProgressBarWrapper>
-            <IconsWrapper>
-                {getStep().buy ? <BuyButton /> : <div />}
-                {getStep().help ? <HelpButton /> : <div />}
-            </IconsWrapper>
-            {/* TODO: proper icon, missing in components */}
+
             <ComponentWrapper>
                 {errorState && (
                     <UnexpectedState

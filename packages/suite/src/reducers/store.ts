@@ -8,12 +8,14 @@ import walletMiddlewares from '@wallet-middlewares';
 import onboardingMiddlewares from '@onboarding-middlewares';
 import settingsMiddlewares from '@settings-middlewares';
 import firmwareMiddlewares from '@firmware-middlewares';
+import backupMiddlewares from '@backup-middlewares';
 
 import suiteReducers from '@suite-reducers';
 import walletReducers from '@wallet-reducers';
 import onboardingReducers from '@onboarding-reducers';
 import settingsReducers from '@settings-reducers';
 import firmwareReducers from '@firmware-reducers';
+import backupReducers from '@backup-reducers';
 
 const rootReducer = combineReducers({
     ...suiteReducers,
@@ -21,6 +23,7 @@ const rootReducer = combineReducers({
     wallet: walletReducers,
     settings: settingsReducers,
     firmware: firmwareReducers,
+    backup: backupReducers,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;
@@ -32,6 +35,7 @@ const middlewares = [
     ...onboardingMiddlewares,
     ...settingsMiddlewares,
     ...firmwareMiddlewares,
+    ...backupMiddlewares,
 ];
 
 const enhancers: any[] = [];

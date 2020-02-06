@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Card from '@suite-components/Card';
 import { colors, Button, variables } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 import messages from '@suite/support/messages';
 // import parser from 'fast-xml-parser';
 
@@ -65,15 +66,15 @@ const Outline = styled.div`
     display: flex;
 `;
 
-const OutlineIcon = styled.div<{ show: boolean }>`
-    display: ${props => (props.show ? 'block' : 'none')};
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: ${colors.BLACK0};
-    margin-top: 6px;
-    margin-left: 10px;
-`;
+// const OutlineIcon = styled.div<{ show: boolean }>`
+//     display: ${props => (props.show ? 'block' : 'none')};
+//     width: 6px;
+//     height: 6px;
+//     border-radius: 50%;
+//     background: ${colors.BLACK0};
+//     margin-top: 6px;
+//     margin-left: 10px;
+// `;
 
 const Left = styled.div`
     display: flex;
@@ -84,7 +85,7 @@ const Right = styled.div`
     flex-direction: column;
 `;
 
-const NewsImage = styled.div`
+const NewsImage = styled.img`
     width: 80px;
     height: 80px;
     border-radius: 2px;
@@ -192,13 +193,13 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                     ))} */}
                     <NewsItem>
                         <Left>
-                            <NewsImage />
+                            <NewsImage src={resolveStaticPath('images/dashboard/fake1.png')} />
                         </Left>
-                        <Outline>
-                            <OutlineIcon show />
-                        </Outline>
+                        <Outline>{/* <OutlineIcon show /> */}</Outline>
                         <Right>
-                            <NewsTitle visited={false}>TODO: Download a real rss feed</NewsTitle>
+                            <NewsTitle visited={false}>
+                                Blog: Where in the world are my coins?
+                            </NewsTitle>
                             <Timestamp visited={false}>today</Timestamp>
                             <Description visited={false}>
                                 Your coins aren’t in your hardware wallet. But don’t panic! By the
@@ -208,6 +209,28 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                             <CTAWrapper>
                                 <CTAButton size="small" variant="tertiary">
                                     <Translation {...messages.TR_READ_MORE} />
+                                </CTAButton>
+                            </CTAWrapper>
+                        </Right>
+                    </NewsItem>
+                    <NewsItem>
+                        <Left>
+                            <NewsImage src={resolveStaticPath('images/dashboard/fake2.png')} />
+                        </Left>
+                        <Outline>{/* <OutlineIcon show /> */}</Outline>
+                        <Right>
+                            <NewsTitle visited={false}>
+                                Update: Trezor T firmware v 2.3.0 update available
+                            </NewsTitle>
+                            <Timestamp visited={false}>yesterday</Timestamp>
+                            <Description visited={false}>
+                                Security update for Trezor T just got out and is ready to be
+                                installed. This update is highly recommended as it patches some
+                                security issues.
+                            </Description>
+                            <CTAWrapper>
+                                <CTAButton size="small" variant="tertiary">
+                                    Update now
                                 </CTAButton>
                             </CTAWrapper>
                         </Right>

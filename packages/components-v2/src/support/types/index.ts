@@ -18,6 +18,7 @@ export type InputDisplay = 'block' | 'default' | 'short';
 export interface InputButton {
     icon?: IconType;
     text?: string;
+    iconSize?: number;
     onClick: () => void;
 }
 

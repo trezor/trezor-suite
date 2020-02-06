@@ -43,16 +43,16 @@ const Buttons = styled(Row)`
     margin-top: auto;
 `;
 
+const StyledButton = styled(Button)`
+    width: 226px;
+    margin-bottom: 16px;
+`;
+
 const ChangesSummary = styled.div`
     background-color: ${colors.BLACK96};
     border: 1px solid ${colors.BLACK80};
     padding: 20px;
     max-width: 600px;
-`;
-
-const StyledButton = styled(Button)`
-    width: 226px;
-    margin-bottom: 16px;
 `;
 
 const SeedImg = styled.img`

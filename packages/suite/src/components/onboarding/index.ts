@@ -2,7 +2,6 @@ import Option from './Option';
 import Text from './Text';
 import UnexpectedState from './UnexpectedState';
 
-import CheckboxWrapper from './Wrapper/CheckboxWrapper';
 import ControlsWrapper from './Wrapper/ControlsWrapper';
 import OptionsWrapper from './Wrapper/OptionsWrapper';
 import StepBodyWrapper from './Wrapper/StepBodyWrapper';
@@ -33,7 +32,6 @@ const Loaders = {
 };
 
 const Wrapper = {
-    Checkbox: CheckboxWrapper,
     Controls: ControlsWrapper,
     Options: OptionsWrapper,
     StepBody: StepBodyWrapper,
