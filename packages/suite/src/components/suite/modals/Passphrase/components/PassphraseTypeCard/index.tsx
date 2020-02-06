@@ -2,7 +2,8 @@ import React, { useState, createRef, useLayoutEffect } from 'react';
 import { useKeyPress } from '@suite-utils/dom';
 import styled, { css } from 'styled-components';
 import { Button, colors, variables, Input, Checkbox } from '@trezor/components-v2';
-// import { Translation } from '@suite-components/Translation';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 
 const WalletTitle = styled.div`
     font-size: ${variables.FONT_SIZE.NORMAL};
@@ -109,7 +110,7 @@ const PassphraseTypeCard = (props: Props) => {
                 {authConfirmation && (
                     <Content>
                         <Checkbox onClick={() => setEnabled(!enabled)} isChecked={enabled}>
-                            I understand passphrase is not saved anywhere and can’t be restored.
+                            <Translation {...messages.TR_I_UNDERSTAND_PASSPHRASE} />
                         </Checkbox>
                     </Content>
                 )}
@@ -147,7 +148,7 @@ const PassphraseTypeCard = (props: Props) => {
                             onClick={() => submit(value, true)}
                             fullWidth
                         >
-                            Enter passphrase on device
+                            <Translation {...messages.TR_ENTER_PASSPHRASE_ON_DEVICE} />
                         </Button>
                     )}
                 </Actions>
