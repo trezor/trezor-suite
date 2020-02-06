@@ -37,6 +37,7 @@ describe('Icons', () => {
         'icon-t1',
         'icon-t2',
         'icon-show',
+        'icon-hide',
         'icon-back',
     ].forEach(testName => {
         it(`${testName}`, () => {
