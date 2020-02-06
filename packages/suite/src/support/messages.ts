@@ -1833,7 +1833,7 @@ const definedMessages = defineMessages({
         defaultMessage: 'Enter passphrase on device',
     },
     TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON: {
-        id: 'TR_CONFIRM_EMPTY_HIDDEN_WALLET',
+        id: 'TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON',
         defaultMessage: 'Confirm empty hidden wallet passphrase on "{deviceLabel}" device.',
     },
     TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE: {
