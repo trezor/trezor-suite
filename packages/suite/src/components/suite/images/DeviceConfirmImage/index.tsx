@@ -16,7 +16,7 @@ const getImage = (majorVersion: number) => {
         case 2:
             return 't-device-confirm';
         default:
-            return 'T2';
+            return 't-device-confirm';
     }
 };
 
