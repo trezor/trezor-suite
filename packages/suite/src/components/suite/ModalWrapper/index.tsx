@@ -1,7 +1,7 @@
 import { variables } from '@trezor/components-v2';
 import styled from 'styled-components';
 
-interface Props {
+export interface Props extends React.HTMLAttributes<HTMLDivElement> {
     padding?: string;
 }
 

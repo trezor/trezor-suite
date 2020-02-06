@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
@@ -7,6 +7,7 @@ import { Button, H2, colors, variables } from '@trezor/components-v2';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as deviceUtils from '@suite-utils/device';
+import Loading from '@suite-components/Loading';
 // import messages from '@suite/support/messages';
 import { AppState, Dispatch, TrezorDevice } from '@suite-types';
 import Link from '../../Link';
@@ -57,6 +58,8 @@ type Props = {
 
 const Passphrase = (props: Props) => {
     const { device } = props;
+    const [submitted, setSubmitted] = useState(false);
+
     const authConfirmation = props.getDiscoveryAuthConfirmationStatus() || device.authConfirm;
     const stateConfirmation = !!device.state;
     const hasEmptyPassphraseWallet = deviceUtils
@@ -68,23 +71,47 @@ const Passphrase = (props: Props) => {
         device.features.capabilities &&
         device.features.capabilities.includes('Capability_PassphraseEntry');
 
+    const onSubmit = (value: string, passphraseOnDevice?: boolean) => {
+        setSubmitted(true);
+        props.onPassphraseSubmit(value, passphraseOnDevice);
+    };
+
+    if (submitted) {
+        return <Loading />;
+    }
+
     if (authConfirmation || stateConfirmation) {
         // show borderless one-column modal for confirming passphrase and state confirmation
         return (
             <PassphraseTypeCard
                 authConfirmation={authConfirmation}
-                title={stateConfirmation ? 'Enter passphrase' : 'Confirm empty hidden wallet'}
+                title={!authConfirmation ? 'Enter passphrase' : 'Confirm empty hidden wallet'}
                 description={
-                    stateConfirmation
+                    !authConfirmation
                         ? 'Unlock'
                         : 'This hidden Wallet is empty. To make sure you are in the correct Wallet, confirm Passphrase.'
                 }
                 submitLabel="Confirm passphrase"
                 colorVariant="secondary"
                 offerPassphraseOnDevice={onDeviceOffer}
-                onPassphraseSubmit={props.onPassphraseSubmit}
+                onSubmit={onSubmit}
                 singleColModal
                 showPassphraseInput
+            />
+        );
+    }
+
+    // creating a hidden wallet
+    if (!noPassphraseOffer) {
+        return (
+            <PassphraseTypeCard
+                title="Passphrase (hidden) wallet"
+                description="Enter existing passphrase to access existing hidden Wallet. Or enter new
+                passphrase to create a new hidden Wallet."
+                submitLabel="Access Hidden Wallet"
+                colorVariant="secondary"
+                showPassphraseInput
+                onSubmit={onSubmit}
             />
         );
     }
@@ -110,15 +137,13 @@ const Passphrase = (props: Props) => {
                     </Button>
                 </Link>
                 <WalletsWrapper>
-                    {noPassphraseOffer && (
-                        <PassphraseTypeCard
-                            title="No-passphrase Wallet"
-                            description="To access standard (no-passphrase) Wallet click the button below."
-                            submitLabel="Access standard Wallet"
-                            colorVariant="primary"
-                            onPassphraseSubmit={props.onPassphraseSubmit}
-                        />
-                    )}
+                    <PassphraseTypeCard
+                        title="No-passphrase Wallet"
+                        description="To access standard (no-passphrase) Wallet click the button below."
+                        submitLabel="Access standard Wallet"
+                        colorVariant="primary"
+                        onSubmit={onSubmit}
+                    />
                     <PassphraseTypeCard
                         title="Passphrase (hidden) wallet"
                         description="Enter existing passphrase to access existing hidden Wallet. Or enter new
@@ -126,7 +151,7 @@ const Passphrase = (props: Props) => {
                         submitLabel="Access Hidden Wallet"
                         colorVariant="secondary"
                         showPassphraseInput
-                        onPassphraseSubmit={props.onPassphraseSubmit}
+                        onSubmit={onSubmit}
                     />
                 </WalletsWrapper>
             </Wrapper>

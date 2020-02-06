@@ -3,7 +3,6 @@ import { useKeyPress } from '@suite-utils/dom';
 import styled, { css } from 'styled-components';
 import { Button, colors, variables, Input, Checkbox } from '@trezor/components-v2';
 // import { Translation } from '@suite-components/Translation';
-import Loading from '@suite-components/Loading';
 
 const WalletTitle = styled.div`
     font-size: ${variables.FONT_SIZE.NORMAL};
@@ -75,13 +74,11 @@ type Props = {
     authConfirmation?: boolean;
     singleColModal?: boolean;
     offerPassphraseOnDevice?: boolean;
-    onPassphraseSubmit: (value: string, passphraseOnDevice?: boolean | undefined) => void;
+    onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
 };
 
 const PassphraseTypeCard = (props: Props) => {
     const { authConfirmation } = props;
-
-    const [submitted, setSubmitted] = useState(false);
     const [enabled, setEnabled] = useState(!authConfirmation);
     const [value, setValue] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -95,18 +92,13 @@ const PassphraseTypeCard = (props: Props) => {
         }
     }, [ref]);
 
-    if (submitted) {
-        return <Loading />;
-    }
-
-    const submit = (passphraseOnDevice?: boolean) => {
+    const submit = (value: string, passphraseOnDevice?: boolean) => {
         if (!enabled) return;
-        setSubmitted(true);
-        props.onPassphraseSubmit(value, passphraseOnDevice);
+        props.onSubmit(value, passphraseOnDevice);
     };
 
     if (enterPressed) {
-        submit();
+        submit(value);
     }
 
     return (
@@ -143,7 +135,7 @@ const PassphraseTypeCard = (props: Props) => {
                     <Button
                         isDisabled={!enabled}
                         variant={props.singleColModal ? 'primary' : props.colorVariant}
-                        onClick={() => submit()}
+                        onClick={() => submit(value)}
                         fullWidth
                     >
                         {props.submitLabel}
@@ -152,7 +144,7 @@ const PassphraseTypeCard = (props: Props) => {
                         <Button
                             isDisabled={!enabled}
                             variant="secondary"
-                            onClick={() => submit(true)}
+                            onClick={() => submit(value, true)}
                             fullWidth
                         >
                             Enter passphrase on device
