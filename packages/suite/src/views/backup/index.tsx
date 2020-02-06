@@ -67,7 +67,7 @@ const Backup = (props: Props) => {
             <ProgressBar
                 showHelp
                 total={backupStatuses.length}
-                current={backupStatuses.findIndex(s => s === backup.status)}
+                current={backupStatuses.findIndex(s => s === backup.status) + 1}
             />
             {backup.status === 'initial' && (
                 <>
