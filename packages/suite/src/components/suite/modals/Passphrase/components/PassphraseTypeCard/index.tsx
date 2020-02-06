@@ -29,11 +29,11 @@ const Col = styled.div<Pick<Props, 'colorVariant' | 'singleColModal'>>`
         `};
 
     ${props =>
-        props.colorVariant === 'secondary' &&
+        props.colorVariant &&
         css`
             background: ${colors.BLACK96};
-        `}
-        
+        `};
+
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         width: 100%;
     }

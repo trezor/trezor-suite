@@ -27,8 +27,6 @@ const DeviceName = styled.span`
     white-space: nowrap;
 `;
 
-const Image = styled.img``;
-
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     getDiscoveryAuthConfirmationStatus: () =>
         dispatch(discoveryActions.getDiscoveryAuthConfirmationStatus()),

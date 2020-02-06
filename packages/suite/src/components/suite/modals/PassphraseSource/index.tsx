@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { P, variables, colors } from '@trezor/components-v2';
+import { variables, colors } from '@trezor/components-v2';
 // import { Translation } from '@suite-components/Translation';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
@@ -32,8 +32,6 @@ const Title = styled.div`
     color: ${colors.BLACK0};
     margin-bottom: 20px;
 `;
-
-const Image = styled.img``;
 
 /**
  * Modal used with model T with legacy firmware as result of 'ButtonRequest_PassphraseType' where passphrase source is requested on device
