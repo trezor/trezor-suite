@@ -39,6 +39,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     const payloadData = {
         totalSpent: totalSpentBig.toString(),
         fee: feeInSatoshi,
+        feePerUnit: send.selectedFee.feePerUnit,
         max: max.isLessThan('0') ? '0' : max.toString(),
     };
 
