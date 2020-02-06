@@ -29,7 +29,7 @@ const Col = styled.div<Pick<Props, 'colorVariant' | 'singleColModal'>>`
         `};
 
     ${props =>
-        props.colorVariant &&
+        props.colorVariant === 'secondary' &&
         css`
             background: ${colors.BLACK96};
         `};
