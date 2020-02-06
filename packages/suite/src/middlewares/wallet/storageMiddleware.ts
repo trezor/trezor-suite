@@ -22,15 +22,11 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
 
     switch (action.type) {
         case SUITE.REMEMBER_DEVICE:
-            api.dispatch(storageActions.rememberDevice(action.payload));
+            api.dispatch(storageActions.rememberDevice(action.payload, action.remember));
             break;
 
         case SUITE.FORGET_DEVICE:
             api.dispatch(storageActions.forgetDevice(action.payload));
-            break;
-
-        case SUITE.FORGET_DEVICE_INSTANCE:
-            api.dispatch(storageActions.forgetDeviceInstance(action.payload));
             break;
 
         case ACCOUNT.CREATE:
@@ -44,14 +40,9 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         }
 
         case ACCOUNT.REMOVE: {
-            const accounts = action.payload;
-            const { devices } = api.getState();
-            accounts.forEach(account => {
-                const device = accountUtils.getAccountDevice(devices, account);
-                if (isDeviceRemembered(device)) {
-                    storageActions.removeAccount(account, device);
-                    storageActions.removeAccountTransactions(account);
-                }
+            action.payload.forEach(account => {
+                storageActions.removeAccount(account);
+                storageActions.removeAccountTransactions(account);
             });
             break;
         }

@@ -15,6 +15,15 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
     const prevState = api.getState();
     const prevRouter = prevState.router;
 
+    if (action.type === SUITE.FORGET_DEVICE) {
+        const deviceState = action.payload.state;
+        const accounts = api.getState().wallet.accounts.filter(a => a.deviceState === deviceState);
+        api.dispatch({
+            type: ACCOUNT.REMOVE,
+            payload: accounts,
+        });
+    }
+
     // propagate action to reducers
     next(action);
 
@@ -28,9 +37,9 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
 
     // leaving wallet app, reset account reducers
     if (prevRouter.app === 'wallet' && action.type === SUITE.APP_CHANGED) {
-        api.dispatch(selectedAccountActions.dispose());
-        api.dispatch(sendFormActions.dispose());
-        api.dispatch(receiveActions.dispose());
+        // api.dispatch(selectedAccountActions.dispose());
+        // api.dispatch(sendFormActions.dispose());
+        // api.dispatch(receiveActions.dispose());
     }
 
     const nextRouter = api.getState().router;

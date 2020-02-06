@@ -1,6 +1,16 @@
 import { IconType, CoinType } from '../support/types';
 
-export const SCREEN_SIZE = {} as const;
+// Bootstrap 4 breakpoints
+/* SM - Phones */
+/* MD - Tablets */
+/* LG - Laptops/Desktops */
+/* XL - Extra Large Laptops/Desktops */
+export const SCREEN_SIZE = {
+    SM: '576px',
+    MD: '768px',
+    LG: '992px',
+    XL: '1200px',
+} as const;
 
 export const FONT_SIZE_NATIVE = {} as const;
 
@@ -83,4 +93,9 @@ export const ICONS: IconType[] = [
     'TRANSACTIONS',
     'TREZOR',
     'WALLET',
+    'EXTERNAL_LINK',
+    'T1',
+    'T2',
+    'BACK',
+    'SHOW',
 ];

@@ -2,7 +2,6 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { SUITE, ROUTER, STORAGE } from '@suite-actions/constants';
-// import { BLOCKCHAIN } from '@wallet-actions/constants';
 import routerReducer from '@suite-reducers/routerReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import modalReducer from '@suite-reducers/modalReducer';

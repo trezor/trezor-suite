@@ -1,51 +1,66 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Icon, Button, colors, variables } from '@trezor/components-v2';
+import { Button, Switch, colors, variables } from '@trezor/components-v2';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { Props } from './Container';
 import { FormattedNumber } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 
-const Wrapper = styled.div<{ active: boolean }>`
+const Wrapper = styled.div<{ selected: boolean }>`
     display: flex;
-    padding: 10px 24px;
+    width: 100%;
+    padding: 18px 20px;
     align-items: center;
     flex-direction: row;
+
     cursor: pointer;
+    background: ${colors.WHITE};
 
     &:hover {
         background: ${colors.BLACK96};
     }
 
+    &:first-of-type {
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+    }
+
+    &:last-of-type {
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+    }
+
     ${props =>
-        props.active &&
+        props.selected &&
         css`
             background: ${colors.BLACK96};
         `}
 `;
 
-const InstanceTitle = styled.div`
-    color: ${colors.BLACK50};
-    font-weight: 600;
-    font-size: ${variables.FONT_SIZE.TINY};
-    text-transform: uppercase;
-`;
 const InstanceType = styled.div`
-    color: ${colors.BLACK50};
+    color: ${colors.BLACK25};
+    font-weight: 600;
+    font-size: ${variables.FONT_SIZE.NORMAL};
+`;
+
+const InstanceTitle = styled.div`
+    margin-top: 6px;
+    color: ${colors.BLACK25};
     font-size: ${variables.FONT_SIZE.TINY};
-    /* text-transform: uppercase; */
 `;
 
-const SortIconWrapper = styled.div`
-    margin-right: ${variables.FONT_SIZE.TINY};
-`;
-
-const Col = styled.div<{ grow?: number }>`
+const Col = styled.div<{ grow?: number; centerItems?: boolean }>`
     display: flex;
     flex-grow: ${props => props.grow || 0};
-    align-items: flex-start;
     flex-direction: column;
+    align-items: ${props => (props.centerItems ? 'center' : 'flex-start')};
+`;
+
+const SwitchCol = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-right: 70px;
 `;
 
 const ForgetButton = styled(Button)`
@@ -54,82 +69,79 @@ const ForgetButton = styled(Button)`
 
 const WalletInstance = ({
     instance,
-    active,
-    selectInstance,
-    forgetDeviceInstance,
+    enabled,
+    selected,
+    selectDeviceInstance,
+    rememberDevice,
+    forgetDevice,
     accounts,
     fiat,
     localCurrency,
     getDiscovery,
+    ...rest
 }: Props) => {
     const discoveryProcess = instance.state ? getDiscovery(instance.state) : null;
     const deviceAccounts = accountUtils.getAllAccounts(instance.state, accounts);
-    const coinsCount = accountUtils.countUniqueCoins(deviceAccounts);
     const accountsCount = deviceAccounts.length;
-    const instanceBalance = accountUtils.getTotalBalance(deviceAccounts, localCurrency, fiat);
+    const noPassphraseInstance = instance.useEmptyPassphrase!!;
+    const instanceBalance = accountUtils.getTotalFiatBalance(deviceAccounts, localCurrency, fiat);
 
     return (
         <Wrapper
             key={`${instance.label}${instance.instance}${instance.state}`}
-            active={active}
-            onClick={() => {
-                selectInstance(instance);
-            }}
+            selected={enabled && selected && !!discoveryProcess}
+            {...rest}
         >
-            <SortIconWrapper>
-                <Icon size={12} icon="SORT" />
-            </SortIconWrapper>
-            <Col grow={1}>
+            <Col grow={1} onClick={() => selectDeviceInstance(instance)}>
                 {discoveryProcess && (
-                    <InstanceTitle>
-                        <Translation
-                            {...messages.TR_NUM_ACCOUNTS_NUM_COINS_FIAT_VALUE}
-                            values={{
-                                accountsCount,
-                                coinsCount,
-                                fiatValue: (
-                                    <FormattedNumber
-                                        value={instanceBalance.toString()}
-                                        currency={localCurrency}
-                                    />
-                                ),
-                            }}
-                        />
-                    </InstanceTitle>
+                    <InstanceType>
+                        {noPassphraseInstance ? (
+                            <Translation {...messages.TR_NO_PASSPHRASE_WALLET} />
+                        ) : (
+                            <Translation {...messages.TR_PASSPHRASE_WALLET} />
+                        )}
+                    </InstanceType>
                 )}
                 {!discoveryProcess && (
-                    <InstanceTitle>
+                    <InstanceType>
                         <Translation {...messages.TR_UNDISCOVERED_WALLET} />
-                    </InstanceTitle>
+                    </InstanceType>
                 )}
-                <InstanceType>
-                    {instance.useEmptyPassphrase ? 'No passphrase' : 'Passphrase'}
-                </InstanceType>
-            </Col>
-            <Col>
-                {discoveryProcess && !instance.useEmptyPassphrase && instance.remember && (
-                    <ForgetButton
-                        size="small"
-                        variant="secondary"
-                        onClick={() => {
-                            forgetDeviceInstance(instance);
+                <InstanceTitle>
+                    <Translation
+                        {...messages.TR_NUM_ACCOUNTS_FIAT_VALUE}
+                        values={{
+                            accountsCount,
+                            fiatValue: (
+                                <FormattedNumber
+                                    value={instanceBalance.toString()}
+                                    currency={localCurrency}
+                                />
+                            ),
                         }}
-                    >
-                        <Translation {...messages.TR_FORGET} />
-                    </ForgetButton>
-                )}
-                {!discoveryProcess && (
-                    <Button
-                        size="small"
-                        isDisabled
-                        variant="tertiary"
-                        icon="INFO"
-                        onClick={() => {}}
-                    >
-                        <Translation {...messages.TR_CONNECT_TO_DISCOVER} />
-                    </Button>
-                )}
+                    />
+                </InstanceTitle>
             </Col>
+            {enabled && discoveryProcess && (
+                <>
+                    <SwitchCol>
+                        <Switch
+                            checked={instance.remember}
+                            onChange={() => rememberDevice(instance)}
+                            data-test="@suite/settings/device/passphrase-switch"
+                        />
+                    </SwitchCol>
+                    <Col>
+                        <ForgetButton
+                            size="small"
+                            variant="secondary"
+                            onClick={() => forgetDevice(instance)}
+                        >
+                            <Translation {...messages.TR_HIDE_WALLET} />
+                        </ForgetButton>
+                    </Col>
+                </>
+            )}
         </Wrapper>
     );
 };

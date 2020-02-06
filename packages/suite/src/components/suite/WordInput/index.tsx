@@ -4,8 +4,8 @@ import styled, { keyframes } from 'styled-components';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 
 import { Select, P } from '@trezor/components';
+import { colors } from '@trezor/components-v2';
 import { Translation } from '@suite-components';
-import colors from '@onboarding-config/colors';
 import { BIP_39 } from '@suite-constants';
 import messages from '@suite/support/messages';
 
@@ -81,19 +81,18 @@ const WordInput = (props: Props) => {
                         option: (provided: CSSProperties, state: any) => ({
                             ...provided,
                             backgroundColor: state.isFocused
-                                ? colors.brandPrimary
+                                ? colors.GREEN
                                 : provided.backgroundColor,
-                            // todo: colors from @trezor/components-v2
-                            color: state.isFocused ? colors.grayLight : colors.grayDark,
+                            color: state.isFocused ? colors.BLACK50 : colors.BLACK17,
                             textAlign: 'initial',
                         }),
                         control: (provided: CSSProperties, state: any) => ({
                             ...provided,
-                            boxShadow: `0 0 0 1px ${colors.brandPrimary}`,
+                            boxShadow: `0 0 0 1px ${colors.GREEN}`,
                             '&:hover': {
-                                borderColor: colors.brandPrimary,
+                                borderColor: colors.GREEN,
                             },
-                            borderColor: state.isFocused ? colors.brandPrimary : 'transparent',
+                            borderColor: state.isFocused ? colors.GREEN : 'transparent',
                         }),
                         dropdownIndicator: () => ({ display: 'none' }),
                         indicatorSeparator: () => ({ display: 'none' }),

@@ -1,6 +1,7 @@
 import React from 'react';
-import { Translation } from '@suite-components/Translation';
 
+import { Translation } from '@suite-components';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import messages from '@suite/support/messages';
 import { Props } from './Container';
@@ -14,11 +15,10 @@ const SecurityStep = (props: Props) => (
             <Text>
                 <Translation {...messages.TR_SECURITY_SUBHEADING} />
             </Text>
+            <img alt="" src={resolveStaticPath('images/onboarding/t-device-initialized.svg')} />
             <Wrapper.Controls>
-                <OnboardingButton.Alt data-test="button-exit-app" onClick={props.closeModalApp}>
-                    <Translation {...messages.TR_SKIP_SECURITY} />
-                </OnboardingButton.Alt>
                 <OnboardingButton.Cta
+                    data-test="@onboarding/continue-to-security-button"
                     onClick={() => {
                         props.goToNextStep();
                     }}
@@ -26,7 +26,17 @@ const SecurityStep = (props: Props) => (
                     <Translation {...messages.TR_GO_TO_SECURITY} />
                 </OnboardingButton.Cta>
             </Wrapper.Controls>
+            <Text>Only 2 more steps that take only few more minutes.</Text>
         </Wrapper.StepBody>
+        <Wrapper.StepFooter>
+            <OnboardingButton.Back
+                icon="CROSS"
+                data-test="@onboarding/exit-app-button"
+                onClick={props.closeModalApp}
+            >
+                <Translation {...messages.TR_SKIP_SECURITY} />
+            </OnboardingButton.Back>
+        </Wrapper.StepFooter>
     </Wrapper.Step>
 );
 

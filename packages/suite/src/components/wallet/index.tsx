@@ -1,5 +1,6 @@
-import Content from './Content';
+import Menu from './Menu';
+import DiscoveryProgress from './DiscoveryProgress';
 import Title from './Title';
-import LayoutAccount from './LayoutAccount';
+import WalletLayout from './WalletLayout';
 
-export { Content, Title, LayoutAccount };
+export { Title, Menu, WalletLayout, DiscoveryProgress };

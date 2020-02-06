@@ -12,12 +12,12 @@ describe('Onboarding happy paths', () => {
         cy.visit('/');
         cy.goToOnboarding();
         cy.onboardingShouldLoad()
-            .getTestElement('@onboarding/button-path-create')
+            .getTestElement('@onboarding/button-begin')
             .click()
             //  add snapshots in distance future when everything is stable
             // .matchImageSnapshot()
-            .get('html')
-            .should('contain', 'New device')
+            .getTestElement('@onboarding/button-path-create')
+            .click()
             .getTestElement('@onboarding/button-used-path')
             .click()
             .getTestElement('@onboarding/pair-device-step');
@@ -38,10 +38,9 @@ describe('Onboarding happy paths', () => {
             .should('be.visible');
         cy.task('sendDecision', 'resetDevice');
 
-        cy.get('html')
-            .should('contain', 'Take me to security')
-            .getTestElement('button-exit-app');
-        // click() removed it for now. I need reproducible runs to compare line by line faild and succeeded once
-        // and going to wallet SOMETIMES managed to trigger discovery process resulting in more lines (bridge calls logs)
+        cy.getTestElement('@onboarding/continue-to-security-button').click();
+        cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
+        cy.getTestElement('@backup/check-item/is-in-private').click();
+        cy.getTestElement('@backup/check-item/has-enough-time').click();
     });
 });

@@ -4,7 +4,13 @@ Suite uses [Cypress](https://docs.cypress.io/guides/overview/why-cypress.html) t
 
 ## Bridge
 
-Cypress does not send request origin headers correctly, so tests must be run againts custom binary of bridge in tests folder which has respective checks disabled.
+Cypress has 2 troubles when communicating with trezord. 
+
+1. Does not send request origin headers correctly -> problem with CORS.
+1. Tests in CI fail occasionally on POST to '/' with 403 -> problem with CSFR.
+
+Workaround is to have cors and csrf protection disabled. We have custom binary compiled from this [trezord branch](https://github.com/trezor/trezord-go/tree/cypress)
+
 
 ## Emulator
 

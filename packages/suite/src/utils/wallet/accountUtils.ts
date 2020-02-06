@@ -120,6 +120,7 @@ export const networkAmountToSatoshi = (amount: string | null, symbol: Account['s
         }
         return bAmount.times(10 ** network.decimals).toString(10);
     } catch (error) {
+        // TODO: return null, so we can decide how to handle missing value in caller component
         return '-1';
     }
 };
@@ -286,7 +287,7 @@ export const enhanceTransaction = (
     };
 };
 
-export const getAccountBalance = (account: Account, localCurrency: string, fiat: Fiat[]) => {
+export const getAccountFiatBalance = (account: Account, localCurrency: string, fiat: Fiat[]) => {
     const fiatRates = fiat.find(f => f.symbol === account.symbol);
     if (fiatRates) {
         const fiatBalance = toFiatCurrency(account.balance, localCurrency, fiatRates);
@@ -296,10 +297,19 @@ export const getAccountBalance = (account: Account, localCurrency: string, fiat:
     }
 };
 
-export const getTotalBalance = (deviceAccounts: Account[], localCurrency: string, fiat: Fiat[]) => {
+export const getTotalFiatBalance = (
+    deviceAccounts: Account[],
+    localCurrency: string,
+    fiat: Fiat[],
+) => {
     const instanceBalance = new BigNumber(0);
     deviceAccounts.forEach(a => {
-        getAccountBalance(a, localCurrency, fiat);
+        getAccountFiatBalance(a, localCurrency, fiat);
     });
     return instanceBalance;
+};
+
+export const isTestnet = (symbol: Account['symbol']) => {
+    const net = NETWORKS.find(n => n.symbol === symbol);
+    return net?.testnet ?? false;
 };

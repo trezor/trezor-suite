@@ -8,8 +8,7 @@ import Card from '../Card';
 import { Account } from '@wallet-types';
 import { AppState } from '@suite-types';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
-import { Loader } from '@trezor/components';
-import { colors } from '@trezor/components-v2';
+import { colors, Loader } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 

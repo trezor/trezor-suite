@@ -10,17 +10,16 @@ import {
     InputButton,
     TextAlign,
 } from '../../../support/types';
-import { getStateColor, getDisplayWidth } from '../../../utils';
+import { getStateColor } from '../../../utils';
 
-const Wrapper = styled.div<WrapperProps>`
+interface WrappedProps {
+    width?: any;
+}
+
+const Wrapper = styled.div<WrappedProps>`
     display: inline-flex;
     flex-direction: column;
-
-    ${props =>
-        props.display === 'block' &&
-        css`
-            width: 100%;
-        `}
+    width: ${props => (props.width ? `${props.width}px` : '100%')};
 `;
 
 const StyledInput = styled.input<Props>`
@@ -33,7 +32,7 @@ const StyledInput = styled.input<Props>`
     background-color: ${colors.WHITE};
     outline: none;
     box-sizing: border-box;
-    width: ${props => getDisplayWidth(props.display || 'default')};
+    width: 100%;
     height: ${props => (props.variant === 'small' ? '38px' : '48px')};
     text-align: ${props => props.align || 'left'};
     color: ${props => getStateColor(props.state)};
@@ -49,12 +48,6 @@ const StyledInput = styled.input<Props>`
         css`
             font-family: ${variables.FONT_FAMILY.MONOSPACE};
             padding-bottom: 2px;
-        `}
-
-    ${props =>
-        props.state &&
-        css`
-            padding-right: 30px;
         `}
 
     ${props =>
@@ -108,7 +101,7 @@ const InputIconWrapper = styled.div<Props>`
 const SpinnerWrapper = styled.div``;
 
 const Label = styled.label`
-    padding: 10px;
+    padding: 0 0 10px 0;
 `;
 
 const BottomText = styled.div<Props>`
@@ -146,12 +139,6 @@ const StyledIcon = styled(Icon)`
     margin-right: 5px;
 `;
 
-const StateIconWrapper = styled.div`
-    display: flex;
-    padding: 0 5px;
-    background: ${colors.WHITE};
-`;
-
 const Overlay = styled.div<Props>`
     bottom: 1px;
     top: 1px;
@@ -163,11 +150,6 @@ const Overlay = styled.div<Props>`
     background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 220px);
     z-index: 1;
 `;
-
-interface WrapperProps {
-    dataTest?: string;
-    display?: InputDisplay;
-}
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     innerRef?: React.RefObject<HTMLInputElement>;
@@ -183,6 +165,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     autoCapitalize?: string;
     spellCheck?: boolean;
     isLoading?: boolean;
+    dataTest?: string;
     isPartiallyHidden?: boolean;
     wrapperProps?: Record<string, any>;
     type?: string;
@@ -195,7 +178,7 @@ const Input = ({
     innerRef,
     state,
     variant = 'large',
-    display = 'default',
+    width,
     button,
     topLabel,
     bottomText,
@@ -206,6 +189,7 @@ const Input = ({
     monospace,
     wrapperProps,
     isLoading,
+    dataTest,
     isPartiallyHidden,
     align = 'left',
     ...rest
@@ -229,7 +213,7 @@ const Input = ({
     };
 
     return (
-        <Wrapper display={display} {...wrapperProps}>
+        <Wrapper width={width} {...wrapperProps} data-test={dataTest}>
             {topLabel && <Label>{topLabel}</Label>}
             <InputWrapper>
                 <InputIconWrapper align={align}>
@@ -247,17 +231,12 @@ const Input = ({
                             {button.icon && (
                                 <StyledIcon
                                     icon={button.icon}
-                                    size={10}
+                                    size={button.iconSize || 10}
                                     color={buttonHover ? colors.BLACK0 : colors.BLACK25}
                                 />
                             )}
                             {button.text && <ButtonText>{button.text}</ButtonText>}
                         </Button>
-                    )}
-                    {state && (
-                        <StateIconWrapper>
-                            <Icon icon={getStateIcon()} color={getStateColor(state)} size={10} />
-                        </StateIconWrapper>
                     )}
                 </InputIconWrapper>
                 {isPartiallyHidden && <Overlay />}
@@ -270,7 +249,7 @@ const Input = ({
                     state={state}
                     variant={variant}
                     disabled={isDisabled}
-                    display={display}
+                    width={width}
                     monospace={monospace}
                     align={align}
                     ref={innerRef}

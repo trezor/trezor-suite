@@ -41,7 +41,7 @@ export const tippy = css`
     }
     .tippy-tooltip[data-placement^='top'] > .tippy-arrow {
         border-width: 8px 8px 0;
-        border-top-color: #333;
+        border-top-color: red;
         margin: 0 3px;
         transform-origin: 50% 0;
         bottom: -7px;

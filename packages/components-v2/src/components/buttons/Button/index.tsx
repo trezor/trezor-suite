@@ -26,14 +26,16 @@ const getFontSize = (variant: ButtonVariant, size: ButtonSize) => {
 
 const Wrapper = styled.button<WrapperProps>`
     display: flex;
+    background: transparent;
     align-items: center;
     justify-content: center;
+    border: none;
     white-space: nowrap;
     cursor: ${props => (props.isDisabled ? 'default' : 'pointer')};
     border-radius: 3px;
     font-size: ${props => getFontSize(props.variant, props.size)}; 
     font-weight: ${props => (props.variant === 'primary' ? 600 : 500)};
-    color: ${colors.BLACK25};
+    color: ${props => (props.color ? props.color : colors.BLACK25)};
     outline: none;
     padding: ${props => (props.variant === 'tertiary' ? '0px 4px' : BUTTON_PADDING[props.size])};
     height: ${props => (props.variant === 'tertiary' ? '20px' : 'auto')};
@@ -49,13 +51,13 @@ const Wrapper = styled.button<WrapperProps>`
         !props.isDisabled &&
         css`
             color: ${colors.WHITE};
+            border: 1px solid ${colors.GREENER};
             background-image: linear-gradient(to top, ${colors.GREENER}, #21c100);
-            border: none;
             box-shadow: 0 3px 6px 0 rgba(48, 193, 0, 0.3);
 
             &:hover,
             &:focus {
-                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.25)),
+                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2)),
                     linear-gradient(to top, ${colors.GREENER}, #21c100);
             }
         `}
@@ -70,7 +72,7 @@ const Wrapper = styled.button<WrapperProps>`
 
             &:hover,
             &:focus {
-                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15)),
+                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1)),
                     linear-gradient(${colors.WHITE}, ${colors.WHITE});
             }
         `}
@@ -107,7 +109,7 @@ const Wrapper = styled.button<WrapperProps>`
 
             &:hover,
             &:focus {
-                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.25)),
+                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2)),
                     linear-gradient(to top, ${colors.RED}, #f25757);
             }
         `}
@@ -124,8 +126,6 @@ const Wrapper = styled.button<WrapperProps>`
 
 const IconWrapper = styled.div<IconWrapperProps>`
     display: flex;
-    /* looks wrong with check icon for an example ¯\_(ツ)_/¯ */
-    /* transform: translateY(-1px); */
 
     ${props =>
         props.alignIcon === 'left' &&
@@ -150,6 +150,7 @@ interface WrapperProps {
     size: ButtonSize;
     isDisabled: boolean;
     fullWidth: boolean;
+    color: string | undefined;
 }
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -167,10 +168,12 @@ const Button = ({
     variant = 'primary',
     size = 'large',
     icon,
+    color,
     fullWidth = false,
     isDisabled = false,
     isLoading = false,
     alignIcon = 'left',
+    onChange,
     ...rest
 }: Props) => {
     const IconComponent = icon ? (
@@ -178,22 +181,24 @@ const Button = ({
             <Icon
                 icon={icon}
                 size={size === 'large' ? 10 : 8}
-                color={getIconColor(variant, isDisabled)}
+                color={color || getIconColor(variant, isDisabled)}
             />
         </IconWrapper>
     ) : null;
     const Loader = (
         <IconWrapper alignIcon={alignIcon}>
-            <FluidSpinner size={10} />
+            <FluidSpinner size={10} color={color} />
         </IconWrapper>
     );
     return (
         <Wrapper
             variant={variant}
             size={size}
+            onChange={onChange}
             isDisabled={isDisabled}
-            disabled={isDisabled}
+            disabled={isDisabled || isLoading}
             fullWidth={fullWidth}
+            color={color}
             {...rest}
         >
             {!isLoading && alignIcon === 'left' && IconComponent}

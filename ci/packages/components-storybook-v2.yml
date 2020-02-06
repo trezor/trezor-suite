@@ -4,7 +4,7 @@ components-storybook-v2 build:
     - yarn workspace @trezor/components-storybook-v2 build
   artifacts:
     name: components-build-files
-    expire_in: 10 hours
+    expire_in: 7 days
     paths:
       - packages/components-storybook-v2/.build
 
@@ -34,9 +34,9 @@ components-storybook-v2 test snapshots:
     - npx cypress install
     - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook-v2/${CI_BUILD_REF_NAME} yarn workspace @trezor/integration-tests test:components-storybook-v2
   artifacts:
-    expire_in: 2 days
+    expire_in: 7 days
     when: always
     paths:
-      - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook-v2/test/snapshots
-      - /builds/satoshilabs/trezor/trezor-suite/packages/components-storybook-v2/test/screenshots
+      - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/components-storybook-v2/snapshots
+      - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/components-storybook-v2/screenshots
   dependencies: []

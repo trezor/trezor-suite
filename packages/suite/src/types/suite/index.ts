@@ -8,10 +8,12 @@ import {
     DeviceStatus,
     DeviceMode,
     DeviceFirmwareStatus,
+    UnavailableCapability,
     FirmwareRelease,
     BlockchainEvent,
 } from 'trezor-connect';
 import { RouterActions } from '@suite-actions/routerActions';
+import { Route as Route$ } from '@suite-constants/routes';
 import { AppState as AppState$ } from '@suite/reducers/store';
 import { StorageActions } from '@suite-actions/storageActions';
 import { SuiteActions } from '@suite-actions/suiteActions';
@@ -19,11 +21,12 @@ import { ResizeActions } from '@suite-actions/resizeActions';
 import { ModalActions } from '@suite-actions/modalActions';
 import { LogActions } from '@suite-actions/logActions';
 import { NotificationActions } from '@suite-actions/notificationActions';
-import OnboardingActions from '@onboarding-types/actions';
+import { OnboardingActions } from '@onboarding-types';
 import { SettingsActions } from '@settings-types';
+import { FirmwareActions } from '@firmware-types';
 import { ExtendedMessageDescriptor as ExtendedMessageDescriptor$ } from '@suite-support/ConnectedIntlProvider';
 import { WalletAction } from '@wallet-types';
-
+import { BackupActions } from '@backup-actions/backupActions';
 // this weird export is because of --isolatedModules and next.js 9
 export type ExtendedMessageDescriptor = ExtendedMessageDescriptor$;
 
@@ -34,6 +37,8 @@ type TrezorConnectEvents =
     | BlockchainEvent;
 
 export type AppState = AppState$;
+
+export type Route = Route$;
 
 // all actions from all apps used to properly type Dispatch.
 export type Action =
@@ -47,6 +52,8 @@ export type Action =
     | NotificationActions
     | WalletAction
     | OnboardingActions
+    | FirmwareActions
+    | BackupActions
     | SettingsActions;
 
 // export type Dispatch = ReduxDispatch<Action>;
@@ -63,6 +70,7 @@ export interface AcquiredDevice {
     status: DeviceStatus;
     mode: DeviceMode;
     state?: string;
+    unavailableCapabilities: { [key: string]: UnavailableCapability };
 
     // suite specific
     useEmptyPassphrase: boolean;
@@ -70,8 +78,10 @@ export interface AcquiredDevice {
     connected: boolean; // device is connected
     available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
     authConfirm: boolean; // device cannot be used because passphrase was not confirmed
+    authFailed?: boolean; // device cannot be used because authorization process failed
     instance?: number;
     ts: number;
+    buttonRequests: string[];
 }
 
 export interface UnknownDevice {
@@ -86,8 +96,10 @@ export interface UnknownDevice {
     // types below are here just for type compatibility with AcquiredDevice
     remember?: boolean;
     authConfirm?: undefined;
+    authFailed?: undefined;
     state?: string;
     ts: number;
+    buttonRequests: string[];
 }
 
 export type TrezorDevice = AcquiredDevice | UnknownDevice;
@@ -95,7 +107,8 @@ export type TrezorDevice = AcquiredDevice | UnknownDevice;
 export type Store = ReduxStore<AppState, Action>;
 
 export type InjectedModalApplicationProps = {
-    modal: React.ReactNode;
+    modal: JSX.Element | null;
     cancelable: boolean;
     closeModalApp: () => void;
+    getBackgroundRoute: () => Route$ | typeof undefined;
 };

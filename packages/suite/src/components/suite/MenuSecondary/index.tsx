@@ -2,8 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Backdrop from '@suite-components/Backdrop';
-import { variables } from '@trezor/components';
-import { colors } from '@trezor/components-v2';
+import { colors, variables } from '@trezor/components-v2';
 
 import { AppState } from '@suite-types';
 
@@ -24,7 +23,6 @@ const AbsoluteWrapper = styled.aside<WrapperProps>`
     box-shadow: 10px 0px 20px -5px rgba(0, 0, 0, 0.05);
     z-index: 2; /* makes the shadow visible on top of the content element */
     margin-right: 3px;
-    height: 100vh;
     min-height: 600px;
     overflow-y: auto;
 
@@ -55,7 +53,6 @@ const AbsoluteWrapper = styled.aside<WrapperProps>`
 `;
 
 const Wrapper = styled.div`
-    height: 100%;
     display: flex;
     flex-direction: column;
     @media screen and (max-width: ${SCREEN_SIZE.SM}) {

@@ -35,19 +35,6 @@ jest.mock('trezor-connect', () => {
                         state: '0123456',
                     },
                 },
-            getAddress: () => {
-                if (fixture && Array.isArray(fixture) && fixture.length > 0) {
-                    const f = fixture[0];
-                    fixture.splice(0, 1);
-                    if (f) return f;
-                }
-                return {
-                    success: true,
-                    payload: {
-                        address: '1234567890address',
-                    },
-                };
-            },
         },
         DEVICE: {
             CONNECT: 'device-connect',
@@ -60,6 +47,15 @@ jest.mock('trezor-connect', () => {
         UI: {},
         setTestFixtures: (f: any) => {
             fixture = f;
+        },
+    };
+});
+
+jest.mock('next/router', () => {
+    return {
+        __esModule: true, // this property makes it work
+        default: {
+            back: () => {},
         },
     };
 });
@@ -197,7 +193,7 @@ describe('Suite Actions', () => {
             const state = getInitialState(f.state);
             const store = initStore(state);
             store.dispatch(init()); // trezorConnectActions.init needs to be called in order to wrap "getFeatures" with lockUi action
-            await store.dispatch(suiteActions.acquireDevice());
+            await store.dispatch(suiteActions.acquireDevice(f.requestedDevice));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -224,7 +220,7 @@ describe('Suite Actions', () => {
 
     fixtures.authConfirm.forEach(f => {
         it(`authConfirm: ${f.description}`, async () => {
-            require('trezor-connect').setTestFixtures(f.getAddress);
+            require('trezor-connect').setTestFixtures(f.getDeviceState);
             const state = getInitialState(f.state);
             const store = initStore(state);
             await store.dispatch(suiteActions.authConfirm());
@@ -259,13 +255,5 @@ describe('Suite Actions', () => {
             payload: SUITE_DEVICE,
         };
         expect(suiteActions.forgetDevice(SUITE_DEVICE)).toEqual(expectedAction);
-    });
-
-    it('forgetDeviceInstance', () => {
-        const expectedAction = {
-            type: SUITE.FORGET_DEVICE_INSTANCE,
-            payload: SUITE_DEVICE,
-        };
-        expect(suiteActions.forgetDeviceInstance(SUITE_DEVICE)).toEqual(expectedAction);
     });
 });

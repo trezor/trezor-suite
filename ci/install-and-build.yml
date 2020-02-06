@@ -2,16 +2,14 @@ install and build:
     cache:
         untracked: true
         policy: pull-push
-        key: node_modules-across-the-monorepo-universe
+        key: ${CI_COMMIT_REF_SLUG}
         paths:
             # modules
             - node_modules/
             - packages/blockchain-link/node_modules/
             - packages/components/node_modules/
             - packages/components-v2/node_modules/
-            - packages/components-storybook/node_modules/
             - packages/components-storybook-v2/node_modules/
-            - packages/connect-explorer/node_modules/
             - packages/rollout/node_modules/
             - packages/suite/node_modules/
             - packages/suite-web/node_modules/

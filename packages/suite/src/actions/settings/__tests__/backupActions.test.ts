@@ -6,8 +6,8 @@ import thunk from 'redux-thunk';
 import { mergeObj } from '@suite-utils/mergeObj';
 import { init } from '@suite-actions/trezorConnectActions';
 import { SUITE } from '@suite-actions/constants';
-
-import * as backupActions from '../backupActions';
+import { BACKUP } from '@backup-actions/constants';
+import * as backupActions from '@backup-actions/backupActions';
 
 jest.mock('trezor-connect', () => {
     let fixture: any;
@@ -61,7 +61,7 @@ export const getInitialState = (override: any) => {
 const mockStore = configureStore<ReturnType<typeof getInitialState>, any>([thunk]);
 
 describe('Backup Actions', () => {
-    it('it should trigger actions in order: uiLock:true, addNotification:success, uiLock: false', async () => {
+    it('backup success', async () => {
         require('trezor-connect').setTestFixtures({ success: true });
 
         const state = getInitialState({});
@@ -72,16 +72,23 @@ describe('Backup Actions', () => {
         // discard @suite/trezor-connect-initialized action we don't care about it in this test
         store.getActions().shift();
 
+        expect(store.getActions().shift()).toEqual({
+            type: BACKUP.SET_STATUS,
+            payload: 'in-progress',
+        });
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: true });
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: false });
         expect(store.getActions().shift()).toMatchObject({
             type: '@notification/add',
-            payload: { variant: 'success' },
+            payload: { type: 'backup-success' },
         });
     });
 
-    it('it should trigger actions in order: uiLock:true, addNotification:error, uiLock: false', async () => {
-        require('trezor-connect').setTestFixtures({ success: false });
+    it('backup error', async () => {
+        require('trezor-connect').setTestFixtures({
+            success: false,
+            payload: { error: 'avadakedavra' },
+        });
 
         const state = getInitialState({});
         const store = mockStore(state);
@@ -91,11 +98,15 @@ describe('Backup Actions', () => {
         // discard @suite/trezor-connect-initialized action we don't care about it in this test
         store.getActions().shift();
 
+        expect(store.getActions().shift()).toEqual({
+            type: BACKUP.SET_STATUS,
+            payload: 'in-progress',
+        });
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: true });
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: false });
         expect(store.getActions().shift()).toMatchObject({
             type: '@notification/add',
-            payload: { variant: 'error' },
+            payload: { type: 'backup-failed' },
         });
     });
 });

@@ -2,9 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { H2, P, Switch, Link, Icon, variables, colors } from '@trezor/components-v2';
-// todo: use new components
-import { CoinLogo } from '@trezor/components';
+import { H2, P, Switch, Link, Icon, variables, colors, CoinLogo } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { SuiteLayout } from '@suite-components';
@@ -81,6 +79,7 @@ const Coin = ({ network }: { network: Network | ExternalNetwork }) => (
 );
 
 const AdvancedSettings = styled.div`
+    display: flex;
     cursor: pointer;
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${colors.BLACK25};
@@ -142,7 +141,7 @@ const CoinsGroup = ({
                     <Coin network={n} />
                     <ActionColumn>
                         <AdvancedSettings>
-                            <SettingsIcon icon="SETTINGS" size={12} />
+                            <SettingsIcon icon="SETTINGS" size={12} color={colors.BLACK25} />
                             <Translation {...messages.TR_ADVANCED_SETTINGS} />
                         </AdvancedSettings>
                         <Switch

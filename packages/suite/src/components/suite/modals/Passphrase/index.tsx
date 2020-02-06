@@ -1,46 +1,44 @@
-import React, { useState, createRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { useKeyPress } from '@suite-utils/dom';
-import styled, { css } from 'styled-components';
-import { Button, H2, P, colors, Input, Checkbox } from '@trezor/components-v2';
-import { Translation } from '@suite-components/Translation';
-import Loading from '@suite-components/Loading';
+import styled from 'styled-components';
+import { Button, H2, colors, variables } from '@trezor/components-v2';
+// import { Translation } from '@suite-components/Translation';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as deviceUtils from '@suite-utils/device';
-import messages from '@suite/support/messages';
+import Loading from '@suite-components/Loading';
+// import messages from '@suite/support/messages';
 import { AppState, Dispatch, TrezorDevice } from '@suite-types';
+import Link from '../../Link';
+import ModalWrapper from '@suite-components/ModalWrapper';
+import { PASSPHRASE_URL } from '@suite-constants/urls';
+import PassphraseTypeCard from './components/PassphraseTypeCard';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ authConfirmation?: boolean }>`
     display: flex;
-    flex-wrap: wrap;
-`;
-
-const Col = styled.div<{ secondary?: boolean }>`
-    display: flex;
-    flex: 1;
-    width: 320px;
     flex-direction: column;
-    padding: 40px;
     align-items: center;
+    width: ${props => (props.authConfirmation ? 'auto' : '660px')};
 
-    ${props =>
-        props.secondary &&
-        css`
-            background: ${colors.BLACK96};
-        `}
+    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        width: 100%;
+    }
 `;
 
-const Content = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
+const WalletsWrapper = styled.div`
+    display: grid;
+    width: 100%;
+    grid-gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    margin-top: 42px;
+`;
+
+const Description = styled.div`
+    font-size: ${variables.FONT_SIZE.SMALL};
+    text-align: center;
     color: ${colors.BLACK50};
-`;
-
-const Actions = styled.div`
-    margin-top: 20px;
+    margin-bottom: 4px;
 `;
 
 const mapStateToProps = (state: AppState) => ({
@@ -59,111 +57,105 @@ type Props = {
     ReturnType<typeof mapDispatchToProps>;
 
 const Passphrase = (props: Props) => {
-    const authConfirmation = props.getDiscoveryAuthConfirmationStatus() || props.device.authConfirm;
-    const stateConfirmation = !!props.device.state;
+    const { device } = props;
+    const [submitted, setSubmitted] = useState(false);
+
+    const authConfirmation = props.getDiscoveryAuthConfirmationStatus() || device.authConfirm;
+    const stateConfirmation = !!device.state;
     const hasEmptyPassphraseWallet = deviceUtils
-        .getDeviceInstances(props.device, props.devices)
+        .getDeviceInstances(device, props.devices)
         .find(d => d.useEmptyPassphrase);
     const noPassphraseOffer = !hasEmptyPassphraseWallet && !stateConfirmation;
+    const onDeviceOffer =
+        device.features &&
+        device.features.capabilities &&
+        device.features.capabilities.includes('Capability_PassphraseEntry');
 
-    const [submitted, setSubmitted] = useState(false);
-    const [enabled, setEnabled] = useState(!authConfirmation);
-    const [value, setValue] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const inputType = showPassword ? 'text' : 'password';
-    const enterPressed = useKeyPress('Enter');
-    const ref = createRef<HTMLInputElement>();
-
-    useEffect(() => {
-        if (ref && ref.current) {
-            ref.current.focus();
-        }
-    }, [ref]);
+    const onSubmit = (value: string, passphraseOnDevice?: boolean) => {
+        setSubmitted(true);
+        props.onPassphraseSubmit(value, passphraseOnDevice);
+    };
 
     if (submitted) {
         return <Loading />;
     }
 
-    const submit = () => {
-        if (!enabled) return;
-        setSubmitted(true);
-        props.onPassphraseSubmit(value);
-    };
-
-    if (enterPressed) {
-        submit();
+    if (authConfirmation || stateConfirmation) {
+        // show borderless one-column modal for confirming passphrase and state confirmation
+        return (
+            <PassphraseTypeCard
+                authConfirmation={authConfirmation}
+                title={!authConfirmation ? 'Enter passphrase' : 'Confirm empty hidden wallet'}
+                description={
+                    !authConfirmation
+                        ? 'Unlock'
+                        : 'This hidden Wallet is empty. To make sure you are in the correct Wallet, confirm Passphrase.'
+                }
+                submitLabel="Confirm passphrase"
+                colorVariant="secondary"
+                offerPassphraseOnDevice={onDeviceOffer}
+                onSubmit={onSubmit}
+                singleColModal
+                showPassphraseInput
+            />
+        );
     }
 
-    // TODO: translations
-    let HEAD = 'Passphrase-secured hidden Wallet';
-    let DESCRIPTION = `Enter existing passphrase to access existing hidden Wallet. Or enter new
-    passphrase to create a new hidden Wallet.`;
-    const INPUT_PLACEHOLDER = 'Enter passphrase';
-    let BUTTON = 'Access Hidden Wallet';
-
-    if (authConfirmation) {
-        HEAD = 'Confirm empty hidden wallet';
-        DESCRIPTION = `This hidden Wallet is empty. To make sure you are in the correct Wallet, confirm Passphrase.`;
-        BUTTON = 'Confirm passphrase';
-    } else if (stateConfirmation) {
-        HEAD = 'Enter passphrase';
-        DESCRIPTION = `Unlock.`;
-        BUTTON = 'Enter';
+    // creating a hidden wallet
+    if (!noPassphraseOffer) {
+        return (
+            <PassphraseTypeCard
+                title="Passphrase (hidden) wallet"
+                description="Enter existing passphrase to access existing hidden Wallet. Or enter new
+                passphrase to create a new hidden Wallet."
+                submitLabel="Access Hidden Wallet"
+                colorVariant="secondary"
+                showPassphraseInput
+                onSubmit={onSubmit}
+            />
+        );
     }
 
+    // show 2-column modal for selecting between standard and hidden wallets
     return (
-        <Wrapper>
-            {noPassphraseOffer && (
-                <Col>
-                    <H2>No-passphrase Wallet</H2>
-                    <Content>
-                        To access standard (no-passphrase) Wallet click the button below.
-                    </Content>
-                    <Actions>
-                        <Button variant="primary" onClick={submit}>
-                            Access standard Wallet
-                        </Button>
-                    </Actions>
-                </Col>
-            )}
-            <Col secondary>
-                <H2>{HEAD}</H2>
-                <Content>{DESCRIPTION}</Content>
-                {authConfirmation && (
-                    <Content>
-                        <Checkbox onClick={() => setEnabled(!enabled)} isChecked={enabled}>
-                            I understand that Passphrase is not saved anywhere
-                        </Checkbox>
-                    </Content>
-                )}
-                <Content>
-                    <Input
-                        onChange={event => setValue(event.target.value)}
-                        placeholder={INPUT_PLACEHOLDER}
-                        type={inputType}
-                        value={value}
-                        innerRef={ref}
-                        display="block"
-                        variant="small"
-                    />
-                    <meter max="4" id="password-strength-meter" />
-                    <P>TODO: strength indicator</P>
-                </Content>
-                <Content>
-                    <Checkbox
-                        onClick={() => setShowPassword(!showPassword)}
-                        isChecked={showPassword}
+        <ModalWrapper>
+            <Wrapper>
+                <H2>Select a wallet to access</H2>
+                <Description>
+                    Choose between no-passphrase or hidden wallet with passphrase.
+                </Description>
+                <Link variant="nostyle" href={PASSPHRASE_URL}>
+                    <Button
+                        variant="tertiary"
+                        size="small"
+                        icon="EXTERNAL_LINK"
+                        alignIcon="right"
+                        color={colors.BLACK25}
+                        onClick={() => {}}
                     >
-                        <Translation {...messages.TR_SHOW_PASSPHRASE} />
-                    </Checkbox>
-                </Content>
-                <Actions>
-                    <Button isDisabled={!enabled} variant="secondary" onClick={submit}>
-                        {BUTTON}
+                        What is passphrase
                     </Button>
-                </Actions>
-            </Col>
-        </Wrapper>
+                </Link>
+                <WalletsWrapper>
+                    <PassphraseTypeCard
+                        title="No-passphrase Wallet"
+                        description="To access standard (no-passphrase) Wallet click the button below."
+                        submitLabel="Access standard Wallet"
+                        colorVariant="primary"
+                        onSubmit={onSubmit}
+                    />
+                    <PassphraseTypeCard
+                        title="Passphrase (hidden) wallet"
+                        description="Enter existing passphrase to access existing hidden Wallet. Or enter new
+                            passphrase to create a new hidden Wallet."
+                        submitLabel="Access Hidden Wallet"
+                        colorVariant="secondary"
+                        showPassphraseInput
+                        onSubmit={onSubmit}
+                    />
+                </WalletsWrapper>
+            </Wrapper>
+        </ModalWrapper>
     );
 };
 

@@ -1,5 +1,6 @@
+import Analytics from '@suite-views/analytics';
 import Bridge from '@suite-views/bridge';
-import DeviceAcquire from '@suite-views/device-acquire';
+import DeviceAcquire from '@suite-views/device-acquire/Container';
 import DeviceBootloader from '@suite-views/device-bootloader';
 import DeviceConnect from '@suite-views/device-connect';
 import DeviceInitialize from '@suite-views/device-initialize';
@@ -13,6 +14,7 @@ import Version from '@suite-views/version';
 import Welcome from '@suite-views/welcome';
 
 export {
+    Analytics,
     Bridge,
     DeviceAcquire,
     DeviceBootloader,

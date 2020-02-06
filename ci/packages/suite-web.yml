@@ -3,7 +3,7 @@ suite-web build:
     script:
         - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
     artifacts:
-        expire_in: 15 minutes
+        expire_in: 7 days
         paths:
             - $PACKAGE_PATH_SUITE_WEB/build
 
@@ -35,7 +35,7 @@ suite-web test integration google-chrome:
         # add DEBUG=cypress:* env variable to debug cypress in ci
         - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} BROWSER=chrome yarn workspace @trezor/integration-tests test:suite-web:ci:run
     artifacts:
-        expire_in: 2 days
+        expire_in: 7 days
         when: always
         paths:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
@@ -51,7 +51,7 @@ suite-web test integration google-chrome-beta:
         - apt-get update && apt-get upgrade -y
         - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} BROWSER=/usr/bin/google-chrome-beta yarn workspace @trezor/integration-tests test:suite-web:ci:run 
     artifacts:
-        expire_in: 2 days
+        expire_in: 7 days
         when: always
         paths:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
@@ -59,9 +59,9 @@ suite-web test integration google-chrome-beta:
     dependencies: []
 
 suite-web test security:
+    stage: deploy artifacts, others
     only: 
         - schedules
-    stage: misc
     script: 
         yarn is-website-vulnerable ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} | node ./ci/scripts/check-vulnerabilities.js
     dependencies: []

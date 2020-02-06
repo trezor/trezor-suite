@@ -3,7 +3,7 @@ import { AccountTransaction } from 'trezor-connect';
 import { ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
 import { getAccountKey, enhanceTransaction } from '@wallet-utils/accountUtils';
 import { SETTINGS } from '@suite-config';
-import { Account, WalletAction } from '@wallet-types';
+import { Account, WalletAction, Network } from '@wallet-types';
 import { Action } from '@suite-types';
 import { STORAGE } from '@suite-actions/constants';
 
@@ -12,7 +12,7 @@ export interface WalletAccountTransaction extends AccountTransaction {
     page?: number;
     deviceState: string;
     descriptor: string;
-    symbol: string;
+    symbol: Network['symbol'];
 }
 
 export interface State {
@@ -94,6 +94,11 @@ export default (state: State = initialState, action: Action | WalletAction): Sta
             case ACCOUNT.CREATE:
                 // gather transactions from account.create action
                 add(draft, action.payload.history.transactions || [], action.payload, 1);
+                break;
+            case ACCOUNT.REMOVE:
+                action.payload.forEach(a => {
+                    delete draft.transactions[getAccountKey(a.descriptor, a.symbol, a.deviceState)];
+                });
                 break;
             case TRANSACTION.ADD:
                 add(draft, action.transactions, action.account, action.page);

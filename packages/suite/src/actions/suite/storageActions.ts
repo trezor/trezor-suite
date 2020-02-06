@@ -5,7 +5,6 @@ import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
 import { getAccountKey } from '@wallet-utils/accountUtils';
 import { State as SendFormState } from '@wallet-types/sendForm';
-import { getDeviceInstances } from '@suite-utils/device';
 import { Discovery } from '@wallet-reducers/discoveryReducer';
 import { serializeDiscovery } from '@suite-utils/storage';
 
@@ -27,13 +26,12 @@ export const removeSendForm = async (accountKey: string) => {
 };
 
 export const saveDevice = async (device: TrezorDevice) => {
-    if (!device || !device.features || !device.state) return;
-    return db.addItem('devices', { ...device, remember: true, connected: false }, device.state);
+    if (!device || !device.features || !device.remember) return;
+    return db.addItem('devices', { ...device, path: '', connected: false }, device.state);
 };
 
-export const removeAccount = async (account: Account, device: TrezorDevice) => {
-    if (!device.state) return;
-    return db.removeItemByPK('accounts', [account.descriptor, account.symbol, device.state]);
+export const removeAccount = async (account: Account) => {
+    return db.removeItemByPK('accounts', [account.descriptor, account.symbol, account.deviceState]);
 };
 
 export const removeAccountTransactions = async (account: Account) => {
@@ -42,6 +40,18 @@ export const removeAccountTransactions = async (account: Account) => {
         account.symbol,
         account.deviceState,
     ]);
+};
+
+export const forgetDevice = (device: TrezorDevice) => async () => {
+    if (!device.state) return;
+    const promises = await Promise.all([
+        db.removeItemByPK('devices', device.state),
+        db.removeItemByIndex('accounts', 'deviceState', device.state),
+        db.removeItemByPK('discovery', device.state),
+        db.removeItemByIndex('txs', 'deviceState', device.state),
+        db.removeItemByIndex('sendForm', 'deviceState', device.state),
+    ]);
+    return promises;
 };
 
 export const saveAccounts = async (accounts: Account[]) => {
@@ -68,33 +78,31 @@ export const saveAccountTransactions = (account: Account) => async (
     return db.addItems('txs', orderedTxs, true);
 };
 
-export const rememberDevice = (device: TrezorDevice) => async (
+export const rememberDevice = (device: TrezorDevice, remember: boolean) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
     if (!device || !device.features || !device.state) return;
-    const { wallet, devices } = getState();
-    const instances = getDeviceInstances(device, devices);
+    if (!remember) {
+        return dispatch(forgetDevice(device));
+    }
 
-    const promises = instances.map(instance => {
-        const accounts = wallet.accounts.filter(a => a.deviceState === instance.state);
-        const discovery = wallet.discovery.filter(d => d.deviceState === instance.state);
-        // trim promise function from discovery object
-        const serializableDiscovery = discovery.map(d => serializeDiscovery(d));
-        const txsPromises = accounts.map(acc => {
-            return dispatch(saveAccountTransactions(acc));
-        });
-
-        return Promise.all([
-            saveDevice(instance),
-            saveAccounts(accounts),
-            saveDiscovery(serializableDiscovery),
-            ...txsPromises,
-        ] as Promise<void | string | undefined>[]);
+    const { wallet } = getState();
+    const accounts = wallet.accounts.filter(a => a.deviceState === device.state);
+    const discovery = wallet.discovery
+        .filter(d => d.deviceState === device.state)
+        .map(serializeDiscovery);
+    const txsPromises = accounts.map(acc => {
+        return dispatch(saveAccountTransactions(acc));
     });
 
     try {
-        await Promise.all(promises);
+        await Promise.all([
+            saveDevice(device),
+            saveAccounts(accounts),
+            saveDiscovery(discovery),
+            ...txsPromises,
+        ] as Promise<void | string | undefined>[]);
     } catch (error) {
         if (error) {
             console.error('errorName', error.name);
@@ -103,33 +111,6 @@ export const rememberDevice = (device: TrezorDevice) => async (
             console.error('error', error);
         }
     }
-};
-
-export const forgetDeviceInstance = (device: TrezorDevice) => async (
-    _dispatch: Dispatch,
-    _getState: GetState,
-) => {
-    if (!device.state) return;
-    const promises = await Promise.all([
-        db.removeItemByPK('devices', device.state),
-        db.removeItemByIndex('accounts', 'deviceState', device.state),
-        db.removeItemByPK('discovery', device.state),
-        db.removeItemByIndex('txs', 'deviceState', device.state),
-        db.removeItemByIndex('sendForm', 'deviceState', device.state),
-    ]);
-    return promises;
-};
-
-export const forgetDevice = (device: TrezorDevice) => async (
-    dispatch: Dispatch,
-    _getState: GetState,
-) => {
-    if (!device.state) return;
-    // get all device instances
-    const storedDevices = await db.getItemsExtended('devices');
-    const deviceInstances = getDeviceInstances(device, storedDevices);
-    const promises = deviceInstances.map(instance => dispatch(forgetDeviceInstance(instance)));
-    await Promise.all(promises);
 };
 
 export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: GetState) => {

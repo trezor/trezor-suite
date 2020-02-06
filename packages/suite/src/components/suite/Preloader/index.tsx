@@ -2,8 +2,9 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { SUITE } from '@suite-actions/constants';
-import { Modal as ModalComponent } from '@trezor/components';
+import { Modal as ModalComponent } from '@trezor/components-v2';
 import Loading from '@suite-components/Loading';
+import DiscoveryLoader from '@suite-components/DiscoveryLoader';
 import Modals from '@suite-components/modals';
 import * as routerActions from '@suite-actions/routerActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
@@ -11,7 +12,10 @@ import { AppState, Dispatch } from '@suite-types';
 
 import Firmware from '@firmware-views';
 import Onboarding from '@onboarding-views';
+import SeedInput from '@seed-input-views';
+import Backup from '@backup-views';
 import {
+    Analytics,
     Bridge,
     DeviceAcquire,
     DeviceBootloader,
@@ -44,6 +48,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
         dispatch(discoveryActions.getDiscoveryAuthConfirmationStatus()),
     goto: bindActionCreators(routerActions.goto, dispatch),
     closeModalApp: bindActionCreators(routerActions.closeModalApp, dispatch),
+    getBackgroundRoute: () => dispatch(routerActions.getBackgroundRoute()),
 });
 
 type Props = ReturnType<typeof mapStateToProps> &
@@ -87,7 +92,7 @@ const getSuiteApplicationState = (props: Props) => {
 
     // account discovery in progress and didn't find any used account yet
     const authConfirmation = getDiscoveryAuthConfirmationStatus();
-    if (authConfirmation) return Loading;
+    if (authConfirmation) return DiscoveryLoader;
 };
 
 const getModalApplication = (route: Props['router']['route']) => {
@@ -95,6 +100,8 @@ const getModalApplication = (route: Props['router']['route']) => {
     switch (route.app) {
         case 'welcome':
             return Welcome;
+        case 'analytics':
+            return Analytics;
         case 'firmware':
             return Firmware;
         case 'onboarding':
@@ -105,6 +112,10 @@ const getModalApplication = (route: Props['router']['route']) => {
             return Version;
         case 'switch-device':
             return SwitchDevice;
+        case 'seed-input':
+            return SeedInput;
+        case 'backup':
+            return Backup;
         default:
             break;
     }
@@ -125,7 +136,6 @@ const Preloader = (props: Props) => {
     }
 
     const hasActionModal = actionModalContext !== '@modal/context-none';
-
     // check if current route is a "modal application" and display it above requested physical route (route in url)
     // pass params to "modal application" and set "cancelable" conditionally
     const ApplicationModal = getModalApplication(router.route);
@@ -139,6 +149,7 @@ const Preloader = (props: Props) => {
                     <ApplicationModal
                         cancelable={cancelable}
                         closeModalApp={props.closeModalApp}
+                        getBackgroundRoute={props.getBackgroundRoute}
                         modal={hasActionModal ? <Modals background={false} /> : null}
                     />
                 </ModalComponent>

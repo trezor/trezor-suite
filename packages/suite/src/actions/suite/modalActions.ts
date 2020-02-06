@@ -1,6 +1,7 @@
 import TrezorConnect, { UI } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
 import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
+import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 
 export type UserContextPayload =
     | {
@@ -22,7 +23,7 @@ export type UserContextPayload =
       }
     | {
           type: 'transaction-detail';
-          txid: string;
+          tx: WalletAccountTransaction;
       }
     | {
           type: 'log';
@@ -56,14 +57,14 @@ export const onPinSubmit = (payload: string) => () => {
  * Sends passphrase to `trezor-connect`
  * @param {string} passphrase
  */
-export const onPassphraseSubmit = (value: string) => async (
+export const onPassphraseSubmit = (value: string, passphraseOnDevice?: boolean) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
     const { device } = getState().suite;
     if (!device) return;
 
-    if (value === '') {
+    if (!passphraseOnDevice && value === '' && !device.authConfirm) {
         // set standard wallet type if passphrase is blank
         dispatch({
             type: SUITE.UPDATE_PASSPHRASE_MODE,
@@ -77,6 +78,7 @@ export const onPassphraseSubmit = (value: string) => async (
         payload: {
             value,
             save: true,
+            passphraseOnDevice,
         },
     });
 };

@@ -2,17 +2,11 @@ import * as utils from '@suite-utils/device';
 import { AcquiredDevice } from '@suite-types';
 import fixtures from '../__fixtures__/device';
 
-describe('getStatus + getStatusName + getStatusColor', () => {
+describe('getStatus', () => {
     fixtures.getStatus.forEach(f => {
         it(f.status, () => {
             const status = utils.getStatus(f.device);
             expect(status).toEqual(f.status);
-            // @ts-ignore: InjectedIntl mock
-            const name = utils.getStatusName(status, {
-                formatMessage: (s: any) => s.defaultMessage,
-            });
-            expect(name).toEqual(f.name);
-            expect(utils.getStatusColor(status)).toEqual(f.color);
         });
     });
 });
@@ -30,6 +24,15 @@ describe('isSelectedDevice', () => {
     fixtures.isSelectedDevice.forEach(f => {
         it(f.description, () => {
             const instance = utils.isSelectedDevice(f.selected, f.device);
+            expect(instance).toEqual(f.result);
+        });
+    });
+});
+
+describe('isSelectedInstance', () => {
+    fixtures.isSelectedInstance.forEach(f => {
+        it(f.description, () => {
+            const instance = utils.isSelectedInstance(f.selected, f.device);
             expect(instance).toEqual(f.result);
         });
     });

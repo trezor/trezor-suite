@@ -1,7 +1,7 @@
 import produce from 'immer';
 import { Device, DEVICE } from 'trezor-connect';
 import { SUITE, STORAGE } from '@suite-actions/constants';
-import { findInstanceIndex, getNewInstanceNumber } from '@suite-utils/device';
+import * as deviceUtils from '@suite-utils/device';
 import { TrezorDevice, AcquiredDevice, Action } from '@suite-types';
 
 type State = TrezorDevice[];
@@ -43,6 +43,7 @@ const connectDevice = (draft: State, device: Device) => {
             available: false,
             features: undefined,
             useEmptyPassphrase: true,
+            buttonRequests: [],
             ts: new Date().getTime(),
         });
         return;
@@ -75,8 +76,9 @@ const connectDevice = (draft: State, device: Device) => {
         available: true,
         authConfirm: false,
         instance: device.features.passphrase_protection
-            ? getNewInstanceNumber(draft, device as AcquiredDevice) || 1
+            ? deviceUtils.getNewInstanceNumber(draft, device) || 1
             : undefined,
+        buttonRequests: [],
         ts: new Date().getTime(),
     };
 
@@ -140,7 +142,7 @@ const changeDevice = (
         const changedDevices = affectedDevices.map(d => {
             // change availability according to "passphrase_protection" field
             if (d.instance && !features.passphrase_protection) {
-                return merge(d, { ...device, ...extended, available: false });
+                return merge(d, { ...device, ...extended, available: !d.state });
             }
             return merge(d, { ...device, ...extended, available: true });
         });
@@ -204,7 +206,7 @@ const disconnectDevice = (draft: State, device: Device) => {
 const updateTimestamp = (draft: State, device?: TrezorDevice) => {
     // only acquired devices
     if (!device || !device.features) return;
-    const index = findInstanceIndex(draft, device);
+    const index = deviceUtils.findInstanceIndex(draft, device);
     if (!draft[index]) return;
     // update timestamp
     draft[index].ts = new Date().getTime();
@@ -220,7 +222,7 @@ const updateTimestamp = (draft: State, device?: TrezorDevice) => {
 const changePassphraseMode = (draft: State, device: TrezorDevice, hidden: boolean) => {
     // only acquired devices
     if (!device || !device.features) return;
-    const index = findInstanceIndex(draft, device);
+    const index = deviceUtils.findInstanceIndex(draft, device);
     if (!draft[index]) return;
     // update fields
     draft[index].useEmptyPassphrase = !hidden;
@@ -238,10 +240,25 @@ const changePassphraseMode = (draft: State, device: TrezorDevice, hidden: boolea
 const authDevice = (draft: State, device: TrezorDevice, state: string) => {
     // only acquired devices
     if (!device || !device.features) return;
-    const index = findInstanceIndex(draft, device);
+    const index = deviceUtils.findInstanceIndex(draft, device);
     if (!draft[index]) return;
     // update state
     draft[index].state = state;
+    delete draft[index].authFailed;
+};
+
+/**
+ * Action handler: SUITE.AUTH_FAILED
+ * @param {State} draft
+ * @param {TrezorDevice} device
+ * @returns
+ */
+const authFailed = (draft: State, device: TrezorDevice) => {
+    // only acquired devices
+    if (!device || !device.features) return;
+    const index = deviceUtils.findInstanceIndex(draft, device);
+    if (!draft[index]) return;
+    draft[index].authFailed = true;
 };
 
 /**
@@ -254,7 +271,7 @@ const authDevice = (draft: State, device: TrezorDevice, state: string) => {
 const authConfirm = (draft: State, device: TrezorDevice, success: boolean) => {
     // only acquired devices
     if (!device || !device.features) return;
-    const index = findInstanceIndex(draft, device);
+    const index = deviceUtils.findInstanceIndex(draft, device);
     if (!draft[index]) return;
     // update state
     draft[index].authConfirm = !success;
@@ -270,12 +287,10 @@ const authConfirm = (draft: State, device: TrezorDevice, success: boolean) => {
 const createInstance = (draft: State, device: TrezorDevice) => {
     // only acquired devices
     if (!device || !device.features) return;
-    const { instance } = device;
     const newDevice: TrezorDevice = {
         ...device,
-        remember: device.remember,
+        remember: false,
         state: undefined,
-        instance,
         ts: new Date().getTime(),
     };
     draft.push(newDevice);
@@ -283,16 +298,16 @@ const createInstance = (draft: State, device: TrezorDevice) => {
 
 /**
  * Action handler: SUITE.REMEMBER_DEVICE
- * Remove single device instance
+ * Set `remember` field for a single device instance
  * @param {State} draft
  * @param {TrezorDevice} device
  */
-const remember = (draft: State, device: TrezorDevice) => {
-    // only acquired devices
+const remember = (draft: State, device: TrezorDevice, remember: boolean) => {
+    // only acquired devices with state
     if (!device || !device.features || !device.state) return;
     draft.forEach(d => {
-        if (d.features && d.state && d.features.device_id === device.features.device_id) {
-            d.remember = true;
+        if (deviceUtils.isSelectedInstance(device, d)) {
+            d.remember = remember;
         }
     });
 };
@@ -306,32 +321,34 @@ const remember = (draft: State, device: TrezorDevice) => {
  */
 const forget = (draft: State, device: TrezorDevice) => {
     // only acquired devices
-    if (!device.features) return;
-    const affectedDevices = draft.filter(
-        d => d.features && d.features.device_id === device.features.device_id,
-    );
-    affectedDevices.forEach(d => {
-        draft.splice(draft.indexOf(d), 1);
-    });
-    // const otherDevices = draft.filter(d => affectedDevices.indexOf(d) === -1);
-    // // clear draft
-    // draft.splice(0, draft.length);
-    // // fill draft with not affected devices
-    // otherDevices.forEach(d => draft.push(d));
+    if (!device || !device.features) return;
+    const index = deviceUtils.findInstanceIndex(draft, device);
+    if (!draft[index]) return;
+    const others = deviceUtils.getDeviceInstances(device, draft, true);
+    if (others.length < 1) {
+        // do not forget the last instance, just reset state
+        draft[index].state = undefined;
+        draft[index].useEmptyPassphrase = false;
+    } else {
+        draft.splice(index, 1);
+    }
 };
 
-/**
- * Action handler: SUITE.FORGET_DEVICE_INSTANCE
- * Remove single device instance
- * @param {State} draft
- * @param {TrezorDevice} device
- */
-const forgetInstance = (draft: State, device: TrezorDevice) => {
+const addButtonRequest = (
+    draft: State,
+    device: TrezorDevice | undefined,
+    buttonRequest?: string,
+) => {
     // only acquired devices
     if (!device || !device.features) return;
-    const index = findInstanceIndex(draft, device);
+    const index = deviceUtils.findInstanceIndex(draft, device);
     if (!draft[index]) return;
-    draft.splice(index, 1);
+    // update state
+    if (!buttonRequest) {
+        draft[index].buttonRequests = [];
+        return;
+    }
+    draft[index].buttonRequests.push(buttonRequest);
 };
 
 export default (state: State = initialState, action: Action): State => {
@@ -358,6 +375,9 @@ export default (state: State = initialState, action: Action): State => {
             case SUITE.AUTH_DEVICE:
                 authDevice(draft, action.payload, action.state);
                 break;
+            case SUITE.AUTH_FAILED:
+                authFailed(draft, action.payload);
+                break;
             case SUITE.RECEIVE_AUTH_CONFIRM:
                 authConfirm(draft, action.payload, action.success);
                 break;
@@ -365,13 +385,13 @@ export default (state: State = initialState, action: Action): State => {
                 createInstance(draft, action.payload);
                 break;
             case SUITE.REMEMBER_DEVICE:
-                remember(draft, action.payload);
+                remember(draft, action.payload, action.remember);
                 break;
             case SUITE.FORGET_DEVICE:
                 forget(draft, action.payload);
                 break;
-            case SUITE.FORGET_DEVICE_INSTANCE:
-                forgetInstance(draft, action.payload);
+            case SUITE.ADD_BUTTON_REQUEST:
+                addButtonRequest(draft, action.device, action.payload);
                 break;
             // no default
         }

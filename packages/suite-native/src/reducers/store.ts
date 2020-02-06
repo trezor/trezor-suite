@@ -8,20 +8,32 @@ import { createLogger } from 'redux-logger';
 
 import suiteMiddlewares from '@suite-middlewares/index';
 import walletMiddlewares from '@wallet-middlewares/index';
+import settingsMiddlewares from '@settings-middlewares/index';
+import firmwareMiddlewares from '@firmware-middlewares/index';
 
 import suiteReducers from '@suite-reducers/index';
 import onboardingReducers from '@onboarding-reducers/index';
 import walletReducers from '@wallet-reducers/index';
+import settingsReducers from '@settings-reducers/index';
+import firmwareReducers from '@firmware-reducers/index';
 
 const reducers = combineReducers({
     ...suiteReducers,
     onboarding: onboardingReducers,
     wallet: walletReducers,
+    settings: settingsReducers,
+    firmware: firmwareReducers,
 });
 
 export type AppState = ReturnType<typeof reducers>;
 
-const middlewares = [thunkMiddleware, ...suiteMiddlewares, ...walletMiddlewares];
+const middlewares = [
+    thunkMiddleware,
+    ...suiteMiddlewares,
+    ...walletMiddlewares,
+    ...settingsMiddlewares,
+    ...firmwareMiddlewares,
+];
 
 const enhancers: any[] = [];
 

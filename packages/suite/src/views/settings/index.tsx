@@ -16,6 +16,7 @@ import {
     TextColumn,
     ActionSelect,
     ActionButton,
+    Analytics,
 } from '@suite-components/Settings';
 import { AppState, Dispatch } from '@suite-types';
 import { FIAT, LANGUAGES } from '@suite-config';
@@ -118,6 +119,8 @@ const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Pr
                         </ActionColumn>
                     </Row>
                 </Section>
+
+                <Analytics />
 
                 <BottomContainer>
                     <Section borderless>

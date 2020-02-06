@@ -1,11 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { P, Prompt } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
+import { variables, colors } from '@trezor/components-v2';
+// import { Translation } from '@suite-components/Translation';
+import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { Dispatch, TrezorDevice } from '@suite-types';
-import messages from '@suite/support/messages';
+import ModalWrapper from '../../ModalWrapper';
+// import messages from '@suite/support/messages';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     getDiscoveryAuthConfirmationStatus: () =>
@@ -16,9 +18,19 @@ type Props = {
     device: TrezorDevice;
 } & ReturnType<typeof mapDispatchToProps>;
 
-const Wrapper = styled.div`
+const Wrapper = styled(ModalWrapper)`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     max-width: 360px;
-    padding: 30px 48px;
+`;
+
+const Title = styled.div`
+    max-width: 80%;
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    text-align: center;
+    color: ${colors.BLACK0};
+    margin-bottom: 20px;
 `;
 
 /**
@@ -26,32 +38,23 @@ const Wrapper = styled.div`
  * @param {Props}
  */
 const PassphraseSource = ({ device, getDiscoveryAuthConfirmationStatus }: Props) => {
-    const majorVersion = device.features ? device.features.major_version : 2;
     const authConfirmation = getDiscoveryAuthConfirmationStatus() || device.authConfirm;
 
     if (authConfirmation) {
         return (
             <Wrapper>
-                <Prompt model={majorVersion} size={32}>
+                <Title>
                     Confirm empty hidden wallet passphrase source on "{device.label}" device.
-                </Prompt>
-                {/* TODO: similar text is in Passphrase modal */}
-                <P size="small">
-                    This hidden Wallet is empty. To make sure you are in the correct Wallet, select
-                    Passphrase source.
-                </P>
+                </Title>
+                <DeviceConfirmImage device={device} />
             </Wrapper>
         );
     }
 
     return (
         <Wrapper>
-            <Prompt model={majorVersion} size={32}>
-                Choose passphrase source on "{device.label}" device.
-            </Prompt>
-            <P size="small">
-                <Translation {...messages.TR_PASSPHRASE_CASE_SENSITIVE} />
-            </P>
+            <Title>Select passphrase source on "{device.label}" device.</Title>
+            <DeviceConfirmImage device={device} />
         </Wrapper>
     );
 };

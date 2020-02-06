@@ -877,7 +877,7 @@ const createInstance = [
         actions: [
             {
                 type: SUITE.CREATE_DEVICE_INSTANCE,
-                payload: getSuiteDevice({ instance: 1 }),
+                payload: getSuiteDevice({ useEmptyPassphrase: false, instance: 1 }),
             },
         ],
         result: [
@@ -906,7 +906,7 @@ const createInstance = [
         actions: [
             {
                 type: SUITE.CREATE_DEVICE_INSTANCE,
-                payload: getSuiteDevice({ instance: 1 }),
+                payload: getSuiteDevice({ useEmptyPassphrase: false, instance: 1 }),
             },
         ],
         result: [
@@ -935,7 +935,7 @@ const createInstance = [
         actions: [
             {
                 type: SUITE.CREATE_DEVICE_INSTANCE,
-                payload: getSuiteDevice({ instance: 2 }),
+                payload: getSuiteDevice({ useEmptyPassphrase: false, instance: 2 }),
             },
         ],
         result: [
@@ -991,7 +991,7 @@ const createInstance = [
 
 const forget = [
     {
-        description: `Forget multiple instances (2 connected, 5 instances, 3 affected)`,
+        description: `Forget multiple instances (2 connected, 5 instances, 3 affected, last instance remains with undefined state)`,
         initialState: [
             getSuiteDevice(undefined, {
                 device_id: 'ignored-device-id',
@@ -1011,6 +1011,14 @@ const forget = [
                 type: SUITE.FORGET_DEVICE,
                 payload: getSuiteDevice({ instance: 1 }),
             },
+            {
+                type: SUITE.FORGET_DEVICE,
+                payload: getSuiteDevice({ instance: 3 }),
+            },
+            {
+                type: SUITE.FORGET_DEVICE,
+                payload: SUITE_DEVICE,
+            },
         ],
         result: [
             {
@@ -1024,6 +1032,11 @@ const forget = [
                 features: {
                     device_id: 'ignored-device-id',
                 },
+            },
+            {
+                ...SUITE_DEVICE,
+                state: undefined,
+                useEmptyPassphrase: false,
             },
         ],
     },
@@ -1045,17 +1058,17 @@ const forget = [
         ],
         actions: [
             {
-                type: SUITE.FORGET_DEVICE_INSTANCE,
+                type: SUITE.FORGET_DEVICE,
                 payload: getSuiteDevice({ instance: 3 }),
             },
             {
-                type: SUITE.FORGET_DEVICE_INSTANCE,
+                type: SUITE.FORGET_DEVICE,
                 payload: getSuiteDevice(undefined, {
                     device_id: 'ignored-device-id',
                 }),
             },
             {
-                type: SUITE.FORGET_DEVICE_INSTANCE,
+                type: SUITE.FORGET_DEVICE,
                 payload: SUITE_DEVICE,
             },
         ],
@@ -1084,12 +1097,6 @@ const forget = [
                     type: 'unacquired',
                 }),
             },
-            {
-                type: SUITE.FORGET_DEVICE_INSTANCE,
-                payload: getSuiteDevice({
-                    type: 'unacquired',
-                }),
-            },
         ],
         result: [
             {
@@ -1102,7 +1109,7 @@ const forget = [
         initialState: [],
         actions: [
             {
-                type: SUITE.FORGET_DEVICE_INSTANCE,
+                type: SUITE.FORGET_DEVICE,
                 payload: SUITE_DEVICE,
             },
         ],
@@ -1167,6 +1174,7 @@ const remember = [
                 payload: getSuiteDevice({
                     state: 'abc',
                 }),
+                remember: true,
             },
         ],
         result: [
@@ -1209,6 +1217,15 @@ const remember = [
                 payload: getSuiteDevice({
                     state: 'abc',
                 }),
+                remember: true,
+            },
+            {
+                type: SUITE.REMEMBER_DEVICE,
+                payload: getSuiteDevice({
+                    state: 'abc',
+                    instance: 3,
+                }),
+                remember: true,
             },
         ],
         result: [
@@ -1219,7 +1236,7 @@ const remember = [
             getSuiteDevice({
                 state: 'abc',
                 instance: 1,
-                remember: true,
+                remember: false,
             }),
             getSuiteDevice({
                 instance: 2,

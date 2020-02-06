@@ -9,8 +9,10 @@ const Wrapper = styled.div`
     display: flex;
     padding: 54px 42px;
     align-items: center;
-    flex-wrap: wrap;
-    justify-content: center;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        flex-direction: column;
+    }
 `;
 
 const Content = styled.div`
@@ -23,6 +25,7 @@ const Title = styled.div`
     font-size: ${variables.FONT_SIZE.H2};
     color: ${colors.BLACK0};
     margin-bottom: 30px;
+    text-align: center;
 `;
 
 const Image = styled.img`
@@ -30,6 +33,10 @@ const Image = styled.img`
     width: 220px;
     height: 180px;
     margin-right: 52px;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        margin-bottom: 20px;
+    }
 `;
 
 const SecurityItem = styled.div`

@@ -1,11 +1,13 @@
-describe('Onboarding unexpected states', () => {
+// todo: skipping for now, will be subject to change
+describe.skip('Onboarding unexpected states', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
     });
 
     it('user selects he is going to use device as a new one and it is already connected, we detect this and notify user about the fact it is not new', () => {
         cy.visit('/');
-        cy.goToOnboarding().onboardingShouldLoad()
+        cy.goToOnboarding()
+            .onboardingShouldLoad()
             .connectDevice({ firmware: 'valid' })
             .getTestElement('@onboarding/button-path-create')
             .click()

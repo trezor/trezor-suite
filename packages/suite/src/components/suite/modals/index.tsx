@@ -4,11 +4,9 @@ import { connect } from 'react-redux';
 import FocusLock from 'react-focus-lock';
 
 import { UI } from 'trezor-connect';
-import { Modal as ModalComponent } from '@trezor/components';
+import { Modal as ModalComponent } from '@trezor/components-v2';
 
 import * as modalActions from '@suite-actions/modalActions';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
-import * as receiveActions from '@wallet-actions/receiveActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { MODAL } from '@suite-actions/constants';
 import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
@@ -20,6 +18,7 @@ import PassphraseSource from './PassphraseSource';
 import PassphraseOnDevice from './PassphraseOnDevice';
 import ConfirmAction from './confirm/Action';
 import Word from './Word';
+import WordAdvanced from './WordAdvanced';
 // import ConfirmAddress from './confirm/Address';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ConfirmSignTx from './confirm/SignTx';
@@ -27,6 +26,7 @@ import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
 import AddAccount from './AddAccount';
 import QrScanner from './QrScanner';
 import BackgroundGallery from './BackgroundGallery';
+import TransactionDetail from './TransactionDetail';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -35,9 +35,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    sendFormActions: bindActionCreators(sendFormActions, dispatch),
     modalActions: bindActionCreators(modalActions, dispatch),
-    receiveActions: bindActionCreators(receiveActions, dispatch),
     goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
@@ -65,16 +63,22 @@ const getDeviceContextModal = (props: Props) => {
 
         case 'WordRequestType_Plain':
             return <Word />;
-
-        // used in TT legacy firmware
-        // TT legacy firmware
+        case 'WordRequestType_Matrix6':
+            return <WordAdvanced count={6} />;
+        case 'WordRequestType_Matrix9':
+            return <WordAdvanced count={9} />;
         case 'ButtonRequest_PassphraseType':
             return <PassphraseSource device={device} />;
         // TT firmware
         case UI.REQUEST_PASSPHRASE_ON_DEVICE:
+        case 'ButtonRequest_PassphraseEntry':
             return <PassphraseOnDevice device={device} />;
-
+        case 'ButtonRequest_SignTx': {
+            return <ConfirmSignTx device={device} />;
+        }
         // Button requests
+        // todo: consider fallback (if windowType.cointains('ButtonRequest'))
+        case 'ButtonRequest_Success':
         case 'ButtonRequest_ProtectCall':
         case 'ButtonRequest_Other':
         case 'ButtonRequest_ResetDevice': // dispatched on BackupDevice call for model T, weird but true
@@ -83,10 +87,6 @@ const getDeviceContextModal = (props: Props) => {
         case 'ButtonRequest_WipeDevice':
             // case 'ButtonRequest_FirmwareUpdate': // ? fake UI event, see firmwareActions
             return <ConfirmAction device={device} />;
-        case 'ButtonRequest_SignTx': {
-            return <ConfirmSignTx device={device} />;
-        }
-
         default:
             return null;
     }
@@ -143,6 +143,8 @@ const getUserContextModal = (props: Props) => {
             );
         case 'qr-reader':
             return <QrScanner outputId={payload.outputId} onCancel={modalActions.onCancel} />;
+        case 'transaction-detail':
+            return <TransactionDetail tx={payload.tx} onCancel={modalActions.onCancel} />;
         default:
             return null;
     }
@@ -177,6 +179,7 @@ const Modal = (props: Props) => {
                 // if modal has onCancel action set cancelable to true and pass the onCancel action
                 cancelable={modalComponent.props.onCancel}
                 onCancel={modalComponent.props.onCancel}
+                padding="0px"
             >
                 <FocusLock>{modalComponent}</FocusLock>
             </ModalComponent>

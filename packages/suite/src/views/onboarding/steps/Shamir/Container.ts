@@ -7,6 +7,7 @@ import Step from './index';
 
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
+    onboarding: state.onboarding,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

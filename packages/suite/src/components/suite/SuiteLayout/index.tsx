@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { colors } from '@trezor/components';
-// import SuiteNotifications from '@suite-components/Notifications';
+import { colors } from '@trezor/components-v2';
+import SuiteNotifications from '@suite-components/Notifications';
 import Head from 'next/head';
 import Menu from '@suite-components/Menu/Container';
 import { AppState } from '@suite-types';
-import { Log } from '@suite-components';
 import MenuSecondary from '@suite-components/MenuSecondary';
+import { DiscoveryProgress } from '@wallet-components';
 
 const PageWrapper = styled.div`
     display: flex;
@@ -17,12 +17,28 @@ const PageWrapper = styled.div`
     overflow-x: hidden;
 `;
 
+const Body = styled.div`
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0%;
+    overflow: auto;
+    height: 100vh;
+`;
+
+// AppWrapper and MenuSecondary creates own scrollbars independently
+const Columns = styled.div`
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    height: 100%;
+`;
+
 const AppWrapper = styled.div`
     display: flex;
     background: ${colors.WHITE};
     flex-direction: column;
     overflow: auto;
-    height: 100vh;
     flex: 1 1 0%;
 `;
 
@@ -44,15 +60,15 @@ const SuiteLayout = (props: Props) => {
                 <title>{props.title ? `${props.title} | Trezor Suite` : 'Trezor Suite'}</title>
             </Head>
             {props.layoutSize !== 'small' && <Menu />}
-            {props.secondaryMenu && <MenuSecondary>{props.secondaryMenu}</MenuSecondary>}
-            <AppWrapper>
-                <>
-                    {/* notifications disabled now. lets redo them into new design */}
-                    {/* {!props.disableNotifications && <SuiteNotifications />} */}
-                    <Log />
-                    {props.children}
-                </>
-            </AppWrapper>
+
+            <Body>
+                <DiscoveryProgress />
+                <SuiteNotifications />
+                <Columns>
+                    {props.secondaryMenu && <MenuSecondary>{props.secondaryMenu}</MenuSecondary>}
+                    <AppWrapper>{props.children}</AppWrapper>
+                </Columns>
+            </Body>
         </PageWrapper>
     );
 };

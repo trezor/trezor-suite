@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import styled from 'styled-components';
-import { P, H2, Link } from '@trezor/components-v2';
+import styled, { css } from 'styled-components';
+import { H2, Link, variables, colors } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import Loading from '@suite-components/Loading';
 import { PinInput } from '@suite-components';
@@ -10,16 +10,58 @@ import { Dispatch, TrezorDevice } from '@suite-types';
 import messages from '@suite/support/messages';
 import { URLS } from '@suite-constants';
 import * as modalActions from '@suite-actions/modalActions';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 
-const ModalWrapper = styled.div`
-    padding: 30px 45px;
-    width: 356px;
+const { FONT_SIZE, SCREEN_SIZE } = variables;
+
+const Wrapper = styled.div`
+    /* padding: 40px 40px 20px 40px; */
+    display: flex;
+    flex-direction: row;
+
+    @media only screen and (max-width: ${SCREEN_SIZE.MD}) {
+        flex-direction: column;
+    }
 `;
 
-const TopMessage = styled(P)``;
+const Col = styled.div<{ gray?: boolean }>`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 405px;
+    padding: 40px 40px 20px 40px;
 
-const BottomMessage = styled(P)`
+    @media only screen and (max-width: ${SCREEN_SIZE.MD}) {
+        align-self: center;
+    }
+
+    ${props =>
+        props.gray &&
+        css`
+            background: ${colors.BLACK96};
+        `}
+`;
+
+const Expand = styled.div`
+    flex: 1;
+`;
+
+const Description = styled.div`
+    color: ${colors.BLACK50};
+    font-size: ${FONT_SIZE.SMALL};
+    text-align: center;
+`;
+
+const Text = styled(Description)`
+    margin-bottom: 15px;
+`;
+
+const BottomMessage = styled(Description)`
     margin: 20px 30px 0;
+`;
+
+const StyledImg = styled.img`
+    padding: 35px;
 `;
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -32,37 +74,75 @@ type Props = {
 
 const Pin = ({ device, onPinSubmit }: Props) => {
     const [submitted, setSubmitted] = useState(false);
+
+    const counter =
+        (device.features && device.buttonRequests.filter(b => b === 'ui-request_pin').length) || 0;
+
+    useEffect(() => {
+        setSubmitted(false);
+    }, [counter]);
+
+    if (!device.features) return null;
+
+    const { features } = device;
+
+    const submit = (pin: string) => {
+        onPinSubmit(pin);
+        setSubmitted(true);
+    };
+
     if (submitted) {
         return <Loading />;
     }
 
-    const submit = (value: string) => {
-        if (submitted) return;
-        setSubmitted(true);
-        onPinSubmit(value);
-    };
-
+    // TODO: figure out responsive design
     return (
-        <ModalWrapper>
-            <H2>
-                <Translation
-                    {...messages.TR_ENTER_PIN}
-                    values={{
-                        deviceLabel: device.label,
-                    }}
-                />
-            </H2>
-            <TopMessage size="small">
-                <Translation {...messages.TR_THE_PIN_LAYOUT_IS_DISPLAYED} />
-            </TopMessage>
-            <PinInput onPinSubmit={submit} />
-            <BottomMessage size="small">
-                <Translation {...messages.TR_HOW_PIN_WORKS} />{' '}
-                <Link href={URLS.PIN_MANUAL_URL}>
-                    <Translation {...messages.TR_LEARN_MORE_LINK} />
-                </Link>
-            </BottomMessage>
-        </ModalWrapper>
+        <Wrapper>
+            {!features?.pin_protection && (
+                <Col gray>
+                    <H2>Set up new PIN</H2>
+                    <Text>
+                        Set up a strong PIN to protect your device from unauthorized access. The
+                        keypad layout is displayed on your connected Trezor device.
+                    </Text>
+                    <Text>Maximum length is 9 digits.</Text>
+                    <Expand>
+                        <StyledImg src={resolveStaticPath('images/suite/set-up-pin-dialog.svg')} />
+                    </Expand>
+                    <Description>
+                        <Translation {...messages.TR_HOW_PIN_WORKS} />{' '}
+                        <Link href={URLS.PIN_MANUAL_URL}>
+                            <Translation {...messages.TR_LEARN_MORE_LINK} />
+                        </Link>
+                    </Description>
+                </Col>
+            )}
+            <Col>
+                <H2>
+                    {counter === 1 && (
+                        <Translation
+                            {...messages.TR_ENTER_PIN}
+                            values={{
+                                deviceLabel: device.label,
+                            }}
+                        />
+                    )}
+                    {counter > 1 && <Translation {...messages.TR_CONFIRM_PIN} />}
+                </H2>
+                <Description>
+                    <Translation {...messages.TR_THE_PIN_LAYOUT_IS_DISPLAYED} />
+                </Description>
+                <PinInput onPinSubmit={submit} />
+                {features?.pin_protection && (
+                    <BottomMessage>
+                        <Translation {...messages.TR_HOW_PIN_WORKS} />{' '}
+                        <Link href={URLS.PIN_MANUAL_URL}>
+                            <Translation {...messages.TR_LEARN_MORE_LINK} />
+                        </Link>
+                    </BottomMessage>
+                )}
+            </Col>
+        </Wrapper>
     );
 };
 

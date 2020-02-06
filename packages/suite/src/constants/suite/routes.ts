@@ -25,6 +25,12 @@ const routes = [
         isModal: true,
     },
     {
+        name: 'suite-analytics',
+        pattern: '/analytics',
+        app: 'analytics',
+        isModal: true,
+    },
+    {
         name: 'suite-index',
         pattern: '/',
         app: 'dashboard',
@@ -88,6 +94,18 @@ const routes = [
         name: 'settings-wallet',
         pattern: '/settings/wallet',
         app: 'settings',
+    },
+    {
+        name: 'seed-input-index',
+        pattern: 'seed-input',
+        app: 'seed-input',
+        isModal: true,
+    },
+    {
+        name: 'backup-index',
+        pattern: 'backup',
+        app: 'backup',
+        isModal: true,
     },
     {
         name: 'firmware-index',

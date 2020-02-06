@@ -4,9 +4,9 @@ import { Store } from 'redux';
 import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
 import * as Sentry from '@sentry/browser';
-
 import { initStore } from '@suite/reducers/store';
 import Preloader from '@suite-components/Preloader';
+import ToastNotification from '@suite-components/ToastNotification';
 import Router from '@suite-support/Router';
 import OnlineStatus from '@suite-support/OnlineStatus';
 import BridgeStatus from '@desktop/support/BridgeStatus';
@@ -37,13 +37,12 @@ class TrezorSuiteApp extends App<Props> {
                     <Resize />
                     <OnlineStatus />
                     <IntlProvider>
-                        <>
-                            <Router />
-                            <BridgeStatus />
-                            <Preloader>
-                                <Component {...pageProps} />
-                            </Preloader>
-                        </>
+                        <Router />
+                        <BridgeStatus />
+                        <ToastNotification />
+                        <Preloader>
+                            <Component {...pageProps} />
+                        </Preloader>
                     </IntlProvider>
                 </ReduxProvider>
             </ErrorBoundary>

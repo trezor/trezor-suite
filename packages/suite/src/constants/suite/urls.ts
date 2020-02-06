@@ -2,6 +2,7 @@ export const TREZOR_URL = 'https://trezor.io';
 export const SUPPORT_URL = 'https://trezor.io/support/';
 export const WIKI_URL = 'https://wiki.trezor.io/';
 export const BLOG_URL = 'https://blog.trezor.io/';
+export const SHOP_URL = 'https://shop.trezor.io/';
 export const TREZOR_DATA_URL = 'https://wallet.trezor.io/data/';
 export const PIN_MANUAL_URL = 'https://wiki.trezor.io/User_manual:Entering_PIN';
 export const DRY_RUN_URL = 'https://wiki.trezor.io/User_manual:Dry-run_recovery';
@@ -24,6 +25,10 @@ export const SATOSHILABS_URL = 'http://satoshilabs.com';
 export const COIN_GECKO_URL = 'https://www.coingecko.com';
 export const TRANSLATIONS_MANUAL_URL =
     'https://wiki.trezor.io/Developers_guide:CrowdIn.com_-_A_tool_for_translation';
-export const RIPPLE_MANUAL_URL = 'https://wiki.trezor.io/Ripple_(XRP)';
+export const XRP_MANUAL_URL = 'https://wiki.trezor.io/Ripple_(XRP)';
+export const BCH_ADDRESS_TOOL = 'https://cashaddr.bitcoincash.org/';
+export const LTC_ADDRESS_INFO_URL =
+    'https://blog.trezor.io/litecoins-new-p2sh-segwit-addresses-843633e3e707';
 export const BRIDGE_CHANGELOG_URL = 'https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md';
 export const WIKI_QR_CODE = 'https://wiki.trezor.io/QR_code';
+export const CHANGELOG_URL = 'https://wiki.trezor.io/Firmware_changelog';

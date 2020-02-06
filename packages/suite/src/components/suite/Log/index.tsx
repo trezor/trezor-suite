@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { Tooltip, Icon, Modal, colors } from '@trezor/components';
-import { Button, H2, P } from '@trezor/components-v2';
+import { Button, H2, P, Tooltip, Icon, Modal, colors } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 
 import * as logActions from '@suite-actions/logActions';
@@ -21,8 +20,8 @@ interface Props {
 
 const Wrapper = styled.div`
     position: relative;
-    color: ${colors.INFO_PRIMARY};
-    background: ${colors.INFO_LIGHT};
+    color: ${colors.BLACK25};
+    background: ${colors.WHITE};
     padding: 24px;
     display: flex;
     flex-direction: column;
@@ -87,7 +86,7 @@ const Log = (props: Props) => {
         <Modal>
             <Wrapper>
                 <Click onClick={props.toggle}>
-                    <Icon size={12} color={colors.INFO_PRIMARY} icon="CLOSE" />
+                    <Icon size={12} color={colors.BLACK50} icon="CROSS" />
                 </Click>
                 <H2>
                     <Translation {...messages.TR_LOG} />

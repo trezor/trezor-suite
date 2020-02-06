@@ -36,14 +36,25 @@ const chooseIconAnimationType = (canAnimate?: boolean, isActive?: boolean) => {
 };
 
 const SvgWrapper = styled.div<WrapperProps>`
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: ${props => props.size}px;
     animation: ${props => chooseIconAnimationType(props.canAnimate, props.isActive)} 0.2s linear 1
         forwards;
 
     div {
+        display: flex;
         height: ${props => props.size}px;
         line-height: ${props => props.size}px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     :hover {

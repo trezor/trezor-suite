@@ -259,7 +259,7 @@ export const create = (deviceState: string, useEmptyPassphrase = false) => (
     });
 };
 
-export const remove = (deviceState: string) => ({
+export const remove = (deviceState: string): DiscoveryActions => ({
     type: DISCOVERY.REMOVE,
     payload: {
         deviceState,
@@ -273,15 +273,8 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
 
     const selectedDevice = getState().suite.device;
     const discovery = dispatch(getDiscoveryForDevice());
-    if (!selectedDevice || !discovery) {
-        dispatch(
-            // TODO: notification with translations
-            addNotification({
-                variant: 'error',
-                title: 'No discovery',
-                cancelable: true,
-            }),
-        );
+    if (!selectedDevice || selectedDevice.authConfirm || !discovery) {
+        dispatch(addNotification({ type: 'discovery-error', error: 'Device not found' }));
         return;
     } // TODO: throw error in notification?
     const { deviceState } = discovery;
@@ -305,7 +298,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
 
     // discovery process complete
     if (bundle.length === 0) {
-        if (discovery.status === DISCOVERY.STATUS.RUNNING && selectedDevice.connected) {
+        if (discovery.status <= DISCOVERY.STATUS.RUNNING && selectedDevice.connected) {
             // call getFeatures to release device session
             if (!discovery.authConfirm) {
                 await TrezorConnect.getFeatures({
@@ -368,13 +361,10 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         } else if (currentDiscovery.status === DISCOVERY.STATUS.STOPPING) {
             dispatch(update({ deviceState, status: DISCOVERY.STATUS.STOPPED }, DISCOVERY.STOP));
         } else {
-            // TODO: notification with translations
             dispatch(
                 addNotification({
-                    variant: 'error',
-                    title: 'Reading accounts error: Discovery process is not running',
-                    // message: (<>{result.payload.error}</>),
-                    cancelable: true,
+                    type: 'discovery-error',
+                    error: 'Reading accounts error: Discovery process is not running',
                 }),
             );
         }
@@ -429,21 +419,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         dispatch(update({ deviceState, status: DISCOVERY.STATUS.STOPPED }, DISCOVERY.STOP));
 
         if (result.payload.error !== 'discovery_interrupted') {
-            // TODO: notification with translations
-            dispatch(
-                addNotification({
-                    variant: 'error',
-                    title: 'Reading accounts error',
-                    message: result.payload.error,
-                    cancelable: true,
-                    actions: [
-                        {
-                            label: 'Retry',
-                            callback: () => dispatch(start()),
-                        },
-                    ],
-                }),
-            );
+            dispatch(addNotification({ type: 'discovery-error', error: result.payload.error }));
         }
     }
 };
@@ -460,5 +436,24 @@ export const stop = () => async (dispatch: Dispatch): Promise<void> => {
         TrezorConnect.cancel('discovery_interrupted');
 
         return discovery.running.promise;
+    }
+};
+
+export const restart = () => (dispatch: Dispatch) => {
+    const discovery = dispatch(getDiscoveryForDevice());
+    if (discovery) {
+        const progress = dispatch(
+            calculateProgress({
+                ...discovery,
+                failed: [],
+            }),
+        );
+        dispatch(
+            update({
+                ...progress,
+                failed: [],
+            }),
+        );
+        dispatch(start());
     }
 };

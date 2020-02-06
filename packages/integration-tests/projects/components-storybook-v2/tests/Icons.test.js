@@ -34,6 +34,10 @@ describe('Icons', () => {
         'icon-transactions',
         'icon-trezor',
         'icon-wallet',
+        'icon-t1',
+        'icon-t2',
+        'icon-show',
+        'icon-back',
     ].forEach(testName => {
         it(`${testName}`, () => {
             cy.loadContent('/iframe.html?selectedKind=Icons&selectedStory=All&full=0');
