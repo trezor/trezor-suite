@@ -1111,10 +1111,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Send {network} and tokens',
         id: 'TR_SEND_NETWORK_AND_TOKENS',
     },
-    TR_SENT_TO_SELF: {
-        defaultMessage: '(Sent to self)',
-        id: 'TR_SENT_TO_SELF',
-    },
     TR_SET_DEFAULT: {
         defaultMessage: 'Set default',
         id: 'TR_SET_DEFAULT',
