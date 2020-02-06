@@ -169,7 +169,7 @@ const Settings = ({
                                 <ActionButton
                                     data-test="@settings/device/check-seed-button"
                                     onClick={() => {
-                                        startCheckSeed();
+                                        goto('seed-input-index', { cancelable: true });
                                     }}
                                     isDisabled={
                                         uiLocked ||
