@@ -76,7 +76,7 @@ describe('Device settings', () => {
         cy.onboardingShouldLoad();
     });
 
-    it.only('Backup', () => {
+    it('Backup', () => {
         cy.getTestElement('@settings/device/check-seed-button').should('be.disabled');
         cy.getTestElement('@settings/device/failed-backup-row').should('not.exist');
         cy.getTestElement('@settings/device/create-backup-button').click();
