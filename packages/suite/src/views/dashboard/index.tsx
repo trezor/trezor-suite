@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import SuiteLayout from '@suite-components/SuiteLayout';
 import AssetsCard from '@suite-components/AssetsCard';
 import SecurityFeatures from '@suite-components/SecurityFeatures/Container';
-import ConnectionStatusCard from '@suite-components/ConnectionStatusCard';
+// import ConnectionStatusCard from '@suite-components/ConnectionStatusCard';
 import PortfolioCard from '@suite-components/PortfolioCard';
 import NewsFeed from '@suite-components/NewsFeed';
 import AuthConfirmFailed from '@wallet-components/AccountMode/AuthConfirmFailed';
@@ -26,9 +26,9 @@ const Row = styled.div`
     display: flex;
 `;
 
-const StyledConnectionStatusCard = styled(ConnectionStatusCard)`
-    margin-right: 20px;
-`;
+// const StyledConnectionStatusCard = styled(ConnectionStatusCard)`
+//     margin-right: 20px;
+// `;
 
 const Dashboard = (props: Props) => {
     const discovery = props.getDiscoveryForDevice();
@@ -76,7 +76,7 @@ const Dashboard = (props: Props) => {
                 <SecurityFeatures />
                 <Divider />
                 <Row>
-                    <StyledConnectionStatusCard />
+                    {/* <StyledConnectionStatusCard /> */}
                     <NewsFeed />
                 </Row>
                 <Divider />
