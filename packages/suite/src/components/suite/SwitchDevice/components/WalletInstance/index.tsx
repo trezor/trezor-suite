@@ -57,6 +57,12 @@ const Col = styled.div<{ grow?: number; centerItems?: boolean }>`
     align-items: ${props => (props.centerItems ? 'center' : 'flex-start')};
 `;
 
+const SwitchCol = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-right: 70px;
+`;
+
 const ForgetButton = styled(Button)`
     font-size: ${variables.FONT_SIZE.BUTTON};
 `;
@@ -118,13 +124,13 @@ const WalletInstance = ({
             </Col>
             {enabled && discoveryProcess && (
                 <>
-                    <Col grow={1} centerItems>
+                    <SwitchCol>
                         <Switch
                             checked={instance.remember}
                             onChange={() => rememberDevice(instance)}
                             data-test="@suite/settings/device/passphrase-switch"
                         />
-                    </Col>
+                    </SwitchCol>
                     <Col>
                         <ForgetButton
                             size="small"
