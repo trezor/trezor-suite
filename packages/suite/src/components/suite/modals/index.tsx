@@ -77,8 +77,11 @@ const getDeviceContextModal = (props: Props) => {
             return <ConfirmSignTx device={device} />;
         }
         // Button requests
-        // todo: consider fallback (if windowType.cointains('ButtonRequest'))
+        // todo: consider fallback (if windowType.cointains('ButtonRequest')). but add also possibility to blacklist some buttonRequests
         case 'ButtonRequest_Success':
+        case 'ButtonRequest_RecoveryHomepage':
+        case 'ButtonRequest_MnemonicWordCount':
+        case 'ButtonRequest_MnemonicInput':
         case 'ButtonRequest_ProtectCall':
         case 'ButtonRequest_Other':
         case 'ButtonRequest_ResetDevice': // dispatched on BackupDevice call for model T, weird but true
