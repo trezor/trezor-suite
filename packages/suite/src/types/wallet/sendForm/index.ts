@@ -27,14 +27,25 @@ export type State = State$;
 export type PrecomposedTransactionXrp = PrecomposedTransactionXrp$;
 export type PrecomposedTransactionEth = PrecomposedTransactionEth$;
 
-export type EthTransaction = {
+export type EthTransactionData = {
     network: Account['symbol'];
     token?: string | boolean;
     chainId: Network['chainId'];
     from: Output['address']['value'];
     to: Output['address']['value'];
     amount: Output['amount']['value'];
-    data: State['networkTypeEthereum']['data']['value'];
+    data?: State['networkTypeEthereum']['data']['value'];
+    gasLimit: State['networkTypeEthereum']['data']['value'];
+    gasPrice: State['networkTypeEthereum']['data']['value'];
+    nonce: string;
+};
+
+export type EthPreparedTransaction = {
+    chainId: Network['chainId'];
+    token?: string | null | boolean;
+    value: Output['amount']['value'];
+    to: Output['address']['value'];
+    data?: State['networkTypeEthereum']['data']['value'];
     gasLimit: State['networkTypeEthereum']['data']['value'];
     gasPrice: State['networkTypeEthereum']['data']['value'];
     nonce: string;

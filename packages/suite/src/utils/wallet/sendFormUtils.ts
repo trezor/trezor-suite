@@ -1,4 +1,4 @@
-import { Output, State, EthTransaction } from '@wallet-types/sendForm';
+import { Output, State, EthTransactionData, EthPreparedTransaction } from '@wallet-types/sendForm';
 import { Account } from '@wallet-types';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import BigNumber from 'bignumber.js';
@@ -124,22 +124,26 @@ export const calculateEthFee = (gasPrice: string | null, gasLimit: string | null
     }
 };
 
-export const prepareEthereumTransaction = (txInfo: EthTransaction) => {
+export const prepareEthereumTransaction = (txInfo: EthTransactionData) => {
     // todo ERC20 support
-    return {
+    const result: EthPreparedTransaction = {
         to: txInfo.to,
         value: toHex(ethUnits.convert(txInfo.amount, 'ether', 'wei')),
         chainId: txInfo.chainId,
         token: null,
-        // @ts-ignore
-        data: sanitizeHex(txInfo.data),
         nonce: toHex(txInfo.nonce),
         gasLimit: toHex(txInfo.gasLimit),
         gasPrice: toHex(ethUnits.convert(txInfo.gasPrice, 'gwei', 'wei')),
-        r: txInfo.r,
-        s: txInfo.s,
-        v: txInfo.v,
+        r: '',
+        s: '',
+        v: '',
     };
+
+    if (txInfo.data) {
+        result.data = sanitizeHex(txInfo.data);
+    }
+
+    return result;
 };
 
 export const serializeEthereumTx = (tx: any) => {

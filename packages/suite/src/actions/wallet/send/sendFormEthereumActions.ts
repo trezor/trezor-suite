@@ -93,13 +93,10 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         from: account.descriptor,
         to: address.value,
         amount: amount.value,
-        data: data.value || '0',
+        data: data.value,
         gasLimit: gasLimit.value,
         gasPrice: gasPrice.value,
         nonce: account.misc.nonce,
-        r: '',
-        s: '',
-        v: '',
     });
 
     // @ts-ignore
@@ -192,7 +189,7 @@ export const handleGasLimit = (gasLimit: string) => (dispatch: Dispatch, getStat
 /*
     Change value in input "Data"
  */
-export const handleData = (data: string) => async (dispatch: Dispatch, getState: GetState) => {
+export const handleData = data => async (dispatch: Dispatch, getState: GetState) => {
     const { send, selectedAccount } = getState().wallet;
     const { account } = selectedAccount;
     if (!send || !account) return null;
