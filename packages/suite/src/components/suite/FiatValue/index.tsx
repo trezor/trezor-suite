@@ -18,7 +18,7 @@ const FiatValue = ({ amount, symbol, fiatCurrency, ...props }: Props) => {
     const targetCurrency = fiatCurrency ?? props.settings.localCurrency;
     const fiatRates = props.fiat.find(f => f.symbol === symbol);
 
-    const fiatRateValue = fiatRates ? fiatRates.rates[targetCurrency] : null;
+    const fiatRateValue = fiatRates?.rates?.[targetCurrency] ?? null;
     const fiat = fiatRates ? toFiatCurrency(amount, targetCurrency, fiatRates) : null;
     if (fiat) {
         const fiatValue = <FormattedNumber currency={targetCurrency} value={fiat} />;
