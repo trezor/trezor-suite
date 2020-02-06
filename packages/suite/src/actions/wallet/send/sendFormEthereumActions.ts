@@ -30,7 +30,10 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     const output = getOutput(send.outputs, 0);
     const amountInSatoshi = networkAmountToSatoshi(output.amount.value, account.symbol).toString();
     const { availableBalance } = account;
-    const feeInSatoshi = send.selectedFee.feePerUnit;
+    const feeInSatoshi = calculateEthFee(
+        ethUnits.convert(send.selectedFee.feePerUnit, 'gwei', 'wei'),
+        send.selectedFee.feeLimit || '0',
+    );
     const totalSpentBig = new BigNumber(calculateTotal(amountInSatoshi, feeInSatoshi));
     const max = new BigNumber(calculateMax(availableBalance, feeInSatoshi));
     const payloadData = {

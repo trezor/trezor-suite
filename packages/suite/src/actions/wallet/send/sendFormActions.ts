@@ -88,7 +88,6 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 export const compose = (setMax = false) => async (dispatch: Dispatch, getState: GetState) => {
     dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: true });
     const account = getState().wallet.selectedAccount.account as Account;
-
     switch (account.networkType) {
         case 'bitcoin': {
             return dispatch(bitcoinActions.compose(setMax));
