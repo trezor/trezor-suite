@@ -104,8 +104,20 @@ def decision():
 
     client.open()
     time.sleep(0.6)  # trezord needs time to populate changes
-    # client.swipe_down()
     client.press_yes()
+    client.close()
+
+def input(word):
+    # TODO:
+    # - "path" parameter to work with correct device, keep transport with device
+    # Setup link
+    transport = get_bridge_device()
+    print(transport)
+    client = DebugLink(transport.find_debug())
+
+    client.open()
+    time.sleep(0.6)  # trezord needs time to populate changes
+    client.input(word)
     client.close()
 
 # def erase_device():
@@ -115,3 +127,19 @@ def decision():
 #     client.open()
 #     debuglink.flash_erase()
 #     client.close()
+
+def swipe(direction): 
+    transport = get_bridge_device()
+    print(transport)
+    client = DebugLink(transport.find_debug())
+    client.open()
+    time.sleep(0.6)  # trezord needs time to populate changes
+    if direction == 'up':
+        client.swipe_up()
+    elif direction == 'right':
+        client.swipe_right()
+    elif direction == 'down':
+        client.swipe_down();
+    elif direction == 'left':
+        client.swipe_left()
+    client.close()
