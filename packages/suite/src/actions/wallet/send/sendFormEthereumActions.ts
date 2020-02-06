@@ -173,6 +173,11 @@ export const handleGasLimit = (gasLimit: string) => (dispatch: Dispatch, getStat
     const gasPrice = send.networkTypeEthereum.gasPrice.value || '0';
 
     dispatch({
+        type: SEND.ETH_HANDLE_GAS_LIMIT,
+        gasLimit,
+    });
+
+    dispatch({
         type: SEND.HANDLE_FEE_VALUE_CHANGE,
         fee: {
             label: 'custom',
@@ -189,7 +194,7 @@ export const handleGasLimit = (gasLimit: string) => (dispatch: Dispatch, getStat
 /*
     Change value in input "Data"
  */
-export const handleData = data => async (dispatch: Dispatch, getState: GetState) => {
+export const handleData = (data: string) => async (dispatch: Dispatch, getState: GetState) => {
     const { send, selectedAccount } = getState().wallet;
     const { account } = selectedAccount;
     if (!send || !account) return null;
@@ -211,7 +216,7 @@ export const handleData = data => async (dispatch: Dispatch, getState: GetState)
         },
     });
 
-    // @ts-ignore // TODO FIX
+    // @ts-ignore // TODO FIX FALLBACK LEVELS
     const level = newFeeLevels.payload.levels[0];
     const gasLimit = level.feeLimit;
     const gasPrice = ethUnits.convert(level.feePerUnit, 'wei', 'gwei');
