@@ -19,7 +19,7 @@ import PassphraseOnDevice from './PassphraseOnDevice';
 import ConfirmAction from './confirm/Action';
 import Word from './Word';
 import WordAdvanced from './WordAdvanced';
-// import ConfirmAddress from './confirm/Address';
+import ConfirmAddress from './confirm/Address';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ConfirmSignTx from './confirm/SignTx';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
@@ -127,11 +127,12 @@ const getUserContextModal = (props: Props) => {
                 />
             );
         case 'unverified-address':
+            return <ConfirmUnverifiedAddress {...payload} onCancel={modalActions.onCancel} />;
+        case 'address':
             return (
-                <ConfirmUnverifiedAddress
-                    device={payload.device}
-                    addressPath={payload.addressPath}
-                    onCancel={modalActions.onCancel}
+                <ConfirmAddress
+                    {...payload}
+                    onCancel={payload.cancelable ? modalActions.onCancel : undefined}
                 />
             );
         case 'device-background-gallery':
@@ -181,7 +182,7 @@ const Modal = (props: Props) => {
                 onCancel={modalComponent.props.onCancel}
                 padding="0px"
             >
-                <FocusLock>{modalComponent}</FocusLock>
+                {modalComponent}
             </ModalComponent>
         );
     }

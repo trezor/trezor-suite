@@ -53,6 +53,14 @@ export type NotificationPayload =
           txid?: string;
       }
     | {
+          type: 'copy-to-clipboard-error';
+          error: string;
+      }
+    | {
+          type: 'copy-to-clipboard-success';
+          address: string;
+      }
+    | {
           type:
               | 'error'
               | 'verify-address-error'

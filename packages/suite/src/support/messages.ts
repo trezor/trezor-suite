@@ -1,6 +1,28 @@
 import { defineMessages } from 'react-intl';
 
 const definedMessages = defineMessages({
+    TR_ADDRESS_MODAL_TITLE: {
+        defaultMessage: '{networkName} receive address',
+        id: 'TR_ADDRESS_MODAL_TITLE',
+    },
+    TR_ADDRESS_MODAL_BTC_DESCRIPTION: {
+        defaultMessage:
+            'Try to always use a fresh address as a prerequisite to keep your transactions and accounts untrackable by anyone else than you.',
+        id: 'TR_ADDRESS_MODAL_BTC_DESCRIPTION',
+    },
+    TR_ADDRESS_MODAL_CHECK_ON_TREZOR: {
+        defaultMessage: 'Check on your Trezor now',
+        id: 'TR_ADDRESS_MODAL_CHECK_ON_TREZOR',
+    },
+    TR_ADDRESS_MODAL_CHECK_ON_TREZOR_DESC: {
+        defaultMessage:
+            'For even more security you can check the receive address on your Trezor to make sure nobody hacked your Wallet.',
+        id: 'TR_ADDRESS_MODAL_CHECK_ON_TREZOR_DESC',
+    },
+    TR_ADDRESS_MODAL_CLIPBOARD: {
+        defaultMessage: 'Copy address',
+        id: 'TR_ADDRESS_MODAL_CLIPBOARD',
+    },
     CANNOT_SEND_TO_MYSELF: {
         defaultMessage: 'Cannot send to myself',
         id: 'CANNOT_SEND_TO_MYSELF',
