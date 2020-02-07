@@ -3,24 +3,32 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
-import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Button, P, H2, Link, variables, colors } from '@trezor/components-v2';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 import * as routerActions from '@suite-actions/routerActions';
 import { Dispatch, InjectedModalApplicationProps } from '@suite-types';
 import { Analytics } from '@suite-components/Settings';
+import ModalWrapper from '@suite-components/ModalWrapper';
+
 import { URLS } from '@suite-constants';
 import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;
 
-const Wrapper = styled.div`
+const Wrapper = styled(ModalWrapper)`
+    display: flex;
+    flex-direction: column;
+    min-height: 80vh;
+    min-width: 60vw;
+`;
+
+const Body = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0 auto;
     justify-content: center;
-    height: 80vh;
+    margin-bottom: 20px;
 `;
 
 const BottomP = styled(P)`
@@ -49,34 +57,36 @@ const Index = (props: Props) => {
             <H2>
                 <Translation>{messages.TR_HELP_TREZOR_SUITE}</Translation>
             </H2>
-            <P size="tiny">
-                <Translation
-                    {...messages.TR_HELP_TREZOR_SUITE_TEXT_1}
-                    values={{
-                        TR_HELP_TREZOR_SUITE_TEXT_1_FAT: (
-                            <Bold>
-                                <Translation>
-                                    {messages.TR_HELP_TREZOR_SUITE_TEXT_1_FAT}
-                                </Translation>
-                            </Bold>
-                        ),
-                    }}
-                />
-            </P>
-            <Bold>
-                <Translation>{messages.TR_HELP_TREZOR_SUITE_TEXT_2}</Translation>
-            </Bold>
+            <Body>
+                <P size="tiny">
+                    <Translation
+                        {...messages.TR_HELP_TREZOR_SUITE_TEXT_1}
+                        values={{
+                            TR_HELP_TREZOR_SUITE_TEXT_1_FAT: (
+                                <Bold>
+                                    <Translation>
+                                        {messages.TR_HELP_TREZOR_SUITE_TEXT_1_FAT}
+                                    </Translation>
+                                </Bold>
+                            ),
+                        }}
+                    />
+                </P>
+                <Bold>
+                    <Translation>{messages.TR_HELP_TREZOR_SUITE_TEXT_2}</Translation>
+                </Bold>
 
-            <StyledImg alt="" src={resolveStaticPath('images/welcome/analytics.svg')} />
+                <StyledImg alt="" src={resolveStaticPath('images/welcome/analytics.svg')} />
 
-            <Analytics />
+                <Analytics />
 
-            <Button
-                onClick={() => props.goto('onboarding-index')}
-                data-test="@button/go-to-onboarding"
-            >
-                <Translation>{messages.TR_CONTINUE}</Translation>
-            </Button>
+                <Button
+                    onClick={() => props.goto('onboarding-index')}
+                    data-test="@button/go-to-onboarding"
+                >
+                    <Translation>{messages.TR_CONTINUE}</Translation>
+                </Button>
+            </Body>
 
             <BottomP size="tiny">
                 <Translation
