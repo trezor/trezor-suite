@@ -62,10 +62,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Add account',
         id: 'TR_ADD_ACCOUNT',
     },
-    TR_ADD_FRESH_ADDRESS: {
-        defaultMessage: 'Add fresh address',
-        id: 'TR_ADD_FRESH_ADDRESS',
-    },
     TR_ADD_NEW_ACCOUNT: {
         defaultMessage: 'Add new account',
         id: 'TR_ADD_NEW_ACCOUNT',
@@ -191,10 +187,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Changelog',
         description: 'Part of the sentence: Learn more about latest version in {TR_CHANGELOG}.',
         id: 'TR_CHANGELOG',
-    },
-    TR_CHECK_ADDRESS_ON_TREZOR: {
-        defaultMessage: 'Check address on Trezor',
-        id: 'TR_CHECK_ADDRESS_ON_TREZOR',
     },
     TR_CHECK_PGP_SIGNATURE: {
         defaultMessage: 'Check PGP signature',
@@ -612,10 +604,6 @@ const definedMessages = defineMessages({
         description: 'Case when device was connected and it is in expected state (not initialized)',
         id: 'TR_FOUND_OK_DEVICE',
     },
-    TR_FRESH_ADDRESS: {
-        defaultMessage: 'Fresh address',
-        id: 'TR_FRESH_ADDRESS',
-    },
     TR_GAS_LIMIT: {
         defaultMessage: 'Gas limit',
         id: 'TR_GAS_LIMIT',
@@ -659,10 +647,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Continue to backup',
         description: 'Button in security page (start security setup)',
         id: 'TR_GO_TO_SECURITY',
-    },
-    TR_HIDE_PREVIOUS_ADDRESSES: {
-        defaultMessage: 'Hide previous addresses',
-        id: 'TR_HIDE_PREVIOUS_ADDRESSES',
     },
     TR_HOLOGRAM_STEP_ACTION_NOT_OK: {
         defaultMessage: 'My hologram looks different',
@@ -987,28 +971,12 @@ const definedMessages = defineMessages({
             'Please enable passphrase settings to continue with the verification process.',
         id: 'TR_PLEASE_ENABLE_PASSPHRASE',
     },
-    TR_PREVIOUS_ADDRESSES: {
-        defaultMessage: 'Previous addresses',
-        id: 'TR_PREVIOUS_ADDRESSES',
-    },
-    TR_QR_CODE: {
-        defaultMessage: 'QR Code',
-        id: 'TR_QR_CODE',
-    },
     TR_RANDOM_SEED_WORDS_DISCLAIMER: {
         defaultMessage:
             'Please note, that to maximaze security, your device will ask you to enter {count} fake words that are not part of your seed.',
         description:
             'User is instructed to enter words from seed (backup) into the form in browser',
         id: 'TR_RANDOM_SEED_WORDS_DISCLAIMER',
-    },
-    TR_RECEIVE_NETWORK: {
-        defaultMessage: 'Receive {network}',
-        id: 'TR_RECEIVE_NETWORK',
-    },
-    TR_RECEIVE_NETWORK_AND_TOKENS: {
-        defaultMessage: 'Receive {network} and tokens',
-        id: 'TR_RECEIVE_NETWORK_AND_TOKENS',
     },
     TR_RECONNECT_HEADER: {
         defaultMessage: 'Reconnect your device',
@@ -1159,17 +1127,13 @@ const definedMessages = defineMessages({
         defaultMessage: 'Show details',
         id: 'TR_SHOW_DETAILS',
     },
-    TR_SHOW_FULL_ADDRESS: {
-        defaultMessage: 'Show full address',
-        id: 'TR_SHOW_FULL_ADDRESS',
-    },
     TR_SHOW_ON_TREZOR: {
         defaultMessage: 'Show on Trezor',
         id: 'TR_SHOW_ON_TREZOR',
     },
-    TR_SHOW_PREVIOUS_ADDRESSES: {
-        defaultMessage: 'Show previous addresses',
-        id: 'TR_SHOW_PREVIOUS_ADDRESSES',
+    TR_SHOW_PASSPHRASE: {
+        defaultMessage: 'Show passphrase',
+        id: 'SHOW_PASSPHRASE',
     },
     TR_SHOW_UNVERIFIED_ADDRESS: {
         defaultMessage: 'Show unverified address',
@@ -1260,10 +1224,6 @@ const definedMessages = defineMessages({
         defaultMessage:
             'To prevent phishing attacks, you should verify the address on your Trezor first. {claim}',
         id: 'TR_TO_PREVENT_PHISHING_ATTACKS_COMMA',
-    },
-    TR_TOTAL_RECEIVED: {
-        defaultMessage: 'Total received: {amount}',
-        id: 'TR_TOTAL_RECEIVED',
     },
     TR_TREZOR: {
         defaultMessage: 'Trezor',
@@ -1385,14 +1345,6 @@ const definedMessages = defineMessages({
     TR_PLEASE_ALLOW_YOUR_CAMERA: {
         id: 'TR_PLEASE_ALLOW_YOUR_CAMERA',
         defaultMessage: 'Please allow your camera to be able to scan a QR code.',
-    },
-    TR_CONFIRM_ADDRESS_ON_TREZOR: {
-        id: 'TR_CONFIRM_ADDRESS_ON_TREZOR',
-        defaultMessage: 'Confirm address on Trezor',
-    },
-    TR_PLEASE_COMPARE_YOUR_ADDRESS: {
-        id: 'TR_PLEASE_COMPARE_YOUR_ADDRESS',
-        defaultMessage: 'Please compare your address on device with address shown bellow',
     },
     TR_WAS_USED_IN_ANOTHER_WINDOW: {
         defaultMessage: 'Reload session',
