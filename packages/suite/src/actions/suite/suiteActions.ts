@@ -361,41 +361,13 @@ export const authorizeDevice = () => async (
 };
 
 /**
- * Inner action used in `authConfirm` and `retryAuthConfirm`
+ * Inner action used in `authConfirm`
  */
 const receiveAuthConfirm = (device: TrezorDevice, success: boolean): Action => ({
     type: SUITE.RECEIVE_AUTH_CONFIRM,
     payload: device,
     success,
 });
-
-/**
- * Triggered by user action in `AuthConfirm` component
- */
-export const retryAuthConfirm = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { device } = getState().suite;
-    if (!device) return;
-    const response = await TrezorConnect.getDeviceState({
-        device: {
-            path: device.path,
-            instance: device.instance,
-            state: device.state,
-        },
-        useEmptyPassphrase: device.useEmptyPassphrase,
-    });
-
-    if (response.success) {
-        dispatch(receiveAuthConfirm(device, true));
-        return;
-    }
-
-    // TODO: add code to trezor-connect
-    if (response.payload.error !== 'Passphrase is incorrect') {
-        dispatch(addNotification({ type: 'auth-confirm-error' }));
-    } else {
-        dispatch(addNotification({ type: 'auth-confirm-error', error: response.payload.error }));
-    }
-};
 
 /**
  * Called from `suiteMiddleware`
@@ -420,6 +392,7 @@ export const authConfirm = () => async (dispatch: Dispatch, getState: GetState) 
     }
 
     if (response.payload.state !== device.state) {
+        dispatch(addNotification({ type: 'auth-confirm-error', error: 'Invalid passphrase' }));
         dispatch(receiveAuthConfirm(device, false));
         return;
     }
