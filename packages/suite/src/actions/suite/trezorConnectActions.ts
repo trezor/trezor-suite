@@ -39,14 +39,16 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         'getFeatures',
         'getDeviceState',
         'getAddress',
+        'ethereumGetAddress',
+        'rippleGetAddress',
         'applySettings',
         'changePin',
         'backupDevice',
     ] as const;
     wrappedMethods.forEach(key => {
-        const original = TrezorConnect[key];
-        if (!original) return;
         // typescript complains about params and return type, need to be "any"
+        const original: any = TrezorConnect[key];
+        if (!original) return;
         (TrezorConnect[key] as any) = async (params: any) => {
             dispatch(lockDevice(true));
             const result = await original(params);

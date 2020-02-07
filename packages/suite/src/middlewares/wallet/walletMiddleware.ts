@@ -1,5 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import { SUITE } from '@suite-actions/constants';
+import { SUITE, ROUTER } from '@suite-actions/constants';
 import { ACCOUNT } from '@wallet-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
@@ -35,21 +35,16 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         api.dispatch(blockchainActions.subscribe());
     }
 
-    // leaving wallet app, reset account reducers
-    if (prevRouter.app === 'wallet' && action.type === SUITE.APP_CHANGED) {
-        // api.dispatch(selectedAccountActions.dispose());
-        // api.dispatch(sendFormActions.dispose());
-        // api.dispatch(receiveActions.dispose());
-    }
-
     const nextRouter = api.getState().router;
 
-    if (prevRouter.route && prevRouter.route !== nextRouter.route) {
-        if (prevRouter.route.name === 'wallet-send') {
+    if (prevRouter.app === 'wallet' && action.type === ROUTER.LOCATION_CHANGE) {
+        // leaving wallet app or switching between accounts
+        const reset =
+            (prevRouter.app !== nextRouter.app && !nextRouter.route?.isModal) ||
+            (nextRouter.app === 'wallet' && nextRouter.hash !== prevRouter.hash);
+        if (reset) {
+            api.dispatch(selectedAccountActions.dispose());
             api.dispatch(sendFormActions.dispose());
-        }
-
-        if (prevRouter.route.name === 'wallet-receive') {
             api.dispatch(receiveActions.dispose());
         }
     }
