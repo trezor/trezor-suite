@@ -42,6 +42,10 @@ const AppWrapper = styled.div`
     flex: 1 1 0%;
 `;
 
+const MaxWithWrapper = styled.div`
+    max-width: 1024px;
+`;
+
 const mapStateToProps = (state: AppState) => ({
     suite: state.suite,
     layoutSize: state.resize.size,
@@ -66,7 +70,9 @@ const SuiteLayout = (props: Props) => {
                 <SuiteNotifications />
                 <Columns>
                     {props.secondaryMenu && <MenuSecondary>{props.secondaryMenu}</MenuSecondary>}
-                    <AppWrapper>{props.children}</AppWrapper>
+                    <AppWrapper>
+                        <MaxWithWrapper>{props.children}</MaxWithWrapper>
+                    </AppWrapper>
                 </Columns>
             </Body>
         </PageWrapper>

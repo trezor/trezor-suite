@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Card, { Props as CardProps } from '@suite-components/Card';
 import { colors, Button, Icon, variables, IconProps } from '@trezor/components-v2';
 
@@ -18,6 +18,7 @@ const Body = styled.div`
     flex-direction: column;
     align-items: center;
     padding: 40px 16px 24px 16px;
+    min-height: 160px;
 `;
 
 const Header = styled.div<Pick<Props, 'variant'>>`
@@ -26,6 +27,7 @@ const Header = styled.div<Pick<Props, 'variant'>>`
     height: 68px;
     background: ${props => (props.variant === 'primary' ? '#31C102' : colors.BLACK92)};
     justify-content: center;
+    transition: background-color 0.7s ease-out;
 `;
 
 const Circle = styled.div`
@@ -37,6 +39,7 @@ const Circle = styled.div`
     height: 58px;
     border-radius: 50%;
     margin-top: 40px;
+    transition: background-color 0.7s ease-out;
 `;
 
 const GreenCircle = styled(Circle)`
@@ -47,18 +50,31 @@ const GreenCircle = styled(Circle)`
     padding: 5px;
 `;
 
-const Title = styled.div`
+const Title = styled.div<{ isLoading: boolean }>`
     font-size: ${variables.FONT_SIZE.BODY};
     color: ${colors.BLACK0};
     text-align: center;
     margin-bottom: 8px;
+    ${props =>
+        props.isLoading &&
+        css`
+            background: ${colors.BLACK0};
+            opacity: 0.1;
+        `};
 `;
 
-const Description = styled.div`
+/* flex: 1 fill the space so the action button is pushed at the bottom of the card */
+const Description = styled.div<{ isLoading: boolean }>`
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${colors.BLACK50};
     text-align: center;
-    flex: 1; /* fill the space so the action button is pushed at the bottom of the card*/
+    flex: 1;
+    ${props =>
+        props.isLoading &&
+        css`
+            background: ${colors.BLACK50};
+            opacity: 0.1;
+        `};
 `;
 
 const Action = styled.div`
@@ -67,12 +83,12 @@ const Action = styled.div`
     justify-self: flex-end;
 `;
 
-interface Props extends CardProps {
-    variant: 'primary' | 'secondary';
+export interface Props extends CardProps {
+    variant: 'primary' | 'secondary' | 'disabled';
     icon: IconProps['icon'];
     heading: React.ReactNode;
     description?: React.ReactNode;
-    cta: {
+    cta?: {
         label: React.ReactNode;
         action?: () => void;
     };
@@ -82,30 +98,33 @@ const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Pro
     const cardIcon = (
         <Icon icon={icon} size={30} color={variant === 'primary' ? colors.WHITE : colors.BLACK0} />
     );
+    const isLoading = variant === 'disabled';
 
     return (
         <StyledCard {...rest}>
             <Header variant={variant}>
                 <Circle>
-                    {variant === 'primary' ? <GreenCircle>{cardIcon}</GreenCircle> : cardIcon}
+                    {!isLoading &&
+                        (variant === 'primary' ? <GreenCircle>{cardIcon}</GreenCircle> : cardIcon)}
                 </Circle>
             </Header>
             <Body>
-                <Title>{heading}</Title>
-                <Description>{description}</Description>
-                <Action>
-                    <Button
-                        isDisabled={variant === 'primary'}
-                        variant="tertiary"
-                        size="small"
-                        onClick={cta.action}
-                        {...(variant === 'secondary'
-                            ? { icon: 'ARROW_RIGHT', alignIcon: 'right' }
-                            : {})}
-                    >
-                        {cta.label}
-                    </Button>
-                </Action>
+                <Title isLoading={isLoading}>{heading}</Title>
+                <Description isLoading={isLoading}>{description}</Description>
+                {cta && !isLoading && (
+                    <Action>
+                        <Button
+                            variant="tertiary"
+                            size="small"
+                            onClick={cta.action}
+                            {...(variant === 'secondary'
+                                ? { icon: 'ARROW_RIGHT', alignIcon: 'right' }
+                                : {})}
+                        >
+                            {cta.label}
+                        </Button>
+                    </Action>
+                )}
             </Body>
         </StyledCard>
     );

@@ -2,11 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import SuiteLayout from '@suite-components/SuiteLayout';
-import AssetsCard from '@suite-components/AssetsCard';
-import SecurityFeatures from '@suite-components/SecurityFeatures/Container';
-// import ConnectionStatusCard from '@suite-components/ConnectionStatusCard';
-import PortfolioCard from '@suite-components/PortfolioCard';
-import NewsFeed from '@suite-components/NewsFeed';
+// ConnectionStatusCard
+import { AssetsCard, PortfolioCard, SecurityFeatures, NewsFeed } from '@dashboard-components';
 import AuthConfirmFailed from '@wallet-components/AccountMode/AuthConfirmFailed';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { DISCOVERY } from '@wallet-actions/constants';
@@ -14,7 +11,8 @@ import { Account } from '@wallet-types';
 import { Props } from './Container';
 
 const Wrapper = styled.div`
-    padding: 30px 50px;
+    padding: 0px 32px 32px 32px;
+    padding-top: 16px;
 `;
 
 const Divider = styled.div`
@@ -29,6 +27,48 @@ const Row = styled.div`
 // const StyledConnectionStatusCard = styled(ConnectionStatusCard)`
 //     margin-right: 20px;
 // `;
+
+// similar to @wallet-actions/selectedAccountActions
+const getDashboardMode = (props: Props, isLoading: boolean) => {
+    const { device } = props;
+    if (!device) {
+        return {
+            status: 'loading',
+            type: 'waiting-for-device',
+        } as const;
+    }
+    if (device.authFailed) {
+        return {
+            status: 'exception',
+            type: 'auth-failed',
+        } as const;
+    }
+    if (device.authConfirm) {
+        return {
+            status: 'exception',
+            type: 'auth-confirm-failed',
+        } as const;
+    }
+    if (!device.state) {
+        return {
+            status: 'loading',
+            type: 'auth',
+        } as const;
+    }
+    if (isLoading) {
+        return {
+            status: 'loading',
+            type: 'discovery',
+        } as const;
+    }
+
+    // if (discovery.networks.length === 0) {
+    //     return {
+    //         status: 'exception',
+    //         loader: 'discovery-empty',
+    //     };
+    // }
+};
 
 const Dashboard = (props: Props) => {
     const discovery = props.getDiscoveryForDevice();
@@ -54,12 +94,15 @@ const Dashboard = (props: Props) => {
     );
 
     const isLoading = !discovery || (discovery && discovery.status < DISCOVERY.STATUS.STOPPING);
+    const dashboardMode = getDashboardMode(props, isLoading);
+    const isDisabled = isLoading || !!dashboardMode;
 
     return (
         <SuiteLayout>
             {device && device.authConfirm && <AuthConfirmFailed />}
             <Wrapper data-test="@dashboard/index">
                 <PortfolioCard
+                    mode={dashboardMode}
                     portfolioValue={instanceBalance}
                     localCurrency={props.localCurrency}
                     buyClickHandler={() => props.goto('wallet-receive')}
@@ -73,7 +116,7 @@ const Dashboard = (props: Props) => {
                     isLoading={isLoading}
                 />
                 <Divider />
-                <SecurityFeatures />
+                <SecurityFeatures isDisabled={isDisabled} />
                 <Divider />
                 <Row>
                     {/* <StyledConnectionStatusCard /> */}
