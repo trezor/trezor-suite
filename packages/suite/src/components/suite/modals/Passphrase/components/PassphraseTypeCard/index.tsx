@@ -74,7 +74,7 @@ type Props = {
     showPassphraseInput?: boolean;
     authConfirmation?: boolean;
     singleColModal?: boolean;
-    offerPassphraseOnDevice?: boolean;
+    offerPassphraseOnDevice: boolean;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
 };
 

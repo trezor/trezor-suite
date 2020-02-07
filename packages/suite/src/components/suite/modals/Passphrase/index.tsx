@@ -66,10 +66,11 @@ const Passphrase = (props: Props) => {
         .getDeviceInstances(device, props.devices)
         .find(d => d.useEmptyPassphrase);
     const noPassphraseOffer = !hasEmptyPassphraseWallet && !stateConfirmation;
-    const onDeviceOffer =
+    const onDeviceOffer = !!(
         device.features &&
         device.features.capabilities &&
-        device.features.capabilities.includes('Capability_PassphraseEntry');
+        device.features.capabilities.includes('Capability_PassphraseEntry')
+    );
 
     const onSubmit = (value: string, passphraseOnDevice?: boolean) => {
         setSubmitted(true);
@@ -117,6 +118,7 @@ const Passphrase = (props: Props) => {
                 description={<Translation {...messages.TR_ENTER_EXISTING_PASSPHRASE} />}
                 submitLabel={<Translation {...messages.TR_ACCESS_HIDDEN_WALLET} />}
                 colorVariant="secondary"
+                offerPassphraseOnDevice={onDeviceOffer}
                 showPassphraseInput
                 onSubmit={onSubmit}
             />
@@ -153,6 +155,7 @@ const Passphrase = (props: Props) => {
                         }
                         submitLabel={<Translation {...messages.TR_ACCESS_STANDARD_WALLET} />}
                         colorVariant="primary"
+                        offerPassphraseOnDevice={onDeviceOffer}
                         onSubmit={onSubmit}
                     />
                     <PassphraseTypeCard
@@ -160,6 +163,7 @@ const Passphrase = (props: Props) => {
                         description={<Translation {...messages.TR_ENTER_EXISTING_PASSPHRASE} />}
                         submitLabel={<Translation {...messages.TR_ACCESS_HIDDEN_WALLET} />}
                         colorVariant="secondary"
+                        offerPassphraseOnDevice={onDeviceOffer}
                         showPassphraseInput
                         onSubmit={onSubmit}
                     />

@@ -309,7 +309,9 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
                 keepSession: false,
                 useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
             });
-            dispatch({ type: SUITE.REQUEST_AUTH_CONFIRM });
+            if (discovery.authConfirm) {
+                dispatch({ type: SUITE.REQUEST_AUTH_CONFIRM });
+            }
         }
 
         dispatch(
