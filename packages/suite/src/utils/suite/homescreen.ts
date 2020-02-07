@@ -151,7 +151,7 @@ const toif = (w: number, h: number, imageData: ImageData) => {
     return header + byteArrayToHexString(packed);
 };
 
-const fileToDataUrl = (file: File): Promise<string> => {
+export const fileToDataUrl = (file: File): Promise<string> => {
     const reader = new FileReader();
     return new Promise((resolve, reject) => {
         reader.onload = e => {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, createRef } from 'react';
 import styled from 'styled-components';
 import { H2, P, Switch, Link, colors } from '@trezor/components-v2';
 
@@ -11,7 +11,7 @@ import { SuiteLayout } from '@suite-components';
 import { Menu as SettingsMenu } from '@settings-components';
 import { getFwVersion } from '@suite-utils/device';
 import { SEED_MANUAL_URL, DRY_RUN_URL, PASSPHRASE_URL } from '@suite-constants/urls';
-// import { AcquiredDevice } from '@suite-types';
+import * as homescreen from '@suite-utils/homescreen';
 
 import { Props } from './Container';
 
@@ -37,6 +37,14 @@ const BackupFailedLink = styled(Link)`
     margin-left: 40px;
 `;
 
+const HiddenInput = styled.input`
+    display: none;
+`;
+
+const Col = styled.div`
+    flex-direction: column;
+`;
+
 const Settings = ({
     device,
     locks,
@@ -49,6 +57,8 @@ const Settings = ({
 }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     const [label, setLabel] = useState('');
+    const [customHomescreen, setCustomHomescreen] = useState('');
+    const fileInputElement = createRef<HTMLInputElement>();
 
     useEffect(() => {
         if (!device) {
@@ -56,22 +66,6 @@ const Settings = ({
         }
         setLabel(device.label);
     }, [device]);
-
-    const DISPLAY_ROTATIONS = [
-        { label: <Translation {...messages.TR_NORTH} />, value: 0 },
-        { label: <Translation {...messages.TR_EAST} />, value: 90 },
-        { label: <Translation {...messages.TR_SOUTH} />, value: 180 },
-        { label: <Translation {...messages.TR_WEST} />, value: 270 },
-    ] as const;
-
-    const startCheckSeed = () => {
-        if (device && device.features && device.features.major_version === 1) {
-            // T1 needs to input some more information from suite. TT does everything on device.
-            goto('seed-input-index', { cancelable: true });
-        } else {
-            checkSeed();
-        }
-    };
 
     if (!device?.features) {
         return (
@@ -81,7 +75,38 @@ const Settings = ({
         );
     }
 
+    const DISPLAY_ROTATIONS = [
+        { label: <Translation {...messages.TR_NORTH} />, value: 0 },
+        { label: <Translation {...messages.TR_EAST} />, value: 90 },
+        { label: <Translation {...messages.TR_SOUTH} />, value: 180 },
+        { label: <Translation {...messages.TR_WEST} />, value: 270 },
+    ] as const;
+
     const { features } = device;
+
+    const onUploadHomescreen = async (files: FileList | null) => {
+        if (!files || !files.length) return;
+        const dataUrl = await homescreen.fileToDataUrl(files[0]);
+        setCustomHomescreen(dataUrl);
+    };
+
+    const onSelectCustomHomescreen = async () => {
+        const element = document.getElementById('custom-image');
+        if (element instanceof HTMLImageElement) {
+            const hex = homescreen.elementToHomescreen(element, device.features.major_version);
+            await applySettings({ homescreen: hex, device });
+            setCustomHomescreen('');
+        }
+    };
+
+    const startCheckSeed = () => {
+        if (device && device.features && device.features.major_version === 1) {
+            // T1 needs to input some more information from suite. TT does everything on device.
+            goto('seed-input-index', { cancelable: true });
+        } else {
+            checkSeed();
+        }
+    };
 
     return (
         <SuiteLayout title="Settings" secondaryMenu={<SettingsMenu />}>
@@ -289,15 +314,31 @@ const Settings = ({
                             }
                         />
                         <ActionColumn>
-                            <ActionButton
-                                onClick={() => console.log('woo')}
-                                isDisabled={uiLocked}
-                                variant="secondary"
-                            >
-                                <Translation>
-                                    {messages.TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE}
-                                </Translation>
-                            </ActionButton>
+                            <HiddenInput
+                                ref={fileInputElement}
+                                type="file"
+                                accept=".png"
+                                onChange={e => {
+                                    onUploadHomescreen(e.target.files);
+                                }}
+                            />
+                            {/* only available for model T at the moment. It works quite well there */}
+                            {features.major_version === 2 && (
+                                <ActionButton
+                                    onClick={() => {
+                                        if (fileInputElement.current) {
+                                            fileInputElement.current.click();
+                                        }
+                                    }}
+                                    isDisabled={uiLocked}
+                                    variant="secondary"
+                                >
+                                    <Translation>
+                                        {messages.TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE}
+                                    </Translation>
+                                </ActionButton>
+                            )}
+
                             <ActionButton
                                 onClick={() =>
                                     openModal({
@@ -315,6 +356,31 @@ const Settings = ({
                             </ActionButton>
                         </ActionColumn>
                     </Row>
+
+                    {customHomescreen && (
+                        <Row>
+                            <Col>
+                                <img
+                                    width="144px"
+                                    alt="custom homescreen"
+                                    id="custom-image"
+                                    src={customHomescreen}
+                                />
+                            </Col>
+
+                            <ActionColumn>
+                                <ActionButton onClick={() => onSelectCustomHomescreen()}>
+                                    Change homescreen
+                                </ActionButton>
+                                <ActionButton
+                                    variant="secondary"
+                                    onClick={() => setCustomHomescreen('')}
+                                >
+                                    Drop image
+                                </ActionButton>
+                            </ActionColumn>
+                        </Row>
+                    )}
 
                     {features.major_version === 2 && (
                         <Row>
