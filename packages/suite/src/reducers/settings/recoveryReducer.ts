@@ -2,7 +2,7 @@ import produce from 'immer';
 import { RECOVERY } from '@settings-actions/constants';
 import { Action } from '@suite-types';
 import { WordCount } from '@settings-types';
-import { SeedInputStatus } from '@settings-actions/recoveryActions';
+import { SeedInputStatus } from '@recovery-actions/recoveryActions';
 
 export interface RecoveryState {
     advancedRecovery: boolean;

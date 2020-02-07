@@ -12,7 +12,7 @@ import { AppState, Dispatch } from '@suite-types';
 
 import Firmware from '@firmware-views';
 import Onboarding from '@onboarding-views';
-import SeedInput from '@seed-input-views';
+import SeedInput from '@suite/views/recovery';
 import Backup from '@backup-views';
 import {
     Analytics,
@@ -112,7 +112,7 @@ const getModalApplication = (route: Props['router']['route']) => {
             return Version;
         case 'switch-device':
             return SwitchDevice;
-        case 'seed-input':
+        case 'recovery':
             return SeedInput;
         case 'backup':
             return Backup;

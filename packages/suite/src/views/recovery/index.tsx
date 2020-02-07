@@ -5,8 +5,9 @@ import { bindActionCreators } from 'redux';
 
 import { Button, H2, P, colors, variables } from '@trezor/components-v2';
 
+import { SelectWordCount, SelectRecoveryType, Error } from '@recovery-components';
 import { ProgressBar, Loading } from '@suite-components';
-import * as recoveryActions from '@settings-actions/recoveryActions';
+import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { InjectedModalApplicationProps, AppState, Dispatch } from '@suite-types';
 import { WordCount } from '@settings-types';
 import { resolveStaticPath } from '@suite-utils/nextjs';
@@ -25,11 +26,6 @@ const Row = styled.div`
     flex-direction: row;
 `;
 
-const Col = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-
 const Buttons = styled(Row)`
     justify-content: center;
     margin-top: auto;
@@ -38,6 +34,7 @@ const Buttons = styled(Row)`
 const StyledButton = styled(Button)`
     min-width: 224px;
     margin-bottom: 16px;
+    margin-top: 28px;
 `;
 
 const InfoBox = styled.div`
@@ -78,30 +75,6 @@ const StyledP = styled(P)`
     color: ${colors.BLACK50};
 `;
 
-interface WordsButtonProps {
-    isActive: boolean;
-    count: WordCount;
-    onClick: () => void;
-}
-
-const WordsButton = ({ isActive, count, ...props }: WordsButtonProps) => (
-    <Button variant={isActive ? 'primary' : 'secondary'} {...props}>
-        {count} words
-    </Button>
-);
-
-interface TypeButton {
-    isActive: boolean;
-    type: string;
-    onClick: () => void;
-}
-
-const TypeButton = ({ isActive, type, ...props }: TypeButton) => (
-    <Button variant={isActive ? 'primary' : 'secondary'} {...props}>
-        {type}
-    </Button>
-);
-
 const mapStateToProps = (state: AppState) => ({
     recovery: state.settings.recovery,
     locks: state.suite.locks,
@@ -119,7 +92,7 @@ export type Props = InjectedModalApplicationProps &
     ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps>;
 
-const SeedInput = ({
+const Recovery = ({
     recovery,
     checkSeed,
     setWordsCount,
@@ -136,7 +109,7 @@ const SeedInput = ({
         setStatus('select-recovery-type');
     };
 
-    const onSetRecoveryType = (type: number) => {
+    const onSetRecoveryType = (type: boolean) => {
         setAdvancedRecovery(type);
         checkSeed();
     };
@@ -155,7 +128,7 @@ const SeedInput = ({
 
             {recovery.status === 'initial' && model === 1 && (
                 <>
-                    1<H2>Check recovery seed</H2>
+                    <H2>Check recovery seed</H2>
                     <StyledP>
                         Your wallet backup, the recovery seed, is entered entirely on the Trezor
                         Model T, through the device screen. We avoid passing any of your sensitive
@@ -236,37 +209,26 @@ const SeedInput = ({
             )}
 
             {recovery.status === 'select-word-count' && (
-                <Row>
-                    <WordsButton
-                        isActive={recovery.wordsCount === 12}
-                        count={12}
-                        onClick={() => onSetWordsCount(12)}
-                    />
-                    <WordsButton
-                        isActive={recovery.wordsCount === 18}
-                        count={18}
-                        onClick={() => onSetWordsCount(18)}
-                    />
-                    <WordsButton
-                        isActive={recovery.wordsCount === 24}
-                        count={24}
-                        onClick={() => onSetWordsCount(24)}
-                    />
-                </Row>
+                <>
+                    <H2>Select number of words</H2>
+                    <SelectWordCount onSelect={(count: WordCount) => onSetWordsCount(count)} />
+                    <Buttons>
+                        <StyledButton icon="CROSS" variant="tertiary" onClick={closeModalApp}>
+                            Cancel seed check
+                        </StyledButton>
+                    </Buttons>
+                </>
             )}
             {recovery.status === 'select-recovery-type' && (
-                <Row>
-                    <TypeButton
-                        isActive={!recovery.advancedRecovery}
-                        type="basic"
-                        onClick={() => onSetRecoveryType(false)}
-                    />
-                    <TypeButton
-                        isActive={recovery.advancedRecovery}
-                        type="advanced"
-                        onClick={() => onSetRecoveryType(true)}
-                    />
-                </Row>
+                <>
+                    <H2>Chose recovery type</H2>
+                    <SelectRecoveryType onSelect={(type: boolean) => onSetRecoveryType(type)} />
+                    <Buttons>
+                        <StyledButton icon="CROSS" variant="tertiary" onClick={closeModalApp}>
+                            Cancel seed check
+                        </StyledButton>
+                    </Buttons>
+                </>
             )}
 
             {recovery.status === 'in-progress' && (
@@ -301,8 +263,7 @@ const SeedInput = ({
             {recovery.status === 'finished' && recovery.error && (
                 <>
                     <H2>Seed check failed</H2>
-                    <StyledP>{recovery.error}</StyledP>
-                    <img alt="" src={resolveStaticPath('images/suite/uni-error.svg')} />
+                    <Error error={recovery.error} />
                     <Buttons>
                         <StyledButton onClick={closeModalApp}>Close</StyledButton>
                     </Buttons>
@@ -312,4 +273,4 @@ const SeedInput = ({
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SeedInput);
+export default connect(mapStateToProps, mapDispatchToProps)(Recovery);

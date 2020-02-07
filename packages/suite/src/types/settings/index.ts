@@ -1,5 +1,5 @@
 import { WalletSettingsActions } from '@settings-actions/walletSettingsActions';
-import { RecoveryActions } from '@settings-actions/recoveryActions';
+import { RecoveryActions } from '@recovery-actions/recoveryActions';
 
 export type SettingsActions = WalletSettingsActions | RecoveryActions;
 

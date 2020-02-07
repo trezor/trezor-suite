@@ -98,15 +98,6 @@ const Settings = ({
         }
     };
 
-    const startCheckSeed = () => {
-        if (device && device.features && device.features.major_version === 1) {
-            // T1 needs to input some more information from suite. TT does everything on device.
-            goto('seed-input-index', { cancelable: true });
-        } else {
-            checkSeed();
-        }
-    };
-
     return (
         <SuiteLayout title="Settings" secondaryMenu={<SettingsMenu />}>
             {/* todo: imho base padding should be in SuiteLayout, but it would break WalletLayout, so I have it temporarily here */}
@@ -168,7 +159,7 @@ const Settings = ({
                                 <ActionButton
                                     data-test="@settings/device/check-seed-button"
                                     onClick={() => {
-                                        goto('seed-input-index', { cancelable: true });
+                                        goto('recovery-index', { cancelable: true });
                                     }}
                                     isDisabled={
                                         uiLocked ||

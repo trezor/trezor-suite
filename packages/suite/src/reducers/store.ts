@@ -6,9 +6,9 @@ import * as buildUtils from '@suite-utils/build';
 import suiteMiddlewares from '@suite-middlewares';
 import walletMiddlewares from '@wallet-middlewares';
 import onboardingMiddlewares from '@onboarding-middlewares';
-import settingsMiddlewares from '@settings-middlewares';
 import firmwareMiddlewares from '@firmware-middlewares';
 import backupMiddlewares from '@backup-middlewares';
+import recoveryMiddlewares from '@recovery-middlewares';
 
 import suiteReducers from '@suite-reducers';
 import walletReducers from '@wallet-reducers';
@@ -33,9 +33,9 @@ const middlewares = [
     ...suiteMiddlewares,
     ...walletMiddlewares,
     ...onboardingMiddlewares,
-    ...settingsMiddlewares,
     ...firmwareMiddlewares,
     ...backupMiddlewares,
+    ...recoveryMiddlewares,
 ];
 
 const enhancers: any[] = [];
