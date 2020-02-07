@@ -1,7 +1,7 @@
 import produce from 'immer';
-import { RECOVERY } from '@settings-actions/constants';
+import { RECOVERY } from '@recovery-actions/constants';
 import { Action } from '@suite-types';
-import { WordCount } from '@settings-types';
+import { WordCount } from '@recovery-types';
 import { SeedInputStatus } from '@recovery-actions/recoveryActions';
 
 export interface RecoveryState {

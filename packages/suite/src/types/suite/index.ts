@@ -27,6 +27,8 @@ import { FirmwareActions } from '@firmware-types';
 import { ExtendedMessageDescriptor as ExtendedMessageDescriptor$ } from '@suite-support/ConnectedIntlProvider';
 import { WalletAction } from '@wallet-types';
 import { BackupActions } from '@backup-actions/backupActions';
+import { RecoveryActions } from '@recovery-actions/recoveryActions';
+
 // this weird export is because of --isolatedModules and next.js 9
 export type ExtendedMessageDescriptor = ExtendedMessageDescriptor$;
 
@@ -54,6 +56,7 @@ export type Action =
     | OnboardingActions
     | FirmwareActions
     | BackupActions
+    | RecoveryActions
     | SettingsActions;
 
 // export type Dispatch = ReduxDispatch<Action>;

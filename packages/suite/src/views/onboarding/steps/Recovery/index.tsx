@@ -13,7 +13,7 @@ import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
-    recovery: state.settings.recovery,
+    recovery: state.recovery,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

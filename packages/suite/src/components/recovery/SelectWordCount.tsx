@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { P, variables } from '@trezor/components-v2';
 import { Option } from '@onboarding-components';
 import messages from '@suite/support/messages';
-import { WordCount } from '@settings-types';
+import { WordCount } from '@recovery-types';
 import { Translation } from '@suite-components';
 
 const Wrapper = styled.div`

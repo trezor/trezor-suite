@@ -1,3 +1,3 @@
-import Page from '@suite/views/recovery';
+import Page from '@recovery-views';
 
 export default Page;

@@ -15,14 +15,14 @@ import recoveryMiddlewares from '@recovery-middlewares';
 import suiteReducers from '@suite-reducers/index';
 import onboardingReducers from '@onboarding-reducers/index';
 import walletReducers from '@wallet-reducers/index';
-import settingsReducers from '@settings-reducers/index';
+import recoveryReducers from '@recovery-reducers/index';
 import firmwareReducers from '@firmware-reducers/index';
 
 const reducers = combineReducers({
     ...suiteReducers,
     onboarding: onboardingReducers,
     wallet: walletReducers,
-    settings: settingsReducers,
+    recovery: recoveryReducers,
     firmware: firmwareReducers,
 });
 

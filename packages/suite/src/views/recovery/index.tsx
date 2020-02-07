@@ -9,7 +9,7 @@ import { SelectWordCount, SelectRecoveryType, Error } from '@recovery-components
 import { ProgressBar, Loading } from '@suite-components';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { InjectedModalApplicationProps, AppState, Dispatch } from '@suite-types';
-import { WordCount } from '@settings-types';
+import { WordCount } from '@recovery-types';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const Wrapper = styled.div`
@@ -76,7 +76,7 @@ const StyledP = styled(P)`
 `;
 
 const mapStateToProps = (state: AppState) => ({
-    recovery: state.settings.recovery,
+    recovery: state.recovery,
     locks: state.suite.locks,
     device: state.suite.device,
 });

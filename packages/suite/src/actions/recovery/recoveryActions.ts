@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import TrezorConnect from 'trezor-connect';
-import { RECOVERY } from '@settings-actions/constants';
+import { RECOVERY } from '@recovery-actions/constants';
 
 // todo
 import { submitWord } from '@onboarding-actions/connectActions';
 import { Dispatch, GetState, Action } from '@suite-types';
-import { WordCount } from '@settings-types';
+import { WordCount } from '@recovery-types';
 
 export type SeedInputStatus =
     | 'initial'
@@ -51,7 +51,7 @@ const submit = (word: string) => async (dispatch: Dispatch) => {
 };
 
 const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { advancedRecovery, wordsCount } = getState().settings.recovery;
+    const { advancedRecovery, wordsCount } = getState().recovery;
     const { device } = getState().suite;
     if (!device || !device.features) return;
 
@@ -61,7 +61,9 @@ const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
         dry_run: true,
         type: advancedRecovery ? 1 : 0,
         word_count: wordsCount,
-        device,
+        device: {
+            path: device.path,
+        },
     });
 
     if (!response.success) {
@@ -72,7 +74,7 @@ const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
 };
 
 const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { advancedRecovery, wordsCount } = getState().settings.recovery;
+    const { advancedRecovery, wordsCount } = getState().recovery;
     const { device } = getState().suite;
     if (!device || !device.features) return;
 
