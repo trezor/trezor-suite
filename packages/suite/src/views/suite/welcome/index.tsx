@@ -9,15 +9,15 @@ import * as routerActions from '@suite-actions/routerActions';
 import { Dispatch, InjectedModalApplicationProps } from '@suite-types';
 import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
+import ModalWrapper from '@suite-components/ModalWrapper';
 
-const Wrapper = styled.div`
+const Wrapper = styled(ModalWrapper)`
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0 auto;
-    padding: 90px;
     justify-content: center;
-    min-height: 60vh;
+    min-height: 80vh;
+    min-width: 60vw;
 `;
 
 const StyledImg = styled.img`

@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Loader } from '@trezor/components-v2';
+
+import { Loader, colors } from '@trezor/components-v2';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
@@ -31,7 +32,7 @@ const TitleText = styled.div`
     text-transform: uppercase;
     font-size: 16px;
     font-weight: 600;
-    color: #808080;
+    color: ${colors.BLACK50}
 `;
 
 const TitleActions = styled.div`

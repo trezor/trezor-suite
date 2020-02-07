@@ -1763,7 +1763,7 @@ const definedMessages = defineMessages({
         id: 'TR_WELCOME_MODAL_HEADING',
     },
     TR_WELCOME_MODAL_TEXT: {
-        defaultMessage: 'Cyka blyat davai trezora',
+        defaultMessage: 'Here your crypto journey begins.',
         id: 'TR_WELCOME_MODAL_TEXT',
     },
     TR_BEGIN: {
