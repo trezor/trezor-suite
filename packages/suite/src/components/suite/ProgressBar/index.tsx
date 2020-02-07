@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Link } from '@trezor/components-v2';
+import { Button, Link, colors } from '@trezor/components-v2';
 import { URLS } from '@suite-constants';
 
 const Wrapper = styled.div`
@@ -25,23 +25,22 @@ interface BarProps {
 
 const BackgroundBar = styled(Bar)`
     background-color: initial;
-    border: solid 2px #ebebeb;
+    border: solid 2px ${colors.BLACK92};
     width: 100%;
     bottom: 12px;
 `;
 
 const GrayBar = styled(Bar)<BarProps>`
     bottom: 6px;
-    background-color: #ebebeb;
-    border: solid 2px #ebebeb;
+    background-color: ${colors.BLACK92};
+    border: solid 2px ${colors.BLACK92};
     width: ${props => props.width};
     z-index: 2;
 `;
 
 const GreenBar = styled(Bar)<BarProps>`
-    /* top: 12px; */
-    background-color: #30c100;
-    border: solid 2px #30c100;
+    background-color: ${colors.GREEN};
+    border: solid 2px ${colors.GREEN};
     width: ${props => props.width};
     z-index: 3;
 `;
