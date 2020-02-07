@@ -8,7 +8,8 @@ describe('Onboarding happy paths', () => {
         cy.viewport(1024, 768).resetDb();
     });
 
-    it(`create new wallet - skip security - appear in wallet`, () => {
+    // todo: not finished up to the last step.
+    it(`Go through onboarding`, () => {
         cy.visit('/');
         cy.goToOnboarding();
         cy.onboardingShouldLoad()
@@ -26,12 +27,8 @@ describe('Onboarding happy paths', () => {
 
         cy.getTestElement('@onboarding/button-continue')
             .click()
-            .get('html')
-            .should('contain', 'Get the latest firmware')
             .getTestElement('@onboarding/button-continue')
             .click()
-            .get('html')
-            .should('contain', 'Seed type')
             .getTestElement('@onboarding/button-standard-backup')
             .click()
             .getTestElement('@onboading/confirm-action-on-device')

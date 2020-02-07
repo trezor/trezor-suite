@@ -7,7 +7,7 @@ import { Props } from './Container';
 
 const WelcomeStep = (props: Props) => {
     return (
-        <Wrapper.Step data-test="onboarding_first_page">
+        <Wrapper.Step data-test="@onboarding/welcome-step">
             <Wrapper.StepBody>
                 <Wrapper.StepHeading>
                     <Translation {...messages.TR_WELCOME_TO_TREZOR} />
