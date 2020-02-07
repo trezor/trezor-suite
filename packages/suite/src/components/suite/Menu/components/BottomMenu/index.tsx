@@ -108,7 +108,7 @@ const BottomMenu = (props: Props) => (
         <SubMenu>
             <StyledDivider className="divider" />
             <MenuItemWrapper>
-                <SubMenuText>Discrete</SubMenuText>
+                <SubMenuText>Discreet</SubMenuText>
                 <Switch
                     isSmall
                     checked={props.discreetMode}
