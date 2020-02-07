@@ -42,7 +42,7 @@ const getColor = (score: 0 | 1 | 2 | 3 | 4, password: string) => {
         case 4:
             return colors.GREEN;
         default:
-            return colors.BLACK0;
+            return 'transparent';
     }
 };
 
