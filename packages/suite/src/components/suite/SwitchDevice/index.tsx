@@ -2,15 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors, variables, H2 } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
+import ModalWrapper from '@suite-components/ModalWrapper';
 import * as deviceUtils from '@suite-utils/device';
 import DeviceItem from './components/DeviceItem/Container';
 import messages from '@suite/support/messages';
 import { Props } from './Container';
 
-const Wrapper = styled.div`
-    position: relative;
-    margin: 30px 24px;
-    display: flex;
+const Wrapper = styled(ModalWrapper)`
     flex-direction: column;
     text-align: center;
     width: 100%;
