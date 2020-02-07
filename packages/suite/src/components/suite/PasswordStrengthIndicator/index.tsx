@@ -9,7 +9,11 @@ interface WrapperProps {
 
 const Wrapper = styled.div<WrapperProps>`
     display: flex;
-    padding: 8px 0;
+    margin: 8px 0;
+    flex: 1;
+    height: 5px;
+    overflow: hidden;
+    border-radius: 5px;
     width: ${props => (props.width ? `${props.width}px` : '100%')};
 `;
 
@@ -20,35 +24,31 @@ interface LineProps {
 
 const Line = styled.div<LineProps>`
     background: ${props => (props.color && props.isFilled ? props.color : 'transparent')};
+    display: flex;
     flex: 1;
     height: 5px;
-    margin-right: 5px;
-    border-radius: 5px;
-
-    &:last-child {
-        margin-right: 0;
-    }
+    transition: all 0.5s;
 `;
 
-interface Props {
-    password: string;
-}
-
-const getColor = (score: 0 | 1 | 2 | 3 | 4 | 5) => {
+const getColor = (score: 0 | 1 | 2 | 3 | 4, password: string) => {
+    if (password === '') return 'transparent';
     switch (score) {
         case 0:
         case 1:
             return colors.RED;
         case 2:
-        case 3:
             return colors.YELLOW;
+        case 3:
         case 4:
-        case 5:
             return colors.GREEN;
         default:
             return colors.BLACK0;
     }
 };
+
+interface Props {
+    password: string;
+}
 
 export default ({ password }: Props) => {
     const passwordInfo = zxcvbn(password);
@@ -57,7 +57,7 @@ export default ({ password }: Props) => {
         <Wrapper>
             {[...Array(5)].map((_x, i) => (
                 // eslint-disable-next-line react/no-array-index-key
-                <Line key={i} isFilled={i <= score} color={getColor(score)} />
+                <Line key={i} isFilled={i <= score} color={getColor(score, password)} />
             ))}
         </Wrapper>
     );

@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components';
 import { Button, colors, variables, Input, Checkbox } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
+import PasswordStrengthIndicator from '@suite-components/PasswordStrengthIndicator';
 
 const WalletTitle = styled.div`
     font-size: ${variables.FONT_SIZE.NORMAL};
@@ -130,6 +131,7 @@ const PassphraseTypeCard = (props: Props) => {
                                 onClick: () => setShowPassword(!showPassword),
                             }}
                         />
+                        <PasswordStrengthIndicator password={value} />
                     </InputWrapper>
                 )}
                 <Actions>
