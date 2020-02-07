@@ -1,15 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
-
 import { NETWORKS } from '@wallet-config';
 import Asset from './components/Asset';
-import Card from '../Card';
 import { Account } from '@wallet-types';
 import { AppState } from '@suite-types';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { colors, Loader } from '@trezor/components-v2';
-import { Translation } from '@suite-components/Translation';
+import { Card, Translation } from '@suite-components';
 import messages from '@suite/support/messages';
 
 const Header = styled.div`
@@ -40,10 +38,11 @@ const StyledCard = styled(Card)`
     flex-direction: column;
 `;
 
+// padding for loader need to math with first row height
 const InfoMessage = styled.div`
-    padding: 20px;
+    padding: 14px 20px;
+    padding-bottom: 15px;
     display: flex;
-    justify-content: center;
 `;
 
 export interface Props extends React.HTMLAttributes<HTMLDivElement> {
@@ -54,6 +53,7 @@ export interface Props extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props) => {
+    const networks = Object.keys(assets);
     return (
         <StyledCard {...rest}>
             <Header>
@@ -72,7 +72,7 @@ const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props)
                     <div />
                 </HeaderTitle>
             </Header>
-            {Object.keys(assets).map(symbol => {
+            {networks.map(symbol => {
                 const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
                 if (!network) {
                     return 'unknown network';
@@ -101,7 +101,7 @@ const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props)
                     />
                 );
             })}
-            {isLoading && (
+            {isLoading && networks.length < 1 && (
                 <InfoMessage>
                     <Loader size={20} />
                 </InfoMessage>

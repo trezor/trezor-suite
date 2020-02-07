@@ -1,15 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
-import Card from '@suite-components/Card';
 import FormattedNumber from '@suite-components/FormattedNumber';
 import { colors, Button } from '@trezor/components-v2';
 import BigNumber from 'bignumber.js';
+import Loading from './components/Loading';
+import Exception from './components/Exception';
 import EmptyWallet from './components/EmptyWallet';
-import { Translation } from '@suite-components/Translation';
+import { Card, Translation } from '@suite-components';
 import messages from '@suite/support/messages';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
+    min-height: 400px;
 `;
 
 const Header = styled.div`
@@ -58,7 +60,18 @@ const ActionButton = styled(Button)`
     }
 `;
 
+export type DashboardMode =
+    | {
+          status: 'loading';
+          type: 'waiting-for-device' | 'auth' | 'discovery';
+      }
+    | {
+          status: 'exception';
+          type: 'auth-failed' | 'auth-confirm-failed';
+      };
+
 export interface Props extends React.HTMLAttributes<HTMLDivElement> {
+    mode?: DashboardMode;
     portfolioValue: BigNumber;
     localCurrency: string;
     buyClickHandler: () => void;
@@ -66,12 +79,20 @@ export interface Props extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const PortfolioCard = ({
+    mode,
     portfolioValue,
     localCurrency,
     buyClickHandler,
     receiveClickHandler,
     ...rest
 }: Props) => {
+    let body = null;
+    if (mode) {
+        body = mode.status === 'exception' ? <Exception /> : <Loading />;
+    } else {
+        body = portfolioValue.gt(0) ? <EmptyWallet /> : <EmptyWallet />;
+    }
+
     return (
         <StyledCard {...rest}>
             <Header>
@@ -87,15 +108,19 @@ const PortfolioCard = ({
                     </ValueWrapper>
                 </Left>
                 <Right>
-                    <ActionButton variant="secondary" onClick={receiveClickHandler}>
+                    <ActionButton
+                        isDisabled={!!mode}
+                        variant="secondary"
+                        onClick={receiveClickHandler}
+                    >
                         <Translation {...messages.TR_RECEIVE} />
                     </ActionButton>
-                    <ActionButton variant="primary" onClick={buyClickHandler}>
+                    <ActionButton isDisabled={!!mode} variant="primary" onClick={buyClickHandler}>
                         <Translation {...messages.TR_BUY} />
                     </ActionButton>
                 </Right>
             </Header>
-            <Body>{portfolioValue.gt(0) ? 'graficek' : <EmptyWallet />}</Body>
+            <Body>{body}</Body>
         </StyledCard>
     );
 };

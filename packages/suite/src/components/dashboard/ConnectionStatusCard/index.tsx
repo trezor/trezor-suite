@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import Card from '@suite-components/Card';
 import { colors, variables } from '@trezor/components-v2';
-import { Translation } from '@suite-components/Translation';
+import { Card, Translation } from '@suite-components';
 import messages from '@suite/support/messages';
 
 const StyledCard = styled(Card)`

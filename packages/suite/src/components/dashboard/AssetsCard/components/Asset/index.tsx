@@ -68,12 +68,12 @@ const AssetLogoWrapper = styled.div`
     padding-right: 6px;
     display: flex;
     align-items: center;
-    padding-bottom: 1px;
 `;
 
 const AssetName = styled.div`
     color: #808080;
     font-size: 12px;
+    padding-top: 1px;
 `;
 
 // Similar Badge in DeviceItem (part of switch device modal)
@@ -92,10 +92,10 @@ const Col = styled.div`
 `;
 
 const GraphWrapper = styled(Col)`
-    min-height: 25px;
+    min-height: 24px;
     flex: 1;
     width: 100%;
-    height: 25px;
+    height: 24px;
     /* margin-right: 20px; */
 `;
 const CryptoValueWrapper = styled(Col)`
