@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Translation } from '@suite-components';
-import { getRoute } from '@suite-utils/router';
 import messages from '@suite/support/messages';
 import { Button, colors } from '@trezor/components-v2';
 import Wrapper from './components/Wrapper';
@@ -8,14 +7,11 @@ import { Props as BaseProps } from './index';
 
 interface Props {
     device: BaseProps['suite']['device'];
-    pathname: string;
     goto: BaseProps['goto'];
 }
 
-const UpdateFirmware = ({ device, pathname, goto }: Props) => {
-    if (!device || device.type !== 'acquired') return null;
-    // don't show notification when user is on firmware update page
-    if (pathname === getRoute('firmware-index')) return null;
+const UpdateFirmware = ({ device, goto }: Props) => {
+    if (!device || device.type !== 'acquired' || !device.connected) return null;
 
     // in bootloader, we don't see firmware version (not true from model T), but still, we probably
     // don't want to show this notification

@@ -26,11 +26,7 @@ const Notifications = (props: Props) => (
     <>
         <OnlineStatus isOnline={props.suite.online} />
         <UpdateBridge transport={props.suite.transport} goto={props.goto} />
-        <UpdateFirmware
-            device={props.suite.device}
-            pathname={props.router.pathname}
-            goto={props.goto}
-        />
+        <UpdateFirmware device={props.suite.device} goto={props.goto} />
         <NoBackup device={props.suite.device} goto={props.goto} />
         {/* TODO: add Failed backup */}
         {/* TODO: add Pin not set */}
