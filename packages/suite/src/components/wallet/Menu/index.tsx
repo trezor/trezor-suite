@@ -15,6 +15,10 @@ import AddAccountButton from './components/AddAccount';
 import ToggleLegacyAccounts from './components/ToggleLegacyAccounts';
 import messages from '@suite/support/messages';
 
+const Wrapper = styled.div`
+    height: auto;
+`;
+
 const TitleWrapper = styled.div`
     display: flex;
     justify-content: space-between;
@@ -105,7 +109,7 @@ const Menu = ({ device, accounts, selectedAccount, getDiscoveryForDevice, openMo
     const addAccountDisabled = !device.connected || device.authConfirm || device.authFailed;
 
     return (
-        <>
+        <Wrapper>
             <TitleWrapper>
                 <TitleText>
                     <Translation {...messages.TR_ACCOUNTS_MENU_TITLE} />
@@ -147,7 +151,7 @@ const Menu = ({ device, accounts, selectedAccount, getDiscoveryForDevice, openMo
                         key={`${account.descriptor}-${account.symbol}`}
                     />
                 ))}
-        </>
+        </Wrapper>
     );
 };
 

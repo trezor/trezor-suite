@@ -1374,7 +1374,7 @@ const definedMessages = defineMessages({
         id: 'TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL',
     },
     TR_YOUR_TREZOR_IS_NOT_BACKED_UP: {
-        defaultMessage: 'Your Trezor is not backed up',
+        defaultMessage: 'Your Trezor is not backed up.',
         id: 'TR_YOUR_TREZOR_IS_NOT_BACKED_UP',
     },
     TR_SWITCH_DEVICE: {
