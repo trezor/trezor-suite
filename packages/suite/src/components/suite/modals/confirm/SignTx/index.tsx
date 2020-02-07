@@ -1,11 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 import { formatDuration } from '@suite-utils/date';
 import { P, Prompt, colors, variables } from '@trezor/components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { Translation } from '@suite-components/Translation';
 import { AppState, TrezorDevice } from '@suite-types';
+import { Account } from '@wallet-types';
+import { fromWei, toWei } from 'web3-utils';
 
 import messages from '@suite/support/messages';
 
@@ -93,16 +96,31 @@ const Row = styled.div`
 `;
 
 const mapStateToProps = (state: AppState) => ({
-    sendForm: state.wallet.send,
+    send: state.wallet.send,
     account: state.wallet.selectedAccount ? state.wallet.selectedAccount.account : null,
 });
 
+const getFeeValue = (
+    transactionInfo: any,
+    networkType: Account['networkType'],
+    symbol: Account['symbol'],
+) => {
+    if (networkType === 'ethereum') {
+        const gasPriceInWei = toWei(transactionInfo.feePerUnit, 'gwei');
+        return fromWei(gasPriceInWei, 'ether');
+    }
+
+    return `${formatNetworkAmount(transactionInfo.fee, symbol)}`;
+};
+
 type Props = ReturnType<typeof mapStateToProps> & { device: TrezorDevice };
 
-const ConfirmSignTx = ({ device, sendForm, account }: Props) => {
-    if (!account || !sendForm || !sendForm.networkTypeBitcoin.transactionInfo) return null;
-    const { outputs } = sendForm;
+const ConfirmSignTx = ({ device, send, account }: Props) => {
+    if (!account || !send) return null;
+    const { outputs } = send;
     const majorVersion = device.features ? device.features.major_version : 2;
+    const transactionInfo = getTransactionInfo(account.networkType, send);
+    if (transactionInfo.type === 'error') return null;
 
     return (
         <Wrapper>
@@ -143,11 +161,8 @@ const ConfirmSignTx = ({ device, sendForm, account }: Props) => {
                     </Heading>
                     <Row>
                         <Value>
-                            {sendForm.networkTypeBitcoin.transactionInfo.type !== 'error' &&
-                                formatNetworkAmount(
-                                    sendForm.networkTypeBitcoin.transactionInfo.fee,
-                                    account.symbol,
-                                )}
+                            {transactionInfo.type !== 'error' &&
+                                getFeeValue(transactionInfo, account.networkType, account.symbol)}
                         </Value>
                         <Symbol>{account.symbol}</Symbol>
                     </Row>
@@ -160,7 +175,7 @@ const ConfirmSignTx = ({ device, sendForm, account }: Props) => {
                         <Row>
                             <Value>
                                 {formatDuration(
-                                    sendForm.feeInfo.blockTime * sendForm.selectedFee.blocks * 60,
+                                    send.feeInfo.blockTime * send.selectedFee.blocks * 60,
                                 )}
                             </Value>
                         </Row>

@@ -58,6 +58,11 @@ module.exports = {
         'node_modules',
         '<rootDir>/src/utils/suite/dom',
         '<rootDir>/src/utils/wallet/promiseUtils',
+        '<rootDir>/src/actions/wallet/send/sendFormActions', // TODO write tests
+        '<rootDir>/src/actions/wallet/send/sendFormCommonActions', // TODO write tests
+        '<rootDir>/src/actions/wallet/send/sendFormBitcoinActions', // TODO write tests
+        '<rootDir>/src/actions/wallet/send/sendFormEthereumActions', // TODO write tests
+        '<rootDir>/src/actions/wallet/send/sendFormRippleActions', // TODO write tests
     ],
     transformIgnorePatterns: [
         '/node_modules/',

@@ -227,6 +227,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 return draft;
             }
 
+            // compose btc transaction after form change
             case SEND.BTC_PRECOMPOSED_TX: {
                 draft.networkTypeBitcoin.transactionInfo = action.payload;
 
@@ -245,6 +246,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 XRP specific
             */
 
+            // compose xrp transaction after form change
             case SEND.XRP_PRECOMPOSED_TX: {
                 draft.networkTypeRipple.transactionInfo = action.payload;
 
@@ -259,6 +261,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 return draft;
             }
 
+            // change input "Destination tag"
             case SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE: {
                 const { destinationTag } = action;
                 draft.networkTypeRipple.destinationTag.error = null;
@@ -280,6 +283,66 @@ export default (state: State | null = null, action: WalletAction): State | null 
             /* 
                 ETH specific
             */
+
+            // compose eth transaction after form change
+            case SEND.ETH_PRECOMPOSED_TX: {
+                draft.networkTypeEthereum.transactionInfo = action.payload;
+
+                if (
+                    action.payload.type === 'error' &&
+                    action.payload.error === 'NOT-ENOUGH-FUNDS'
+                ) {
+                    draft.outputs.map(
+                        output => (output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH),
+                    );
+                }
+                return draft;
+            }
+
+            // change input "Gas limit"
+            case SEND.ETH_HANDLE_GAS_LIMIT: {
+                const { gasLimit } = action;
+                const gasLimitBig = new Bignumber(gasLimit);
+
+                draft.networkTypeEthereum.gasLimit.error = null;
+                draft.networkTypeEthereum.gasLimit.value = gasLimit;
+
+                if (!validator.isNumeric(gasLimit) || gasLimitBig.isLessThanOrEqualTo(0)) {
+                    draft.networkTypeEthereum.gasLimit.error = VALIDATION_ERRORS.NOT_NUMBER;
+                    return draft;
+                }
+
+                return draft;
+            }
+
+            // change input "Gas price"
+            case SEND.ETH_HANDLE_GAS_PRICE: {
+                const { gasPrice } = action;
+                const gasPriceBig = new Bignumber(gasPrice);
+                draft.networkTypeEthereum.gasPrice.error = null;
+                draft.networkTypeEthereum.gasPrice.value = gasPrice;
+
+                if (!validator.isNumeric(gasPrice) || gasPriceBig.isLessThanOrEqualTo(0)) {
+                    draft.networkTypeEthereum.gasPrice.error = VALIDATION_ERRORS.NOT_NUMBER;
+                    return draft;
+                }
+
+                return draft;
+            }
+
+            // change input "Data"
+            case SEND.ETH_HANDLE_DATA: {
+                const { data } = action;
+                draft.networkTypeEthereum.data.error = null;
+                draft.networkTypeEthereum.data.value = data;
+
+                if (!validator.isHexadecimal(data)) {
+                    draft.networkTypeEthereum.data.error = VALIDATION_ERRORS.NOT_HEX;
+                    return draft;
+                }
+
+                return draft;
+            }
 
             // no default
         }

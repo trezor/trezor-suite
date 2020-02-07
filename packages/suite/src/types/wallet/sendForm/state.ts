@@ -1,14 +1,7 @@
 import { Output } from './output';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import {
-    FeeLevel as FeeLevelBase,
-    PrecomposedTransaction as PrecomposedBitcoinTransaction,
-} from 'trezor-connect';
+import { FeeLevel, PrecomposedTransaction as PrecomposedBitcoinTransaction } from 'trezor-connect';
 import { PrecomposedTransactionXrp } from './transactions';
-
-export interface FeeLevel extends FeeLevelBase {
-    value: string;
-}
 
 export type InitialState = {
     feeInfo: FeeInfo;
@@ -45,15 +38,15 @@ interface NetworkTypeEthereum {
     transactionInfo: any | null;
     gasLimit: {
         value: null | string;
-        error: null;
+        error: null | typeof VALIDATION_ERRORS.NOT_NUMBER;
     };
     gasPrice: {
         value: null | string;
-        error: null;
+        error: null | typeof VALIDATION_ERRORS.NOT_NUMBER;
     };
     data: {
         value: null | string;
-        error: null;
+        error: null | typeof VALIDATION_ERRORS.NOT_HEX;
     };
 }
 
