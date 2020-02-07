@@ -1131,10 +1131,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Show on Trezor',
         id: 'TR_SHOW_ON_TREZOR',
     },
-    TR_SHOW_PASSPHRASE: {
-        defaultMessage: 'Show passphrase',
-        id: 'SHOW_PASSPHRASE',
-    },
     TR_SHOW_UNVERIFIED_ADDRESS: {
         defaultMessage: 'Show unverified address',
         id: 'TR_SHOW_UNVERIFIED_ADDRESS',
