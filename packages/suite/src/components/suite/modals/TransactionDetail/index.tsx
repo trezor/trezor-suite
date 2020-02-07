@@ -27,8 +27,9 @@ const Title = styled(H2)`
 `;
 
 const Divider = styled.div`
+    display: flex;
     width: 100%;
-    height: 20px;
+    margin-bottom: 20px;
 `;
 
 const Buttons = styled.div`
