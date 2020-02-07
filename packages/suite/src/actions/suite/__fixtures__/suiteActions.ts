@@ -800,53 +800,6 @@ const authConfirm = [
     },
 ];
 
-const retryAuthConfirm = [
-    {
-        description: `without device`,
-        state: {},
-        result: undefined,
-    },
-    {
-        description: `failed getDeviceState`,
-        state: {
-            device: getSuiteDevice(),
-        },
-        getDeviceState: {
-            success: false,
-            payload: {
-                error: 'getDeviceState error',
-            },
-        },
-        result: NOTIFICATION.ADD,
-    },
-    {
-        description: `failed with incorrect passphrase`,
-        state: {
-            device: getSuiteDevice(),
-        },
-        getDeviceState: {
-            success: false,
-            payload: {
-                error: 'Passphrase is incorrect',
-            },
-        },
-        result: NOTIFICATION.ADD,
-    },
-    {
-        description: `success`,
-        state: {
-            device: getSuiteDevice(),
-        },
-        getDeviceState: {
-            success: true,
-            payload: {
-                state: 'device-state',
-            },
-        },
-        result: SUITE.RECEIVE_AUTH_CONFIRM,
-    },
-];
-
 export default {
     reducerActions,
     initialRun,
@@ -857,5 +810,4 @@ export default {
     acquireDevice,
     authorizeDevice,
     authConfirm,
-    retryAuthConfirm,
 };

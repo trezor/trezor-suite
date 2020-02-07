@@ -13,12 +13,12 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    retryAuthConfirm: bindActionCreators(suiteActions.retryAuthConfirm, dispatch),
+    authConfirm: bindActionCreators(suiteActions.authConfirm, dispatch),
 });
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-const AuthConfirmFailed = ({ locks, retryAuthConfirm }: Props) => {
+const AuthConfirmFailed = ({ locks, authConfirm }: Props) => {
     const progress = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     return (
         <NotificationCard variant="warning">
@@ -27,7 +27,7 @@ const AuthConfirmFailed = ({ locks, retryAuthConfirm }: Props) => {
                 variant="tertiary"
                 icon="REFRESH"
                 color={colors.RED_ERROR}
-                onClick={retryAuthConfirm}
+                onClick={authConfirm}
                 isLoading={progress}
             >
                 <Translation {...messages.TR_AUTH_CONFIRM_FAILED_RETRY} />

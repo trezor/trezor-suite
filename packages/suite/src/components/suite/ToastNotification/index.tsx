@@ -17,6 +17,8 @@ type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchT
 
 const getContent = (notification: any) => {
     switch (notification.type) {
+        case 'auth-confirm-error':
+            return notification.error;
         case 'copy-to-clipboard-success':
             return `Address ${notification.address} copied to clipboard`;
         case 'copy-to-clipboard-error':
