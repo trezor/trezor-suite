@@ -4,6 +4,7 @@ import * as commonActions from './sendFormCommonActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
+import { toWei, fromWei } from 'web3-utils';
 import {
     prepareEthereumTransaction,
     serializeEthereumTx,
@@ -13,8 +14,6 @@ import {
     getOutput,
 } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
-// @ts-ignore
-import ethUnits from 'ethereumjs-units';
 import TrezorConnect from 'trezor-connect';
 import { composeChange } from './sendFormActions';
 
@@ -31,7 +30,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     const amountInSatoshi = networkAmountToSatoshi(output.amount.value, account.symbol).toString();
     const { availableBalance } = account;
     const feeInSatoshi = calculateEthFee(
-        ethUnits.convert(send.selectedFee.feePerUnit, 'gwei', 'wei'),
+        toWei(send.selectedFee.feePerUnit, 'gwei'),
         send.selectedFee.feeLimit || '0',
     );
     const totalSpentBig = new BigNumber(calculateTotal(amountInSatoshi, feeInSatoshi));
@@ -223,7 +222,7 @@ export const handleData = (data: string) => async (dispatch: Dispatch, getState:
     // @ts-ignore // TODO FIX FALLBACK LEVELS
     const level = newFeeLevels.payload.levels[0];
     const gasLimit = level.feeLimit;
-    const gasPrice = ethUnits.convert(level.feePerUnit, 'wei', 'gwei');
+    const gasPrice = fromWei(level.feePerUnit, 'gwei');
 
     // update custom fee
     dispatch({

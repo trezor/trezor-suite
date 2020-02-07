@@ -2,10 +2,8 @@ import { Output, State, EthTransactionData, EthPreparedTransaction } from '@wall
 import { Account } from '@wallet-types';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import BigNumber from 'bignumber.js';
-import { toHex } from 'web3-utils';
+import { toHex, toWei } from 'web3-utils';
 import { Transaction } from 'ethereumjs-tx';
-// @ts-ignore
-import ethUnits from 'ethereumjs-units';
 
 export const getOutput = (outputs: Output[], id: number) =>
     outputs.find(outputItem => outputItem.id === id) as Output;
@@ -128,12 +126,12 @@ export const prepareEthereumTransaction = (txInfo: EthTransactionData) => {
     // todo ERC20 support
     const result: EthPreparedTransaction = {
         to: txInfo.to,
-        value: toHex(ethUnits.convert(txInfo.amount, 'ether', 'wei')),
+        value: toHex(toWei(txInfo.amount, 'ether')),
         chainId: txInfo.chainId,
         token: null,
         nonce: toHex(txInfo.nonce),
         gasLimit: toHex(txInfo.gasLimit),
-        gasPrice: toHex(ethUnits.convert(txInfo.gasPrice, 'gwei', 'wei')),
+        gasPrice: toHex(toWei(txInfo.gasPrice, 'gwei')),
         r: '',
         s: '',
         v: '',

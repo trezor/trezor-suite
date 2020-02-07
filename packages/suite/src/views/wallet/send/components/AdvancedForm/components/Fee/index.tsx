@@ -3,13 +3,12 @@ import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { colors, Icon, P, Select, variables } from '@trezor/components-v2';
 import { Account } from '@wallet-types';
+import { fromWei, toWei } from 'web3-utils';
 import { FeeLevel } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { capitalizeFirstLetter } from '@suite-utils/string';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { calculateEthFee } from '@wallet-utils/sendFormUtils';
-// @ts-ignore
-import ethUnits from 'ethereumjs-units';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -115,7 +114,9 @@ const getValue = (
     if (networkType === 'ethereum') {
         const fee = calculateEthFee(feePerUnit, feeLimit || '0');
         try {
-            return `${ethUnits.convert(fee, 'gwei', 'eth')} ${symbol.toUpperCase()}`;
+            const gasPriceInWei = toWei(fee, 'gwei');
+            const gasPriceInEth = fromWei(gasPriceInWei, 'ether');
+            return `${gasPriceInEth} ${symbol.toUpperCase()}`;
         } catch (err) {
             return feePerUnit;
         }

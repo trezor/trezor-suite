@@ -2,7 +2,6 @@
 import { Dispatch, GetState } from '@suite-types';
 import { SEND } from '@wallet-actions/constants';
 import { ETH_DEFAULT_GAS_LIMIT, ETH_DEFAULT_GAS_PRICE } from '@wallet-constants/sendForm';
-import { Account } from '@wallet-types';
 import { FeeLevel, Output } from '@wallet-types/sendForm';
 import { formatNetworkAmount, getFiatValue } from '@wallet-utils/accountUtils';
 // import { formatNetworkAmount, getAccountKey, getFiatValue } from '@wallet-utils/accountUtils';
@@ -10,8 +9,7 @@ import { ParsedURI } from '@wallet-utils/cryptoUriParser';
 import { getOutput, hasDecimals, shouldComposeBy } from '@wallet-utils/sendFormUtils';
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import BigNumber from 'bignumber.js';
-// @ts-ignore
-import ethUnits from 'ethereumjs-units';
+import { fromWei } from 'web3-utils';
 
 import * as bitcoinActions from './sendFormBitcoinActions';
 import * as ethereumActions from './sendFormEthereumActions';
@@ -22,10 +20,9 @@ import * as commonActions from './sendFormCommonActions';
  * Initialize current form, load values from session storage
  */
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
-    // const { settings, send } = getState().wallet;
-    const { settings } = getState().wallet;
-    const { account } = getState().wallet.selectedAccount;
-    if (!account) return;
+    const { settings, selectedAccount } = getState().wallet;
+    if (selectedAccount.status !== 'loaded') return null;
+    const { account } = selectedAccount;
 
     // let cachedState = null;
     const convertedEthLevels: FeeLevel[] = [];
@@ -44,7 +41,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         initialLevels.forEach(level =>
             convertedEthLevels.push({
                 ...level,
-                feePerUnit: ethUnits.convert(level.feePerUnit, 'wei', 'gwei'),
+                feePerUnit: fromWei(level.feePerUnit, 'gwei'),
             }),
         );
     }
@@ -87,7 +84,9 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
 export const compose = (setMax = false) => async (dispatch: Dispatch, getState: GetState) => {
     dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: true });
-    const account = getState().wallet.selectedAccount.account as Account;
+    const { selectedAccount } = getState().wallet;
+    if (selectedAccount.status !== 'loaded') return null;
+    const { account } = selectedAccount;
     switch (account.networkType) {
         case 'bitcoin': {
             return dispatch(bitcoinActions.compose(setMax));

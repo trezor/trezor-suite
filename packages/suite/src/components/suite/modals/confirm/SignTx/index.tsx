@@ -8,8 +8,7 @@ import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { Translation } from '@suite-components/Translation';
 import { AppState, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
-// @ts-ignore
-import ethUnits from 'ethereumjs-units';
+import { fromWei, toWei } from 'web3-utils';
 
 import messages from '@suite/support/messages';
 
@@ -107,7 +106,8 @@ const getFeeValue = (
     symbol: Account['symbol'],
 ) => {
     if (networkType === 'ethereum') {
-        return ethUnits.convert(transactionInfo.feePerUnit, 'gwei', 'eth');
+        const gasPriceInWei = toWei(transactionInfo.feePerUnit, 'gwei');
+        return fromWei(gasPriceInWei, 'ether');
     }
 
     return `${formatNetworkAmount(transactionInfo.fee, symbol)}`;
