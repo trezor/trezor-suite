@@ -48,12 +48,6 @@ const Wrapper = styled.div`
     }
 `;
 
-const ProgressBarWrapper = styled.div`
-    height: 30px;
-    display: flex;
-    flex-direction: column;
-`;
-
 const ComponentWrapper = styled.div`
     display: flex;
     justify-content: center;
@@ -160,16 +154,13 @@ const Onboarding = (props: Props) => {
                 <title>Onboarding | Trezor Suite</title>
             </Head>
 
-            <ProgressBarWrapper>
-                {getStep().progress && (
-                    <ProgressBar
-                        total={steps.filter(s => s.progress).length}
-                        current={steps.findIndex(step => activeStepId === step.id)}
-                        showBuy={getStep().buy}
-                        showHelp={getStep().help}
-                    />
-                )}
-            </ProgressBarWrapper>
+            <ProgressBar
+                total={steps.filter(s => s.progress).length}
+                current={steps.findIndex(step => activeStepId === step.id)}
+                showBuy={getStep().buy}
+                showHelp={getStep().help}
+                hidden={!getStep().progress}
+            />
 
             <ComponentWrapper>
                 {errorState && (

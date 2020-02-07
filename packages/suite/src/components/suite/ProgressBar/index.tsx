@@ -35,6 +35,7 @@ const GrayBar = styled(Bar)<BarProps>`
     border: solid 2px #ebebeb;
     width: ${props => props.width};
     z-index: 2;
+    transition: all 0.5s;
 `;
 
 const GreenBar = styled(Bar)<BarProps>`
@@ -43,6 +44,7 @@ const GreenBar = styled(Bar)<BarProps>`
     border: solid 2px #30c100;
     width: ${props => props.width};
     z-index: 3;
+    transition: all 0.5s;
 `;
 
 const IconsContainer = styled.div`
@@ -57,6 +59,7 @@ interface Props {
     current: number;
     showBuy?: boolean;
     showHelp?: boolean;
+    hidden?: boolean;
 }
 
 const BuyButton = () => (
@@ -76,19 +79,23 @@ const HelpButton = () => (
 );
 
 const ProgressBar = (props: Props) => {
-    const { total, current, showBuy, showHelp } = props;
+    const { total, current, showBuy, showHelp, hidden } = props;
     const progress = (100 / total) * current;
     return (
         <Wrapper>
-            <BarContainer>
-                <GreenBar width={`${Math.min(Math.max(progress - 5, 0), 100)}%`} />
-                <GrayBar width={`${Math.min(progress, 100)}%`} />
-                <BackgroundBar />
-            </BarContainer>
-            <IconsContainer>
-                {showBuy ? <BuyButton /> : <div />}
-                {showHelp ? <HelpButton /> : <div />}
-            </IconsContainer>
+            {!hidden && (
+                <>
+                    <BarContainer>
+                        <GreenBar width={`${Math.min(Math.max(progress - 5, 0), 100)}%`} />
+                        <GrayBar width={`${Math.min(progress, 100)}%`} />
+                        <BackgroundBar />
+                    </BarContainer>
+                    <IconsContainer>
+                        {showBuy ? <BuyButton /> : <div />}
+                        {showHelp ? <HelpButton /> : <div />}
+                    </IconsContainer>
+                </>
+            )}
         </Wrapper>
     );
 };
