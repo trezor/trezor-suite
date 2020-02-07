@@ -100,12 +100,15 @@ const Pin = ({ device, onPinSubmit }: Props) => {
         <Wrapper>
             {!features?.pin_protection && (
                 <Col gray>
-                    <H2>Set up new PIN</H2>
+                    <H2>
+                        <Translation {...messages.TR_SET_UP_NEW_PIN} />
+                    </H2>
                     <Text>
-                        Set up a strong PIN to protect your device from unauthorized access. The
-                        keypad layout is displayed on your connected Trezor device.
+                        <Translation {...messages.TR_SET_UP_STRONG_PIN_TO_PROTECT} />
                     </Text>
-                    <Text>Maximum length is 9 digits.</Text>
+                    <Text>
+                        <Translation {...messages.TR_MAXIMUM_LENGTH_IS_9_DIGITS} />
+                    </Text>
                     <Expand>
                         <StyledImg src={resolveStaticPath('images/suite/set-up-pin-dialog.svg')} />
                     </Expand>

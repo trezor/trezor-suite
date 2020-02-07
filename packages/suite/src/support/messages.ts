@@ -1101,10 +1101,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Send {network} and tokens',
         id: 'TR_SEND_NETWORK_AND_TOKENS',
     },
-    TR_SENT_TO_SELF: {
-        defaultMessage: '(Sent to self)',
-        id: 'TR_SENT_TO_SELF',
-    },
     TR_SET_DEFAULT: {
         defaultMessage: 'Set default',
         id: 'TR_SET_DEFAULT',
@@ -1743,6 +1739,204 @@ const definedMessages = defineMessages({
     TR_BEGIN: {
         defaultMessage: "Let's begin!",
         id: 'TR_BEGIN',
+    },
+    TR_ENTER_PASSPHRASE: {
+        id: 'TR_ENTER_PASSPHRASE',
+        defaultMessage: 'Enter passphrase',
+    },
+    TR_CONFIRM_EMPTY_HIDDEN_WALLET: {
+        id: 'TR_CONFIRM_EMPTY_HIDDEN_WALLET',
+        defaultMessage: 'Confirm empty hidden wallet',
+    },
+    TR_UNLOCK: {
+        id: 'TR_UNLOCK',
+        defaultMessage: 'Unlock',
+    },
+    TR_THIS_HIDDEN_WALLET_IS_EMPTY: {
+        id: 'TR_THIS_HIDDEN_WALLET_IS_EMPTY',
+        defaultMessage:
+            'This hidden Wallet is empty. To make sure you are in the correct Wallet, confirm Passphrase',
+    },
+    TR_CONFIRM_PASSPHRASE: {
+        id: 'TR_CONFIRM_PASSPHRASE',
+        defaultMessage: 'Confirm passphrase',
+    },
+    TR_PASSPHRASE_HIDDEN_WALLET: {
+        id: 'TR_PASSPHRASE_HIDDEN_WALLET',
+        defaultMessage: 'Passphrase (hidden) wallet',
+    },
+    TR_ENTER_EXISTING_PASSPHRASE: {
+        id: 'TR_ENTER_EXISTING_PASSPHRASE',
+        defaultMessage:
+            'Enter existing passphrase to access existing hidden Wallet. Or enter new passphrase to create a new hidden Wallet.',
+    },
+    TR_ACCESS_HIDDEN_WALLET: {
+        id: 'TR_ACCESS_HIDDEN_WALLET',
+        defaultMessage: 'Access Hidden Wallet',
+    },
+    TR_SELECT_WALLET_TO_ACCESS: {
+        id: 'TR_SELECT_WALLET_TO_ACCESS',
+        defaultMessage: 'Select a wallet to access',
+    },
+    TR_CHOOSE_BETWEEN_NO_PASSPHRASE: {
+        id: 'TR_CHOOSE_BETWEEN_NO_PASSPHRASE',
+        defaultMessage: 'Choose between no-passphrase or hidden wallet with passphrase.',
+    },
+    TR_WHAT_IS_PASSPHRASE: {
+        id: 'TR_WHAT_IS_PASSPHRASE',
+        defaultMessage: 'What is passphrase',
+    },
+    TR_TO_ACCESS_STANDARD_NO_PASSPHRASE: {
+        id: 'TR_TO_ACCESS_STANDARD_NO_PASSPHRASE',
+        defaultMessage: 'To access standard (no-passphrase) Wallet click the button below.',
+    },
+    TR_ACCESS_STANDARD_WALLET: {
+        id: 'TR_ACCESS_STANDARD_WALLET',
+        defaultMessage: 'Access standard Wallet',
+    },
+    TR_I_UNDERSTAND_PASSPHRASE: {
+        id: 'TR_I_UNDERSTAND_PASSPHRASE',
+        defaultMessage: 'I understand passphrase is not saved anywhere and can’t be restored.',
+    },
+    TR_ENTER_PASSPHRASE_ON_DEVICE: {
+        id: 'TR_ENTER_PASSPHRASE_ON_DEVICE',
+        defaultMessage: 'Enter passphrase on device',
+    },
+    TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON: {
+        id: 'TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON',
+        defaultMessage: 'Confirm empty hidden wallet passphrase on "{deviceLabel}" device.',
+    },
+    TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE: {
+        id: 'TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE',
+        defaultMessage:
+            'This hidden Wallet is empty. To make sure you are in the correct Wallet, select Passphrase source.',
+    },
+    TR_ENTER_PASSPHRASE_ON_DEVICE_LABEL: {
+        id: 'TR_ENTER_PASSPHRASE_ON_DEVICE_LABEL',
+        defaultMessage: 'Enter passphrase on "{deviceLabel}" device.',
+    },
+    TR_CONFIRM_PASSPHRASE_SOURCE: {
+        id: 'TR_CONFIRM_PASSPHRASE_SOURCE',
+        defaultMessage: 'Confirm empty hidden wallet passphrase source on "{deviceLabel}" device.',
+    },
+    TR_SELECT_PASSPHRASE_SOURCE: {
+        id: 'TR_SELECT_PASSPHRASE_SOURCE',
+        defaultMessage: 'Select passphrase source on "{deviceLabel}" device.',
+    },
+    TR_SET_UP_NEW_PIN: {
+        id: 'TR_SET_UP_NEW_PIN',
+        defaultMessage: 'Set up new PIN',
+    },
+    TR_SET_UP_STRONG_PIN_TO_PROTECT: {
+        id: 'TR_SET_UP_STRONG_PIN_TO_PROTECT',
+        defaultMessage:
+            'Set up a strong PIN to protect your device from unauthorized access. The keypad layout is displayed on your connected Trezor device.',
+    },
+    TR_MAXIMUM_LENGTH_IS_9_DIGITS: {
+        id: 'TR_MAXIMUM_LENGTH_IS_9_DIGITS',
+        defaultMessage: 'Maximum length is 9 digits.',
+    },
+    TR_TRANSACTION_DETAILS: {
+        id: 'TR_TRANSACTION_DETAILS',
+        defaultMessage: 'Transaction details',
+    },
+    TR_SHOW_DETAILS_IN_BLOCK_EXPLORER: {
+        id: 'TR_SHOW_DETAILS_IN_BLOCK_EXPLORER',
+        defaultMessage: 'Show details in Block Explorer',
+    },
+    TR_CLOSE: {
+        id: 'TR_CLOSE',
+        defaultMessage: 'Close',
+    },
+    TR_OUTGOING: {
+        id: 'TR_OUTGOING',
+        defaultMessage: 'Outgoing',
+    },
+    TR_INCOMING: {
+        id: 'TR_INCOMING',
+        defaultMessage: 'Incoming',
+    },
+    TR_SENT_TO_SELF: {
+        id: 'TR_SENT_TO_SELF',
+        defaultMessage: 'Sent to self',
+    },
+    TR_UNKNOWN: {
+        id: 'TR_UNKNOWN',
+        defaultMessage: 'Unknown',
+    },
+    TR_STATUS: {
+        id: 'TR_STATUS',
+        defaultMessage: 'Status',
+    },
+    TR_TX_CONFIRMATIONS: {
+        id: 'TR_TX_CONFIRMATIONS',
+        defaultMessage:
+            '{confirmationsCount} {confirmationsCount, plural, one {confirmation} other {confirmations}}',
+    },
+    TR_MINED_TIME: {
+        id: 'TR_MINED_TIME',
+        defaultMessage: 'Mined Time',
+    },
+    TR_FIRST_SEEN: {
+        id: 'TR_FIRST_SEEN',
+        defaultMessage: 'First Seen',
+    },
+    TR_TOTAL_INPUT: {
+        id: 'TR_TOTAL_INPUT',
+        defaultMessage: 'Total Input',
+    },
+    TR_TOTAL_OUTPUT: {
+        id: 'TR_TOTAL_OUTPUT',
+        defaultMessage: 'Total Output',
+    },
+    TR_TRANSACTION_ID: {
+        id: 'TR_TRANSACTION_ID',
+        defaultMessage: 'Transaction ID',
+    },
+    TR_UNKNOWN_CONFIRMATION_TIME: {
+        id: 'TR_UNKNOWN_CONFIRMATION_TIME',
+        defaultMessage: 'unknown',
+    },
+    TR_CONFIRMED_TX: {
+        id: 'TR_CONFIRMED_TX',
+        defaultMessage: 'Confirmed',
+    },
+    TR_TX_FEE: {
+        id: 'TR_TX_FEE',
+        defaultMessage: 'Fee',
+    },
+    TR_UNCONFIRMED_TX: {
+        id: 'TR_UNCONFIRMED_TX',
+        defaultMessage: 'Unconfirmed',
+    },
+    TR_TX_TYPE: {
+        id: 'TR_TX_TYPE',
+        defaultMessage: 'Type',
+    },
+    TR_TX_CURRENT_VALUE: {
+        id: 'TR_TX_CURRENT_VALUE',
+        defaultMessage: 'Current Value',
+    },
+    TR_TX_HISTORICAL_VALUE_DATE: {
+        id: 'TR_TX_HISTORICAL_VALUE_DATE',
+        defaultMessage: 'Historical Value ({date})',
+    },
+    TR_DEVICE_NEEDS_ATTENTION: {
+        id: 'TR_DEVICE_NEEDS_ATTENTION',
+        defaultMessage: 'Device needs attention',
+    },
+    TR_SOLVE_ISSUE: {
+        id: 'TR_SOLVE_ISSUE',
+        defaultMessage: 'Solve issue',
+    },
+    TR_COIN_DISCOVERY_IN_PROGRESS: {
+        id: 'TR_COIN_DISCOVERY_IN_PROGRESS',
+        defaultMessage: 'Coin discovery in progress…',
+    },
+    TR_TO_FIND_YOUR_ACCOUNTS_AND: {
+        id: 'TR_TO_FIND_YOUR_ACCOUNTS_AND',
+        defaultMessage:
+            'To find your accounts and funds we need to perform a coin discovery which will discover all your coins.',
     },
 });
 

@@ -185,7 +185,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                                     {/* TODO: warning icon */}
                                     <Icon icon="INFO" size={14} color={colors.RED_ERROR} />
                                 </AttentionIconWrapper>
-                                Device needs attention
+                                <Translation {...messages.TR_DEVICE_NEEDS_ATTENTION} />
                             </Attention>
                             <Button
                                 variant="secondary"
@@ -193,7 +193,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                                 // icon="REFRESH"
                                 onClick={() => onSolveIssueClick()}
                             >
-                                Solve issue
+                                <Translation {...messages.TR_SOLVE_ISSUE} />
                             </Button>
                         </Row>
                     )}
