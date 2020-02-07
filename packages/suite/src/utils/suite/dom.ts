@@ -64,7 +64,6 @@ export const copyToClipboard = (value: string) => {
             throw new Error('Copy command unsuccessful');
         }
         document.body.removeChild(el);
-        console.warn('COPIED', value, successful);
         return true;
     } catch (error) {
         return error.message;

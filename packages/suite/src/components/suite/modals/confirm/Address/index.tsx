@@ -12,9 +12,9 @@ import QRCode from './components/QRCode';
 import CheckOnTrezor from './components/CheckOnTrezor';
 import DeviceDisconnected from './components/DeviceDisconnected';
 
-const Wrapper = styled.div`
+const StyledWrapper = styled.div`
     max-width: 600px;
-    padding: 0px 48px;
+    padding: 40px;
 `;
 
 const Address = styled.div`
@@ -30,7 +30,7 @@ const Address = styled.div`
 
 const Row = styled.div`
     display: flex;
-    flex-direction: column;
+    justify-content: center;
 
     button + button {
         margin-top: 10px;
@@ -71,7 +71,7 @@ const ConfirmAddress = ({
     };
 
     return (
-        <Wrapper>
+        <StyledWrapper>
             <H2>
                 <Translation
                     {...messages.TR_ADDRESS_MODAL_TITLE}
@@ -85,14 +85,14 @@ const ConfirmAddress = ({
             )}
             <QRCode value={address} addressPath={addressPath} />
             <Address>{address}</Address>
-            {device.connected && <CheckOnTrezor />}
+            {device.connected && <CheckOnTrezor device={device} />}
             {!device.connected && <DeviceDisconnected label={device.label} />}
             <Row>
                 <Button variant="secondary" onClick={copyAddress}>
                     <Translation {...messages.TR_ADDRESS_MODAL_CLIPBOARD} />
                 </Button>
             </Row>
-        </Wrapper>
+        </StyledWrapper>
     );
 };
 

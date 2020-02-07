@@ -68,10 +68,9 @@ const FreshAddress = ({ account, addresses, showAddress, disabled, locked }: Pro
             ? `${firstFreshAddress.address.substring(0, 15)}…`
             : firstFreshAddress.address;
 
-    const addressPath =
-        account.networkType === 'bitcoin'
-            ? `/${parseBIP44Path(firstFreshAddress.path)!.addrIndex}`
-            : undefined;
+    const addressPath = isBitcoin
+        ? `/${parseBIP44Path(firstFreshAddress.path)!.addrIndex}`
+        : undefined;
 
     return (
         <StyledCard>
