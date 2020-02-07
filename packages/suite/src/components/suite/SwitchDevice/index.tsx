@@ -1,29 +1,24 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components-v2';
+import { colors, variables, H2 } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
+import ModalWrapper from '@suite-components/ModalWrapper';
 import * as deviceUtils from '@suite-utils/device';
 import DeviceItem from './components/DeviceItem/Container';
 import messages from '@suite/support/messages';
 import { Props } from './Container';
 
-const Wrapper = styled.div`
-    position: relative;
-    padding: 30px 24px;
-    display: flex;
+const Wrapper = styled(ModalWrapper)`
     flex-direction: column;
     text-align: center;
     width: 100%;
-    max-width: 600px;
-`;
-
-const Title = styled.div`
-    font-size: 15pt;
+    max-width: 720px;
 `;
 
 const Description = styled.div`
     font-size: ${variables.FONT_SIZE.BODY};
     line-height: 1.43;
+    width: 90%;
     margin-bottom: 20px;
     color: ${colors.BLACK50};
 `;
@@ -56,14 +51,15 @@ const SwitchDeviceModal = (props: Props) => {
     return (
         <Wrapper>
             <In>
-                <Title>
+                <H2>
                     <Translation {...messages.TR_SWITCH_DEVICE} />
-                </Title>
+                </H2>
                 <Description>
                     <Translation {...messages.TR_THIS_IS_PLACE_TO_SEE_ALL} />
                 </Description>
                 {sortedDevices.map(device => (
                     <DeviceItem
+                        key={device.path}
                         device={device}
                         instances={deviceUtils.getDeviceInstances(device, devices)}
                         backgroundRoute={backgroundRoute}

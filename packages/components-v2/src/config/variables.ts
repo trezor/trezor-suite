@@ -96,4 +96,6 @@ export const ICONS: IconType[] = [
     'EXTERNAL_LINK',
     'T1',
     'T2',
+    'BACK',
+    'SHOW',
 ];

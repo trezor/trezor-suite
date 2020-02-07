@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { SUITE } from '@suite-actions/constants';
 import { Modal as ModalComponent } from '@trezor/components-v2';
 import Loading from '@suite-components/Loading';
+import DiscoveryLoader from '@suite-components/DiscoveryLoader';
 import Modals from '@suite-components/modals';
 import * as routerActions from '@suite-actions/routerActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
@@ -12,6 +13,7 @@ import { AppState, Dispatch } from '@suite-types';
 import Firmware from '@firmware-views';
 import Onboarding from '@onboarding-views';
 import SeedInput from '@seed-input-views';
+import Backup from '@backup-views';
 import {
     Analytics,
     Bridge,
@@ -90,7 +92,7 @@ const getSuiteApplicationState = (props: Props) => {
 
     // account discovery in progress and didn't find any used account yet
     const authConfirmation = getDiscoveryAuthConfirmationStatus();
-    if (authConfirmation) return Loading;
+    if (authConfirmation) return DiscoveryLoader;
 };
 
 const getModalApplication = (route: Props['router']['route']) => {
@@ -112,6 +114,8 @@ const getModalApplication = (route: Props['router']['route']) => {
             return SwitchDevice;
         case 'seed-input':
             return SeedInput;
+        case 'backup':
+            return Backup;
         default:
             break;
     }

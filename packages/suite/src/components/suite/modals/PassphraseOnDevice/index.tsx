@@ -1,12 +1,27 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { Prompt } from '@trezor/components';
-import { P } from '@trezor/components-v2';
+import { P, variables, colors } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
+import ModalWrapper from '@suite-components/ModalWrapper';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { Dispatch, TrezorDevice } from '@suite-types';
 import messages from '@suite/support/messages';
+import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
+
+const Wrapper = styled(ModalWrapper)`
+    max-width: 360px;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+`;
+
+const Title = styled.div`
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    text-align: center;
+    color: ${colors.BLACK0};
+    margin-bottom: 20px;
+`;
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     getDiscoveryAuthConfirmationStatus: () =>
@@ -17,29 +32,26 @@ type Props = {
     device: TrezorDevice;
 } & ReturnType<typeof mapDispatchToProps>;
 
-const Wrapper = styled.div`
-    max-width: 360px;
-    padding: 30px 48px;
-`;
-
 /**
  * Modal used with model T with legacy firmware as result of 'ButtonRequest_PassphraseType' where passphrase source is requested on device
  * @param {Props}
  */
 const PassphraseOnDevice = ({ device, getDiscoveryAuthConfirmationStatus }: Props) => {
-    const majorVersion = device.features ? device.features.major_version : 2;
     const authConfirmation = getDiscoveryAuthConfirmationStatus() || device.authConfirm;
 
     if (authConfirmation) {
         return (
             <Wrapper>
-                <Prompt model={majorVersion} size={32}>
-                    Confirm empty hidden wallet passphrase on "{device.label}" device.
-                </Prompt>
+                <Title>
+                    <Translation
+                        {...messages.TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON}
+                        values={{ deviceLabel: device.label }}
+                    />
+                </Title>
+                <DeviceConfirmImage device={device} />
                 {/* TODO: similar text is in Passphrase modal */}
                 <P size="small">
-                    This hidden Wallet is empty. To make sure you are in the correct Wallet, select
-                    Passphrase source.
+                    <Translation {...messages.TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE} />
                 </P>
             </Wrapper>
         );
@@ -47,9 +59,13 @@ const PassphraseOnDevice = ({ device, getDiscoveryAuthConfirmationStatus }: Prop
 
     return (
         <Wrapper>
-            <Prompt model={majorVersion} size={32}>
-                Enter passphrase on "{device.label}" device.
-            </Prompt>
+            <Title>
+                <Translation
+                    {...messages.TR_ENTER_PASSPHRASE_ON_DEVICE_LABEL}
+                    values={{ deviceLabel: device.label }}
+                />
+            </Title>
+            <DeviceConfirmImage device={device} />
             <P size="small">
                 <Translation {...messages.TR_PASSPHRASE_CASE_SENSITIVE} />
             </P>

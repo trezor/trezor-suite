@@ -4,7 +4,7 @@ import { injectIntl, WrappedComponentProps } from 'react-intl';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import * as backupActions from '@settings-actions/backupActions';
+import * as backupActions from '@backup-actions/backupActions';
 import { Dispatch, AppState } from '@suite-types';
 import SecurityFeatures from './index';
 

@@ -6,8 +6,7 @@ import { Icon } from '../Icon';
 import colors from '../../config/colors';
 
 const Wrapper = styled.div`
-    display: inline-flex;
-    flex-direction: row;
+    display: flex;
     cursor: pointer;
     align-items: center;
 
@@ -28,6 +27,8 @@ const IconWrapper = styled.div<IconWrapperProps>`
     justify-content: center;
     align-items: center;
     width: 19px;
+    min-width: 19px;
+    max-width: 19px;
     height: 19px;
     border-radius: 3px;
     box-shadow: ${props => (!props.isChecked ? `inset 0 3px 6px 0 ${colors.BLACK92}` : `none`)};

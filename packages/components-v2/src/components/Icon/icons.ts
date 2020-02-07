@@ -35,4 +35,7 @@ export const ICONS = {
     EXTERNAL_LINK: require('../../images/icons/external_link.svg'),
     T1: require('../../images/icons/t1.svg'),
     T2: require('../../images/icons/t2.svg'),
+    SHOW: require('../../images/icons/show.svg'),
+    HIDE: require('../../images/icons/hide.svg'),
+    BACK: require('../../images/icons/back.svg'),
 };

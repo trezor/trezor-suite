@@ -10,13 +10,14 @@ import * as routerActions from '@suite-actions/routerActions';
 import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { AppState, Dispatch, TrezorDevice } from '@suite-types';
 import { Account, Network, ExternalNetwork } from '@wallet-types';
+import ModalWrapper from '@suite-components/ModalWrapper';
 import messages from '@suite/support/messages';
 import NetworkSelect from './components/NetworkSelect';
 import AccountSelect from './components/AccountSelect';
 import ExternalWallet from './components/ExternalWallet';
 
-const Wrapper = styled.div`
-    padding: 40px 50px;
+const Wrapper = styled(ModalWrapper)`
+    flex-direction: column;
     width: 420px;
 `;
 

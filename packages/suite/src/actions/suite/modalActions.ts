@@ -1,6 +1,7 @@
 import TrezorConnect, { UI } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
 import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
+import { Account } from '@wallet-types';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 
 export type UserContextPayload =
@@ -11,7 +12,19 @@ export type UserContextPayload =
     | {
           type: 'unverified-address';
           device: TrezorDevice;
+          address: string;
           addressPath: string;
+          symbol: Account['symbol'];
+          networkType: Account['networkType'];
+      }
+    | {
+          type: 'address';
+          device: TrezorDevice;
+          address: string;
+          addressPath: string;
+          symbol: Account['symbol'];
+          networkType: Account['networkType'];
+          cancelable?: boolean;
       }
     | {
           type: 'add-account';

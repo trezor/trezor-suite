@@ -1,15 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
-
-import AccountName from '@wallet-components/AccountName';
 import { WalletLayout } from '@wallet-components';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Dispatch } from '@suite-types';
-import ReceiveForm from './components/ReceiveForm';
-import messages from '@suite/support/messages';
+import Header from './components/Header';
+import FreshAddress from './components/FreshAddress';
+import UsedAddresses from './components/UsedAddresses';
 
 const mapStateToProps = (state: AppState) => ({
     selectedAccount: state.wallet.selectedAccount,
@@ -23,60 +21,43 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     showAddress: bindActionCreators(receiveActions.showAddress, dispatch),
 });
 
-type Props = WrappedComponentProps &
-    ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>;
+type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+export interface ChildProps {
+    account: NonNullable<Props['selectedAccount']['account']>;
+    addresses: Props['receive'];
+    showAddress: Props['showAddress'];
+    disabled: boolean;
+    locked: boolean;
+}
 
 const AccountReceive = (props: Props) => {
-    const { device } = props;
+    const { device, locks, receive } = props;
     if (!device || props.selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Receive" account={props.selectedAccount} />;
     }
-    const { account, network } = props.selectedAccount;
-
-    const isAddressPartiallyHidden = (descriptor: string) => {
-        const receiveInfo = props.receive.addresses.find(r => r.descriptor === descriptor);
-        if (receiveInfo) {
-            return (
-                !receiveInfo.isAddressVerifying &&
-                !receiveInfo.isAddressVerified &&
-                !receiveInfo.isAddressUnverified &&
-                !account.imported
-            );
-        }
-        return true;
-    };
-
-    const getAddressReceiveInfo = (descriptor: string) => {
-        const receiveInfo = props.receive.addresses.find(r => r.descriptor === descriptor);
-        if (receiveInfo) {
-            return receiveInfo;
-        }
-        return null;
-    };
-
-    const showButtonDisabled =
-        props.locks.includes(SUITE.LOCK_TYPE.DEVICE) || props.locks.includes(SUITE.LOCK_TYPE.UI);
-
-    const accountNameMessage =
-        account && account.networkType === 'ethereum'
-            ? messages.TR_RECEIVE_NETWORK_AND_TOKENS
-            : messages.TR_RECEIVE_NETWORK;
+    const { account } = props.selectedAccount;
+    const locked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
+    const disabled = !!device.authConfirm;
 
     return (
         <WalletLayout title="Receive" account={props.selectedAccount}>
-            <ReceiveForm
-                showButtonDisabled={showButtonDisabled}
+            <Header account={account} />
+            <FreshAddress
                 account={account}
-                device={device}
+                addresses={receive}
                 showAddress={props.showAddress}
-                isAddressPartiallyHidden={isAddressPartiallyHidden}
-                getAddressReceiveInfo={getAddressReceiveInfo}
-                networkType={network.networkType}
-                title={<AccountName account={account} message={accountNameMessage} />}
+                disabled={disabled}
+                locked={locked}
+            />
+            <UsedAddresses
+                account={account}
+                addresses={receive}
+                showAddress={props.showAddress}
+                disabled={disabled}
+                locked={locked}
             />
         </WalletLayout>
     );
 };
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(AccountReceive));
+export default connect(mapStateToProps, mapDispatchToProps)(AccountReceive);

@@ -19,7 +19,7 @@ import PassphraseOnDevice from './PassphraseOnDevice';
 import ConfirmAction from './confirm/Action';
 import Word from './Word';
 import WordAdvanced from './WordAdvanced';
-// import ConfirmAddress from './confirm/Address';
+import ConfirmAddress from './confirm/Address';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ConfirmSignTx from './confirm/SignTx';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
@@ -73,8 +73,12 @@ const getDeviceContextModal = (props: Props) => {
         case UI.REQUEST_PASSPHRASE_ON_DEVICE:
         case 'ButtonRequest_PassphraseEntry':
             return <PassphraseOnDevice device={device} />;
-
+        case 'ButtonRequest_SignTx': {
+            return <ConfirmSignTx device={device} />;
+        }
         // Button requests
+        // todo: consider fallback (if windowType.cointains('ButtonRequest'))
+        case 'ButtonRequest_Success':
         case 'ButtonRequest_ProtectCall':
         case 'ButtonRequest_Other':
         case 'ButtonRequest_ResetDevice': // dispatched on BackupDevice call for model T, weird but true
@@ -83,10 +87,6 @@ const getDeviceContextModal = (props: Props) => {
         case 'ButtonRequest_WipeDevice':
             // case 'ButtonRequest_FirmwareUpdate': // ? fake UI event, see firmwareActions
             return <ConfirmAction device={device} />;
-        case 'ButtonRequest_SignTx': {
-            return <ConfirmSignTx device={device} />;
-        }
-
         default:
             return null;
     }
@@ -127,11 +127,12 @@ const getUserContextModal = (props: Props) => {
                 />
             );
         case 'unverified-address':
+            return <ConfirmUnverifiedAddress {...payload} onCancel={modalActions.onCancel} />;
+        case 'address':
             return (
-                <ConfirmUnverifiedAddress
-                    device={payload.device}
-                    addressPath={payload.addressPath}
-                    onCancel={modalActions.onCancel}
+                <ConfirmAddress
+                    {...payload}
+                    onCancel={payload.cancelable ? modalActions.onCancel : undefined}
                 />
             );
         case 'device-background-gallery':
@@ -179,8 +180,9 @@ const Modal = (props: Props) => {
                 // if modal has onCancel action set cancelable to true and pass the onCancel action
                 cancelable={modalComponent.props.onCancel}
                 onCancel={modalComponent.props.onCancel}
+                padding="0px"
             >
-                <FocusLock>{modalComponent}</FocusLock>
+                {modalComponent}
             </ModalComponent>
         );
     }

@@ -1,6 +1,3 @@
-import colors from '@trezor/components/lib/config/colors'; // TODO: fix this import, jest fails on svg parsing
-import { WrappedComponentProps } from 'react-intl';
-import messages from '@suite/support/messages';
 import { Device } from 'trezor-connect';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
 
@@ -45,60 +42,21 @@ export const getStatus = (device: TrezorDevice): string => {
     return 'unknown';
 };
 
-export const getStatusName = (
-    deviceStatus: string,
-    intl: WrappedComponentProps['intl'],
-): string => {
+export const deviceNeedsAttention = (deviceStatus: string): boolean => {
     switch (deviceStatus) {
-        case 'connected':
-            return intl.formatMessage(messages.TR_CONNECTED);
-        case 'disconnected':
-            return intl.formatMessage(messages.TR_DISCONNECTED);
-        case 'bootloader':
-            return intl.formatMessage(messages.TR_CONNECTED_BOOTLOADER);
-        case 'initialize':
-            return intl.formatMessage(messages.TR_CONNECTED_NOT_INITIALIZED);
-        case 'seedless':
-            return intl.formatMessage(messages.TR_CONNECTED_SEEDLESS);
-        case 'firmware-required':
-            return intl.formatMessage(messages.TR_CONNECTED_UPDATE_REQUIRED);
-        case 'firmware-recommended':
-            return intl.formatMessage(messages.TR_CONNECTED_UPDATE_RECOMMENDED);
-        case 'used-in-other-window':
-            return intl.formatMessage(messages.TR_USED_IN_ANOTHER_WINDOW);
-        case 'was-used-in-other-window':
-            return intl.formatMessage(messages.TR_WAS_USED_IN_ANOTHER_WINDOW);
-        case 'unacquired':
-            return intl.formatMessage(messages.TR_USED_IN_ANOTHER_WINDOW);
-        case 'unavailable':
-            return intl.formatMessage(messages.TR_UNAVAILABLE);
-        case 'unreadable':
-            return intl.formatMessage(messages.TR_UNREADABLE);
-        default:
-            return intl.formatMessage(messages.TR_STATUS_UNKNOWN);
-    }
-};
-
-export const getStatusColor = (deviceStatus: string): string => {
-    switch (deviceStatus) {
-        case 'connected':
-            return colors.GREEN_PRIMARY;
-        case 'disconnected':
-            return colors.ERROR_PRIMARY;
+        // case 'firmware-recommended':
         case 'bootloader':
         case 'initialize':
         case 'seedless':
-        case 'firmware-recommended':
         case 'used-in-other-window':
         case 'was-used-in-other-window':
         case 'unacquired':
-            return colors.WARNING_PRIMARY;
         case 'firmware-required':
         case 'unavailable':
         case 'unreadable':
-            return colors.ERROR_PRIMARY;
+            return true;
         default:
-            return colors.TEXT_PRIMARY;
+            return false;
     }
 };
 

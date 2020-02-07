@@ -1,17 +1,26 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Loader } from '@trezor/components-v2';
+import ModalWrapper, { Props as ModalWrapperProps } from '@suite-components/ModalWrapper';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 
-const LoaderWrapper = styled.div`
+const LoaderWrapper = styled(ModalWrapper)`
     display: flex;
     flex: 1;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    /* width: 360px;
+    height: 400px; */
 `;
+const Image = styled.img``;
 
-const Loading = () => (
-    <LoaderWrapper>
-        <Loader text="Loading" size={100} strokeWidth={1} />
+interface Props extends ModalWrapperProps {
+    imageProps?: React.HTMLAttributes<HTMLImageElement>;
+}
+
+const Loading = (props: Props) => (
+    <LoaderWrapper {...props}>
+        <Image src={resolveStaticPath(`images/suite/spinner.svg`)} {...props.imageProps} />
     </LoaderWrapper>
 );
 
