@@ -58,34 +58,34 @@ const Index = (props: Props) => {
                 <Translation>{messages.TR_HELP_TREZOR_SUITE}</Translation>
             </H2>
             <Body>
-            <P size="tiny">
-                <Translation
-                    {...messages.TR_HELP_TREZOR_SUITE_TEXT_1}
-                    values={{
-                        TR_HELP_TREZOR_SUITE_TEXT_1_FAT: (
-                            <Bold>
-                                <Translation>
-                                    {messages.TR_HELP_TREZOR_SUITE_TEXT_1_FAT}
-                                </Translation>
-                            </Bold>
-                        ),
-                    }}
-                />
-            </P>
-            <Bold>
-                <Translation>{messages.TR_HELP_TREZOR_SUITE_TEXT_2}</Translation>
-            </Bold>
+                <P size="tiny">
+                    <Translation
+                        {...messages.TR_HELP_TREZOR_SUITE_TEXT_1}
+                        values={{
+                            TR_HELP_TREZOR_SUITE_TEXT_1_FAT: (
+                                <Bold>
+                                    <Translation>
+                                        {messages.TR_HELP_TREZOR_SUITE_TEXT_1_FAT}
+                                    </Translation>
+                                </Bold>
+                            ),
+                        }}
+                    />
+                </P>
+                <Bold>
+                    <Translation>{messages.TR_HELP_TREZOR_SUITE_TEXT_2}</Translation>
+                </Bold>
 
-            <StyledImg alt="" src={resolveStaticPath('images/welcome/analytics.svg')} />
+                <StyledImg alt="" src={resolveStaticPath('images/welcome/analytics.svg')} />
 
-            <Analytics />
+                <Analytics />
 
-            <Button
-                onClick={() => props.goto('onboarding-index')}
-                data-test="@button/go-to-onboarding"
-            >
-                <Translation>{messages.TR_CONTINUE}</Translation>
-            </Button>
+                <Button
+                    onClick={() => props.goto('onboarding-index')}
+                    data-test="@button/go-to-onboarding"
+                >
+                    <Translation>{messages.TR_CONTINUE}</Translation>
+                </Button>
             </Body>
 
             <BottomP size="tiny">

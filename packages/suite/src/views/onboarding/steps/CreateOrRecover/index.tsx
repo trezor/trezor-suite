@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Translation } from '@suite-components';
 import * as STEP from '@onboarding-constants/steps';
-import { Text, Option, Wrapper } from '@onboarding-components';
+import { Text, Option, Wrapper, OnboardingButton } from '@onboarding-components';
 import messages from '@suite/support/messages';
 import { Props } from './Container';
 
@@ -43,6 +43,15 @@ const CreateOrRecoverStep = (props: Props) => {
                     />
                 </Wrapper.Options>
             </Wrapper.StepBody>
+            <Wrapper.StepFooter>
+                <OnboardingButton.Back
+                    onClick={() => {
+                        props.goToPreviousStep();
+                    }}
+                >
+                    Back
+                </OnboardingButton.Back>
+            </Wrapper.StepFooter>
         </Wrapper.Step>
     );
 };

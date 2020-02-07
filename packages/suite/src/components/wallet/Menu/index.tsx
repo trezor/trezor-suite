@@ -32,7 +32,7 @@ const TitleText = styled.div`
     text-transform: uppercase;
     font-size: 16px;
     font-weight: 600;
-    color: ${colors.BLACK50}
+    color: ${colors.BLACK50};
 `;
 
 const TitleActions = styled.div`
