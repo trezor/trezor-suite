@@ -14,6 +14,7 @@ import WordInputAdvanced from './WordInputAdvanced';
 import ProgressBar from './ProgressBar';
 import ModalWrapper from './ModalWrapper';
 import Loading from './Loading';
+import WebusbButton from './WebusbButton';
 
 import { Translation } from './Translation';
 
@@ -35,4 +36,5 @@ export {
     ProgressBar,
     ModalWrapper,
     Loading,
+    WebusbButton,
 };
