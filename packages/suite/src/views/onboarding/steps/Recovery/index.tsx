@@ -18,7 +18,7 @@ const RecoveryStep = (props: Props) => {
         recoverDevice,
         recovery,
         device,
-        modal,
+        // modal,
         resetReducer,
     } = props;
 
@@ -86,10 +86,11 @@ const RecoveryStep = (props: Props) => {
                 )}
 
                 {recovery.status === 'in-progress' && (
-                    <>
-                        {!modal && <Loading />}
-                        {modal && modal}
-                    </>
+                    // <>
+                    //     {!modal && <Loading />}
+                    //     {modal && modal}
+                    // </>
+                    <Loading />
                 )}
 
                 {recovery.status === 'finished' && !recovery.error && (

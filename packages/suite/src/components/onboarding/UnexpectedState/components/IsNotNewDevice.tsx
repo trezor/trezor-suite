@@ -11,6 +11,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import { Text, Wrapper, OnboardingButton } from '@onboarding-components';
 import messages from '@suite/support/messages';
 import { AppState, Dispatch } from '@suite-types';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     actionAlt: bindActionCreators(onboardingActions.removePath, dispatch),
@@ -32,6 +33,7 @@ const IsNotNewDevice = ({ actionAlt, closeModalApp, device }: Props) => {
             <Text>
                 <Translation>{messages.TR_IS_NOT_NEW_DEVICE}</Translation>
             </Text>
+            <img alt="" src={resolveStaticPath('images/suite/uni-warning.svg')} />
             <Wrapper.Controls>
                 <Link href={SUPPORT_URL}>
                     <OnboardingButton.Cta style={{ width: '100%' }}>
@@ -39,17 +41,15 @@ const IsNotNewDevice = ({ actionAlt, closeModalApp, device }: Props) => {
                     </OnboardingButton.Cta>
                 </Link>
 
-                {
-                    device.mode !== 'initialize' && (
-                        <OnboardingButton.Alt
-                            onClick={() => closeModalApp() }
-                            data-test="@onboarding/unexpected-state/go-to-suite-button"
-                        >
-                            Go to Suite
-                        </OnboardingButton.Alt>
-                    )
-                }
-                {device.mode === 'initialize' && device.firmware !== 'none' && device.mode !== 'bootloader' && (
+                {device.mode !== 'initialize' && (
+                    <OnboardingButton.Alt
+                        onClick={() => closeModalApp()}
+                        data-test="@onboarding/unexpected-state/go-to-suite-button"
+                    >
+                        Go to Suite
+                    </OnboardingButton.Alt>
+                )}
+                {device.mode === 'initialize' && device.firmware !== 'none' && (
                     <OnboardingButton.Alt
                         onClick={() => actionAlt([STEP.PATH_NEW])}
                         data-test="@onboarding/unexpected-state/use-it-anyway-button"
