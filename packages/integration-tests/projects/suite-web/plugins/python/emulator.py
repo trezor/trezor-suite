@@ -108,9 +108,6 @@ def decision():
     client.close()
 
 def input(word):
-    # TODO:
-    # - "path" parameter to work with correct device, keep transport with device
-    # Setup link
     transport = get_bridge_device()
     print(transport)
     client = DebugLink(transport.find_debug())
@@ -142,4 +139,32 @@ def swipe(direction):
         client.swipe_down();
     elif direction == 'left':
         client.swipe_left()
+    client.close()
+    
+def read_and_confirm_mnemonic():
+    transport = get_bridge_device()
+    print(transport)
+    client = DebugLink(transport.find_debug())
+    client.open()
+    time.sleep(0.6)  # trezord needs time to populate changes
+    mnem = client.read_mnemonic_secret().decode("utf-8")
+    mnemonic = mnem.split()
+    client.swipe_up()
+    client.swipe_up()
+    client.swipe_up()
+    client.press_yes()
+    time.sleep(1)
+    index = client.read_reset_word_pos()
+    client.input(mnemonic[index])
+    time.sleep(1)
+    index = client.read_reset_word_pos()
+    client.input(mnemonic[index])
+    time.sleep(1)
+    index = client.read_reset_word_pos()
+    client.input(mnemonic[index])
+    time.sleep(1)
+    client.press_yes()
+    time.sleep(1)
+    client.press_yes()
+    print(mnemonic)
     client.close()

@@ -117,6 +117,11 @@ module.exports = on => {
             await controller.disconnect();
             return null;
         },
-
+        readAndConfirmMnemonicEmu: async word => {
+            await controller.connect();
+            await controller.send({ type: 'emulator-read-and-confirm-mnemonic' });
+            await controller.disconnect();
+            return null;
+        },
     });
 };

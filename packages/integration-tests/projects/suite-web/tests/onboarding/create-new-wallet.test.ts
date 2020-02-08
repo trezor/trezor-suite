@@ -36,8 +36,9 @@ describe('Onboarding happy paths', () => {
         cy.task('sendDecision', 'resetDevice');
 
         cy.getTestElement('@onboarding/continue-to-security-button').click();
-        cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
-        cy.getTestElement('@backup/check-item/is-in-private').click();
-        cy.getTestElement('@backup/check-item/has-enough-time').click();
+        // cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
+        // cy.getTestElement('@backup/check-item/is-in-private').click();
+        // cy.getTestElement('@backup/check-item/has-enough-time').click();
+        cy.passThroughBackup();
     });
 });
