@@ -1373,10 +1373,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'You were disconnected.',
         id: 'TR_YOU_WERE_DISCONNECTED_DOT',
     },
-    TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL: {
-        defaultMessage: 'You will be redirected to external wallet',
-        id: 'TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL',
-    },
     TR_YOUR_TREZOR_IS_NOT_BACKED_UP: {
         defaultMessage: 'Your Trezor is not backed up',
         id: 'TR_YOUR_TREZOR_IS_NOT_BACKED_UP',
