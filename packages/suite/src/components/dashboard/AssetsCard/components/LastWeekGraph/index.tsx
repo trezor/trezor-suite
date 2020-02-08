@@ -56,7 +56,7 @@ interface Props {
 }
 
 const LastWeekGraph = React.memo(({ symbol }: Props) => {
-    let isGraphGreen = false;
+    const isGraphGreen = false;
 
     return (
         <ResponsiveContainer id={symbol} height="100%" width="100%">
