@@ -120,7 +120,7 @@ const CoinsGroup = ({
     filterFn,
     enabledNetworks,
 }: CoinsGroupProps) => (
-    <CoinsGroupWrapper>
+    <CoinsGroupWrapper data-test="@settings/wallet/coins-group">
         <Header>
             <HeaderLeft>
                 <SectionHeader>{label}</SectionHeader>

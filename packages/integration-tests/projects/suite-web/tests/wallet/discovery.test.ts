@@ -1,37 +1,23 @@
 // import { NETWORKS } from '@wallet-config';
 
-// todo: Finish with new design; had to stop with this after rebase.
-describe.skip('Discovery', () => {
+describe('Discovery', () => {
     before(() => {
         cy.task('startEmu');
         cy.task('setupEmu');
         cy.viewport(1024, 768).resetDb();
     });
 
-    // after(() => {
-    //     cy.task('stopEmu').task('stopBridge');
-    // });
-
     it('navigate to wallet settings page', () => {
-        cy.visit('/')
-            .onboardingShouldLoad()
-            .getTestElement('button-use-wallet')
-            .click()
-            .dashboardShouldLoad()
-            .toggleDeviceMenu()
-            .getTestElement('@suite/menu-item/wallet-settings')
-            .click();
-    });
+        cy.visit('/');
+        cy.passThroughInitialRun();
+        cy.getTestElement('@suite/menu/settings').click({ force: true });
+        cy.getTestElement('@suite/settings/menu/wallet').click({ force: true });
+        cy.get('[data-test="@settings/wallet/coins-group"] [role="switch"]').click({
+            multiple: true,
+            force: true,
+        });
 
-    // it('enable all networks', () => {
-    //     // btc is already checked, so first click is hide;
-    //     cy.getTestElement('@wallet/settings/toggle-all-mainnet')
-    //         .click()
-    //         .click();
-    //     cy.getTestElement('@wallet/settings/toggle-all-testnet').click();
-    //     cy.getTestElement('@wallet/settings/coin-switch').should(
-    //         'have.length',
-    //         NETWORKS.filter(n => !n.accountType).length,
-    //     );
-    // });
+        // todo: just loading dashboard now, need to add assertions;
+        cy.getTestElement('@suite/menu/suite-index').click();
+    });
 });

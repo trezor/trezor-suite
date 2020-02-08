@@ -88,6 +88,7 @@ const Menu = (props: Props) => (
             return (
                 <MenuItemWrapper key={text}>
                     <In
+                        data-test={`@suite/menu/${route}`}
                         onClick={() => !isDisabled && props.goto(routeObj!.name)}
                         isActive={isActive}
                         isDisabled={isDisabled}
