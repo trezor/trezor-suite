@@ -91,6 +91,7 @@ const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props)
 
                 return (
                     <StyledAsset
+                        data-test="@dashboard/asset-card"
                         key={symbol}
                         name={network.name}
                         symbol={network.symbol}

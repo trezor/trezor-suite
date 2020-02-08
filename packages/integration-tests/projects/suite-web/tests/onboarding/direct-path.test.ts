@@ -39,11 +39,11 @@ describe('Onboarding happy paths', () => {
 
         cy.passThroughBackup();
 
-        cy.getTestElement('@onboarding/set-pin-button').click();
-        cy.task('sendDecision');
+        // cy.getTestElement('@onboarding/set-pin-button').click();
+        // cy.task('sendDecision');
         // cy.task('enterPinEmu');
-        cy.getTestElement('@onboarding/skip-button').click();
-        cy.getTestElement('@onboarding/exit-app-button').click();
+        // cy.getTestElement('@onboarding/skip-button').click();
+        // cy.getTestElement('@onboarding/exit-app-button').click();
     });
 });
 

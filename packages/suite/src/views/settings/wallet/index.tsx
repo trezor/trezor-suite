@@ -110,6 +110,7 @@ interface CoinsGroupProps {
     onToggleOneFn: (symbol: Network['symbol'], visible: boolean) => void;
     filterFn: FilterFn;
     enabledNetworks: Network['symbol'][];
+    type: 'mainnet' | 'testnet'; // used in tests
 }
 
 const CoinsGroup = ({
@@ -119,6 +120,7 @@ const CoinsGroup = ({
     onToggleOneFn,
     filterFn,
     enabledNetworks,
+    ...props
 }: CoinsGroupProps) => (
     <CoinsGroupWrapper data-test="@settings/wallet/coins-group">
         <Header>
@@ -126,7 +128,10 @@ const CoinsGroup = ({
                 <SectionHeader>{label}</SectionHeader>
                 {description && <P size="tiny">{description}</P>}
             </HeaderLeft>
-            <ToggleAll onClick={() => onToggleAllFn(filterFn)}>
+            <ToggleAll
+                onClick={() => onToggleAllFn(filterFn)}
+                data-test={`@settings/wallet/coins-group/${props.type}/toggle-all`}
+            >
                 {NETWORKS.filter(filterFn).some(n => enabledNetworks.includes(n.symbol)) ? (
                     <Translation {...messages.TR_DEACTIVATE_ALL} />
                 ) : (
@@ -189,6 +194,7 @@ const Settings = (props: Props) => {
                     filterFn={baseNetworksFilterFn}
                     onToggleOneFn={props.changeCoinVisibility}
                     onToggleAllFn={props.toggleGroupCoinsVisibility}
+                    type="mainnet"
                 />
 
                 <CoinsGroup
@@ -198,6 +204,7 @@ const Settings = (props: Props) => {
                     filterFn={testnetNetworksFilterFn}
                     onToggleOneFn={props.changeCoinVisibility}
                     onToggleAllFn={props.toggleGroupCoinsVisibility}
+                    type="testnet"
                 />
 
                 <SectionHeader>
