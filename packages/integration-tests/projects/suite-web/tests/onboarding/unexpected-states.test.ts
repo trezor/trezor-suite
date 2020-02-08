@@ -19,14 +19,14 @@ describe('Onboarding unexpected states', () => {
         cy.task('startEmu');
         cy.getTestElement('@onboarding/unexpected-state/go-to-suite-button');
         cy.task('stopEmu');
-        cy.getTestElement('@onboarding/option-model-t-path').click();
+        cy.getTestElement('@onboarding/option-model-t-path', { timeout: 20 * 1000 }).click();
         cy.task('startEmu');
         cy.getTestElement('@onboarding/unexpected-state/go-to-suite-button');
         cy.task('stopEmu');
-        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@onboarding/continue-button', { timeout: 20 * 1000 }).click();
         cy.task('startEmu');
 
-        cy.getTestElement('@onboarding/unexpected-state/go-to-suite-button')
+        cy.getTestElement('@onboarding/unexpected-state/go-to-suite-button');
         // cant click it now, it triggers discovery which does not stop fast enough and affects nexts test
         // causing wrong previous session error on bridge
 
