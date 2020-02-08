@@ -52,11 +52,10 @@ const data = [
     { value: 9401.14 },
 ];
 interface Props {
-    lastWeekData?: any;
     symbol: Network['symbol'];
 }
 
-const LastWeekGraph = React.memo(({ lastWeekData, symbol }: Props) => {
+const LastWeekGraph = React.memo(({ symbol }: Props) => {
     let isGraphGreen = false;
 
     return (
