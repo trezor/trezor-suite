@@ -29,8 +29,6 @@ const buildNetworkOptions = (networks: Network[], externalNetworks: ExternalNetw
 
 type Option = ReturnType<typeof buildNetworkOption>;
 
-const StyledSelect = styled(Select)``;
-
 const OptionWrapper = styled.div`
     display: flex;
     align-items: center;
@@ -66,7 +64,7 @@ const NetworkSelect = ({
     externalNetworks,
     setSelectedNetwork,
 }: Props) => (
-    <StyledSelect
+    <Select
         placeholder="Select network..."
         isSearchable={false}
         width={250}
