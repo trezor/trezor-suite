@@ -132,7 +132,6 @@ const FeeComponent = ({ sendFormActions, send, account, settings, fiat }: Props)
     const { localCurrency } = settings;
     const { networkType, symbol } = account;
     const fiatVal = fiat.find(fiatItem => fiatItem.symbol === symbol);
-
     return (
         <Wrapper>
             <Row>
@@ -149,7 +148,8 @@ const FeeComponent = ({ sendFormActions, send, account, settings, fiat }: Props)
                 <StyledSelect
                     variant="small"
                     isSearchable={false}
-                    value={selectedFee}
+                    // hack for react select, it needs the "value"
+                    value={{ ...selectedFee, value: selectedFee.feePerUnit }}
                     onChange={sendFormActions.handleFeeValueChange}
                     options={feeLevels}
                     formatOptionLabel={(option: FeeLevel) => (
