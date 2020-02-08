@@ -103,6 +103,7 @@ const CryptoValueWrapper = styled(Col)`
     justify-content: flex-end;
     margin-right: 32px;
     text-align: right;
+    white-space: nowrap;
 `;
 const FiatValueWrapper = styled(Col)``;
 
