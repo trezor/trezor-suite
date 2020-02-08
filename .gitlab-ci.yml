@@ -61,8 +61,8 @@ unit tests:
 include:
     - ci/environment.yml
     - ci/install-and-build.yml
-    - ci/packages/components-storybook-v2.yml
-    - ci/packages/suite.yml
+    # - ci/packages/components-storybook-v2.yml
+    # - ci/packages/suite.yml
     - ci/packages/suite-web.yml
-    - ci/packages/suite-desktop.yml
-    - ci/packages/suite-native.yml
+    # - ci/packages/suite-desktop.yml
+    # - ci/packages/suite-native.yml
