@@ -96,9 +96,9 @@ const routes = [
         app: 'settings',
     },
     {
-        name: 'seed-input-index',
-        pattern: 'seed-input',
-        app: 'seed-input',
+        name: 'recovery-index',
+        pattern: 'recovery',
+        app: 'recovery',
         isModal: true,
     },
     {

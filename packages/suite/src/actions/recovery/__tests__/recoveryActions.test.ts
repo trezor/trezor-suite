@@ -1,9 +1,9 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import recoveryReducer, { RecoveryState } from '@settings-reducers/recoveryReducer';
+import recoveryReducer, { RecoveryState } from '@recovery-reducers/recoveryReducer';
 import { Action } from '@suite-types';
-import * as recoveryActions from '@settings-actions/recoveryActions';
+import * as recoveryActions from '@recovery-actions/recoveryActions';
 
 export const getInitialState = (custom?: any): { recovery: RecoveryState } => {
     return {

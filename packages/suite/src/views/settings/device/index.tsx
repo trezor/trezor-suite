@@ -52,7 +52,6 @@ const Settings = ({
     changePin,
     wipeDevice,
     openModal,
-    checkSeed,
     goto,
 }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
@@ -96,15 +95,6 @@ const Settings = ({
             const hex = homescreen.elementToHomescreen(element, device.features.major_version);
             await applySettings({ homescreen: hex, device });
             setCustomHomescreen('');
-        }
-    };
-
-    const startCheckSeed = () => {
-        if (device && device.features && device.features.major_version === 1) {
-            // T1 needs to input some more information from suite. TT does everything on device.
-            goto('seed-input-index', { cancelable: true });
-        } else {
-            checkSeed();
         }
     };
 
@@ -169,7 +159,7 @@ const Settings = ({
                                 <ActionButton
                                     data-test="@settings/device/check-seed-button"
                                     onClick={() => {
-                                        startCheckSeed();
+                                        goto('recovery-index', { cancelable: true });
                                     }}
                                     isDisabled={
                                         uiLocked ||

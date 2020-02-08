@@ -8,20 +8,21 @@ import { createLogger } from 'redux-logger';
 
 import suiteMiddlewares from '@suite-middlewares/index';
 import walletMiddlewares from '@wallet-middlewares/index';
-import settingsMiddlewares from '@settings-middlewares/index';
 import firmwareMiddlewares from '@firmware-middlewares/index';
+import backupMiddlewares from '@backup-middlewares';
+import recoveryMiddlewares from '@recovery-middlewares';
 
 import suiteReducers from '@suite-reducers/index';
 import onboardingReducers from '@onboarding-reducers/index';
 import walletReducers from '@wallet-reducers/index';
-import settingsReducers from '@settings-reducers/index';
+import recoveryReducers from '@recovery-reducers/index';
 import firmwareReducers from '@firmware-reducers/index';
 
 const reducers = combineReducers({
     ...suiteReducers,
     onboarding: onboardingReducers,
     wallet: walletReducers,
-    settings: settingsReducers,
+    recovery: recoveryReducers,
     firmware: firmwareReducers,
 });
 
@@ -31,8 +32,9 @@ const middlewares = [
     thunkMiddleware,
     ...suiteMiddlewares,
     ...walletMiddlewares,
-    ...settingsMiddlewares,
     ...firmwareMiddlewares,
+    ...backupMiddlewares,
+    ...recoveryMiddlewares,
 ];
 
 const enhancers: any[] = [];

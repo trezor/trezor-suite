@@ -1,20 +1,21 @@
 import produce from 'immer';
-import { RECOVERY } from '@settings-actions/constants';
+import { RECOVERY } from '@recovery-actions/constants';
 import { Action } from '@suite-types';
-import { WordCount } from '@settings-types';
+import { WordCount } from '@recovery-types';
+import { SeedInputStatus } from '@recovery-actions/recoveryActions';
 
 export interface RecoveryState {
     advancedRecovery: boolean;
     wordsCount: WordCount;
-    success: boolean | null;
-    error: string | null;
+    status: SeedInputStatus;
+    error?: string;
 }
 
 const initialState: RecoveryState = {
     advancedRecovery: false,
     wordsCount: 12,
-    success: null,
-    error: null,
+    error: '',
+    status: 'initial',
 };
 
 const recovery = (state: RecoveryState = initialState, action: Action): RecoveryState => {
@@ -26,9 +27,11 @@ const recovery = (state: RecoveryState = initialState, action: Action): Recovery
             case RECOVERY.SET_ADVANCED_RECOVERY:
                 draft.advancedRecovery = action.payload;
                 break;
-            case RECOVERY.SET_RESULT:
-                draft.error = action.payload.error;
-                draft.success = action.payload.success;
+            case RECOVERY.SET_ERROR:
+                draft.error = action.payload;
+                break;
+            case RECOVERY.SET_STATUS:
+                draft.status = action.payload;
                 break;
             case RECOVERY.RESET_REDUCER:
                 return initialState;

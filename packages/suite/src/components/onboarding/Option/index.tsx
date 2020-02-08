@@ -6,9 +6,14 @@ import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const { FONT_SIZE } = variables;
 
-const Wrapper = styled.div`
-    width: 260px;
-    height: 350px;
+type Variant = 2 | 3;
+interface WrapperProps {
+    variant?: Variant;
+}
+
+const Wrapper = styled.div<WrapperProps>`
+    width: ${({ variant }) => (variant === 2 ? '260px' : '160px')};
+    height: ${({ variant }) => (variant === 2 ? '340px' : '240px')};
     padding: 20px 30px 30px 30px;
     margin: 2%;
     border-radius: 6px;
@@ -36,17 +41,18 @@ const Text = styled.div`
 
 interface Props {
     imgSrc?: string;
-    title: React.ReactNode;
-    text: React.ReactNode;
+    title?: React.ReactNode;
+    text?: React.ReactNode;
     action: () => void;
     button: React.ReactNode;
+    variant?: Variant;
     'data-test'?: string;
 }
 
 const Option = (props: Props) => {
-    const { imgSrc, title, text, action, button } = props;
+    const { imgSrc, title, text, action, button, variant } = props;
     return (
-        <Wrapper>
+        <Wrapper variant={variant || 2}>
             {imgSrc && <Image src={resolveStaticPath(imgSrc)} />}
             <Title>{title}</Title>
             <Text>{text}</Text>
