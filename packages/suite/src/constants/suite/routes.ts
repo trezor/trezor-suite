@@ -73,7 +73,7 @@ const routes = [
     {
         name: 'tips-index',
         pattern: '/tips',
-        app: 'wallet',
+        app: 'tips',
     },
     {
         name: 'settings-index',
