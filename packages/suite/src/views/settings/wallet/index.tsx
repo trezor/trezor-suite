@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { H2, P, Switch, Link, Icon, variables, colors, CoinLogo } from '@trezor/components-v2';
+import { P, Switch, Link, Icon, variables, colors, CoinLogo } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { SuiteLayout } from '@suite-components';
@@ -179,9 +179,6 @@ const Settings = (props: Props) => {
                     flexDirection: 'column',
                 }}
             >
-                <H2>
-                    <Translation {...messages.TR_ASSETS} />
-                </H2>
                 <P size="tiny">
                     <Translation {...messages.TR_COINS_SETTINGS_ALSO_DEFINES} />
                 </P>
