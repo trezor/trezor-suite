@@ -1,33 +1,12 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import { SelectWordCount, SelectRecoveryType, Error } from '@recovery-components';
 import { Translation, Loading } from '@suite-components';
-import { AppState, Dispatch } from '@suite-types';
 import messages from '@suite/support/messages';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 
-const mapStateToProps = (state: AppState) => ({
-    device: state.suite.device,
-    recovery: state.recovery,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
-    goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
-    setWordsCount: bindActionCreators(recoveryActions.setWordsCount, dispatch),
-    setAdvancedRecovery: bindActionCreators(recoveryActions.setAdvancedRecovery, dispatch),
-    recoverDevice: bindActionCreators(recoveryActions.recoverDevice, dispatch),
-    setStatus: bindActionCreators(recoveryActions.setStatus, dispatch),
-    resetReducer: bindActionCreators(recoveryActions.resetReducer, dispatch),
-});
-
-type Props = { modal: React.ReactNode } & ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>;
+import { Props } from './Container';
 
 const RecoveryStep = (props: Props) => {
     const {
@@ -150,4 +129,4 @@ const RecoveryStep = (props: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RecoveryStep);
+export default RecoveryStep;

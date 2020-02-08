@@ -24,7 +24,7 @@ const SkipStep = ({ closeModalApp, goToNextStep }: Props) => (
             <StyledImg src={resolveStaticPath('images/onboarding/skip-warning.svg')} alt="" />
         </Wrapper.StepBody>
         <Wrapper.Controls>
-            <OnboardingButton.Cta data-test="@onboarding/button-skip" onClick={closeModalApp}>
+            <OnboardingButton.Cta data-test="@onboarding/skip-button" onClick={closeModalApp}>
                 Skip onboarding
             </OnboardingButton.Cta>
         </Wrapper.Controls>

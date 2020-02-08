@@ -44,7 +44,10 @@ const Index = (props: Props) => {
             </P>
             <StyledImg alt="" src={resolveStaticPath('images/welcome/welcome.svg')} />
 
-            <Button data-test="@button/continue" onClick={() => props.goto('suite-analytics')}>
+            <Button
+                data-test="@welcome/continue-button"
+                onClick={() => props.goto('suite-analytics')}
+            >
                 <Translation>{messages.TR_BEGIN}</Translation>
             </Button>
         </Wrapper>

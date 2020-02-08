@@ -20,7 +20,7 @@ const CreateOrRecoverStep = (props: Props) => {
 
                 <Wrapper.Options>
                     <Option
-                        data-test="@onboarding/button-path-create"
+                        data-test="@onboarding/path-create-button"
                         action={() => {
                             props.addPath(STEP.PATH_CREATE);
                             props.goToNextStep();
@@ -31,7 +31,7 @@ const CreateOrRecoverStep = (props: Props) => {
                         imgSrc="images/onboarding/create-new.svg"
                     />
                     <Option
-                        data-test="button-path-recovery"
+                        data-test="@onboarding/path-recovery-button"
                         action={() => {
                             props.addPath(STEP.PATH_RECOVERY);
                             props.goToNextStep();

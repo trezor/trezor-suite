@@ -24,7 +24,7 @@ const NewOrUsedStep = (props: Props) => {
             <Wrapper.StepBody>
                 <Wrapper.Options>
                     <Option
-                        data-test="@onboarding/button-new-path"
+                        data-test="@onboarding/path-new-button"
                         action={() => {
                             handleNewDeviceOnClick();
                         }}
@@ -35,7 +35,7 @@ const NewOrUsedStep = (props: Props) => {
                     />
 
                     <Option
-                        data-test="@onboarding/button-used-path"
+                        data-test="@onboarding/path-used-button"
                         action={() => {
                             props.onboardingActions.addPath(STEP.PATH_USED);
                             props.onboardingActions.goToNextStep();

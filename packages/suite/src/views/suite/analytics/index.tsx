@@ -82,7 +82,7 @@ const Index = (props: Props) => {
 
                 <Button
                     onClick={() => props.goto('onboarding-index')}
-                    data-test="@button/go-to-onboarding"
+                    data-test="@analytics/go-to-onboarding-button"
                 >
                     <Translation>{messages.TR_CONTINUE}</Translation>
                 </Button>

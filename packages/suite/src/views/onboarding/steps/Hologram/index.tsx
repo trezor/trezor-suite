@@ -47,7 +47,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                 <Translation {...messages.TR_HOLOGRAM_STEP_ACTION_NOT_OK} />
                             </OnboardingButton.Alt>
                             <OnboardingButton.Cta
-                                data-test="@onboarding/button-continue"
+                                data-test="@onboarding/continue-button"
                                 onClick={() => onboardingActions.goToNextStep()}
                             >
                                 <Translation {...messages.TR_HOLOGRAM_STEP_ACTION_OK} />

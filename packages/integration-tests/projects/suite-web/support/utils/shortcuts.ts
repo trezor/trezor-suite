@@ -7,21 +7,21 @@ export const toggleDeviceMenu = () => {
 
 export const goToOnboarding = () => {
     return cy
-        .getTestElement('@button/continue')
+        .getTestElement('@welcome/continue-button')
         .click()
-        .getTestElement('@button/go-to-onboarding')
+        .getTestElement('@analytics/go-to-onboarding-button')
         .click();
 };
 
 export const passThroughInitialRun = () => {
     return cy
-        .getTestElement('@button/continue')
+        .getTestElement('@welcome/continue-button')
         .click()
-        .getTestElement('@button/go-to-onboarding')
+        .getTestElement('@analytics/go-to-onboarding-button')
         .click()
-        .getTestElement('@onboarding/button-skip')
+        .getTestElement('@onboarding/skip-button')
         .click()
-        .getTestElement('@onboarding/button-skip')
+        .getTestElement('@onboarding/skip-button')
         .click();
 };
 
