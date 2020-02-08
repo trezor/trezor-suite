@@ -874,6 +874,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'segwit',
         id: 'TR_NETWORK_TYPE_SEGWIT',
     },
+    TR_NETWORK_TYPE_NORMAL: {
+        defaultMessage: 'normal',
+        id: 'TR_NETWORK_TYPE_NORMAL',
+    },
     TR_NETWORK_VERTCOIN: {
         defaultMessage: 'Vertcoin',
         id: 'TR_NETWORK_VERTCOIN',

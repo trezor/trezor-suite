@@ -2,23 +2,18 @@ import React from 'react';
 import { Translation } from '@suite-components/Translation';
 
 import styled from 'styled-components';
-import { CoinLogo } from '@trezor/components';
-import { Button, H2, Link, P } from '@trezor/components-v2';
+import { H2, P, colors } from '@trezor/components-v2';
 import { Network, ExternalNetwork } from '@wallet-types';
 import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     width: 100%;
-    max-width: 620px;
-    padding: 10px 0 0;
+    margin-top: 20px;
+    color: ${colors.BLACK50};
 `;
 
-const StyledButton = styled(Button)`
-    margin-top: 10px;
-`;
-
-const StyledCoinLogo = styled(CoinLogo)`
-    margin-bottom: 10px;
+const StyledP = styled(P)`
+    color: ${colors.BLACK50};
 `;
 
 const getHeader = (symbol: ExternalNetwork['symbol']) => {
@@ -37,27 +32,20 @@ const getHeader = (symbol: ExternalNetwork['symbol']) => {
 
 interface Props {
     selectedNetwork?: Network | ExternalNetwork;
-    onCancel: () => void;
 }
 
-const ExternalWallet = ({ selectedNetwork, onCancel }: Props) => {
+const ExternalWallet = ({ selectedNetwork }: Props) => {
     if (!selectedNetwork || selectedNetwork.networkType !== 'external') return null;
-    const { symbol, url } = selectedNetwork;
+    const { symbol } = selectedNetwork;
     return (
         <Wrapper>
-            <StyledCoinLogo size={64} symbol={symbol} />
             <H2>
                 <Translation>{getHeader(symbol)}</Translation>
             </H2>
-            <P size="small">
-                <Translation>{messages.TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL}</Translation>
-            </P>
-
-            <Link href={url}>
-                <StyledButton onClick={onCancel} fullWidth>
-                    <Translation>{messages.TR_GO_TO_EXTERNAL_WALLET}</Translation>
-                </StyledButton>
-            </Link>
+            <StyledP size="small">
+                This coin is only accessible via an external wallet. It is supported by Trezor but
+                not by Trezor Suite app.
+            </StyledP>
         </Wrapper>
     );
 };

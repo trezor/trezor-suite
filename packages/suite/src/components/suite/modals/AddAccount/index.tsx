@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
-import { H2 } from '@trezor/components-v2';
+import { H2, Button, P, colors, variables } from '@trezor/components-v2';
 import { changeAccountVisibility } from '@wallet-actions/accountActions';
 import { changeCoinVisibility } from '@settings-actions/walletSettingsActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -13,13 +13,80 @@ import { Account, Network, ExternalNetwork } from '@wallet-types';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import messages from '@suite/support/messages';
 import NetworkSelect from './components/NetworkSelect';
-import AccountSelect from './components/AccountSelect';
+import AccountTypeSelect from './components/AccountTypeSelect';
 import ExternalWallet from './components/ExternalWallet';
+import AddAccountButton from './components/AddAccountButton';
+import Link from '@suite-components/Link';
 
 const Wrapper = styled(ModalWrapper)`
     flex-direction: column;
-    width: 420px;
+    width: 100%;
+    max-width: 600px;
+    min-height: 530px;
 `;
+
+const Actions = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
+
+const Description = styled.div`
+    display: flex;
+    font-size: ${variables.FONT_SIZE.SMALL};
+    color: ${colors.BLACK50};
+    margin-bottom: 32px;
+`;
+
+const Row = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0px;
+
+    & + & {
+        border-top: 1px solid ${colors.BLACK96};
+    }
+`;
+
+const RowTitle = styled.div`
+    display: flex;
+    color: ${colors.BLACK0};
+    font-size: ${variables.FONT_SIZE.SMALL};
+`;
+
+const StyledP = styled(P)`
+    color: ${colors.BLACK50};
+    margin-bottom: 32px;
+`;
+
+const Expander = styled.div`
+    display: flex;
+    flex: 1;
+`;
+
+const isNetworkExternal = (n: Network | ExternalNetwork | undefined): n is ExternalNetwork => {
+    return n !== undefined && EXTERNAL_NETWORKS.find(e => e.symbol === n.symbol) !== undefined;
+};
+const isNetworkInternal = (n: Network | ExternalNetwork | undefined): n is Network => {
+    return n !== undefined && NETWORKS.find(e => e.symbol === n.symbol) !== undefined;
+};
+
+const EnableNetwork = (props: {
+    selectedNetwork: Network;
+    onEnableNetwork: (symbol: Network['symbol']) => void;
+}) => (
+    <>
+        <Button
+            variant="primary"
+            onClick={() => props.onEnableNetwork(props.selectedNetwork.symbol)}
+        >
+            <Translation
+                {...messages.TR_ENABLE_NETWORK_BUTTON}
+                values={{ networkName: props.selectedNetwork.name }}
+            />
+        </Button>
+    </>
+);
 
 const mapStateToProps = (state: AppState) => ({
     accounts: state.wallet.accounts,
@@ -56,13 +123,56 @@ const AddAccount = (props: Props) => {
     if (props.router.app === 'wallet' && account) {
         preselectedNetwork = internalNetworks.find(n => n.symbol === account.symbol);
     }
-    const [selectedSymbol, setSelectedNetwork] = useState<NetworkSymbol>(
+    const [selectedType, setSelectedType] = useState<Network['accountType']>(undefined);
+    const [selectedSymbol, setSelectedSymbol] = useState<NetworkSymbol>(
         preselectedNetwork ? preselectedNetwork.symbol : internalNetworks[0].symbol,
     );
+
+    const accountTypes = NETWORKS.filter(n => n.symbol === selectedSymbol);
     // Find selected network (from component state value)
-    const selectedNetwork = [...internalNetworks, ...externalNetworks].find(
-        n => n.symbol === selectedSymbol,
-    );
+    const selectedNetwork = selectedType
+        ? accountTypes.find(n => (n.accountType || 'normal') === selectedType)
+        : [...internalNetworks, ...externalNetworks].find(n => n.symbol === selectedSymbol);
+
+    const isExternal = isNetworkExternal(selectedNetwork);
+    const isInternal = isNetworkInternal(selectedNetwork);
+
+    const isNetworkDisabled =
+        selectedNetwork && isNetworkInternal(selectedNetwork)
+            ? !props.enabledNetworks.includes(selectedNetwork?.symbol)
+            : false;
+
+    const availableAccounts = accounts.filter(a => a.symbol === selectedNetwork?.symbol && a.empty);
+
+    const getEmptyAccounts = (n: Network) => {
+        if (!n) return [];
+        return availableAccounts.filter(a => a.accountType === (n.accountType || 'normal'));
+    };
+
+    const filteredAccountTypes = accountTypes.filter(t => {
+        const emptyAccounts = getEmptyAccounts(t);
+        if (emptyAccounts.length === 0) return false;
+        return true;
+    });
+
+    const onSelectAccountType = (type: Network['accountType']) => {
+        setSelectedType(type);
+    };
+
+    const onSelectNetwork = (symbol: NetworkSymbol) => {
+        setSelectedSymbol(symbol);
+        setSelectedType(undefined);
+    };
+
+    const onEnableAccount = (account: Account) => {
+        props.onCancel();
+        props.changeAccountVisibility(account);
+        props.goto('wallet-index', {
+            symbol: account.symbol,
+            accountIndex: account.index,
+            accountType: account.accountType,
+        });
+    };
 
     return (
         <Wrapper>
@@ -72,36 +182,76 @@ const AddAccount = (props: Props) => {
                     values={{ deviceLabel: props.device.label }}
                 />
             </H2>
-            <NetworkSelect
-                selectedNetwork={selectedNetwork}
-                networks={internalNetworks}
-                externalNetworks={externalNetworks}
-                setSelectedNetwork={setSelectedNetwork}
-            />
-            <AccountSelect
-                selectedNetwork={selectedNetwork}
-                enabledNetworks={props.enabledNetworks}
-                accounts={accounts}
-                onEnableAccount={(account: Account) => {
-                    props.onCancel();
-                    props.changeAccountVisibility(account);
-                    props.goto('wallet-index', {
-                        symbol: account.symbol,
-                        accountIndex: account.index,
-                        accountType: account.accountType,
-                    });
-                }}
-                onEnableNetwork={(symbol: Network['symbol']) => {
-                    props.onCancel();
-                    props.changeCoinVisibility(symbol, true);
-                    props.goto('wallet-index', {
-                        symbol,
-                        accountIndex: 0,
-                        accountType: 'normal',
-                    });
-                }}
-            />
-            <ExternalWallet selectedNetwork={selectedNetwork} onCancel={props.onCancel} />
+
+            <Description>
+                Explain how account work and some other info that is useful for a new user and does
+                not annoy hard core user. Ok that’s enough text and I can stop now.
+            </Description>
+            <Row>
+                <RowTitle>Cryptocurrency</RowTitle>
+                <NetworkSelect
+                    selectedNetwork={selectedNetwork}
+                    networks={internalNetworks}
+                    externalNetworks={externalNetworks}
+                    setSelectedNetwork={onSelectNetwork}
+                />
+            </Row>
+            {!isNetworkDisabled && accountTypes.length > 1 && (
+                <Row>
+                    <RowTitle>Account Type</RowTitle>
+                    <AccountTypeSelect
+                        selectedNetwork={selectedNetwork}
+                        accountTypes={filteredAccountTypes}
+                        onSelectAccountType={onSelectAccountType}
+                    />
+                </Row>
+            )}
+
+            {selectedNetwork?.symbol === 'btc' &&
+                (selectedNetwork?.accountType || 'normal') === 'normal' && (
+                    <StyledP size="small" textAlign="left">
+                        Bech32 uses the most modern addresses for smallest transaction fees. Be
+                        aware that it may not be compatible with old bitcoin services.
+                    </StyledP>
+                )}
+
+            <ExternalWallet selectedNetwork={selectedNetwork} />
+
+            <Expander />
+
+            <Actions>
+                <Button variant="secondary" onClick={() => props.onCancel()}>
+                    Cancel
+                </Button>
+                {isInternal && isNetworkDisabled && (
+                    <EnableNetwork
+                        selectedNetwork={selectedNetwork as Network}
+                        onEnableNetwork={(symbol: Network['symbol']) => {
+                            props.onCancel();
+                            props.changeCoinVisibility(symbol, true);
+                            props.goto('wallet-index', {
+                                symbol,
+                                accountIndex: 0,
+                                accountType: 'normal',
+                            });
+                        }}
+                    />
+                )}
+
+                {isExternal ? (
+                    <Link href={(selectedNetwork as ExternalNetwork).url}>
+                        <Button variant="primary" onClick={props.onCancel}>
+                            <Translation>{messages.TR_GO_TO_EXTERNAL_WALLET}</Translation>
+                        </Button>
+                    </Link>
+                ) : (
+                    <AddAccountButton
+                        network={selectedNetwork as Network}
+                        accounts={getEmptyAccounts(selectedNetwork as Network)}
+                        onEnableAccount={onEnableAccount}
+                    />
+                )}
+            </Actions>
         </Wrapper>
     );
 };
