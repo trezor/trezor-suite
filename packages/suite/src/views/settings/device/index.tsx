@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, createRef } from 'react';
 import styled from 'styled-components';
-import { H2, P, Switch, Link, colors } from '@trezor/components-v2';
+import { P, Switch, Link, colors } from '@trezor/components-v2';
 
 import { SUITE } from '@suite-actions/constants';
 import { Translation } from '@suite-components/Translation';
@@ -102,10 +102,6 @@ const Settings = ({
         <SuiteLayout title="Settings" secondaryMenu={<SettingsMenu />}>
             {/* todo: imho base padding should be in SuiteLayout, but it would break WalletLayout, so I have it temporarily here */}
             <div style={{ padding: '30px' }}>
-                <H2>
-                    <Translation>{messages.TR_DEVICE_SETTINGS_TITLE}</Translation>
-                </H2>
-
                 <Section header={<Translation>{messages.TR_BACKUP}</Translation>}>
                     <Row>
                         <TextColumn

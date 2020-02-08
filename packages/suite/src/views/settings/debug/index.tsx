@@ -1,5 +1,5 @@
 import React from 'react';
-import { H2, Switch } from '@trezor/components-v2';
+import { Switch } from '@trezor/components-v2';
 import { SuiteLayout } from '@suite-components';
 import { Menu as SettingsMenu } from '@settings-components';
 
@@ -12,8 +12,6 @@ const DebugSettings = (props: Props) => {
         <SuiteLayout title="Settings" secondaryMenu={<SettingsMenu />}>
             {/* todo: imho base padding should be in SuiteLayout, but it would break WalletLayout, so I have it temporarily here */}
             <div style={{ padding: '30px' }}>
-                <H2>Debug Settings</H2>
-
                 <Section header="Localization">
                     <Row>
                         <TextColumn
