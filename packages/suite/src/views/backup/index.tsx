@@ -7,14 +7,15 @@ import { H2, P, Button, colors } from '@trezor/components-v2';
 import * as backupActions from '@backup-actions/backupActions';
 import { Dispatch, AppState, InjectedModalApplicationProps } from '@suite-types';
 import { ProgressBar } from '@suite-components';
+import ModalWrapper from '@suite-components/ModalWrapper';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
 import { canStart, canContinue } from '@backup-utils';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 
-const Wrapper = styled.div`
-    width: 60vw;
-    min-height: 500px;
-    display: flex;
+const Wrapper = styled(ModalWrapper)`
+    min-height: 80vh;
+    min-width: 60vw;
+    max-width: 80vw;
     flex-direction: column;
 `;
 

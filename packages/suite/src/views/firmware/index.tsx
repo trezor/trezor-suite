@@ -10,16 +10,17 @@ import * as routerActions from '@suite-actions/routerActions';
 import { InjectedModalApplicationProps, Dispatch, AppState } from '@suite-types';
 import { getFwVersion } from '@suite-utils/device';
 import { ProgressBar } from '@suite-components';
+import ModalWrapper from '@suite-components/ModalWrapper';
 import { InitImg, SuccessImg } from '@firmware-components';
 import { Loaders } from '@onboarding-components';
 import { CHANGELOG_URL } from '@suite-constants/urls';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;
 
-const Wrapper = styled.div`
-    width: 60vw;
-    min-height: 500px;
-    display: flex;
+const Wrapper = styled(ModalWrapper)`
+    min-height: 80vh;
+    min-width: 60vw;
+    max-width: 80vw;
     flex-direction: column;
 `;
 
@@ -377,7 +378,6 @@ const Firmware = ({
                             </Buttons>
                         </>
                     )}
-                    }
                 </>
             )}
 
