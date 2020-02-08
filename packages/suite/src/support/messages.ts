@@ -874,6 +874,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'segwit',
         id: 'TR_NETWORK_TYPE_SEGWIT',
     },
+    TR_NETWORK_TYPE_NORMAL: {
+        defaultMessage: 'normal',
+        id: 'TR_NETWORK_TYPE_NORMAL',
+    },
     TR_NETWORK_VERTCOIN: {
         defaultMessage: 'Vertcoin',
         id: 'TR_NETWORK_VERTCOIN',
@@ -1368,10 +1372,6 @@ const definedMessages = defineMessages({
     TR_YOU_WERE_DISCONNECTED_DOT: {
         defaultMessage: 'You were disconnected.',
         id: 'TR_YOU_WERE_DISCONNECTED_DOT',
-    },
-    TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL: {
-        defaultMessage: 'You will be redirected to external wallet',
-        id: 'TR_YOU_WILL_BE_REDIRECTED_TO_EXTERNAL',
     },
     TR_YOUR_TREZOR_IS_NOT_BACKED_UP: {
         defaultMessage: 'Your Trezor is not backed up.',

@@ -81,6 +81,19 @@ export const getTitleForNetwork = (symbol: Account['symbol']) => {
     }
 };
 
+// same as 'getTypeForNetwork' below except it returns proper value for NORMAL account type
+export const getAccountTypeIntl = (accountType: Account['accountType']) => {
+    switch (accountType) {
+        case ACCOUNT_TYPE.NORMAL:
+            return messages.TR_NETWORK_TYPE_NORMAL;
+        case ACCOUNT_TYPE.SEGWIT:
+            return messages.TR_NETWORK_TYPE_SEGWIT;
+        case ACCOUNT_TYPE.LEGACY:
+            return messages.TR_NETWORK_TYPE_LEGACY;
+        // no default
+    }
+};
+
 export const getTypeForNetwork = (accountType: Account['accountType']) => {
     switch (accountType) {
         case ACCOUNT_TYPE.NORMAL:
@@ -302,9 +315,10 @@ export const getTotalFiatBalance = (
     localCurrency: string,
     fiat: Fiat[],
 ) => {
-    const instanceBalance = new BigNumber(0);
+    let instanceBalance = new BigNumber(0);
     deviceAccounts.forEach(a => {
-        getAccountFiatBalance(a, localCurrency, fiat);
+        const accountFiatBalance = getAccountFiatBalance(a, localCurrency, fiat) ?? '0';
+        instanceBalance = instanceBalance.plus(accountFiatBalance);
     });
     return instanceBalance;
 };

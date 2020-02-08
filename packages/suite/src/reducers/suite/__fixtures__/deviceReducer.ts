@@ -1002,9 +1002,9 @@ const forget = [
                     device_id: 'ignored-device-id',
                 },
             ),
+            getSuiteDevice({ state: 'state', connected: true, instance: 3 }),
             SUITE_DEVICE,
             getSuiteDevice({ instance: 1 }),
-            getSuiteDevice({ instance: 3 }),
         ],
         actions: [
             {
@@ -1013,11 +1013,11 @@ const forget = [
             },
             {
                 type: SUITE.FORGET_DEVICE,
-                payload: getSuiteDevice({ instance: 3 }),
+                payload: SUITE_DEVICE,
             },
             {
                 type: SUITE.FORGET_DEVICE,
-                payload: SUITE_DEVICE,
+                payload: getSuiteDevice({ connected: true, instance: 3 }),
             },
         ],
         result: [
@@ -1034,7 +1034,7 @@ const forget = [
                 },
             },
             {
-                ...SUITE_DEVICE,
+                ...getSuiteDevice({ connected: true, instance: 3 }),
                 state: undefined,
                 useEmptyPassphrase: false,
             },

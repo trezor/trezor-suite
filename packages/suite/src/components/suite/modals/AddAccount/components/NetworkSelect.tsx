@@ -29,10 +29,6 @@ const buildNetworkOptions = (networks: Network[], externalNetworks: ExternalNetw
 
 type Option = ReturnType<typeof buildNetworkOption>;
 
-const StyledSelect = styled(Select)`
-    margin: 0 0 10px 0;
-`;
-
 const OptionWrapper = styled.div`
     display: flex;
     align-items: center;
@@ -49,7 +45,7 @@ const LogoWrapper = styled.div`
 const NetworkOption = ({ value, label }: Option) => (
     <OptionWrapper>
         <LogoWrapper>
-            <CoinLogo size={25} symbol={value} />
+            <CoinLogo size={20} symbol={value} />
         </LogoWrapper>
         <div>{label}</div>
     </OptionWrapper>
@@ -68,9 +64,10 @@ const NetworkSelect = ({
     externalNetworks,
     setSelectedNetwork,
 }: Props) => (
-    <StyledSelect
+    <Select
         placeholder="Select network..."
         isSearchable={false}
+        width={250}
         isClearable={false}
         value={buildNetworkOption(selectedNetwork || networks[0])}
         options={buildNetworkOptions(networks, externalNetworks)}
