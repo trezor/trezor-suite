@@ -45,6 +45,7 @@ const BackupStep = (props: Props) => {
 
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
+                                data-test="@backup/start-button"
                                 onClick={() => props.backupDevice()}
                                 isDisabled={!canStart(backup.userConfirmed)}
                             >
@@ -98,6 +99,7 @@ const BackupStep = (props: Props) => {
 
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
+                                data-test="@backup/close-button"
                                 onClick={() => props.goToNextStep()}
                                 isDisabled={!canContinue(backup.userConfirmed)}
                             >

@@ -67,6 +67,7 @@ const SetPinStep = (props: Props) => {
                         <img alt="" src={resolveStaticPath('images/onboarding/t-pin-ask.svg')} />
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
+                                data-test="@onboarding/set-pin-button"
                                 onClick={() => {
                                     props.connectActions.changePin();
                                 }}
@@ -79,35 +80,11 @@ const SetPinStep = (props: Props) => {
 
                 {getStatus() === 'first' && (
                     <NewPinWrapper>
-                        {/* <Link onClick={() =>  setState({ instructionsFocused: true })} variant="nostyle">
-                                Click to see how pin works.
-                            </Link> */}
-
-                        {/* { state.instructionsFocused && (
-                                <Modal>
-                                    <HowToSetPinModal>
-                                        <HowToSetPin
-                                            src={resolveStaticPath('videos/onboarding/pin.gif')}
-                                            alt="How to enter pin"
-                                        />
-                                        <Link
-                                            onClick={() =>
-                                                 setState({ instructionsFocused: false })
-                                            }
-                                            variant="nostyle"
-                                        >
-                                            Ok, I get it.
-                                        </Link>
-                                    </HowToSetPinModal>
-                                </Modal>
-                            )} */}
-                        <div>
-                            <PinInput
-                                onPinSubmit={(pin: string) => {
-                                    props.connectActions.submitNewPin({ pin });
-                                }}
-                            />
-                        </div>
+                        <PinInput
+                            onPinSubmit={(pin: string) => {
+                                props.connectActions.submitNewPin({ pin });
+                            }}
+                        />
                     </NewPinWrapper>
                 )}
 
@@ -172,6 +149,7 @@ const SetPinStep = (props: Props) => {
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
                 <OnboardingButton.Back
+                    data-test="@onboarding/skip-button"
                     icon="CROSS"
                     onClick={() => props.onboardingActions.goToNextStep()}
                 >

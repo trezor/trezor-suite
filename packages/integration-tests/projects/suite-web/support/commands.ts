@@ -8,7 +8,7 @@ import { onboardingShouldLoad, dashboardShouldLoad } from './utils/assertions';
 import { connectBootloaderDevice, connectDevice, changeDevice } from './utils/device';
 import { getTestElement, getConfirmActionOnDeviceModal } from './utils/selectors';
 import { resetDb, setState } from './utils/test-env';
-import { toggleDeviceMenu, goToOnboarding, passThroughInitialRun } from './utils/shortcuts';
+import { toggleDeviceMenu, goToOnboarding, passThroughInitialRun, passThroughBackup } from './utils/shortcuts';
 
 const command = require('cypress-image-snapshot/command');
 
@@ -65,3 +65,4 @@ Cypress.Commands.add('getConfirmActionOnDeviceModal', getConfirmActionOnDeviceMo
 Cypress.Commands.add('toggleDeviceMenu', toggleDeviceMenu);
 Cypress.Commands.add('goToOnboarding', goToOnboarding);
 Cypress.Commands.add('passThroughInitialRun', passThroughInitialRun);
+Cypress.Commands.add('passThroughBackup', passThroughBackup);

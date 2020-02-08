@@ -10,6 +10,7 @@ from trezorlib.client import TrezorClient
 from trezorlib.transport import enumerate_devices, get_transport
 from trezorlib.transport.udp import UdpTransport
 from trezorlib.transport.bridge import BridgeTransport
+# from trezorlib import messages as proto
 
 proc = None
 # log.enable_debug_output()
@@ -108,9 +109,6 @@ def decision():
     client.close()
 
 def input(word):
-    # TODO:
-    # - "path" parameter to work with correct device, keep transport with device
-    # Setup link
     transport = get_bridge_device()
     print(transport)
     client = DebugLink(transport.find_debug())
@@ -119,14 +117,6 @@ def input(word):
     time.sleep(0.6)  # trezord needs time to populate changes
     client.input(word)
     client.close()
-
-# def erase_device():
-#     transport = get_bridge_device()
-#     print(transport)
-#     client = TrezorClientDebugLink(transport)
-#     client.open()
-#     debuglink.flash_erase()
-#     client.close()
 
 def swipe(direction): 
     transport = get_bridge_device()
@@ -143,3 +133,49 @@ def swipe(direction):
     elif direction == 'left':
         client.swipe_left()
     client.close()
+    
+def read_and_confirm_mnemonic():
+    transport = get_bridge_device()
+    print(transport)
+    client = DebugLink(transport.find_debug())
+    client.open()
+    time.sleep(0.6)  # trezord needs time to populate changes
+    mnem = client.read_mnemonic_secret().decode("utf-8")
+    mnemonic = mnem.split()
+    client.swipe_up()
+    client.swipe_up()
+    client.swipe_up()
+    client.press_yes()
+    time.sleep(1)
+    index = client.read_reset_word_pos()
+    client.input(mnemonic[index])
+    time.sleep(1)
+    index = client.read_reset_word_pos()
+    client.input(mnemonic[index])
+    time.sleep(1)
+    index = client.read_reset_word_pos()
+    client.input(mnemonic[index])
+    time.sleep(1)
+    client.press_yes()
+    time.sleep(1)
+    client.press_yes()
+    client.close()
+
+# todo: work in progress
+# def enter_pin(pin):
+#     transport = get_bridge_device()
+#     print(transport)
+#     client = DebugLink(transport.find_debug())
+
+#     client.open()
+#     time.sleep(0.6)  # trezord needs time to populate changes
+#     # pin = client.read_pin()
+#     pin_encoded = client.encode_pin("1234")
+#     time.sleep(1)
+
+#     ret = client.call_raw(proto.PinMatrixAck(pin=pin_encoded))
+#     print(ret)
+#     time.sleep(1)
+#     print('pin')
+#     print(pin)
+#     client.close()

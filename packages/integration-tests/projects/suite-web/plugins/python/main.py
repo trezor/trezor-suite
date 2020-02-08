@@ -63,6 +63,12 @@ def message_received(client, server, message):
         elif cmdType == "emulator-input":
             emulator.input(cmd['word'])
             response = {"success": True}
+        elif cmdType == "emulator-read-and-confirm-mnemonic":
+            emulator.read_and_confirm_mnemonic()
+            response = {"success": True}
+        elif cmdType == "emulator-enter-pin":
+            emulator.enter_pin(cmd['pin'])
+            response = {"success": True}
         elif cmdType == "emulator-swipe":
             emulator.swipe(cmd["direction"])
             response = {"success": True}

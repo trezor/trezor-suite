@@ -17,7 +17,9 @@ const FinalStep = ({ closeModalApp }: Props) => (
             <img src={resolveStaticPath('images/onboarding/all-done.svg')} alt="" />
         </Wrapper.StepBody>
         <Wrapper.Controls>
-            <OnboardingButton.Cta onClick={closeModalApp}>Go to Suite</OnboardingButton.Cta>
+            <OnboardingButton.Cta data-test="@onboarding/exit-app-button" onClick={closeModalApp}>
+                Go to Suite
+            </OnboardingButton.Cta>
         </Wrapper.Controls>
     </Wrapper.Step>
 );
