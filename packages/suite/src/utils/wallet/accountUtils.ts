@@ -302,9 +302,10 @@ export const getTotalFiatBalance = (
     localCurrency: string,
     fiat: Fiat[],
 ) => {
-    const instanceBalance = new BigNumber(0);
+    let instanceBalance = new BigNumber(0);
     deviceAccounts.forEach(a => {
-        getAccountFiatBalance(a, localCurrency, fiat);
+        const accountFiatBalance = getAccountFiatBalance(a, localCurrency, fiat) ?? '0';
+        instanceBalance = instanceBalance.plus(accountFiatBalance);
     });
     return instanceBalance;
 };
