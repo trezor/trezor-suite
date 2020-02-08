@@ -452,10 +452,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'PIN protection',
         id: 'TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE',
     },
-    TR_DEVICE_SETTINGS_TITLE: {
-        defaultMessage: 'Device Settings',
-        id: 'TR_DEVICE_SETTINGS_TITLE',
-    },
     TR_DEVICE_YOU_RECONNECTED_IS_DIFFERENT: {
         defaultMessage:
             'Device you reconnected is different from the previous device. Connect the right one.',
