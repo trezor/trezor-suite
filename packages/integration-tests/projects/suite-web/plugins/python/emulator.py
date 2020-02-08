@@ -10,7 +10,7 @@ from trezorlib.client import TrezorClient
 from trezorlib.transport import enumerate_devices, get_transport
 from trezorlib.transport.udp import UdpTransport
 from trezorlib.transport.bridge import BridgeTransport
-from trezorlib import messages as proto
+# from trezorlib import messages as proto
 
 proc = None
 # log.enable_debug_output()
