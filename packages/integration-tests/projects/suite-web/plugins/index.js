@@ -123,5 +123,11 @@ module.exports = on => {
             await controller.disconnect();
             return null;
         },
+        enterPinEmu: async pin => {
+            await controller.connect();
+            await controller.send({ type: 'emulator-enter-pin', pin });
+            await controller.disconnect();
+            return null;
+        },
     });
 };

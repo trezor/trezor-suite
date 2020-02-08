@@ -10,6 +10,7 @@ from trezorlib.client import TrezorClient
 from trezorlib.transport import enumerate_devices, get_transport
 from trezorlib.transport.udp import UdpTransport
 from trezorlib.transport.bridge import BridgeTransport
+from trezorlib import messages as proto
 
 proc = None
 # log.enable_debug_output()
@@ -117,14 +118,6 @@ def input(word):
     client.input(word)
     client.close()
 
-# def erase_device():
-#     transport = get_bridge_device()
-#     print(transport)
-#     client = TrezorClientDebugLink(transport)
-#     client.open()
-#     debuglink.flash_erase()
-#     client.close()
-
 def swipe(direction): 
     transport = get_bridge_device()
     print(transport)
@@ -166,5 +159,23 @@ def read_and_confirm_mnemonic():
     client.press_yes()
     time.sleep(1)
     client.press_yes()
-    print(mnemonic)
     client.close()
+
+# todo: work in progress
+# def enter_pin(pin):
+#     transport = get_bridge_device()
+#     print(transport)
+#     client = DebugLink(transport.find_debug())
+
+#     client.open()
+#     time.sleep(0.6)  # trezord needs time to populate changes
+#     # pin = client.read_pin()
+#     pin_encoded = client.encode_pin("1234")
+#     time.sleep(1)
+
+#     ret = client.call_raw(proto.PinMatrixAck(pin=pin_encoded))
+#     print(ret)
+#     time.sleep(1)
+#     print('pin')
+#     print(pin)
+#     client.close()

@@ -9,7 +9,7 @@ describe('Onboarding happy paths', () => {
     });
 
     // todo: not finished up to the last step.
-    it(`Go through onboarding`, () => {
+    it(`Create new wallet direct path through onboarding`, () => {
         cy.visit('/');
         cy.goToOnboarding();
         cy.onboardingShouldLoad()
@@ -36,9 +36,15 @@ describe('Onboarding happy paths', () => {
         cy.task('sendDecision', 'resetDevice');
 
         cy.getTestElement('@onboarding/continue-to-security-button').click();
-        // cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
-        // cy.getTestElement('@backup/check-item/is-in-private').click();
-        // cy.getTestElement('@backup/check-item/has-enough-time').click();
+
         cy.passThroughBackup();
+
+        cy.getTestElement('@onboarding/set-pin-button').click();
+        cy.task('sendDecision');
+        // cy.task('enterPinEmu');
+        cy.getTestElement('@onboarding/skip-button').click();
+        cy.getTestElement('@onboarding/exit-app-button').click();
     });
 });
+
+// todo Recover wallet direct path through onboarding
