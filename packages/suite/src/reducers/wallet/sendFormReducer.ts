@@ -133,7 +133,6 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
                 draft.customFee.error = null;
                 draft.customFee.value = customFee;
-                draft.selectedFee.feePerUnit = customFee || '1';
 
                 if (customFee === null) return draft;
 
