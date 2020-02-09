@@ -669,8 +669,7 @@ const definedMessages = defineMessages({
         id: 'TR_HOW_PIN_WORKS',
     },
     TR_IF_YOUR_DEVICE_IS_EVER_LOST: {
-        defaultMessage:
-            'If your device is ever lost or damaged, your funds will be lost. Backup your device first, to protect your coins against such events.',
+        defaultMessage: 'If you lose or damage the device, your funds will be lost.',
         id: 'TR_IF_YOUR_DEVICE_IS_EVER_LOST',
     },
     TR_IMPORTED_ACCOUNT_HASH: {
