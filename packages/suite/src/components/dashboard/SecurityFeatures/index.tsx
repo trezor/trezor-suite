@@ -81,7 +81,7 @@ const SecurityFeatures = ({
         : {
               variant: 'primary',
               icon: 'CHECK',
-              heading: 'Backup seed created successfully!',
+              heading: 'Recovery seed created!',
           };
 
     const pinData: CardProps = !pinEnabled
@@ -100,7 +100,7 @@ const SecurityFeatures = ({
         : {
               variant: 'primary',
               icon: 'CHECK',
-              heading: 'Backup seed created successfully!',
+              heading: 'Device protected by PIN!',
           };
 
     const hiddenWalletData: CardProps = !hiddenWalletCreated
@@ -117,7 +117,7 @@ const SecurityFeatures = ({
         : {
               variant: 'primary',
               icon: 'CHECK',
-              heading: 'Backup seed created successfully!',
+              heading: 'Passphrase protection enabled!',
           };
 
     const discreetModeData: CardProps = !discreetMode
@@ -134,7 +134,7 @@ const SecurityFeatures = ({
         : {
               variant: 'primary',
               icon: 'CHECK',
-              heading: 'Discreet mode enabled!',
+              heading: 'Discovery mode enabled!',
               cta: {
                   label: 'Disable discreet mode',
                   action: () => setDiscreetMode(false),
