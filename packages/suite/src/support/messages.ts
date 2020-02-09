@@ -1759,7 +1759,7 @@ const definedMessages = defineMessages({
         id: 'TR_WELCOME_MODAL_HEADING',
     },
     TR_WELCOME_MODAL_TEXT: {
-        defaultMessage: 'Here your crypto journey begins.',
+        defaultMessage: 'The one place for all your crypto matters.',
         id: 'TR_WELCOME_MODAL_TEXT',
     },
     TR_BEGIN: {

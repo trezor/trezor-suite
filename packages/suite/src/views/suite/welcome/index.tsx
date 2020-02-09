@@ -38,7 +38,9 @@ const Index = (props: Props) => {
                 <Translation>{messages.TR_WELCOME_MODAL_HEADING}</Translation>
             </H2>
             <P size="tiny">
-                <Translation>{messages.TR_WELCOME_MODAL_TEXT}</Translation>
+                {/* todo: remove, temporarily here, instead of cyka blyat */}
+                The one place for all your crypto matters.
+                {/* <Translation>{messages.TR_WELCOME_MODAL_TEXT}</Translation> */}
             </P>
             <StyledImg alt="" src={resolveStaticPath('images/welcome/welcome.svg')} />
 
