@@ -8,14 +8,20 @@ interface Props {
 }
 
 const Hologram = (props: Props) => {
-    const sources: { [index: string]: any } = {
-        1: 'T1_hologram.mp4',
-        2: 'TT_hologram.mp4',
+    const videos: { [index: string]: any } = {
+        1: {
+            src: 'T1_hologram.mp4',
+            loop: true,
+        },
+        2: {
+            src: 'TT_hologram.mov',
+            loop: false,
+        },
     };
     return (
-        <video width="100%" autoPlay loop>
+        <video width="100%" autoPlay loop={videos[props.model].loop}>
             <source
-                src={resolveStaticPath(`videos/onboarding/${sources[props.model]}`)}
+                src={resolveStaticPath(`videos/onboarding/${videos[props.model].src}`)}
                 type="video/mp4"
             />
         </video>
