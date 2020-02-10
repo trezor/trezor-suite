@@ -118,6 +118,7 @@ const PairDeviceStep = (props: Props) => {
                                                     <WebusbButton ready={imageLoaded} />
                                                 </WebusbButtonWrapper>
                                                 <OnboardingButton.Alt
+                                                    data-test="@onboarding/try-bridge-button"
                                                     onClick={() => TrezorConnect.disableWebUSB()}
                                                 >
                                                     Try bridge
