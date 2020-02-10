@@ -17,7 +17,7 @@ export default ({ device, goto }: Props) => {
         <Wrapper variant="info">
             <Translation {...messages.TR_YOUR_TREZOR_IS_NOT_BACKED_UP} />{' '}
             <Translation {...messages.TR_IF_YOUR_DEVICE_IS_EVER_LOST} />
-            <Button variant="tertiary" color={colors.WHITE} onClick={() => goto('settings-device')}>
+            <Button variant="tertiary" color={colors.WHITE} onClick={() => goto('backup-index')}>
                 <Translation {...messages.TR_CREATE_BACKUP} />
             </Button>
         </Wrapper>
