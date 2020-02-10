@@ -3,6 +3,7 @@ import messages from '@suite/support/messages';
 import { colors, Icon } from '@trezor/components-v2';
 import { WalletLayout } from '@wallet-components';
 import AccountName from '@wallet-components/AccountName';
+import AccountSelector from '@wallet-components/AccountSelector';
 import { Output } from '@wallet-types/sendForm';
 import React, { useEffect } from 'react';
 import styled, { css } from 'styled-components';
@@ -70,6 +71,8 @@ const Send = ({
     device,
     send,
     fees,
+    accounts,
+    goto,
     selectedAccount,
     sendFormActions,
     sendFormActionsBitcoin,
@@ -91,6 +94,12 @@ const Send = ({
     return (
         <WalletLayout title="Send" account={selectedAccount}>
             <AccountName account={account} message={accountNameMessage} />
+            <AccountSelector
+                selectedAccount={account}
+                title="Send from Account"
+                accounts={accounts}
+                goto={goto}
+            />
             {send.outputs.map((output: Output) => (
                 <OutputWrapper key={output.id}>
                     {output.id === 0 && <Clear sendFormActions={sendFormActions} />}
