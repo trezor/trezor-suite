@@ -10,7 +10,6 @@ import { Menu as SettingsMenu } from '@settings-components';
 import { AppState, Dispatch } from '@suite-types';
 import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { Network, ExternalNetwork } from '@wallet-types';
-// todo: maybe move to @settings-actions ?
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { SectionHeader, Section, ActionColumn, Row } from '@suite-components/Settings';
 
@@ -32,7 +31,6 @@ const Header = styled.div`
     display: flex;
     min-height: 20px;
     justify-content: space-between;
-    padding-left: 4%;
     padding-right: 4%;
     margin-top: 20px;
 `;
@@ -100,6 +98,10 @@ const CoinRow = styled(Row)`
     &:hover ${AdvancedSettings} {
         visibility: visible;
     }
+`;
+
+const StyledLink = styled(Link)`
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 type FilterFn = (n: Network) => boolean;
@@ -211,9 +213,9 @@ const Settings = (props: Props) => {
                         <Row key={n.symbol}>
                             <Coin network={n} />
                             <ActionColumn>
-                                <Link href={n.url}>
-                                    <Translation>{messages.TR_GO_TO_EXTERNAL_WALLET}</Translation>
-                                </Link>
+                                <StyledLink variant="nostyle" href={n.url}>
+                                    <Translation>{n.url.replace('https://', '')}</Translation>
+                                </StyledLink>
                             </ActionColumn>
                         </Row>
                     ))}
