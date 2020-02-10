@@ -96,16 +96,22 @@ export default ({ accounts, selectedAccount, title, goto }: Props) => {
                                 accountType,
                             });
                         }}
-                        formatOptionLabel={(option: SelectValue) => (
-                            <Option>
-                                {option.label}
-                                <Label>
-                                    {selectedAccount.formattedBalance}{' '}
-                                    {selectedAccount.symbol.toUpperCase()}
-                                </Label>
-                            </Option>
-                        )}
-                        option
+                        formatOptionLabel={(option: SelectValue) => {
+                            const itemAccount = otherAccounts.find(
+                                account => account.index === option.value,
+                            );
+                            if (itemAccount) {
+                                return (
+                                    <Option>
+                                        {option.label}
+                                        <Label>
+                                            {itemAccount.formattedBalance}{' '}
+                                            {itemAccount.symbol.toUpperCase()}
+                                        </Label>
+                                    </Option>
+                                );
+                            }
+                        }}
                         options={options}
                         value={selectedAccountValue}
                         variant="small"
