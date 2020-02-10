@@ -1,6 +1,8 @@
 import { NETWORKS } from '@wallet-config';
 
-describe('Discovery', () => {
+// todo: this test is potentially flaky. I maybe want to introduce two category of tests.
+
+describe.skip('Discovery', () => {
     beforeEach(() => {
         cy.task('startEmu');
         cy.task('setupEmu');

@@ -41,7 +41,7 @@ const SecurityFeatures = ({
     discreetMode,
     setDiscreetMode,
     createDeviceInstance,
-    backupDevice,
+    goto,
     changePin,
     ...rest
 }: Props) => {
@@ -74,7 +74,7 @@ const SecurityFeatures = ({
               cta: {
                   label: 'Backup now',
                   action: () => {
-                      backupDevice({});
+                      goto('backup-index');
                   },
               },
           }
@@ -134,7 +134,7 @@ const SecurityFeatures = ({
         : {
               variant: 'primary',
               icon: 'CHECK',
-              heading: 'Discovery mode enabled!',
+              heading: 'Discrete mode enabled!',
               cta: {
                   label: 'Disable discreet mode',
                   action: () => setDiscreetMode(false),
@@ -142,7 +142,7 @@ const SecurityFeatures = ({
           };
 
     const cards = [backupData, pinData, hiddenWalletData, discreetModeData];
-    const keys = [1, 2, 3, 4];
+    const dataTest = ['backup', 'pin', 'hidden-wallet', 'discreet'];
 
     return (
         <Section {...rest}>
@@ -165,13 +165,14 @@ const SecurityFeatures = ({
                 {!isHidden &&
                     cards.map((card, i) => (
                         <SecurityCard
-                            key={keys[i]}
+                            key={dataTest[i]}
                             variant={isDisabled ? 'disabled' : card.variant}
                             // variant="disabled"
                             icon={card.icon}
                             heading={card.heading}
                             description={card.description}
                             cta={card.cta}
+                            data-test={dataTest[i]}
                         />
                     ))}
             </Content>

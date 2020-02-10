@@ -4,7 +4,7 @@ import { injectIntl, WrappedComponentProps } from 'react-intl';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import * as backupActions from '@backup-actions/backupActions';
+import * as routerActions from '@suite-actions/routerActions';
 import { Dispatch, AppState } from '@suite-types';
 import SecurityFeatures from './index';
 
@@ -20,7 +20,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     setDiscreetMode: bindActionCreators(walletSettingsActions.setDiscreetMode, dispatch),
     createDeviceInstance: bindActionCreators(suiteActions.createDeviceInstance, dispatch),
     changePin: bindActionCreators(deviceSettingsActions.changePin, dispatch),
-    backupDevice: bindActionCreators(backupActions.backupDevice, dispatch),
+    goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
 export type Props = ReturnType<typeof mapStateToProps> &
