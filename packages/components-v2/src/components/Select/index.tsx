@@ -42,12 +42,12 @@ const selectStyle = (
             alignItems: 'center',
             height: variant === 'small' ? '38px' : '48px',
             borderRadius: '3px',
-            borderColor: isClean ? 'none' : colors.BLACK80,
+            borderColor: isClean ? 'white' : colors.BLACK80,
             boxShadow: 'none',
             backgroundImage,
             '&:hover, &:focus': {
                 cursor: 'pointer',
-                borderColor: isClean ? 'none' : colors.BLACK50,
+                borderColor: isClean ? 'white' : colors.BLACK50,
             },
         };
     },

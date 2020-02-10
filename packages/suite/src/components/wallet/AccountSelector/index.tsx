@@ -34,6 +34,12 @@ const SelectWrapper = styled.div`
     min-width: 250px;
 `;
 
+const Option = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+`;
+
 interface SelectValue {
     value: number;
     label: string;
@@ -81,7 +87,7 @@ export default ({ accounts, selectedAccount, title, goto }: Props) => {
                 )}
                 {otherAccounts.length > 1 && (
                     <Select
-                        clean
+                        isClean
                         onChange={(change: SelectValue) => {
                             const { symbol, accountType } = selectedAccount;
                             goto('wallet-send', {
@@ -90,6 +96,15 @@ export default ({ accounts, selectedAccount, title, goto }: Props) => {
                                 accountType,
                             });
                         }}
+                        formatOptionLabel={(option: SelectValue) => (
+                            <Option>
+                                {option.label}
+                                <Label>
+                                    {selectedAccount.formattedBalance}{' '}
+                                    {selectedAccount.symbol.toUpperCase()}
+                                </Label>
+                            </Option>
+                        )}
                         option
                         options={options}
                         value={selectedAccountValue}
