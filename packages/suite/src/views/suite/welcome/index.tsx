@@ -33,8 +33,8 @@ type Props = ReturnType<typeof mapDispatchToProps> & InjectedModalApplicationPro
 
 const Index = (props: Props) => {
     return (
-        <Wrapper>
-            <H2 data-test="welcome-message">
+        <Wrapper data-test="@welcome">
+            <H2>
                 <Translation>{messages.TR_WELCOME_MODAL_HEADING}</Translation>
             </H2>
             <P size="tiny">
