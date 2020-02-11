@@ -77,6 +77,7 @@ type Props = {
     singleColModal?: boolean;
     offerPassphraseOnDevice: boolean;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
+    recreateWallet: () => void;
 };
 
 const PassphraseTypeCard = (props: Props) => {
@@ -151,6 +152,11 @@ const PassphraseTypeCard = (props: Props) => {
                             fullWidth
                         >
                             <Translation {...messages.TR_ENTER_PASSPHRASE_ON_DEVICE} />
+                        </Button>
+                    )}
+                    {props.showPassphraseInput && props.authConfirmation && (
+                        <Button variant="secondary" onClick={props.recreateWallet} fullWidth>
+                            <Translation {...messages.TR_RECREATE_HIDDEN_WALLET} />
                         </Button>
                     )}
                 </Actions>
