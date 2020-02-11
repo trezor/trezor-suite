@@ -75,14 +75,23 @@ export const onPinSubmit = (payload: string) => () => {
  * Sends passphrase to `trezor-connect`
  * @param {string} passphrase
  */
-export const onPassphraseSubmit = (value: string, passphraseOnDevice?: boolean) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
+export const onPassphraseSubmit = (
+    value: string,
+    passphraseOnDevice: boolean,
+    hasEmptyPassphraseWallet: boolean,
+) => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
     if (!device) return;
 
-    if (!passphraseOnDevice && value === '' && !device.authConfirm && !device.state) {
+    // update wallet type only on certain conditions
+    const update =
+        !hasEmptyPassphraseWallet &&
+        !passphraseOnDevice &&
+        !device.authConfirm &&
+        !device.state &&
+        value === '';
+
+    if (update) {
         // set standard wallet type if passphrase is blank
         dispatch({
             type: SUITE.UPDATE_PASSPHRASE_MODE,
