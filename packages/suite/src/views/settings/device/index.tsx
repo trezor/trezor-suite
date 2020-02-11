@@ -10,7 +10,12 @@ import messages from '@suite/support/messages';
 import { SuiteLayout } from '@suite-components';
 import { Menu as SettingsMenu } from '@settings-components';
 import { getFwVersion } from '@suite-utils/device';
-import { SEED_MANUAL_URL, DRY_RUN_URL, PASSPHRASE_URL } from '@suite-constants/urls';
+import {
+    SEED_MANUAL_URL,
+    DRY_RUN_URL,
+    PASSPHRASE_URL,
+    FAILED_BACKUP_URL,
+} from '@suite-constants/urls';
 import * as homescreen from '@suite-utils/homescreen';
 
 import { Props } from './Container';
@@ -134,8 +139,7 @@ const Settings = ({
                                 <Translation>{messages.TR_BACKUP_FAILED}</Translation>
                             </P>
                             <ActionColumn>
-                                {/* todo: add proper link */}
-                                <BackupFailedLink href="https://fooo">
+                                <BackupFailedLink href={FAILED_BACKUP_URL}>
                                     <Translation>{messages.TR_WHAT_TO_DO_NOW}</Translation>
                                 </BackupFailedLink>
                             </ActionColumn>

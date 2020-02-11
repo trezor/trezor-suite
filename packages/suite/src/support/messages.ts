@@ -1959,6 +1959,10 @@ const definedMessages = defineMessages({
         defaultMessage:
             'To find your accounts and funds we need to perform a coin discovery which will discover all your coins.',
     },
+    TR_FAILED_BACKUP: {
+        id: 'TR_FAILED_BACKUP',
+        defaultMessage: 'Backup failed. This is serious.',
+    },
 });
 
 export default definedMessages;

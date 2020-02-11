@@ -32,3 +32,4 @@ export const LTC_ADDRESS_INFO_URL =
 export const BRIDGE_CHANGELOG_URL = 'https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md';
 export const WIKI_QR_CODE = 'https://wiki.trezor.io/QR_code';
 export const CHANGELOG_URL = 'https://wiki.trezor.io/Firmware_changelog';
+export const FAILED_BACKUP_URL = 'https://wiki.trezor.io/Recovery_seed_backup_fail';
