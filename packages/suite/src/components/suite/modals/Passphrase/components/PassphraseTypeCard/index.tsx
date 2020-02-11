@@ -4,6 +4,8 @@ import styled, { css } from 'styled-components';
 import { Button, colors, variables, Input, Checkbox } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
+import { MAX_PASSPHRASE_LENGTH } from '@suite-constants/passphrase';
+import { countBytesInString } from '@suite-utils/string';
 import PasswordStrengthIndicator from '@suite-components/PasswordStrengthIndicator';
 
 const WalletTitle = styled.div`
@@ -92,6 +94,7 @@ const PassphraseTypeCard = (props: Props) => {
     const inputType = showPassword ? 'text' : 'password';
     const enterPressed = useKeyPress('Enter');
     const ref = createRef<HTMLInputElement>();
+    const isTooLong = countBytesInString(value) > MAX_PASSPHRASE_LENGTH;
 
     useLayoutEffect(() => {
         if (ref && ref.current) {
@@ -129,6 +132,8 @@ const PassphraseTypeCard = (props: Props) => {
                             value={value}
                             innerRef={ref}
                             display="block"
+                            bottomText={isTooLong ? 'Maximum passphrase length is 50 bytes' : null}
+                            state={isTooLong ? 'error' : undefined}
                             variant="small"
                             button={{
                                 iconSize: 18,
@@ -136,7 +141,7 @@ const PassphraseTypeCard = (props: Props) => {
                                 onClick: () => setShowPassword(!showPassword),
                             }}
                         />
-                        <PasswordStrengthIndicator password={value} />
+                        {!isTooLong && <PasswordStrengthIndicator password={value} />}
                     </InputWrapper>
                 )}
                 <Actions>
