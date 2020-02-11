@@ -1346,6 +1346,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'First-time user or an ol’ Trezor fella?',
         id: 'TR_WELCOME_TO_TREZOR',
     },
+    TR_PASSPHRASE_TOO_LONG: {
+        defaultMessage: 'The passphrase length has exceed the allowed limit.',
+        id: 'TR_PASSPHRASE_TOO_LONG'
+    },
     TR_WELCOME_TO_TREZOR_TEXT: {
         defaultMessage: 'Choose your path and let the Trezor Force be with you!.',
         id: 'TR_WELCOME_TO_TREZOR_TEXT',

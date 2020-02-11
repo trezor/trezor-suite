@@ -133,9 +133,9 @@ const PassphraseTypeCard = (props: Props) => {
                             innerRef={ref}
                             display="block"
                             bottomText={
-                                isTooLong
-                                    ? 'The passphrase length has exceed the allowed limit.                            '
-                                    : null
+                                isTooLong ? (
+                                    <Translation {...messages.TR_PASSPHRASE_TOO_LONG} />
+                                ) : null
                             }
                             state={isTooLong ? 'error' : undefined}
                             variant="small"
