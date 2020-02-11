@@ -1773,10 +1773,6 @@ const definedMessages = defineMessages({
         id: 'TR_CONFIRM_EMPTY_HIDDEN_WALLET',
         defaultMessage: 'Confirm empty hidden wallet',
     },
-    TR_RECREATE_HIDDEN_WALLET: {
-        id: 'TR_RECREATE_HIDDEN_WALLET',
-        defaultMessage: 'Recreate hidden wallet',
-    },
     TR_UNLOCK: {
         id: 'TR_UNLOCK',
         defaultMessage: 'Unlock',
