@@ -40,12 +40,9 @@ def message_received(client, server, message):
         server.send_message(client, json.dumps(
             {"success": False, "error": "Invalid json message"}))
         return
-    
+
     cmdId = cmd["id"]
     cmdType = cmd["type"]
-    print('type')
-    print(cmdType)
-    
     response = None
     try:
         if cmdType == "ping":
