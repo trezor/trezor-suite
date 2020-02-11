@@ -19,7 +19,7 @@ const WelcomeStep = (props: Props) => {
 
                 <Wrapper.Options>
                     <Option
-                        data-test="@onboarding/button-begin"
+                        data-test="@onboarding/begin-button"
                         action={() => {
                             props.goToNextStep('create-or-recover');
                         }}
@@ -29,7 +29,7 @@ const WelcomeStep = (props: Props) => {
                         imgSrc="images/onboarding/new-user.svg"
                     />
                     <Option
-                        data-test="@onboarding/button-skip"
+                        data-test="@onboarding/skip-button"
                         action={() => {
                             props.goToNextStep('skip');
                         }}

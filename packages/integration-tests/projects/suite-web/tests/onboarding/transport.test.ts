@@ -41,9 +41,9 @@ describe.skip('Transport webusb/bridge', () => {
     });
 
     it('user selects new device -> user selects model one -> in this case we know that he can not use webusb (unreadable device) so we disable webusb and offer bridge download', () => {
-        cy.getTestElement('@onboarding/button-path-create')
+        cy.getTestElement('@onboarding/path-create-button')
             .click()
-            .getTestElement('@onboarding/button-new-path')
+            .getTestElement('@onboarding/path-new-button')
             .click()
             .getTestElement('@onboarding/option-model-one-path')
             .click()

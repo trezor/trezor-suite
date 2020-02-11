@@ -13,13 +13,13 @@ describe('Onboarding happy paths', () => {
         cy.visit('/');
         cy.goToOnboarding();
         cy.onboardingShouldLoad()
-            .getTestElement('@onboarding/button-begin')
+            .getTestElement('@onboarding/begin-button')
             .click()
             //  add snapshots in distance future when everything is stable
             // .matchImageSnapshot()
-            .getTestElement('@onboarding/button-path-create')
+            .getTestElement('@onboarding/path-create-button')
             .click()
-            .getTestElement('@onboarding/button-used-path')
+            .getTestElement('@onboarding/path-used-button')
             .click()
             .getTestElement('@onboarding/pair-device-step');
 

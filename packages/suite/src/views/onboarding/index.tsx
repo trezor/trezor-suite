@@ -21,7 +21,7 @@ import HologramStep from '@onboarding-views/steps/Hologram/Container';
 import PairStep from '@onboarding-views/steps/Pair/Container';
 import FirmwareStep from '@onboarding-views/steps/Firmware/Container';
 import ShamirStep from '@onboarding-views/steps/Shamir/Container';
-import RecoveryStep from '@onboarding-views/steps/Recovery';
+import RecoveryStep from '@onboarding-views/steps/Recovery/Container';
 import BackupStep from '@onboarding-views/steps/Backup/Container';
 import SecurityStep from '@onboarding-views/steps/Security/Container';
 import SetPinStep from '@onboarding-views/steps/Pin/Container';
@@ -180,7 +180,7 @@ const Onboarding = (props: Props) => {
                         {modal}
                     </ActionModalWrapper>
                 )}
-                {!errorState && !modal && <StepComponent modal={modal} />}
+                {!errorState && !modal && <StepComponent />}
             </ComponentWrapper>
         </Wrapper>
     );
