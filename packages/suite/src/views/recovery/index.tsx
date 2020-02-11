@@ -201,7 +201,11 @@ const Recovery = ({
                     <StyledButton onClick={() => checkSeed()}>Start</StyledButton>
 
                     <Buttons>
-                        <StyledButton icon="CROSS" variant="tertiary" onClick={closeModalApp}>
+                        <StyledButton
+                            icon="CROSS"
+                            variant="tertiary"
+                            onClick={() => closeModalApp()}
+                        >
                             Cancel seed check
                         </StyledButton>
                     </Buttons>
@@ -213,7 +217,11 @@ const Recovery = ({
                     <H2>Select number of words</H2>
                     <SelectWordCount onSelect={(count: WordCount) => onSetWordsCount(count)} />
                     <Buttons>
-                        <StyledButton icon="CROSS" variant="tertiary" onClick={closeModalApp}>
+                        <StyledButton
+                            icon="CROSS"
+                            variant="tertiary"
+                            onClick={() => closeModalApp()}
+                        >
                             Cancel seed check
                         </StyledButton>
                     </Buttons>
@@ -224,7 +232,11 @@ const Recovery = ({
                     <H2>Chose recovery type</H2>
                     <SelectRecoveryType onSelect={(type: boolean) => onSetRecoveryType(type)} />
                     <Buttons>
-                        <StyledButton icon="CROSS" variant="tertiary" onClick={closeModalApp}>
+                        <StyledButton
+                            icon="CROSS"
+                            variant="tertiary"
+                            onClick={() => closeModalApp()}
+                        >
                             Cancel seed check
                         </StyledButton>
                     </Buttons>
@@ -255,7 +267,7 @@ const Recovery = ({
                     <StyledP>Seed you have entered now matches the seed in device</StyledP>
                     <img alt="" src={resolveStaticPath('images/suite/uni-success.svg')} />
                     <Buttons>
-                        <StyledButton onClick={closeModalApp}>Close</StyledButton>
+                        <StyledButton onClick={() => closeModalApp()}>Close</StyledButton>
                     </Buttons>
                 </>
             )}
@@ -265,7 +277,7 @@ const Recovery = ({
                     <H2>Seed check failed</H2>
                     <Error error={recovery.error} />
                     <Buttons>
-                        <StyledButton onClick={closeModalApp}>Close</StyledButton>
+                        <StyledButton onClick={() => closeModalApp()}>Close</StyledButton>
                     </Buttons>
                 </>
             )}
