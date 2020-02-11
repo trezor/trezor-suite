@@ -91,7 +91,7 @@ const Passphrase = (props: Props) => {
         return (
             <PassphraseTypeCard
                 authConfirmation={authConfirmation}
-                recreateWallet={onRecreate}
+                recreateWallet={authConfirmation ? onRecreate : undefined}
                 title={
                     !authConfirmation ? (
                         <Translation {...messages.TR_ENTER_PASSPHRASE} />

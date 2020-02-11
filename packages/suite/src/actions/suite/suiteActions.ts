@@ -2,6 +2,7 @@ import TrezorConnect, { Device, DEVICE } from 'trezor-connect';
 import * as reducersUtils from '@suite-utils/reducerUtils';
 import * as deviceUtils from '@suite-utils/device';
 import { add as addNotification } from '@suite-actions/notificationActions';
+import * as modalActions from '@suite-actions/modalActions';
 import { SUITE } from './constants';
 import { LANGUAGES } from '@suite-config';
 import { Action, Dispatch, GetState, TrezorDevice, AppState } from '@suite-types';
@@ -348,10 +349,12 @@ export const authorizeDevice = () => async (
     if (response.success) {
         const { state } = response.payload;
         const s = state.split(':')[0];
-        const existing = getState().devices.find(d => d.state && d.state.split(':')[0] === s);
-        if (existing) {
-            // TODO: catch already existing state here (new passphrase design)
-            // dispatch(addNotification({ type: 'hidden-wallet-already-exists' }));
+        const duplicate = getState().devices.find(
+            d => d.state && d.state.split(':')[0] === s && d.instance !== device.instance,
+        );
+        if (duplicate) {
+            dispatch(modalActions.openModal({ type: 'passphrase-duplicate', device, duplicate }));
+            return false;
         }
 
         dispatch({
@@ -413,4 +416,24 @@ export const authConfirm = () => async (dispatch: Dispatch, getState: GetState) 
     }
 
     dispatch(receiveAuthConfirm(device, true));
+};
+
+/**
+ * Called from `suiteMiddleware`
+ */
+export const switchDuplicatedDevice = (device: TrezorDevice, duplicate: TrezorDevice) => async (
+    dispatch: Dispatch,
+) => {
+    // close modal
+    dispatch(modalActions.onCancel());
+    // release session from authorizeDevice
+    await TrezorConnect.getFeatures({
+        device,
+        keepSession: false,
+    });
+
+    // switch to existing wallet
+    dispatch(selectDevice(duplicate));
+    // remove stateless instance
+    dispatch(forgetDevice(device));
 };

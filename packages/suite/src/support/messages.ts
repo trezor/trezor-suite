@@ -1799,6 +1799,22 @@ const definedMessages = defineMessages({
         id: 'TR_ACCESS_HIDDEN_WALLET',
         defaultMessage: 'Access Hidden Wallet',
     },
+    TR_WALLET_DUPLICATE_TITLE: {
+        id: 'TR_WALLET_DUPLICATE_TITLE',
+        defaultMessage: 'Passphrase duplicated',
+    },
+    TR_WALLET_DUPLICATE_DESC: {
+        id: 'TR_WALLET_DUPLICATE_DESC',
+        defaultMessage: 'The hidden wallet that you are trying to create already exists',
+    },
+    TR_WALLET_DUPLICATE_SWITCH: {
+        id: 'TR_WALLET_DUPLICATE_SWITCH',
+        defaultMessage: 'Switch to existing wallet',
+    },
+    TR_WALLET_DUPLICATE_RETRY: {
+        id: 'TR_WALLET_DUPLICATE_RETRY',
+        defaultMessage: 'Try again with different passphrase',
+    },
     TR_SELECT_WALLET_TO_ACCESS: {
         id: 'TR_SELECT_WALLET_TO_ACCESS',
         defaultMessage: 'Select a wallet to access',
