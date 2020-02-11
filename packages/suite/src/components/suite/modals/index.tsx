@@ -16,6 +16,7 @@ import PinInvalid from './PinInvalid';
 import Passphrase from './Passphrase';
 import PassphraseSource from './PassphraseSource';
 import PassphraseOnDevice from './PassphraseOnDevice';
+import PassphraseDuplicate from './PassphraseDuplicate';
 import ConfirmAction from './confirm/Action';
 import Word from './Word';
 import WordAdvanced from './WordAdvanced';
@@ -150,6 +151,8 @@ const getUserContextModal = (props: Props) => {
             return <QrScanner outputId={payload.outputId} onCancel={modalActions.onCancel} />;
         case 'transaction-detail':
             return <TransactionDetail tx={payload.tx} onCancel={modalActions.onCancel} />;
+        case 'passphrase-duplicate':
+            return <PassphraseDuplicate device={payload.device} duplicate={payload.duplicate} />;
         default:
             return null;
     }

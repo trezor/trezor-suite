@@ -27,6 +27,11 @@ export type UserContextPayload =
           cancelable?: boolean;
       }
     | {
+          type: 'passphrase-duplicate';
+          device: TrezorDevice;
+          duplicate: TrezorDevice;
+      }
+    | {
           type: 'add-account';
           device: TrezorDevice;
       }
