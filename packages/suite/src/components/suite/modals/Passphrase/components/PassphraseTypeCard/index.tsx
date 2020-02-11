@@ -132,7 +132,11 @@ const PassphraseTypeCard = (props: Props) => {
                             value={value}
                             innerRef={ref}
                             display="block"
-                            bottomText={isTooLong ? 'Maximum passphrase length is 50 bytes' : null}
+                            bottomText={
+                                isTooLong
+                                    ? 'The passphrase length has exceed the allowed limit.                            '
+                                    : null
+                            }
                             state={isTooLong ? 'error' : undefined}
                             variant="small"
                             button={{
