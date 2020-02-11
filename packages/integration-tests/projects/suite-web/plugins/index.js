@@ -148,5 +148,11 @@ module.exports = on => {
             await controller.disconnect();
             return null;
         },
+        // backupDeviceEmu: async () => {
+        //     await controller.connect();
+        //     await controller.send({ type: 'emulator-backup-device' });
+        //     await controller.disconnect();
+        //     return null;
+        // },
     });
 };

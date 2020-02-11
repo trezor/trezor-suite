@@ -88,6 +88,7 @@ const WalletInstance = ({
 
     return (
         <Wrapper
+            data-test={`@switch-device/wallet-instance/${instance.instance}`}
             key={`${instance.label}${instance.instance}${instance.state}`}
             selected={enabled && selected && !!discoveryProcess}
             {...rest}

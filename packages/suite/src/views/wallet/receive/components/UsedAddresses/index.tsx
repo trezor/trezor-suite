@@ -82,14 +82,16 @@ const Actions = styled.div`
 
 const DEFAULT_LIMIT = 10;
 
-const Item = ({ addr, symbol, onClick, revealed }: any) => {
+const Item = ({ addr, symbol, onClick, revealed, index }: any) => {
     const amount = addr.received ? `${formatNetworkAmount(addr.received, symbol)} ${symbol}` : null;
     const address =
         addr.transfers < 1 || revealed ? addr.address : `${addr.address.substring(0, 15)}…`;
     return (
         <GridTable fresh={addr.transfers < 1}>
             <GridItem>/{parseBIP44Path(addr.path)!.addrIndex}</GridItem>
-            <GridItem onClick={onClick}>{address}</GridItem>
+            <GridItem data-test={`@wallet/receive/used-address/${index}`} onClick={onClick}>
+                {address}
+            </GridItem>
             <GridItem right>{addr.transfers < 1 ? 'Not used yet' : addr.transfers}</GridItem>
             <GridItem amount>{amount}</GridItem>
         </GridTable>
@@ -122,8 +124,9 @@ const UsedAddresses = ({ account, addresses, showAddress }: Props) => {
                 <GridItem right>Transactions</GridItem>
                 <GridItem>Total received</GridItem>
             </GridTable>
-            {list.slice(0, limit).map(addr => (
+            {list.slice(0, limit).map((addr, index) => (
                 <Item
+                    index={index}
                     key={addr.path}
                     addr={addr}
                     symbol={account.symbol}

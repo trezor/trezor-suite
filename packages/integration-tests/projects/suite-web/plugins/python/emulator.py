@@ -10,7 +10,7 @@ from trezorlib.client import TrezorClient
 from trezorlib.transport import enumerate_devices, get_transport
 from trezorlib.transport.udp import UdpTransport
 from trezorlib.transport.bridge import BridgeTransport
-# from trezorlib import messages as proto
+from trezorlib import messages as proto
 
 proc = None
 # log.enable_debug_output()
@@ -162,6 +162,17 @@ def read_and_confirm_mnemonic():
     client.press_yes()
     client.close()
 
+# def backup_device():
+#     transport = get_bridge_device()
+#     print(transport)
+#     client = TrezorClientDebugLink(transport)
+#     client.open()
+#     time.sleep(0.6)
+#     # todo: backup is blocking here, need to find out how to return "promise"
+#     device.backup(client)
+#     client.close()
+#     # read_and_confirm_mnemonic()
+
 # todo: work in progress
 # def enter_pin(pin):
 #     transport = get_bridge_device()
@@ -189,3 +200,5 @@ def set_passphrase_source(passphrase_source):
     time.sleep(0.6)
     device.apply_settings(client, passphrase_source=passphrase_source)
     client.close()
+
+

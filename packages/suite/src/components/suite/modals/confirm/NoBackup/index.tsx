@@ -50,7 +50,11 @@ const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup }: Props) => (
             >
                 <Translation>{messages.TR_CREATE_BACKUP_IN_3_MINUTES}</Translation>
             </BackupButton>
-            <Button variant="secondary" onClick={() => onReceiveConfirmation(true)}>
+            <Button
+                variant="secondary"
+                onClick={() => onReceiveConfirmation(true)}
+                data-test="@no-backup/take-risk-button"
+            >
                 <Translation>{messages.TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK}</Translation>
             </Button>
         </Row>
