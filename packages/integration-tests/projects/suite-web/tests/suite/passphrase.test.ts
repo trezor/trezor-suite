@@ -52,7 +52,10 @@ describe('Passphrase', () => {
         cy.getTestElement('@passphrase/submit-button').click();
         cy.getTestElement('@suite/loading').should('not.be.visible');
         // click reveal address
-        cy.getTestElement('@wallet/receive/used-address/0').click();
+        // no address should be in table yet
+        cy.getTestElement('@wallet/receive/used-address/0').should('not.exist');
+        cy.getTestElement('@wallet/receive/reveal-address-button').click();
+
         cy.getTestElement('@no-backup/take-risk-button').click();
         cy.getTestElement('@address-modal/address-field').should('contain', defAddr);
         cy.task('sendDecision');
@@ -62,7 +65,10 @@ describe('Passphrase', () => {
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@switch-device/wallet-instance/1').click();
         // reveal 0 address again
-        cy.getTestElement('@wallet/receive/used-address/0').click();
+        // no address should be in table yet
+        cy.getTestElement('@wallet/receive/used-address/0').should('not.exist');
+        cy.getTestElement('@wallet/receive/reveal-address-button').click();
+
         cy.getTestElement('@no-backup/take-risk-button').click();
         // should display confirm passphrase modal
         cy.getTestElement('@passhphrase/input').type('abc');
