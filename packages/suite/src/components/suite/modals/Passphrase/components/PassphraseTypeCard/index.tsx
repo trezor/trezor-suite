@@ -115,7 +115,11 @@ const PassphraseTypeCard = (props: Props) => {
             <Padding singleColModal={props.singleColModal}>
                 {authConfirmation && (
                     <Content>
-                        <Checkbox onClick={() => setEnabled(!enabled)} isChecked={enabled}>
+                        <Checkbox
+                            data-test="@passphrase/confirm-checkbox"
+                            onClick={() => setEnabled(!enabled)}
+                            isChecked={enabled}
+                        >
                             <Translation {...messages.TR_I_UNDERSTAND_PASSPHRASE} />
                         </Checkbox>
                     </Content>
@@ -123,6 +127,7 @@ const PassphraseTypeCard = (props: Props) => {
                 {props.showPassphraseInput && (
                     <InputWrapper>
                         <Input
+                            data-test="@passhphrase/input"
                             onChange={event => setValue(event.target.value)}
                             placeholder="Enter passphrase"
                             type={inputType}
@@ -141,6 +146,7 @@ const PassphraseTypeCard = (props: Props) => {
                 )}
                 <Actions>
                     <Button
+                        data-test="@passphrase/submit-button"
                         isDisabled={!enabled}
                         variant={props.singleColModal ? 'primary' : props.colorVariant}
                         onClick={() => submit(value)}

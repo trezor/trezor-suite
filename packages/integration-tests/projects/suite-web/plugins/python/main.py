@@ -40,9 +40,12 @@ def message_received(client, server, message):
         server.send_message(client, json.dumps(
             {"success": False, "error": "Invalid json message"}))
         return
-
+    
     cmdId = cmd["id"]
     cmdType = cmd["type"]
+    print('type')
+    print(cmdType)
+    
     response = None
     try:
         if cmdType == "ping":
@@ -75,8 +78,10 @@ def message_received(client, server, message):
         elif cmdType == "emulator-wipe":
             emulator.wipe_device()
             response = {"success": True}
-        elif cmdType == "emulator-erase":
-            emulator.erase_device()
+        elif cmdType == "emulator-set-passhphrase-source":
+            print("cmd['passphrase_source']")
+            print(cmd['passphrase_source'])
+            emulator.set_passphrase_source(cmd['passphrase_source'])
             response = {"success": True}
         elif cmdType == "bridge-start":
             bridge.start()

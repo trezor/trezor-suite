@@ -47,4 +47,4 @@ export const passThroughBackup = () => {
     cy.getTestElement('@backup/check-item/made-no-digital-copy').click();
     cy.getTestElement('@backup/check-item/will-hide-seed').click();
     cy.getTestElement('@backup/close-button').click();
-}
+};

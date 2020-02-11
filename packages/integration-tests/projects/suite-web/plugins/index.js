@@ -129,5 +129,24 @@ module.exports = on => {
             await controller.disconnect();
             return null;
         },
+        setPasshpraseSourceEmu: async passhpraseSource => {
+            await controller.connect();
+            let source;
+            if (passhpraseSource === 'ask') {
+                source = 0;
+            } else if (passhpraseSource === 'device') {
+                source = 1;
+            } else if (passhpraseSource === 'host') {
+                source = 2;
+            } else {
+                throw Error('unexpected passhpraseSource');
+            }
+            const response = await controller.send({
+                type: 'emulator-set-passhphrase-source',
+                passphrase_source: source,
+            });
+            await controller.disconnect();
+            return null;
+        },
     });
 };
