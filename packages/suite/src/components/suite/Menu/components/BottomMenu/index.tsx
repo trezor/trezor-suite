@@ -98,8 +98,13 @@ const BottomMenu = (props: Props) => (
             const isActive = routeObj ? routeObj.app === props.app : false;
 
             return (
-                <In key={text} onClick={() => props.goto(routeObj!.name)} isActive={isActive}>
-                    <MenuItemWrapper data-test={dataTestId} onClick={() => props.goto(route)}>
+                <In
+                    key={text}
+                    data-test={dataTestId}
+                    onClick={() => props.goto(routeObj!.name)}
+                    isActive={isActive}
+                >
+                    <MenuItemWrapper>
                         <IconWrapper>
                             <Icon
                                 color={isActive ? colors.BLACK0 : colors.WHITE}

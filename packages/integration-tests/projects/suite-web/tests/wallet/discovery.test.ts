@@ -1,37 +1,32 @@
-// import { NETWORKS } from '@wallet-config';
+import { NETWORKS } from '@wallet-config';
 
-// todo: Finish with new design; had to stop with this after rebase.
+// todo: this test is potentially flaky. I maybe want to introduce two category of tests.
+
 describe.skip('Discovery', () => {
-    before(() => {
+    beforeEach(() => {
         cy.task('startEmu');
         cy.task('setupEmu');
         cy.viewport(1024, 768).resetDb();
     });
 
-    // after(() => {
-    //     cy.task('stopEmu').task('stopBridge');
-    // });
-
-    it('navigate to wallet settings page', () => {
-        cy.visit('/')
-            .onboardingShouldLoad()
-            .getTestElement('button-use-wallet')
-            .click()
-            .dashboardShouldLoad()
-            .toggleDeviceMenu()
-            .getTestElement('@suite/menu-item/wallet-settings')
-            .click();
+    afterEach(() => {
+        cy.task('stopEmu');
     });
 
-    // it('enable all networks', () => {
-    //     // btc is already checked, so first click is hide;
-    //     cy.getTestElement('@wallet/settings/toggle-all-mainnet')
-    //         .click()
-    //         .click();
-    //     cy.getTestElement('@wallet/settings/toggle-all-testnet').click();
-    //     cy.getTestElement('@wallet/settings/coin-switch').should(
-    //         'have.length',
-    //         NETWORKS.filter(n => !n.accountType).length,
-    //     );
-    // });
+    it('go to wallet settings page, activate all coins and see that there is equal number of records on dashboard', () => {
+        cy.visit('/settings/wallet');
+        cy.passThroughInitialRun();
+        cy.getTestElement('@suite/loading').should('not.be.visible');
+        cy.getTestElement('@settings/wallet/coins-group/mainnet/toggle-all')
+            .click()
+            .click();
+        cy.getTestElement('@settings/wallet/coins-group/testnet/toggle-all').click({ force: true });
+
+        cy.getTestElement('@suite/menu/suite-index').click({ force: true });
+        cy.log('all available networks should return something from discovery');
+        cy.getTestElement('@dashboard/asset-card', { timeout: 120 * 1000 }).should(
+            'have.length',
+            NETWORKS.filter(n => !n.accountType).length,
+        );
+    });
 });

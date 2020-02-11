@@ -92,6 +92,7 @@ export interface Props extends CardProps {
         label: React.ReactNode;
         action?: () => void;
     };
+    'data-test'?: string;
 }
 
 const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Props) => {
@@ -114,6 +115,7 @@ const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Pro
                 {cta && !isLoading && (
                     <Action>
                         <Button
+                            data-test={`@dashboard/security-card/${rest['data-test']}/button`}
                             variant="tertiary"
                             size="small"
                             onClick={cta.action}

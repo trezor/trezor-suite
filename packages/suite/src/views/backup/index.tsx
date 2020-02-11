@@ -64,7 +64,7 @@ const Backup = (props: Props) => {
     const backupStatuses = ['initial', 'in-progress', 'finished'] as const;
 
     return (
-        <Wrapper>
+        <Wrapper data-test="@backup">
             <ProgressBar
                 showHelp
                 total={backupStatuses.length}

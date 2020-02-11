@@ -54,7 +54,7 @@ type Props = React.HTMLAttributes<HTMLDivElement>;
 
 const EmptyWallet = (props: Props) => {
     return (
-        <Wrapper {...props}>
+        <Wrapper {...props} data-test="@dashboard/wallet-ready">
             <Image src={resolveStaticPath(`images/dashboard/empty-dashboard.svg`)} />
             <Content>
                 <Title>
