@@ -59,6 +59,10 @@ const Actions = styled.div`
     /* margin-top: 20px; */
 `;
 
+const RetryButton = styled(Button)`
+    margin: 16px auto 0px;
+`;
+
 const Padding = styled.div<{ singleColModal?: boolean }>`
     display: flex;
     width: 100%;
@@ -77,6 +81,7 @@ type Props = {
     singleColModal?: boolean;
     offerPassphraseOnDevice: boolean;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
+    recreateWallet?: () => void;
 };
 
 const PassphraseTypeCard = (props: Props) => {
@@ -153,10 +158,23 @@ const PassphraseTypeCard = (props: Props) => {
                             <Translation {...messages.TR_ENTER_PASSPHRASE_ON_DEVICE} />
                         </Button>
                     )}
+                    {props.recreateWallet && (
+                        <RetryButton
+                            variant="tertiary"
+                            icon="ARROW_LEFT"
+                            color={colors.BLACK50}
+                            size="small"
+                            onClick={props.recreateWallet}
+                        >
+                            <Translation {...messages.TR_TRY_AGAIN} />
+                        </RetryButton>
+                    )}
                 </Actions>
             </Padding>
         </Col>
     );
 };
+
+// margin="16px auto 0px"
 
 export default PassphraseTypeCard;

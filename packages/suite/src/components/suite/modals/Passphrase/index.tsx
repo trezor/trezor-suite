@@ -1,8 +1,9 @@
+import TrezorConnect from 'trezor-connect';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Button, H2, colors, variables } from '@trezor/components-v2';
+import { Button, Link, H2, colors, variables } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
@@ -10,7 +11,6 @@ import * as deviceUtils from '@suite-utils/device';
 import Loading from '@suite-components/Loading';
 import messages from '@suite/support/messages';
 import { AppState, Dispatch, TrezorDevice } from '@suite-types';
-import Link from '../../Link';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import { PASSPHRASE_URL } from '@suite-constants/urls';
 import PassphraseTypeCard from './components/PassphraseTypeCard';
@@ -77,6 +77,11 @@ const Passphrase = (props: Props) => {
         props.onPassphraseSubmit(value, passphraseOnDevice);
     };
 
+    const onRecreate = async () => {
+        // Cancel TrezorConnect request and pass error to suiteAction.authConfirm
+        TrezorConnect.cancel('auth-confirm-cancel');
+    };
+
     if (submitted) {
         return <Loading />;
     }
@@ -86,6 +91,7 @@ const Passphrase = (props: Props) => {
         return (
             <PassphraseTypeCard
                 authConfirmation={authConfirmation}
+                recreateWallet={onRecreate}
                 title={
                     !authConfirmation ? (
                         <Translation {...messages.TR_ENTER_PASSPHRASE} />

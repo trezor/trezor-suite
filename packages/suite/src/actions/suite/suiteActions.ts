@@ -346,11 +346,18 @@ export const authorizeDevice = () => async (
     });
 
     if (response.success) {
-        // TODO: catch already existing state here (new passphrase design)
+        const { state } = response.payload;
+        const s = state.split(':')[0];
+        const existing = getState().devices.find(d => d.state && d.state.split(':')[0] === s);
+        if (existing) {
+            // TODO: catch already existing state here (new passphrase design)
+            // dispatch(addNotification({ type: 'hidden-wallet-already-exists' }));
+        }
+
         dispatch({
             type: SUITE.AUTH_DEVICE,
             payload: device,
-            state: response.payload.state,
+            state,
         });
         return true;
     }
@@ -386,6 +393,14 @@ export const authConfirm = () => async (dispatch: Dispatch, getState: GetState) 
     });
 
     if (!response.success) {
+        // handle error passed from Passphrase modal
+        if (response.payload.error === 'auth-confirm-cancel') {
+            // needs await to propagate all actions
+            await dispatch(createDeviceInstance(device));
+            // forget previous empty wallet
+            dispatch(forgetDevice(device));
+            return;
+        }
         dispatch(addNotification({ type: 'auth-confirm-error', error: response.payload.error }));
         dispatch(receiveAuthConfirm(device, false));
         return;
