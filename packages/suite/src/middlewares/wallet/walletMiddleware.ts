@@ -37,16 +37,17 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
 
     const nextRouter = api.getState().router;
 
+    let resetReducers = action.type === SUITE.SELECT_DEVICE;
     if (prevRouter.app === 'wallet' && action.type === ROUTER.LOCATION_CHANGE) {
         // leaving wallet app or switching between accounts
-        const reset =
+        resetReducers =
             (prevRouter.app !== nextRouter.app && !nextRouter.route?.isModal) ||
             (nextRouter.app === 'wallet' && nextRouter.hash !== prevRouter.hash);
-        if (reset) {
-            api.dispatch(selectedAccountActions.dispose());
-            api.dispatch(sendFormActions.dispose());
-            api.dispatch(receiveActions.dispose());
-        }
+    }
+    if (resetReducers) {
+        api.dispatch(selectedAccountActions.dispose());
+        api.dispatch(sendFormActions.dispose());
+        api.dispatch(receiveActions.dispose());
     }
 
     api.dispatch(selectedAccountActions.getStateForAction(action));
