@@ -175,6 +175,4 @@ const PassphraseTypeCard = (props: Props) => {
     );
 };
 
-// margin="16px auto 0px"
-
 export default PassphraseTypeCard;
