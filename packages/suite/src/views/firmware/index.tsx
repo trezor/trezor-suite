@@ -24,11 +24,6 @@ const Wrapper = styled(ModalWrapper)`
     flex-direction: column;
 `;
 
-// todo: aaarghhh this should be in some abstract modal container
-const ProgressBarWrapper = styled.div`
-    margin-bottom: 40px;
-`;
-
 const Row = styled.div`
     display: flex;
     flex-direction: row;
@@ -210,12 +205,7 @@ const Firmware = ({
             <Wrapper>
                 {firmware.status === 'waiting-for-bootloader' && (
                     <>
-                        <ProgressBarWrapper>
-                            <ProgressBar
-                                total={statesInProgessBar.length}
-                                current={getCurrentStep()}
-                            />
-                        </ProgressBarWrapper>
+                        <ProgressBar total={statesInProgessBar.length} current={getCurrentStep()} />
                         <H2>Reconnect your device in bootloader mode</H2>
                         <StyledP>Ok, now disconnect your device</StyledP>
                         <InitImg />
@@ -263,9 +253,7 @@ const Firmware = ({
 
     return (
         <Wrapper>
-            <ProgressBarWrapper>
-                <ProgressBar total={statesInProgessBar.length} current={getCurrentStep()} />
-            </ProgressBarWrapper>
+            <ProgressBar total={statesInProgessBar.length} current={getCurrentStep()} />
 
             {firmware.status === 'initial' && (
                 <>
