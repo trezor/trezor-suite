@@ -144,12 +144,12 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
 
     const selectDeviceInstance = async (instance: Props['device']) => {
         await props.selectDevice(instance);
-        props.closeModalApp();
+        props.closeModalApp(!isWalletContext);
     };
 
     const addDeviceInstance = async (instance: Props['device']) => {
         await props.createDeviceInstance(instance);
-        props.closeModalApp();
+        props.closeModalApp(!isWalletContext);
     };
 
     const onSolveIssueClick = () => {

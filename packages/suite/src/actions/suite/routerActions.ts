@@ -106,7 +106,7 @@ export const getBackgroundRoute = () => () => findRoute(Router.pathname + window
  * Application modal does not push route into router history, it changes it only in reducer (see goto action).
  * Reverse operation (again without touching history) needs to be done in back action.
  */
-export const closeModalApp = () => async (dispatch: Dispatch) => {
+export const closeModalApp = (preserveParams = true) => async (dispatch: Dispatch) => {
     dispatch(suiteActions.lockRouter(false));
     // const route = findRoute(Router.pathname + window.location.hash);
     const route = dispatch(getBackgroundRoute());
@@ -115,8 +115,13 @@ export const closeModalApp = () => async (dispatch: Dispatch) => {
     if (route && route.isModal) {
         return dispatch(goto('suite-index'));
     }
-    // + window.location.hash is here to preserve params (eg nth account)
-    dispatch(onLocationChange(Router.pathname + window.location.hash));
+
+    if (!preserveParams && window.location.hash.length > 0) {
+        await Router.push(Router.pathname, getPrefixedURL(Router.pathname));
+    } else {
+        // + window.location.hash is here to preserve params (eg nth account)
+        dispatch(onLocationChange(Router.pathname + window.location.hash));
+    }
 };
 
 /**
