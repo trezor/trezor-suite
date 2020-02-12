@@ -138,7 +138,7 @@ const FeeComponent = ({ sendFormActions, send, account, settings, fiat }: Props)
                 <Top>
                     <Label>
                         <Translation {...messages.TR_FEE} />
-                        <StyledIcon size={12} color={colors.BLACK50} icon="QUESTION" />
+                        <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
                     </Label>
                     <Refresh>
                         <StyledIcon icon="REFRESH" color={colors.BLACK50} size={10} />

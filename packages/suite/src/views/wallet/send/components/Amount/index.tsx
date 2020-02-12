@@ -106,7 +106,7 @@ export default ({ fiat, sendFormActions, intl, output, selectedAccount }: Props)
                     topLabel={
                         <Label>
                             {intl.formatMessage(messages.TR_AMOUNT)}
-                            <StyledIcon size={12} color={colors.BLACK50} icon="QUESTION" />
+                            <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
                         </Label>
                     }
                     button={{

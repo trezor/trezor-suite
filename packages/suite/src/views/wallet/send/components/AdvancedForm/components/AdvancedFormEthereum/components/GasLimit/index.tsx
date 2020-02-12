@@ -43,7 +43,7 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
             topLabel={
                 <Label>
                     Gas Limit
-                    <StyledIcon size={12} color={colors.BLACK50} icon="QUESTION" />
+                    <StyledIcon size={1416} color={colors.BLACK50} icon="QUESTION" />
                 </Label>
             }
             bottomText={getError(error)}

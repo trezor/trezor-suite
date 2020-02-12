@@ -73,7 +73,7 @@ const Address = ({
             topLabel={
                 <Label>
                     {intl.formatMessage(messages.TR_RECIPIENT_ADDRESS)}
-                    <StyledIcon size={12} color={colors.BLACK50} icon="QUESTION" />
+                    <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
                 </Label>
             }
             bottomText={getMessage(error, networkType, value, accounts, devices)}

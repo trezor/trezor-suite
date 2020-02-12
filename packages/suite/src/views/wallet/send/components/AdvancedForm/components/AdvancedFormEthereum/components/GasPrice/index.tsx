@@ -42,7 +42,7 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
             topLabel={
                 <Label>
                     Gas Price
-                    <StyledIcon size={12} color={colors.BLACK50} icon="QUESTION" />
+                    <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
                 </Label>
             }
             bottomText={getError(error)}

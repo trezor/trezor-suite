@@ -44,7 +44,7 @@ const AdvancedFormRipple = ({ send, sendFormActionsRipple }: Props) => {
             topLabel={
                 <Label>
                     <Translation {...messages.TR_XRP_DESTINATION_TAG} />
-                    <StyledIcon icon="QUESTION" color={colors.BLACK0} size={12} />
+                    <StyledIcon icon="QUESTION" color={colors.BLACK0} size={16} />
                 </Label>
             }
             bottomText={getErrorMessage(error)}
