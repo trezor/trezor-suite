@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { AppState, Dispatch } from '@suite-types';
 import { bindActionCreators } from 'redux';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
+import * as modalActions from '@suite-actions/modalActions';
 import * as sendFormActionsBitcoin from '@wallet-actions/send/sendFormBitcoinActions';
 import * as sendFormActionsEthereum from '@wallet-actions/send/sendFormEthereumActions';
 import * as sendFormActionsRipple from '@wallet-actions/send/sendFormRippleActions';
@@ -81,6 +82,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
+    modalActions: bindActionCreators(modalActions, dispatch),
     sendFormActionsBitcoin: bindActionCreators(sendFormActionsBitcoin, dispatch),
     sendFormActionsRipple: bindActionCreators(sendFormActionsRipple, dispatch),
     sendFormActionsEthereum: bindActionCreators(sendFormActionsEthereum, dispatch),
@@ -93,6 +95,7 @@ type Props = StateProps & DispatchProps;
 const ReviewTransaction = ({
     send,
     account,
+    modalActions,
     sendFormActionsBitcoin,
     sendFormActionsRipple,
     sendFormActionsEthereum,
@@ -152,7 +155,9 @@ const ReviewTransaction = ({
                 </Box>
             </Content>
             <Buttons>
-                <Button variant="secondary">Edit</Button>
+                <Button variant="secondary" onClick={() => modalActions.onCancel()}>
+                    Edit
+                </Button>
                 <Button
                     onClick={() => {
                         switch (networkType) {
