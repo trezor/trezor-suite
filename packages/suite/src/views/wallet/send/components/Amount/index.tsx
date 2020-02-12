@@ -4,7 +4,7 @@ import { Account, Network } from '@wallet-types';
 import React from 'react';
 import styled from 'styled-components';
 import { Output } from '@wallet-types/sendForm';
-import { Input, colors, Icon } from '@trezor/components-v2';
+import { Input, colors, Icon, Tooltip } from '@trezor/components-v2';
 import { VALIDATION_ERRORS, LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 
@@ -106,7 +106,9 @@ export default ({ fiat, sendFormActions, intl, output, selectedAccount }: Props)
                     topLabel={
                         <Label>
                             {intl.formatMessage(messages.TR_AMOUNT)}
-                            <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
+                            <Tooltip placement="top" content="Tooltip gas limit">
+                                <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
+                            </Tooltip>
                         </Label>
                     }
                     button={{
