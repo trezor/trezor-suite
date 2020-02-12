@@ -66,7 +66,7 @@ const AdditionalFormHeader = styled.div`
     align-items: center;
 `;
 
-const Send = ({
+export default ({
     device,
     send,
     fees,
@@ -130,5 +130,3 @@ const Send = ({
         </WalletLayout>
     );
 };
-
-export default Send;

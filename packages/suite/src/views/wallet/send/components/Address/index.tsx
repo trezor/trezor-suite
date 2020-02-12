@@ -50,7 +50,7 @@ const getMessage = (
     }
 };
 
-const Address = ({
+export default ({
     output,
     intl,
     account,
@@ -91,5 +91,3 @@ const Address = ({
         />
     );
 };
-
-export default Address;

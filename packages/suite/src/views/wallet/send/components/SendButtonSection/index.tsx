@@ -104,7 +104,7 @@ const getSendAmount = (
     return null;
 };
 
-const SendSection = ({ send, suite, account, device, sendFormActions }: Props) => {
+export default ({ send, suite, account, device, sendFormActions }: Props) => {
     if (!send || !account || !device) return null;
     const { isComposing, customFee } = send;
     const { networkType, symbol } = account;
@@ -142,5 +142,3 @@ const SendSection = ({ send, suite, account, device, sendFormActions }: Props) =
         </Wrapper>
     );
 };
-
-export default SendSection;

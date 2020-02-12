@@ -32,7 +32,7 @@ interface Props {
     sendFormActions: DispatchProps['sendFormActions'];
 }
 
-const Fiat = (props: Props) => (
+export default (props: Props) => (
     <Wrapper>
         <LocalCurrencyInput
             state={props.state}
@@ -57,5 +57,3 @@ const Fiat = (props: Props) => (
         </SelectWrapper>
     </Wrapper>
 );
-
-export default Fiat;

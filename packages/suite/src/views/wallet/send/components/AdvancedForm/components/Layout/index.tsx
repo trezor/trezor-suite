@@ -46,7 +46,7 @@ interface Props {
     bottom?: ReactElement | null;
 }
 
-const Layout = (props: Props) => (
+export default (props: Props) => (
     <Wrapper>
         <Row>
             <Left>{props.left}</Left>
@@ -58,5 +58,3 @@ const Layout = (props: Props) => (
         </>
     </Wrapper>
 );
-
-export default Layout;

@@ -24,7 +24,7 @@ const Row = styled.div`
     }
 `;
 
-const AdvancedFormBitcoin = ({ send }: Props) => {
+export default ({ send }: Props) => {
     if (!send) return null;
     const { customFee, networkTypeBitcoin } = send;
     const { transactionInfo } = networkTypeBitcoin;
@@ -37,7 +37,7 @@ const AdvancedFormBitcoin = ({ send }: Props) => {
                         <Row>
                             <Fee />
                         </Row>
-                        {!customFee.value && (
+                        {transactionInfo?.type === 'final' && !customFee.value && (
                             <Row>
                                 <EstimatedMiningTime
                                     seconds={send.feeInfo.blockTime * send.selectedFee.blocks * 60}
@@ -61,5 +61,3 @@ const AdvancedFormBitcoin = ({ send }: Props) => {
         </Wrapper>
     );
 };
-
-export default AdvancedFormBitcoin;

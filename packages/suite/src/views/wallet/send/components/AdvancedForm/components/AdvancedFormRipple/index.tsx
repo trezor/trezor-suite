@@ -13,7 +13,7 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const AdvancedFormRipple = ({ send, account }: Props) => {
+export default ({ send, account }: Props) => {
     if (!send || !account) return null;
     const { transactionInfo } = send.networkTypeRipple;
 
@@ -27,5 +27,3 @@ const AdvancedFormRipple = ({ send, account }: Props) => {
         </Wrapper>
     );
 };
-
-export default AdvancedFormRipple;

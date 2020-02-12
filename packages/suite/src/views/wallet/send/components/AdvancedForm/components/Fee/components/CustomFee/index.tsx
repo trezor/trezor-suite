@@ -47,7 +47,7 @@ const getValue = (networkType: Account['networkType']) => {
     }
 };
 
-const CustomFee = ({ send, sendFormActions, account }: Props) => {
+export default ({ send, sendFormActions, account }: Props) => {
     if (!send || !account) return null;
     const { customFee, feeInfo } = send;
     const { value, error } = customFee;
@@ -74,5 +74,3 @@ const CustomFee = ({ send, sendFormActions, account }: Props) => {
         </Wrapper>
     );
 };
-
-export default CustomFee;

@@ -29,7 +29,7 @@ const Right = styled.div`
     justify-content: flex-end;
 `;
 
-const ReplaceByFee = () => {
+export default () => {
     return (
         <Wrapper>
             <Left>
@@ -44,5 +44,3 @@ const ReplaceByFee = () => {
         </Wrapper>
     );
 };
-
-export default ReplaceByFee;

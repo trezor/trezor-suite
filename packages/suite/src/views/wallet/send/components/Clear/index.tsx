@@ -31,7 +31,7 @@ interface Props {
     sendFormActions: DispatchProps['sendFormActions'];
 }
 
-const Clear = ({ sendFormActions }: Props) => (
+export default ({ sendFormActions }: Props) => (
     <Wrapper>
         <In onClick={() => sendFormActions.clear()}>
             <StyledIcon size={8} color={colors.BLACK50} icon="CROSS" />
@@ -39,5 +39,3 @@ const Clear = ({ sendFormActions }: Props) => (
         </In>
     </Wrapper>
 );
-
-export default Clear;

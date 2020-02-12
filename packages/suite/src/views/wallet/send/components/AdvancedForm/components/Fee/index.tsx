@@ -125,7 +125,7 @@ const getValue = (
     return `${formatNetworkAmount(feePerUnit, symbol)} ${symbol.toUpperCase()}`;
 };
 
-const FeeComponent = ({ sendFormActions, send, account, settings, fiat }: Props) => {
+export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
     if (!send || !account || !settings || !fiat) return null;
     const { selectedFee, customFee, feeInfo } = send;
     const feeLevels = feeInfo.levels;
@@ -184,5 +184,3 @@ const FeeComponent = ({ sendFormActions, send, account, settings, fiat }: Props)
         </Wrapper>
     );
 };
-
-export default FeeComponent;

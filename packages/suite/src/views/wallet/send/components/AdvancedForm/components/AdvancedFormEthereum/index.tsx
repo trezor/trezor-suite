@@ -19,7 +19,7 @@ const Row = styled.div`
     margin-bottom: 25px;
 `;
 
-const AdvancedFormEthereum = ({ send, account }: Props) => {
+export default ({ send, account }: Props) => {
     if (!send || !account) return null;
     const { transactionInfo } = send.networkTypeEthereum;
 
@@ -47,5 +47,3 @@ const AdvancedFormEthereum = ({ send, account }: Props) => {
         </Wrapper>
     );
 };
-
-export default AdvancedFormEthereum;
