@@ -44,7 +44,7 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
                 <Label>
                     Gas Limit
                     <Tooltip placement="top" content="Tooltip gas limit">
-                        <StyledIcon size={1416} color={colors.BLACK50} icon="QUESTION" />
+                        <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
                     </Tooltip>
                 </Label>
             }
