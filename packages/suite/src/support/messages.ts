@@ -206,10 +206,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Confirm action on your "{deviceLabel}" device.',
         id: 'TR_CONFIRM_ACTION_ON_YOUR',
     },
-    TR_CONFIRM_TRANSACTION_ON: {
-        defaultMessage: 'Confirm transaction on "{deviceLabel}" device',
-        id: 'TR_CONFIRM_TRANSACTION_ON',
-    },
     TR_BACKEND_DISCONNECTED: {
         defaultMessage: 'Backend is disconnected',
         id: 'TR_BACKEND_DISCONNECTED',
@@ -326,10 +322,6 @@ const definedMessages = defineMessages({
     TR_DESTINATION_TAG_IS_NOT_NUMBER: {
         defaultMessage: 'Destination tag is not a number',
         id: 'TR_DESTINATION_TAG_IS_NOT_NUMBER',
-    },
-    TR_DETAILS_ARE_SHOWN_ON: {
-        defaultMessage: 'Details are shown on display',
-        id: 'TR_DETAILS_ARE_SHOWN_ON',
     },
     TR_DETECTING_BRIDGE: {
         defaultMessage: 'Detecting Trezor Bridge instalation',
@@ -544,11 +536,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Fee',
         description: 'Label in Send form',
         id: 'TR_FEE',
-    },
-    TR_FEE_LABEL: {
-        defaultMessage: 'Fee',
-        description: 'Label above the fee used for transaction',
-        id: 'TR_FEE_LABEL',
     },
     TR_FIAT_RATES_ARE_NOT_CURRENTLY: {
         defaultMessage: 'Fiat rates are not currently available.',
@@ -1087,11 +1074,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Send {amount}',
         id: 'TR_SEND',
     },
-    TR_SEND_LABEL: {
-        defaultMessage: 'Send',
-        description: 'Label for amount to be send',
-        id: 'TR_SEND_LABEL',
-    },
     TR_SEND_NETWORK: {
         defaultMessage: 'Send {network}',
         id: 'TR_SEND_NETWORK',
@@ -1205,11 +1187,6 @@ const definedMessages = defineMessages({
     TR_THE_PIN_LAYOUT_IS_DISPLAYED: {
         defaultMessage: 'The PIN layout is displayed on your Trezor.',
         id: 'TR_THE_PIN_LAYOUT_IS_DISPLAYED',
-    },
-    TR_TO_LABEL: {
-        defaultMessage: 'To',
-        description: "Label for recepeint's address",
-        id: 'TR_TO_LABEL',
     },
     TR_TO_PREVENT_PHISHING_ATTACKS_COMMA: {
         defaultMessage:
