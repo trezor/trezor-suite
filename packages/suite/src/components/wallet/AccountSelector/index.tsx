@@ -59,8 +59,8 @@ const getOptions = (otherAccounts: Account[]) => {
     return options;
 };
 
-export default ({ accounts, selectedAccount, title, goto }: Props) => {
-    if (selectedAccount.status !== 'loaded') return null;
+export default ({ accounts, selectedAccount, title, goto, router }: Props) => {
+    if (selectedAccount.status !== 'loaded' || !router.route) return null;
     const { account } = selectedAccount;
 
     const otherAccounts = accounts.filter(
@@ -86,7 +86,7 @@ export default ({ accounts, selectedAccount, title, goto }: Props) => {
                         isClean
                         onChange={(change: SelectValue) => {
                             const { symbol, accountType } = account;
-                            goto('wallet-send', {
+                            goto(router.route.name, {
                                 accountIndex: change.value,
                                 symbol,
                                 accountType,

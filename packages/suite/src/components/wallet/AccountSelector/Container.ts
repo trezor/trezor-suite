@@ -8,6 +8,7 @@ import Component from './index';
 const mapStateToProps = (state: AppState) => ({
     selectedAccount: state.wallet.selectedAccount,
     accounts: state.wallet.accounts,
+    router: state.router,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
