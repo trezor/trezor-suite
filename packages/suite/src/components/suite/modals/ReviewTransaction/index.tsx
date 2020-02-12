@@ -131,12 +131,9 @@ const ConfirmSignTx = ({ device, send, account }: Props) => {
                         values={{ deviceLabel: device.label }}
                     />
                 </Prompt>
-                <P>
-                    <Translation {...messages.TR_DETAILS_ARE_SHOWN_ON} />
-                </P>
             </Header>
             <Content>
-                <Section>
+                {/* <Section>
                     <Heading>
                         <Translation {...messages.TR_SEND_LABEL} />
                     </Heading>
@@ -180,10 +177,25 @@ const ConfirmSignTx = ({ device, send, account }: Props) => {
                             </Value>
                         </Row>
                     </Section>
-                )}
+                )} */}
             </Content>
         </Wrapper>
     );
 };
+
+// onClick={() => {
+//     switch (networkType) {
+//         case 'bitcoin':
+//             sendFormActionsBitcoin.send();
+//             break;
+//         case 'ethereum':
+//             sendFormActionsEthereum.send();
+//             break;
+//         case 'ripple':
+//             sendFormActionsRipple.send();
+//             break;
+//         // no default
+//     }
+// }}
 
 export default connect(mapStateToProps)(ConfirmSignTx);

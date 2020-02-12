@@ -22,7 +22,7 @@ import Word from './Word';
 import WordAdvanced from './WordAdvanced';
 import ConfirmAddress from './confirm/Address';
 import ConfirmNoBackup from './confirm/NoBackup';
-import ConfirmSignTx from './confirm/SignTx';
+import ReviewTransaction from './ReviewTransaction';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
 import AddAccount from './AddAccount';
 import QrScanner from './QrScanner';
@@ -74,12 +74,10 @@ const getDeviceContextModal = (props: Props) => {
         case UI.REQUEST_PASSPHRASE_ON_DEVICE:
         case 'ButtonRequest_PassphraseEntry':
             return <PassphraseOnDevice device={device} />;
-        case 'ButtonRequest_SignTx': {
-            return <ConfirmSignTx device={device} />;
-        }
         // Button requests
         // todo: consider fallback (if windowType.cointains('ButtonRequest')). but add also possibility to blacklist some buttonRequests
         case 'ButtonRequest_Warning':
+        case 'ButtonRequest_SignTx':
         case 'ButtonRequest_Success':
         case 'ButtonRequest_RecoveryHomepage':
         case 'ButtonRequest_MnemonicWordCount':
@@ -153,6 +151,14 @@ const getUserContextModal = (props: Props) => {
             return <TransactionDetail tx={payload.tx} onCancel={modalActions.onCancel} />;
         case 'passphrase-duplicate':
             return <PassphraseDuplicate device={payload.device} duplicate={payload.duplicate} />;
+        case 'review-transaction':
+            return (
+                <ReviewTransaction
+                    device={payload.device}
+                    send={payload.send}
+                    account={payload.account}
+                />
+            );
         default:
             return null;
     }

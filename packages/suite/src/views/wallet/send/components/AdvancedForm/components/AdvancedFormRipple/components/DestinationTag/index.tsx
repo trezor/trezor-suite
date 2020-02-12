@@ -4,7 +4,7 @@ import { Input, Icon, colors } from '@trezor/components-v2';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Translation } from '@suite-components/Translation';
-import { State } from '@wallet-types/sendForm';
+import { Send } from '@wallet-types';
 import messages from '@suite/support/messages';
 import { Props } from './Container';
 
@@ -21,7 +21,7 @@ const StyledIcon = styled(Icon)`
     height: 100%;
 `;
 
-const getErrorMessage = (error: State['networkTypeRipple']['destinationTag']['error']) => {
+const getErrorMessage = (error: Send['networkTypeRipple']['destinationTag']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.NOT_NUMBER:
             return <Translation {...messages.TR_DESTINATION_TAG_IS_NOT_NUMBER} />;

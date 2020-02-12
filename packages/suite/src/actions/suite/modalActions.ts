@@ -1,7 +1,7 @@
 import TrezorConnect, { UI } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
 import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
-import { Account } from '@wallet-types';
+import { Account, Send } from '@wallet-types';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 
 export type UserContextPayload =
@@ -42,6 +42,12 @@ export type UserContextPayload =
     | {
           type: 'transaction-detail';
           tx: WalletAccountTransaction;
+      }
+    | {
+          type: 'review-transaction';
+          send: Send;
+          device: TrezorDevice;
+          account: Account;
       }
     | {
           type: 'log';
