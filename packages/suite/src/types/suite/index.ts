@@ -112,6 +112,6 @@ export type Store = ReduxStore<AppState, Action>;
 export type InjectedModalApplicationProps = {
     modal: JSX.Element | null;
     cancelable: boolean;
-    closeModalApp: () => void;
+    closeModalApp: (preserveParams?: boolean) => void;
     getBackgroundRoute: () => Route$ | typeof undefined;
 };
