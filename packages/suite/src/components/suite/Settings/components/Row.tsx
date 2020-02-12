@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { variables } from '@trezor/components';
+import { variables } from '@trezor/components-v2';
 
 const { SCREEN_SIZE } = variables;
 
