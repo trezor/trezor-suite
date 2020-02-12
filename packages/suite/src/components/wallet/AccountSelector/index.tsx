@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Select, colors, variables } from '@trezor/components-v2';
 import { Account } from '@wallet-types';
+import { Props } from './Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -45,13 +46,6 @@ interface SelectValue {
     label: string;
 }
 
-interface Props {
-    title: string;
-    selectedAccount: Account;
-    accounts: Account[];
-    goto: any; // todo fix ts
-}
-
 const getOptions = (otherAccounts: Account[]) => {
     const options: SelectValue[] = [];
     otherAccounts.forEach(account => {
@@ -66,11 +60,14 @@ const getOptions = (otherAccounts: Account[]) => {
 };
 
 export default ({ accounts, selectedAccount, title, goto }: Props) => {
+    if (selectedAccount.status !== 'loaded') return null;
+    const { account } = selectedAccount;
+
     const otherAccounts = accounts.filter(
-        otherAccount => selectedAccount.symbol === otherAccount.symbol && otherAccount.visible,
+        (otherAccount: Account) => account.symbol === otherAccount.symbol && otherAccount.visible,
     );
     const options = getOptions(otherAccounts);
-    const selectedAccountValue = options.find(option => option.value === selectedAccount.index);
+    const accountValue = options.find(option => option.value === account.index);
 
     return (
         <Wrapper>
@@ -78,10 +75,9 @@ export default ({ accounts, selectedAccount, title, goto }: Props) => {
             <SelectWrapper>
                 {otherAccounts.length === 1 && (
                     <SingleAccount>
-                        Account {selectedAccount.symbol.toUpperCase()} #{selectedAccount.index + 1}
+                        Account {account.symbol.toUpperCase()} #{account.index + 1}
                         <Label>
-                            {selectedAccount.formattedBalance}{' '}
-                            {selectedAccount.symbol.toUpperCase()}
+                            {account.formattedBalance} {account.symbol.toUpperCase()}
                         </Label>
                     </SingleAccount>
                 )}
@@ -89,7 +85,7 @@ export default ({ accounts, selectedAccount, title, goto }: Props) => {
                     <Select
                         isClean
                         onChange={(change: SelectValue) => {
-                            const { symbol, accountType } = selectedAccount;
+                            const { symbol, accountType } = account;
                             goto('wallet-send', {
                                 accountIndex: change.value,
                                 symbol,
@@ -113,7 +109,7 @@ export default ({ accounts, selectedAccount, title, goto }: Props) => {
                             }
                         }}
                         options={options}
-                        value={selectedAccountValue}
+                        value={accountValue}
                         variant="small"
                     />
                 )}
