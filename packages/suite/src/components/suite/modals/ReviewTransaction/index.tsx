@@ -1,104 +1,64 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
+import { AppState, Dispatch } from '@suite-types';
+import { bindActionCreators } from 'redux';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
-import { formatDuration } from '@suite-utils/date';
-import { P, Prompt, colors, variables } from '@trezor/components';
+import * as sendFormActionsBitcoin from '@wallet-actions/send/sendFormBitcoinActions';
+import * as sendFormActionsEthereum from '@wallet-actions/send/sendFormEthereumActions';
+import * as sendFormActionsRipple from '@wallet-actions/send/sendFormRippleActions';
+import { H2, Button, colors, variables } from '@trezor/components-v2';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { Translation } from '@suite-components/Translation';
-import { AppState, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
+import { Output } from '@wallet-types/sendForm';
 import { fromWei, toWei } from 'web3-utils';
-
-import messages from '@suite/support/messages';
-
-const { LINE_HEIGHT, FONT_SIZE, FONT_WEIGHT } = variables;
 
 const Wrapper = styled.div`
     max-width: 480px;
+    padding: 40px;
 `;
 
-const Header = styled.div`
-    padding: 30px 48px;
-`;
-
-const Content = styled.div`
-    border-top: 1px solid ${colors.DIVIDER};
-    background: ${colors.MAIN};
-    border-radius: 4px;
-    padding: 15px 0;
-`;
-
-const StyledP = styled(P)`
+const Box = styled.div`
+    width: 320px;
+    height: 46px;
+    border-radius: 3px;
+    border: solid 2px ${colors.BLACK96};
     display: flex;
-    justify-content: left;
-    color: ${colors.TEXT};
-    font-size: ${FONT_SIZE.BASE};
-    &:last-child {
-        padding-bottom: 0px;
-    }
-`;
-
-const Address = styled(StyledP)`
-    word-wrap: break-word;
-    line-height: ${LINE_HEIGHT.SMALL};
+    align-items: center;
+    padding: 12px;
+    margin-bottom: 10px;
 `;
 
 const Label = styled.div`
-    padding: 0 3px 6px 0;
     display: flex;
-    justify-content: center;
     align-items: center;
-    font-weight: ${FONT_WEIGHT.MEDIUM};
-    font-size: ${FONT_SIZE.BIG};
-    color: ${colors.TEXT_SECONDARY};
-`;
-
-const Symbol = styled.div`
-    text-transform: uppercase;
-    font-size: ${FONT_SIZE.BIG};
-`;
-
-const Section = styled.div`
-    padding: 10px 0;
-    border-bottom: 1px solid ${colors.DIVIDER};
-
-    &:last-child {
-        border-bottom: 0;
-    }
-`;
-
-const Heading = styled.div`
-    padding: 10px 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: ${FONT_WEIGHT.MEDIUM};
-    font-size: ${FONT_SIZE.BIG};
-    color: ${colors.TEXT_SECONDARY};
+    justify-content: flex-start;
+    min-width: 80px;
+    color: ${colors.BLACK50};
+    font-size: ${variables.FONT_SIZE.TINY};
 `;
 
 const Value = styled.div`
-    font-size: ${FONT_SIZE.BIG};
-    font-weight: ${FONT_WEIGHT.MEDIUM};
-    padding: 0 5px 0 0;
+    display: flex;
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    align-items: center;
+    flex: 1;
+`;
+
+const Content = styled.div`
+    margin-top: 16px;
 `;
 
 const OutputWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
+    background: ${colors.BLACK96};
+    border-radius: 3px;
 `;
 
-const Row = styled.div`
+const Buttons = styled.div`
     display: flex;
-    padding: 0 48px;
-    justify-content: center;
+    margin-top: 24px;
+    justify-content: space-between;
 `;
-
-const mapStateToProps = (state: AppState) => ({
-    send: state.wallet.send,
-    account: state.wallet.selectedAccount ? state.wallet.selectedAccount.account : null,
-});
 
 const getFeeValue = (
     transactionInfo: any,
@@ -113,89 +73,107 @@ const getFeeValue = (
     return `${formatNetworkAmount(transactionInfo.fee, symbol)}`;
 };
 
-type Props = ReturnType<typeof mapStateToProps> & { device: TrezorDevice };
+const VISIBLE_ADDRESS_CHAR_COUNT = 8;
 
-const ConfirmSignTx = ({ device, send, account }: Props) => {
+const mapStateToProps = (state: AppState) => ({
+    account: state.wallet.selectedAccount.account,
+    send: state.wallet.send,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    sendFormActionsBitcoin: bindActionCreators(sendFormActionsBitcoin, dispatch),
+    sendFormActionsRipple: bindActionCreators(sendFormActionsRipple, dispatch),
+    sendFormActionsEthereum: bindActionCreators(sendFormActionsEthereum, dispatch),
+});
+
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+type Props = StateProps & DispatchProps;
+
+const ReviewTransaction = ({
+    send,
+    account,
+    sendFormActionsBitcoin,
+    sendFormActionsRipple,
+    sendFormActionsEthereum,
+}: Props) => {
     if (!account || !send) return null;
     const { outputs } = send;
-    const majorVersion = device.features ? device.features.major_version : 2;
+    const { networkType } = account;
     const transactionInfo = getTransactionInfo(account.networkType, send);
     if (transactionInfo.type === 'error') return null;
+    const upperCaseSymbol = account.symbol.toUpperCase();
 
     return (
         <Wrapper>
-            <Header>
-                <Prompt model={majorVersion}>
-                    <Translation
-                        {...messages.TR_CONFIRM_TRANSACTION_ON}
-                        values={{ deviceLabel: device.label }}
-                    />
-                </Prompt>
-            </Header>
+            <H2>Confirm Transaction</H2>
             <Content>
-                {/* <Section>
-                    <Heading>
-                        <Translation {...messages.TR_SEND_LABEL} />
-                    </Heading>
-                    {outputs.map(output => (
-                        <OutputWrapper key={output.id}>
-                            <Row>
-                                <Value>{`${output.amount.value || '0'} `}</Value>
-                                <Symbol>{account.symbol}</Symbol>
-                            </Row>
-                            <Row>
-                                <Label>
-                                    <Translation {...messages.TR_TO_LABEL} />
-                                </Label>
-                                <Address>{output.address.value}</Address>
-                            </Row>
-                        </OutputWrapper>
-                    ))}
-                </Section>
-                <Section>
-                    <Heading>
-                        <Translation {...messages.TR_FEE_LABEL} />
-                    </Heading>
-                    <Row>
-                        <Value>
-                            {transactionInfo.type !== 'error' &&
-                                getFeeValue(transactionInfo, account.networkType, account.symbol)}
-                        </Value>
-                        <Symbol>{account.symbol}</Symbol>
-                    </Row>
-                </Section>
-                {account.networkType === 'bitcoin' && (
-                    <Section>
-                        <Heading>
-                            <Translation {...messages.TR_ESTIMATED_TIME} />
-                        </Heading>
-                        <Row>
-                            <Value>
-                                {formatDuration(
-                                    send.feeInfo.blockTime * send.selectedFee.blocks * 60,
-                                )}
-                            </Value>
-                        </Row>
-                    </Section>
-                )} */}
+                <Box>
+                    <Label>From</Label>
+                    <Value>
+                        {upperCaseSymbol} Account #{account.index}
+                    </Value>
+                </Box>
+                {outputs.map((output: Output) => {
+                    const address = output.address.value;
+                    const amount = output.amount.value;
+                    if (address) {
+                        const addressLength = address.length;
+
+                        return (
+                            <OutputWrapper>
+                                <Box>
+                                    <Label>To</Label>
+                                    <Value>
+                                        {address.substring(0, VISIBLE_ADDRESS_CHAR_COUNT)}...
+                                        {address.substring(
+                                            addressLength - VISIBLE_ADDRESS_CHAR_COUNT,
+                                            addressLength,
+                                        )}
+                                    </Value>
+                                </Box>
+                                <Box>
+                                    <Label>Amount</Label>
+                                    <Value>
+                                        {amount} {upperCaseSymbol}
+                                    </Value>
+                                </Box>
+                            </OutputWrapper>
+                        );
+                    }
+                    return null;
+                })}
+                <Box>
+                    <Label>{networkType === 'ethereum' ? 'Gas price' : 'Fee'}</Label>
+                    <Value>
+                        {getFeeValue(transactionInfo, networkType, account.symbol)}{' '}
+                        {upperCaseSymbol}
+                    </Value>
+                </Box>
             </Content>
+            <Buttons>
+                <Button variant="secondary">Edit</Button>
+                <Button
+                    onClick={() => {
+                        switch (networkType) {
+                            case 'bitcoin':
+                                sendFormActionsBitcoin.send();
+                                break;
+                            case 'ethereum':
+                                sendFormActionsEthereum.send();
+                                break;
+                            case 'ripple':
+                                sendFormActionsRipple.send();
+                                break;
+                            // no default
+                        }
+                    }}
+                >
+                    Confirm Transaction
+                </Button>
+            </Buttons>
         </Wrapper>
     );
 };
 
-// onClick={() => {
-//     switch (networkType) {
-//         case 'bitcoin':
-//             sendFormActionsBitcoin.send();
-//             break;
-//         case 'ethereum':
-//             sendFormActionsEthereum.send();
-//             break;
-//         case 'ripple':
-//             sendFormActionsRipple.send();
-//             break;
-//         // no default
-//     }
-// }}
-
-export default connect(mapStateToProps)(ConfirmSignTx);
+export default connect(mapStateToProps, mapDispatchToProps)(ReviewTransaction);

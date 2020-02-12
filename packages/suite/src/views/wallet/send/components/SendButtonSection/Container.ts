@@ -1,5 +1,6 @@
 import { AppState, Dispatch } from '@suite-types';
 import * as sendFormActions from '@wallet-actions/send/sendFormActions';
+import * as modalActions from '@suite-actions/modalActions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -14,6 +15,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     sendFormActions: bindActionCreators(sendFormActions, dispatch),
+    modalActions: bindActionCreators(modalActions, dispatch),
 });
 
 export type StateProps = ReturnType<typeof mapStateToProps>;

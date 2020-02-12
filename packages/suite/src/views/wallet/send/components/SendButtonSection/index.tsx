@@ -104,7 +104,7 @@ const getSendAmount = (
     return null;
 };
 
-export default ({ send, suite, account, device, sendFormActions }: Props) => {
+export default ({ send, suite, account, device, modalActions }: Props) => {
     if (!send || !account || !device) return null;
     const { isComposing, customFee } = send;
     const { networkType, symbol } = account;
@@ -115,8 +115,8 @@ export default ({ send, suite, account, device, sendFormActions }: Props) => {
             <Row>
                 <ButtonReview
                     isLoading={isComposing}
-                    isDisabled={isComposing || isDisabled(send, suite, device, networkType)}
-                    onClick={() => sendFormActions.reviewTransaction()}
+                    isDisabled={isComposing ? false : isDisabled(send, suite, device, networkType)}
+                    onClick={() => modalActions.openModal({ type: 'review-transaction' })}
                 >
                     Review Transaction
                 </ButtonReview>

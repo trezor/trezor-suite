@@ -1,7 +1,6 @@
 // import * as storageActions from '@suite-actions/storageActions';
 import { Dispatch, GetState } from '@suite-types';
 import { SEND } from '@wallet-actions/constants';
-import * as modalActions from '@suite-actions/modalActions';
 import { ETH_DEFAULT_GAS_LIMIT, ETH_DEFAULT_GAS_PRICE } from '@wallet-constants/sendForm';
 import { FeeLevel, Output } from '@wallet-types/sendForm';
 import { formatNetworkAmount, getFiatValue } from '@wallet-utils/accountUtils';
@@ -405,7 +404,6 @@ export const handleCustomFeeValueChange = (customFee: string) => (
 export const toggleAdditionalFormVisibility = () => (dispatch: Dispatch, getState: GetState) => {
     const { send, selectedAccount } = getState().wallet;
     if (!send || selectedAccount.status !== 'loaded') return;
-    const { account } = selectedAccount;
 
     dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
     dispatch(commonActions.cache());
@@ -433,17 +431,4 @@ export const onQrScan = (parsedUri: ParsedURI, outputId: number) => (dispatch: D
 */
 export const clear = () => (dispatch: Dispatch) => {
     dispatch(commonActions.clear());
-};
-
-/*
-    Review transaction
-*/
-
-export const reviewTransaction = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { send, selectedAccount } = getState().wallet;
-    const { device } = getState().suite;
-    if (!send || !device || selectedAccount.status !== 'loaded') return;
-    const { account } = selectedAccount;
-
-    dispatch(modalActions.openModal({ type: 'review-transaction', device, account, send }));
 };

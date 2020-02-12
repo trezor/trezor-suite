@@ -152,13 +152,7 @@ const getUserContextModal = (props: Props) => {
         case 'passphrase-duplicate':
             return <PassphraseDuplicate device={payload.device} duplicate={payload.duplicate} />;
         case 'review-transaction':
-            return (
-                <ReviewTransaction
-                    device={payload.device}
-                    send={payload.send}
-                    account={payload.account}
-                />
-            );
+            return <ReviewTransaction />;
         default:
             return null;
     }
