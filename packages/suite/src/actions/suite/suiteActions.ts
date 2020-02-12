@@ -319,6 +319,15 @@ export const acquireDevice = (requestedDevice?: TrezorDevice) => async (
 };
 
 /**
+ * Inner action used in `authorizeDevice`
+ */
+const updatePassphraseMode = (device: TrezorDevice, hidden: boolean): Action => ({
+    type: SUITE.UPDATE_PASSPHRASE_MODE,
+    payload: device,
+    hidden,
+});
+
+/**
  * Called from `discoveryMiddleware`
  * Fetch device state, update `devices` reducer as result of SUITE.AUTH_DEVICE
  */
@@ -353,6 +362,15 @@ export const authorizeDevice = () => async (
             d => d.state && d.state.split(':')[0] === s && d.instance !== device.instance,
         );
         if (duplicate) {
+            // get fresh data from reducer, `useEmptyPassphrase` might be changed after TrezorConnect call
+            const freshDeviceData = deviceUtils.getSelectedDevice(device, getState().devices);
+            if (freshDeviceData!.useEmptyPassphrase) {
+                // if currently selected device uses empty passphrase
+                // make sure that founded duplicate will also use empty passphrase
+                dispatch(updatePassphraseMode(duplicate, false));
+                // reset useEmptyPassphrase field for selected device to allow future PassphraseRequests
+                dispatch(updatePassphraseMode(device, true));
+            }
             dispatch(modalActions.openModal({ type: 'passphrase-duplicate', device, duplicate }));
             return false;
         }
