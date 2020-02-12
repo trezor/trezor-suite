@@ -78,5 +78,6 @@ describe('Passphrase', () => {
         cy.task('sendDecision');
     });
 
+    // todo: passphrase duplicate test
     it.skip('passphrase duplicate', () => {});
 });

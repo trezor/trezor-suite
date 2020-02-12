@@ -162,6 +162,7 @@ def read_and_confirm_mnemonic():
     client.press_yes()
     client.close()
 
+# todo: work in progress
 # def backup_device():
 #     transport = get_bridge_device()
 #     print(transport)
