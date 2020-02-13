@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input, Icon, colors } from '@trezor/components-v2';
+import { Input, Icon, colors, Tooltip } from '@trezor/components-v2';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Translation } from '@suite-components/Translation';
@@ -44,7 +44,12 @@ const AdvancedFormRipple = ({ send, sendFormActionsRipple }: Props) => {
             topLabel={
                 <Label>
                     <Translation {...messages.TR_XRP_DESTINATION_TAG} />
-                    <StyledIcon icon="QUESTION" color={colors.BLACK0} size={12} />
+                    <Tooltip
+                        placement="top"
+                        content={<Translation {...messages.TR_XRP_DESTINATION_TAG_TOOLTIP} />}
+                    >
+                        <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
+                    </Tooltip>
                 </Label>
             }
             bottomText={getErrorMessage(error)}

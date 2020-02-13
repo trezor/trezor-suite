@@ -1,7 +1,7 @@
 import Badge from '@suite-components/Badge';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { colors, Icon, P, Select, variables } from '@trezor/components-v2';
+import { colors, Icon, P, Select, variables, Tooltip } from '@trezor/components-v2';
 import { Account } from '@wallet-types';
 import { fromWei, toWei } from 'web3-utils';
 import { FeeLevel } from '@wallet-types/sendForm';
@@ -138,7 +138,12 @@ const FeeComponent = ({ sendFormActions, send, account, settings, fiat }: Props)
                 <Top>
                     <Label>
                         <Translation {...messages.TR_FEE} />
-                        <StyledIcon size={12} color={colors.BLACK50} icon="QUESTION" />
+                        <Tooltip
+                            placement="top"
+                            content={<Translation {...messages.TR_SEND_FEE_TOOLTIP} />}
+                        >
+                            <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
+                        </Tooltip>
                     </Label>
                     <Refresh>
                         <StyledIcon icon="REFRESH" color={colors.BLACK50} size={10} />

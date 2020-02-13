@@ -1,7 +1,7 @@
 import { Translation } from '@suite-components/Translation';
 import { AppState } from '@suite-types';
 import styled from 'styled-components';
-import { Icon, colors, Input } from '@trezor/components-v2';
+import { Icon, colors, Input, Tooltip } from '@trezor/components-v2';
 import messages from '@suite/support/messages';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Account, Network } from '@wallet-types';
@@ -73,7 +73,12 @@ const Address = ({
             topLabel={
                 <Label>
                     {intl.formatMessage(messages.TR_RECIPIENT_ADDRESS)}
-                    <StyledIcon size={12} color={colors.BLACK50} icon="QUESTION" />
+                    <Tooltip
+                        placement="top"
+                        content={<Translation {...messages.TR_RECIPIENT_ADDRESS_TOOLTIP} />}
+                    >
+                        <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
+                    </Tooltip>
                 </Label>
             }
             bottomText={getMessage(error, networkType, value, accounts, devices)}
