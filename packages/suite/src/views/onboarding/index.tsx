@@ -177,6 +177,7 @@ const Onboarding = (props: Props) => {
                 )}
                 {!errorState && modal && (
                     <ActionModalWrapper data-test="@onboading/confirm-action-on-device">
+                        bla bla
                         {modal}
                     </ActionModalWrapper>
                 )}

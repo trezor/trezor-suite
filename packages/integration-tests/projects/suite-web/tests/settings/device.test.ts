@@ -59,13 +59,9 @@ describe('Device settings', () => {
         cy.task('sendDecision', { method: 'applySettings' });
         cy.getConfirmActionOnDeviceModal().should('not.exist');
 
-        // cy.log('open firmware modal and close it again');
-        // cy.getTestElement('@settings/device/update-button')
-        //     .click()
-        //     .getTestElement('@modal/close')
-        //     .click()
-        //     .getTestElement('@modal/close')
-        //     .should('not.exist');
+        cy.log('open firmware modal and close it again');
+        cy.getTestElement('@settings/device/update-button').click();
+        cy.getTestElement('@firmware/close-button').click();
 
         cy.log('wipe device');
         cy.getTestElement('@settings/device/wipe-button')
@@ -80,8 +76,6 @@ describe('Device settings', () => {
         cy.getTestElement('@settings/device/check-seed-button').should('be.disabled');
         cy.getTestElement('@settings/device/failed-backup-row').should('not.exist');
         cy.getTestElement('@settings/device/create-backup-button').click();
-        // just confirm that modal appeared. It is enough for settings;
-        cy.getTestElement('@backup/start-button');
     });
     // TODO: upload custom image
     // TODO: set pin part. need to extend python script to allow input digits on emulator
