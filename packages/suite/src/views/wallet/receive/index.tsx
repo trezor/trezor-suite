@@ -1,63 +1,39 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { WalletLayout } from '@wallet-components';
-import * as receiveActions from '@wallet-actions/receiveActions';
 import { SUITE } from '@suite-actions/constants';
-import { AppState, Dispatch } from '@suite-types';
+import AccountSelector from '@wallet-components/AccountSelector/Container';
 import Header from './components/Header';
 import FreshAddress from './components/FreshAddress';
 import UsedAddresses from './components/UsedAddresses';
+import { Props } from './Container';
 
-const mapStateToProps = (state: AppState) => ({
-    selectedAccount: state.wallet.selectedAccount,
-    device: state.suite.device,
-    receive: state.wallet.receive,
-    modal: state.modal,
-    locks: state.suite.locks,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    showAddress: bindActionCreators(receiveActions.showAddress, dispatch),
-});
-
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-export interface ChildProps {
-    account: NonNullable<Props['selectedAccount']['account']>;
-    addresses: Props['receive'];
-    showAddress: Props['showAddress'];
-    disabled: boolean;
-    locked: boolean;
-}
-
-const AccountReceive = (props: Props) => {
-    const { device, locks, receive } = props;
-    if (!device || props.selectedAccount.status !== 'loaded') {
-        return <WalletLayout title="Receive" account={props.selectedAccount} />;
+export default ({ selectedAccount, receive, locks, device, showAddress }: Props) => {
+    if (!device || selectedAccount.status !== 'loaded') {
+        return <WalletLayout title="Receive" account={selectedAccount} />;
     }
-    const { account } = props.selectedAccount;
+
+    const { account } = selectedAccount;
     const locked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     const disabled = !!device.authConfirm;
 
     return (
-        <WalletLayout title="Receive" account={props.selectedAccount}>
+        <WalletLayout title="Receive" account={selectedAccount}>
             <Header account={account} />
+            <AccountSelector title="Receive" />
             <FreshAddress
                 account={account}
                 addresses={receive}
-                showAddress={props.showAddress}
+                showAddress={showAddress}
                 disabled={disabled}
                 locked={locked}
             />
             <UsedAddresses
                 account={account}
                 addresses={receive}
-                showAddress={props.showAddress}
+                showAddress={showAddress}
                 disabled={disabled}
                 locked={locked}
             />
         </WalletLayout>
     );
 };
-
-export default connect(mapStateToProps, mapDispatchToProps)(AccountReceive);
