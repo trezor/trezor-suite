@@ -385,10 +385,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Confirm PIN',
         id: 'TR_CONFIRM_PIN',
     },
-    TR_CONFIRM_TRANSACTION_ON: {
-        defaultMessage: 'Confirm transaction on "{deviceLabel}" device',
-        id: 'TR_CONFIRM_TRANSACTION_ON',
-    },
     TR_CONFIRMED_TX: {
         defaultMessage: 'Confirmed',
         id: 'TR_CONFIRMED_TX',
@@ -1687,11 +1683,6 @@ const definedMessages = defineMessages({
             'To find your accounts and funds we need to perform a coin discovery which will discover all your coins.',
         id: 'TR_TO_FIND_YOUR_ACCOUNTS_AND',
     },
-    TR_TO_LABEL: {
-        defaultMessage: 'To',
-        description: "Label for recepeint's address",
-        id: 'TR_TO_LABEL',
-    },
     TR_TO_PREVENT_PHISHING_ATTACKS_COMMA: {
         defaultMessage:
             'To prevent phishing attacks, you should verify the address on your Trezor first. {claim}',
@@ -2008,6 +1999,7 @@ const definedMessages = defineMessages({
     TR_TO: {
         id: 'TR_TO',
         defaultMessage: 'To',
+    },
     TR_RECIPIENT_ADDRESS_TOOLTIP: {
         id: 'TR_RECIPIENT_ADDRESS_TOOLTIP',
         defaultMessage: 'TR_RECIPIENT_ADDRESS_TOOLTIP',
