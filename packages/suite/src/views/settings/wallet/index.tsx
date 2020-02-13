@@ -5,8 +5,7 @@ import styled from 'styled-components';
 import { P, Switch, Link, Icon, variables, colors, CoinLogo } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { SuiteLayout } from '@suite-components';
-import { Menu as SettingsMenu } from '@settings-components';
+import { SettingsLayout } from '@settings-components';
 import { AppState, Dispatch } from '@suite-types';
 import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { Network, ExternalNetwork } from '@wallet-types';
@@ -176,59 +175,49 @@ const Settings = (props: Props) => {
     };
 
     return (
-        <SuiteLayout title="Settings" secondaryMenu={<SettingsMenu />}>
-            {/* todo: imho base padding should be in SuiteLayout, but it would break WalletLayout, so I have it temporarily here */}
-            <div
-                style={{
-                    padding: '30px',
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                }}
-            >
+        <SettingsLayout>
+            <P size="tiny">
+                <Translation {...messages.TR_COINS_SETTINGS_ALSO_DEFINES} />
+            </P>
+
+            <CoinsGroup
+                label={<Translation>{messages.TR_COINS}</Translation>}
+                enabledNetworks={enabledNetworks}
+                filterFn={baseNetworksFilterFn}
+                onToggleOneFn={props.changeCoinVisibility}
+                onToggleAllFn={props.toggleGroupCoinsVisibility}
+                type="mainnet"
+            />
+
+            <CoinsGroup
+                label={<Translation>{messages.TR_TESTNET_COINS}</Translation>}
+                description={<Translation>{messages.TR_TESTNET_COINS_EXPLAINED}</Translation>}
+                enabledNetworks={enabledNetworks}
+                filterFn={testnetNetworksFilterFn}
+                onToggleOneFn={props.changeCoinVisibility}
+                onToggleAllFn={props.toggleGroupCoinsVisibility}
+                type="testnet"
+            />
+
+            <SectionHeader>
+                <Translation>{messages.TR_3RD_PARTY_WALLETS}</Translation>
                 <P size="tiny">
-                    <Translation {...messages.TR_COINS_SETTINGS_ALSO_DEFINES} />
+                    <Translation>{messages.TR_3RD_PARTY_WALLETS_DESC}</Translation>
                 </P>
-
-                <CoinsGroup
-                    label={<Translation>{messages.TR_COINS}</Translation>}
-                    enabledNetworks={enabledNetworks}
-                    filterFn={baseNetworksFilterFn}
-                    onToggleOneFn={props.changeCoinVisibility}
-                    onToggleAllFn={props.toggleGroupCoinsVisibility}
-                    type="mainnet"
-                />
-
-                <CoinsGroup
-                    label={<Translation>{messages.TR_TESTNET_COINS}</Translation>}
-                    description={<Translation>{messages.TR_TESTNET_COINS_EXPLAINED}</Translation>}
-                    enabledNetworks={enabledNetworks}
-                    filterFn={testnetNetworksFilterFn}
-                    onToggleOneFn={props.changeCoinVisibility}
-                    onToggleAllFn={props.toggleGroupCoinsVisibility}
-                    type="testnet"
-                />
-
-                <SectionHeader>
-                    <Translation>{messages.TR_3RD_PARTY_WALLETS}</Translation>
-                    <P size="tiny">
-                        <Translation>{messages.TR_3RD_PARTY_WALLETS_DESC}</Translation>
-                    </P>
-                </SectionHeader>
-                <Section>
-                    {EXTERNAL_NETWORKS.map(n => (
-                        <Row key={n.symbol}>
-                            <Coin network={n} />
-                            <ActionColumn>
-                                <StyledLink variant="nostyle" href={n.url}>
-                                    <Translation>{n.url.replace('https://', '')}</Translation>
-                                </StyledLink>
-                            </ActionColumn>
-                        </Row>
-                    ))}
-                </Section>
-            </div>
-        </SuiteLayout>
+            </SectionHeader>
+            <Section>
+                {EXTERNAL_NETWORKS.map(n => (
+                    <Row key={n.symbol}>
+                        <Coin network={n} />
+                        <ActionColumn>
+                            <StyledLink variant="nostyle" href={n.url}>
+                                <Translation>{n.url.replace('https://', '')}</Translation>
+                            </StyledLink>
+                        </ActionColumn>
+                    </Row>
+                ))}
+            </Section>
+        </SettingsLayout>
     );
 };
 
