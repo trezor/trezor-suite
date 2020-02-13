@@ -146,15 +146,12 @@ const Backup = (props: Props) => {
                                 </>
                             )}
                             {device?.features?.pin_protection && (
-                                <>
-                                    <StyledButton
-                                        isDisabled={!canContinue(backup.userConfirmed)}
-                                        onClick={onClose}
-                                    >
-                                        Close
-                                    </StyledButton>
-                                    <CloseButton onClick={onClose}>Close anyway</CloseButton>
-                                </>
+                                <StyledButton
+                                    isDisabled={!canContinue(backup.userConfirmed)}
+                                    onClick={onClose}
+                                >
+                                    Close
+                                </StyledButton>
                             )}
                         </Col>
                     </Buttons>
