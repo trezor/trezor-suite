@@ -156,7 +156,7 @@ const PassphraseTypeCard = (props: Props) => {
                 <Actions>
                     <Button
                         data-test="@passphrase/submit-button"
-                        isDisabled={!enabled}
+                        isDisabled={!enabled || isTooLong}
                         variant={props.singleColModal ? 'primary' : props.colorVariant}
                         onClick={() => submit(value)}
                         fullWidth
