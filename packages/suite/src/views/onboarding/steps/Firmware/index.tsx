@@ -218,6 +218,12 @@ const FirmwareStep = ({
                 </Wrapper.Controls>
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
+                {/* todo add option to switch for btc-only firwmare */}
+                {/* {status === 'initial' && (
+                    <OnboardingButton.Back onClick={}>
+                        Switch to btc only firmware
+                    </OnboardingButton.Back>
+                )} */}
                 <OnboardingButton.Back onClick={() => onboardingActions.goToPreviousStep()}>
                     Back
                 </OnboardingButton.Back>
