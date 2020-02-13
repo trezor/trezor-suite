@@ -22,7 +22,7 @@ import Word from './Word';
 import WordAdvanced from './WordAdvanced';
 import ConfirmAddress from './confirm/Address';
 import ConfirmNoBackup from './confirm/NoBackup';
-import ReviewTransaction from './ReviewTransaction';
+import ReviewTransaction from './ReviewTransaction/Container';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
 import AddAccount from './AddAccount';
 import QrScanner from './QrScanner';

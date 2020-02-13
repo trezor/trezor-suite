@@ -1,18 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
-import { AppState, Dispatch } from '@suite-types';
-import { bindActionCreators } from 'redux';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
-import * as modalActions from '@suite-actions/modalActions';
-import * as sendFormActionsBitcoin from '@wallet-actions/send/sendFormBitcoinActions';
-import * as sendFormActionsEthereum from '@wallet-actions/send/sendFormEthereumActions';
-import * as sendFormActionsRipple from '@wallet-actions/send/sendFormRippleActions';
 import { H2, Button, colors, variables } from '@trezor/components-v2';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
 import { Output } from '@wallet-types/sendForm';
 import { fromWei, toWei } from 'web3-utils';
+import { Props } from './Container';
 
 const Wrapper = styled.div`
     max-width: 480px;
@@ -76,23 +70,7 @@ const getFeeValue = (
 
 const VISIBLE_ADDRESS_CHAR_COUNT = 8;
 
-const mapStateToProps = (state: AppState) => ({
-    account: state.wallet.selectedAccount.account,
-    send: state.wallet.send,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    modalActions: bindActionCreators(modalActions, dispatch),
-    sendFormActionsBitcoin: bindActionCreators(sendFormActionsBitcoin, dispatch),
-    sendFormActionsRipple: bindActionCreators(sendFormActionsRipple, dispatch),
-    sendFormActionsEthereum: bindActionCreators(sendFormActionsEthereum, dispatch),
-});
-
-type StateProps = ReturnType<typeof mapStateToProps>;
-type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-type Props = StateProps & DispatchProps;
-
-const ReviewTransaction = ({
+export default ({
     send,
     account,
     modalActions,
@@ -180,5 +158,3 @@ const ReviewTransaction = ({
         </Wrapper>
     );
 };
-
-export default connect(mapStateToProps, mapDispatchToProps)(ReviewTransaction);
