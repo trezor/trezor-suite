@@ -81,6 +81,9 @@ const Backup = (props: Props) => {
             <Wrapper data-test="@backup/no-device">
                 <H2>Reconnect your device</H2>
                 <img src={resolveStaticPath('images/suite/connect-device.svg')} alt="" />
+                <Buttons>
+                    <CloseButton onClick={onClose} />
+                </Buttons>
             </Wrapper>
         );
     }

@@ -54,6 +54,5 @@ describe('Backup', () => {
     // todo, check that checkboxes are really disabled, but I cant now. They might be (and are) disabled by device lock from
     // finishing discovery that was triggered on dashboard.
     it.skip('Backup should reset if modal is closed', () => {});
-
     it.skip('When device disconnects before backup process starts, we just show reconnect your device screen and continue', () => {});
 });
