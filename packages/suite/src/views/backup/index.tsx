@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 
-import { H2, P, Button, colors } from '@trezor/components-v2';
+import { H2, P, Button, ButtonProps, colors } from '@trezor/components-v2';
 import * as backupActions from '@backup-actions/backupActions';
+import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { Dispatch, AppState, InjectedModalApplicationProps } from '@suite-types';
 import { ProgressBar, Loading } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
@@ -43,6 +44,12 @@ const StyledP = styled(P)`
     color: ${colors.BLACK50};
 `;
 
+const CloseButton = (props: ButtonProps) => (
+    <StyledButton {...props} data-test="@backup/close-button" variant="tertiary" icon="CROSS">
+        {props.children ? props.children : 'Close'}
+    </StyledButton>
+);
+
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
     backup: state.backup,
@@ -51,6 +58,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     backupDevice: bindActionCreators(backupActions.backupDevice, dispatch),
+    changePin: bindActionCreators(deviceSettingsActions.changePin, dispatch),
 });
 
 type Props = ReturnType<typeof mapDispatchToProps> &
@@ -58,12 +66,24 @@ type Props = ReturnType<typeof mapDispatchToProps> &
     InjectedModalApplicationProps;
 
 const Backup = (props: Props) => {
-    const { backup, closeModalApp, modal, backupDevice, locks } = props;
+    const { backup, closeModalApp, modal, backupDevice, locks, device, changePin } = props;
 
     const onClose = () => closeModalApp();
 
     const backupStatuses = ['initial', 'in-progress', 'finished'] as const;
 
+    if (modal) {
+        return <Wrapper>{modal}</Wrapper>;
+    }
+
+    if (!device || !device.features) {
+        return (
+            <Wrapper data-test="@backup/no-device">
+                <H2>Reconnect your device</H2>
+                <img src={resolveStaticPath('images/suite/connect-device.svg')} alt="" />
+            </Wrapper>
+        );
+    }
     return (
         <Wrapper data-test="@backup">
             <ProgressBar
@@ -90,25 +110,14 @@ const Backup = (props: Props) => {
                             >
                                 Create backup seed
                             </StyledButton>
-                            <Button
-                                data-test="@backup/close-button"
-                                icon="CROSS"
-                                variant="tertiary"
-                                onClick={onClose}
-                            >
-                                Cancel backup process
-                            </Button>
+                            <CloseButton onClick={onClose}>Cancel backup process</CloseButton>
                         </Col>
                     </Buttons>
                 </>
             )}
 
-            {backup.status === 'in-progress' && (
-                <>
-                    {!modal && <Loading />}
-                    {modal && modal}
-                </>
-            )}
+            {backup.status === 'in-progress' && <Loading />}
+
             {backup.status === 'finished' && !backup.error && (
                 <>
                     <H2>Backup successfully created!</H2>
@@ -118,13 +127,32 @@ const Backup = (props: Props) => {
                     <AfterBackupCheckboxes />
                     <Buttons>
                         <Col>
-                            <StyledButton
-                                isDisabled={!canContinue(backup.userConfirmed)}
-                                onClick={onClose}
-                                data-test="@backup/close-button"
-                            >
-                                Close
-                            </StyledButton>
+                            {!device.features?.pin_protection && (
+                                <>
+                                    <StyledButton
+                                        data-test="@backup/continue-to-pin-button"
+                                        isDisabled={!canContinue(backup.userConfirmed)}
+                                        onClick={() => {
+                                            onClose();
+                                            changePin({});
+                                        }}
+                                    >
+                                        Continue to PIN
+                                    </StyledButton>
+                                    <CloseButton onClick={onClose}>Skip PIN</CloseButton>
+                                </>
+                            )}
+                            {device?.features?.pin_protection && (
+                                <>
+                                    <StyledButton
+                                        isDisabled={!canContinue(backup.userConfirmed)}
+                                        onClick={onClose}
+                                    >
+                                        Close
+                                    </StyledButton>
+                                    <CloseButton onClick={onClose}>Close anyway</CloseButton>
+                                </>
+                            )}
                         </Col>
                     </Buttons>
                 </>
@@ -136,9 +164,7 @@ const Backup = (props: Props) => {
                     <img src={resolveStaticPath('images/suite/uni-error.svg')} alt="" />
                     <Buttons>
                         <Col>
-                            <StyledButton onClick={onClose} data-test="@backup/close-button">
-                                Close
-                            </StyledButton>
+                            <CloseButton onClick={onClose} />
                         </Col>
                     </Buttons>
                 </>
