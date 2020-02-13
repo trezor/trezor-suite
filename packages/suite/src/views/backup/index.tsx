@@ -46,6 +46,7 @@ const StyledP = styled(P)`
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
     backup: state.backup,
+    locks: state.suite.locks,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -57,7 +58,7 @@ type Props = ReturnType<typeof mapDispatchToProps> &
     InjectedModalApplicationProps;
 
 const Backup = (props: Props) => {
-    const { backup, closeModalApp, modal, backupDevice } = props;
+    const { backup, closeModalApp, modal, backupDevice, locks } = props;
 
     const onClose = () => closeModalApp();
 
@@ -85,7 +86,7 @@ const Backup = (props: Props) => {
                             <StyledButton
                                 data-test="@backup/start-button"
                                 onClick={() => backupDevice()}
-                                isDisabled={!canStart(backup.userConfirmed)}
+                                isDisabled={!canStart(backup.userConfirmed, locks)}
                             >
                                 Create backup seed
                             </StyledButton>
@@ -111,7 +112,7 @@ const Backup = (props: Props) => {
             {backup.status === 'finished' && !backup.error && (
                 <>
                     <H2>Backup successfully created!</H2>
-                    <StyledP>
+                    <StyledP data-test="@backup/success-message">
                         Great! Now get out there and hide it properly. Here are some DOs and DON’Ts:
                     </StyledP>
                     <AfterBackupCheckboxes />
@@ -131,7 +132,7 @@ const Backup = (props: Props) => {
             {backup.status === 'finished' && backup.error && (
                 <>
                     <H2>Backup failed!</H2>
-                    <StyledP>{backup.error}</StyledP>
+                    <StyledP data-test="@backup/error-message">{backup.error}</StyledP>
                     <img src={resolveStaticPath('images/suite/uni-error.svg')} alt="" />
                     <Buttons>
                         <Col>

@@ -13,6 +13,7 @@ import Step from './index';
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
     backup: state.backup,
+    locks: state.suite.locks,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
