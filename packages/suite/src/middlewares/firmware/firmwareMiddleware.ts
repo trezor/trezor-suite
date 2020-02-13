@@ -37,7 +37,7 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
             }
             break;
         case SUITE.APP_CHANGED:
-            if (prevApp === 'firmware') {
+            if (prevApp === 'firmware' || prevApp === 'onboarding') {
                 api.dispatch(firmwareActions.resetReducer());
             }
             break;
