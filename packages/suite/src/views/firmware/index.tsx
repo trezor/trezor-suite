@@ -23,6 +23,7 @@ const Wrapper = styled(ModalWrapper)`
     min-width: 60vw;
     max-width: 80vw;
     flex-direction: column;
+    align-items: center;
 `;
 
 const Row = styled.div`
