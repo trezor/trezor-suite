@@ -1956,6 +1956,34 @@ const definedMessages = defineMessages({
         id: 'TR_FAILED_BACKUP',
         defaultMessage: 'Backup failed. This is serious.',
     },
+    TR_MODAL_CONFIRM_TX_TITLE: {
+        id: 'TR_MODAL_CONFIRM_TX_TITLE',
+        defaultMessage: 'Confirm transaction',
+    },
+    TR_MODAL_CONFIRM_TX_BUTTON: {
+        id: 'TR_MODAL_CONFIRM_TX_BUTTON',
+        defaultMessage: 'Confirm transaction',
+    },
+    TR_ADDRESS_FROM: {
+        id: 'TR_ADDRESS_FROM',
+        defaultMessage: 'From',
+    },
+    TR_EDIT: {
+        id: 'TR_EDIT',
+        defaultMessage: 'Edit',
+    },
+    TR_GAS_PRICE: {
+        id: 'TR_GAS_PRICE',
+        defaultMessage: 'Gas price',
+    },
+    TR_SEND_REVIEW_TRANSACTION: {
+        id: 'TR_SEND_REVIEW_TRANSACTION',
+        defaultMessage: 'Review Transaction',
+    },
+    TR_TO: {
+        id: 'TR_TO',
+        defaultMessage: 'To',
+    },
 });
 
 export default definedMessages;

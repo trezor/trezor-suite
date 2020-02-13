@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 import { H2, Button, colors, variables } from '@trezor/components-v2';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -9,12 +11,10 @@ import { fromWei, toWei } from 'web3-utils';
 import { Props } from './Container';
 
 const Wrapper = styled.div`
-    max-width: 480px;
     padding: 40px;
 `;
 
 const Box = styled.div`
-    width: 320px;
     height: 46px;
     border-radius: 3px;
     border: solid 2px ${colors.BLACK96};
@@ -68,8 +68,6 @@ const getFeeValue = (
     return `${formatNetworkAmount(transactionInfo.fee, symbol)}`;
 };
 
-const VISIBLE_ADDRESS_CHAR_COUNT = 8;
-
 export default ({
     send,
     account,
@@ -87,45 +85,44 @@ export default ({
 
     return (
         <Wrapper>
-            <H2>Confirm Transaction</H2>
+            <H2>
+                <Translation {...messages.TR_MODAL_CONFIRM_TX_TITLE} />
+            </H2>
             <Content>
                 <Box>
-                    <Label>From</Label>
+                    <Label>
+                        <Translation {...messages.TR_ADDRESS_FROM} />
+                    </Label>
                     <Value>
                         {upperCaseSymbol} Account #{account.index}
                     </Value>
                 </Box>
-                {outputs.map((output: Output) => {
-                    const address = output.address.value;
-                    const amount = output.amount.value;
-                    if (address) {
-                        const addressLength = address.length;
-
-                        return (
-                            <OutputWrapper>
-                                <Box>
-                                    <Label>To</Label>
-                                    <Value>
-                                        {address.substring(0, VISIBLE_ADDRESS_CHAR_COUNT)}...
-                                        {address.substring(
-                                            addressLength - VISIBLE_ADDRESS_CHAR_COUNT,
-                                            addressLength,
-                                        )}
-                                    </Value>
-                                </Box>
-                                <Box>
-                                    <Label>Amount</Label>
-                                    <Value>
-                                        {amount} {upperCaseSymbol}
-                                    </Value>
-                                </Box>
-                            </OutputWrapper>
-                        );
-                    }
-                    return null;
-                })}
+                {outputs.map((output: Output) => (
+                    <OutputWrapper>
+                        <Box>
+                            <Label>
+                                <Translation {...messages.TR_TO} />
+                            </Label>
+                            <Value>{output.address.value}</Value>
+                        </Box>
+                        <Box>
+                            <Label>
+                                <Translation {...messages.TR_AMOUNT} />
+                            </Label>
+                            <Value>
+                                {output.amount.value} {upperCaseSymbol}
+                            </Value>
+                        </Box>
+                    </OutputWrapper>
+                ))}
                 <Box>
-                    <Label>{networkType === 'ethereum' ? 'Gas price' : 'Fee'}</Label>
+                    <Label>
+                        {networkType === 'ethereum' ? (
+                            <Translation {...messages.TR_GAS_PRICE} />
+                        ) : (
+                            <Translation {...messages.TR_FEE} />
+                        )}
+                    </Label>
                     <Value>
                         {getFeeValue(transactionInfo, networkType, account.symbol)}{' '}
                         {upperCaseSymbol}
@@ -133,8 +130,12 @@ export default ({
                 </Box>
             </Content>
             <Buttons>
-                <Button variant="secondary" onClick={() => modalActions.onCancel()}>
-                    Edit
+                <Button
+                    icon="ARROW_LEFT"
+                    variant="secondary"
+                    onClick={() => modalActions.onCancel()}
+                >
+                    <Translation {...messages.TR_EDIT} />
                 </Button>
                 <Button
                     onClick={() => {
@@ -152,7 +153,7 @@ export default ({
                         }
                     }}
                 >
-                    Confirm Transaction
+                    <Translation {...messages.TR_MODAL_CONFIRM_TX_BUTTON} />
                 </Button>
             </Buttons>
         </Wrapper>

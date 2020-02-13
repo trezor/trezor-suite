@@ -2,6 +2,8 @@ import { SUITE } from '@suite-actions/constants';
 import { AppState, TrezorDevice } from '@suite-types';
 import { Button, colors, variables } from '@trezor/components-v2';
 import { Account, Send } from '@wallet-types';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 import { PrecomposedTransactionXrp, PrecomposedTransactionEth } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
@@ -57,7 +59,12 @@ const isDisabled = (
 
     // form errors
     outputs.forEach(output => {
-        if (output.address.error || output.amount.error) {
+        if (
+            !output.address.value ||
+            !output.amount.value ||
+            output.address.error ||
+            output.amount.error
+        ) {
             isDisabled = true;
         }
     });
@@ -118,7 +125,7 @@ export default ({ send, suite, account, device, modalActions }: Props) => {
                     isDisabled={isComposing ? false : isDisabled(send, suite, device, networkType)}
                     onClick={() => modalActions.openModal({ type: 'review-transaction' })}
                 >
-                    Review Transaction
+                    <Translation {...messages.TR_SEND_REVIEW_TRANSACTION} />
                 </ButtonReview>
             </Row>
             {transactionInfo?.type === 'final' && (

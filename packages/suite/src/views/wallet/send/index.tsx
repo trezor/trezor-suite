@@ -13,7 +13,7 @@ import AdditionalForm from './components/AdvancedForm';
 import Amount from './components/Amount/Container';
 import ButtonToggleAdditional from './components/ButtonToggleAdditional';
 import Clear from './components/Clear';
-import SendButtonSection from './components/SendButtonSection/Container';
+import ReviewButtonSection from './components/ReviewButtonSection/Container';
 import { Props } from './Container';
 
 const Row = styled.div`
@@ -126,7 +126,7 @@ export default ({
                     )}
                 </Row>
             </AdditionalInfoWrapper>
-            <SendButtonSection />
+            <ReviewButtonSection />
         </WalletLayout>
     );
 };
