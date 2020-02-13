@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { colors, Button } from '@trezor/components-v2';
 import { Card } from '@suite-components';
 import { parseBIP44Path, formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { ChildProps as Props } from '../../index';
+import { ChildProps as Props } from '../../Container';
 
 const StyledCard = styled(Card)`
     flex-direction: column;

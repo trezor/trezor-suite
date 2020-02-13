@@ -22,4 +22,12 @@ export type StateProps = ReturnType<typeof mapStateToProps>;
 export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 export type Props = StateProps & DispatchProps;
 
+export interface ChildProps {
+    account: NonNullable<Props['selectedAccount']['account']>;
+    addresses: Props['receive'];
+    showAddress: Props['showAddress'];
+    disabled: boolean;
+    locked: boolean;
+}
+
 export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(SendIndex));
