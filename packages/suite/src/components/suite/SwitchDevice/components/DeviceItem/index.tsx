@@ -243,6 +243,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                     {isWalletContext && (
                         <AddWallet>
                             <Button
+                                data-test="@switch-device/add-hidden-wallet-button"
                                 variant="tertiary"
                                 icon="PLUS"
                                 disabled={!device.connected || !hasAtLeastOneWallet} // TODO: tooltip?

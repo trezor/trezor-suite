@@ -39,7 +39,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
 const DiscoveryLoader = (props: Props) => {
     return (
-        <Wrapper {...props}>
+        <Wrapper {...props} data-test="@discovery/loader">
             <Title>
                 <Translation {...messages.TR_COIN_DISCOVERY_IN_PROGRESS} />
             </Title>

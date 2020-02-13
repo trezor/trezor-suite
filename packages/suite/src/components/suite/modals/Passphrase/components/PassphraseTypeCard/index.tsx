@@ -4,6 +4,8 @@ import styled, { css } from 'styled-components';
 import { Button, colors, variables, Input, Checkbox } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
+import { MAX_PASSPHRASE_LENGTH } from '@suite-constants/passphrase';
+import { countBytesInString } from '@suite-utils/string';
 import PasswordStrengthIndicator from '@suite-components/PasswordStrengthIndicator';
 
 const WalletTitle = styled.div`
@@ -92,6 +94,7 @@ const PassphraseTypeCard = (props: Props) => {
     const inputType = showPassword ? 'text' : 'password';
     const enterPressed = useKeyPress('Enter');
     const ref = createRef<HTMLInputElement>();
+    const isTooLong = countBytesInString(value) > MAX_PASSPHRASE_LENGTH;
 
     useLayoutEffect(() => {
         if (ref && ref.current) {
@@ -115,7 +118,11 @@ const PassphraseTypeCard = (props: Props) => {
             <Padding singleColModal={props.singleColModal}>
                 {authConfirmation && (
                     <Content>
-                        <Checkbox onClick={() => setEnabled(!enabled)} isChecked={enabled}>
+                        <Checkbox
+                            data-test="@passphrase/confirm-checkbox"
+                            onClick={() => setEnabled(!enabled)}
+                            isChecked={enabled}
+                        >
                             <Translation {...messages.TR_I_UNDERSTAND_PASSPHRASE} />
                         </Checkbox>
                     </Content>
@@ -123,12 +130,19 @@ const PassphraseTypeCard = (props: Props) => {
                 {props.showPassphraseInput && (
                     <InputWrapper>
                         <Input
+                            data-test="@passhphrase/input"
                             onChange={event => setValue(event.target.value)}
                             placeholder="Enter passphrase"
                             type={inputType}
                             value={value}
                             innerRef={ref}
                             display="block"
+                            bottomText={
+                                isTooLong ? (
+                                    <Translation {...messages.TR_PASSPHRASE_TOO_LONG} />
+                                ) : null
+                            }
+                            state={isTooLong ? 'error' : undefined}
                             variant="small"
                             button={{
                                 iconSize: 18,
@@ -136,11 +150,12 @@ const PassphraseTypeCard = (props: Props) => {
                                 onClick: () => setShowPassword(!showPassword),
                             }}
                         />
-                        <PasswordStrengthIndicator password={value} />
+                        {!isTooLong && <PasswordStrengthIndicator password={value} />}
                     </InputWrapper>
                 )}
                 <Actions>
                     <Button
+                        data-test="@passphrase/submit-button"
                         isDisabled={!enabled}
                         variant={props.singleColModal ? 'primary' : props.colorVariant}
                         onClick={() => submit(value)}

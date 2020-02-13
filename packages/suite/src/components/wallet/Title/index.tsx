@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { variables } from '@trezor/components';
+import { variables } from '@trezor/components-v2';
 
 interface OwnProps {
     children?: React.ReactNode;
@@ -11,7 +11,7 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    font-size: ${variables.FONT_SIZE.WALLET_TITLE};
+    font-size: ${variables.FONT_SIZE.H1};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding-bottom: 35px;
 `;

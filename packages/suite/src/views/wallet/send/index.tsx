@@ -3,6 +3,7 @@ import messages from '@suite/support/messages';
 import { colors, Icon } from '@trezor/components-v2';
 import { WalletLayout } from '@wallet-components';
 import AccountName from '@wallet-components/AccountName';
+import AccountSelector from '@wallet-components/AccountSelector/Container';
 import { Output } from '@wallet-types/sendForm';
 import React, { useEffect } from 'react';
 import styled, { css } from 'styled-components';
@@ -91,6 +92,7 @@ export default ({
     return (
         <WalletLayout title="Send" account={selectedAccount}>
             <AccountName account={account} message={accountNameMessage} />
+            <AccountSelector title="Send from Account" />
             {send.outputs.map((output: Output) => (
                 <OutputWrapper key={output.id}>
                     {output.id === 0 && <Clear sendFormActions={sendFormActions} />}

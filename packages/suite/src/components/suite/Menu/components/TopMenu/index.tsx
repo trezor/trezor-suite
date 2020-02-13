@@ -62,7 +62,10 @@ const TopMenu = (props: Props) => (
         <DeviceStatus>
             {!props.selectedDevice && <DeviceRow />}
             {props.selectedDevice && (
-                <DeviceRow onClick={() => props.goto('suite-switch-device', { cancelable: true })}>
+                <DeviceRow
+                    data-test="@menu/switch-device"
+                    onClick={() => props.goto('suite-switch-device', { cancelable: true })}
+                >
                     <DeviceIconWrapper>
                         <DeviceIcon size={12} color={colors.GREEN} device={props.selectedDevice} />
                     </DeviceIconWrapper>

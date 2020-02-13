@@ -79,6 +79,7 @@ const FreshAddress = ({ account, addresses, showAddress, disabled, locked }: Pro
                 <Input topLabel={addressLabel} variant="small" isDisabled value={addressValue} />
             </AddressContainer>
             <StyledButton
+                data-test="@wallet/receive/reveal-address-button"
                 onClick={() => showAddress(firstFreshAddress.path, firstFreshAddress.address)}
                 isDisabled={disabled}
                 isLoading={!disabled && locked}

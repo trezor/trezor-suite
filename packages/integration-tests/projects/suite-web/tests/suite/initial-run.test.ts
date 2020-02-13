@@ -8,7 +8,7 @@ describe('Suite initial run: when user opens suite for the first time, welcome a
         cy.visit('/');
         cy.getTestElement('@welcome');
         cy.reload();
-        cy.getTestElement('@welcome');
+        cy.getTestElement('@welcome', { timeout: 20000 });
     });
 
     it('Skips initial run and shows connect-device modal', () => {
@@ -16,6 +16,6 @@ describe('Suite initial run: when user opens suite for the first time, welcome a
         cy.passThroughInitialRun();
         cy.getTestElement('@modal/connect-device');
         cy.reload();
-        cy.getTestElement('@modal/connect-device');
+        cy.getTestElement('@modal/connect-device', { timeout: 20000 });
     });
 });

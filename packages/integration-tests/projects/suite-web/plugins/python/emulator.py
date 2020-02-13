@@ -10,7 +10,7 @@ from trezorlib.client import TrezorClient
 from trezorlib.transport import enumerate_devices, get_transport
 from trezorlib.transport.udp import UdpTransport
 from trezorlib.transport.bridge import BridgeTransport
-# from trezorlib import messages as proto
+from trezorlib import messages as proto
 
 proc = None
 # log.enable_debug_output()
@@ -30,11 +30,12 @@ def start():
         proc = Popen(
             # todo: run from binary directly, need to solve glibc error;
 
-            # "./emu.sh",
-            # cwd="../../../trezor-firmware/core"
+            # has glibc error on my machine
+            # "TREZOR_OLED_SCALE=2 ./projects/suite-web/plugins/python/bin/trezor-emu-legacy-v1.8.3 -O0",
 
+            # works but is too old and gets some firmware-old error
+            # "TREZOR_OLED_SCALE=2 ./projects/suite-web/plugins/python/bin/trezor-emu-legacy-v1.6.2 -O0",
 
-            # "TREZOR_OLED_SCALE=2 ./packages/suite-web/test/trezor-emu-legacy-v1.6.2 -O0",
             "./projects/suite-web/plugins/python/bin/trezor-emu-core-v2.1.4 -O0 -X heapsize=20M -m main",
             shell=True,
             preexec_fn=os.setsid
@@ -162,6 +163,18 @@ def read_and_confirm_mnemonic():
     client.close()
 
 # todo: work in progress
+# def backup_device():
+#     transport = get_bridge_device()
+#     print(transport)
+#     client = TrezorClientDebugLink(transport)
+#     client.open()
+#     time.sleep(0.6)
+#     # todo: backup is blocking here, need to find out how to return "promise"
+#     device.backup(client)
+#     client.close()
+#     # read_and_confirm_mnemonic()
+
+# todo: work in progress
 # def enter_pin(pin):
 #     transport = get_bridge_device()
 #     print(transport)
@@ -179,3 +192,14 @@ def read_and_confirm_mnemonic():
 #     print('pin')
 #     print(pin)
 #     client.close()
+
+def set_passphrase_source(passphrase_source):
+    transport = get_bridge_device()
+    print(transport)
+    client = TrezorClientDebugLink(transport)
+    client.open()
+    time.sleep(0.6)
+    device.apply_settings(client, passphrase_source=passphrase_source)
+    client.close()
+
+

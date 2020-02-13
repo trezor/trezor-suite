@@ -3,8 +3,7 @@ import * as STEP from '@onboarding-constants/steps';
 import { SUPPORT_URL, TREZOR_PACKAGING_URL, TREZOR_RESELLERS_URL } from '@suite-constants/urls';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { variables } from '@trezor/components';
-import { Link } from '@trezor/components-v2';
+import { Link, variables } from '@trezor/components-v2';
 import React from 'react';
 import styled from 'styled-components';
 
