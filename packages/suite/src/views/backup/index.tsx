@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import { H2, P, Button, colors } from '@trezor/components-v2';
 import * as backupActions from '@backup-actions/backupActions';
 import { Dispatch, AppState, InjectedModalApplicationProps } from '@suite-types';
-import { ProgressBar } from '@suite-components';
+import { ProgressBar, Loading } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
 import { canStart, canContinue } from '@backup-utils';
@@ -102,7 +102,12 @@ const Backup = (props: Props) => {
                 </>
             )}
 
-            {backup.status === 'in-progress' && <>{modal && modal}</>}
+            {backup.status === 'in-progress' && (
+                <>
+                    {!modal && <Loading />}
+                    {modal && modal}
+                </>
+            )}
             {backup.status === 'finished' && !backup.error && (
                 <>
                     <H2>Backup successfully created!</H2>

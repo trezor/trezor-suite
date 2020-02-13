@@ -12,6 +12,7 @@ const Wrapper = styled(ModalWrapper)`
     flex-direction: column;
     text-align: center;
     align-items: center;
+    margin: auto;
 `;
 
 const Title = styled.div`
