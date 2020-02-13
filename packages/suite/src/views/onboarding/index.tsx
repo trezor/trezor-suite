@@ -51,7 +51,8 @@ const Wrapper = styled.div`
 const ComponentWrapper = styled.div`
     display: flex;
     justify-content: center;
-    min-height: 65vh;
+    /* min-height: 65vh; */
+    min-height: 100%;
 `;
 
 // used to position modal to center
@@ -177,7 +178,6 @@ const Onboarding = (props: Props) => {
                 )}
                 {!errorState && modal && (
                     <ActionModalWrapper data-test="@onboading/confirm-action-on-device">
-                        bla bla
                         {modal}
                     </ActionModalWrapper>
                 )}

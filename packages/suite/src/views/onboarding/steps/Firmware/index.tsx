@@ -59,7 +59,6 @@ const FirmwareStep = ({
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
-                progress: {firmwareUpdate.installingProgress}
                 <Translation {...messages.TR_FIRMWARE_HEADING} />
             </Wrapper.StepHeading>
             <Wrapper.StepBody>

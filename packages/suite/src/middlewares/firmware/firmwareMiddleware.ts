@@ -7,6 +7,8 @@ import { AppState, Action, Dispatch } from '@suite-types';
 const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
 ): Action => {
+    const prevApp = api.getState().router.app;
+
     // pass action
     next(action);
 
@@ -32,6 +34,11 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
                 } else if (['outdated', 'required'].includes(action.payload.firmware)) {
                     api.dispatch(firmwareActions.setStatus('partially-done'));
                 }
+            }
+            break;
+        case SUITE.APP_CHANGED:
+            if (prevApp === 'firmware') {
+                api.dispatch(firmwareActions.resetReducer());
             }
             break;
         default:

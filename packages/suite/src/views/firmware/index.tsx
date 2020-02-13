@@ -95,6 +95,7 @@ const StyledP = styled(P)`
     color: ${colors.BLACK50};
     font-size: ${FONT_SIZE.SMALL};
     margin: 20px 0;
+    max-width: 500px;
 `;
 
 const WhatsNewLink = styled(Link)`
@@ -342,6 +343,9 @@ const Firmware = ({
                                 alt=""
                                 src={resolveStaticPath('images/suite/connect-device.svg')}
                             />
+                            <Buttons>
+                                <CloseButton onClick={onClose} />
+                            </Buttons>
                         </>
                     )}
                     {device && device.mode === 'bootloader' && (
