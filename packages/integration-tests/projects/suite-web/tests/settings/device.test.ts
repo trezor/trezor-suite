@@ -76,6 +76,7 @@ describe('Device settings', () => {
         cy.getTestElement('@settings/device/check-seed-button').should('be.disabled');
         cy.getTestElement('@settings/device/failed-backup-row').should('not.exist');
         cy.getTestElement('@settings/device/create-backup-button').click();
+        cy.getTestElement('@backup');
     });
     // TODO: upload custom image
     // TODO: set pin part. need to extend python script to allow input digits on emulator
