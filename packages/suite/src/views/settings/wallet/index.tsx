@@ -174,6 +174,17 @@ const Settings = (props: Props) => {
         return !n.accountType && 'testnet' in n && n.testnet === true;
     };
 
+    const getPrettyUrl = (url: string) => {
+        let pretty = url;
+        pretty = pretty.replace('https://', '');
+        console.log(pretty);
+        const slash = pretty.indexOf('/');
+        if (slash) {
+            pretty = pretty.substr(0, slash);
+        }
+        return pretty;
+    };
+
     return (
         <SettingsLayout>
             <P size="tiny">
@@ -210,8 +221,8 @@ const Settings = (props: Props) => {
                     <Row key={n.symbol}>
                         <Coin network={n} />
                         <ActionColumn>
-                            <StyledLink variant="nostyle" href={n.url}>
-                                <Translation>{n.url.replace('https://', '')}</Translation>
+                            <StyledLink variant="nostyle" href={n.url} size="small">
+                                <Translation>{getPrettyUrl(n.url)}</Translation>
                             </StyledLink>
                         </ActionColumn>
                     </Row>
