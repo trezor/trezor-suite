@@ -1,6 +1,6 @@
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { Input, Icon, colors } from '@trezor/components-v2';
+import { Input, Icon, colors, Tooltip } from '@trezor/components-v2';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Send } from '@wallet-types';
 import styled from 'styled-components';
@@ -42,7 +42,12 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
             topLabel={
                 <Label>
                     Gas Price
-                    <StyledIcon size={12} color={colors.BLACK50} icon="QUESTION" />
+                    <Tooltip
+                        placement="top"
+                        content={<Translation {...messages.TR_SEND_GAS_PRICE_TOOLTIP} />}
+                    >
+                        <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
+                    </Tooltip>
                 </Label>
             }
             bottomText={getError(error)}
