@@ -9,6 +9,7 @@ storiesOf('Form', module).add(
     () => {
         const isSearchable = boolean('Searchable', false);
         const isClearable = boolean('Clearable', false);
+        const isClean = boolean('IsClean', false);
         const isDisabled = boolean('Disabled', false);
         const withDropdownIndicator = boolean('withDropdownIndicator', true);
         const topLabel = text('Top label', 'Input label');
@@ -46,6 +47,7 @@ storiesOf('Form', module).add(
             <Select
                 {...(!isSearchable ? { isSearchable } : {})}
                 {...(isClearable ? { isClearable } : {})}
+                {...(isClean ? { isClean } : {})}
                 {...(isDisabled ? { isDisabled } : {})}
                 {...(withDropdownIndicator ? {} : { withDropdownIndicator })}
                 {...(display ? { display } : {})}

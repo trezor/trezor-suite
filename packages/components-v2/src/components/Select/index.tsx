@@ -9,7 +9,8 @@ import { InputDisplay, InputVariant } from '../../support/types';
 const selectStyle = (
     isSearchable: boolean,
     withDropdownIndicator = true,
-    variant: InputVariant
+    variant: InputVariant,
+    isClean: boolean
 ) => ({
     singleValue: (base: Record<string, any>) => ({
         ...base,
@@ -31,6 +32,9 @@ const selectStyle = (
         if (isDisabled) {
             backgroundImage = `linear-gradient(to top, ${colors.BLACK92}, ${colors.BLACK92})`;
         }
+        if (isClean) {
+            backgroundImage = 'none';
+        }
         return {
             ...base,
             minHeight: 'initial',
@@ -38,12 +42,12 @@ const selectStyle = (
             alignItems: 'center',
             height: variant === 'small' ? '38px' : '48px',
             borderRadius: '3px',
-            borderColor: colors.BLACK80,
+            borderColor: isClean ? 'white' : colors.BLACK80,
             boxShadow: 'none',
             backgroundImage,
             '&:hover, &:focus': {
                 cursor: 'pointer',
-                borderColor: colors.BLACK50,
+                borderColor: isClean ? 'white' : colors.BLACK50,
             },
         };
     },
@@ -101,6 +105,7 @@ const TopLabel = styled.span`
 interface Props extends Omit<SelectProps, 'components'> {
     isSearchable?: boolean;
     withDropdownIndicator?: boolean;
+    isClean?: boolean;
     topLabel?: React.ReactNode;
     wrapperProps?: Record<string, any>;
     display?: InputDisplay;
@@ -112,6 +117,7 @@ const Select = ({
     withDropdownIndicator = true,
     className,
     wrapperProps,
+    isClean = false,
     topLabel,
     width,
     variant = 'large',
@@ -121,7 +127,7 @@ const Select = ({
         <Wrapper className={className} width={width} {...wrapperProps}>
             {topLabel && <TopLabel>{topLabel}</TopLabel>}
             <ReactSelect
-                styles={selectStyle(isSearchable, withDropdownIndicator, variant)}
+                styles={selectStyle(isSearchable, withDropdownIndicator, variant, isClean)}
                 isSearchable={isSearchable}
                 {...rest}
             />
