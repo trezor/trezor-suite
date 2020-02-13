@@ -42,7 +42,10 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
             topLabel={
                 <Label>
                     Gas Price
-                    <Tooltip placement="top" content="Tooltip gas limit">
+                    <Tooltip
+                        placement="top"
+                        content={<Translation {...messages.TR_SEND_GAS_PRICE_TOOLTIP} />}
+                    >
                         <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
                     </Tooltip>
                 </Label>

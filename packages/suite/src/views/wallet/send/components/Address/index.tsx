@@ -73,7 +73,10 @@ const Address = ({
             topLabel={
                 <Label>
                     {intl.formatMessage(messages.TR_RECIPIENT_ADDRESS)}
-                    <Tooltip placement="top" content="Tooltip address">
+                    <Tooltip
+                        placement="top"
+                        content={<Translation {...messages.TR_RECIPIENT_ADDRESS_TOOLTIP} />}
+                    >
                         <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
                     </Tooltip>
                 </Label>

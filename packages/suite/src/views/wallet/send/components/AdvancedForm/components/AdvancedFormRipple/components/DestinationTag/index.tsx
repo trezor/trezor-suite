@@ -44,7 +44,10 @@ const AdvancedFormRipple = ({ send, sendFormActionsRipple }: Props) => {
             topLabel={
                 <Label>
                     <Translation {...messages.TR_XRP_DESTINATION_TAG} />
-                    <Tooltip placement="top" content="Tooltip destination tag">
+                    <Tooltip
+                        placement="top"
+                        content={<Translation {...messages.TR_XRP_DESTINATION_TAG_TOOLTIP} />}
+                    >
                         <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
                     </Tooltip>
                 </Label>

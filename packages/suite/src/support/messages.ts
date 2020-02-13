@@ -1983,6 +1983,34 @@ const definedMessages = defineMessages({
         id: 'TR_FAILED_BACKUP',
         defaultMessage: 'Backup failed. This is serious.',
     },
+    TR_RECIPIENT_ADDRESS_TOOLTIP: {
+        id: 'TR_RECIPIENT_ADDRESS_TOOLTIP',
+        defaultMessage: 'TR_RECIPIENT_ADDRESS_TOOLTIP',
+    },
+    TR_SEND_DATA_TOOLTIP: {
+        id: 'TR_SEND_DATA_TOOLTIP',
+        defaultMessage: 'TR_SEND_DATA_TOOLTIP',
+    },
+    TR_SEND_GAS_LIMIT_TOOLTIP: {
+        id: 'TR_SEND_GAS_LIMIT_TOOLTIP',
+        defaultMessage: 'TR_SEND_GAS_LIMIT_TOOLTIP',
+    },
+    TR_SEND_GAS_PRICE_TOOLTIP: {
+        id: 'TR_SEND_GAS_PRICE_TOOLTIP',
+        defaultMessage: 'TR_SEND_GAS_PRICE_TOOLTIP',
+    },
+    TR_XRP_DESTINATION_TAG_TOOLTIP: {
+        id: 'TR_XRP_DESTINATION_TAG_TOOLTIP',
+        defaultMessage: 'TR_XRP_DESTINATION_TAG_TOOLTIP',
+    },
+    TR_SEND_FEE_TOOLTIP: {
+        id: 'TR_SEND_FEE_TOOLTIP',
+        defaultMessage: 'TR_SEND_FEE_TOOLTIP',
+    },
+    TR_SEND_AMOUNT_TOOLTIP: {
+        id: 'TR_SEND_AMOUNT_TOOLTIP',
+        defaultMessage: 'TR_SEND_AMOUNT_TOOLTIP',
+    },
 });
 
 export default definedMessages;

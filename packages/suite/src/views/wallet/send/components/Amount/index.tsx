@@ -106,7 +106,10 @@ export default ({ fiat, sendFormActions, intl, output, selectedAccount }: Props)
                     topLabel={
                         <Label>
                             {intl.formatMessage(messages.TR_AMOUNT)}
-                            <Tooltip placement="top" content="Tooltip gas limit">
+                            <Tooltip
+                                placement="top"
+                                content={<Translation {...messages.TR_SEND_AMOUNT_TOOLTIP} />}
+                            >
                                 <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
                             </Tooltip>
                         </Label>

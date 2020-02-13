@@ -42,7 +42,10 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
             topLabel={
                 <Label>
                     Data
-                    <Tooltip placement="top" content="Tooltip data">
+                    <Tooltip
+                        placement="top"
+                        content={<Translation {...messages.TR_SEND_DATA_TOOLTIP} />}
+                    >
                         <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
                     </Tooltip>
                 </Label>

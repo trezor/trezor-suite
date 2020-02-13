@@ -138,7 +138,10 @@ const FeeComponent = ({ sendFormActions, send, account, settings, fiat }: Props)
                 <Top>
                     <Label>
                         <Translation {...messages.TR_FEE} />
-                        <Tooltip placement="top" content="Tooltip fee">
+                        <Tooltip
+                            placement="top"
+                            content={<Translation {...messages.TR_SEND_FEE_TOOLTIP} />}
+                        >
                             <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
                         </Tooltip>
                     </Label>
