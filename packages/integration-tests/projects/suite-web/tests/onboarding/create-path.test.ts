@@ -38,11 +38,12 @@ describe('Onboarding happy paths', () => {
 
         cy.passThroughBackup();
 
-        // todo: PIN has problem in CI, need help
-        // cy.getTestElement('@onboarding/set-pin-button').click();
-        // cy.task('sendDecision');
-        // cy.task('inputEmu', '1');
-        // cy.task('inputEmu', '1');
-        // cy.getTestElement('@onboarding/pin/continue-button').click();
+        cy.getTestElement('@onboarding/set-pin-button').click();
+        cy.getTestElement('@suite/modal/confirm-action-on-device');
+        cy.task('sendDecision');
+        cy.task('inputEmu', '1');
+        cy.task('inputEmu', '1');
+        cy.getTestElement('@onboarding/pin/continue-button').click();
+        cy.getTestElement('@onboarding/final');
     });
 });
