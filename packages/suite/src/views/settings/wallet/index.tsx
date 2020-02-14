@@ -11,6 +11,7 @@ import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { Network, ExternalNetwork } from '@wallet-types';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { SectionHeader, Section, ActionColumn, Row } from '@suite-components/Settings';
+import { getPrettyUrl } from '@suite-utils/url';
 
 const mapStateToProps = (state: AppState) => ({
     wallet: state.wallet,
@@ -172,17 +173,6 @@ const Settings = (props: Props) => {
 
     const testnetNetworksFilterFn = (n: Network) => {
         return !n.accountType && 'testnet' in n && n.testnet === true;
-    };
-
-    const getPrettyUrl = (url: string) => {
-        let pretty = url;
-        pretty = pretty.replace('https://', '');
-        console.log(pretty);
-        const slash = pretty.indexOf('/');
-        if (slash) {
-            pretty = pretty.substr(0, slash);
-        }
-        return pretty;
     };
 
     return (
