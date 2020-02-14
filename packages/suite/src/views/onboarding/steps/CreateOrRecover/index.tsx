@@ -31,7 +31,7 @@ const CreateOrRecoverStep = (props: Props) => {
                         imgSrc="images/onboarding/create-new.svg"
                     />
                     <Option
-                        data-test="@onboarding/button-path-recovery"
+                        data-test="@onboarding/path-recovery-button"
                         action={() => {
                             props.addPath(STEP.PATH_RECOVERY);
                             props.goToNextStep();

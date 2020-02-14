@@ -179,6 +179,7 @@ def select_num_of_words(num_of_words=12):
     client.close()
 
 # todo: work in progress
+# todo: with new firmware I might send needs_backup false
 def backup_device():
     transport = get_bridge_device()
     print(transport)
@@ -191,6 +192,9 @@ def backup_device():
     # read_and_confirm_mnemonic()
 
 # todo: work in progress
+# enter pin not possible for T2, it is lock, for T1 it is possible
+# change pin possible, use input(word=pin-string)
+# 
 def enter_pin(pin):
     transport = get_bridge_device()
     print(transport)
@@ -198,15 +202,9 @@ def enter_pin(pin):
 
     client.open()
     time.sleep(0.6)  # trezord needs time to populate changes
-    # pin = client.read_pin()
-    pin_encoded = client.encode_pin("1234")
-    time.sleep(1)
-
-    ret = client.call_raw(proto.PinMatrixAck(pin=pin_encoded))
+    client.input(pin)
     print(ret)
     time.sleep(1)
-    print('pin')
-    print(pin)
     client.close()
 
 def set_passphrase_source(passphrase_source):

@@ -12,9 +12,9 @@ describe('Recovery path', () => {
         cy.visit('/');
         cy.goToOnboarding();
         cy.onboardingShouldLoad();
-        cy.getTestElement('@onboarding/button-begin').click();
-        cy.getTestElement('@onboarding/button-path-recovery').click();
-        cy.getTestElement('@onboarding/button-used-path').click();
+        cy.getTestElement('@onboarding/begin-button').click();
+        cy.getTestElement('@onboarding/path-recovery-button').click();
+        cy.getTestElement('@onboarding/path-used-button').click();
         cy.getTestElement('@onboarding/pair-device-step').click();
 
         cy.task('startEmu');
