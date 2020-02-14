@@ -28,15 +28,15 @@ components-storybook-v2 deploy dev:
   tags:
     - deploy
 
-components-storybook-v2 test snapshots:
-  stage: integration testing
-  script:
-    - npx cypress install
-    - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook-v2/${CI_BUILD_REF_NAME} yarn workspace @trezor/integration-tests test:components-storybook-v2
-  artifacts:
-    expire_in: 7 days
-    when: always
-    paths:
-      - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/components-storybook-v2/snapshots
-      - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/components-storybook-v2/screenshots
-  dependencies: []
+# components-storybook-v2 test snapshots:
+#   stage: integration testing
+#   script:
+#     - npx cypress install
+#     - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook-v2/${CI_BUILD_REF_NAME} yarn workspace @trezor/integration-tests test:components-storybook-v2
+#   artifacts:
+#     expire_in: 7 days
+#     when: always
+#     paths:
+#       - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/components-storybook-v2/snapshots
+#       - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/components-storybook-v2/screenshots
+#   dependencies: []
