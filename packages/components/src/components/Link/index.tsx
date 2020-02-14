@@ -12,7 +12,7 @@ const P_SIZES = {
 };
 
 const A = styled.a<Props>`
-    font-size: ${props => props.size ? P_SIZES[props.size] : 'inherit'};
+    font-size: ${props => (props.size ? P_SIZES[props.size] : 'inherit')};
     text-decoration: none;
     cursor: pointer;
     color: ${colors.GREENER};
