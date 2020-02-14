@@ -272,6 +272,7 @@ const Settings = ({
                         />
                         <ActionColumn>
                             <ActionInput
+                                variant="small"
                                 value={label}
                                 onChange={(event: React.FormEvent<HTMLInputElement>) =>
                                     setLabel(event.currentTarget.value)
