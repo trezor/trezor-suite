@@ -48,6 +48,9 @@ export type UserContextPayload =
       }
     | {
           type: 'log';
+      }
+    | {
+          type: 'pin-mismatch';
       };
 
 export type ModalActions =
@@ -71,6 +74,10 @@ export const onCancel = (): Action => ({
  */
 export const onPinSubmit = (payload: string) => () => {
     TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload });
+};
+
+export const onPinCancel = () => {
+    TrezorConnect.cancel('pin-cancelled');
 };
 
 /**

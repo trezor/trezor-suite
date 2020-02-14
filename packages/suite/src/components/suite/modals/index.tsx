@@ -13,6 +13,7 @@ import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
 
 import Pin from './Pin';
 import PinInvalid from './PinInvalid';
+import PinMismatch from './PinMismatch';
 import Passphrase from './Passphrase';
 import PassphraseSource from './PassphraseSource';
 import PassphraseOnDevice from './PassphraseOnDevice';
@@ -53,7 +54,7 @@ const getDeviceContextModal = (props: Props) => {
     switch (modal.windowType) {
         // T1 firmware
         case UI.REQUEST_PIN:
-            return <Pin device={device} />;
+            return <Pin device={device} onCancel={modalActions.onPinCancel} />;
         // T1 firmware
         case UI.INVALID_PIN:
             return <PinInvalid device={device} />;
@@ -153,6 +154,8 @@ const getUserContextModal = (props: Props) => {
             return <PassphraseDuplicate device={payload.device} duplicate={payload.duplicate} />;
         case 'review-transaction':
             return <ReviewTransaction />;
+        case 'pin-mismatch':
+            return <PinMismatch onCancel={modalActions.onCancel} />;
         default:
             return null;
     }
