@@ -115,6 +115,9 @@ def decision():
     client.press_yes()
     client.close()
 
+# enter recovery word or pin
+# enter pin not possible for T2, it is lock, for T1 it is possible
+# change pin possible, use input(word=pin-string)
 def input(word):
     transport = get_bridge_device()
     print(transport)
@@ -178,34 +181,6 @@ def select_num_of_words(num_of_words=12):
     client.input(str(num_of_words))
     client.close()
 
-# todo: work in progress
-# todo: with new firmware I might send needs_backup false
-def backup_device():
-    transport = get_bridge_device()
-    print(transport)
-    client = TrezorClientDebugLink(transport)
-    client.open()
-    time.sleep(0.6)
-    # todo: backup is blocking here, need to find out how to return "promise"
-    device.backup(client)
-    client.close()
-    # read_and_confirm_mnemonic()
-
-# todo: work in progress
-# enter pin not possible for T2, it is lock, for T1 it is possible
-# change pin possible, use input(word=pin-string)
-# 
-def enter_pin(pin):
-    transport = get_bridge_device()
-    print(transport)
-    client = DebugLink(transport.find_debug())
-
-    client.open()
-    time.sleep(0.6)  # trezord needs time to populate changes
-    client.input(pin)
-    print(ret)
-    time.sleep(1)
-    client.close()
 
 def set_passphrase_source(passphrase_source):
     transport = get_bridge_device()
