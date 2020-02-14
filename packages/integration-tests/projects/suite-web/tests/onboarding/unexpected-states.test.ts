@@ -53,5 +53,5 @@ describe('Onboarding unexpected states', () => {
         cy.getTestElement('@onboarding/unexpected-state/use-it-anyway-button').click();
         // just check that we got rid of overlay
         cy.getTestElement('@onboarding/option-model-t-path').should('be.visible');
-    })
+    });
 });
