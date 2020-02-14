@@ -16,7 +16,7 @@ type Props = ReturnType<typeof mapDispatchToProps>;
 const IsSameDevice = ({ actionAlt }: Props) => (
     <>
         <Text>
-            <Translation>{messages.TR_DEVICE_YOU_RECONNECTED_IS_DIFFERENT}></Translation>
+            <Translation {...messages.TR_DEVICE_YOU_RECONNECTED_IS_DIFFERENT} />
         </Text>
         <Text>--- or ---</Text>
         <Wrapper.Controls>
