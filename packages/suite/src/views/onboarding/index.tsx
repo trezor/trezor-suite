@@ -27,17 +27,16 @@ import SetPinStep from '@onboarding-views/steps/Pin/Container';
 import FinalStep from '@onboarding-views/steps/Final/Container';
 import { UnexpectedState } from '@onboarding-components';
 import { ProgressBar } from '@suite-components';
+import ModalWrapper from '@suite-components/ModalWrapper';
 import { AppState, Dispatch, InjectedModalApplicationProps } from '@suite-types';
 
-const Wrapper = styled.div`
+const Wrapper = styled(ModalWrapper)`
     display: flex;
     flex: 1;
     flex-direction: column;
-    width: 100%;
     overflow-x: hidden;
-    padding-left: 40px;
-    padding-right: 40px;
-    max-width: 700px; /* neat boxed view */
+    height: 90vh;
+    max-width: 90vw;
 
     @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
         width: calc(55vw + 150px);
@@ -51,7 +50,8 @@ const ComponentWrapper = styled.div`
     display: flex;
     justify-content: center;
     /* min-height: 65vh; */
-    min-height: 100%;
+    /* min-height: 100%; */
+    overflow-y: auto;
 `;
 
 // used to position modal to center

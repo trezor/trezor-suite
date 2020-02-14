@@ -33,7 +33,7 @@ export const applySettings = (params: ApplySettingsParams) => async (
     }
 };
 
-export const changePin = (params: ChangePinParams) => async (
+export const changePin = (params: ChangePinParams = {}) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -45,7 +45,7 @@ export const changePin = (params: ChangePinParams) => async (
         },
         ...params,
     });
-
+    console.log('result', result);
     if (result.success) {
         dispatch(addNotification({ type: 'pin-changed' }));
     } else {

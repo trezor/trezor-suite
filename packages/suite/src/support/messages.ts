@@ -833,12 +833,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Firmware version',
         id: 'TR_FIRMWARE_VERSION',
     },
-    TR_FIRST_PIN_ENTERED: {
-        defaultMessage:
-            'Good. You entered a new pin. But to make sure you did not make mistake, please enter it again. Look at your device now, numbers are now different.',
-        description: 'Text describing what happens after user enters PIN for the first time.',
-        id: 'TR_FIRST_PIN_ENTERED',
-    },
     TR_FIRST_SEEN: {
         defaultMessage: 'First Seen',
         id: 'TR_FIRST_SEEN',
