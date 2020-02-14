@@ -552,22 +552,6 @@ const definedMessages = defineMessages({
         description: 'Display firmware of device',
         id: 'TR_DEVICE_FIRMWARE_VERSION',
     },
-    TR_DEVICE_IS_USED_IN_OTHER_WINDOW_BUTTON: {
-        defaultMessage: 'Continue',
-        description: '',
-        id: 'TR_DEVICE_IS_USED_IN_OTHER_WINDOW_BUTTON',
-    },
-    TR_DEVICE_IS_USED_IN_OTHER_WINDOW_HEADING: {
-        defaultMessage: 'Device is used in other window',
-        description: '',
-        id: 'TR_DEVICE_IS_USED_IN_OTHER_WINDOW_HEADING',
-    },
-    TR_DEVICE_IS_USED_IN_OTHER_WINDOW_TEXT: {
-        defaultMessage:
-            'This is a big no no. Please dont use device in other window. Close all other windows or tabs that might be using your Trezor device.',
-        description: '',
-        id: 'TR_DEVICE_IS_USED_IN_OTHER_WINDOW_TEXT',
-    },
     TR_DEVICE_LABEL: {
         defaultMessage: 'Device label: {label}.',
         description: 'Display label of device',
@@ -735,17 +719,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Enter PIN',
         description: 'Button. Submit PIN',
         id: 'TR_ENTER_PIN',
-    },
-    TR_ENTER_PIN_HEADING: {
-        defaultMessage: 'Enter PIN',
-        description: '',
-        id: 'TR_ENTER_PIN_HEADING',
-    },
-    TR_ENTER_PIN_TEXT: {
-        defaultMessage:
-            'Your device gets locked anytime you disconnect it. You now need to enter your PIN to continue.',
-        description: '',
-        id: 'TR_ENTER_PIN_TEXT',
     },
     TR_ENTER_SEED_WORDS_INSTRUCTION: {
         defaultMessage: 'Enter words from your seed in order displayed on your device.',
