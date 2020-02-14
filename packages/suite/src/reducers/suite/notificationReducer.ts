@@ -31,6 +31,7 @@ export type NotificationPayload =
       }
     | {
           type:
+              | 'log-copied'
               | 'settings-applied'
               | 'pin-changed'
               | 'device-wiped'

@@ -2036,6 +2036,10 @@ const definedMessages = defineMessages({
         id: 'TR_PIN_MISMATCH_TEXT',
         defaultMessage: 'Pin mismatch text',
     },
+    TR_SHOW_LOG: {
+        id: 'TR_SHOW_LOG',
+        defaultMessage: 'Show log',
+    },
 });
 
 export default definedMessages;

@@ -10,41 +10,19 @@ export interface LogEntry {
 }
 
 export interface State {
-    opened: boolean;
     entries: LogEntry[];
-    copied: boolean;
 }
 
 export const initialState: State = {
-    opened: false,
     entries: [],
-    copied: false,
 };
 
 export default (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
-            case LOG.OPEN:
-                draft.opened = true;
-                break;
-
             case LOG.ADD:
                 draft.entries = state.entries.concat([action.payload]);
                 break;
-
-            case LOG.CLOSE:
-                draft.copied = false;
-                draft.opened = false;
-                break;
-
-            case LOG.COPY_SUCCESS:
-                draft.copied = true;
-                break;
-
-            case LOG.COPY_RESET:
-                draft.copied = false;
-                break;
-
             // no default
         }
     });

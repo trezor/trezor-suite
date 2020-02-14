@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 
 import { H2, Icon, colors, variables } from '@trezor/components-v2';
 import * as routerActions from '@suite-actions/routerActions';
+import * as modalActions from '@suite-actions/modalActions';
 import { AppState, Dispatch } from '@suite-types';
 import { IconType } from '@trezor/components-v2/lib/support/types';
 import { Translation } from '@suite-components/Translation';
@@ -16,6 +17,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
+    openModal: bindActionCreators(modalActions.openModal, dispatch),
 });
 
 type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
@@ -112,18 +114,7 @@ const ITEMS = [
     },
 ] as const;
 
-const BOTTOM_ITEMS = [
-    {
-        label: <Translation {...messages.TR_SUPPORT} />,
-        icon: 'SUPPORT',
-    },
-    {
-        label: 'Show log',
-        icon: 'LOG',
-    },
-] as const;
-
-const SettignsMenu = ({ goto, router }: Props) => {
+const SettignsMenu = ({ goto, router, openModal }: Props) => {
     return (
         <ContentWrapper>
             <Heading>
@@ -146,10 +137,12 @@ const SettignsMenu = ({ goto, router }: Props) => {
 
             <Bottom>
                 <Items>
-                    {BOTTOM_ITEMS.map((item, i) => (
-                        // eslint-disable-next-line react/no-array-index-key
-                        <Item key={i} {...item} />
-                    ))}
+                    <Item icon="SUPPORT" label={<Translation {...messages.TR_SUPPORT} />} />
+                    <Item
+                        icon="LOG"
+                        onClick={() => openModal({ type: 'log' })}
+                        label={<Translation {...messages.TR_SHOW_LOG} />}
+                    />
                 </Items>
             </Bottom>
         </ContentWrapper>
