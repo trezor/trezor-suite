@@ -54,7 +54,7 @@ const Log = (props: Props) => {
                 <Translation {...messages.TR_ATTENTION_COLON_THE_LOG_CONTAINS} />
             </StyledParagraph>
             <LogWrapper>{JSON.stringify(props.log.entries)}</LogWrapper>
-            <ButtonCopy onClick={() => props.copyToClipboard()}>
+            <ButtonCopy onClick={() => props.copyToClipboard()} data-test="@log/copy-button">
                 <Translation {...messages.TR_COPY_TO_CLIPBOARD} />
             </ButtonCopy>
         </Wrapper>

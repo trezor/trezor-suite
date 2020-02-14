@@ -16,7 +16,7 @@ describe('Device settings', () => {
         cy.dashboardShouldLoad();
         cy.getTestElement('@suite/menu/settings')
             .click({ force: true })
-            .getTestElement('@suite/settings/menu/device')
+            .getTestElement('@ssettings/menu/device')
             .click({ force: true });
         // a little antipattern but perfection is the enemy of good.
         // there is a problem with device call in progress (from discovery)

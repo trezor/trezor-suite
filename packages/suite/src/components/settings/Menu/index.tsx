@@ -78,16 +78,12 @@ interface ItemProps {
     label: React.ReactNode;
     icon: IconType;
     onClick?: () => void;
-    dataTest?: string;
     isActive?: boolean;
+    ['data-test']: string;
 }
 
-const Item = ({ label, icon, onClick, dataTest, isActive }: ItemProps) => (
-    <ItemWrapper
-        onClick={onClick}
-        data-test={`@suite/settings/menu/${dataTest}`}
-        isActive={isActive}
-    >
+const Item = ({ label, icon, onClick, isActive, ...props }: ItemProps) => (
+    <ItemWrapper onClick={onClick} data-test={props['data-test']} isActive={isActive}>
         <StyledIcon color={isActive ? ACTIVE_TEXT_COLOR : TEXT_COLOR} icon={icon} size={18} />
         {label}
     </ItemWrapper>
@@ -96,19 +92,19 @@ const Item = ({ label, icon, onClick, dataTest, isActive }: ItemProps) => (
 const ITEMS = [
     {
         label: <Translation {...messages.TR_GENERAL} />,
-        dataTest: 'general',
+        'data-test': '@settings/menu/general',
         icon: 'SETTINGS',
         route: 'settings-index',
     },
     {
         label: <Translation {...messages.TR_DEVICE} />,
-        dataTest: 'device',
+        'data-test': '@settings/menu/device',
         icon: 'TREZOR',
         route: 'settings-device',
     },
     {
         label: <Translation {...messages.TR_WALLET} />,
-        dataTest: 'wallet',
+        'data-test': '@settings/menu/wallet',
         icon: 'WALLET',
         route: 'settings-wallet',
     },
@@ -137,8 +133,13 @@ const SettignsMenu = ({ goto, router, openModal }: Props) => {
 
             <Bottom>
                 <Items>
-                    <Item icon="SUPPORT" label={<Translation {...messages.TR_SUPPORT} />} />
                     <Item
+                        data-test="@settings/menu/support"
+                        icon="SUPPORT"
+                        label={<Translation {...messages.TR_SUPPORT} />}
+                    />
+                    <Item
+                        data-test="@settings/menu/log"
                         icon="LOG"
                         onClick={() => openModal({ type: 'log' })}
                         label={<Translation {...messages.TR_SHOW_LOG} />}
