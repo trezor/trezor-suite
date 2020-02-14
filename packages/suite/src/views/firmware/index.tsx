@@ -13,6 +13,7 @@ import { ProgressBar } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import { InitImg, SuccessImg } from '@firmware-components';
 import { Loaders } from '@onboarding-components';
+
 import { CHANGELOG_URL } from '@suite-constants/urls';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;
@@ -22,6 +23,7 @@ const Wrapper = styled(ModalWrapper)`
     min-width: 60vw;
     max-width: 80vw;
     flex-direction: column;
+    align-items: center;
 `;
 
 const Row = styled.div`
@@ -94,6 +96,7 @@ const StyledP = styled(P)`
     color: ${colors.BLACK50};
     font-size: ${FONT_SIZE.SMALL};
     margin: 20px 0;
+    max-width: 500px;
 `;
 
 const WhatsNewLink = styled(Link)`
@@ -112,12 +115,7 @@ const UniSuccessImg = () => (
 );
 
 const CloseButton = (props: ButtonProps) => (
-    <StyledButton
-        {...props}
-        data-test="@modal/firmware/exit-button"
-        variant="tertiary"
-        icon="CROSS"
-    >
+    <StyledButton {...props} data-test="@firmware/close-button" variant="tertiary" icon="CROSS">
         Exit
     </StyledButton>
 );
@@ -189,11 +187,10 @@ const Firmware = ({
             <Wrapper>
                 <H2>Holy guacamole! We got an error!</H2>
                 <StyledP>{firmware.error}</StyledP>
+                <img src={resolveStaticPath('images/suite/uni-error.svg')} alt="" />
                 <Buttons>
                     <Col>
-                        <StyledButton onClick={onClose} data-test="@modal/firmware/exit-button">
-                            Exit
-                        </StyledButton>
+                        <CloseButton />
                     </Col>
                 </Buttons>
             </Wrapper>
@@ -207,8 +204,10 @@ const Firmware = ({
                     <>
                         <ProgressBar total={statesInProgessBar.length} current={getCurrentStep()} />
                         <H2>Reconnect your device in bootloader mode</H2>
-                        <StyledP>Ok, now disconnect your device</StyledP>
-                        <InitImg />
+                        <StyledP data-test="@firmware/connect-message">
+                            swipe your finger accross the touchscreen while connecting cable
+                        </StyledP>
+                        <InitImg model={2} />
                     </>
                 )}
                 {firmware.status !== 'waiting-for-bootloader' && (
@@ -226,6 +225,8 @@ const Firmware = ({
         );
     }
 
+    const model = device.features.major_version;
+
     if (!device.firmwareRelease) {
         return (
             <Wrapper>
@@ -240,9 +241,7 @@ const Firmware = ({
                 <UniSuccessImg />
                 <Buttons>
                     <Col>
-                        <StyledButton onClick={onClose} data-test="@modal/firmware/exit-button">
-                            Exit
-                        </StyledButton>
+                        <CloseButton />
                     </Col>
                 </Buttons>
             </Wrapper>
@@ -267,9 +266,7 @@ const Firmware = ({
                                 continue.
                             </StyledP>
                             <Buttons>
-                                <Col>
-                                    <CloseButton onClick={onClose} />
-                                </Col>
+                                <CloseButton onClick={onClose} />
                             </Buttons>
                         </>
                     )}
@@ -296,7 +293,7 @@ const Firmware = ({
                                 <Col>
                                     <StyledButton
                                         onClick={() => setStatus('check-seed')}
-                                        data-test="@modal/firmware/start-button"
+                                        data-test="@firmware/start-button"
                                     >
                                         Start
                                     </StyledButton>
@@ -324,7 +321,7 @@ const Firmware = ({
                         <Col>
                             <StyledButton
                                 onClick={() => setStatus('waiting-for-bootloader')}
-                                data-test="@modal/firmware/start-button"
+                                data-test="@firmware/confirm-seed-button"
                             >
                                 Start
                             </StyledButton>
@@ -339,26 +336,27 @@ const Firmware = ({
                     {device && device.mode !== 'bootloader' && (
                         <>
                             <H2>Connect your device in bootloader mode</H2>
-                            <StyledP>
-                                swipe your finger accross the touchscreen while connecting cable
+                            <StyledP data-test="@firmware/disconnect-message">
+                                Ok, now disconnect your device
                             </StyledP>
+
                             <img
                                 alt=""
                                 src={resolveStaticPath('images/suite/connect-device.svg')}
                             />
+                            <Buttons>
+                                <CloseButton onClick={onClose} />
+                            </Buttons>
                         </>
                     )}
                     {device && device.mode === 'bootloader' && (
                         <>
                             <H2>Let's unleash the kraken</H2>
-                            <InitImg />
+                            <InitImg model={model} />
 
                             <Buttons>
                                 <Col>
-                                    <StyledButton
-                                        onClick={() => firmwareUpdate()}
-                                        data-test="@modal/firmware/start-button"
-                                    >
+                                    <StyledButton onClick={() => firmwareUpdate()}>
                                         Start
                                     </StyledButton>
                                     <CloseButton onClick={onClose} />
@@ -377,6 +375,7 @@ const Firmware = ({
                         {getTextForStatus()}
                         <Loaders.Dots />
                     </H2>
+                    <InitImg model={model} />
                 </>
             )}
 
@@ -384,7 +383,7 @@ const Firmware = ({
                 <>
                     <H2>Firmware partially upgraded</H2>
                     <StyledP>But there is still another upgrade ahead!</StyledP>
-                    <SuccessImg />
+                    <SuccessImg model={model} />
 
                     <Buttons>
                         <Col>
