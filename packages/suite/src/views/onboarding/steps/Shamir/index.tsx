@@ -6,8 +6,7 @@ import { TOS_URL } from '@suite-constants/urls';
 import { Props } from './Container';
 
 const ShamirStep = (props: Props) => {
-    const { device, onboarding } = props;
-    const { deviceCall } = onboarding;
+    const { device } = props;
 
     // this step expects device
     if (!device || !device.features) {
@@ -40,9 +39,8 @@ const ShamirStep = (props: Props) => {
                         <Option
                             data-test="@onboarding/button-standard-backup"
                             action={() => {
-                                props.setBackupType(0);
                                 props.callActionAndGoToNextStep(
-                                    () => props.resetDevice(),
+                                    () => props.resetDevice({ backupType: 0 }),
                                     STEP.ID_SECURITY_STEP,
                                 );
                             }}
@@ -54,9 +52,8 @@ const ShamirStep = (props: Props) => {
 
                         <Option
                             action={() => {
-                                props.setBackupType(1);
                                 props.callActionAndGoToNextStep(
-                                    () => props.resetDevice(),
+                                    () => props.resetDevice({ backupType: 1 }),
                                     STEP.ID_SECURITY_STEP,
                                 );
                             }}
@@ -70,9 +67,10 @@ const ShamirStep = (props: Props) => {
                 {getModel() === 1 && (
                     <Wrapper.Controls>
                         <OnboardingButton.Cta
+                            // onClick={() => props.resetDevice()}
                             onClick={() =>
                                 props.callActionAndGoToNextStep(
-                                    () => props.resetDevice(),
+                                    props.resetDevice,
                                     STEP.ID_SECURITY_STEP,
                                 )
                             }
@@ -81,7 +79,6 @@ const ShamirStep = (props: Props) => {
                         </OnboardingButton.Cta>
                     </Wrapper.Controls>
                 )}
-                {deviceCall.error && <>Error: {deviceCall.error} </>}
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
                 <OnboardingButton.Back onClick={() => props.goToPreviousStep()}>

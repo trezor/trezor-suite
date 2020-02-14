@@ -7,7 +7,6 @@ import { bindActionCreators } from 'redux';
 import { variables } from '@trezor/components-v2';
 import { AnyStepDisallowedState, Step } from '@onboarding-types/steps';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import * as connectActions from '@onboarding-actions/connectActions';
 import * as STEP from '@onboarding-constants/steps';
 import steps from '@onboarding-config/steps';
 import { getFnForRule } from '@onboarding-utils/rules';
@@ -65,11 +64,6 @@ const ActionModalWrapper = styled.div`
 const mapStateToProps = (state: AppState) => {
     return {
         device: state.suite.device,
-
-        // connect reducer
-        deviceCall: state.onboarding.deviceCall,
-        uiInteraction: state.onboarding.uiInteraction,
-
         // onboarding reducer
         prevDevice: state.onboarding.prevDevice,
         activeStepId: state.onboarding.activeStepId,
@@ -79,7 +73,6 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     onboardingActions: bindActionCreators(onboardingActions, dispatch),
-    connectActions: bindActionCreators(connectActions, dispatch),
 });
 
 type Props = ReturnType<typeof mapStateToProps> &
@@ -87,7 +80,7 @@ type Props = ReturnType<typeof mapStateToProps> &
     InjectedModalApplicationProps;
 
 const Onboarding = (props: Props) => {
-    const { activeStepId, device, uiInteraction, prevDevice, path, modal } = props;
+    const { activeStepId, device, prevDevice, path, modal } = props;
 
     const getStep = () => {
         const lookup = steps.find((step: Step) => step.id === activeStepId);
@@ -106,7 +99,7 @@ const Onboarding = (props: Props) => {
 
         return activeStep.disallowedDeviceStates.find((state: AnyStepDisallowedState) => {
             const fn = getFnForRule(state);
-            return fn({ device, prevDevice, path, uiInteraction });
+            return fn({ device, prevDevice, path });
         });
     };
 
@@ -173,7 +166,6 @@ const Onboarding = (props: Props) => {
                                 prevDevice.features.major_version) ||
                             2
                         }
-                        uiInteraction={uiInteraction}
                     />
                 )}
                 {!errorState && modal && (
