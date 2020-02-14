@@ -69,6 +69,9 @@ def message_received(client, server, message):
         # elif cmdType == "emulator-enter-pin":
         #     emulator.enter_pin(cmd['pin'])
         #     response = {"success": True}
+        elif cmdType == "select-num-of-words":
+            emulator.select_num_of_words(cmd['num'])
+            response = {"success": True}
         elif cmdType == "emulator-swipe":
             emulator.swipe(cmd["direction"])
             response = {"success": True}

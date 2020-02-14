@@ -154,5 +154,11 @@ module.exports = on => {
         //     await controller.disconnect();
         //     return null;
         // },
+        selectNumOfWordsEmu: async num => {
+            await controller.connect();
+            await controller.send({ type: 'select-num-of-words', num });
+            await controller.disconnect();
+            return null;
+        },
     });
 };
