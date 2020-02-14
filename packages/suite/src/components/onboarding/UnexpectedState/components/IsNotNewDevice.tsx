@@ -1,7 +1,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from '@trezor/components-v2';
+import { Link, H2 } from '@trezor/components-v2';
 
 import { Translation } from '@suite-components';
 import { SUPPORT_URL } from '@suite-constants/urls';
@@ -30,6 +30,7 @@ const IsNotNewDevice = ({ actionAlt, closeModalApp, device }: Props) => {
 
     return (
         <>
+            <H2>Device does not appear to be that new...</H2>
             <Text>
                 <Translation>{messages.TR_IS_NOT_NEW_DEVICE}</Translation>
             </Text>
