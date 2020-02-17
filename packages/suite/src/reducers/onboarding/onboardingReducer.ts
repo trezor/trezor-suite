@@ -2,16 +2,10 @@ import produce from 'immer';
 import { DEVICE, Device } from 'trezor-connect';
 
 import { ONBOARDING } from '@onboarding-actions/constants';
-// import * as SUITE from '@suite-actions/constants/suiteConstants';
 import * as STEP from '@onboarding-constants/steps';
 import steps from '@onboarding-config/steps';
 import { Action } from '@suite-types';
 import { AnyStepId, AnyPath } from '@onboarding-types/steps';
-
-// export interface UiInteraction {
-//     name: undefined | string;
-//     counter: undefined | number;
-// }
 
 export interface OnboardingState {
     reducerEnabled: boolean;
@@ -20,13 +14,6 @@ export interface OnboardingState {
     activeStepId: AnyStepId;
     activeSubStep: string | null;
     path: AnyPath[];
-    // deviceCall: {
-    //     name: null | string; // todo: better, make type AnyDeviceCall
-    //     isProgress: boolean;
-    //     error: null | string;
-    //     result: null | Record<string, any>;
-    // };
-    // uiInteraction: UiInteraction;
     backupType: number;
 }
 
@@ -41,18 +28,6 @@ const initialState: OnboardingState = {
     activeStepId: STEP.ID_WELCOME_STEP,
     activeSubStep: null,
     path: [],
-
-    // deviceCall: {
-    //     name: null,
-    //     isProgress: false,
-    //     error: null,
-    //     result: null,
-    // },
-    // uiInteraction: {
-    //     name: undefined,
-    //     counter: undefined,
-    // },
-
     // shamir or standard. we need to have this field in reducer for the case
     // when backup fails and user wants to retry it.
     backupType: 0,
@@ -81,13 +56,6 @@ const setPrevDevice = (state: OnboardingState, device: Device) => {
     return device;
 };
 
-// const updatePrevDevice = (draft: OnboardingState, device: Device) => {
-//     wipeDevice call changes id
-//     if (draft.deviceCall.name === CALLS.WIPE_DEVICE && !draft.deviceCall.error) {
-//         draft.prevDevice = device;
-//     }
-// };
-
 const addPath = (path: AnyPath, state: OnboardingState) => {
     if (!state.path.includes(path)) {
         return [...state.path, path];
@@ -98,27 +66,6 @@ const addPath = (path: AnyPath, state: OnboardingState) => {
 const removePath = (paths: AnyPath[], state: OnboardingState) => {
     return state.path.filter(p => !paths.includes(p));
 };
-
-// const setInteraction = (
-//     currentInteraction: OnboardingState['uiInteraction'],
-//     newInteraction: string,
-// ) => {
-//     if (
-//         typeof currentInteraction.name === 'undefined' ||
-//         currentInteraction.name === newInteraction
-//     ) {
-//         const nextCounter =
-//             typeof currentInteraction.counter === 'number' ? currentInteraction.counter + 1 : 0;
-//         return {
-//             name: newInteraction,
-//             counter: nextCounter,
-//         };
-//     }
-//     return {
-//         name: newInteraction,
-//         counter: 0,
-//     };
-// };
 
 const onboarding = (state: OnboardingState = initialState, action: Action) => {
     if (
@@ -154,60 +101,7 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
                 break;
             case DEVICE.DISCONNECT:
                 draft.prevDevice = setPrevDevice(state, action.payload);
-                // draft.uiInteraction = initialState.uiInteraction;
                 break;
-            // case ONBOARDING.DEVICE_CALL_RESET:
-            //     draft.deviceCall = {
-            //         name: null,
-            //         isProgress: false,
-            //         error: null,
-            //         result: null,
-            //     };
-            //     draft.uiInteraction = initialState.uiInteraction;
-            //     break;
-            // case ONBOARDING.DEVICE_CALL_START:
-            //     draft.deviceCall = {
-            //         ...state.deviceCall,
-            //         name: action.name,
-            //         isProgress: true,
-            //     };
-            //     break;
-            // case ONBOARDING.DEVICE_CALL_SUCCESS:
-            //     draft.deviceCall = {
-            //         ...state.deviceCall,
-            //         isProgress: false,
-            //         error: null,
-            //         result: action.result,
-            //     };
-            //     draft.uiInteraction = initialState.uiInteraction;
-            //     break;
-            // case ONBOARDING.DEVICE_CALL_ERROR:
-            //     draft.deviceCall = {
-            //         ...state.deviceCall,
-            //         name: action.name,
-            //         isProgress: false,
-            //         error: action.error,
-            //         result: null,
-            //     };
-            //     break;
-            // case UI.REQUEST_BUTTON:
-            //     draft.uiInteraction = setInteraction(state.uiInteraction, action.payload.code);
-            //     break;
-            // case UI.REQUEST_WORD:
-            //     draft.uiInteraction = setInteraction(
-            //         state.uiInteraction,
-            //         // todo: maybe fix type in connect, it should be always string imho.
-            //         action.payload.type as string,
-            //     );
-            //     break;
-            // case UI.REQUEST_PIN:
-            //     draft.uiInteraction = setInteraction(state.uiInteraction, action.type);
-            //     break;
-
-            // case SUITE.UPDATE_SELECTED_DEVICE:
-            //     updatePrevDevice(draft, action.payload);
-            //     break;
-
             case ONBOARDING.RESET_ONBOARDING:
                 return initialState;
             //  no default

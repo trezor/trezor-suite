@@ -131,6 +131,7 @@ const enableOnboardingReducer = (payload: boolean): Action => ({
     payload,
 });
 
+// todo: decide if we want this. product!
 const retryBackup = () => async (dispatch: Dispatch) => {
     await dispatch(deviceSettingsActions.wipeDevice());
     await dispatch(deviceSettingsActions.resetDevice());

@@ -12,6 +12,7 @@ const DEFAULT_PASSPHRASE_PROTECTION = true;
 const DEFAULT_SKIP_BACKUP = true;
 const DEFAULT_STRENGTH_T1 = 256;
 const DEFAULT_STRENGTH_T2 = 128;
+const DEFAULT_BACKUP_TYPE = 0;
 
 export const applySettings = (params: ApplySettingsParams) => async (
     dispatch: Dispatch,
@@ -45,7 +46,6 @@ export const changePin = (params: ChangePinParams = {}) => async (
         },
         ...params,
     });
-    console.log('result', result);
     if (result.success) {
         dispatch(addNotification({ type: 'pin-changed' }));
     } else {
@@ -90,7 +90,7 @@ export const resetDevice = (params: ResetDeviceParams = {}) => async (
             label: DEFAULT_LABEL,
             skipBackup: DEFAULT_SKIP_BACKUP,
             passhpraseProtection: DEFAULT_PASSPHRASE_PROTECTION,
-            backupType: 0,
+            backupType: DEFAULT_BACKUP_TYPE,
         };
     } else {
         defaults = {
@@ -98,7 +98,7 @@ export const resetDevice = (params: ResetDeviceParams = {}) => async (
             label: DEFAULT_LABEL,
             skipBackup: DEFAULT_SKIP_BACKUP,
             passhpraseProtection: DEFAULT_PASSPHRASE_PROTECTION,
-            backupType: 0,
+            backupType: DEFAULT_BACKUP_TYPE,
         };
     }
 

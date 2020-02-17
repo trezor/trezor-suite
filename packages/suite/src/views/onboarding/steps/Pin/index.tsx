@@ -63,7 +63,7 @@ const SetPinStep = (props: Props) => {
                             <OnboardingButton.Cta
                                 data-test="@onboarding/set-pin-button"
                                 onClick={() => {
-                                    props.changePin({});
+                                    props.changePin();
                                 }}
                             >
                                 <Translation {...messages.TR_SET_PIN} />
@@ -110,7 +110,7 @@ const SetPinStep = (props: Props) => {
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 onClick={() => {
-                                    props.changePin({});
+                                    props.changePin();
                                 }}
                             >
                                 <Translation {...messages.TR_START_AGAIN} />

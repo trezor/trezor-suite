@@ -67,7 +67,6 @@ const ShamirStep = (props: Props) => {
                 {getModel() === 1 && (
                     <Wrapper.Controls>
                         <OnboardingButton.Cta
-                            // onClick={() => props.resetDevice()}
                             onClick={() =>
                                 props.callActionAndGoToNextStep(
                                     props.resetDevice,
