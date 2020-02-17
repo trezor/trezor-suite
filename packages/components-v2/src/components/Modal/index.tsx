@@ -40,7 +40,7 @@ const StyledLink = styled(Link)`
     position: absolute;
     right: 0;
     top: 0;
-    margin: 10px;
+    margin: 16px;
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${colors.BLACK25};

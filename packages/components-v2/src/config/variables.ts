@@ -6,6 +6,7 @@ import { IconType, CoinType } from '../support/types';
 /* LG - Laptops/Desktops */
 /* XL - Extra Large Laptops/Desktops */
 export const SCREEN_SIZE = {
+    UNAVAILABLE: '360px',
     SM: '576px',
     MD: '768px',
     LG: '992px',

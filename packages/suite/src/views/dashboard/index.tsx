@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import SuiteLayout from '@suite-components/SuiteLayout';
+import SuiteLayout from '@suite-components/SuiteLayout/Container';
 // ConnectionStatusCard
 import { AssetsCard, PortfolioCard, SecurityFeatures, NewsFeed } from '@dashboard-components';
 import AuthConfirmFailed from '@wallet-components/AccountMode/AuthConfirmFailed';

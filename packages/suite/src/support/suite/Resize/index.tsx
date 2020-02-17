@@ -4,9 +4,11 @@ import debounce from 'debounce';
 
 const Resize = (props: Props) => {
     useEffect(() => {
+        props.updateWindowSize(window.innerWidth, window.innerHeight);
+
         const handleResize = debounce(() => {
             props.updateWindowSize(window.innerWidth, window.innerHeight);
-        }, 700);
+        }, 66);
 
         window.addEventListener('resize', handleResize);
 

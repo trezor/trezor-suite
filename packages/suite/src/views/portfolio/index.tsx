@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import SuiteLayout from '@suite-components/SuiteLayout';
+import SuiteLayout from '@suite-components/SuiteLayout/Container';
 
 const Placeholder = styled.div`
     display: flex;

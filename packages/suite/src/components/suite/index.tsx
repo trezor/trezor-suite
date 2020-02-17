@@ -4,8 +4,8 @@ import Link from './Link';
 import Log from './Log';
 import Preloader from './Preloader';
 import FormattedNumber from './FormattedNumber';
-import SuiteLayout from './SuiteLayout';
 import Card from './Card';
+import SuiteLayout from './SuiteLayout/Container';
 import NotificationCard from './NotificationCard';
 import PinInput from './PinInput';
 import NoRatesTooltip from './NoRatesTooltip';
@@ -22,10 +22,10 @@ export {
     Backdrop,
     DeviceIcon,
     Link,
+    SuiteLayout,
     Log,
     Preloader,
     FormattedNumber,
-    SuiteLayout,
     Card,
     NotificationCard,
     PinInput,

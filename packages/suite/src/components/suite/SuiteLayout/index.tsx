@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 import { colors } from '@trezor/components-v2';
+import SmallLayout from './components/SmallLayout';
 import SuiteNotifications from '@suite-components/Notifications';
 import Head from 'next/head';
+import { Props } from './Container';
 import Menu from '@suite-components/Menu/Container';
-import { AppState } from '@suite-types';
 import MenuSecondary from '@suite-components/MenuSecondary';
 import { DiscoveryProgress } from '@wallet-components';
 
@@ -47,30 +47,23 @@ const MaxWithWrapper = styled.div<{ withMenu: boolean }>`
     max-width: ${props => (props.withMenu ? '786px' : '1024px')};
 `;
 
-const mapStateToProps = (state: AppState) => ({
-    suite: state.suite,
-    layoutSize: state.resize.size,
-});
+export default (props: Props) => {
+    if (props.layoutSize === 'UNAVAILABLE') return <SmallLayout />;
+    const showBigMenus = ['MEGA', 'LARGE', 'NORMAL'].includes(props.layoutSize);
 
-type Props = ReturnType<typeof mapStateToProps> & {
-    children?: React.ReactNode;
-    title?: string;
-    secondaryMenu?: React.ReactNode;
-};
-
-const SuiteLayout = (props: Props) => {
     return (
         <PageWrapper>
             <Head>
                 <title>{props.title ? `${props.title} | Trezor Suite` : 'Trezor Suite'}</title>
             </Head>
-            {props.layoutSize !== 'small' && <Menu />}
-
+            {showBigMenus && <Menu />}
             <Body>
                 <DiscoveryProgress />
                 <SuiteNotifications />
                 <Columns>
-                    {props.secondaryMenu && <MenuSecondary>{props.secondaryMenu}</MenuSecondary>}
+                    {props.secondaryMenu && showBigMenus && (
+                        <MenuSecondary>{props.secondaryMenu}</MenuSecondary>
+                    )}
                     <AppWrapper>
                         <MaxWithWrapper withMenu={!!props.secondaryMenu}>
                             {props.children}
@@ -81,5 +74,3 @@ const SuiteLayout = (props: Props) => {
         </PageWrapper>
     );
 };
-
-export default connect(mapStateToProps)(SuiteLayout);
