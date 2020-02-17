@@ -973,6 +973,10 @@ const definedMessages = defineMessages({
             'Instruction what to do when user knows the device he is holding was manipulated by him, not someone else.',
         id: 'TR_INSTRUCTION_TO_SKIP',
     },
+    TR_IS_NOT_NEW_DEVICE_HEADING: {
+        defaultMessage: 'Device does not appear to be that new',
+        id: 'TR_IS_NOT_NEW_DEVICE_HEADING',
+    },
     TR_IS_NOT_NEW_DEVICE: {
         defaultMessage:
             'According to your decision in a previous step, this was supposed to be a fresh device. But we were able to detect already installed firmware on it.',

@@ -30,7 +30,9 @@ const IsNotNewDevice = ({ actionAlt, closeModalApp, device }: Props) => {
 
     return (
         <>
-            <H2>Device does not appear to be that new...</H2>
+            <H2>
+                <Translation>{messages.TR_IS_NOT_NEW_DEVICE_HEADING}</Translation>
+            </H2>
             <Text>
                 <Translation>{messages.TR_IS_NOT_NEW_DEVICE}</Translation>
             </Text>
