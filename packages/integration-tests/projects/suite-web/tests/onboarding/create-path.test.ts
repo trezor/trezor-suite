@@ -8,14 +8,13 @@ describe('Onboarding happy paths', () => {
         cy.viewport(1024, 768).resetDb();
     });
 
-    // todo: not finished up to the last step.
     it(`Create new wallet direct path through onboarding`, () => {
         cy.visit('/');
         cy.goToOnboarding();
         cy.onboardingShouldLoad()
             .getTestElement('@onboarding/begin-button')
             .click()
-            //  add snapshots in distance future when everything is stable
+            //  add snapshots in distant future when everything is stable
             // .matchImageSnapshot()
             .getTestElement('@onboarding/path-create-button')
             .click()
@@ -33,18 +32,18 @@ describe('Onboarding happy paths', () => {
             .click()
             .getTestElement('@onboading/confirm-action-on-device')
             .should('be.visible');
-        cy.task('sendDecision', 'resetDevice');
+        cy.task('sendDecision');
 
         cy.getTestElement('@onboarding/continue-to-security-button').click();
 
         cy.passThroughBackup();
 
-        // cy.getTestElement('@onboarding/set-pin-button').click();
-        // cy.task('sendDecision');
-        // cy.task('enterPinEmu');
-        // cy.getTestElement('@onboarding/skip-button').click();
-        // cy.getTestElement('@onboarding/exit-app-button').click();
+        cy.getTestElement('@onboarding/set-pin-button').click();
+        cy.getTestElement('@suite/modal/confirm-action-on-device');
+        cy.task('sendDecision');
+        cy.task('inputEmu', '1');
+        cy.task('inputEmu', '1');
+        cy.getTestElement('@onboarding/pin/continue-button').click();
+        cy.getTestElement('@onboarding/final');
     });
 });
-
-// todo Recover wallet direct path through onboarding

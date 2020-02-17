@@ -8,7 +8,7 @@ import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Props } from './Container';
 
 const FinalStep = ({ closeModalApp }: Props) => (
-    <Wrapper.Step>
+    <Wrapper.Step data-test="@onboarding/final">
         <Wrapper.StepHeading>
             <Translation>{messages.TR_FINAL_HEADING}</Translation>
         </Wrapper.StepHeading>

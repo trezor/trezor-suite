@@ -55,6 +55,7 @@ const RecoveryStep = (props: Props) => {
                         </Text>
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
+                                data-test="@onboarding/recovery/start-button"
                                 onClick={() => {
                                     recoverDevice();
                                 }}
@@ -97,7 +98,10 @@ const RecoveryStep = (props: Props) => {
                     <>
                         <img src={resolveStaticPath('images/suite/uni-success.svg')} alt="" />
                         <Wrapper.Controls>
-                            <OnboardingButton.Cta onClick={() => goToNextStep()}>
+                            <OnboardingButton.Cta
+                                data-test="@onboarding/recovery/continue-button"
+                                onClick={() => goToNextStep('set-pin')}
+                            >
                                 Continue
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>

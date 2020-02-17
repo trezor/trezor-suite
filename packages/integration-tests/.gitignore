@@ -1,3 +1,4 @@
 screenshots
-projects/suite-web/plugins/python/__pycache__/
 __diff_output__
+__pychace__/
+*.py[cod]

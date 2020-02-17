@@ -123,12 +123,6 @@ module.exports = on => {
             await controller.disconnect();
             return null;
         },
-        enterPinEmu: async pin => {
-            await controller.connect();
-            await controller.send({ type: 'emulator-enter-pin', pin });
-            await controller.disconnect();
-            return null;
-        },
         setPasshpraseSourceEmu: async passhpraseSource => {
             await controller.connect();
             let source;
@@ -148,11 +142,11 @@ module.exports = on => {
             await controller.disconnect();
             return null;
         },
-        // backupDeviceEmu: async () => {
-        //     await controller.connect();
-        //     await controller.send({ type: 'emulator-backup-device' });
-        //     await controller.disconnect();
-        //     return null;
-        // },
+        selectNumOfWordsEmu: async num => {
+            await controller.connect();
+            await controller.send({ type: 'select-num-of-words', num });
+            await controller.disconnect();
+            return null;
+        },
     });
 };
