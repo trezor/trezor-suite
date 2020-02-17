@@ -15,6 +15,7 @@ import ProgressBar from './ProgressBar';
 import ModalWrapper from './ModalWrapper';
 import Loading from './Loading';
 import WebusbButton from './WebusbButton';
+import StrengthIndicator from './StrengthIndicator';
 
 import { Translation } from './Translation';
 
@@ -30,6 +31,7 @@ export {
     NotificationCard,
     PinInput,
     NoRatesTooltip,
+    StrengthIndicator,
     Translation,
     WordInput,
     WordInputAdvanced,

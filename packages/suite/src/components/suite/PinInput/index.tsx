@@ -3,8 +3,9 @@ import styled from 'styled-components';
 import { Button } from '@trezor/components-v2';
 import ButtonPin from './components/ButtonPin';
 import InputPin from './components/InputPin';
-import { Translation } from '@suite-components/Translation';
+import { Translation, StrengthIndicator } from '@suite-components';
 import messages from '@suite/support/messages';
+import { getPinStrengthScore } from '@suite-utils/strengthIndicators';
 
 const Wrapper = styled.div`
     display: flex;
@@ -130,6 +131,7 @@ const PinInput = (props: Props) => {
             <InputWrapper>
                 <InputPin value={pin} onDeleteClick={() => onPinBackspace()} />
             </InputWrapper>
+            <StrengthIndicator score={getPinStrengthScore(pin)} />
             <PinRow>
                 <ButtonPin type="button" data-value="7" onClick={() => onPinAdd('7')} />
                 <ButtonPin type="button" data-value="8" onClick={() => onPinAdd('8')} />

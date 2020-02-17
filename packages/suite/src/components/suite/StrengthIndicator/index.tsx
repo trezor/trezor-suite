@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import zxcvbn from 'zxcvbn';
 import { colors } from '@trezor/components-v2';
 
 interface WrapperProps {
@@ -30,8 +29,7 @@ const Line = styled.div<LineProps>`
     transition: all 0.5s;
 `;
 
-const getColor = (score: 0 | 1 | 2 | 3 | 4, password: string) => {
-    if (password === '') return 'transparent';
+const getColor = (score?: zxcvbn.ZXCVBNResult['score']) => {
     switch (score) {
         case 0:
         case 1:
@@ -47,17 +45,15 @@ const getColor = (score: 0 | 1 | 2 | 3 | 4, password: string) => {
 };
 
 interface Props {
-    password: string;
+    score?: zxcvbn.ZXCVBNResult['score'];
 }
 
-export default ({ password }: Props) => {
-    const passwordInfo = zxcvbn(password);
-    const { score } = passwordInfo;
+export default ({ score }: Props) => {
     return (
         <Wrapper>
             {[...Array(5)].map((_x, i) => (
                 // eslint-disable-next-line react/no-array-index-key
-                <Line key={i} isFilled={i <= score} color={getColor(score, password)} />
+                <Line key={i} isFilled={score ? i <= score : false} color={getColor(score)} />
             ))}
         </Wrapper>
     );
