@@ -15,12 +15,10 @@ interface Props {
     networkType: Network['networkType'];
 }
 
-const AdditionalForm = (props: Props) => (
+export default (props: Props) => (
     <Wrapper>
         {props.networkType === 'bitcoin' && <AdvancedFormBitcoin />}
         {props.networkType === 'ethereum' && <AdvancedFormEthereum />}
         {props.networkType === 'ripple' && <AdvancedFormRipple />}
     </Wrapper>
 );
-
-export default AdditionalForm;

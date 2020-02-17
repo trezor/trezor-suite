@@ -402,9 +402,8 @@ export const handleCustomFeeValueChange = (customFee: string) => (
     Click on button "Advanced settings"
  */
 export const toggleAdditionalFormVisibility = () => (dispatch: Dispatch, getState: GetState) => {
-    const { send } = getState().wallet;
-    const { account } = getState().wallet.selectedAccount;
-    if (!send || !account) return;
+    const { send, selectedAccount } = getState().wallet;
+    if (!send || selectedAccount.status !== 'loaded') return;
 
     dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
     dispatch(commonActions.cache());

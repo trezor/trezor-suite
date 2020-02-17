@@ -23,7 +23,7 @@ const Value = styled.div`
     padding-left: 5px;
 `;
 
-const TransactionInfo = ({ account, send }: Props) => {
+export default ({ account, send }: Props) => {
     if (!account || !send) return null;
     const { networkType, symbol } = account;
     const transactionInfo = getTransactionInfo(networkType, send);
@@ -53,5 +53,3 @@ const TransactionInfo = ({ account, send }: Props) => {
         </Wrapper>
     );
 };
-
-export default TransactionInfo;

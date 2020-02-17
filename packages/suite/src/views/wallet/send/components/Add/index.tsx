@@ -5,7 +5,7 @@ import { Props } from './Container';
 
 const Wrapper = styled.div``;
 
-const Add = (props: Props) => {
+export default (props: Props) => {
     const networkType = props.selectedAccount.account?.networkType;
     return (
         <Wrapper>
@@ -15,5 +15,3 @@ const Add = (props: Props) => {
         </Wrapper>
     );
 };
-
-export default Add;

@@ -19,7 +19,7 @@ interface Props {
     seconds: number;
 }
 
-const EstimatedMiningTime = ({ seconds }: Props) => {
+export default ({ seconds }: Props) => {
     return (
         <Wrapper>
             <Translation {...messages.TR_ESTIMATED_TIME} />
@@ -27,5 +27,3 @@ const EstimatedMiningTime = ({ seconds }: Props) => {
         </Wrapper>
     );
 };
-
-export default EstimatedMiningTime;

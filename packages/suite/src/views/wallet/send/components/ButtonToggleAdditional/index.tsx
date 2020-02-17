@@ -31,7 +31,7 @@ interface Props {
     sendFormActions: DispatchProps['sendFormActions'];
 }
 
-const ToggleAdditionalButton = (props: Props) => (
+export default (props: Props) => (
     <Wrapper>
         <Text onClick={() => props.sendFormActions.toggleAdditionalFormVisibility()}>
             {props.isActive ? (
@@ -50,5 +50,3 @@ const ToggleAdditionalButton = (props: Props) => (
         </Text>
     </Wrapper>
 );
-
-export default ToggleAdditionalButton;

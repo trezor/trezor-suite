@@ -1,12 +1,10 @@
 import { SUITE } from '@suite-actions/constants';
 import { AppState, TrezorDevice } from '@suite-types';
 import { Button, colors, variables } from '@trezor/components-v2';
-import { Account } from '@wallet-types';
-import {
-    State as SendFormState,
-    PrecomposedTransactionXrp,
-    PrecomposedTransactionEth,
-} from '@wallet-types/sendForm';
+import { Account, Send } from '@wallet-types';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
+import { PrecomposedTransactionXrp, PrecomposedTransactionEth } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 import React from 'react';
@@ -22,7 +20,7 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const Send = styled(Button)`
+const ButtonReview = styled(Button)`
     min-width: 200px;
     margin-bottom: 5px;
 `;
@@ -32,15 +30,11 @@ const Row = styled.div`
     justify-content: center;
     align-items: center;
     padding-bottom: 5px;
+    color: ${colors.BLACK50};
 
     &:last-child {
         padding-bottom: 0;
     }
-`;
-
-const Fee = styled.div`
-    display: flex;
-    color: ${colors.BLACK50};
 `;
 
 const Bold = styled.div`
@@ -49,7 +43,7 @@ const Bold = styled.div`
 `;
 
 const isDisabled = (
-    send: SendFormState,
+    send: Send,
     suite: AppState['suite'],
     device: TrezorDevice,
     networkType: Account['networkType'],
@@ -65,7 +59,12 @@ const isDisabled = (
 
     // form errors
     outputs.forEach(output => {
-        if (output.address.error || output.amount.error) {
+        if (
+            !output.address.value ||
+            !output.amount.value ||
+            output.address.error ||
+            output.amount.error
+        ) {
             isDisabled = true;
         }
     });
@@ -101,29 +100,18 @@ const isDisabled = (
     return isDisabled;
 };
 
-const getSendText = (
+const getSendAmount = (
     transactionInfo: PrecomposedTransactionXrp | PrecomposedTransactionEth,
     symbol: Account['symbol'],
 ) => {
     if (transactionInfo && transactionInfo.type !== 'error') {
-        return `Send ${formatNetworkAmount(
-            transactionInfo.totalSpent,
-            symbol,
-        )} ${symbol.toUpperCase()}`;
+        return `${formatNetworkAmount(transactionInfo.totalSpent, symbol)} ${symbol.toUpperCase()}`;
     }
 
-    return 'Send';
+    return null;
 };
 
-const SendSection = ({
-    send,
-    suite,
-    account,
-    device,
-    sendFormActionsBitcoin,
-    sendFormActionsEthereum,
-    sendFormActionsRipple,
-}: Props) => {
+export default ({ send, suite, account, device, modalActions }: Props) => {
     if (!send || !account || !device) return null;
     const { isComposing, customFee } = send;
     const { networkType, symbol } = account;
@@ -132,44 +120,32 @@ const SendSection = ({
     return (
         <Wrapper>
             <Row>
-                <Send
+                <ButtonReview
                     isLoading={isComposing}
-                    isDisabled={isComposing || isDisabled(send, suite, device, networkType)}
-                    onClick={() => {
-                        switch (networkType) {
-                            case 'bitcoin':
-                                sendFormActionsBitcoin.send();
-                                break;
-                            case 'ethereum':
-                                sendFormActionsEthereum.send();
-                                break;
-                            case 'ripple':
-                                sendFormActionsRipple.send();
-                                break;
-                            // no default
-                        }
-                    }}
+                    isDisabled={isComposing ? false : isDisabled(send, suite, device, networkType)}
+                    onClick={() => modalActions.openModal({ type: 'review-transaction' })}
                 >
-                    {getSendText(transactionInfo, symbol)}
-                </Send>
+                    <Translation {...messages.TR_SEND_REVIEW_TRANSACTION} />
+                </ButtonReview>
             </Row>
             {transactionInfo?.type === 'final' && (
-                <Row>
-                    <Fee>
+                <>
+                    <Row>
+                        Send <Bold>{getSendAmount(transactionInfo, symbol)}</Bold>
+                    </Row>
+                    <Row>
                         Including fee of{' '}
                         <Bold>{formatNetworkAmount(transactionInfo.fee, symbol)}</Bold>
-                    </Fee>
-                </Row>
-            )}
-            {networkType === 'bitcoin' && !customFee.value && (
-                <Row>
-                    <EstimatedMiningTime
-                        seconds={send.feeInfo.blockTime * send.selectedFee.blocks * 60}
-                    />
-                </Row>
+                    </Row>
+                    {networkType === 'bitcoin' && !customFee.value && (
+                        <Row>
+                            <EstimatedMiningTime
+                                seconds={send.feeInfo.blockTime * send.selectedFee.blocks * 60}
+                            />
+                        </Row>
+                    )}
+                </>
             )}
         </Wrapper>
     );
 };
-
-export default SendSection;

@@ -3,7 +3,7 @@ import messages from '@suite/support/messages';
 import { Input, Icon, colors, Tooltip } from '@trezor/components-v2';
 import styled from 'styled-components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { State } from '@wallet-types/sendForm';
+import { Send } from '@wallet-types';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 
@@ -20,7 +20,7 @@ const StyledIcon = styled(Icon)`
     padding-left: 5px;
 `;
 
-const getError = (error: State['networkTypeEthereum']['gasLimit']['error']) => {
+const getError = (error: Send['networkTypeEthereum']['gasLimit']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.NOT_NUMBER:
             return <Translation>{messages.TR_ETH_GAS_LIMIT_NOT_NUMBER}</Translation>;

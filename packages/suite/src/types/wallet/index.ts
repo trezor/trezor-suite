@@ -2,6 +2,7 @@ import { ReceiveActions } from '@wallet-actions/receiveActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
 
 import {
+    State as SendState,
     SendFormActions,
     SendFormBtcActions,
     SendFormXrpActions,
@@ -29,6 +30,7 @@ export type ExternalNetwork = ArrayElement<typeof EXTERNAL_NETWORKS>;
 export type NetworkToken = NetworkToken$;
 export type Token = Token$;
 export type Account = Account$;
+export type Send = SendState;
 export type Icon = Icon$;
 export type Fiat = Fiat$;
 export type Discovery = Discovery$;

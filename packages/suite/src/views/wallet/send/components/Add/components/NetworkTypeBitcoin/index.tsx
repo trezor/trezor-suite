@@ -15,7 +15,7 @@ interface ComponentProps {
     addRecipient: Props['sendFormActionsBitcoin']['addRecipient'];
 }
 
-const Add = (props: ComponentProps) => (
+export default (props: ComponentProps) => (
     <Wrapper>
         <StyledSelect
             variant="small"
@@ -31,5 +31,3 @@ const Add = (props: ComponentProps) => (
         />
     </Wrapper>
 );
-
-export default Add;

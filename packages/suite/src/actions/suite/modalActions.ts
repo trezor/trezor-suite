@@ -44,6 +44,9 @@ export type UserContextPayload =
           tx: WalletAccountTransaction;
       }
     | {
+          type: 'review-transaction';
+      }
+    | {
           type: 'log';
       };
 

@@ -3,7 +3,7 @@ import messages from '@suite/support/messages';
 import styled from 'styled-components';
 import { Textarea, colors, Icon, Tooltip } from '@trezor/components-v2';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { State } from '@wallet-types/sendForm';
+import { Send } from '@wallet-types';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import { Props } from './Container';
@@ -19,7 +19,7 @@ const StyledIcon = styled(Icon)`
     padding-left: 5px;
 `;
 
-const getError = (error: State['networkTypeEthereum']['data']['error']) => {
+const getError = (error: Send['networkTypeEthereum']['data']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.NOT_HEX:
             return <Translation>{messages.TR_ETH_DATA_NOT_HEX}</Translation>;

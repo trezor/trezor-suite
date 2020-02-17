@@ -38,7 +38,7 @@ const StyledInput = styled(Input)`
     margin-top: 20px;
 `;
 
-const SwitchItem = () => {
+export default () => {
     return (
         <Wrapper>
             <Row>
@@ -56,5 +56,3 @@ const SwitchItem = () => {
         </Wrapper>
     );
 };
-
-export default SwitchItem;

@@ -385,10 +385,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Confirm PIN',
         id: 'TR_CONFIRM_PIN',
     },
-    TR_CONFIRM_TRANSACTION_ON: {
-        defaultMessage: 'Confirm transaction on "{deviceLabel}" device',
-        id: 'TR_CONFIRM_TRANSACTION_ON',
-    },
     TR_CONFIRMED_TX: {
         defaultMessage: 'Confirmed',
         id: 'TR_CONFIRMED_TX',
@@ -529,10 +525,6 @@ const definedMessages = defineMessages({
     TR_DESTINATION_TAG_IS_NOT_NUMBER: {
         defaultMessage: 'Destination tag is not a number',
         id: 'TR_DESTINATION_TAG_IS_NOT_NUMBER',
-    },
-    TR_DETAILS_ARE_SHOWN_ON: {
-        defaultMessage: 'Details are shown on display',
-        id: 'TR_DETAILS_ARE_SHOWN_ON',
     },
     TR_DETECTING_BRIDGE: {
         defaultMessage: 'Detecting Trezor Bridge instalation',
@@ -793,11 +785,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Fee',
         description: 'Label in Send form',
         id: 'TR_FEE',
-    },
-    TR_FEE_LABEL: {
-        defaultMessage: 'Fee',
-        description: 'Label above the fee used for transaction',
-        id: 'TR_FEE_LABEL',
     },
     TR_FIAT_RATES_ARE_NOT_CURRENTLY: {
         defaultMessage: 'Fiat rates are not currently available.',
@@ -1490,11 +1477,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Send {amount}',
         id: 'TR_SEND',
     },
-    TR_SEND_LABEL: {
-        defaultMessage: 'Send',
-        description: 'Label for amount to be send',
-        id: 'TR_SEND_LABEL',
-    },
     TR_SEND_NETWORK: {
         defaultMessage: 'Send {network}',
         id: 'TR_SEND_NETWORK',
@@ -1700,11 +1682,6 @@ const definedMessages = defineMessages({
         defaultMessage:
             'To find your accounts and funds we need to perform a coin discovery which will discover all your coins.',
         id: 'TR_TO_FIND_YOUR_ACCOUNTS_AND',
-    },
-    TR_TO_LABEL: {
-        defaultMessage: 'To',
-        description: "Label for recepeint's address",
-        id: 'TR_TO_LABEL',
     },
     TR_TO_PREVENT_PHISHING_ATTACKS_COMMA: {
         defaultMessage:
@@ -1994,6 +1971,34 @@ const definedMessages = defineMessages({
     TR_YOUR_WALLET_IS_READY_WHAT: {
         defaultMessage: 'Your Wallet is ready. What to do now?',
         id: 'TR_YOUR_WALLET_IS_READY_WHAT',
+    },
+    TR_MODAL_CONFIRM_TX_TITLE: {
+        id: 'TR_MODAL_CONFIRM_TX_TITLE',
+        defaultMessage: 'Confirm transaction',
+    },
+    TR_MODAL_CONFIRM_TX_BUTTON: {
+        id: 'TR_MODAL_CONFIRM_TX_BUTTON',
+        defaultMessage: 'Confirm transaction',
+    },
+    TR_ADDRESS_FROM: {
+        id: 'TR_ADDRESS_FROM',
+        defaultMessage: 'From',
+    },
+    TR_EDIT: {
+        id: 'TR_EDIT',
+        defaultMessage: 'Edit',
+    },
+    TR_GAS_PRICE: {
+        id: 'TR_GAS_PRICE',
+        defaultMessage: 'Gas price',
+    },
+    TR_SEND_REVIEW_TRANSACTION: {
+        id: 'TR_SEND_REVIEW_TRANSACTION',
+        defaultMessage: 'Review Transaction',
+    },
+    TR_TO: {
+        id: 'TR_TO',
+        defaultMessage: 'To',
     },
     TR_RECIPIENT_ADDRESS_TOOLTIP: {
         id: 'TR_RECIPIENT_ADDRESS_TOOLTIP',

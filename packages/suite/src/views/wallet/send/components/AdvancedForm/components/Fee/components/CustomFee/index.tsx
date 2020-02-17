@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Account } from '@wallet-types';
-import { State } from '@wallet-types/sendForm';
+import { Account, Send } from '@wallet-types';
 import { Translation } from '@suite-components/Translation';
 import { Input, Select } from '@trezor/components-v2';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
@@ -20,9 +19,9 @@ const ItemWrapper = styled.div`
 `;
 
 const getError = (
-    error: State['customFee']['error'],
-    maxFee: State['feeInfo']['maxFee'],
-    minFee: State['feeInfo']['minFee'],
+    error: Send['customFee']['error'],
+    maxFee: Send['feeInfo']['maxFee'],
+    minFee: Send['feeInfo']['minFee'],
 ) => {
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
@@ -48,7 +47,7 @@ const getValue = (networkType: Account['networkType']) => {
     }
 };
 
-const CustomFee = ({ send, sendFormActions, account }: Props) => {
+export default ({ send, sendFormActions, account }: Props) => {
     if (!send || !account) return null;
     const { customFee, feeInfo } = send;
     const { value, error } = customFee;
@@ -75,5 +74,3 @@ const CustomFee = ({ send, sendFormActions, account }: Props) => {
         </Wrapper>
     );
 };
-
-export default CustomFee;

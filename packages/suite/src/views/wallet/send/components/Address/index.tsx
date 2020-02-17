@@ -28,7 +28,7 @@ const getMessage = (
     accounts: Account[],
     devices: AppState['devices'],
 ) => {
-    if (address && !VALIDATION_ERRORS.CANNOT_SEND_TO_MYSELF) {
+    if (address && error !== VALIDATION_ERRORS.CANNOT_SEND_TO_MYSELF) {
         const account = isAddressInAccount(networkType, address, accounts);
         if (account) {
             const device = getAccountDevice(devices, account);
@@ -50,7 +50,7 @@ const getMessage = (
     }
 };
 
-const Address = ({
+export default ({
     output,
     intl,
     account,
@@ -96,5 +96,3 @@ const Address = ({
         />
     );
 };
-
-export default Address;
