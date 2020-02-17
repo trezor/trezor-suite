@@ -145,8 +145,10 @@ const setBackupType = (payload: number): Action => ({
 const callActionAndGoToNextStep = (action: any, stepId?: AnyStepId) => async (
     dispatch: Dispatch,
 ) => {
-    await action();
-    dispatch(goToNextStep(stepId));
+    const result = await action();
+    if (result.success) {
+        dispatch(goToNextStep(stepId));
+    }
 };
 
 export {

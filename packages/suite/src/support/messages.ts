@@ -552,6 +552,22 @@ const definedMessages = defineMessages({
         description: 'Display firmware of device',
         id: 'TR_DEVICE_FIRMWARE_VERSION',
     },
+    TR_DEVICE_IS_USED_IN_OTHER_WINDOW_BUTTON: {
+        defaultMessage: 'Continue',
+        description: '',
+        id: 'TR_DEVICE_IS_USED_IN_OTHER_WINDOW_BUTTON',
+    },
+    TR_DEVICE_IS_USED_IN_OTHER_WINDOW_HEADING: {
+        defaultMessage: 'Device is used in other window',
+        description: '',
+        id: 'TR_DEVICE_IS_USED_IN_OTHER_WINDOW_HEADING',
+    },
+    TR_DEVICE_IS_USED_IN_OTHER_WINDOW_TEXT: {
+        defaultMessage:
+            'This is a big no no. Please dont use device in other window. Close all other windows or tabs that might be using your Trezor device.',
+        description: '',
+        id: 'TR_DEVICE_IS_USED_IN_OTHER_WINDOW_TEXT',
+    },
     TR_DEVICE_LABEL: {
         defaultMessage: 'Device label: {label}.',
         description: 'Display label of device',

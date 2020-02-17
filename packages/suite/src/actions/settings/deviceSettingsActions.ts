@@ -114,4 +114,5 @@ export const resetDevice = (params: ResetDeviceParams = {}) => async (
     } else {
         dispatch(addNotification({ type: 'error', error: result.payload.error }));
     }
+    return result;
 };

@@ -84,7 +84,7 @@ const SetPinStep = (props: Props) => {
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 data-test="@onboarding/pin/continue-button"
-                                onClick={() => props.onboardingActions.goToNextStep()}
+                                onClick={() => props.goToNextStep()}
                             >
                                 <Translation {...messages.TR_CONTINUE} />
                             </OnboardingButton.Cta>
