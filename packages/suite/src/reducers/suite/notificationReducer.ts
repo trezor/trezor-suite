@@ -59,7 +59,7 @@ export type NotificationPayload =
       }
     | {
           type: 'copy-to-clipboard-success';
-          address: string;
+          payload?: string;
       }
     | {
           type:

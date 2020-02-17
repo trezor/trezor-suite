@@ -1,7 +1,5 @@
-import copy from 'copy-to-clipboard';
 import { LogEntry } from '@suite-reducers/logReducer';
-import { Action, GetState, Dispatch } from '@suite-types';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { Action } from '@suite-types';
 
 import { LOG } from './constants';
 
@@ -15,15 +13,3 @@ export const add = (type: string, message: any): Action => ({
         message,
     },
 });
-
-export const copyToClipboard = () => (dispatch: Dispatch, getState: GetState): void => {
-    const { entries } = getState().log;
-    try {
-        const res = copy(JSON.stringify(entries));
-        if (res) {
-            dispatch(notificationActions.add({ type: 'log-copied' }));
-        }
-    } catch (err) {
-        dispatch(notificationActions.add({ type: 'error', error: 'failed to copy log' }));
-    }
-};

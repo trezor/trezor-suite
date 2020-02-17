@@ -6,9 +6,10 @@ import { connect } from 'react-redux';
 import { Button, H2, P } from '@trezor/components-v2';
 import { Translation } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
-import * as logActions from '@suite-actions/logActions';
+import * as notificationActions from '@suite-actions/notificationActions';
 import { AppState, Dispatch } from '@suite-types';
 import messages from '@suite/support/messages';
+import { copyToClipboard } from '@suite-utils/dom';
 
 const Wrapper = styled(ModalWrapper)`
     display: flex;
@@ -36,7 +37,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    copyToClipboard: bindActionCreators(logActions.copyToClipboard, dispatch),
+    addNotification: bindActionCreators(notificationActions.add, dispatch),
 });
 
 type Props = ReturnType<typeof mapStateToProps> &
@@ -45,6 +46,20 @@ type Props = ReturnType<typeof mapStateToProps> &
     };
 
 const Log = (props: Props) => {
+    const getFormattedLog = () => {
+        // todo: finish, depends on requierements from product;
+        return JSON.stringify(props.log.entries);
+    };
+
+    const copy = () => {
+        const result = copyToClipboard(getFormattedLog());
+        if (typeof result === 'string') {
+            props.addNotification({ type: 'copy-to-clipboard-error', error: result });
+        } else {
+            props.addNotification({ type: 'copy-to-clipboard-success' });
+        }
+    };
+
     return (
         <Wrapper>
             <H2>
@@ -53,8 +68,8 @@ const Log = (props: Props) => {
             <StyledParagraph size="small">
                 <Translation {...messages.TR_ATTENTION_COLON_THE_LOG_CONTAINS} />
             </StyledParagraph>
-            <LogWrapper>{JSON.stringify(props.log.entries)}</LogWrapper>
-            <ButtonCopy onClick={() => props.copyToClipboard()} data-test="@log/copy-button">
+            <LogWrapper>{getFormattedLog()}</LogWrapper>
+            <ButtonCopy onClick={() => copy()} data-test="@log/copy-button">
                 <Translation {...messages.TR_COPY_TO_CLIPBOARD} />
             </ButtonCopy>
         </Wrapper>
