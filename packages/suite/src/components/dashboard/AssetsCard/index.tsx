@@ -83,12 +83,6 @@ const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props)
                     new BigNumber(0),
                 );
 
-                const fiatRates = rates.find(f => f.symbol === symbol);
-                const localCurrencyRate = fiatRates
-                    ? toFiatCurrency('1', localCurrency, fiatRates)
-                    : null;
-                const fiatvalue = assetBalance.multipliedBy(localCurrencyRate || 0);
-
                 return (
                     <StyledAsset
                         data-test="@dashboard/asset-card"
@@ -96,9 +90,6 @@ const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props)
                         name={network.name}
                         symbol={network.symbol}
                         cryptoValue={assetBalance.toFixed()}
-                        fiatValue={fiatvalue}
-                        exchangeRate={localCurrencyRate}
-                        localCurrency={localCurrency}
                     />
                 );
             })}
