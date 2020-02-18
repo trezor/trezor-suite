@@ -5,7 +5,6 @@ import { NETWORKS } from '@wallet-config';
 import Asset from './components/Asset';
 import { Account } from '@wallet-types';
 import { AppState } from '@suite-types';
-import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { colors, Loader } from '@trezor/components-v2';
 import { Card, Translation } from '@suite-components';
 import messages from '@suite/support/messages';
@@ -83,12 +82,6 @@ const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props)
                     new BigNumber(0),
                 );
 
-                const fiatRates = rates.find(f => f.symbol === symbol);
-                const localCurrencyRate = fiatRates
-                    ? toFiatCurrency('1', localCurrency, fiatRates)
-                    : null;
-                const fiatvalue = assetBalance.multipliedBy(localCurrencyRate || 0);
-
                 return (
                     <StyledAsset
                         data-test="@dashboard/asset-card"
@@ -96,9 +89,6 @@ const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props)
                         name={network.name}
                         symbol={network.symbol}
                         cryptoValue={assetBalance.toFixed()}
-                        fiatValue={fiatvalue}
-                        exchangeRate={localCurrencyRate}
-                        localCurrency={localCurrency}
                     />
                 );
             })}

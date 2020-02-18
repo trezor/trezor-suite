@@ -39,11 +39,13 @@ const Image = styled.img`
     }
 `;
 
+const InlineButton = styled(Button)`
+    display: inline-flex;
+`;
+
 const SecurityItem = styled.div`
-    display: flex;
     color: ${colors.BLACK50};
     font-size: ${variables.FONT_SIZE.BUTTON};
-    flex-direction: row;
 
     & + & {
         margin-top: 12px;
@@ -62,7 +64,7 @@ const EmptyWallet = (props: Props) => {
                 </Title>
                 <SecurityItem>
                     <Translation {...messages.TR_ADDITIONAL_SECURITY_FEATURES} />
-                    <Button
+                    <InlineButton
                         variant="tertiary"
                         size="small"
                         icon="ARROW_RIGHT"
@@ -72,11 +74,11 @@ const EmptyWallet = (props: Props) => {
                         }}
                     >
                         <Translation {...messages.TR_FINISH_ADVANCED_SECURITY} />
-                    </Button>
+                    </InlineButton>
                 </SecurityItem>
                 <SecurityItem>
                     <Translation {...messages.TR_LOOKING_FOR_QUICK_EASY} />
-                    <Button
+                    <InlineButton
                         variant="tertiary"
                         size="small"
                         icon="ARROW_RIGHT"
@@ -86,7 +88,7 @@ const EmptyWallet = (props: Props) => {
                         }}
                     >
                         Buy BTC
-                    </Button>
+                    </InlineButton>
                 </SecurityItem>
             </Content>
         </Wrapper>
