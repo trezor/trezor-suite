@@ -5,10 +5,9 @@ import { URLS } from '@suite-constants';
 
 const Wrapper = styled.div`
     width: 100%;
-    height: 6px;
+    height: 40px;
     justify-content: center;
     align-items: center;
-    margin-bottom: 40px;
 `;
 
 const BarContainer = styled.div``;
@@ -48,7 +47,6 @@ const GreenBar = styled(Bar)<BarProps>`
 `;
 
 const IconsContainer = styled.div`
-    margin: 20px 0;
     display: flex;
     flex-direction: row;
     justify-content: space-between;

@@ -1,10 +1,19 @@
-import TrezorConnect, { ApplySettingsParams, ChangePinParams } from 'trezor-connect';
+import TrezorConnect, {
+    ApplySettingsParams,
+    ChangePinParams,
+    ResetDeviceParams,
+} from 'trezor-connect';
 import { add as addNotification } from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
 
 import { Dispatch, GetState } from '@suite-types';
 
-//  TODO: should be reworked to deviceManagementActions
+const DEFAULT_LABEL = 'My Trezor';
+const DEFAULT_PASSPHRASE_PROTECTION = true;
+const DEFAULT_SKIP_BACKUP = true;
+const DEFAULT_STRENGTH_T1 = 256;
+const DEFAULT_STRENGTH_T2 = 128;
+const DEFAULT_BACKUP_TYPE = 0;
 
 export const applySettings = (params: ApplySettingsParams) => async (
     dispatch: Dispatch,
@@ -26,7 +35,7 @@ export const applySettings = (params: ApplySettingsParams) => async (
     }
 };
 
-export const changePin = (params: ChangePinParams) => async (
+export const changePin = (params: ChangePinParams = {}) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -69,4 +78,44 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
     //         payload: device,
     //     });
     // }
+};
+
+export const resetDevice = (params: ResetDeviceParams = {}) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { device } = getState().suite;
+    if (!device) return;
+    let defaults = {};
+    if (device.features?.major_version === 1) {
+        defaults = {
+            strength: DEFAULT_STRENGTH_T1,
+            label: DEFAULT_LABEL,
+            skipBackup: DEFAULT_SKIP_BACKUP,
+            passhpraseProtection: DEFAULT_PASSPHRASE_PROTECTION,
+            backupType: DEFAULT_BACKUP_TYPE,
+        };
+    } else {
+        defaults = {
+            strength: DEFAULT_STRENGTH_T2,
+            label: DEFAULT_LABEL,
+            skipBackup: DEFAULT_SKIP_BACKUP,
+            passhpraseProtection: DEFAULT_PASSPHRASE_PROTECTION,
+            backupType: DEFAULT_BACKUP_TYPE,
+        };
+    }
+
+    const result = await TrezorConnect.resetDevice({
+        device: {
+            path: device.path,
+        },
+        ...defaults,
+        ...params,
+    });
+    if (result.success) {
+        dispatch(addNotification({ type: 'settings-applied' }));
+    } else {
+        dispatch(addNotification({ type: 'error', error: result.payload.error }));
+    }
+    return result;
 };

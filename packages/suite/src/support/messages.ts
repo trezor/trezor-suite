@@ -736,17 +736,6 @@ const definedMessages = defineMessages({
         description: 'Button. Submit PIN',
         id: 'TR_ENTER_PIN',
     },
-    TR_ENTER_PIN_HEADING: {
-        defaultMessage: 'Enter PIN',
-        description: '',
-        id: 'TR_ENTER_PIN_HEADING',
-    },
-    TR_ENTER_PIN_TEXT: {
-        defaultMessage:
-            'Your device gets locked anytime you disconnect it. You now need to enter your PIN to continue.',
-        description: '',
-        id: 'TR_ENTER_PIN_TEXT',
-    },
     TR_ENTER_SEED_WORDS_INSTRUCTION: {
         defaultMessage: 'Enter words from your seed in order displayed on your device.',
         description:
@@ -832,12 +821,6 @@ const definedMessages = defineMessages({
     TR_FIRMWARE_VERSION: {
         defaultMessage: 'Firmware version',
         id: 'TR_FIRMWARE_VERSION',
-    },
-    TR_FIRST_PIN_ENTERED: {
-        defaultMessage:
-            'Good. You entered a new pin. But to make sure you did not make mistake, please enter it again. Look at your device now, numbers are now different.',
-        description: 'Text describing what happens after user enters PIN for the first time.',
-        id: 'TR_FIRST_PIN_ENTERED',
     },
     TR_FIRST_SEEN: {
         defaultMessage: 'First Seen',
@@ -989,6 +972,10 @@ const definedMessages = defineMessages({
         description:
             'Instruction what to do when user knows the device he is holding was manipulated by him, not someone else.',
         id: 'TR_INSTRUCTION_TO_SKIP',
+    },
+    TR_IS_NOT_NEW_DEVICE_HEADING: {
+        defaultMessage: 'Device does not appear to be that new',
+        id: 'TR_IS_NOT_NEW_DEVICE_HEADING',
     },
     TR_IS_NOT_NEW_DEVICE: {
         defaultMessage:

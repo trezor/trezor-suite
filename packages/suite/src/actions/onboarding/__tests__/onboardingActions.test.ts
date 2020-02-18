@@ -6,10 +6,7 @@ import thunk from 'redux-thunk';
 import onboardingReducer from '@onboarding-reducers/onboardingReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import recoveryReducer from '@recovery-reducers/recoveryReducer';
-import fixtures, {
-    deviceCallsSpecific,
-    deviceCallsGeneral,
-} from '../__fixtures__/onboardingActions';
+import fixtures from '../__fixtures__/onboardingActions';
 
 import { Action } from '@suite-types';
 
@@ -108,36 +105,6 @@ describe('Onboarding Actions', () => {
             if (f.expect.toMatchObject) {
                 expect(stateAfter).toMatchObject(f.expect.toMatchObject);
             }
-        });
-    });
-});
-
-describe('Onboarding Actions - deviceCalls - general', () => {
-    deviceCallsGeneral.forEach(f => {
-        it(f.description, async () => {
-            const store = mockStore(getInitialState(f.initialState));
-            require('trezor-connect').setTestFixtures(f);
-
-            const promise = store.dispatch(f.action());
-            if (f.expect && f.expect.stateBeforeResolve) {
-                expect(store.getState().onboarding).toMatchObject(f.expect.stateBeforeResolve);
-            }
-            await promise;
-            if (f.expect && f.expect.stateAfterResolve) {
-                expect(store.getState().onboarding).toMatchObject(f.expect.stateAfterResolve);
-            }
-        });
-    });
-});
-
-describe('Onboarding Actions - deviceCalls - specific calls', () => {
-    deviceCallsSpecific.forEach(f => {
-        it(f.description, async () => {
-            const store = mockStore(getInitialState(f.initialState));
-            require('trezor-connect').setTestFixtures(f);
-            const promise = store.dispatch(f.action());
-            await promise;
-            // no assertions on purpose here.
         });
     });
 });
