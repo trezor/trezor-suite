@@ -190,7 +190,7 @@ const Firmware = ({
                 <img src={resolveStaticPath('images/suite/uni-error.svg')} alt="" />
                 <Buttons>
                     <Col>
-                        <CloseButton />
+                        <CloseButton onClick={onClose} />
                     </Col>
                 </Buttons>
             </Wrapper>
@@ -241,7 +241,7 @@ const Firmware = ({
                 <UniSuccessImg />
                 <Buttons>
                     <Col>
-                        <CloseButton />
+                        <CloseButton onClick={onClose} />
                     </Col>
                 </Buttons>
             </Wrapper>
