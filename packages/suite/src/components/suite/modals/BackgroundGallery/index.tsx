@@ -69,7 +69,7 @@ const BackgroundGallery = ({ device, applySettings }: Props) => {
         const element = document.getElementById(image);
         if (element instanceof HTMLImageElement) {
             const hex = elementToHomescreen(element, device.features.major_version);
-            applySettings({ homescreen: hex, device });
+            applySettings({ homescreen: hex });
         }
     };
 

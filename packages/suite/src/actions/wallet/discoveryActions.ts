@@ -1,5 +1,5 @@
 import { Discovery, PartialDiscovery } from '@wallet-reducers/discoveryReducer';
-import TrezorConnect, { AccountInfo, UI } from 'trezor-connect';
+import TrezorConnect, { BundleProgress, AccountInfo, UI } from 'trezor-connect';
 import { add as addNotification } from '@suite-actions/notificationActions';
 import { SUITE } from '@suite-actions/constants';
 import { create as createAccount } from '@wallet-actions/accountActions';
@@ -36,12 +36,7 @@ export interface DiscoveryItem {
     networkType: Account['networkType'];
 }
 
-// TODO: trezor-connect untyped event
-interface ProgressEvent {
-    progress: number;
-    response: AccountInfo;
-    error?: string;
-}
+type ProgressEvent = BundleProgress<AccountInfo>['payload'];
 
 const LIMIT = 10;
 
@@ -335,7 +330,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         dispatch(handleProgress(event, deviceState, bundle[progress]));
     };
 
-    TrezorConnect.on(UI.BUNDLE_PROGRESS, onBundleProgress);
+    TrezorConnect.on<AccountInfo>(UI.BUNDLE_PROGRESS, onBundleProgress);
     const result = await TrezorConnect.getAccountInfo({
         device: {
             path: selectedDevice.path,

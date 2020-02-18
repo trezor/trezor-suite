@@ -81,7 +81,6 @@ const TransactionDetail = (props: Props) => {
         // fetch tx details and store them inside the local state 'txDetails'
         const fetchTxDetails = async () => {
             setIsFetching(true);
-            // @ts-ignore
             const res = await TrezorConnect.blockchainGetTransactions({
                 txs: [tx.txid],
                 coin: tx.symbol,

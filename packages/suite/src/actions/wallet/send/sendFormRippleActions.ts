@@ -5,7 +5,7 @@ import { XRP_FLAG } from '@wallet-constants/sendForm';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { calculateMax, calculateTotal, getOutput } from '@wallet-utils/sendFormUtils';
 import Bignumber from 'bignumber.js';
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect, { RipplePayment } from 'trezor-connect';
 
 /*
     Compose xrp transaction
@@ -72,12 +72,6 @@ export const handleDestinationTagChange = (destinationTag: string) => (dispatch:
     });
 };
 
-interface Payment {
-    destination: string | null;
-    destinationTag?: number | null;
-    amount: string | null;
-}
-
 /*
     Send transaction
  */
@@ -92,7 +86,8 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
 
     if (account.networkType !== 'ripple' || !destinationTag) return null;
 
-    const payment: Payment = {
+    const payment: RipplePayment = {
+        // @ts-ignore TODO: Vladimir
         destination: outputs[0].address.value,
         amount: networkAmountToSatoshi(outputs[0].amount.value, account.symbol),
     };
@@ -101,7 +96,6 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         payment.destinationTag = parseInt(destinationTag.value || '0', 10);
     }
 
-    // @ts-ignore
     const signedTransaction = await TrezorConnect.rippleSignTransaction({
         device: {
             path: selectedDevice.path,
@@ -118,7 +112,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         },
     });
 
-    if (!signedTransaction || !signedTransaction.success) {
+    if (!signedTransaction.success) {
         dispatch(
             notificationActions.add({
                 type: 'sign-tx-error',

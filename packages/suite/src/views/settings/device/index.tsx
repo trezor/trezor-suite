@@ -98,7 +98,7 @@ const Settings = ({
         const element = document.getElementById('custom-image');
         if (element instanceof HTMLImageElement) {
             const hex = homescreen.elementToHomescreen(element, device.features.major_version);
-            await applySettings({ homescreen: hex, device });
+            await applySettings({ homescreen: hex });
             setCustomHomescreen('');
         }
     };
