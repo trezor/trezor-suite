@@ -23,6 +23,7 @@
         "@trezor/rollout": "^1.0.0",
         "@trezor/suite-data": "^1.0.0",
         "@trezor/suite-storage": "^1.0.0",
+        "@trezor/typescript-typings": "^1.0.0",
         "@types/zxcvbn": "^4.4.0",
         "bignumber.js": "^9.0.0",
         "color-hash": "^1.0.3",

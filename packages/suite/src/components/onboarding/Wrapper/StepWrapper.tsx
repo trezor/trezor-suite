@@ -1,14 +1,8 @@
-import styled from 'styled-components';
+import React from 'react';
+import { Scrollbars } from 'react-custom-scrollbars';
 
-const StepWrapper = styled.div`
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    /* justify-content: space-around; */
-    padding-left: 10%;
-    padding-right: 10%;
-`;
-
-export default StepWrapper;
+interface Props {
+    children: React.ReactNode;
+    ['data-test']?: string;
+}
+export default ({ children, ...props }: Props) => <Scrollbars {...props}>{children}</Scrollbars>;
