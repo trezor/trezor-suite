@@ -10,7 +10,8 @@ tests
 babel.config.js
 jest.config.integration.js
 jest.config.unit.js
-tsconfig-workers.json
+tsconfig.workers.json
+tsconfig.lib.json
 tsconfig.json
 
 # Source files
