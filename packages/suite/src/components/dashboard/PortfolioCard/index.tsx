@@ -74,6 +74,7 @@ export interface Props extends React.HTMLAttributes<HTMLDivElement> {
     mode?: DashboardMode;
     portfolioValue: BigNumber;
     localCurrency: string;
+    isDeviceEmpty: boolean | null;
     buyClickHandler: () => void;
     receiveClickHandler: () => void;
 }
@@ -84,13 +85,14 @@ const PortfolioCard = ({
     localCurrency,
     buyClickHandler,
     receiveClickHandler,
+    isDeviceEmpty,
     ...rest
 }: Props) => {
     let body = null;
     if (mode) {
         body = mode.status === 'exception' ? <Exception /> : <Loading />;
     } else {
-        body = portfolioValue.gt(0) ? <EmptyWallet /> : <EmptyWallet />;
+        body = isDeviceEmpty ? <EmptyWallet /> : <EmptyWallet />;
     }
 
     return (
