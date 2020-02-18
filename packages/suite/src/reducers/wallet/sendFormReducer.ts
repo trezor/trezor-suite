@@ -76,7 +76,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 }
 
                 if (networkType === 'ripple' && currentAccountAddress === address) {
-                    output.address.error = VALIDATION_ERRORS.CANNOT_SEND_TO_MYSELF;
+                    output.address.error = VALIDATION_ERRORS.XRP_CANNOT_SEND_TO_MYSELF;
                     return draft;
                 }
                 break;
@@ -84,7 +84,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
             // change input "Amount"
             case SEND.HANDLE_AMOUNT_CHANGE: {
-                const { outputId, amount, decimals, availableBalance } = action;
+                const { outputId, amount, decimals, availableBalance, error } = action;
                 const output = getOutput(draft.outputs, outputId);
                 const amountBig = new Bignumber(amount);
 
@@ -108,6 +108,11 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
                 if (!hasDecimals(amount, decimals)) {
                     output.amount.error = VALIDATION_ERRORS.NOT_IN_RANGE_DECIMALS;
+                    return draft;
+                }
+
+                if (error) {
+                    output.amount.error = error;
                     return draft;
                 }
 

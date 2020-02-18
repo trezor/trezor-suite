@@ -176,6 +176,10 @@ export const handleAmountChange = (outputId: number, amount: string) => (
         }
     }
 
+    if (account.networkType === 'ripple') {
+        dispatch(rippleActions.checkAccountReserve(output.id, amount));
+    }
+
     dispatch({
         type: SEND.HANDLE_AMOUNT_CHANGE,
         outputId,
