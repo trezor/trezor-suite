@@ -89,7 +89,6 @@ export const goto = (
 
     if (preserveParams) {
         const { hash } = window.location;
-        console.log('hash', hash);
         await Router.push(url + hash, getPrefixedURL(url) + hash);
     } else {
         await Router.push(url, getPrefixedURL(url));
