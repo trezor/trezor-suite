@@ -23,10 +23,6 @@ const RESERVE = {
     BASE: '20000000',
     OWNER: '5000000',
 };
-const BLOCKS = {
-    MIN: 0,
-    MAX: 0,
-};
 
 const setPingTimeout = () => {
     if (pingTimeout) {
@@ -83,30 +79,18 @@ const connect = async (): Promise<RippleAPI> => {
     common.debug('Connecting to', endpoints[0]);
     let api: RippleAPI;
 
-    // RippleApi doesn't have custom connection timeout
-    // set it here since we don't want to wait 50 sec.
-    const connectionTimeout = setTimeout(() => {
-        api.disconnect();
-    }, timeout || DEFAULT_TIMEOUT);
-
     try {
-        api = new RippleAPI({ server: endpoints[0], timeout: timeout || DEFAULT_TIMEOUT });
+        api = new RippleAPI({
+            server: endpoints[0],
+            timeout: timeout || DEFAULT_TIMEOUT,
+        });
         // disable websocket auto reconnecting
         // workaround for RippleApi which doesn't have possibility to disable reconnection
         // issue: https://github.com/ripple/ripple-lib/issues/1068
         // override Api (connection) private methods and return never ending promises to prevent this behavior
-        const { connection } = api;
-        /* eslint-disable no-underscore-dangle */
-        connection._retryConnect = () => new Promise(() => {});
-        const onUnexpectedClose = connection._onUnexpectedClose.bind(connection);
-        connection._onUnexpectedClose = (_beforeOpen, resolve, reject, code) =>
-            onUnexpectedClose(false, resolve, reject, code);
-        /* eslint-enable no-underscore-dangle */
+        api.connection.reconnect = () => new Promise(() => {});
         await api.connect();
     } catch (error) {
-        // clear custom timeout
-        clearTimeout(connectionTimeout);
-
         common.debug('Websocket connection failed');
         rippleApi = undefined;
         // connection error. remove endpoint
@@ -117,35 +101,18 @@ const connect = async (): Promise<RippleAPI> => {
         }
         return connect();
     }
-    // clear custom timeout
-    clearTimeout(connectionTimeout);
 
     // Ripple api does set ledger listener automatically
     api.on('ledger', ledger => {
-        // store current block/ledger values
+        // store current ledger values
         RESERVE.BASE = api.xrpToDrops(ledger.reserveBaseXRP);
         RESERVE.OWNER = api.xrpToDrops(ledger.reserveIncrementXRP);
-        const availableBlocks = ledger.validatedLedgerVersions.split('-');
-        BLOCKS.MIN = parseInt(availableBlocks[0], 10);
-        BLOCKS.MAX = parseInt(availableBlocks[1], 10);
     });
 
     api.on('disconnected', () => {
         common.response({ id: -1, type: RESPONSES.DISCONNECTED, payload: true });
         cleanup();
     });
-
-    try {
-        // @ts-ignore: accessing private var _availableLedgerVersions
-        const availableBlocks = api.connection._availableLedgerVersions.serialize().split('-'); // eslint-disable-line no-underscore-dangle
-        BLOCKS.MIN = parseInt(availableBlocks[0], 10);
-        BLOCKS.MAX = parseInt(availableBlocks[1], 10);
-    } catch (error) {
-        const info = await api.getServerInfo();
-        const availableBlocks = info.completeLedgers.split('-');
-        BLOCKS.MIN = parseInt(availableBlocks[0], 10);
-        BLOCKS.MAX = parseInt(availableBlocks[1], 10);
-    }
 
     common.response({ id: -1, type: RESPONSES.CONNECTED });
 
@@ -294,14 +261,10 @@ const getAccountInfo = async (
     }
 
     try {
-        // Rippled has an issue with looking up outside of range of completed ledgers
-        // https://github.com/ripple/ripple-lib/issues/879#issuecomment-377576063
-        // Always use "minLedgerVersion"
-
         const requestOptions = {
             account: payload.descriptor,
-            ledger_index_min: payload.from ? Math.max(payload.from, BLOCKS.MIN) : BLOCKS.MIN,
-            ledger_index_max: payload.to ? Math.max(payload.to, BLOCKS.MAX) : undefined,
+            ledger_index_min: payload.from ? payload.from : undefined,
+            ledger_index_max: payload.to ? payload.to : undefined,
             limit: payload.pageSize || 25,
             marker: payload.marker,
         };
@@ -330,9 +293,7 @@ const getTransaction = async (
     const { payload } = data;
     try {
         const api = await connect();
-        const tx = await api.getTransaction(payload, {
-            minLedgerVersion: BLOCKS.MIN,
-        });
+        const tx = await api.getTransaction(payload);
         common.response({
             id: data.id,
             type: RESPONSES.GET_TRANSACTION,
