@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Card from '@suite-components/Card';
 import { Button, Input } from '@trezor/components-v2';
 import { parseBIP44Path } from '@wallet-utils/accountUtils';
-import { ChildProps as Props } from '../../index';
+import { ChildProps as Props } from '../../Container';
 
 const StyledCard = styled(Card)`
     width: 100%;
