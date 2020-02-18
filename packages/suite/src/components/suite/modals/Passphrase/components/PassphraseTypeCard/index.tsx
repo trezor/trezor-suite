@@ -58,11 +58,21 @@ const InputWrapper = styled(Content)`
 
 const Actions = styled.div`
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     /* margin-top: 20px; */
 `;
 
+const ActionButton = styled(Button)`
+    & + & {
+        margin-top: 8px;
+    }
+`;
+
 const RetryButton = styled(Button)`
-    margin: 16px auto 0px;
+    align-self: center;
+    margin-top: 16px;
 `;
 
 const Padding = styled.div<{ singleColModal?: boolean }>`
@@ -154,7 +164,7 @@ const PassphraseTypeCard = (props: Props) => {
                     </InputWrapper>
                 )}
                 <Actions>
-                    <Button
+                    <ActionButton
                         data-test="@passphrase/submit-button"
                         isDisabled={!enabled || isTooLong}
                         variant={props.singleColModal ? 'primary' : props.colorVariant}
@@ -162,16 +172,16 @@ const PassphraseTypeCard = (props: Props) => {
                         fullWidth
                     >
                         {props.submitLabel}
-                    </Button>
+                    </ActionButton>
                     {props.showPassphraseInput && props.offerPassphraseOnDevice && (
-                        <Button
+                        <ActionButton
                             isDisabled={!enabled}
                             variant="secondary"
                             onClick={() => submit(value, true)}
                             fullWidth
                         >
                             <Translation {...messages.TR_ENTER_PASSPHRASE_ON_DEVICE} />
-                        </Button>
+                        </ActionButton>
                     )}
                     {props.recreateWallet && (
                         <RetryButton
