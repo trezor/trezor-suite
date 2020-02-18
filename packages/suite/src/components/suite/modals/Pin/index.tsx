@@ -24,6 +24,14 @@ const Wrapper = styled.div`
     }
 `;
 
+// Hackish hiding of close icon (x in top-left corner). I have no control
+// over its rendering here as it renders automatically if cancelable prop
+// is provided in modals/index
+const HideCloseIconWrapper = styled.div`
+    z-index: 1;
+    background-color: white;
+`;
+
 const Col = styled.div<{ gray?: boolean }>`
     display: flex;
     flex-direction: column;
@@ -70,6 +78,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 type Props = {
     device: TrezorDevice;
+    onCancel: () => void;
 } & ReturnType<typeof mapDispatchToProps>;
 
 const Pin = ({ device, onPinSubmit }: Props) => {
@@ -92,7 +101,11 @@ const Pin = ({ device, onPinSubmit }: Props) => {
     };
 
     if (submitted) {
-        return <Loading />;
+        return (
+            <HideCloseIconWrapper>
+                <Loading />
+            </HideCloseIconWrapper>
+        );
     }
 
     // TODO: figure out responsive design

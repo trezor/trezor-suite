@@ -2028,6 +2028,14 @@ const definedMessages = defineMessages({
         id: 'TR_SEND_AMOUNT_TOOLTIP',
         defaultMessage: 'TR_SEND_AMOUNT_TOOLTIP',
     },
+    TR_PIN_MISMATCH_HEADING: {
+        id: 'TR_PIN_MISMATCH_HEADING',
+        defaultMessage: 'Pin mismatch',
+    },
+    TR_PIN_MISMATCH_TEXT: {
+        id: 'TR_PIN_MISMATCH_TEXT',
+        defaultMessage: 'Pin mismatch text',
+    },
 });
 
 export default definedMessages;

@@ -1,5 +1,6 @@
 import TrezorConnect, { ApplySettingsParams, ChangePinParams } from 'trezor-connect';
 import { add as addNotification } from '@suite-actions/notificationActions';
+import * as modalActions from '@suite-actions/modalActions';
 
 import { Dispatch, GetState } from '@suite-types';
 
@@ -37,9 +38,10 @@ export const changePin = (params: ChangePinParams) => async (
         },
         ...params,
     });
-
     if (result.success) {
         dispatch(addNotification({ type: 'pin-changed' }));
+    } else if (result.payload.code === 'Failure_PinMismatch') {
+        dispatch(modalActions.openModal({ type: 'pin-mismatch' }));
     } else {
         dispatch(addNotification({ type: 'error', error: result.payload.error }));
     }
