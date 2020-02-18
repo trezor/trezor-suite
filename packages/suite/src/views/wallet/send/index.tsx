@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import messages from '@suite/support/messages';
-import { colors, Icon } from '@trezor/components-v2';
+import { colors, variables } from '@trezor/components-v2';
 import { WalletLayout } from '@wallet-components';
 import AccountName from '@wallet-components/AccountName';
 import AccountSelector from '@wallet-components/AccountSelector/Container';
 import { Output } from '@wallet-types/sendForm';
 import React, { useEffect } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import Add from './components/Add/Container';
 import Address from './components/Address/Container';
@@ -14,6 +14,7 @@ import AdditionalForm from './components/AdvancedForm';
 import Amount from './components/Amount/Container';
 import ButtonToggleAdditional from './components/ButtonToggleAdditional';
 import Clear from './components/Clear';
+import Remove from './components/Remove';
 import ReviewButtonSection from './components/ReviewButtonSection/Container';
 import { Props } from './Container';
 
@@ -25,23 +26,6 @@ const Row = styled.div`
     &:last-child {
         padding: 0;
     }
-`;
-
-const SlimRow = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    min-height: 10px;
-    align-items: flex-end;
-
-    ${(props: { isOnlyOne: boolean }) =>
-        props.isOnlyOne &&
-        css`
-            display: none;
-        `}
-`;
-
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
 `;
 
 const OutputWrapper = styled.div`
@@ -65,6 +49,20 @@ const AdditionalFormHeader = styled.div`
     justify-content: space-between;
     width: 100%;
     align-items: center;
+`;
+
+const Header = styled.div`
+    display: flex;
+    min-height: 17px;
+    justify-content: space-between;
+`;
+
+const OutputIndex = styled.div`
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    font-size: ${variables.FONT_SIZE.TINY};
+    color: ${colors.BLACK25};
 `;
 
 export default ({
@@ -93,19 +91,18 @@ export default ({
         <WalletLayout title="Send" account={selectedAccount}>
             <AccountName account={account} message={accountNameMessage} />
             <AccountSelector title="Send from Account" />
+            <Clear sendFormActions={sendFormActions} />
             {send.outputs.map((output: Output) => (
                 <OutputWrapper key={output.id}>
-                    {output.id === 0 && <Clear sendFormActions={sendFormActions} />}
-                    {output.id !== 0 && (
-                        <SlimRow isOnlyOne={send.outputs.length === 1}>
-                            <StyledIcon
-                                onClick={() => sendFormActionsBitcoin.removeRecipient(output.id)}
-                                size={10}
-                                color={colors.BLACK50}
-                                icon="CROSS"
+                    <Header>
+                        {send.outputs.length > 1 && <OutputIndex>#{output.id + 1}</OutputIndex>}
+                        {output.id !== 0 && (
+                            <Remove
+                                sendFormActionsBitcoin={sendFormActionsBitcoin}
+                                outputId={output.id}
                             />
-                        </SlimRow>
-                    )}
+                        )}
+                    </Header>
                     <Row>
                         <Address output={output} />
                     </Row>
