@@ -44,15 +44,19 @@ const Option = styled.div`
 interface SelectValue {
     value: number;
     label: string;
+    symbol: Account['symbol'];
+    accountType: Account['accountType'];
 }
 
 const getOptions = (otherAccounts: Account[]) => {
     const options: SelectValue[] = [];
     otherAccounts.forEach(account => {
-        const { index, symbol } = account;
+        const { index, symbol, accountType } = account;
         options.push({
             label: `${symbol.toUpperCase()} Account #${index + 1}`,
             value: index,
+            symbol,
+            accountType,
         });
     });
 
@@ -85,9 +89,9 @@ export default ({ accounts, selectedAccount, title, goto, router }: Props) => {
                     <Select
                         isClean
                         onChange={(change: SelectValue) => {
-                            const { symbol, accountType } = account;
+                            const { symbol, accountType, value } = change;
                             goto(router.route.name, {
-                                accountIndex: change.value,
+                                accountIndex: value,
                                 symbol,
                                 accountType,
                             });
