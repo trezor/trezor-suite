@@ -32,13 +32,18 @@ const SingleAccount = styled.div`
 `;
 
 const SelectWrapper = styled.div`
-    min-width: 250px;
+    min-width: 310px;
 `;
 
 const Option = styled.div`
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+`;
+
+const OptionVal = styled.div`
+    display: flex;
+    align-items: center;
+    flex: 1;
 `;
 
 interface SelectValue {
@@ -53,7 +58,9 @@ const getOptions = (otherAccounts: Account[]) => {
     otherAccounts.forEach(account => {
         const { index, symbol, accountType } = account;
         options.push({
-            label: `${symbol.toUpperCase()} Account #${index + 1}`,
+            label: `${symbol.toUpperCase()} Account #${index + 1} ${
+                accountType !== 'normal' ? accountType : ''
+            }`,
             value: index,
             symbol,
             accountType,
@@ -103,7 +110,7 @@ export default ({ accounts, selectedAccount, title, goto, router }: Props) => {
                             if (itemAccount) {
                                 return (
                                     <Option>
-                                        {option.label}
+                                        <OptionVal>{option.label}</OptionVal>
                                         <Label>
                                             {itemAccount.formattedBalance}{' '}
                                             {itemAccount.symbol.toUpperCase()}
