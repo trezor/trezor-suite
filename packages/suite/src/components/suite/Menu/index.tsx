@@ -17,7 +17,11 @@ const Wrapper = styled.div`
 const Menu = (props: Props) => {
     return (
         <Wrapper>
-            <TopMenu selectedDevice={props.selectedDevice} goto={props.goto} />
+            <TopMenu
+                deviceCount={props.devices.length}
+                selectedDevice={props.selectedDevice}
+                goto={props.goto}
+            />
             <MainMenu app={props.router.app} goto={props.goto} />
             <BottomMenu
                 app={props.router.app}
