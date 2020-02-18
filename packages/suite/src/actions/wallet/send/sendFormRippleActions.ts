@@ -75,13 +75,6 @@ export const checkAccountReserve = (outputId: number, amount: string) => async (
     if (account.networkType !== 'ripple') return null;
     const { misc } = account;
     const output = getOutput(send.outputs, outputId);
-
-    dispatch({
-        type: SEND.AMOUNT_LOADING,
-        isLoading: true,
-        outputId: output.id,
-    });
-
     const address = output.address.value;
     const amountBig = new BigNumber(amount);
 
@@ -100,13 +93,17 @@ export const checkAccountReserve = (outputId: number, amount: string) => async (
         const error =
             !targetAccountIsActive && amountBig.isLessThan(reserve)
                 ? VALIDATION_ERRORS.XRP_CANNOT_SEND_LESS_THAN_RESERVE
-                : undefined;
-
-        console.log('error', error);
+                : null;
 
         dispatch({
             type: SEND.AMOUNT_LOADING,
             isLoading: false,
+            outputId: output.id,
+        });
+
+        dispatch({
+            type: SEND.AMOUNT_ERROR,
+            error,
             outputId: output.id,
         });
     }

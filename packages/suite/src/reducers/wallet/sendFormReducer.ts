@@ -84,7 +84,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
             // change input "Amount"
             case SEND.HANDLE_AMOUNT_CHANGE: {
-                const { outputId, amount, decimals, availableBalance, error } = action;
+                const { outputId, amount, decimals, availableBalance } = action;
                 const output = getOutput(draft.outputs, outputId);
                 const amountBig = new Bignumber(amount);
 
@@ -111,19 +111,22 @@ export default (state: State | null = null, action: WalletAction): State | null 
                     return draft;
                 }
 
-                if (error) {
-                    output.amount.error = error;
-                    return draft;
-                }
-
                 break;
             }
 
-            // change input "Amount"
+            // change loading state in "Amount"
             case SEND.AMOUNT_LOADING: {
                 const { isLoading, outputId } = action;
                 const output = getOutput(draft.outputs, outputId);
                 output.amount.isLoading = isLoading;
+                return draft;
+            }
+
+            // change error state in "Amount"
+            case SEND.AMOUNT_ERROR: {
+                const { error, outputId } = action;
+                const output = getOutput(draft.outputs, outputId);
+                output.amount.error = error;
                 return draft;
             }
 

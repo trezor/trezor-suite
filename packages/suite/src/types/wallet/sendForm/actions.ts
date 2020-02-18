@@ -29,6 +29,11 @@ export type SendFormActions =
           outputId: number;
       }
     | {
+          type: typeof SEND.AMOUNT_ERROR;
+          error: typeof VALIDATION_ERRORS.XRP_CANNOT_SEND_LESS_THAN_RESERVE | null;
+          outputId: number;
+      }
+    | {
           type: typeof SEND.SET_MAX;
           outputId: number;
       }

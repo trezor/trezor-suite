@@ -3,6 +3,7 @@ import { Dispatch, GetState } from '@suite-types';
 import { SEND } from '@wallet-actions/constants';
 import { ETH_DEFAULT_GAS_LIMIT, ETH_DEFAULT_GAS_PRICE } from '@wallet-constants/sendForm';
 import { FeeLevel, Output } from '@wallet-types/sendForm';
+import debounce from 'debounce';
 import { formatNetworkAmount, getFiatValue } from '@wallet-utils/accountUtils';
 // import { formatNetworkAmount, getAccountKey, getFiatValue } from '@wallet-utils/accountUtils';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
@@ -176,10 +177,6 @@ export const handleAmountChange = (outputId: number, amount: string) => (
         }
     }
 
-    if (account.networkType === 'ripple') {
-        dispatch(rippleActions.checkAccountReserve(output.id, amount));
-    }
-
     dispatch({
         type: SEND.HANDLE_AMOUNT_CHANGE,
         outputId,
@@ -187,6 +184,15 @@ export const handleAmountChange = (outputId: number, amount: string) => (
         decimals: network.decimals,
         availableBalance: account.formattedBalance,
     });
+
+    if (account.networkType === 'ripple' && output.address.value && !output.address.error) {
+        dispatch({
+            type: SEND.AMOUNT_LOADING,
+            isLoading: true,
+            outputId: output.id,
+        });
+        dispatch(debounce(rippleActions.checkAccountReserve(output.id, amount), 700));
+    }
 
     dispatch(composeChange('amount'));
 };

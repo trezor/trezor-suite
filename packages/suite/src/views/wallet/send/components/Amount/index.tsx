@@ -58,7 +58,7 @@ const getMessage = (
     reserve: string | null,
     isLoading: Output['amount']['isLoading'],
 ) => {
-    if (isLoading && !error) return 'Loading';
+    if (isLoading && !error) return 'Loading'; // TODO loader or text?
 
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
