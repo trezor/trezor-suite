@@ -1,28 +1,11 @@
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { colors, Icon } from '@trezor/components-v2';
 import Divider from '../Divider';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
 import { Props as ContainerProps } from '../../Container';
 import { MENU_PADDING } from '@suite-constants/menu';
-
-export const SHAKE = keyframes`
-    10%, 90% {
-    transform: translate3d(-1px, 0, 0);
-    }
-    
-    20%, 80% {
-        transform: translate3d(2px, 0, 0);
-    }
-
-    30%, 50%, 70% {
-        transform: translate3d(-4px, 0, 0);
-    }
-
-    40%, 60% {
-        transform: translate3d(4px, 0, 0);
-    }
-`;
+import { SHAKE } from '@suite-support/styles/animations';
 
 const Wrapper = styled.div`
     padding-left: ${MENU_PADDING}px;
