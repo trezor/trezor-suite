@@ -56,7 +56,10 @@ const getMessage = (
     error: Output['amount']['error'],
     decimals: Network['decimals'],
     reserve: string | null,
+    isLoading: Output['amount']['isLoading'],
 ) => {
+    if (isLoading && !error) return 'Loading';
+
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
             return <Translation {...messages.TR_AMOUNT_IS_NOT_SET} />;
@@ -108,7 +111,7 @@ export default ({ fiat, sendFormActions, intl, output, selectedAccount }: Props)
     const { symbol } = account;
     const { decimals } = network;
     const { id, amount, fiatValue, localCurrency } = output;
-    const { value, error } = amount;
+    const { value, error, isLoading } = amount;
     const reserve =
         account.networkType === 'ripple' ? formatNetworkAmount(account.misc.reserve, symbol) : null;
 
@@ -116,7 +119,7 @@ export default ({ fiat, sendFormActions, intl, output, selectedAccount }: Props)
         <Wrapper>
             <Left>
                 <StyledInput
-                    state={getInputState(error, value)}
+                    state={getInputState(error, value, isLoading)}
                     topLabel={
                         <Label>
                             {intl.formatMessage(messages.TR_AMOUNT)}
@@ -137,7 +140,7 @@ export default ({ fiat, sendFormActions, intl, output, selectedAccount }: Props)
                     display="block"
                     value={value || ''}
                     onChange={e => sendFormActions.handleAmountChange(id, e.target.value)}
-                    bottomText={getMessage(error, decimals, reserve)}
+                    bottomText={getMessage(error, decimals, reserve, isLoading)}
                 />
                 <CurrencySelect key="currency-select" symbol={symbol} tokens={account.tokens} />
             </Left>

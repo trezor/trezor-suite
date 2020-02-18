@@ -2,6 +2,7 @@ import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 
 interface Amount {
     value: null | string;
+    isLoading: boolean;
     error:
         | null
         | typeof VALIDATION_ERRORS.IS_EMPTY

@@ -4,6 +4,7 @@ export const SET_ADDITIONAL_FORM_VISIBILITY = '@wallet-send-form/set-additional-
 export const HANDLE_ADDRESS_CHANGE = '@wallet-send-form/handle-address';
 export const COMPOSE_PROGRESS = '@wallet-send-form/compose-progress';
 export const HANDLE_AMOUNT_CHANGE = '@wallet-send-form/handle-amount';
+export const AMOUNT_LOADING = '@wallet-send-form/amount-loading';
 export const SET_MAX = '@wallet-send-form/set-max';
 
 export const HANDLE_SELECT_CURRENCY_CHANGE = '@wallet-send-form/handle-local-currency';

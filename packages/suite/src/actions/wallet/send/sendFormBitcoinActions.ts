@@ -106,7 +106,7 @@ export const addRecipient = () => (dispatch: Dispatch, getState: GetState) => {
     const newOutput = {
         id: lastOutputId + 1,
         address: { value: null, error: null },
-        amount: { value: null, error: null },
+        amount: { value: null, error: null, isLoading: false },
         fiatValue: { value: null },
         localCurrency: { value: localCurrency },
     };

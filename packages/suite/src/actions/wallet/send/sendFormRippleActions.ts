@@ -73,9 +73,15 @@ export const checkAccountReserve = (outputId: number, amount: string) => async (
     if (!send || selectedAccount.status !== 'loaded') return;
     const { account } = selectedAccount;
     if (account.networkType !== 'ripple') return null;
-
     const { misc } = account;
     const output = getOutput(send.outputs, outputId);
+
+    dispatch({
+        type: SEND.AMOUNT_LOADING,
+        isLoading: true,
+        outputId: output.id,
+    });
+
     const address = output.address.value;
     const amountBig = new BigNumber(amount);
 
@@ -97,6 +103,12 @@ export const checkAccountReserve = (outputId: number, amount: string) => async (
                 : undefined;
 
         console.log('error', error);
+
+        dispatch({
+            type: SEND.AMOUNT_LOADING,
+            isLoading: false,
+            outputId: output.id,
+        });
     }
 };
 

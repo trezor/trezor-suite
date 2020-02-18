@@ -24,6 +24,11 @@ export type SendFormActions =
           availableBalance: Account['availableBalance'];
       }
     | {
+          type: typeof SEND.AMOUNT_LOADING;
+          isLoading: boolean;
+          outputId: number;
+      }
+    | {
           type: typeof SEND.SET_MAX;
           outputId: number;
       }

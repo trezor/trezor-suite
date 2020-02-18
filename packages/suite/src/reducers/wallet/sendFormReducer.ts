@@ -19,7 +19,7 @@ const initialState = (
             // fill first output by default
             id: FIRST_OUTPUT_ID,
             address: { value: null, error: null },
-            amount: { value: null, error: null },
+            amount: { value: null, error: null, isLoading: false },
             fiatValue: { value: null },
             localCurrency: { value: localCurrency },
         },
@@ -117,6 +117,14 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 }
 
                 break;
+            }
+
+            // change input "Amount"
+            case SEND.AMOUNT_LOADING: {
+                const { isLoading, outputId } = action;
+                const output = getOutput(draft.outputs, outputId);
+                output.amount.isLoading = isLoading;
+                return draft;
             }
 
             // change select "Currency"
