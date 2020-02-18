@@ -118,7 +118,12 @@ const PassphraseTypeCard = (props: Props) => {
     };
 
     if (enterPressed) {
-        submit(value);
+        // Trigger submit on pressing Enter in case of single col modal (creating/confirming hidden wallet)
+        // In case of two-col modal (selecting between standard and hidden wallet)
+        // only the hidden wallet part handle the enter press.
+        if (props.singleColModal || props.showPassphraseInput) {
+            submit(value);
+        }
     }
 
     return (
