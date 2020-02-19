@@ -68,7 +68,7 @@ type WrapperProps = Omit<Props, 'icon'>;
 interface Props extends React.SVGAttributes<HTMLDivElement> {
     className?: string;
     icon: IconType;
-    size?: number | string;
+    size?: number;
     color?: string;
     isActive?: boolean;
     canAnimate?: boolean;
