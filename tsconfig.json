@@ -253,7 +253,6 @@
         "sourceMap": true,
         "strict": true,
         "target": "ES2020",
-        "typeRoots": ["node_modules/@trezor/typescript-typings/types", "node_modules/@types"]
     },
     "exclude": [
         "node_modules",
