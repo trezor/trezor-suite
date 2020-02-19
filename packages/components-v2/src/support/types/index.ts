@@ -21,7 +21,7 @@ export interface InputButton {
     iconSize?: number;
     iconColor?: string;
     iconColorHover?: string;
-    disabled?: boolean;
+    isDisabled?: boolean;
     onClick: () => void;
 }
 

@@ -110,7 +110,7 @@ const BottomText = styled.div<Props>`
     color: ${props => getStateColor(props.state)};
 `;
 
-const Button = styled.button`
+const Button = styled.button<{ disabled?: boolean }>`
     font-family: ${variables.FONT_FAMILY.TTHOVES};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -119,13 +119,24 @@ const Button = styled.button`
     outline: none;
     display: flex;
     align-items: center;
-    cursor: pointer;
     padding: 0 0 0 5px;
     background: ${colors.WHITE};
 
-    &:hover {
-        color: ${colors.BLACK0};
-    }
+    ${props =>
+        !props.disabled &&
+        css`
+            cursor: pointer;
+
+            &:hover {
+                color: ${colors.BLACK0};
+            }
+        `}
+
+    ${props =>
+        props.disabled &&
+        css`
+            opacity: 0.7;
+        `}
 `;
 
 const ButtonText = styled.div`
@@ -227,6 +238,7 @@ const Input = ({
                             onClick={button.onClick}
                             onMouseEnter={handleButtonEnter}
                             onMouseLeave={handleButtonLeave}
+                            disabled={button.isDisabled}
                         >
                             {button.icon && (
                                 <StyledIcon
