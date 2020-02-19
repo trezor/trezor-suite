@@ -12,6 +12,7 @@ import { Translation } from '@suite-components/Translation';
 import { Link, FormattedNumber } from '@suite-components';
 import AccountNavigation from './components/AccountNavigation/Container';
 import Badge from '@suite-components/Badge';
+import HiddenBalance from '@suite-components/HiddenBalance/Container';
 import { Props } from './Container';
 
 const Wrapper = styled.div<{ selected: boolean }>`
@@ -145,7 +146,10 @@ const AccountItem = React.memo((props: Props) => {
 
                         <Balance>
                             <CryptoValue>
-                                {account.formattedBalance} {account.symbol.toUpperCase()}
+                                <HiddenBalance
+                                    stringToHide={account.formattedBalance}
+                                    symbol={account.symbol.toUpperCase()}
+                                />
                             </CryptoValue>
                             {fiatBalance && (
                                 <StyledBadge>
