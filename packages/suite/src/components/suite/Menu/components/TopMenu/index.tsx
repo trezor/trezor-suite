@@ -5,6 +5,7 @@ import Divider from '../Divider';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
 import { Props as ContainerProps } from '../../Container';
 import { MENU_PADDING } from '@suite-constants/menu';
+import { SHAKE } from '@suite-support/styles/animations';
 
 const Wrapper = styled.div`
     padding-left: ${MENU_PADDING}px;
@@ -31,6 +32,11 @@ const DeviceRow = styled.div`
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
 
+    animation: ${SHAKE} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden; /* used for hardware acceleration */
+    perspective: 1000px; /* used for hardware acceleration */
+
     &:hover {
         background-color: ${colors.BLACK25};
     }
@@ -55,10 +61,12 @@ const IconWrapper = styled.div`
 interface Props {
     selectedDevice: ContainerProps['selectedDevice'];
     goto: ContainerProps['goto'];
+    deviceCount: number;
 }
 
 const TopMenu = (props: Props) => (
-    <Wrapper>
+    // forces remount that will trigger animation with every deviceCount change
+    <Wrapper key={props.deviceCount}>
         <DeviceStatus>
             {!props.selectedDevice && <DeviceRow />}
             {props.selectedDevice && (
