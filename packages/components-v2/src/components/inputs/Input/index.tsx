@@ -232,7 +232,11 @@ const Input = ({
                                 <StyledIcon
                                     icon={button.icon}
                                     size={button.iconSize || 10}
-                                    color={buttonHover ? colors.BLACK0 : colors.BLACK25}
+                                    color={
+                                        buttonHover
+                                            ? button.iconColorHover || colors.BLACK0
+                                            : button.iconColor || colors.BLACK25
+                                    }
                                 />
                             )}
                             {button.text && <ButtonText>{button.text}</ButtonText>}
