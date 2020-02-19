@@ -148,7 +148,7 @@ const AccountItem = React.memo((props: Props) => {
                             <CryptoValue>
                                 <HiddenBalance
                                     stringToHide={account.formattedBalance}
-                                    symbol={account.symbol.toUpperCase()}
+                                    symbol={account.symbol}
                                 />
                             </CryptoValue>
                             {fiatBalance && (

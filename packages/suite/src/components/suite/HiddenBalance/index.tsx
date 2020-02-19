@@ -1,9 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React from 'react';
+import { useHover } from '@suite-utils/dom';
 import styled from 'styled-components';
-
-interface Props {
-    stringToHide: string;
-}
+import { Account } from '@wallet-types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -17,49 +15,30 @@ const Symbol = styled.div`
     padding-left: 1ch;
 `;
 
-const useHover = () => {
-    const [value, setValue] = useState(false);
-
-    const ref = useRef(null);
-
-    const handleMouseOver = () => setValue(true);
-    const handleMouseOut = () => setValue(false);
-
-    useEffect(
-        () => {
-            const node = ref.current;
-            if (node) {
-                node.addEventListener('mouseover', handleMouseOver);
-                node.addEventListener('mouseout', handleMouseOut);
-
-                return () => {
-                    node.removeEventListener('mouseover', handleMouseOver);
-                    node.removeEventListener('mouseout', handleMouseOut);
-                };
-            }
-        },
-        [ref.current], // Recall only if ref changes
-    );
-
-    return [ref, value];
-};
+interface Props {
+    stringToHide: string;
+    symbol: Account['symbol'];
+    discreetMode: boolean;
+}
 
 export default ({ stringToHide, symbol, discreetMode }: Props) => {
     const [hoverRef, isHovered] = useHover();
     const stringLength = stringToHide.length;
+    const uppercaseSymbol = symbol.toUpperCase();
 
     if (!discreetMode)
         return (
             <Wrapper>
-                {stringToHide} {symbol}
+                {stringToHide} {uppercaseSymbol}
             </Wrapper>
         );
 
     return (
+        // @ts-ignore
         <Wrapper ref={hoverRef}>
             {isHovered && stringToHide}
             {!isHovered && [...Array(stringLength)].map(() => <Dot>•</Dot>)}
-            <Symbol>{symbol}</Symbol>
+            <Symbol>{uppercaseSymbol}</Symbol>
         </Wrapper>
     );
 };
