@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { P, Switch, Icon, variables, colors, CoinLogo } from '@trezor/components-v2';
+import { P, Switch, Icon, variables, colors, CoinLogo } from '@trezor/components';
 import { Translation, Link } from '@suite-components';
 import messages from '@suite/support/messages';
 import { SettingsLayout } from '@settings-components';
@@ -11,7 +11,6 @@ import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { Network, ExternalNetwork } from '@wallet-types';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { SectionHeader, Section, ActionColumn, Row } from '@suite-components/Settings';
-import { getPrettyUrl } from '@suite-utils/url';
 
 const mapStateToProps = (state: AppState) => ({
     wallet: state.wallet,
@@ -212,7 +211,7 @@ const Settings = (props: Props) => {
                         <Coin network={n} />
                         <ActionColumn>
                             <StyledLink variant="nostyle" href={n.url} size="small">
-                                <Translation>{getPrettyUrl(n.url)}</Translation>
+                                <Translation>{new URL(n.url).hostname}</Translation>
                             </StyledLink>
                         </ActionColumn>
                     </Row>

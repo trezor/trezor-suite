@@ -6,8 +6,8 @@ import { P, Switch, Link, colors } from '@trezor/components';
 
 import { SUITE } from '@suite-actions/constants';
 import messages from '@suite/support/messages';
-
-import { SettingsLayout, Translation } from '@settings-components';
+import { Translation } from '@suite-components';
+import { SettingsLayout } from '@settings-components';
 import { getFwVersion } from '@suite-utils/device';
 import {
     SEED_MANUAL_URL,

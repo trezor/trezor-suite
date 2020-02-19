@@ -1,12 +1,6 @@
 import React from 'react';
-<<<<<<< 0494e14d4caf8831fff0d560ef537ebceb932b34
 import { Switch } from '@trezor/components';
-import { SuiteLayout } from '@suite-components';
-import { Menu as SettingsMenu } from '@settings-components';
-=======
-import { Switch } from '@trezor/components-v2';
 import { SettingsLayout } from '@settings-components';
->>>>>>> introduce SettingsLayout, closes #1025
 
 import { Props } from './Container';
 
