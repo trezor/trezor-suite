@@ -52,6 +52,8 @@ const init = async () => {
     mainWindow = new BrowserWindow({
         width: winBounds.width,
         height: winBounds.height,
+        minWidth: store.MIN_WIDTH,
+        minHeight: store.MIN_HEIGHT,
         webPreferences: {
             webSecurity: !isDev,
             allowRunningInsecureContent: isDev,
