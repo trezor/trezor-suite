@@ -101,7 +101,8 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         gasPrice: gasPrice.value,
         nonce: account.misc.nonce,
     });
-
+    // TODO: @Vladimir
+    // use import { EthereumTransaction } from 'trezor-connect'; instead of EthPreparedTransaction
     // @ts-ignore
     const signedTransaction = await TrezorConnect.ethereumSignTransaction({
         device: {
@@ -219,9 +220,10 @@ export const handleData = (data: string) => async (dispatch: Dispatch, getState:
         },
     });
 
-    // @ts-ignore // TODO FIX FALLBACK LEVELS
+    if (!newFeeLevels.success) return null;
+
     const level = newFeeLevels.payload.levels[0];
-    const gasLimit = level.feeLimit;
+    const gasLimit = level.feeLimit || '0'; // TODO: default
     const gasPrice = fromWei(level.feePerUnit, 'gwei');
 
     // update custom fee

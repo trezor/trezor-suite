@@ -40,7 +40,8 @@ const ShamirStep = (props: Props) => {
                             data-test="@onboarding/button-standard-backup"
                             action={() => {
                                 props.callActionAndGoToNextStep(
-                                    () => props.resetDevice({ backupType: 0 }),
+                                    // eslint-disable-next-line @typescript-eslint/camelcase
+                                    () => props.resetDevice({ backup_type: 0 }),
                                     STEP.ID_SECURITY_STEP,
                                 );
                             }}
@@ -53,7 +54,8 @@ const ShamirStep = (props: Props) => {
                         <Option
                             action={() => {
                                 props.callActionAndGoToNextStep(
-                                    () => props.resetDevice({ backupType: 1 }),
+                                    // eslint-disable-next-line @typescript-eslint/camelcase
+                                    () => props.resetDevice({ backup_type: 1 }),
                                     STEP.ID_SECURITY_STEP,
                                 );
                             }}

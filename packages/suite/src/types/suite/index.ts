@@ -34,11 +34,7 @@ import { SUITE } from '@suite-actions/constants';
 // this weird export is because of --isolatedModules and next.js 9
 export type ExtendedMessageDescriptor = ExtendedMessageDescriptor$;
 
-type TrezorConnectEvents =
-    | Omit<TransportEvent, 'event'>
-    | UiEvent
-    | Omit<DeviceEvent, 'event'>
-    | BlockchainEvent;
+type TrezorConnectEvents = TransportEvent | UiEvent | DeviceEvent | BlockchainEvent;
 
 export type AppState = AppState$;
 

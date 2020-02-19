@@ -50,7 +50,7 @@ const getBridgeLibByOs = () => {
     const os = getOS();
     const arch = getArch();
     const bridgeVersion = getBridgeVersion();
-    const filePath = `static/bridge/${bridgeVersion}`;
+    const filePath = `public/static/bridge/${bridgeVersion}`;
     const prefixedFilePath = isDev ? filePath : `build/${filePath}`;
     const bridgeStaticFolder = join(__dirname, `../${prefixedFilePath}`);
 

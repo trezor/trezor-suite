@@ -4,8 +4,8 @@ import { SEND } from '@wallet-actions/constants';
 import { XRP_FLAG, VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { calculateMax, calculateTotal, getOutput } from '@wallet-utils/sendFormUtils';
-import BigNumber from 'bignumber.js';
-import TrezorConnect from 'trezor-connect';
+import Bignumber from 'bignumber.js';
+import TrezorConnect, { RipplePayment } from 'trezor-connect';
 
 /*
     Compose xrp transaction
@@ -20,8 +20,8 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     const { availableBalance } = account;
     const feeInSatoshi = send.selectedFee.feePerUnit;
     let tx;
-    const totalSpentBig = new BigNumber(calculateTotal(amountInSatoshi, feeInSatoshi));
-    const max = new BigNumber(calculateMax(availableBalance, feeInSatoshi));
+    const totalSpentBig = new Bignumber(calculateTotal(amountInSatoshi, feeInSatoshi));
+    const max = new Bignumber(calculateMax(availableBalance, feeInSatoshi));
     const payloadData = {
         totalSpent: totalSpentBig.toString(),
         fee: feeInSatoshi,
@@ -76,7 +76,7 @@ export const checkAccountReserve = (outputId: number, amount: string) => async (
     const { misc } = account;
     const output = getOutput(send.outputs, outputId);
     const address = output.address.value;
-    const amountBig = new BigNumber(amount);
+    const amountBig = new Bignumber(amount);
 
     if (!address || !amount || !misc) return null;
 
@@ -86,10 +86,11 @@ export const checkAccountReserve = (outputId: number, amount: string) => async (
     });
 
     // TODO: handle error state
+
     if (response.success) {
         const targetAccountBalance = formatNetworkAmount(response.payload.balance, account.symbol);
         const reserve = formatNetworkAmount(misc.reserve, account.symbol);
-        const targetAccountIsActive = new BigNumber(targetAccountBalance).isGreaterThan(reserve);
+        const targetAccountIsActive = new Bignumber(targetAccountBalance).isGreaterThan(reserve);
         const error =
             !targetAccountIsActive && amountBig.isLessThan(reserve)
                 ? VALIDATION_ERRORS.XRP_CANNOT_SEND_LESS_THAN_RESERVE
@@ -119,12 +120,6 @@ export const handleDestinationTagChange = (destinationTag: string) => (dispatch:
     });
 };
 
-interface Payment {
-    destination: string | null;
-    destinationTag?: number | null;
-    amount: string | null;
-}
-
 /*
     Send transaction
  */
@@ -135,12 +130,14 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
 
     const { account } = selectedAccount;
     const { selectedFee, outputs, networkTypeRipple } = send;
+    const amount = outputs[0].amount.value;
+    const address = outputs[0].address.value;
     const { destinationTag } = networkTypeRipple;
 
-    if (account.networkType !== 'ripple' || !destinationTag) return null;
+    if (account.networkType !== 'ripple' || !destinationTag || !amount || !address) return null;
 
-    const payment: Payment = {
-        destination: outputs[0].address.value,
+    const payment: RipplePayment = {
+        destination: address,
         amount: networkAmountToSatoshi(outputs[0].amount.value, account.symbol),
     };
 
@@ -148,7 +145,6 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         payment.destinationTag = parseInt(destinationTag.value || '0', 10);
     }
 
-    // @ts-ignore
     const signedTransaction = await TrezorConnect.rippleSignTransaction({
         device: {
             path: selectedDevice.path,
@@ -165,7 +161,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         },
     });
 
-    if (!signedTransaction || !signedTransaction.success) {
+    if (!signedTransaction.success) {
         dispatch(
             notificationActions.add({
                 type: 'sign-tx-error',

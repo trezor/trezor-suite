@@ -15,8 +15,6 @@ import { serializeDiscovery } from '@suite-utils/storage';
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
     action: SuiteAction | WalletAction,
 ): Promise<SuiteAction | WalletAction> => {
-    // @ts-ignore
-    const prevState = api.getState();
     // pass action
     next(action);
 

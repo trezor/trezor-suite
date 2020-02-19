@@ -126,6 +126,7 @@ const Passphrase = (props: Props) => {
                 colorVariant="secondary"
                 offerPassphraseOnDevice={onDeviceOffer}
                 showPassphraseInput
+                singleColModal
                 onSubmit={onSubmit}
             />
         );

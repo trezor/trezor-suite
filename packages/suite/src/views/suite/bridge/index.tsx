@@ -101,30 +101,33 @@ type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchT
 interface Installer {
     label: string;
     value: string;
-    signature: string;
-    preferred: boolean;
+    signature?: string;
+    preferred?: boolean;
 }
 
 const InstallBridge = (props: Props) => {
     const [selectedTarget, setSelectedTarget] = useState<Installer | null>(null);
 
-    // todo: typescript any. use type from connect?
-    const installers = props.transport
-        ? props.transport.bridge.packages.map((p: any) => ({
-              label: p.name,
-              value: p.url,
-              signature: p.signature,
-              preferred: p.preferred,
-          }))
-        : [];
+    const installers: Installer[] =
+        props.transport && props.transport.bridge
+            ? props.transport.bridge.packages.map(p => ({
+                  label: p.name,
+                  value: p.url,
+                  signature: p.signature,
+                  preferred: p.preferred,
+              }))
+            : [];
 
-    const preferredTarget = installers.find((i: Installer) => i.preferred === true);
+    const preferredTarget = installers.find(i => i.preferred === true);
     const data = {
         currentVersion:
             props.transport && props.transport.type === 'bridge'
                 ? `Your version ${props.transport!.version}`
                 : 'Not installed',
-        latestVersion: props.transport ? props.transport.bridge.version.join('.') : null,
+        latestVersion:
+            props.transport && props.transport.bridge
+                ? props.transport.bridge.version.join('.')
+                : null,
         installers,
         target: preferredTarget || installers[0],
         uri: URLS.TREZOR_DATA_URL,

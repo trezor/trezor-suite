@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { DEVICE, TRANSPORT } from 'trezor-connect';
-import { SUITE, STORAGE, NOTIFICATION } from '@suite-actions/constants';
+import { SUITE, STORAGE, NOTIFICATION, MODAL } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as suiteActions from '../suiteActions';
 
@@ -336,9 +336,22 @@ const handleDeviceConnect = [
     {
         description: `ignore`,
         state: {
-            device: SUITE_DEVICE,
+            suite: {
+                device: SUITE_DEVICE,
+            },
         },
         device: CONNECT_DEVICE,
+    },
+    {
+        description: `waiting-for-bootloader`,
+        state: {
+            suite: {
+                device: SUITE_DEVICE,
+            },
+            firmware: { status: 'waiting-for-bootloader' },
+        },
+        device: getConnectDevice({ path: '3', mode: 'bootloader' }),
+        result: SUITE.SELECT_DEVICE,
     },
 ];
 
@@ -722,7 +735,7 @@ const authorizeDevice = [
     },
     {
         description: `with device which needs FW update`,
-        state: {
+        suiteState: {
             device: getSuiteDevice({
                 connected: true,
                 firmware: 'required',
@@ -732,7 +745,7 @@ const authorizeDevice = [
     },
     {
         description: `success`,
-        state: {
+        suiteState: {
             device: getSuiteDevice({
                 connected: true,
             }),
@@ -740,8 +753,89 @@ const authorizeDevice = [
         result: SUITE.AUTH_DEVICE,
     },
     {
+        description: `duplicate detected`,
+        suiteState: {
+            device: getSuiteDevice({
+                connected: true,
+                instance: 2,
+                state: undefined,
+            }),
+        },
+        devicesState: [
+            getSuiteDevice({
+                connected: true,
+                useEmptyPassphrase: false,
+                instance: 1,
+                state: 'state@device-id:1',
+            }),
+            getSuiteDevice({
+                connected: true,
+                useEmptyPassphrase: false,
+                instance: 2,
+                state: undefined,
+            }),
+        ],
+        result: MODAL.OPEN_USER_CONTEXT,
+        deviceReducerResult: [
+            getSuiteDevice({
+                connected: true,
+                useEmptyPassphrase: false,
+                instance: 1,
+                state: 'state@device-id:1',
+            }),
+            getSuiteDevice({
+                connected: true,
+                useEmptyPassphrase: false,
+                instance: 2,
+                state: undefined,
+            }),
+        ],
+    },
+    {
+        // detected duplicate was authorized "on device" therefore it's know as "hidden wallet"
+        // selected device is authorized "on host" as "standard wallet"
+        description: `duplicate detected (current device has useEmptyPassphrase flag)`,
+        suiteState: {
+            device: getSuiteDevice({
+                connected: true,
+                useEmptyPassphrase: true,
+                instance: 2,
+                state: undefined,
+            }),
+        },
+        devicesState: [
+            getSuiteDevice({
+                connected: true,
+                useEmptyPassphrase: false,
+                instance: 1,
+                state: 'state@device-id:1',
+            }),
+            getSuiteDevice({
+                connected: true,
+                useEmptyPassphrase: true,
+                instance: 2,
+                state: undefined,
+            }),
+        ],
+        result: MODAL.OPEN_USER_CONTEXT,
+        deviceReducerResult: [
+            getSuiteDevice({
+                connected: true,
+                useEmptyPassphrase: true,
+                instance: 1,
+                state: 'state@device-id:1',
+            }),
+            getSuiteDevice({
+                connected: true,
+                useEmptyPassphrase: false,
+                instance: 2,
+                state: undefined,
+            }),
+        ],
+    },
+    {
         description: `with TrezorConnect error`,
-        state: {
+        suiteState: {
             device: getSuiteDevice({
                 connected: true,
             }),
@@ -770,12 +864,27 @@ const authConfirm = [
         getDeviceState: {
             success: false,
             payload: {
-                error: 'getAddress error',
+                error: 'getDeviceState error',
             },
         },
         result: {
             type: SUITE.RECEIVE_AUTH_CONFIRM,
             success: false,
+        },
+    },
+    {
+        description: `cancelled getDeviceState`,
+        state: {
+            device: getSuiteDevice(),
+        },
+        getDeviceState: {
+            success: false,
+            payload: {
+                error: 'auth-confirm-cancel',
+            },
+        },
+        result: {
+            type: SUITE.FORGET_DEVICE,
         },
     },
     {
@@ -791,11 +900,90 @@ const authConfirm = [
     {
         description: `success`,
         state: {
-            device: getSuiteDevice({ state: '0123456' }),
+            device: getSuiteDevice({ instance: 1, state: 'state@device-id:1' }),
         },
         result: {
             type: SUITE.RECEIVE_AUTH_CONFIRM,
             success: true,
+        },
+    },
+];
+
+const createDeviceInstance = [
+    {
+        description: `with unacquired device`,
+        state: {
+            device: getSuiteDevice({
+                type: 'unacquired',
+                connected: true,
+            }),
+        },
+        result: undefined,
+    },
+    {
+        description: `without passphrase_protection`,
+        state: {
+            device: getSuiteDevice({
+                connected: true,
+            }),
+        },
+        result: SUITE.CREATE_DEVICE_INSTANCE,
+    },
+    {
+        description: `without passphrase_protection and trezor-connect error`,
+        state: {
+            device: getSuiteDevice({
+                connected: true,
+            }),
+        },
+        applySettings: {
+            success: false,
+            payload: {
+                error: 'applySettings error',
+            },
+        },
+        result: undefined,
+    },
+    {
+        description: `with passphrase_protection enabled`,
+        state: {
+            device: getSuiteDevice(
+                {
+                    connected: true,
+                },
+                {
+                    passphrase_protection: true,
+                },
+            ),
+        },
+        applySettings: {
+            success: false,
+            payload: {
+                error: 'applySettings error',
+            },
+        },
+        result: SUITE.CREATE_DEVICE_INSTANCE,
+    },
+];
+
+const switchDuplicatedDevice = [
+    {
+        description: `success`,
+        state: {
+            suite: {
+                device: getSuiteDevice({
+                    instance: 1,
+                }),
+            },
+            devices: [SUITE_DEVICE],
+        },
+        device: getSuiteDevice({
+            instance: 1,
+        }),
+        duplicate: SUITE_DEVICE,
+        result: {
+            selected: SUITE_DEVICE,
+            devices: [SUITE_DEVICE],
         },
     },
 ];
@@ -810,4 +998,6 @@ export default {
     acquireDevice,
     authorizeDevice,
     authConfirm,
+    createDeviceInstance,
+    switchDuplicatedDevice,
 };

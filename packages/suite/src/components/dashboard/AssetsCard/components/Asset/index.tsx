@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Network } from '@wallet-types';
+import { Account } from '@wallet-types';
 import { CoinLogo, variables } from '@trezor/components-v2';
-import BigNumber from 'bignumber.js';
-import { FormattedNumber, NoRatesTooltip } from '@suite-components';
+import FiatValue from '@suite-components/FiatValue/Container';
+import { NoRatesTooltip } from '@suite-components';
 import Badge from '@suite-components/Badge';
 import LastWeekGraph from '../LastWeekGraph';
 
@@ -59,66 +59,55 @@ const FiatValueWrapper = styled(Col)``;
 
 export interface Props extends React.HTMLAttributes<HTMLDivElement> {
     name: string;
-    symbol: Network['symbol'];
-    cryptoValue: BigNumber | string | number;
-    fiatValue: BigNumber | string | number;
-    exchangeRate: string | number | null;
-    localCurrency: string;
+    symbol: Account['symbol'];
+    cryptoValue: string;
 }
 
-const Asset = React.memo(
-    ({ name, symbol, cryptoValue, fiatValue, exchangeRate, localCurrency, ...rest }: Props) => {
-        return (
-            <Wrapper {...rest}>
-                <Col>
-                    <AssetLogoWrapper>
-                        <CoinLogo symbol={symbol} size={16} />
-                    </AssetLogoWrapper>
-                    <AssetName>
-                        {name} ({symbol.toUpperCase()})
-                    </AssetName>
-                </Col>
-                <Col>
-                    <CryptoValueWrapper>
-                        {cryptoValue} {symbol.toUpperCase()}{' '}
-                    </CryptoValueWrapper>
-                </Col>
-                <Col>
-                    <FiatValueWrapper>
-                        <SmallBadge>
-                            <FormattedNumber
-                                value={fiatValue.toString()}
-                                currency={localCurrency}
-                            />
-                        </SmallBadge>
-                    </FiatValueWrapper>
-                </Col>
-                <Col>
-                    <GraphWrapper>
-                        <LastWeekGraph symbol={symbol} />
-                    </GraphWrapper>
-                </Col>
-                <Col>
-                    {exchangeRate && (
-                        <SmallBadge>
-                            1 {symbol.toUpperCase()} ={' '}
-                            <FormattedNumber
-                                value={exchangeRate.toString()}
-                                currency={localCurrency}
-                            />
-                        </SmallBadge>
-                    )}
-                    {!exchangeRate && (
-                        <>
+const Asset = React.memo(({ name, symbol, cryptoValue, ...rest }: Props) => {
+    return (
+        <Wrapper {...rest}>
+            <Col>
+                <AssetLogoWrapper>
+                    <CoinLogo symbol={symbol} size={16} />
+                </AssetLogoWrapper>
+                <AssetName>
+                    {name} ({symbol.toUpperCase()})
+                </AssetName>
+            </Col>
+            <Col>
+                <CryptoValueWrapper>
+                    {cryptoValue} {symbol.toUpperCase()}{' '}
+                </CryptoValueWrapper>
+            </Col>
+            <Col>
+                <FiatValueWrapper>
+                    <FiatValue amount={cryptoValue} symbol={symbol}>
+                        {fiatValue => <SmallBadge>{fiatValue}</SmallBadge>}
+                    </FiatValue>
+                </FiatValueWrapper>
+            </Col>
+            <Col>
+                <GraphWrapper>
+                    <LastWeekGraph symbol={symbol} />
+                </GraphWrapper>
+            </Col>
+            <Col>
+                <FiatValue amount={cryptoValue} symbol={symbol}>
+                    {(_fiatValue, exchangeRate) => {
+                        return exchangeRate ? (
+                            <SmallBadge>
+                                1 {symbol.toUpperCase()} = {exchangeRate}
+                            </SmallBadge>
+                        ) : (
                             <SmallBadge>
                                 <BadgeText>N/A</BadgeText> <NoRatesTooltip />
                             </SmallBadge>
-                        </>
-                    )}
-                </Col>
-            </Wrapper>
-        );
-    },
-);
+                        );
+                    }}
+                </FiatValue>
+            </Col>
+        </Wrapper>
+    );
+});
 
 export default Asset;

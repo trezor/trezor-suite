@@ -1,4 +1,4 @@
-import TrezorConnect, { UI } from 'trezor-connect';
+import TrezorConnect, { UI, ButtonRequestMessage } from 'trezor-connect';
 import { RECEIVE } from '@wallet-actions/constants';
 import * as modalActions from '@suite-actions/modalActions';
 import * as notificationActions from '@suite-actions/notificationActions';
@@ -72,8 +72,7 @@ export const showAddress = (path: string, address: string) => async (
     };
 
     // catch button request and open modal
-    // TODO: types in trezor-connect
-    const buttonRequestHandler = (event: any) => {
+    const buttonRequestHandler = (event: ButtonRequestMessage['payload']) => {
         if (!event || event.code !== 'ButtonRequest_Address') return;
         dispatch(
             modalActions.openModal({
