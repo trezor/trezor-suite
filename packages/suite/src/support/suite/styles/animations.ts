@@ -88,7 +88,7 @@ const animationStyles = `
 
 export const SHAKE = keyframes`
     10%, 90% {
-    transform: translate3d(-1px, 0, 0);
+        transform: translate3d(-1px, 0, 0);
     }
     
     20%, 80% {
