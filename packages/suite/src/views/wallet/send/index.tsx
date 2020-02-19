@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import messages from '@suite/support/messages';
-import { colors, variables } from '@trezor/components-v2';
+import { colors } from '@trezor/components-v2';
 import { WalletLayout } from '@wallet-components';
 import AccountName from '@wallet-components/AccountName';
 import AccountSelector from '@wallet-components/AccountSelector/Container';
@@ -14,7 +14,7 @@ import AdditionalForm from './components/AdvancedForm';
 import Amount from './components/Amount/Container';
 import ButtonToggleAdditional from './components/ButtonToggleAdditional';
 import Clear from './components/Clear';
-import Remove from './components/Remove';
+import OutputHeader from './components/OutputHeader';
 import ReviewButtonSection from './components/ReviewButtonSection/Container';
 import { Props } from './Container';
 
@@ -51,20 +51,6 @@ const AdditionalFormHeader = styled.div`
     align-items: center;
 `;
 
-const Header = styled.div`
-    display: flex;
-    min-height: 17px;
-    justify-content: space-between;
-`;
-
-const OutputIndex = styled.div`
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.BLACK25};
-`;
-
 export default ({
     device,
     send,
@@ -94,15 +80,11 @@ export default ({
             <Clear sendFormActions={sendFormActions} />
             {send.outputs.map((output: Output) => (
                 <OutputWrapper key={output.id}>
-                    <Header>
-                        {send.outputs.length > 1 && <OutputIndex>#{output.id + 1}</OutputIndex>}
-                        {output.id !== 0 && (
-                            <Remove
-                                sendFormActionsBitcoin={sendFormActionsBitcoin}
-                                outputId={output.id}
-                            />
-                        )}
-                    </Header>
+                    <OutputHeader
+                        outputs={send.outputs}
+                        output={output}
+                        sendFormActionsBitcoin={sendFormActionsBitcoin}
+                    />
                     <Row>
                         <Address output={output} />
                     </Row>
