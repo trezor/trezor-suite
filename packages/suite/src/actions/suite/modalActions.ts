@@ -1,6 +1,7 @@
 import TrezorConnect, { UI } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
 import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
+import { Account } from '@wallet-types';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 
 export type UserContextPayload =
@@ -11,7 +12,24 @@ export type UserContextPayload =
     | {
           type: 'unverified-address';
           device: TrezorDevice;
+          address: string;
           addressPath: string;
+          symbol: Account['symbol'];
+          networkType: Account['networkType'];
+      }
+    | {
+          type: 'address';
+          device: TrezorDevice;
+          address: string;
+          addressPath: string;
+          symbol: Account['symbol'];
+          networkType: Account['networkType'];
+          cancelable?: boolean;
+      }
+    | {
+          type: 'passphrase-duplicate';
+          device: TrezorDevice;
+          duplicate: TrezorDevice;
       }
     | {
           type: 'add-account';
@@ -26,7 +44,13 @@ export type UserContextPayload =
           tx: WalletAccountTransaction;
       }
     | {
+          type: 'review-transaction';
+      }
+    | {
           type: 'log';
+      }
+    | {
+          type: 'pin-mismatch';
       };
 
 export type ModalActions =
@@ -52,19 +76,32 @@ export const onPinSubmit = (payload: string) => () => {
     TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload });
 };
 
+export const onPinCancel = () => {
+    TrezorConnect.cancel('pin-cancelled');
+};
+
 /**
  * Called from <PassphraseModal /> component
  * Sends passphrase to `trezor-connect`
  * @param {string} passphrase
  */
-export const onPassphraseSubmit = (value: string, passphraseOnDevice?: boolean) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
+export const onPassphraseSubmit = (
+    value: string,
+    passphraseOnDevice: boolean,
+    hasEmptyPassphraseWallet: boolean,
+) => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
     if (!device) return;
 
-    if (!passphraseOnDevice && value === '' && !device.authConfirm) {
+    // update wallet type only on certain conditions
+    const update =
+        !hasEmptyPassphraseWallet &&
+        !passphraseOnDevice &&
+        !device.authConfirm &&
+        !device.state &&
+        value === '';
+
+    if (update) {
         // set standard wallet type if passphrase is blank
         dispatch({
             type: SUITE.UPDATE_PASSPHRASE_MODE,

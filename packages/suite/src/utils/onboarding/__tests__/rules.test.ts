@@ -5,7 +5,6 @@ import {
     DISALLOWED_DEVICE_IS_NOT_CONNECTED,
     DISALLOWED_DEVICE_IS_NOT_USED_HERE,
     DISALLOWED_DEVICE_IS_IN_BOOTLOADER,
-    DISALLOWED_DEVICE_IS_REQUESTING_PIN,
     DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE,
 } from '@onboarding-constants/steps';
 
@@ -13,7 +12,6 @@ import {
     isNotSameDevice,
     isNotConnected,
     isInBootloader,
-    isRequestingPin,
     isNotNewDevice,
     isNotUsedHere,
     getFnForRule,
@@ -97,19 +95,6 @@ describe('rules', () => {
         });
     });
 
-    describe('isRequestingPin', () => {
-        it('should return true', () => {
-            expect(
-                isRequestingPin({
-                    uiInteraction: { name: 'ui-request_pin', counter: 0 },
-                }),
-            ).toEqual(true);
-        });
-        it('cant tell without device', () => {
-            expect(isRequestingPin({})).toEqual(null);
-        });
-    });
-
     describe('isNotNewDevice', () => {
         it('should return false', () => {
             expect(
@@ -148,7 +133,6 @@ describe('rules', () => {
                 DISALLOWED_DEVICE_IS_NOT_CONNECTED,
                 DISALLOWED_DEVICE_IS_NOT_USED_HERE,
                 DISALLOWED_DEVICE_IS_IN_BOOTLOADER,
-                DISALLOWED_DEVICE_IS_REQUESTING_PIN,
                 DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE,
             ].forEach((state: string) => {
                 expect(() => getFnForRule(state)).not.toThrow();

@@ -1,23 +1,21 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import * as connectActions from '@onboarding-actions/connectActions';
+import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { AppState, Dispatch } from '@suite-types';
 import Step from './index';
 
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
-    onboarding: state.onboarding,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
+    resetDevice: bindActionCreators(deviceSettingsActions.resetDevice, dispatch),
+    goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
     callActionAndGoToNextStep: bindActionCreators(
-        connectActions.callActionAndGoToNextStep,
+        onboardingActions.callActionAndGoToNextStep,
         dispatch,
     ),
-    resetDevice: bindActionCreators(connectActions.resetDevice, dispatch),
-    setBackupType: bindActionCreators(onboardingActions.setBackupType, dispatch),
-    goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
 });
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;

@@ -28,10 +28,17 @@ const Wrapper = styled.div<{ variant: Props['variant'] }>`
     display: flex;
     background: ${props => getBgColor(props.variant)};
     color: ${colors.WHITE};
-    padding: 16px;
     & + & {
         border-top: 1px solid ${colors.WHITE};
     }
+`;
+
+const MaxWithWrapper = styled.div`
+    max-width: 1024px;
+    display: flex;
+    flex: 1;
+    padding: 16px;
+    padding-right: 32px;
 `;
 
 const IconWrapper = styled.div`
@@ -53,8 +60,10 @@ export default ({ variant, children }: Props) => {
     const iconElement = getIcon(variant);
     return (
         <Wrapper variant={variant}>
-            {iconElement && <IconWrapper>{iconElement}</IconWrapper>}
-            <Body>{children}</Body>
+            <MaxWithWrapper>
+                {iconElement && <IconWrapper>{iconElement}</IconWrapper>}
+                <Body>{children}</Body>
+            </MaxWithWrapper>
         </Wrapper>
     );
 };

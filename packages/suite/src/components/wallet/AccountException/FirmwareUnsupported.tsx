@@ -4,9 +4,10 @@ import styled from 'styled-components';
 import { CoinLogo, colors } from '@trezor/components';
 import { Button, H2, P, Link } from '@trezor/components-v2';
 
-import { Translation } from '@suite-components/Translation';
+import { Translation } from '@suite-components';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import messages from '@suite/support/messages';
+import { URLS } from '@suite-constants';
 
 interface Props {
     symbol?: string | null;
@@ -17,9 +18,9 @@ interface Props {
 const getInfoUrl = (symbol?: Props['symbol']) => {
     let result;
     const urls = {
-        default: 'https://wiki.trezor.io',
-        xrp: 'https://wiki.trezor.io/Ripple_(XRP)',
-        txrp: 'https://wiki.trezor.io/Ripple_(XRP)',
+        default: URLS.WIKI_URL,
+        xrp: URLS.XRP_MANUAL_URL,
+        txrp: URLS.XRP_MANUAL_URL,
     };
 
     if (!symbol) {

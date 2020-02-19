@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
 import { colors, Loader } from '@trezor/components-v2';
-import * as transactionActions from '@wallet-actions/transactionActions';
 import { WalletLayout } from '@wallet-components';
 import { getAccountTransactions } from '@wallet-utils/accountUtils';
 import { SETTINGS } from '@suite-config';
-import { AppState, Dispatch } from '@suite-types';
 import TransactionList from './components/TransactionList';
 import messages from '@suite/support/messages';
 import NoTransactions from './components/NoTransactions';
 import PricePanel from './components/PricePanel';
+
+import { Props } from './Container';
 
 const LoaderWrapper = styled.div`
     display: flex;
@@ -25,18 +23,7 @@ const LoaderText = styled.div`
     text-align: center;
 `;
 
-const mapStateToProps = (state: AppState) => ({
-    selectedAccount: state.wallet.selectedAccount,
-    transactions: state.wallet.transactions,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    fetchTransactions: bindActionCreators(transactionActions.fetchTransactions, dispatch),
-});
-
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-
-const Transactions = (props: Props) => {
+export default (props: Props) => {
     const { selectedAccount, transactions } = props;
     const [selectedPage, setSelectedPage] = useState(1);
 
@@ -87,5 +74,3 @@ const Transactions = (props: Props) => {
         </WalletLayout>
     );
 };
-
-export default connect(mapStateToProps, mapDispatchToProps)(Transactions);

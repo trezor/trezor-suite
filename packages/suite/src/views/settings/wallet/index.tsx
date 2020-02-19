@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { H2, P, Switch, Link, Icon, variables, colors, CoinLogo } from '@trezor/components-v2';
+import { P, Switch, Link, Icon, variables, colors, CoinLogo } from '@trezor/components-v2';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { SuiteLayout } from '@suite-components';
@@ -10,7 +10,6 @@ import { Menu as SettingsMenu } from '@settings-components';
 import { AppState, Dispatch } from '@suite-types';
 import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { Network, ExternalNetwork } from '@wallet-types';
-// todo: maybe move to @settings-actions ?
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { SectionHeader, Section, ActionColumn, Row } from '@suite-components/Settings';
 
@@ -32,7 +31,6 @@ const Header = styled.div`
     display: flex;
     min-height: 20px;
     justify-content: space-between;
-    padding-left: 4%;
     padding-right: 4%;
     margin-top: 20px;
 `;
@@ -102,6 +100,10 @@ const CoinRow = styled(Row)`
     }
 `;
 
+const StyledLink = styled(Link)`
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
 type FilterFn = (n: Network) => boolean;
 interface CoinsGroupProps {
     label: React.ReactNode;
@@ -110,6 +112,7 @@ interface CoinsGroupProps {
     onToggleOneFn: (symbol: Network['symbol'], visible: boolean) => void;
     filterFn: FilterFn;
     enabledNetworks: Network['symbol'][];
+    type: 'mainnet' | 'testnet'; // used in tests
 }
 
 const CoinsGroup = ({
@@ -119,14 +122,18 @@ const CoinsGroup = ({
     onToggleOneFn,
     filterFn,
     enabledNetworks,
+    ...props
 }: CoinsGroupProps) => (
-    <CoinsGroupWrapper>
+    <CoinsGroupWrapper data-test="@settings/wallet/coins-group">
         <Header>
             <HeaderLeft>
                 <SectionHeader>{label}</SectionHeader>
                 {description && <P size="tiny">{description}</P>}
             </HeaderLeft>
-            <ToggleAll onClick={() => onToggleAllFn(filterFn)}>
+            <ToggleAll
+                onClick={() => onToggleAllFn(filterFn)}
+                data-test={`@settings/wallet/coins-group/${props.type}/toggle-all`}
+            >
                 {NETWORKS.filter(filterFn).some(n => enabledNetworks.includes(n.symbol)) ? (
                     <Translation {...messages.TR_DEACTIVATE_ALL} />
                 ) : (
@@ -179,9 +186,6 @@ const Settings = (props: Props) => {
                     flexDirection: 'column',
                 }}
             >
-                <H2>
-                    <Translation {...messages.TR_ASSETS} />
-                </H2>
                 <P size="tiny">
                     <Translation {...messages.TR_COINS_SETTINGS_ALSO_DEFINES} />
                 </P>
@@ -192,6 +196,7 @@ const Settings = (props: Props) => {
                     filterFn={baseNetworksFilterFn}
                     onToggleOneFn={props.changeCoinVisibility}
                     onToggleAllFn={props.toggleGroupCoinsVisibility}
+                    type="mainnet"
                 />
 
                 <CoinsGroup
@@ -201,6 +206,7 @@ const Settings = (props: Props) => {
                     filterFn={testnetNetworksFilterFn}
                     onToggleOneFn={props.changeCoinVisibility}
                     onToggleAllFn={props.toggleGroupCoinsVisibility}
+                    type="testnet"
                 />
 
                 <SectionHeader>
@@ -214,9 +220,9 @@ const Settings = (props: Props) => {
                         <Row key={n.symbol}>
                             <Coin network={n} />
                             <ActionColumn>
-                                <Link href={n.url}>
-                                    <Translation>{messages.TR_GO_TO_EXTERNAL_WALLET}</Translation>
-                                </Link>
+                                <StyledLink variant="nostyle" href={n.url}>
+                                    <Translation>{n.url.replace('https://', '')}</Translation>
+                                </StyledLink>
                             </ActionColumn>
                         </Row>
                     ))}

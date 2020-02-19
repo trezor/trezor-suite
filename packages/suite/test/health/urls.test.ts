@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 
 import { URLS } from '@suite-constants';
+import externalNetworks from '@wallet-config/externalNetworks';
 
 // Excluded urls
 const excluded = [
@@ -10,17 +11,20 @@ const excluded = [
     URLS.TOS_URL,
 ];
 
-const getUrls = (urls: string[]) => {
-    return urls.filter((url: string) => {
+const getUrls = () => {
+    const constantUrls = Object.values(URLS).filter((url: string) => {
         return !excluded.includes(url);
     });
+    const externalNetworksUrls = externalNetworks.map(n => n.url);
+
+    return [...constantUrls, ...externalNetworksUrls];
 };
 
 describe('Test that all external links are alive', () => {
     beforeEach(() => {
         jest.setTimeout(30000);
     });
-    getUrls(Object.values(URLS)).forEach((url: string) => {
+    getUrls().forEach((url: string) => {
         it(`HTTP GET request to ${url} should respond with range >= 200 && < 400`, async () => {
             const response = await fetch(url);
             expect(response.status).toBeGreaterThanOrEqual(200);

@@ -55,6 +55,7 @@ const AbsoluteWrapper = styled.aside<WrapperProps>`
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
+    height: 100%;
     @media screen and (max-width: ${SCREEN_SIZE.SM}) {
         height: calc(100vh - 52px);
     }

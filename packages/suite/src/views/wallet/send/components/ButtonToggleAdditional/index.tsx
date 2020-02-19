@@ -1,5 +1,5 @@
 import React from 'react';
-import { variables, colors, Icon } from '@trezor/components';
+import { variables, colors, Icon } from '@trezor/components-v2';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
@@ -7,17 +7,23 @@ import { DispatchProps } from '../../Container';
 
 const Wrapper = styled.div`
     display: flex;
-    cursor: pointer;
     min-height: 41px;
     align-items: center;
+    justify-content: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.BASE};
-    color: ${colors.TEXT_PRIMARY};
+    font-size: ${variables.FONT_SIZE.BODY};
+    color: ${colors.BLACK17};
 `;
 
 const ToggleIcon = styled(Icon)`
-    margin-left: 10px;
-    margin-right: 6px;
+    margin-left: 8px;
+`;
+
+const Text = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 `;
 
 interface Props {
@@ -25,17 +31,22 @@ interface Props {
     sendFormActions: DispatchProps['sendFormActions'];
 }
 
-const ToggleAdditionalButton = (props: Props) => (
-    <Wrapper onClick={() => props.sendFormActions.toggleAdditionalFormVisibility()}>
-        <Translation {...messages.TR_ADVANCED_SETTINGS} />
-        <ToggleIcon
-            icon="ARROW_DOWN"
-            color={colors.TEXT_SECONDARY}
-            size={12}
-            isActive={props.isActive}
-            canAnimate={props.isActive}
-        />
+export default (props: Props) => (
+    <Wrapper>
+        <Text onClick={() => props.sendFormActions.toggleAdditionalFormVisibility()}>
+            {props.isActive ? (
+                <Translation {...messages.TR_HIDE_ADVANCED_OPTIONS} />
+            ) : (
+                <Translation {...messages.TR_SHOW_ADVANCED_OPTIONS} />
+            )}
+
+            <ToggleIcon
+                icon="ARROW_DOWN"
+                color={colors.BLACK17}
+                size={12}
+                isActive={props.isActive}
+                canAnimate={props.isActive}
+            />
+        </Text>
     </Wrapper>
 );
-
-export default ToggleAdditionalButton;

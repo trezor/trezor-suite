@@ -1,6 +1,9 @@
-import { Output, State } from '@wallet-types/sendForm';
+import { Output, State, EthTransactionData, EthPreparedTransaction } from '@wallet-types/sendForm';
 import { Account } from '@wallet-types';
+import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import BigNumber from 'bignumber.js';
+import { toHex, toWei } from 'web3-utils';
+import { Transaction } from 'ethereumjs-tx';
 
 export const getOutput = (outputs: Output[], id: number) =>
     outputs.find(outputItem => outputItem.id === id) as Output;
@@ -74,4 +77,74 @@ export const getTransactionInfo = (networkType: Account['networkType'], send: St
         }
         // no default
     }
+};
+
+export const getInputState = (
+    error: typeof VALIDATION_ERRORS[keyof typeof VALIDATION_ERRORS] | null,
+    value: string | null,
+    noSuccess?: boolean,
+) => {
+    if (error) {
+        return 'error';
+    }
+
+    if (noSuccess) {
+        return undefined;
+    }
+
+    if (value && !error) {
+        return 'success';
+    }
+};
+
+// ETH SPECIFIC
+
+const padLeftEven = (hex: string): string => (hex.length % 2 !== 0 ? `0${hex}` : hex);
+
+export const sanitizeHex = ($hex: string): string => {
+    const hex = $hex.toLowerCase().substring(0, 2) === '0x' ? $hex.substring(2) : $hex;
+    if (hex === '') return '';
+    return `0x${padLeftEven(hex)}`;
+};
+
+/*
+    Calculate fee from gas price and gas limit
+ */
+export const calculateEthFee = (gasPrice: string | null, gasLimit: string | null): string => {
+    if (!gasPrice || !gasLimit) {
+        return '0';
+    }
+    try {
+        return new BigNumber(gasPrice).times(gasLimit).toFixed();
+    } catch (error) {
+        // TODO: empty input throws this error.
+        return '0';
+    }
+};
+
+export const prepareEthereumTransaction = (txInfo: EthTransactionData) => {
+    // todo ERC20 support
+    const result: EthPreparedTransaction = {
+        to: txInfo.to,
+        value: toHex(toWei(txInfo.amount, 'ether')),
+        chainId: txInfo.chainId,
+        token: null,
+        nonce: toHex(txInfo.nonce),
+        gasLimit: toHex(txInfo.gasLimit),
+        gasPrice: toHex(toWei(txInfo.gasPrice, 'gwei')),
+        r: '',
+        s: '',
+        v: '',
+    };
+
+    if (txInfo.data) {
+        result.data = sanitizeHex(txInfo.data);
+    }
+
+    return result;
+};
+
+export const serializeEthereumTx = (tx: any) => {
+    const ethTx = new Transaction(tx, { chain: tx.chainId });
+    return `0x${ethTx.serialize().toString('hex')}`;
 };

@@ -27,6 +27,10 @@ import { FirmwareActions } from '@firmware-types';
 import { ExtendedMessageDescriptor as ExtendedMessageDescriptor$ } from '@suite-support/ConnectedIntlProvider';
 import { WalletAction } from '@wallet-types';
 import { BackupActions } from '@backup-actions/backupActions';
+import { RecoveryActions } from '@recovery-actions/recoveryActions';
+import { ObjectValues } from '@suite/types/utils';
+import { SUITE } from '@suite-actions/constants';
+
 // this weird export is because of --isolatedModules and next.js 9
 export type ExtendedMessageDescriptor = ExtendedMessageDescriptor$;
 
@@ -54,6 +58,7 @@ export type Action =
     | OnboardingActions
     | FirmwareActions
     | BackupActions
+    | RecoveryActions
     | SettingsActions;
 
 // export type Dispatch = ReduxDispatch<Action>;
@@ -106,9 +111,11 @@ export type TrezorDevice = AcquiredDevice | UnknownDevice;
 
 export type Store = ReduxStore<AppState, Action>;
 
+export type Lock = ObjectValues<typeof SUITE.LOCK_TYPE>;
+
 export type InjectedModalApplicationProps = {
     modal: JSX.Element | null;
     cancelable: boolean;
-    closeModalApp: () => void;
+    closeModalApp: (preserveParams?: boolean) => void;
     getBackgroundRoute: () => Route$ | typeof undefined;
 };

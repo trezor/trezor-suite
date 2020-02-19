@@ -15,10 +15,14 @@ const MenuItemWrapper = styled.div`
     font-weight: bold;
     color: ${colors.WHITE};
     cursor: pointer;
+    align-items: center;
 `;
 
 const IconWrapper = styled.div`
     padding-right: 5px;
+    display: flex;
+    flex: 1;
+    align-items: center;
 `;
 
 const SubMenu = styled.div`
@@ -37,6 +41,9 @@ interface ComponentProps {
 const Text = styled.div<ComponentProps>`
     color: ${colors.WHITE};
     font-weight: bold;
+    padding-top: 2px;
+    display: flex;
+    align-items: center;
 
     ${props =>
         props.isActive &&
@@ -91,8 +98,13 @@ const BottomMenu = (props: Props) => (
             const isActive = routeObj ? routeObj.app === props.app : false;
 
             return (
-                <In key={text} onClick={() => props.goto(routeObj!.name)} isActive={isActive}>
-                    <MenuItemWrapper data-test={dataTestId} onClick={() => props.goto(route)}>
+                <In
+                    key={text}
+                    data-test={dataTestId}
+                    onClick={() => props.goto(routeObj!.name)}
+                    isActive={isActive}
+                >
+                    <MenuItemWrapper>
                         <IconWrapper>
                             <Icon
                                 color={isActive ? colors.BLACK0 : colors.WHITE}

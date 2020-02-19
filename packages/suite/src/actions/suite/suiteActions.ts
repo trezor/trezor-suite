@@ -2,6 +2,7 @@ import TrezorConnect, { Device, DEVICE } from 'trezor-connect';
 import * as reducersUtils from '@suite-utils/reducerUtils';
 import * as deviceUtils from '@suite-utils/device';
 import { add as addNotification } from '@suite-actions/notificationActions';
+import * as modalActions from '@suite-actions/modalActions';
 import { SUITE } from './constants';
 import { LANGUAGES } from '@suite-config';
 import { Action, Dispatch, GetState, TrezorDevice, AppState } from '@suite-types';
@@ -318,6 +319,15 @@ export const acquireDevice = (requestedDevice?: TrezorDevice) => async (
 };
 
 /**
+ * Inner action used in `authorizeDevice`
+ */
+const updatePassphraseMode = (device: TrezorDevice, hidden: boolean): Action => ({
+    type: SUITE.UPDATE_PASSPHRASE_MODE,
+    payload: device,
+    hidden,
+});
+
+/**
  * Called from `discoveryMiddleware`
  * Fetch device state, update `devices` reducer as result of SUITE.AUTH_DEVICE
  */
@@ -346,11 +356,29 @@ export const authorizeDevice = () => async (
     });
 
     if (response.success) {
-        // TODO: catch already existing state here (new passphrase design)
+        const { state } = response.payload;
+        const s = state.split(':')[0];
+        const duplicate = getState().devices.find(
+            d => d.state && d.state.split(':')[0] === s && d.instance !== device.instance,
+        );
+        if (duplicate) {
+            // get fresh data from reducer, `useEmptyPassphrase` might be changed after TrezorConnect call
+            const freshDeviceData = deviceUtils.getSelectedDevice(device, getState().devices);
+            if (freshDeviceData!.useEmptyPassphrase) {
+                // if currently selected device uses empty passphrase
+                // make sure that founded duplicate will also use empty passphrase
+                dispatch(updatePassphraseMode(duplicate, false));
+                // reset useEmptyPassphrase field for selected device to allow future PassphraseRequests
+                dispatch(updatePassphraseMode(device, true));
+            }
+            dispatch(modalActions.openModal({ type: 'passphrase-duplicate', device, duplicate }));
+            return false;
+        }
+
         dispatch({
             type: SUITE.AUTH_DEVICE,
             payload: device,
-            state: response.payload.state,
+            state,
         });
         return true;
     }
@@ -361,41 +389,13 @@ export const authorizeDevice = () => async (
 };
 
 /**
- * Inner action used in `authConfirm` and `retryAuthConfirm`
+ * Inner action used in `authConfirm`
  */
 const receiveAuthConfirm = (device: TrezorDevice, success: boolean): Action => ({
     type: SUITE.RECEIVE_AUTH_CONFIRM,
     payload: device,
     success,
 });
-
-/**
- * Triggered by user action in `AuthConfirm` component
- */
-export const retryAuthConfirm = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { device } = getState().suite;
-    if (!device) return;
-    const response = await TrezorConnect.getDeviceState({
-        device: {
-            path: device.path,
-            instance: device.instance,
-            state: device.state,
-        },
-        useEmptyPassphrase: device.useEmptyPassphrase,
-    });
-
-    if (response.success) {
-        dispatch(receiveAuthConfirm(device, true));
-        return;
-    }
-
-    // TODO: add code to trezor-connect
-    if (response.payload.error !== 'Passphrase is incorrect') {
-        dispatch(addNotification({ type: 'auth-confirm-error' }));
-    } else {
-        dispatch(addNotification({ type: 'auth-confirm-error', error: response.payload.error }));
-    }
-};
 
 /**
  * Called from `suiteMiddleware`
@@ -414,15 +414,44 @@ export const authConfirm = () => async (dispatch: Dispatch, getState: GetState) 
     });
 
     if (!response.success) {
+        // handle error passed from Passphrase modal
+        if (response.payload.error === 'auth-confirm-cancel') {
+            // needs await to propagate all actions
+            await dispatch(createDeviceInstance(device));
+            // forget previous empty wallet
+            dispatch(forgetDevice(device));
+            return;
+        }
         dispatch(addNotification({ type: 'auth-confirm-error', error: response.payload.error }));
         dispatch(receiveAuthConfirm(device, false));
         return;
     }
 
     if (response.payload.state !== device.state) {
+        dispatch(addNotification({ type: 'auth-confirm-error', error: 'Invalid passphrase' }));
         dispatch(receiveAuthConfirm(device, false));
         return;
     }
 
     dispatch(receiveAuthConfirm(device, true));
+};
+
+/**
+ * Called from `suiteMiddleware`
+ */
+export const switchDuplicatedDevice = (device: TrezorDevice, duplicate: TrezorDevice) => async (
+    dispatch: Dispatch,
+) => {
+    // close modal
+    dispatch(modalActions.onCancel());
+    // release session from authorizeDevice
+    await TrezorConnect.getFeatures({
+        device,
+        keepSession: false,
+    });
+
+    // switch to existing wallet
+    dispatch(selectDevice(duplicate));
+    // remove stateless instance
+    dispatch(forgetDevice(device));
 };

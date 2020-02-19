@@ -4,11 +4,11 @@ import styled, { css } from 'styled-components';
 import { getRoute } from '@suite-utils/router';
 import {
     getTitleForNetwork,
-    getTypeForNetwork,
+    // getTypeForNetwork,
     getAccountFiatBalance,
 } from '@wallet-utils/accountUtils';
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+// import messages from '@suite/support/messages';
 import { Link, FormattedNumber } from '@suite-components';
 import AccountNavigation from './components/AccountNavigation/Container';
 import Badge from '@suite-components/Badge';
@@ -43,25 +43,31 @@ const Right = styled.div`
     display: flex;
     flex-direction: column;
     padding-left: 8px;
+    width: 100%;
     min-width: 0; /* this makes text-overflow on label work */
 `;
 
-const Label = styled.span`
+const AccountName = styled.div`
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     font-size: 16px;
     letter-spacing: -0.2px;
-    color: #808080;
+    color: ${colors.BLACK50};
+    display: flex;
+    justify-content: space-between;
 `;
 
-const LabelAddon = styled.span`
-    padding-right: 2px;
-`;
+const AccountNumber = styled.div``;
+
+// const LabelAddon = styled.span`
+//     padding-right: 2px;
+// `;
 
 const Balance = styled.div`
     display: flex;
     align-items: center;
+    justify-content: space-between;
     font-size: 14px;
     font-weight: normal;
     color: #000;
@@ -90,30 +96,30 @@ const AccountHeader = styled.div<{ selected: boolean }>`
 
 const StyledBadge = styled(Badge)`
     font-size: ${variables.FONT_SIZE.TINY};
-    background: #ebebeb;
+    background: ${colors.BLACK92};
 `;
 
 const AccountItem = React.memo((props: Props) => {
     const { account, selected } = props;
-    const accountType = getTypeForNetwork(account.accountType);
+    // const accountType = getTypeForNetwork(account.accountType);
     const fiatBalance = getAccountFiatBalance(account, props.localCurrency, props.fiat);
 
-    const accountName = (
-        <>
-            <Translation {...getTitleForNetwork(account.symbol)} />
-            {accountType && (
-                <LabelAddon>
-                    <Translation {...accountType} />
-                </LabelAddon>
-            )}{' '}
-            <Translation
-                {...(account.imported
-                    ? messages.TR_IMPORTED_ACCOUNT_HASH
-                    : messages.TR_ACCOUNT_HASH)}
-                values={{ number: String(account.index + 1) }}
-            />
-        </>
-    );
+    // const accountName = (
+    //     <>
+    //         <Translation {...getTitleForNetwork(account.symbol)} />
+    //         {accountType && (
+    //             <LabelAddon>
+    //                 <Translation {...accountType} />
+    //             </LabelAddon>
+    //         )}{' '}
+    //         <Translation
+    //             {...(account.imported
+    //                 ? messages.TR_IMPORTED_ACCOUNT_HASH
+    //                 : messages.TR_ACCOUNT_HASH)}
+    //             values={{ number: String(account.index + 1) }}
+    //         />
+    //     </>
+    // );
 
     return (
         <Wrapper selected={selected}>
@@ -132,7 +138,11 @@ const AccountItem = React.memo((props: Props) => {
                         </LogoWrapper>
                     </Left>
                     <Right>
-                        <Label>{accountName}</Label>
+                        <AccountName>
+                            <Translation {...getTitleForNetwork(account.symbol)} />
+                            <AccountNumber># {account.index + 1}</AccountNumber>
+                        </AccountName>
+
                         <Balance>
                             <CryptoValue>
                                 {account.formattedBalance} {account.symbol.toUpperCase()}

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 // import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-// import { Translation } from '@suite-components/Translation';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import { H2, Link, Button } from '@trezor/components-v2';
 import { AppState } from '@suite-types';
@@ -26,8 +27,9 @@ const Title = styled(H2)`
 `;
 
 const Divider = styled.div`
+    display: flex;
     width: 100%;
-    height: 20px;
+    margin-bottom: 20px;
 `;
 
 const Buttons = styled.div`
@@ -96,7 +98,9 @@ const TransactionDetail = (props: Props) => {
 
     return (
         <Wrapper>
-            <Title>Transaction details</Title>
+            <Title>
+                <Translation {...messages.TR_TRANSACTION_DETAILS} />
+            </Title>
             <BasicDetails
                 tx={tx}
                 txDetails={txDetails}
@@ -111,11 +115,11 @@ const TransactionDetail = (props: Props) => {
             <IODetails tx={tx} txDetails={txDetails} isFetching={isFetching} />
             <Buttons>
                 <Button variant="secondary" onClick={() => props.onCancel()}>
-                    Close
+                    <Translation {...messages.TR_CLOSE} />
                 </Button>
                 <Button alignIcon="right" icon="EXTERNAL_LINK" variant="secondary">
                     <Link variant="nostyle" href={explorerUrl}>
-                        Show details in Block Explorer
+                        <Translation {...messages.TR_SHOW_DETAILS_IN_BLOCK_EXPLORER} />
                     </Link>
                 </Button>
             </Buttons>

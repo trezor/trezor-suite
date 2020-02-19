@@ -1,14 +1,16 @@
+import { URLS } from '@suite-constants';
+
 export default {
     supportedBrowsers: {
         chrome: {
             version: 59,
-            download: 'https://www.google.com/chrome/',
-            update: 'https://support.google.com/chrome/answer/95414',
+            download: URLS.CHROME_DOWNLOAD_URL,
+            update: URLS.CHROME_UPDATE_URL,
         },
         firefox: {
             version: 54,
-            download: 'https://www.mozilla.org/en-US/firefox/new/',
-            update: 'https://support.mozilla.org/en-US/kb/update-firefox-latest-version',
+            download: URLS.FF_DOWNLOAD_URL,
+            update: URLS.FF_UPDATE_URL,
         },
     },
 };

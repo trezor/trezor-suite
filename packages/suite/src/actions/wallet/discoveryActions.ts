@@ -300,17 +300,16 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
     if (bundle.length === 0) {
         if (discovery.status <= DISCOVERY.STATUS.RUNNING && selectedDevice.connected) {
             // call getFeatures to release device session
-            if (!discovery.authConfirm) {
-                await TrezorConnect.getFeatures({
-                    device: {
-                        path: selectedDevice.path,
-                        instance: selectedDevice.instance,
-                        state: selectedDevice.state,
-                    },
-                    keepSession: false,
-                    useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
-                });
-            } else {
+            await TrezorConnect.getFeatures({
+                device: {
+                    path: selectedDevice.path,
+                    instance: selectedDevice.instance,
+                    state: selectedDevice.state,
+                },
+                keepSession: false,
+                useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
+            });
+            if (discovery.authConfirm) {
                 dispatch({ type: SUITE.REQUEST_AUTH_CONFIRM });
             }
         }

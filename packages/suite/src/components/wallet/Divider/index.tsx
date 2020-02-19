@@ -32,11 +32,9 @@ const TextLeft = styled.div`
 
 const TextRight = styled.div``;
 
-const Divider = ({ textLeft, textRight, hasBorder = false, className, testId }: Props) => (
+export default ({ textLeft, textRight, hasBorder = false, className, testId }: Props) => (
     <Wrapper data-test={testId} hasBorder={hasBorder} className={className}>
         <TextLeft>{textLeft}</TextLeft>
         {textRight && <TextRight>{textRight}</TextRight>}
     </Wrapper>
 );
-
-export default Divider;

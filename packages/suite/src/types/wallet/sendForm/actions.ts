@@ -1,97 +1,72 @@
 import { SEND } from '@wallet-actions/constants';
 import { Account } from '@wallet-types';
-import { FeeLevel as FeeLevelBase } from 'trezor-connect';
+import { FeeLevel, PrecomposedTransaction } from 'trezor-connect';
+import { PrecomposedTransactionXrp, PrecomposedTransactionEth } from './transactions';
 import { Output } from './output';
 import { InitialState } from './state';
 
-export interface FeeLevel extends FeeLevelBase {
-    value: string;
-}
+export type SendFormActions =
+    | {
+          type: typeof SEND.HANDLE_ADDRESS_CHANGE;
+          outputId: number;
+          address: string;
+          symbol: Account['symbol'];
+          networkType: Account['networkType'];
+          currentAccountAddress: string;
+      }
+    | {
+          type: typeof SEND.HANDLE_AMOUNT_CHANGE;
+          outputId: number;
+          amount: string;
+          decimals: number;
+          availableBalance: Account['availableBalance'];
+      }
+    | {
+          type: typeof SEND.SET_MAX;
+          outputId: number;
+      }
+    | { type: typeof SEND.COMPOSE_PROGRESS; isComposing: boolean }
+    | {
+          type: typeof SEND.HANDLE_FIAT_VALUE_CHANGE;
+          outputId: number;
+          fiatValue: string;
+      }
+    | {
+          type: typeof SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE;
+          customFee: string | null;
+      }
+    | { type: typeof SEND.HANDLE_FEE_VALUE_CHANGE; fee: FeeLevel }
+    | {
+          type: typeof SEND.HANDLE_SELECT_CURRENCY_CHANGE;
+          outputId: number;
+          localCurrency: Output['localCurrency']['value'];
+      }
+    | {
+          type: typeof SEND.HANDLE_SELECT_CURRENCY_CHANGE;
+          outputId: number;
+          localCurrency: Output['localCurrency']['value'];
+      }
+    | { type: typeof SEND.SET_ADDITIONAL_FORM_VISIBILITY }
+    | { type: typeof SEND.CLEAR; localCurrency: Output['localCurrency']['value'] }
+    | { type: typeof SEND.DELETE_TRANSACTION_INFO; networkType: Account['networkType'] }
+    | {
+          type: typeof SEND.INIT;
+          payload: InitialState;
+          localCurrency: Output['localCurrency']['value'];
+      }
+    | { type: typeof SEND.DISPOSE };
 
-interface AddressChange {
-    type: typeof SEND.HANDLE_ADDRESS_CHANGE;
-    outputId: number;
-    address: string;
-    symbol: Account['symbol'];
-    networkType: Account['networkType'];
-    currentAccountAddress: string;
-}
+export type SendFormBtcActions =
+    | { type: typeof SEND.BTC_ADD_RECIPIENT; newOutput: Output }
+    | { type: typeof SEND.BTC_REMOVE_RECIPIENT; outputId: number }
+    | { type: typeof SEND.BTC_PRECOMPOSED_TX; payload: PrecomposedTransaction };
 
-interface AmountChange {
-    type: typeof SEND.HANDLE_AMOUNT_CHANGE;
-    outputId: number;
-    amount: string;
-    decimals: number;
-    availableBalance: Account['availableBalance'];
-}
+export type SendFormXrpActions =
+    | { type: typeof SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE; destinationTag: string }
+    | { type: typeof SEND.XRP_PRECOMPOSED_TX; payload: PrecomposedTransactionXrp };
 
-interface SetMax {
-    type: typeof SEND.SET_MAX;
-    outputId: number;
-}
-
-interface ComposeProgress {
-    type: typeof SEND.COMPOSE_PROGRESS;
-    isComposing: boolean;
-}
-
-interface FiatValueChange {
-    type: typeof SEND.HANDLE_FIAT_VALUE_CHANGE;
-    outputId: number;
-    fiatValue: string;
-}
-
-interface FeeValueChange {
-    type: typeof SEND.HANDLE_FEE_VALUE_CHANGE;
-    fee: FeeLevel;
-}
-
-interface CustomFeeValueChange {
-    type: typeof SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE;
-    customFee: string | null;
-}
-
-interface CurrencyChange {
-    type: typeof SEND.HANDLE_SELECT_CURRENCY_CHANGE;
-    outputId: number;
-    localCurrency: Output['localCurrency']['value'];
-}
-
-interface AdditionalFormVisibility {
-    type: typeof SEND.SET_ADDITIONAL_FORM_VISIBILITY;
-}
-
-interface Clear {
-    type: typeof SEND.CLEAR;
-    localCurrency: Output['localCurrency']['value'];
-}
-
-interface DeleteTransactionInfo {
-    type: typeof SEND.DELETE_TRANSACTION_INFO;
-    networkType: Account['networkType'];
-}
-
-interface Init {
-    type: typeof SEND.INIT;
-    payload: InitialState;
-    localCurrency: Output['localCurrency']['value'];
-}
-
-interface Dispose {
-    type: typeof SEND.DISPOSE;
-}
-
-export type Actions =
-    | AddressChange
-    | AmountChange
-    | SetMax
-    | ComposeProgress
-    | FiatValueChange
-    | FeeValueChange
-    | CustomFeeValueChange
-    | CurrencyChange
-    | AdditionalFormVisibility
-    | Clear
-    | DeleteTransactionInfo
-    | Init
-    | Dispose;
+export type SendFormEthActions =
+    | { type: typeof SEND.ETH_HANDLE_GAS_LIMIT; gasLimit: string }
+    | { type: typeof SEND.ETH_HANDLE_GAS_PRICE; gasPrice: string }
+    | { type: typeof SEND.ETH_HANDLE_DATA; data: string }
+    | { type: typeof SEND.ETH_PRECOMPOSED_TX; payload: PrecomposedTransactionEth };

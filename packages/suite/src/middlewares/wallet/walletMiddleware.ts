@@ -1,9 +1,9 @@
 import { MiddlewareAPI } from 'redux';
-import { SUITE } from '@suite-actions/constants';
+import { SUITE, ROUTER } from '@suite-actions/constants';
 import { ACCOUNT } from '@wallet-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
+import * as sendFormActions from '@wallet-actions/send/sendFormActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 import { AppState, Action, Dispatch } from '@suite-types';
@@ -35,23 +35,19 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         api.dispatch(blockchainActions.subscribe());
     }
 
-    // leaving wallet app, reset account reducers
-    if (prevRouter.app === 'wallet' && action.type === SUITE.APP_CHANGED) {
-        // api.dispatch(selectedAccountActions.dispose());
-        // api.dispatch(sendFormActions.dispose());
-        // api.dispatch(receiveActions.dispose());
-    }
-
     const nextRouter = api.getState().router;
 
-    if (prevRouter.route && prevRouter.route !== nextRouter.route) {
-        if (prevRouter.route.name === 'wallet-send') {
-            api.dispatch(sendFormActions.dispose());
-        }
-
-        if (prevRouter.route.name === 'wallet-receive') {
-            api.dispatch(receiveActions.dispose());
-        }
+    let resetReducers = action.type === SUITE.SELECT_DEVICE;
+    if (prevRouter.app === 'wallet' && action.type === ROUTER.LOCATION_CHANGE) {
+        // leaving wallet app or switching between accounts
+        resetReducers =
+            (prevRouter.app !== nextRouter.app && !nextRouter.route?.isModal) ||
+            (nextRouter.app === 'wallet' && nextRouter.hash !== prevRouter.hash);
+    }
+    if (resetReducers) {
+        api.dispatch(selectedAccountActions.dispose());
+        api.dispatch(sendFormActions.dispose());
+        api.dispatch(receiveActions.dispose());
     }
 
     api.dispatch(selectedAccountActions.getStateForAction(action));

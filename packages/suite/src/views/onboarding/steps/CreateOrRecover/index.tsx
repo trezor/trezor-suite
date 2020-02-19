@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Translation } from '@suite-components';
 import * as STEP from '@onboarding-constants/steps';
-import { Text, Option, Wrapper } from '@onboarding-components';
+import { Text, Option, Wrapper, OnboardingButton } from '@onboarding-components';
 import messages from '@suite/support/messages';
 import { Props } from './Container';
 
@@ -20,7 +20,7 @@ const CreateOrRecoverStep = (props: Props) => {
 
                 <Wrapper.Options>
                     <Option
-                        data-test="@onboarding/button-path-create"
+                        data-test="@onboarding/path-create-button"
                         action={() => {
                             props.addPath(STEP.PATH_CREATE);
                             props.goToNextStep();
@@ -31,7 +31,7 @@ const CreateOrRecoverStep = (props: Props) => {
                         imgSrc="images/onboarding/create-new.svg"
                     />
                     <Option
-                        data-test="button-path-recovery"
+                        data-test="@onboarding/path-recovery-button"
                         action={() => {
                             props.addPath(STEP.PATH_RECOVERY);
                             props.goToNextStep();
@@ -43,6 +43,15 @@ const CreateOrRecoverStep = (props: Props) => {
                     />
                 </Wrapper.Options>
             </Wrapper.StepBody>
+            <Wrapper.StepFooter>
+                <OnboardingButton.Back
+                    onClick={() => {
+                        props.goToPreviousStep();
+                    }}
+                >
+                    Back
+                </OnboardingButton.Back>
+            </Wrapper.StepFooter>
         </Wrapper.Step>
     );
 };

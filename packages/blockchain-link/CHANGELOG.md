@@ -1,3 +1,10 @@
+# 1.0.7
+#### changes
+- Update outdated node_modules
+- Ripple worker: different reconnection schema since RippleApi@1.6.3
+- Ripple worker: fixed bug with `minLedgerVersion` since RippleApi@1.6.3
+
+
 # 1.0.6
 #### changes
 - Fix for react-native workers

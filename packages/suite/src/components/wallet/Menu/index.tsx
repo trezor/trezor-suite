@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Loader } from '@trezor/components-v2';
+
+import { Loader, colors } from '@trezor/components-v2';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
@@ -14,6 +15,10 @@ import AccountItem from './components/AccountItem/Container';
 import AddAccountButton from './components/AddAccount';
 import ToggleLegacyAccounts from './components/ToggleLegacyAccounts';
 import messages from '@suite/support/messages';
+
+const Wrapper = styled.div`
+    height: auto;
+`;
 
 const TitleWrapper = styled.div`
     display: flex;
@@ -27,7 +32,7 @@ const TitleText = styled.div`
     text-transform: uppercase;
     font-size: 16px;
     font-weight: 600;
-    color: #808080;
+    color: ${colors.BLACK50};
 `;
 
 const TitleActions = styled.div`
@@ -105,7 +110,7 @@ const Menu = ({ device, accounts, selectedAccount, getDiscoveryForDevice, openMo
     const addAccountDisabled = !device.connected || device.authConfirm || device.authFailed;
 
     return (
-        <>
+        <Wrapper>
             <TitleWrapper>
                 <TitleText>
                     <Translation {...messages.TR_ACCOUNTS_MENU_TITLE} />
@@ -147,7 +152,7 @@ const Menu = ({ device, accounts, selectedAccount, getDiscoveryForDevice, openMo
                         key={`${account.descriptor}-${account.symbol}`}
                     />
                 ))}
-        </>
+        </Wrapper>
     );
 };
 

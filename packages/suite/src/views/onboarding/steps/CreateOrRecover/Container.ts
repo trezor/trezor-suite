@@ -8,6 +8,7 @@ import Step from './index';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
+    goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
     addPath: bindActionCreators(onboardingActions.addPath, dispatch),
     closeModalApp: bindActionCreators(routerActions.closeModalApp, dispatch),
 });

@@ -4,9 +4,11 @@
         "type": "response",
         "result": {
             "info": {
-                "build_version": "0.24.0-rc1",
+                "build_version": "1.4.0",
+                "complete_ledgers": "32570-8819951",
                 "hostid": "localhost",
                 "validated_ledger": {
+                    "age": 7,
                     "base_fee_xrp": 0.00001,
                     "reserve_base_xrp": 20,
                     "reserve_inc_xrp": 5,

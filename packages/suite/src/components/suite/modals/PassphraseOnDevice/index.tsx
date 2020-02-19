@@ -23,10 +23,6 @@ const Title = styled.div`
     margin-bottom: 20px;
 `;
 
-const DeviceName = styled.span`
-    white-space: nowrap;
-`;
-
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     getDiscoveryAuthConfirmationStatus: () =>
         dispatch(discoveryActions.getDiscoveryAuthConfirmationStatus()),
@@ -47,14 +43,15 @@ const PassphraseOnDevice = ({ device, getDiscoveryAuthConfirmationStatus }: Prop
         return (
             <Wrapper>
                 <Title>
-                    Confirm empty hidden wallet passphrase on{' '}
-                    <DeviceName>"{device.label}"</DeviceName> device.
+                    <Translation
+                        {...messages.TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON}
+                        values={{ deviceLabel: device.label }}
+                    />
                 </Title>
                 <DeviceConfirmImage device={device} />
                 {/* TODO: similar text is in Passphrase modal */}
                 <P size="small">
-                    This hidden Wallet is empty. To make sure you are in the correct Wallet, select
-                    Passphrase source.
+                    <Translation {...messages.TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE} />
                 </P>
             </Wrapper>
         );
@@ -63,7 +60,10 @@ const PassphraseOnDevice = ({ device, getDiscoveryAuthConfirmationStatus }: Prop
     return (
         <Wrapper>
             <Title>
-                Enter passphrase on <DeviceName>"{device.label}"</DeviceName> device.
+                <Translation
+                    {...messages.TR_ENTER_PASSPHRASE_ON_DEVICE_LABEL}
+                    values={{ deviceLabel: device.label }}
+                />
             </Title>
             <DeviceConfirmImage device={device} />
             <P size="small">

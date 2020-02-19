@@ -24,6 +24,14 @@ const Wrapper = styled.div`
     }
 `;
 
+// Hackish hiding of close icon (x in top-left corner). I have no control
+// over its rendering here as it renders automatically if cancelable prop
+// is provided in modals/index
+const HideCloseIconWrapper = styled.div`
+    z-index: 1;
+    background-color: white;
+`;
+
 const Col = styled.div<{ gray?: boolean }>`
     display: flex;
     flex-direction: column;
@@ -70,6 +78,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 type Props = {
     device: TrezorDevice;
+    onCancel: () => void;
 } & ReturnType<typeof mapDispatchToProps>;
 
 const Pin = ({ device, onPinSubmit }: Props) => {
@@ -92,7 +101,11 @@ const Pin = ({ device, onPinSubmit }: Props) => {
     };
 
     if (submitted) {
-        return <Loading />;
+        return (
+            <HideCloseIconWrapper>
+                <Loading />
+            </HideCloseIconWrapper>
+        );
     }
 
     // TODO: figure out responsive design
@@ -100,12 +113,15 @@ const Pin = ({ device, onPinSubmit }: Props) => {
         <Wrapper>
             {!features?.pin_protection && (
                 <Col gray>
-                    <H2>Set up new PIN</H2>
+                    <H2>
+                        <Translation {...messages.TR_SET_UP_NEW_PIN} />
+                    </H2>
                     <Text>
-                        Set up a strong PIN to protect your device from unauthorized access. The
-                        keypad layout is displayed on your connected Trezor device.
+                        <Translation {...messages.TR_SET_UP_STRONG_PIN_TO_PROTECT} />
                     </Text>
-                    <Text>Maximum length is 9 digits.</Text>
+                    <Text>
+                        <Translation {...messages.TR_MAXIMUM_LENGTH_IS_9_DIGITS} />
+                    </Text>
                     <Expand>
                         <StyledImg src={resolveStaticPath('images/suite/set-up-pin-dialog.svg')} />
                     </Expand>

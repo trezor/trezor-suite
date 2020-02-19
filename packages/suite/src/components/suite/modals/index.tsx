@@ -13,15 +13,17 @@ import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
 
 import Pin from './Pin';
 import PinInvalid from './PinInvalid';
+import PinMismatch from './PinMismatch';
 import Passphrase from './Passphrase';
 import PassphraseSource from './PassphraseSource';
 import PassphraseOnDevice from './PassphraseOnDevice';
+import PassphraseDuplicate from './PassphraseDuplicate';
 import ConfirmAction from './confirm/Action';
 import Word from './Word';
 import WordAdvanced from './WordAdvanced';
-// import ConfirmAddress from './confirm/Address';
+import ConfirmAddress from './confirm/Address';
 import ConfirmNoBackup from './confirm/NoBackup';
-import ConfirmSignTx from './confirm/SignTx';
+import ReviewTransaction from './ReviewTransaction/Container';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
 import AddAccount from './AddAccount';
 import QrScanner from './QrScanner';
@@ -52,7 +54,7 @@ const getDeviceContextModal = (props: Props) => {
     switch (modal.windowType) {
         // T1 firmware
         case UI.REQUEST_PIN:
-            return <Pin device={device} />;
+            return <Pin device={device} onCancel={modalActions.onPinCancel} />;
         // T1 firmware
         case UI.INVALID_PIN:
             return <PinInvalid device={device} />;
@@ -73,12 +75,14 @@ const getDeviceContextModal = (props: Props) => {
         case UI.REQUEST_PASSPHRASE_ON_DEVICE:
         case 'ButtonRequest_PassphraseEntry':
             return <PassphraseOnDevice device={device} />;
-        case 'ButtonRequest_SignTx': {
-            return <ConfirmSignTx device={device} />;
-        }
         // Button requests
-        // todo: consider fallback (if windowType.cointains('ButtonRequest'))
+        // todo: consider fallback (if windowType.cointains('ButtonRequest')). but add also possibility to blacklist some buttonRequests
+        case 'ButtonRequest_Warning':
+        case 'ButtonRequest_SignTx':
         case 'ButtonRequest_Success':
+        case 'ButtonRequest_RecoveryHomepage':
+        case 'ButtonRequest_MnemonicWordCount':
+        case 'ButtonRequest_MnemonicInput':
         case 'ButtonRequest_ProtectCall':
         case 'ButtonRequest_Other':
         case 'ButtonRequest_ResetDevice': // dispatched on BackupDevice call for model T, weird but true
@@ -127,11 +131,12 @@ const getUserContextModal = (props: Props) => {
                 />
             );
         case 'unverified-address':
+            return <ConfirmUnverifiedAddress {...payload} onCancel={modalActions.onCancel} />;
+        case 'address':
             return (
-                <ConfirmUnverifiedAddress
-                    device={payload.device}
-                    addressPath={payload.addressPath}
-                    onCancel={modalActions.onCancel}
+                <ConfirmAddress
+                    {...payload}
+                    onCancel={payload.cancelable ? modalActions.onCancel : undefined}
                 />
             );
         case 'device-background-gallery':
@@ -145,6 +150,12 @@ const getUserContextModal = (props: Props) => {
             return <QrScanner outputId={payload.outputId} onCancel={modalActions.onCancel} />;
         case 'transaction-detail':
             return <TransactionDetail tx={payload.tx} onCancel={modalActions.onCancel} />;
+        case 'passphrase-duplicate':
+            return <PassphraseDuplicate device={payload.device} duplicate={payload.duplicate} />;
+        case 'review-transaction':
+            return <ReviewTransaction />;
+        case 'pin-mismatch':
+            return <PinMismatch onCancel={modalActions.onCancel} />;
         default:
             return null;
     }
@@ -181,7 +192,7 @@ const Modal = (props: Props) => {
                 onCancel={modalComponent.props.onCancel}
                 padding="0px"
             >
-                <FocusLock>{modalComponent}</FocusLock>
+                {modalComponent}
             </ModalComponent>
         );
     }

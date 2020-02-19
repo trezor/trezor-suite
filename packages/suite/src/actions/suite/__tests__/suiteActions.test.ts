@@ -233,21 +233,6 @@ describe('Suite Actions', () => {
         });
     });
 
-    fixtures.retryAuthConfirm.forEach(f => {
-        it(`retryAuthConfirm: ${f.description}`, async () => {
-            require('trezor-connect').setTestFixtures(f.getDeviceState);
-            const state = getInitialState(f.state);
-            const store = initStore(state);
-            await store.dispatch(suiteActions.retryAuthConfirm());
-            if (!f.result) {
-                expect(store.getActions().length).toEqual(0);
-            } else {
-                const action = store.getActions().pop();
-                expect(action.type).toEqual(f.result);
-            }
-        });
-    });
-
     const SUITE_DEVICE = getSuiteDevice({ path: '1' });
     it('forgetDevice', () => {
         const expectedAction = {
