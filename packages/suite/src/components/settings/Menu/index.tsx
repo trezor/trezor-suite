@@ -3,12 +3,14 @@ import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { bindActionCreators } from 'redux';
 
-import { H2, Icon, colors, variables } from '@trezor/components-v2';
+import { H2, Icon, Link, colors, variables } from '@trezor/components-v2';
 import * as routerActions from '@suite-actions/routerActions';
+import * as modalActions from '@suite-actions/modalActions';
 import { AppState, Dispatch } from '@suite-types';
 import { IconType } from '@trezor/components-v2/lib/support/types';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
+import { SUPPORT_URL } from '@suite-constants/urls';
 
 const mapStateToProps = (state: AppState) => ({
     router: state.router,
@@ -16,6 +18,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
+    openModal: bindActionCreators(modalActions.openModal, dispatch),
 });
 
 type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
@@ -76,16 +79,12 @@ interface ItemProps {
     label: React.ReactNode;
     icon: IconType;
     onClick?: () => void;
-    dataTest?: string;
     isActive?: boolean;
+    ['data-test']: string;
 }
 
-const Item = ({ label, icon, onClick, dataTest, isActive }: ItemProps) => (
-    <ItemWrapper
-        onClick={onClick}
-        data-test={`@suite/settings/menu/${dataTest}`}
-        isActive={isActive}
-    >
+const Item = ({ label, icon, onClick, isActive, ...props }: ItemProps) => (
+    <ItemWrapper onClick={onClick} data-test={props['data-test']} isActive={isActive}>
         <StyledIcon color={isActive ? ACTIVE_TEXT_COLOR : TEXT_COLOR} icon={icon} size={18} />
         {label}
     </ItemWrapper>
@@ -94,36 +93,25 @@ const Item = ({ label, icon, onClick, dataTest, isActive }: ItemProps) => (
 const ITEMS = [
     {
         label: <Translation {...messages.TR_GENERAL} />,
-        dataTest: 'general',
+        'data-test': '@settings/menu/general',
         icon: 'SETTINGS',
         route: 'settings-index',
     },
     {
         label: <Translation {...messages.TR_DEVICE} />,
-        dataTest: 'device',
+        'data-test': '@settings/menu/device',
         icon: 'TREZOR',
         route: 'settings-device',
     },
     {
         label: <Translation {...messages.TR_WALLET} />,
-        dataTest: 'wallet',
+        'data-test': '@settings/menu/wallet',
         icon: 'WALLET',
         route: 'settings-wallet',
     },
 ] as const;
 
-const BOTTOM_ITEMS = [
-    {
-        label: <Translation {...messages.TR_SUPPORT} />,
-        icon: 'SUPPORT',
-    },
-    {
-        label: 'Show log',
-        icon: 'LOG',
-    },
-] as const;
-
-const SettignsMenu = ({ goto, router }: Props) => {
+const SettignsMenu = ({ goto, router, openModal }: Props) => {
     return (
         <ContentWrapper>
             <Heading>
@@ -146,10 +134,21 @@ const SettignsMenu = ({ goto, router }: Props) => {
 
             <Bottom>
                 <Items>
-                    {BOTTOM_ITEMS.map((item, i) => (
-                        // eslint-disable-next-line react/no-array-index-key
-                        <Item key={i} {...item} />
-                    ))}
+                    <Item
+                        data-test="@settings/menu/support"
+                        icon="SUPPORT"
+                        label={
+                            <Link variant="nostyle" href={SUPPORT_URL}>
+                                <Translation {...messages.TR_SUPPORT} />
+                            </Link>
+                        }
+                    />
+                    <Item
+                        data-test="@settings/menu/log"
+                        icon="LOG"
+                        onClick={() => openModal({ type: 'log' })}
+                        label={<Translation {...messages.TR_SHOW_LOG} />}
+                    />
                 </Items>
             </Bottom>
         </ContentWrapper>

@@ -29,6 +29,7 @@ import AddAccount from './AddAccount';
 import QrScanner from './QrScanner';
 import BackgroundGallery from './BackgroundGallery';
 import TransactionDetail from './TransactionDetail';
+import Log from './Log';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -156,6 +157,8 @@ const getUserContextModal = (props: Props) => {
             return <ReviewTransaction />;
         case 'pin-mismatch':
             return <PinMismatch onCancel={modalActions.onCancel} />;
+        case 'log':
+            return <Log onCancel={modalActions.onCancel} />;
         default:
             return null;
     }

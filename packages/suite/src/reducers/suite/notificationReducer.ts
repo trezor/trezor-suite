@@ -31,6 +31,7 @@ export type NotificationPayload =
       }
     | {
           type:
+              | 'log-copied'
               | 'settings-applied'
               | 'pin-changed'
               | 'device-wiped'
@@ -58,7 +59,7 @@ export type NotificationPayload =
       }
     | {
           type: 'copy-to-clipboard-success';
-          address: string;
+          payload?: string;
       }
     | {
           type:

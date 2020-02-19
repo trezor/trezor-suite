@@ -1,7 +1,6 @@
 import Backdrop from './Backdrop';
 import DeviceIcon from './images/DeviceIcon';
 import Link from './Link';
-import Log from './Log';
 import Preloader from './Preloader';
 import FormattedNumber from './FormattedNumber';
 import SuiteLayout from './SuiteLayout';
@@ -22,7 +21,6 @@ export {
     Backdrop,
     DeviceIcon,
     Link,
-    Log,
     Preloader,
     FormattedNumber,
     SuiteLayout,

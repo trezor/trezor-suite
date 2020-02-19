@@ -20,7 +20,7 @@ const getContent = (notification: any) => {
         case 'auth-confirm-error':
             return notification.error;
         case 'copy-to-clipboard-success':
-            return `Address ${notification.address} copied to clipboard`;
+            return `Copied to clipboard. ${notification.payload ? notification.payload : ''}`;
         case 'copy-to-clipboard-error':
             return notification.error;
         case 'verify-address-error':

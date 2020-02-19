@@ -473,10 +473,6 @@ const definedMessages = defineMessages({
         description: 'Continue button',
         id: 'TR_CONTINUE',
     },
-    TR_COPIED: {
-        defaultMessage: 'Copied!',
-        id: 'TR_COPIED',
-    },
     TR_COPY_TO_CLIPBOARD: {
         defaultMessage: 'Copy to clipboard',
         id: 'TR_COPY_TO_CLIPBOARD',
@@ -2022,6 +2018,10 @@ const definedMessages = defineMessages({
     TR_PIN_MISMATCH_TEXT: {
         id: 'TR_PIN_MISMATCH_TEXT',
         defaultMessage: 'Pin mismatch text',
+    },
+    TR_SHOW_LOG: {
+        id: 'TR_SHOW_LOG',
+        defaultMessage: 'Show log',
     },
 });
 

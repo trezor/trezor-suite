@@ -66,7 +66,7 @@ const ConfirmAddress = ({
         if (typeof result === 'string') {
             addNotification({ type: 'copy-to-clipboard-error', error: result });
         } else {
-            addNotification({ type: 'copy-to-clipboard-success', address });
+            addNotification({ type: 'copy-to-clipboard-success', payload: address });
         }
     };
 
