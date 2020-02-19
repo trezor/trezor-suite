@@ -3,13 +3,14 @@ import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { bindActionCreators } from 'redux';
 
-import { H2, Icon, colors, variables } from '@trezor/components-v2';
+import { H2, Icon, Link, colors, variables } from '@trezor/components-v2';
 import * as routerActions from '@suite-actions/routerActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { AppState, Dispatch } from '@suite-types';
 import { IconType } from '@trezor/components-v2/lib/support/types';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
+import { SUPPORT_URL } from '@suite-constants/urls';
 
 const mapStateToProps = (state: AppState) => ({
     router: state.router,
@@ -136,7 +137,11 @@ const SettignsMenu = ({ goto, router, openModal }: Props) => {
                     <Item
                         data-test="@settings/menu/support"
                         icon="SUPPORT"
-                        label={<Translation {...messages.TR_SUPPORT} />}
+                        label={
+                            <Link variant="nostyle" href={SUPPORT_URL}>
+                                <Translation {...messages.TR_SUPPORT} />
+                            </Link>
+                        }
                     />
                     <Item
                         data-test="@settings/menu/log"
