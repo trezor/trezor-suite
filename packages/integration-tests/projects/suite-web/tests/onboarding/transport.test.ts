@@ -23,18 +23,14 @@ describe('Transport webusb/bridge', () => {
     });
 
     it('user selects new device -> user selects model one -> in this case we know that he can not use webusb (unreadable device) so we disable webusb and offer bridge download', () => {
-<<<<<<< e94e4f76e00c19f3239115ecd0c86b92665bfe1b
-        cy.getTestElement('@onboarding/path-create-button')
-=======
         cy.getTestElement('@onboarding/button-begin')
             .click()
             .getTestElement('@onboarding/button-path-create')
->>>>>>> fix disable webusb and tests
             .click()
             .getTestElement('@onboarding/path-new-button')
             .click()
             .getTestElement('@onboarding/option-model-one-path')
             .click()
             .getTestElement('@onboarding/bridge');
-    })
+    });
 });
