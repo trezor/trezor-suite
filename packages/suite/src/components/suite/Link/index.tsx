@@ -1,17 +1,12 @@
 import React from 'react';
 import NextLink, { LinkProps } from 'next/link';
-import { Link as TLink } from '@trezor/components';
+import { Link as TLink, LinkProps as TLinkProps } from '@trezor/components-v2';
 import { getPrefixedURL, isInternalRoute } from '@suite-utils/router';
 
-interface Props extends LinkProps {
-    className?: string;
-    variant?: 'default' | 'nostyle';
-    target?: string;
-    children?: React.ReactNode;
-}
+type Props = LinkProps & TLinkProps;
 
 const RefLinkComponent = React.forwardRef((props: Props, _ref: any) => (
-    <TLink {...props} href={props.href as string}>
+    <TLink {...props} href={props.href as string} icon="EXTERNAL_LINK">
         {props.children}
     </TLink>
 ));

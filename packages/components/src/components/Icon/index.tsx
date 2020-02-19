@@ -93,7 +93,6 @@ const Icon = ({
     onFocus,
     ...rest
 }: Props) => {
-    const normalizedSize = typeof size === 'string' ? Number(size.replace('px', '')) : size;
     return (
         <SvgWrapper
             className={className}
@@ -104,14 +103,14 @@ const Icon = ({
             onMouseLeave={onMouseLeave}
             onFocus={onFocus}
             isActive={isActive}
-            size={normalizedSize}
+            size={size}
             {...rest}
         >
             <ReactSVG
                 src={ICONS[icon]}
                 beforeInjection={svg => {
-                    svg.setAttribute('width', `${normalizedSize}px`);
-                    svg.setAttribute('height', `${normalizedSize}px`);
+                    svg.setAttribute('width', `${size}px`);
+                    svg.setAttribute('height', `${size}px`);
                     svg.setAttribute('fill', color);
                 }}
                 loading={() => <span className="loading" />}
