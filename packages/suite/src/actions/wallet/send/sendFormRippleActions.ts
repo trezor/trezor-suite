@@ -129,29 +129,31 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!send || !selectedDevice || selectedAccount.status !== 'loaded') return;
 
     const { account } = selectedAccount;
+    const { symbol } = account;
     const { selectedFee, outputs, networkTypeRipple } = send;
     const amount = outputs[0].amount.value;
     const address = outputs[0].address.value;
-    const { destinationTag } = networkTypeRipple;
+    const destinationTag = networkTypeRipple.destinationTag.value;
 
     if (account.networkType !== 'ripple' || !destinationTag || !amount || !address) return null;
 
     const payment: RipplePayment = {
         destination: address,
-        amount: networkAmountToSatoshi(outputs[0].amount.value, account.symbol),
+        amount: networkAmountToSatoshi(amount, symbol),
     };
 
-    if (destinationTag.value) {
-        payment.destinationTag = parseInt(destinationTag.value || '0', 10);
+    if (destinationTag) {
+        payment.destinationTag = parseInt(destinationTag, 10);
     }
 
+    const { path, instance, state, useEmptyPassphrase } = selectedDevice;
     const signedTransaction = await TrezorConnect.rippleSignTransaction({
         device: {
-            path: selectedDevice.path,
-            instance: selectedDevice.instance,
-            state: selectedDevice.state,
+            path,
+            instance,
+            state,
         },
-        useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
+        useEmptyPassphrase,
         path: account.path,
         transaction: {
             fee: selectedFee.feePerUnit,
