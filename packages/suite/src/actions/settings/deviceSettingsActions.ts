@@ -1,8 +1,5 @@
-import TrezorConnect, {
-    ApplySettingsParams,
-    ChangePinParams,
-    ResetDeviceParams,
-} from 'trezor-connect';
+/* eslint-disable @typescript-eslint/camelcase */
+import TrezorConnect, { ApplySettings, ChangePin, ResetDevice } from 'trezor-connect';
 import { add as addNotification } from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
 
@@ -15,7 +12,7 @@ const DEFAULT_STRENGTH_T1 = 256;
 const DEFAULT_STRENGTH_T2 = 128;
 const DEFAULT_BACKUP_TYPE = 0;
 
-export const applySettings = (params: ApplySettingsParams) => async (
+export const applySettings = (params: ApplySettings) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -35,7 +32,7 @@ export const applySettings = (params: ApplySettingsParams) => async (
     }
 };
 
-export const changePin = (params: ChangePinParams = {}) => async (
+export const changePin = (params: ChangePin = {}) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -80,7 +77,7 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
     // }
 };
 
-export const resetDevice = (params: ResetDeviceParams = {}) => async (
+export const resetDevice = (params: ResetDevice = {}) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -91,17 +88,17 @@ export const resetDevice = (params: ResetDeviceParams = {}) => async (
         defaults = {
             strength: DEFAULT_STRENGTH_T1,
             label: DEFAULT_LABEL,
-            skipBackup: DEFAULT_SKIP_BACKUP,
-            passhpraseProtection: DEFAULT_PASSPHRASE_PROTECTION,
-            backupType: DEFAULT_BACKUP_TYPE,
+            skip_backup: DEFAULT_SKIP_BACKUP,
+            passphrase_protection: DEFAULT_PASSPHRASE_PROTECTION,
+            backup_type: DEFAULT_BACKUP_TYPE,
         };
     } else {
         defaults = {
             strength: DEFAULT_STRENGTH_T2,
             label: DEFAULT_LABEL,
-            skipBackup: DEFAULT_SKIP_BACKUP,
-            passhpraseProtection: DEFAULT_PASSPHRASE_PROTECTION,
-            backupType: DEFAULT_BACKUP_TYPE,
+            skip_backup: DEFAULT_SKIP_BACKUP,
+            passphrase_protection: DEFAULT_PASSPHRASE_PROTECTION,
+            backup_type: DEFAULT_BACKUP_TYPE,
         };
     }
 

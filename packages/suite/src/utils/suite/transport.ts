@@ -1,6 +1,4 @@
 import { AppState } from '@suite-types';
 
-type Transport = NonNullable<AppState['suite']['transport']>;
-
-export const isWebUSB = (transport?: Transport) =>
+export const isWebUSB = (transport?: AppState['suite']['transport']) =>
     !!(transport && transport.type && transport.type === 'WebUsbPlugin');

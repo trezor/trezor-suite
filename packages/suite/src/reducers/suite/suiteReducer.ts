@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { TRANSPORT } from 'trezor-connect';
+import { TRANSPORT, TransportInfo } from 'trezor-connect';
 import { SUITE, STORAGE } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { Action, TrezorDevice, Lock } from '@suite-types';
@@ -15,29 +15,13 @@ export interface SuiteState {
     loading: boolean;
     loaded: boolean;
     error?: string;
-    transport?: Transport;
+    transport?: Partial<TransportInfo>;
     device?: TrezorDevice;
     language: typeof LANGUAGES[number]['code'];
     messages: { [key: string]: any };
     locks: Lock[];
     debug: DebugModeOptions;
     analytics: boolean;
-}
-
-interface Transport {
-    type?: string;
-    version?: string;
-    outdated?: boolean;
-    bridge: {
-        version: number[];
-        directory: string;
-        packages: {
-            platform: string;
-            name: string;
-            url: string;
-        }[];
-        changelog: string;
-    };
 }
 
 const initialState: SuiteState = {
