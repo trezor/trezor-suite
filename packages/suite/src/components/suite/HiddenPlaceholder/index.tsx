@@ -1,15 +1,18 @@
 import React, { ReactNode } from 'react';
-import { useHover } from '@suite-utils/dom';
 import styled from 'styled-components';
 
-const Wrapper = styled.span``;
-
-interface BlurProps {
+interface WrapperProps {
     intensity: number;
+    showOnHover: boolean;
 }
 
-const Blurred = styled.div<BlurProps>`
+const Wrapper = styled.span<WrapperProps>`
     filter: blur(${props => props.intensity || 4}px);
+    transition: all 0.2s ease;
+
+    &:hover {
+        filter: none;
+    }
 `;
 
 interface Props {
@@ -20,15 +23,10 @@ interface Props {
 }
 
 export default ({ showOnHover = true, children, discreetMode, intensity }: Props) => {
-    const [hoverRef, isHovered] = useHover();
-
     if (!discreetMode) return children;
-
     return (
-        // @ts-ignore
-        <Wrapper ref={hoverRef}>
-            {isHovered && children}
-            {!isHovered && showOnHover && <Blurred intensity={intensity}>{children}</Blurred>}
+        <Wrapper intensity={intensity} showOnHover={showOnHover}>
+            {children}
         </Wrapper>
     );
 };
