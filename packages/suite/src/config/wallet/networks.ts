@@ -72,7 +72,7 @@ const networks = [
         networkType: 'ethereum',
         symbol: 'eth',
         chainId: 1,
-        bip44: "m/44'/60'/0'/0/i",
+        bip44: "m/44'/61'/0'/0/i",
         hasSignVerify: true,
         decimals: 18,
         explorer: {
@@ -83,7 +83,7 @@ const networks = [
     {
         name: 'Ethereum Classic',
         networkType: 'ethereum',
-        symbol: 'eth',
+        symbol: 'etc',
         chainId: 1,
         bip44: "m/44'/61'/0'/0/i",
         hasSignVerify: true,
