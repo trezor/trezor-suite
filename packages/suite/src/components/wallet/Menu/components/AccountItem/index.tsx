@@ -9,10 +9,9 @@ import {
 } from '@wallet-utils/accountUtils';
 import { Translation } from '@suite-components/Translation';
 // import messages from '@suite/support/messages';
-import { Link, FormattedNumber } from '@suite-components';
+import { Link, FormattedNumber, HiddenPlaceholder } from '@suite-components';
 import AccountNavigation from './components/AccountNavigation/Container';
 import Badge from '@suite-components/Badge';
-import HiddenPlaceholder from '@suite-components/HiddenPlaceholder';
 import { Props } from './Container';
 
 const Wrapper = styled.div<{ selected: boolean }>`

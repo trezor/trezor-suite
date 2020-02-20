@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Select, colors, variables } from '@trezor/components-v2';
 import { Account } from '@wallet-types';
-import HiddenPlaceholder from '@suite-components/HiddenPlaceholder';
+import { HiddenPlaceholder } from '@suite-components';
 import { Props } from './Container';
 
 const Wrapper = styled.div`

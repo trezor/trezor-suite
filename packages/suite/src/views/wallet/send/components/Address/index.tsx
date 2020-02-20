@@ -1,4 +1,4 @@
-import { Translation } from '@suite-components/Translation';
+import { Translation } from '@suite-components';
 import { AppState } from '@suite-types';
 import styled from 'styled-components';
 import { Icon, colors, Input, Tooltip } from '@trezor/components-v2';

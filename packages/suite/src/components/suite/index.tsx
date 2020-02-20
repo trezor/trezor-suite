@@ -13,6 +13,8 @@ import WordInputAdvanced from './WordInputAdvanced';
 import ProgressBar from './ProgressBar';
 import ModalWrapper from './ModalWrapper';
 import Loading from './Loading';
+import FiatValue from './FiatValue/Container';
+import Badge from './Badge';
 import WebusbButton from './WebusbButton';
 import HiddenPlaceholder from './HiddenPlaceholder/Container';
 
@@ -28,6 +30,7 @@ export {
     Card,
     NotificationCard,
     PinInput,
+    FiatValue,
     NoRatesTooltip,
     Translation,
     WordInput,
@@ -37,4 +40,5 @@ export {
     Loading,
     WebusbButton,
     HiddenPlaceholder,
+    Badge,
 };

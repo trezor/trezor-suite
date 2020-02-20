@@ -1,17 +1,19 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { colors, variables, CoinLogo } from '@trezor/components-v2';
-import Card from '@suite-components/Card';
+import {
+    HiddenPlaceholder,
+    Card,
+    Badge,
+    FormattedNumber,
+    NoRatesTooltip,
+    FiatValue,
+} from '@suite-components';
 import { AppState } from '@suite/types/suite';
-import HiddenPlaceholder from '@suite-components/HiddenPlaceholder';
 import { getAccountFiatBalance, getTitleForNetwork, isTestnet } from '@wallet-utils/accountUtils';
-import Badge from '@suite-components/Badge';
 import { Account } from '@wallet-types';
-import FormattedNumber from '@suite-components/FormattedNumber';
-import NoRatesTooltip from '@suite-components/NoRatesTooltip';
 import { Translation } from '@suite-components/Translation';
 import { connect } from 'react-redux';
-import FiatValue from '@suite-components/FiatValue/Container';
 
 const Wrapper = styled(Card)`
     width: 100%;
