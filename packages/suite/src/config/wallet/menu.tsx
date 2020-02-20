@@ -1,6 +1,7 @@
 import React from 'react';
 import { Translation } from '@suite-components/Translation';
 // import { NETWORKS } from '@wallet-config';
+import { Account } from '@wallet-types';
 import messages from '@suite/support/messages';
 
 export const ITEMS = [
@@ -21,6 +22,12 @@ export const ITEMS = [
         title: <Translation>{messages.TR_NAV_SEND}</Translation>,
         icon: 'SEND',
         isHidden: () => false,
+    },
+    {
+        route: 'wallet-details',
+        title: <Translation>{messages.TR_NAV_DETAILS}</Translation>,
+        icon: 'INFO',
+        isHidden: (networkType: Account['networkType']) => networkType !== 'bitcoin',
     },
 ] as const;
 
