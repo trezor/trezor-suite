@@ -8,13 +8,7 @@ import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
 import { getBip43Shortcut } from '@wallet-utils/accountUtils';
 
-import {
-    Section,
-    ActionColumn,
-    Row,
-    TextColumn,
-    ActionButton,
-} from '@suite-components/Settings';
+import { Section, ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/Settings';
 
 import {
     WIKI_XPUB_URL,
@@ -33,7 +27,6 @@ const AccountTypeLabel = styled.div`
     }
 `;
 
-
 export default ({ selectedAccount, locks, device, openModal }: Props) => {
     if (!device || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Account details" account={selectedAccount} />;
@@ -45,7 +38,10 @@ export default ({ selectedAccount, locks, device, openModal }: Props) => {
 
     let accountTypeName = messages.TR_ACCOUNT_TYPE_NORMAL;
     if (account.accountType !== 'normal') {
-        accountTypeName = account.accountType === 'segwit' ? messages.TR_ACCOUNT_TYPE_SEGWIT : messages.TR_ACCOUNT_TYPE_LEGACY;
+        accountTypeName =
+            account.accountType === 'segwit'
+                ? messages.TR_ACCOUNT_TYPE_SEGWIT
+                : messages.TR_ACCOUNT_TYPE_LEGACY;
     }
 
     const bip43 = getBip43Shortcut(account.path);
@@ -65,7 +61,9 @@ export default ({ selectedAccount, locks, device, openModal }: Props) => {
 
     return (
         <WalletLayout title="Account details" account={selectedAccount}>
-            <H2><Translation {...messages.TR_ACCOUNT_DETAILS_HEADER} /></H2>
+            <H2>
+                <Translation {...messages.TR_ACCOUNT_DETAILS_HEADER} />
+            </H2>
             <Section>
                 <Row>
                     <TextColumn
@@ -92,14 +90,16 @@ export default ({ selectedAccount, locks, device, openModal }: Props) => {
                         <ActionButton
                             variant="secondary"
                             data-test="@wallets/details/show-xpub-button"
-                            onClick={() => openModal({
-                                type: 'xpub',
-                                xpub: account.descriptor,
-                                accountPath: account.path,
-                                accountIndex: account.index,
-                                accountType: account.accountType,
-                                symbol: account.symbol,
-                            })}
+                            onClick={() =>
+                                openModal({
+                                    type: 'xpub',
+                                    xpub: account.descriptor,
+                                    accountPath: account.path,
+                                    accountIndex: account.index,
+                                    accountType: account.accountType,
+                                    symbol: account.symbol,
+                                })
+                            }
                             isLoading={locked && !disabled}
                             isDisabled={disabled}
                         >

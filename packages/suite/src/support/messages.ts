@@ -2050,7 +2050,8 @@ const definedMessages = defineMessages({
     },
     TR_ACCOUNT_DETAILS_TYPE_P2SH: {
         id: 'TR_ACCOUNT_DETAILS_TYPE_P2SH',
-        defaultMessage: 'Pay to script hash (P2SH) is an advanced type of transaction used in Bitcoin and other similar crypto currencies. Unlike P2PKH, it allows sender to commit funds to a hash of an arbitrary valid script.',
+        defaultMessage:
+            'Pay to script hash (P2SH) is an advanced type of transaction used in Bitcoin and other similar crypto currencies. Unlike P2PKH, it allows sender to commit funds to a hash of an arbitrary valid script.',
     },
     TR_ACCOUNT_DETAILS_TYPE_P2PKH: {
         id: 'TR_ACCOUNT_DETAILS_TYPE_P2PKH',

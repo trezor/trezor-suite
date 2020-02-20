@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { Button, P, H2, colors } from '@trezor/components-v2';
+import { Button, H2, colors } from '@trezor/components-v2';
 import { copyToClipboard } from '@suite-utils/dom';
 import { Dispatch } from '@suite-types';
 import { Account } from '@wallet-types';
@@ -48,13 +48,7 @@ type Props = {
     onCancel: () => void;
 } & ReturnType<typeof mapDispatchToProps>;
 
-const ConfirmAddress = ({
-    xpub,
-    accountPath,
-    accountIndex,
-    symbol,
-    addNotification,
-}: Props) => {
+const ConfirmAddress = ({ xpub, accountPath, accountIndex, symbol, addNotification }: Props) => {
     // TODO: no-backup, backup failed
     // const needsBackup = device.features && device.features.needs_backup;
 

@@ -37,6 +37,7 @@ describe('account utils', () => {
     describe('getBip43Shortcut', () => {
         fixtures.getBip43Shortcut.forEach(f => {
             it(f.description, () => {
+                // @ts-ignore intentional invalid params
                 const bip43 = accountUtils.getBip43Shortcut(f.path);
                 expect(bip43).toBe(f.result);
             });
