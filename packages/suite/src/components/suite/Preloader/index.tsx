@@ -166,11 +166,7 @@ const Preloader = (props: Props) => {
     // display Loader wrapped in modal above requested route to keep "modal" flow continuity (see ApplicationStateModal)
     // otherwise display Loader as full page view
     if (router.app === 'unknown' && (!loaded || !transport)) {
-        return (
-            <FocusLock>
-                <Loading />
-            </FocusLock>
-        );
+        return <Loading />;
     }
 
     // check route state and display it as not cancelable modal above requested route view
