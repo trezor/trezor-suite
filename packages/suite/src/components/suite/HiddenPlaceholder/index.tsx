@@ -8,7 +8,7 @@ interface WrapperProps {
 
 const Wrapper = styled.span<WrapperProps>`
     filter: blur(${props => props.intensity || 4}px);
-    transition: all 0.2s ease;
+    transition: all 0.1s ease;
 
     &:hover {
         filter: none;
