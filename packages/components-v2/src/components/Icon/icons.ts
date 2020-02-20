@@ -6,6 +6,7 @@ export const ICONS = {
     ARROW_RIGHT: require('../../images/icons/arrow_right.svg'),
     CHECK: require('../../images/icons/check.svg'),
     COINS: require('../../images/icons/coins.svg'),
+    CLEAR: require('../../images/icons/clear.svg'),
     COPY: require('../../images/icons/copy.svg'),
     CROSS: require('../../images/icons/cross.svg'),
     DASHBOARD: require('../../images/icons/dashboard.svg'),

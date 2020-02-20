@@ -52,7 +52,7 @@ const StyledLink = styled(Link)`
 `;
 
 const StyledIcon = styled(Icon)`
-    margin-left: 4px;
+    padding: 20px 14px;
 `;
 
 interface Props {
@@ -83,7 +83,7 @@ const Modal = ({
                 {cancelable && (
                     <StyledLink onClick={onCancel}>
                         {cancelText || ''}
-                        <StyledIcon size={12} color={colors.BLACK25} icon="CROSS" />
+                        <StyledIcon size={16} color={colors.BLACK25} icon="CROSS" />
                     </StyledLink>
                 )}
                 {children}

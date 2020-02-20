@@ -3,18 +3,18 @@ import styled from 'styled-components';
 import { Icon, colors, variables } from '@trezor/components-v2';
 import { DispatchProps } from '../../Container';
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-`;
-
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    margin: 8px 0 16px 0;
+`;
+
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
 `;
 
 const In = styled.div`
-    margin-right: -15px;
     cursor: pointer;
     display: flex;
     align-items: center;
