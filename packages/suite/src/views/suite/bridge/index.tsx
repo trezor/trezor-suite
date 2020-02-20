@@ -4,20 +4,19 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
-
-import { Select, colors, variables, Loader } from '@trezor/components';
-import { Button, P, Link, H1 } from '@trezor/components-v2';
+import { Button, P, Link, H2, Select, colors, variables, Loader } from '@trezor/components-v2';
 import * as routerActions from '@suite-actions/routerActions';
 import { URLS } from '@suite-constants';
 import { AppState, Dispatch } from '@suite-types';
 import messages from '@suite/support/messages';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 60px 24px 30px 24px;
+    padding: 60px 110px 30px 110px;
     flex: 1;
 `;
 
@@ -27,29 +26,17 @@ const Top = styled.div`
     max-width: 500px;
     text-align: center;
     flex: 1;
-    padding-top: 30px;
 `;
 
 const Bottom = styled.div`
     padding-bottom: 20px;
 `;
 
-const TitleHeader = styled(H1)`
+const TitleHeader = styled(H2)`
     display: flex;
-    font-size: ${variables.FONT_SIZE.HUGE};
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-`;
-
-const Version = styled.span`
-    color: ${colors.GREEN_PRIMARY};
-    padding: 6px 10px;
-    border: 1px solid ${colors.GREEN_PRIMARY};
-    border-radius: 3px;
-    font-size: ${variables.FONT_SIZE.BASE};
-    font-weight: ${variables.FONT_WEIGHT.LIGHT};
-    margin-left: 24px;
 `;
 
 const LearnMoreText = styled.span`
@@ -57,19 +44,20 @@ const LearnMoreText = styled.span`
 `;
 
 const SelectWrapper = styled(Select)`
-    margin-right: 10px;
-    width: 180px;
-    margin-bottom: 5px;
+    width: 100%;
 `;
 
 const Download = styled.div`
     margin: 24px auto;
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
+    align-content: center;
+    flex-direction: column;
 `;
 
-const DownloadBridgeButton = styled(Button)``;
+const DownloadBridgeButton = styled(Button)`
+    margin-top: 12px;
+`;
 
 const GoBack = styled(Link)`
     display: flex;
@@ -86,6 +74,13 @@ const LoaderWrapper = styled.div`
     align-items: center;
     justify-items: center;
 `;
+
+const Version = styled.div`
+    margin-top: 10px;
+    font-size: ${variables.FONT_SIZE.SMALL};
+`;
+
+const Image = styled.img``;
 
 const mapStateToProps = (state: AppState) => ({
     transport: state.suite.transport,
@@ -120,14 +115,8 @@ const InstallBridge = (props: Props) => {
 
     const preferredTarget = installers.find(i => i.preferred === true);
     const data = {
-        currentVersion:
-            props.transport && props.transport.type === 'bridge'
-                ? `Your version ${props.transport!.version}`
-                : 'Not installed',
-        latestVersion:
-            props.transport && props.transport.bridge
-                ? props.transport.bridge.version.join('.')
-                : null,
+        currentVersion: props.transport?.type === 'bridge' ? props.transport!.version : null,
+        latestVersion: props.transport?.bridge ? props.transport.bridge.version.join('.') : null,
         installers,
         target: preferredTarget || installers[0],
         uri: URLS.TREZOR_DATA_URL,
@@ -143,17 +132,21 @@ const InstallBridge = (props: Props) => {
             </Head>
             <Top>
                 <TitleHeader>
-                    Trezor Bridge
-                    {isLoading && (
+                    Trezor Bridge Download
+                    {/* {isLoading && (
                         <Version>
                             <Translation {...messages.TR_VERSION_IS_LOADING} />
                         </Version>
-                    )}
-                    {props.transport && <Version>{data && data.currentVersion}</Version>}
+                    )} */}
+                    {/* {props.transport && <Version>{data && data.currentVersion}</Version>} */}
                 </TitleHeader>
-                <P>
+                <P size="small">
                     <Translation {...messages.TR_NEW_COMMUNICATION_TOOL} />
                 </P>
+                {props.transport && data.currentVersion && (
+                    <Version>Installed version: Trezor Bridge {data.currentVersion}</Version>
+                )}
+                <Image src={resolveStaticPath('images/suite/t-bridge-check.svg')} />
                 {isLoading ? (
                     <LoaderWrapper>
                         <CenteredLoader size={50} strokeWidth={2} />
