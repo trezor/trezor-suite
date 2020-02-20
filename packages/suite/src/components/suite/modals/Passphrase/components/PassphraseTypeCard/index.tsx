@@ -56,6 +56,11 @@ const InputWrapper = styled(Content)`
     width: 100%;
 `;
 
+const PassphraseInput = styled(Input)`
+    color: ${colors.BLACK0};
+    font-size: ${variables.FONT_SIZE.SMALL};
+`;
+
 const Actions = styled.div`
     width: 100%;
     display: flex;
@@ -144,7 +149,7 @@ const PassphraseTypeCard = (props: Props) => {
                 )}
                 {props.showPassphraseInput && (
                     <InputWrapper>
-                        <Input
+                        <PassphraseInput
                             data-test="@passhphrase/input"
                             onChange={event => setValue(event.target.value)}
                             placeholder="Enter passphrase"
@@ -161,6 +166,8 @@ const PassphraseTypeCard = (props: Props) => {
                             variant="small"
                             button={{
                                 iconSize: 18,
+                                iconColor: colors.BLACK70,
+                                iconColorHover: colors.BLACK70,
                                 icon: showPassword ? 'HIDE' : 'SHOW',
                                 onClick: () => setShowPassword(!showPassword),
                             }}

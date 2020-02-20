@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createRef } from 'react';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -46,13 +46,15 @@ type Props = ReturnType<typeof mapStateToProps> &
     };
 
 const Log = (props: Props) => {
+    const htmlElement = createRef<HTMLDivElement>();
+
     const getFormattedLog = () => {
         // todo: finish, depends on requierements from product;
         return JSON.stringify(props.log.entries);
     };
 
     const copy = () => {
-        const result = copyToClipboard(getFormattedLog());
+        const result = copyToClipboard(getFormattedLog(), htmlElement.current);
         if (typeof result === 'string') {
             props.addNotification({ type: 'copy-to-clipboard-error', error: result });
         } else {
@@ -61,7 +63,7 @@ const Log = (props: Props) => {
     };
 
     return (
-        <Wrapper>
+        <Wrapper ref={htmlElement}>
             <H2>
                 <Translation {...messages.TR_LOG} />
             </H2>

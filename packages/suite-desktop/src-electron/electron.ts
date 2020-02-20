@@ -115,6 +115,7 @@ app.on('ready', init);
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
     app.quit();
+    // @ts-ignore
     mainWindow = undefined;
 });
 
