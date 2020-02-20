@@ -102,11 +102,13 @@ export const checkAccountReserve = (outputId: number, amount: string) => async (
             outputId: output.id,
         });
 
-        dispatch({
-            type: SEND.AMOUNT_ERROR,
-            error,
-            outputId: output.id,
-        });
+        if (error) {
+            dispatch({
+                type: SEND.AMOUNT_ERROR,
+                error,
+                outputId: output.id,
+            });
+        }
     }
 };
 
