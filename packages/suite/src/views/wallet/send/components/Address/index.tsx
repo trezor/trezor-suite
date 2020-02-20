@@ -50,15 +50,7 @@ const getMessage = (
     }
 };
 
-export default ({
-    output,
-    intl,
-    account,
-    accounts,
-    devices,
-    openModal,
-    sendFormActions,
-}: Props) => {
+export default ({ output, account, accounts, devices, openModal, sendFormActions }: Props) => {
     if (!account) return null;
 
     const { networkType } = account;
@@ -72,7 +64,7 @@ export default ({
             monospace
             topLabel={
                 <Label>
-                    {intl.formatMessage(messages.TR_RECIPIENT_ADDRESS)}
+                    <Translation {...messages.TR_RECIPIENT_ADDRESS} />
                     <Tooltip
                         placement="top"
                         content={<Translation {...messages.TR_RECIPIENT_ADDRESS_TOOLTIP} />}
