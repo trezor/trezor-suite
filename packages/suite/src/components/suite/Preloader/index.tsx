@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import FocusLock from 'react-focus-lock';
 import { SUITE } from '@suite-actions/constants';
 import { Modal as ModalComponent } from '@trezor/components-v2';
 import Loading from '@suite-components/Loading';
@@ -146,12 +147,14 @@ const Preloader = (props: Props) => {
         return (
             <>
                 <ModalComponent cancelable={cancelable} onCancel={props.closeModalApp}>
-                    <ApplicationModal
-                        cancelable={cancelable}
-                        closeModalApp={props.closeModalApp}
-                        getBackgroundRoute={props.getBackgroundRoute}
-                        modal={hasActionModal ? <Modals background={false} /> : null}
-                    />
+                    <FocusLock>
+                        <ApplicationModal
+                            cancelable={cancelable}
+                            closeModalApp={props.closeModalApp}
+                            getBackgroundRoute={props.getBackgroundRoute}
+                            modal={hasActionModal ? <Modals background={false} /> : null}
+                        />
+                    </FocusLock>
                 </ModalComponent>
                 {props.children}
             </>
@@ -163,7 +166,11 @@ const Preloader = (props: Props) => {
     // display Loader wrapped in modal above requested route to keep "modal" flow continuity (see ApplicationStateModal)
     // otherwise display Loader as full page view
     if (router.app === 'unknown' && (!loaded || !transport)) {
-        return <Loading />;
+        return (
+            <FocusLock>
+                <Loading />
+            </FocusLock>
+        );
     }
 
     // check route state and display it as not cancelable modal above requested route view
@@ -174,7 +181,9 @@ const Preloader = (props: Props) => {
                 {hasActionModal && <Modals />}
                 {!hasActionModal && (
                     <ModalComponent>
-                        <ApplicationStateModal />
+                        <FocusLock>
+                            <ApplicationStateModal />
+                        </FocusLock>
                     </ModalComponent>
                 )}
                 {props.children}

@@ -195,12 +195,12 @@ const Modal = (props: Props) => {
                 onCancel={modalComponent.props.onCancel}
                 padding="0px"
             >
-                {modalComponent}
+                <FocusLock>{modalComponent}</FocusLock>
             </ModalComponent>
         );
     }
 
-    return <FocusLock>{modalComponent}</FocusLock>;
+    return modalComponent;
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Modal);
