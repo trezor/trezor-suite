@@ -14,7 +14,7 @@ import ProgressBar from './ProgressBar';
 import ModalWrapper from './ModalWrapper';
 import Loading from './Loading';
 import WebusbButton from './WebusbButton';
-import HiddenPlaceholder from './HiddenPlaceholder';
+import HiddenPlaceholder from './HiddenPlaceholder/Container';
 
 import { Translation } from './Translation';
 
