@@ -106,6 +106,22 @@ export const getTypeForNetwork = (accountType: Account['accountType']) => {
     }
 };
 
+export const getBip43Shortcut = (path: string) => {
+    if (typeof path !== 'string') return 'unknown';
+    // https://github.com/bitcoin/bips/blob/master/bip-0043.mediawiki
+    const bip43 = path.split('/')[1];
+    switch (bip43) {
+        case `84'`:
+            return 'bech32';
+        case `49'`:
+            return 'p2sh';
+        case `44'`:
+            return 'p2phk';
+        default:
+            return 'unknown';
+    }
+};
+
 export const stripNetworkAmount = (amount: string, decimals: number) => {
     return new BigNumber(amount).toFixed(decimals, 1);
 };

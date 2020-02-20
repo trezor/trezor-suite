@@ -14,6 +14,7 @@ import ProgressBar from './ProgressBar';
 import ModalWrapper from './ModalWrapper';
 import Loading from './Loading';
 import WebusbButton from './WebusbButton';
+import QrCode from './QrCode';
 
 import { Translation } from './Translation';
 
@@ -35,4 +36,5 @@ export {
     ModalWrapper,
     Loading,
     WebusbButton,
+    QrCode,
 };

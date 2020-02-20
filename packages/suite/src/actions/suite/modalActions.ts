@@ -27,6 +27,14 @@ export type UserContextPayload =
           cancelable?: boolean;
       }
     | {
+          type: 'xpub';
+          xpub: string;
+          accountPath: string;
+          accountIndex: number;
+          accountType: Account['accountType'];
+          symbol: Account['symbol'];
+      }
+    | {
           type: 'passphrase-duplicate';
           device: TrezorDevice;
           duplicate: TrezorDevice;

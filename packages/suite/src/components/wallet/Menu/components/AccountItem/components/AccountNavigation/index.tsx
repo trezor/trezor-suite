@@ -52,7 +52,7 @@ const AccountNavigation = (props: Props) => {
     return (
         <Wrapper>
             {ITEMS.map(item => {
-                if (!item.isHidden()) {
+                if (!item.isHidden(account.networkType)) {
                     return (
                         <StyledNavLink
                             data-test={`@wallet/menu/${item.route}`}

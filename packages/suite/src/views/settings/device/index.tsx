@@ -5,9 +5,8 @@ import styled from 'styled-components';
 import { P, Switch, Link, colors } from '@trezor/components-v2';
 
 import { SUITE } from '@suite-actions/constants';
-import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { SuiteLayout } from '@suite-components';
+import { SuiteLayout, Translation } from '@suite-components';
 import { Menu as SettingsMenu } from '@settings-components';
 import { getFwVersion } from '@suite-utils/device';
 import {

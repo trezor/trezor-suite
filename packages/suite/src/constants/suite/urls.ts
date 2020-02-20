@@ -37,3 +37,8 @@ export const CHROME_DOWNLOAD_URL = 'https://www.google.com/chrome/';
 export const CHROME_UPDATE_URL = 'https://support.google.com/chrome/answer/95414';
 export const FF_DOWNLOAD_URL = 'https://www.mozilla.org/en-US/firefox/new/';
 export const FF_UPDATE_URL = 'https://support.mozilla.org/en-US/kb/update-firefox-latest-version';
+export const WIKI_XPUB_URL =
+    'https://wiki.trezor.io/User_manual:Displaying_account_public_key_(XPUB)';
+export const WIKI_BECH32_URL = 'https://wiki.trezor.io/Bech32';
+export const WIKI_P2SH_URL = 'https://wiki.trezor.io/P2SH';
+export const WIKI_P2PHK_URL = 'https://wiki.trezor.io/P2PHK_address';
