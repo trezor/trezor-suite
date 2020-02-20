@@ -88,11 +88,11 @@ export default ({ accounts, selectedAccount, title, goto, router }: Props) => {
                 {otherAccounts.length === 1 && (
                     <SingleAccount>
                         Account {account.symbol.toUpperCase()} #{account.index + 1}
-                        <HiddenPlaceholder>
-                            <Label>
+                        <Label>
+                            <HiddenPlaceholder>
                                 {account.formattedBalance} {account.symbol.toUpperCase()}
-                            </Label>
-                        </HiddenPlaceholder>
+                            </HiddenPlaceholder>
+                        </Label>
                     </SingleAccount>
                 )}
                 {otherAccounts.length > 1 && (

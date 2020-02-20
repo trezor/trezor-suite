@@ -76,11 +76,11 @@ const Asset = React.memo(({ name, symbol, cryptoValue, ...rest }: Props) => {
                 </AssetName>
             </Col>
             <Col>
-                <HiddenPlaceholder>
-                    <CryptoValueWrapper>
+                <CryptoValueWrapper>
+                    <HiddenPlaceholder>
                         {cryptoValue} {symbol.toUpperCase()}{' '}
-                    </CryptoValueWrapper>
-                </HiddenPlaceholder>
+                    </HiddenPlaceholder>
+                </CryptoValueWrapper>
             </Col>
             <Col>
                 <FiatValueWrapper>
