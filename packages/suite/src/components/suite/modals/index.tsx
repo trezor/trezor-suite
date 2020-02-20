@@ -22,7 +22,7 @@ import ConfirmAction from './confirm/Action';
 import Word from './Word';
 import WordAdvanced from './WordAdvanced';
 import ConfirmAddress from './confirm/Address';
-import ConfirmXpub from './confirm/Xpub';
+import ConfirmXpub from './confirm/Xpub/Container';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ReviewTransaction from './ReviewTransaction/Container';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';

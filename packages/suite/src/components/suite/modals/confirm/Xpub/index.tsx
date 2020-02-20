@@ -1,14 +1,10 @@
 import React, { createRef } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import * as notificationActions from '@suite-actions/notificationActions';
 import { Button, H2, colors } from '@trezor/components-v2';
 import { copyToClipboard } from '@suite-utils/dom';
-import { Dispatch } from '@suite-types';
-import { Account } from '@wallet-types';
 import { Translation, QrCode } from '@suite-components';
 import messages from '@suite/support/messages';
+import { Props } from './Container';
 
 const StyledWrapper = styled.div`
     max-width: 600px;
@@ -35,20 +31,7 @@ const Row = styled.div`
     }
 `;
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    addNotification: bindActionCreators(notificationActions.add, dispatch),
-});
-
-type Props = {
-    xpub: string;
-    accountPath: string;
-    accountIndex: number;
-    accountType: Account['accountType'];
-    symbol: Account['symbol'];
-    onCancel: () => void;
-} & ReturnType<typeof mapDispatchToProps>;
-
-const ConfirmAddress = ({ xpub, accountPath, accountIndex, symbol, addNotification }: Props) => {
+export default ({ xpub, accountPath, accountIndex, symbol, addNotification }: Props) => {
     // TODO: no-backup, backup failed
     // const needsBackup = device.features && device.features.needs_backup;
 
@@ -81,5 +64,3 @@ const ConfirmAddress = ({ xpub, accountPath, accountIndex, symbol, addNotificati
         </StyledWrapper>
     );
 };
-
-export default connect(null, mapDispatchToProps)(ConfirmAddress);
