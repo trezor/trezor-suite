@@ -2084,15 +2084,15 @@ const definedMessages = defineMessages({
         defaultMessage: 'Legacy',
     },
     TR_ACCOUNT_TYPE_BECH32: {
-        id: 'TR_ACCOUNT_TYPE_NORMAL',
+        id: 'TR_ACCOUNT_TYPE_BECH32',
         defaultMessage: 'Bech32',
     },
     TR_ACCOUNT_TYPE_P2SH: {
-        id: 'TR_ACCOUNT_TYPE_NORMAL',
+        id: 'TR_ACCOUNT_TYPE_P2SH',
         defaultMessage: 'P2SH',
     },
     TR_ACCOUNT_TYPE_P2PKH: {
-        id: 'TR_ACCOUNT_TYPE_NORMAL',
+        id: 'TR_ACCOUNT_TYPE_P2PKH',
         defaultMessage: 'P2PKH',
     },
 });
