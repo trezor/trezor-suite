@@ -5,11 +5,10 @@ import styled from 'styled-components';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { Button, P, H2, colors } from '@trezor/components-v2';
 import { copyToClipboard } from '@suite-utils/dom';
-import { TrezorDevice, Dispatch } from '@suite-types';
+import { Dispatch } from '@suite-types';
+import { Account } from '@wallet-types';
 import { Translation, QrCode } from '@suite-components';
 import messages from '@suite/support/messages';
-import CheckOnTrezor from './components/CheckOnTrezor';
-import DeviceDisconnected from './components/DeviceDisconnected';
 
 const StyledWrapper = styled.div`
     max-width: 600px;
@@ -41,19 +40,18 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 });
 
 type Props = {
-    device: TrezorDevice;
-    address: string;
-    addressPath?: string;
-    networkType: string;
-    symbol: string;
-    onCancel?: () => void;
+    xpub: string;
+    accountPath: string;
+    accountIndex: number;
+    accountType: Account['accountType'];
+    symbol: Account['symbol'];
+    onCancel: () => void;
 } & ReturnType<typeof mapDispatchToProps>;
 
 const ConfirmAddress = ({
-    device,
-    address,
-    addressPath,
-    networkType,
+    xpub,
+    accountPath,
+    accountIndex,
     symbol,
     addNotification,
 }: Props) => {
@@ -63,11 +61,11 @@ const ConfirmAddress = ({
     const htmlElement = createRef<HTMLDivElement>();
 
     const copyAddress = () => {
-        const result = copyToClipboard(address, htmlElement.current);
+        const result = copyToClipboard(xpub, htmlElement.current);
         if (typeof result === 'string') {
             addNotification({ type: 'copy-to-clipboard-error', error: result });
         } else {
-            addNotification({ type: 'copy-to-clipboard-success', payload: address });
+            addNotification({ type: 'copy-to-clipboard-success', payload: xpub });
         }
     };
 
@@ -75,22 +73,15 @@ const ConfirmAddress = ({
         <StyledWrapper>
             <H2>
                 <Translation
-                    {...messages.TR_ADDRESS_MODAL_TITLE}
-                    values={{ networkName: symbol.toUpperCase() }}
+                    {...messages.TR_XPUB_MODAL_TITLE}
+                    values={{ networkName: symbol.toUpperCase(), accountIndex: accountIndex + 1 }}
                 />
             </H2>
-            {networkType === 'bitcoin' && (
-                <P size="tiny">
-                    <Translation {...messages.TR_ADDRESS_MODAL_BTC_DESCRIPTION} />
-                </P>
-            )}
-            <QrCode value={address} addressPath={addressPath} />
-            <Address data-test="@address-modal/address-field">{address}</Address>
-            {device.connected && <CheckOnTrezor device={device} />}
-            {!device.connected && <DeviceDisconnected label={device.label} />}
+            <QrCode value={xpub} addressPath={accountPath} />
+            <Address data-test="@xpub-modal/xpub-field">{xpub}</Address>
             <Row ref={htmlElement}>
                 <Button variant="secondary" onClick={copyAddress}>
-                    <Translation {...messages.TR_ADDRESS_MODAL_CLIPBOARD} />
+                    <Translation {...messages.TR_XPUB_MODAL_CLIPBOARD} />
                 </Button>
             </Row>
         </StyledWrapper>
