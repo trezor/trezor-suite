@@ -125,4 +125,4 @@ const Asset = React.memo(({ name, symbol, cryptoValue, localCurrency, ...props }
     );
 });
 
-export default connect(mapStateToProps, null)(Asset);
+export default connect(mapStateToProps)(Asset);
