@@ -4,10 +4,9 @@ import Head from 'next/head';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { variables } from '@trezor/components';
+import { variables } from '@trezor/components-v2';
 import { AnyStepDisallowedState, Step } from '@onboarding-types/steps';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import * as connectActions from '@onboarding-actions/connectActions';
 import * as STEP from '@onboarding-constants/steps';
 import steps from '@onboarding-config/steps';
 import { getFnForRule } from '@onboarding-utils/rules';
@@ -21,24 +20,23 @@ import HologramStep from '@onboarding-views/steps/Hologram/Container';
 import PairStep from '@onboarding-views/steps/Pair/Container';
 import FirmwareStep from '@onboarding-views/steps/Firmware/Container';
 import ShamirStep from '@onboarding-views/steps/Shamir/Container';
-import RecoveryStep from '@onboarding-views/steps/Recovery';
+import RecoveryStep from '@onboarding-views/steps/Recovery/Container';
 import BackupStep from '@onboarding-views/steps/Backup/Container';
 import SecurityStep from '@onboarding-views/steps/Security/Container';
 import SetPinStep from '@onboarding-views/steps/Pin/Container';
 import FinalStep from '@onboarding-views/steps/Final/Container';
 import { UnexpectedState } from '@onboarding-components';
 import { ProgressBar } from '@suite-components';
+import ModalWrapper from '@suite-components/ModalWrapper';
 import { AppState, Dispatch, InjectedModalApplicationProps } from '@suite-types';
 
-const Wrapper = styled.div`
+const Wrapper = styled(ModalWrapper)`
     display: flex;
     flex: 1;
     flex-direction: column;
-    width: 100%;
     overflow-x: hidden;
-    padding-left: 40px;
-    padding-right: 40px;
-    max-width: 700px; /* neat boxed view */
+    height: 90vh;
+    max-width: 90vw;
 
     @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
         width: calc(55vw + 150px);
@@ -48,16 +46,12 @@ const Wrapper = styled.div`
     }
 `;
 
-const ProgressBarWrapper = styled.div`
-    height: 30px;
-    display: flex;
-    flex-direction: column;
-`;
-
 const ComponentWrapper = styled.div`
     display: flex;
     justify-content: center;
-    min-height: 65vh;
+    /* min-height: 65vh; */
+    /* min-height: 100%; */
+    overflow-y: auto;
 `;
 
 // used to position modal to center
@@ -70,11 +64,6 @@ const ActionModalWrapper = styled.div`
 const mapStateToProps = (state: AppState) => {
     return {
         device: state.suite.device,
-
-        // connect reducer
-        deviceCall: state.onboarding.deviceCall,
-        uiInteraction: state.onboarding.uiInteraction,
-
         // onboarding reducer
         prevDevice: state.onboarding.prevDevice,
         activeStepId: state.onboarding.activeStepId,
@@ -84,7 +73,6 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     onboardingActions: bindActionCreators(onboardingActions, dispatch),
-    connectActions: bindActionCreators(connectActions, dispatch),
 });
 
 type Props = ReturnType<typeof mapStateToProps> &
@@ -92,7 +80,7 @@ type Props = ReturnType<typeof mapStateToProps> &
     InjectedModalApplicationProps;
 
 const Onboarding = (props: Props) => {
-    const { activeStepId, device, uiInteraction, prevDevice, path, modal } = props;
+    const { activeStepId, device, prevDevice, path, modal } = props;
 
     const getStep = () => {
         const lookup = steps.find((step: Step) => step.id === activeStepId);
@@ -111,7 +99,7 @@ const Onboarding = (props: Props) => {
 
         return activeStep.disallowedDeviceStates.find((state: AnyStepDisallowedState) => {
             const fn = getFnForRule(state);
-            return fn({ device, prevDevice, path, uiInteraction });
+            return fn({ device, prevDevice, path });
         });
     };
 
@@ -160,16 +148,13 @@ const Onboarding = (props: Props) => {
                 <title>Onboarding | Trezor Suite</title>
             </Head>
 
-            <ProgressBarWrapper>
-                {getStep().progress && (
-                    <ProgressBar
-                        total={steps.filter(s => s.progress).length}
-                        current={steps.findIndex(step => activeStepId === step.id)}
-                        showBuy={getStep().buy}
-                        showHelp={getStep().help}
-                    />
-                )}
-            </ProgressBarWrapper>
+            <ProgressBar
+                total={steps.filter(s => s.progress).length}
+                current={steps.findIndex(step => activeStepId === step.id)}
+                showBuy={getStep().buy}
+                showHelp={getStep().help}
+                hidden={!getStep().progress}
+            />
 
             <ComponentWrapper>
                 {errorState && (
@@ -181,7 +166,6 @@ const Onboarding = (props: Props) => {
                                 prevDevice.features.major_version) ||
                             2
                         }
-                        uiInteraction={uiInteraction}
                     />
                 )}
                 {!errorState && modal && (
@@ -189,7 +173,7 @@ const Onboarding = (props: Props) => {
                         {modal}
                     </ActionModalWrapper>
                 )}
-                {!errorState && !modal && <StepComponent modal={modal} />}
+                {!errorState && !modal && <StepComponent />}
             </ComponentWrapper>
         </Wrapper>
     );

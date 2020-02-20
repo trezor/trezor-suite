@@ -32,7 +32,7 @@ export default {
                 name: 'Ripple',
                 shortcut: 'xrp',
                 testnet: false,
-                version: '0.24.0-rc1',
+                version: '1.4.0',
             },
         },
         {

@@ -7,17 +7,5 @@ import * as TOKEN from './token';
 import * as TRANSACTION from './transactionConstants';
 import * as DISCOVERY from './discoveryConstants';
 import * as WALLET from './walletConstants';
-import * as SEND_CACHE from './sendFormCacheConstants';
 
-export {
-    BLOCKCHAIN,
-    SIGN_VERIFY,
-    TOKEN,
-    RECEIVE,
-    ACCOUNT,
-    TRANSACTION,
-    DISCOVERY,
-    WALLET,
-    SEND,
-    SEND_CACHE,
-};
+export { BLOCKCHAIN, SIGN_VERIFY, TOKEN, RECEIVE, ACCOUNT, TRANSACTION, DISCOVERY, WALLET, SEND };

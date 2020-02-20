@@ -3,8 +3,7 @@ import { createFilter } from 'react-select';
 import styled, { keyframes } from 'styled-components';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 
-import { Select, P } from '@trezor/components';
-import { colors } from '@trezor/components-v2';
+import { colors, Select, P } from '@trezor/components-v2';
 import { Translation } from '@suite-components';
 import { BIP_39 } from '@suite-constants';
 import messages from '@suite/support/messages';

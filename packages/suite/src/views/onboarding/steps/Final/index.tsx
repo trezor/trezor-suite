@@ -8,7 +8,7 @@ import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Props } from './Container';
 
 const FinalStep = ({ closeModalApp }: Props) => (
-    <Wrapper.Step>
+    <Wrapper.Step data-test="@onboarding/final">
         <Wrapper.StepHeading>
             <Translation>{messages.TR_FINAL_HEADING}</Translation>
         </Wrapper.StepHeading>
@@ -17,7 +17,12 @@ const FinalStep = ({ closeModalApp }: Props) => (
             <img src={resolveStaticPath('images/onboarding/all-done.svg')} alt="" />
         </Wrapper.StepBody>
         <Wrapper.Controls>
-            <OnboardingButton.Cta onClick={closeModalApp}>Go to Suite</OnboardingButton.Cta>
+            <OnboardingButton.Cta
+                data-test="@onboarding/exit-app-button"
+                onClick={() => closeModalApp()}
+            >
+                Go to Suite
+            </OnboardingButton.Cta>
         </Wrapper.Controls>
     </Wrapper.Step>
 );

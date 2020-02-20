@@ -3,7 +3,7 @@
  * ready to interact with
  */
 export const onboardingShouldLoad = () => {
-    return cy.get('html').should('contain', 'Welcome to Trezor');
+    return cy.getTestElement('@onboarding/welcome-step').should('be.visible');
 };
 
 export const dashboardShouldLoad = () => {

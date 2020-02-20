@@ -3,11 +3,10 @@ import {
     DISALLOWED_DEVICE_IS_NOT_CONNECTED,
     DISALLOWED_DEVICE_IS_NOT_USED_HERE,
     DISALLOWED_DEVICE_IS_IN_BOOTLOADER,
-    DISALLOWED_DEVICE_IS_REQUESTING_PIN,
     DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE,
 } from '@onboarding-constants/steps';
 import { AnyPath } from '@onboarding-types/steps';
-import { TrezorDevice, AppState } from '@suite-types';
+import { TrezorDevice } from '@suite-types';
 
 export const isNotConnected = ({ device }: { device?: TrezorDevice }) => !device;
 
@@ -45,17 +44,6 @@ export const isInBootloader = ({ device }: { device?: TrezorDevice }) => {
     return device.features.bootloader_mode === true;
 };
 
-export const isRequestingPin = ({
-    uiInteraction,
-}: {
-    uiInteraction?: AppState['onboarding']['uiInteraction'];
-}) => {
-    if (!uiInteraction) {
-        return null;
-    }
-    return uiInteraction.name === 'ui-request_pin';
-};
-
 export const isNotNewDevice = ({ device, path }: { device?: TrezorDevice; path?: AnyPath[] }) => {
     if (!device || !path || !path.includes('new')) {
         return null;
@@ -73,8 +61,6 @@ export const getFnForRule = (rule: string) => {
             return isNotUsedHere;
         case DISALLOWED_DEVICE_IS_IN_BOOTLOADER:
             return isInBootloader;
-        case DISALLOWED_DEVICE_IS_REQUESTING_PIN:
-            return isRequestingPin;
         case DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE:
             return isNotNewDevice;
         default:

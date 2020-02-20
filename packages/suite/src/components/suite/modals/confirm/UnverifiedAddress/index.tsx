@@ -47,27 +47,27 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 type Props = {
     device: TrezorDevice;
+    address: string;
     addressPath: string;
     onCancel: () => void;
 } & ReturnType<typeof mapDispatchToProps>;
 
 const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
     device,
+    address,
     addressPath,
     showAddress,
     showUnverifiedAddress,
     onCancel,
 }) => {
     const verifyAddress = () => {
-        if (!addressPath) return;
         onCancel();
-        showAddress(addressPath);
+        showAddress(addressPath, address);
     };
 
     const unverifiedAddress = () => {
-        if (!addressPath) return;
         onCancel();
-        showUnverifiedAddress(addressPath);
+        showUnverifiedAddress(addressPath, address);
     };
 
     const enterPressed = useKeyPress('Enter');

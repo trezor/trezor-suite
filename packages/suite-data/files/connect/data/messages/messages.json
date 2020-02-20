@@ -1691,6 +1691,10 @@
                             "id": 12
                         },
                         {
+                            "name": "Failure_WipeCodeMismatch",
+                            "id": 13
+                        },
+                        {
                             "name": "Failure_FirmwareError",
                             "id": 99
                         }
@@ -1770,10 +1774,6 @@
                             "id": 13
                         },
                         {
-                            "name": "ButtonRequest_PassphraseType",
-                            "id": 14
-                        },
-                        {
                             "name": "ButtonRequest_UnknownDerivationPath",
                             "id": 15
                         },
@@ -1788,6 +1788,10 @@
                         {
                             "name": "ButtonRequest_Warning",
                             "id": 18
+                        },
+                        {
+                            "name": "ButtonRequest_PassphraseEntry",
+                            "id": 19
                         }
                     ],
                     "options": {}
@@ -1831,6 +1835,14 @@
                         {
                             "name": "PinMatrixRequestType_NewSecond",
                             "id": 3
+                        },
+                        {
+                            "name": "PinMatrixRequestType_WipeCodeFirst",
+                            "id": 4
+                        },
+                        {
+                            "name": "PinMatrixRequestType_WipeCodeSecond",
+                            "id": 5
                         }
                     ],
                     "options": {}
@@ -1861,9 +1873,11 @@
             "fields": [
                 {
                     "rule": "optional",
-                    "options": {},
+                    "options": {
+                        "deprecated": true
+                    },
                     "type": "bool",
-                    "name": "on_device",
+                    "name": "_on_device",
                     "id": 1
                 }
             ],
@@ -1885,9 +1899,9 @@
                 {
                     "rule": "optional",
                     "options": {},
-                    "type": "bytes",
-                    "name": "state",
-                    "id": 2
+                    "type": "bool",
+                    "name": "on_device",
+                    "id": 3
                 }
             ],
             "enums": [],
@@ -1896,7 +1910,7 @@
             "oneofs": {}
         },
         {
-            "name": "PassphraseStateRequest",
+            "name": "Deprecated_PassphraseStateRequest",
             "fields": [
                 {
                     "rule": "optional",
@@ -1908,15 +1922,19 @@
             ],
             "enums": [],
             "messages": [],
-            "options": {},
+            "options": {
+                "deprecated": true
+            },
             "oneofs": {}
         },
         {
-            "name": "PassphraseStateAck",
+            "name": "Deprecated_PassphraseStateAck",
             "fields": [],
             "enums": [],
             "messages": [],
-            "options": {},
+            "options": {
+                "deprecated": true
+            },
             "oneofs": {}
         },
         {
@@ -2396,6 +2414,134 @@
             ],
             "enums": [],
             "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "DebugLinkReseedRandom",
+            "fields": [
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "value",
+                    "id": 1
+                }
+            ],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "DebugLinkRecordScreen",
+            "fields": [
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "string",
+                    "name": "target_directory",
+                    "id": 1
+                }
+            ],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "DebugLinkShowText",
+            "fields": [
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "string",
+                    "name": "header_text",
+                    "id": 1
+                },
+                {
+                    "rule": "repeated",
+                    "options": {},
+                    "type": "DebugLinkShowTextItem",
+                    "name": "body_text",
+                    "id": 2
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "string",
+                    "name": "header_icon",
+                    "id": 3
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "string",
+                    "name": "icon_color",
+                    "id": 4
+                }
+            ],
+            "enums": [
+                {
+                    "name": "DebugLinkShowTextStyle",
+                    "values": [
+                        {
+                            "name": "NORMAL",
+                            "id": 0
+                        },
+                        {
+                            "name": "BOLD",
+                            "id": 1
+                        },
+                        {
+                            "name": "MONO",
+                            "id": 2
+                        },
+                        {
+                            "name": "MONO_BOLD",
+                            "id": 3
+                        },
+                        {
+                            "name": "BR",
+                            "id": 4
+                        },
+                        {
+                            "name": "BR_HALF",
+                            "id": 5
+                        },
+                        {
+                            "name": "SET_COLOR",
+                            "id": 6
+                        }
+                    ],
+                    "options": {}
+                }
+            ],
+            "messages": [
+                {
+                    "name": "DebugLinkShowTextItem",
+                    "fields": [
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "DebugLinkShowTextStyle",
+                            "name": "style",
+                            "id": 1
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "string",
+                            "name": "content",
+                            "id": 2
+                        }
+                    ],
+                    "enums": [],
+                    "messages": [],
+                    "options": {},
+                    "oneofs": {}
+                }
+            ],
             "options": {},
             "oneofs": {}
         },
@@ -3976,9 +4122,7 @@
                         },
                         {
                             "rule": "optional",
-                            "options": {
-                                "default": 0
-                            },
+                            "options": {},
                             "type": "uint64",
                             "name": "amount",
                             "id": 2
@@ -4288,15 +4432,8 @@
                     "rule": "optional",
                     "options": {},
                     "type": "bytes",
-                    "name": "state",
+                    "name": "session_id",
                     "id": 1
-                },
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "bool",
-                    "name": "skip_passphrase",
-                    "id": 2
                 }
             ],
             "enums": [],
@@ -4424,13 +4561,6 @@
                     "rule": "optional",
                     "options": {},
                     "type": "bool",
-                    "name": "passphrase_cached",
-                    "id": 17
-                },
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "bool",
                     "name": "firmware_present",
                     "id": 18
                 },
@@ -4538,6 +4668,27 @@
                     "type": "bool",
                     "name": "sd_protection",
                     "id": 33
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "wipe_code_protection",
+                    "id": 34
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "session_id",
+                    "id": 35
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "passphrase_always_on_device",
+                    "id": 36
                 }
             ],
             "enums": [
@@ -4607,6 +4758,10 @@
                         {
                             "name": "Capability_ShamirGroups",
                             "id": 16
+                        },
+                        {
+                            "name": "Capability_PassphraseEntry",
+                            "id": 17
                         }
                     ],
                     "options": {}
@@ -4658,13 +4813,6 @@
                 {
                     "rule": "optional",
                     "options": {},
-                    "type": "PassphraseSourceType",
-                    "name": "passphrase_source",
-                    "id": 5
-                },
-                {
-                    "rule": "optional",
-                    "options": {},
                     "type": "uint32",
                     "name": "auto_lock_delay_ms",
                     "id": 6
@@ -4675,28 +4823,16 @@
                     "type": "uint32",
                     "name": "display_rotation",
                     "id": 7
-                }
-            ],
-            "enums": [
+                },
                 {
-                    "name": "PassphraseSourceType",
-                    "values": [
-                        {
-                            "name": "ASK",
-                            "id": 0
-                        },
-                        {
-                            "name": "DEVICE",
-                            "id": 1
-                        },
-                        {
-                            "name": "HOST",
-                            "id": 2
-                        }
-                    ],
-                    "options": {}
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "passphrase_always_on_device",
+                    "id": 8
                 }
             ],
+            "enums": [],
             "messages": [],
             "options": {},
             "oneofs": {}
@@ -4719,6 +4855,22 @@
         },
         {
             "name": "ChangePin",
+            "fields": [
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "remove",
+                    "id": 1
+                }
+            ],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "ChangeWipeCode",
             "fields": [
                 {
                     "rule": "optional",
@@ -4784,20 +4936,6 @@
                     "type": "bool",
                     "name": "button_protection",
                     "id": 2
-                },
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "bool",
-                    "name": "pin_protection",
-                    "id": 3
-                },
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "bool",
-                    "name": "passphrase_protection",
-                    "id": 4
                 }
             ],
             "enums": [],
@@ -4866,13 +5004,6 @@
                 {
                     "rule": "optional",
                     "options": {},
-                    "type": "HDNodeType",
-                    "name": "node",
-                    "id": 2
-                },
-                {
-                    "rule": "optional",
-                    "options": {},
                     "type": "string",
                     "name": "pin",
                     "id": 3
@@ -4887,7 +5018,7 @@
                 {
                     "rule": "optional",
                     "options": {
-                        "default": "english"
+                        "default": "en-US"
                     },
                     "type": "string",
                     "name": "language",
@@ -4913,6 +5044,20 @@
                     "type": "uint32",
                     "name": "u2f_counter",
                     "id": 8
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "needs_backup",
+                    "id": 9
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "no_backup",
+                    "id": 10
                 }
             ],
             "enums": [],
@@ -4956,7 +5101,7 @@
                 {
                     "rule": "optional",
                     "options": {
-                        "default": "english"
+                        "default": "en-US"
                     },
                     "type": "string",
                     "name": "language",
@@ -5064,7 +5209,7 @@
                 {
                     "rule": "optional",
                     "options": {
-                        "default": "english"
+                        "default": "en-US"
                     },
                     "type": "string",
                     "name": "language",
@@ -5194,6 +5339,30 @@
             "oneofs": {}
         },
         {
+            "name": "GetNextU2FCounter",
+            "fields": [],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "NextU2FCounter",
+            "fields": [
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "u2f_counter",
+                    "id": 1
+                }
+            ],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
             "name": "MoneroTransactionSourceEntry",
             "fields": [
                 {
@@ -5258,6 +5427,13 @@
                     "type": "MoneroMultisigKLRki",
                     "name": "multisig_kLRki",
                     "id": 9
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "subaddr_minor",
+                    "id": 10
                 }
             ],
             "enums": [],
@@ -5892,6 +6068,13 @@
                     "type": "bytes",
                     "name": "pseudo_out_hmac",
                     "id": 5
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "orig_idx",
+                    "id": 6
                 }
             ],
             "enums": [],
@@ -6147,6 +6330,13 @@
                     "type": "bytes",
                     "name": "spend_key",
                     "id": 7
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "orig_idx",
+                    "id": 8
                 }
             ],
             "enums": [],
@@ -6215,6 +6405,13 @@
                     "type": "bytes",
                     "name": "tx_enc_keys",
                     "id": 4
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "opening_key",
+                    "id": 5
                 }
             ],
             "enums": [],
@@ -9160,14 +9357,6 @@
                     "id": 42
                 },
                 {
-                    "name": "MessageType_PassphraseStateRequest",
-                    "id": 77
-                },
-                {
-                    "name": "MessageType_PassphraseStateAck",
-                    "id": 78
-                },
-                {
                     "name": "MessageType_RecoveryDevice",
                     "id": 45
                 },
@@ -9190,6 +9379,26 @@
                 {
                     "name": "MessageType_SdProtect",
                     "id": 79
+                },
+                {
+                    "name": "MessageType_GetNextU2FCounter",
+                    "id": 80
+                },
+                {
+                    "name": "MessageType_NextU2FCounter",
+                    "id": 81
+                },
+                {
+                    "name": "MessageType_ChangeWipeCode",
+                    "id": 82
+                },
+                {
+                    "name": "MessageType_Deprecated_PassphraseStateRequest",
+                    "id": 77
+                },
+                {
+                    "name": "MessageType_Deprecated_PassphraseStateAck",
+                    "id": 78
                 },
                 {
                     "name": "MessageType_FirmwareErase",
@@ -9326,6 +9535,18 @@
                 {
                     "name": "MessageType_DebugLinkLayout",
                     "id": 9001
+                },
+                {
+                    "name": "MessageType_DebugLinkReseedRandom",
+                    "id": 9002
+                },
+                {
+                    "name": "MessageType_DebugLinkRecordScreen",
+                    "id": 9003
+                },
+                {
+                    "name": "MessageType_DebugLinkShowText",
+                    "id": 9004
                 },
                 {
                     "name": "MessageType_EthereumGetPublicKey",

@@ -67,6 +67,8 @@ export const notifications = `
 
     .Toastify__toast {
         position: relative;
+        background: white;
+        border: 1px solid ${colors.BLACK96};
         min-height: 50px;
         box-sizing: border-box;
         margin-bottom: 1rem;
@@ -87,8 +89,8 @@ export const notifications = `
     }
 
     .Toastify__toast--default {
-        background: ${colors.BLACK17};
-        color: ${colors.WHITE};
+        background: ${colors.WHITE};
+        color: ${colors.BLACK0};
     }
 
     .Toastify__toast--info {

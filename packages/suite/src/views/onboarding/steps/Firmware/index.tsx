@@ -54,6 +54,8 @@ const FirmwareStep = ({
         return intl.formatMessage(messages.TR_INSTALLING);
     };
 
+    const model = device?.features?.major_version || 2;
+
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
@@ -107,7 +109,7 @@ const FirmwareStep = ({
                         )}
 
                         {['outdated', 'required', 'none'].includes(getFirmwareStatus()) && (
-                            <InitImg />
+                            <InitImg model={model} />
                         )}
 
                         {getFirmwareStatus() === 'valid' && (
@@ -115,7 +117,7 @@ const FirmwareStep = ({
                                 <Text>
                                     <Translation {...messages.TR_FIRMWARE_INSTALLED} />
                                 </Text>
-                                <SuccessImg />
+                                <SuccessImg model={model} />
                             </>
                         )}
                     </>
@@ -126,7 +128,7 @@ const FirmwareStep = ({
                         <Text>
                             Excellent, fw update successful, only 6% of user share this experience!
                         </Text>
-                        <SuccessImg />
+                        <SuccessImg model={model} />
                     </>
                 )}
 
@@ -137,7 +139,7 @@ const FirmwareStep = ({
                             lastest version. Only to an intermediate one. We apologize for
                             inconvenience.
                         </Text>
-                        <SuccessImg />
+                        <SuccessImg model={model} />
                     </>
                 )}
 
@@ -156,7 +158,7 @@ const FirmwareStep = ({
                     'wait-for-reboot',
                 ].includes(status) && (
                     <>
-                        <InitImg />
+                        <InitImg model={model} />
 
                         <Text>
                             {getMessageForStatus() && (
@@ -216,6 +218,12 @@ const FirmwareStep = ({
                 </Wrapper.Controls>
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
+                {/* todo add option to switch for btc-only firwmare */}
+                {/* {status === 'initial' && (
+                    <OnboardingButton.Back onClick={}>
+                        Switch to btc only firmware
+                    </OnboardingButton.Back>
+                )} */}
                 <OnboardingButton.Back onClick={() => onboardingActions.goToPreviousStep()}>
                     Back
                 </OnboardingButton.Back>

@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import Loading from '@suite-components/Loading';
 import ModalWrapper from '@suite-components/ModalWrapper';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 import { variables, colors } from '@trezor/components-v2';
 
 const Wrapper = styled(ModalWrapper)`
@@ -37,11 +39,12 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
 const DiscoveryLoader = (props: Props) => {
     return (
-        <Wrapper {...props}>
-            <Title>Coin discovery in progress…</Title>
+        <Wrapper {...props} data-test="@discovery/loader">
+            <Title>
+                <Translation {...messages.TR_COIN_DISCOVERY_IN_PROGRESS} />
+            </Title>
             <Description>
-                To find your accounts and funds we need to perform a coin discovery which will
-                discover all your coins.
+                <Translation {...messages.TR_TO_FIND_YOUR_ACCOUNTS_AND} />
             </Description>
             <Expand>
                 <Loading padding="0px" />

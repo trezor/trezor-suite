@@ -2,7 +2,8 @@ import { ONBOARDING } from '@onboarding-actions/constants';
 import * as STEP from '@onboarding-constants/steps';
 import { AnyStepId, AnyPath } from '@onboarding-types/steps';
 import steps from '@onboarding-config/steps';
-import * as connectActions from '@onboarding-actions/connectActions';
+import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
+import * as backupActions from '@backup-actions/backupActions';
 import { findNextStep, findPrevStep, isStepInPath } from '@onboarding-utils/steps';
 
 import { GetState, Dispatch, Action } from '@suite-types';
@@ -130,16 +131,26 @@ const enableOnboardingReducer = (payload: boolean): Action => ({
     payload,
 });
 
+// todo: decide if we want this. product!
 const retryBackup = () => async (dispatch: Dispatch) => {
-    await dispatch(connectActions.wipeDevice());
-    await dispatch(connectActions.resetDevice());
-    await dispatch(connectActions.backupDevice());
+    await dispatch(deviceSettingsActions.wipeDevice());
+    await dispatch(deviceSettingsActions.resetDevice());
+    await dispatch(backupActions.backupDevice());
 };
 
 const setBackupType = (payload: number): Action => ({
     type: ONBOARDING.SET_BACKUP_TYPE,
     payload,
 });
+
+const callActionAndGoToNextStep = (action: any, stepId?: AnyStepId) => async (
+    dispatch: Dispatch,
+) => {
+    const result = await action();
+    if (result.success) {
+        dispatch(goToNextStep(stepId));
+    }
+};
 
 export {
     enableOnboardingReducer,
@@ -153,4 +164,5 @@ export {
     resetOnboarding,
     retryBackup,
     setBackupType,
+    callActionAndGoToNextStep,
 };

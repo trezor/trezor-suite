@@ -2,12 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { variables, colors } from '@trezor/components-v2';
-// import { Translation } from '@suite-components/Translation';
+import { Translation } from '@suite-components/Translation';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { Dispatch, TrezorDevice } from '@suite-types';
 import ModalWrapper from '../../ModalWrapper';
-// import messages from '@suite/support/messages';
+import messages from '@suite/support/messages';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     getDiscoveryAuthConfirmationStatus: () =>
@@ -44,7 +44,10 @@ const PassphraseSource = ({ device, getDiscoveryAuthConfirmationStatus }: Props)
         return (
             <Wrapper>
                 <Title>
-                    Confirm empty hidden wallet passphrase source on "{device.label}" device.
+                    <Translation
+                        {...messages.TR_CONFIRM_PASSPHRASE_SOURCE}
+                        values={{ deviceLabel: device.label }}
+                    />
                 </Title>
                 <DeviceConfirmImage device={device} />
             </Wrapper>
@@ -53,7 +56,12 @@ const PassphraseSource = ({ device, getDiscoveryAuthConfirmationStatus }: Props)
 
     return (
         <Wrapper>
-            <Title>Select passphrase source on "{device.label}" device.</Title>
+            <Title>
+                <Translation
+                    {...messages.TR_SELECT_PASSPHRASE_SOURCE}
+                    values={{ deviceLabel: device.label }}
+                />
+            </Title>
             <DeviceConfirmImage device={device} />
         </Wrapper>
     );

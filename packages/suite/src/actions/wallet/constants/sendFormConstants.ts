@@ -15,14 +15,17 @@ export const CLEAR = '@wallet-send-form/clear';
 export const DISPOSE = '@wallet-send-form/dispose';
 export const DELETE_TRANSACTION_INFO = '@wallet-send-form/delete-tx-info';
 
-// btc specific
+// btc
 export const BTC_ADD_RECIPIENT = '@wallet-send-form/btc-add-recipient';
 export const BTC_REMOVE_RECIPIENT = '@wallet-send-form/btc-remove-recipient';
 export const BTC_PRECOMPOSED_TX = '@wallet-send-form/btc-precomposed-tx';
 
-// ethereum specific
+// ethereum
 export const ETH_PRECOMPOSED_TX = '@wallet-send-form/eth-precomposed-tx';
+export const ETH_HANDLE_GAS_PRICE = '@wallet-send-form/eth-handle-gas-price';
+export const ETH_HANDLE_GAS_LIMIT = '@wallet-send-form/eth-handle-gas-limit';
+export const ETH_HANDLE_DATA = '@wallet-send-form/eth-handle-data';
 
-// xrp specific
+// xrp
 export const XRP_HANDLE_DESTINATION_TAG_CHANGE = '@wallet-send-form/xrp-handle-destination-tag';
 export const XRP_PRECOMPOSED_TX = '@wallet-send-form/xrp-precomposed-tx';

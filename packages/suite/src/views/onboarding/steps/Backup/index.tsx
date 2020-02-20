@@ -10,7 +10,7 @@ import messages from '@suite/support/messages';
 import { Props } from './Container';
 
 const BackupStep = (props: Props) => {
-    const { device, backup } = props;
+    const { device, backup, locks } = props;
 
     if (!device || !device.features) {
         return null;
@@ -45,8 +45,9 @@ const BackupStep = (props: Props) => {
 
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
+                                data-test="@backup/start-button"
                                 onClick={() => props.backupDevice()}
-                                isDisabled={!canStart(backup.userConfirmed)}
+                                isDisabled={!canStart(backup.userConfirmed, locks)}
                             >
                                 <Translation {...messages.TR_START_BACKUP} />
                             </OnboardingButton.Cta>
@@ -98,6 +99,7 @@ const BackupStep = (props: Props) => {
 
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
+                                data-test="@backup/close-button"
                                 onClick={() => props.goToNextStep()}
                                 isDisabled={!canContinue(backup.userConfirmed)}
                             >

@@ -10,6 +10,7 @@ import suiteReducer from '@suite-reducers/suiteReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
 import routerReducer from '@suite-reducers/routerReducer';
 import modalReducer from '@suite-reducers/modalReducer';
+import firmwareReducer from '@firmware-reducers/firmwareReducer';
 import { SUITE } from '../constants';
 import * as suiteActions from '../suiteActions';
 import { init } from '../trezorConnectActions';
@@ -28,12 +29,16 @@ jest.mock('trezor-connect', () => {
                 fixture || {
                     success: true,
                 },
-            getDeviceState: () =>
+            getDeviceState: ({ device }: any) =>
                 fixture || {
                     success: true,
                     payload: {
-                        state: '0123456',
+                        state: `state@device-id:${device ? device.instance : undefined}`,
                     },
+                },
+            applySettings: () =>
+                fixture || {
+                    success: true,
                 },
         },
         DEVICE: {
@@ -63,11 +68,13 @@ jest.mock('next/router', () => {
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
+type FirmwareState = ReturnType<typeof firmwareReducer>;
 
 export const getInitialState = (
     suite?: Partial<SuiteState>,
     devices?: DevicesState,
     router?: RouterState,
+    firmware?: Partial<FirmwareState>,
 ) => {
     return {
         suite: {
@@ -80,6 +87,10 @@ export const getInitialState = (
             ...router,
         },
         modal: modalReducer(undefined, { type: 'foo' } as any),
+        firmware: {
+            ...firmwareReducer(undefined, { type: 'foo' } as any),
+            ...firmware,
+        },
     };
 };
 
@@ -139,7 +150,12 @@ describe('Suite Actions', () => {
 
     fixtures.handleDeviceConnect.forEach(f => {
         it(`handleDeviceConnect: ${f.description}`, async () => {
-            const state = getInitialState(f.state);
+            const state = getInitialState(
+                f.state.suite,
+                f.state.devices,
+                undefined,
+                f.state.firmware as FirmwareState,
+            );
             const store = initStore(state);
             await store.dispatch(suiteActions.handleDeviceConnect(f.device));
             if (!f.result) {
@@ -206,7 +222,7 @@ describe('Suite Actions', () => {
     fixtures.authorizeDevice.forEach(f => {
         it(`authorizeDevice: ${f.description}`, async () => {
             require('trezor-connect').setTestFixtures(f.getDeviceState);
-            const state = getInitialState(f.state);
+            const state = getInitialState(f.suiteState, f.devicesState);
             const store = initStore(state);
             await store.dispatch(suiteActions.authorizeDevice());
             if (!f.result) {
@@ -214,6 +230,18 @@ describe('Suite Actions', () => {
             } else {
                 const action = store.getActions().pop();
                 expect(action.type).toEqual(f.result);
+                if (f.deviceReducerResult) {
+                    // expect(store.getState().devices).toMatchObject(f.deviceReducerResult);
+                    store.getState().devices.forEach((d, i) => {
+                        const dev = f.deviceReducerResult[i];
+                        expect(d.state).toEqual(dev.state);
+                        expect(d.instance).toEqual(dev.instance);
+                        expect(d.useEmptyPassphrase).toEqual(dev.useEmptyPassphrase);
+                    });
+                    // expect(store.getState().devices).toEqual(
+                    //     expect.arrayContaining(f.deviceReducerResult),
+                    // );
+                }
             }
         });
     });
@@ -233,12 +261,12 @@ describe('Suite Actions', () => {
         });
     });
 
-    fixtures.retryAuthConfirm.forEach(f => {
-        it(`retryAuthConfirm: ${f.description}`, async () => {
-            require('trezor-connect').setTestFixtures(f.getDeviceState);
+    fixtures.createDeviceInstance.forEach(f => {
+        it(`createDeviceInstance: ${f.description}`, async () => {
+            require('trezor-connect').setTestFixtures(f.applySettings);
             const state = getInitialState(f.state);
             const store = initStore(state);
-            await store.dispatch(suiteActions.retryAuthConfirm());
+            await store.dispatch(suiteActions.createDeviceInstance(f.state.device));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -248,12 +276,33 @@ describe('Suite Actions', () => {
         });
     });
 
-    const SUITE_DEVICE = getSuiteDevice({ path: '1' });
-    it('forgetDevice', () => {
-        const expectedAction = {
+    fixtures.switchDuplicatedDevice.forEach(f => {
+        it(`createDeviceInstance: ${f.description}`, async () => {
+            const state = getInitialState(f.state.suite, f.state.devices);
+            const store = initStore(state);
+            await store.dispatch(suiteActions.switchDuplicatedDevice(f.device, f.duplicate));
+            expect(store.getState().suite.device).toEqual(f.result.selected);
+            expect(store.getState().devices.length).toEqual(f.result.devices.length);
+            // if (!f.result) {
+            //     expect(store.getActions().length).toEqual(0);
+            // } else {
+            //     const action = store.getActions().pop();
+            //     expect(action.type).toEqual(f.result);
+            // }
+        });
+    });
+
+    // just for coverage
+    it('misc', () => {
+        const SUITE_DEVICE = getSuiteDevice({ path: '1' });
+        expect(suiteActions.rememberDevice(SUITE_DEVICE)).toMatchObject({
+            type: SUITE.REMEMBER_DEVICE,
+        });
+        expect(suiteActions.forgetDevice(SUITE_DEVICE)).toMatchObject({
             type: SUITE.FORGET_DEVICE,
-            payload: SUITE_DEVICE,
-        };
-        expect(suiteActions.forgetDevice(SUITE_DEVICE)).toEqual(expectedAction);
+        });
+        expect(suiteActions.setDebugMode({ translationMode: true })).toMatchObject({
+            type: SUITE.SET_DEBUG_MODE,
+        });
     });
 });

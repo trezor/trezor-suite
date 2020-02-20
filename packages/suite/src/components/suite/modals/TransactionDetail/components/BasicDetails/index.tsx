@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Icon, colors, variables, Link, Loader } from '@trezor/components-v2';
-
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 import { FormattedDate } from 'react-intl';
 import Box from '../Box';
 import BoxRow from '../BoxRow';
@@ -68,15 +69,15 @@ interface Props {
 const getHumanReadableTxType = (tx: WalletAccountTransaction) => {
     switch (tx.type) {
         case 'sent':
-            return 'Outgoing';
+            return <Translation {...messages.TR_OUTGOING} />;
         case 'recv':
-            return 'Incoming';
+            return <Translation {...messages.TR_INCOMING} />;
         case 'self':
-            return 'Sent to self';
+            return <Translation {...messages.TR_SENT_TO_SELF} />;
         case 'unknown':
-            return 'Unknown';
+            return <Translation {...messages.TR_UNKNOWN} />;
         default:
-            return 'Unknown';
+            return <Translation {...messages.TR_UNKNOWN} />;
     }
 };
 
@@ -94,10 +95,12 @@ const BasicDetails = ({
     return (
         <>
             <Box>
-                <BoxRow title="Status">
+                <BoxRow title={<Translation {...messages.TR_STATUS} />}>
                     {isConfirmed ? (
                         <StatusWrapper>
-                            <>Confirmed</>
+                            <>
+                                <Translation {...messages.TR_CONFIRMED_TX} />
+                            </>
                             {isFetching && (
                                 <LoaderIconWrapper>
                                     <Loader size={16} />
@@ -105,7 +108,10 @@ const BasicDetails = ({
                             )}
                             {txDetails?.confirmations && (
                                 <Confirmations>
-                                    {txDetails.confirmations} confirmations
+                                    <Translation
+                                        {...messages.TR_TX_CONFIRMATIONS}
+                                        values={{ confirmationsCount: txDetails.confirmations }}
+                                    />
                                     <ConfirmationsIconWrapper>
                                         <Icon icon="QUESTION" color={colors.BLACK50} size={12} />
                                     </ConfirmationsIconWrapper>
@@ -113,13 +119,23 @@ const BasicDetails = ({
                             )}
                         </StatusWrapper>
                     ) : (
-                        'Unconfirmed'
+                        <Translation {...messages.TR_UNCONFIRMED_TX} />
                     )}
                 </BoxRow>
 
-                <BoxRow title="Type">{getHumanReadableTxType(tx)}</BoxRow>
+                <BoxRow title={<Translation {...messages.TR_TX_TYPE} />}>
+                    {getHumanReadableTxType(tx)}
+                </BoxRow>
 
-                <BoxRow title={isConfirmed ? 'Mined Time' : 'First Seen'}>
+                <BoxRow
+                    title={
+                        isConfirmed ? (
+                            <Translation {...messages.TR_MINED_TIME} />
+                        ) : (
+                            <Translation {...messages.TR_FIRST_SEEN} />
+                        )
+                    }
+                >
                     {tx.blockTime ? (
                         <FormattedDate
                             value={getDateWithTimeZone(tx.blockTime * 1000)}
@@ -132,11 +148,11 @@ const BasicDetails = ({
                             // timeZone="utc"
                         />
                     ) : (
-                        'unknown'
+                        <Translation {...messages.TR_UNKNOWN_CONFIRMATION_TIME} />
                     )}
                 </BoxRow>
 
-                <BoxRow title="Transaction ID">
+                <BoxRow title={<Translation {...messages.TR_TRANSACTION_ID} />}>
                     {explorerUrl ? (
                         <ExplorerLink variant="nostyle" href={explorerUrl}>
                             <TransactionIdWrapper>
@@ -157,11 +173,15 @@ const BasicDetails = ({
             </Box>
 
             <Box>
-                <BoxRow title="Total Input">{totalInput && `${totalInput} ${assetSymbol}`}</BoxRow>
-                <BoxRow title="Total Output">
+                <BoxRow title={<Translation {...messages.TR_TOTAL_INPUT} />}>
+                    {totalInput && `${totalInput} ${assetSymbol}`}
+                </BoxRow>
+                <BoxRow title={<Translation {...messages.TR_TOTAL_OUTPUT} />}>
                     {totalOutput && `${totalOutput} ${assetSymbol}`}
                 </BoxRow>
-                <BoxRow title="Fee">{`${tx.fee} ${assetSymbol}`}</BoxRow>
+                <BoxRow
+                    title={<Translation {...messages.TR_TX_FEE} />}
+                >{`${tx.fee} ${assetSymbol}`}</BoxRow>
                 {/* TODO: BlockchainLink doesn't return size/vsize field */}
                 {/* {txDetails?.size && <BoxRow title="Size">{`${txDetails.size} B`}</BoxRow>} */}
             </Box>

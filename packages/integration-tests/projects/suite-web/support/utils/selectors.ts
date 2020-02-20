@@ -3,8 +3,9 @@
  *
  * @example cy.getTestElement('my-fancy-attr-name')
  */
-export const getTestElement = (selector: string) => {
-    return cy.get(`[data-test="${selector}"]`);
+
+export const getTestElement = (selector: string, options) => {
+    return cy.get(`[data-test="${selector}"]`, options);
 };
 
 export const getConfirmActionOnDeviceModal = () => {

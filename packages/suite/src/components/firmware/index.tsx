@@ -1,10 +1,18 @@
 import React from 'react';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 
-const InitImg = () => <img alt="" src={resolveStaticPath('images/firmware/firmware-init.svg')} />;
+interface Props {
+    model: number;
+}
 
-const SuccessImg = () => (
-    <img alt="" src={resolveStaticPath('images/firmware/firmware-success.svg')} />
+const InitImg = ({ model }: Props) => (
+    <img alt="" src={resolveStaticPath(`images/firmware/firmware-init-${model}.svg`)} />
 );
+
+const SuccessImg = ({ model }: Props) => (
+    <img alt="" src={resolveStaticPath(`images/firmware/firmware-success-${model}.svg`)} />
+);
+
+// todo: ProgressImg. PRODUCT
 
 export { InitImg, SuccessImg };

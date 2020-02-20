@@ -1,47 +1,34 @@
 import { Translation } from '@suite-components/Translation';
 import { AppState } from '@suite-types';
+import styled from 'styled-components';
+import { Icon, colors, Input, Tooltip } from '@trezor/components-v2';
 import messages from '@suite/support/messages';
-import { colors, Icon, Input } from '@trezor/components';
-import { Button } from '@trezor/components-v2';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Account, Network } from '@wallet-types';
 import { Output } from '@wallet-types/sendForm';
 import { getAccountDevice, isAddressInAccount } from '@wallet-utils/accountUtils';
+import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
-import styled from 'styled-components';
+import { Props } from './Container';
 
-import { DispatchProps } from '../../Container';
-
-const TopLabel = styled.div``;
-
-const QrButton = styled(Button)`
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
-    border-left: 0px;
-    height: 40px;
-    padding: 0 10px;
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
+    padding-left: 5px;
 `;
 
-interface Props extends WrappedComponentProps {
-    outputId: Output['id'];
-    error: Output['address']['error'];
-    networkType: Network['networkType'];
-    devices: AppState['devices'];
-    accounts: Account[];
-    address: Output['address']['value'];
-    sendFormActions: DispatchProps['sendFormActions'];
-    openModal: DispatchProps['openModal'];
-}
+const Label = styled.div`
+    display: flex;
+    align-items: center;
+`;
 
 const getMessage = (
     error: Output['address']['error'],
     networkType: Network['networkType'],
-    address: string | null,
+    address: Output['address']['value'],
     accounts: Account[],
     devices: AppState['devices'],
 ) => {
-    if (address && !VALIDATION_ERRORS.CANNOT_SEND_TO_MYSELF) {
+    if (address && error !== VALIDATION_ERRORS.CANNOT_SEND_TO_MYSELF) {
         const account = isAddressInAccount(networkType, address, accounts);
         if (account) {
             const device = getAccountDevice(devices, account);
@@ -57,53 +44,55 @@ const getMessage = (
         case VALIDATION_ERRORS.NOT_VALID:
             return <Translation>{messages.TR_ADDRESS_IS_NOT_VALID}</Translation>;
         case VALIDATION_ERRORS.CANNOT_SEND_TO_MYSELF:
-            return <Translation>{messages.CANNOT_SEND_TO_MYSELF}</Translation>;
+            return <Translation>{messages.TR_CANNOT_SEND_TO_MYSELF}</Translation>;
         default:
-            return null;
+            return undefined;
     }
 };
 
-const getState = (error: Output['address']['error'], address: Output['address']['value']) => {
-    if (error) {
-        return 'error';
-    }
-    if (address && !error) {
-        return 'success';
-    }
-};
+export default ({
+    output,
+    intl,
+    account,
+    accounts,
+    devices,
+    openModal,
+    sendFormActions,
+}: Props) => {
+    if (!account) return null;
 
-const Address = (props: Props) => (
-    <Input
-        state={getState(props.error, props.address)}
-        autoComplete="off"
-        autoCorrect="off"
-        spellCheck={false}
-        autoCapitalize="off"
-        topLabel={<TopLabel>{props.intl.formatMessage(messages.TR_ADDRESS)}</TopLabel>}
-        bottomText={getMessage(
-            props.error,
-            props.networkType,
-            props.address,
-            props.accounts,
-            props.devices,
-        )}
-        value={props.address || ''}
-        onChange={e => props.sendFormActions.handleAddressChange(props.outputId, e.target.value)}
-        sideAddons={
-            <QrButton
-                key="qrButton"
-                variant="secondary"
-                onClick={() =>
-                    props.openModal({
+    const { networkType } = account;
+    const { address, id } = output;
+    const { value, error } = address;
+
+    return (
+        <Input
+            state={getInputState(error, value)}
+            display="block"
+            monospace
+            topLabel={
+                <Label>
+                    {intl.formatMessage(messages.TR_RECIPIENT_ADDRESS)}
+                    <Tooltip
+                        placement="top"
+                        content={<Translation {...messages.TR_RECIPIENT_ADDRESS_TOOLTIP} />}
+                    >
+                        <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
+                    </Tooltip>
+                </Label>
+            }
+            bottomText={getMessage(error, networkType, value, accounts, devices)}
+            button={{
+                icon: 'QR',
+                onClick: () =>
+                    openModal({
                         type: 'qr-reader',
-                        outputId: props.outputId,
-                    })
-                }
-            >
-                <Icon size={25} color={colors.TEXT_SECONDARY} icon="QRCODE" />
-            </QrButton>
-        }
-    />
-);
-
-export default injectIntl(Address);
+                        outputId: id,
+                    }),
+                text: 'Scan',
+            }}
+            value={value || ''}
+            onChange={e => sendFormActions.handleAddressChange(id, e.target.value)}
+        />
+    );
+};

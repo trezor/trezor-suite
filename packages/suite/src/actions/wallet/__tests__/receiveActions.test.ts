@@ -4,16 +4,29 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import receiveReducer from '@wallet-reducers/receiveReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
+import { init } from '@suite-actions/trezorConnectActions';
+import { SUITE } from '@suite-actions/constants';
+import * as receiveActions from '@wallet-actions/receiveActions';
 import fixtures from '../__fixtures__/receiveActions';
 
 const { getSuiteDevice } = global.JestMocks;
 
 jest.mock('trezor-connect', () => {
     let fixture: any;
+    let buttonRequest: Function | undefined;
 
     const getAddress = (_params: any) => {
         if (fixture && fixture.getAddress) {
+            if (fixture.getAddress.success && buttonRequest) {
+                buttonRequest({ code: 'ButtonRequest_Address' });
+            }
             return fixture.getAddress;
+        }
+        // trigger multiple button requests
+        if (buttonRequest) {
+            buttonRequest({ code: 'ButtonRequest_Address' });
+            buttonRequest({ code: 'some-other-code' });
+            buttonRequest();
         }
         return {
             success: true,
@@ -25,16 +38,29 @@ jest.mock('trezor-connect', () => {
     return {
         __esModule: true, // this property makes it work
         default: {
-            on: (_event: any, _handler: any) => _handler(),
-            off: () => null,
+            init: () => null,
+            on: (event: string, cb: Function) => {
+                if (event === 'ui-button') buttonRequest = cb;
+            },
+            off: () => {
+                buttonRequest = undefined;
+            },
             getAddress,
+            ethereumGetAddress: getAddress,
+            rippleGetAddress: getAddress,
         },
         setTestFixtures: (f: any) => {
             fixture = f;
         },
+        DEVICE_EVENT: 'DEVICE_EVENT',
+        UI_EVENT: 'UI_EVENT',
+        TRANSPORT_EVENT: 'TRANSPORT_EVENT',
+        BLOCKCHAIN_EVENT: 'BLOCKCHAIN_EVENT',
         DEVICE: {},
-        UI: {},
         TRANSPORT: {},
+        UI: {
+            REQUEST_BUTTON: 'ui-button',
+        },
     };
 });
 
@@ -43,26 +69,32 @@ type SuiteState = ReturnType<typeof suiteReducer>;
 
 interface InitialState {
     suite: Partial<SuiteState>;
-    wallet?: {
-        receive?: Partial<ReceiveState>;
+    wallet: {
+        receive: ReceiveState;
+        selectedAccount: {
+            account?: {
+                networkType: 'bitcoin' | 'ethereum' | 'ripple';
+            };
+        };
     };
 }
 
-export const getInitialState = (state: InitialState | undefined) => {
+export const getInitialState = (state: Partial<InitialState> | undefined) => {
     return {
+        devices: [],
         suite: {
+            ...suiteReducer(undefined, { type: 'foo' } as any),
             device: getSuiteDevice({ available: true, connected: true }),
-            // @ts-ignore
-            ...suiteReducer(state && state.suite, { type: 'foo' } as any),
         },
         wallet: {
-            receive: receiveReducer(undefined, { type: 'foo' } as any),
+            receive: receiveReducer([], { type: 'foo' } as any),
             selectedAccount: {
                 account: {
                     networkType: 'bitcoin',
                 },
             },
         },
+        ...state,
     };
 };
 
@@ -76,21 +108,51 @@ const initStore = (state: State) => {
         const { receive } = store.getState().wallet;
         store.getState().wallet.receive = receiveReducer(receive, action);
         // add action back to stack
-        store.getActions().push(action);
+        if (action.type !== SUITE.CONNECT_INITIALIZED) store.getActions().push(action);
     });
     return store;
 };
 
 describe('ReceiveActions', () => {
+    // fixtures.slice(3, 4).forEach(f => {
     fixtures.forEach(f => {
         it(f.description, async () => {
             require('trezor-connect').setTestFixtures(f.mocks);
-            const state = getInitialState(f.initialState);
+            const state = getInitialState(f.initialState as any);
             const store = initStore(state);
+            await store.dispatch(init());
             await store.dispatch(f.action());
+
             if (f.result && f.result.actions) {
                 expect(store.getActions()).toMatchObject(f.result.actions);
             }
         });
+    });
+
+    it('show unverified address then verify', async () => {
+        require('trezor-connect').setTestFixtures({});
+        const state = getInitialState(undefined);
+        const store = initStore(state);
+        await store.dispatch(init());
+
+        const VERIFIED = [{ path: 'a', address: 'b', isVerified: true }];
+        const UNVERIFIED = [{ path: 'a', address: 'b', isVerified: false }];
+
+        await store.dispatch(receiveActions.showUnverifiedAddress('a', 'b'));
+        expect(store.getState().wallet.receive).toEqual(UNVERIFIED);
+
+        await store.dispatch(receiveActions.showAddress('a', 'b'));
+        expect(store.getState().wallet.receive).toEqual(VERIFIED);
+
+        await store.dispatch(receiveActions.showUnverifiedAddress('a', 'b'));
+        expect(store.getState().wallet.receive).toEqual(UNVERIFIED);
+
+        // add second
+        await store.dispatch(receiveActions.showUnverifiedAddress('c', 'd'));
+        expect(store.getState().wallet.receive.length).toEqual(2);
+
+        // clear
+        await store.dispatch(receiveActions.dispose());
+        expect(store.getState().wallet.receive.length).toEqual(0);
     });
 });

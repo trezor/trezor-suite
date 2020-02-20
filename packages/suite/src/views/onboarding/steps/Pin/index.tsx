@@ -1,24 +1,17 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
-import styled from 'styled-components';
 import { UI } from 'trezor-connect';
 
 import { Link } from '@trezor/components-v2';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import { Translation, PinInput } from '@suite-components';
+import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
 import { URLS } from '@suite-constants';
 import { Text, OnboardingButton, Wrapper } from '@onboarding-components';
 import { Props } from './Container';
 
-const NewPinWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-`;
-
 const SetPinStep = (props: Props) => {
-    const { deviceCall, device, activeSubStep, uiInteraction } = props;
+    const { device, activeSubStep } = props;
 
     if (!device || !device.features) {
         return null;
@@ -28,27 +21,28 @@ const SetPinStep = (props: Props) => {
         if (activeSubStep) {
             return activeSubStep;
         }
-        if (deviceCall.error === 'PIN mismatch') {
-            return 'mismatch';
-        }
-        if (device && device.features.pin_protection && !deviceCall.isProgress) {
-            return 'success';
-        }
-        if (device && !device.features.pin_protection && !deviceCall.isProgress) {
-            return 'initial';
-        }
-        if (uiInteraction.counter === 0 && uiInteraction.name === UI.REQUEST_PIN) {
+        // if (deviceCall.error === 'PIN mismatch') {
+        //     return 'mismatch';
+        // }
+        if (device.buttonRequests.filter(b => b === UI.REQUEST_PIN).length === 1) {
             return 'first';
         }
-        if (uiInteraction.counter === 1 && uiInteraction.name === UI.REQUEST_PIN) {
+        if (device.buttonRequests.filter(b => b === UI.REQUEST_PIN).length === 2) {
             return 'second';
         }
+        if (device && device.features.pin_protection) {
+            return 'success';
+        }
+        if (device && !device.features.pin_protection) {
+            return 'initial';
+        }
+
         // todo: what if device disconnects?
         return null;
     };
 
     return (
-        <Wrapper.Step>
+        <Wrapper.Step data-test="@onboarding/pin">
             <Wrapper.StepHeading>
                 {getStatus() === 'initial' && 'PIN'}
                 {getStatus() === 'first' && <Translation {...messages.TR_PIN_HEADING_FIRST} />}
@@ -67,60 +61,14 @@ const SetPinStep = (props: Props) => {
                         <img alt="" src={resolveStaticPath('images/onboarding/t-pin-ask.svg')} />
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
+                                data-test="@onboarding/set-pin-button"
                                 onClick={() => {
-                                    props.connectActions.changePin();
+                                    props.changePin();
                                 }}
                             >
                                 <Translation {...messages.TR_SET_PIN} />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
-                    </>
-                )}
-
-                {getStatus() === 'first' && (
-                    <NewPinWrapper>
-                        {/* <Link onClick={() =>  setState({ instructionsFocused: true })} variant="nostyle">
-                                Click to see how pin works.
-                            </Link> */}
-
-                        {/* { state.instructionsFocused && (
-                                <Modal>
-                                    <HowToSetPinModal>
-                                        <HowToSetPin
-                                            src={resolveStaticPath('videos/onboarding/pin.gif')}
-                                            alt="How to enter pin"
-                                        />
-                                        <Link
-                                            onClick={() =>
-                                                 setState({ instructionsFocused: false })
-                                            }
-                                            variant="nostyle"
-                                        >
-                                            Ok, I get it.
-                                        </Link>
-                                    </HowToSetPinModal>
-                                </Modal>
-                            )} */}
-                        <div>
-                            <PinInput
-                                onPinSubmit={(pin: string) => {
-                                    props.connectActions.submitNewPin({ pin });
-                                }}
-                            />
-                        </div>
-                    </NewPinWrapper>
-                )}
-
-                {getStatus() === 'second' && (
-                    <>
-                        <Text>
-                            <Translation {...messages.TR_FIRST_PIN_ENTERED} />
-                        </Text>
-                        <PinInput
-                            onPinSubmit={(pin: string) => {
-                                props.connectActions.submitNewPin({ pin });
-                            }}
-                        />
                     </>
                 )}
 
@@ -135,7 +83,8 @@ const SetPinStep = (props: Props) => {
                         />
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
-                                onClick={() => props.onboardingActions.goToNextStep()}
+                                data-test="@onboarding/pin/continue-button"
+                                onClick={() => props.goToNextStep()}
                             >
                                 <Translation {...messages.TR_CONTINUE} />
                             </OnboardingButton.Cta>
@@ -161,7 +110,7 @@ const SetPinStep = (props: Props) => {
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 onClick={() => {
-                                    props.connectActions.changePin();
+                                    props.changePin();
                                 }}
                             >
                                 <Translation {...messages.TR_START_AGAIN} />
@@ -172,8 +121,9 @@ const SetPinStep = (props: Props) => {
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
                 <OnboardingButton.Back
+                    data-test="@onboarding/skip-button"
                     icon="CROSS"
-                    onClick={() => props.onboardingActions.goToNextStep()}
+                    onClick={() => props.goToNextStep()}
                 >
                     <Translation {...messages.TR_SKIP} />
                 </OnboardingButton.Back>

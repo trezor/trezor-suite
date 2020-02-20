@@ -55,6 +55,7 @@ const AccountNavigation = (props: Props) => {
                 if (!item.isHidden()) {
                     return (
                         <StyledNavLink
+                            data-test={`@wallet/menu/${item.route}`}
                             key={item.route}
                             active={route ? route.name === item.route : false}
                             onClick={() => props.goto(item.route, undefined, true)}

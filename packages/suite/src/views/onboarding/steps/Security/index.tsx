@@ -32,7 +32,7 @@ const SecurityStep = (props: Props) => (
             <OnboardingButton.Back
                 icon="CROSS"
                 data-test="@onboarding/exit-app-button"
-                onClick={props.closeModalApp}
+                onClick={() => props.closeModalApp()}
             >
                 <Translation {...messages.TR_SKIP_SECURITY} />
             </OnboardingButton.Back>

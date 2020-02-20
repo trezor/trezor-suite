@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import FocusLock from 'react-focus-lock';
 import { SUITE } from '@suite-actions/constants';
 import { Modal as ModalComponent } from '@trezor/components-v2';
 import Loading from '@suite-components/Loading';
@@ -12,7 +13,7 @@ import { AppState, Dispatch } from '@suite-types';
 
 import Firmware from '@firmware-views';
 import Onboarding from '@onboarding-views';
-import SeedInput from '@seed-input-views';
+import Recovery from '@suite/views/recovery';
 import Backup from '@backup-views';
 import {
     Analytics,
@@ -112,8 +113,8 @@ const getModalApplication = (route: Props['router']['route']) => {
             return Version;
         case 'switch-device':
             return SwitchDevice;
-        case 'seed-input':
-            return SeedInput;
+        case 'recovery':
+            return Recovery;
         case 'backup':
             return Backup;
         default:
@@ -146,12 +147,14 @@ const Preloader = (props: Props) => {
         return (
             <>
                 <ModalComponent cancelable={cancelable} onCancel={props.closeModalApp}>
-                    <ApplicationModal
-                        cancelable={cancelable}
-                        closeModalApp={props.closeModalApp}
-                        getBackgroundRoute={props.getBackgroundRoute}
-                        modal={hasActionModal ? <Modals background={false} /> : null}
-                    />
+                    <FocusLock>
+                        <ApplicationModal
+                            cancelable={cancelable}
+                            closeModalApp={props.closeModalApp}
+                            getBackgroundRoute={props.getBackgroundRoute}
+                            modal={hasActionModal ? <Modals background={false} /> : null}
+                        />
+                    </FocusLock>
                 </ModalComponent>
                 {props.children}
             </>
@@ -174,7 +177,9 @@ const Preloader = (props: Props) => {
                 {hasActionModal && <Modals />}
                 {!hasActionModal && (
                     <ModalComponent>
-                        <ApplicationStateModal />
+                        <FocusLock>
+                            <ApplicationStateModal />
+                        </FocusLock>
                     </ModalComponent>
                 )}
                 {props.children}

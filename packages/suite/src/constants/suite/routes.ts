@@ -73,7 +73,7 @@ const routes = [
     {
         name: 'tips-index',
         pattern: '/tips',
-        app: 'wallet',
+        app: 'tips',
     },
     {
         name: 'settings-index',
@@ -96,9 +96,9 @@ const routes = [
         app: 'settings',
     },
     {
-        name: 'seed-input-index',
-        pattern: 'seed-input',
-        app: 'seed-input',
+        name: 'recovery-index',
+        pattern: 'recovery',
+        app: 'recovery',
         isModal: true,
     },
     {

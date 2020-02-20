@@ -16,7 +16,7 @@ describe('Device settings', () => {
         cy.dashboardShouldLoad();
         cy.getTestElement('@suite/menu/settings')
             .click({ force: true })
-            .getTestElement('@suite/settings/menu/device')
+            .getTestElement('@settings/menu/device')
             .click({ force: true });
         // a little antipattern but perfection is the enemy of good.
         // there is a problem with device call in progress (from discovery)
@@ -59,13 +59,9 @@ describe('Device settings', () => {
         cy.task('sendDecision', { method: 'applySettings' });
         cy.getConfirmActionOnDeviceModal().should('not.exist');
 
-        // cy.log('open firmware modal and close it again');
-        // cy.getTestElement('@settings/device/update-button')
-        //     .click()
-        //     .getTestElement('@modal/close')
-        //     .click()
-        //     .getTestElement('@modal/close')
-        //     .should('not.exist');
+        cy.log('open firmware modal and close it again');
+        cy.getTestElement('@settings/device/update-button').click();
+        cy.getTestElement('@firmware/close-button').click();
 
         cy.log('wipe device');
         cy.getTestElement('@settings/device/wipe-button')
@@ -76,55 +72,12 @@ describe('Device settings', () => {
         cy.onboardingShouldLoad();
     });
 
-    it('Backup', () => {
+    it('backup in settings', () => {
         cy.getTestElement('@settings/device/check-seed-button').should('be.disabled');
         cy.getTestElement('@settings/device/failed-backup-row').should('not.exist');
         cy.getTestElement('@settings/device/create-backup-button').click();
-
-        cy.log('Backup should reset when modal is closed');
-        cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
-        cy.getTestElement('@backup/check-item/is-in-private').click();
-        cy.getTestElement('@backup/check-item/has-enough-time').click();
-        cy.getTestElement('@backup/start-button').should('not.be.disabled');
-        cy.getTestElement('@backup/close-button').click();
-        cy.getTestElement('@settings/device/create-backup-button').click();
-        cy.getTestElement('@backup/start-button').should('be.disabled');
-
-        cy.log('Backup button should be disabled until all checkboxes are checked');
-        cy.getTestElement('@backup/start-button').should('be.disabled');
-        cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
-        cy.getTestElement('@backup/start-button').should('be.disabled');
-        cy.getTestElement('@backup/check-item/has-enough-time').click();
-        cy.getTestElement('@backup/start-button').should('be.disabled');
-        cy.getTestElement('@backup/check-item/is-in-private').click();
-        cy.getTestElement('@backup/start-button').should('not.be.disabled');
-
-        cy.log('Create backup on device');
-        cy.getTestElement('@backup/start-button').click();
-        cy.getConfirmActionOnDeviceModal();
-        cy.task('sendDecision');
-        cy.task('swipeEmu', 'up');
-        cy.task('swipeEmu', 'up');
-        cy.task('sendDecision');
-        cy.task('inputEmu', 'all');
-        cy.task('inputEmu', 'all');
-        cy.task('inputEmu', 'all');
-        cy.task('sendDecision');
-        cy.task('sendDecision');
-
-        cy.log('click all after checkboxes and close backup modal');
-        cy.getTestElement('@backup/close-button').should('be.disabled');
-        cy.getTestElement('@backup/check-item/wrote-seed-properly').click();
-        cy.getTestElement('@backup/check-item/made-no-digital-copy').click();
-        cy.getTestElement('@backup/check-item/will-hide-seed').click();
-        cy.getTestElement('@backup/close-button').click();
-
-
-
-        // TODO: failed backup
-        // TODO: success backup
+        cy.getTestElement('@backup');
     });
-
     // TODO: upload custom image
     // TODO: set pin part. need to extend python script to allow input digits on emulator
 });

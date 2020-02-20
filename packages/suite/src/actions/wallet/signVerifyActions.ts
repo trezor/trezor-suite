@@ -27,7 +27,6 @@ export const sign = (path: [number], message: string, hex = false) => async (
     const selectedDevice = getState().suite.device;
     if (!selectedDevice) return;
 
-    // @ts-ignore
     const response = await TrezorConnect.ethereumSignMessage({
         device: {
             path: selectedDevice.path,
@@ -72,7 +71,6 @@ export const verify = (address: string, message: string, signature: string, hex 
     }
 
     if (!error) {
-        // @ts-ignore // TODO ADD TO CONNECT
         const response = await TrezorConnect.ethereumVerifyMessage({
             device: {
                 path: selectedDevice.path,

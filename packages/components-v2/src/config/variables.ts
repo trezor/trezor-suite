@@ -98,4 +98,5 @@ export const ICONS: IconType[] = [
     'T2',
     'BACK',
     'SHOW',
+    'HIDE',
 ];

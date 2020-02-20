@@ -2,9 +2,8 @@ import { db } from '@suite/storage';
 import SuiteDB from '@trezor/suite-storage';
 import { STORAGE } from './constants';
 import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
-import { Account } from '@wallet-types';
+import { Account, Send } from '@wallet-types';
 import { getAccountKey } from '@wallet-utils/accountUtils';
-import { State as SendFormState } from '@wallet-types/sendForm';
 import { Discovery } from '@wallet-reducers/discoveryReducer';
 import { serializeDiscovery } from '@suite-utils/storage';
 
@@ -13,7 +12,7 @@ export type StorageActions =
     | { type: typeof STORAGE.LOADED; payload: AppState }
     | { type: typeof STORAGE.ERROR; error: any };
 
-export const saveSendForm = async (saveSendFormState: SendFormState, accountKey: string) => {
+export const saveSendForm = async (saveSendFormState: Send, accountKey: string) => {
     return db.addItem('sendForm', saveSendFormState, accountKey);
 };
 

@@ -1,64 +1,85 @@
-import TrezorConnect, { UI } from 'trezor-connect';
+import TrezorConnect, { UI, ButtonRequestMessage } from 'trezor-connect';
 import { RECEIVE } from '@wallet-actions/constants';
 import * as modalActions from '@suite-actions/modalActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { GetState, Dispatch } from '@suite-types';
-import { WalletAction } from '@wallet-types';
 
 export type ReceiveActions =
-    | { type: typeof RECEIVE.INIT; descriptor: string }
     | { type: typeof RECEIVE.DISPOSE }
-    | { type: typeof RECEIVE.SHOW_ADDRESS; descriptor: string }
-    | { type: typeof RECEIVE.HIDE_ADDRESS; descriptor: string }
-    | { type: typeof RECEIVE.SHOW_UNVERIFIED_ADDRESS; descriptor: string };
+    | { type: typeof RECEIVE.SHOW_ADDRESS; path: string; address: string }
+    | { type: typeof RECEIVE.SHOW_UNVERIFIED_ADDRESS; path: string; address: string };
 
-export const dispose = (): WalletAction => ({
+export const dispose = (): ReceiveActions => ({
     type: RECEIVE.DISPOSE,
 });
 
-export const showUnverifiedAddress = (path: string): WalletAction => {
-    return {
-        type: RECEIVE.SHOW_UNVERIFIED_ADDRESS,
-        descriptor: path,
-    };
-};
-
-export const showAddress = (path: string) => async (
+export const showUnverifiedAddress = (path: string, address: string) => (
     dispatch: Dispatch,
     getState: GetState,
-): Promise<void> => {
-    const selectedDevice = getState().suite.device;
+) => {
+    const { device } = getState().suite;
     const { account } = getState().wallet.selectedAccount;
+    if (!device || !account) return;
+    dispatch(
+        modalActions.openModal({
+            type: 'address',
+            device,
+            address,
+            addressPath: path,
+            networkType: account.networkType,
+            symbol: account.symbol,
+            cancelable: true,
+        }),
+    );
+    dispatch({
+        type: RECEIVE.SHOW_UNVERIFIED_ADDRESS,
+        path,
+        address,
+    });
+};
 
-    if (!selectedDevice || !account) return;
-    if (!selectedDevice.connected || !selectedDevice.available) {
-        // Show modal when device is not connected
+export const showAddress = (path: string, address: string) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { device } = getState().suite;
+    const { account } = getState().wallet.selectedAccount;
+    if (!device || !account) return;
+
+    const modalPayload = {
+        device,
+        address,
+        addressPath: path,
+        networkType: account.networkType,
+        symbol: account.symbol,
+    };
+
+    // Show warning when device is not connected
+    if (!device.connected || !device.available) {
         dispatch(
             modalActions.openModal({
                 type: 'unverified-address',
-                device: selectedDevice,
-                addressPath: path,
+                ...modalPayload,
             }),
         );
         return;
     }
 
     const params = {
-        device: {
-            path: selectedDevice.path,
-            instance: selectedDevice.instance,
-            state: selectedDevice.state,
-        },
+        device,
         path,
-        useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
+        useEmptyPassphrase: device.useEmptyPassphrase,
     };
 
-    const buttonRequestHandler = () => {
-        // mark address that is being verified
-        dispatch({
-            type: RECEIVE.INIT,
-            descriptor: path,
-        });
+    // catch button request and open modal
+    const buttonRequestHandler = (event: ButtonRequestMessage['payload']) => {
+        if (!event || event.code !== 'ButtonRequest_Address') return;
+        dispatch(
+            modalActions.openModal({
+                type: 'address',
+                ...modalPayload,
+            }),
+        );
     };
 
     let fn;
@@ -87,14 +108,10 @@ export const showAddress = (path: string) => async (
     if (response.success) {
         dispatch({
             type: RECEIVE.SHOW_ADDRESS,
-            descriptor: path,
+            path,
+            address,
         });
     } else {
-        dispatch({
-            type: RECEIVE.HIDE_ADDRESS,
-            descriptor: path,
-        });
-
         // special case: device no-backup permissions not granted
         if (response.payload.code === 403) return;
 

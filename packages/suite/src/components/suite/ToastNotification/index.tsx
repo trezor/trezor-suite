@@ -15,6 +15,21 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
+const getContent = (notification: any) => {
+    switch (notification.type) {
+        case 'auth-confirm-error':
+            return notification.error;
+        case 'copy-to-clipboard-success':
+            return `Copied to clipboard. ${notification.payload ? notification.payload : ''}`;
+        case 'copy-to-clipboard-error':
+            return notification.error;
+        case 'verify-address-error':
+            return notification.error;
+        default:
+            return notification.type;
+    }
+};
+
 const Notifications = ({ notifications, close }: Props) => {
     useEffect(() => {
         notifications
@@ -23,7 +38,7 @@ const Notifications = ({ notifications, close }: Props) => {
                 // const exists = Object.keys(state).find(k => k === n.key);
                 const shouldBeDisplayed = !toast.isActive(n.id);
                 if (shouldBeDisplayed) {
-                    toast(n.type, {
+                    toast(getContent(n), {
                         position: 'bottom-center',
                         toastId: n.id,
                         onClose: () => close(n.id),

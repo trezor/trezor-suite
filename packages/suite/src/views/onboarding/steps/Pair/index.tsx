@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 
@@ -18,6 +18,8 @@ const WebusbButtonWrapper = styled.div`
 
 const PairDeviceStep = (props: Props) => {
     const { device, transport } = props;
+
+    const [imageLoaded, setImageLoaded] = useState(false);
 
     const isInBlWithFwPresent = () => {
         if (!device) {
@@ -57,7 +59,12 @@ const PairDeviceStep = (props: Props) => {
             <Wrapper.StepBody>
                 {!hasNoTransport() && (
                     <>
-                        <img alt="" src={resolveStaticPath('images/suite/connect-device.svg')} />
+                        <img
+                            alt=""
+                            src={resolveStaticPath('images/suite/connect-device.svg')}
+                            onLoad={() => setImageLoaded(true)}
+                            onError={() => setImageLoaded(true)}
+                        />
                         {isDetectingDevice() && (
                             <>
                                 {/* {getConnectedDeviceStatus() === 'initialized' && (
@@ -108,7 +115,7 @@ const PairDeviceStep = (props: Props) => {
                                         {!isDeviceUnreadable() && (
                                             <Wrapper.Controls>
                                                 <WebusbButtonWrapper>
-                                                    <WebusbButton ready />
+                                                    <WebusbButton ready={imageLoaded} />
                                                 </WebusbButtonWrapper>
                                                 <OnboardingButton.Alt
                                                     onClick={() => TrezorConnect.disableWebUSB()}

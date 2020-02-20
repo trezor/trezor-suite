@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import * as routerActions from '@suite-actions/routerActions';
-import { Translation } from '@suite-components/Translation';
 import { Prompt, colors, variables, animations } from '@trezor/components';
 import { Link, P, H2 } from '@trezor/components-v2';
-import WebusbButton from '@suite-components/WebusbButton';
+
+import * as routerActions from '@suite-actions/routerActions';
+import { Translation, WebusbButton } from '@suite-components';
 import messages from '@suite/support/messages';
 import { URLS } from '@suite-constants';
 import { Dispatch, AppState } from '@suite-types';
@@ -89,6 +89,9 @@ type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchT
 
 const Index = (props: Props) => {
     const showWebUsb = isWebUSB(props.transport);
+    // we need imageLoaded here so that we can position webusb button properly.
+    const [imageLoaded, setImageLoaded] = useState(false);
+
     return (
         <StyledConnectDevice data-test="@modal/connect-device">
             <Title>
@@ -96,7 +99,12 @@ const Index = (props: Props) => {
                     <Translation {...messages.TR_CONNECT_TREZOR} />
                 </H2>
             </Title>
-            <img alt="" src={resolveStaticPath('images/suite/connect-device.svg')} />
+            <img
+                alt=""
+                src={resolveStaticPath('images/suite/connect-device.svg')}
+                onLoad={() => setImageLoaded(true)}
+                onError={() => setImageLoaded(true)}
+            />
 
             <Wrapper>
                 <ConnectTrezorWrapper>
@@ -111,7 +119,7 @@ const Index = (props: Props) => {
                             <Translation {...messages.TR_AND} />
                         </And>
                         <ButtonWrapper>
-                            <WebusbButton ready />
+                            <WebusbButton ready={imageLoaded} />
                         </ButtonWrapper>
                     </>
                 )}

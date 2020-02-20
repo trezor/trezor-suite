@@ -9,6 +9,7 @@ import Menu from './index';
 const mapStateToProps = (state: AppState) => ({
     router: state.router,
     selectedDevice: state.suite.device,
+    devices: state.devices,
     discreetMode: state.wallet.settings.discreetMode,
 });
 

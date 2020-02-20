@@ -52,6 +52,8 @@ const init = async () => {
     mainWindow = new BrowserWindow({
         width: winBounds.width,
         height: winBounds.height,
+        minWidth: store.MIN_WIDTH,
+        minHeight: store.MIN_HEIGHT,
         webPreferences: {
             webSecurity: !isDev,
             allowRunningInsecureContent: isDev,
@@ -61,10 +63,14 @@ const init = async () => {
     });
     mainWindow.removeMenu();
 
-    mainWindow.on('close', () => {
-        // store window bounds
-        store.setWinBounds(mainWindow);
-    });
+    if (process.platform === 'darwin') {
+        // On OS X it is common for applications and their menu bar
+        // to stay active until the user quits explicitly with Cmd + Q (onBeforeQuit = true)
+        mainWindow.on('close', event => {
+            event.preventDefault();
+            mainWindow.hide();
+        });
+    }
 
     // open external links in default browser
     const handleExternalLink = (event: Event, url: string) => {
@@ -108,10 +114,17 @@ app.on('ready', init);
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
-    // On OS X it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== 'darwin') {
-        app.quit();
+    app.quit();
+    // @ts-ignore
+    mainWindow = undefined;
+});
+
+app.on('before-quit', () => {
+    if (mainWindow) {
+        // remove onclose listener
+        mainWindow.removeAllListeners();
+        // store window bounds
+        store.setWinBounds(mainWindow);
     }
 });
 
@@ -127,7 +140,9 @@ app.on('will-quit', () => {
 app.on('activate', () => {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (mainWindow === null) {
+    if (mainWindow) {
+        mainWindow.show();
+    } else {
         init();
     }
 });

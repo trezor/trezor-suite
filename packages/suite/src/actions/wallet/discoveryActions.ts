@@ -1,5 +1,5 @@
 import { Discovery, PartialDiscovery } from '@wallet-reducers/discoveryReducer';
-import TrezorConnect, { AccountInfo, UI } from 'trezor-connect';
+import TrezorConnect, { BundleProgress, AccountInfo, UI } from 'trezor-connect';
 import { add as addNotification } from '@suite-actions/notificationActions';
 import { SUITE } from '@suite-actions/constants';
 import { create as createAccount } from '@wallet-actions/accountActions';
@@ -36,12 +36,7 @@ export interface DiscoveryItem {
     networkType: Account['networkType'];
 }
 
-// TODO: trezor-connect untyped event
-interface ProgressEvent {
-    progress: number;
-    response: AccountInfo;
-    error?: string;
-}
+type ProgressEvent = BundleProgress<AccountInfo>['payload'];
 
 const LIMIT = 10;
 
@@ -300,17 +295,16 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
     if (bundle.length === 0) {
         if (discovery.status <= DISCOVERY.STATUS.RUNNING && selectedDevice.connected) {
             // call getFeatures to release device session
-            if (!discovery.authConfirm) {
-                await TrezorConnect.getFeatures({
-                    device: {
-                        path: selectedDevice.path,
-                        instance: selectedDevice.instance,
-                        state: selectedDevice.state,
-                    },
-                    keepSession: false,
-                    useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
-                });
-            } else {
+            await TrezorConnect.getFeatures({
+                device: {
+                    path: selectedDevice.path,
+                    instance: selectedDevice.instance,
+                    state: selectedDevice.state,
+                },
+                keepSession: false,
+                useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
+            });
+            if (discovery.authConfirm) {
                 dispatch({ type: SUITE.REQUEST_AUTH_CONFIRM });
             }
         }
@@ -336,7 +330,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         dispatch(handleProgress(event, deviceState, bundle[progress]));
     };
 
-    TrezorConnect.on(UI.BUNDLE_PROGRESS, onBundleProgress);
+    TrezorConnect.on<AccountInfo>(UI.BUNDLE_PROGRESS, onBundleProgress);
     const result = await TrezorConnect.getAccountInfo({
         device: {
             path: selectedDevice.path,

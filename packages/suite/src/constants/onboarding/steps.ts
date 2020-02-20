@@ -19,7 +19,6 @@ export const DISALLOWED_IS_NOT_SAME_DEVICE = 'is-not-same-device';
 export const DISALLOWED_DEVICE_IS_NOT_CONNECTED = 'device-is-not-connected';
 export const DISALLOWED_DEVICE_IS_NOT_USED_HERE = 'device-is-not-used-here';
 export const DISALLOWED_DEVICE_IS_IN_BOOTLOADER = 'device-is-in-bootloader';
-export const DISALLOWED_DEVICE_IS_REQUESTING_PIN = 'device-is-not-requesting-pin';
 export const DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE = 'is-not-new-device';
 
 export const PATH_RECOVERY = 'recovery';

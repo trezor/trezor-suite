@@ -1,16 +1,16 @@
+import TrezorConnect from 'trezor-connect';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Button, H2, colors, variables } from '@trezor/components-v2';
-// import { Translation } from '@suite-components/Translation';
+import { Button, Link, H2, colors, variables } from '@trezor/components-v2';
+import { Translation } from '@suite-components/Translation';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as deviceUtils from '@suite-utils/device';
 import Loading from '@suite-components/Loading';
-// import messages from '@suite/support/messages';
+import messages from '@suite/support/messages';
 import { AppState, Dispatch, TrezorDevice } from '@suite-types';
-import Link from '../../Link';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import { PASSPHRASE_URL } from '@suite-constants/urls';
 import PassphraseTypeCard from './components/PassphraseTypeCard';
@@ -66,14 +66,20 @@ const Passphrase = (props: Props) => {
         .getDeviceInstances(device, props.devices)
         .find(d => d.useEmptyPassphrase);
     const noPassphraseOffer = !hasEmptyPassphraseWallet && !stateConfirmation;
-    const onDeviceOffer =
+    const onDeviceOffer = !!(
         device.features &&
         device.features.capabilities &&
-        device.features.capabilities.includes('Capability_PassphraseEntry');
+        device.features.capabilities.includes('Capability_PassphraseEntry')
+    );
 
     const onSubmit = (value: string, passphraseOnDevice?: boolean) => {
         setSubmitted(true);
-        props.onPassphraseSubmit(value, passphraseOnDevice);
+        props.onPassphraseSubmit(value, !!passphraseOnDevice, !!hasEmptyPassphraseWallet);
+    };
+
+    const onRecreate = async () => {
+        // Cancel TrezorConnect request and pass error to suiteAction.authConfirm
+        TrezorConnect.cancel('auth-confirm-cancel');
     };
 
     if (submitted) {
@@ -85,13 +91,22 @@ const Passphrase = (props: Props) => {
         return (
             <PassphraseTypeCard
                 authConfirmation={authConfirmation}
-                title={!authConfirmation ? 'Enter passphrase' : 'Confirm empty hidden wallet'}
-                description={
-                    !authConfirmation
-                        ? 'Unlock'
-                        : 'This hidden Wallet is empty. To make sure you are in the correct Wallet, confirm Passphrase.'
+                recreateWallet={authConfirmation ? onRecreate : undefined}
+                title={
+                    !authConfirmation ? (
+                        <Translation {...messages.TR_ENTER_PASSPHRASE} />
+                    ) : (
+                        <Translation {...messages.TR_CONFIRM_EMPTY_HIDDEN_WALLET} />
+                    )
                 }
-                submitLabel="Confirm passphrase"
+                description={
+                    !authConfirmation ? (
+                        <Translation {...messages.TR_UNLOCK} />
+                    ) : (
+                        <Translation {...messages.TR_THIS_HIDDEN_WALLET_IS_EMPTY} />
+                    )
+                }
+                submitLabel={<Translation {...messages.TR_CONFIRM_PASSPHRASE} />}
                 colorVariant="secondary"
                 offerPassphraseOnDevice={onDeviceOffer}
                 onSubmit={onSubmit}
@@ -105,12 +120,13 @@ const Passphrase = (props: Props) => {
     if (!noPassphraseOffer) {
         return (
             <PassphraseTypeCard
-                title="Passphrase (hidden) wallet"
-                description="Enter existing passphrase to access existing hidden Wallet. Or enter new
-                passphrase to create a new hidden Wallet."
-                submitLabel="Access Hidden Wallet"
+                title={<Translation {...messages.TR_PASSPHRASE_HIDDEN_WALLET} />}
+                description={<Translation {...messages.TR_ENTER_EXISTING_PASSPHRASE} />}
+                submitLabel={<Translation {...messages.TR_ACCESS_HIDDEN_WALLET} />}
                 colorVariant="secondary"
+                offerPassphraseOnDevice={onDeviceOffer}
                 showPassphraseInput
+                singleColModal
                 onSubmit={onSubmit}
             />
         );
@@ -120,9 +136,11 @@ const Passphrase = (props: Props) => {
     return (
         <ModalWrapper>
             <Wrapper>
-                <H2>Select a wallet to access</H2>
+                <H2>
+                    <Translation {...messages.TR_SELECT_WALLET_TO_ACCESS} />
+                </H2>
                 <Description>
-                    Choose between no-passphrase or hidden wallet with passphrase.
+                    <Translation {...messages.TR_CHOOSE_BETWEEN_NO_PASSPHRASE} />
                 </Description>
                 <Link variant="nostyle" href={PASSPHRASE_URL}>
                     <Button
@@ -133,23 +151,26 @@ const Passphrase = (props: Props) => {
                         color={colors.BLACK25}
                         onClick={() => {}}
                     >
-                        What is passphrase
+                        <Translation {...messages.TR_WHAT_IS_PASSPHRASE} />
                     </Button>
                 </Link>
                 <WalletsWrapper>
                     <PassphraseTypeCard
-                        title="No-passphrase Wallet"
-                        description="To access standard (no-passphrase) Wallet click the button below."
-                        submitLabel="Access standard Wallet"
+                        title={<Translation {...messages.TR_NO_PASSPHRASE_WALLET} />}
+                        description={
+                            <Translation {...messages.TR_TO_ACCESS_STANDARD_NO_PASSPHRASE} />
+                        }
+                        submitLabel={<Translation {...messages.TR_ACCESS_STANDARD_WALLET} />}
                         colorVariant="primary"
+                        offerPassphraseOnDevice={onDeviceOffer}
                         onSubmit={onSubmit}
                     />
                     <PassphraseTypeCard
-                        title="Passphrase (hidden) wallet"
-                        description="Enter existing passphrase to access existing hidden Wallet. Or enter new
-                            passphrase to create a new hidden Wallet."
-                        submitLabel="Access Hidden Wallet"
+                        title={<Translation {...messages.TR_PASSPHRASE_HIDDEN_WALLET} />}
+                        description={<Translation {...messages.TR_ENTER_EXISTING_PASSPHRASE} />}
+                        submitLabel={<Translation {...messages.TR_ACCESS_HIDDEN_WALLET} />}
                         colorVariant="secondary"
+                        offerPassphraseOnDevice={onDeviceOffer}
                         showPassphraseInput
                         onSubmit={onSubmit}
                     />

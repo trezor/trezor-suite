@@ -76,6 +76,7 @@ const networks = [
         name: 'Ethereum',
         networkType: 'ethereum',
         symbol: 'eth',
+        chainId: 1,
         bip44: "m/44'/60'/0'/0/i",
         hasSignVerify: true,
         decimals: 18,
@@ -89,6 +90,7 @@ const networks = [
         name: 'Ethereum Classic',
         networkType: 'ethereum',
         symbol: 'etc',
+        chainId: 1,
         bip44: "m/44'/61'/0'/0/i",
         hasSignVerify: true,
         decimals: 18,
@@ -307,6 +309,7 @@ const networks = [
         symbol: 'trop',
         bip44: "m/44'/60'/0'/0/i",
         hasSignVerify: true,
+        chainId: 3,
         decimals: 18,
         testnet: true,
         explorer: {
@@ -334,6 +337,7 @@ type Network = {
     accountType?: 'normal' | 'legacy' | 'segwit';
     testnet?: boolean;
     isHidden?: boolean;
+    chainId?: number;
     hasSignVerify?: boolean;
 } & ArrayElement<typeof networks>;
 

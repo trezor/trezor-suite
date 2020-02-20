@@ -2,7 +2,11 @@ import React, { useState, createRef, useLayoutEffect } from 'react';
 import { useKeyPress } from '@suite-utils/dom';
 import styled, { css } from 'styled-components';
 import { Button, colors, variables, Input, Checkbox } from '@trezor/components-v2';
-// import { Translation } from '@suite-components/Translation';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
+import { MAX_PASSPHRASE_LENGTH } from '@suite-constants/passphrase';
+import { countBytesInString } from '@suite-utils/string';
+import PasswordStrengthIndicator from '@suite-components/PasswordStrengthIndicator';
 
 const WalletTitle = styled.div`
     font-size: ${variables.FONT_SIZE.NORMAL};
@@ -52,9 +56,28 @@ const InputWrapper = styled(Content)`
     width: 100%;
 `;
 
+const PassphraseInput = styled(Input)`
+    color: ${colors.BLACK0};
+    font-size: ${variables.FONT_SIZE.SMALL};
+`;
+
 const Actions = styled.div`
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     /* margin-top: 20px; */
+`;
+
+const ActionButton = styled(Button)`
+    & + & {
+        margin-top: 8px;
+    }
+`;
+
+const RetryButton = styled(Button)`
+    align-self: center;
+    margin-top: 16px;
 `;
 
 const Padding = styled.div<{ singleColModal?: boolean }>`
@@ -73,8 +96,9 @@ type Props = {
     showPassphraseInput?: boolean;
     authConfirmation?: boolean;
     singleColModal?: boolean;
-    offerPassphraseOnDevice?: boolean;
+    offerPassphraseOnDevice: boolean;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
+    recreateWallet?: () => void;
 };
 
 const PassphraseTypeCard = (props: Props) => {
@@ -85,6 +109,7 @@ const PassphraseTypeCard = (props: Props) => {
     const inputType = showPassword ? 'text' : 'password';
     const enterPressed = useKeyPress('Enter');
     const ref = createRef<HTMLInputElement>();
+    const isTooLong = countBytesInString(value) > MAX_PASSPHRASE_LENGTH;
 
     useLayoutEffect(() => {
         if (ref && ref.current) {
@@ -98,7 +123,12 @@ const PassphraseTypeCard = (props: Props) => {
     };
 
     if (enterPressed) {
-        submit(value);
+        // Trigger submit on pressing Enter in case of single col modal (creating/confirming hidden wallet)
+        // In case of two-col modal (selecting between standard and hidden wallet)
+        // only the hidden wallet part handle the enter press.
+        if (props.singleColModal || props.showPassphraseInput) {
+            submit(value);
+        }
     }
 
     return (
@@ -108,47 +138,73 @@ const PassphraseTypeCard = (props: Props) => {
             <Padding singleColModal={props.singleColModal}>
                 {authConfirmation && (
                     <Content>
-                        <Checkbox onClick={() => setEnabled(!enabled)} isChecked={enabled}>
-                            I understand passphrase is not saved anywhere and can’t be restored.
+                        <Checkbox
+                            data-test="@passphrase/confirm-checkbox"
+                            onClick={() => setEnabled(!enabled)}
+                            isChecked={enabled}
+                        >
+                            <Translation {...messages.TR_I_UNDERSTAND_PASSPHRASE} />
                         </Checkbox>
                     </Content>
                 )}
                 {props.showPassphraseInput && (
                     <InputWrapper>
-                        <Input
+                        <PassphraseInput
+                            data-test="@passhphrase/input"
                             onChange={event => setValue(event.target.value)}
                             placeholder="Enter passphrase"
                             type={inputType}
                             value={value}
                             innerRef={ref}
                             display="block"
+                            bottomText={
+                                isTooLong ? (
+                                    <Translation {...messages.TR_PASSPHRASE_TOO_LONG} />
+                                ) : null
+                            }
+                            state={isTooLong ? 'error' : undefined}
                             variant="small"
                             button={{
                                 iconSize: 18,
+                                iconColor: colors.BLACK70,
+                                iconColorHover: colors.BLACK70,
                                 icon: showPassword ? 'HIDE' : 'SHOW',
                                 onClick: () => setShowPassword(!showPassword),
                             }}
                         />
+                        {!isTooLong && <PasswordStrengthIndicator password={value} />}
                     </InputWrapper>
                 )}
                 <Actions>
-                    <Button
-                        isDisabled={!enabled}
+                    <ActionButton
+                        data-test="@passphrase/submit-button"
+                        isDisabled={!enabled || isTooLong}
                         variant={props.singleColModal ? 'primary' : props.colorVariant}
                         onClick={() => submit(value)}
                         fullWidth
                     >
                         {props.submitLabel}
-                    </Button>
+                    </ActionButton>
                     {props.showPassphraseInput && props.offerPassphraseOnDevice && (
-                        <Button
+                        <ActionButton
                             isDisabled={!enabled}
                             variant="secondary"
                             onClick={() => submit(value, true)}
                             fullWidth
                         >
-                            Enter passphrase on device
-                        </Button>
+                            <Translation {...messages.TR_ENTER_PASSPHRASE_ON_DEVICE} />
+                        </ActionButton>
+                    )}
+                    {props.recreateWallet && (
+                        <RetryButton
+                            variant="tertiary"
+                            icon="ARROW_LEFT"
+                            color={colors.BLACK50}
+                            size="small"
+                            onClick={props.recreateWallet}
+                        >
+                            <Translation {...messages.TR_TRY_AGAIN} />
+                        </RetryButton>
                     )}
                 </Actions>
             </Padding>

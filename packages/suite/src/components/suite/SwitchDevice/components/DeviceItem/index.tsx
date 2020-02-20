@@ -144,12 +144,12 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
 
     const selectDeviceInstance = async (instance: Props['device']) => {
         await props.selectDevice(instance);
-        props.closeModalApp();
+        props.closeModalApp(!isWalletContext);
     };
 
     const addDeviceInstance = async (instance: Props['device']) => {
         await props.createDeviceInstance(instance);
-        props.closeModalApp();
+        props.closeModalApp(!isWalletContext);
     };
 
     const onSolveIssueClick = () => {
@@ -185,7 +185,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                                     {/* TODO: warning icon */}
                                     <Icon icon="INFO" size={14} color={colors.RED_ERROR} />
                                 </AttentionIconWrapper>
-                                Device needs attention
+                                <Translation {...messages.TR_DEVICE_NEEDS_ATTENTION} />
                             </Attention>
                             <Button
                                 variant="secondary"
@@ -193,7 +193,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                                 // icon="REFRESH"
                                 onClick={() => onSolveIssueClick()}
                             >
-                                Solve issue
+                                <Translation {...messages.TR_SOLVE_ISSUE} />
                             </Button>
                         </Row>
                     )}
@@ -243,6 +243,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                     {isWalletContext && (
                         <AddWallet>
                             <Button
+                                data-test="@switch-device/add-hidden-wallet-button"
                                 variant="tertiary"
                                 icon="PLUS"
                                 disabled={!device.connected || !hasAtLeastOneWallet} // TODO: tooltip?

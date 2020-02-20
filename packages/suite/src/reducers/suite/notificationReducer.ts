@@ -31,6 +31,7 @@ export type NotificationPayload =
       }
     | {
           type:
+              | 'log-copied'
               | 'settings-applied'
               | 'pin-changed'
               | 'device-wiped'
@@ -51,6 +52,14 @@ export type NotificationPayload =
     | {
           type: 'sign-tx-success';
           txid?: string;
+      }
+    | {
+          type: 'copy-to-clipboard-error';
+          error: string;
+      }
+    | {
+          type: 'copy-to-clipboard-success';
+          payload?: string;
       }
     | {
           type:

@@ -39,14 +39,16 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         'getFeatures',
         'getDeviceState',
         'getAddress',
+        'ethereumGetAddress',
+        'rippleGetAddress',
         'applySettings',
         'changePin',
         'backupDevice',
     ] as const;
     wrappedMethods.forEach(key => {
-        const original = TrezorConnect[key];
-        if (!original) return;
         // typescript complains about params and return type, need to be "any"
+        const original: any = TrezorConnect[key];
+        if (!original) return;
         (TrezorConnect[key] as any) = async (params: any) => {
             dispatch(lockDevice(true));
             const result = await original(params);
@@ -61,7 +63,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                 ? resolveStaticPath('connect/')
                 : // : 'https://connect.trezor.io/8/';
                   // 'https://localhost:8088/';
-                  'https://connect.corp.sldev.cz/feature/fw-passphrase-redesign/';
+                  'https://connect.corp.sldev.cz/develop/';
 
         await TrezorConnect.init({
             connectSrc,

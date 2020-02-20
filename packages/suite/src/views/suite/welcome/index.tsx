@@ -9,15 +9,15 @@ import * as routerActions from '@suite-actions/routerActions';
 import { Dispatch, InjectedModalApplicationProps } from '@suite-types';
 import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
+import ModalWrapper from '@suite-components/ModalWrapper';
 
-const Wrapper = styled.div`
+const Wrapper = styled(ModalWrapper)`
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0 auto;
-    padding: 90px;
     justify-content: center;
-    min-height: 60vh;
+    min-height: 80vh;
+    min-width: 60vw;
 `;
 
 const StyledImg = styled.img`
@@ -33,16 +33,21 @@ type Props = ReturnType<typeof mapDispatchToProps> & InjectedModalApplicationPro
 
 const Index = (props: Props) => {
     return (
-        <Wrapper>
-            <H2 data-test="welcome-message">
+        <Wrapper data-test="@welcome">
+            <H2>
                 <Translation>{messages.TR_WELCOME_MODAL_HEADING}</Translation>
             </H2>
             <P size="tiny">
-                <Translation>{messages.TR_WELCOME_MODAL_TEXT}</Translation>
+                {/* todo: remove, temporarily here, instead of cyka blyat */}
+                The one place for all your crypto matters.
+                {/* <Translation>{messages.TR_WELCOME_MODAL_TEXT}</Translation> */}
             </P>
             <StyledImg alt="" src={resolveStaticPath('images/welcome/welcome.svg')} />
 
-            <Button data-test="@button/continue" onClick={() => props.goto('suite-analytics')}>
+            <Button
+                data-test="@welcome/continue-button"
+                onClick={() => props.goto('suite-analytics')}
+            >
                 <Translation>{messages.TR_BEGIN}</Translation>
             </Button>
         </Wrapper>

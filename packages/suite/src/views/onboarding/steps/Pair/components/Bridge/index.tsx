@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import { Select } from '@trezor/components';
-import { Link } from '@trezor/components-v2';
+import { Select, Link } from '@trezor/components-v2';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Translation } from '@suite-components/Translation';
 
@@ -27,8 +26,8 @@ const Download = styled.div`
 interface Installer {
     label: string;
     value: string;
-    signature: string;
-    preferred: boolean;
+    signature?: string;
+    preferred?: boolean;
 }
 
 interface BridgeState {
@@ -71,14 +70,16 @@ class InstallBridge extends PureComponent<Props & WrappedComponentProps, BridgeS
         return this.props.activeSubStep;
     }
 
-    getInstallers() {
-        // todo: typescript from connect
-        return this.props.transport!.bridge.packages.map((p: any) => ({
-            label: p.name,
-            value: p.url,
-            signature: p.signature,
-            preferred: p.preferred,
-        }));
+    getInstallers(): Installer[] {
+        const { transport } = this.props;
+        return transport && transport.bridge
+            ? transport.bridge.packages.map(p => ({
+                  label: p.name,
+                  value: p.url,
+                  signature: p.signature,
+                  preferred: p.preferred,
+              }))
+            : [];
     }
 
     download() {
