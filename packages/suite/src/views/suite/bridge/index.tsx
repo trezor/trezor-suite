@@ -149,7 +149,7 @@ const InstallBridge = (props: Props) => {
                 <Description size="small">
                     <Translation {...messages.TR_NEW_COMMUNICATION_TOOL} />
                 </Description>
-                <Version show={data.currentVersion}>
+                <Version show={!!data.currentVersion}>
                     Currently installed: Trezor Bridge {data.currentVersion}
                 </Version>
                 <Image src={resolveStaticPath('images/suite/t-bridge-check.svg')} />
