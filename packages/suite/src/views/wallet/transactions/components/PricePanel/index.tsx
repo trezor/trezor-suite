@@ -3,7 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import { colors, variables, CoinLogo } from '@trezor/components-v2';
 import Card from '@suite-components/Card';
 import { AppState } from '@suite/types/suite';
-import HiddenPlaceholder from '@suite-components/HiddenPlaceholder/Container';
+import HiddenPlaceholder from '@suite-components/HiddenPlaceholder';
 import { getAccountFiatBalance, getTitleForNetwork, isTestnet } from '@wallet-utils/accountUtils';
 import Badge from '@suite-components/Badge';
 import { Account } from '@wallet-types';

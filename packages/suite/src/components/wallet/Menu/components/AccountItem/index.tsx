@@ -12,7 +12,7 @@ import { Translation } from '@suite-components/Translation';
 import { Link, FormattedNumber } from '@suite-components';
 import AccountNavigation from './components/AccountNavigation/Container';
 import Badge from '@suite-components/Badge';
-import HiddenPlaceholder from '@suite-components/HiddenPlaceholder/Container';
+import HiddenPlaceholder from '@suite-components/HiddenPlaceholder';
 import { Props } from './Container';
 
 const Wrapper = styled.div<{ selected: boolean }>`

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Account } from '@wallet-types';
-import HiddenPlaceholder from '@suite-components/HiddenPlaceholder/Container';
+import HiddenPlaceholder from '@suite-components/HiddenPlaceholder';
 import { CoinLogo, variables } from '@trezor/components-v2';
 import FiatValue from '@suite-components/FiatValue/Container';
 import { NoRatesTooltip } from '@suite-components';
