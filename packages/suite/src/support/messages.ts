@@ -684,10 +684,6 @@ const definedMessages = defineMessages({
         defaultMessage: "Don't have a Trezor? {getOne}",
         id: 'TR_DONT_HAVE_A_TREZOR',
     },
-    TR_DONT_UPGRADE_BRIDGE: {
-        defaultMessage: "No, I don't want to upgrade Bridge now",
-        id: 'TR_DONT_UPGRADE_BRIDGE',
-    },
     TR_DOUBLE_CLICK_IT_TO_RUN_INSTALLER: {
         defaultMessage: 'Double click it to run installer',
         description: 'Instruction for installing Trezor Bridge',
@@ -992,10 +988,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Learn more',
         description: 'Link to Trezor wiki.',
         id: 'TR_LEARN_MORE',
-    },
-    TR_LEARN_MORE_ABOUT_LATEST_VERSION: {
-        defaultMessage: 'Learn more about latest version in {TR_CHANGELOG}.',
-        id: 'TR_LEARN_MORE_ABOUT_LATEST_VERSION',
     },
     TR_LEARN_MORE_LINK: {
         defaultMessage: 'Learn more.',
@@ -1839,10 +1831,6 @@ const definedMessages = defineMessages({
     //         defaultMessage: 'Verifying address error',
     //         id: 'TR_VERIFYING_ADDRESS_ERROR',
     // },
-    TR_VERSION_IS_LOADING: {
-        defaultMessage: 'Version is loading',
-        id: 'TR_VERSION_IS_LOADING',
-    },
     TR_WAIT_FOR_FILE_TO_DOWNLOAD: {
         defaultMessage: 'Wait for file to download',
         description: 'Instruction for installing Trezor Bridge',
