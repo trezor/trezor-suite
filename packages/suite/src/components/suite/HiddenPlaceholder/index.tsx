@@ -1,4 +1,5 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
+import { Props } from './Container';
 import styled from 'styled-components';
 
 interface WrapperProps {
@@ -13,12 +14,6 @@ const Wrapper = styled.span<WrapperProps>`
         filter: none;
     }
 `;
-
-interface Props {
-    children: ReactNode;
-    discreetMode: boolean;
-    intensity: number;
-}
 
 export default ({ children, discreetMode, intensity }: Props) => {
     if (!discreetMode) return children;
