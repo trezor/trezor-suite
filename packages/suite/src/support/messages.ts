@@ -154,6 +154,14 @@ const definedMessages = defineMessages({
         defaultMessage: '{networkName} receive address',
         id: 'TR_ADDRESS_MODAL_TITLE',
     },
+    TR_XPUB_MODAL_CLIPBOARD: {
+        defaultMessage: 'Copy public key',
+        id: 'TR_XPUB_MODAL_CLIPBOARD',
+    },
+    TR_XPUB_MODAL_TITLE: {
+        defaultMessage: '{networkName} Account {accountIndex} public key (XPUB)',
+        id: 'TR_XPUB_MODAL_TITLE',
+    },
     TR_ADVANCED_RECOVERY_OPTION: {
         defaultMessage: 'Advanced recovery (5 minutes)',
         description: 'Button for selecting advanced recovery option',
@@ -1077,6 +1085,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Send',
         description: 'Title of the navigation tab that contains a form for sending funds',
         id: 'TR_NAV_SEND',
+    },
+    TR_NAV_DETAILS: {
+        defaultMessage: 'Account details',
+        id: 'TR_NAV_DETAILS',
     },
     TR_NAV_SIGN_AND_VERIFY: {
         defaultMessage: 'Sign & Verify',
@@ -2022,6 +2034,65 @@ const definedMessages = defineMessages({
     TR_SHOW_LOG: {
         id: 'TR_SHOW_LOG',
         defaultMessage: 'Show log',
+    },
+    TR_ACCOUNT_DETAILS_HEADER: {
+        id: 'TR_ACCOUNT_DETAILS_HEADER',
+        defaultMessage: 'Account Details',
+    },
+    TR_ACCOUNT_DETAILS_TYPE_HEADER: {
+        id: 'TR_ACCOUNT_DETAILS_TYPE_HEADER',
+        defaultMessage: 'Account type',
+    },
+    TR_ACCOUNT_DETAILS_TYPE_BECH32: {
+        id: 'TR_ACCOUNT_DETAILS_TYPE_BECH32',
+        defaultMessage:
+            'Bech32 uses the most modern addresses for smallest transaction fees. Be aware that it may not be compatible with old bitcoin services.',
+    },
+    TR_ACCOUNT_DETAILS_TYPE_P2SH: {
+        id: 'TR_ACCOUNT_DETAILS_TYPE_P2SH',
+        defaultMessage: 'Pay to script hash (P2SH) is an advanced type of transaction used in Bitcoin and other similar crypto currencies. Unlike P2PKH, it allows sender to commit funds to a hash of an arbitrary valid script.',
+    },
+    TR_ACCOUNT_DETAILS_TYPE_P2PKH: {
+        id: 'TR_ACCOUNT_DETAILS_TYPE_P2PKH',
+        defaultMessage:
+            'Legacy Pay-to-Public-Key-Hash (P2PKH) is the basic type of transaction used in Bitcoin and other similar crypto currencies.',
+    },
+    TR_ACCOUNT_DETAILS_XPUB_HEADER: {
+        id: 'TR_ACCOUNT_DETAILS_XPUB_HEADER',
+        defaultMessage: 'Public key (XPUB)',
+    },
+    TR_ACCOUNT_DETAILS_XPUB: {
+        id: 'TR_ACCOUNT_DETAILS_XPUB',
+        defaultMessage:
+            'Be careful with your account public key (XPUB). When you expose your public key to a third party, you allow them to see your entire transaction history.',
+    },
+    TR_ACCOUNT_DETAILS_XPUB_BUTTON: {
+        id: 'TR_ACCOUNT_DETAILS_XPUB_BUTTON',
+        defaultMessage: 'Show public key',
+    },
+    TR_ACCOUNT_TYPE_NORMAL: {
+        id: 'TR_ACCOUNT_TYPE_NORMAL',
+        defaultMessage: 'Normal',
+    },
+    TR_ACCOUNT_TYPE_SEGWIT: {
+        id: 'TR_ACCOUNT_TYPE_NORMAL',
+        defaultMessage: 'SegWit',
+    },
+    TR_ACCOUNT_TYPE_LEGACY: {
+        id: 'TR_ACCOUNT_TYPE_LEGACY',
+        defaultMessage: 'Legacy',
+    },
+    TR_ACCOUNT_TYPE_BECH32: {
+        id: 'TR_ACCOUNT_TYPE_NORMAL',
+        defaultMessage: 'Bech32',
+    },
+    TR_ACCOUNT_TYPE_P2SH: {
+        id: 'TR_ACCOUNT_TYPE_NORMAL',
+        defaultMessage: 'P2SH',
+    },
+    TR_ACCOUNT_TYPE_P2PKH: {
+        id: 'TR_ACCOUNT_TYPE_NORMAL',
+        defaultMessage: 'P2PKH',
     },
 });
 
