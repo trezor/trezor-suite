@@ -2076,7 +2076,7 @@ const definedMessages = defineMessages({
         defaultMessage: 'Normal',
     },
     TR_ACCOUNT_TYPE_SEGWIT: {
-        id: 'TR_ACCOUNT_TYPE_NORMAL',
+        id: 'TR_ACCOUNT_TYPE_SEGWIT',
         defaultMessage: 'SegWit',
     },
     TR_ACCOUNT_TYPE_LEGACY: {
