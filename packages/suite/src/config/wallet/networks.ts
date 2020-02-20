@@ -83,7 +83,7 @@ const networks = [
     {
         name: 'Ethereum Classic',
         networkType: 'ethereum',
-        symbol: 'etc',
+        symbol: 'eth',
         chainId: 1,
         bip44: "m/44'/61'/0'/0/i",
         hasSignVerify: true,
