@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Account } from '@wallet-types';
+import HiddenPlaceholder from '@suite-components/HiddenPlaceholder/Container';
 import { CoinLogo, variables } from '@trezor/components-v2';
 import FiatValue from '@suite-components/FiatValue/Container';
 import { NoRatesTooltip } from '@suite-components';
@@ -75,9 +76,11 @@ const Asset = React.memo(({ name, symbol, cryptoValue, ...rest }: Props) => {
                 </AssetName>
             </Col>
             <Col>
-                <CryptoValueWrapper>
-                    {cryptoValue} {symbol.toUpperCase()}{' '}
-                </CryptoValueWrapper>
+                <HiddenPlaceholder>
+                    <CryptoValueWrapper>
+                        {cryptoValue} {symbol.toUpperCase()}{' '}
+                    </CryptoValueWrapper>
+                </HiddenPlaceholder>
             </Col>
             <Col>
                 <FiatValueWrapper>

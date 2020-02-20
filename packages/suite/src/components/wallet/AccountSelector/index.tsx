@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Select, colors, variables } from '@trezor/components-v2';
 import { Account } from '@wallet-types';
+import HiddenPlaceholder from '@suite-components/HiddenPlaceholder/Container';
 import { Props } from './Container';
 
 const Wrapper = styled.div`
@@ -87,9 +88,11 @@ export default ({ accounts, selectedAccount, title, goto, router }: Props) => {
                 {otherAccounts.length === 1 && (
                     <SingleAccount>
                         Account {account.symbol.toUpperCase()} #{account.index + 1}
-                        <Label>
-                            {account.formattedBalance} {account.symbol.toUpperCase()}
-                        </Label>
+                        <HiddenPlaceholder>
+                            <Label>
+                                {account.formattedBalance} {account.symbol.toUpperCase()}
+                            </Label>
+                        </HiddenPlaceholder>
                     </SingleAccount>
                 )}
                 {otherAccounts.length > 1 && (
@@ -111,10 +114,12 @@ export default ({ accounts, selectedAccount, title, goto, router }: Props) => {
                                 return (
                                     <Option>
                                         <OptionVal>{option.label}</OptionVal>
-                                        <Label>
-                                            {itemAccount.formattedBalance}{' '}
-                                            {itemAccount.symbol.toUpperCase()}
-                                        </Label>
+                                        <HiddenPlaceholder>
+                                            <Label>
+                                                {itemAccount.formattedBalance}{' '}
+                                                {itemAccount.symbol.toUpperCase()}
+                                            </Label>
+                                        </HiddenPlaceholder>
                                     </Option>
                                 );
                             }
