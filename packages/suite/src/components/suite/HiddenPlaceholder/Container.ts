@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { ReactElement } from 'react';
+import { ReactNode } from 'react';
 
 import { AppState } from '@suite-types';
 import Component from './index';
@@ -11,8 +11,8 @@ const mapStateToProps = (state: AppState) => ({
 export type StateProps = ReturnType<typeof mapStateToProps>;
 
 interface ExtendedProps extends StateProps {
-    children: ReactElement | null;
-    intensity: number;
+    children: ReactNode;
+    intensity?: number;
 }
 export type Props = StateProps & ExtendedProps;
 
