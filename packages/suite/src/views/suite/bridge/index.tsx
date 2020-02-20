@@ -15,21 +15,40 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    max-width: 780px;
     justify-content: center;
-    padding: 60px 110px 30px 110px;
+    padding: 50px 0px 30px 0px;
     flex: 1;
 `;
 
-const Top = styled.div`
+const Content = styled.div`
     display: flex;
     flex-direction: column;
-    max-width: 500px;
     text-align: center;
     flex: 1;
+    padding: 0px 110px;
+    /* min-width: 560px; */
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: 0px;
+        min-width: 0px;
+    }
 `;
 
-const Bottom = styled.div`
-    padding-bottom: 20px;
+const Description = styled(P)`
+    color: ${colors.BLACK50};
+`;
+
+const Footer = styled.div`
+    margin-top: 72px;
+    display: flex;
+    padding: 0px 42px;
+    justify-content: space-between;
+    width: 100%;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: 0px 12px;
+    }
 `;
 
 const TitleHeader = styled(H2)`
@@ -37,10 +56,6 @@ const TitleHeader = styled(H2)`
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-`;
-
-const LearnMoreText = styled.span`
-    margin-right: 4px;
 `;
 
 const SelectWrapper = styled(Select)`
@@ -57,11 +72,7 @@ const Download = styled.div`
 
 const DownloadBridgeButton = styled(Button)`
     margin-top: 12px;
-`;
-
-const GoBack = styled(Link)`
-    display: flex;
-    justify-content: center;
+    min-width: 280px;
 `;
 
 const CenteredLoader = styled(Loader)`
@@ -72,10 +83,13 @@ const CenteredLoader = styled(Loader)`
 const LoaderWrapper = styled.div`
     margin: 15px 0 25px 0;
     align-items: center;
+    /* same height as content so it won't feel jumpy */
+    min-height: 98px;
     justify-items: center;
 `;
 
-const Version = styled.div`
+const Version = styled.div<{ show: boolean }>`
+    visibility: ${props => (props.show ? 'visible' : 'hidden')};
     margin-top: 10px;
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
@@ -130,22 +144,14 @@ const InstallBridge = (props: Props) => {
             <Head>
                 <title>Download Bridge | Trezor Suite</title>
             </Head>
-            <Top>
-                <TitleHeader>
-                    Trezor Bridge Download
-                    {/* {isLoading && (
-                        <Version>
-                            <Translation {...messages.TR_VERSION_IS_LOADING} />
-                        </Version>
-                    )} */}
-                    {/* {props.transport && <Version>{data && data.currentVersion}</Version>} */}
-                </TitleHeader>
-                <P size="small">
+            <Content>
+                <TitleHeader>Trezor Bridge Download</TitleHeader>
+                <Description size="small">
                     <Translation {...messages.TR_NEW_COMMUNICATION_TOOL} />
-                </P>
-                {props.transport && data.currentVersion && (
-                    <Version>Installed version: Trezor Bridge {data.currentVersion}</Version>
-                )}
+                </Description>
+                <Version show={data.currentVersion}>
+                    Currently installed: Trezor Bridge {data.currentVersion}
+                </Version>
                 <Image src={resolveStaticPath('images/suite/t-bridge-check.svg')} />
                 {isLoading ? (
                     <LoaderWrapper>
@@ -164,8 +170,8 @@ const InstallBridge = (props: Props) => {
                             options={installers}
                         />
 
-                        <Link href={`${data.uri}${target.value}`}>
-                            <DownloadBridgeButton icon="RECEIVE">
+                        <Link variant="nostyle" href={`${data.uri}${target.value}`}>
+                            <DownloadBridgeButton>
                                 <Translation
                                     {...messages.TR_DOWNLOAD_LATEST_BRIDGE}
                                     values={{ version: data.latestVersion }}
@@ -174,44 +180,45 @@ const InstallBridge = (props: Props) => {
                         </Link>
                     </Download>
                 )}
+            </Content>
 
-                <P size="small">
-                    <LearnMoreText>
-                        <Translation
-                            {...messages.TR_LEARN_MORE_ABOUT_LATEST_VERSION}
-                            values={{
-                                TR_CHANGELOG: (
-                                    <Link href={URLS.BRIDGE_CHANGELOG_URL}>
-                                        <Translation {...messages.TR_CHANGELOG} />
-                                    </Link>
-                                ),
-                            }}
-                        />
-                    </LearnMoreText>
-                </P>
-
-                <P>
-                    {target && data && target.signature && (
-                        <Link href={data.uri + target.signature}>
-                            <Translation {...messages.TR_CHECK_PGP_SIGNATURE} />
+            <Footer>
+                <Button
+                    icon="ARROW_LEFT"
+                    variant="tertiary"
+                    color={colors.BLACK50}
+                    onClick={() => props.goto('wallet-index')}
+                >
+                    <Translation {...messages.TR_TAKE_ME_BACK_TO_WALLET} />
+                </Button>
+                {!isLoading && (
+                    <>
+                        <Link variant="nostyle" href={URLS.BRIDGE_CHANGELOG_URL}>
+                            <Button
+                                icon="LOG"
+                                color={colors.BLACK50}
+                                variant="tertiary"
+                                onClick={() => {}}
+                            >
+                                <Translation {...messages.TR_CHANGELOG} />
+                            </Button>
                         </Link>
-                    )}
-                </P>
-            </Top>
 
-            <Bottom>
-                {props.transport &&
-                    props.transport.type &&
-                    props.device &&
-                    props.device.type !== 'unreadable' && (
-                        <P>
-                            <Translation {...messages.TR_DONT_UPGRADE_BRIDGE} />
-                            <GoBack onClick={() => props.goto('wallet-index')}>
-                                <Translation {...messages.TR_TAKE_ME_BACK_TO_WALLET} />
-                            </GoBack>
-                        </P>
-                    )}
-            </Bottom>
+                        {data && target?.signature && (
+                            <Link variant="nostyle" href={data.uri + target.signature}>
+                                <Button
+                                    color={colors.BLACK50}
+                                    icon="SIGN"
+                                    variant="tertiary"
+                                    onClick={() => {}}
+                                >
+                                    <Translation {...messages.TR_CHECK_PGP_SIGNATURE} />
+                                </Button>
+                            </Link>
+                        )}
+                    </>
+                )}
+            </Footer>
         </Wrapper>
     );
 };
