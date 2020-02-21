@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components-v2';
+import { colors, variables, P } from '@trezor/components-v2';
 import FiatValue from '@suite-components/FiatValue/Container';
 import Badge from '@suite-components/Badge';
 import { Translation } from '@suite-components/Translation';
@@ -9,6 +9,8 @@ import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import Box from '../Box';
 import BoxRow from '../BoxRow';
 import { FormattedDate } from 'react-intl';
+import NoRatesTooltip from '@suite/components/suite/NoRatesTooltip';
+import { getDateWithTimeZone } from '@suite-utils/date';
 
 const Grid = styled.div`
     display: grid;
@@ -36,6 +38,12 @@ const Col = styled.div<{ direction: 'column' | 'row' }>`
     display: flex;
     flex-direction: ${props => props.direction};
     flex: 1 1 auto;
+`;
+
+const NoRatesMessage = styled(P)`
+    display: flex;
+    align-items: center;
+    color: ${colors.BLACK50};
 `;
 
 interface Props {
@@ -68,9 +76,17 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                             </>
                         )}
                     </FiatValue>
-                    <Badge>
-                        <FiatValue amount="1" symbol={tx.symbol} />
-                    </Badge>
+                    <FiatValue amount="1" symbol={tx.symbol}>
+                        {({ value }) =>
+                            value ? (
+                                <Badge>{value}</Badge>
+                            ) : (
+                                <NoRatesMessage size="tiny">
+                                    No data available <NoRatesTooltip />
+                                </NoRatesMessage>
+                            )
+                        }
+                    </FiatValue>
                 </BoxHeading>
                 <Box>
                     <BoxRow
@@ -92,7 +108,21 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
             </Col>
             <Col direction="column">
                 <BoxHeading>
-                    <Translation {...messages.TR_TX_HISTORICAL_VALUE_DATE} values={{ date: '' }} />
+                    <Translation
+                        {...messages.TR_TX_HISTORICAL_VALUE_DATE}
+                        values={{
+                            date: tx.blockTime ? (
+                                <FormattedDate
+                                    value={getDateWithTimeZone(tx.blockTime * 1000)}
+                                    year="numeric"
+                                    month="2-digit"
+                                    day="2-digit"
+                                />
+                            ) : (
+                                ''
+                            ),
+                        }}
+                    />
                     <HistoricalBadge>
                         <FiatValue amount="1" symbol={tx.symbol}>
                             {({ value }) => value}
