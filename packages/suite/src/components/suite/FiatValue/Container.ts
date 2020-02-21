@@ -14,7 +14,7 @@ type OwnProps = {
     fiatCurrency?: string;
     children?: (
         fiatValue: JSX.Element | null,
-        fiatRateValue?: number | null,
+        fiatRateValue?: JSX.Element | null,
         timestamp?: number | null,
     ) => React.ReactElement | null;
 };

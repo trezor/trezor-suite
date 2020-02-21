@@ -3,11 +3,8 @@ import { Fiat } from '@wallet-types';
 
 const toFiatCurrency = (amount: string, fiatCurrency: string, networkRates: Fiat) => {
     // calculate amount in local currency
-    if (!networkRates || !networkRates.rates || !amount) {
-        return null;
-    }
 
-    const rate = networkRates.rates[fiatCurrency];
+    const rate = networkRates?.current?.rates?.[fiatCurrency];
     if (!rate) {
         return null;
     }
@@ -28,11 +25,7 @@ const fromFiatCurrency = (
     networkRates: Fiat,
     decimals: number,
 ) => {
-    if (!networkRates || !networkRates.rates || !localAmount) {
-        return null;
-    }
-
-    const rate = networkRates.rates[fiatCurrency];
+    const rate = networkRates?.current?.rates?.[fiatCurrency];
     if (!rate) {
         return null;
     }

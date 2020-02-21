@@ -18,12 +18,15 @@ const FiatValue = ({ amount, symbol, fiatCurrency, ...props }: Props) => {
     const targetCurrency = fiatCurrency ?? props.settings.localCurrency;
     const fiatRates = props.fiat.find(f => f.symbol === symbol);
 
-    const fiatRateValue = fiatRates?.rates?.[targetCurrency] ?? null;
+    const fiatRateValue = fiatRates?.current?.rates?.[targetCurrency] ?? null;
     const fiat = fiatRates ? toFiatCurrency(amount, targetCurrency, fiatRates) : null;
     if (fiat) {
-        const fiatValue = <FormattedNumber currency={targetCurrency} value={fiat} />;
-        if (!props.children) return fiatValue;
-        return props.children(fiatValue, fiatRateValue, fiatRates!.timestamp);
+        const fiatValueComponent = <FormattedNumber currency={targetCurrency} value={fiat} />;
+        const fiatRateComponent = fiatRateValue ? (
+            <FormattedNumber currency={targetCurrency} value={fiatRateValue} />
+        ) : null;
+        if (!props.children) return fiatValueComponent;
+        return props.children(fiatValueComponent, fiatRateComponent, fiatRates!.current?.ts);
     }
     if (!props.children) return null;
     return props.children(null, null, null);

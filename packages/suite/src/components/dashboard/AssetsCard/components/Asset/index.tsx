@@ -93,7 +93,7 @@ const Asset = React.memo(({ name, symbol, cryptoValue, localCurrency, ...props }
             <Col>
                 <FiatValueWrapper>
                     <FiatValue amount={cryptoValue} symbol={symbol}>
-                        {fiatValue => <SmallBadge>{fiatValue}</SmallBadge>}
+                        {fiatValue => (fiatValue ? <SmallBadge>{fiatValue}</SmallBadge> : null)}
                     </FiatValue>
                 </FiatValueWrapper>
             </Col>
