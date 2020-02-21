@@ -2104,7 +2104,7 @@ const definedMessages = defineMessages({
         defaultMessage: 'Invalid passphrase',
     },
     TOAST_DISCOVERY_ERROR: {
-        id: 'TOAST_AUTH_CONFIRM_ERROR',
+        id: 'TOAST_DISCOVERY_ERROR',
         defaultMessage: 'Account discovery error {error}',
     },
     TOAST_BACKUP_FAILED: {
