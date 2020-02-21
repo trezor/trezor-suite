@@ -11,7 +11,6 @@ import { Icon, IconProps } from './components/Icon';
 import { H1, H2 } from './components/Heading';
 import { P } from './components/Paragraph';
 import { Link, LinkProps } from './components/Link';
-import { Notification, NotificationProps } from './components/Notification';
 import { Modal, ModalProps } from './components/Modal';
 import { CoinLogo, CoinLogoProps } from './components/CoinLogo';
 import { TrezorLogo, TrezorLogoProps } from './components/TrezorLogo';
@@ -41,8 +40,6 @@ export {
     P,
     Link,
     LinkProps,
-    Notification,
-    NotificationProps,
     Modal,
     ModalProps,
     CoinLogo,
