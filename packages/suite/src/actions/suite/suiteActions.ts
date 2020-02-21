@@ -305,16 +305,23 @@ export const acquireDevice = (requestedDevice?: TrezorDevice) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const { device } = getState().suite;
-    if (!device && !requestedDevice) return;
+    const selectedDevice = getState().suite.device;
+    if (!selectedDevice && !requestedDevice) return;
+    const device = requestedDevice || selectedDevice;
 
     const response = await TrezorConnect.getFeatures({
-        device: requestedDevice || device,
+        device,
         useEmptyPassphrase: true,
     });
 
     if (!response.success) {
-        dispatch(addNotification({ type: 'acquire-error' }));
+        dispatch(
+            addNotification({
+                type: 'acquire-error',
+                acquiringDevice: device,
+                error: response.payload.error,
+            }),
+        );
     }
 };
 
@@ -428,7 +435,7 @@ export const authConfirm = () => async (dispatch: Dispatch, getState: GetState) 
     }
 
     if (response.payload.state !== device.state) {
-        dispatch(addNotification({ type: 'auth-confirm-error', error: 'Invalid passphrase' }));
+        dispatch(addNotification({ type: 'auth-confirm-error' }));
         dispatch(receiveAuthConfirm(device, false));
         return;
     }

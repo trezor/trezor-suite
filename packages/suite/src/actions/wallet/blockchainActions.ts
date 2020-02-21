@@ -8,6 +8,7 @@ import {
     enhanceTransaction,
     getAccountDevice,
 } from '@wallet-utils/accountUtils';
+import * as deviceUtils from '@suite-utils/device';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as notificationActions from '@suite-actions/notificationActions';
@@ -301,7 +302,22 @@ export const onNotification = (payload: BlockchainNotification) => async (
 
     // don't dispatch sent and self notifications
     if (accountDevice && enhancedTx.type !== 'sent' && enhancedTx.type !== 'self') {
-        dispatch(notificationActions.add({ type: 'tx-confirmed', txid: enhancedTx.txid }));
+        const isSelectedDevice = deviceUtils.isSelectedInstance(
+            getState().suite.device,
+            accountDevice,
+        );
+        dispatch(
+            notificationActions.add({
+                type: 'tx-confirmed',
+                amount: enhancedTx.amount,
+                accountDevice: !isSelectedDevice ? accountDevice : undefined,
+                routeParams: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
+            }),
+        );
     }
 
     // fetch account info and update the account (txs count,...)
