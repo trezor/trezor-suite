@@ -115,9 +115,11 @@ const PricePanel = (props: Props) => {
                         {props.account.formattedBalance} {props.account.symbol.toUpperCase()}
                     </Balance>
                 </HiddenPlaceholder>
-                <Badge>
-                    <FormattedNumber value={fiatBalance} currency={localCurrency} />
-                </Badge>
+                <HiddenPlaceholder>
+                    <Badge>
+                        <FormattedNumber value={fiatBalance} currency={localCurrency} />
+                    </Badge>
+                </HiddenPlaceholder>
             </Col>
             {!isTestnet(props.account.symbol) && (
                 <Col>

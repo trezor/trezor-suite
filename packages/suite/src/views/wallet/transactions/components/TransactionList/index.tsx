@@ -1,7 +1,6 @@
 /* eslint-disable radix */
 import React, { useMemo } from 'react';
 import { FormattedDate } from 'react-intl';
-import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
 import { P, colors, variables } from '@trezor/components-v2';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
@@ -11,9 +10,7 @@ import { Account } from '@wallet-types';
 import TransactionItem from '../TransactionItem/Container';
 import Pagination from '../Pagination';
 import messages from '@suite/support/messages';
-import Card from '@suite-components/Card';
-import Badge from '@suite-components/Badge';
-import FiatValue from '@suite-components/FiatValue/Container';
+import { Badge, Card, FiatValue, HiddenPlaceholder, Translation } from '@suite-components';
 
 const Wrapper = styled.div``;
 
@@ -138,23 +135,27 @@ const TransactionList = ({
                                                 />
                                             </DateWrapper>
                                             <DayAmountWrapper>
-                                                <DayAmount>
-                                                    {totalAmountPerDay.gte(0) && '+'}
-                                                    {totalAmountPerDay.toFixed()}{' '}
-                                                    {props.symbol.toUpperCase()}
-                                                </DayAmount>
-                                                <FiatValue
-                                                    amount={totalAmountPerDay.toFixed()}
-                                                    symbol={props.symbol}
-                                                >
-                                                    {fiatValue =>
-                                                        fiatValue && (
-                                                            <FiatDayAmount>
-                                                                <Badge>{fiatValue}</Badge>
-                                                            </FiatDayAmount>
-                                                        )
-                                                    }
-                                                </FiatValue>
+                                                <HiddenPlaceholder>
+                                                    <DayAmount>
+                                                        {totalAmountPerDay.gte(0) && '+'}
+                                                        {totalAmountPerDay.toFixed()}{' '}
+                                                        {props.symbol.toUpperCase()}
+                                                    </DayAmount>
+                                                </HiddenPlaceholder>
+                                                <HiddenPlaceholder>
+                                                    <FiatValue
+                                                        amount={totalAmountPerDay.toFixed()}
+                                                        symbol={props.symbol}
+                                                    >
+                                                        {fiatValue =>
+                                                            fiatValue && (
+                                                                <FiatDayAmount>
+                                                                    <Badge>{fiatValue}</Badge>
+                                                                </FiatDayAmount>
+                                                            )
+                                                        }
+                                                    </FiatValue>
+                                                </HiddenPlaceholder>
                                             </DayAmountWrapper>
                                         </>
                                     )}

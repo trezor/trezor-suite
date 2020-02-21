@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
-import { Translation } from '@suite-components/Translation';
+import { Translation, HiddenPlaceholder, FiatValue, Badge } from '@suite-components';
 import { variables, colors, Button } from '@trezor/components-v2';
 import { ArrayElement } from '@suite/types/utils';
 import messages from '@suite/support/messages';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import TransactionTypeIcon from '../TransactionTypeIcon';
-import Badge from '@suite/components/suite/Badge';
-import FiatValue from '@suite-components/FiatValue/Container';
 import { Props } from './Container';
 
 const Wrapper = styled.div<{ isExpanded: boolean }>`
@@ -17,10 +15,6 @@ const Wrapper = styled.div<{ isExpanded: boolean }>`
     padding: 12px 16px;
     flex-direction: column;
     cursor: pointer;
-
-    /* &:hover {
-        background: ${colors.BLACK96};
-    } */
 `;
 
 const Timestamp = styled.div`
@@ -186,11 +180,13 @@ const TokenTransfer = (transfer: ArrayElement<Props['transaction']['tokens']>) =
                 <Col>
                     <TokenName>
                         {transfer.name} ({transfer.symbol})
-                        <TokenAmount txType={transfer.type}>
-                            {transfer.type === 'recv' && '+'}
-                            {transfer.type !== 'recv' && '-'}
-                            {transfer.amount} {transfer.symbol}
-                        </TokenAmount>
+                        <HiddenPlaceholder>
+                            <TokenAmount txType={transfer.type}>
+                                {transfer.type === 'recv' && '+'}
+                                {transfer.type !== 'recv' && '-'}
+                                {transfer.amount} {transfer.symbol}
+                            </TokenAmount>
+                        </HiddenPlaceholder>
                     </TokenName>
                     <Label>
                         From:&nbsp;<TokenAddress>{transfer.from}</TokenAddress>
@@ -289,23 +285,27 @@ const TransactionItem = React.memo((props: Props) => {
                 </Targets>
                 {amount !== '0' && (
                     <>
-                        <Balance>
-                            <Amount>
-                                {type === 'recv' && '+'}
-                                {type !== 'recv' && '-'}
-                                {amount}&nbsp;
-                            </Amount>
-                            <Symbol>{symbol.toUpperCase()}</Symbol>
-                        </Balance>
-                        <FiatValue amount={amount} symbol={symbol}>
-                            {fiatValue =>
-                                fiatValue && (
-                                    <FiatBalance>
-                                        <SmallBadge>{fiatValue}</SmallBadge>
-                                    </FiatBalance>
-                                )
-                            }
-                        </FiatValue>
+                        <HiddenPlaceholder>
+                            <Balance>
+                                <Amount>
+                                    {type === 'recv' && '+'}
+                                    {type !== 'recv' && '-'}
+                                    {amount}&nbsp;
+                                </Amount>
+                                <Symbol>{symbol.toUpperCase()}</Symbol>
+                            </Balance>
+                        </HiddenPlaceholder>
+                        <HiddenPlaceholder>
+                            <FiatValue amount={amount} symbol={symbol}>
+                                {fiatValue =>
+                                    fiatValue && (
+                                        <FiatBalance>
+                                            <SmallBadge>{fiatValue}</SmallBadge>
+                                        </FiatBalance>
+                                    )
+                                }
+                            </FiatValue>
+                        </HiddenPlaceholder>
                     </>
                 )}
             </Row>
