@@ -94,7 +94,7 @@ export default ({
                         <Translation {...messages.TR_ADDRESS_FROM} />
                     </Label>
                     <Value>
-                        {upperCaseSymbol} Account #{account.index}
+                        {upperCaseSymbol} Account #{account.index + 1}
                     </Value>
                 </Box>
                 {outputs.map((output: Output) => (
