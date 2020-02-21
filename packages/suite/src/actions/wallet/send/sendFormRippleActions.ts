@@ -1,4 +1,6 @@
+import * as commonActions from './sendFormCommonActions';
 import * as notificationActions from '@suite-actions/notificationActions';
+import * as accountActions from '@wallet-actions/accountActions';
 import { Dispatch, GetState } from '@suite-types';
 import { SEND } from '@wallet-actions/constants';
 import { XRP_FLAG, VALIDATION_ERRORS } from '@wallet-constants/sendForm';
@@ -149,7 +151,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     }
 
     const { path, instance, state, useEmptyPassphrase } = selectedDevice;
-    const signedTransaction = await TrezorConnect.rippleSignTransaction({
+    const signedTx = await TrezorConnect.rippleSignTransaction({
         device: {
             path,
             instance,
@@ -165,34 +167,27 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         },
     });
 
-    if (!signedTransaction.success) {
+    if (!signedTx.success) {
         dispatch(
             notificationActions.add({
                 type: 'sign-tx-error',
-                error: signedTransaction.payload.error,
+                error: signedTx.payload.error,
             }),
         );
         return;
     }
 
-    const push = await TrezorConnect.pushTransaction({
-        tx: signedTransaction.payload.serializedTx,
+    // TODO: add possibility to show serialized tx without pushing (locktime)
+    const sentTx = await TrezorConnect.pushTransaction({
+        tx: signedTx.payload.serializedTx,
         coin: account.symbol,
     });
 
-    if (!push.success) {
-        dispatch(
-            notificationActions.add({
-                type: 'sign-tx-error',
-                error: push.payload.error,
-            }),
-        );
+    if (sentTx.success) {
+        dispatch(commonActions.clear());
+        dispatch(notificationActions.add({ type: 'sign-tx-success', txid: sentTx.payload.txid }));
+        dispatch(accountActions.fetchAndUpdateAccount(account));
     } else {
-        dispatch(
-            notificationActions.add({
-                type: 'sign-tx-success',
-                txid: push.payload.txid,
-            }),
-        );
+        dispatch(notificationActions.add({ type: 'sign-tx-error', error: sentTx.payload.error }));
     }
 };

@@ -104,7 +104,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     // TODO: @Vladimir
     // use import { EthereumTransaction } from 'trezor-connect'; instead of EthPreparedTransaction
     // @ts-ignore
-    const signedTransaction = await TrezorConnect.ethereumSignTransaction({
+    const signedTx = await TrezorConnect.ethereumSignTransaction({
         device: {
             path: selectedDevice.path,
             instance: selectedDevice.instance,
@@ -115,23 +115,29 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         transaction,
     });
 
-    transaction.r = signedTransaction.payload.r;
-    transaction.s = signedTransaction.payload.s;
-    transaction.v = signedTransaction.payload.v;
+    if (!signedTx.success) {
+        dispatch(notificationActions.add({ type: 'sign-tx-error', error: signedTx.payload.error }));
+        return;
+    }
+
+    transaction.r = signedTx.payload.r;
+    transaction.s = signedTx.payload.s;
+    transaction.v = signedTx.payload.v;
 
     const serializedTx = serializeEthereumTx(transaction);
 
-    const res = await TrezorConnect.pushTransaction({
+    // TODO: add possibility to show serialized tx without pushing (locktime)
+    const sentTx = await TrezorConnect.pushTransaction({
         tx: serializedTx,
         coin: network.symbol,
     });
 
-    if (res.success) {
+    if (sentTx.success) {
         dispatch(commonActions.clear());
-        dispatch(notificationActions.add({ type: 'sign-tx-success', txid: res.payload.txid }));
+        dispatch(notificationActions.add({ type: 'sign-tx-success', txid: sentTx.payload.txid }));
         dispatch(accountActions.fetchAndUpdateAccount(account));
     } else {
-        dispatch(notificationActions.add({ type: 'sign-tx-error', error: res.payload.error }));
+        dispatch(notificationActions.add({ type: 'sign-tx-error', error: sentTx.payload.error }));
     }
 };
 
