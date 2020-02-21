@@ -44,4 +44,5 @@ export type Transport = {
 
   isOutdated: boolean;
   setBridgeLatestUrl(url: string): void;
+  setBridgeLatestVersion(version: string): void;
 }

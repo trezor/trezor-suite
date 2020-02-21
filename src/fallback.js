@@ -120,6 +120,12 @@ export default class FallbackTransport {
     }
   }
 
+  setBridgeLatestVersion(version: string): void {
+    for (const transport of this.transports) {
+      transport.setBridgeLatestVersion(version);
+    }
+  }
+
   stop(): void {
     for (const transport of this.transports) {
       transport.stop();
