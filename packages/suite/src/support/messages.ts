@@ -2087,6 +2087,82 @@ const definedMessages = defineMessages({
         id: 'TR_ACCOUNT_TYPE_P2PKH',
         defaultMessage: 'P2PKH',
     },
+    TOAST_ACQUIRE_ERROR: {
+        id: 'TOAST_ACQUIRE_ERROR',
+        defaultMessage: 'Acquire error {error}',
+    },
+    TOAST_AUTH_FAILED: {
+        id: 'TOAST_AUTH_FAILED',
+        defaultMessage: 'Authorization error: {error}',
+    },
+    TOAST_AUTH_CONFIRM_ERROR: {
+        id: 'TOAST_AUTH_CONFIRM_ERROR',
+        defaultMessage: 'Passphrase confirmation error: {error}',
+    },
+    TOAST_AUTH_CONFIRM_ERROR_DEFAULT: {
+        id: 'TOAST_AUTH_CONFIRM_ERROR_DEFAULT',
+        defaultMessage: 'Invalid passphrase',
+    },
+    TOAST_DISCOVERY_ERROR: {
+        id: 'TOAST_AUTH_CONFIRM_ERROR',
+        defaultMessage: 'Account discovery error {error}',
+    },
+    TOAST_BACKUP_FAILED: {
+        id: 'TOAST_BACKUP_FAILED',
+        defaultMessage: 'Backup failed',
+    },
+    TOAST_BACKUP_SUCCESS: {
+        id: 'TOAST_BACKUP_SUCCESS',
+        defaultMessage: 'Pin changed',
+    },
+    TOAST_SETTINGS_APPLIED: {
+        id: 'TOAST_SETTINGS_APPLIED',
+        defaultMessage: 'Settings applied',
+    },
+    TOAST_PIN_CHANGED: {
+        id: 'TOAST_PIN_CHANGED',
+        defaultMessage: 'Pin changed',
+    },
+    TOAST_DEVICE_WIPED: {
+        id: 'TOAST_DEVICE_WIPED',
+        defaultMessage: 'Pin changed',
+    },
+    TOAST_COPY_TO_CLIPBOARD: {
+        id: 'TOAST_COPY_TO_CLIPBOARD',
+        defaultMessage: 'Copied to clipboard',
+    },
+    TOAST_TX_CONFIRMED: {
+        id: 'TOAST_TX_CONFIRMED',
+        defaultMessage: 'Transaction {amount} successfully confirmed',
+    },
+    TOAST_TX_CONFIRMED_CTA: {
+        id: 'TOAST_TX_CONFIRMED_CTA',
+        defaultMessage: 'View details',
+    },
+    TOAST_SIGN_TX_SUCCESS: {
+        id: 'TOAST_SIGN_TX_SUCCESS',
+        defaultMessage: 'Transaction sent. ID: {txid}',
+    },
+    TOAST_SIGN_TX_ERROR: {
+        id: 'TOAST_SIGN_TX_ERROR',
+        defaultMessage: 'Sign transaction error: {error}',
+    },
+    TOAST_VERIFY_ADDRESS_ERROR: {
+        id: 'TOAST_VERIFY_ADDRESS_ERROR',
+        defaultMessage: 'Verify address error: {error}',
+    },
+    TOAST_SIGN_MESSAGE_ERROR: {
+        id: 'TOAST_SIGN_MESSAGE_ERROR',
+        defaultMessage: 'Sign message error: {error}',
+    },
+    TOAST_VERIFY_MESSAGE_ERROR: {
+        id: 'TOAST_VERIFY_MESSAGE_ERROR',
+        defaultMessage: 'Verify message error: {error}',
+    },
+    TOAST_GENERIC_ERROR: {
+        id: 'TOAST_GENERIC_ERROR',
+        defaultMessage: 'Error: {error}',
+    },
 });
 
 export default definedMessages;

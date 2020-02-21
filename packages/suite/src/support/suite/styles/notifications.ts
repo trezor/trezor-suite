@@ -77,7 +77,6 @@ export const notifications = `
         box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.1), 0 2px 15px 0 rgba(0, 0, 0, 0.05);
         display: flex;
         justify-content: space-between;
-        width: 70%;
         max-height: 800px;
         overflow: hidden;
         font-family: sans-serif;

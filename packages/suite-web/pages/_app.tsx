@@ -7,7 +7,7 @@ import * as Sentry from '@sentry/browser';
 import { Button } from '@trezor/components';
 import { initStore } from '@suite/reducers/store';
 import Preloader from '@suite-components/Preloader';
-import ToastNotification from '@suite-components/ToastNotification';
+import { ToastContainer } from 'react-toastify';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import Resize from '@suite-support/Resize/Container';
 import OnlineStatus from '@suite-support/OnlineStatus';
@@ -75,7 +75,7 @@ class TrezorSuiteApp extends App<Props> {
                                 <Translation {...messages.TR_CHECK_FOR_DEVICES} />
                             </Button>
                             <Router />
-                            <ToastNotification />
+                            <ToastContainer />
                             <Preloader>
                                 <Component {...pageProps} />
                             </Preloader>

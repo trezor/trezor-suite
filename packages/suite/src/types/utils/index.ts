@@ -15,3 +15,6 @@ export type ConstWithOptionalFields<Const extends { [key: string]: any }, Fields
             : undefined;
     };
 };
+
+// Extract item from union
+export type ItemExtractor<M> = Extract<M, { type: M }>;
