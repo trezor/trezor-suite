@@ -41,8 +41,6 @@ const loadStories = () => {
     require('../src/stories/typography/heading');
     require('../src/stories/typography/paragraph');
     require('../src/stories/typography/link');
-    require('../src/stories/notifications/all');
-    require('../src/stories/notifications/notification');
     require('../src/stories/modal/modal');
     require('../src/stories/loaders/all');
     require('../src/stories/loaders/loader');

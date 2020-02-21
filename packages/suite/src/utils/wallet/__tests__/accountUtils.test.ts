@@ -34,6 +34,16 @@ describe('account utils', () => {
         });
     });
 
+    describe('getBip43Shortcut', () => {
+        fixtures.getBip43Shortcut.forEach(f => {
+            it(f.description, () => {
+                // @ts-ignore intentional invalid params
+                const bip43 = accountUtils.getBip43Shortcut(f.path);
+                expect(bip43).toBe(f.result);
+            });
+        });
+    });
+
     it('get fiat value', () => {
         expect(accountUtils.getFiatValue('1', '10')).toEqual('10.00');
         expect(accountUtils.getFiatValue('1', '10', 5)).toEqual('10.00000');

@@ -19,7 +19,7 @@ const initialState = (
             // fill first output by default
             id: FIRST_OUTPUT_ID,
             address: { value: null, error: null },
-            amount: { value: null, error: null },
+            amount: { value: null, error: null, isLoading: false },
             fiatValue: { value: null },
             localCurrency: { value: localCurrency },
         },
@@ -76,7 +76,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 }
 
                 if (networkType === 'ripple' && currentAccountAddress === address) {
-                    output.address.error = VALIDATION_ERRORS.CANNOT_SEND_TO_MYSELF;
+                    output.address.error = VALIDATION_ERRORS.XRP_CANNOT_SEND_TO_MYSELF;
                     return draft;
                 }
                 break;
@@ -112,6 +112,22 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 }
 
                 break;
+            }
+
+            // change loading state in "Amount"
+            case SEND.AMOUNT_LOADING: {
+                const { isLoading, outputId } = action;
+                const output = getOutput(draft.outputs, outputId);
+                output.amount.isLoading = isLoading;
+                return draft;
+            }
+
+            // change error state in "Amount"
+            case SEND.AMOUNT_ERROR: {
+                const { error, outputId } = action;
+                const output = getOutput(draft.outputs, outputId);
+                output.amount.error = error;
+                return draft;
             }
 
             // change select "Currency"

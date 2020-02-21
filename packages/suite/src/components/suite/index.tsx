@@ -17,6 +17,7 @@ import FiatValue from './FiatValue/Container';
 import Badge from './Badge';
 import WebusbButton from './WebusbButton';
 import HiddenPlaceholder from './HiddenPlaceholder/Container';
+import QrCode from './QrCode';
 
 import { Translation } from './Translation';
 
@@ -41,4 +42,5 @@ export {
     WebusbButton,
     HiddenPlaceholder,
     Badge,
+    QrCode,
 };

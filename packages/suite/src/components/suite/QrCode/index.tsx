@@ -1,7 +1,7 @@
 import React from 'react';
 import { QRCode } from 'react-qr-svg';
 import styled from 'styled-components';
-import { P } from '@trezor/components-v2';
+import { P, colors } from '@trezor/components-v2';
 
 const Wrapper = styled.div`
     display: flex;
@@ -25,8 +25,8 @@ interface Props {
 const QrCode = (props: Props) => (
     <Wrapper>
         <QRCode
-            bgColor="#FFFFFF"
-            fgColor="#000000"
+            bgColor={colors.WHITE}
+            fgColor={colors.BLACK0}
             level="Q"
             style={{ width: '140px' }}
             value={props.value}

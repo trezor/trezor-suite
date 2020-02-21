@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createRef } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
@@ -6,9 +6,8 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import { Button, P, H2, colors } from '@trezor/components-v2';
 import { copyToClipboard } from '@suite-utils/dom';
 import { TrezorDevice, Dispatch } from '@suite-types';
-import { Translation } from '@suite-components';
+import { Translation, QrCode } from '@suite-components';
 import messages from '@suite/support/messages';
-import QRCode from './components/QRCode';
 import CheckOnTrezor from './components/CheckOnTrezor';
 import DeviceDisconnected from './components/DeviceDisconnected';
 
@@ -61,8 +60,10 @@ const ConfirmAddress = ({
     // TODO: no-backup, backup failed
     // const needsBackup = device.features && device.features.needs_backup;
 
+    const htmlElement = createRef<HTMLDivElement>();
+
     const copyAddress = () => {
-        const result = copyToClipboard(address);
+        const result = copyToClipboard(address, htmlElement.current);
         if (typeof result === 'string') {
             addNotification({ type: 'copy-to-clipboard-error', error: result });
         } else {
@@ -83,11 +84,11 @@ const ConfirmAddress = ({
                     <Translation {...messages.TR_ADDRESS_MODAL_BTC_DESCRIPTION} />
                 </P>
             )}
-            <QRCode value={address} addressPath={addressPath} />
+            <QrCode value={address} addressPath={addressPath} />
             <Address data-test="@address-modal/address-field">{address}</Address>
             {device.connected && <CheckOnTrezor device={device} />}
             {!device.connected && <DeviceDisconnected label={device.label} />}
-            <Row>
+            <Row ref={htmlElement}>
                 <Button variant="secondary" onClick={copyAddress}>
                     <Translation {...messages.TR_ADDRESS_MODAL_CLIPBOARD} />
                 </Button>

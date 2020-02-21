@@ -6,7 +6,8 @@ export const VALIDATION_ERRORS = {
     NOT_HEX: 'not-hex',
     NOT_IN_RANGE: 'not-in-range',
     NOT_IN_RANGE_DECIMALS: 'not-in-range-decimals',
-    CANNOT_SEND_TO_MYSELF: 'cannot-send-to-myself',
+    XRP_CANNOT_SEND_TO_MYSELF: 'xrp-cannot-send-to-myself',
+    XRP_CANNOT_SEND_LESS_THAN_RESERVE: 'xrp-cannot-send-less-than-reserve',
 } as const;
 
 export const CUSTOM_FEE = 'custom' as const;

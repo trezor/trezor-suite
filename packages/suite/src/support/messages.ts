@@ -1,9 +1,13 @@
 import { defineMessages } from 'react-intl';
 
 const definedMessages = defineMessages({
-    CANNOT_SEND_TO_MYSELF: {
+    TR_XRP_CANNOT_SEND_TO_MYSELF: {
         defaultMessage: 'Cannot send to myself',
         id: 'CANNOT_SEND_TO_MYSELF',
+    },
+    TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE: {
+        defaultMessage: 'Cannot send less than {reserve}XRP (reserve) to the empty account',
+        id: 'TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE',
     },
     TR_3RD_PARTY_WALLETS: {
         defaultMessage: '3rd party wallets',
@@ -153,6 +157,14 @@ const definedMessages = defineMessages({
     TR_ADDRESS_MODAL_TITLE: {
         defaultMessage: '{networkName} receive address',
         id: 'TR_ADDRESS_MODAL_TITLE',
+    },
+    TR_XPUB_MODAL_CLIPBOARD: {
+        defaultMessage: 'Copy public key',
+        id: 'TR_XPUB_MODAL_CLIPBOARD',
+    },
+    TR_XPUB_MODAL_TITLE: {
+        defaultMessage: '{networkName} Account {accountIndex} public key (XPUB)',
+        id: 'TR_XPUB_MODAL_TITLE',
     },
     TR_ADVANCED_RECOVERY_OPTION: {
         defaultMessage: 'Advanced recovery (5 minutes)',
@@ -684,10 +696,6 @@ const definedMessages = defineMessages({
         defaultMessage: "Don't have a Trezor? {getOne}",
         id: 'TR_DONT_HAVE_A_TREZOR',
     },
-    TR_DONT_UPGRADE_BRIDGE: {
-        defaultMessage: "No, I don't want to upgrade Bridge now",
-        id: 'TR_DONT_UPGRADE_BRIDGE',
-    },
     TR_DOUBLE_CLICK_IT_TO_RUN_INSTALLER: {
         defaultMessage: 'Double click it to run installer',
         description: 'Instruction for installing Trezor Bridge',
@@ -993,10 +1001,6 @@ const definedMessages = defineMessages({
         description: 'Link to Trezor wiki.',
         id: 'TR_LEARN_MORE',
     },
-    TR_LEARN_MORE_ABOUT_LATEST_VERSION: {
-        defaultMessage: 'Learn more about latest version in {TR_CHANGELOG}.',
-        id: 'TR_LEARN_MORE_ABOUT_LATEST_VERSION',
-    },
     TR_LEARN_MORE_LINK: {
         defaultMessage: 'Learn more.',
         description: 'Link to Trezor wiki.',
@@ -1077,6 +1081,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Send',
         description: 'Title of the navigation tab that contains a form for sending funds',
         id: 'TR_NAV_SEND',
+    },
+    TR_NAV_DETAILS: {
+        defaultMessage: 'Account details',
+        id: 'TR_NAV_DETAILS',
     },
     TR_NAV_SIGN_AND_VERIFY: {
         defaultMessage: 'Sign & Verify',
@@ -1839,10 +1847,6 @@ const definedMessages = defineMessages({
     //         defaultMessage: 'Verifying address error',
     //         id: 'TR_VERIFYING_ADDRESS_ERROR',
     // },
-    TR_VERSION_IS_LOADING: {
-        defaultMessage: 'Version is loading',
-        id: 'TR_VERSION_IS_LOADING',
-    },
     TR_WAIT_FOR_FILE_TO_DOWNLOAD: {
         defaultMessage: 'Wait for file to download',
         description: 'Instruction for installing Trezor Bridge',
@@ -2022,6 +2026,66 @@ const definedMessages = defineMessages({
     TR_SHOW_LOG: {
         id: 'TR_SHOW_LOG',
         defaultMessage: 'Show log',
+    },
+    TR_ACCOUNT_DETAILS_HEADER: {
+        id: 'TR_ACCOUNT_DETAILS_HEADER',
+        defaultMessage: 'Account Details',
+    },
+    TR_ACCOUNT_DETAILS_TYPE_HEADER: {
+        id: 'TR_ACCOUNT_DETAILS_TYPE_HEADER',
+        defaultMessage: 'Account type',
+    },
+    TR_ACCOUNT_DETAILS_TYPE_BECH32: {
+        id: 'TR_ACCOUNT_DETAILS_TYPE_BECH32',
+        defaultMessage:
+            'Bech32 uses the most modern addresses for smallest transaction fees. Be aware that it may not be compatible with old bitcoin services.',
+    },
+    TR_ACCOUNT_DETAILS_TYPE_P2SH: {
+        id: 'TR_ACCOUNT_DETAILS_TYPE_P2SH',
+        defaultMessage:
+            'Pay to script hash (P2SH) is an advanced type of transaction used in Bitcoin and other similar crypto currencies. Unlike P2PKH, it allows sender to commit funds to a hash of an arbitrary valid script.',
+    },
+    TR_ACCOUNT_DETAILS_TYPE_P2PKH: {
+        id: 'TR_ACCOUNT_DETAILS_TYPE_P2PKH',
+        defaultMessage:
+            'Legacy Pay-to-Public-Key-Hash (P2PKH) is the basic type of transaction used in Bitcoin and other similar crypto currencies.',
+    },
+    TR_ACCOUNT_DETAILS_XPUB_HEADER: {
+        id: 'TR_ACCOUNT_DETAILS_XPUB_HEADER',
+        defaultMessage: 'Public key (XPUB)',
+    },
+    TR_ACCOUNT_DETAILS_XPUB: {
+        id: 'TR_ACCOUNT_DETAILS_XPUB',
+        defaultMessage:
+            'Be careful with your account public key (XPUB). When you expose your public key to a third party, you allow them to see your entire transaction history.',
+    },
+    TR_ACCOUNT_DETAILS_XPUB_BUTTON: {
+        id: 'TR_ACCOUNT_DETAILS_XPUB_BUTTON',
+        defaultMessage: 'Show public key',
+    },
+    TR_ACCOUNT_TYPE_NORMAL: {
+        id: 'TR_ACCOUNT_TYPE_NORMAL',
+        defaultMessage: 'Normal',
+    },
+    TR_ACCOUNT_TYPE_SEGWIT: {
+        id: 'TR_ACCOUNT_TYPE_SEGWIT',
+        defaultMessage: 'SegWit',
+    },
+    TR_ACCOUNT_TYPE_LEGACY: {
+        id: 'TR_ACCOUNT_TYPE_LEGACY',
+        defaultMessage: 'Legacy',
+    },
+    TR_ACCOUNT_TYPE_BECH32: {
+        id: 'TR_ACCOUNT_TYPE_BECH32',
+        defaultMessage: 'Bech32',
+    },
+    TR_ACCOUNT_TYPE_P2SH: {
+        id: 'TR_ACCOUNT_TYPE_P2SH',
+        defaultMessage: 'P2SH',
+    },
+    TR_ACCOUNT_TYPE_P2PKH: {
+        id: 'TR_ACCOUNT_TYPE_P2PKH',
+        defaultMessage: 'P2PKH',
     },
 });
 

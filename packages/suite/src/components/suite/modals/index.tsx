@@ -22,6 +22,7 @@ import ConfirmAction from './confirm/Action';
 import Word from './Word';
 import WordAdvanced from './WordAdvanced';
 import ConfirmAddress from './confirm/Address';
+import ConfirmXpub from './confirm/Xpub/Container';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ReviewTransaction from './ReviewTransaction/Container';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
@@ -140,6 +141,8 @@ const getUserContextModal = (props: Props) => {
                     onCancel={payload.cancelable ? modalActions.onCancel : undefined}
                 />
             );
+        case 'xpub':
+            return <ConfirmXpub {...payload} onCancel={modalActions.onCancel} />;
         case 'device-background-gallery':
             return (
                 <BackgroundGallery
@@ -195,12 +198,12 @@ const Modal = (props: Props) => {
                 onCancel={modalComponent.props.onCancel}
                 padding="0px"
             >
-                {modalComponent}
+                <FocusLock>{modalComponent}</FocusLock>
             </ModalComponent>
         );
     }
 
-    return <FocusLock>{modalComponent}</FocusLock>;
+    return modalComponent;
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Modal);
