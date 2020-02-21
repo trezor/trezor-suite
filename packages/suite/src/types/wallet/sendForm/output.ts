@@ -2,12 +2,14 @@ import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 
 interface Amount {
     value: null | string;
+    isLoading: boolean;
     error:
         | null
         | typeof VALIDATION_ERRORS.IS_EMPTY
         | typeof VALIDATION_ERRORS.NOT_NUMBER
         | typeof VALIDATION_ERRORS.NOT_ENOUGH
-        | typeof VALIDATION_ERRORS.NOT_IN_RANGE_DECIMALS;
+        | typeof VALIDATION_ERRORS.NOT_IN_RANGE_DECIMALS
+        | typeof VALIDATION_ERRORS.XRP_CANNOT_SEND_LESS_THAN_RESERVE;
 }
 
 interface Address {
@@ -16,7 +18,7 @@ interface Address {
         | null
         | typeof VALIDATION_ERRORS.IS_EMPTY
         | typeof VALIDATION_ERRORS.NOT_VALID
-        | typeof VALIDATION_ERRORS.CANNOT_SEND_TO_MYSELF;
+        | typeof VALIDATION_ERRORS.XRP_CANNOT_SEND_TO_MYSELF;
 }
 
 interface FiatValue {

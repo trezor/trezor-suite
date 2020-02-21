@@ -4,6 +4,7 @@ import { FeeLevel, PrecomposedTransaction } from 'trezor-connect';
 import { PrecomposedTransactionXrp, PrecomposedTransactionEth } from './transactions';
 import { Output } from './output';
 import { InitialState } from './state';
+import { VALIDATION_ERRORS } from '@suite/constants/wallet/sendForm';
 
 export type SendFormActions =
     | {
@@ -18,8 +19,19 @@ export type SendFormActions =
           type: typeof SEND.HANDLE_AMOUNT_CHANGE;
           outputId: number;
           amount: string;
+          error?: typeof VALIDATION_ERRORS.XRP_CANNOT_SEND_LESS_THAN_RESERVE;
           decimals: number;
           availableBalance: Account['availableBalance'];
+      }
+    | {
+          type: typeof SEND.AMOUNT_LOADING;
+          isLoading: boolean;
+          outputId: number;
+      }
+    | {
+          type: typeof SEND.AMOUNT_ERROR;
+          error: typeof VALIDATION_ERRORS.XRP_CANNOT_SEND_LESS_THAN_RESERVE | null;
+          outputId: number;
       }
     | {
           type: typeof SEND.SET_MAX;

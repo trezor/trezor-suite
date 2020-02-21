@@ -1,9 +1,13 @@
 import { defineMessages } from 'react-intl';
 
 const definedMessages = defineMessages({
-    CANNOT_SEND_TO_MYSELF: {
+    TR_XRP_CANNOT_SEND_TO_MYSELF: {
         defaultMessage: 'Cannot send to myself',
         id: 'CANNOT_SEND_TO_MYSELF',
+    },
+    TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE: {
+        defaultMessage: 'Cannot send less than {reserve}XRP (reserve) to the empty account',
+        id: 'TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE',
     },
     TR_3RD_PARTY_WALLETS: {
         defaultMessage: '3rd party wallets',

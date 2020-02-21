@@ -28,7 +28,7 @@ const getMessage = (
     accounts: Account[],
     devices: AppState['devices'],
 ) => {
-    if (address && error !== VALIDATION_ERRORS.CANNOT_SEND_TO_MYSELF) {
+    if (address && error !== VALIDATION_ERRORS.XRP_CANNOT_SEND_TO_MYSELF) {
         const account = isAddressInAccount(networkType, address, accounts);
         if (account) {
             const device = getAccountDevice(devices, account);
@@ -43,8 +43,8 @@ const getMessage = (
             return <Translation>{messages.TR_ADDRESS_IS_NOT_SET}</Translation>;
         case VALIDATION_ERRORS.NOT_VALID:
             return <Translation>{messages.TR_ADDRESS_IS_NOT_VALID}</Translation>;
-        case VALIDATION_ERRORS.CANNOT_SEND_TO_MYSELF:
-            return <Translation>{messages.TR_CANNOT_SEND_TO_MYSELF}</Translation>;
+        case VALIDATION_ERRORS.XRP_CANNOT_SEND_TO_MYSELF:
+            return <Translation>{messages.TR_XRP_CANNOT_SEND_TO_MYSELF}</Translation>;
         default:
             return undefined;
     }
