@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { colors, variables } from '@trezor/components-v2';
 import FiatValue from '@suite-components/FiatValue/Container';
 import Badge from '@suite-components/Badge';
-import { Translation } from '@suite-components/Translation';
+import { Translation, HiddenPlaceholder } from '@suite-components';
 import messages from '@suite/support/messages';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import Box from '../Box';
@@ -78,15 +78,19 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                         alignContent="right"
                     >
                         {totalOutput && (
-                            <FiatValue amount={totalOutput} symbol={tx.symbol}>
-                                {fiatValue => fiatValue}
-                            </FiatValue>
+                            <HiddenPlaceholder>
+                                <FiatValue amount={totalOutput} symbol={tx.symbol}>
+                                    {fiatValue => fiatValue}
+                                </FiatValue>
+                            </HiddenPlaceholder>
                         )}
                     </BoxRow>
                     <BoxRow title={<Translation {...messages.TR_TX_FEE} />} alignContent="right">
-                        <FiatValue amount={tx.fee} symbol={tx.symbol}>
-                            {(fiatValue, _timestamp) => fiatValue}
-                        </FiatValue>
+                        <HiddenPlaceholder>
+                            <FiatValue amount={tx.fee} symbol={tx.symbol}>
+                                {(fiatValue, _timestamp) => fiatValue}
+                            </FiatValue>
+                        </HiddenPlaceholder>
                     </BoxRow>
                 </Box>
             </Col>
@@ -104,14 +108,18 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                         title={<Translation {...messages.TR_TOTAL_OUTPUT} />}
                         alignContent="right"
                     >
-                        <FiatValue amount="1" symbol={tx.symbol}>
-                            {fiatValue => fiatValue}
-                        </FiatValue>
+                        <HiddenPlaceholder>
+                            <FiatValue amount="1" symbol={tx.symbol}>
+                                {fiatValue => fiatValue}
+                            </FiatValue>
+                        </HiddenPlaceholder>
                     </BoxRow>
                     <BoxRow title={<Translation {...messages.TR_TX_FEE} />} alignContent="right">
-                        <FiatValue amount="1" symbol={tx.symbol}>
-                            {fiatValue => fiatValue}
-                        </FiatValue>
+                        <HiddenPlaceholder>
+                            <FiatValue amount="1" symbol={tx.symbol}>
+                                {fiatValue => fiatValue}
+                            </FiatValue>
+                        </HiddenPlaceholder>
                     </BoxRow>
                 </Box>
             </Col>
