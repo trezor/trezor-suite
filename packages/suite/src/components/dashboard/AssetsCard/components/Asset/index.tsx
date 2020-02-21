@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Account } from '@wallet-types';
-import { CoinLogo, variables } from '@trezor/components-v2';
+import { CoinLogo, variables, P } from '@trezor/components-v2';
 import FiatValue from '@suite-components/FiatValue/Container';
 import { NoRatesTooltip } from '@suite-components';
 import Badge from '@suite-components/Badge';
@@ -59,6 +59,11 @@ const CryptoValueWrapper = styled(Col)`
 `;
 const FiatValueWrapper = styled(Col)``;
 
+const NoRatesMessage = styled(P)`
+    display: flex;
+    align-items: center;
+`;
+
 interface OwnProps extends React.HTMLAttributes<HTMLDivElement> {
     name: string;
     symbol: Account['symbol'];
@@ -114,9 +119,10 @@ const Asset = React.memo(({ name, symbol, cryptoValue, localCurrency, ...props }
                                 1 {symbol.toUpperCase()} = {rate}
                             </SmallBadge>
                         ) : (
-                            <SmallBadge>
-                                <BadgeText>N/A</BadgeText> <NoRatesTooltip />
-                            </SmallBadge>
+                            <NoRatesMessage size="tiny">
+                                No data available
+                                <NoRatesTooltip />
+                            </NoRatesMessage>
                         );
                     }}
                 </FiatValue>

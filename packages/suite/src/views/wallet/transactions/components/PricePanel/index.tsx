@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { colors, variables, CoinLogo } from '@trezor/components-v2';
+import { colors, variables, CoinLogo, P } from '@trezor/components-v2';
 import Card from '@suite-components/Card';
 import { AppState } from '@suite/types/suite';
 import { getAccountFiatBalance, getTitleForNetwork, isTestnet } from '@wallet-utils/accountUtils';
@@ -95,13 +95,19 @@ const Dot = styled.div`
     margin-right: 3px;
 `;
 
+const NoRatesMessage = styled(P)`
+    color: ${colors.BLACK50};
+    display: flex;
+    align-items: center;
+`;
+
 interface OwnProps {
     account: Account;
 }
 
 const PricePanel = (props: Props) => {
     const { localCurrency } = props.settings;
-    const fiatBalance = getAccountFiatBalance(props.account, localCurrency, props.fiat) || 0;
+    const fiatBalance = getAccountFiatBalance(props.account, localCurrency, props.fiat);
 
     return (
         <Wrapper>
@@ -110,9 +116,11 @@ const PricePanel = (props: Props) => {
                 <Balance>
                     {props.account.formattedBalance} {props.account.symbol.toUpperCase()}
                 </Balance>
-                <Badge>
-                    <FormattedNumber value={fiatBalance} currency={localCurrency} />
-                </Badge>
+                {fiatBalance && (
+                    <Badge>
+                        <FormattedNumber value={fiatBalance} currency={localCurrency} />
+                    </Badge>
+                )}
             </Col>
             {!isTestnet(props.account.symbol) && (
                 <Col>
@@ -128,15 +136,19 @@ const PricePanel = (props: Props) => {
                                         <Live key={props.account.symbol}>
                                             <Dot /> Live
                                         </Live>
-                                    ) : (
-                                        <NoRatesTooltip />
-                                    )
+                                    ) : null
                                 }
                             </FiatValue>
                         </Row>
                         <TickerPrice>
                             <FiatValue amount="1" symbol={props.account.symbol}>
-                                {({ value }) => value ?? <>n/a</>}
+                                {({ value }) =>
+                                    value ?? (
+                                        <NoRatesMessage size="small">
+                                            No data available <NoRatesTooltip />
+                                        </NoRatesMessage>
+                                    )
+                                }
                             </FiatValue>
                         </TickerPrice>
                     </Ticker>

@@ -7,17 +7,28 @@ import messages from '@suite/support/messages';
 const StyledIcon = styled(Icon)`
     cursor: pointer;
     align-items: center;
-    margin-top: -5px;
 `;
 
-const NoRatesTooltip = (props: Partial<typeof Tooltip>) => (
+interface Props extends Partial<typeof Tooltip> {
+    children?: React.ReactNode;
+}
+
+const NoRatesTooltip = ({ children, ...props }: Props) => (
     <Tooltip
         maxWidth={285}
         placement="top"
         content={<Translation {...messages.TR_FIAT_RATES_ARE_NOT_CURRENTLY} />}
         {...props}
     >
-        <StyledIcon icon="QUESTION" color={colors.BLACK50} size={12} />
+        <>
+            {children}
+            <StyledIcon
+                icon="QUESTION"
+                color={colors.BLACK50}
+                hoverColor={colors.BLACK25}
+                size={14}
+            />
+        </>
     </Tooltip>
 );
 
