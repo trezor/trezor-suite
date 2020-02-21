@@ -89,12 +89,25 @@ const fetchCurrentFiatRates = async (symbol: string) => {
     };
 };
 
+/**
+ * Returns an array with coin tickers that need fullfil several conditions:
+ *  1. network for a given ticker needs to be enabled
+ *  2a. no rates available yet (first fetch)
+ *  OR
+ *  2b. duration since the last check is greater than passed `interval`
+ *  Timestamp is extracted via `timestampFunc`.
+ *
+ * @param {((ticker: CoinFiatRates) => number | undefined)} timestampFunc
+ * @param {number} interval
+ */
 const getStaleTickers = (
     timestampFunc: (ticker: CoinFiatRates) => number | undefined,
     interval: number,
 ) => async (dispatch: Dispatch, getState: GetState) => {
     const { fiat } = getState().wallet;
     const { enabledNetworks } = getState().wallet.settings;
+    // TODO: Consider removing FIAT.tickers as now we can fetch rates for any coin by calling an API with the coin symbol,
+    // and then using the coin ID from the response to finally fetch the rates
     const watchedTickers = FIAT.tickers.filter(t => enabledNetworks.includes(t.symbol));
 
     return watchedTickers.filter(t => {
@@ -111,11 +124,10 @@ const getStaleTickers = (
     });
 };
 
+/**
+ * Updates current fiat rates for every stale ticker
+ */
 export const handleRatesUpdate = () => async (dispatch: Dispatch, getState: GetState) => {
-    // get enabled networks to decide which fiat endpoints we are going to watch
-    // it doesnt matter there are testnets included, as they will not be taken into account because
-    // there is no counterpart for them in FIAT constant
-
     try {
         const staleTickers = await dispatch(getStaleTickers(ticker => ticker.current?.ts, MAX_AGE));
         const promises = staleTickers.map(async ticker => {
@@ -125,7 +137,6 @@ export const handleRatesUpdate = () => async (dispatch: Dispatch, getState: GetS
                     ? await blockchainLink?.getCurrentFiatRates({})
                     : await fetchCurrentFiatRates(ticker.symbol);
 
-                console.log(response);
                 if (response) {
                     dispatch({
                         type: RATE_UPDATE,
@@ -136,6 +147,7 @@ export const handleRatesUpdate = () => async (dispatch: Dispatch, getState: GetS
                         },
                     });
                     // save to storage
+                    // TODO: let's handle this in storageMiddleware so all storage operations are in one place
                     dispatch(saveFiatRates());
                 }
             } catch (error) {
@@ -151,7 +163,10 @@ export const handleRatesUpdate = () => async (dispatch: Dispatch, getState: GetS
     }
 };
 
-export const updateLastWeekRates = () => async (dispatch: Dispatch) => {
+/**
+ * Updates the price data for the past 7 days in 4-hour interval (42 data points)
+ */
+const updateLastWeekRates = () => async (dispatch: Dispatch) => {
     const day = 86400;
     const hour = 3600;
     const currentTimestamp = Math.floor(new Date().getTime() / 1000) - 120; // unix timestamp in seconds - 2 mins
