@@ -35,10 +35,10 @@ const INTERVAL = 1000 * 60; // 1 min
 const MAX_AGE = 1000 * 60 * 10; // 10 mins
 const INTERVAL_LAST_WEEK = 1000 * 60 * 60 * 4; // 4 hours
 
-const blockchanLinks: Partial<{ [k in Network['symbol']]: BlockchainLink | undefined }> = {};
+const blockchainLinks: Partial<{ [k in Network['symbol']]: BlockchainLink | undefined }> = {};
 NETWORKS.forEach(network => {
     if (network.blockbook) {
-        blockchanLinks[network.symbol] = new BlockchainLink({
+        blockchainLinks[network.symbol] = new BlockchainLink({
             name: network.symbol,
             worker: BlockbookWorker,
             server: (network.blockbook as unknown) as string[],
@@ -46,6 +46,48 @@ NETWORKS.forEach(network => {
         });
     }
 });
+
+// TODO: move coingecko related funcs to separate file
+const COINGECKO_BASE_URL = 'https://api.coingecko.com/';
+/**
+ * Returns an array with coins supported by CoinGecko API
+ *
+ * @returns {Promise<any>}
+ */
+const fetchCoinList = async (): Promise<any> => {
+    const url = new URL('/api/v3/coins/list', COINGECKO_BASE_URL);
+
+    const response = await fetch(url.toString());
+    const tokens = await response.json();
+    return tokens;
+};
+/**
+ * Returns the current rate for a given symbol fetched from CoinGecko API.
+ * Returns null if coin for a given symbol was not found.
+ *
+ * @param {string} symbol
+ * @returns
+ */
+const fetchCurrentFiatRates = async (symbol: string) => {
+    const coinList = await fetchCoinList();
+    const coinData = coinList.find((t: any) => t.symbol === symbol.toLowerCase());
+    if (!coinData) return null;
+
+    const url = new URL(`/api/v3/coins/${coinData.id}`, COINGECKO_BASE_URL);
+    url.searchParams.set('tickers', 'false');
+    url.searchParams.set('market_data', 'true');
+    url.searchParams.set('community_data', 'false');
+    url.searchParams.set('developer_data', 'false');
+    url.searchParams.set('sparkline', 'false');
+
+    const response = await fetch(url.toString());
+    const rates = await response.json();
+    return {
+        ts: new Date().getTime() / 1000,
+        rates: rates.market_data.current_price,
+        symbol: rates.symbol,
+    };
+};
 
 const getStaleTickers = (
     timestampFunc: (ticker: CoinFiatRates) => number | undefined,
@@ -78,8 +120,12 @@ export const handleRatesUpdate = () => async (dispatch: Dispatch, getState: GetS
         const staleTickers = await dispatch(getStaleTickers(ticker => ticker.current?.ts, MAX_AGE));
         const promises = staleTickers.map(async ticker => {
             try {
-                const blockchainLink = blockchanLinks[ticker.symbol];
-                const response = await blockchainLink?.getCurrentFiatRates({});
+                const blockchainLink = blockchainLinks[ticker.symbol];
+                const response = blockchainLink
+                    ? await blockchainLink?.getCurrentFiatRates({})
+                    : await fetchCurrentFiatRates(ticker.symbol);
+
+                console.log(response);
                 if (response) {
                     dispatch({
                         type: RATE_UPDATE,
@@ -94,6 +140,7 @@ export const handleRatesUpdate = () => async (dispatch: Dispatch, getState: GetS
                 }
             } catch (error) {
                 // bla
+                console.log(error);
             }
         });
         await Promise.all(promises);
@@ -122,7 +169,7 @@ export const updateLastWeekRates = () => async (dispatch: Dispatch) => {
     const staleTickers = await dispatch(getStaleTickers(ticker => ticker.lastWeek?.ts, MAX_AGE));
 
     const promises = staleTickers.map(async ticker => {
-        const blockchainLink = blockchanLinks[ticker.symbol];
+        const blockchainLink = blockchainLinks[ticker.symbol];
         if (!blockchainLink) return;
         try {
             const response = await blockchainLink.getFiatRatesForTimestamps({
@@ -137,7 +184,6 @@ export const updateLastWeekRates = () => async (dispatch: Dispatch) => {
                 },
             });
         } catch (error) {
-            // bla
             console.log('updateLastWeekRates fail', error);
         }
     });
