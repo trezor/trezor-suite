@@ -110,7 +110,7 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                                             <Amount>{`${inputAmount} ${tx.symbol.toUpperCase()}`}</Amount>
                                             <Badge>
                                                 <FiatValue amount={inputAmount} symbol={tx.symbol}>
-                                                    {(fiatValue, _timestamp) => fiatValue}
+                                                    {({ value }) => value}
                                                 </FiatValue>
                                             </Badge>
                                         </IOBoxAmountWrapper>
@@ -138,7 +138,7 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                                             <Amount>{`${outputAmount} ${tx.symbol.toUpperCase()}`}</Amount>
                                             <Badge>
                                                 <FiatValue amount={outputAmount} symbol={tx.symbol}>
-                                                    {(fiatValue, _timestamp) => fiatValue}
+                                                    {({ value }) => value}
                                                 </FiatValue>
                                             </Badge>
                                         </IOBoxAmountWrapper>

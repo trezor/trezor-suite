@@ -8,15 +8,17 @@ const mapStateToProps = (state: AppState) => ({
     settings: state.wallet.settings,
 });
 
+interface Params {
+    value: JSX.Element | null;
+    rate: JSX.Element | null;
+    timestamp: number | null;
+}
+
 type OwnProps = {
     amount: string;
     symbol: Network['symbol'];
     fiatCurrency?: string;
-    children?: (
-        fiatValue: JSX.Element | null,
-        fiatRateValue?: JSX.Element | null,
-        timestamp?: number | null,
-    ) => React.ReactElement | null;
+    children?: (props: Params) => React.ReactElement | null;
 };
 
 export type Props = ReturnType<typeof mapStateToProps> & OwnProps;

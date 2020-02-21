@@ -123,8 +123,8 @@ const PricePanel = (props: Props) => {
                                 ({props.account.symbol.toUpperCase()})
                             </TickerTitle>
                             <FiatValue amount="1" symbol={props.account.symbol}>
-                                {(fiatValue, _timestamp) =>
-                                    fiatValue ? (
+                                {({ value }) =>
+                                    value ? (
                                         <Live key={props.account.symbol}>
                                             <Dot /> Live
                                         </Live>
@@ -136,7 +136,7 @@ const PricePanel = (props: Props) => {
                         </Row>
                         <TickerPrice>
                             <FiatValue amount="1" symbol={props.account.symbol}>
-                                {(fiatValue, _timestamp) => fiatValue ?? <>n/a</>}
+                                {({ value }) => value ?? <>n/a</>}
                             </FiatValue>
                         </TickerPrice>
                     </Ticker>

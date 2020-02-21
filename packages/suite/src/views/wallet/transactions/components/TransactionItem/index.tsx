@@ -298,10 +298,10 @@ const TransactionItem = React.memo((props: Props) => {
                             <Symbol>{symbol.toUpperCase()}</Symbol>
                         </Balance>
                         <FiatValue amount={amount} symbol={symbol}>
-                            {fiatValue =>
-                                fiatValue && (
+                            {({ value }) =>
+                                value && (
                                     <FiatBalance>
-                                        <SmallBadge>{fiatValue}</SmallBadge>
+                                        <SmallBadge>{value}</SmallBadge>
                                     </FiatBalance>
                                 )
                             }
@@ -334,10 +334,10 @@ const TransactionItem = React.memo((props: Props) => {
                                         <Symbol>{symbol.toUpperCase()}</Symbol>
                                     </Balance>
                                     <FiatValue amount={target.amount || '0'} symbol={symbol}>
-                                        {fiatValue =>
-                                            fiatValue && (
+                                        {({ value }) =>
+                                            value && (
                                                 <FiatBalance partial>
-                                                    <SmallBadge>{fiatValue}</SmallBadge>
+                                                    <SmallBadge>{value}</SmallBadge>
                                                 </FiatBalance>
                                             )
                                         }

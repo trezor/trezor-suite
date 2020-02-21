@@ -147,10 +147,10 @@ const TransactionList = ({
                                                     amount={totalAmountPerDay.toFixed()}
                                                     symbol={props.symbol}
                                                 >
-                                                    {fiatValue =>
-                                                        fiatValue && (
+                                                    {({ value }) =>
+                                                        value && (
                                                             <FiatDayAmount>
-                                                                <Badge>{fiatValue}</Badge>
+                                                                <Badge>{value}</Badge>
                                                             </FiatDayAmount>
                                                         )
                                                     }

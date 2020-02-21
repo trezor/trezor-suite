@@ -51,13 +51,13 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                     <Translation {...messages.TR_TX_CURRENT_VALUE} />{' '}
                     {/* such a weird syntax, but basically all I want is show date in parentheses: (formattedDate) */}
                     <FiatValue amount="1" symbol={tx.symbol}>
-                        {(_fiatValue, _fiatRate, currentFiatRateTimestamp) => (
+                        {({ timestamp }) => (
                             <>
-                                {currentFiatRateTimestamp && (
+                                {timestamp && (
                                     <>
                                         (
                                         <FormattedDate
-                                            value={currentFiatRateTimestamp}
+                                            value={timestamp}
                                             year="numeric"
                                             month="2-digit"
                                             day="2-digit"
@@ -79,13 +79,13 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                     >
                         {totalOutput && (
                             <FiatValue amount={totalOutput} symbol={tx.symbol}>
-                                {fiatValue => fiatValue}
+                                {({ value }) => value}
                             </FiatValue>
                         )}
                     </BoxRow>
                     <BoxRow title={<Translation {...messages.TR_TX_FEE} />} alignContent="right">
                         <FiatValue amount={tx.fee} symbol={tx.symbol}>
-                            {(fiatValue, _timestamp) => fiatValue}
+                            {({ value }) => value}
                         </FiatValue>
                     </BoxRow>
                 </Box>
@@ -95,7 +95,7 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                     <Translation {...messages.TR_TX_HISTORICAL_VALUE_DATE} values={{ date: '' }} />
                     <HistoricalBadge>
                         <FiatValue amount="1" symbol={tx.symbol}>
-                            {fiatValue => fiatValue}
+                            {({ value }) => value}
                         </FiatValue>
                     </HistoricalBadge>
                 </BoxHeading>
@@ -105,12 +105,12 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                         alignContent="right"
                     >
                         <FiatValue amount="1" symbol={tx.symbol}>
-                            {fiatValue => fiatValue}
+                            {({ value }) => value}
                         </FiatValue>
                     </BoxRow>
                     <BoxRow title={<Translation {...messages.TR_TX_FEE} />} alignContent="right">
                         <FiatValue amount="1" symbol={tx.symbol}>
-                            {fiatValue => fiatValue}
+                            {({ value }) => value}
                         </FiatValue>
                     </BoxRow>
                 </Box>

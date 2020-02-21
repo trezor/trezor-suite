@@ -9,7 +9,7 @@ import FormattedNumber from '../FormattedNumber';
  * null is returned if there was some problem with conversion (eg. missing rates)
  *
  * Advanced usage is with passing a function as a children prop.
- * The function will called (and rendered) with 3 params: fiatValue, fiatRateValue, fiatRateTimestamp.
+ * The function will called (and rendered) with 1 object param: {fiatValue, fiatRateValue, fiatRateTimestamp}.
  *
  * @param {Props} { amount, symbol, fiatCurrency, ...props }
  * @returns
@@ -26,10 +26,14 @@ const FiatValue = ({ amount, symbol, fiatCurrency, ...props }: Props) => {
             <FormattedNumber currency={targetCurrency} value={fiatRateValue} />
         ) : null;
         if (!props.children) return fiatValueComponent;
-        return props.children(fiatValueComponent, fiatRateComponent, fiatRates!.current?.ts);
+        return props.children({
+            value: fiatValueComponent,
+            rate: fiatRateComponent,
+            timestamp: fiatRates!.current?.ts ?? null,
+        });
     }
     if (!props.children) return null;
-    return props.children(null, null, null);
+    return props.children({ value: null, rate: null, timestamp: null });
 };
 
 export default FiatValue;
