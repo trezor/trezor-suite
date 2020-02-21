@@ -408,8 +408,9 @@ export default class LowlevelTransportWithSharedConnections {
     delete this.defereds[m.id];
   }
 
-  setBridgeLatestUrl(url: string): void {
-  }
+  setBridgeLatestUrl(url: string): void {}
+  setBridgeLatestVersion(version: string): void {}
+
   isOutdated: boolean = false;
 
   stop(): void {
