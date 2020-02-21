@@ -1,7 +1,9 @@
 # IDE specific settings
 
 ## Visual Studio Code
+
 Copy the code below to `.vscode/settings.json`
+
 ```JSON
 {
     "eslint.validate": [
@@ -16,7 +18,7 @@ Copy the code below to `.vscode/settings.json`
             "autoFix": true
         }
     ],
-    
+
     "[javascript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
@@ -33,3 +35,4 @@ Copy the code below to `.vscode/settings.json`
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
 }
+```
