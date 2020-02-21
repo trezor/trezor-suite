@@ -1,12 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import FormattedNumber from '@suite-components/FormattedNumber';
 import { colors, Button } from '@trezor/components-v2';
 import BigNumber from 'bignumber.js';
 import Loading from './components/Loading';
 import Exception from './components/Exception';
 import EmptyWallet from './components/EmptyWallet';
-import { Card, Translation } from '@suite-components';
+import { Card, Translation, FormattedNumber, HiddenPlaceholder } from '@suite-components';
 import messages from '@suite/support/messages';
 
 const StyledCard = styled(Card)`
@@ -103,10 +102,12 @@ const PortfolioCard = ({
                         <Translation {...messages.TR_TOTAL_PORTFOLIO_VALUE} />
                     </HeaderTitle>
                     <ValueWrapper>
-                        <FormattedNumber
-                            value={portfolioValue.toString()}
-                            currency={localCurrency}
-                        />
+                        <HiddenPlaceholder intensity={7}>
+                            <FormattedNumber
+                                value={portfolioValue.toString()}
+                                currency={localCurrency}
+                            />
+                        </HiddenPlaceholder>
                     </ValueWrapper>
                 </Left>
                 <Right>
