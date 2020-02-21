@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components-v2';
+import { colors, variables } from '@trezor/components';
 import FiatValue from '@suite-components/FiatValue/Container';
 import Badge from '@suite-components/Badge';
 import { Translation, HiddenPlaceholder } from '@suite-components';

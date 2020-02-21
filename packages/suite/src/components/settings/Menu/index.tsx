@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { bindActionCreators } from 'redux';
 
-import { H2, Icon, Link, colors, variables } from '@trezor/components-v2';
+import { H2, Icon, Link, colors, variables } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { AppState, Dispatch } from '@suite-types';
-import { IconType } from '@trezor/components-v2/lib/support/types';
+import { IconType } from '@trezor/components/lib/support/types';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { SUPPORT_URL } from '@suite-constants/urls';

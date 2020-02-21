@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { colors, Icon } from '@trezor/components-v2';
+import { colors, Icon } from '@trezor/components';
 import Divider from '../Divider';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
 import { Props as ContainerProps } from '../../Container';

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, colors, variables, Loader } from '@trezor/components-v2';
+import { Icon, colors, variables, Loader } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import FiatValue from '@suite-components/FiatValue/Container';

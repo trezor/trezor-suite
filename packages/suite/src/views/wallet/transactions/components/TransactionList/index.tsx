@@ -2,7 +2,7 @@
 import React, { useMemo } from 'react';
 import { FormattedDate } from 'react-intl';
 import styled from 'styled-components';
-import { P, colors, variables } from '@trezor/components-v2';
+import { P, colors, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { groupTransactionsByDate, parseKey, sumTransactions } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';

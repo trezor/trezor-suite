@@ -2,7 +2,7 @@ import React from 'react';
 import { Props as ContainerProps } from '../../Container';
 import styled, { css } from 'styled-components';
 import { findRouteByName } from '@suite-utils/router';
-import { Icon, colors, Switch } from '@trezor/components-v2';
+import { Icon, colors, Switch } from '@trezor/components';
 import { BOTTOM_MENU_ITEMS, MENU_PADDING } from '@suite-constants/menu';
 import Divider from '../Divider';
 

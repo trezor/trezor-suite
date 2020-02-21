@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Props } from '../../Container';
-import { Select } from '@trezor/components-v2';
+import { Select } from '@trezor/components';
 
 const Wrapper = styled.div`
     min-width: 90px;

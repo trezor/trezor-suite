@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { colors } from '@trezor/components-v2';
+import { colors } from '@trezor/components';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { Discovery } from '@wallet-types';

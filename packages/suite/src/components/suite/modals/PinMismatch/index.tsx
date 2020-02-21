@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { H2, P, Button } from '@trezor/components-v2';
+import { H2, P, Button } from '@trezor/components';
 import { Translation, Loading } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import messages from '@suite/support/messages';

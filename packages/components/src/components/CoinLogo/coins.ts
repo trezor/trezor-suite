@@ -1,5 +1,5 @@
 /* eslint-disable global-require */
-export const COINS: { [key: string]: any } = {
+export const COINS = {
     ada: require('../../images/coins/ada.svg'),
     bch: require('../../images/coins/bch.svg'),
     btc: require('../../images/coins/btc.svg'),

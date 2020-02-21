@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Select } from '@trezor/components-v2';
+import { Select } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 

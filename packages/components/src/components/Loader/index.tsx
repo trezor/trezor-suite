@@ -31,7 +31,7 @@ const CircleWrapper = styled.circle<CircleProps>`
     ${props =>
         props.isRoute &&
         css`
-            stroke: ${props.transparentRoute ? 'transparent' : colors.GRAY_LIGHT};
+            stroke: ${props.transparentRoute ? 'transparent' : colors.BLACK98};
         `}
 
     ${props =>
@@ -47,8 +47,8 @@ const CircleWrapper = styled.circle<CircleProps>`
 `;
 
 const StyledParagraph = styled(P)<Props>`
-    font-size: ${props => (props.isSmallText ? FONT_SIZE.SMALL : FONT_SIZE.BIG)};
-    color: ${props => (props.isWhiteText ? colors.WHITE : colors.TEXT_PRIMARY)};
+    font-size: ${props => (props.isSmallText ? FONT_SIZE.SMALL : FONT_SIZE.NORMAL)};
+    color: ${props => (props.isWhiteText ? colors.WHITE : colors.BLACK25)};
 `;
 
 interface Props {

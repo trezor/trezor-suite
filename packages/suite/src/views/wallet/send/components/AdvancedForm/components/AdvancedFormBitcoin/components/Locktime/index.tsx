@@ -1,4 +1,4 @@
-import { colors, Switch, variables, Input } from '@trezor/components-v2';
+import { colors, Switch, variables, Input } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
 

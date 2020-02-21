@@ -1,6 +1,6 @@
 import React from 'react';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
-import { Icon, colors, IconProps } from '@trezor/components-v2';
+import { Icon, colors, IconProps } from '@trezor/components';
 
 interface Props extends Omit<IconProps, 'icon'> {
     type: WalletAccountTransaction['type'];

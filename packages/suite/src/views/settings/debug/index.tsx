@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch } from '@trezor/components-v2';
+import { Switch } from '@trezor/components';
 import { SuiteLayout } from '@suite-components';
 import { Menu as SettingsMenu } from '@settings-components';
 

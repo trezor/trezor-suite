@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
-import { colors, Icon } from '@trezor/components-v2';
+import { colors, Icon } from '@trezor/components';
 import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`

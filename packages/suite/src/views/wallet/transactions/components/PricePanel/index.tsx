@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { colors, variables, CoinLogo } from '@trezor/components-v2';
+import { colors, variables, CoinLogo } from '@trezor/components';
 import {
     HiddenPlaceholder,
     Card,

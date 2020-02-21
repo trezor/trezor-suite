@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { P, colors } from '@trezor/components-v2';
+import { P, colors } from '@trezor/components';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';

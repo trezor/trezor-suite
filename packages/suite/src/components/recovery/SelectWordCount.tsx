@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { P, variables } from '@trezor/components-v2';
+import { P, variables } from '@trezor/components';
 import { Option } from '@onboarding-components';
 import messages from '@suite/support/messages';
 import { WordCount } from '@recovery-types';

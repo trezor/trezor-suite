@@ -1,233 +1,211 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-
-import { FONT_SIZE, FONT_WEIGHT, TRANSITION } from '../../../config/variables';
 import { Icon } from '../../Icon';
-import { getPrimaryColor, getSecondaryColor } from '../../../utils/colors';
+import { IconType, ButtonVariant, ButtonSize } from '../../../support/types';
 import colors from '../../../config/colors';
+import { FONT_SIZE } from '../../../config/variables';
 import FluidSpinner from '../../FluidSpinner';
-import { ButtonVariant, IconType } from '../../../support/types';
 
-const Wrapper = styled.button<Props>`
+const BUTTON_PADDING = {
+    small: '2px 12px',
+    large: '9px 12px',
+};
+
+const getIconColor = (variant: ButtonVariant, isDisabled: boolean) => {
+    if (isDisabled) return colors.BLACK80;
+    return variant === 'primary' || variant === 'danger' ? colors.WHITE : colors.BLACK25;
+};
+
+const getFontSize = (variant: ButtonVariant, size: ButtonSize) => {
+    // all button variants use same font size except the small tertiary btn
+    if (variant === 'tertiary' && size === 'small') {
+        return FONT_SIZE.TINY;
+    }
+    return FONT_SIZE.BUTTON;
+};
+
+const Wrapper = styled.button<WrapperProps>`
     display: flex;
-    position: relative;
+    background: transparent;
     align-items: center;
-    padding: 11px 24px;
-    text-align: center;
+    justify-content: center;
+    border: none;
+    white-space: nowrap;
+    cursor: ${props => (props.isDisabled ? 'default' : 'pointer')};
     border-radius: 3px;
-    font-size: ${FONT_SIZE.BASE};
-    font-weight: ${FONT_WEIGHT.LIGHT};
-    cursor: pointer;
+    font-size: ${props => getFontSize(props.variant, props.size)}; 
+    font-weight: ${props => (props.variant === 'primary' ? 600 : 500)};
+    color: ${props => (props.color ? props.color : colors.BLACK25)};
     outline: none;
-    background: ${props => getPrimaryColor(props.variant)};
-    color: ${colors.WHITE};
-    border: 1px solid ${props => getPrimaryColor(props.variant)};
-    transition: ${TRANSITION.HOVER};
-    justify-content: ${(props: Props) =>
-        props.align === 'right' ? 'flex-end' : props.align || 'center'};
-
-    &:hover {
-        background: ${props => getSecondaryColor(props.variant)};
-    }
-
-    &:focus {
-        box-shadow: ${colors.INPUT_FOCUS_SHADOW} 0px 0px 6px 0px;
-    }
-
-    &:active {
-        background: ${props => getSecondaryColor(props.variant)};
-    }
+    padding: ${props => (props.variant === 'tertiary' ? '0px 4px' : BUTTON_PADDING[props.size])};
+    height: ${props => (props.variant === 'tertiary' ? '20px' : 'auto')};
 
     ${props =>
-        props.icon &&
+        props.fullWidth &&
         css`
-            svg {
-                path {
-                    transition: ${TRANSITION.HOVER};
-                }
+            width: 100%;
+        `}
+
+    ${props =>
+        props.variant === 'primary' &&
+        !props.isDisabled &&
+        css`
+            color: ${colors.WHITE};
+            border: 1px solid ${colors.GREENER};
+            background-image: linear-gradient(to top, ${colors.GREENER}, #21c100);
+            box-shadow: 0 3px 6px 0 rgba(48, 193, 0, 0.3);
+
+            &:hover,
+            &:focus {
+                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2)),
+                    linear-gradient(to top, ${colors.GREENER}, #21c100);
             }
         `}
 
     ${props =>
-        props.isInverse &&
+        props.variant === 'secondary' &&
         !props.isDisabled &&
         css`
-            background: transparent;
-            color: ${getPrimaryColor(props.variant)};
-            border: 1px solid ${getPrimaryColor(props.variant)};
+            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.05)),
+                linear-gradient(${colors.WHITE}, ${colors.WHITE});
+            border: 1px solid ${colors.BLACK70};
+
             &:hover,
-            &:active {
-                background: ${getPrimaryColor(props.variant)};
-                color: ${colors.WHITE};
-
-                &:before,
-                &:after {
-                    background: ${colors.WHITE};
-                }
-
-                svg {
-                    path {
-                        fill: ${colors.WHITE};
-                    }
-                }
+            &:focus {
+                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1)),
+                    linear-gradient(${colors.WHITE}, ${colors.WHITE});
             }
+        `}
 
-            &:active {
-                background: ${getPrimaryColor(props.variant)};
+    ${props =>
+        props.variant === 'tertiary' &&
+        !props.isDisabled &&
+        css`
+            border: none;
+            padding: 0px 4px;
+
+            &:hover,
+            &:focus {
+                background: ${colors.BLACK92};
+            }
+        `};
+
+    ${props =>
+        props.isDisabled &&
+        props.variant === 'tertiary' &&
+        css`
+            color: ${colors.BLACK80};
+            border: none;
+        `}
+
+    ${props =>
+        props.variant === 'danger' &&
+        !props.isDisabled &&
+        css`
+            color: ${colors.WHITE};
+            background-image: linear-gradient(to top, ${colors.RED}, #f25757);
+            border: none;
+            box-shadow: 0 3px 6px 0 rgba(205, 73, 73, 0.3);
+
+            &:hover,
+            &:focus {
+                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2)),
+                    linear-gradient(to top, ${colors.RED}, #f25757);
             }
         `}
 
     ${props =>
         props.isDisabled &&
+        props.variant !== 'tertiary' &&
         css`
-            pointer-events: none;
-            color: ${colors.TEXT_SECONDARY};
-            background: ${colors.GRAY_LIGHT};
-            border: 1px solid ${colors.DIVIDER};
-
-            &:focus {
-                background: ${colors.GRAY_LIGHT};
-            }
-
-            svg {
-                path {
-                    fill: ${colors.TEXT_SECONDARY};
-                }
-            }
-        `}
-    ${props =>
-        props.fullWidth &&
-        css`
-            width: 100%;
-            vertical-align: middle;
-        `}
-
-    ${props =>
-        props.variant === 'white' &&
-        css`
-            color: ${colors.TEXT_SECONDARY};
-            border: 1px solid ${colors.DIVIDER};
-
-            &:hover {
-                color: ${colors.TEXT_PRIMARY};
-                background: ${colors.DIVIDER};
-
-                svg {
-                    path {
-                        fill: ${colors.TEXT_PRIMARY};
-                    }
-                }
-            }
-
-            svg {
-                path {
-                    fill: ${colors.TEXT_SECONDARY};
-                }
-            }
-
-            &:active {
-                color: ${colors.TEXT_PRIMARY};
-                background: ${colors.DIVIDER};
-            }
-        `}
-
-    ${props =>
-        props.isTransparent &&
-        css`
-            background: transparent;
-            border-color: transparent;
-            color: ${colors.TEXT_SECONDARY};
-
-            &:hover,
-            &:active,
-            &:focus {
-                color: ${colors.TEXT_PRIMARY};
-                background: transparent;
-                box-shadow: none;
-
-                svg {
-                    path {
-                        fill: ${colors.TEXT_PRIMARY};
-                    }
-                }
-            }
-
-            svg {
-                path {
-                    fill: ${colors.TEXT_SECONDARY};
-                }
-            }
+            color: ${colors.BLACK80};
+            border: solid 1px ${colors.BLACK70};
+            background-image: linear-gradient(${colors.WHITE}, ${colors.BLACK96});
         `}
 `;
 
-const TextWrapper = styled.div`
+const IconWrapper = styled.div<IconWrapperProps>`
     display: flex;
+
+    ${props =>
+        props.alignIcon === 'left' &&
+        css`
+            margin-right: 8px;
+            margin-left: 3px;
+        `}
+
+    ${props =>
+        props.alignIcon === 'right' &&
+        css`
+            margin-left: 8px;
+        `}
 `;
 
-const IconWrapper = styled.div`
-    align-items: center;
-    margin-right: 0.8rem;
-    display: flex;
-    justify-content: center;
-`;
+interface IconWrapperProps {
+    alignIcon?: Props['alignIcon'];
+}
 
-// TODO: Error messages are not helpful. Find a better way to extend html button props.
+interface WrapperProps {
+    variant: ButtonVariant;
+    size: ButtonSize;
+    isDisabled: boolean;
+    fullWidth: boolean;
+    color: string | undefined;
+}
+
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    additionalClassName?: string;
-    isDisabled?: boolean;
-    isInverse?: boolean;
-    isTransparent?: boolean;
-    isLoading?: boolean;
-    icon?: IconType;
     variant?: ButtonVariant;
+    size?: ButtonSize;
+    icon?: IconType;
+    isDisabled?: boolean;
+    isLoading?: boolean;
     fullWidth?: boolean;
-    align?: string;
+    alignIcon?: 'left' | 'right';
 }
 
 const Button = ({
     children,
-    className,
-    additionalClassName,
-
-    variant = 'success',
-    isDisabled = false,
-    isTransparent = false,
-    isInverse = false,
-    isLoading = false,
-    fullWidth = false,
-    align = 'center',
+    variant = 'primary',
+    size = 'large',
     icon,
+    color,
+    fullWidth = false,
+    isDisabled = false,
+    isLoading = false,
+    alignIcon = 'left',
+    onChange,
     ...rest
 }: Props) => {
-    const newClassName = additionalClassName ? `${className} ${additionalClassName}` : className;
+    const IconComponent = icon ? (
+        <IconWrapper alignIcon={alignIcon}>
+            <Icon
+                icon={icon}
+                size={size === 'large' ? 10 : 8}
+                color={color || getIconColor(variant, isDisabled)}
+            />
+        </IconWrapper>
+    ) : null;
+    const Loader = (
+        <IconWrapper alignIcon={alignIcon}>
+            <FluidSpinner size={10} color={color} />
+        </IconWrapper>
+    );
     return (
         <Wrapper
-            className={newClassName}
-            isDisabled={isDisabled}
-            isTransparent={isTransparent}
-            isInverse={isInverse}
-            isLoading={isLoading}
-            fullWidth={fullWidth}
             variant={variant}
-            icon={icon}
-            align={align}
+            size={size}
+            onChange={onChange}
+            isDisabled={isDisabled}
+            disabled={isDisabled || isLoading}
+            fullWidth={fullWidth}
+            color={color}
             {...rest}
         >
-            {isLoading && (
-                <IconWrapper>
-                    <FluidSpinner size={16} />
-                </IconWrapper>
-            )}
-            {!isLoading && icon && (
-                <IconWrapper>
-                    <Icon
-                        icon={icon}
-                        size={14}
-                        color={isInverse ? getPrimaryColor(variant) || colors.WHITE : colors.WHITE}
-                    />
-                </IconWrapper>
-            )}
-            <TextWrapper>{children}</TextWrapper>
+            {!isLoading && alignIcon === 'left' && IconComponent}
+            {isLoading && alignIcon === 'left' && Loader}
+            {children}
+            {!isLoading && alignIcon === 'right' && IconComponent}
+            {isLoading && alignIcon === 'right' && Loader}
         </Wrapper>
     );
 };

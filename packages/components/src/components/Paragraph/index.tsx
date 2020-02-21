@@ -1,22 +1,34 @@
 import styled, { css } from 'styled-components';
 
 import React from 'react';
-import { FONT_SIZE, LINE_HEIGHT } from '../../config/variables';
+import { FONT_SIZE } from '../../config/variables';
 import colors from '../../config/colors';
+import { ParagraphSize } from '../../support/types';
+
+const getLineHeight = (size: Props['size']) => {
+    switch (size) {
+        case 'small':
+            return '18px';
+        case 'tiny':
+            return 'normal';
+        default:
+            return '22px';
+    }
+};
 
 const P_SIZES: { [key: string]: string } = {
+    normal: FONT_SIZE.NORMAL,
     small: FONT_SIZE.SMALL,
-    medium: FONT_SIZE.BASE,
-    large: FONT_SIZE.BIG,
-    xlarge: FONT_SIZE.BIGGER,
+    tiny: FONT_SIZE.TINY,
 };
 
 const Paragraph = styled.p<Props>`
-    font-size: ${props => props.size};
-    line-height: ${LINE_HEIGHT.BASE};
-    color: ${colors.TEXT_SECONDARY};
+    font-size: ${props => P_SIZES[props.size || 'normal']};
+    line-height: ${props => getLineHeight(props.size)};
+    color: ${props =>
+        props.size === 'tiny' || props.weight === 'bold' ? colors.BLACK50 : colors.BLACK0};
     padding: 0;
-    margin: 0;
+    font-weight: ${props => (props.weight === 'normal' ? 'normal' : 600)};
     ${props =>
         props.textAlign &&
         css`
@@ -27,14 +39,22 @@ const Paragraph = styled.p<Props>`
 interface Props {
     children: React.ReactNode;
     className?: string;
-    size?: string;
+    size?: ParagraphSize;
+    weight?: 'normal' | 'bold';
     textAlign?: string;
 }
 
-const P = ({ children, className, size = 'medium', textAlign, ...rest }: Props) => (
-    <Paragraph className={className} size={P_SIZES[size]} textAlign={textAlign} {...rest}>
+const P = ({
+    children,
+    className,
+    size = 'normal',
+    weight = 'normal',
+    textAlign,
+    ...rest
+}: Props) => (
+    <Paragraph className={className} size={size} textAlign={textAlign} weight={weight} {...rest}>
         {children}
     </Paragraph>
 );
 
-export { P, Props as ParagraphProps };
+export { P };

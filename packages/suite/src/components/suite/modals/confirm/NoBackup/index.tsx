@@ -1,7 +1,6 @@
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { colors, Icon } from '@trezor/components';
-import { Button, H2, P } from '@trezor/components-v2';
+import { Button, H2, P, Icon, colors } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
 

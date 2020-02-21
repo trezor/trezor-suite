@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import Card, { Props as CardProps } from '@suite-components/Card';
-import { colors, Button, Icon, variables, IconProps } from '@trezor/components-v2';
+import { colors, Button, Icon, variables, IconProps } from '@trezor/components';
 
 const StyledCard = styled(Card)`
     flex-direction: column;

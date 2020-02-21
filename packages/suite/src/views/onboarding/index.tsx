@@ -4,7 +4,7 @@ import Head from 'next/head';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { variables } from '@trezor/components-v2';
+import { variables } from '@trezor/components';
 import { AnyStepDisallowedState, Step } from '@onboarding-types/steps';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as STEP from '@onboarding-constants/steps';

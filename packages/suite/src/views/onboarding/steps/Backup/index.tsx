@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, P } from '@trezor/components-v2';
+import { Link, P } from '@trezor/components';
 
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import { Translation } from '@suite-components';

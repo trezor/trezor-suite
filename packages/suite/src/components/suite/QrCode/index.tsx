@@ -1,7 +1,7 @@
 import React from 'react';
 import { QRCode } from 'react-qr-svg';
 import styled from 'styled-components';
-import { P, colors } from '@trezor/components-v2';
+import { P, colors } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;

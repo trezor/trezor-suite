@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H2, colors } from '@trezor/components-v2';
+import { H2, colors } from '@trezor/components';
 import { AccountException } from '@wallet-reducers/selectedAccountReducer';
 
 import AuthFailed from './AuthFailed';

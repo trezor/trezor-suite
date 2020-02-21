@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, colors, variables, Link, Loader } from '@trezor/components-v2';
+import { Icon, colors, variables, Link, Loader } from '@trezor/components';
 import { Translation, HiddenPlaceholder } from '@suite-components';
 import messages from '@suite/support/messages';
 import { FormattedDate } from 'react-intl';

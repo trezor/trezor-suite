@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { Button } from '@trezor/components-v2';
+import { Button } from '@trezor/components';
 import ButtonPin from './components/ButtonPin';
 import InputPin from './components/InputPin';
 import { Translation } from '@suite-components/Translation';

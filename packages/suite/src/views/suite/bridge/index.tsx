@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
-import { Button, P, Link, H2, Select, colors, variables, Loader } from '@trezor/components-v2';
+import { Button, P, Link, H2, Select, colors, variables, Loader } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { URLS } from '@suite-constants';
 import { AppState, Dispatch } from '@suite-types';

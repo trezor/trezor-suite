@@ -1,9 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { CoinLogo, colors } from '@trezor/components';
-import { Button, H2, P, Link } from '@trezor/components-v2';
-
+import { CoinLogo, colors, Button, H2, P, Link } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import messages from '@suite/support/messages';

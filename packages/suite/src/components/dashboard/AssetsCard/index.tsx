@@ -5,7 +5,7 @@ import { NETWORKS } from '@wallet-config';
 import Asset from './components/Asset';
 import { Account } from '@wallet-types';
 import { AppState } from '@suite-types';
-import { colors, Loader } from '@trezor/components-v2';
+import { colors, Loader } from '@trezor/components';
 import { Card, Translation } from '@suite-components';
 import messages from '@suite/support/messages';
 

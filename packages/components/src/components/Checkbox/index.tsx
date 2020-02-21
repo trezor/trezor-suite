@@ -4,11 +4,9 @@ import styled, { css } from 'styled-components';
 import { FONT_SIZE } from '../../config/variables';
 import { Icon } from '../Icon';
 import colors from '../../config/colors';
-import { useKeyPress } from '../../utils/hooks';
 
 const Wrapper = styled.div`
     display: flex;
-    flex-direction: row;
     cursor: pointer;
     align-items: center;
 
@@ -16,41 +14,45 @@ const Wrapper = styled.div`
     &:focus {
         outline: none;
     }
+
+    &:hover {
+        > div:first-child {
+            border: 1px solid ${colors.BLACK50};
+        }
+    }
 `;
 
 const IconWrapper = styled.div<IconWrapperProps>`
     display: flex;
-    border-radius: 2px;
     justify-content: center;
     align-items: center;
-    color: ${props => (props.isChecked ? colors.WHITE : colors.GREEN_PRIMARY)};
-    background: ${props => (props.isChecked ? colors.GREEN_PRIMARY : colors.WHITE)};
-    border: 1px solid ${props => (props.isChecked ? colors.GREEN_PRIMARY : colors.DIVIDER)};
-    width: 24px;
-    height: 24px;
+    width: 19px;
+    min-width: 19px;
+    max-width: 19px;
+    height: 19px;
+    border-radius: 3px;
+    box-shadow: ${props => (!props.isChecked ? `inset 0 3px 6px 0 ${colors.BLACK92}` : `none`)};
+    background: ${props => (props.isChecked ? colors.GREEN : colors.WHITE)};
+    border: 1px solid ${props => (props.isChecked ? colors.GREENER : colors.BLACK80)};
 
     &:hover,
     &:focus {
         ${props =>
             !props.isChecked &&
             css`
-                border: 1px solid ${colors.GREEN_PRIMARY};
+                border: 1px solid ${colors.BLACK50};
             `}
-        background: ${props => (props.isChecked ? colors.GREEN_PRIMARY : colors.WHITE)};
     }
 `;
 
 const Label = styled.div<IconWrapperProps>`
     display: flex;
     padding-left: 10px;
+    padding-top: 2px;
     justify-content: center;
-    ${colors.TEXT_SECONDARY};
-    font-size: ${FONT_SIZE.BASE};
-
-    &:hover,
-    &:focus {
-        color: ${props => (props.isChecked ? colors.TEXT_PRIMARY : colors.TEXT_PRIMARY)};
-    }
+    color: ${colors.BLACK0};
+    font-size: ${FONT_SIZE.SMALL};
+    line-height: 18px;
 `;
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
@@ -76,14 +78,7 @@ const Checkbox = ({ isChecked, children, onClick, ...rest }: Props) => (
         {...rest}
     >
         <IconWrapper isChecked={isChecked}>
-            {isChecked && (
-                <Icon
-                    hoverColor={colors.WHITE}
-                    size={10}
-                    color={isChecked ? colors.WHITE : colors.GREEN_PRIMARY}
-                    icon="SUCCESS"
-                />
-            )}
+            {isChecked && <Icon size={10} color={colors.WHITE} icon="CHECK" />}
         </IconWrapper>
         <Label isChecked={isChecked}>{children}</Label>
     </Wrapper>

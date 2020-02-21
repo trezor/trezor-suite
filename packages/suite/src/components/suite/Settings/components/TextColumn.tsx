@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { P, Link, colors, variables } from '@trezor/components-v2';
+import { P, Link, colors, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 

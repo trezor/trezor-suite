@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { Input, Button, Textarea, colors, variables } from '@trezor/components-v2';
+import { Input, Button, Textarea, colors, variables } from '@trezor/components';
 import Title from '@wallet-components/Title';
 import { WalletLayout } from '@wallet-components';
 import * as signVerifyActions from '@wallet-actions/signVerifyActions';

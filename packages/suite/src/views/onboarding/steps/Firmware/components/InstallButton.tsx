@@ -1,6 +1,6 @@
 import React from 'react';
 import { OnboardingButton } from '@onboarding-components';
-import { Translation } from '@suite-components/Translation';
+import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
 import { Tooltip } from '@trezor/components';
 

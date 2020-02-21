@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, Button } from '@trezor/components-v2';
+import { colors, Button } from '@trezor/components';
 import BigNumber from 'bignumber.js';
 import Loading from './components/Loading';
 import Exception from './components/Exception';

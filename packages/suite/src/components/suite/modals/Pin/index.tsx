@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled, { css } from 'styled-components';
-import { H2, Link, variables, colors } from '@trezor/components-v2';
+import { H2, Link, variables, colors } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import Loading from '@suite-components/Loading';
 import { PinInput } from '@suite-components';

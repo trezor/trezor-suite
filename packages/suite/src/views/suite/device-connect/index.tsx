@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Prompt, colors, variables, animations } from '@trezor/components';
-import { Link, P, H2 } from '@trezor/components-v2';
+import { Link, P, H2 } from '@trezor/components';
 
 import * as routerActions from '@suite-actions/routerActions';
 import { Translation, WebusbButton } from '@suite-components';

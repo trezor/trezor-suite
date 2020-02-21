@@ -1,5 +1,5 @@
 import React from 'react';
-import { CoinLogo, colors, variables } from '@trezor/components-v2';
+import { CoinLogo, colors, variables } from '@trezor/components';
 import styled, { css } from 'styled-components';
 import { getRoute } from '@suite-utils/router';
 import {

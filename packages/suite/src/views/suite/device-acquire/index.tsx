@@ -1,7 +1,7 @@
 import { SUITE } from '@suite-actions/constants';
 import styled from 'styled-components';
 import messages from '@suite/support/messages';
-import { H2, P, Button } from '@trezor/components-v2';
+import { H2, P, Button } from '@trezor/components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Translation } from '@suite-components/Translation';
 import React from 'react';
