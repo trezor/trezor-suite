@@ -8,6 +8,7 @@ export interface Props extends React.HTMLAttributes<HTMLDivElement> {
 const ModalWrapper = styled.div<Props>`
     display: flex;
     flex-direction: row;
+    max-height: 90vh;
     overflow-y: auto;
     padding: ${props => props.padding || '40px'};
 
