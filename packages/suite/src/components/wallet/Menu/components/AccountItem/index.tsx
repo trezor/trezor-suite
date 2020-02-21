@@ -9,7 +9,7 @@ import {
 } from '@wallet-utils/accountUtils';
 import { Translation } from '@suite-components/Translation';
 // import messages from '@suite/support/messages';
-import { Link, FormattedNumber } from '@suite-components';
+import { Link, FormattedNumber, HiddenPlaceholder } from '@suite-components';
 import AccountNavigation from './components/AccountNavigation/Container';
 import Badge from '@suite-components/Badge';
 import { Props } from './Container';
@@ -144,9 +144,11 @@ const AccountItem = React.memo((props: Props) => {
                         </AccountName>
 
                         <Balance>
-                            <CryptoValue>
-                                {account.formattedBalance} {account.symbol.toUpperCase()}
-                            </CryptoValue>
+                            <HiddenPlaceholder>
+                                <CryptoValue>
+                                    {account.formattedBalance} {account.symbol.toUpperCase()}
+                                </CryptoValue>
+                            </HiddenPlaceholder>
                             {fiatBalance && (
                                 <StyledBadge>
                                     <FormattedNumber

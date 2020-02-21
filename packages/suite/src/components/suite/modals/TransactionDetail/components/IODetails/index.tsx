@@ -4,7 +4,7 @@ import { Icon, colors, variables, Loader } from '@trezor/components-v2';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import FiatValue from '@suite-components/FiatValue/Container';
-import Badge from '@suite-components/Badge';
+import { Badge, HiddenPlaceholder } from '@suite-components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -107,11 +107,18 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                                         </IOBoxAddress>
                                         {/* <IOBoxPath>placeholder</IOBoxPath> */}
                                         <IOBoxAmountWrapper>
-                                            <Amount>{`${inputAmount} ${tx.symbol.toUpperCase()}`}</Amount>
+                                            <HiddenPlaceholder>
+                                                <Amount>{`${inputAmount} ${tx.symbol.toUpperCase()}`}</Amount>
+                                            </HiddenPlaceholder>
                                             <Badge>
-                                                <FiatValue amount={inputAmount} symbol={tx.symbol}>
-                                                    {(fiatValue, _timestamp) => fiatValue}
-                                                </FiatValue>
+                                                <HiddenPlaceholder>
+                                                    <FiatValue
+                                                        amount={inputAmount}
+                                                        symbol={tx.symbol}
+                                                    >
+                                                        {(fiatValue, _timestamp) => fiatValue}
+                                                    </FiatValue>
+                                                </HiddenPlaceholder>
                                             </Badge>
                                         </IOBoxAmountWrapper>
                                     </IOBox>
@@ -135,12 +142,19 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                                         </IOBoxAddress>
                                         {/* <IOBoxPath>todo: bip44 path</IOBoxPath> */}
                                         <IOBoxAmountWrapper>
-                                            <Amount>{`${outputAmount} ${tx.symbol.toUpperCase()}`}</Amount>
-                                            <Badge>
-                                                <FiatValue amount={outputAmount} symbol={tx.symbol}>
-                                                    {(fiatValue, _timestamp) => fiatValue}
-                                                </FiatValue>
-                                            </Badge>
+                                            <HiddenPlaceholder>
+                                                <Amount>{`${outputAmount} ${tx.symbol.toUpperCase()}`}</Amount>
+                                            </HiddenPlaceholder>
+                                            <HiddenPlaceholder>
+                                                <Badge>
+                                                    <FiatValue
+                                                        amount={outputAmount}
+                                                        symbol={tx.symbol}
+                                                    >
+                                                        {(fiatValue, _timestamp) => fiatValue}
+                                                    </FiatValue>
+                                                </Badge>
+                                            </HiddenPlaceholder>
                                         </IOBoxAmountWrapper>
                                     </IOBox>
                                 );

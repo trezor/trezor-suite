@@ -134,7 +134,7 @@ const SecurityFeatures = ({
         : {
               variant: 'primary',
               icon: 'CHECK',
-              heading: 'Discrete mode enabled!',
+              heading: 'Discreet mode enabled!',
               cta: {
                   label: 'Disable discreet mode',
                   action: () => setDiscreetMode(false),
