@@ -14,7 +14,7 @@ components-storybook deploy dev:
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/components-storybook/${CI_BUILD_REF_NAME}
   dependencies:
     - install and build
-    - components-storybook-v2 build
+    - components-storybook build
   environment:
     name: ${CI_BUILD_REF_NAME}
     url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
