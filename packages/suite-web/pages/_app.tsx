@@ -67,7 +67,6 @@ class TrezorSuiteApp extends App<Props> {
                                 is handled by suite/components/Webusb component
                             */}
                             <Button
-                                isInverse
                                 icon="PLUS"
                                 additionalClassName="trezor-webusb-button"
                                 style={{ width: '100%', position: 'absolute', top: '-1000px' }}

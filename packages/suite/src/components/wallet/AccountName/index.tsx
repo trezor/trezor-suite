@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
-import { CoinLogo, variables, colors } from '@trezor/components';
+import { CoinLogo, variables } from '@trezor/components';
 import messages from '@suite/support/messages';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import Title from '@wallet-components/Title';
@@ -11,7 +11,7 @@ import { Account } from '@wallet-types';
 const { FONT_WEIGHT, FONT_SIZE } = variables;
 
 const AccountTitle = styled.div`
-    font-size: ${FONT_SIZE.WALLET_TITLE};
+    font-size: ${FONT_SIZE.H1};
     font-weight: ${FONT_WEIGHT.MEDIUM};
 `;
 
@@ -20,10 +20,7 @@ const StyledCoinLogo = styled(CoinLogo)`
 `;
 
 const Label = styled.span`
-    font-size: ${variables.FONT_SIZE.BASE};
-    font-weight: ${variables.FONT_WEIGHT.NORMAL};
     text-transform: uppercase;
-    color: ${colors.TEXT_SECONDARY};
     margin-left: 5px;
 `;
 

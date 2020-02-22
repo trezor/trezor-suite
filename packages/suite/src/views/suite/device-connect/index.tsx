@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Prompt, colors, variables, animations } from '@trezor/components';
-import { Link, P, H2 } from '@trezor/components';
-
+import { Prompt, colors, variables, Link, P, H2 } from '@trezor/components';
+import { PULSATE } from '@suite-support/styles/animations';
 import * as routerActions from '@suite-actions/routerActions';
 import { Translation, WebusbButton } from '@suite-components';
 import messages from '@suite/support/messages';
@@ -39,9 +38,9 @@ const Wrapper = styled.div`
 const ConnectTrezorWrapper = styled.div`
     display: flex;
     align-items: center;
-    animation: ${animations.PULSATE} 1.3s ease-out infinite;
-    color: ${colors.GREEN_PRIMARY};
-    font-size: ${variables.FONT_SIZE.BIG};
+    animation: ${PULSATE} 1.3s ease-out infinite;
+    color: ${colors.GREEN};
+    font-size: ${variables.FONT_SIZE.H2};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -74,7 +73,7 @@ const Text = styled.span`
 `;
 
 const StyledLink = styled(Link)`
-    font-size: ${variables.FONT_SIZE.BIG};
+    font-size: ${variables.FONT_SIZE.H2};
 `;
 
 const mapStateToProps = (state: AppState) => ({

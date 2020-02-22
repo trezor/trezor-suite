@@ -156,6 +156,7 @@ interface WrapperProps {
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: ButtonVariant;
     size?: ButtonSize;
+    additionalClassName?: string;
     icon?: IconType;
     isDisabled?: boolean;
     isLoading?: boolean;
@@ -165,9 +166,11 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button = ({
     children,
+    className,
     variant = 'primary',
     size = 'large',
     icon,
+    additionalClassName,
     color,
     fullWidth = false,
     isDisabled = false,
@@ -176,6 +179,7 @@ const Button = ({
     onChange,
     ...rest
 }: Props) => {
+    const newClassName = additionalClassName ? `${className} ${additionalClassName}` : className;
     const IconComponent = icon ? (
         <IconWrapper alignIcon={alignIcon}>
             <Icon
@@ -192,6 +196,7 @@ const Button = ({
     );
     return (
         <Wrapper
+            className={newClassName}
             variant={variant}
             size={size}
             onChange={onChange}
