@@ -10,8 +10,7 @@ cache:
         - node_modules/
         - packages/blockchain-link/node_modules/
         - packages/components/node_modules/
-        - packages/components-v2/node_modules/
-        - packages/components-storybook-v2/node_modules/
+        - packages/components-storybook/node_modules/
         - packages/rollout/node_modules/
         - packages/suite/node_modules/
         - packages/suite-web/node_modules/
@@ -29,7 +28,7 @@ cache:
         - packages/translations-manager/lib
 
 variables:
-    DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
+    DEV_SERVER_URL: "https://suite.corp.sldev.cz"
     PACKAGE_PATH_SUITE_DESKTOP: packages/suite-desktop
     PACKAGE_PATH_SUITE_NATIVE: packages/suite-native
     PACKAGE_PATH_SUITE_WEB: packages/suite-web
@@ -61,7 +60,7 @@ unit tests:
 include:
     - ci/environment.yml
     - ci/install-and-build.yml
-    - ci/packages/components-storybook-v2.yml
+    - ci/packages/components-storybook.yml
     - ci/packages/suite.yml
     - ci/packages/suite-web.yml
     - ci/packages/suite-desktop.yml
