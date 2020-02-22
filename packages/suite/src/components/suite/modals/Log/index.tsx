@@ -55,10 +55,8 @@ const Log = (props: Props) => {
 
     const copy = () => {
         const result = copyToClipboard(getFormattedLog(), htmlElement.current);
-        if (typeof result === 'string') {
-            props.addNotification({ type: 'copy-to-clipboard-error', error: result });
-        } else {
-            props.addNotification({ type: 'copy-to-clipboard-success' });
+        if (typeof result !== 'string') {
+            props.addNotification({ type: 'copy-to-clipboard' });
         }
     };
 

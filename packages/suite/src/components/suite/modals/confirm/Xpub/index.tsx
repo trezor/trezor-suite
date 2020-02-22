@@ -39,10 +39,8 @@ export default ({ xpub, accountPath, accountIndex, symbol, addNotification }: Pr
 
     const copyAddress = () => {
         const result = copyToClipboard(xpub, htmlElement.current);
-        if (typeof result === 'string') {
-            addNotification({ type: 'copy-to-clipboard-error', error: result });
-        } else {
-            addNotification({ type: 'copy-to-clipboard-success', payload: xpub });
+        if (typeof result !== 'string') {
+            addNotification({ type: 'copy-to-clipboard' });
         }
     };
 

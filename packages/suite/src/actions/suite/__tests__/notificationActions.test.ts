@@ -42,9 +42,9 @@ const initStore = (state: State) => {
 describe('Notifications Actions', () => {
     it('add notifications', () => {
         const store = initStore(getInitialState(undefined));
-        store.dispatch(notificationActions.add({ type: 'tx-confirmed', txid: 'abcd' }));
+        store.dispatch(notificationActions.add({ type: 'sign-tx-success', txid: 'abcd' }));
         expect(store.getState().notifications.length).toEqual(1);
-        store.dispatch(notificationActions.add({ type: 'tx-confirmed', txid: 'xyz0' }));
+        store.dispatch(notificationActions.add({ type: 'copy-to-clipboard' }));
         expect(store.getState().notifications.length).toEqual(2);
     });
 
@@ -52,8 +52,8 @@ describe('Notifications Actions', () => {
         const store = initStore(
             getInitialState({
                 notifications: [
-                    { id: 1, type: 'tx-confirmed', txid: 'abcd', device: undefined },
-                    { id: 2, type: 'tx-confirmed', txid: 'xyz0', device: undefined },
+                    { id: 1, type: 'copy-to-clipboard' },
+                    { id: 2, type: 'sign-tx-success', txid: 'xyz0' },
                 ],
             }),
         );
