@@ -23,10 +23,11 @@ interface Props extends ButtonProps {
 const EyeButton = (props: Props) => {
     let color: string;
     if (props.isDisabled) {
-        color = colors.GRAY_LIGHT;
+        color = colors.BLACK25;
     } else {
-        color = props.isAddressUnverified ? colors.ERROR_PRIMARY : colors.TEXT_PRIMARY;
+        color = props.isAddressUnverified ? colors.GREEN : colors.BLACK0;
     }
+
     return (
         <Wrapper variant="tertiary" {...props}>
             <Tooltip
