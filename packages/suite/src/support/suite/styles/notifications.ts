@@ -1,4 +1,4 @@
-import { colors } from '@trezor/components-v2';
+import { colors } from '@trezor/components';
 
 export const notifications = `
     .Toastify__toast-container {

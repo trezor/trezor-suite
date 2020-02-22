@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import { colors, Button, variables } from '@trezor/components-v2';
+import { colors, Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 

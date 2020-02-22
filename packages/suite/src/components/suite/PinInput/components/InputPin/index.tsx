@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables, Icon, colors } from '@trezor/components-v2';
+import { variables, Icon, colors } from '@trezor/components';
 
 const Wrapper = styled.div`
     position: relative;

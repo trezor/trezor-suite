@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { P } from '@trezor/components-v2';
+import { P } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import * as STEP from '@onboarding-constants/steps';
 import { AnyStepDisallowedState } from '@onboarding-types/steps';

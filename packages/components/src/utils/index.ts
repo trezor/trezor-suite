@@ -1,4 +1,3 @@
-import * as colors from './colors';
-import * as icons from './icons';
+import { getStateColor } from './colors';
 
-export default { colors, icons };
+export { getStateColor };

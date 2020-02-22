@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { AppState, Dispatch } from '@suite-types';
-import { Tooltip, Link } from '@trezor/components-v2';
+import { Tooltip, Link } from '@trezor/components';
 
 const StyledLink = styled(Link)`
     font-size: 10px;

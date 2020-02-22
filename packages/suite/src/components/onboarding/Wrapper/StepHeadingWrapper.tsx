@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { variables } from '@trezor/components-v2';
+import { variables } from '@trezor/components';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;
 

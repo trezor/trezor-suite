@@ -6,35 +6,19 @@ import colors from '../../config/colors';
 const A = styled.a<Props>`
     text-decoration: none;
     cursor: pointer;
+    color: ${colors.GREENER};
+    font-size: inherit;
+    font-weight: 600;
 
-    ${props =>
-        !props.variant &&
-        css`
-            color: ${colors.GREEN_PRIMARY};
-            &:visited,
-            &:active,
-            &:hover {
-                text-decoration: underline;
-                color: ${colors.GREEN_PRIMARY};
-            }
-        `}
-
-    ${props =>
-        props.variant === 'gray' &&
-        css`
-            color: ${colors.TEXT_SECONDARY};
-            &:visited,
-            &:active,
-            &:hover {
-                text-decoration: underline;
-                color: ${colors.TEXT_SECONDARY};
-            }
-        `}
+    &:hover {
+        text-decoration: underline;
+    }
 
     ${props =>
         props.variant === 'nostyle' &&
         css`
             color: inherit;
+            font-weight: inherit;
             &:visited,
             &:active,
             &:hover {
@@ -45,13 +29,13 @@ const A = styled.a<Props>`
 `;
 
 interface Props {
-    variant?: 'gray' | 'nostyle';
     href?: string;
     to?: any;
     target?: string;
     onClick?: (event: React.MouseEvent<any>) => void;
     children?: React.ReactNode;
     className?: string;
+    variant?: 'default' | 'nostyle';
 }
 
 const Link = (props: Props) => (

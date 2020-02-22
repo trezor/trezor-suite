@@ -1,19 +1,16 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Icon } from '../Icon';
-
-import { IconType } from '../../support/types';
 import colors from '../../config/colors';
-import { getDeviceIcon } from '../../utils/icons';
 
 const PulseAnimation = keyframes`
     0% {
-        background-color: ${colors.GREEN_PRIMARY};
+        background-color: ${colors.GREEN};
         transform: scale(0);
         opacity: 0;
     }
     25% {
-        background-color: ${colors.GREEN_PRIMARY};
+        background-color: ${colors.GREEN};
         transform: scale(0.75);
         opacity: 0.2;
     }
@@ -52,7 +49,7 @@ const Wrapper = styled.div`
 
 const ContentWrapper = styled.div`
     max-width: 300px;
-    color: ${colors.GREEN_PRIMARY};
+    color: ${colors.GREEN};
     text-align: center;
     margin: 5px;
 `;
@@ -64,7 +61,6 @@ const PulsePrompt = ({ model, size, children, ...rest }: PulsePromptProps) => {
         <Wrapper {...rest}>
             <ImgWrapper size={size}>
                 <Pulse />
-                <Icon icon={getDeviceIcon(model)} size={size} color={colors.GREEN_PRIMARY} />
             </ImgWrapper>
             <ContentWrapper>{children}</ContentWrapper>
         </Wrapper>

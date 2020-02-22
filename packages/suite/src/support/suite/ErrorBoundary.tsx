@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import * as Sentry from '@sentry/browser';
-import { H1, P, Button } from '@trezor/components-v2';
+import { H1, P, Button } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;

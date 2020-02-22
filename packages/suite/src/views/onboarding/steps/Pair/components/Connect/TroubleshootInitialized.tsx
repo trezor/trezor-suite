@@ -5,7 +5,7 @@ import { Translation } from '@suite-components/Translation';
 import { AcquiredDevice, AppState, Dispatch } from '@suite-types';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import messages from '@suite/support/messages';
-import { Link } from '@trezor/components-v2';
+import { Link } from '@trezor/components';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';

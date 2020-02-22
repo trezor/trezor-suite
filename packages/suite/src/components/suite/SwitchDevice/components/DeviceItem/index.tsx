@@ -1,7 +1,7 @@
 import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
-import { Button, colors, variables, Icon } from '@trezor/components-v2';
+import { Button, colors, variables, Icon } from '@trezor/components';
 import { Translation } from '@suite-components';
 import Card from '@suite-components/Card';
 import * as deviceUtils from '@suite-utils/device';

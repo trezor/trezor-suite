@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, createRef } from 'react';
 import styled from 'styled-components';
-import { P, Switch, Link, colors } from '@trezor/components-v2';
+import { P, Switch, Link, colors } from '@trezor/components';
 
 import { SUITE } from '@suite-actions/constants';
 import messages from '@suite/support/messages';

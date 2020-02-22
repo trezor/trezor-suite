@@ -1,7 +1,7 @@
 import { Translation } from '@suite-components';
 import { AppState } from '@suite-types';
 import styled from 'styled-components';
-import { Icon, colors, Input, Tooltip } from '@trezor/components-v2';
+import { Icon, colors, Input, Tooltip } from '@trezor/components';
 import messages from '@suite/support/messages';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Account, Network } from '@wallet-types';

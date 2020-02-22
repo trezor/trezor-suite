@@ -1,7 +1,7 @@
 import React from 'react';
 import { findRouteByName } from '@suite-utils/router';
 import styled, { css } from 'styled-components';
-import { Icon, colors, variables } from '@trezor/components-v2';
+import { Icon, colors, variables } from '@trezor/components';
 import { MAIN_MENU_ITEMS } from '@suite-constants/menu';
 import { Props as ContainerProps } from '../../Container';
 

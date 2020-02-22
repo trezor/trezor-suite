@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Select, CoinLogo } from '@trezor/components-v2';
+import { Select, CoinLogo } from '@trezor/components';
 import { Network, ExternalNetwork } from '@wallet-types';
 
 const buildNetworkOption = (network: Network | ExternalNetwork) => ({

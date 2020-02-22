@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { variables } from '@trezor/components-v2';
+import { variables } from '@trezor/components';
 
 interface OwnProps {
     children?: React.ReactNode;

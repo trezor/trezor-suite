@@ -7,5 +7,5 @@
     "screenshotsFolder": "./screenshots",
     "video": false,
     "trashAssetsBeforeRuns": true,
-    "chromeWebSecurity": false
+    "chromeWebSecurity": true
 }

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { Button, H2, P } from '@trezor/components-v2';
+import { Button, H2, P } from '@trezor/components';
 import { Translation } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import * as notificationActions from '@suite-actions/notificationActions';

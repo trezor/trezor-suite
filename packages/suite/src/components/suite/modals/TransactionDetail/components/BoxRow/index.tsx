@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { variables, colors } from '@trezor/components-v2';
+import { variables, colors } from '@trezor/components';
 
 const COLOR_BORDER = '#E6E6E6';
 const COLOR_TEXT_SECONDARY = colors.BLACK25;

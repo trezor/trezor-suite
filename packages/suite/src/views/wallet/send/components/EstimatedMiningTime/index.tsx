@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { variables, colors } from '@trezor/components-v2';
+import { variables, colors } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;

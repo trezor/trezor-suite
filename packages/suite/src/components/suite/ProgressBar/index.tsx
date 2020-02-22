@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Link, colors } from '@trezor/components-v2';
+import { Button, Link, colors } from '@trezor/components';
 import { URLS } from '@suite-constants';
 
 const Wrapper = styled.div`

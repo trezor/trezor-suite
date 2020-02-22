@@ -2,52 +2,47 @@
     "name": "@trezor/components",
     "version": "1.0.0",
     "main": "lib/index.js",
-    "react-native": "lib/index.native.js",
-    "repository": "https://github.com/trezor/trezor-ui-components",
     "author": "SatoshiLabs s.r.o.",
     "license": "SEE LICENSE IN LICENSE.md",
     "scripts": {
-        "lint": "yarn lint:styles && yarn lint:js",
+        "lint": "run-s lint:*",
         "lint:js": "eslint '**/*{.ts,.tsx}'",
         "lint:styles": "npx stylelint './src/**/*{.tsx,.ts}'",
         "lint-fix": "npx eslint ./src --fix",
-        "build:lib": "rimraf lib && babel --extensions '.ts,.tsx' src -d lib && babel-node ./scripts/build.js && yarn tsc -p tsconfig.json",
+        "build:lib": "rm -rf lib && yarn tsc -p tsconfig.json && babel-node ./scripts/copyAssets.js",
         "type-check": "tsc --project tsconfig.types.json",
         "type-check:watch": "yarn type-check -- --watch",
         "prepublishOnly": "npm run build:lib",
         "test:unit": "jest"
     },
+    "dependencies": {
+        "@tippy.js/react": "^3.1.1",
+        "@types/react-select": "^3.0.10",
+        "@types/styled-components": "^4.4.2",
+        "react-select": "^3.0.8",
+        "react-svg": "^11.0.7",
+        "react-switch": "^5.0.1"
+    },
     "devDependencies": {
-        "@types/react-native": "0.57.45",
-        "@types/react-select": "^3.0.0",
-        "@types/styled-components": "^4.4.1",
         "awesome-typescript-loader": "^5.2.1",
         "babel-jest": "^25.1.0",
         "babel-loader": "^8.0.6",
         "babel-plugin-styled-components": "^1.10.6",
         "fs-extra": "^8.1.0",
         "npm-run-all": "^4.1.5",
-        "react-docgen-typescript-loader": "^3.1.0",
+        "react-docgen-typescript-loader": "^3.6.0",
         "start-server-and-test": "^1.10.8",
-        "stylelint": "^12.0.0",
+        "styled-components": "^4.3.2",
+        "stylelint": "13.0.0",
         "stylelint-config-recommended": "^3.0.0",
         "stylelint-config-styled-components": "^0.1.1",
         "stylelint-custom-processor-loader": "^0.6.0",
         "stylelint-processor-styled-components": "^1.9.0",
         "typescript-styled-plugin": "^0.15.0"
     },
-    "dependencies": {
-        "@tippy.js/react": "^2.1.1",
-        "react-native-picker-select": "^6.2.0",
-        "react-native-svg": "^9.13.6",
-        "react-native-svg-uri": "^1.2.3",
-        "react-select": "^3.0.3",
-        "react-svg": "^10.0.12",
-        "react-switch": "^5.0.1"
-    },
     "peerDependencies": {
-        "react": "^16.8",
-        "react-native": "^0.61.4",
+        "react": "16.9.0",
+        "react-native": "^0.59.4",
         "styled-components": "^4.3.2"
     }
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactSvg from 'react-svg';
+import { ReactSVG } from 'react-svg';
 import styled from 'styled-components';
 import { LOGOS } from './logos';
 import { TrezorLogoType, TrezorLogoVariant } from '../../support/types';
@@ -34,7 +34,7 @@ const TrezorLogo = ({
             height={typeof height === 'number' ? `${height}px` : height}
             {...rest}
         >
-            <ReactSvg
+            <ReactSVG
                 src={LOGOS[type.toUpperCase()]}
                 beforeInjection={svg => {
                     if (typeof height === 'number') {

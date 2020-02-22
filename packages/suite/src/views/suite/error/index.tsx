@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Translation, Link } from '@suite-components';
 import messages from '@suite/support/messages';
-import { P, H1, Button } from '@trezor/components-v2';
+import { P, H1, Button } from '@trezor/components';
 import { getRoute } from '@suite-utils/router';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 

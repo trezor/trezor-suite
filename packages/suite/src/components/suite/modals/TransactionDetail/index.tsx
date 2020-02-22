@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
 import ModalWrapper from '@suite-components/ModalWrapper';
-import { H2, Link, Button } from '@trezor/components-v2';
+import { H2, Link, Button } from '@trezor/components';
 import { AppState } from '@suite-types';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import TrezorConnect from 'trezor-connect';

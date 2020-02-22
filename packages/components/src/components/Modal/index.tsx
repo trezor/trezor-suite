@@ -4,7 +4,7 @@ import { useKeyPress } from '../../utils/hooks';
 
 import { Link } from '../Link';
 import { Icon } from '../Icon';
-import colors from '../../config/colors';
+import { colors, variables } from '../../config';
 
 const ModalContainer = styled.div`
     position: fixed;
@@ -13,41 +13,64 @@ const ModalContainer = styled.div`
     height: 100%;
     top: 0px;
     left: 0px;
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
     align-items: center;
     overflow: auto;
-    padding: 20px;
 `;
 
-const ModalWindow = styled.div`
+const ModalWindow = styled.div<Props>`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     margin: auto;
     position: relative;
-    border-radius: 4px;
+    border-radius: 6px;
     background-color: ${colors.WHITE};
+    box-shadow: 0 10px 60px 0 ${colors.BLACK25};
     text-align: center;
+    padding: ${props => props.padding};
+    overflow-x: hidden; /* retains border-radius when using background in child component */
 `;
 
 const StyledLink = styled(Link)`
+    display: flex;
+    align-items: center;
     position: absolute;
     right: 0;
     top: 0;
-    opacity: 0.5;
-    padding: 20px;
+    margin: 10px;
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.BLACK25};
 
     :hover {
-        opacity: 1;
+        text-decoration: none;
+        color: ${colors.BLACK0};
     }
+`;
+
+const StyledIcon = styled(Icon)`
+    padding: 20px 14px;
 `;
 
 interface Props {
     children: React.ReactNode;
     cancelable?: boolean;
+    cancelText?: string;
+    padding?: string;
     onCancel?: () => void;
 }
 
-const Modal = ({ children, cancelable, onCancel }: Props) => {
+const Modal = ({
+    children,
+    cancelable,
+    cancelText,
+    onCancel,
+    padding = '10px',
+    ...rest
+}: Props) => {
     const escPressed = useKeyPress('Escape');
 
     if (cancelable && onCancel && escPressed) {
@@ -55,19 +78,15 @@ const Modal = ({ children, cancelable, onCancel }: Props) => {
     }
 
     return (
-        <ModalContainer>
-            <ModalWindow>
-                {children}
+        <ModalContainer {...rest}>
+            <ModalWindow padding={padding}>
                 {cancelable && (
                     <StyledLink onClick={onCancel}>
-                        <Icon
-                            size={14}
-                            color={colors.TEXT_SECONDARY}
-                            icon="CLOSE"
-                            data-test="@modal/close"
-                        />
+                        {cancelText || ''}
+                        <StyledIcon size={16} color={colors.BLACK25} icon="CROSS" />
                     </StyledLink>
                 )}
+                {children}
             </ModalWindow>
         </ModalContainer>
     );

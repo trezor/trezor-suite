@@ -2,7 +2,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { Button, ButtonProps, H2, P, Link, colors, variables } from '@trezor/components-v2';
+import { Button, ButtonProps, H2, P, Link, colors, variables } from '@trezor/components';
 
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import * as firmwareActions from '@firmware-actions/firmwareActions';

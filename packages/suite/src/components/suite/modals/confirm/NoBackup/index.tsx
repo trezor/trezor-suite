@@ -1,7 +1,6 @@
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { colors, Icon } from '@trezor/components';
-import { Button, H2, P } from '@trezor/components-v2';
+import { Button, H2, P, Icon, colors } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -36,7 +35,7 @@ const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup }: Props) => (
         <H2>
             <Translation>{messages.TR_YOUR_TREZOR_IS_NOT_BACKED_UP}</Translation>
         </H2>
-        <Icon size={32} color={colors.WARNING_PRIMARY} icon="WARNING" />
+        <Icon size={32} color={colors.YELLOW} icon="WARNING" />
         <StyledP size="small">
             <Translation>{messages.TR_IF_YOUR_DEVICE_IS_EVER_LOST}</Translation>
         </StyledP>

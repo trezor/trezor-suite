@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables, colors } from '@trezor/components-v2';
+import { variables, colors } from '@trezor/components';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import { Translation } from '@suite-components/Translation';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';

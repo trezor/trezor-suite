@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Account, Send } from '@wallet-types';
 import { Translation } from '@suite-components/Translation';
-import { Input, Select } from '@trezor/components-v2';
+import { Input, Select } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import messages from '@suite/support/messages';

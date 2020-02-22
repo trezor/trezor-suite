@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { Translation, HiddenPlaceholder, FiatValue, Badge } from '@suite-components';
-import { variables, colors, Button } from '@trezor/components-v2';
+import { variables, colors, Button } from '@trezor/components';
 import { ArrayElement } from '@suite/types/utils';
 import messages from '@suite/support/messages';
 import { getDateWithTimeZone } from '@suite-utils/date';

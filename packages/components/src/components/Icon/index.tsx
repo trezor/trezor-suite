@@ -1,8 +1,7 @@
-/* eslint-disable global-require */
 import styled, { keyframes } from 'styled-components';
 
 import React from 'react';
-import ReactSvg from 'react-svg';
+import { ReactSVG } from 'react-svg';
 import colors from '../../config/colors';
 import { IconType } from '../../support/types';
 import { ICONS } from './icons';
@@ -37,14 +36,25 @@ const chooseIconAnimationType = (canAnimate?: boolean, isActive?: boolean) => {
 };
 
 const SvgWrapper = styled.div<WrapperProps>`
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: ${props => props.size}px;
     animation: ${props => chooseIconAnimationType(props.canAnimate, props.isActive)} 0.2s linear 1
         forwards;
 
     div {
+        display: flex;
         height: ${props => props.size}px;
         line-height: ${props => props.size}px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     :hover {
@@ -72,7 +82,7 @@ interface Props extends React.SVGAttributes<HTMLDivElement> {
 const Icon = ({
     icon,
     size = 24,
-    color = colors.TEXT_SECONDARY,
+    color = colors.BLACK50,
     isActive,
     canAnimate,
     hoverColor,
@@ -96,7 +106,7 @@ const Icon = ({
             size={size}
             {...rest}
         >
-            <ReactSvg
+            <ReactSVG
                 src={ICONS[icon]}
                 beforeInjection={svg => {
                     svg.setAttribute('width', `${size}px`);

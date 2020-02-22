@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H2, P } from '@trezor/components-v2';
+import { H2, P } from '@trezor/components';
 import { WalletLayout } from '@wallet-components';
 import { SUITE } from '@suite-actions/constants';
 import { Props } from './Container';

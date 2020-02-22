@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import TrezorConnect, { UI } from 'trezor-connect';
-import { H2, Link } from '@trezor/components-v2';
+import { H2, Link } from '@trezor/components';
 import { Translation, WordInput } from '@suite-components';
 import messages from '@suite/support/messages';
 // todo: no design yet, but I guess we are going to use URLS

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
-import { H2, Button, P, colors, variables } from '@trezor/components-v2';
+import { H2, Button, P, colors, variables } from '@trezor/components';
 import { changeAccountVisibility } from '@wallet-actions/accountActions';
 import { changeCoinVisibility } from '@settings-actions/walletSettingsActions';
 import * as routerActions from '@suite-actions/routerActions';

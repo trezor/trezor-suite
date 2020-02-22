@@ -1,5 +1,5 @@
 import React from 'react';
-import { Translation } from '@suite-components/Translation';
+import { Translation } from '@suite-components';
 import { P } from '@trezor/components';
 import { ConnectPrompt } from '@suite-components/Prompts';
 import { Wrapper } from '@onboarding-components';

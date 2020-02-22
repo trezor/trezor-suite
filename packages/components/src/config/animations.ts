@@ -1,21 +1,12 @@
 import { keyframes } from 'styled-components';
 import colors from './colors';
 
-export const ROTATE_180_UP = keyframes`
-    from { 
-        transform: rotate(0deg) 
+export const SPIN = keyframes`
+    0% { 
+        transform: rotate(0deg); 
     }
-    to { 
-        transform: rotate(180deg) 
-    }
-`;
-
-export const ROTATE_180_DOWN = keyframes`
-    from { 
-        transform: rotate(180deg) 
-    }
-    to { 
-        transform: rotate(0deg) 
+    100% { 
+        transform: rotate(360deg);
     }
 `;
 
@@ -36,75 +27,15 @@ export const DASH = keyframes`
 
 export const GREEN_COLOR = keyframes`
     100%, 0% {
-        stroke: ${colors.GREEN_PRIMARY};
+        stroke: ${colors.GREEN};
     }
     40% {
-        stroke: ${colors.GREEN_PRIMARY};
+        stroke: ${colors.GREEN};
     }
     66% {
-        stroke: ${colors.GREEN_SECONDARY};
+        stroke: ${colors.GREENER};
     }
     80%, 90% {
-        stroke: ${colors.GREEN_TERTIARY};
-    }
-`;
-
-export const WHITE_COLOR = keyframes`
-    0%, 100% {
-        stroke: white;
-    }
-`;
-
-export const PULSATE = keyframes`
-    0%, 100% {
-        opacity: 0.5;
-    }
-    50% {
-        opacity: 1.0;
-    }
-`;
-
-export const SPIN = keyframes`
-    0% { 
-        transform: rotate(0deg); 
-    }
-    100% { 
-        transform: rotate(360deg);
-    }
-`;
-
-export const FADE_IN = keyframes`
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-`;
-
-export const SLIDE_DOWN = keyframes`
-    0% {
-        transform: translateY(-100%);
-    }
-    100% {
-        transform: translateY(0%);
-    }
-`;
-
-export const SLIDE_RIGHT = keyframes`
-    0% {
-        transform: translateX(-100%);
-    }
-    100% {
-        transform: translateX(0%);
-    }
-`;
-
-export const SLIDE_LEFT = keyframes`
-    0% {
-        transform: translateX(0%);
-    }
-    100% {
-        transform: translateX(-100%);
+        stroke: ${colors.GREENER};
     }
 `;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link, H2 } from '@trezor/components-v2';
+import { Link, H2 } from '@trezor/components';
 
 import { Translation } from '@suite-components';
 import { SUPPORT_URL } from '@suite-constants/urls';

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import FocusLock from 'react-focus-lock';
 import { SUITE } from '@suite-actions/constants';
-import { Modal as ModalComponent } from '@trezor/components-v2';
+import { Modal as ModalComponent } from '@trezor/components';
 import Loading from '@suite-components/Loading';
 import DiscoveryLoader from '@suite-components/DiscoveryLoader';
 import Modals from '@suite-components/modals';

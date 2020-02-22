@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
-import { P, H2 } from '@trezor/components-v2';
+import { P, H2 } from '@trezor/components';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import { TrezorDevice } from '@suite-types';

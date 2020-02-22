@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { P, Link, variables } from '@trezor/components-v2';
+import { P, Link, variables } from '@trezor/components';
 import { Option } from '@onboarding-components';
 import messages from '@suite/support/messages';
 import { Translation } from '@suite-components';

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
-import { colors, Button } from '@trezor/components-v2';
+import { colors, Button } from '@trezor/components';
 import { Card, HiddenPlaceholder } from '@suite-components';
 import { parseBIP44Path, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { ChildProps as Props } from '../../Container';

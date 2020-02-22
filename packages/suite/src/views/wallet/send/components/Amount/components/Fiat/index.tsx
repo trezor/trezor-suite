@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Select, Input } from '@trezor/components-v2';
+import { Select, Input } from '@trezor/components';
 import { Output } from '@wallet-types/sendForm';
 import { DispatchProps } from '../../../../Container';
 import { FIAT } from '@suite-config';

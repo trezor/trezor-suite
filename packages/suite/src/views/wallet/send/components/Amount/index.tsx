@@ -5,7 +5,7 @@ import React from 'react';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import styled from 'styled-components';
 import { Output } from '@wallet-types/sendForm';
-import { Input, colors, Icon, Tooltip } from '@trezor/components-v2';
+import { Input, colors, Icon, Tooltip } from '@trezor/components';
 import { VALIDATION_ERRORS, LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 

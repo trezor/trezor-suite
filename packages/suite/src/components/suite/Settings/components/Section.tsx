@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { colors } from '@trezor/components-v2';
+import { colors } from '@trezor/components';
 import SectionHeader from './SectionHeader';
 
 interface SectionProps {
