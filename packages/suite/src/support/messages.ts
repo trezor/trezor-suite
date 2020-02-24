@@ -840,10 +840,10 @@ const definedMessages = defineMessages({
         description: 'Case when device was connected and it is in expected state (not initialized)',
         id: 'TR_FOUND_OK_DEVICE',
     },
-    // TR_GAS_LIMIT: {
-    //         defaultMessage: 'Gas limit',
-    //         id: 'TR_GAS_LIMIT',
-    // },
+    TR_GAS_LIMIT: {
+        defaultMessage: 'Gas limit',
+        id: 'TR_GAS_LIMIT',
+    },
     // TR_GAS_LIMIT_REFERS_TO: {
     //         defaultMessage:
     //                 'Gas limit refers to the maximum amount of gas user is willing to spend on a particular transaction. {TR_GAS_QUOTATION}. Increasing the gas limit will not get the transaction confirmed sooner. Default value for sending {gasLimitTooltipCurrency} is {gasLimitTooltipValue}.',
@@ -1465,7 +1465,7 @@ const definedMessages = defineMessages({
         id: 'TR_SELECT_YOUR_DEVICE_HEADING',
     },
     TR_SEND: {
-        defaultMessage: 'Send {amount}',
+        defaultMessage: 'Send',
         id: 'TR_SEND',
     },
     TR_SEND_NETWORK: {
@@ -2162,6 +2162,43 @@ const definedMessages = defineMessages({
     TOAST_GENERIC_ERROR: {
         id: 'TOAST_GENERIC_ERROR',
         defaultMessage: 'Error: {error}',
+    },
+    TR_RECIPIENT: {
+        id: 'TR_RECIPIENT',
+        defaultMessage: 'Recipient',
+    },
+    TR_SCAN: {
+        id: 'TR_SCAN',
+        defaultMessage: 'Scan',
+    },
+    TR_REMOVE: {
+        id: 'TR_REMOVE',
+        defaultMessage: 'Remove',
+    },
+    TR_INCLUDING_FEE: {
+        id: 'TR_INCLUDING_FEE',
+        defaultMessage: ' Including fee of',
+    },
+    LOCKTIME_TITLE: {
+        id: 'LOCKTIME_TITLE',
+        defaultMessage: 'Add Locktime',
+    },
+    LOCKTIME_DESCRIPTION: {
+        id: 'LOCKTIME_DESCRIPTION',
+        defaultMessage: 'Allows you to postpone the transaction by set value (time or block)',
+    },
+    REPLACE_BY_FEE_TITLE: {
+        id: 'REPLACE_BY_FEE_TITLE',
+        defaultMessage: 'Replace by fee (RBF)',
+    },
+    REPLACE_BY_FEE_DESCRIPTION: {
+        id: 'REPLACE_BY_FEE_DESCRIPTION',
+        defaultMessage:
+            'RBF allows to bump fee later in case you want the transaction to be mined faster',
+    },
+    REFRESH: {
+        id: 'REFRESH',
+        defaultMessage: 'Refresh',
     },
 });
 

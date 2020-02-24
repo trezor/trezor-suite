@@ -23,7 +23,7 @@ const StyledIcon = styled(Icon)`
 const getError = (error: Send['networkTypeEthereum']['gasPrice']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.NOT_NUMBER:
-            return <Translation>{messages.TR_ETH_GAS_PRICE_NOT_NUMBER}</Translation>;
+            return <Translation {...messages.TR_ETH_GAS_PRICE_NOT_NUMBER} />;
         default:
             return null;
     }
@@ -41,7 +41,7 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
             state={getInputState(error, value, true)}
             topLabel={
                 <Label>
-                    Gas Price
+                    <Translation {...messages.TR_GAS_PRICE} />
                     <Tooltip
                         placement="top"
                         content={<Translation {...messages.TR_SEND_GAS_PRICE_TOOLTIP} />}

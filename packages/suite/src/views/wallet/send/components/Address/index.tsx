@@ -81,7 +81,7 @@ export default ({ output, account, accounts, devices, openModal, sendFormActions
                         type: 'qr-reader',
                         outputId: id,
                     }),
-                text: 'Scan',
+                text: <Translation {...messages.TR_SCAN} />,
             }}
             value={value || ''}
             onChange={e => sendFormActions.handleAddressChange(id, e.target.value)}

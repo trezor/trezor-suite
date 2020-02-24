@@ -122,7 +122,7 @@ export default ({ fiat, sendFormActions, intl, output, selectedAccount }: Props)
                     state={getInputState(error, value, isLoading)}
                     topLabel={
                         <Label>
-                            {intl.formatMessage(messages.TR_AMOUNT)}
+                            <Translation {...messages.TR_AMOUNT} />
                             <Tooltip
                                 placement="top"
                                 content={<Translation {...messages.TR_SEND_AMOUNT_TOOLTIP} />}

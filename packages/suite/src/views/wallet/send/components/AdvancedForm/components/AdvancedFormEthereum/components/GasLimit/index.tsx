@@ -23,7 +23,7 @@ const StyledIcon = styled(Icon)`
 const getError = (error: Send['networkTypeEthereum']['gasLimit']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.NOT_NUMBER:
-            return <Translation>{messages.TR_ETH_GAS_LIMIT_NOT_NUMBER}</Translation>;
+            return <Translation {...messages.TR_ETH_GAS_LIMIT_NOT_NUMBER} />;
         default:
             return null;
     }
@@ -42,7 +42,7 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
             state={getInputState(error, value, true)}
             topLabel={
                 <Label>
-                    Gas Limit
+                    <Translation {...messages.TR_GAS_LIMIT} />
                     <Tooltip
                         placement="top"
                         content={<Translation {...messages.TR_SEND_GAS_LIMIT_TOOLTIP} />}

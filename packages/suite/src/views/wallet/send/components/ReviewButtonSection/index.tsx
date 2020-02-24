@@ -131,11 +131,15 @@ export default ({ send, suite, account, device, modalActions }: Props) => {
             {transactionInfo?.type === 'final' && (
                 <>
                     <Row>
-                        Send <Bold>{getSendAmount(transactionInfo, symbol)}</Bold>
+                        <Translation {...messages.TR_SEND} />{' '}
+                        <Bold>{getSendAmount(transactionInfo, symbol)}</Bold>
                     </Row>
                     <Row>
-                        Including fee of{' '}
-                        <Bold>{formatNetworkAmount(transactionInfo.fee, symbol)}</Bold>
+                        <Translation {...messages.TR_INCLUDING_FEE} />{' '}
+                        <Bold>
+                            {formatNetworkAmount(transactionInfo.fee, symbol)}{' '}
+                            {symbol.toUpperCase()}
+                        </Bold>
                     </Row>
                     {networkType === 'bitcoin' && !customFee.value && (
                         <Row>

@@ -147,7 +147,9 @@ export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
                     </Label>
                     <Refresh>
                         <StyledIcon icon="REFRESH" color={colors.BLACK50} size={10} />
-                        <RefreshText>Refresh</RefreshText>
+                        <RefreshText>
+                            <Translation {...messages.REFRESH} />
+                        </RefreshText>
                     </Refresh>
                 </Top>
                 <StyledSelect
