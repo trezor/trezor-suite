@@ -79,7 +79,7 @@ describe('Backup Actions', () => {
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: true });
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: false });
         expect(store.getActions().shift()).toMatchObject({
-            type: '@notification/add',
+            type: '@notification/toast',
             payload: { type: 'backup-success' },
         });
     });
@@ -105,7 +105,7 @@ describe('Backup Actions', () => {
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: true });
         expect(store.getActions().shift()).toEqual({ type: SUITE.LOCK_DEVICE, payload: false });
         expect(store.getActions().shift()).toMatchObject({
-            type: '@notification/add',
+            type: '@notification/toast',
             payload: { type: 'backup-failed' },
         });
     });
