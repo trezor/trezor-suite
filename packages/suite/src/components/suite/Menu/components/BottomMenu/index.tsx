@@ -7,12 +7,11 @@ import { BOTTOM_MENU_ITEMS, MENU_PADDING } from '@suite-constants/menu';
 import Divider from '../Divider';
 
 const Wrapper = styled.div`
-    padding: ${MENU_PADDING}px 0 10px 10px;
+    padding: ${MENU_PADDING}px 0 10px 4px;
 `;
 
 const MenuItemWrapper = styled.div`
     display: flex;
-    font-weight: bold;
     color: ${colors.WHITE};
     cursor: pointer;
     align-items: center;
@@ -40,7 +39,7 @@ interface ComponentProps {
 
 const Text = styled.div<ComponentProps>`
     color: ${colors.WHITE};
-    font-weight: bold;
+    font-size: 12px;
     padding-top: 2px;
     display: flex;
     align-items: center;
@@ -54,9 +53,9 @@ const Text = styled.div<ComponentProps>`
 
 const In = styled.div<ComponentProps>`
     cursor: pointer;
-    padding: 10px 0;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
+    padding: 6px 0;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
     display: flex;
     flex: 1;
     flex-direction: flex-start;
@@ -108,7 +107,7 @@ const BottomMenu = (props: Props) => (
                         <IconWrapper>
                             <Icon
                                 color={isActive ? colors.BLACK0 : colors.WHITE}
-                                size={10}
+                                size={12}
                                 icon={icon}
                             />
                         </IconWrapper>
