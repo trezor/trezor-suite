@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components-v2';
+import { colors, variables } from '@trezor/components';
 import { Card, Translation } from '@suite-components';
 import messages from '@suite/support/messages';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, variables, colors } from '@trezor/components-v2';
+import { Button, variables, colors } from '@trezor/components';
 
 import { resolveStaticPath } from '@suite-utils/nextjs';
 

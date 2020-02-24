@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Card from '@suite-components/Card';
-import { Icon, Loader, colors } from '@trezor/components-v2';
+import { Icon, Loader, colors } from '@trezor/components';
 
 const getBorderColor = (variant: Props['variant']) => {
     switch (variant) {

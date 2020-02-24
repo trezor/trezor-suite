@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { P, Switch, Link, Icon, variables, colors, CoinLogo } from '@trezor/components-v2';
+import { P, Switch, Link, Icon, variables, colors, CoinLogo } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { SuiteLayout } from '@suite-components';

@@ -1,6 +1,6 @@
 import { SUITE } from '@suite-actions/constants';
 import { AppState, TrezorDevice } from '@suite-types';
-import { Button, colors, variables } from '@trezor/components-v2';
+import { Button, colors, variables } from '@trezor/components';
 import { Account, Send } from '@wallet-types';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';

@@ -1,261 +1,279 @@
-import React from 'react';
+import * as React from 'react';
 import styled, { css } from 'styled-components';
 import FluidSpinner from '../../FluidSpinner';
-
-import {
-    FONT_FAMILY,
-    FONT_SIZE,
-    FONT_WEIGHT,
-    LINE_HEIGHT,
-    TRANSITION,
-} from '../../../config/variables';
-import { getStateIcon } from '../../../utils/icons';
-import { getPrimaryColor } from '../../../utils/colors';
 import { Icon } from '../../Icon';
-import colors from '../../../config/colors';
-import { FeedbackType, IconType } from '../../../support/types';
+import { colors, variables } from '../../../config';
+import {
+    InputState,
+    InputVariant,
+    InputDisplay,
+    InputButton,
+    TextAlign,
+} from '../../../support/types';
+import { getStateColor } from '../../../utils';
 
-const Wrapper = styled.div`
-    width: 100%;
-    display: flex;
+interface WrappedProps {
+    width?: any;
+}
+
+const Wrapper = styled.div<WrappedProps>`
+    display: inline-flex;
     flex-direction: column;
-    justify-content: flex-start;
+    width: ${props => (props.width ? `${props.width}px` : '100%')};
+`;
+
+const StyledInput = styled.input<Props>`
+    font-family: ${variables.FONT_FAMILY.TTHOVES};
+    padding: 0 10px;
+    font-size: ${props => (props.value ? '16px' : '14px')};
+    border-radius: 3px;
+    box-shadow: inset 0 3px 6px 0 ${colors.BLACK92};
+    border: solid 1px ${props => (props.state ? getStateColor(props.state) : colors.BLACK80)};
+    background-color: ${colors.WHITE};
+    outline: none;
+    box-sizing: border-box;
+    width: 100%;
+    height: ${props => (props.variant === 'small' ? '38px' : '48px')};
+    text-align: ${props => props.align || 'left'};
+    color: ${props => getStateColor(props.state)};
+
+    &:read-only {
+        background: ${colors.BLACK96};
+        box-shadow: none;
+        color: ${colors.BLACK50};
+    }
+
+    ${props =>
+        props.monospace &&
+        css`
+            font-family: ${variables.FONT_FAMILY.MONOSPACE};
+            padding-bottom: 2px;
+        `}
+
+    ${props =>
+        props.disabled &&
+        css`
+            background: ${colors.BLACK96};
+            box-shadow: none;
+            color: ${colors.BLACK50};
+            cursor: not-allowed;
+        `}
+
+    ${props =>
+        !props.disabled &&
+        !props.state &&
+        !props.readOnly &&
+        css`
+            &:hover,
+            &:focus,
+            &:active {
+                border-color: ${colors.BLACK50};
+            }
+        `}
 `;
 
 const InputWrapper = styled.div`
     display: flex;
-`;
-
-const InputIconWrapper = styled.div`
-    flex: 1;
     position: relative;
-    display: inline-block;
-    background: white;
 `;
 
-const TopLabel = styled.span`
-    padding-bottom: 10px;
-    color: ${colors.TEXT_SECONDARY};
-`;
+const InputIconWrapper = styled.div<Props>`
+    position: absolute;
+    top: 1px;
+    bottom: 1px;
+    display: flex;
+    align-items: center;
+    z-index: 2;
 
-const StyledInput = styled.input<InputProps>`
-    width: 100%;
-    height: ${props => (props.height ? `${props.height}px` : '40px')};
-    padding: 5px ${props => (props.hasIcon ? '40px' : '12px')} 6px 12px;
-
-    font-family: ${FONT_FAMILY.MONOSPACE};
-    line-height: ${LINE_HEIGHT.SMALL};
-    font-size: ${props => (props.isSmallText ? `${FONT_SIZE.SMALL}` : `${FONT_SIZE.BASE}`)};
-    font-weight: ${FONT_WEIGHT.MEDIUM};
-    color: ${props => (props.color ? props.color : colors.TEXT)};
-    box-sizing: border-box;
-
-    border-radius: 2px;
-    
     ${props =>
-        props.hasAddon &&
+        props.align === 'left' &&
         css`
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
+            right: 10px;
         `}
 
-    border: 1px solid ${props => props.border};
-    background-color: ${colors.WHITE};
-    transition: ${TRANSITION.HOVER};
+    ${props =>
+        props.align === 'right' &&
+        css`
+            left: 10px;
+        `}
+`;
 
-    &:disabled {
-        pointer-events: none;
-        background: ${colors.GRAY_LIGHT};
-        color: ${colors.TEXT_SECONDARY};
-    }
+const SpinnerWrapper = styled.div``;
 
-    &:read-only  {
-        background: ${colors.GRAY_LIGHT};
-        color: ${colors.TEXT_SECONDARY};
-    }
+const Label = styled.label`
+    padding: 0 0 10px 0;
+`;
 
-    &:focus {
-        box-shadow: ${colors.INPUT_FOCUS_SHADOW} 0px 0px 6px 0px;
-        border-color: ${props => props.border || colors.INPUT_FOCUS_BORDER};
-        outline: none;
-    }
+const BottomText = styled.div<Props>`
+    padding: 10px;
+    font-size: 12px;
+    color: ${props => getStateColor(props.state)};
+`;
+
+const Button = styled.button<{ disabled?: boolean }>`
+    font-family: ${variables.FONT_FAMILY.TTHOVES};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.BLACK25};
+    border: none;
+    outline: none;
+    display: flex;
+    align-items: center;
+    padding: 0 0 0 5px;
+    background: ${colors.WHITE};
 
     ${props =>
-        props.tooltipAction &&
+        !props.disabled &&
         css`
-            z-index: 10001; /* bigger than modal container */
-            position: relative;
-        `};
+            cursor: pointer;
+
+            &:hover {
+                color: ${colors.BLACK0};
+            }
+        `}
+
+    ${props =>
+        props.disabled &&
+        css`
+            opacity: 0.7;
+        `}
+`;
+
+const ButtonText = styled.div`
+    font-size: 14px;
+    font-weight: 500;
+    height: 14px;
+    line-height: 16px;
 `;
 
 const StyledIcon = styled(Icon)`
+    margin-right: 5px;
+`;
+
+const Overlay = styled.div<Props>`
+    bottom: 1px;
+    top: 1px;
+    left: 1px;
+    right: 1px;
+    border: 1px solid transparent;
+    border-radius: 3px;
     position: absolute;
-    left: auto;
-    top: 12px;
-    right: 15px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 220px);
+    z-index: 1;
 `;
 
-const BottomText = styled.span`
-    margin-top: 10px;
-    font-size: ${FONT_SIZE.SMALL};
-    color: ${props => (props.color ? props.color : colors.TEXT_SECONDARY)};
-`;
-
-const Overlay = styled.div<InputProps>`
-    ${props =>
-        props.isPartiallyHidden &&
-        css`
-            bottom: 0;
-            border: 1px solid ${colors.DIVIDER};
-            border-radius: 2px;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-image: linear-gradient(
-                to right,
-                rgba(0, 0, 0, 0) 0%,
-                rgba(249, 249, 249, 1) 220px
-            );
-        `}
-`;
-
-const TooltipAction = styled.div<TooltipActionProps>`
-    display: ${props => (props.action ? 'flex' : 'none')};
-    align-items: center;
-    height: 37px;
-    margin: 0px 10px;
-    padding: 0 14px;
-    position: absolute;
-    top: 45px;
-    background: black;
-    color: ${colors.WHITE};
-    border-radius: 5px;
-    line-height: ${LINE_HEIGHT.TREZOR_ACTION};
-    z-index: 10002;
-    transform: translate(-1px, -1px);
-`;
-
-const ArrowUp = styled.div`
-    position: absolute;
-    top: -9px;
-    left: 12px;
-    width: 0;
-    height: 0;
-    border-left: 9px solid transparent;
-    border-right: 9px solid transparent;
-    border-bottom: 9px solid black;
-    z-index: 10001;
-`;
-
-interface TooltipActionProps {
-    action?: React.ReactNode;
-}
-
-interface InputProps {
-    hasIcon?: boolean;
-    hasAddon?: boolean;
-    isPartiallyHidden?: boolean;
-    isSmallText?: boolean;
-    border?: string;
-    tooltipAction?: React.ReactNode;
-}
-
-// TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     innerRef?: React.RefObject<HTMLInputElement>;
-    height?: number;
-    icon?: IconType | React.ReactNode;
-    bottomText?: React.ReactNode;
+    variant?: InputVariant;
+    display?: InputDisplay;
+    button?: InputButton;
     topLabel?: React.ReactNode;
-    isLoading?: boolean;
-    tooltipAction?: React.ReactNode;
-    sideAddons?: React.ReactNode;
+    bottomText?: React.ReactNode;
+    monospace?: boolean;
     isDisabled?: boolean;
     autoComplete?: string;
     autoCorrect?: string;
     autoCapitalize?: string;
     spellCheck?: boolean;
-    isSmallText?: boolean;
+    isLoading?: boolean;
+    dataTest?: string;
     isPartiallyHidden?: boolean;
     wrapperProps?: Record<string, any>;
-    type?: string; // TODO: type prop should be inherited from basic html input
-    state?: FeedbackType;
+    type?: string;
+    state?: InputState;
+    align?: TextAlign;
 }
 
-const SpinnerWrapper = styled.div`
-    position: absolute;
-    left: auto;
-    top: 12px;
-    right: 15px;
-`;
-
 const Input = ({
-    className,
-    innerRef,
     type = 'text',
-    height = 40,
-    icon,
+    innerRef,
     state,
-    bottomText,
+    variant = 'large',
+    width,
+    button,
     topLabel,
-    tooltipAction,
-    sideAddons,
-    isLoading,
+    bottomText,
     isDisabled,
-    isSmallText,
     autoComplete = 'off',
     autoCorrect = 'off',
     autoCapitalize = 'off',
-    spellCheck = false,
-    isPartiallyHidden,
+    monospace,
     wrapperProps,
+    isLoading,
+    dataTest,
+    isPartiallyHidden,
+    align = 'left',
     ...rest
 }: Props) => {
-    const stateIcon = getStateIcon(state);
-    const stateColor = getPrimaryColor(state) || undefined;
+    const [buttonHover, setButtonHover] = React.useState(false);
+    const handleButtonEnter = () => {
+        setButtonHover(true);
+    };
+    const handleButtonLeave = () => {
+        setButtonHover(false);
+    };
+    const getStateIcon = () => {
+        switch (state) {
+            case 'warning':
+                return 'INFO';
+            case 'error':
+                return 'CROSS';
+            default:
+                return 'CHECK';
+        }
+    };
 
     return (
-        <Wrapper className={className} {...wrapperProps}>
-            {topLabel && <TopLabel>{topLabel}</TopLabel>}
+        <Wrapper width={width} {...wrapperProps} data-test={dataTest}>
+            {topLabel && <Label>{topLabel}</Label>}
             <InputWrapper>
-                <InputIconWrapper>
-                    {stateIcon && stateColor && (
-                        <StyledIcon icon={stateIcon} color={stateColor} size={16} />
-                    )}
+                <InputIconWrapper align={align}>
                     {isLoading && (
                         <SpinnerWrapper>
-                            <FluidSpinner size={16} />
+                            <FluidSpinner size={16} color={colors.GREEN} />
                         </SpinnerWrapper>
                     )}
-                    <Overlay isPartiallyHidden={isPartiallyHidden} />
-                    {/* TODO: this icon should be most likely removed */}
-                    {icon}
-                    <StyledInput
-                        type={type}
-                        autoComplete="off"
-                        autoCorrect="off"
-                        autoCapitalize="off"
-                        spellCheck={false}
-                        height={height}
-                        tooltipAction={tooltipAction}
-                        hasIcon={!!icon || !!getStateIcon(state)}
-                        ref={innerRef}
-                        hasAddon={!!sideAddons}
-                        color={stateColor}
-                        isSmallText={isSmallText}
-                        border={stateColor || colors.INPUT_BORDER}
-                        disabled={isDisabled}
-                        data-lpignore="true"
-                        {...rest}
-                    />
-                    <TooltipAction action={tooltipAction}>
-                        <ArrowUp />
-                        {tooltipAction}
-                    </TooltipAction>
+                    {button && (
+                        <Button
+                            onClick={button.onClick}
+                            onMouseEnter={handleButtonEnter}
+                            onMouseLeave={handleButtonLeave}
+                            disabled={button.isDisabled}
+                        >
+                            {button.icon && (
+                                <StyledIcon
+                                    icon={button.icon}
+                                    size={button.iconSize || 10}
+                                    color={
+                                        buttonHover
+                                            ? button.iconColorHover || colors.BLACK0
+                                            : button.iconColor || colors.BLACK25
+                                    }
+                                />
+                            )}
+                            {button.text && <ButtonText>{button.text}</ButtonText>}
+                        </Button>
+                    )}
                 </InputIconWrapper>
-                {sideAddons}
+                {isPartiallyHidden && <Overlay />}
+                <StyledInput
+                    type={type}
+                    autoComplete={autoComplete}
+                    autoCorrect={autoCorrect}
+                    autoCapitalize={autoCapitalize}
+                    spellCheck={false}
+                    state={state}
+                    variant={variant}
+                    disabled={isDisabled}
+                    width={width}
+                    monospace={monospace}
+                    align={align}
+                    ref={innerRef}
+                    data-lpignore="true"
+                    {...rest}
+                />
             </InputWrapper>
-            {bottomText && <BottomText color={stateColor}>{bottomText}</BottomText>}
+            {bottomText && <BottomText state={state}>{bottomText}</BottomText>}
         </Wrapper>
     );
 };

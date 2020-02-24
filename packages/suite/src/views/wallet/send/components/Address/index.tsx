@@ -1,7 +1,7 @@
-import { Translation } from '@suite-components/Translation';
+import { Translation } from '@suite-components';
 import { AppState } from '@suite-types';
 import styled from 'styled-components';
-import { Icon, colors, Input, Tooltip } from '@trezor/components-v2';
+import { Icon, colors, Input, Tooltip } from '@trezor/components';
 import messages from '@suite/support/messages';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Account, Network } from '@wallet-types';
@@ -28,7 +28,7 @@ const getMessage = (
     accounts: Account[],
     devices: AppState['devices'],
 ) => {
-    if (address && error !== VALIDATION_ERRORS.CANNOT_SEND_TO_MYSELF) {
+    if (address && error !== VALIDATION_ERRORS.XRP_CANNOT_SEND_TO_MYSELF) {
         const account = isAddressInAccount(networkType, address, accounts);
         if (account) {
             const device = getAccountDevice(devices, account);
@@ -43,22 +43,14 @@ const getMessage = (
             return <Translation>{messages.TR_ADDRESS_IS_NOT_SET}</Translation>;
         case VALIDATION_ERRORS.NOT_VALID:
             return <Translation>{messages.TR_ADDRESS_IS_NOT_VALID}</Translation>;
-        case VALIDATION_ERRORS.CANNOT_SEND_TO_MYSELF:
-            return <Translation>{messages.TR_CANNOT_SEND_TO_MYSELF}</Translation>;
+        case VALIDATION_ERRORS.XRP_CANNOT_SEND_TO_MYSELF:
+            return <Translation>{messages.TR_XRP_CANNOT_SEND_TO_MYSELF}</Translation>;
         default:
             return undefined;
     }
 };
 
-export default ({
-    output,
-    intl,
-    account,
-    accounts,
-    devices,
-    openModal,
-    sendFormActions,
-}: Props) => {
+export default ({ output, account, accounts, devices, openModal, sendFormActions }: Props) => {
     if (!account) return null;
 
     const { networkType } = account;
@@ -72,7 +64,7 @@ export default ({
             monospace
             topLabel={
                 <Label>
-                    {intl.formatMessage(messages.TR_RECIPIENT_ADDRESS)}
+                    <Translation {...messages.TR_RECIPIENT_ADDRESS} />
                     <Tooltip
                         placement="top"
                         content={<Translation {...messages.TR_RECIPIENT_ADDRESS_TOOLTIP} />}

@@ -3,12 +3,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { Button, P, H2, colors } from '@trezor/components-v2';
+import { Button, P, H2, colors } from '@trezor/components';
 import { copyToClipboard } from '@suite-utils/dom';
 import { TrezorDevice, Dispatch } from '@suite-types';
-import { Translation } from '@suite-components';
+import { Translation, QrCode } from '@suite-components';
 import messages from '@suite/support/messages';
-import QRCode from './components/QRCode';
 import CheckOnTrezor from './components/CheckOnTrezor';
 import DeviceDisconnected from './components/DeviceDisconnected';
 
@@ -65,10 +64,8 @@ const ConfirmAddress = ({
 
     const copyAddress = () => {
         const result = copyToClipboard(address, htmlElement.current);
-        if (typeof result === 'string') {
-            addNotification({ type: 'copy-to-clipboard-error', error: result });
-        } else {
-            addNotification({ type: 'copy-to-clipboard-success', payload: address });
+        if (typeof result !== 'string') {
+            addNotification({ type: 'copy-to-clipboard' });
         }
     };
 
@@ -85,7 +82,7 @@ const ConfirmAddress = ({
                     <Translation {...messages.TR_ADDRESS_MODAL_BTC_DESCRIPTION} />
                 </P>
             )}
-            <QRCode value={address} addressPath={addressPath} />
+            <QrCode value={address} addressPath={addressPath} />
             <Address data-test="@address-modal/address-field">{address}</Address>
             {device.connected && <CheckOnTrezor device={device} />}
             {!device.connected && <DeviceDisconnected label={device.label} />}

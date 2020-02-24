@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as routerActions from '@suite-actions/routerActions';
-import { Button, P } from '@trezor/components-v2';
+import { Button, P } from '@trezor/components';
 import { Dispatch } from '@suite-types';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

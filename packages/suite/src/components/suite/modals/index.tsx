@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import FocusLock from 'react-focus-lock';
 
 import { UI } from 'trezor-connect';
-import { Modal as ModalComponent } from '@trezor/components-v2';
+import { Modal as ModalComponent } from '@trezor/components';
 
 import * as modalActions from '@suite-actions/modalActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -22,6 +22,7 @@ import ConfirmAction from './confirm/Action';
 import Word from './Word';
 import WordAdvanced from './WordAdvanced';
 import ConfirmAddress from './confirm/Address';
+import ConfirmXpub from './confirm/Xpub/Container';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ReviewTransaction from './ReviewTransaction/Container';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
@@ -140,6 +141,8 @@ const getUserContextModal = (props: Props) => {
                     onCancel={payload.cancelable ? modalActions.onCancel : undefined}
                 />
             );
+        case 'xpub':
+            return <ConfirmXpub {...payload} onCancel={modalActions.onCancel} />;
         case 'device-background-gallery':
             return (
                 <BackgroundGallery

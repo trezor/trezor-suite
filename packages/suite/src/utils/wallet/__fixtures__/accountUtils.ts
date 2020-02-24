@@ -585,3 +585,36 @@ export const sortByCoin = [
         ],
     },
 ];
+
+export const getBip43Shortcut = [
+    {
+        description: 'bech32',
+        path: "m/84'/0'/0'",
+        result: 'bech32',
+    },
+    {
+        description: 'p2sh',
+        path: "m/49'/0'/0'",
+        result: 'p2sh',
+    },
+    {
+        description: 'p2phk',
+        path: "m/44'/0'/0'",
+        result: 'p2phk',
+    },
+    {
+        description: 'unknown',
+        path: 'm/',
+        result: 'unknown',
+    },
+    {
+        description: 'invalid path',
+        path: 'invalid-string',
+        result: 'unknown',
+    },
+    {
+        description: 'invalid path type',
+        path: undefined,
+        result: 'unknown',
+    },
+];

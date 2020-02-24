@@ -4,7 +4,7 @@ import Loading from '@suite-components/Loading';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { variables, colors } from '@trezor/components-v2';
+import { variables, colors } from '@trezor/components';
 
 const Wrapper = styled(ModalWrapper)`
     display: flex;

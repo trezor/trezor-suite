@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { colors } from '@trezor/components-v2';
+import { colors } from '@trezor/components';
 import { Props } from './Container';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 

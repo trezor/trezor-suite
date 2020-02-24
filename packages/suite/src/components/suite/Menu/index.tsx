@@ -1,6 +1,6 @@
 import React from 'react';
 import { Props } from './Container';
-import { colors } from '@trezor/components-v2';
+import { colors } from '@trezor/components';
 import styled from 'styled-components';
 
 import TopMenu from './components/TopMenu';

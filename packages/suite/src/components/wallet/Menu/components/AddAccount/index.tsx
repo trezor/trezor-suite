@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, colors } from '@trezor/components-v2';
-import { Tooltip } from '@trezor/components';
+import { Icon, colors, Tooltip } from '@trezor/components';
 // import messages from '@suite/support/messages';
 
 interface Props {

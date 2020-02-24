@@ -2,7 +2,7 @@ import React from 'react';
 import { Translation } from '@suite-components/Translation';
 
 import styled from 'styled-components';
-import { H2, P, colors } from '@trezor/components-v2';
+import { H2, P, colors } from '@trezor/components';
 import { Network, ExternalNetwork } from '@wallet-types';
 import messages from '@suite/support/messages';
 

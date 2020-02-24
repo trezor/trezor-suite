@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Checkbox, variables, colors } from '@trezor/components-v2';
+import { Checkbox, variables, colors } from '@trezor/components';
 
 const { FONT_SIZE } = variables;
 

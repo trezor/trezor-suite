@@ -1,5 +1,5 @@
 import React from 'react';
-import { colors, variables } from '@trezor/components-v2';
+import { colors, variables } from '@trezor/components';
 import styled from 'styled-components';
 import { Output } from '@wallet-types/sendForm';
 import Remove from './components/Remove';

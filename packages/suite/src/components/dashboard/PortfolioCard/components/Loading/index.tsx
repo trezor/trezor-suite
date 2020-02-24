@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import { colors, variables } from '@trezor/components-v2';
+import { colors, variables } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;

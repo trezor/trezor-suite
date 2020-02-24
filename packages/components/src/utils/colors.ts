@@ -1,76 +1,30 @@
+import { FeedbackState, InputState } from '../support/types';
 import colors from '../config/colors';
-import { FeedbackType, ButtonVariant } from '../support/types';
 
-const getPrimaryColor = (type?: ButtonVariant) => {
-    let color;
-    switch (type) {
-        case 'info':
-            color = colors.INFO_PRIMARY;
-            break;
+const getFeedbackColor = (state: FeedbackState) => {
+    switch (state) {
         case 'error':
-            color = colors.ERROR_PRIMARY;
-            break;
+            return colors.RED;
+        case 'info':
+            return colors.BLUE;
         case 'warning':
-            color = colors.WARNING_PRIMARY;
-            break;
-        case 'success':
-            color = colors.SUCCESS_PRIMARY;
-            break;
-        case 'white':
-            color = colors.WHITE;
-            break;
+            return colors.YELLOW;
         default:
-            color = null;
+            return colors.GREEN;
     }
-
-    return color;
 };
 
-const getSecondaryColor = (type?: ButtonVariant) => {
-    let color;
-    switch (type) {
-        case 'info':
-            color = colors.INFO_SECONDARY;
-            break;
-        case 'error':
-            color = colors.ERROR_SECONDARY;
-            break;
-        case 'warning':
-            color = colors.WARNING_SECONDARY;
-            break;
+const getStateColor = (state: InputState | undefined) => {
+    switch (state) {
         case 'success':
-            color = colors.SUCCESS_SECONDARY;
-            break;
-        case 'white':
-            color = colors.WHITE;
-            break;
+            return colors.GREENER;
+        case 'warning':
+            return colors.YELLOWER;
+        case 'error':
+            return colors.RED;
         default:
-            color = null;
+            return colors.BLACK50;
     }
-
-    return color;
 };
 
-const getNotificationBgColor = (type?: FeedbackType) => {
-    let color;
-    switch (type) {
-        case 'info':
-            color = colors.INFO_LIGHT;
-            break;
-        case 'error':
-            color = colors.ERROR_LIGHT;
-            break;
-        case 'warning':
-            color = colors.WARNING_LIGHT;
-            break;
-        case 'success':
-            color = colors.SUCCESS_LIGHT;
-            break;
-        default:
-            color = null;
-    }
-
-    return color;
-};
-
-export { getPrimaryColor, getSecondaryColor, getNotificationBgColor };
+export { getStateColor, getFeedbackColor };

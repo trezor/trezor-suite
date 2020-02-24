@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { H2, P } from '@trezor/components-v2';
+import { H2, P } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { Wrapper, OnboardingButton } from '@onboarding-components';
 import messages from '@suite/support/messages';

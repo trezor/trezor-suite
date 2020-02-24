@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
-import { H2, Button, colors, variables } from '@trezor/components-v2';
+import { H2, Button, colors, variables } from '@trezor/components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
 import { Output } from '@wallet-types/sendForm';
@@ -94,7 +94,7 @@ export default ({
                         <Translation {...messages.TR_ADDRESS_FROM} />
                     </Label>
                     <Value>
-                        {upperCaseSymbol} Account #{account.index}
+                        {upperCaseSymbol} Account #{account.index + 1}
                     </Value>
                 </Box>
                 {outputs.map((output: Output) => (

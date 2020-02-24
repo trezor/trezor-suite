@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables, H2 } from '@trezor/components-v2';
+import { colors, variables, H2 } from '@trezor/components';
 
 const Content = styled.div`
     display: flex;

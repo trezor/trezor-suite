@@ -1,6 +1,6 @@
 import React from 'react';
 import { NotificationCard, Translation } from '@suite-components';
-import { Link } from '@trezor/components-v2';
+import { Link } from '@trezor/components';
 import { URLS } from '@suite-constants';
 import messages from '@suite/support/messages';
 

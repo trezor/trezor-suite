@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Button, Link, H2, colors, variables } from '@trezor/components-v2';
+import { Button, Link, H2, colors, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';

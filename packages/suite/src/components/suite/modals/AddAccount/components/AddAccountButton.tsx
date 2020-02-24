@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Tooltip } from '@trezor/components-v2';
+import { Button, Tooltip } from '@trezor/components';
 import { Account, Network } from '@wallet-types';
 
 interface Props {

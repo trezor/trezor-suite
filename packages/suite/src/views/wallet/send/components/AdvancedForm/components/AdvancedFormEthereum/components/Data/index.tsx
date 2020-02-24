@@ -1,7 +1,7 @@
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import styled from 'styled-components';
-import { Textarea, colors, Icon, Tooltip } from '@trezor/components-v2';
+import { Textarea, colors, Icon, Tooltip } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Send } from '@wallet-types';
 import { getInputState } from '@wallet-utils/sendFormUtils';

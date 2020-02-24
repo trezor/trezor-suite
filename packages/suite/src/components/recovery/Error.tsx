@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { P } from '@trezor/components-v2';
+import { P } from '@trezor/components';
 import messages from '@suite/support/messages';
 import { Translation } from '@suite-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';

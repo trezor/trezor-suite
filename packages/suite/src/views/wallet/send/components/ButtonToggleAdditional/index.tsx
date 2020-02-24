@@ -1,5 +1,5 @@
 import React from 'react';
-import { variables, colors, Icon } from '@trezor/components-v2';
+import { variables, colors, Icon } from '@trezor/components';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';

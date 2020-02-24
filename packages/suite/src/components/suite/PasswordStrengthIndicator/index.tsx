@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import zxcvbn from 'zxcvbn';
-import { colors } from '@trezor/components-v2';
+import { colors } from '@trezor/components';
 
 interface WrapperProps {
     width?: number;

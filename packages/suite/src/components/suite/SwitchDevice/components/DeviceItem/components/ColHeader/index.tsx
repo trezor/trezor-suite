@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, Tooltip, TooltipProps, colors, variables } from '@trezor/components-v2';
+import { Icon, Tooltip, TooltipProps, colors, variables } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;

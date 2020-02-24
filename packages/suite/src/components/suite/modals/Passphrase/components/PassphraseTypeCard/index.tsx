@@ -1,7 +1,7 @@
 import React, { useState, createRef, useLayoutEffect } from 'react';
 import { useKeyPress } from '@suite-utils/dom';
 import styled, { css } from 'styled-components';
-import { Button, colors, variables, Input, Checkbox } from '@trezor/components-v2';
+import { Button, colors, variables, Input, Checkbox } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import { MAX_PASSPHRASE_LENGTH } from '@suite-constants/passphrase';

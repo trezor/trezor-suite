@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import messages from '@suite/support/messages';
-import { colors } from '@trezor/components-v2';
+import { colors } from '@trezor/components';
 import { WalletLayout } from '@wallet-components';
 import AccountName from '@wallet-components/AccountName';
 import AccountSelector from '@wallet-components/AccountSelector/Container';

@@ -2,8 +2,7 @@
     "compilerOptions": {
         "baseUrl": "./",
         // Target latest version of ECMAScript.
-        "target": "esnext",
-        "module": "esnext",
+        "target": "es5",
         "lib": ["es6", "dom"],
         "allowSyntheticDefaultImports": true,
         // fix "duplicate identifier" error
@@ -14,7 +13,7 @@
         "esModuleInterop": true,
         "declaration": true,
         // Only emit ‘.d.ts’ declaration files.
-        "emitDeclarationOnly": true,
+        "emitDeclarationOnly": false,
         "declarationMap": true,
         "noImplicitReturns": true,
         "noImplicitThis": true,

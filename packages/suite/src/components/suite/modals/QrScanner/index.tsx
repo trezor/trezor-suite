@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
 import { parseUri } from '@suite-utils/parseUri';
-import { H2, P, Icon, colors, variables, Link, Button } from '@trezor/components-v2';
+import { H2, P, Icon, colors, variables, Link, Button } from '@trezor/components';
 import * as sendFormActions from '@wallet-actions/send/sendFormActions';
 import messages from '@suite/support/messages';
 import * as URLS from '@suite-constants/urls';

@@ -104,4 +104,13 @@ export const SHAKE = keyframes`
     }
 `;
 
+export const PULSATE = keyframes`
+    0%, 100% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1.0;
+    }
+`;
+
 export default animationStyles;

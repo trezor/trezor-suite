@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, colors, variables, Link, Loader } from '@trezor/components-v2';
-import { Translation } from '@suite-components/Translation';
+import { Icon, colors, variables, Link, Loader } from '@trezor/components';
+import { Translation, HiddenPlaceholder } from '@suite-components';
 import messages from '@suite/support/messages';
 import { FormattedDate } from 'react-intl';
 import Box from '../Box';
@@ -174,14 +174,18 @@ const BasicDetails = ({
 
             <Box>
                 <BoxRow title={<Translation {...messages.TR_TOTAL_INPUT} />}>
-                    {totalInput && `${totalInput} ${assetSymbol}`}
+                    <HiddenPlaceholder>
+                        {totalInput && `${totalInput} ${assetSymbol}`}
+                    </HiddenPlaceholder>
                 </BoxRow>
                 <BoxRow title={<Translation {...messages.TR_TOTAL_OUTPUT} />}>
-                    {totalOutput && `${totalOutput} ${assetSymbol}`}
+                    <HiddenPlaceholder>
+                        {totalOutput && `${totalOutput} ${assetSymbol}`}
+                    </HiddenPlaceholder>
                 </BoxRow>
-                <BoxRow
-                    title={<Translation {...messages.TR_TX_FEE} />}
-                >{`${tx.fee} ${assetSymbol}`}</BoxRow>
+                <BoxRow title={<Translation {...messages.TR_TX_FEE} />}>
+                    <HiddenPlaceholder>{`${tx.fee} ${assetSymbol}`}</HiddenPlaceholder>
+                </BoxRow>
                 {/* TODO: BlockchainLink doesn't return size/vsize field */}
                 {/* {txDetails?.size && <BoxRow title="Size">{`${txDetails.size} B`}</BoxRow>} */}
             </Box>

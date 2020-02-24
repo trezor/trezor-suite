@@ -2,7 +2,7 @@
 import React from 'react';
 import { UI } from 'trezor-connect';
 
-import { Link } from '@trezor/components-v2';
+import { Link } from '@trezor/components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';

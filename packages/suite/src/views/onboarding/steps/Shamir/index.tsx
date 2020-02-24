@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from '@trezor/components-v2';
+import { Link } from '@trezor/components';
 import * as STEP from '@onboarding-constants/steps';
 import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components';
 import { TOS_URL } from '@suite-constants/urls';

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, colors, variables } from '@trezor/components-v2';
+import { Icon, colors, variables } from '@trezor/components';
 import { DispatchProps } from '../../Container';
 
 const Wrapper = styled.div`

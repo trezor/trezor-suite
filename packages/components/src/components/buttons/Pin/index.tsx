@@ -5,7 +5,7 @@ import colors from '../../../config/colors';
 const Button = styled.button`
     width: 80px;
     height: 80px;
-    border: 1px solid ${colors.DIVIDER};
+    border: 1px solid ${colors.BLACK0};
     background: ${colors.WHITE};
     transition: all 0.3s;
     position: relative;
@@ -16,15 +16,15 @@ const Button = styled.button`
     }
 
     &:hover {
-        color: ${colors.TEXT_PRIMARY};
+        color: ${colors.BLACK0};
         background-color: ${colors.WHITE};
-        border-color: ${colors.TEXT_SECONDARY};
+        border-color: ${colors.BLACK0};
     }
 
     &:active {
-        color: ${colors.TEXT_PRIMARY};
-        background: ${colors.DIVIDER};
-        border-color: ${colors.DIVIDER};
+        color: ${colors.BLACK0};
+        background: ${colors.BLACK0};
+        border-color: ${colors.BLACK0};
     }
 
     &:before {
@@ -33,7 +33,7 @@ const Button = styled.button`
         content: ' ';
         position: absolute;
         border-radius: 100%;
-        background: ${colors.TEXT_PRIMARY};
+        background: ${colors.BLACK0};
         top: calc(50% - 3px);
         left: calc(50% - 3px);
     }

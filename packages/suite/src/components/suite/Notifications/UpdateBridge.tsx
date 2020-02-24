@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, colors } from '@trezor/components-v2';
+import { Button, colors } from '@trezor/components';
 import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
 import Wrapper from './components/Wrapper';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { P } from '@trezor/components-v2';
+import { P } from '@trezor/components';
 
 export default () => (
     <>

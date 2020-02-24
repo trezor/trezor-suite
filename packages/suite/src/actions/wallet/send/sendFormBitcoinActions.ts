@@ -106,7 +106,7 @@ export const addRecipient = () => (dispatch: Dispatch, getState: GetState) => {
     const newOutput = {
         id: lastOutputId + 1,
         address: { value: null, error: null },
-        amount: { value: null, error: null },
+        amount: { value: null, error: null, isLoading: false },
         fiatValue: { value: null },
         localCurrency: { value: localCurrency },
     };
@@ -150,7 +150,8 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         sequence: BTC_RBF_SEQUENCE,
     }));
 
-    const resp = await TrezorConnect.signTransaction({
+    // TODO: add more params to alt coins txs (zcash: version_branch_id & version, etc...)
+    const signedTx = await TrezorConnect.signTransaction({
         device: {
             path: selectedDevice.path,
             instance: selectedDevice.instance,
@@ -160,14 +161,24 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         outputs: transaction.outputs,
         inputs,
         coin: account.symbol,
-        push: true,
     });
 
-    if (resp.success) {
+    if (!signedTx.success) {
+        dispatch(notificationActions.add({ type: 'sign-tx-error', error: signedTx.payload.error }));
+        return;
+    }
+
+    // TODO: add possibility to show serialized tx without pushing (locktime)
+    const sentTx = await TrezorConnect.pushTransaction({
+        tx: signedTx.payload.serializedTx,
+        coin: account.symbol,
+    });
+
+    if (sentTx.success) {
         dispatch(commonActions.clear());
-        dispatch(notificationActions.add({ type: 'sign-tx-success', txid: resp.payload.txid }));
+        dispatch(notificationActions.add({ type: 'sign-tx-success', txid: sentTx.payload.txid }));
         dispatch(accountActions.fetchAndUpdateAccount(account));
     } else {
-        dispatch(notificationActions.add({ type: 'sign-tx-error', error: resp.payload.error }));
+        dispatch(notificationActions.add({ type: 'sign-tx-error', error: sentTx.payload.error }));
     }
 };

@@ -1,12 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Account } from '@wallet-types';
-import { CoinLogo, variables, P } from '@trezor/components-v2';
-import FiatValue from '@suite-components/FiatValue/Container';
-import { NoRatesTooltip } from '@suite-components';
-import Badge from '@suite-components/Badge';
 import { AppState } from '@suite-types';
 import { connect } from 'react-redux';
+import { CoinLogo, variables, P } from '@trezor/components';
+import { NoRatesTooltip, HiddenPlaceholder, Badge, FiatValue } from '@suite-components';
 import LastWeekGraph from '../LastWeekGraph';
 
 const Wrapper = styled.div`
@@ -92,14 +90,18 @@ const Asset = React.memo(({ name, symbol, cryptoValue, localCurrency, ...props }
             </Col>
             <Col>
                 <CryptoValueWrapper>
-                    {cryptoValue} {symbol.toUpperCase()}{' '}
+                    <HiddenPlaceholder>
+                        {cryptoValue} {symbol.toUpperCase()}{' '}
+                    </HiddenPlaceholder>
                 </CryptoValueWrapper>
             </Col>
             <Col>
                 <FiatValueWrapper>
-                    <FiatValue amount={cryptoValue} symbol={symbol}>
-                        {({ value }) => (value ? <SmallBadge>{value}</SmallBadge> : null)}
-                    </FiatValue>
+                    <HiddenPlaceholder>
+                        <FiatValue amount={cryptoValue} symbol={symbol}>
+                            {({ value }) => (value ? <SmallBadge>{value}</SmallBadge> : null)}
+                        </FiatValue>
+                    </HiddenPlaceholder>
                 </FiatValueWrapper>
             </Col>
             <Col>

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
-import { Loader, colors } from '@trezor/components-v2';
+import { Loader, colors } from '@trezor/components';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';

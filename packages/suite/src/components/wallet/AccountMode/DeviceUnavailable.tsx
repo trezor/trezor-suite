@@ -3,7 +3,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Button, colors } from '@trezor/components-v2';
+import { Button, colors } from '@trezor/components';
 import { SUITE } from '@suite-actions/constants';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { NotificationCard, Translation } from '@suite-components';

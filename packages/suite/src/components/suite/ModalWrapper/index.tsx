@@ -1,4 +1,4 @@
-import { variables } from '@trezor/components-v2';
+import { variables } from '@trezor/components';
 import styled from 'styled-components';
 
 export interface Props extends React.HTMLAttributes<HTMLDivElement> {

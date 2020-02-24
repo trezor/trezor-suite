@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { variables, colors, Button } from '@trezor/components-v2';
+import { variables, colors, Button } from '@trezor/components';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { SUITE } from '@suite-actions/constants';

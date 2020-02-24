@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
-import { colors, Button } from '@trezor/components-v2';
-import { Card } from '@suite-components';
+import { colors, Button } from '@trezor/components';
+import { Card, HiddenPlaceholder } from '@suite-components';
 import { parseBIP44Path, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { ChildProps as Props } from '../../Container';
 
@@ -93,7 +93,9 @@ const Item = ({ addr, symbol, onClick, revealed, index }: any) => {
                 {address}
             </GridItem>
             <GridItem right>{addr.transfers < 1 ? 'Not used yet' : addr.transfers}</GridItem>
-            <GridItem amount>{amount}</GridItem>
+            <GridItem amount>
+                <HiddenPlaceholder>{amount}</HiddenPlaceholder>
+            </GridItem>
         </GridTable>
     );
 };
