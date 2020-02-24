@@ -15,7 +15,7 @@ const GridTable = styled.div<{ header?: boolean; fresh?: boolean; revealed?: boo
     grid-template-columns: minmax(60px, 1fr) 4fr 110px 3fr;
     color: ${colors.BLACK50};
     font-size: 12px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid ${colors.BLACK96};
     &:first-child,
     &:last-child {
         border: 0px;
