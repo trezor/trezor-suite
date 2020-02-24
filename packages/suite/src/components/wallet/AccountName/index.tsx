@@ -1,22 +1,21 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
-import { CoinLogo, variables } from '@trezor/components';
+import { CoinLogo, H2 } from '@trezor/components';
 import messages from '@suite/support/messages';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import Title from '@wallet-components/Title';
 import { getTitleForNetwork, getTypeForNetwork } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
 
-const { FONT_WEIGHT, FONT_SIZE } = variables;
-
-const AccountTitle = styled.div`
-    font-size: ${FONT_SIZE.H1};
-    font-weight: ${FONT_WEIGHT.MEDIUM};
-`;
-
 const StyledCoinLogo = styled(CoinLogo)`
     margin-right: 10px;
+`;
+
+const StyledH2 = styled(H2)`
+    display: flex;
+    align-items: center;
+    padding-top: 15px;
 `;
 
 const Label = styled.span`
@@ -38,7 +37,7 @@ const AccountName = ({ account, message }: Props) => {
     return (
         <Title>
             <StyledCoinLogo size={24} symbol={account.symbol} />
-            <AccountTitle>
+            <StyledH2>
                 {message && (
                     <Translation
                         {...message}
@@ -61,7 +60,7 @@ const AccountName = ({ account, message }: Props) => {
                         values={{ number: String(account.index + 1) }}
                     />
                 </Label>
-            </AccountTitle>
+            </StyledH2>
         </Title>
     );
 };
