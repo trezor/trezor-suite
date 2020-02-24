@@ -9,6 +9,7 @@ export const MAIN_MENU_ITEMS = [
 export const BOTTOM_MENU_ITEMS = [
     // tips are not ready for Q1, waiting for product.
     // { text: 'Tips', icon: 'TIPS', route: 'tips-index' },
+    { text: 'Notifications', icon: 'SETTINGS', route: 'notifications-index' },
     { text: 'Settings', icon: 'SETTINGS', route: 'settings-index' },
 ] as const;
 
