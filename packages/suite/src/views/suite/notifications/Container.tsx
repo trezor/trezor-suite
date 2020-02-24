@@ -10,6 +10,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
+    dispatch,
     goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
