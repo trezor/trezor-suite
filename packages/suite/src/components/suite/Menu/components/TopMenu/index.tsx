@@ -75,10 +75,11 @@ const TopMenu = (props: Props) => {
         if (deviceCount !== previousDeviceCount) {
             // different count triggers anim
             setTriggerAnim(true);
-            setTimeout(() => {
+            const timer = setTimeout(() => {
                 // removes anim, allowing it to restart later
                 setTriggerAnim(false);
             }, 1000);
+            return () => clearTimeout(timer);
         }
 
         // update previous device count
