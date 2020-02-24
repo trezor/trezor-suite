@@ -6,7 +6,7 @@ import { Account } from '@wallet-types';
 import Index from './index';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    addNotification: bindActionCreators(notificationActions.add, dispatch),
+    addNotification: bindActionCreators(notificationActions.addToast, dispatch),
 });
 
 export type Props = {

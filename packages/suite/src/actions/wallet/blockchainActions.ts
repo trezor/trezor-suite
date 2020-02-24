@@ -307,10 +307,10 @@ export const onNotification = (payload: BlockchainNotification) => async (
             accountDevice,
         );
         dispatch(
-            notificationActions.add({
+            notificationActions.addToast({
                 type: 'tx-confirmed',
                 amount: enhancedTx.amount,
-                accountDevice: !isSelectedDevice ? accountDevice : undefined,
+                device: !isSelectedDevice ? accountDevice : undefined,
                 routeParams: {
                     symbol: account.symbol,
                     accountIndex: account.index,

@@ -46,7 +46,7 @@ export const sign = (path: [number], message: string, hex = false) => async (
         });
     } else {
         dispatch(
-            notificationActions.add({
+            notificationActions.addToast({
                 type: 'sign-message-error',
                 error: response.payload.error,
             }),
@@ -86,13 +86,13 @@ export const verify = (address: string, message: string, signature: string, hex 
 
         if (response && response.success) {
             dispatch(
-                notificationActions.add({
+                notificationActions.addToast({
                     type: 'verify-message-success',
                 }),
             );
         } else {
             dispatch(
-                notificationActions.add({
+                notificationActions.addToast({
                     type: 'verify-message-error',
                     error: response.payload.error,
                 }),
