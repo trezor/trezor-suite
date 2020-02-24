@@ -61,6 +61,7 @@ const fetchCoinList = async (): Promise<any> => {
     const tokens = await response.json();
     return tokens;
 };
+
 /**
  * Returns the current rate for a given symbol fetched from CoinGecko API.
  * Returns null if coin for a given symbol was not found.
@@ -86,6 +87,52 @@ const fetchCurrentFiatRates = async (symbol: string) => {
         ts: new Date().getTime() / 1000,
         rates: rates.market_data.current_price,
         symbol: rates.symbol,
+    };
+};
+
+/**
+ * Returns the historical rate for a given symbol, timesttamp fetched from CoinGecko API.
+ * Be aware that the data granularity is 1 day.
+ * Returns null if coin for a given symbol was not found.
+ *
+ * @param {string} symbol
+ * @returns
+ */
+interface HistoricalResponse {
+    symbol: Network['symbol'];
+    tickers: LastWeekRates['tickers'];
+    ts: number;
+}
+const getFiatRatesForTimestamps = async (
+    symbol: string,
+    timestamps: number[],
+): Promise<HistoricalResponse | null> => {
+    const coinList = await fetchCoinList();
+    const coinData = coinList.find((t: any) => t.symbol === symbol.toLowerCase());
+    if (!coinData) return null;
+
+    const url = new URL(`/api/v3/coins/${coinData.id}/history`, COINGECKO_BASE_URL);
+
+    const promises = timestamps.map(async t => {
+        const d = new Date(t * 1000);
+        const dateParam = `${d.getUTCDate()}-${d.getUTCMonth() + 1}-${d.getUTCFullYear()}`;
+        url.searchParams.set('date', dateParam);
+
+        const response = await fetch(url.toString());
+        const data = await response.json();
+        // if (!data?.market_data?.current_price) return null;
+        // TODO: market_data field is missing if they are no rates available for a given date
+        return {
+            ts: t,
+            rates: data.market_data.current_price,
+        };
+    });
+
+    const results = await Promise.all(promises);
+    return {
+        symbol: symbol as Network['symbol'],
+        tickers: results,
+        ts: new Date().getTime(),
     };
 };
 
@@ -134,7 +181,7 @@ export const handleRatesUpdate = () => async (dispatch: Dispatch, getState: GetS
             try {
                 const blockchainLink = blockchainLinks[ticker.symbol];
                 const response = blockchainLink
-                    ? await blockchainLink?.getCurrentFiatRates({})
+                    ? await blockchainLink.getCurrentFiatRates({})
                     : await fetchCurrentFiatRates(ticker.symbol);
 
                 if (response) {
@@ -170,7 +217,7 @@ const updateLastWeekRates = () => async (dispatch: Dispatch) => {
     const day = 86400;
     const hour = 3600;
     const currentTimestamp = Math.floor(new Date().getTime() / 1000) - 120; // unix timestamp in seconds - 2 mins
-    const timestamps: number[] = [];
+    let timestamps: number[] = [];
     const weekAgoTimestamp = currentTimestamp - 7 * day;
 
     // calc timestamps in 4 hours intervals the last 7 days
@@ -179,25 +226,30 @@ const updateLastWeekRates = () => async (dispatch: Dispatch) => {
         timestamp -= 4 * hour;
         timestamps.push(timestamp);
     }
+    timestamps = timestamps.reverse();
     // console.log('timestamps', timestamps);
 
     const staleTickers = await dispatch(getStaleTickers(ticker => ticker.lastWeek?.ts, MAX_AGE));
 
     const promises = staleTickers.map(async ticker => {
-        const blockchainLink = blockchainLinks[ticker.symbol];
-        if (!blockchainLink) return;
         try {
-            const response = await blockchainLink.getFiatRatesForTimestamps({
-                timestamps: timestamps.reverse(),
-            });
-            dispatch({
-                type: LAST_WEEK_RATES_UPDATE,
-                payload: {
-                    symbol: ticker.symbol,
-                    tickers: response.tickers,
-                    ts: new Date().getTime(),
-                },
-            });
+            const blockchainLink = blockchainLinks[ticker.symbol];
+            const response = blockchainLink
+                ? await blockchainLink.getFiatRatesForTimestamps({
+                      timestamps,
+                  })
+                : await getFiatRatesForTimestamps(ticker.symbol, timestamps);
+            console.log('response', response);
+            if (response?.tickers) {
+                dispatch({
+                    type: LAST_WEEK_RATES_UPDATE,
+                    payload: {
+                        symbol: ticker.symbol,
+                        tickers: response.tickers,
+                        ts: new Date().getTime(),
+                    },
+                });
+            }
         } catch (error) {
             console.log('updateLastWeekRates fail', error);
         }
