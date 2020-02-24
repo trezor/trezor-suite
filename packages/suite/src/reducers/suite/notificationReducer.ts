@@ -1,13 +1,14 @@
 import produce from 'immer';
-import { NOTIFICATION } from '@suite-actions/constants';
+import { NOTIFICATION, SUITE } from '@suite-actions/constants';
 import { Action as SuiteAction, TrezorDevice } from '@suite-types';
 import { WalletParams } from '@wallet-types';
 
-export type NotificationPayload =
+export type ToastPayload =
     | {
           type: 'acquire-error';
           error: string;
-          acquiringDevice?: TrezorDevice;
+          device?: TrezorDevice;
+          // acquiringDevice?: TrezorDevice;
       }
     | {
           type: 'auth-confirm-error';
@@ -27,7 +28,7 @@ export type NotificationPayload =
     | {
           type: 'tx-confirmed';
           amount: string;
-          accountDevice?: TrezorDevice;
+          device?: TrezorDevice;
           routeParams?: WalletParams;
       }
     | {
@@ -49,18 +50,28 @@ export type NotificationPayload =
           error: string;
       };
 
-export type NotificationEntry = {
+interface Common {
     id: number; // programmer provided, might be used to find and close notification programmatically
     device?: TrezorDevice; // used to close notifications for device
     hidden?: boolean;
-} & NotificationPayload;
+}
+
+export type EventPayload = {
+    type: typeof SUITE.AUTH_DEVICE | 'some-other';
+};
+
+export type ToastNotification = { context: 'toast' } & Common & ToastPayload;
+export type EventNotification = { context: 'event' } & Common & EventPayload;
+
+export type NotificationEntry = ToastNotification | EventNotification;
 
 export type State = NotificationEntry[];
 
 export default function notification(state: State = [], action: SuiteAction): State {
     return produce(state, draft => {
         switch (action.type) {
-            case NOTIFICATION.ADD:
+            case NOTIFICATION.TOAST:
+            case NOTIFICATION.EVENT:
                 draft.push(action.payload);
                 break;
             case NOTIFICATION.CLOSE: {

@@ -1,43 +1,43 @@
 import { NOTIFICATION } from './constants';
 import { Dispatch, GetState } from '@suite-types';
-import { NotificationPayload, NotificationEntry } from '@suite-reducers/notificationReducer';
+import {
+    ToastPayload,
+    ToastNotification,
+    EventPayload,
+    EventNotification,
+} from '@suite-reducers/notificationReducer';
 
 export type NotificationActions =
     | {
-          type: typeof NOTIFICATION.ADD;
-          payload: NotificationEntry;
+          type: typeof NOTIFICATION.TOAST;
+          payload: ToastNotification;
       }
     | {
-          type: typeof NOTIFICATION.CLOSE;
+          type: typeof NOTIFICATION.EVENT;
+          payload: EventNotification;
+      }
+    | {
+          type: typeof NOTIFICATION.CLOSE | typeof NOTIFICATION.REMOVE;
           payload: number;
       };
 
-// type Single = Omit<NotificationPayload['type'], 'acquire-error|auth-failed'>;
-// type Single = Exclude<NotificationPayload['type'], 'acquire-error' | 'auth-failed' | 'auth-confirm-error'>;
-// type WithoutPayload = 'settings-applied' | 'pin-changed' | 'device-wiped' | 'backup-success';
-// Generate this from NotificationPayload
-
-// type Add = {
-//     (type: 'auth-failed', payload: string): any;
-//     (type: 'auth-failed2', error: number): any;
-// };
-
-// export const add2: Add = (type: any, payload?: any) => (dispatch: Dispatch, getState: GetState) => {
-//     dispatch({
-//         type: NOTIFICATION.ADD,
-//         payload: {
-//             id: new Date().getTime(),
-//             device: getState().suite.device,
-//             type,
-//             payload,
-//         },
-//     });
-// };
-
-export const add = (payload: NotificationPayload) => (dispatch: Dispatch, getState: GetState) => {
+export const addToast = (payload: ToastPayload) => (dispatch: Dispatch, getState: GetState) => {
     dispatch({
-        type: NOTIFICATION.ADD,
+        type: NOTIFICATION.TOAST,
         payload: {
+            context: 'toast',
+            id: new Date().getTime(),
+            device: getState().suite.device,
+            ...payload,
+        },
+    });
+};
+
+export const addEvent = (payload: EventPayload) => (dispatch: Dispatch, getState: GetState) => {
+    dispatch({
+        type: NOTIFICATION.EVENT,
+        payload: {
+            context: 'event',
             id: new Date().getTime(),
             device: getState().suite.device,
             ...payload,
@@ -47,6 +47,11 @@ export const add = (payload: NotificationPayload) => (dispatch: Dispatch, getSta
 
 export const close = (id: number): NotificationActions => ({
     type: NOTIFICATION.CLOSE,
+    payload: id,
+});
+
+export const remove = (id: number): NotificationActions => ({
+    type: NOTIFICATION.REMOVE,
     payload: id,
 });
 

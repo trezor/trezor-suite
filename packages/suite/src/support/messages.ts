@@ -2163,6 +2163,19 @@ const definedMessages = defineMessages({
         id: 'TOAST_GENERIC_ERROR',
         defaultMessage: 'Error: {error}',
     },
+    NOTIFICATIONS_TITLE: {
+        id: 'NOTIFICATIONS_TITLE',
+        defaultMessage: 'Notifications',
+    },
+    NOTIFICATIONS_EMPTY_TITLE: {
+        id: 'NOTIFICATIONS_EMPTY_TITLE',
+        defaultMessage: 'No notifications to show',
+    },
+    NOTIFICATIONS_EMPTY_DESC: {
+        id: 'NOTIFICATIONS_EMPTY_DESC',
+        defaultMessage:
+            'Here you will see all important notifications once they happen. For now, there’s nothing to see.',
+    },
 });
 
 export default definedMessages;

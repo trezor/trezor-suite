@@ -37,5 +37,5 @@ rm -rf /Users/<user>/Library/Application Support/@trezor/suite-desktop/IndexedDB
 # React-native tsconfig regex:
 
 copy block from top level tsconfig.json
-find: "./packages/suite/src/(.\*)"
-replace: "./src/$1", "../../packages/suite/src/$1"
+find: `./packages/suite/src/(.*)"`
+replace: `./src/$1", "../../packages/suite/src/$1"`

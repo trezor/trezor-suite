@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, Icon, variables, colors } from '@trezor/components';
+import { Translation } from '@suite-components';
+import { NotificationMessage } from '@suite-utils/notifications';
 
 const Wrapper = styled.div`
     display: flex;
@@ -15,17 +17,13 @@ const Text = styled.div`
 
 // button margin-left: auto;
 
-type Props = {
-    text: JSX.Element | string;
-    action?: (_event: any) => void;
-    actionLabel?: JSX.Element | string;
-};
-
-export default ({ text, action, actionLabel }: Props) => {
+export default ({ icon, message, action, actionLabel }: NotificationMessage) => {
     return (
         <Wrapper>
-            <Icon icon="INFO" size={12} color={colors.WHITE} />
-            <Text>{text}</Text>
+            {icon && <Icon icon={icon} size={12} color={colors.WHITE} />}
+            <Text>
+                <Translation {...message} />
+            </Text>
             {action && actionLabel && (
                 <Button
                     variant="tertiary"
@@ -34,7 +32,7 @@ export default ({ text, action, actionLabel }: Props) => {
                     color={colors.WHITE}
                     onClick={action}
                 >
-                    {actionLabel}
+                    <Translation {...actionLabel} />
                 </Button>
             )}
         </Wrapper>

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import TrezorConnect, { ApplySettings, ChangePin, ResetDevice } from 'trezor-connect';
-import { add as addNotification } from '@suite-actions/notificationActions';
+import { addToast } from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
 
 import { Dispatch, GetState } from '@suite-types';
@@ -26,9 +26,9 @@ export const applySettings = (params: ApplySettings) => async (
     });
 
     if (result.success) {
-        dispatch(addNotification({ type: 'settings-applied' }));
+        dispatch(addToast({ type: 'settings-applied' }));
     } else {
-        dispatch(addNotification({ type: 'error', error: result.payload.error }));
+        dispatch(addToast({ type: 'error', error: result.payload.error }));
     }
 };
 
@@ -45,11 +45,11 @@ export const changePin = (params: ChangePin = {}) => async (
         ...params,
     });
     if (result.success) {
-        dispatch(addNotification({ type: 'pin-changed' }));
+        dispatch(addToast({ type: 'pin-changed' }));
     } else if (result.payload.code === 'Failure_PinMismatch') {
         dispatch(modalActions.openModal({ type: 'pin-mismatch' }));
     } else {
-        dispatch(addNotification({ type: 'error', error: result.payload.error }));
+        dispatch(addToast({ type: 'error', error: result.payload.error }));
     }
 };
 
@@ -63,9 +63,9 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
     });
 
     if (result.success) {
-        dispatch(addNotification({ type: 'device-wiped' }));
+        dispatch(addToast({ type: 'device-wiped' }));
     } else {
-        dispatch(addNotification({ type: 'error', error: result.payload.error }));
+        dispatch(addToast({ type: 'error', error: result.payload.error }));
     }
 
     // todo: evaluate in future, see https://github.com/trezor/trezor-suite/issues/1064
@@ -110,9 +110,9 @@ export const resetDevice = (params: ResetDevice = {}) => async (
         ...params,
     });
     if (result.success) {
-        dispatch(addNotification({ type: 'settings-applied' }));
+        dispatch(addToast({ type: 'settings-applied' }));
     } else {
-        dispatch(addNotification({ type: 'error', error: result.payload.error }));
+        dispatch(addToast({ type: 'error', error: result.payload.error }));
     }
     return result;
 };

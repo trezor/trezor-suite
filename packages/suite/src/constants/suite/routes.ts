@@ -159,6 +159,11 @@ const routes = [
         pattern: '/portfolio',
         app: 'portfolio',
     },
+    {
+        name: 'notifications-index',
+        pattern: '/notifications',
+        app: 'notifications',
+    },
 ] as const;
 
 type RouteKeys = keyof ArrayElement<typeof routes> | 'isModal' | 'params';

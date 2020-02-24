@@ -116,7 +116,7 @@ export const showAddress = (path: string, address: string) => async (
         if (response.payload.code === 403) return;
 
         dispatch(
-            notificationActions.add({
+            notificationActions.addToast({
                 type: 'verify-address-error',
                 error: response.payload.error,
             }),
