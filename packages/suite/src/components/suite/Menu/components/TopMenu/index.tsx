@@ -67,24 +67,17 @@ interface Props {
 
 const TopMenu = (props: Props) => {
     const { deviceCount } = props;
-    const [previousDeviceCount, setPreviousDeviceCount] = useState(deviceCount);
     const [triggerAnim, setTriggerAnim] = useState(false);
 
     useEffect(() => {
-        // deviceCount changed
-        if (deviceCount !== previousDeviceCount) {
-            // different count triggers anim
-            setTriggerAnim(true);
-            const timer = setTimeout(() => {
-                // removes anim, allowing it to restart later
-                setTriggerAnim(false);
-            }, 1000);
-            return () => clearTimeout(timer);
-        }
-
-        // update previous device count
-        setPreviousDeviceCount(deviceCount);
-    }, [deviceCount, previousDeviceCount]);
+        // different count triggers anim
+        setTriggerAnim(true);
+        const timer = setTimeout(() => {
+            // removes anim, allowing it to restart later
+            setTriggerAnim(false);
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, [deviceCount]);
 
     return (
         <Wrapper>
