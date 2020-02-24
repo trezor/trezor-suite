@@ -164,7 +164,9 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 
     if (!signedTx.success) {
-        dispatch(notificationActions.add({ type: 'sign-tx-error', error: signedTx.payload.error }));
+        dispatch(
+            notificationActions.addToast({ type: 'sign-tx-error', error: signedTx.payload.error }),
+        );
         return;
     }
 
@@ -176,9 +178,13 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
 
     if (sentTx.success) {
         dispatch(commonActions.clear());
-        dispatch(notificationActions.add({ type: 'sign-tx-success', txid: sentTx.payload.txid }));
+        dispatch(
+            notificationActions.addToast({ type: 'sign-tx-success', txid: sentTx.payload.txid }),
+        );
         dispatch(accountActions.fetchAndUpdateAccount(account));
     } else {
-        dispatch(notificationActions.add({ type: 'sign-tx-error', error: sentTx.payload.error }));
+        dispatch(
+            notificationActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),
+        );
     }
 };

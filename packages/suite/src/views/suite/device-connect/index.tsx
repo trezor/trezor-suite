@@ -72,9 +72,7 @@ const Text = styled.span`
     margin-right: 4px;
 `;
 
-const StyledLink = styled(Link)`
-    font-size: ${variables.FONT_SIZE.H2};
-`;
+const StyledLink = styled(Link)``;
 
 const mapStateToProps = (state: AppState) => ({
     transport: state.suite.transport,

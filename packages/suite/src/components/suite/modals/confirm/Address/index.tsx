@@ -37,7 +37,7 @@ const Row = styled.div`
 `;
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    addNotification: bindActionCreators(notificationActions.add, dispatch),
+    addNotification: bindActionCreators(notificationActions.addToast, dispatch),
 });
 
 type Props = {

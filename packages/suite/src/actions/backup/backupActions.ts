@@ -53,7 +53,7 @@ export const backupDevice = (params: CommonParams = {}) => async (
     const { device } = getState().suite;
     if (!device) {
         return dispatch(
-            notificationActions.add({
+            notificationActions.addToast({
                 type: 'error',
                 error: 'Device not connected',
             }),
@@ -72,13 +72,13 @@ export const backupDevice = (params: CommonParams = {}) => async (
         },
     });
     if (!result.success) {
-        dispatch(notificationActions.add({ type: 'backup-failed' }));
+        dispatch(notificationActions.addToast({ type: 'backup-failed' }));
         dispatch({
             type: BACKUP.SET_ERROR,
             payload: result.payload.error,
         });
     } else {
-        dispatch(notificationActions.add({ type: 'backup-success' }));
+        dispatch(notificationActions.addToast({ type: 'backup-success' }));
     }
     dispatch({
         type: BACKUP.SET_STATUS,
