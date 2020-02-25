@@ -1857,11 +1857,6 @@ const definedMessages = defineMessages({
         description: 'Info what is happening with users device.',
         id: 'TR_WAIT_FOR_REBOOT',
     },
-    TR_WALLET: {
-        defaultMessage: 'Wallet',
-        description: 'Category in Settings',
-        id: 'TR_WALLET',
-    },
     TR_WALLET_DUPLICATE_DESC: {
         defaultMessage: 'The hidden wallet that you are trying to create already exists',
         id: 'TR_WALLET_DUPLICATE_DESC',
