@@ -179,9 +179,7 @@ const Settings = ({
                             <Translation
                                 values={{ version: getFwVersion(device) }}
                                 {...messages.TR_YOUR_CURRENT_FIRMWARE}
-                            />
-                        }
-                        learnMore={SEED_MANUAL_URL}
+                            />}
                     />
                     <ActionColumn>
                         <ActionButton
@@ -193,7 +191,7 @@ const Settings = ({
                                 // TODO: for development and testing purposes is disable disabled
                                 // || (device && !['required', 'outdated'].includes(device.firmware))
                             }
-                        >
+                            >
                             {device &&
                                 ['required', 'outdated'].includes(device.firmware) &&
                                 'Update available'}

@@ -51,7 +51,6 @@
         "redux-devtools-extension": "^2.13.8",
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.3.0",
-        "simplebar-react": "^2.1.0",
         "styled-components": "^4.3.2",
         "trezor-connect": "8.1.0-beta",
         "validator": "^11.1.0",
