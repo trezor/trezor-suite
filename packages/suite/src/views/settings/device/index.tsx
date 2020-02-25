@@ -71,7 +71,14 @@ const Settings = ({
     }, [device]);
 
     if (!device?.features) {
-        return <SettingsLayout>no device connected</SettingsLayout>;
+        return (
+            <SettingsLayout>
+                <Translation
+                    {...messages.TR_DEVICE_LABEL_IS_DISCONNECTED}
+                    values={{ deviceLabel: device?.label || '' }}
+                />
+            </SettingsLayout>
+        );
     }
 
     const DISPLAY_ROTATIONS = [
