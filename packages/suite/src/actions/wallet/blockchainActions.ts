@@ -6,7 +6,7 @@ import TrezorConnect, {
 import {
     getSelectedNetwork,
     enhanceTransaction,
-    getAccountDevice,
+    findAccountDevice,
 } from '@wallet-utils/accountUtils';
 import * as deviceUtils from '@suite-utils/device';
 import * as accountActions from '@wallet-actions/accountActions';
@@ -298,7 +298,7 @@ export const onNotification = (payload: BlockchainNotification) => async (
     dispatch(transactionActions.add([notification.tx], account));
 
     const enhancedTx = enhanceTransaction(notification.tx, account);
-    const accountDevice = getAccountDevice(getState().devices, account);
+    const accountDevice = findAccountDevice(account, getState().devices);
 
     // don't dispatch sent and self notifications
     if (accountDevice && enhancedTx.type !== 'sent' && enhancedTx.type !== 'self') {

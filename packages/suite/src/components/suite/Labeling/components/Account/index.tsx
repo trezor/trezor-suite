@@ -41,7 +41,7 @@ export default (props: Props) => {
 
     if (device && !accounts.find(a => a.deviceState === device.state)) {
         // account is not associated with selected device, add wallet label
-        const accountDevice = accountUtils.getAccountDevice(props.devices, accounts[0]);
+        const accountDevice = accountUtils.findAccountDevice(accounts[0], props.devices);
         if (accountDevice) {
             return (
                 <Translation
