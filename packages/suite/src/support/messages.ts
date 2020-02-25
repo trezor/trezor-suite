@@ -2179,6 +2179,10 @@ const definedMessages = defineMessages({
         id: 'LABELING_ACCOUNT_WITH_TYPE',
         defaultMessage: 'Account #{index} ({type})',
     },
+    TR_DISCREET_TOOLTIP: {
+        id: 'TR_DISCREET_TOOLTIP',
+        defaultMessage: '[FIX THIS TEXT] This is a descreeeet mode',
+    },
 });
 
 export default definedMessages;

@@ -1,13 +1,15 @@
 import React from 'react';
 import { Props as ContainerProps } from '../../Container';
 import styled, { css } from 'styled-components';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 import { findRouteByName } from '@suite-utils/router';
-import { Icon, colors, Switch } from '@trezor/components';
+import { Icon, colors, Switch, Tooltip } from '@trezor/components';
 import { BOTTOM_MENU_ITEMS, MENU_PADDING } from '@suite-constants/menu';
 import Divider from '../Divider';
 
 const Wrapper = styled.div`
-    padding: ${MENU_PADDING}px 0 10px 4px;
+    padding: ${MENU_PADDING}px 0 10px 10px;
 `;
 
 const MenuItemWrapper = styled.div`
@@ -15,6 +17,7 @@ const MenuItemWrapper = styled.div`
     color: ${colors.WHITE};
     cursor: pointer;
     align-items: center;
+    justify-content: space-between;
 `;
 
 const IconWrapper = styled.div`
@@ -25,7 +28,7 @@ const IconWrapper = styled.div`
 `;
 
 const SubMenu = styled.div`
-    padding: 0 10px 0 0;
+    display: flex;
 `;
 
 const SubMenuText = styled.div`
@@ -78,7 +81,13 @@ const In = styled.div<ComponentProps>`
 `;
 
 const StyledDivider = styled(Divider)`
-    padding: 5px 0 10px 0;
+    padding: 5px 10px 10px 0;
+`;
+
+const SwitchWrapper = styled.div`
+    display: flex;
+    margin-left: 20px;
+    flex: 1;
 `;
 
 interface Props {
@@ -116,17 +125,24 @@ const BottomMenu = (props: Props) => (
                 </In>
             );
         })}
+        <StyledDivider className="divider" />
         <SubMenu>
-            <StyledDivider className="divider" />
             <MenuItemWrapper>
                 <SubMenuText>Discreet</SubMenuText>
-                <Switch
-                    isSmall
-                    checked={props.discreetMode}
-                    onChange={checked => {
-                        props.setDiscreetMode(checked);
-                    }}
-                />
+                <SwitchWrapper>
+                    <Tooltip
+                        placement="right"
+                        content={<Translation {...messages.TR_DISCREET_TOOLTIP} />}
+                    >
+                        <Switch
+                            isSmall
+                            checked={props.discreetMode}
+                            onChange={checked => {
+                                props.setDiscreetMode(checked);
+                            }}
+                        />
+                    </Tooltip>
+                </SwitchWrapper>
             </MenuItemWrapper>
         </SubMenu>
     </Wrapper>
