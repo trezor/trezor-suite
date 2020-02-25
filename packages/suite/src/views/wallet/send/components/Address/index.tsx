@@ -1,13 +1,11 @@
 import { Translation } from '@suite-components';
-import { AppState } from '@suite-types';
 import styled from 'styled-components';
 import { Icon, colors, Input, Tooltip } from '@trezor/components';
 import messages from '@suite/support/messages';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { Account, Network } from '@wallet-types';
 import { Output } from '@wallet-types/sendForm';
-import { getAccountDevice, isAddressInAccount } from '@wallet-utils/accountUtils';
 import { getInputState } from '@wallet-utils/sendFormUtils';
+import { Address as LabeledAddress } from '@suite-components/Labeling';
 import React from 'react';
 import { Props } from './Container';
 
@@ -21,23 +19,7 @@ const Label = styled.div`
     align-items: center;
 `;
 
-const getMessage = (
-    error: Output['address']['error'],
-    networkType: Network['networkType'],
-    address: Output['address']['value'],
-    accounts: Account[],
-    devices: AppState['devices'],
-) => {
-    if (address && error !== VALIDATION_ERRORS.XRP_CANNOT_SEND_TO_MYSELF) {
-        const account = isAddressInAccount(networkType, address, accounts);
-        if (account) {
-            const device = getAccountDevice(devices, account);
-            if (device) {
-                return `${device.label} Account #${account.index + 1}`;
-            }
-        }
-    }
-
+const getErrorMessage = (error: Output['address']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
             return <Translation>{messages.TR_ADDRESS_IS_NOT_SET}</Translation>;
@@ -50,10 +32,8 @@ const getMessage = (
     }
 };
 
-export default ({ output, account, accounts, devices, openModal, sendFormActions }: Props) => {
+export default ({ output, account, openModal, sendFormActions }: Props) => {
     if (!account) return null;
-
-    const { networkType } = account;
     const { address, id } = output;
     const { value, error } = address;
 
@@ -73,7 +53,7 @@ export default ({ output, account, accounts, devices, openModal, sendFormActions
                     </Tooltip>
                 </Label>
             }
-            bottomText={getMessage(error, networkType, value, accounts, devices)}
+            bottomText={getErrorMessage(error) || <LabeledAddress address={value} knownOnly />}
             button={{
                 icon: 'QR',
                 onClick: () =>
