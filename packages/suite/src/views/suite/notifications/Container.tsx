@@ -6,6 +6,7 @@ import { AppState, Dispatch } from '@suite-types';
 import Index from './index';
 
 const mapStateToProps = (state: AppState) => ({
+    device: state.suite.device,
     notifications: state.notifications,
 });
 
