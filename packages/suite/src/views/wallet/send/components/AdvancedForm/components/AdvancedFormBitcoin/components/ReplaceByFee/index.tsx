@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 
 import { variables, colors, Switch } from '@trezor/components';
 

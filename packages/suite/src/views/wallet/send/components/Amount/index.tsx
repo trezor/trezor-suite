@@ -104,7 +104,7 @@ const hasRates = (
     return false;
 };
 
-export default ({ fiat, sendFormActions, intl, output, selectedAccount }: Props) => {
+export default ({ fiat, sendFormActions, output, selectedAccount }: Props) => {
     if (selectedAccount.status !== 'loaded') return null;
 
     const { account, network } = selectedAccount;
