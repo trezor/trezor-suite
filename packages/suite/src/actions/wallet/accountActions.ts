@@ -1,7 +1,8 @@
 import TrezorConnect, { AccountInfo } from 'trezor-connect';
 import { ACCOUNT } from '@wallet-actions/constants';
 import { DiscoveryItem } from '@wallet-actions/discoveryActions';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import * as transactionActions from '@wallet-actions/transactionActions';
+import { formatNetworkAmount, isAccountOutdated } from '@wallet-utils/accountUtils';
 import { NETWORKS } from '@wallet-config';
 import { Account, Network } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
@@ -59,7 +60,6 @@ export const create = (
         descriptor: accountInfo.descriptor,
         accountType: discoveryItem.accountType,
         symbol: discoveryItem.coin,
-        // empty: accountInfo.empty,
         empty: accountInfo.empty,
         visible:
             !accountInfo.empty ||
@@ -108,18 +108,34 @@ export const changeAccountVisibility = (payload: Account) => ({
     payload,
 });
 
-export const fetchAndUpdateAccount = (account: Account) => async (
+export const fetchAndUpdateAccount = (account: Account, rollbacks = false) => async (
     dispatch: Dispatch,
-    _getState: GetState,
 ) => {
     const response = await TrezorConnect.getAccountInfo({
         coin: account.symbol,
         descriptor: account.descriptor,
         details: 'txs',
-        pageSize: SETTINGS.TXS_PER_PAGE,
+        page: 1, // useful for every network except ripple
+        pageSize:
+            (account.history.unconfirmed || 0) > SETTINGS.TXS_PER_PAGE
+                ? account.history.unconfirmed
+                : SETTINGS.TXS_PER_PAGE, // we need to fetch at least the number of unconfirmed txs
     });
 
     if (response.success) {
-        dispatch(update(account, response.payload));
+        const { payload } = response;
+        const outdated = isAccountOutdated(account, payload);
+        const unconfirmedTxs = payload.history.unconfirmed; // not working for ripple, 0 for all ripple accounts?
+
+        if (outdated && rollbacks) {
+            // delete already stored txs for the account
+            dispatch(transactionActions.remove(account));
+        }
+
+        if (outdated || unconfirmedTxs) {
+            // runs also in case of up-to-date account with pending txs
+            // update the account (balance, txs count, etc)
+            dispatch(update(account, payload));
+        }
     }
 };

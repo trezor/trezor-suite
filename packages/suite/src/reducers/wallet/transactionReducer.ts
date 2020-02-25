@@ -92,6 +92,7 @@ export default (state: State = initialState, action: Action | WalletAction): Sta
             case STORAGE.LOADED:
                 return action.payload.wallet.transactions;
             case ACCOUNT.CREATE:
+            case ACCOUNT.UPDATE:
                 // gather transactions from account.create action
                 add(draft, action.payload.history.transactions || [], action.payload, 1);
                 break;
