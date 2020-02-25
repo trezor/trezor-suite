@@ -44,20 +44,13 @@ export default (props: Props) => {
         const accountDevice = accountUtils.findAccountDevice(accounts[0], props.devices);
         if (accountDevice) {
             return (
-                <Translation
-                    {...messages.LABELING_ACCOUNT_WITH_WALLET}
-                    values={{
-                        walletLabel: (
-                            <WalletLabel
-                                device={accountDevice}
-                                useDeviceLabel={
-                                    !deviceUtils.isSelectedDevice(device, accountDevice)
-                                }
-                            />
-                        ),
-                        accountLabel,
-                    }}
-                />
+                <>
+                    <WalletLabel
+                        device={accountDevice}
+                        useDeviceLabel={!deviceUtils.isSelectedDevice(device, accountDevice)}
+                    />{' '}
+                    {accountLabel}
+                </>
             );
         }
     }

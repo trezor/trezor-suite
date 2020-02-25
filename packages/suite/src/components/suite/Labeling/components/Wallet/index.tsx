@@ -1,12 +1,13 @@
 import React from 'react';
 import { Translation } from '@suite-components';
+import { ExtendedMessageDescriptor } from '@suite-types';
 import messages from '@suite/support/messages';
 import { Props } from './Container';
 
 export default (props: Props) => {
     const { device, labeling } = props;
     const key = `wallet:${device.state}`;
-    let walletLabel: any;
+    let walletLabel: ExtendedMessageDescriptor | string;
     if (labeling[key]) {
         walletLabel = labeling[key];
     } else {
@@ -20,26 +21,17 @@ export default (props: Props) => {
               };
     }
 
+    const label =
+        typeof walletLabel === 'string' ? <>{walletLabel}</> : <Translation {...walletLabel} />;
+
     if (props.useDeviceLabel) {
         return (
-            <Translation
-                id="ignored"
-                defaultMessage="{deviceLabel} {walletLabel}"
-                values={{
-                    deviceLabel: device.label,
-                    walletLabel,
-                }}
-            />
+            <>
+                {`${device.label} `}
+                {label}
+            </>
         );
     }
 
-    return (
-        <Translation
-            id="ignored"
-            defaultMessage="{walletLabel}"
-            values={{
-                walletLabel,
-            }}
-        />
-    );
+    return label;
 };

@@ -2184,10 +2184,6 @@ const definedMessages = defineMessages({
         id: 'LABELING_ACCOUNT_WITH_TYPE',
         defaultMessage: 'Account #{index} ({type})',
     },
-    LABELING_ACCOUNT_WITH_WALLET: {
-        id: 'LABELING_ACCOUNT_WITH_WALLET',
-        defaultMessage: '{walletLabel} {accountLabel}',
-    },
 });
 
 export default definedMessages;
