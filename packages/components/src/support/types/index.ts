@@ -1,4 +1,5 @@
 import { ICONS } from '../../components/Icon/icons';
+import { ReactNode } from 'react';
 import { COINS } from '../../components/CoinLogo/coins';
 
 export type TextAlign = 'left' | 'center' | 'right';
@@ -17,7 +18,7 @@ export type InputDisplay = 'block' | 'default' | 'short';
 
 export interface InputButton {
     icon?: IconType;
-    text?: string;
+    text?: ReactNode;
     iconSize?: number;
     iconColor?: string;
     iconColorHover?: string;
