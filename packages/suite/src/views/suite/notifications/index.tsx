@@ -5,6 +5,7 @@ import { H2, Icon, P, Button, colors } from '@trezor/components';
 import { SuiteLayout, Translation } from '@suite-components';
 import messages from '@suite/support/messages';
 import * as notificationsUtils from '@suite-utils/notifications';
+import * as deviceUtils from '@suite-utils/device';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Props } from './Container';
 
@@ -52,9 +53,11 @@ export default (props: Props) => {
     // TODO: filter notifications only for selected device
     // TODO: decide which notification should be displayed
     // TODO: decide which notification should have CTA
-    // const notifications = props.notifications.filter(n => t.type)
+    const notifications = props.notifications.filter(n =>
+        deviceUtils.isSelectedInstance(props.device, n.device),
+    );
 
-    if (props.notifications.length < 1) {
+    if (notifications.length < 1) {
         return (
             <SuiteLayout title="Notifications">
                 <EmptyWrapper>
@@ -75,7 +78,7 @@ export default (props: Props) => {
                 <H2>
                     <Translation {...messages.NOTIFICATIONS_TITLE} />
                 </H2>
-                {props.notifications.map(n => {
+                {notifications.map(n => {
                     const item = notificationsUtils.getNotificationMessage(n, props.dispatch);
                     if (n.type !== 'tx-confirmed') {
                         delete item.action;

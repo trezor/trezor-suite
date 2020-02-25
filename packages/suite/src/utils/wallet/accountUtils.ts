@@ -5,7 +5,7 @@ import {
 import { AccountTransaction } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import messages from '@suite/support/messages';
-import { NETWORK_TYPE, ACCOUNT_TYPE } from '@wallet-constants/account';
+import { ACCOUNT_TYPE } from '@wallet-constants/account';
 import { Account, Network, Fiat, WalletParams } from '@wallet-types';
 import { AppState } from '@suite-types';
 import { NETWORKS } from '@wallet-config';
@@ -175,46 +175,20 @@ export const sortByCoin = (accounts: Account[]) => {
     });
 };
 
-export const isAddressInAccount = (
-    networkType: Network['networkType'],
-    address: string,
-    accounts: Account[],
-) => {
-    const filteredAccounts = accounts.filter(account => account.networkType === networkType);
-
-    switch (networkType) {
-        case NETWORK_TYPE.BITCOIN: {
-            return filteredAccounts.find(account => {
-                const { addresses } = account;
-                if (addresses) {
-                    const foundAccountUnused = addresses.unused.find(
-                        item => item.address === address,
-                    );
-                    if (foundAccountUnused) {
-                        return account;
-                    }
-                    const foundAccountUsed = addresses.used.find(item => item.address === address);
-                    if (foundAccountUsed) {
-                        return account;
-                    }
-                }
-                return false;
-            });
+export const findAccountsByAddress = (address: string, accounts: Account[]) =>
+    accounts.filter(a => {
+        if (a.addresses) {
+            return (
+                a.addresses.used.find(u => u.address === address) ||
+                a.addresses.unused.find(u => u.address === address) ||
+                a.addresses.change.find(u => u.address === address) ||
+                a.descriptor === address
+            );
         }
+        return a.descriptor === address;
+    });
 
-        case NETWORK_TYPE.RIPPLE:
-        case NETWORK_TYPE.ETHEREUM: {
-            const foundAccount = filteredAccounts.find(account => account.descriptor === address);
-            if (foundAccount) {
-                return foundAccount;
-            }
-            return false;
-        }
-        // no default
-    }
-};
-
-export const getAccountDevice = (devices: AppState['devices'], account: Account) =>
+export const findAccountDevice = (account: Account, devices: AppState['devices']) =>
     devices.find(d => d.state === account.deviceState);
 
 export const getAllAccounts = (deviceState: string | typeof undefined, accounts: Account[]) =>

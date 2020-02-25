@@ -99,7 +99,10 @@ const WalletInstance = ({
                         {noPassphraseInstance ? (
                             <Translation {...messages.TR_NO_PASSPHRASE_WALLET} />
                         ) : (
-                            <Translation {...messages.TR_PASSPHRASE_WALLET} />
+                            <Translation
+                                {...messages.TR_PASSPHRASE_WALLET}
+                                values={{ id: instance.instance }}
+                            />
                         )}
                     </InstanceType>
                 )}

@@ -5,6 +5,7 @@ import modal from './modalReducer';
 import log from './logReducer';
 import notifications from './notificationReducer';
 import resize from './resizeReducer';
+import labeling from './labelingReducer';
 
 export default {
     suite,
@@ -14,4 +15,5 @@ export default {
     log,
     notifications,
     resize,
+    labeling,
 };

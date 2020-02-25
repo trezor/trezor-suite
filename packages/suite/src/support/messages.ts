@@ -1267,7 +1267,7 @@ const definedMessages = defineMessages({
         id: 'TR_PASSPHRASE_TOO_LONG',
     },
     TR_PASSPHRASE_WALLET: {
-        defaultMessage: 'Passphrase wallet',
+        defaultMessage: 'Passphrase wallet ({id})',
         id: 'TR_PASSPHRASE_WALLET',
     },
     TR_PENDING: {
@@ -2175,6 +2175,14 @@ const definedMessages = defineMessages({
         id: 'NOTIFICATIONS_EMPTY_DESC',
         defaultMessage:
             'Here you will see all important notifications once they happen. For now, there’s nothing to see.',
+    },
+    LABELING_ACCOUNT: {
+        id: 'LABELING_ACCOUNT',
+        defaultMessage: 'Account #{index}',
+    },
+    LABELING_ACCOUNT_WITH_TYPE: {
+        id: 'LABELING_ACCOUNT_WITH_TYPE',
+        defaultMessage: 'Account #{index} ({type})',
     },
 });
 
