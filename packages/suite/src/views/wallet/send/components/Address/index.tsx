@@ -1,11 +1,10 @@
-import { Translation } from '@suite-components';
+import { Translation, AddressLabeling } from '@suite-components';
 import styled from 'styled-components';
 import { Icon, colors, Input, Tooltip } from '@trezor/components';
 import messages from '@suite/support/messages';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Output } from '@wallet-types/sendForm';
 import { getInputState } from '@wallet-utils/sendFormUtils';
-import { Address as LabeledAddress } from '@suite-components/Labeling';
 import React from 'react';
 import { Props } from './Container';
 
@@ -53,7 +52,7 @@ export default ({ output, account, openModal, sendFormActions }: Props) => {
                     </Tooltip>
                 </Label>
             }
-            bottomText={getErrorMessage(error) || <LabeledAddress address={value} knownOnly />}
+            bottomText={getErrorMessage(error) || <AddressLabeling address={value} knownOnly />}
             button={{
                 icon: 'QR',
                 onClick: () =>

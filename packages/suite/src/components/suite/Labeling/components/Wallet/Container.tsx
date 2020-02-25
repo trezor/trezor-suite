@@ -8,7 +8,7 @@ const mapStateToProps = (state: AppState) => ({
 
 export type Props = ReturnType<typeof mapStateToProps> & {
     device: TrezorDevice;
-    useDeviceLabel: boolean;
+    useDeviceLabel?: boolean;
 };
 
 export default connect(mapStateToProps)(Component);
