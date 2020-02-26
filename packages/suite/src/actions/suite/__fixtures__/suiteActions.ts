@@ -681,7 +681,7 @@ const acquireDevice = [
                 error: 'getFeatures error',
             },
         },
-        result: NOTIFICATION.ADD,
+        result: NOTIFICATION.TOAST,
     },
     {
         description: `without device`,
@@ -846,7 +846,7 @@ const authorizeDevice = [
                 error: 'getDeviceState error',
             },
         },
-        result: NOTIFICATION.ADD,
+        result: NOTIFICATION.TOAST,
     },
 ];
 

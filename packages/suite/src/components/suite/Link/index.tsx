@@ -1,14 +1,9 @@
 import React from 'react';
 import NextLink, { LinkProps } from 'next/link';
-import { Link as TLink } from '@trezor/components';
+import { Link as TLink, LinkProps as TLinkProps } from '@trezor/components';
 import { getPrefixedURL, isInternalRoute } from '@suite-utils/router';
 
-interface Props extends LinkProps {
-    className?: string;
-    variant?: 'default' | 'nostyle';
-    target?: string;
-    children?: React.ReactNode;
-}
+type Props = LinkProps & TLinkProps;
 
 const RefLinkComponent = React.forwardRef((props: Props, _ref: any) => (
     <TLink {...props} href={props.href as string}>
@@ -26,7 +21,7 @@ const Link = ({ children, href, className, target = '_self', ...rest }: Props) =
     const overrideAsProp = {
         ...(isInternalLink && typeof href === 'string' ? { as: getPrefixedURL(href) } : {}),
     };
-
+    const externalIconProps = !isInternalLink ? ({ icon: 'EXTERNAL_LINK' } as const) : {};
     const { prefetch, shallow, scroll, replace, ...linkProps } = rest;
 
     const StyledLink = (
@@ -35,6 +30,7 @@ const Link = ({ children, href, className, target = '_self', ...rest }: Props) =
             target={target}
             className={className}
             {...linkProps}
+            {...externalIconProps}
         >
             {children}
         </RefLinkComponent>

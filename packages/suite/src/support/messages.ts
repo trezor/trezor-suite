@@ -1267,7 +1267,7 @@ const definedMessages = defineMessages({
         id: 'TR_PASSPHRASE_TOO_LONG',
     },
     TR_PASSPHRASE_WALLET: {
-        defaultMessage: 'Passphrase wallet',
+        defaultMessage: 'Passphrase wallet ({id})',
         id: 'TR_PASSPHRASE_WALLET',
     },
     TR_PENDING: {
@@ -1857,11 +1857,6 @@ const definedMessages = defineMessages({
         description: 'Info what is happening with users device.',
         id: 'TR_WAIT_FOR_REBOOT',
     },
-    TR_WALLET: {
-        defaultMessage: 'Wallet',
-        description: 'Category in Settings',
-        id: 'TR_WALLET',
-    },
     TR_WALLET_DUPLICATE_DESC: {
         defaultMessage: 'The hidden wallet that you are trying to create already exists',
         id: 'TR_WALLET_DUPLICATE_DESC',
@@ -2199,6 +2194,31 @@ const definedMessages = defineMessages({
     REFRESH: {
         id: 'REFRESH',
         defaultMessage: 'Refresh',
+    },
+    NOTIFICATIONS_TITLE: {
+        id: 'NOTIFICATIONS_TITLE',
+        defaultMessage: 'Notifications',
+    },
+    NOTIFICATIONS_EMPTY_TITLE: {
+        id: 'NOTIFICATIONS_EMPTY_TITLE',
+        defaultMessage: 'No notifications to show',
+    },
+    NOTIFICATIONS_EMPTY_DESC: {
+        id: 'NOTIFICATIONS_EMPTY_DESC',
+        defaultMessage:
+            'Here you will see all important notifications once they happen. For now, there’s nothing to see.',
+    },
+    LABELING_ACCOUNT: {
+        id: 'LABELING_ACCOUNT',
+        defaultMessage: 'Account #{index}',
+    },
+    LABELING_ACCOUNT_WITH_TYPE: {
+        id: 'LABELING_ACCOUNT_WITH_TYPE',
+        defaultMessage: 'Account #{index} ({type})',
+    },
+    TR_DISCREET_TOOLTIP: {
+        id: 'TR_DISCREET_TOOLTIP',
+        defaultMessage: '[FIX THIS TEXT] This is a descreeeet mode',
     },
 });
 

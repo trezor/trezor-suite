@@ -104,9 +104,9 @@ const ITEMS = [
         route: 'settings-device',
     },
     {
-        label: <Translation {...messages.TR_WALLET} />,
+        label: <Translation {...messages.TR_COINS} />,
         'data-test': '@settings/menu/wallet',
-        icon: 'WALLET',
+        icon: 'COINS',
         route: 'settings-wallet',
     },
 ] as const;

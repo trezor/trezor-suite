@@ -41,4 +41,5 @@ export const ICONS = {
     BACK: require('../../images/icons/back.svg'),
     EYE: require('../../images/icons/eye.svg'),
     EYE_CROSSED: require('../../images/icons/eye_crossed.svg'),
+    NOTIFICATIONS: require('../../images/icons/notifications.svg'),
 };

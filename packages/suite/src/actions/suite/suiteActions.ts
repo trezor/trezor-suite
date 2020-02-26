@@ -1,7 +1,7 @@
 import TrezorConnect, { Device, DEVICE } from 'trezor-connect';
 import * as reducersUtils from '@suite-utils/reducerUtils';
 import * as deviceUtils from '@suite-utils/device';
-import { add as addNotification } from '@suite-actions/notificationActions';
+import { addToast } from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { SUITE } from './constants';
 import { LANGUAGES } from '@suite-config';
@@ -316,9 +316,9 @@ export const acquireDevice = (requestedDevice?: TrezorDevice) => async (
 
     if (!response.success) {
         dispatch(
-            addNotification({
+            addToast({
                 type: 'acquire-error',
-                acquiringDevice: device,
+                device,
                 error: response.payload.error,
             }),
         );
@@ -391,7 +391,7 @@ export const authorizeDevice = () => async (
     }
 
     dispatch({ type: SUITE.AUTH_FAILED, payload: device });
-    dispatch(addNotification({ type: 'auth-failed', error: response.payload.error }));
+    dispatch(addToast({ type: 'auth-failed', error: response.payload.error }));
     return false;
 };
 
@@ -429,13 +429,13 @@ export const authConfirm = () => async (dispatch: Dispatch, getState: GetState) 
             dispatch(forgetDevice(device));
             return;
         }
-        dispatch(addNotification({ type: 'auth-confirm-error', error: response.payload.error }));
+        dispatch(addToast({ type: 'auth-confirm-error', error: response.payload.error }));
         dispatch(receiveAuthConfirm(device, false));
         return;
     }
 
     if (response.payload.state !== device.state) {
-        dispatch(addNotification({ type: 'auth-confirm-error' }));
+        dispatch(addToast({ type: 'auth-confirm-error' }));
         dispatch(receiveAuthConfirm(device, false));
         return;
     }

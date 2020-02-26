@@ -1,8 +1,10 @@
 import React from 'react';
 import { Props as ContainerProps } from '../../Container';
 import styled, { css } from 'styled-components';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 import { findRouteByName } from '@suite-utils/router';
-import { Icon, colors, Switch } from '@trezor/components';
+import { Icon, colors, Switch, Tooltip } from '@trezor/components';
 import { BOTTOM_MENU_ITEMS, MENU_PADDING } from '@suite-constants/menu';
 import Divider from '../Divider';
 
@@ -12,10 +14,10 @@ const Wrapper = styled.div`
 
 const MenuItemWrapper = styled.div`
     display: flex;
-    font-weight: bold;
     color: ${colors.WHITE};
     cursor: pointer;
     align-items: center;
+    justify-content: space-between;
 `;
 
 const IconWrapper = styled.div`
@@ -26,7 +28,7 @@ const IconWrapper = styled.div`
 `;
 
 const SubMenu = styled.div`
-    padding: 0 10px 0 0;
+    display: flex;
 `;
 
 const SubMenuText = styled.div`
@@ -40,7 +42,7 @@ interface ComponentProps {
 
 const Text = styled.div<ComponentProps>`
     color: ${colors.WHITE};
-    font-weight: bold;
+    font-size: 12px;
     padding-top: 2px;
     display: flex;
     align-items: center;
@@ -54,9 +56,9 @@ const Text = styled.div<ComponentProps>`
 
 const In = styled.div<ComponentProps>`
     cursor: pointer;
-    padding: 10px 0;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
+    padding: 6px 0;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
     display: flex;
     flex: 1;
     flex-direction: flex-start;
@@ -79,7 +81,13 @@ const In = styled.div<ComponentProps>`
 `;
 
 const StyledDivider = styled(Divider)`
-    padding: 5px 0 10px 0;
+    padding: 5px 10px 10px 0;
+`;
+
+const SwitchWrapper = styled.div`
+    display: flex;
+    margin-left: 20px;
+    flex: 1;
 `;
 
 interface Props {
@@ -108,7 +116,7 @@ const BottomMenu = (props: Props) => (
                         <IconWrapper>
                             <Icon
                                 color={isActive ? colors.BLACK0 : colors.WHITE}
-                                size={10}
+                                size={12}
                                 icon={icon}
                             />
                         </IconWrapper>
@@ -117,17 +125,24 @@ const BottomMenu = (props: Props) => (
                 </In>
             );
         })}
+        <StyledDivider className="divider" />
         <SubMenu>
-            <StyledDivider className="divider" />
             <MenuItemWrapper>
                 <SubMenuText>Discreet</SubMenuText>
-                <Switch
-                    isSmall
-                    checked={props.discreetMode}
-                    onChange={checked => {
-                        props.setDiscreetMode(checked);
-                    }}
-                />
+                <SwitchWrapper>
+                    <Tooltip
+                        placement="right"
+                        content={<Translation {...messages.TR_DISCREET_TOOLTIP} />}
+                    >
+                        <Switch
+                            isSmall
+                            checked={props.discreetMode}
+                            onChange={checked => {
+                                props.setDiscreetMode(checked);
+                            }}
+                        />
+                    </Tooltip>
+                </SwitchWrapper>
             </MenuItemWrapper>
         </SubMenu>
     </Wrapper>

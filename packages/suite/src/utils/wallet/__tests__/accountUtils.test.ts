@@ -64,9 +64,15 @@ describe('account utils', () => {
         expect(accountUtils.networkAmountToSatoshi('aaa', 'eth')).toEqual('-1');
     });
 
-    it('getAccountDevice', () => {
+    it('findAccountDevice', () => {
         expect(
-            accountUtils.getAccountDevice(
+            accountUtils.findAccountDevice(
+                global.JestMocks.getWalletAccount({
+                    deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+                    descriptor:
+                        'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+                    symbol: 'btc',
+                }),
                 [
                     global.JestMocks.getSuiteDevice({
                         state: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
@@ -75,12 +81,6 @@ describe('account utils', () => {
                         state: '20f91883604899768ba21ffd38d0f5f35b07f14e65355f342e4442547c0ce45e',
                     }),
                 ],
-                global.JestMocks.getWalletAccount({
-                    deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
-                    descriptor:
-                        'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
-                    symbol: 'btc',
-                }),
             ),
         ).toEqual(
             global.JestMocks.getSuiteDevice({

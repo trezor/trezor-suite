@@ -137,7 +137,9 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
 
     const isWalletContext =
         !!backgroundRoute &&
-        (backgroundRoute.app === 'wallet' || backgroundRoute.app === 'dashboard');
+        (backgroundRoute.app === 'wallet' ||
+            backgroundRoute.app === 'dashboard' ||
+            backgroundRoute.app === 'notifications');
     const hasDeviceSelection =
         !isWalletContext && !deviceUtils.isSelectedDevice(selectedDevice, device);
     const hasAtLeastOneWallet = props.instances.find(d => d.state);

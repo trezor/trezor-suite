@@ -37,7 +37,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    addNotification: bindActionCreators(notificationActions.add, dispatch),
+    addNotification: bindActionCreators(notificationActions.addToast, dispatch),
 });
 
 type Props = ReturnType<typeof mapStateToProps> &
