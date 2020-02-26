@@ -7,7 +7,8 @@ import { AppState, Action, Dispatch } from '@suite-types';
 
 /*
  * Middleware for toast notifications.
- * Catch NOTIFICATION.ADD action, get content component and call react-toastify
+ * This middleware should be used only in browser environment (web/desktop)
+ * Catch NOTIFICATION.TOAST action, get content component and call `react-toastify.toast`
  */
 
 export default (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
@@ -16,7 +17,7 @@ export default (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     // pass action
     next(action);
 
-    if (action.type !== NOTIFICATION.ADD) return action;
+    if (action.type !== NOTIFICATION.TOAST) return action;
 
     const { payload } = action;
     toast(getContent(payload, api.dispatch), {

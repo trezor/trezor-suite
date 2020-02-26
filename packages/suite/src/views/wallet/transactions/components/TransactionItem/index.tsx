@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
-import { Translation, HiddenPlaceholder, FiatValue, Badge } from '@suite-components';
+import {
+    Translation,
+    HiddenPlaceholder,
+    FiatValue,
+    Badge,
+    AddressLabeling,
+} from '@suite-components';
 import { variables, colors, Button } from '@trezor/components';
 import { ArrayElement } from '@suite/types/utils';
 import messages from '@suite/support/messages';
@@ -189,10 +195,16 @@ const TokenTransfer = (transfer: ArrayElement<Props['transaction']['tokens']>) =
                         </HiddenPlaceholder>
                     </TokenName>
                     <Label>
-                        From:&nbsp;<TokenAddress>{transfer.from}</TokenAddress>
+                        From:&nbsp;
+                        <TokenAddress>
+                            <AddressLabeling address={transfer.from} />
+                        </TokenAddress>
                     </Label>
                     <Label>
-                        To:&nbsp;<TokenAddress>{transfer.to}</TokenAddress>
+                        To:&nbsp;
+                        <TokenAddress>
+                            <AddressLabeling address={transfer.to} />
+                        </TokenAddress>
                     </Label>
                 </Col>
             </Row>
@@ -208,7 +220,12 @@ const TransactionItem = (props: Props) => {
         // It is ok to ignore eslint. the list is never reordered/filtered, items have no ids, list/items do not change
         // eslint-disable-next-line react/no-array-index-key
         <Target key={i}>
-            {target.addresses && target.addresses.map(addr => <Addr key={addr}>{addr}</Addr>)}
+            {target.addresses &&
+                target.addresses.map(addr => (
+                    <Addr key={addr}>
+                        <AddressLabeling address={addr} />
+                    </Addr>
+                ))}
         </Target>
     ));
 
@@ -327,7 +344,9 @@ const TransactionItem = (props: Props) => {
                                         <Target>
                                             {target.addresses &&
                                                 target.addresses.map(addr => (
-                                                    <Addr key={addr}>{addr}</Addr>
+                                                    <Addr key={addr}>
+                                                        <AddressLabeling address={addr} />
+                                                    </Addr>
                                                 ))}
                                         </Target>
                                     </Targets>

@@ -2,10 +2,10 @@ import {
     State as TransactionsState,
     WalletAccountTransaction,
 } from '@wallet-reducers/transactionReducer';
-import { AccountTransaction } from 'trezor-connect';
+import { AccountTransaction, AccountInfo } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import messages from '@suite/support/messages';
-import { NETWORK_TYPE, ACCOUNT_TYPE } from '@wallet-constants/account';
+import { ACCOUNT_TYPE } from '@wallet-constants/account';
 import { Account, Network, Fiat, WalletParams } from '@wallet-types';
 import { AppState } from '@suite-types';
 import { NETWORKS } from '@wallet-config';
@@ -175,46 +175,20 @@ export const sortByCoin = (accounts: Account[]) => {
     });
 };
 
-export const isAddressInAccount = (
-    networkType: Network['networkType'],
-    address: string,
-    accounts: Account[],
-) => {
-    const filteredAccounts = accounts.filter(account => account.networkType === networkType);
-
-    switch (networkType) {
-        case NETWORK_TYPE.BITCOIN: {
-            return filteredAccounts.find(account => {
-                const { addresses } = account;
-                if (addresses) {
-                    const foundAccountUnused = addresses.unused.find(
-                        item => item.address === address,
-                    );
-                    if (foundAccountUnused) {
-                        return account;
-                    }
-                    const foundAccountUsed = addresses.used.find(item => item.address === address);
-                    if (foundAccountUsed) {
-                        return account;
-                    }
-                }
-                return false;
-            });
+export const findAccountsByAddress = (address: string, accounts: Account[]) =>
+    accounts.filter(a => {
+        if (a.addresses) {
+            return (
+                a.addresses.used.find(u => u.address === address) ||
+                a.addresses.unused.find(u => u.address === address) ||
+                a.addresses.change.find(u => u.address === address) ||
+                a.descriptor === address
+            );
         }
+        return a.descriptor === address;
+    });
 
-        case NETWORK_TYPE.RIPPLE:
-        case NETWORK_TYPE.ETHEREUM: {
-            const foundAccount = filteredAccounts.find(account => account.descriptor === address);
-            if (foundAccount) {
-                return foundAccount;
-            }
-            return false;
-        }
-        // no default
-    }
-};
-
-export const getAccountDevice = (devices: AppState['devices'], account: Account) =>
+export const findAccountDevice = (account: Account, devices: AppState['devices']) =>
     devices.find(d => d.state === account.deviceState);
 
 export const getAllAccounts = (deviceState: string | typeof undefined, accounts: Account[]) =>
@@ -342,4 +316,54 @@ export const getTotalFiatBalance = (
 export const isTestnet = (symbol: Account['symbol']) => {
     const net = NETWORKS.find(n => n.symbol === symbol);
     return net?.testnet ?? false;
+};
+
+export const isAccountOutdated = (account: Account, accountInfo: AccountInfo) => {
+    // changed transaction count (total + unconfirmed)
+    const changedTxCount =
+        accountInfo.history.total + (accountInfo.history.unconfirmed || 0) !==
+        account.history.total + (account.history.unconfirmed || 0);
+
+    // different sequence or balance
+    const changedRippleSpecific =
+        account.networkType === 'ripple'
+            ? accountInfo.misc!.sequence !== account.misc.sequence ||
+              accountInfo.balance !== account.balance
+            : false;
+
+    // last tx doesn't match
+    // const lastPayloadTx = accountInfo.history.transactions
+    //     ? accountInfo.history.transactions[0]
+    //     : undefined;
+    // const lastReducerTx = getAccountTransactions(
+    //     getState().wallet.transactions.transactions,
+    //     account,
+    // )[0];
+    // // .filter(t => !!t.blockTime)
+    // // [0]; // exclude pending txs
+
+    // let changedLastTx = false;
+    // if ((!lastReducerTx && lastPayloadTx) || (lastReducerTx && !lastPayloadTx)) {
+    //     changedLastTx = true;
+    // } else if (lastReducerTx && lastPayloadTx && lastReducerTx.txid !== lastPayloadTx.txid) {
+    //     changedLastTx = true;
+    // }
+
+    // if (changedTxCount || changedLastTx || changedRippleSpecific) {
+    //     console.log(changedTxCount, changedLastTx, changedRippleSpecific);
+    //     console.log('isAccountOutdated');
+    //     console.log('account', account);
+    //     console.log('accountINfo', accountInfo);
+    //     console.log('changedTxCount', changedTxCount);
+    //     console.log('changedRippleSpecific', changedRippleSpecific);
+    //     console.log('changedLastTx', changedLastTx);
+    //     console.log('lastReducerTx', lastReducerTx);
+    //     console.log('lastPayloadTx', lastPayloadTx);
+    // }
+
+    // ripple doesn't provide total txs count, rely on balance/sequence
+    if (account.networkType === 'ripple') {
+        return changedRippleSpecific;
+    }
+    return changedTxCount;
 };

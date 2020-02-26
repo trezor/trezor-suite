@@ -113,7 +113,7 @@ export default [
         result: {
             actions: [
                 {
-                    type: NOTIFICATION.ADD,
+                    type: NOTIFICATION.TOAST,
                     payload: {
                         type: 'verify-address-error',
                         error: 'Method for getAddress not defined',
@@ -165,7 +165,7 @@ export default [
                 { type: SUITE.LOCK_DEVICE, payload: true },
                 { type: SUITE.LOCK_DEVICE, payload: false },
                 {
-                    type: NOTIFICATION.ADD,
+                    type: NOTIFICATION.TOAST,
                     payload: { type: 'verify-address-error', error: 'Runtime error' },
                 },
             ],

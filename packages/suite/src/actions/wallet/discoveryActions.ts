@@ -1,6 +1,6 @@
 import { Discovery, PartialDiscovery } from '@wallet-reducers/discoveryReducer';
 import TrezorConnect, { BundleProgress, AccountInfo, UI } from 'trezor-connect';
-import { add as addNotification } from '@suite-actions/notificationActions';
+import { addToast } from '@suite-actions/notificationActions';
 import { SUITE } from '@suite-actions/constants';
 import { create as createAccount } from '@wallet-actions/accountActions';
 import { DISCOVERY } from './constants';
@@ -269,7 +269,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
     const selectedDevice = getState().suite.device;
     const discovery = dispatch(getDiscoveryForDevice());
     if (!selectedDevice || selectedDevice.authConfirm || !discovery) {
-        dispatch(addNotification({ type: 'discovery-error', error: 'Device not found' }));
+        dispatch(addToast({ type: 'discovery-error', error: 'Device not found' }));
         return;
     } // TODO: throw error in notification?
     const { deviceState } = discovery;
@@ -356,7 +356,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
             dispatch(update({ deviceState, status: DISCOVERY.STATUS.STOPPED }, DISCOVERY.STOP));
         } else {
             dispatch(
-                addNotification({
+                addToast({
                     type: 'discovery-error',
                     error: 'Reading accounts error: Discovery process is not running',
                 }),
@@ -413,7 +413,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         dispatch(update({ deviceState, status: DISCOVERY.STATUS.STOPPED }, DISCOVERY.STOP));
 
         if (result.payload.error !== 'discovery_interrupted') {
-            dispatch(addNotification({ type: 'discovery-error', error: result.payload.error }));
+            dispatch(addToast({ type: 'discovery-error', error: result.payload.error }));
         }
     }
 };

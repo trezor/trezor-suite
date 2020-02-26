@@ -20,6 +20,7 @@ import HiddenPlaceholder from './HiddenPlaceholder/Container';
 import QrCode from './QrCode';
 
 import { Translation } from './Translation';
+import { AccountLabeling, AddressLabeling, WalletLabeling } from './Labeling';
 
 export {
     Backdrop,
@@ -43,4 +44,7 @@ export {
     HiddenPlaceholder,
     Badge,
     QrCode,
+    AccountLabeling,
+    AddressLabeling,
+    WalletLabeling,
 };

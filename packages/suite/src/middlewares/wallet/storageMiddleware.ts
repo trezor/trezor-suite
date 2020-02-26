@@ -29,7 +29,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
 
         case ACCOUNT.CREATE:
         case ACCOUNT.UPDATE: {
-            const device = accountUtils.getAccountDevice(api.getState().devices, action.payload);
+            const device = accountUtils.findAccountDevice(action.payload, api.getState().devices);
             // update only transactions for remembered device
             if (isDeviceRemembered(device)) {
                 storageActions.saveAccounts([action.payload]);
@@ -46,7 +46,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         }
 
         case TRANSACTION.ADD: {
-            const device = accountUtils.getAccountDevice(api.getState().devices, action.account);
+            const device = accountUtils.findAccountDevice(action.account, api.getState().devices);
             // update only transactions for remembered device
             if (isDeviceRemembered(device)) {
                 storageActions.removeAccountTransactions(action.account);

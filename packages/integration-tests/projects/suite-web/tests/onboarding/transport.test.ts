@@ -1,54 +1,30 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { TRANSPORT } from 'trezor-connect';
 
-describe.skip('Transport webusb/bridge', () => {
+describe('Transport webusb/bridge', () => {
     beforeEach(() => {
         cy.task('stopBridge').task('stopEmu');
         cy.viewport(1024, 768).resetDb();
         cy.visit('')
             .goToOnboarding()
             .onboardingShouldLoad();
+    });
 
-        cy.window().then(window => {
-            cy.stub(window.TrezorConnect, 'disableWebUSB', () => {
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                        window.store.dispatch({
-                            type: TRANSPORT.ERROR,
-                            payload: {
-                                error: 'failed to fetch',
-                                bridge: {
-                                    changelog: ['Fix Certificate issue on Windows'],
-                                    directory: 'bridge/2.0.27/',
-                                    packages: [
-                                        {
-                                            name: 'Linux 64-bit (deb)',
-                                            platform: ['deb64'],
-                                            preffered: true,
-                                            signature: null,
-                                            url: 'bridge/2.0.27/trezor-bridge_2.0.27_amd64.de',
-                                        },
-                                    ],
-                                    version: [2, 0, 27],
-                                },
-                            },
-                        });
-                    }, 0);
-                    return resolve({ success: true });
-                });
-            });
-        });
+    it('Offer webusb as primary choice on web, but allow user to disable it and fallback to bridge', () => {
+        cy.getTestElement('@onboarding/begin-button').click();
+        cy.getTestElement('@onboarding/path-create-button').click();
+        cy.getTestElement('@onboarding/path-used-button').click();
+        cy.getTestElement('@onboarding/try-bridge-button').click();
+        cy.getTestElement('@onboarding/bridge');
     });
 
     it('user selects new device -> user selects model one -> in this case we know that he can not use webusb (unreadable device) so we disable webusb and offer bridge download', () => {
-        cy.getTestElement('@onboarding/path-create-button')
-            .click()
-            .getTestElement('@onboarding/path-new-button')
-            .click()
-            .getTestElement('@onboarding/option-model-one-path')
-            .click()
-            .getTestElement('@onboarding/button-continue')
-            .click()
-            .getTestElement('@onboarding/bridge');
+        cy.getTestElement('@onboarding/begin-button').click();
+        cy.getTestElement('@onboarding/path-create-button').click();
+        cy.getTestElement('@onboarding/path-new-button').click();
+        cy.getTestElement('@onboarding/option-model-one-path').click();
+        cy.getTestElement('@onboarding/continue-button').click();
+        // see, no try bridge button, we already know we can not use webusb
+        cy.getTestElement('@onboarding/bridge');
     });
 });

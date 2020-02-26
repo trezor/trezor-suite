@@ -1,19 +1,12 @@
-import TrezorConnect, {
-    AccountInfo,
-    BlockchainBlock,
-    BlockchainNotification,
-} from 'trezor-connect';
+import TrezorConnect, { BlockchainBlock, BlockchainNotification } from 'trezor-connect';
 import {
     getSelectedNetwork,
     enhanceTransaction,
-    getAccountDevice,
+    findAccountDevice,
 } from '@wallet-utils/accountUtils';
-import * as deviceUtils from '@suite-utils/device';
 import * as accountActions from '@wallet-actions/accountActions';
-import * as transactionActions from '@wallet-actions/transactionActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { State as FeeState } from '@wallet-reducers/feesReducer';
-import { SETTINGS } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
 import { Dispatch, GetState } from '@suite-types';
 import { Account, Network } from '@wallet-types';
@@ -163,59 +156,6 @@ export const reconnect = (symbol: Network['symbol']) => async (
     });
 };
 
-const isAccountOutdated = (account: Account, accountInfo: AccountInfo) => (
-    _dispatch: Dispatch,
-    _getState: GetState,
-) => {
-    // changed transaction count (total + unconfirmed)
-    const changedTxCount =
-        accountInfo.history.total + (accountInfo.history.unconfirmed || 0) !==
-        account.history.total + (account.history.unconfirmed || 0);
-
-    // different sequence or balance
-    const changedRippleSpecific =
-        account.networkType === 'ripple'
-            ? accountInfo.misc!.sequence !== account.misc.sequence ||
-              accountInfo.balance !== account.balance
-            : false;
-
-    // last tx doesn't match
-    // const lastPayloadTx = accountInfo.history.transactions
-    //     ? accountInfo.history.transactions[0]
-    //     : undefined;
-    // const lastReducerTx = getAccountTransactions(
-    //     getState().wallet.transactions.transactions,
-    //     account,
-    // )[0];
-    // // .filter(t => !!t.blockTime)
-    // // [0]; // exclude pending txs
-
-    // let changedLastTx = false;
-    // if ((!lastReducerTx && lastPayloadTx) || (lastReducerTx && !lastPayloadTx)) {
-    //     changedLastTx = true;
-    // } else if (lastReducerTx && lastPayloadTx && lastReducerTx.txid !== lastPayloadTx.txid) {
-    //     changedLastTx = true;
-    // }
-
-    // if (changedTxCount || changedLastTx || changedRippleSpecific) {
-    //     console.log(changedTxCount, changedLastTx, changedRippleSpecific);
-    //     console.log('isAccountOutdated');
-    //     console.log('account', account);
-    //     console.log('accountINfo', accountInfo);
-    //     console.log('changedTxCount', changedTxCount);
-    //     console.log('changedRippleSpecific', changedRippleSpecific);
-    //     console.log('changedLastTx', changedLastTx);
-    //     console.log('lastReducerTx', lastReducerTx);
-    //     console.log('lastPayloadTx', lastPayloadTx);
-    // }
-
-    // ripple doesn't provide total txs count, rely on balance/sequence
-    if (account.networkType === 'ripple') {
-        return changedRippleSpecific;
-    }
-    return changedTxCount;
-};
-
 export const onBlockMined = (block: BlockchainBlock) => async (
     dispatch: Dispatch,
     getState: GetState,
@@ -238,38 +178,7 @@ export const onBlockMined = (block: BlockchainBlock) => async (
     if (networkAccounts.length === 0) return;
 
     networkAccounts.forEach(async account => {
-        const response = await TrezorConnect.getAccountInfo({
-            coin: symbol,
-            descriptor: account.descriptor,
-            details: 'txs',
-            page: 1, // useful for every network except ripple
-            pageSize:
-                (account.history.unconfirmed || 0) > SETTINGS.TXS_PER_PAGE
-                    ? account.history.unconfirmed
-                    : SETTINGS.TXS_PER_PAGE, // we need to fetch at least the number of unconfirmed txs
-        });
-
-        if (response.success) {
-            const outdated = dispatch(isAccountOutdated(account, response.payload));
-            const unconfirmedTxs = account.history.unconfirmed; // not working for ripple, 0 for all ripple accounts?
-            if (outdated) {
-                // delete already stored txs for the account
-                dispatch(transactionActions.remove(account));
-            }
-
-            if (outdated || unconfirmedTxs) {
-                // runs also in case of up-to-date account with pending txs
-                // update the account (balance, txs count, etc)
-                dispatch(accountActions.update(account, response.payload));
-                // add new txs/update existing ones if necessary
-                dispatch(
-                    transactionActions.add(response.payload.history.transactions || [], account, 1),
-                );
-            }
-        } else {
-            // TODO: inform user about failure?
-            console.warn('Failed to get account info on new block');
-        }
+        dispatch(accountActions.fetchAndUpdateAccount(account, true));
     });
 };
 
@@ -295,22 +204,18 @@ export const onNotification = (payload: BlockchainNotification) => async (
     if (!account) return;
 
     // add tx to the reducer
-    dispatch(transactionActions.add([notification.tx], account));
+    // dispatch(transactionActions.add([notification.tx], account));
 
     const enhancedTx = enhanceTransaction(notification.tx, account);
-    const accountDevice = getAccountDevice(getState().devices, account);
+    const accountDevice = findAccountDevice(account, getState().devices);
 
-    // don't dispatch sent and self notifications
-    if (accountDevice && enhancedTx.type !== 'sent' && enhancedTx.type !== 'self') {
-        const isSelectedDevice = deviceUtils.isSelectedInstance(
-            getState().suite.device,
-            accountDevice,
-        );
+    // dispatch only recv notifications
+    if (accountDevice && enhancedTx.type === 'recv') {
         dispatch(
-            notificationActions.add({
+            notificationActions.addToast({
                 type: 'tx-confirmed',
                 amount: enhancedTx.amount,
-                accountDevice: !isSelectedDevice ? accountDevice : undefined,
+                device: accountDevice,
                 routeParams: {
                     symbol: account.symbol,
                     accountIndex: account.index,

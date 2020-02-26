@@ -204,7 +204,7 @@ describe('Discovery Actions', () => {
                 expect(result.bundleSize).toEqual(0);
             } else {
                 const action = store.getActions().pop();
-                expect(action.type).toEqual(NOTIFICATION.ADD);
+                expect(action.type).toEqual(NOTIFICATION.TOAST);
             }
         });
     });
@@ -304,7 +304,7 @@ describe('Discovery Actions', () => {
         });
         await store.dispatch(discoveryActions.start());
         const action = store.getActions().pop();
-        expect(action.type).toEqual(NOTIFICATION.ADD);
+        expect(action.type).toEqual(NOTIFICATION.TOAST);
     });
 
     it('Create discovery which already exist', async () => {
@@ -393,7 +393,7 @@ describe('Discovery Actions', () => {
         store.dispatch(discoveryActions.create('device-state'));
         store.dispatch(discoveryActions.start()).then(() => {
             const action = store.getActions().pop();
-            done(expect(action.type).toEqual(NOTIFICATION.ADD));
+            done(expect(action.type).toEqual(NOTIFICATION.TOAST));
         });
         store.dispatch(
             discoveryActions.update({
@@ -415,7 +415,7 @@ describe('Discovery Actions', () => {
         store.dispatch(discoveryActions.create('device-state'));
         await store.dispatch(discoveryActions.start());
         const action = store.getActions().pop();
-        expect(action.type).toEqual(NOTIFICATION.ADD);
+        expect(action.type).toEqual(NOTIFICATION.TOAST);
     });
 
     it('First iteration malformed error (invalid json not an array)', async () => {
@@ -430,7 +430,7 @@ describe('Discovery Actions', () => {
         store.dispatch(discoveryActions.create('device-state'));
         await store.dispatch(discoveryActions.start());
         const action = store.getActions().pop();
-        expect(action.type).toEqual(NOTIFICATION.ADD);
+        expect(action.type).toEqual(NOTIFICATION.TOAST);
     });
 
     it('TrezorConnect did not emit any progress event', async () => {
@@ -446,7 +446,7 @@ describe('Discovery Actions', () => {
         const action = store.getActions().pop();
         // restore original mocked fn
         require('trezor-connect').default.getAccountInfo = originalFn;
-        expect(action.type).toEqual(NOTIFICATION.ADD);
+        expect(action.type).toEqual(NOTIFICATION.TOAST);
     });
 
     it('All accounts failed in runtime', async () => {

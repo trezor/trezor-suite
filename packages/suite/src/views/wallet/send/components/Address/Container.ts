@@ -10,8 +10,6 @@ import Component from './index';
 const mapStateToProps = (state: AppState) => ({
     account: state.wallet.selectedAccount.account,
     send: state.wallet.send,
-    accounts: state.wallet.accounts,
-    devices: state.devices,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
