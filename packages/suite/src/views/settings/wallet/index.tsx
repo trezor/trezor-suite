@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { P, Switch, Icon, variables, colors, CoinLogo } from '@trezor/components';
-import { Translation, Link } from '@suite-components';
+import { Translation, ExternalLink } from '@suite-components';
 import messages from '@suite/support/messages';
 import { SettingsLayout } from '@settings-components';
 import { AppState, Dispatch } from '@suite-types';
@@ -99,7 +99,7 @@ const CoinRow = styled(Row)`
     }
 `;
 
-const StyledLink = styled(Link)`
+const StyledLink = styled(ExternalLink)`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
