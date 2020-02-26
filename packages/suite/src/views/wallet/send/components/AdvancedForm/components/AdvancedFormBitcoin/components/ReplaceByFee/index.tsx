@@ -39,7 +39,7 @@ export default () => {
                     <Translation {...messages.REPLACE_BY_FEE_TITLE} />
                 </Title>
                 <Description>
-                    <Translation {...messages.REPLACE_BY_FEE_TITLE} />
+                    <Translation {...messages.REPLACE_BY_FEE_DESCRIPTION} />
                 </Description>
             </Left>
             <Right>
