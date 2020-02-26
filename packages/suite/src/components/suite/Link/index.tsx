@@ -6,7 +6,7 @@ import { getPrefixedURL, isInternalRoute } from '@suite-utils/router';
 type Props = LinkProps & TLinkProps;
 
 const RefLinkComponent = React.forwardRef((props: Props, _ref: any) => (
-    <TLink {...props} href={props.href as string} icon="EXTERNAL_LINK">
+    <TLink {...props} href={props.href as string}>
         {props.children}
     </TLink>
 ));
@@ -21,7 +21,7 @@ const Link = ({ children, href, className, target = '_self', ...rest }: Props) =
     const overrideAsProp = {
         ...(isInternalLink && typeof href === 'string' ? { as: getPrefixedURL(href) } : {}),
     };
-
+    const externalIconProps = !isInternalLink ? ({ icon: 'EXTERNAL_LINK' } as const) : {};
     const { prefetch, shallow, scroll, replace, ...linkProps } = rest;
 
     const StyledLink = (
@@ -30,6 +30,7 @@ const Link = ({ children, href, className, target = '_self', ...rest }: Props) =
             target={target}
             className={className}
             {...linkProps}
+            {...externalIconProps}
         >
             {children}
         </RefLinkComponent>
