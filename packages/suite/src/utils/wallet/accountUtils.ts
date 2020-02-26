@@ -2,7 +2,7 @@ import {
     State as TransactionsState,
     WalletAccountTransaction,
 } from '@wallet-reducers/transactionReducer';
-import { AccountTransaction } from 'trezor-connect';
+import { AccountTransaction, AccountInfo } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import messages from '@suite/support/messages';
 import { ACCOUNT_TYPE } from '@wallet-constants/account';
@@ -316,4 +316,54 @@ export const getTotalFiatBalance = (
 export const isTestnet = (symbol: Account['symbol']) => {
     const net = NETWORKS.find(n => n.symbol === symbol);
     return net?.testnet ?? false;
+};
+
+export const isAccountOutdated = (account: Account, accountInfo: AccountInfo) => {
+    // changed transaction count (total + unconfirmed)
+    const changedTxCount =
+        accountInfo.history.total + (accountInfo.history.unconfirmed || 0) !==
+        account.history.total + (account.history.unconfirmed || 0);
+
+    // different sequence or balance
+    const changedRippleSpecific =
+        account.networkType === 'ripple'
+            ? accountInfo.misc!.sequence !== account.misc.sequence ||
+              accountInfo.balance !== account.balance
+            : false;
+
+    // last tx doesn't match
+    // const lastPayloadTx = accountInfo.history.transactions
+    //     ? accountInfo.history.transactions[0]
+    //     : undefined;
+    // const lastReducerTx = getAccountTransactions(
+    //     getState().wallet.transactions.transactions,
+    //     account,
+    // )[0];
+    // // .filter(t => !!t.blockTime)
+    // // [0]; // exclude pending txs
+
+    // let changedLastTx = false;
+    // if ((!lastReducerTx && lastPayloadTx) || (lastReducerTx && !lastPayloadTx)) {
+    //     changedLastTx = true;
+    // } else if (lastReducerTx && lastPayloadTx && lastReducerTx.txid !== lastPayloadTx.txid) {
+    //     changedLastTx = true;
+    // }
+
+    // if (changedTxCount || changedLastTx || changedRippleSpecific) {
+    //     console.log(changedTxCount, changedLastTx, changedRippleSpecific);
+    //     console.log('isAccountOutdated');
+    //     console.log('account', account);
+    //     console.log('accountINfo', accountInfo);
+    //     console.log('changedTxCount', changedTxCount);
+    //     console.log('changedRippleSpecific', changedRippleSpecific);
+    //     console.log('changedLastTx', changedLastTx);
+    //     console.log('lastReducerTx', lastReducerTx);
+    //     console.log('lastPayloadTx', lastPayloadTx);
+    // }
+
+    // ripple doesn't provide total txs count, rely on balance/sequence
+    if (account.networkType === 'ripple') {
+        return changedRippleSpecific;
+    }
+    return changedTxCount;
 };
