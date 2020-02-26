@@ -1,14 +1,12 @@
 import produce from 'immer';
 import { NOTIFICATION, SUITE } from '@suite-actions/constants';
-import { Action as SuiteAction, TrezorDevice } from '@suite-types';
-import { WalletParams } from '@wallet-types';
+import { Action, TrezorDevice } from '@suite-types';
 
 export type ToastPayload =
     | {
           type: 'acquire-error';
           error: string;
           device?: TrezorDevice;
-          // acquiringDevice?: TrezorDevice;
       }
     | {
           type: 'auth-confirm-error';
@@ -20,19 +18,14 @@ export type ToastPayload =
               | 'pin-changed'
               | 'device-wiped'
               | 'backup-success'
+              | 'backup-failed'
               | 'verify-message-success';
       }
     | {
-          type: 'backup-failed';
-      }
-    | {
-          type: 'tx-confirmed';
+          type: 'tx-received' | 'tx-sent' | 'tx-confirmed';
           amount: string;
           device?: TrezorDevice;
-          routeParams?: WalletParams;
-      }
-    | {
-          type: 'sign-tx-success';
+          descriptor: string;
           txid: string;
       }
     | {
@@ -67,7 +60,7 @@ export type NotificationEntry = ToastNotification | EventNotification;
 
 export type State = NotificationEntry[];
 
-export default function notification(state: State = [], action: SuiteAction): State {
+export default function notification(state: State = [], action: Action): State {
     return produce(state, draft => {
         switch (action.type) {
             case NOTIFICATION.TOAST:
@@ -79,6 +72,10 @@ export default function notification(state: State = [], action: SuiteAction): St
                 if (item) {
                     item.hidden = true;
                 }
+                break;
+            }
+            case NOTIFICATION.REMOVE: {
+                draft = draft.filter(n => n.id !== action.payload);
                 break;
             }
             // no default
