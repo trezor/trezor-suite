@@ -1,5 +1,5 @@
-import Account from './components/Account/Container';
-import Address from './components/Address/Container';
-import Wallet from './components/Wallet/Container';
+import AccountLabeling from './components/Account/Container';
+import AddressLabeling from './components/Address/Container';
+import WalletLabeling from './components/Wallet/Container';
 
-export { Account, Address, Wallet };
+export { AccountLabeling, AddressLabeling, WalletLabeling };
