@@ -1,13 +1,14 @@
 import { MiddlewareAPI } from 'redux';
 import { SUITE, ROUTER } from '@suite-actions/constants';
-import { ACCOUNT } from '@wallet-actions/constants';
+import { ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import * as sendFormActions from '@wallet-actions/send/sendFormActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
+import * as transactionActions from '@wallet-actions/transactionActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 import { AppState, Action, Dispatch } from '@suite-types';
-import { handleRatesUpdate } from '@wallet-actions/fiatRatesActions';
+import { handleRatesUpdate, fetchFiatRatesForTxs } from '@wallet-actions/fiatRatesActions';
 
 const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
@@ -22,6 +23,18 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
             type: ACCOUNT.REMOVE,
             payload: accounts,
         });
+    }
+
+    if (action.type === ACCOUNT.CREATE) {
+        // gather transactions from account.create action
+        api.dispatch(
+            transactionActions.add(action.payload.history.transactions || [], action.payload, 1),
+        );
+    }
+
+    if (action.type === TRANSACTION.ADD) {
+        // fetch historical rates for each added transaction
+        api.dispatch(fetchFiatRatesForTxs(action.account, action.transactions));
     }
 
     // propagate action to reducers

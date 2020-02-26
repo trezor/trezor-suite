@@ -29,10 +29,8 @@ export interface CoinFiatRates {
 export const initialState: CoinFiatRates[] = [];
 
 const updateCurrentRates = (state: CoinFiatRates[], current: CurrentFiatRates) => {
-    const { symbol, rates } = current;
+    const { symbol } = current;
     const affected = state.find(f => f.symbol === symbol);
-    console.log('affected', affected);
-    // Object.keys(rates).map(k => rates[k].toFixed(2));
 
     if (!affected) {
         state.push({

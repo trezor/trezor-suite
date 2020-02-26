@@ -45,8 +45,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             break;
         }
 
-        case TRANSACTION.ADD:
-        case TRANSACTION.FETCH_SUCCESS: {
+        case TRANSACTION.ADD: {
             const device = accountUtils.getAccountDevice(api.getState().devices, action.account);
             // update only transactions for remembered device
             if (isDeviceRemembered(device)) {

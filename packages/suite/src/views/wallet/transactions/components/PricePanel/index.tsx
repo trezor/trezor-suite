@@ -98,12 +98,6 @@ const Dot = styled.div`
     margin-right: 3px;
 `;
 
-const NoRatesMessage = styled(P)`
-    color: ${colors.BLACK50};
-    display: flex;
-    align-items: center;
-`;
-
 interface OwnProps {
     account: Account;
 }
@@ -149,13 +143,7 @@ const PricePanel = (props: Props) => {
                         </Row>
                         <TickerPrice>
                             <FiatValue amount="1" symbol={props.account.symbol}>
-                                {({ value }) =>
-                                    value ?? (
-                                        <NoRatesMessage size="small">
-                                            No data available <NoRatesTooltip />
-                                        </NoRatesMessage>
-                                    )
-                                }
+                                {({ value }) => value ?? <NoRatesTooltip />}
                             </FiatValue>
                         </TickerPrice>
                     </Ticker>

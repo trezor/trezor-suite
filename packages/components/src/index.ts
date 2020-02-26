@@ -10,7 +10,7 @@ import { Checkbox, CheckboxProps } from './components/Checkbox';
 import { Switch, SwitchProps } from './components/Switch';
 import { Icon, IconProps } from './components/Icon';
 import { H1, H2 } from './components/Heading';
-import { P } from './components/Paragraph';
+import { P, PProps } from './components/Paragraph';
 import { Prompt, PromptProps } from './components/Prompt';
 import { Link, LinkProps } from './components/Link';
 import { Modal, ModalProps } from './components/Modal';
@@ -42,6 +42,7 @@ export {
     H1,
     H2,
     P,
+    PProps,
     Link,
     Prompt,
     PromptProps,

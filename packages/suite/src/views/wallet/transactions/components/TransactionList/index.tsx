@@ -142,6 +142,8 @@ const TransactionList = ({
                                                         {props.symbol.toUpperCase()}
                                                     </DayAmount>
                                                 </HiddenPlaceholder>
+                                                {/* PRDIM NA TO */}
+                                                {/* TODO: calc average rate of all txs in a day and use that? */}
                                                 <HiddenPlaceholder>
                                                     <FiatValue
                                                         amount={totalAmountPerDay.toFixed()}

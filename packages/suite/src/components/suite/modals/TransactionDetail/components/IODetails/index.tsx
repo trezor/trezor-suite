@@ -112,7 +112,11 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
 
                                         <Badge>
                                             <HiddenPlaceholder>
-                                                <FiatValue amount={inputAmount} symbol={tx.symbol}>
+                                                <FiatValue
+                                                    amount={inputAmount}
+                                                    symbol={tx.symbol}
+                                                    source={tx.rates}
+                                                >
                                                     {({ value }) => value}
                                                 </FiatValue>
                                             </HiddenPlaceholder>
@@ -143,7 +147,11 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                                         </HiddenPlaceholder>
                                         <HiddenPlaceholder>
                                             <Badge>
-                                                <FiatValue amount={outputAmount} symbol={tx.symbol}>
+                                                <FiatValue
+                                                    amount={outputAmount}
+                                                    symbol={tx.symbol}
+                                                    source={tx.rates}
+                                                >
                                                     {({ value }) => value}
                                                 </FiatValue>
                                             </Badge>

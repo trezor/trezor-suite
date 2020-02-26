@@ -40,12 +40,6 @@ const Col = styled.div<{ direction: 'column' | 'row' }>`
     flex: 1 1 auto;
 `;
 
-const NoRatesMessage = styled(P)`
-    display: flex;
-    align-items: center;
-    color: ${colors.BLACK50};
-`;
-
 interface Props {
     tx: WalletAccountTransaction;
     totalOutput?: string;
@@ -77,15 +71,7 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                         )}
                     </FiatValue>
                     <FiatValue amount="1" symbol={tx.symbol}>
-                        {({ value }) =>
-                            value ? (
-                                <Badge>{value}</Badge>
-                            ) : (
-                                <NoRatesMessage size="tiny">
-                                    No data available <NoRatesTooltip />
-                                </NoRatesMessage>
-                            )
-                        }
+                        {({ value }) => (value ? <Badge>{value}</Badge> : <NoRatesTooltip />)}
                     </FiatValue>
                 </BoxHeading>
                 <Box>
@@ -127,29 +113,43 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                             ),
                         }}
                     />
-                    <HistoricalBadge>
-                        <FiatValue amount="1" symbol={tx.symbol}>
-                            {({ value }) => value}
-                        </FiatValue>
-                    </HistoricalBadge>
+                    {tx.rates && (
+                        <HistoricalBadge>
+                            <FiatValue amount="1" symbol={tx.symbol} source={tx.rates}>
+                                {({ value }) => value}
+                            </FiatValue>
+                        </HistoricalBadge>
+                    )}
                 </BoxHeading>
                 <Box>
                     <BoxRow
                         title={<Translation {...messages.TR_TOTAL_OUTPUT} />}
                         alignContent="right"
                     >
-                        <HiddenPlaceholder>
-                            <FiatValue amount="1" symbol={tx.symbol}>
-                                {({ value }) => value}
-                            </FiatValue>
-                        </HiddenPlaceholder>
+                        {totalOutput && tx.rates ? (
+                            <HiddenPlaceholder>
+                                <FiatValue
+                                    amount={totalOutput}
+                                    symbol={tx.symbol}
+                                    source={tx.rates}
+                                >
+                                    {({ value }) => value}
+                                </FiatValue>
+                            </HiddenPlaceholder>
+                        ) : (
+                            <NoRatesTooltip />
+                        )}
                     </BoxRow>
                     <BoxRow title={<Translation {...messages.TR_TX_FEE} />} alignContent="right">
-                        <HiddenPlaceholder>
-                            <FiatValue amount="1" symbol={tx.symbol}>
-                                {({ value }) => value}
-                            </FiatValue>
-                        </HiddenPlaceholder>
+                        {totalOutput && tx.rates ? (
+                            <HiddenPlaceholder>
+                                <FiatValue amount={tx.fee} symbol={tx.symbol} source={tx.rates}>
+                                    {({ value }) => value}
+                                </FiatValue>
+                            </HiddenPlaceholder>
+                        ) : (
+                            <NoRatesTooltip />
+                        )}
                     </BoxRow>
                 </Box>
             </Col>

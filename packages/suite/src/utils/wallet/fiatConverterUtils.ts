@@ -1,10 +1,14 @@
 import BigNumber from 'bignumber.js';
-import { Fiat } from '@wallet-types';
+import { CoinFiatRates } from '@wallet-types';
 
-const toFiatCurrency = (amount: string, fiatCurrency: string, networkRates: Fiat) => {
+const toFiatCurrency = (
+    amount: string,
+    fiatCurrency: string,
+    networkRates: NonNullable<CoinFiatRates['current']>['rates'] | undefined,
+) => {
     // calculate amount in local currency
 
-    const rate = networkRates?.current?.rates?.[fiatCurrency];
+    const rate = networkRates?.[fiatCurrency];
     if (!rate) {
         return null;
     }
@@ -22,10 +26,10 @@ const toFiatCurrency = (amount: string, fiatCurrency: string, networkRates: Fiat
 const fromFiatCurrency = (
     localAmount: string,
     fiatCurrency: string,
-    networkRates: Fiat,
+    networkRates: NonNullable<CoinFiatRates['current']>['rates'] | undefined,
     decimals: number,
 ) => {
-    const rate = networkRates?.current?.rates?.[fiatCurrency];
+    const rate = networkRates?.[fiatCurrency];
     if (!rate) {
         return null;
     }

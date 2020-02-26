@@ -200,7 +200,7 @@ const TokenTransfer = (transfer: ArrayElement<Props['transaction']['tokens']>) =
     );
 };
 
-const TransactionItem = React.memo((props: Props) => {
+const TransactionItem = (props: Props) => {
     const { symbol, type, blockTime, blockHeight, amount, targets, tokens } = props.transaction;
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -296,15 +296,21 @@ const TransactionItem = React.memo((props: Props) => {
                             </Balance>
                         </HiddenPlaceholder>
                         <HiddenPlaceholder>
-                            <FiatValue amount={amount} symbol={symbol}>
-                                {({ value }) =>
-                                    value && (
-                                        <FiatBalance>
-                                            <SmallBadge>{value}</SmallBadge>
-                                        </FiatBalance>
-                                    )
-                                }
-                            </FiatValue>
+                            {props.transaction.rates && (
+                                <FiatValue
+                                    amount={amount}
+                                    symbol={symbol}
+                                    source={props.transaction.rates}
+                                >
+                                    {({ value }) =>
+                                        value && (
+                                            <FiatBalance>
+                                                <SmallBadge>{value}</SmallBadge>
+                                            </FiatBalance>
+                                        )
+                                    }
+                                </FiatValue>
+                            )}
                         </HiddenPlaceholder>
                     </>
                 )}
@@ -350,6 +356,6 @@ const TransactionItem = React.memo((props: Props) => {
             )}
         </Wrapper>
     );
-});
+};
 
 export default TransactionItem;

@@ -57,11 +57,6 @@ const CryptoValueWrapper = styled(Col)`
 `;
 const FiatValueWrapper = styled(Col)``;
 
-const NoRatesMessage = styled(P)`
-    display: flex;
-    align-items: center;
-`;
-
 interface OwnProps extends React.HTMLAttributes<HTMLDivElement> {
     name: string;
     symbol: Account['symbol'];
@@ -121,10 +116,7 @@ const Asset = React.memo(({ name, symbol, cryptoValue, localCurrency, ...props }
                                 1 {symbol.toUpperCase()} = {rate}
                             </SmallBadge>
                         ) : (
-                            <NoRatesMessage size="tiny">
-                                No data available
-                                <NoRatesTooltip />
-                            </NoRatesMessage>
+                            <NoRatesTooltip />
                         );
                     }}
                 </FiatValue>

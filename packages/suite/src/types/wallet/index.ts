@@ -13,7 +13,7 @@ import { DiscoveryActions } from '@wallet-actions/discoveryActions';
 import { AccountActions } from '@wallet-actions/accountActions';
 import { Discovery as Discovery$ } from '@wallet-reducers/discoveryReducer';
 import { Account as Account$ } from '@wallet-reducers/accountsReducer';
-import { Fiat as Fiat$ } from '@wallet-reducers/fiatRateReducer';
+import { CoinFiatRates as CoinFiatRates$ } from '@wallet-reducers/fiatRateReducer';
 
 import { FiatRateActions } from '@wallet-actions/fiatRatesActions';
 import { BlockchainActions } from '@wallet-actions/blockchainActions';
@@ -32,7 +32,7 @@ export type Token = Token$;
 export type Account = Account$;
 export type Send = SendState;
 export type Icon = Icon$;
-export type Fiat = Fiat$;
+export type CoinFiatRates = CoinFiatRates$;
 export type Discovery = Discovery$;
 export type WalletParams = WalletParams$;
 

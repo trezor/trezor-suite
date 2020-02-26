@@ -1,8 +1,12 @@
 import { httpRequest } from '@wallet-utils/networkUtils';
 import { FIAT } from '@suite-config';
 import { Dispatch, GetState } from '@suite-types';
-import { RATE_UPDATE, LAST_WEEK_RATES_UPDATE } from './constants/fiatRatesConstants';
-import { Network } from '@wallet-types';
+import {
+    RATE_UPDATE,
+    LAST_WEEK_RATES_UPDATE,
+    TX_FIAT_RATE_UPDATE,
+} from './constants/fiatRatesConstants';
+import { Network, Account } from '@wallet-types';
 import { saveFiatRates } from '@suite-actions/storageActions';
 import BlockchainLink from '@trezor/blockchain-link';
 // import { resolveStaticPath } from '@suite-utils/nextjs';
@@ -10,6 +14,8 @@ import { CoinFiatRates, LastWeekRates } from '@wallet-reducers/fiatRateReducer';
 import NETWORKS from '@wallet-config/networks';
 // @ts-ignore
 import BlockbookWorker from '@trezor/blockchain-link/build/web/blockbook-worker';
+import { AccountTransaction } from 'trezor-connect';
+import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 
 export type FiatRateActions =
     | {
@@ -21,9 +27,18 @@ export type FiatRateActions =
           };
       }
     | {
+          type: typeof TX_FIAT_RATE_UPDATE;
+          payload: {
+              txid: string;
+              account: Account;
+              updateObject: Partial<WalletAccountTransaction>;
+              ts: number;
+          };
+      }
+    | {
           type: typeof LAST_WEEK_RATES_UPDATE;
           payload: {
-              symbol: Network['symbol'];
+              symbol: Network['symbol'] | string;
               tickers: LastWeekRates['tickers'];
               ts: number;
           };
@@ -239,7 +254,6 @@ const updateLastWeekRates = () => async (dispatch: Dispatch) => {
                       timestamps,
                   })
                 : await getFiatRatesForTimestamps(ticker.symbol, timestamps);
-            console.log('response', response);
             if (response?.tickers) {
                 dispatch({
                     type: LAST_WEEK_RATES_UPDATE,
@@ -259,6 +273,39 @@ const updateLastWeekRates = () => async (dispatch: Dispatch) => {
     setInterval(() => {
         dispatch(updateLastWeekRates());
     }, INTERVAL_LAST_WEEK);
+};
+
+export const fetchFiatRatesForTxs = (account: Account, txs: AccountTransaction[]) => async (
+    dispatch: Dispatch,
+) => {
+    if (txs?.length === 0) return;
+
+    const timestamps = txs.map(tx => tx.blockTime ?? new Date().getTime());
+    try {
+        const blockchainLink = blockchainLinks[account.symbol as Network['symbol']];
+        const response = blockchainLink
+            ? await blockchainLink.getFiatRatesForTimestamps({
+                  timestamps,
+              })
+            : await getFiatRatesForTimestamps(account.symbol, timestamps);
+        if (response?.tickers) {
+            txs.forEach((tx, i) => {
+                dispatch({
+                    type: TX_FIAT_RATE_UPDATE,
+                    payload: {
+                        txid: tx.txid,
+                        updateObject: { rates: response.tickers[i]?.rates },
+                        account,
+                        ts: new Date().getTime(),
+                    },
+                });
+            });
+        }
+    } catch (error) {
+        console.log('fetchFiatRatesForTx', error);
+        console.log('txs', txs);
+        console.log('timestamps', timestamps);
+    }
 };
 
 export const initRates = () => (dispatch: Dispatch) => {

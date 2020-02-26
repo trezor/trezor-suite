@@ -7,6 +7,7 @@ import { TRANSACTION } from '@wallet-actions/constants';
 import { SETTINGS } from '@suite-config';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
+import { fetchFiatRatesForTxs } from './fiatRatesActions';
 
 export type TransactionAction =
     | {
@@ -20,9 +21,6 @@ export type TransactionAction =
     | { type: typeof TRANSACTION.FETCH_INIT }
     | {
           type: typeof TRANSACTION.FETCH_SUCCESS;
-          transactions: AccountTransaction[];
-          account: Account;
-          page: number;
       }
     | { type: typeof TRANSACTION.FETCH_ERROR; error: string };
 
@@ -110,11 +108,14 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
     });
 
     if (result && result.success) {
-        const updatedAccount = accountActions.update(account, result.payload).payload;
         // TODO
         // @ts-ignore
+        const updatedAccount: Account = accountActions.update(account, result.payload).payload;
         dispatch({
             type: TRANSACTION.FETCH_SUCCESS,
+        });
+        dispatch({
+            type: TRANSACTION.ADD,
             account: updatedAccount,
             transactions: result.payload.history.transactions || [],
             page,
