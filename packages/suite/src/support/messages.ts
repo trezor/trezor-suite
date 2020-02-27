@@ -2183,6 +2183,10 @@ const definedMessages = defineMessages({
         id: 'TR_DISCREET_TOOLTIP',
         defaultMessage: '[FIX THIS TEXT] This is a descreeeet mode',
     },
+    TX_CONFIRMATIONS_EXPLAIN: {
+        id: 'TX_CONFIRMATIONS_EXPLAIN',
+        defaultMessage: 'TODO TODO TODO ExPlAnAtIoN',
+    },
 });
 
 export default definedMessages;

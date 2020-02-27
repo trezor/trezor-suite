@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, colors, variables, Link, Loader } from '@trezor/components';
+import { Icon, colors, variables, Link, Loader, Tooltip } from '@trezor/components';
 import { Translation, HiddenPlaceholder } from '@suite-components';
 import messages from '@suite/support/messages';
 import { FormattedDate } from 'react-intl';
@@ -49,7 +49,8 @@ const StatusWrapper = styled.div`
 
 const ConfirmationsIconWrapper = styled.div`
     display: flex;
-    margin-left: 1ch;
+    align-items: center;
+    margin-left: 0.5ch;
 `;
 
 const LoaderIconWrapper = styled.div`
@@ -113,7 +114,21 @@ const BasicDetails = ({
                                         values={{ confirmationsCount: txDetails.confirmations }}
                                     />
                                     <ConfirmationsIconWrapper>
-                                        <Icon icon="QUESTION" color={colors.BLACK50} size={12} />
+                                        <Tooltip
+                                            placement="top"
+                                            content={
+                                                <Translation
+                                                    {...messages.TX_CONFIRMATIONS_EXPLAIN}
+                                                />
+                                            }
+                                        >
+                                            <Icon
+                                                icon="QUESTION"
+                                                color={colors.BLACK50}
+                                                hoverColor={colors.BLACK25}
+                                                size={14}
+                                            />
+                                        </Tooltip>
                                     </ConfirmationsIconWrapper>
                                 </Confirmations>
                             )}

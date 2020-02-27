@@ -79,7 +79,7 @@ const FlickerAnimation = keyframes`
     }
 `;
 
-const Live = styled.div`
+const LiveWrapper = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
@@ -89,6 +89,10 @@ const Live = styled.div`
     animation: ${FlickerAnimation} 2s 3;
 `;
 
+const Live = styled.div`
+    display: flex;
+`;
+
 const Dot = styled.div`
     display: flex;
     width: 6px;
@@ -96,6 +100,7 @@ const Dot = styled.div`
     background-color: ${colors.GREEN};
     border-radius: 50%;
     margin-right: 3px;
+    margin-top: -1px;
 `;
 
 interface OwnProps {
@@ -134,9 +139,10 @@ const PricePanel = (props: Props) => {
                             <FiatValue amount="1" symbol={props.account.symbol}>
                                 {({ value }) =>
                                     value ? (
-                                        <Live key={props.account.symbol}>
-                                            <Dot /> Live
-                                        </Live>
+                                        <LiveWrapper key={props.account.symbol}>
+                                            <Dot />
+                                            <Live>Live</Live>
+                                        </LiveWrapper>
                                     ) : null
                                 }
                             </FiatValue>
