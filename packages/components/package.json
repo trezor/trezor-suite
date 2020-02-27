@@ -13,7 +13,9 @@
         "type-check": "tsc --project tsconfig.types.json",
         "type-check:watch": "yarn type-check -- --watch",
         "prepublishOnly": "npm run build:lib",
-        "test:unit": "jest"
+        "test:unit": "jest",
+        "storybook": "start-storybook -s ./public -p 9001 -c .storybook",
+        "storybook-build": "build-storybook -s ./public -c .storybook -o .build"
     },
     "dependencies": {
         "@tippy.js/react": "^3.1.1",
@@ -38,7 +40,18 @@
         "stylelint-config-styled-components": "^0.1.1",
         "stylelint-custom-processor-loader": "^0.6.0",
         "stylelint-processor-styled-components": "^1.9.0",
-        "typescript-styled-plugin": "^0.15.0"
+        "typescript-styled-plugin": "^0.15.0",
+        "@storybook/addon-actions": "^5.3.9",
+        "@storybook/addon-centered": "^5.3.9",
+        "@storybook/addon-info": "5.3.9",
+        "@storybook/addon-knobs": "^5.3.9",
+        "@storybook/addon-links": "^5.3.9",
+        "@storybook/addon-viewport": "^5.3.9",
+        "@storybook/addons": "^5.3.9",
+        "@storybook/react": "^5.3.9",
+        "@types/storybook__addon-knobs": "^5.0.0",
+        "@types/storybook__addon-links": "^3.3.4",
+        "@types/storybook__react": "^4.0.1"
     },
     "peerDependencies": {
         "react": "16.9.0",
