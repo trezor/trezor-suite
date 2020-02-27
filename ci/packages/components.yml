@@ -24,7 +24,7 @@ components storybook deploy dev:
     - echo "Deploy to dev servers"
     - mkdir -p ${DEPLOY_BASE_DIR}/components
     - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
-    - rsync --delete -va .build/ "${DEPLOY_DIRECTORY}/"
+    - rsync --delete -va .build-storybook/ "${DEPLOY_DIRECTORY}/"
   tags:
     - deploy
 # components-storybook test snapshots:
