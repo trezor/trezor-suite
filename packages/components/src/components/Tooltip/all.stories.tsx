@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Tooltip } from '../../';
+import { Tooltip } from './index';
 import { storiesOf } from '@storybook/react';
 
 const TooltipWrapper = styled.div`
