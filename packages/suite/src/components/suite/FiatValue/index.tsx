@@ -30,7 +30,7 @@ const FiatValue = ({ amount, symbol, fiatCurrency, source = 'current', ...props 
         return props.children({
             value: fiatValueComponent,
             rate: fiatRateComponent,
-            timestamp: source ? null : fiatRates!.current?.ts ?? null,
+            timestamp: source !== 'current' ? null : fiatRates!.current?.ts ?? null,
         });
     }
     if (!props.children) return null;
