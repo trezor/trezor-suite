@@ -204,7 +204,7 @@ export const onNotification = (payload: BlockchainNotification) => async (
     // dispatch only recv notifications
     if (accountDevice && enhancedTx.type === 'recv') {
         dispatch(
-            notificationActions.addToast({
+            notificationActions.addEvent({
                 type: 'tx-received',
                 amount: enhancedTx.amount,
                 device: accountDevice,
