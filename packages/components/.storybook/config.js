@@ -2,7 +2,7 @@ import React from 'react';
 import { addParameters, addDecorator, configure } from '@storybook/react';
 import { withInfo } from '@storybook/addon-info';
 import { withKnobs } from '@storybook/addon-knobs';
-import { StoryWrapper } from '../src/stories/components/Story';
+import { StoryWrapper } from '../src/support/Story';
 
 addParameters({
     options: {
@@ -23,7 +23,7 @@ addDecorator(withKnobs);
 addDecorator(storyFn => <StoryWrapper>{storyFn()}</StoryWrapper>);
 
 const loadStories = () => {
-    const req = require.context('../src/stories', true, /^.*\.tsx?$/);
+    const req = require.context('../src/components', true, /^.*\.stories\.tsx?$/);
     req.keys().forEach(filename => req(filename));
 };
 

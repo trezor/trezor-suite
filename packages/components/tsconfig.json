@@ -21,8 +21,7 @@
         "strictNullChecks": true,
         "moduleResolution": "node",
         "jsx": "react",
-        "outDir": "lib",
-        "rootDir": "src"
+        "outDir": "lib"
     },
     "include": ["src/**/*"],
     "exclude": [
