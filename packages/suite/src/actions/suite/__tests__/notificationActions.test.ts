@@ -74,7 +74,7 @@ describe('Notifications Actions', () => {
         store.dispatch(notificationActions.close(1));
         store.dispatch(notificationActions.close(10)); // does not exists
         const { notifications } = store.getState();
-        expect(notifications.filter(n => !n.hidden).length).toEqual(1);
-        expect(notifications.filter(n => n.hidden).length).toEqual(1);
+        expect(notifications.filter(n => !n.closed).length).toEqual(1);
+        expect(notifications.filter(n => n.closed).length).toEqual(1);
     });
 });
