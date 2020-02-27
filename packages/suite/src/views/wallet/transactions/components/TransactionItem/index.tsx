@@ -358,7 +358,11 @@ const TransactionItem = (props: Props) => {
                                         </Amount>
                                         <Symbol>{symbol.toUpperCase()}</Symbol>
                                     </Balance>
-                                    <FiatValue amount={target.amount || '0'} symbol={symbol}>
+                                    <FiatValue
+                                        amount={target.amount || '0'}
+                                        symbol={symbol}
+                                        source={props.transaction.rates}
+                                    >
                                         {({ value }) =>
                                             value && (
                                                 <FiatBalance partial>
