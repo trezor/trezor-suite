@@ -1,105 +1,41 @@
 import React from 'react';
 import styled from 'styled-components';
-import { CoinLogo, TrezorLogo, variables, colors, types } from '../../index';
+import { Tooltip } from '../../';
 import { storiesOf } from '@storybook/react';
-import { StoryColumn } from '../../support/Story';
 
-const CoinName = styled.div`
-    margin-bottom: 0.5rem;
-    color: ${colors.BLACK50};
+const TooltipWrapper = styled.div`
+    width: 400px;
+    height: 200px;
+    text-align: center;
+    padding: 5rem 0px;
+    margin: 5px;
 `;
 
-interface WrapperProps {
-    isDark?: boolean;
-}
-
-const LogoWrapper = styled.div<WrapperProps>`
-    background: ${props => (props.isDark ? 'black' : 'none')};
-    display: flex;
-    min-height: 100px;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-`;
-
-const WrapperIcons = styled.div`
-    display: grid;
-    width: 100%;
-    grid-gap: 5px;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-`;
-
-const Icon = styled.div`
-    display: flex;
-    min-height: 100px;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-`;
-const Wrapper = styled.div`
-    display: grid;
-    width: 100%;
-    grid-gap: 5px;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-`;
-
-storiesOf('Logos', module).add(
+storiesOf('Tooltip', module).add(
     'All',
     () => {
         return (
             <>
-                <StoryColumn minWidth={700}>
-                    <WrapperIcons>
-                        {variables.COINS.map((coin: types.CoinType) => (
-                            <Icon>
-                                <CoinName>{coin}</CoinName>
-                                <CoinLogo symbol={coin} data-test={`coin-${coin}`} size={64} />
-                            </Icon>
-                        ))}
-                    </WrapperIcons>
-                </StoryColumn>
-                <StoryColumn minWidth={400}>
-                    <LogoWrapper>
-                        <TrezorLogo
-                            type="horizontal"
-                            variant="black"
-                            width="200px"
-                            data-test="trezor-logo-horizontal-black"
-                        />
-                        <TrezorLogo
-                            type="vertical"
-                            variant="black"
-                            width="120px"
-                            data-test="trezor-logo-vertical-black"
-                        />
-                        <TrezorLogo
-                            type="symbol"
-                            variant="black"
-                            width="50px"
-                            data-test="trezor-logo-symbol-black"
-                        />
-                    </LogoWrapper>
-                    <LogoWrapper isDark>
-                        <TrezorLogo
-                            type="horizontal"
-                            variant="white"
-                            width="200px"
-                            data-test="trezor-logo-horizontal-white"
-                        />
-                        <TrezorLogo
-                            type="vertical"
-                            variant="white"
-                            width="120px"
-                            data-test="trezor-logo-vertical-white"
-                        />
-                        <TrezorLogo
-                            type="symbol"
-                            variant="white"
-                            width="50px"
-                            data-test="trezor-logo-symbol-white"
-                        />
-                    </LogoWrapper>
-                </StoryColumn>
+                <TooltipWrapper data-test="tooltip-top">
+                    <Tooltip content="Tooltip text" visible>
+                        <span>Tooltip top</span>
+                    </Tooltip>
+                </TooltipWrapper>
+                <TooltipWrapper data-test="tooltip-bottom">
+                    <Tooltip content="Tooltip text" visible placement="bottom">
+                        <span>Tooltip bottom</span>
+                    </Tooltip>
+                </TooltipWrapper>
+                <TooltipWrapper data-test="tooltip-left">
+                    <Tooltip content="Tooltip text" visible placement="left">
+                        <span>Tooltip left</span>
+                    </Tooltip>
+                </TooltipWrapper>
+                <TooltipWrapper data-test="tooltip-right">
+                    <Tooltip content="Tooltip text" visible placement="right">
+                        <span>Tooltip right</span>
+                    </Tooltip>
+                </TooltipWrapper>
             </>
         );
     },

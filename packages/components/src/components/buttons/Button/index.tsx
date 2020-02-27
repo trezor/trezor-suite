@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { Icon } from '../../Icon';
 import { IconType, ButtonVariant, ButtonSize } from '../../../support/types';
 import { colors, variables } from '../../../config';
-import FluidSpinner from '../../FluidSpinner';
+import FluidSpinner from '../../loaders/FluidSpinner';
 
 const BUTTON_PADDING = {
     small: '2px 12px',

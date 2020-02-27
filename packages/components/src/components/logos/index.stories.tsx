@@ -36,12 +36,6 @@ const Icon = styled.div`
     justify-content: center;
     align-items: center;
 `;
-const Wrapper = styled.div`
-    display: grid;
-    width: 100%;
-    grid-gap: 5px;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-`;
 
 storiesOf('Logos', module).add(
     'All',

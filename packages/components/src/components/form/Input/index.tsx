@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import FluidSpinner from '../../FluidSpinner';
+import FluidSpinner from '../../loaders/FluidSpinner';
 import { Icon } from '../../Icon';
 import { colors, variables } from '../../../config';
 import {
