@@ -7,6 +7,7 @@ import { findRouteByName } from '@suite-utils/router';
 import { Icon, colors, Switch, Tooltip } from '@trezor/components';
 import { BOTTOM_MENU_ITEMS, MENU_PADDING } from '@suite-constants/menu';
 import Divider from '../Divider';
+import NotificationsBadge from './NotificationsBadge';
 
 const Wrapper = styled.div`
     padding: ${MENU_PADDING}px 0 10px 10px;
@@ -105,6 +106,17 @@ const BottomMenu = (props: Props) => (
             const routeObj = findRouteByName(route);
             const isActive = routeObj ? routeObj.app === props.app : false;
 
+            const defaultIcon = (
+                <Icon color={isActive ? colors.BLACK0 : colors.WHITE} size={12} icon={icon} />
+            );
+
+            const iconComponent =
+                !isActive && route === 'notifications-index' ? (
+                    <NotificationsBadge defaultIcon={defaultIcon} />
+                ) : (
+                    defaultIcon
+                );
+
             return (
                 <In
                     key={text}
@@ -113,13 +125,7 @@ const BottomMenu = (props: Props) => (
                     isActive={isActive}
                 >
                     <MenuItemWrapper>
-                        <IconWrapper>
-                            <Icon
-                                color={isActive ? colors.BLACK0 : colors.WHITE}
-                                size={12}
-                                icon={icon}
-                            />
-                        </IconWrapper>
+                        <IconWrapper>{iconComponent}</IconWrapper>
                         <Text isActive={isActive}>{text}</Text>
                     </MenuItemWrapper>
                 </In>

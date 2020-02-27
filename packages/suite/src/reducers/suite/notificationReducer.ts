@@ -1,14 +1,17 @@
 import produce from 'immer';
 import { NOTIFICATION, SUITE } from '@suite-actions/constants';
-import { Action as SuiteAction, TrezorDevice } from '@suite-types';
-import { WalletParams } from '@wallet-types';
+import { Action, TrezorDevice } from '@suite-types';
 
-export type ToastPayload =
+interface Options {
+    seen?: boolean;
+    resolved?: boolean;
+}
+
+export type ToastPayload = (
     | {
           type: 'acquire-error';
           error: string;
           device?: TrezorDevice;
-          // acquiringDevice?: TrezorDevice;
       }
     | {
           type: 'auth-confirm-error';
@@ -20,19 +23,14 @@ export type ToastPayload =
               | 'pin-changed'
               | 'device-wiped'
               | 'backup-success'
+              | 'backup-failed'
               | 'verify-message-success';
       }
     | {
-          type: 'backup-failed';
-      }
-    | {
-          type: 'tx-confirmed';
+          type: 'tx-sent';
           amount: string;
           device?: TrezorDevice;
-          routeParams?: WalletParams;
-      }
-    | {
-          type: 'sign-tx-success';
+          descriptor: string;
           txid: string;
       }
     | {
@@ -48,17 +46,29 @@ export type ToastPayload =
               | 'verify-message-error'
               | 'sign-tx-error';
           error: string;
-      };
+      }
+) &
+    Options;
 
 interface Common {
     id: number; // programmer provided, might be used to find and close notification programmatically
     device?: TrezorDevice; // used to close notifications for device
-    hidden?: boolean;
+    closed?: boolean;
 }
 
-export type EventPayload = {
-    type: typeof SUITE.AUTH_DEVICE | 'some-other';
-};
+export type EventPayload = (
+    | {
+          type: typeof SUITE.AUTH_DEVICE;
+      }
+    | {
+          type: 'tx-received' | 'tx-confirmed';
+          amount: string;
+          device?: TrezorDevice;
+          descriptor: string;
+          txid: string;
+      }
+) &
+    Options;
 
 export type ToastNotification = { context: 'toast' } & Common & ToastPayload;
 export type EventNotification = { context: 'event' } & Common & EventPayload;
@@ -67,18 +77,28 @@ export type NotificationEntry = ToastNotification | EventNotification;
 
 export type State = NotificationEntry[];
 
-export default function notification(state: State = [], action: SuiteAction): State {
+export default function notification(state: State = [], action: Action): State {
     return produce(state, draft => {
         switch (action.type) {
             case NOTIFICATION.TOAST:
             case NOTIFICATION.EVENT:
-                draft.push(action.payload);
+                draft.unshift(action.payload);
                 break;
             case NOTIFICATION.CLOSE: {
                 const item = draft.find(n => n.id === action.payload);
                 if (item) {
-                    item.hidden = true;
+                    item.closed = true;
                 }
+                break;
+            }
+            case NOTIFICATION.RESET_UNSEEN: {
+                draft.forEach(n => {
+                    if (!n.seen) n.seen = true;
+                });
+                break;
+            }
+            case NOTIFICATION.REMOVE: {
+                draft = draft.filter(n => n.id !== action.payload);
                 break;
             }
             // no default

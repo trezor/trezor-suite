@@ -186,7 +186,13 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     if (sentTx.success) {
         dispatch(commonActions.clear());
         dispatch(
-            notificationActions.addToast({ type: 'sign-tx-success', txid: sentTx.payload.txid }),
+            notificationActions.addToast({
+                type: 'tx-sent',
+                amount,
+                device: selectedDevice,
+                descriptor: account.descriptor,
+                txid: sentTx.payload.txid,
+            }),
         );
         dispatch(accountActions.fetchAndUpdateAccount(account));
     } else {

@@ -2126,17 +2126,21 @@ const definedMessages = defineMessages({
         id: 'TOAST_COPY_TO_CLIPBOARD',
         defaultMessage: 'Copied to clipboard',
     },
+    TOAST_TX_SENT: {
+        id: 'TOAST_TX_SENT',
+        defaultMessage: '{amount} sent from {account}',
+    },
+    TOAST_TX_RECEIVED: {
+        id: 'TOAST_TX_RECEIVED',
+        defaultMessage: '{amount} received on {account}',
+    },
     TOAST_TX_CONFIRMED: {
         id: 'TOAST_TX_CONFIRMED',
-        defaultMessage: 'Transaction {amount} successfully confirmed',
+        defaultMessage: 'Transaction {amount} on {account} successfully confirmed',
     },
-    TOAST_TX_CONFIRMED_CTA: {
-        id: 'TOAST_TX_CONFIRMED_CTA',
+    TOAST_TX_BUTTON: {
+        id: 'TOAST_TX_BUTTON',
         defaultMessage: 'View details',
-    },
-    TOAST_SIGN_TX_SUCCESS: {
-        id: 'TOAST_SIGN_TX_SUCCESS',
-        defaultMessage: 'Transaction sent. ID: {txid}',
     },
     TOAST_SIGN_TX_ERROR: {
         id: 'TOAST_SIGN_TX_ERROR',

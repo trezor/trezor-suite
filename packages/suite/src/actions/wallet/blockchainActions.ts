@@ -1,9 +1,5 @@
 import TrezorConnect, { BlockchainBlock, BlockchainNotification } from 'trezor-connect';
-import {
-    getSelectedNetwork,
-    enhanceTransaction,
-    findAccountDevice,
-} from '@wallet-utils/accountUtils';
+import * as accountUtils from '@wallet-utils/accountUtils';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { State as FeeState } from '@wallet-reducers/feesReducer';
@@ -161,7 +157,7 @@ export const onBlockMined = (block: BlockchainBlock) => async (
     getState: GetState,
 ): Promise<void> => {
     const symbol = block.coin.shortcut.toLowerCase();
-    const network = getSelectedNetwork(NETWORKS, symbol);
+    const network = accountUtils.getSelectedNetwork(NETWORKS, symbol);
     if (!network) return;
 
     // TODO: update the fee (should use TrezorConnect.blockchainEstimateFee?),
@@ -195,32 +191,25 @@ export const onNotification = (payload: BlockchainNotification) => async (
     // }
     const { notification } = payload;
     const symbol = payload.coin.shortcut.toLowerCase();
-    const account = getState().wallet.accounts.find(
-        a =>
-            a.symbol === symbol && a.networkType === 'ethereum'
-                ? a.descriptor.toLowerCase() === notification.descriptor.toLowerCase()
-                : a.descriptor === notification.descriptor, // blockbook returns lowercase eth address
+    const accounts = accountUtils.findAccountsByDescriptor(
+        notification.descriptor,
+        getState().wallet.accounts,
     );
-    if (!account) return;
+    if (!accounts.length) return;
+    const account = accounts[0];
 
-    // add tx to the reducer
-    // dispatch(transactionActions.add([notification.tx], account));
-
-    const enhancedTx = enhanceTransaction(notification.tx, account);
-    const accountDevice = findAccountDevice(account, getState().devices);
+    const enhancedTx = accountUtils.enhanceTransaction(notification.tx, account);
+    const accountDevice = accountUtils.findAccountDevice(account, getState().devices);
 
     // dispatch only recv notifications
     if (accountDevice && enhancedTx.type === 'recv') {
         dispatch(
-            notificationActions.addToast({
-                type: 'tx-confirmed',
+            notificationActions.addEvent({
+                type: 'tx-received',
                 amount: enhancedTx.amount,
                 device: accountDevice,
-                routeParams: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
+                descriptor: account.descriptor,
+                txid: enhancedTx.txid,
             }),
         );
     }

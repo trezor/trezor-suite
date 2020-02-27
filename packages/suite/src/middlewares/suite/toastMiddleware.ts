@@ -2,7 +2,8 @@ import { MiddlewareAPI } from 'redux';
 import { toast } from 'react-toastify';
 import { NOTIFICATION } from '@suite-actions/constants';
 import { close } from '@suite-actions/notificationActions';
-import { getContent } from '@suite-components/ToastNotification';
+import ToastNotification from '@suite-components/ToastNotification';
+import hocNotification from '@suite-components/hocNotification';
 import { AppState, Action, Dispatch } from '@suite-types';
 
 /*
@@ -19,8 +20,9 @@ export default (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
 
     if (action.type !== NOTIFICATION.TOAST) return action;
 
+    // TODO: set custom timeout
     const { payload } = action;
-    toast(getContent(payload, api.dispatch), {
+    toast(hocNotification(payload, ToastNotification), {
         position: 'bottom-center',
         toastId: payload.id,
         onClose: () => api.dispatch(close(payload.id)),
