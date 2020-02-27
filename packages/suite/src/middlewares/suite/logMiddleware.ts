@@ -5,6 +5,7 @@ import * as logActions from '@suite-actions/logActions';
 import { TRANSPORT, DEVICE } from 'trezor-connect';
 import { SUITE, LOG } from '@suite-actions/constants';
 import { ACCOUNT } from '@wallet-actions/constants';
+import { getUserAgent } from '@suite-utils/env';
 
 const log = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
@@ -20,7 +21,8 @@ const log = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
         case SUITE.INIT:
             api.dispatch(
                 logActions.add(action.type, {
-                    userAgent: navigator.userAgent,
+                    // todo: ? because of native. I didnt want to duplicate entire file
+                    userAgent: getUserAgent(),
                     commitHash: process.env.COMMITHASH,
                     suiteType: process.env.SUITE_TYPE,
                 }),
