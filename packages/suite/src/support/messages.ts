@@ -1267,7 +1267,7 @@ const definedMessages = defineMessages({
         id: 'TR_PASSPHRASE_TOO_LONG',
     },
     TR_PASSPHRASE_WALLET: {
-        defaultMessage: 'Passphrase wallet ({id})',
+        defaultMessage: 'Passphrase wallet #{id}',
         id: 'TR_PASSPHRASE_WALLET',
     },
     TR_PENDING: {
@@ -1774,9 +1774,9 @@ const definedMessages = defineMessages({
         defaultMessage: '(Unknown transaction)',
         id: 'TR_UNKNOWN_TRANSACTION',
     },
-    TR_UNKOWN_ERROR_SEE_CONSOLE: {
+    TR_UNKNOWN_ERROR_SEE_CONSOLE: {
         defaultMessage: 'Unknown error. See console logs for details.',
-        id: 'TR_UNKOWN_ERROR_SEE_CONSOLE',
+        id: 'TR_UNKNOWN_ERROR_SEE_CONSOLE',
     },
     TR_UNLOCK: {
         defaultMessage: 'Unlock',
@@ -1786,6 +1786,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Unreadable',
         description: 'Device status',
         id: 'TR_UNREADABLE',
+    },
+    TR_UNACQUIRED: {
+        defaultMessage: 'Unrecognized device',
+        description: 'Device status',
+        id: 'TR_UNACQUIRED',
     },
     TR_UNVERIFIED_ADDRESS_COMMA_CONNECT: {
         defaultMessage: 'Unverified address, connect your Trezor to verify it',
@@ -2126,17 +2131,21 @@ const definedMessages = defineMessages({
         id: 'TOAST_COPY_TO_CLIPBOARD',
         defaultMessage: 'Copied to clipboard',
     },
+    TOAST_TX_SENT: {
+        id: 'TOAST_TX_SENT',
+        defaultMessage: '{amount} sent from {account}',
+    },
+    TOAST_TX_RECEIVED: {
+        id: 'TOAST_TX_RECEIVED',
+        defaultMessage: '{amount} received on {account}',
+    },
     TOAST_TX_CONFIRMED: {
         id: 'TOAST_TX_CONFIRMED',
-        defaultMessage: 'Transaction {amount} successfully confirmed',
+        defaultMessage: 'Transaction {amount} on {account} successfully confirmed',
     },
-    TOAST_TX_CONFIRMED_CTA: {
-        id: 'TOAST_TX_CONFIRMED_CTA',
+    TOAST_TX_BUTTON: {
+        id: 'TOAST_TX_BUTTON',
         defaultMessage: 'View details',
-    },
-    TOAST_SIGN_TX_SUCCESS: {
-        id: 'TOAST_SIGN_TX_SUCCESS',
-        defaultMessage: 'Transaction sent. ID: {txid}',
     },
     TOAST_SIGN_TX_ERROR: {
         id: 'TOAST_SIGN_TX_ERROR',
@@ -2182,6 +2191,18 @@ const definedMessages = defineMessages({
     TR_DISCREET_TOOLTIP: {
         id: 'TR_DISCREET_TOOLTIP',
         defaultMessage: '[FIX THIS TEXT] This is a descreeeet mode',
+    },
+    EVENT_DEVICE_CONNECT: {
+        id: 'EVENT_DEVICE_CONNECT',
+        defaultMessage: 'Device {label} connected',
+    },
+    EVENT_DEVICE_CONNECT_UNACQUIRED: {
+        id: 'EVENT_DEVICE_CONNECT_UNACQUIRED',
+        defaultMessage: '{label} connected',
+    },
+    EVENT_WALLET_CREATED: {
+        id: 'EVENT_WALLET_CREATED',
+        defaultMessage: '{walletLabel} created',
     },
 });
 

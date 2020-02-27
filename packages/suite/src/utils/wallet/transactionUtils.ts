@@ -59,3 +59,6 @@ export const parseKey = (key: string) => {
     );
     return d;
 };
+
+export const findTransaction = (txid: string, transactions: WalletAccountTransaction[]) =>
+    transactions.find(t => t && t.txid === txid);

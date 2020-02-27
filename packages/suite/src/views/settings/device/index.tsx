@@ -181,7 +181,6 @@ const Settings = ({
                                 {...messages.TR_YOUR_CURRENT_FIRMWARE}
                             />
                         }
-                        learnMore={SEED_MANUAL_URL}
                     />
                     <ActionColumn>
                         <ActionButton

@@ -11,16 +11,16 @@ const ControlsWrapper = styled.div<Props>`
     width: ${({ isVertical }) => (isVertical ? '240px' : '100%')};
 
     justify-content: ${({ isVertical }) => (isVertical ? 'center' : 'space-around')};
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 8px;
+    margin-bottom: 8px;
     & > * {
-        margin: 3px 10px 3px 10px;
+        margin: 4px 8px;
     }
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: column;
         & > * {
-            margin: 3px 0 3px 0;
+            margin: 4px 0;
         }
     }
 `;

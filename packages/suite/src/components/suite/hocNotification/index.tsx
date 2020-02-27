@@ -1,27 +1,37 @@
+import React from 'react';
 import { IconProps } from '@trezor/components';
+import { DEVICE } from 'trezor-connect';
 import { SUITE } from '@suite-actions/constants';
 import { NotificationEntry } from '@suite-reducers/notificationReducer';
 import messages from '@suite/support/messages';
-import { Dispatch, ExtendedMessageDescriptor } from '@suite-types';
+import { ExtendedMessageDescriptor } from '@suite-types';
+import withAction from './components/withAction';
+import withTransaction from './components/withTransaction';
 
-import * as suiteActions from '@suite-actions/suiteActions';
-import * as discoveryActions from '@wallet-actions/discoveryActions';
-import * as routerActions from '@suite-actions/routerActions';
-
-export interface NotificationMessage {
+export interface ViewProps {
+    notification: NotificationEntry;
     icon?: IconProps['icon'];
     message: ExtendedMessageDescriptor;
     actionLabel?: ExtendedMessageDescriptor;
     action?: () => any;
 }
 
-export const getNotificationMessage = (
-    notification: NotificationEntry,
-    dispatch: Dispatch,
-): NotificationMessage => {
+const simple = (View: React.ComponentType<ViewProps>, props: ViewProps) => {
+    return <View key={props.notification.id} {...props} />;
+};
+
+/**
+ * HOC component for `state.notifications` views
+ * Used by `ToastNotification` and `@suite-views/notifications` page
+ * Pass intl objects into requested View
+ * @param {NotificationEntry} notification
+ * @param {React.ComponentType<ViewProps>} View
+ */
+export default (notification: NotificationEntry, View: React.ComponentType<ViewProps>) => {
     switch (notification.type) {
         case 'acquire-error':
-            return {
+            return withAction(View, {
+                notification,
                 icon: 'WARNING',
                 message: {
                     ...messages.TOAST_ACQUIRE_ERROR,
@@ -30,10 +40,11 @@ export const getNotificationMessage = (
                     },
                 },
                 actionLabel: messages.TR_RETRY,
-                action: () => dispatch(suiteActions.acquireDevice(notification.device)),
-            };
+            });
+
         case 'auth-failed':
-            return {
+            return withAction(View, {
+                notification,
                 icon: 'WARNING',
                 message: {
                     ...messages.TOAST_AUTH_FAILED,
@@ -42,10 +53,11 @@ export const getNotificationMessage = (
                     },
                 },
                 actionLabel: messages.TR_RETRY,
-                action: () => dispatch(suiteActions.authorizeDevice()),
-            };
+            });
+
         case 'auth-confirm-error':
-            return {
+            return withAction(View, {
+                notification,
                 icon: 'WARNING',
                 message: {
                     ...messages.TOAST_AUTH_CONFIRM_ERROR,
@@ -54,10 +66,11 @@ export const getNotificationMessage = (
                     },
                 },
                 actionLabel: messages.TR_RETRY,
-                action: () => dispatch(suiteActions.authConfirm()),
-            };
+            });
+
         case 'discovery-error':
-            return {
+            return withAction(View, {
+                notification,
                 icon: 'WARNING',
                 message: {
                     ...messages.TOAST_DISCOVERY_ERROR,
@@ -66,71 +79,95 @@ export const getNotificationMessage = (
                     },
                 },
                 actionLabel: messages.TR_RETRY,
-                action: () => dispatch(discoveryActions.restart()),
-            };
+            });
+
         case 'backup-failed':
-            return {
+            return simple(View, {
+                notification,
                 icon: 'WARNING',
                 message: messages.TOAST_BACKUP_FAILED,
-            };
+            });
+
         case 'backup-success':
-            return {
+            return simple(View, {
+                notification,
                 icon: 'SETTINGS',
                 message: messages.TOAST_BACKUP_SUCCESS,
-            };
+            });
+
         case 'settings-applied':
-            return {
+            return simple(View, {
+                notification,
                 icon: 'SETTINGS',
                 message: messages.TOAST_SETTINGS_APPLIED,
-            };
+            });
+
         case 'pin-changed':
-            return {
+            return simple(View, {
+                notification,
                 icon: 'SETTINGS',
                 message: messages.TOAST_PIN_CHANGED,
-            };
+            });
+
         case 'device-wiped':
-            return {
+            return simple(View, {
+                notification,
                 icon: 'SETTINGS',
                 message: messages.TOAST_DEVICE_WIPED,
-            };
+            });
+
         case 'copy-to-clipboard':
-            return {
+            return simple(View, {
+                notification,
                 icon: 'INFO',
                 message: messages.TOAST_COPY_TO_CLIPBOARD,
-            };
-        case 'tx-confirmed':
-            return {
+            });
+
+        case 'tx-received':
+            return withTransaction(View, {
+                notification,
                 icon: 'RECEIVE',
+                message: {
+                    ...messages.TOAST_TX_RECEIVED,
+                    values: {
+                        amount: notification.amount,
+                        account: notification.descriptor,
+                    },
+                },
+                actionLabel: messages.TOAST_TX_BUTTON,
+            });
+
+        case 'tx-sent':
+            return withTransaction(View, {
+                notification,
+                icon: 'SEND',
+                message: {
+                    ...messages.TOAST_TX_SENT,
+                    values: {
+                        amount: notification.amount,
+                        account: notification.descriptor,
+                    },
+                },
+                actionLabel: messages.TOAST_TX_BUTTON,
+            });
+
+        case 'tx-confirmed':
+            return withTransaction(View, {
+                notification,
+                icon: 'INFO',
                 message: {
                     ...messages.TOAST_TX_CONFIRMED,
                     values: {
                         amount: notification.amount,
+                        account: notification.descriptor,
                     },
                 },
-                actionLabel: messages.TOAST_TX_CONFIRMED_CTA,
-                action: async () => {
-                    // select device
-                    if (notification.device) {
-                        await dispatch(suiteActions.selectDevice(notification.device));
-                    }
-                    // go to account route
-                    if (notification.routeParams) {
-                        dispatch(routerActions.goto('wallet-index', notification.routeParams));
-                    }
-                },
-            };
-        case 'sign-tx-success':
-            return {
-                icon: 'SEND',
-                message: {
-                    ...messages.TOAST_SIGN_TX_SUCCESS,
-                    values: {
-                        txid: notification.txid,
-                    },
-                },
-            };
+                actionLabel: messages.TOAST_TX_BUTTON,
+            });
+
         case 'sign-tx-error':
-            return {
+            return simple(View, {
+                notification,
                 icon: 'WARNING',
                 message: {
                     ...messages.TOAST_SIGN_TX_ERROR,
@@ -138,9 +175,11 @@ export const getNotificationMessage = (
                         error: notification.error,
                     },
                 },
-            };
+            });
+
         case 'verify-address-error':
-            return {
+            return simple(View, {
+                notification,
                 icon: 'WARNING',
                 message: {
                     ...messages.TOAST_VERIFY_ADDRESS_ERROR,
@@ -148,9 +187,11 @@ export const getNotificationMessage = (
                         error: notification.error,
                     },
                 },
-            };
+            });
+
         case 'sign-message-error':
-            return {
+            return simple(View, {
+                notification,
                 icon: 'WARNING',
                 message: {
                     ...messages.TOAST_SIGN_MESSAGE_ERROR,
@@ -158,9 +199,11 @@ export const getNotificationMessage = (
                         error: notification.error,
                     },
                 },
-            };
+            });
+
         case 'verify-message-error':
-            return {
+            return simple(View, {
+                notification,
                 icon: 'WARNING',
                 message: {
                     ...messages.TOAST_VERIFY_MESSAGE_ERROR,
@@ -168,9 +211,11 @@ export const getNotificationMessage = (
                         error: notification.error,
                     },
                 },
-            };
+            });
+
         case 'error':
-            return {
+            return simple(View, {
+                notification,
                 icon: 'WARNING',
                 message: {
                     ...messages.TOAST_GENERIC_ERROR,
@@ -178,25 +223,55 @@ export const getNotificationMessage = (
                         error: notification.error,
                     },
                 },
-            };
+            });
 
         // Events:
-        case SUITE.AUTH_DEVICE:
-            return {
+        case DEVICE.CONNECT:
+            return withAction(View, {
+                notification,
                 icon: 'INFO',
                 message: {
-                    id: 'unknown',
-                    defaultMessage: 'Wallet created',
+                    ...messages.EVENT_DEVICE_CONNECT,
+                    values: {
+                        label: notification.device.label,
+                    },
                 },
-            };
+                actionLabel: messages.TR_SELECT_DEVICE,
+            });
+
+        case DEVICE.CONNECT_UNACQUIRED:
+            return withAction(View, {
+                notification,
+                icon: 'WARNING',
+                message: {
+                    ...messages.EVENT_DEVICE_CONNECT_UNACQUIRED,
+                    values: {
+                        label: messages.TR_UNACQUIRED,
+                    },
+                },
+                actionLabel: messages.TR_SOLVE_ISSUE,
+            });
+
+        case SUITE.AUTH_DEVICE:
+            return simple(View, {
+                notification,
+                icon: 'INFO',
+                message: {
+                    ...messages.EVENT_WALLET_CREATED,
+                    values: {
+                        walletLabel: 'New wallet',
+                    },
+                },
+            });
 
         default:
-            return {
+            return simple(View, {
+                notification,
                 icon: 'INFO',
                 message: {
-                    id: 'unknown',
+                    id: notification.type,
                     defaultMessage: notification.type,
                 },
-            };
+            });
     }
 };

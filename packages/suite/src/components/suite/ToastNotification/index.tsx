@@ -1,11 +1,40 @@
 import React from 'react';
-import { ToastNotification } from '@suite-reducers/notificationReducer';
-import Toast from './components/Toast';
-import { Dispatch } from '@suite-types';
+import styled from 'styled-components';
+import { Button, Icon, variables, colors } from '@trezor/components';
+import { Translation } from '@suite-components';
+import { ViewProps } from '@suite-components/hocNotification';
 
-import { getNotificationMessage } from '@suite-utils/notifications';
+const Wrapper = styled.div`
+    display: flex;
+    align-items: center;
+    font-size: ${variables.FONT_SIZE.SMALL};
+`;
 
-export const getContent = (notification: ToastNotification, dispatch: Dispatch) => {
-    const item = getNotificationMessage(notification, dispatch);
-    return <Toast {...item} />;
+const Text = styled.div`
+    padding: 0px 16px;
+    flex: 1;
+`;
+
+// button margin-left: auto;
+
+export default ({ icon, message, action, actionLabel }: ViewProps) => {
+    return (
+        <Wrapper>
+            {icon && <Icon icon={icon} size={12} color={colors.WHITE} />}
+            <Text>
+                <Translation {...message} />
+            </Text>
+            {action && actionLabel && (
+                <Button
+                    variant="tertiary"
+                    icon="ARROW_RIGHT"
+                    alignIcon="right"
+                    color={colors.WHITE}
+                    onClick={action}
+                >
+                    <Translation {...actionLabel} />
+                </Button>
+            )}
+        </Wrapper>
+    );
 };

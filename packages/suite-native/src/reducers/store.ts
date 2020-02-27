@@ -40,7 +40,7 @@ const middlewares = [
 const enhancers: any[] = [];
 
 const excludeLogger = (_getState: any, action: any): boolean => {
-    const excluded = ['LOG_TO_EXCLUDE', 'log__add', undefined];
+    const excluded = ['@log/add', undefined];
     const pass = excluded.filter(act => action.type === act);
     return pass.length === 0;
 };

@@ -79,7 +79,7 @@ export const isSelectedInstance = (selected?: TrezorDevice, device?: TrezorDevic
         selected.instance === device.instance
     );
 
-export const isSelectedDevice = (selected?: TrezorDevice, device?: TrezorDevice) => {
+export const isSelectedDevice = (selected?: TrezorDevice | Device, device?: TrezorDevice) => {
     if (!selected || !device) return false;
     if (!selected.features && !device.features) return selected.path === device.path;
     return !!(

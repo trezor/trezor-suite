@@ -120,7 +120,7 @@ const QrScanner = ({ onScan, onCancel, outputId }: Props) => {
         } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
             setError(<Translation>{messages.TR_CAMERA_NOT_RECOGNIZED}</Translation>);
         } else {
-            setError(<Translation>{messages.TR_UNKOWN_ERROR_SEE_CONSOLE}</Translation>);
+            setError(<Translation>{messages.TR_UNKNOWN_ERROR_SEE_CONSOLE}</Translation>);
         }
     };
 
