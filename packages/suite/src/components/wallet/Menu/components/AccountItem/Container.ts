@@ -1,6 +1,8 @@
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { Dispatch, AppState } from '@suite-types';
 import { Account } from '@wallet-types';
+import * as routerActions from '@suite-actions/routerActions';
 import AccountItem from './index';
 
 const mapStateToProps = (state: AppState) => ({
@@ -9,7 +11,9 @@ const mapStateToProps = (state: AppState) => ({
     fiat: state.wallet.fiat,
 });
 
-const mapDispatchToProps = (_dispatch: Dispatch) => ({});
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    goto: bindActionCreators(routerActions.goto, dispatch),
+});
 
 interface OwnProps {
     account: Account;

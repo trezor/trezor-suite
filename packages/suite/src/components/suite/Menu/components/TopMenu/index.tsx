@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect, useRef } from 'react';
+import styled, { css } from 'styled-components';
 import { colors, Icon } from '@trezor/components';
 import Divider from '../Divider';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
@@ -32,11 +32,14 @@ const DeviceRow = styled.div<{ triggerAnim?: boolean }>`
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
 
-    animation: ${props => (props.triggerAnim ? SHAKE : '')} 0.82s
-        cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-    transform: translate3d(0, 0, 0);
-    backface-visibility: hidden; /* used for hardware acceleration */
-    perspective: 1000px; /* used for hardware acceleration */
+    ${props =>
+        props.triggerAnim &&
+        css`
+            animation: ${SHAKE} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden; /* used for hardware acceleration */
+            perspective: 1000px; /* used for hardware acceleration */
+        `}
 
     &:hover {
         background-color: ${colors.BLACK25};
@@ -67,23 +70,35 @@ interface Props {
 
 const TopMenu = (props: Props) => {
     const { deviceCount } = props;
-    const [previousDeviceCount, setPreviousDeviceCount] = useState(deviceCount);
+    const [localCount, setLocalCount] = useState<number | null>(null);
     const [triggerAnim, setTriggerAnim] = useState(false);
 
+    const countChanged = localCount && localCount !== deviceCount;
+    const timerRef = useRef<number | undefined>(undefined);
+
     useEffect(() => {
-        // deviceCount changed
-        if (deviceCount !== previousDeviceCount) {
+        // clear timer on unmount
+        return () => {
+            if (timerRef.current) clearTimeout(timerRef.current);
+        };
+    }, []);
+
+    useEffect(() => {
+        // update previous device count
+        setLocalCount(deviceCount);
+    }, [deviceCount]);
+
+    useEffect(() => {
+        if (countChanged) {
             // different count triggers anim
             setTriggerAnim(true);
-            setTimeout(() => {
-                // removes anim, allowing it to restart later
+            // after 1s removes anim, allowing it to restart later
+            timerRef.current = setTimeout(() => {
+                // makes sure component is still mounted
                 setTriggerAnim(false);
             }, 1000);
         }
-
-        // update previous device count
-        setPreviousDeviceCount(deviceCount);
-    }, [deviceCount, previousDeviceCount]);
+    }, [countChanged]);
 
     return (
         <Wrapper>

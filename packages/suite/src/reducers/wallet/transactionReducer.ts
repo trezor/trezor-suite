@@ -2,6 +2,7 @@ import produce from 'immer';
 import { AccountTransaction } from 'trezor-connect';
 import { ACCOUNT, TRANSACTION, FIAT_RATES } from '@wallet-actions/constants';
 import { getAccountKey, enhanceTransaction } from '@wallet-utils/accountUtils';
+import { findTransaction } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
 import { Account, WalletAction, Network } from '@wallet-types';
 import { Action } from '@suite-types';
@@ -45,14 +46,6 @@ const initializeAccount = (draft: State, accountHash: string) => {
     }
 };
 
-const alreadyExists = (
-    transactions: WalletAccountTransaction[],
-    transaction: WalletAccountTransaction,
-) => {
-    // first we need to make sure that tx is not undefined, then check if txid matches
-    return transactions.find(t => t && t.txid === transaction.txid);
-};
-
 const update = (
     draft: State,
     account: Account,
@@ -79,7 +72,8 @@ const add = (draft: State, transactions: AccountTransaction[], account: Account,
 
     transactions.forEach((tx, i) => {
         const enhancedTx = enhanceTransaction(tx, account);
-        const existingTx = alreadyExists(accountTxs, enhancedTx);
+        // first we need to make sure that tx is not undefined, then check if txid matches
+        const existingTx = findTransaction(tx.txid, accountTxs);
 
         if (!existingTx) {
             // add a new transaction

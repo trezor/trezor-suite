@@ -19,6 +19,9 @@ export type NotificationActions =
     | {
           type: typeof NOTIFICATION.CLOSE | typeof NOTIFICATION.REMOVE;
           payload: number;
+      }
+    | {
+          type: typeof NOTIFICATION.RESET_UNSEEN;
       };
 
 export const addToast = (payload: ToastPayload) => (dispatch: Dispatch, getState: GetState) => {
@@ -28,6 +31,7 @@ export const addToast = (payload: ToastPayload) => (dispatch: Dispatch, getState
             context: 'toast',
             id: new Date().getTime(),
             device: getState().suite.device,
+            seen: true,
             ...payload,
         },
     });
@@ -48,6 +52,10 @@ export const addEvent = (payload: EventPayload) => (dispatch: Dispatch, getState
 export const close = (id: number): NotificationActions => ({
     type: NOTIFICATION.CLOSE,
     payload: id,
+});
+
+export const resetUnseen = (): NotificationActions => ({
+    type: NOTIFICATION.RESET_UNSEEN,
 });
 
 export const remove = (id: number): NotificationActions => ({

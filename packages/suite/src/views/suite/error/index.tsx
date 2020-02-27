@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation, Link } from '@suite-components';
+import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
-import { P, H1, Button } from '@trezor/components';
-import { getRoute } from '@suite-utils/router';
+import { P, H1, Button, Link } from '@trezor/components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const Wrapper = styled.div`
@@ -27,7 +26,7 @@ export default () => {
                 <Translation {...messages.TR_404_DESCRIPTION} />
             </P>
             <Img src={resolveStaticPath('images/suite/404.svg')} />
-            <Link href={getRoute('suite-index')}>
+            <Link target="_self" href="/">
                 <Button>
                     <Translation {...messages.TR_404_GO_TO_DASHBOARD} />
                 </Button>

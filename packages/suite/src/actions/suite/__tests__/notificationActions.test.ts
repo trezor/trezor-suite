@@ -42,7 +42,14 @@ const initStore = (state: State) => {
 describe('Notifications Actions', () => {
     it('add notifications', () => {
         const store = initStore(getInitialState(undefined));
-        store.dispatch(notificationActions.addToast({ type: 'sign-tx-success', txid: 'abcd' }));
+        store.dispatch(
+            notificationActions.addToast({
+                type: 'tx-sent',
+                amount: '0',
+                descriptor: 'xpub',
+                txid: 'abcd',
+            }),
+        );
         expect(store.getState().notifications.length).toEqual(1);
         store.dispatch(notificationActions.addToast({ type: 'copy-to-clipboard' }));
         expect(store.getState().notifications.length).toEqual(2);
@@ -53,14 +60,21 @@ describe('Notifications Actions', () => {
             getInitialState({
                 notifications: [
                     { id: 1, context: 'toast', type: 'copy-to-clipboard' },
-                    { id: 2, context: 'toast', type: 'sign-tx-success', txid: 'xyz0' },
+                    {
+                        id: 2,
+                        context: 'toast',
+                        type: 'tx-sent',
+                        amount: '0',
+                        descriptor: 'xpub',
+                        txid: 'abcd',
+                    },
                 ],
             }),
         );
         store.dispatch(notificationActions.close(1));
         store.dispatch(notificationActions.close(10)); // does not exists
         const { notifications } = store.getState();
-        expect(notifications.filter(n => !n.hidden).length).toEqual(1);
-        expect(notifications.filter(n => n.hidden).length).toEqual(1);
+        expect(notifications.filter(n => !n.closed).length).toEqual(1);
+        expect(notifications.filter(n => n.closed).length).toEqual(1);
     });
 });
