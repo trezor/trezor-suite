@@ -1,7 +1,6 @@
 import React from 'react';
-import { resolveStaticPath } from '@suite-utils/nextjs';
-// import { Translation } from '@suite-components';
-// import messages from '@suite/support/messages';
+import { UniErrorImg, Translation } from '@suite-components';
+import messages from '@suite/support/messages';
 import Wrapper from './components/Wrapper';
 
 /**
@@ -11,8 +10,8 @@ import Wrapper from './components/Wrapper';
 const DiscoveryFailed = () => {
     return (
         <Wrapper
-            title="TODO: Discovery failed hard"
-            image={resolveStaticPath(`images/suite/uni-error.svg`)}
+            title={<Translation {...messages.TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR} />}
+            image={<UniErrorImg />}
         />
     );
 };

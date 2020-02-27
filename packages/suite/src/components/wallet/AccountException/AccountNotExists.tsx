@@ -12,7 +12,7 @@ const AccountNotExists = () => {
     return (
         <Wrapper
             title={<Translation {...messages.TR_ACCOUNT_EXCEPTION_NOT_EXIST} />}
-            image={resolveStaticPath(`images/wallet/wallet-empty.svg`)}
+            image={<img alt="" src={resolveStaticPath(`images/wallet/wallet-empty.svg`)} />}
         />
     );
 };

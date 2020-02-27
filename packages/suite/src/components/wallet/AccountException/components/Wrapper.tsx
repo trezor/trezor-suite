@@ -15,12 +15,6 @@ const Title = styled(H2)`
     color: ${colors.BLACK0};
 `;
 
-const Image = styled.img`
-    width: 340px;
-    height: 280px;
-    margin-bottom: 40px;
-`;
-
 const Actions = styled.div`
     display: flex;
     justify-content: center;
@@ -38,7 +32,7 @@ const Description = styled.div`
 interface Props {
     title: JSX.Element | string;
     description?: JSX.Element | string;
-    image?: string;
+    image?: JSX.Element;
     children?: React.ReactNode;
 }
 
@@ -47,7 +41,7 @@ const Wrapper = (props: Props) => {
         <Content>
             <Title>{props.title}</Title>
             {props.description && <Description>{props.description}</Description>}
-            {props.image && <Image src={props.image} />}
+            {props.image && props.image}
             {props.children && <Actions>{props.children}</Actions>}
         </Content>
     );
