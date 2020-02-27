@@ -1,28 +1,28 @@
-components-storybook build:
+components build-storybook:
   stage: build
   script:
-    - yarn workspace @trezor/components-storybook build
+    - yarn workspace @trezor/components storybook-build
   artifacts:
-    name: components-build-files
+    name: components-build-storybook-files
     expire_in: 7 days
     paths:
-      - packages/components-storybook/.build
+      - packages/components/.build-storybook
 
-components-storybook deploy dev:
+components storybook deploy dev:
   stage: deploy to dev servers
   variables:
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/components-storybook/${CI_BUILD_REF_NAME}
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/components/${CI_BUILD_REF_NAME}
   dependencies:
     - install and build
-    - components-storybook build
+    - components build-storybook
   environment:
     name: ${CI_BUILD_REF_NAME}
     url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
   before_script: []
   script:
-    - cd packages/components-storybook
+    - cd packages/components
     - echo "Deploy to dev servers"
-    - mkdir -p ${DEPLOY_BASE_DIR}/components-storybook
+    - mkdir -p ${DEPLOY_BASE_DIR}/components
     - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
     - rsync --delete -va .build/ "${DEPLOY_DIRECTORY}/"
   tags:
