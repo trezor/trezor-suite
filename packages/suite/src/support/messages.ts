@@ -1267,7 +1267,7 @@ const definedMessages = defineMessages({
         id: 'TR_PASSPHRASE_TOO_LONG',
     },
     TR_PASSPHRASE_WALLET: {
-        defaultMessage: 'Passphrase wallet ({id})',
+        defaultMessage: 'Passphrase wallet #{id}',
         id: 'TR_PASSPHRASE_WALLET',
     },
     TR_PENDING: {
@@ -1774,9 +1774,9 @@ const definedMessages = defineMessages({
         defaultMessage: '(Unknown transaction)',
         id: 'TR_UNKNOWN_TRANSACTION',
     },
-    TR_UNKOWN_ERROR_SEE_CONSOLE: {
+    TR_UNKNOWN_ERROR_SEE_CONSOLE: {
         defaultMessage: 'Unknown error. See console logs for details.',
-        id: 'TR_UNKOWN_ERROR_SEE_CONSOLE',
+        id: 'TR_UNKNOWN_ERROR_SEE_CONSOLE',
     },
     TR_UNLOCK: {
         defaultMessage: 'Unlock',
