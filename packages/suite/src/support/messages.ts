@@ -1267,7 +1267,7 @@ const definedMessages = defineMessages({
         id: 'TR_PASSPHRASE_TOO_LONG',
     },
     TR_PASSPHRASE_WALLET: {
-        defaultMessage: 'Passphrase wallet ({id})',
+        defaultMessage: 'Passphrase wallet #{id}',
         id: 'TR_PASSPHRASE_WALLET',
     },
     TR_PENDING: {
