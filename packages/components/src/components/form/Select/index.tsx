@@ -100,7 +100,7 @@ const TopLabel = styled.span`
     padding: 0 0 10px 0;
 `;
 
-interface Props extends SelectProps {
+interface Props extends Omit<SelectProps, 'components'> {
     withDropdownIndicator?: boolean;
     isClean?: boolean;
     topLabel?: React.ReactNode;
