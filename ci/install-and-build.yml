@@ -8,7 +8,6 @@ install and build:
             - node_modules/
             - packages/blockchain-link/node_modules/
             - packages/components/node_modules/
-            - packages/components-storybook/node_modules/
             - packages/rollout/node_modules/
             - packages/suite/node_modules/
             - packages/suite-web/node_modules/
