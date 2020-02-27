@@ -6,19 +6,21 @@ import { bindActionCreators } from 'redux';
 import { Button, H2, P, colors, variables } from '@trezor/components';
 
 import { SelectWordCount, SelectRecoveryType, Error } from '@recovery-components';
-import { ProgressBar, Loading } from '@suite-components';
+import { ProgressBar, Loading, Translation } from '@suite-components';
+import ModalWrapper from '@suite-components/ModalWrapper';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { InjectedModalApplicationProps, AppState, Dispatch } from '@suite-types';
 import { WordCount } from '@recovery-types';
+import messages from '@suite/support/messages';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 
-const Wrapper = styled.div`
-    width: 60vw;
+const Wrapper = styled(ModalWrapper)`
+    min-width: 60vw;
+    max-width: 80vw;
     min-height: 80vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 40px;
 `;
 
 const Row = styled.div`
@@ -162,7 +164,9 @@ const Recovery = ({
                             variant="tertiary"
                             onClick={() => closeModalApp()}
                         >
-                            Cancel seed check
+                            Cancel
+                            {/* waiting for RP to be merged */}
+                            {/* <Translation {...messsages.TR_CANCEL}/> */}
                         </StyledButton>
                     </Buttons>
                 </>
@@ -248,7 +252,6 @@ const Recovery = ({
                     {!modal && <Loading />}
                     {modal && (
                         <>
-                            <H2>Follow instructions on your device</H2>
                             {model === 2 && (
                                 <StyledP>
                                     All the words are entered only on the device as a extra security

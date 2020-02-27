@@ -30,7 +30,8 @@ const shake = keyframes`
 
 const SelectWrapper = styled.div`
     animation: ${shake} 1.3s;
-    margin-top: 10px;
+    margin: 12px auto;
+    width: 380px;
 `;
 
 interface Counter {
@@ -38,7 +39,6 @@ interface Counter {
     current?: number;
 }
 interface Props extends WrappedComponentProps {
-    counter?: Counter;
     onSubmit: (word: string) => void;
 }
 
@@ -48,7 +48,7 @@ const WordInput = (props: Props) => {
     // does not seem to support this.
     const [word, setWord] = useState('');
 
-    const { counter, onSubmit } = props;
+    const { onSubmit } = props;
 
     useEffect(() => {
         const keyboardHandler = (event: KeyboardEvent) => {
@@ -65,44 +65,8 @@ const WordInput = (props: Props) => {
 
     return (
         <>
-            <P>
-                <Translation {...messages.TR_ENTER_SEED_WORDS_INSTRUCTION} />{' '}
-                {counter && typeof counter.total === 'number' && counter.total < 24 && (
-                    <Translation
-                        {...messages.TR_RANDOM_SEED_WORDS_DISCLAIMER}
-                        values={{ count: 24 - counter.total }}
-                    />
-                )}
-            </P>
             <SelectWrapper>
                 <Select
-                    styles={{
-                        option: (provided: CSSProperties, state: any) => ({
-                            ...provided,
-                            backgroundColor: state.isFocused
-                                ? colors.GREEN
-                                : provided.backgroundColor,
-                            color: state.isFocused ? colors.BLACK50 : colors.BLACK17,
-                            textAlign: 'initial',
-                        }),
-                        control: (provided: CSSProperties, state: any) => ({
-                            ...provided,
-                            boxShadow: `0 0 0 1px ${colors.GREEN}`,
-                            '&:hover': {
-                                borderColor: colors.GREEN,
-                            },
-                            borderColor: state.isFocused ? colors.GREEN : 'transparent',
-                        }),
-                        dropdownIndicator: () => ({ display: 'none' }),
-                        indicatorSeparator: () => ({ display: 'none' }),
-                        menu: (provided: CSSProperties) => {
-                            // see here, this is why I (probably) need using local state to save word
-                            if (!word) {
-                                return { display: 'none' };
-                            }
-                            return provided;
-                        },
-                    }}
                     autoFocus
                     isSearchable
                     isClearable={false}
@@ -125,14 +89,6 @@ const WordInput = (props: Props) => {
                     }}
                 />
             </SelectWrapper>
-            {counter && typeof counter.current === 'number' && typeof counter.total === 'number' && (
-                <P size="small">
-                    <Translation
-                        {...messages.TR_MORE_WORDS_TO_ENTER}
-                        values={{ count: counter.total - counter.current }}
-                    />
-                </P>
-            )}
         </>
     );
 };

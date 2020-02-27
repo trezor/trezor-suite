@@ -279,7 +279,7 @@ const definedMessages = defineMessages({
     },
     TR_BASIC_RECOVERY_OPTION: {
         defaultMessage: 'Basic recovery (2 minutes)',
-        description: 'Button for selecting basic recovery option',
+        description: 'Enter words on your computer, recovery takes about 2 minutes.',
         id: 'TR_BASIC_RECOVERY_OPTION',
     },
     TR_BCH_ADDRESS_INFO: {
@@ -1335,7 +1335,7 @@ const definedMessages = defineMessages({
     },
     TR_RANDOM_SEED_WORDS_DISCLAIMER: {
         defaultMessage:
-            'Please note, that to maximaze security, your device will ask you to enter {count} fake words that are not part of your seed.',
+            'You might be asked to retype some words that are not part of your recovery seed.',
         description:
             'User is instructed to enter words from seed (backup) into the form in browser',
         id: 'TR_RANDOM_SEED_WORDS_DISCLAIMER',
