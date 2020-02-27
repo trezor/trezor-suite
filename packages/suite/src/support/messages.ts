@@ -1787,6 +1787,11 @@ const definedMessages = defineMessages({
         description: 'Device status',
         id: 'TR_UNREADABLE',
     },
+    TR_UNACQUIRED: {
+        defaultMessage: 'Unrecognized device',
+        description: 'Device status',
+        id: 'TR_UNACQUIRED',
+    },
     TR_UNVERIFIED_ADDRESS_COMMA_CONNECT: {
         defaultMessage: 'Unverified address, connect your Trezor to verify it',
         id: 'TR_UNVERIFIED_ADDRESS_COMMA_CONNECT',
@@ -2186,6 +2191,18 @@ const definedMessages = defineMessages({
     TR_DISCREET_TOOLTIP: {
         id: 'TR_DISCREET_TOOLTIP',
         defaultMessage: '[FIX THIS TEXT] This is a descreeeet mode',
+    },
+    EVENT_DEVICE_CONNECT: {
+        id: 'EVENT_DEVICE_CONNECTED',
+        defaultMessage: 'Device {label} connected',
+    },
+    EVENT_DEVICE_CONNECT_UNACQUIRED: {
+        id: 'EVENT_DEVICE_CONNECT_UNACQUIRED',
+        defaultMessage: '{label} connected',
+    },
+    EVENT_WALLET_CREATED: {
+        id: 'EVENT_WALLET_CREATED',
+        defaultMessage: '{walletLabel} created',
     },
 });
 
