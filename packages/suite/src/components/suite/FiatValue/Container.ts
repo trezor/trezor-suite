@@ -19,7 +19,7 @@ type OwnProps = {
     amount: string;
     symbol: Network['symbol'];
     fiatCurrency?: string;
-    source?: TimestampedRates['rates'];
+    source?: TimestampedRates['rates'] | 'current';
     children?: (props: Params) => React.ReactElement | null;
 };
 

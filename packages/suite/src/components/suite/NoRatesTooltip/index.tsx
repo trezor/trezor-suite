@@ -14,6 +14,7 @@ const NoRatesMessage = styled.div`
     align-items: center;
     color: ${colors.BLACK50};
     font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
 interface Props extends Partial<typeof Tooltip> {
@@ -22,22 +23,22 @@ interface Props extends Partial<typeof Tooltip> {
 }
 
 const NoRatesTooltip = ({ customText, className, ...props }: Props) => (
-    <Tooltip
-        maxWidth={285}
-        placement="top"
-        content={<Translation {...messages.TR_FIAT_RATES_ARE_NOT_CURRENTLY} />}
-        {...props}
-    >
-        <NoRatesMessage className={className}>
-            {customText ? <>{customText}</> : 'No data available'}
+    <NoRatesMessage className={className}>
+        {customText ? <>{customText}</> : 'No data available'}
+        <Tooltip
+            maxWidth={285}
+            placement="top"
+            content={<Translation {...messages.TR_FIAT_RATES_ARE_NOT_CURRENTLY} />}
+            {...props}
+        >
             <StyledIcon
                 icon="QUESTION"
                 color={colors.BLACK50}
                 hoverColor={colors.BLACK25}
                 size={14}
             />
-        </NoRatesMessage>
-    </Tooltip>
+        </Tooltip>
+    </NoRatesMessage>
 );
 
 export default NoRatesTooltip;

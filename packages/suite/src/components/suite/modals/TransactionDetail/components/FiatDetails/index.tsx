@@ -79,18 +79,20 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                         title={<Translation {...messages.TR_TOTAL_OUTPUT} />}
                         alignContent="right"
                     >
-                        {totalOutput && (
+                        {totalOutput ? (
                             <HiddenPlaceholder>
                                 <FiatValue amount={totalOutput} symbol={tx.symbol}>
-                                    {({ value }) => value}
+                                    {({ value }) => value ?? <NoRatesTooltip />}
                                 </FiatValue>
                             </HiddenPlaceholder>
+                        ) : (
+                            <NoRatesTooltip />
                         )}
                     </BoxRow>
                     <BoxRow title={<Translation {...messages.TR_TX_FEE} />} alignContent="right">
                         <HiddenPlaceholder>
                             <FiatValue amount={tx.fee} symbol={tx.symbol}>
-                                {({ value }) => value}
+                                {({ value }) => value ?? <NoRatesTooltip />}
                             </FiatValue>
                         </HiddenPlaceholder>
                     </BoxRow>
