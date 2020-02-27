@@ -102,7 +102,7 @@ const remove = (draft: State, payload: State | NotificationEntry) => {
         const index = draft.findIndex(n => n.id === item.id);
         draft.splice(index, 1);
     });
-}
+};
 
 export default function notification(state: State = [], action: Action): State {
     return produce(state, draft => {

@@ -2193,7 +2193,7 @@ const definedMessages = defineMessages({
         defaultMessage: '[FIX THIS TEXT] This is a descreeeet mode',
     },
     EVENT_DEVICE_CONNECT: {
-        id: 'EVENT_DEVICE_CONNECTED',
+        id: 'EVENT_DEVICE_CONNECT',
         defaultMessage: 'Device {label} connected',
     },
     EVENT_DEVICE_CONNECT_UNACQUIRED: {
