@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, Icon, variables, colors } from '@trezor/components';
-import { Translation, AddressLabeling } from '@suite-components';
+import { Translation } from '@suite-components';
 import { ViewProps } from '@suite-components/hocNotification';
 
 const Wrapper = styled.div`
@@ -18,14 +18,6 @@ const Text = styled.div`
 // button margin-left: auto;
 
 export default ({ icon, message, action, actionLabel }: ViewProps) => {
-    if (message.values) {
-        if (typeof message.values.txid === 'string') {
-            message.values.amount = '00';
-        }
-        if (typeof message.values.descriptor === 'string') {
-            message.values.account = <AddressLabeling address={message.values.descriptor} />;
-        }
-    }
     return (
         <Wrapper>
             {icon && <Icon icon={icon} size={12} color={colors.WHITE} />}
