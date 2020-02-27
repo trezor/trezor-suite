@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { useKeyPress } from '../../utils/hooks';
 
-import { Link } from '../Link';
+import { Link } from '../typography/Link';
 import { Icon } from '../Icon';
 import { colors, variables } from '../../config';
 

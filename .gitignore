@@ -2,6 +2,7 @@
 _old
 build
 build-electron
+.build-storybook
 
 # Dependency directory
 node_modules
