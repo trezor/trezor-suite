@@ -29,6 +29,7 @@
         "build",
         "lib",
         "dist",
+        "src/components/**/*.stories.tsx",
         "scripts",
         "acceptance-tests",
         "webpack",
