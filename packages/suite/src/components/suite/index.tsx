@@ -1,6 +1,6 @@
 import Backdrop from './Backdrop';
 import DeviceIcon from './images/DeviceIcon';
-import Link from './Link';
+import ExternalLink from './ExternalLink';
 import Preloader from './Preloader';
 import FormattedNumber from './FormattedNumber';
 import SuiteLayout from './SuiteLayout';
@@ -25,7 +25,7 @@ import { AccountLabeling, AddressLabeling, WalletLabeling } from './Labeling';
 export {
     Backdrop,
     DeviceIcon,
-    Link,
+    ExternalLink,
     Preloader,
     FormattedNumber,
     SuiteLayout,

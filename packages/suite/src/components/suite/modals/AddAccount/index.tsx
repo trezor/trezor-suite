@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Translation';
-import { H2, Button, P, colors, variables } from '@trezor/components';
+import { H2, Button, P, Link, colors, variables } from '@trezor/components';
+import { Translation } from '@suite-components';
 import { changeAccountVisibility } from '@wallet-actions/accountActions';
 import { changeCoinVisibility } from '@settings-actions/walletSettingsActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -16,7 +16,6 @@ import NetworkSelect from './components/NetworkSelect';
 import AccountTypeSelect from './components/AccountTypeSelect';
 import ExternalWallet from './components/ExternalWallet';
 import AddAccountButton from './components/AddAccountButton';
-import Link from '@suite-components/Link';
 
 const Wrapper = styled(ModalWrapper)`
     flex-direction: column;
@@ -240,7 +239,7 @@ const AddAccount = (props: Props) => {
 
                 {isExternal ? (
                     <Link href={(selectedNetwork as ExternalNetwork).url}>
-                        <Button variant="primary" onClick={props.onCancel}>
+                        <Button icon="EXTERNAL_LINK" variant="primary" onClick={props.onCancel}>
                             <Translation>{messages.TR_GO_TO_EXTERNAL_WALLET}</Translation>
                         </Button>
                     </Link>

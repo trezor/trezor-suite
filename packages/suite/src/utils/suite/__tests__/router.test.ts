@@ -5,7 +5,6 @@ import {
     getRoute,
     getPrefixedURL,
     stripPrefixedPathname,
-    isInternalRoute,
     getTopLevelRoute,
 } from '../router';
 
@@ -105,17 +104,6 @@ describe('router', () => {
         it('should strip params delimited by a hashtag from the URL', () => {
             expect(stripPrefixedPathname('/wallet/send/#/btc/0')).toEqual('/wallet/send');
             expect(stripPrefixedPathname('/wallet/send/#/42')).toEqual('/wallet/send');
-        });
-    });
-
-    describe('isInternalRoute', () => {
-        it('should return true in case of in app route', () => {
-            expect(isInternalRoute('/wallet/#/btc/0')).toEqual(true);
-            expect(isInternalRoute('/wallet/#/42')).toEqual(true);
-            expect(isInternalRoute('/wallet/receive/#/btc/0')).toEqual(true);
-            expect(isInternalRoute('/wallet/')).toEqual(true);
-            expect(isInternalRoute('/onboarding/')).toEqual(true);
-            expect(isInternalRoute('https://example.com')).toEqual(false);
         });
     });
 
