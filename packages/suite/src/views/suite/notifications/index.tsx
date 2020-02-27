@@ -29,7 +29,6 @@ const Item = styled.div`
     display: flex;
     border-bottom: 1px solid ${colors.BLACK96};
     padding: 16px 0px;
-    color: red;
 `;
 
 const Text = styled.div`
