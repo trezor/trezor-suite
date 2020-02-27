@@ -29,6 +29,7 @@ const Item = styled.div`
     display: flex;
     border-bottom: 1px solid ${colors.BLACK96};
     padding: 16px 0px;
+    color: red;
 `;
 
 const Text = styled.div`
@@ -53,7 +54,7 @@ const NotificationView = (props: ViewProps) => {
         <Item>
             {props.icon && <Icon size={16} icon={props.icon} style={{ marginTop: '4px' }} />}
             <Text>
-                <P>
+                <P weight={props.notification.seen ? 'normal' : 'bold'}>
                     <Translation {...props.message} />
                 </P>
                 <P size="tiny">
