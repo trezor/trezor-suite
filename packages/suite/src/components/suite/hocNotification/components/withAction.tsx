@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { DEVICE } from 'trezor-connect';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { Dispatch } from '@suite-types';
@@ -28,6 +29,16 @@ export default (View: React.ComponentType<ViewProps>, props: ViewProps) => {
                 break;
             case 'discovery-error':
                 action = () => dispatch(discoveryActions.restart());
+                break;
+            case DEVICE.CONNECT:
+                action = !notification.seen
+                    ? () => dispatch(suiteActions.selectDevice(notification.device))
+                    : undefined;
+                break;
+            case DEVICE.CONNECT_UNACQUIRED:
+                action = !notification.seen
+                    ? () => dispatch(suiteActions.acquireDevice(notification.device))
+                    : undefined;
                 break;
             // no default
         }
