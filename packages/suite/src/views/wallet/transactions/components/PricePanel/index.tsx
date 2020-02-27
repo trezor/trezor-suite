@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { colors, variables, CoinLogo, P } from '@trezor/components';
+import { colors, variables, CoinLogo, P, Tooltip, Icon } from '@trezor/components';
 import {
     HiddenPlaceholder,
     Card,
@@ -14,6 +14,9 @@ import { getAccountFiatBalance, getTitleForNetwork, isTestnet } from '@wallet-ut
 import { Account } from '@wallet-types';
 import { Translation } from '@suite-components/Translation';
 import { connect } from 'react-redux';
+import { differenceInMinutes } from 'date-fns';
+import { FormattedRelativeTime } from 'react-intl';
+import messages from '@suite/support/messages';
 
 const Wrapper = styled(Card)`
     width: 100%;
@@ -103,6 +106,14 @@ const Dot = styled.div`
     margin-top: -1px;
 `;
 
+const LastUpdate = styled.div`
+    text-transform: none;
+`;
+
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
+`;
+
 interface OwnProps {
     account: Account;
 }
@@ -110,6 +121,8 @@ interface OwnProps {
 const PricePanel = (props: Props) => {
     const { localCurrency } = props.settings;
     const fiatBalance = getAccountFiatBalance(props.account, localCurrency, props.fiat);
+    const MAX_AGE = 5; // after 5 minutes the ticker will show tooltip with info about last update instead of blinking LIVE text
+    const rateAge = (timestamp: number) => differenceInMinutes(new Date(), new Date(timestamp));
 
     return (
         <Wrapper>
@@ -137,12 +150,51 @@ const PricePanel = (props: Props) => {
                                 ({props.account.symbol.toUpperCase()})
                             </TickerTitle>
                             <FiatValue amount="1" symbol={props.account.symbol}>
-                                {({ value }) =>
-                                    value ? (
-                                        <LiveWrapper key={props.account.symbol}>
-                                            <Dot />
-                                            <Live>Live</Live>
-                                        </LiveWrapper>
+                                {({ value, timestamp }) =>
+                                    value && timestamp ? (
+                                        <>
+                                            {rateAge(timestamp) >= MAX_AGE ? (
+                                                <Tooltip
+                                                    maxWidth={285}
+                                                    placement="top"
+                                                    content={
+                                                        <LastUpdate>
+                                                            <Translation
+                                                                {...messages.TR_LAST_UPDATE}
+                                                                values={{
+                                                                    value: (
+                                                                        <FormattedRelativeTime
+                                                                            value={
+                                                                                rateAge(timestamp) *
+                                                                                -60
+                                                                            }
+                                                                            numeric="auto"
+                                                                            updateIntervalInSeconds={
+                                                                                10
+                                                                            }
+                                                                        />
+                                                                    ),
+                                                                }}
+                                                            />
+                                                        </LastUpdate>
+                                                    }
+                                                >
+                                                    <StyledIcon
+                                                        icon="QUESTION"
+                                                        color={colors.BLACK50}
+                                                        hoverColor={colors.BLACK25}
+                                                        size={14}
+                                                    />
+                                                </Tooltip>
+                                            ) : (
+                                                <LiveWrapper key={props.account.symbol}>
+                                                    <Dot />
+                                                    <Live>
+                                                        <Translation {...messages.TR_LIVE} />
+                                                    </Live>
+                                                </LiveWrapper>
+                                            )}
+                                        </>
                                     ) : null
                                 }
                             </FiatValue>

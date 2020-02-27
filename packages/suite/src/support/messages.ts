@@ -2191,6 +2191,14 @@ const definedMessages = defineMessages({
         id: 'TX_CONFIRMATIONS_EXPLAIN',
         defaultMessage: 'TODO TODO TODO ExPlAnAtIoN',
     },
+    TR_LAST_UPDATE: {
+        id: 'TR_LAST_UPDATE',
+        defaultMessage: 'Last update: {value}',
+    },
+    TR_LIVE: {
+        id: 'TR_LIVE',
+        defaultMessage: 'Live',
+    },
 });
 
 export default definedMessages;
