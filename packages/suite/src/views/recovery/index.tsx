@@ -191,7 +191,7 @@ const Recovery = ({
                                 <Translation {...messages.TR_SELECT_NUMBER_OF_WORDS} />
                             </InfoBoxTitle>
                             <InfoBoxDescription>
-                                <Translation {...messages.TR_YOU_EITHER_HAVE_T1} />
+                                <Translation {...messages.TR_YOU_EITHER_HAVE_T2} />
                             </InfoBoxDescription>
                         </InfoBoxText>
                     </InfoBox>

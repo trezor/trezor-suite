@@ -1083,11 +1083,6 @@ const definedMessages = defineMessages({
         description: 'Name of Trezor model T',
         id: 'TR_MODEL_T',
     },
-    TR_MORE_WORDS_TO_ENTER: {
-        defaultMessage: '{count} words to enter.',
-        description: 'How many words will user need to enter before recovery is finished.',
-        id: 'TR_MORE_WORDS_TO_ENTER',
-    },
     TR_NAV_RECEIVE: {
         defaultMessage: 'Receive',
         description: 'Title of the navigation tab that contains the account address',
@@ -2261,11 +2256,11 @@ const definedMessages = defineMessages({
             'Words need to be entered according to the matrix on device but clicking on buttons below.',
     },
     TR_ADVANCED_RECOVERY_NOT_SURE: {
-        id: 'TR_ADVANCED_RECOVERY_LEARN_MORE',
+        id: 'TR_ADVANCED_RECOVERY_NOT_SURE',
         defaultMessage: 'Not sure how advanced method works?',
     },
     TR_CHECK_RECOVERY_SEED_DESC_T1: {
-        id: 'TR_CHECK_RECOVERY_SEED_DESC',
+        id: 'TR_CHECK_RECOVERY_SEED_DESC_T1',
         defaultMessage:
             'Your wallet backup, the recovery seed, is entered on your computer (host) and your device shows which word to type. You will also be asked to enter words not in your seed, that is a security meassure to ensure nobody can read what key is being pressed.',
     },
@@ -2321,6 +2316,17 @@ const definedMessages = defineMessages({
     TR_SEED_CHECK_FAIL_TITLE: {
         id: 'TR_SEED_CHECK_FAIL_TITLE',
         defaultMessage: 'Seed check failed',
+    },
+    TR_WORD_DOES_NOT_EXIST: {
+        id: 'TR_WORD_DOES_NOT_EXIST',
+        defaultMessage: 'Word "{word}" does not exist in bip39 word list.',
+        description:
+            'In recovery or dry run, appears when user types a string that is not a substring of any word included in bip39 word list.',
+    },
+    TR_BACKSPACE: {
+        id: 'TR_BACKSPACE',
+        defaultMessaga: 'Backspace',
+        description: 'Keyboard key',
     },
 });
 

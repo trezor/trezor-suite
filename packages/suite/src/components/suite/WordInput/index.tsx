@@ -34,10 +34,6 @@ const SelectWrapper = styled.div`
     text-align: left;
 `;
 
-// interface Counter {
-//     total?: number;
-//     current?: number;
-// }
 interface Props extends WrappedComponentProps {
     onSubmit: (word: string) => void;
 }
@@ -66,7 +62,7 @@ const WordInput = (props: Props) => {
                 isClearable={false}
                 controlShouldRenderValue={false}
                 noOptionsMessage={({ inputValue }: { inputValue: string }) =>
-                    `word "${inputValue}" does not exist in words list`
+                    props.intl.formatMessage(messages.TR_WORD_DOES_NOT_EXIST, { word: inputValue })
                 }
                 onChange={(item: any) => {
                     onSubmit(item.value);
