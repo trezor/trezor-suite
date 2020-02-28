@@ -96,6 +96,12 @@ const Version = styled.div<{ show: boolean }>`
 
 const Image = styled.img``;
 
+const Col = styled.div<{ justify?: string }>`
+    display: flex;
+    flex: 1;
+    justify-content: ${props => props.justify};
+`;
+
 const mapStateToProps = (state: AppState) => ({
     transport: state.suite.transport,
     device: state.suite.device,
@@ -183,39 +189,44 @@ const InstallBridge = (props: Props) => {
             </Content>
 
             <Footer>
-                <Button
-                    icon="ARROW_LEFT"
-                    variant="tertiary"
-                    color={colors.BLACK50}
-                    onClick={() => props.goto('wallet-index')}
-                >
-                    <Translation {...messages.TR_TAKE_ME_BACK_TO_WALLET} />
-                </Button>
+                <Col justify="flex-start">
+                    <Button
+                        icon="ARROW_LEFT"
+                        variant="tertiary"
+                        color={colors.BLACK50}
+                        onClick={() => props.goto('wallet-index')}
+                    >
+                        <Translation {...messages.TR_TAKE_ME_BACK_TO_WALLET} />
+                    </Button>
+                </Col>
                 {!isLoading && (
                     <>
-                        <Link variant="nostyle" href={URLS.BRIDGE_CHANGELOG_URL}>
-                            <Button
-                                icon="LOG"
-                                color={colors.BLACK50}
-                                variant="tertiary"
-                                onClick={() => {}}
-                            >
-                                <Translation {...messages.TR_CHANGELOG} />
-                            </Button>
-                        </Link>
-
-                        {data && target?.signature && (
-                            <Link variant="nostyle" href={data.uri + target.signature}>
+                        <Col justify="center">
+                            <Link variant="nostyle" href={URLS.BRIDGE_CHANGELOG_URL}>
                                 <Button
+                                    icon="LOG"
                                     color={colors.BLACK50}
-                                    icon="SIGN"
                                     variant="tertiary"
                                     onClick={() => {}}
                                 >
-                                    <Translation {...messages.TR_CHECK_PGP_SIGNATURE} />
+                                    <Translation {...messages.TR_CHANGELOG} />
                                 </Button>
                             </Link>
-                        )}
+                        </Col>
+                        <Col justify="flex-end">
+                            {data && target?.signature && (
+                                <Link variant="nostyle" href={data.uri + target.signature}>
+                                    <Button
+                                        color={colors.BLACK50}
+                                        icon="SIGN"
+                                        variant="tertiary"
+                                        onClick={() => {}}
+                                    >
+                                        <Translation {...messages.TR_CHECK_PGP_SIGNATURE} />
+                                    </Button>
+                                </Link>
+                            )}
+                        </Col>
                     </>
                 )}
             </Footer>
