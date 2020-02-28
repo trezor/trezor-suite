@@ -59,6 +59,9 @@ export type UserContextPayload =
       }
     | {
           type: 'pin-mismatch';
+      }
+    | {
+          type: 'wipe-device';
       };
 
 export type ModalActions =

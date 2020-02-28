@@ -7,23 +7,13 @@ describe('Device settings', () => {
         cy.task('setupEmu');
         // navigate to device settings page
         cy.viewport(1024, 768).resetDb();
-
-        cy.visit('/');
-
+        cy.visit('/settings/device');
         cy.passThroughInitialRun();
         // make sure suite already sees device
         cy.getTestElement('@modal/connect-device').should('not.exist');
-        cy.dashboardShouldLoad();
-        cy.getTestElement('@suite/menu/settings')
-            .click({ force: true })
-            .getTestElement('@settings/menu/device')
-            .click({ force: true });
-        // a little antipattern but perfection is the enemy of good.
-        // there is a problem with device call in progress (from discovery)
-        cy.wait(2000);
     });
 
-    it('change all possible device settings and wipe device in the end', () => {
+    it('change all possible device settings', () => {
         cy.log('change label');
         cy.getTestElement('@settings/device/label-input')
             .should('have.value', CONSTANTS.DEFAULT_TREZOR_LABEL)
@@ -62,14 +52,6 @@ describe('Device settings', () => {
         cy.log('open firmware modal and close it again');
         cy.getTestElement('@settings/device/update-button').click();
         cy.getTestElement('@firmware/close-button').click();
-
-        cy.log('wipe device');
-        cy.getTestElement('@settings/device/wipe-button')
-            .click()
-            .getConfirmActionOnDeviceModal();
-        cy.task('sendDecision', { method: 'wipeDevice' });
-        cy.getTestElement('@button/go-to-onboarding').click();
-        cy.onboardingShouldLoad();
     });
 
     it('backup in settings', () => {
@@ -78,6 +60,15 @@ describe('Device settings', () => {
         cy.getTestElement('@settings/device/create-backup-button').click();
         cy.getTestElement('@backup');
     });
+
+    it('wipe device', () => {
+        cy.getTestElement('@settings/device/open-wipe-modal-button').click();
+        cy.getTestElement('@wipe/checkbox-1').click();
+        cy.getTestElement('@wipe/checkbox-2').click();
+        cy.getTestElement('@wipe/wipe-button').click();
+        cy.task('sendDecision');
+    });
+
     // TODO: upload custom image
     // TODO: set pin part. need to extend python script to allow input digits on emulator
 });

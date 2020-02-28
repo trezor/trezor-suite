@@ -31,6 +31,7 @@ import QrScanner from './QrScanner';
 import BackgroundGallery from './BackgroundGallery';
 import TransactionDetail from './TransactionDetail';
 import Log from './Log';
+import WipeDevice from './WipeDevice';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -151,6 +152,8 @@ const getUserContextModal = (props: Props) => {
                     onCancel={modalActions.onCancel}
                 />
             );
+        case 'wipe-device':
+            return <WipeDevice onCancel={modalActions.onCancel} />;
         case 'qr-reader':
             return <QrScanner outputId={payload.outputId} onCancel={modalActions.onCancel} />;
         case 'transaction-detail':

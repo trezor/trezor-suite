@@ -7,7 +7,7 @@ import { H2, P, Button, ButtonProps, colors } from '@trezor/components';
 import * as backupActions from '@backup-actions/backupActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { Dispatch, AppState, InjectedModalApplicationProps } from '@suite-types';
-import { ProgressBar, Loading } from '@suite-components';
+import { ProgressBar, Loading, UniErrorImg } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
 import { canStart, canContinue } from '@backup-utils';
@@ -161,7 +161,7 @@ const Backup = (props: Props) => {
                 <>
                     <H2>Backup failed!</H2>
                     <StyledP data-test="@backup/error-message">{backup.error}</StyledP>
-                    <img src={resolveStaticPath('images/suite/uni-error.svg')} alt="" />
+                    <UniErrorImg />
                     <Buttons>
                         <Col>
                             <CloseButton onClick={onClose} />

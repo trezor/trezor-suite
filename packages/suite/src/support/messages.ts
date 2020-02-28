@@ -2204,6 +2204,37 @@ const definedMessages = defineMessages({
         id: 'EVENT_WALLET_CREATED',
         defaultMessage: '{walletLabel} created',
     },
+    TR_WIPE_DEVICE_HEADING: {
+        id: 'TR_WIPE_DEVICE_HEADING',
+        defaultMessage: 'Before you wipe your device…',
+    },
+    TR_WIPE_DEVICE_TEXT: {
+        id: 'TR_WIPE_DEVICE_TEXT',
+        defaultMessage:
+            'Wiping the device removes all its content. Only wipe your device if you have your recovery seed with you or when there are no assets on the device.',
+    },
+    TR_WIPE_DEVICE_CHECKBOX_1_TITLE: {
+        id: 'TR_WIPE_DEVICE_CHECKBOX_1_TITLE',
+        defaultMessage: 'I understand this action deletes all data on the device',
+    },
+    TR_WIPE_DEVICE_CHECKBOX_1_DESCRIPTION: {
+        id: 'TR_WIPE_DEVICE_CHECKBOX_1_DESCRIPTION',
+        defaultMessage:
+            'Device will be completely wiped. All data and history will be deleted. You will need a recovery seed to recover your wallet.',
+    },
+    TR_WIPE_DEVICE_CHECKBOX_2_TITLE: {
+        id: 'TR_WIPE_DEVICE_CHECKBOX_2_TITLE',
+        defaultMessage: 'I understand this action does not affect my funds',
+    },
+    TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION: {
+        id: 'TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION',
+        defaultMessage:
+            'Your assets are safe only if you have created a recovery seed. Make sure you have your seed or you know where you keep it.',
+    },
+    TR_CANCEL: {
+        id: 'TR_CANCEL',
+        defaultMessage: 'Cancel',
+    },
 });
 
 export default definedMessages;

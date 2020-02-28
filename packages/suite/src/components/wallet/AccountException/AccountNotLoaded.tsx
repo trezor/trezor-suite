@@ -44,7 +44,7 @@ const AccountNotLoaded = (props: Props) => {
         <Wrapper
             title={<Translation {...messages.TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR} />}
             description="TODO: Error message from discovery field"
-            image={resolveStaticPath(`images/wallet/wallet-empty.svg`)}
+            image={<img alt="" src={resolveStaticPath(`images/wallet/wallet-empty.svg`)} />}
         >
             <Button variant="primary" icon="PLUS" isLoading={locked} onClick={restart}>
                 <Translation {...messages.TR_RETRY} />
