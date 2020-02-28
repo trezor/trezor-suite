@@ -2325,7 +2325,7 @@ const definedMessages = defineMessages({
     },
     TR_BACKSPACE: {
         id: 'TR_BACKSPACE',
-        defaultMessaga: 'Backspace',
+        defaultMessage: 'Backspace',
         description: 'Keyboard key',
     },
 });
