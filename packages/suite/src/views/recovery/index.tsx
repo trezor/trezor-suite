@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -6,13 +6,14 @@ import { bindActionCreators } from 'redux';
 import { Button, H2, P, colors, variables } from '@trezor/components';
 
 import { SelectWordCount, SelectRecoveryType, Error } from '@recovery-components';
-import { ProgressBar, Loading, Translation } from '@suite-components';
+import { ProgressBar, Loading, Translation, CheckItem, ExternalLink } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { InjectedModalApplicationProps, AppState, Dispatch } from '@suite-types';
 import { WordCount } from '@recovery-types';
 import messages from '@suite/support/messages';
 import { resolveStaticPath } from '@suite-utils/nextjs';
+import { URLS } from '@suite-constants';
 
 const Wrapper = styled(ModalWrapper)`
     min-width: 60vw;
@@ -50,7 +51,7 @@ const InfoBoxText = styled.div`
     width: 360px;
     flex-direction: column;
     text-align: left;
-    margin-left: 8px;
+    margin-left: 12px;
 `;
 const InfoBoxTitle = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -64,8 +65,8 @@ const InfoBoxDescription = styled.div`
 `;
 
 const Number = styled.div`
-    width: 15px;
-    height: 15px;
+    width: 16px;
+    height: 16px;
     background-color: ${colors.BLACK70};
     border-radius: 50%;
     color: ${colors.WHITE};
@@ -105,6 +106,7 @@ const Recovery = ({
     setStatus,
 }: Props) => {
     const model = device?.features?.major_version;
+    const [understood, setUnderstood] = useState(false);
 
     const onSetWordsCount = (count: WordCount) => {
         setWordsCount(count);
@@ -158,8 +160,26 @@ const Recovery = ({
                             </InfoBoxDescription>
                         </InfoBoxText>
                     </InfoBox>
-                    <StyledButton onClick={() => setStatus('select-word-count')}>
-                        Start
+
+                    <CheckItem
+                        title={<Translation {...messages.TR_DRY_RUN_CHECK_ITEM_TITLE} />}
+                        description={
+                            <Translation {...messages.TR_DRY_RUN_CHECK_ITEM_DESCRIPTION} />
+                        }
+                        isChecked={understood}
+                        link={
+                            <ExternalLink size="small" href={URLS.DRY_RUN_URL}>
+                                <Translation {...messages.TR_WHAT_IS_DRY_RUN} />
+                            </ExternalLink>
+                        }
+                        onClick={() => setUnderstood(!understood)}
+                    />
+
+                    <StyledButton
+                        onClick={() => setStatus('select-word-count')}
+                        isDisabled={!understood}
+                    >
+                        <Translation {...messages.TR_START} />
                     </StyledButton>
                     <Buttons>
                         <StyledButton
@@ -167,9 +187,7 @@ const Recovery = ({
                             variant="tertiary"
                             onClick={() => closeModalApp()}
                         >
-                            Cancel
-                            {/* waiting for RP to be merged */}
-                            {/* <Translation {...messsages.TR_CANCEL}/> */}
+                            <Translation {...messages.TR_CANCEL} />
                         </StyledButton>
                     </Buttons>
                 </>
@@ -216,7 +234,7 @@ const Recovery = ({
                             variant="tertiary"
                             onClick={() => closeModalApp()}
                         >
-                            Cancel
+                            <Translation {...messages.TR_CANCEL} />
                         </StyledButton>
                     </Buttons>
                 </>
@@ -234,7 +252,7 @@ const Recovery = ({
                             variant="tertiary"
                             onClick={() => closeModalApp()}
                         >
-                            Cancel
+                            <Translation {...messages.TR_CANCEL} />
                         </StyledButton>
                     </Buttons>
                 </>
@@ -251,7 +269,7 @@ const Recovery = ({
                             variant="tertiary"
                             onClick={() => closeModalApp()}
                         >
-                            Cancel
+                            <Translation {...messages.TR_CANCEL} />
                         </StyledButton>
                     </Buttons>
                 </>

@@ -1615,6 +1615,10 @@ const definedMessages = defineMessages({
         description: 'Button.',
         id: 'TR_START_RECOVERY',
     },
+    TR_START: {
+        defaultMessage: 'Start',
+        id: 'TR_START',
+    },
     TR_STATUS: {
         defaultMessage: 'Status',
         id: 'TR_STATUS',
@@ -2327,6 +2331,19 @@ const definedMessages = defineMessages({
         id: 'TR_BACKSPACE',
         defaultMessage: 'Backspace',
         description: 'Keyboard key',
+    },
+    TR_DRY_RUN_CHECK_ITEM_TITLE: {
+        id: 'TR_DRY_RUN_CHECK_ITEM_TITLE',
+        defaultMessage: 'I understand this is only check and it won’t affect my seed',
+    },
+    TR_DRY_RUN_CHECK_ITEM_DESCRIPTION: {
+        id: 'TR_DRY_RUN_CHECK_ITEM_DESCRIPTION',
+        defaultMessage:
+            'To learn more about why and how to do a backup seed, please visit our blog post where we explain the process.',
+    },
+    TR_WHAT_IS_DRY_RUN: {
+        id: 'TR_WHAT_IS_DRY_RUN',
+        defaultMessage: 'what is dry run',
     },
 });
 
