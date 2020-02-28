@@ -1267,7 +1267,7 @@ const definedMessages = defineMessages({
         id: 'TR_PASSPHRASE_TOO_LONG',
     },
     TR_PASSPHRASE_WALLET: {
-        defaultMessage: 'Passphrase wallet ({id})',
+        defaultMessage: 'Passphrase wallet #{id}',
         id: 'TR_PASSPHRASE_WALLET',
     },
     TR_PENDING: {
@@ -1774,9 +1774,9 @@ const definedMessages = defineMessages({
         defaultMessage: '(Unknown transaction)',
         id: 'TR_UNKNOWN_TRANSACTION',
     },
-    TR_UNKOWN_ERROR_SEE_CONSOLE: {
+    TR_UNKNOWN_ERROR_SEE_CONSOLE: {
         defaultMessage: 'Unknown error. See console logs for details.',
-        id: 'TR_UNKOWN_ERROR_SEE_CONSOLE',
+        id: 'TR_UNKNOWN_ERROR_SEE_CONSOLE',
     },
     TR_UNLOCK: {
         defaultMessage: 'Unlock',
@@ -1786,6 +1786,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Unreadable',
         description: 'Device status',
         id: 'TR_UNREADABLE',
+    },
+    TR_UNACQUIRED: {
+        defaultMessage: 'Unrecognized device',
+        description: 'Device status',
+        id: 'TR_UNACQUIRED',
     },
     TR_UNVERIFIED_ADDRESS_COMMA_CONNECT: {
         defaultMessage: 'Unverified address, connect your Trezor to verify it',
@@ -2194,6 +2199,49 @@ const definedMessages = defineMessages({
     TR_CURRENTLY_INSTALLED_TREZOR: {
         id: 'TR_CURRENTLY_INSTALLED_TREZOR',
         defaultMessage: 'Currently installed: Trezor Bridge {version}',
+    },
+    EVENT_DEVICE_CONNECT: {
+        id: 'EVENT_DEVICE_CONNECT',
+        defaultMessage: 'Device {label} connected',
+    },
+    EVENT_DEVICE_CONNECT_UNACQUIRED: {
+        id: 'EVENT_DEVICE_CONNECT_UNACQUIRED',
+        defaultMessage: '{label} connected',
+    },
+    EVENT_WALLET_CREATED: {
+        id: 'EVENT_WALLET_CREATED',
+        defaultMessage: '{walletLabel} created',
+    },
+    TR_WIPE_DEVICE_HEADING: {
+        id: 'TR_WIPE_DEVICE_HEADING',
+        defaultMessage: 'Before you wipe your device…',
+    },
+    TR_WIPE_DEVICE_TEXT: {
+        id: 'TR_WIPE_DEVICE_TEXT',
+        defaultMessage:
+            'Wiping the device removes all its content. Only wipe your device if you have your recovery seed with you or when there are no assets on the device.',
+    },
+    TR_WIPE_DEVICE_CHECKBOX_1_TITLE: {
+        id: 'TR_WIPE_DEVICE_CHECKBOX_1_TITLE',
+        defaultMessage: 'I understand this action deletes all data on the device',
+    },
+    TR_WIPE_DEVICE_CHECKBOX_1_DESCRIPTION: {
+        id: 'TR_WIPE_DEVICE_CHECKBOX_1_DESCRIPTION',
+        defaultMessage:
+            'Device will be completely wiped. All data and history will be deleted. You will need a recovery seed to recover your wallet.',
+    },
+    TR_WIPE_DEVICE_CHECKBOX_2_TITLE: {
+        id: 'TR_WIPE_DEVICE_CHECKBOX_2_TITLE',
+        defaultMessage: 'I understand this action does not affect my funds',
+    },
+    TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION: {
+        id: 'TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION',
+        defaultMessage:
+            'Your assets are safe only if you have created a recovery seed. Make sure you have your seed or you know where you keep it.',
+    },
+    TR_CANCEL: {
+        id: 'TR_CANCEL',
+        defaultMessage: 'Cancel',
     },
 });
 

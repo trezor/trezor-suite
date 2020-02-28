@@ -1,5 +1,8 @@
 import Backdrop from './Backdrop';
 import DeviceIcon from './images/DeviceIcon';
+import UniWarningImg from './images/UniWarningImg';
+import UniErrorImg from './images/UniErrorImg';
+import CheckItem from './CheckItem';
 import ExternalLink from './ExternalLink';
 import Preloader from './Preloader';
 import FormattedNumber from './FormattedNumber';
@@ -25,6 +28,7 @@ import { AccountLabeling, AddressLabeling, WalletLabeling } from './Labeling';
 export {
     Backdrop,
     DeviceIcon,
+    CheckItem,
     ExternalLink,
     Preloader,
     FormattedNumber,
@@ -47,4 +51,6 @@ export {
     AccountLabeling,
     AddressLabeling,
     WalletLabeling,
+    UniWarningImg,
+    UniErrorImg,
 };

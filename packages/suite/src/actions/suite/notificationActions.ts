@@ -5,6 +5,7 @@ import {
     ToastNotification,
     EventPayload,
     EventNotification,
+    NotificationEntry,
 } from '@suite-reducers/notificationReducer';
 
 export type NotificationActions =
@@ -17,11 +18,16 @@ export type NotificationActions =
           payload: EventNotification;
       }
     | {
-          type: typeof NOTIFICATION.CLOSE | typeof NOTIFICATION.REMOVE;
+          type: typeof NOTIFICATION.CLOSE;
           payload: number;
       }
     | {
+          type: typeof NOTIFICATION.REMOVE;
+          payload: NotificationEntry[] | NotificationEntry;
+      }
+    | {
           type: typeof NOTIFICATION.RESET_UNSEEN;
+          payload?: NotificationEntry[];
       };
 
 export const addToast = (payload: ToastPayload) => (dispatch: Dispatch, getState: GetState) => {
@@ -54,13 +60,14 @@ export const close = (id: number): NotificationActions => ({
     payload: id,
 });
 
-export const resetUnseen = (): NotificationActions => ({
+export const resetUnseen = (payload?: NotificationEntry[]): NotificationActions => ({
     type: NOTIFICATION.RESET_UNSEEN,
+    payload,
 });
 
-export const remove = (id: number): NotificationActions => ({
+export const remove = (payload: NotificationEntry[] | NotificationEntry): NotificationActions => ({
     type: NOTIFICATION.REMOVE,
-    payload: id,
+    payload,
 });
 
 // TODO: didnt touch it right now. imho not used anywhere now. relates to route handling probably.

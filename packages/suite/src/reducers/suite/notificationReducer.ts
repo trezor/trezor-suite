@@ -1,4 +1,5 @@
 import produce from 'immer';
+import { DEVICE } from 'trezor-connect';
 import { NOTIFICATION, SUITE } from '@suite-actions/constants';
 import { Action, TrezorDevice } from '@suite-types';
 
@@ -67,6 +68,11 @@ export type EventPayload = (
           descriptor: string;
           txid: string;
       }
+    | {
+          type: typeof DEVICE.CONNECT | typeof DEVICE.CONNECT_UNACQUIRED;
+          device: TrezorDevice;
+          needAttention?: boolean;
+      }
 ) &
     Options;
 
@@ -77,6 +83,27 @@ export type NotificationEntry = ToastNotification | EventNotification;
 
 export type State = NotificationEntry[];
 
+const resetUnseen = (draft: State, payload?: State) => {
+    if (!payload) {
+        draft.forEach(n => {
+            if (!n.seen) n.seen = true;
+        });
+    } else {
+        payload.forEach(p => {
+            const item = draft.find(n => n.id === p.id);
+            if (item) item.seen = true;
+        });
+    }
+};
+
+const remove = (draft: State, payload: State | NotificationEntry) => {
+    const arr = !Array.isArray(payload) ? [payload] : payload;
+    arr.forEach(item => {
+        const index = draft.findIndex(n => n.id === item.id);
+        draft.splice(index, 1);
+    });
+};
+
 export default function notification(state: State = [], action: Action): State {
     return produce(state, draft => {
         switch (action.type) {
@@ -86,21 +113,15 @@ export default function notification(state: State = [], action: Action): State {
                 break;
             case NOTIFICATION.CLOSE: {
                 const item = draft.find(n => n.id === action.payload);
-                if (item) {
-                    item.closed = true;
-                }
+                if (item) item.closed = true;
                 break;
             }
-            case NOTIFICATION.RESET_UNSEEN: {
-                draft.forEach(n => {
-                    if (!n.seen) n.seen = true;
-                });
+            case NOTIFICATION.RESET_UNSEEN:
+                resetUnseen(draft, action.payload);
                 break;
-            }
-            case NOTIFICATION.REMOVE: {
-                draft = draft.filter(n => n.id !== action.payload);
+            case NOTIFICATION.REMOVE:
+                remove(draft, action.payload);
                 break;
-            }
             // no default
         }
     });

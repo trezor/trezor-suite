@@ -21,8 +21,7 @@
         "strictNullChecks": true,
         "moduleResolution": "node",
         "jsx": "react",
-        "outDir": "lib",
-        "rootDir": "src"
+        "outDir": "lib"
     },
     "include": ["src/**/*"],
     "exclude": [
@@ -30,6 +29,7 @@
         "build",
         "lib",
         "dist",
+        // "src/components/**/*.stories.tsx",
         "scripts",
         "acceptance-tests",
         "webpack",

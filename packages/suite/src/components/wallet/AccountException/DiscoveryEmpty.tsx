@@ -33,7 +33,7 @@ const DiscoveryEmpty = (props: Props) => {
     return (
         <Wrapper
             title={<Translation {...messages.TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY} />}
-            image={resolveStaticPath(`images/suite/wallet-empty.svg`)}
+            image={<img alt="" src={resolveStaticPath(`images/suite/wallet-empty.svg`)} />}
         >
             <Button
                 variant="primary"

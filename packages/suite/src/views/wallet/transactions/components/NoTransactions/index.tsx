@@ -48,7 +48,12 @@ const ActionButton = styled(Button)`
     min-width: 160px;
 `;
 
-const NoTransactions = () => {
+interface Props {
+    receive: () => any;
+    buy: () => any;
+}
+
+const NoTransactions = ({ receive, buy }: Props) => {
     return (
         <Wrapper>
             <Content>
@@ -60,8 +65,12 @@ const NoTransactions = () => {
                 </Description>
                 <Image src={resolveStaticPath(`images/wallet/wallet-empty.svg`)} />
                 <Actions>
-                    <ActionButton variant="secondary">Receive BTC</ActionButton>
-                    <ActionButton variant="primary">Buy BTC</ActionButton>
+                    <ActionButton variant="secondary" onClick={receive}>
+                        <Translation {...messages.TR_RECEIVE} />
+                    </ActionButton>
+                    <ActionButton variant="primary" onClick={buy}>
+                        <Translation {...messages.TR_BUY} />
+                    </ActionButton>
                 </Actions>
             </Content>
         </Wrapper>

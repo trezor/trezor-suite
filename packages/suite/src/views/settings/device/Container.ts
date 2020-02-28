@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import * as routerActions from '@suite-actions/routerActions';
 import * as modalActions from '@suite-actions/modalActions';
-import { applySettings, changePin, wipeDevice } from '@settings-actions/deviceSettingsActions';
+import { applySettings, changePin } from '@settings-actions/deviceSettingsActions';
 
 import { AppState, Dispatch } from '@suite-types';
 
@@ -17,7 +17,6 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     applySettings: bindActionCreators(applySettings, dispatch),
     changePin: bindActionCreators(changePin, dispatch),
-    wipeDevice: bindActionCreators(wipeDevice, dispatch),
     goto: bindActionCreators(routerActions.goto, dispatch),
     openModal: bindActionCreators(modalActions.openModal, dispatch),
 });

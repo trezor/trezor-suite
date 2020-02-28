@@ -1,5 +1,6 @@
 import React from 'react';
 import { IconProps } from '@trezor/components';
+import { DEVICE } from 'trezor-connect';
 import { SUITE } from '@suite-actions/constants';
 import { NotificationEntry } from '@suite-reducers/notificationReducer';
 import messages from '@suite/support/messages';
@@ -225,13 +226,41 @@ export default (notification: NotificationEntry, View: React.ComponentType<ViewP
             });
 
         // Events:
+        case DEVICE.CONNECT:
+            return withAction(View, {
+                notification,
+                icon: 'INFO',
+                message: {
+                    ...messages.EVENT_DEVICE_CONNECT,
+                    values: {
+                        label: notification.device.label,
+                    },
+                },
+                actionLabel: messages.TR_SELECT_DEVICE,
+            });
+
+        case DEVICE.CONNECT_UNACQUIRED:
+            return withAction(View, {
+                notification,
+                icon: 'WARNING',
+                message: {
+                    ...messages.EVENT_DEVICE_CONNECT_UNACQUIRED,
+                    values: {
+                        label: messages.TR_UNACQUIRED,
+                    },
+                },
+                actionLabel: messages.TR_SOLVE_ISSUE,
+            });
+
         case SUITE.AUTH_DEVICE:
             return simple(View, {
                 notification,
                 icon: 'INFO',
                 message: {
-                    id: 'unknown',
-                    defaultMessage: 'Wallet created',
+                    ...messages.EVENT_WALLET_CREATED,
+                    values: {
+                        walletLabel: 'New wallet',
+                    },
                 },
             });
 

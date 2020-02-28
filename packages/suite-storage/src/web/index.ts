@@ -9,6 +9,7 @@ import {
     StoreValue,
     IDBPTransaction,
 } from 'idb';
+import { BroadcastChannel } from 'broadcast-channel';
 import { StorageUpdateMessage, StorageMessageEvent } from './types';
 
 // const VERSION = 1;

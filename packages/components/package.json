@@ -13,7 +13,9 @@
         "type-check": "tsc --project tsconfig.types.json",
         "type-check:watch": "yarn type-check -- --watch",
         "prepublishOnly": "npm run build:lib",
-        "test:unit": "jest"
+        "test:unit": "jest",
+        "storybook": "start-storybook -s ./public -p 9001 -c .storybook",
+        "storybook-build": "build-storybook -s ./public -c .storybook -o .build-storybook"
     },
     "dependencies": {
         "@tippy.js/react": "^3.1.1",
@@ -24,21 +26,35 @@
         "react-switch": "^5.0.1"
     },
     "devDependencies": {
+        "@storybook/addon-actions": "^5.3.14",
+        "@storybook/addon-centered": "^5.3.14",
+        "@storybook/addon-info": "5.3.14",
+        "@storybook/addon-knobs": "^5.3.14",
+        "@storybook/addon-links": "^5.3.14",
+        "@storybook/addon-viewport": "^5.3.14",
+        "@storybook/addons": "^5.3.14",
+        "@storybook/react": "^5.3.14",
+        "@types/randomcolor": "0.5.3",
+        "react": "16.9.0",
+        "regenerator-runtime": "0.13.3",
+        "react-dom": "16.9.0",
         "awesome-typescript-loader": "^5.2.1",
         "babel-jest": "^25.1.0",
         "babel-loader": "^8.0.6",
-        "babel-plugin-styled-components": "^1.10.6",
+        "babel-plugin-styled-components": "^1.10.7",
         "fs-extra": "^8.1.0",
         "npm-run-all": "^4.1.5",
+        "randomcolor": "^0.5.4",
         "react-docgen-typescript-loader": "^3.6.0",
         "start-server-and-test": "^1.10.8",
         "styled-components": "^4.3.2",
-        "stylelint": "13.0.0",
+        "stylelint": "13.2.0",
         "stylelint-config-recommended": "^3.0.0",
         "stylelint-config-styled-components": "^0.1.1",
         "stylelint-custom-processor-loader": "^0.6.0",
-        "stylelint-processor-styled-components": "^1.9.0",
-        "typescript-styled-plugin": "^0.15.0"
+        "stylelint-processor-styled-components": "^1.10.0",
+        "typescript-styled-plugin": "^0.15.0",
+        "webpack": "^4.41.6"
     },
     "peerDependencies": {
         "react": "16.9.0",
