@@ -42,9 +42,16 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
                 action={() => {
                     onSelect(false);
                 }}
-                title="Basic recovery"
+                title={<Translation {...messages.TR_BASIC_RECOVERY} />}
                 text={<Translation {...messages.TR_BASIC_RECOVERY_OPTION} />}
-                button="Select basic recovery"
+                button={
+                    <Translation
+                        {...messages.TR_SELECT_CONCRETE_RECOVERY_TYPE}
+                        values={{
+                            recoveryType: <Translation {...messages.TR_BASIC_RECOVERY} />,
+                        }}
+                    />
+                }
                 imgSrc="images/recovery/basic.svg"
             />
 
@@ -52,9 +59,16 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
                 action={() => {
                     onSelect(true);
                 }}
-                title="Advanced recovery"
+                title={<Translation {...messages.TR_ADVANCED_RECOVERY} />}
                 text={<Translation {...messages.TR_ADVANCED_RECOVERY_OPTION} />}
-                button="Select advanced recovery"
+                button={
+                    <Translation
+                        {...messages.TR_SELECT_CONCRETE_RECOVERY_TYPE}
+                        values={{
+                            recoveryType: <Translation {...messages.TR_ADVANCED_RECOVERY} />,
+                        }}
+                    />
+                }
                 imgSrc="images/recovery/advanced.svg"
             />
         </Wrapper>

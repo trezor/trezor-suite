@@ -143,7 +143,7 @@ const Recovery = ({
                                 <Translation {...messages.TR_SELECT_NUMBER_OF_WORDS} />
                             </InfoBoxTitle>
                             <InfoBoxDescription>
-                                <Translation {...messages.TR_YOU_EITHER_HAVE} />
+                                <Translation {...messages.TR_YOU_EITHER_HAVE_T1} />
                             </InfoBoxDescription>
                         </InfoBoxText>
                     </InfoBox>
@@ -180,19 +180,18 @@ const Recovery = ({
                     <H2>
                         <Translation {...messages.TR_CHECK_RECOVERY_SEED} />
                     </H2>
-                    <H2>Check recovery seed</H2>
                     <StyledP>
-                        Your wallet backup, the recovery seed, is entered entirely on the Trezor
-                        Model T, through the device screen. We avoid passing any of your sensitive
-                        information to a potentially insecure computer or web browser.
+                        <Translation {...messages.TR_CHECK_RECOVERY_SEED_DESC_T2} />
                     </StyledP>
 
                     <InfoBox>
                         <Number>1</Number>
                         <InfoBoxText>
-                            <InfoBoxTitle>Select number of words in your seed</InfoBoxTitle>
+                            <InfoBoxTitle>
+                                <Translation {...messages.TR_SELECT_NUMBER_OF_WORDS} />
+                            </InfoBoxTitle>
                             <InfoBoxDescription>
-                                You either have a seed containing 12, 18 or 24 words.
+                                <Translation {...messages.TR_YOU_EITHER_HAVE_T1} />
                             </InfoBoxDescription>
                         </InfoBoxText>
                     </InfoBox>
@@ -200,10 +199,11 @@ const Recovery = ({
                     <InfoBox>
                         <Number>2</Number>
                         <InfoBoxText>
-                            <InfoBoxTitle>Enter all words in the correct order</InfoBoxTitle>
+                            <InfoBoxTitle>
+                                <Translation {...messages.TR_ENTER_ALL_WORDS_IN_CORRECT} />
+                            </InfoBoxTitle>
                             <InfoBoxDescription>
-                                Using the touchscreen display you enter all the words in the correct
-                                order until completed.
+                                <Translation {...messages.TR_USING_TOUCHSCREEN} />
                             </InfoBoxDescription>
                         </InfoBoxText>
                     </InfoBox>
@@ -216,7 +216,7 @@ const Recovery = ({
                             variant="tertiary"
                             onClick={() => closeModalApp()}
                         >
-                            Cancel seed check
+                            Cancel
                         </StyledButton>
                     </Buttons>
                 </>
@@ -234,14 +234,16 @@ const Recovery = ({
                             variant="tertiary"
                             onClick={() => closeModalApp()}
                         >
-                            Cancel seed check
+                            Cancel
                         </StyledButton>
                     </Buttons>
                 </>
             )}
             {recovery.status === 'select-recovery-type' && (
                 <>
-                    <H2>Chose recovery type</H2>
+                    <H2>
+                        <Translation {...messages.TR_CHOSE_RECOVERY_TYPE} />
+                    </H2>
                     <SelectRecoveryType onSelect={(type: boolean) => onSetRecoveryType(type)} />
                     <Buttons>
                         <StyledButton
@@ -249,7 +251,7 @@ const Recovery = ({
                             variant="tertiary"
                             onClick={() => closeModalApp()}
                         >
-                            Cancel seed check
+                            Cancel
                         </StyledButton>
                     </Buttons>
                 </>
@@ -262,9 +264,7 @@ const Recovery = ({
                         <>
                             {model === 2 && (
                                 <StyledP>
-                                    All the words are entered only on the device as a extra security
-                                    feature. Please enter all the words in the correct order
-                                    carefully.
+                                    <Translation {...messages.TR_ALL_THE_WORDS} />
                                 </StyledP>
                             )}
                             {modal}
@@ -274,21 +274,31 @@ const Recovery = ({
             )}
             {recovery.status === 'finished' && !recovery.error && (
                 <>
-                    <H2>Great success.</H2>
-                    <StyledP>Seed you have entered now matches the seed in device</StyledP>
+                    <H2>
+                        <Translation {...messages.TR_SEED_CHECK_SUCCESS_TITLE} />
+                    </H2>
+                    <StyledP>
+                        <Translation {...messages.TR_SEED_CHECK_SUCCESS_DESC} />
+                    </StyledP>
                     <img alt="" src={resolveStaticPath('images/suite/uni-success.svg')} />
                     <Buttons>
-                        <StyledButton onClick={() => closeModalApp()}>Close</StyledButton>
+                        <StyledButton onClick={() => closeModalApp()}>
+                            <Translation {...messages.TR_CLOSE} />
+                        </StyledButton>
                     </Buttons>
                 </>
             )}
 
             {recovery.status === 'finished' && recovery.error && (
                 <>
-                    <H2>Seed check failed</H2>
+                    <H2>
+                        <Translation {...messages.TR_SEED_CHECK_FAIL_TITLE} />
+                    </H2>
                     <Error error={recovery.error} />
                     <Buttons>
-                        <StyledButton onClick={() => closeModalApp()}>Close</StyledButton>
+                        <StyledButton onClick={() => closeModalApp()}>
+                            <Translation {...messages.TR_CLOSE} />
+                        </StyledButton>
                     </Buttons>
                 </>
             )}

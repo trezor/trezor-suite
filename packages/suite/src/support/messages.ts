@@ -166,11 +166,17 @@ const definedMessages = defineMessages({
         defaultMessage: '{networkName} Account {accountIndex} public key (XPUB)',
         id: 'TR_XPUB_MODAL_TITLE',
     },
+    TR_ADVANCED_RECOVERY: {
+        defaultMessage: 'advanced recovery',
+        description: 'Enter words via obfuscated pin matrix, recovery takes about 5 minutes.',
+        id: 'TR_ADVANCED_RECOVERY',
+    },
     TR_ADVANCED_RECOVERY_OPTION: {
-        defaultMessage: 'Advanced recovery (5 minutes)',
+        defaultMessage: 'Advanced recovery',
         description: 'Button for selecting advanced recovery option',
         id: 'TR_ADVANCED_RECOVERY_OPTION',
     },
+
     TR_ADVANCED_SETTINGS: {
         defaultMessage: 'Advanced settings',
         description: 'Shows advanced sending form',
@@ -277,10 +283,20 @@ const definedMessages = defineMessages({
         description: 'Explanation what recovery seed is',
         id: 'TR_BACKUP_SUBHEADING_1',
     },
+    TR_BASIC_RECOVERY: {
+        defaultMessage: 'basic recovery',
+        id: 'TR_BASIC_RECOVERY',
+    },
     TR_BASIC_RECOVERY_OPTION: {
-        defaultMessage: 'Basic recovery (2 minutes)',
+        defaultMessage: 'Enter words on your computer, recovery takes about 2 minutes.',
         description: 'Enter words on your computer, recovery takes about 2 minutes.',
         id: 'TR_BASIC_RECOVERY_OPTION',
+    },
+    TR_SELECT_CONCRETE_RECOVERY_TYPE: {
+        id: 'TR_SELECT_CONCRETE_RECOVERY_TYPE',
+        defaultMessage: 'Select {recoveryType}',
+        description:
+            '{recoveryType} stands for either TR_BASIC_RECOVERY or TR_ADVANCED_RECOVERY. Used as button description',
     },
     TR_BCH_ADDRESS_INFO: {
         defaultMessage:
@@ -2257,9 +2273,13 @@ const definedMessages = defineMessages({
         id: 'TR_SELECT_NUMBER_OF_WORDS',
         defaultMessage: 'Select number of words in your seed.',
     },
-    TR_YOU_EITHER_HAVE: {
-        id: 'TR_YOU_EITHER_HAVE',
+    TR_YOU_EITHER_HAVE_T1: {
+        id: 'TR_YOU_EITHER_HAVE_T1',
         defaultMessage: 'You either have a seed containing 12, 18 or 24 words. ',
+    },
+    TR_YOU_EITHER_HAVE_T2: {
+        id: 'TR_YOU_EITHER_HAVE_T2',
+        defaultMessage: 'You either have a seed containing 12, 18, 24, 33 words. ',
     },
     TR_ENTER_ALL_WORDS_IN_CORRECT: {
         id: 'TR_ENTER_ALL_WORDS_IN_CORRECT',
@@ -2267,8 +2287,40 @@ const definedMessages = defineMessages({
     },
     TR_ON_YOUR_COMPUTER_ENTER: {
         id: 'TR_ON_YOUR_COMPUTER_ENTER',
-        defaultMessge:
+        defaultMessage:
             'On your computer enter each word carefully according to the order showed on device.',
+    },
+    TR_CHECK_RECOVERY_SEED_DESC_T2: {
+        id: 'TR_CHECK_RECOVERY_SEED_DESC_T2',
+        defaultMessage:
+            'Your wallet backup, the recovery seed, is entered entirely on the Trezor Model T, through the device screen. We avoid passing any of your sensitive information to a potentially insecure computer or web browser.',
+    },
+    TR_USING_TOUCHSCREEN: {
+        id: 'TR_USING_TOUCHSCREEN',
+        defaultMessage:
+            'Using the touchscreen display you enter all the words in the correct order until completed.',
+    },
+    TR_CHOSE_RECOVERY_TYPE: {
+        id: 'TR_CHOSE_RECOVERY_TYPE',
+        defaultMessage: 'Chose recovery type',
+    },
+    TR_ALL_THE_WORDS: {
+        id: 'TR_ALL_THE_WORDS',
+        defaultMessage:
+            'All the words are entered only on the device as a extra security feature. Please enter all the words in the correct order carefully.',
+    },
+    TR_SEED_CHECK_SUCCESS_TITLE: {
+        id: 'TR_SEED_CHECK_SUCCESS_TITLE',
+        defaultMessage: 'Backup seed successfully checked!',
+    },
+    TR_SEED_CHECK_SUCCESS_DESC: {
+        id: 'TR_SEED_CHECK_SUCCESS_DESC',
+        defaultMessage:
+            'Your seed is valid and has just been successfully checked. Please take great care of it and/or hide it back where you are goint to find it.',
+    },
+    TR_SEED_CHECK_FAIL_TITLE: {
+        id: 'TR_SEED_CHECK_FAIL_TITLE',
+        defaultMessage: 'Seed check failed',
     },
 });
 

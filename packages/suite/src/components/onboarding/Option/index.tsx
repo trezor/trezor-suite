@@ -32,6 +32,7 @@ const Image = styled.img``;
 
 const Title = styled.div`
     font-size: ${FONT_SIZE.NORMAL};
+    text-transform: capitalize;
 `;
 
 const Text = styled.div`
