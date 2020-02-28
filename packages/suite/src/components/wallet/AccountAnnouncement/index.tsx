@@ -20,17 +20,17 @@ const Announcement = (props: Props) => {
             const bigBalance = new Bignumber(account.availableBalance);
             const bigReserve = new Bignumber(account.misc.reserve);
             if (bigBalance.isLessThan(bigReserve)) {
-                notifications.push(<XRPReserve reserve={account.misc.reserve} />);
+                notifications.push(<XRPReserve key="xrp" reserve={account.misc.reserve} />);
             }
         }
         if (account.symbol === 'ltc') {
-            notifications.push(<LTCAddresses />);
+            notifications.push(<LTCAddresses key="ltc" />);
         }
         if (account.symbol === 'bch') {
-            notifications.push(<BCHAddresses />);
+            notifications.push(<BCHAddresses key="bch" />);
         }
         if (account.imported) {
-            notifications.push(<AccountImported />);
+            notifications.push(<AccountImported key="imported" />);
         }
     }
 
