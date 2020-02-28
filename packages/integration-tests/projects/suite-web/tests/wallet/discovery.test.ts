@@ -17,10 +17,10 @@ describe.skip('Discovery', () => {
         cy.visit('/settings/wallet');
         cy.passThroughInitialRun();
         cy.getTestElement('@suite/loading').should('not.be.visible');
-        cy.getTestElement('@settings/wallet/coins-group/mainnet/toggle-all')
-            .click()
-            .click();
-        cy.getTestElement('@settings/wallet/coins-group/testnet/toggle-all').click({ force: true });
+        cy.getTestElement('@settings/wallet/coins-group/mainnet/activate-all').click();
+        cy.getTestElement('@settings/wallet/coins-group/testnet/activate-all').click({
+            force: true,
+        });
 
         cy.getTestElement('@suite/menu/suite-index').click({ force: true });
         cy.log('all available networks should return something from discovery');

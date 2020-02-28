@@ -50,32 +50,6 @@ export default [
         },
     },
     {
-        description: 'toggleGroupCoinsVisibility - show all ethereum like',
-        initialState: { enabledNetworks: [] },
-        action: () =>
-            walletSettingsActions.toggleGroupCoinsVisibility(n => n.networkType === 'ethereum'),
-        result: {
-            enabledNetworks: ['eth', 'etc', 'trop'],
-        },
-    },
-    {
-        description: 'toggleGroupCoinsVisibility - hide all ethereum like',
-        initialState: { enabledNetworks: ['btc', 'eth'] },
-        action: () =>
-            walletSettingsActions.toggleGroupCoinsVisibility(n => n.networkType === 'ethereum'),
-        result: {
-            enabledNetworks: ['btc'],
-        },
-    },
-    {
-        description: 'toggleGroupCoinsVisibility - hide all (no filter provided)',
-        initialState: { enabledNetworks: ['btc', 'eth'] },
-        action: () => walletSettingsActions.toggleGroupCoinsVisibility(undefined),
-        result: {
-            enabledNetworks: [],
-        },
-    },
-    {
         description: 'setLocalCurrency',
         initialState: { localCurrency: 'eur' },
         action: () => walletSettingsActions.setLocalCurrency('usd'),
