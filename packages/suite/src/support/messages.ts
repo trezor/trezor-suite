@@ -2235,6 +2235,41 @@ const definedMessages = defineMessages({
         id: 'TR_CANCEL',
         defaultMessage: 'Cancel',
     },
+    TR_FOLLOW_INSTRUCTIONS_ON_DEVICE: {
+        id: 'TR_FOLLOW_INSTRUCTIONS_ON_DEVICE',
+        defaultMessage: 'Follow instructions on your device',
+    },
+    TR_ADVANCED_RECOVERY_TEXT: {
+        id: 'TR_ADVANCED_RECOVERY_TEXT',
+        defaultMessage:
+            'Words need to be entered according to the matrix on device but clicking on buttons below.',
+    },
+    TR_ADVANCED_RECOVERY_NOT_SURE: {
+        id: 'TR_ADVANCED_RECOVERY_LEARN_MORE',
+        defaultMessage: 'Not sure how advanced method works?',
+    },
+    TR_CHECK_RECOVERY_SEED_DESC_T1: {
+        id: 'TR_CHECK_RECOVERY_SEED_DESC',
+        defaultMessage:
+            'Your wallet backup, the recovery seed, is entered on your computer (host) and your device shows which word to type. You will also be asked to enter words not in your seed, that is a security meassure to ensure nobody can read what key is being pressed.',
+    },
+    TR_SELECT_NUMBER_OF_WORDS: {
+        id: 'TR_SELECT_NUMBER_OF_WORDS',
+        defaultMessage: 'Select number of words in your seed.',
+    },
+    TR_YOU_EITHER_HAVE: {
+        id: 'TR_YOU_EITHER_HAVE',
+        defaultMessage: 'You either have a seed containing 12, 18 or 24 words. ',
+    },
+    TR_ENTER_ALL_WORDS_IN_CORRECT: {
+        id: 'TR_ENTER_ALL_WORDS_IN_CORRECT',
+        defaultMessage: 'Enter all words in the correct order',
+    },
+    TR_ON_YOUR_COMPUTER_ENTER: {
+        id: 'TR_ON_YOUR_COMPUTER_ENTER',
+        defaultMessge:
+            'On your computer enter each word carefully according to the order showed on device.',
+    },
 });
 
 export default definedMessages;

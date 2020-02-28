@@ -130,28 +130,31 @@ const Recovery = ({
 
             {recovery.status === 'initial' && model === 1 && (
                 <>
-                    <H2>Check recovery seed</H2>
+                    <H2>
+                        <Translation {...messages.TR_CHECK_RECOVERY_SEED} />
+                    </H2>
                     <StyledP>
-                        Your wallet backup, the recovery seed, is entered entirely on the Trezor
-                        Model T, through the device screen. We avoid passing any of your sensitive
-                        information to a potentially insecure computer or web browser.
+                        <Translation {...messages.TR_CHECK_RECOVERY_SEED_DESC_T1} />
                     </StyledP>
                     <InfoBox>
                         <Number>1</Number>
                         <InfoBoxText>
-                            <InfoBoxTitle>Select number of words in your seed</InfoBoxTitle>
+                            <InfoBoxTitle>
+                                <Translation {...messages.TR_SELECT_NUMBER_OF_WORDS} />
+                            </InfoBoxTitle>
                             <InfoBoxDescription>
-                                You either have a seed containing 12, 18 or 24 words.
+                                <Translation {...messages.TR_YOU_EITHER_HAVE} />
                             </InfoBoxDescription>
                         </InfoBoxText>
                     </InfoBox>
                     <InfoBox>
                         <Number>2</Number>
                         <InfoBoxText>
-                            <InfoBoxTitle>Enter all words in the correct order</InfoBoxTitle>
+                            <InfoBoxTitle>
+                                <Translation {...messages.TR_ENTER_ALL_WORDS_IN_CORRECT} />
+                            </InfoBoxTitle>
                             <InfoBoxDescription>
-                                Using the touchscreen display you enter all the words in the correct
-                                order until completed.
+                                <Translation {...messages.TR_ON_YOUR_COMPUTER_ENTER} />
                             </InfoBoxDescription>
                         </InfoBoxText>
                     </InfoBox>
@@ -174,6 +177,9 @@ const Recovery = ({
 
             {recovery.status === 'initial' && model === 2 && (
                 <>
+                    <H2>
+                        <Translation {...messages.TR_CHECK_RECOVERY_SEED} />
+                    </H2>
                     <H2>Check recovery seed</H2>
                     <StyledP>
                         Your wallet backup, the recovery seed, is entered entirely on the Trezor
@@ -218,7 +224,9 @@ const Recovery = ({
 
             {recovery.status === 'select-word-count' && (
                 <>
-                    <H2>Select number of words</H2>
+                    <H2>
+                        <Translation {...messages.TR_SELECT_NUMBER_OF_WORDS} />
+                    </H2>
                     <SelectWordCount onSelect={(count: WordCount) => onSetWordsCount(count)} />
                     <Buttons>
                         <StyledButton
