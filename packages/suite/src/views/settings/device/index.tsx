@@ -49,15 +49,7 @@ const Col = styled.div`
     flex-direction: column;
 `;
 
-const Settings = ({
-    device,
-    locks,
-    applySettings,
-    changePin,
-    wipeDevice,
-    openModal,
-    goto,
-}: Props) => {
+const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     const [label, setLabel] = useState('');
     const [customHomescreen, setCustomHomescreen] = useState('');
@@ -408,10 +400,14 @@ const Settings = ({
                     />
                     <ActionColumn>
                         <ActionButton
+                            onClick={() =>
+                                openModal({
+                                    type: 'wipe-device',
+                                })
+                            }
                             variant="danger"
-                            onClick={() => wipeDevice()}
                             isDisabled={uiLocked}
-                            data-test="@settings/device/wipe-button"
+                            data-test="@settings/device/open-wipe-modal-button"
                         >
                             <Translation>
                                 {messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}

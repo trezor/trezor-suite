@@ -42,7 +42,7 @@ const AccountNotEnabled = (props: Props) => {
                     values={{ networkName: network.name }}
                 />
             }
-            image={resolveStaticPath(`images/wallet/wallet-empty.svg`)}
+            image={<img alt="" src={resolveStaticPath(`images/wallet/wallet-empty.svg`)} />}
         >
             <Button
                 variant="primary"
