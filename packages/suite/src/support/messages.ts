@@ -2187,6 +2187,14 @@ const definedMessages = defineMessages({
         id: 'TR_DISCREET_TOOLTIP',
         defaultMessage: '[FIX THIS TEXT] This is a descreeeet mode',
     },
+    TR_TREZOR_BRIDGE_DOWNLOAD: {
+        id: 'TR_TREZOR_BRIDGE_DOWNLOAD',
+        defaultMessage: 'Trezor Bridge Download',
+    },
+    TR_CURRENTLY_INSTALLED_TREZOR: {
+        id: 'TR_CURRENTLY_INSTALLED_TREZOR',
+        defaultMessage: 'Currently installed: Trezor Bridge {version}',
+    },
 });
 
 export default definedMessages;

@@ -151,12 +151,17 @@ const InstallBridge = (props: Props) => {
                 <title>Download Bridge | Trezor Suite</title>
             </Head>
             <Content>
-                <TitleHeader>Trezor Bridge Download</TitleHeader>
+                <TitleHeader>
+                    <Translation {...messages.TR_TREZOR_BRIDGE_DOWNLOAD} />
+                </TitleHeader>
                 <Description size="small">
                     <Translation {...messages.TR_NEW_COMMUNICATION_TOOL} />
                 </Description>
                 <Version show={!!data.currentVersion}>
-                    Currently installed: Trezor Bridge {data.currentVersion}
+                    <Translation
+                        {...messages.TR_CURRENTLY_INSTALLED_TREZOR}
+                        values={{ version: data.currentVersion }}
+                    />
                 </Version>
                 <Image src={resolveStaticPath('images/suite/t-bridge-check.svg')} />
                 {isLoading ? (
