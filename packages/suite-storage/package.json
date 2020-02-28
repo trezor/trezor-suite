@@ -19,8 +19,8 @@
     "react-native": "./lib/native/index.js",
     "browser": "./lib/web/index.js",
     "dependencies": {
+        "broadcast-channel": "^3.0.5",
         "idb": "^4.0.5"
     },
-    "devDependencies": {
-    }
+    "devDependencies": {}
 }
