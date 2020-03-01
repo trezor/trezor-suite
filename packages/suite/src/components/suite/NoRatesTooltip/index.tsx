@@ -15,16 +15,19 @@ const NoRatesMessage = styled.div`
     color: ${colors.BLACK50};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
+    text-transform: none;
 `;
 
 interface Props extends Partial<typeof Tooltip> {
     customText?: React.ReactNode;
+    iconOnly?: boolean;
     className?: string;
 }
 
-const NoRatesTooltip = ({ customText, className, ...props }: Props) => (
+const NoRatesTooltip = ({ customText, iconOnly, className, ...props }: Props) => (
     <NoRatesMessage className={className}>
-        {customText ? <>{customText}</> : 'No data available'}
+        {!iconOnly && customText && <>{customText}</>}
+        {!iconOnly && !customText && 'No data available'}
         <Tooltip
             maxWidth={285}
             placement="top"
