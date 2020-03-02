@@ -45,6 +45,7 @@ const AppWrapper = styled.div`
 const MaxWithWrapper = styled.div<{ withMenu: boolean }>`
     max-width: 1024px;
     max-width: ${props => (props.withMenu ? '786px' : '1024px')};
+    height: 100%;
 `;
 
 const mapStateToProps = (state: AppState) => ({
