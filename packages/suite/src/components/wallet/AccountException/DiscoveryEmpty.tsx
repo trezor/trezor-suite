@@ -43,7 +43,7 @@ const DiscoveryEmpty = (props: Props) => {
                 isDisabled={disabled}
                 onClick={() => props.goto('settings-wallet')}
             >
-                Coin settings
+                <Translation {...messages.TR_COIN_SETTINGS} />
             </Button>
             <Button
                 variant="primary"
