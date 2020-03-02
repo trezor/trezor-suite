@@ -16,6 +16,7 @@ import NETWORKS from '@wallet-config/networks';
 import BlockbookWorker from '@trezor/blockchain-link/build/web/blockbook-worker';
 import { AccountTransaction } from 'trezor-connect';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import { subWeeks } from 'date-fns';
 
 export type FiatRateActions =
     | {
@@ -305,6 +306,32 @@ export const fetchFiatRatesForTxs = (account: Account, txs: AccountTransaction[]
         console.log('fetchFiatRatesForTx', error);
         console.log('txs', txs);
         console.log('timestamps', timestamps);
+    }
+};
+
+export const fetchAccountHistory = async (account: Account, weeks: number) => {
+    // TODO: move out of actions?
+    const secondsInDay = 3600 * 24;
+    const secondsInMonth = secondsInDay * 30;
+
+    const startDate = subWeeks(new Date(), weeks);
+    const endDate = new Date();
+    try {
+        const blockchainLink = blockchainLinks[account.symbol as Network['symbol']];
+        const response = blockchainLink
+            ? await blockchainLink.getAccountBalanceHistory({
+                  descriptor: account.descriptor,
+                  from: Math.floor(startDate.getTime() / 1000),
+                  to: Math.floor(endDate.getTime() / 1000),
+                  groupBy: weeks >= 52 ? secondsInMonth : secondsInDay,
+              })
+            : null;
+        if (response) {
+            return response;
+        }
+        return null;
+    } catch (error) {
+        console.log('fetchAccountHistory', error);
     }
 };
 

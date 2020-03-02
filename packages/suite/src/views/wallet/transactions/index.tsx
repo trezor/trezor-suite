@@ -9,6 +9,7 @@ import TransactionList from './components/TransactionList';
 import messages from '@suite/support/messages';
 import NoTransactions from './components/NoTransactions';
 import PricePanel from './components/PricePanel';
+import TransactionSummary from './components/TransactionSummary';
 
 import { Props } from './Container';
 
@@ -61,15 +62,18 @@ export default (props: Props) => {
             )}
             {accountTransactions.length === 0 && !transactions.isLoading && <NoTransactions />}
             {accountTransactions.length > 0 && (
-                <TransactionList
-                    explorerUrl={network.explorer.tx}
-                    transactions={accountTransactions}
-                    currentPage={selectedPage}
-                    totalPages={total}
-                    onPageSelected={onPageSelected}
-                    perPage={SETTINGS.TXS_PER_PAGE}
-                    symbol={account.symbol}
-                />
+                <>
+                    <TransactionSummary account={account} />
+                    <TransactionList
+                        explorerUrl={network.explorer.tx}
+                        transactions={accountTransactions}
+                        currentPage={selectedPage}
+                        totalPages={total}
+                        onPageSelected={onPageSelected}
+                        perPage={SETTINGS.TXS_PER_PAGE}
+                        symbol={account.symbol}
+                    />
+                </>
             )}
         </WalletLayout>
     );
