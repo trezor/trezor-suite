@@ -1,6 +1,6 @@
 import { ICONS } from '../../components/Icon/icons';
 import { ReactNode } from 'react';
-import { COINS } from '../../components/CoinLogo/coins';
+import { COINS } from '../../components/logos/CoinLogo/coins';
 
 export type TextAlign = 'left' | 'center' | 'right';
 

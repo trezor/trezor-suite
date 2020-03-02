@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { P, Switch, Icon, variables, colors, CoinLogo } from '@trezor/components';
-import { Translation, Link } from '@suite-components';
+import { P, Switch, Icon, variables, colors, CoinLogo, Button } from '@trezor/components';
+import { Translation, ExternalLink } from '@suite-components';
 import messages from '@suite/support/messages';
 import { SettingsLayout } from '@settings-components';
 import { AppState, Dispatch } from '@suite-types';
@@ -11,20 +11,6 @@ import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { Network, ExternalNetwork } from '@wallet-types';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { SectionHeader, Section, ActionColumn, Row } from '@suite-components/Settings';
-
-const mapStateToProps = (state: AppState) => ({
-    wallet: state.wallet,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    changeCoinVisibility: bindActionCreators(walletSettingsActions.changeCoinVisibility, dispatch),
-    toggleGroupCoinsVisibility: bindActionCreators(
-        walletSettingsActions.toggleGroupCoinsVisibility,
-        dispatch,
-    ),
-});
-
-export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const Header = styled.div`
     display: flex;
@@ -40,12 +26,8 @@ const HeaderLeft = styled.div`
     padding-right: 4%;
 `;
 
-const ToggleAll = styled.div`
-    cursor: pointer;
-    min-width: 100px;
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.BLACK0};
-    text-align: right;
+const ToggleButtons = styled.div`
+    display: flex;
 `;
 
 const CoinWrapper = styled.div`
@@ -99,7 +81,7 @@ const CoinRow = styled(Row)`
     }
 `;
 
-const StyledLink = styled(Link)`
+const StyledLink = styled(ExternalLink)`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -107,7 +89,8 @@ type FilterFn = (n: Network) => boolean;
 interface CoinsGroupProps {
     label: React.ReactNode;
     description?: React.ReactNode;
-    onToggleAllFn: (filterFn: FilterFn) => void;
+    onActivateAll: () => void;
+    onDeactivateAll: () => void;
     onToggleOneFn: (symbol: Network['symbol'], visible: boolean) => void;
     filterFn: FilterFn;
     enabledNetworks: Network['symbol'][];
@@ -117,7 +100,8 @@ interface CoinsGroupProps {
 const CoinsGroup = ({
     label,
     description,
-    onToggleAllFn,
+    onActivateAll,
+    onDeactivateAll,
     onToggleOneFn,
     filterFn,
     enabledNetworks,
@@ -129,16 +113,28 @@ const CoinsGroup = ({
                 <SectionHeader>{label}</SectionHeader>
                 {description && <P size="tiny">{description}</P>}
             </HeaderLeft>
-            <ToggleAll
-                onClick={() => onToggleAllFn(filterFn)}
-                data-test={`@settings/wallet/coins-group/${props.type}/toggle-all`}
-            >
-                {NETWORKS.filter(filterFn).some(n => enabledNetworks.includes(n.symbol)) ? (
-                    <Translation {...messages.TR_DEACTIVATE_ALL} />
-                ) : (
+            <ToggleButtons>
+                <Button
+                    isDisabled={NETWORKS.filter(filterFn).length === enabledNetworks.length}
+                    variant="tertiary"
+                    size="small"
+                    icon="CHECK"
+                    onClick={() => onActivateAll()}
+                    data-test={`@settings/wallet/coins-group/${props.type}/activate-all`}
+                >
                     <Translation {...messages.TR_ACTIVATE_ALL} />
-                )}
-            </ToggleAll>
+                </Button>
+                <Button
+                    isDisabled={enabledNetworks.length === 0}
+                    variant="tertiary"
+                    size="small"
+                    icon="CROSS"
+                    onClick={() => onDeactivateAll()}
+                    data-test={`@settings/wallet/coins-group/${props.type}/deactivate-all`}
+                >
+                    <Translation {...messages.TR_DEACTIVATE_ALL} />
+                </Button>
+            </ToggleButtons>
         </Header>
 
         <Section>
@@ -163,16 +159,39 @@ const CoinsGroup = ({
     </CoinsGroupWrapper>
 );
 
+const mapStateToProps = (state: AppState) => ({
+    wallet: state.wallet,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    changeCoinVisibility: bindActionCreators(walletSettingsActions.changeCoinVisibility, dispatch),
+    changeNetworks: bindActionCreators(walletSettingsActions.changeNetworks, dispatch),
+});
+
+export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+
 const Settings = (props: Props) => {
     const { enabledNetworks } = props.wallet.settings;
 
-    const baseNetworksFilterFn = (n: Network) => {
+    const mainnetNetworksFilterFn = (n: Network) => {
         return !n.accountType && !n.testnet;
     };
 
     const testnetNetworksFilterFn = (n: Network) => {
         return !n.accountType && 'testnet' in n && n.testnet === true;
     };
+
+    const enabledMainnetNetworks: Network['symbol'][] = [];
+    const enabledTestnetNetworks: Network['symbol'][] = [];
+    enabledNetworks.forEach(en => {
+        const network = NETWORKS.find(n => n.symbol === en);
+        if (!network) return;
+        if (network.testnet) {
+            enabledTestnetNetworks.push(network.symbol);
+        } else {
+            enabledMainnetNetworks.push(network.symbol);
+        }
+    });
 
     return (
         <SettingsLayout>
@@ -182,20 +201,32 @@ const Settings = (props: Props) => {
 
             <CoinsGroup
                 label={<Translation>{messages.TR_COINS}</Translation>}
-                enabledNetworks={enabledNetworks}
-                filterFn={baseNetworksFilterFn}
+                enabledNetworks={enabledMainnetNetworks}
+                filterFn={mainnetNetworksFilterFn}
                 onToggleOneFn={props.changeCoinVisibility}
-                onToggleAllFn={props.toggleGroupCoinsVisibility}
+                onActivateAll={() =>
+                    props.changeNetworks([
+                        ...enabledTestnetNetworks,
+                        ...NETWORKS.filter(mainnetNetworksFilterFn).map(n => n.symbol),
+                    ])
+                }
+                onDeactivateAll={() => props.changeNetworks(enabledTestnetNetworks)}
                 type="mainnet"
             />
 
             <CoinsGroup
                 label={<Translation>{messages.TR_TESTNET_COINS}</Translation>}
                 description={<Translation>{messages.TR_TESTNET_COINS_EXPLAINED}</Translation>}
-                enabledNetworks={enabledNetworks}
+                enabledNetworks={enabledTestnetNetworks}
                 filterFn={testnetNetworksFilterFn}
                 onToggleOneFn={props.changeCoinVisibility}
-                onToggleAllFn={props.toggleGroupCoinsVisibility}
+                onActivateAll={() =>
+                    props.changeNetworks([
+                        ...enabledMainnetNetworks,
+                        ...NETWORKS.filter(testnetNetworksFilterFn).map(n => n.symbol),
+                    ])
+                }
+                onDeactivateAll={() => props.changeNetworks(enabledMainnetNetworks)}
                 type="testnet"
             />
 

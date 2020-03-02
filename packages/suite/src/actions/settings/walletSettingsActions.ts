@@ -1,6 +1,5 @@
 import { Dispatch, GetState } from '@suite-types';
 import { WALLET_SETTINGS } from './constants';
-import { NETWORKS } from '@wallet-config';
 import { Network, ExternalNetwork } from '@wallet-types';
 
 export type WalletSettingsActions =
@@ -37,23 +36,6 @@ export const changeCoinVisibility = (symbol: Network['symbol'], shouldBeVisible:
     dispatch({
         type: WALLET_SETTINGS.CHANGE_NETWORKS,
         payload: enabledNetworks,
-    });
-};
-
-export const toggleGroupCoinsVisibility = (
-    filterFn?: (network: Network) => boolean | undefined,
-) => (dispatch: Dispatch, getState: GetState) => {
-    const { enabledNetworks } = getState().wallet.settings;
-    const matchedNetworks = filterFn ? NETWORKS.filter(filterFn) : NETWORKS;
-
-    const atLeastOneChecked = matchedNetworks.some(m => enabledNetworks.includes(m.symbol));
-    const nextEnabledNetworks = atLeastOneChecked
-        ? enabledNetworks.filter(en => !matchedNetworks.some(m => m.symbol === en))
-        : [...enabledNetworks, ...matchedNetworks.map(m => m.symbol)];
-
-    return dispatch({
-        type: WALLET_SETTINGS.CHANGE_NETWORKS,
-        payload: Array.from(new Set(nextEnabledNetworks)),
     });
 };
 

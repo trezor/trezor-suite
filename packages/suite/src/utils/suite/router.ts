@@ -116,9 +116,6 @@ export const getRoute = (name: Route['name'], params?: RouteParams) => {
     return route.pattern;
 };
 
-// Check if the URL/route points to an in-app page
-export const isInternalRoute = (url: string) => !!findRoute(url);
-
 // Used in @suite-native routerActions
 export const getTopLevelRoute = (url: string) => {
     if (typeof url !== 'string') return;

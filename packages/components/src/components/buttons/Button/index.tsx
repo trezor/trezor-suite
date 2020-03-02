@@ -2,9 +2,8 @@ import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { Icon } from '../../Icon';
 import { IconType, ButtonVariant, ButtonSize } from '../../../support/types';
-import colors from '../../../config/colors';
-import { FONT_SIZE } from '../../../config/variables';
-import FluidSpinner from '../../FluidSpinner';
+import { colors, variables } from '../../../config';
+import FluidSpinner from '../../loaders/FluidSpinner';
 
 const BUTTON_PADDING = {
     small: '2px 12px',
@@ -19,9 +18,9 @@ const getIconColor = (variant: ButtonVariant, isDisabled: boolean) => {
 const getFontSize = (variant: ButtonVariant, size: ButtonSize) => {
     // all button variants use same font size except the small tertiary btn
     if (variant === 'tertiary' && size === 'small') {
-        return FONT_SIZE.TINY;
+        return variables.FONT_SIZE.TINY;
     }
-    return FONT_SIZE.BUTTON;
+    return variables.FONT_SIZE.BUTTON;
 };
 
 const Wrapper = styled.button<WrapperProps>`

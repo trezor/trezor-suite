@@ -6,7 +6,7 @@ import { Action } from '@suite-types';
 export interface LogEntry {
     time: number;
     type: string;
-    message: any;
+    message?: any;
 }
 
 export interface State {
@@ -17,11 +17,20 @@ export const initialState: State = {
     entries: [],
 };
 
+const MAX_ENTRIES = 200;
+
+const addToStack = (stack: LogEntry[], entry: LogEntry) => {
+    stack.push(entry);
+    if (stack.length > MAX_ENTRIES) {
+        stack.pop();
+    }
+};
+
 export default (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
             case LOG.ADD:
-                draft.entries = state.entries.concat([action.payload]);
+                addToStack(draft.entries, action.payload);
                 break;
             // no default
         }

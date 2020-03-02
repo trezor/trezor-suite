@@ -9,7 +9,7 @@ import * as firmwareActions from '@firmware-actions/firmwareActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { InjectedModalApplicationProps, Dispatch, AppState } from '@suite-types';
 import { getFwVersion } from '@suite-utils/device';
-import { ProgressBar } from '@suite-components';
+import { ProgressBar, UniErrorImg } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import { InitImg, SuccessImg } from '@firmware-components';
 import { Loaders } from '@onboarding-components';
@@ -187,7 +187,7 @@ const Firmware = ({
             <Wrapper>
                 <H2>Holy guacamole! We got an error!</H2>
                 <StyledP>{firmware.error}</StyledP>
-                <img src={resolveStaticPath('images/suite/uni-error.svg')} alt="" />
+                <UniErrorImg />
                 <Buttons>
                     <Col>
                         <CloseButton onClick={onClose} />

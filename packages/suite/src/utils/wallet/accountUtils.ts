@@ -175,6 +175,14 @@ export const sortByCoin = (accounts: Account[]) => {
     });
 };
 
+export const findAccountsByDescriptor = (descriptor: string, accounts: Account[]) =>
+    accounts.filter(
+        a =>
+            a.networkType === 'ethereum'
+                ? a.descriptor.toLowerCase() === descriptor.toLowerCase()
+                : a.descriptor === descriptor, // blockbook returns lowercase eth address
+    );
+
 export const findAccountsByAddress = (address: string, accounts: Account[]) =>
     accounts.filter(a => {
         if (a.addresses) {

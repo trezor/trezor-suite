@@ -35,23 +35,18 @@ const Wrapper = styled(ModalWrapper)`
     flex: 1;
     flex-direction: column;
     overflow-x: hidden;
-    height: 90vh;
-    max-width: 90vw;
+
+    height: 95vh;
+    width: 95vw;
 
     @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
-        width: calc(55vw + 150px);
-        margin: 20px auto 0 auto;
-        height: 80vh;
+        margin: 0 auto;
         overflow: hidden;
+        max-height: 85vh;
+        max-width: 800px;
+        min-width: 50vw;
+        min-height: 50vh;
     }
-`;
-
-const ComponentWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    /* min-height: 65vh; */
-    /* min-height: 100%; */
-    overflow-y: auto;
 `;
 
 // used to position modal to center
@@ -156,25 +151,21 @@ const Onboarding = (props: Props) => {
                 hidden={!getStep().progress}
             />
 
-            <ComponentWrapper>
-                {errorState && (
-                    <UnexpectedState
-                        caseType={errorState}
-                        prevModel={
-                            (prevDevice &&
-                                prevDevice.features &&
-                                prevDevice.features.major_version) ||
-                            2
-                        }
-                    />
-                )}
-                {!errorState && modal && (
-                    <ActionModalWrapper data-test="@onboading/confirm-action-on-device">
-                        {modal}
-                    </ActionModalWrapper>
-                )}
-                {!errorState && !modal && <StepComponent />}
-            </ComponentWrapper>
+            {errorState && (
+                <UnexpectedState
+                    caseType={errorState}
+                    prevModel={
+                        (prevDevice && prevDevice.features && prevDevice.features.major_version) ||
+                        2
+                    }
+                />
+            )}
+            {!errorState && modal && (
+                <ActionModalWrapper data-test="@onboading/confirm-action-on-device">
+                    {modal}
+                </ActionModalWrapper>
+            )}
+            {!errorState && !modal && <StepComponent />}
         </Wrapper>
     );
 };
