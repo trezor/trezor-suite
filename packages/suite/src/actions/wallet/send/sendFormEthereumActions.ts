@@ -176,7 +176,6 @@ export const handleGasPrice = (gasPrice: string) => (dispatch: Dispatch, getStat
             label: 'custom',
             feePerUnit: gasPrice,
             feeLimit: gasLimit,
-            feePerTx: '1',
             blocks: 1,
             value: fee,
         },
