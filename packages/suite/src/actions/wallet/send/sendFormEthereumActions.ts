@@ -176,7 +176,7 @@ export const handleGasPrice = (gasPrice: string) => (dispatch: Dispatch, getStat
             label: 'custom',
             feePerUnit: gasPrice,
             feeLimit: gasLimit,
-            blocks: 1,
+            blocks: -1,
             value: fee,
         },
     });
@@ -205,8 +205,7 @@ export const handleGasLimit = (gasLimit: string) => (dispatch: Dispatch, getStat
             label: 'custom',
             feePerUnit: gasPrice,
             feeLimit: gasLimit,
-            feePerTx: '1',
-            blocks: 1,
+            blocks: -1,
         },
     });
 
@@ -251,8 +250,7 @@ export const handleData = (data: string) => async (dispatch: Dispatch, getState:
             label: 'custom',
             feePerUnit: gasPrice,
             feeLimit: gasLimit,
-            feePerTx: '1',
-            blocks: 1,
+            blocks: -1,
         },
     });
 
