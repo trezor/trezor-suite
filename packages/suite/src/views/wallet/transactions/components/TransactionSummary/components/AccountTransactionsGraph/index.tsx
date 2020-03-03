@@ -110,6 +110,7 @@ const CustomTooltip = ({
             <CustomTooltipWrapper coordinate={coordinate!}>
                 <DateWrapper>
                     {date && selectedRange?.label === 'year' && (
+                        //
                         <FormattedDate value={date} year="numeric" month="2-digit" />
                     )}
                     {date && selectedRange?.label !== 'year' && (
@@ -118,27 +119,25 @@ const CustomTooltip = ({
                 </DateWrapper>
                 <Row>
                     <Rect color={colors.GREEN} /> Received {payload[0].payload.received}{' '}
-                    {symbol.toUpperCase()} (
+                    {symbol.toUpperCase()}
                     <FiatValue
                         amount={payload[0].payload.received}
                         symbol={symbol}
                         source={payload[0].payload.rates}
                     >
-                        {({ value }) => value}
+                        {({ value }) => (value ? <> ({value})</> : null)}
                     </FiatValue>
-                    )
                 </Row>
                 <Row>
                     <Rect color={colors.RED_ERROR} /> Sent {payload[0].payload.sent}{' '}
-                    {symbol.toUpperCase()} (
+                    {symbol.toUpperCase()}
                     <FiatValue
                         amount={payload[0].payload.sent}
                         symbol={symbol}
                         source={payload[0].payload.rates}
                     >
-                        {({ value }) => value}
+                        {({ value }) => (value ? <> ({value})</> : null)}
                     </FiatValue>
-                    )
                 </Row>
             </CustomTooltipWrapper>
         );
