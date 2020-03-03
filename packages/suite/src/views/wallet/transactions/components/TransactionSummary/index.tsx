@@ -58,7 +58,7 @@ const TransactionSummary = (props: Props) => {
 
     const [selectedRange, setSelectedRange] = useState<Range>({
         label: 'year',
-        weeks: 1,
+        weeks: 52,
     });
     const [isLoading, setIsLoading] = useState(false);
 

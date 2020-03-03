@@ -8,6 +8,7 @@ import BigNumber from 'bignumber.js';
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
+    min-height: 80px;
     min-width: 250px;
     & + & {
         border-top: 1px solid ${colors.BLACK92};

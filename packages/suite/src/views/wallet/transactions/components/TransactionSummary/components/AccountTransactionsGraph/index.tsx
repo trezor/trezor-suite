@@ -204,7 +204,7 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
                                 top: 10,
                                 bottom: 30,
                                 right: 10,
-                                left: 10,
+                                left: 20,
                             }}
                         >
                             <XAxis
@@ -255,14 +255,15 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
                                 stackId="stack"
                                 fill={colors.RED_ERROR}
                                 maxBarSize={10}
-                                // minPointSize={data.sent === '0' ? 0 : 1}
+                                // minPointSize={1}
                             />
                             <Bar
                                 dataKey={(data: AccountHistory[number]) => Number(data.received)}
                                 stackId="stack"
                                 fill={colors.GREEN}
-                                // minPointSize={data.received === '0' ? 0 : 1}
                                 maxBarSize={10}
+                                // minPointSize={data.received === '0' ? 0 : 1}
+                                // minPointSize={1}
                             />
                         </BarChart>
                     </ResponsiveContainer>
