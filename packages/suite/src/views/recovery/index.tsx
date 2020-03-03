@@ -6,13 +6,12 @@ import { bindActionCreators } from 'redux';
 import { Button, H2, P, colors, variables } from '@trezor/components';
 
 import { SelectWordCount, SelectRecoveryType, Error } from '@recovery-components';
-import { ProgressBar, Loading, Translation, CheckItem, ExternalLink } from '@suite-components';
+import { ProgressBar, Loading, Translation, CheckItem, ExternalLink, Image  } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { InjectedModalApplicationProps, AppState, Dispatch } from '@suite-types';
 import { WordCount } from '@recovery-types';
 import messages from '@suite/support/messages';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 import { URLS } from '@suite-constants';
 
 const Wrapper = styled(ModalWrapper)`
@@ -298,7 +297,7 @@ const Recovery = ({
                     <StyledP>
                         <Translation {...messages.TR_SEED_CHECK_SUCCESS_DESC} />
                     </StyledP>
-                    <img alt="" src={resolveStaticPath('images/suite/uni-success.svg')} />
+                    <Image image="UNI_SUCCESS" />
                     <Buttons>
                         <StyledButton onClick={() => closeModalApp()}>
                             <Translation {...messages.TR_CLOSE} />

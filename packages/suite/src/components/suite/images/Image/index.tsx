@@ -5,6 +5,8 @@ import { resolveStaticPath } from '@suite-utils/nextjs';
 const PATH = 'images/svg';
 
 const IMAGES = {
+    RECOVERY_ADVANCED: 'recovery-advanced.svg',
+    RECOVERY_BASIC: 'recovery-basic.svg',
     FIRMWARE_INIT_1: 'firmware-init-1.svg',
     FIRMWARE_INIT_2: 'firmware-init-2.svg',
     FIRMWARE_SUCCESS_1: 'firmware-success-1.svg',
