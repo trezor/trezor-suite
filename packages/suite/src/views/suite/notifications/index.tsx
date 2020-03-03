@@ -2,10 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { H2, Icon, P, Button, colors } from '@trezor/components';
-import { SuiteLayout, Translation } from '@suite-components';
+import { SuiteLayout, Translation, Image } from '@suite-components';
 import hocNotification, { ViewProps } from '@suite-components/hocNotification';
 import messages from '@suite/support/messages';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Props } from './Container';
 
 const Wrapper = styled.div`
@@ -36,7 +35,7 @@ const Text = styled.div`
     padding: 0px 16px;
 `;
 
-const Image = styled.img`
+const StyledImage = styled(Image)`
     width: 340px;
     height: 280px;
     margin-bottom: 40px;
@@ -95,7 +94,7 @@ export default (props: Props) => {
                     <P size="tiny">
                         <Translation {...messages.NOTIFICATIONS_EMPTY_DESC} />
                     </P>
-                    <Image src={resolveStaticPath(`images/suite/uni-empty-page.svg`)} />
+                    <StyledImage image="UNI_EMPTY_PAGE" />
                 </EmptyWrapper>
             </SuiteLayout>
         );

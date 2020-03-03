@@ -3,14 +3,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled, { css } from 'styled-components';
 import { H2, Link, variables, colors } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
-import Loading from '@suite-components/Loading';
-import { PinInput } from '@suite-components';
+import { PinInput, Loading, Translation, Image } from '@suite-components';
 import { Dispatch, TrezorDevice } from '@suite-types';
 import messages from '@suite/support/messages';
 import { URLS } from '@suite-constants';
 import * as modalActions from '@suite-actions/modalActions';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const { FONT_SIZE, SCREEN_SIZE } = variables;
 
@@ -68,7 +65,7 @@ const BottomMessage = styled(Description)`
     margin: 20px 30px 0;
 `;
 
-const StyledImg = styled.img`
+const StyledImg = styled(Image)`
     padding: 35px;
 `;
 
@@ -123,7 +120,7 @@ const Pin = ({ device, onPinSubmit }: Props) => {
                         <Translation {...messages.TR_MAXIMUM_LENGTH_IS_9_DIGITS} />
                     </Text>
                     <Expand>
-                        <StyledImg src={resolveStaticPath('images/suite/set-up-pin-dialog.svg')} />
+                        <StyledImg image="SET_UP_PIN_DIALOG" />
                     </Expand>
                     <Description>
                         <Translation {...messages.TR_HOW_PIN_WORKS} />{' '}

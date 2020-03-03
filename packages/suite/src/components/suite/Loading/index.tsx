@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import ModalWrapper, { Props as ModalWrapperProps } from '@suite-components/ModalWrapper';
-import { resolveStaticPath } from '@suite-utils/nextjs';
+import { Image } from '@suite-components';
 
 const LoaderWrapper = styled(ModalWrapper)`
     display: flex;
@@ -12,7 +12,6 @@ const LoaderWrapper = styled(ModalWrapper)`
     /* width: 360px;
     height: 400px; */
 `;
-const Image = styled.img``;
 
 interface Props extends ModalWrapperProps {
     imageProps?: React.HTMLAttributes<HTMLImageElement>;
@@ -20,7 +19,7 @@ interface Props extends ModalWrapperProps {
 
 const Loading = (props: Props) => (
     <LoaderWrapper {...props} data-test="@suite/loading">
-        <Image src={resolveStaticPath(`images/suite/spinner.svg`)} {...props.imageProps} />
+        <Image image="SPINNER" {...props.imageProps} />
     </LoaderWrapper>
 );
 

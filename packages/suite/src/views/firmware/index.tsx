@@ -4,12 +4,11 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Button, ButtonProps, H2, P, Link, colors, variables } from '@trezor/components';
 
-import { resolveStaticPath } from '@suite-utils/nextjs';
 import * as firmwareActions from '@firmware-actions/firmwareActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { InjectedModalApplicationProps, Dispatch, AppState } from '@suite-types';
 import { getFwVersion } from '@suite-utils/device';
-import { ProgressBar, UniErrorImg } from '@suite-components';
+import { ProgressBar, Image } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import { InitImg, SuccessImg } from '@firmware-components';
 import { Loaders } from '@onboarding-components';
@@ -53,7 +52,7 @@ const ChangesSummary = styled.div`
     max-width: 600px;
 `;
 
-const SeedImg = styled.img`
+const SeedImg = styled(Image)`
     height: 250px;
     padding: 30px;
 `;
@@ -105,14 +104,6 @@ const WhatsNewLink = styled(Link)`
     font-weight: ${FONT_WEIGHT.MEDIUM};
     margin-top: 12px;
 `;
-
-const UniSuccessImg = () => (
-    <img
-        src={resolveStaticPath('images/suite/uni-success.svg')}
-        alt=""
-        style={{ marginTop: 'auto' }}
-    />
-);
 
 const CloseButton = (props: ButtonProps) => (
     <StyledButton {...props} data-test="@firmware/close-button" variant="tertiary" icon="CROSS">
@@ -187,7 +178,7 @@ const Firmware = ({
             <Wrapper>
                 <H2>Holy guacamole! We got an error!</H2>
                 <StyledP>{firmware.error}</StyledP>
-                <UniErrorImg />
+                <Image image="UNI_ERROR" />
                 <Buttons>
                     <Col>
                         <CloseButton onClick={onClose} />
@@ -238,7 +229,7 @@ const Firmware = ({
                 <P size="normal">version {getFwVersion(device)}</P>
 
                 <WhatsNewLink href={CHANGELOG_URL}>What's new</WhatsNewLink>
-                <UniSuccessImg />
+                <Image image="UNI_SUCCESS" />
                 <Buttons>
                     <Col>
                         <CloseButton onClick={onClose} />
@@ -313,10 +304,7 @@ const Firmware = ({
                         seed. Either safely stored or even with you as of now. In any case of
                         improbable emergency.
                     </StyledP>
-                    <SeedImg
-                        src={resolveStaticPath('images/onboarding/recover-from-seed.svg')}
-                        alt=""
-                    />
+                    <SeedImg image="RECOVER_FROM_SEED" />
                     <Buttons>
                         <Col>
                             <StyledButton
@@ -340,10 +328,7 @@ const Firmware = ({
                                 Ok, now disconnect your device
                             </StyledP>
 
-                            <img
-                                alt=""
-                                src={resolveStaticPath('images/suite/connect-device.svg')}
-                            />
+                            <Image image="CONNECT_DEVICE" />
                             <Buttons>
                                 <CloseButton onClick={onClose} />
                             </Buttons>

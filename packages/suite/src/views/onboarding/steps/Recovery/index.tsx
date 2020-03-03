@@ -2,9 +2,8 @@ import React from 'react';
 
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import { SelectWordCount, SelectRecoveryType, Error } from '@recovery-components';
-import { Translation, Loading } from '@suite-components';
+import { Translation, Loading, Image } from '@suite-components';
 import messages from '@suite/support/messages';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 
 import { Props } from './Container';
 
@@ -96,7 +95,7 @@ const RecoveryStep = (props: Props) => {
 
                 {recovery.status === 'finished' && !recovery.error && (
                     <>
-                        <img src={resolveStaticPath('images/suite/uni-success.svg')} alt="" />
+                        <Image image="UNI_SUCCESS" />
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 data-test="@onboarding/recovery/continue-button"

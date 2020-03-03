@@ -4,10 +4,9 @@ import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
 import { Button, P, H2 } from '@trezor/components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 import * as routerActions from '@suite-actions/routerActions';
 import { Dispatch, InjectedModalApplicationProps } from '@suite-types';
-import { Translation } from '@suite-components';
+import { Translation, Image } from '@suite-components';
 import messages from '@suite/support/messages';
 import ModalWrapper from '@suite-components/ModalWrapper';
 
@@ -20,7 +19,7 @@ const Wrapper = styled(ModalWrapper)`
     min-width: 60vw;
 `;
 
-const StyledImg = styled.img`
+const StyledImg = styled(Image)`
     margin-top: 40px;
     margin-bottom: 15px;
 `;
@@ -38,11 +37,9 @@ const Index = (props: Props) => {
                 <Translation>{messages.TR_WELCOME_MODAL_HEADING}</Translation>
             </H2>
             <P size="tiny">
-                {/* todo: remove, temporarily here, instead of cyka blyat */}
-                The one place for all your crypto matters.
-                {/* <Translation>{messages.TR_WELCOME_MODAL_TEXT}</Translation> */}
+                <Translation>{messages.TR_WELCOME_MODAL_TEXT}</Translation>
             </P>
-            <StyledImg alt="" src={resolveStaticPath('images/welcome/welcome.svg')} />
+            <StyledImg image="WELCOME" />
 
             <Button
                 data-test="@welcome/continue-button"

@@ -3,8 +3,7 @@ import React from 'react';
 import { UI } from 'trezor-connect';
 
 import { Link } from '@trezor/components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
-import { Translation } from '@suite-components';
+import { Translation, Image } from '@suite-components';
 import messages from '@suite/support/messages';
 import { URLS } from '@suite-constants';
 import { Text, OnboardingButton, Wrapper } from '@onboarding-components';
@@ -58,7 +57,8 @@ const SetPinStep = (props: Props) => {
                         <Text>
                             <Translation {...messages.TR_PIN_SUBHEADING} />
                         </Text>
-                        <img alt="" src={resolveStaticPath('images/onboarding/t-pin-ask.svg')} />
+
+                        <Image image="T_PIN_ASK" />
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 data-test="@onboarding/set-pin-button"
@@ -77,10 +77,7 @@ const SetPinStep = (props: Props) => {
                         <Text>
                             <Translation {...messages.TR_PIN_SET_SUCCESS} />
                         </Text>
-                        <img
-                            alt=""
-                            src={resolveStaticPath('images/onboarding/t-pin-success.svg')}
-                        />
+                        <Image image="T_PIN_SUCCESS" />
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 data-test="@onboarding/pin/continue-button"

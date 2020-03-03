@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 import { colors, Button, variables } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
+import { Translation, Image } from '@suite-components';
 import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
@@ -28,7 +27,7 @@ const Title = styled.div`
     text-align: center;
 `;
 
-const Image = styled.img`
+const StyledImage = styled(Image)`
     display: flex;
     width: 220px;
     height: 180px;
@@ -57,7 +56,7 @@ type Props = React.HTMLAttributes<HTMLDivElement>;
 const EmptyWallet = (props: Props) => {
     return (
         <Wrapper {...props} data-test="@dashboard/wallet-ready">
-            <Image src={resolveStaticPath(`images/dashboard/empty-dashboard.svg`)} />
+            <StyledImage image="EMPTY_DASHBOARD" />
             <Content>
                 <Title>
                     <Translation {...messages.TR_YOUR_WALLET_IS_READY_WHAT} />

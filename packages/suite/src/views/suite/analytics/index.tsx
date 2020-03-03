@@ -4,14 +4,12 @@ import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
 import { Button, P, H2, Link, variables, colors } from '@trezor/components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 import * as routerActions from '@suite-actions/routerActions';
 import { Dispatch, InjectedModalApplicationProps } from '@suite-types';
 import { Analytics } from '@suite-components/Settings';
 import ModalWrapper from '@suite-components/ModalWrapper';
-
 import { URLS } from '@suite-constants';
-import { Translation } from '@suite-components';
+import { Translation, Image } from '@suite-components';
 import messages from '@suite/support/messages';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;
@@ -41,7 +39,7 @@ const Bold = styled.span`
     color: ${colors.BLACK50};
 `;
 
-const StyledImg = styled.img`
+const StyledImg = styled(Image)`
     margin-top: 23px;
 `;
 
@@ -76,7 +74,7 @@ const Index = (props: Props) => {
                     <Translation>{messages.TR_HELP_TREZOR_SUITE_TEXT_2}</Translation>
                 </Bold>
 
-                <StyledImg alt="" src={resolveStaticPath('images/welcome/analytics.svg')} />
+                <StyledImg image="ANALYTICS" />
 
                 <Analytics />
 

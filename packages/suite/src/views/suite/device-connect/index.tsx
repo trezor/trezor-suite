@@ -2,19 +2,14 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Prompt, colors, variables, Link, P, H2 } from '@trezor/components';
-import { PULSATE } from '@suite-support/styles/animations';
+import { variables, Link, P, H2 } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
-import { Translation, WebusbButton } from '@suite-components';
+import { Translation, WebusbButton, Image } from '@suite-components';
+import ModalWrapper from '@suite-components/ModalWrapper';
+import HelpBuyIcons from '@suite-components/ProgressBar/components/HelpBuyIcons';
 import messages from '@suite/support/messages';
-import { URLS } from '@suite-constants';
 import { Dispatch, AppState } from '@suite-types';
 import { isWebUSB } from '@suite-utils/transport';
-import { resolveStaticPath } from '@suite-utils/nextjs';
-
-const StyledConnectDevice = styled.div`
-    padding: 0px 48px;
-`;
 
 const Title = styled.div`
     margin-top: 60px;
@@ -22,11 +17,11 @@ const Title = styled.div`
     text-align: center;
 `;
 
-const Wrapper = styled.div`
+const Wrapper = styled(ModalWrapper)`
     display: flex;
+    min-width: 60vw;
+    flex-direction: column;
     align-items: center;
-    margin: 0 auto;
-    padding: 36px 0;
     justify-content: center;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -35,41 +30,18 @@ const Wrapper = styled.div`
     }
 `;
 
-const ConnectTrezorWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    animation: ${PULSATE} 1.3s ease-out infinite;
-    color: ${colors.GREEN};
-    font-size: ${variables.FONT_SIZE.H2};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const PromptWrapper = styled.div`
-    margin-right: 20px;
-`;
-
-const And = styled(P)`
-    margin: 0px 15px 0px 15px;
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        margin: 15px 0 15px 0;
-    }
-`;
-
 const ButtonWrapper = styled.div`
     display: flex;
     width: 200px;
+    margin-bottom: 20px;
 `;
 
 const BridgeWrapper = styled.div`
-    margin-bottom: 22px;
+    margin-bottom: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-`;
-
-const Text = styled.span`
-    margin-right: 4px;
 `;
 
 const StyledLink = styled(Link)``;
@@ -90,74 +62,46 @@ const Index = (props: Props) => {
     const [imageLoaded, setImageLoaded] = useState(false);
 
     return (
-        <StyledConnectDevice data-test="@modal/connect-device">
+        <Wrapper data-test="@modal/connect-device">
+            <HelpBuyIcons showBuy showHelp />
             <Title>
                 <H2>
                     <Translation {...messages.TR_CONNECT_TREZOR} />
                 </H2>
             </Title>
-            <img
-                alt=""
-                src={resolveStaticPath('images/suite/connect-device.svg')}
+            <Image
+                image="CONNECT_DEVICE"
                 onLoad={() => setImageLoaded(true)}
                 onError={() => setImageLoaded(true)}
             />
 
-            <Wrapper>
-                <ConnectTrezorWrapper>
-                    <PromptWrapper>
-                        <Prompt type="connect-device" />
-                    </PromptWrapper>
-                    <Translation {...messages.TR_CONNECT_TREZOR_TO_CONTINUE} />
-                </ConnectTrezorWrapper>
-                {showWebUsb && (
-                    <>
-                        <And>
-                            <Translation {...messages.TR_AND} />
-                        </And>
-                        <ButtonWrapper>
-                            <WebusbButton ready={imageLoaded} />
-                        </ButtonWrapper>
-                    </>
-                )}
-            </Wrapper>
+            {showWebUsb && (
+                <ButtonWrapper>
+                    <WebusbButton ready={imageLoaded} />
+                </ButtonWrapper>
+            )}
+
             <BridgeWrapper>
                 {showWebUsb && (
-                    <P>
-                        <Text>
-                            <Translation
-                                {...messages.TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING}
-                                values={{
-                                    link: (
-                                        <StyledLink
-                                            onClick={() =>
-                                                props.goto('suite-bridge', { cancelable: true })
-                                            }
-                                        >
-                                            Trezor Bridge
-                                        </StyledLink>
-                                    ),
-                                }}
-                            />
-                        </Text>
-                    </P>
-                )}
-                <P>
-                    <Text>
+                    <P size="tiny">
                         <Translation
-                            {...messages.TR_DONT_HAVE_A_TREZOR}
+                            {...messages.TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING}
                             values={{
-                                getOne: (
-                                    <StyledLink href={URLS.TREZOR_URL}>
-                                        <Translation {...messages.TR_GET_ONE} />
+                                link: (
+                                    <StyledLink
+                                        onClick={() =>
+                                            props.goto('suite-bridge', { cancelable: true })
+                                        }
+                                    >
+                                        Trezor Bridge
                                     </StyledLink>
                                 ),
                             }}
                         />
-                    </Text>
-                </P>
+                    </P>
+                )}
             </BridgeWrapper>
-        </StyledConnectDevice>
+        </Wrapper>
     );
 };
 
