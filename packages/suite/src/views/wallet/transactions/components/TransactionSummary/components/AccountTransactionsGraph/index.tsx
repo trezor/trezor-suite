@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
-import { colors, variables, Loader } from '@trezor/components';
+import { colors, variables, Loader, Tooltip as CTooltip } from '@trezor/components';
 import { HiddenPlaceholder, Badge, NoRatesTooltip, FiatValue } from '@suite-components';
 import { Account } from '@wallet-types';
 import BigNumber from 'bignumber.js';
@@ -43,13 +43,16 @@ const YAxisWrapper = styled.div`
     color: ${colors.BLACK80};
 `;
 
-const CustomTooltipWrapper = styled.div`
+const CustomTooltipWrapper = styled.div<{ coordinate: { x: number; y: number } }>`
     display: flex;
     flex-direction: column;
     color: ${colors.WHITE};
-    background: ${colors.BLACK17};
+    background: rgba(0, 0, 0, 0.8);
     padding: 12px 12px;
-    border-radius: 4px;
+    border-radius: 3px;
+    transform: ${props => `translate(0px, ${props.coordinate.y - 100}px)`};
+
+    line-height: 1.5;
 `;
 
 const Row = styled.div`
@@ -90,11 +93,21 @@ interface CustomTooltipProps extends TooltipProps {
     selectedRange: Range;
 }
 
-const CustomTooltip = ({ active, payload, label, symbol, selectedRange }: CustomTooltipProps) => {
+const CustomTooltip = ({
+    active,
+    payload,
+    coordinate,
+    label,
+    symbol,
+    selectedRange,
+    ...props
+}: CustomTooltipProps) => {
+    console.log(coordinate);
+    console.log('props', props);
     if (active && payload) {
         const date = getDateWithTimeZone(payload[0].payload.time * 1000);
         return (
-            <CustomTooltipWrapper>
+            <CustomTooltipWrapper coordinate={coordinate!}>
                 <DateWrapper>
                     {date && selectedRange?.label === 'year' && (
                         <FormattedDate value={date} year="numeric" month="2-digit" />
@@ -240,6 +253,8 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
                                 // }
                             />
                             <Tooltip
+                                // position={{ y: 0, x: 0 }}
+                                // allowEscapeViewBox={{ x: true }}
                                 content={
                                     <CustomTooltip
                                         selectedRange={selectedRange}
