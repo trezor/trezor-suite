@@ -83,7 +83,10 @@ export const getInputState = (
     error: typeof VALIDATION_ERRORS[keyof typeof VALIDATION_ERRORS] | null,
     value: string | null,
     noSuccess?: boolean,
+    isMandatory?: boolean,
 ) => {
+    if (!isMandatory && !value) return undefined;
+
     if (error) {
         return 'error';
     }

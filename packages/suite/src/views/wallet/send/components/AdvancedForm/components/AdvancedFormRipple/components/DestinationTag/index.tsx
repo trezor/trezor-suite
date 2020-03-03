@@ -21,7 +21,12 @@ const StyledIcon = styled(Icon)`
     height: 100%;
 `;
 
-const getErrorMessage = (error: Send['networkTypeRipple']['destinationTag']['error']) => {
+const getErrorMessage = (
+    error: Send['networkTypeRipple']['destinationTag']['error'],
+    value: Send['networkTypeRipple']['destinationTag']['value'],
+) => {
+    if (!value) return null;
+
     switch (error) {
         case VALIDATION_ERRORS.NOT_NUMBER:
             return <Translation {...messages.TR_DESTINATION_TAG_IS_NOT_NUMBER} />;
@@ -38,7 +43,7 @@ const AdvancedFormRipple = ({ send, sendFormActionsRipple }: Props) => {
 
     return (
         <Input
-            state={getInputState(error, value)}
+            state={getInputState(error, value, undefined, false)}
             display="block"
             variant="small"
             topLabel={
@@ -52,7 +57,7 @@ const AdvancedFormRipple = ({ send, sendFormActionsRipple }: Props) => {
                     </Tooltip>
                 </Label>
             }
-            bottomText={getErrorMessage(error)}
+            bottomText={getErrorMessage(error, value)}
             value={value || ''}
             onChange={e => sendFormActionsRipple.handleDestinationTagChange(e.target.value)}
         />
