@@ -105,16 +105,16 @@ const InfoCard = (props: Props) => {
                         <>
                             <Value>
                                 {bigValue && (
-                                    <>
+                                    <HiddenPlaceholder>
                                         {isValuePos && '+'}
                                         {bigValue.toFixed()} {props.symbol?.toUpperCase()}
-                                    </>
+                                    </HiddenPlaceholder>
                                 )}
                                 {!bigValue && props.value}
                             </Value>
                             {props.isNumeric && props.value && (
-                                <FiatAmountWrapper>
-                                    <HiddenPlaceholder>
+                                <HiddenPlaceholder>
+                                    <FiatAmountWrapper>
                                         <FiatValue amount={props.value} symbol={props.symbol}>
                                             {({ value }) =>
                                                 value ? (
@@ -124,8 +124,8 @@ const InfoCard = (props: Props) => {
                                                 )
                                             }
                                         </FiatValue>
-                                    </HiddenPlaceholder>
-                                </FiatAmountWrapper>
+                                    </FiatAmountWrapper>
+                                </HiddenPlaceholder>
                             )}
                         </>
                     )}

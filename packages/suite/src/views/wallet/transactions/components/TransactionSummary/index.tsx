@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
-import { Card } from '@suite-components';
+import { Card, HiddenPlaceholder } from '@suite-components';
 import { AppState } from '@suite/types/suite';
 import {
     getAccountFiatBalance,
@@ -36,6 +36,7 @@ const GraphWrapper = styled.div`
 
 const InfoCardsWrapper = styled.div`
     display: flex;
+    min-height: 240px;
     flex-direction: column;
     flex: 1 1 auto;
     border-left: 1px solid ${colors.BLACK92};
@@ -61,6 +62,7 @@ const TransactionSummary = (props: Props) => {
         weeks: 52,
     });
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -74,6 +76,8 @@ const TransactionSummary = (props: Props) => {
                 }));
                 console.log('processed', processed);
                 setData(processed);
+            } else {
+                setError(true);
             }
             setIsLoading(false);
         };
@@ -81,6 +85,7 @@ const TransactionSummary = (props: Props) => {
         if (selectedRange && account) {
             setData(null);
             setIsLoading(false);
+            setError(false);
             fetchData();
         }
     }, [account, selectedRange, setData]);
@@ -91,6 +96,7 @@ const TransactionSummary = (props: Props) => {
 
     return (
         <Wrapper>
+            {/* TODO: what should be shown on error? */}
             <GraphWrapper>
                 <AccountTransactionsGraph
                     account={props.account}
@@ -101,28 +107,31 @@ const TransactionSummary = (props: Props) => {
                 />
             </GraphWrapper>
             <InfoCardsWrapper>
-                {/* TODO: what should be shown on error? */}
-                <InfoCard
-                    title="Incoming"
-                    value={totalReceivedAmount?.toFixed()}
-                    symbol={props.account.symbol}
-                    stripe="green"
-                    isLoading={isLoading}
-                    isNumeric
-                />
-                <InfoCard
-                    title="Outgoing"
-                    value={totalSentAmount?.toFixed()}
-                    symbol={props.account.symbol}
-                    isLoading={isLoading}
-                    stripe="red"
-                    isNumeric
-                />
-                <InfoCard
-                    title="Number of transactions"
-                    isLoading={isLoading}
-                    value={`${numOfTransactions} transactions`}
-                />
+                {error ? null : (
+                    <>
+                        <InfoCard
+                            title="Incoming"
+                            value={totalReceivedAmount?.toFixed()}
+                            symbol={props.account.symbol}
+                            stripe="green"
+                            isLoading={isLoading}
+                            isNumeric
+                        />
+                        <InfoCard
+                            title="Outgoing"
+                            value={totalSentAmount?.toFixed()}
+                            symbol={props.account.symbol}
+                            isLoading={isLoading}
+                            stripe="red"
+                            isNumeric
+                        />
+                        <InfoCard
+                            title="Number of transactions"
+                            isLoading={isLoading}
+                            value={`${numOfTransactions} transactions`}
+                        />
+                    </>
+                )}
             </InfoCardsWrapper>
         </Wrapper>
     );
