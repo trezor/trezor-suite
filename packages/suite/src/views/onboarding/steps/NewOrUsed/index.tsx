@@ -31,7 +31,7 @@ const NewOrUsedStep = (props: Props) => {
                         title="I have a new device"
                         text="Sealed package that you just bought or received"
                         button="New device"
-                        imgSrc="images/new-device.svg"
+                        imgSrc="images/svg/new-device.svg"
                     />
 
                     <Option
@@ -43,7 +43,7 @@ const NewOrUsedStep = (props: Props) => {
                         title="I have a used device"
                         text="Unpacked device that has been already used before"
                         button="Used device"
-                        imgSrc="images/used-device.svg"
+                        imgSrc="images/svg/used-device.svg"
                     />
                 </Wrapper.Options>
             </Wrapper.StepBody>

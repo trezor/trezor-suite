@@ -1,6 +1,6 @@
 import React from 'react';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import { Translation } from '@suite-components';
+import { Translation, Image } from '@suite-components';
 import messages from '@suite/support/messages';
 import Wrapper from './components/Wrapper';
 
@@ -12,7 +12,7 @@ const AccountNotExists = () => {
     return (
         <Wrapper
             title={<Translation {...messages.TR_ACCOUNT_EXCEPTION_NOT_EXIST} />}
-            image={<img alt="" src={resolveStaticPath(`images/wallet/wallet-empty.svg`)} />}
+            image={<Image image="EMPTY_WALLET" />}
         />
     );
 };

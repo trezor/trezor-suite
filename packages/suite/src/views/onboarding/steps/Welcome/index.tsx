@@ -26,7 +26,7 @@ const WelcomeStep = (props: Props) => {
                         title="I'm new to all this"
                         text="I want to be guided through onboarding process"
                         button="Begin onboarding"
-                        imgSrc="images/new-user.svg"
+                        imgSrc="images/svg/new-user.svg"
                     />
                     <Option
                         data-test="@onboarding/skip-button"
@@ -36,7 +36,7 @@ const WelcomeStep = (props: Props) => {
                         title="I have initialized device"
                         text="My device is initialized and I used Wallet or Suite before"
                         button="Skip onboarding"
-                        imgSrc="images/existing-user.svg"
+                        imgSrc="images/svg/existing-user.svg"
                     />
                 </Wrapper.Options>
             </Wrapper.StepBody>
