@@ -16,9 +16,9 @@ suite check outdated:
 
 suite check multiple same svgs:
     stage: deploy artifacts, others
-    # only:
-    #     refs:
-    #         - develop
+    only:
+        refs:
+            - develop
     script:
         - node ./packages/suite-data/test/test-same-svgs.js
 
