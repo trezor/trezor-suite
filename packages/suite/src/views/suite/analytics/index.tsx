@@ -39,7 +39,7 @@ const Bold = styled.span`
     color: ${colors.BLACK50};
 `;
 
-const StyledImg = styled(Image)`
+const StyledImg = styled(props => <Image {...props} />)`
     margin-top: 23px;
 `;
 

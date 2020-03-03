@@ -52,7 +52,7 @@ const ChangesSummary = styled.div`
     max-width: 600px;
 `;
 
-const SeedImg = styled(Image)`
+const SeedImg = styled(props => <Image {...props} />)`
     height: 250px;
     padding: 30px;
 `;

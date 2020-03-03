@@ -7,7 +7,7 @@ import messages from '@suite/support/messages';
 
 import { Props } from './Container';
 
-const StyledImg = styled(Image)`
+const StyledImg = styled(props => <Image {...props} />)`
     margin: 50px 0;
 `;
 

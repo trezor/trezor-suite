@@ -35,7 +35,7 @@ const Text = styled.div`
     padding: 0px 16px;
 `;
 
-const StyledImage = styled(Image)`
+const StyledImage = styled(props => <Image {...props} />)`
     width: 340px;
     height: 280px;
     margin-bottom: 40px;

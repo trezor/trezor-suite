@@ -65,7 +65,7 @@ const BottomMessage = styled(Description)`
     margin: 20px 30px 0;
 `;
 
-const StyledImg = styled(Image)`
+const StyledImg = styled(props => <Image {...props} />)`
     padding: 35px;
 `;
 

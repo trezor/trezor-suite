@@ -31,7 +31,7 @@ const Description = styled.div`
     margin-bottom: 10px;
 `;
 
-const StyledImage = styled(Image)`
+const StyledImage = styled(props => <Image {...props} />)`
     width: 340px;
     height: 280px;
     margin-bottom: 40px;

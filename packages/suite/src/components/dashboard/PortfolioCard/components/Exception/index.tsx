@@ -26,7 +26,7 @@ const Title = styled.div`
     text-align: center;
 `;
 
-const StyledImage = styled(Image)`
+const StyledImage = styled(props => <Image {...props} />)`
     display: flex;
     width: 220px;
     height: 180px;
