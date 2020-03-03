@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, variables, H2, Button } from '@trezor/components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
-import { Translation } from '@suite-components/Translation';
+import { Translation, Image } from '@suite-components';
 import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
@@ -32,7 +31,7 @@ const Description = styled.div`
     margin-bottom: 10px;
 `;
 
-const Image = styled.img`
+const StyledImage = styled(Image)`
     width: 340px;
     height: 280px;
     margin-bottom: 40px;
@@ -63,7 +62,7 @@ const NoTransactions = ({ receive, buy }: Props) => {
                 <Description>
                     <Translation {...messages.TR_ONCE_YOU_SEND_OR_RECEIVE} />
                 </Description>
-                <Image src={resolveStaticPath(`images/wallet/wallet-empty.svg`)} />
+                <StyledImage image="EMPTY_WALLET" />
                 <Actions>
                     <ActionButton variant="secondary" onClick={receive}>
                         <Translation {...messages.TR_RECEIVE} />
