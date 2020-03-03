@@ -64,7 +64,7 @@ const FirmwareStep = ({
             <Wrapper.StepBody>
                 {status === 'initial' && (
                     <>
-                        {!device && <Translation {...messaes.TR_CONNECT_YOUR_DEVICE} />}
+                        {!device && <Translation {...messages.TR_CONNECT_YOUR_DEVICE} />}
 
                         {getFirmwareStatus() === 'none' && (
                             <>
