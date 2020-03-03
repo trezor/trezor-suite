@@ -1,5 +1,4 @@
 import React from 'react';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Translation, Image } from '@suite-components';
 import messages from '@suite/support/messages';
 import Wrapper from './components/Wrapper';

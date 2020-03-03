@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Button } from '@trezor/components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Dispatch } from '@suite-types';

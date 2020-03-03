@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
+/**
+ * This is just to test that we do not accidantely use two or more same files under different names
+ * Of course not 100% bulletproof
+ */
+
 const fse = require('fs-extra');
 const crypto = require('crypto');
 
@@ -20,7 +25,8 @@ let failed = false;
 
 imagePaths.forEach(imgPath => {
     const image = fse.readFileSync(`packages/suite-data/files/images/svg/${imgPath}`, 'utf-8');
-    const hash = getHash(image.trim());
+    // remove all linebreaks and whitespaces
+    const hash = getHash(image.replace(/(\r\n|\n|\r|\s)/gm, ''));
     if (!hashMap[hash]) {
         hashMap[hash] = [];
     } else {
