@@ -7,7 +7,6 @@ import { TRANSACTION } from '@wallet-actions/constants';
 import { SETTINGS } from '@suite-config';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
-import { fetchFiatRatesForTxs } from './fiatRatesActions';
 
 export type TransactionAction =
     | {

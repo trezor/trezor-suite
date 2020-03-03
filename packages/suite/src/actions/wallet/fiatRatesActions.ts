@@ -1,4 +1,3 @@
-import { httpRequest } from '@wallet-utils/networkUtils';
 import { FIAT } from '@suite-config';
 import { Dispatch, GetState } from '@suite-types';
 import {
@@ -166,7 +165,7 @@ const getFiatRatesForTimestamps = async (
 const getStaleTickers = (
     timestampFunc: (ticker: CoinFiatRates) => number | undefined,
     interval: number,
-) => async (dispatch: Dispatch, getState: GetState) => {
+) => async (_dispatch: Dispatch, getState: GetState) => {
     const { fiat } = getState().wallet;
     const { enabledNetworks } = getState().wallet.settings;
     // TODO: Consider removing FIAT.tickers as now we can fetch rates for any coin by calling an API with the coin symbol,
@@ -190,7 +189,7 @@ const getStaleTickers = (
 /**
  * Updates current fiat rates for every stale ticker
  */
-export const handleRatesUpdate = () => async (dispatch: Dispatch, getState: GetState) => {
+export const handleRatesUpdate = () => async (dispatch: Dispatch, _getState: GetState) => {
     try {
         const staleTickers = await dispatch(getStaleTickers(ticker => ticker.current?.ts, MAX_AGE));
         const promises = staleTickers.map(async ticker => {

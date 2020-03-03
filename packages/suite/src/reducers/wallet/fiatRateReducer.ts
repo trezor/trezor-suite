@@ -5,7 +5,7 @@ import { STORAGE } from '@suite-actions/constants';
 import { Network } from '@wallet-types';
 
 export interface CurrentFiatRates {
-    symbol: Network['symbol'];
+    symbol: string;
     rates: { [key: string]: number };
     ts: number;
 }
@@ -23,7 +23,7 @@ export interface LastWeekRates {
 export interface CoinFiatRates {
     current?: CurrentFiatRates;
     lastWeek?: LastWeekRates;
-    symbol: Network['symbol'];
+    symbol: string;
 }
 
 export const initialState: CoinFiatRates[] = [];
@@ -45,7 +45,7 @@ const updateCurrentRates = (state: CoinFiatRates[], current: CurrentFiatRates) =
 
 const updateLastWeekRates = (
     state: CoinFiatRates[],
-    payload: { symbol: Network['symbol']; tickers: TimestampedRates[]; ts: number },
+    payload: { symbol: Network['symbol'] | string; tickers: TimestampedRates[]; ts: number },
 ) => {
     const affected = state.find(f => f.symbol === payload.symbol);
     // Object.keys(tickers).map(k => tickers[k].toFixed(2));

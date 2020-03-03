@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
-import { Card, HiddenPlaceholder } from '@suite-components';
+import { Card } from '@suite-components';
 import { AppState } from '@suite/types/suite';
-import {
-    getAccountFiatBalance,
-    getTitleForNetwork,
-    isTestnet,
-    formatNetworkAmount,
-} from '@wallet-utils/accountUtils';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
 import { Translation } from '@suite-components/Translation';
 import { connect } from 'react-redux';
@@ -110,7 +105,7 @@ const TransactionSummary = (props: Props) => {
                 {error ? null : (
                     <>
                         <InfoCard
-                            title="Incoming"
+                            title={<Translation {...messages.TR_INCOMING} />}
                             value={totalReceivedAmount?.toFixed()}
                             symbol={props.account.symbol}
                             stripe="green"
@@ -118,7 +113,7 @@ const TransactionSummary = (props: Props) => {
                             isNumeric
                         />
                         <InfoCard
-                            title="Outgoing"
+                            title={<Translation {...messages.TR_OUTGOING} />}
                             value={totalSentAmount?.toFixed()}
                             symbol={props.account.symbol}
                             isLoading={isLoading}
@@ -126,9 +121,14 @@ const TransactionSummary = (props: Props) => {
                             isNumeric
                         />
                         <InfoCard
-                            title="Number of transactions"
+                            title={<Translation {...messages.TR_NUMBER_OF_TRANSACTIONS} />}
                             isLoading={isLoading}
-                            value={`${numOfTransactions} transactions`}
+                            value={
+                                <Translation
+                                    {...messages.TR_N_TRANSACTIONS}
+                                    values={{ value: numOfTransactions }}
+                                />
+                            }
                         />
                     </>
                 )}

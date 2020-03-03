@@ -116,6 +116,7 @@ const TransactionList = ({
             <StyledCard>
                 <Transactions>
                     {Object.keys(transactionsByDate).map(dateKey => {
+                        const parsedDate = parseKey(dateKey);
                         const totalAmountPerDay = sumTransactions(transactionsByDate[dateKey]);
                         return (
                             <React.Fragment key={dateKey}>
@@ -128,7 +129,7 @@ const TransactionList = ({
                                         <>
                                             <DateWrapper>
                                                 <FormattedDate
-                                                    value={parseKey(dateKey)}
+                                                    value={parsedDate ?? undefined}
                                                     day="numeric"
                                                     month="long"
                                                     year="numeric"

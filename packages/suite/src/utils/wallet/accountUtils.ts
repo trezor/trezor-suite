@@ -6,7 +6,7 @@ import { AccountTransaction, AccountInfo } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import messages from '@suite/support/messages';
 import { ACCOUNT_TYPE } from '@wallet-constants/account';
-import { Account, Network, Fiat, WalletParams } from '@wallet-types';
+import { Account, Network, CoinFiatRates, WalletParams } from '@wallet-types';
 import { AppState } from '@suite-types';
 import { NETWORKS } from '@wallet-config';
 import { toFiatCurrency } from './fiatConverterUtils';
@@ -298,10 +298,18 @@ export const enhanceTransaction = (
     };
 };
 
-export const getAccountFiatBalance = (account: Account, localCurrency: string, fiat: Fiat[]) => {
+export const getAccountFiatBalance = (
+    account: Account,
+    localCurrency: string,
+    fiat: CoinFiatRates[],
+) => {
     const fiatRates = fiat.find(f => f.symbol === account.symbol);
     if (fiatRates) {
-        const fiatBalance = toFiatCurrency(account.balance, localCurrency, fiatRates);
+        const fiatBalance = toFiatCurrency(
+            account.balance,
+            localCurrency,
+            fiatRates.current?.rates,
+        );
         if (fiatBalance) {
             return formatNetworkAmount(fiatBalance, account.symbol);
         }
@@ -311,7 +319,7 @@ export const getAccountFiatBalance = (account: Account, localCurrency: string, f
 export const getTotalFiatBalance = (
     deviceAccounts: Account[],
     localCurrency: string,
-    fiat: Fiat[],
+    fiat: CoinFiatRates[],
 ) => {
     let instanceBalance = new BigNumber(0);
     deviceAccounts.forEach(a => {

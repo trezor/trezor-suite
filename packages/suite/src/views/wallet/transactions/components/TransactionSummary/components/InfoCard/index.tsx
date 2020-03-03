@@ -70,7 +70,7 @@ const LoaderWrapper = styled.div`
 type Props =
     | {
           title: React.ReactNode;
-          value?: string;
+          value?: JSX.Element | string;
           symbol: Account['symbol'];
           isNumeric: boolean;
           stripe?: 'green' | 'red';
@@ -78,7 +78,7 @@ type Props =
       }
     | {
           title: React.ReactNode;
-          value?: string;
+          value?: JSX.Element | string;
           stripe?: 'green' | 'red';
           symbol?: undefined;
           isNumeric?: undefined;
@@ -86,7 +86,10 @@ type Props =
       };
 
 const InfoCard = (props: Props) => {
-    let bigValue = props.isNumeric && props.value ? new BigNumber(props.value) : null;
+    let bigValue =
+        props.isNumeric && props.value && typeof props.value === 'string'
+            ? new BigNumber(props.value)
+            : null;
     bigValue = bigValue?.isNaN() ? null : bigValue;
     const isValuePos = bigValue?.gt(0);
 
@@ -112,10 +115,13 @@ const InfoCard = (props: Props) => {
                                 )}
                                 {!bigValue && props.value}
                             </Value>
-                            {props.isNumeric && props.value && (
+                            {props.isNumeric && bigValue && (
                                 <HiddenPlaceholder>
                                     <FiatAmountWrapper>
-                                        <FiatValue amount={props.value} symbol={props.symbol}>
+                                        <FiatValue
+                                            amount={bigValue.toFixed()}
+                                            symbol={props.symbol}
+                                        >
                                             {({ value }) =>
                                                 value ? (
                                                     <Badge>{value}</Badge>

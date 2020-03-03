@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 import { Network } from '@wallet-types';
 import { AreaChart, Area, ResponsiveContainer, YAxis } from 'recharts';
 import { LastWeekRates } from '@wallet-reducers/fiatRateReducer';

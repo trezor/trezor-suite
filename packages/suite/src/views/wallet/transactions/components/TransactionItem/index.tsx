@@ -247,7 +247,7 @@ const TransactionItem = (props: Props) => {
                 <Timestamp>
                     {blockHeight !== 0 && blockTime && blockTime > 0 && (
                         <FormattedDate
-                            value={getDateWithTimeZone(blockTime * 1000)}
+                            value={getDateWithTimeZone(blockTime * 1000) ?? undefined}
                             hour="numeric"
                             minute="numeric"
                         />

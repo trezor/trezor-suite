@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
-import { colors, variables, Loader, Tooltip as CTooltip } from '@trezor/components';
-import { HiddenPlaceholder, Badge, NoRatesTooltip, FiatValue } from '@suite-components';
+import { colors, variables, Loader } from '@trezor/components';
+import { FiatValue } from '@suite-components';
 import { Account } from '@wallet-types';
 import BigNumber from 'bignumber.js';
 import {
@@ -18,7 +18,6 @@ import {
 import { fetchAccountHistory } from '@suite/actions/wallet/fiatRatesActions';
 import { Await } from '@suite/types/utils';
 import RangeSelector from './components/RangeSelector';
-import { formatNetworkAmount } from '@suite/utils/wallet/accountUtils';
 import { getDateWithTimeZone } from '@suite/utils/suite/date';
 
 const Wrapper = styled.div`
@@ -37,11 +36,11 @@ const Description = styled.div`
     flex: 1;
 `;
 
-const YAxisWrapper = styled.div`
-    font-size: ${variables.FONT_SIZE.TINY};
-    white-space: nowrap;
-    color: ${colors.BLACK80};
-`;
+// const YAxisWrapper = styled.div`
+//     font-size: ${variables.FONT_SIZE.TINY};
+//     white-space: nowrap;
+//     color: ${colors.BLACK80};
+// `;
 
 const CustomTooltipWrapper = styled.div<{ coordinate: { x: number; y: number } }>`
     display: flex;
@@ -97,13 +96,9 @@ const CustomTooltip = ({
     active,
     payload,
     coordinate,
-    label,
     symbol,
     selectedRange,
-    ...props
 }: CustomTooltipProps) => {
-    console.log(coordinate);
-    console.log('props', props);
     if (active && payload) {
         const date = getDateWithTimeZone(payload[0].payload.time * 1000);
         return (
@@ -152,7 +147,7 @@ interface CustomXAxisProps {
 }
 
 const CustomizedXAxisTick = (props: CustomXAxisProps) => {
-    const { x, y, stroke, payload } = props;
+    const { x, y, payload } = props;
     const date = getDateWithTimeZone(payload.value * 1000);
     return (
         <g transform={`translate(${x},${y})`}>
@@ -169,7 +164,7 @@ const CustomizedXAxisTick = (props: CustomXAxisProps) => {
 };
 
 const CustomizedYAxisTick = (props: any) => {
-    const { x, y, stroke, payload } = props;
+    const { x, y, payload } = props;
 
     return (
         // <YAxisWrapper>

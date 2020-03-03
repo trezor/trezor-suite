@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Account } from '@wallet-types';
 import { AppState } from '@suite-types';
 import { connect } from 'react-redux';
-import { CoinLogo, variables, P } from '@trezor/components';
+import { CoinLogo, variables } from '@trezor/components';
 import { NoRatesTooltip, HiddenPlaceholder, Badge, FiatValue } from '@suite-components';
 import LastWeekGraph from '../LastWeekGraph';
 
@@ -30,10 +30,6 @@ const AssetName = styled.div`
 // TOOD: refactor to single component
 const SmallBadge = styled(Badge)`
     font-size: ${variables.FONT_SIZE.TINY};
-`;
-
-const BadgeText = styled.div`
-    margin-right: 6px;
 `;
 
 const Col = styled.div`

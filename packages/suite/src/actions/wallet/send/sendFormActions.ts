@@ -166,7 +166,7 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     const isValidAmount = hasDecimals(amount, network.decimals);
 
     if (fiatNetwork && isValidAmount) {
-        const rate = fiatNetwork.rates[output.localCurrency.value.value].toString();
+        const rate = fiatNetwork.current?.rates[output.localCurrency.value.value].toString();
         const fiatValue = getFiatValue(amount, rate);
         if (rate) {
             dispatch({
@@ -212,7 +212,7 @@ export const handleSelectCurrencyChange = (
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
 
     if (fiatNetwork && output.amount.value) {
-        const rate = fiatNetwork.current.rates[localCurrency.value];
+        const rate = fiatNetwork.current?.rates[localCurrency.value];
         const fiatValueBigNumber = new BigNumber(output.amount.value).multipliedBy(
             new BigNumber(rate),
         );
@@ -259,7 +259,7 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
 
     if (!fiatNetwork) return null;
 
-    const rate = fiatNetwork.rates[output.localCurrency.value.value];
+    const rate = fiatNetwork.current?.rates[output.localCurrency.value.value];
     const amountBigNumber = new BigNumber(fiatValue || '0').dividedBy(new BigNumber(rate));
     const amount = amountBigNumber.isNaN() ? '' : amountBigNumber.toFixed(network.decimals);
 
@@ -293,7 +293,7 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
 
     if (fiatNetwork && composedTransaction && composedTransaction.type !== 'error') {
-        const rate = fiatNetwork.rates[output.localCurrency.value.value].toString();
+        const rate = fiatNetwork.current?.rates[output.localCurrency.value.value].toString();
         const fiatValue = getFiatValue(
             formatNetworkAmount(composedTransaction.max, account.symbol),
             rate,

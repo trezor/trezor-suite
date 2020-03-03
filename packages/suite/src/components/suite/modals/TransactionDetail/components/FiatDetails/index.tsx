@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables, P } from '@trezor/components';
+import { colors, variables } from '@trezor/components';
 import FiatValue from '@suite-components/FiatValue/Container';
 import Badge from '@suite-components/Badge';
 import { Translation, HiddenPlaceholder } from '@suite-components';
@@ -105,7 +105,7 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                         values={{
                             date: tx.blockTime ? (
                                 <FormattedDate
-                                    value={getDateWithTimeZone(tx.blockTime * 1000)}
+                                    value={getDateWithTimeZone(tx.blockTime * 1000) ?? undefined}
                                     year="numeric"
                                     month="2-digit"
                                     day="2-digit"

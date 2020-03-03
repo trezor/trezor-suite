@@ -153,7 +153,7 @@ const BasicDetails = ({
                 >
                     {tx.blockTime ? (
                         <FormattedDate
-                            value={getDateWithTimeZone(tx.blockTime * 1000)}
+                            value={getDateWithTimeZone(tx.blockTime * 1000) ?? undefined}
                             // value={tx.blockTime * 1000}
                             year="numeric"
                             month="2-digit"

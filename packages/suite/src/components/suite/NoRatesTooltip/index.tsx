@@ -1,7 +1,7 @@
 import React from 'react';
 import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
-import { Icon, Tooltip, colors, P, variables } from '@trezor/components';
+import { Icon, Tooltip, colors, variables } from '@trezor/components';
 import messages from '@suite/support/messages';
 
 const StyledIcon = styled(Icon)`
