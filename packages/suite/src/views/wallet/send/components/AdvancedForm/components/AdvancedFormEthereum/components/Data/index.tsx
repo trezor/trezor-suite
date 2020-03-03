@@ -1,7 +1,7 @@
 import { Translation, QuestionTooltip } from '@suite-components';
 import messages from '@suite/support/messages';
 import styled from 'styled-components';
-import { Textarea, colors, Icon, Tooltip } from '@trezor/components';
+import { Textarea } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Send } from '@wallet-types';
 import { getInputState } from '@wallet-utils/sendFormUtils';
@@ -39,7 +39,9 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
             onChange={e => sendFormActionsEthereum.handleData(e.target.value)}
             topLabel={
                 <Label>
-                    <Text>Data</Text>
+                    <Text>
+                        <Translation {...messages.TR_SEND_DATA} />
+                    </Text>
                     <QuestionTooltip messageId="TR_SEND_DATA_TOOLTIP" />
                 </Label>
             }

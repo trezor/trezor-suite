@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input, Icon } from '@trezor/components';
+import { Input } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Translation, QuestionTooltip } from '@suite-components';

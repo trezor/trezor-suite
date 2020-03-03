@@ -6,7 +6,7 @@ const definedMessages = defineMessages({
         id: 'CANNOT_SEND_TO_MYSELF',
     },
     TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE: {
-        defaultMessage: 'Cannot send less than {reserve}XRP (reserve) to the empty account',
+        defaultMessage: 'Not enough XRP above the required unspendable reserve ({reserve} XRP)',
         id: 'TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE',
     },
     TR_3RD_PARTY_WALLETS: {
@@ -2271,6 +2271,10 @@ const definedMessages = defineMessages({
     TR_CANCEL: {
         id: 'TR_CANCEL',
         defaultMessage: 'Cancel',
+    },
+    TR_SEND_DATA: {
+        id: 'TR_SEND_DATA',
+        defaultMessage: 'Data',
     },
 });
 
