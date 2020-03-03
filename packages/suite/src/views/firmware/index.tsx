@@ -8,7 +8,8 @@ import * as firmwareActions from '@firmware-actions/firmwareActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { InjectedModalApplicationProps, Dispatch, AppState } from '@suite-types';
 import { getFwVersion } from '@suite-utils/device';
-import { ProgressBar, Image } from '@suite-components';
+import { ProgressBar } from '@suite-components';
+import Image from '@suite-components/images/Image';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import { InitImg, SuccessImg } from '@firmware-components';
 import { Loaders } from '@onboarding-components';
@@ -52,6 +53,8 @@ const ChangesSummary = styled.div`
     max-width: 600px;
 `;
 
+// see here:
+// https://github.com/styled-components/styled-components/issues/2473
 const SeedImg = styled(props => <Image {...props} />)`
     height: 250px;
     padding: 30px;
