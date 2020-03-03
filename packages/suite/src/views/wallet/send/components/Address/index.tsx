@@ -1,6 +1,6 @@
-import { Translation, AddressLabeling } from '@suite-components';
+import { Translation, AddressLabeling, QuestionTooltip } from '@suite-components';
 import styled from 'styled-components';
-import { Icon, colors, Input, Tooltip } from '@trezor/components';
+import { Input } from '@trezor/components';
 import messages from '@suite/support/messages';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Output } from '@wallet-types/sendForm';
@@ -8,14 +8,13 @@ import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import { Props } from './Container';
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-    padding-left: 5px;
-`;
-
 const Label = styled.div`
     display: flex;
     align-items: center;
+`;
+
+const Text = styled.div`
+    margin-right: 3px;
 `;
 
 const getErrorMessage = (error: Output['address']['error']) => {
@@ -43,13 +42,10 @@ export default ({ output, account, openModal, sendFormActions }: Props) => {
             monospace
             topLabel={
                 <Label>
-                    <Translation {...messages.TR_RECIPIENT_ADDRESS} />
-                    <Tooltip
-                        placement="top"
-                        content={<Translation {...messages.TR_RECIPIENT_ADDRESS_TOOLTIP} />}
-                    >
-                        <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
-                    </Tooltip>
+                    <Text>
+                        <Translation {...messages.TR_RECIPIENT_ADDRESS} />
+                    </Text>
+                    <QuestionTooltip messageId="TR_RECIPIENT_ADDRESS_TOOLTIP" />
                 </Label>
             }
             bottomText={getErrorMessage(error) || <AddressLabeling address={value} knownOnly />}

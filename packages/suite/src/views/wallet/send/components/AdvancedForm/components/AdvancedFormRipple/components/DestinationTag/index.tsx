@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input, Icon, colors, Tooltip } from '@trezor/components';
+import { Input, Icon } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { getInputState } from '@wallet-utils/sendFormUtils';
-import { Translation } from '@suite-components/Translation';
+import { Translation, QuestionTooltip } from '@suite-components';
 import { Send } from '@wallet-types';
 import messages from '@suite/support/messages';
 import { Props } from './Container';
@@ -14,11 +14,8 @@ const Label = styled.div`
     justify-content: flex-start;
 `;
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-    display: flex;
-    padding-left: 5px;
-    height: 100%;
+const Text = styled.div`
+    margin-right: 3px;
 `;
 
 const getErrorMessage = (
@@ -48,13 +45,10 @@ const AdvancedFormRipple = ({ send, sendFormActionsRipple }: Props) => {
             variant="small"
             topLabel={
                 <Label>
-                    <Translation {...messages.TR_XRP_DESTINATION_TAG} />
-                    <Tooltip
-                        placement="top"
-                        content={<Translation {...messages.TR_XRP_DESTINATION_TAG_TOOLTIP} />}
-                    >
-                        <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
-                    </Tooltip>
+                    <Text>
+                        <Translation {...messages.TR_XRP_DESTINATION_TAG} />
+                    </Text>
+                    <QuestionTooltip messageId="TR_XRP_DESTINATION_TAG_TOOLTIP" />
                 </Label>
             }
             bottomText={getErrorMessage(error, value)}

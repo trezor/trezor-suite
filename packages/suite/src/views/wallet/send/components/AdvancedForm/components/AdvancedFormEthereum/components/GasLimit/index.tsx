@@ -1,4 +1,4 @@
-import { Translation } from '@suite-components/Translation';
+import { Translation, QuestionTooltip } from '@suite-components';
 import messages from '@suite/support/messages';
 import { Input, Icon, colors, Tooltip } from '@trezor/components';
 import styled from 'styled-components';
@@ -14,10 +14,8 @@ const Label = styled.div`
     align-items: center;
 `;
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-    display: flex;
-    padding-left: 5px;
+const Text = styled.div`
+    margin-right: 3px;
 `;
 
 const getError = (error: Send['networkTypeEthereum']['gasLimit']['error']) => {
@@ -42,13 +40,10 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
             state={getInputState(error, value, true)}
             topLabel={
                 <Label>
-                    <Translation {...messages.TR_GAS_LIMIT} />
-                    <Tooltip
-                        placement="top"
-                        content={<Translation {...messages.TR_SEND_GAS_LIMIT_TOOLTIP} />}
-                    >
-                        <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
-                    </Tooltip>
+                    <Text>
+                        <Translation {...messages.TR_GAS_LIMIT} />
+                    </Text>
+                    <QuestionTooltip messageId="TR_SEND_GAS_LIMIT_TOOLTIP" />
                 </Label>
             }
             bottomText={getError(error)}
