@@ -35,7 +35,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             : feeInfo.levels.concat({
                   label: 'custom',
                   feePerUnit: '0',
-                  blocks: 0,
+                  blocks: -1,
               });
 
     if (account.networkType === 'ethereum') {

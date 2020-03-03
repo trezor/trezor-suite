@@ -24,14 +24,16 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount, send } = getState().wallet;
     if (selectedAccount.status !== 'loaded' || !send) return null;
     const { account } = selectedAccount;
+    const { selectedFee } = send;
+    const isFeeValid = !new BigNumber(selectedFee.feePerUnit).isNaN();
 
     let tx;
     const output = getOutput(send.outputs, 0);
     const amountInSatoshi = networkAmountToSatoshi(output.amount.value, account.symbol).toString();
     const { availableBalance } = account;
     const feeInSatoshi = calculateEthFee(
-        toWei(send.selectedFee.feePerUnit, 'gwei'),
-        send.selectedFee.feeLimit || '0',
+        toWei(isFeeValid ? selectedFee.feePerUnit : '0', 'gwei'),
+        selectedFee.feeLimit || '0',
     );
     const totalSpentBig = new BigNumber(calculateTotal(amountInSatoshi, feeInSatoshi));
     const max = new BigNumber(calculateMax(availableBalance, feeInSatoshi));
