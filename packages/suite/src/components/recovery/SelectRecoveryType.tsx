@@ -52,7 +52,7 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
                         }}
                     />
                 }
-                imgSrc="images/recovery/basic.svg"
+                imgSrc="images/svg/basic.svg"
             />
 
             <Option
@@ -69,7 +69,7 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
                         }}
                     />
                 }
-                imgSrc="images/recovery/advanced.svg"
+                imgSrc="images/svg/advanced.svg"
             />
         </Wrapper>
     </>

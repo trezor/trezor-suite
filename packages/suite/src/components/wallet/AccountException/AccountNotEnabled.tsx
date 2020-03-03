@@ -2,12 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Button } from '@trezor/components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Dispatch } from '@suite-types';
 import { Network, Discovery } from '@wallet-types';
-import { Translation } from '@suite-components';
+import { Translation, Image } from '@suite-components';
 import messages from '@suite/support/messages';
 import Wrapper from './components/Wrapper';
 
@@ -42,7 +41,7 @@ const AccountNotEnabled = (props: Props) => {
                     values={{ networkName: network.name }}
                 />
             }
-            image={<img alt="" src={resolveStaticPath(`images/wallet/wallet-empty.svg`)} />}
+            image={<Image image="EMPTY_WALLET" />}
         >
             <Button
                 variant="primary"

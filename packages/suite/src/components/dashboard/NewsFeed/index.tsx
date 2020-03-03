@@ -193,7 +193,7 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                     ))} */}
                     <NewsItem>
                         <Left>
-                            <NewsImage src={resolveStaticPath('images/dashboard/fake1.png')} />
+                            <NewsImage src={resolveStaticPath('images/png/fake1.png')} />
                         </Left>
                         <Outline>{/* <OutlineIcon show /> */}</Outline>
                         <Right>
@@ -215,7 +215,7 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                     </NewsItem>
                     <NewsItem>
                         <Left>
-                            <NewsImage src={resolveStaticPath('images/dashboard/fake2.png')} />
+                            <NewsImage src={resolveStaticPath('images/png/fake2.png')} />
                         </Left>
                         <Outline>{/* <OutlineIcon show /> */}</Outline>
                         <Right>

@@ -48,7 +48,7 @@ const ShamirStep = (props: Props) => {
                             title="Single seed"
                             text="Security level: Standard. Distributable: No"
                             button="Select single seed"
-                            imgSrc="images/onboarding/seed-card-single.svg"
+                            imgSrc="images/svg/seed-card-single.svg"
                         />
 
                         <Option
@@ -62,7 +62,7 @@ const ShamirStep = (props: Props) => {
                             title="Shamir seed"
                             text="Security level: Advanced Distributable: Yes"
                             button="Select Shamir seed"
-                            imgSrc="images/onboarding/seed-card-shamir.svg"
+                            imgSrc="images/svg/seed-card-shamir.svg"
                         />
                     </Wrapper.Options>
                 )}

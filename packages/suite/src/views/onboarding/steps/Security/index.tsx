@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { Translation } from '@suite-components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
+import { Translation, Image } from '@suite-components';
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import messages from '@suite/support/messages';
 import { Props } from './Container';
@@ -15,7 +14,7 @@ const SecurityStep = (props: Props) => (
             <Text>
                 <Translation {...messages.TR_SECURITY_SUBHEADING} />
             </Text>
-            <img alt="" src={resolveStaticPath('images/onboarding/t-device-initialized.svg')} />
+            <Image image="T_DEVICE_INITIALIZED" />
             <Wrapper.Controls>
                 <OnboardingButton.Cta
                     data-test="@onboarding/continue-to-security-button"

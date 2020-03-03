@@ -86,7 +86,7 @@ const BackgroundGallery = ({ device, applySettings }: Props) => {
                             key={image}
                             id={image}
                             onClick={() => setHomescreen(image)}
-                            src={resolveStaticPath(`images/suite/homescreens/t1/${image}.png`)}
+                            src={resolveStaticPath(`images/png/homescreens/t1/${image}.png`)}
                         />
                     ))}
                 </BackgroundGalleryT1>
@@ -99,7 +99,7 @@ const BackgroundGallery = ({ device, applySettings }: Props) => {
                             key={image}
                             id={image}
                             onClick={() => setHomescreen(image)}
-                            src={resolveStaticPath(`images/suite/homescreens/t2/${image}.png`)}
+                            src={resolveStaticPath(`images/png/homescreens/t2/${image}.png`)}
                         />
                     ))}
                 </BackgroundGalleryT2>

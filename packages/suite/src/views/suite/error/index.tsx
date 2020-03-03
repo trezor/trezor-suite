@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
+import { Translation, Image } from '@suite-components';
 import messages from '@suite/support/messages';
 import { P, H1, Button, Link } from '@trezor/components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const Wrapper = styled.div`
     display: flex;
@@ -14,8 +13,6 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const Img = styled.img``;
-
 export default () => {
     return (
         <Wrapper>
@@ -25,7 +22,7 @@ export default () => {
             <P size="tiny">
                 <Translation {...messages.TR_404_DESCRIPTION} />
             </P>
-            <Img src={resolveStaticPath('images/suite/404.svg')} />
+            <Image image="404" />
             <Link target="_self" href="/">
                 <Button>
                     <Translation {...messages.TR_404_GO_TO_DASHBOARD} />

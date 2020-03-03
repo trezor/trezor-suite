@@ -26,7 +26,7 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                         title="Trezor One"
                         text={<Translation {...messages.TR_MODEL_ONE} />}
                         button="Select Trezor One"
-                        imgSrc="images/onboarding/model-1.svg"
+                        imgSrc="images/svg/model-1.svg"
                     />
                     <Option
                         data-test="@onboarding/option-model-t-path"
@@ -37,7 +37,7 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                         title="Trezor One"
                         text={<Translation {...messages.TR_MODEL_T} />}
                         button="Select Trezor T"
-                        imgSrc="images/onboarding/model-2.svg"
+                        imgSrc="images/svg/model-2.svg"
                     />
                 </Wrapper.Options>
             </Wrapper.StepBody>

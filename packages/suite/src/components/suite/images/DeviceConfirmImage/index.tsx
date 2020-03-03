@@ -23,7 +23,7 @@ const getImage = (majorVersion: number) => {
 const DeviceConfirmImage = ({ device, ...rest }: Props) => {
     const majorVersion = device.features ? device.features.major_version : 2;
     const imgName = getImage(majorVersion);
-    return <Image src={resolveStaticPath(`images/suite/${imgName}.svg`)} {...rest} />;
+    return <Image src={resolveStaticPath(`images/svg/${imgName}.svg`)} {...rest} />;
 };
 
 export default DeviceConfirmImage;

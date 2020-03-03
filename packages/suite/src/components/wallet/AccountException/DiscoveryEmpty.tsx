@@ -2,11 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Button } from '@trezor/components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 import * as modalActions from '@suite-actions/modalActions';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Dispatch } from '@suite-types';
-import { Translation } from '@suite-components';
+import { Translation, Image } from '@suite-components';
 import messages from '@suite/support/messages';
 
 import Wrapper from './components/Wrapper';
@@ -33,7 +32,7 @@ const DiscoveryEmpty = (props: Props) => {
     return (
         <Wrapper
             title={<Translation {...messages.TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY} />}
-            image={<img alt="" src={resolveStaticPath(`images/suite/wallet-empty.svg`)} />}
+            image={<Image image="EMPTY_WALLET" />}
         >
             <Button
                 variant="primary"

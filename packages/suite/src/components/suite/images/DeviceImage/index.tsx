@@ -23,7 +23,7 @@ const Img = styled.img``;
 const DeviceImage = ({ device, ...rest }: Props) => {
     const majorVersion = device.features?.major_version ?? 2;
     const image = getDeviceImage(majorVersion);
-    return <Img src={resolveStaticPath(`images/suite/${image}.svg`)} {...rest} />;
+    return <Img src={resolveStaticPath(`images/svg/${image}.svg`)} {...rest} />;
 };
 
 export default DeviceImage;
