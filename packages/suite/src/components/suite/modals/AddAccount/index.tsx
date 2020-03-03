@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { H2, Button, P, Link, colors, variables } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation, ExternalLink } from '@suite-components';
 import { changeAccountVisibility } from '@wallet-actions/accountActions';
 import { changeCoinVisibility } from '@settings-actions/walletSettingsActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -16,6 +16,7 @@ import NetworkSelect from './components/NetworkSelect';
 import AccountTypeSelect from './components/AccountTypeSelect';
 import ExternalWallet from './components/ExternalWallet';
 import AddAccountButton from './components/AddAccountButton';
+import { WIKI_BECH32_URL } from '@suite-constants/urls';
 
 const Wrapper = styled(ModalWrapper)`
     flex-direction: column;
@@ -183,11 +184,12 @@ const AddAccount = (props: Props) => {
             </H2>
 
             <Description>
-                Explain how account work and some other info that is useful for a new user and does
-                not annoy hard core user. Ok that’s enough text and I can stop now.
+                <Translation {...messages.TR_EXPLAIN_HOW_ACCOUNT_WORK} />
             </Description>
             <Row>
-                <RowTitle>Cryptocurrency</RowTitle>
+                <RowTitle>
+                    <Translation {...messages.TR_CRYPTOCURRENCY} />
+                </RowTitle>
                 <NetworkSelect
                     selectedNetwork={selectedNetwork}
                     networks={internalNetworks}
@@ -197,7 +199,9 @@ const AddAccount = (props: Props) => {
             </Row>
             {!isNetworkDisabled && accountTypes.length > 1 && (
                 <Row>
-                    <RowTitle>Account Type</RowTitle>
+                    <RowTitle>
+                        <Translation {...messages.TR_ACCOUNT_TYPE} />
+                    </RowTitle>
                     <AccountTypeSelect
                         selectedNetwork={selectedNetwork}
                         accountTypes={filteredAccountTypes}
@@ -209,8 +213,10 @@ const AddAccount = (props: Props) => {
             {selectedNetwork?.symbol === 'btc' &&
                 (selectedNetwork?.accountType || 'normal') === 'normal' && (
                     <StyledP size="small" textAlign="left">
-                        Bech32 uses the most modern addresses for smallest transaction fees. Be
-                        aware that it may not be compatible with old bitcoin services.
+                        <Translation {...messages.TR_BECH32_USES_MOST_MODERN} />{' '}
+                        <ExternalLink href={WIKI_BECH32_URL} size="small">
+                            <Translation {...messages.TR_LEARN_MORE} />
+                        </ExternalLink>
                     </StyledP>
                 )}
 
@@ -220,7 +226,7 @@ const AddAccount = (props: Props) => {
 
             <Actions>
                 <Button variant="secondary" onClick={() => props.onCancel()}>
-                    Cancel
+                    <Translation {...messages.TR_CANCEL} />
                 </Button>
                 {isInternal && isNetworkDisabled && (
                     <EnableNetwork

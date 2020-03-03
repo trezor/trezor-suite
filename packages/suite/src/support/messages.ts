@@ -2353,6 +2353,24 @@ const definedMessages = defineMessages({
         id: 'TR_WHAT_IS_DRY_RUN',
         defaultMessage: 'what is dry run',
     },
+    TR_BECH32_USES_MOST_MODERN: {
+        id: 'TR_BECH32_USES_MOST_MODERN',
+        defaultMessage:
+            'Bech32 uses the most modern addresses for smallest transaction fees. Be aware that it may not be compatible with old bitcoin services.',
+    },
+    TR_ACCOUNT_TYPE: {
+        id: 'TR_ACCOUNT_TYPE',
+        defaultMessage: 'Account Type',
+    },
+    TR_EXPLAIN_HOW_ACCOUNT_WORK: {
+        id: 'TR_EXPLAIN_HOW_ACCOUNT_WORK',
+        defaultMessage:
+            'Explain how account work and some other info that is useful for a new user and does not annoy hard core user. Ok that’s enough text and I can stop now.',
+    },
+    TR_CRYPTOCURRENCY: {
+        id: 'TR_CRYPTOCURRENCY',
+        defaultMessage: 'Cryptocurrency',
+    },
 });
 
 export default definedMessages;
