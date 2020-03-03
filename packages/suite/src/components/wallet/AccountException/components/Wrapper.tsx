@@ -17,7 +17,7 @@ const Title = styled(H2)`
 
 const Actions = styled.div`
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     width: 100%;
 `;
 
