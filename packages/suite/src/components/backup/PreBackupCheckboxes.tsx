@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as backupActions from '@suite/actions/backup/backupActions';
-import { CheckItem } from '@backup-components';
+import { CheckItem } from '@suite-components';
 import { Dispatch, AppState } from '@suite-types';
 
 const CheckboxWrapper = styled.div`

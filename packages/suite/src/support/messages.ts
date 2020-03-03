@@ -166,11 +166,17 @@ const definedMessages = defineMessages({
         defaultMessage: '{networkName} Account {accountIndex} public key (XPUB)',
         id: 'TR_XPUB_MODAL_TITLE',
     },
+    TR_ADVANCED_RECOVERY: {
+        defaultMessage: 'advanced recovery',
+        description: 'Enter words via obfuscated pin matrix, recovery takes about 5 minutes.',
+        id: 'TR_ADVANCED_RECOVERY',
+    },
     TR_ADVANCED_RECOVERY_OPTION: {
-        defaultMessage: 'Advanced recovery (5 minutes)',
+        defaultMessage: 'Advanced recovery',
         description: 'Button for selecting advanced recovery option',
         id: 'TR_ADVANCED_RECOVERY_OPTION',
     },
+
     TR_ADVANCED_SETTINGS: {
         defaultMessage: 'Advanced settings',
         description: 'Shows advanced sending form',
@@ -277,10 +283,20 @@ const definedMessages = defineMessages({
         description: 'Explanation what recovery seed is',
         id: 'TR_BACKUP_SUBHEADING_1',
     },
+    TR_BASIC_RECOVERY: {
+        defaultMessage: 'basic recovery',
+        id: 'TR_BASIC_RECOVERY',
+    },
     TR_BASIC_RECOVERY_OPTION: {
-        defaultMessage: 'Basic recovery (2 minutes)',
-        description: 'Button for selecting basic recovery option',
+        defaultMessage: 'Enter words on your computer, recovery takes about 2 minutes.',
+        description: 'Enter words on your computer, recovery takes about 2 minutes.',
         id: 'TR_BASIC_RECOVERY_OPTION',
+    },
+    TR_SELECT_CONCRETE_RECOVERY_TYPE: {
+        id: 'TR_SELECT_CONCRETE_RECOVERY_TYPE',
+        defaultMessage: 'Select {recoveryType}',
+        description:
+            '{recoveryType} stands for either TR_BASIC_RECOVERY or TR_ADVANCED_RECOVERY. Used as button description',
     },
     TR_BCH_ADDRESS_INFO: {
         defaultMessage:
@@ -1067,11 +1083,6 @@ const definedMessages = defineMessages({
         description: 'Name of Trezor model T',
         id: 'TR_MODEL_T',
     },
-    TR_MORE_WORDS_TO_ENTER: {
-        defaultMessage: '{count} words to enter.',
-        description: 'How many words will user need to enter before recovery is finished.',
-        id: 'TR_MORE_WORDS_TO_ENTER',
-    },
     TR_NAV_RECEIVE: {
         defaultMessage: 'Receive',
         description: 'Title of the navigation tab that contains the account address',
@@ -1267,7 +1278,7 @@ const definedMessages = defineMessages({
         id: 'TR_PASSPHRASE_TOO_LONG',
     },
     TR_PASSPHRASE_WALLET: {
-        defaultMessage: 'Passphrase wallet ({id})',
+        defaultMessage: 'Passphrase wallet #{id}',
         id: 'TR_PASSPHRASE_WALLET',
     },
     TR_PENDING: {
@@ -1335,7 +1346,7 @@ const definedMessages = defineMessages({
     },
     TR_RANDOM_SEED_WORDS_DISCLAIMER: {
         defaultMessage:
-            'Please note, that to maximaze security, your device will ask you to enter {count} fake words that are not part of your seed.',
+            'You might be asked to retype some words that are not part of your recovery seed.',
         description:
             'User is instructed to enter words from seed (backup) into the form in browser',
         id: 'TR_RANDOM_SEED_WORDS_DISCLAIMER',
@@ -1604,6 +1615,10 @@ const definedMessages = defineMessages({
         description: 'Button.',
         id: 'TR_START_RECOVERY',
     },
+    TR_START: {
+        defaultMessage: 'Start',
+        id: 'TR_START',
+    },
     TR_STATUS: {
         defaultMessage: 'Status',
         id: 'TR_STATUS',
@@ -1774,9 +1789,9 @@ const definedMessages = defineMessages({
         defaultMessage: '(Unknown transaction)',
         id: 'TR_UNKNOWN_TRANSACTION',
     },
-    TR_UNKOWN_ERROR_SEE_CONSOLE: {
+    TR_UNKNOWN_ERROR_SEE_CONSOLE: {
         defaultMessage: 'Unknown error. See console logs for details.',
-        id: 'TR_UNKOWN_ERROR_SEE_CONSOLE',
+        id: 'TR_UNKNOWN_ERROR_SEE_CONSOLE',
     },
     TR_UNLOCK: {
         defaultMessage: 'Unlock',
@@ -1786,6 +1801,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Unreadable',
         description: 'Device status',
         id: 'TR_UNREADABLE',
+    },
+    TR_UNACQUIRED: {
+        defaultMessage: 'Unrecognized device',
+        description: 'Device status',
+        id: 'TR_UNACQUIRED',
     },
     TR_UNVERIFIED_ADDRESS_COMMA_CONNECT: {
         defaultMessage: 'Unverified address, connect your Trezor to verify it',
@@ -2206,6 +2226,152 @@ const definedMessages = defineMessages({
     TR_N_TRANSACTIONS: {
         id: 'TR_N_TRANSACTIONS',
         defaultMessage: '{value} {value, plural, one {transaction} other {transactions}}',
+    },
+    TR_TREZOR_BRIDGE_DOWNLOAD: {
+        id: 'TR_TREZOR_BRIDGE_DOWNLOAD',
+        defaultMessage: 'Trezor Bridge Download',
+    },
+    TR_CURRENTLY_INSTALLED_TREZOR: {
+        id: 'TR_CURRENTLY_INSTALLED_TREZOR',
+        defaultMessage: 'Currently installed: Trezor Bridge {version}',
+    },
+    EVENT_DEVICE_CONNECT: {
+        id: 'EVENT_DEVICE_CONNECT',
+        defaultMessage: 'Device {label} connected',
+    },
+    EVENT_DEVICE_CONNECT_UNACQUIRED: {
+        id: 'EVENT_DEVICE_CONNECT_UNACQUIRED',
+        defaultMessage: '{label} connected',
+    },
+    EVENT_WALLET_CREATED: {
+        id: 'EVENT_WALLET_CREATED',
+        defaultMessage: '{walletLabel} created',
+    },
+    TR_WIPE_DEVICE_HEADING: {
+        id: 'TR_WIPE_DEVICE_HEADING',
+        defaultMessage: 'Before you wipe your device…',
+    },
+    TR_WIPE_DEVICE_TEXT: {
+        id: 'TR_WIPE_DEVICE_TEXT',
+        defaultMessage:
+            'Wiping the device removes all its content. Only wipe your device if you have your recovery seed with you or when there are no assets on the device.',
+    },
+    TR_WIPE_DEVICE_CHECKBOX_1_TITLE: {
+        id: 'TR_WIPE_DEVICE_CHECKBOX_1_TITLE',
+        defaultMessage: 'I understand this action deletes all data on the device',
+    },
+    TR_WIPE_DEVICE_CHECKBOX_1_DESCRIPTION: {
+        id: 'TR_WIPE_DEVICE_CHECKBOX_1_DESCRIPTION',
+        defaultMessage:
+            'Device will be completely wiped. All data and history will be deleted. You will need a recovery seed to recover your wallet.',
+    },
+    TR_WIPE_DEVICE_CHECKBOX_2_TITLE: {
+        id: 'TR_WIPE_DEVICE_CHECKBOX_2_TITLE',
+        defaultMessage: 'I understand this action does not affect my funds',
+    },
+    TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION: {
+        id: 'TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION',
+        defaultMessage:
+            'Your assets are safe only if you have created a recovery seed. Make sure you have your seed or you know where you keep it.',
+    },
+    TR_CANCEL: {
+        id: 'TR_CANCEL',
+        defaultMessage: 'Cancel',
+    },
+    TR_FOLLOW_INSTRUCTIONS_ON_DEVICE: {
+        id: 'TR_FOLLOW_INSTRUCTIONS_ON_DEVICE',
+        defaultMessage: 'Follow instructions on your device',
+    },
+    TR_ADVANCED_RECOVERY_TEXT: {
+        id: 'TR_ADVANCED_RECOVERY_TEXT',
+        defaultMessage:
+            'Words need to be entered according to the matrix on device but clicking on buttons below.',
+    },
+    TR_ADVANCED_RECOVERY_NOT_SURE: {
+        id: 'TR_ADVANCED_RECOVERY_NOT_SURE',
+        defaultMessage: 'Not sure how advanced method works?',
+    },
+    TR_CHECK_RECOVERY_SEED_DESC_T1: {
+        id: 'TR_CHECK_RECOVERY_SEED_DESC_T1',
+        defaultMessage:
+            'Your wallet backup, the recovery seed, is entered on your computer (host) and your device shows which word to type. You will also be asked to enter words not in your seed, that is a security meassure to ensure nobody can read what key is being pressed.',
+    },
+    TR_SELECT_NUMBER_OF_WORDS: {
+        id: 'TR_SELECT_NUMBER_OF_WORDS',
+        defaultMessage: 'Select number of words in your seed.',
+    },
+    TR_YOU_EITHER_HAVE_T1: {
+        id: 'TR_YOU_EITHER_HAVE_T1',
+        defaultMessage: 'You either have a seed containing 12, 18 or 24 words. ',
+    },
+    TR_YOU_EITHER_HAVE_T2: {
+        id: 'TR_YOU_EITHER_HAVE_T2',
+        defaultMessage: 'You either have a seed containing 12, 18, 24, 33 words. ',
+    },
+    TR_ENTER_ALL_WORDS_IN_CORRECT: {
+        id: 'TR_ENTER_ALL_WORDS_IN_CORRECT',
+        defaultMessage: 'Enter all words in the correct order',
+    },
+    TR_ON_YOUR_COMPUTER_ENTER: {
+        id: 'TR_ON_YOUR_COMPUTER_ENTER',
+        defaultMessage:
+            'On your computer enter each word carefully according to the order showed on device.',
+    },
+    TR_CHECK_RECOVERY_SEED_DESC_T2: {
+        id: 'TR_CHECK_RECOVERY_SEED_DESC_T2',
+        defaultMessage:
+            'Your wallet backup, the recovery seed, is entered entirely on the Trezor Model T, through the device screen. We avoid passing any of your sensitive information to a potentially insecure computer or web browser.',
+    },
+    TR_USING_TOUCHSCREEN: {
+        id: 'TR_USING_TOUCHSCREEN',
+        defaultMessage:
+            'Using the touchscreen display you enter all the words in the correct order until completed.',
+    },
+    TR_CHOSE_RECOVERY_TYPE: {
+        id: 'TR_CHOSE_RECOVERY_TYPE',
+        defaultMessage: 'Chose recovery type',
+    },
+    TR_ALL_THE_WORDS: {
+        id: 'TR_ALL_THE_WORDS',
+        defaultMessage:
+            'All the words are entered only on the device as a extra security feature. Please enter all the words in the correct order carefully.',
+    },
+    TR_SEED_CHECK_SUCCESS_TITLE: {
+        id: 'TR_SEED_CHECK_SUCCESS_TITLE',
+        defaultMessage: 'Backup seed successfully checked!',
+    },
+    TR_SEED_CHECK_SUCCESS_DESC: {
+        id: 'TR_SEED_CHECK_SUCCESS_DESC',
+        defaultMessage:
+            'Your seed is valid and has just been successfully checked. Please take great care of it and/or hide it back where you are goint to find it.',
+    },
+    TR_SEED_CHECK_FAIL_TITLE: {
+        id: 'TR_SEED_CHECK_FAIL_TITLE',
+        defaultMessage: 'Seed check failed',
+    },
+    TR_WORD_DOES_NOT_EXIST: {
+        id: 'TR_WORD_DOES_NOT_EXIST',
+        defaultMessage: 'Word "{word}" does not exist in bip39 word list.',
+        description:
+            'In recovery or dry run, appears when user types a string that is not a substring of any word included in bip39 word list.',
+    },
+    TR_BACKSPACE: {
+        id: 'TR_BACKSPACE',
+        defaultMessage: 'Backspace',
+        description: 'Keyboard key',
+    },
+    TR_DRY_RUN_CHECK_ITEM_TITLE: {
+        id: 'TR_DRY_RUN_CHECK_ITEM_TITLE',
+        defaultMessage: 'I understand this is only check and it won’t affect my seed',
+    },
+    TR_DRY_RUN_CHECK_ITEM_DESCRIPTION: {
+        id: 'TR_DRY_RUN_CHECK_ITEM_DESCRIPTION',
+        defaultMessage:
+            'To learn more about why and how to do a backup seed, please visit our blog post where we explain the process.',
+    },
+    TR_WHAT_IS_DRY_RUN: {
+        id: 'TR_WHAT_IS_DRY_RUN',
+        defaultMessage: 'what is dry run',
     },
 });
 

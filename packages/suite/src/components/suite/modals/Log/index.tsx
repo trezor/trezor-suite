@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { Button, H2, P } from '@trezor/components';
+import { Button, H2, P, colors } from '@trezor/components';
 import { Translation } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import * as notificationActions from '@suite-actions/notificationActions';
@@ -21,11 +21,16 @@ const StyledParagraph = styled(P)`
     margin: 10px 0;
 `;
 
-const LogWrapper = styled.div`
+const LogWrapper = styled.pre`
     background: white;
     padding: 25px;
-    height: 300px;
+    height: 400px;
+    max-width: 80vw;
     overflow: auto;
+    background-color: ${colors.BLACK96};
+    color: ${colors.BLACK0};
+    text-align: left;
+    word-break: break-all;
 `;
 
 const ButtonCopy = styled(Button)`
@@ -49,8 +54,7 @@ const Log = (props: Props) => {
     const htmlElement = createRef<HTMLDivElement>();
 
     const getFormattedLog = () => {
-        // todo: finish, depends on requierements from product;
-        return JSON.stringify(props.log.entries);
+        return JSON.stringify(props.log.entries, null, 2);
     };
 
     const copy = () => {

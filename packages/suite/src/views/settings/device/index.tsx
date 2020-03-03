@@ -49,15 +49,7 @@ const Col = styled.div`
     flex-direction: column;
 `;
 
-const Settings = ({
-    device,
-    locks,
-    applySettings,
-    changePin,
-    wipeDevice,
-    openModal,
-    goto,
-}: Props) => {
+const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     const [label, setLabel] = useState('');
     const [customHomescreen, setCustomHomescreen] = useState('');
@@ -221,6 +213,25 @@ const Settings = ({
                         />
                     </ActionColumn>
                 </Row>
+
+                {features.pin_protection && (
+                    <Row>
+                        <TextColumn
+                            title="Change PIN"
+                            description="In case your PIN has been exposed or you simply want to change it, here you go. There is no limit of how many times you can change your PIN."
+                        />
+                        <ActionColumn>
+                            <ActionButton
+                                onClick={() => changePin({ remove: false })}
+                                // isDisabled={uiLocked}
+                                variant="secondary"
+                                data-test="@settings/device/update-button"
+                            >
+                                Change PIN
+                            </ActionButton>
+                        </ActionColumn>
+                    </Row>
+                )}
 
                 <Row>
                     <TextColumn
@@ -408,10 +419,14 @@ const Settings = ({
                     />
                     <ActionColumn>
                         <ActionButton
+                            onClick={() =>
+                                openModal({
+                                    type: 'wipe-device',
+                                })
+                            }
                             variant="danger"
-                            onClick={() => wipeDevice()}
                             isDisabled={uiLocked}
-                            data-test="@settings/device/wipe-button"
+                            data-test="@settings/device/open-wipe-modal-button"
                         >
                             <Translation>
                                 {messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}

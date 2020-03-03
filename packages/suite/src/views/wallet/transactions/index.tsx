@@ -60,7 +60,12 @@ export default (props: Props) => {
                     </LoaderText>
                 </LoaderWrapper>
             )}
-            {accountTransactions.length === 0 && !transactions.isLoading && <NoTransactions />}
+            {accountTransactions.length === 0 && !transactions.isLoading && (
+                <NoTransactions
+                    receive={() => props.goto('wallet-receive', undefined, true)}
+                    buy={() => {}}
+                />
+            )}
             {accountTransactions.length > 0 && (
                 <>
                     <TransactionSummary account={account} />

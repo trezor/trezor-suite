@@ -88,7 +88,8 @@ const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Pr
                 </Row>
             </Section>
 
-            <Section header={<Translation>{messages.TR_LABELING}</Translation>}>
+            {/* TODO: KEEP IT HERE AND UNCOMMENT WHEN READY */}
+            {/* <Section header={<Translation>{messages.TR_LABELING}</Translation>}>
                 <Row>
                     <TextColumn title={<Translation>{messages.TR_CONNECT_DROPBOX}</Translation>} />
                     <ActionColumn>
@@ -101,7 +102,7 @@ const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Pr
                         </ActionButton>
                     </ActionColumn>
                 </Row>
-            </Section>
+            </Section> */}
 
             <Analytics />
 

@@ -42,3 +42,4 @@ export const WIKI_XPUB_URL =
 export const WIKI_BECH32_URL = 'https://wiki.trezor.io/Bech32';
 export const WIKI_P2SH_URL = 'https://wiki.trezor.io/P2SH';
 export const WIKI_P2PHK_URL = 'https://wiki.trezor.io/P2PHK_address';
+export const WIKI_ADVANCED_RECOVERY = 'https://wiki.trezor.io/User_manual:Advanced_recovery';
