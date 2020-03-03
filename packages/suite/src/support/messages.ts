@@ -211,10 +211,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Amount is not set',
         id: 'TR_AMOUNT_IS_NOT_SET',
     },
-    TR_AND: {
-        defaultMessage: 'and',
-        id: 'TR_AND',
-    },
     TR_ASSETS: {
         defaultMessage: 'Assets',
         id: 'TR_ASSETS',
@@ -424,10 +420,6 @@ const definedMessages = defineMessages({
     TR_CONNECT_TREZOR: {
         defaultMessage: 'Connect Trezor to continue...',
         id: 'TR_CONNECT_TREZOR',
-    },
-    TR_CONNECT_TREZOR_TO_CONTINUE: {
-        defaultMessage: 'Connect Trezor to continue',
-        id: 'TR_CONNECT_TREZOR_TO_CONTINUE',
     },
     TR_CONNECT_YOUR_DEVICE: {
         defaultMessage: 'Connect your device',
@@ -708,10 +700,6 @@ const definedMessages = defineMessages({
         description: 'Link to trezor documentation (wiki)',
         id: 'TR_DOCUMENTATION',
     },
-    TR_DONT_HAVE_A_TREZOR: {
-        defaultMessage: "Don't have a Trezor? {getOne}",
-        id: 'TR_DONT_HAVE_A_TREZOR',
-    },
     TR_DOUBLE_CLICK_IT_TO_RUN_INSTALLER: {
         defaultMessage: 'Double click it to run installer',
         description: 'Instruction for installing Trezor Bridge',
@@ -890,11 +878,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'General',
         description: 'Category in Settings',
         id: 'TR_GENERAL',
-    },
-    TR_GET_ONE: {
-        defaultMessage: 'Get one',
-        description: 'Part of the sentence: Dont have a Trezor? Get one',
-        id: 'TR_GET_ONE',
     },
     TR_GO_TO_EXTERNAL_WALLET: {
         defaultMessage: 'Go to external wallet',
