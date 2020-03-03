@@ -4,13 +4,10 @@ import { Button, colors, variables } from '@trezor/components';
 import { Account, Send } from '@wallet-types';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
-import { PrecomposedTransactionXrp, PrecomposedTransactionEth } from '@wallet-types/sendForm';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import styled from 'styled-components';
 
-import EstimatedMiningTime from '../EstimatedMiningTime';
 import { Props } from './Container';
 
 const Wrapper = styled.div`
@@ -35,11 +32,6 @@ const Row = styled.div`
     &:last-child {
         padding-bottom: 0;
     }
-`;
-
-const Bold = styled.div`
-    padding-left: 4px;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
 const isDisabled = (
@@ -100,22 +92,10 @@ const isDisabled = (
     return isDisabled;
 };
 
-const getSendAmount = (
-    transactionInfo: PrecomposedTransactionXrp | PrecomposedTransactionEth,
-    symbol: Account['symbol'],
-) => {
-    if (transactionInfo && transactionInfo.type !== 'error') {
-        return `${formatNetworkAmount(transactionInfo.totalSpent, symbol)} ${symbol.toUpperCase()}`;
-    }
-
-    return null;
-};
-
 export default ({ send, suite, account, device, modalActions }: Props) => {
     if (!send || !account || !device) return null;
-    const { isComposing, customFee } = send;
-    const { networkType, symbol } = account;
-    const transactionInfo = getTransactionInfo(networkType, send);
+    const { isComposing } = send;
+    const { networkType } = account;
 
     return (
         <Wrapper>
@@ -128,28 +108,6 @@ export default ({ send, suite, account, device, modalActions }: Props) => {
                     <Translation {...messages.TR_SEND_REVIEW_TRANSACTION} />
                 </ButtonReview>
             </Row>
-            {transactionInfo?.type === 'final' && (
-                <>
-                    <Row>
-                        <Translation {...messages.TR_SEND} />{' '}
-                        <Bold>{getSendAmount(transactionInfo, symbol)}</Bold>
-                    </Row>
-                    <Row>
-                        <Translation {...messages.TR_INCLUDING_FEE} />{' '}
-                        <Bold>
-                            {formatNetworkAmount(transactionInfo.fee, symbol)}{' '}
-                            {symbol.toUpperCase()}
-                        </Bold>
-                    </Row>
-                    {networkType === 'bitcoin' && !customFee.value && (
-                        <Row>
-                            <EstimatedMiningTime
-                                seconds={send.feeInfo.blockTime * send.selectedFee.blocks * 60}
-                            />
-                        </Row>
-                    )}
-                </>
-            )}
         </Wrapper>
     );
 };
