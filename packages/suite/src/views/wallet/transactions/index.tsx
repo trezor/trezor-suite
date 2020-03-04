@@ -68,7 +68,7 @@ export default (props: Props) => {
             )}
             {accountTransactions.length > 0 && (
                 <>
-                    <TransactionSummary account={account} />
+                    {account.networkType !== 'ripple' && <TransactionSummary account={account} />}
                     <TransactionList
                         explorerUrl={network.explorer.tx}
                         transactions={accountTransactions}

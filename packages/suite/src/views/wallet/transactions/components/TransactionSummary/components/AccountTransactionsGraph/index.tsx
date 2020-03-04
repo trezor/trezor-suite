@@ -14,8 +14,6 @@ import {
     YAxis,
     XAxis,
     TooltipProps,
-    BarProps,
-    RectangleProps,
 } from 'recharts';
 import { fetchAccountHistory } from '@suite/actions/wallet/fiatRatesActions';
 import { Await } from '@suite/types/utils';
@@ -187,7 +185,6 @@ interface CustomBarProps {
 
 const CustomBar = (props: CustomBarProps) => {
     const { fill, x, y, width, height, payload, variant } = props;
-
     let forcedHeightChange = false;
     let minHeight = height;
     if (
@@ -230,7 +227,7 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
     //           )
     //         : null;
 
-    const Xticks = calcTicks(selectedRange.weeks).map(getUnixTime);
+    const XTicks = calcTicks(selectedRange.weeks).map(getUnixTime);
 
     return (
         <Wrapper>
@@ -253,12 +250,12 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
                             <XAxis
                                 dataKey="time"
                                 type="number"
-                                domain={[Xticks[0], Xticks[Xticks.length - 1]]}
+                                domain={[XTicks[0], XTicks[XTicks.length - 1]]}
                                 width={10}
                                 stroke={colors.BLACK80}
                                 interval={0}
                                 tick={<CustomizedXAxisTick selectedRange={selectedRange} />}
-                                ticks={Xticks}
+                                ticks={XTicks}
                             />
                             <YAxis
                                 type="number"
@@ -288,7 +285,7 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
                                 dataKey={(data: AccountHistory[number]) => Number(data.sent)}
                                 stackId="stack"
                                 fill={colors.RED_ERROR}
-                                maxBarSize={10}
+                                barSize={10}
                                 shape={<CustomBar variant="sent" />}
                                 // minPointSize={1}
                             />
@@ -296,9 +293,8 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
                                 dataKey={(data: AccountHistory[number]) => Number(data.received)}
                                 stackId="stack"
                                 fill={colors.GREEN}
-                                maxBarSize={10}
+                                barSize={10}
                                 shape={<CustomBar variant="received" />}
-
                                 // minPointSize={data.received === '0' ? 0 : 1}
                                 // minPointSize={1}
                             />

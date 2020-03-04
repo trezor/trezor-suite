@@ -102,7 +102,7 @@ const TransactionSummary = (props: Props) => {
                 />
             </GraphWrapper>
             <InfoCardsWrapper>
-                {error ? null : (
+                {!error && (
                     <>
                         <InfoCard
                             title={<Translation {...messages.TR_INCOMING} />}
