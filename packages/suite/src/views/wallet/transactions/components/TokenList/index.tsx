@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Account } from '@wallet-types';
-import { Card } from '@suite-components';
+import { Card, FiatValue, Badge } from '@suite-components';
 // @ts-ignore no types for this lib
 import ScaleText from 'react-scale-text';
 import { variables, colors, Icon, Link } from '@trezor/components';
@@ -50,8 +50,12 @@ const TokenName = styled.div`
 
 const TokenValue = styled.div`
     display: flex;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    margin-right: 28px;
+`;
+
+const FiatWrapper = styled.div`
+    display: flex;
+    font-size: ${variables.FONT_SIZE.TINY};
     margin-right: 28px;
 `;
 
@@ -72,6 +76,13 @@ const TokenList = ({ tokens, explorerUrl }: Props) => {
                             </TokenImage>
                             <TokenName>{t.name}</TokenName>
                             <TokenValue>{`${t.balance} ${t.symbol?.toUpperCase()}`}</TokenValue>
+                            <FiatWrapper>
+                                {t.balance && t.symbol && (
+                                    <FiatValue amount={t.balance} symbol={t.symbol}>
+                                        {({ value }) => (value ? <Badge>{value}</Badge> : null)}
+                                    </FiatValue>
+                                )}
+                            </FiatWrapper>
                             <Link href={`${explorerUrl}${t.address}`}>
                                 <Icon icon="EXTERNAL_LINK" size={16} color={colors.BLACK25} />
                             </Link>

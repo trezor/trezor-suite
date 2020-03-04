@@ -336,11 +336,11 @@ const TransactionItem = (props: Props) => {
                     {tokens.map(t => (
                         <HiddenPlaceholder>
                             <FiatBalanceCol>
-                                <FiatValue amount={t.amount} symbol={t.symbol}>
+                                {/* <FiatValue amount={t.amount} symbol={t.symbol}>
                                     {({ value }) =>
                                         value ? <SmallBadge>{value}</SmallBadge> : null
                                     }
-                                </FiatValue>
+                                </FiatValue> */}
                             </FiatBalanceCol>
                         </HiddenPlaceholder>
                     ))}
