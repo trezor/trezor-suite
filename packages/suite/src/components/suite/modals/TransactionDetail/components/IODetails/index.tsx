@@ -122,25 +122,26 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
 
                                         <BadgesWrapper>
                                             <HiddenPlaceholder>
-                                                <Badge>
-                                                    <FiatValue
-                                                        amount={inputAmount}
-                                                        symbol={tx.symbol}
-                                                    >
-                                                        {({ value }) => value}
-                                                    </FiatValue>
-                                                </Badge>
+                                                <FiatValue amount={inputAmount} symbol={tx.symbol}>
+                                                    {({ value }) =>
+                                                        value ? <Badge>{value}</Badge> : null
+                                                    }
+                                                </FiatValue>
                                             </HiddenPlaceholder>
                                             <HiddenPlaceholder>
-                                                <HistoricalBadge>
-                                                    <FiatValue
-                                                        amount={inputAmount}
-                                                        symbol={tx.symbol}
-                                                        source={tx.rates}
-                                                    >
-                                                        {({ value }) => value}
-                                                    </FiatValue>
-                                                </HistoricalBadge>
+                                                <FiatValue
+                                                    amount={inputAmount}
+                                                    symbol={tx.symbol}
+                                                    source={tx.rates}
+                                                >
+                                                    {({ value }) =>
+                                                        value ? (
+                                                            <HistoricalBadge>
+                                                                {value}
+                                                            </HistoricalBadge>
+                                                        ) : null
+                                                    }
+                                                </FiatValue>
                                             </HiddenPlaceholder>
                                         </BadgesWrapper>
                                     </IOBoxAmountWrapper>
@@ -169,25 +170,26 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                                         </HiddenPlaceholder>
                                         <BadgesWrapper>
                                             <HiddenPlaceholder>
-                                                <Badge>
-                                                    <FiatValue
-                                                        amount={outputAmount}
-                                                        symbol={tx.symbol}
-                                                    >
-                                                        {({ value }) => value}
-                                                    </FiatValue>
-                                                </Badge>
+                                                <FiatValue amount={outputAmount} symbol={tx.symbol}>
+                                                    {({ value }) =>
+                                                        value ? <Badge>{value}</Badge> : null
+                                                    }
+                                                </FiatValue>
                                             </HiddenPlaceholder>
                                             <HiddenPlaceholder>
-                                                <HistoricalBadge>
-                                                    <FiatValue
-                                                        amount={outputAmount}
-                                                        symbol={tx.symbol}
-                                                        source={tx.rates}
-                                                    >
-                                                        {({ value }) => value}
-                                                    </FiatValue>
-                                                </HistoricalBadge>
+                                                <FiatValue
+                                                    amount={outputAmount}
+                                                    symbol={tx.symbol}
+                                                    source={tx.rates}
+                                                >
+                                                    {({ value }) =>
+                                                        value ? (
+                                                            <HistoricalBadge>
+                                                                {value}
+                                                            </HistoricalBadge>
+                                                        ) : null
+                                                    }
+                                                </FiatValue>
                                             </HiddenPlaceholder>
                                         </BadgesWrapper>
                                     </IOBoxAmountWrapper>
