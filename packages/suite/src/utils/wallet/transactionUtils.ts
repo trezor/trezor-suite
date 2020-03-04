@@ -61,9 +61,8 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
  */
 export const parseKey = (key: string) => {
     const parts = key.split('-');
-    const d = getDateWithTimeZone(
-        new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])).getTime(),
-    );
+    const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])).getTime();
+
     return d;
 };
 
