@@ -1786,7 +1786,7 @@ const definedMessages = defineMessages({
         id: 'TR_UNKNOWN_CONFIRMATION_TIME',
     },
     TR_UNKNOWN_TRANSACTION: {
-        defaultMessage: '(Unknown transaction)',
+        defaultMessage: 'Unknown transaction',
         id: 'TR_UNKNOWN_TRANSACTION',
     },
     TR_UNKNOWN_ERROR_SEE_CONSOLE: {

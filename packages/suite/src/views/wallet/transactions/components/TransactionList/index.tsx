@@ -67,6 +67,7 @@ const FiatDayAmount = styled(DayAmount)`
     min-width: 100px;
     justify-content: flex-end;
     text-align: right;
+    margin-left: 16px;
 `;
 
 const DateWrapper = styled.div`

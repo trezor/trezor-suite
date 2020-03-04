@@ -76,41 +76,39 @@ const Target = styled.div`
 const Token = styled.div`
     display: flex;
     flex-direction: column;
-    border: 1px solid #f2f2f2;
-    border-radius: 3px;
-    padding: 4px 8px;
-    background: #fafafa;
+    color: ${colors.BLACK50};
+    font-size: ${variables.FONT_SIZE.TINY};
 `;
 
 const TokenName = styled.div`
-    color: ${colors.BLACK0};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const TokenAddress = styled.div`
-    color: ${colors.BLACK0};
-    /* font-family: ${variables.FONT_FAMILY.MONOSPACE}; */
-    font-size: ${variables.FONT_SIZE.SMALL};
     overflow: hidden;
     text-overflow: ellipsis;
+    color: ${colors.BLACK0};
 `;
 
 const Label = styled.div`
-    color: ${colors.BLACK80};
-    font-size: ${variables.FONT_SIZE.SMALL};
     display: flex;
+
+    & + & {
+        margin-top: 8px;
+    }
 `;
 
-const Balance = styled.div<{ partial?: boolean }>`
+const Balance = styled.div<{ partial?: boolean; secondary?: boolean }>`
     display: flex;
     flex-direction: row;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => (props.partial === true ? colors.BLACK50 : colors.BLACK0)};
+    margin-top: ${props => (props.secondary ? '8px' : '0px')};
+    font-size: ${props => (props.secondary ? variables.FONT_SIZE.TINY : variables.FONT_SIZE.SMALL)};
+    color: ${props => (props.partial || props.secondary ? colors.BLACK50 : colors.BLACK0)};
     margin-left: 1rem;
 `;
 
-const FiatBalance = styled(Balance)`
+const FiatBalanceCol = styled(Balance)`
     min-width: 100px;
     justify-content: flex-end;
     text-align: right;
@@ -163,6 +161,12 @@ const SmallBadge = styled(Badge)`
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
+const AmountsWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+`;
+
 const TokenTransfer = (transfer: ArrayElement<Props['transaction']['tokens']>) => {
     if (transfer.type === 'self') {
         return (
@@ -184,7 +188,7 @@ const TokenTransfer = (transfer: ArrayElement<Props['transaction']['tokens']>) =
         <Token>
             <Row>
                 <Col>
-                    <TokenName>
+                    {/* <TokenName>
                         {transfer.name} ({transfer.symbol})
                         <HiddenPlaceholder>
                             <TokenAmount txType={transfer.type}>
@@ -193,15 +197,15 @@ const TokenTransfer = (transfer: ArrayElement<Props['transaction']['tokens']>) =
                                 {transfer.amount} {transfer.symbol}
                             </TokenAmount>
                         </HiddenPlaceholder>
-                    </TokenName>
+                    </TokenName> */}
                     <Label>
-                        From:&nbsp;
+                        from:&nbsp;
                         <TokenAddress>
                             <AddressLabeling address={transfer.from} />
                         </TokenAddress>
                     </Label>
                     <Label>
-                        To:&nbsp;
+                        to:&nbsp;
                         <TokenAddress>
                             <AddressLabeling address={transfer.to} />
                         </TokenAddress>
@@ -231,7 +235,9 @@ const TransactionItem = (props: Props) => {
 
     // blockbook cannot parse some txs
     // eg. tx with eth smart contract that creates a new token has no valid target
-    const isUnknown = type === 'sent' && targets.length === 1 && targets[0].addresses === null;
+    const isUnknown =
+        (type === 'sent' && targets.length === 1 && targets[0].addresses === null) ||
+        type === 'unknown';
     return (
         <Wrapper
             isExpanded={isExpanded}
@@ -300,10 +306,22 @@ const TransactionItem = (props: Props) => {
                     {tokens &&
                         tokens.map(token => <TokenTransfer key={token.address} {...token} />)}
                 </Targets>
-                {amount !== '0' && (
-                    <>
+                <AmountsWrapper>
+                    {tokens.map(t => (
                         <HiddenPlaceholder>
                             <Balance>
+                                <Amount>
+                                    {t.type === 'recv' && '+'}
+                                    {t.type !== 'recv' && '-'}
+                                    {t.amount}&nbsp;
+                                </Amount>
+                                <Symbol>{t.symbol.toUpperCase()}</Symbol>
+                            </Balance>
+                        </HiddenPlaceholder>
+                    ))}
+                    {amount !== '0' && (
+                        <HiddenPlaceholder>
+                            <Balance secondary={tokens.length > 0}>
                                 <Amount>
                                     {type === 'recv' && '+'}
                                     {type !== 'recv' && '-'}
@@ -312,25 +330,34 @@ const TransactionItem = (props: Props) => {
                                 <Symbol>{symbol.toUpperCase()}</Symbol>
                             </Balance>
                         </HiddenPlaceholder>
+                    )}
+                </AmountsWrapper>
+                <AmountsWrapper>
+                    {tokens.map(t => (
                         <HiddenPlaceholder>
-                            {props.transaction.rates && (
+                            <FiatBalanceCol>
+                                <FiatValue amount={t.amount} symbol={t.symbol}>
+                                    {({ value }) =>
+                                        value ? <SmallBadge>{value}</SmallBadge> : null
+                                    }
+                                </FiatValue>
+                            </FiatBalanceCol>
+                        </HiddenPlaceholder>
+                    ))}
+                    {amount !== '0' && (
+                        <HiddenPlaceholder>
+                            <FiatBalanceCol>
                                 <FiatValue
                                     amount={amount}
                                     symbol={symbol}
                                     source={props.transaction.rates}
                                 >
-                                    {({ value }) =>
-                                        value && (
-                                            <FiatBalance>
-                                                <SmallBadge>{value}</SmallBadge>
-                                            </FiatBalance>
-                                        )
-                                    }
+                                    {({ value }) => value && <SmallBadge>{value}</SmallBadge>}
                                 </FiatValue>
-                            )}
+                            </FiatBalanceCol>
                         </HiddenPlaceholder>
-                    </>
-                )}
+                    )}
+                </AmountsWrapper>
             </Row>
             {isExpanded && (
                 <ExpandedList>
@@ -365,9 +392,9 @@ const TransactionItem = (props: Props) => {
                                     >
                                         {({ value }) =>
                                             value && (
-                                                <FiatBalance partial>
+                                                <FiatBalanceCol partial>
                                                     <SmallBadge>{value}</SmallBadge>
-                                                </FiatBalance>
+                                                </FiatBalanceCol>
                                             )
                                         }
                                     </FiatValue>

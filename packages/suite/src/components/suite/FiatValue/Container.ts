@@ -17,7 +17,7 @@ interface Params {
 
 type OwnProps = {
     amount: string;
-    symbol: Network['symbol'];
+    symbol: Network['symbol'] | string;
     fiatCurrency?: string;
     source?: TimestampedRates['rates'] | 'current';
     children?: (props: Params) => React.ReactElement | null;
