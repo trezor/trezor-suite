@@ -141,8 +141,8 @@ export const handleAddressChange = (outputId: number, address: string) => (
     getState: GetState,
 ) => {
     const { send, selectedAccount } = getState().wallet;
+    if (!send || selectedAccount.status !== 'loaded') return null;
     const { account } = selectedAccount;
-    if (!account || !send) return null;
     const { networkType } = account;
     const output = getOutput(send.outputs, outputId);
 
