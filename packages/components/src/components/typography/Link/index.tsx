@@ -15,9 +15,10 @@ const A = styled.a<Props>`
     font-size: ${props => (props.size ? A_SIZES[props.size] : 'inherit')};
     text-decoration: none;
     cursor: pointer;
-    color: ${colors.GREENER};
-    font-weight: 600;
+    color: ${colors.BLACK25};
+    font-weight: 500;
     display: inline-flex;
+    align-items: center;
 
     &:hover {
         text-decoration: underline;
@@ -37,6 +38,10 @@ const A = styled.a<Props>`
         `}
 `;
 
+const IconWrapper = styled.div`
+    margin-left: 4px;
+`;
+
 interface Props {
     href?: string;
     to?: any;
@@ -47,16 +52,21 @@ interface Props {
     className?: string;
     variant?: 'default' | 'nostyle';
     icon?: IconProps['icon'];
+    iconProps?: IconProps;
 }
 
-const Link = ({ icon, ...props }: Props) => (
+const Link = ({ icon, iconProps, ...props }: Props) => (
     <A href={props.href} target={props.target || '_blank'} rel="noreferrer noopener" {...props}>
         {props.children}
         {icon && (
-            <Icon
-                size={props.size ? Number(A_SIZES[props.size].replace('px', '')) : undefined}
-                icon={icon}
-            />
+            <IconWrapper>
+                <Icon
+                    size={props.size ? Number(A_SIZES[props.size].replace('px', '')) : 24}
+                    icon={icon}
+                    color={colors.BLACK25}
+                    {...iconProps}
+                />
+            </IconWrapper>
         )}
     </A>
 );
