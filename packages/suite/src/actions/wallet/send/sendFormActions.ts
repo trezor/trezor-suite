@@ -330,19 +330,11 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
     }
 
     if (composedTransaction && composedTransaction.type !== 'error') {
-        const availableBalanceBig = new BigNumber(account.availableBalance);
-
-        const amount = formatNetworkAmount(
-            availableBalanceBig.minus(composedTransaction.fee).toString(),
-            account.symbol,
-        );
-
-        const amountBig = new BigNumber(amount);
-
+        const maxBig = new BigNumber(formatNetworkAmount(composedTransaction.max, account.symbol));
         dispatch({
             type: SEND.HANDLE_AMOUNT_CHANGE,
             outputId,
-            amount: amountBig.isLessThan(0) ? '0' : amountBig.toString(),
+            amount: maxBig.isLessThanOrEqualTo(0) ? '0' : maxBig.toFixed(network.decimals),
             decimals: network.decimals,
             availableBalance: account.availableBalance,
             isDestinationAccountEmpty,

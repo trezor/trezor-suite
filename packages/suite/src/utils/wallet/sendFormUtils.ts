@@ -53,13 +53,18 @@ export const calculateTotal = (amount: string, fee: string): string => {
     }
 };
 
-export const calculateMax = (balance: string, fee: string): string => {
+export const calculateMax = (balance: string, fee: string, account?: Account): string => {
     try {
         const balanceBig = new BigNumber(balance);
-        // TODO - minus pendings
-        const max = balanceBig.minus(fee);
+        let max = balanceBig.minus(fee);
+
+        if (account && account.networkType === 'ripple') {
+            const { misc } = account;
+            max = max.minus(misc.reserve);
+        }
+
         if (max.isLessThan(0)) return '0';
-        return max.toFixed();
+        return max.toString();
     } catch (error) {
         return '0';
     }
