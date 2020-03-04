@@ -10,6 +10,7 @@ import messages from '@suite/support/messages';
 import NoTransactions from './components/NoTransactions';
 import PricePanel from './components/PricePanel';
 import TransactionSummary from './components/TransactionSummary';
+import TokenList from './components/TokenList';
 
 import { Props } from './Container';
 
@@ -69,6 +70,9 @@ export default (props: Props) => {
             {accountTransactions.length > 0 && (
                 <>
                     {account.networkType !== 'ripple' && <TransactionSummary account={account} />}
+                    {account.networkType === 'ethereum' && (
+                        <TokenList explorerUrl={network.explorer.account} tokens={account.tokens} />
+                    )}
                     <TransactionList
                         explorerUrl={network.explorer.tx}
                         transactions={accountTransactions}

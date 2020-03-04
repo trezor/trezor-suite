@@ -2,7 +2,7 @@ import TrezorConnect, { AccountInfo } from 'trezor-connect';
 import { ACCOUNT } from '@wallet-actions/constants';
 import { DiscoveryItem } from '@wallet-actions/discoveryActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
-import { formatNetworkAmount, isAccountOutdated } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount, isAccountOutdated, formatAmount } from '@wallet-utils/accountUtils';
 import { NETWORKS } from '@wallet-config';
 import { Account, Network } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
@@ -67,7 +67,10 @@ export const create = (
         balance: accountInfo.balance,
         availableBalance: accountInfo.availableBalance,
         formattedBalance: formatNetworkAmount(accountInfo.availableBalance, discoveryItem.coin),
-        tokens: accountInfo.tokens,
+        tokens: accountInfo.tokens?.map(t => ({
+            ...t,
+            balance: t.balance ? formatAmount(t.balance, t.decimals) : t.balance,
+        })),
         addresses: accountInfo.addresses,
         utxo: accountInfo.utxo,
         history: accountInfo.history,
