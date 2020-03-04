@@ -69,6 +69,7 @@ export const create = (
         formattedBalance: formatNetworkAmount(accountInfo.availableBalance, discoveryItem.coin),
         tokens: accountInfo.tokens?.map(t => ({
             ...t,
+            symbol: t.symbol ? t.symbol.toLowerCase() : t.symbol,
             balance: t.balance ? formatAmount(t.balance, t.decimals) : t.balance,
         })),
         addresses: accountInfo.addresses,
