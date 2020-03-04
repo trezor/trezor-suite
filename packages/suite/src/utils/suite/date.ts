@@ -1,4 +1,4 @@
-import { formatDistance, fromUnixTime } from 'date-fns';
+import { formatDistance, isBefore, addMonths, subWeeks, addDays, fromUnixTime } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 
 export const formatDuration = (seconds: number) =>
@@ -13,4 +13,32 @@ export const getDateWithTimeZone = (date: number, timeZone?: string) => {
         console.error(err);
         return null;
     }
+};
+
+export const getTicksBetweenTimestamps = (from: Date, to: Date, interval: 'month' | 'day') => {
+    let fromDate = from;
+    const toDate = to;
+
+    if (isBefore(toDate, fromDate)) {
+        return [];
+    }
+
+    const months = [];
+    while (isBefore(fromDate, toDate)) {
+        months.push(fromDate);
+        if (interval === 'month') {
+            fromDate = addMonths(fromDate, 1);
+        }
+        if (interval === 'day') {
+            fromDate = addDays(fromDate, 1);
+        }
+    }
+    months.push(fromDate);
+    return months;
+};
+
+export const calcTicks = (weeks: number) => {
+    const startDate = subWeeks(new Date(), weeks);
+    const endDate = new Date();
+    return getTicksBetweenTimestamps(startDate, endDate, weeks === 52 ? 'month' : 'day');
 };

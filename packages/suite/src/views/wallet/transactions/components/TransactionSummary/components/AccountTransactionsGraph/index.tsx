@@ -14,11 +14,14 @@ import {
     YAxis,
     XAxis,
     TooltipProps,
+    BarProps,
+    RectangleProps,
 } from 'recharts';
 import { fetchAccountHistory } from '@suite/actions/wallet/fiatRatesActions';
 import { Await } from '@suite/types/utils';
 import RangeSelector from './components/RangeSelector';
-import { getDateWithTimeZone } from '@suite/utils/suite/date';
+import { getDateWithTimeZone, calcTicks } from '@suite/utils/suite/date';
+import { getUnixTime } from 'date-fns';
 
 const Wrapper = styled.div`
     display: flex;
@@ -151,9 +154,9 @@ const CustomizedXAxisTick = (props: CustomXAxisProps) => {
     const date = getDateWithTimeZone(payload.value * 1000);
     return (
         <g transform={`translate(${x},${y})`}>
-            <text x={0} y={0} dy={16} textAnchor="end" fill="#666" transform="rotate(-45)">
+            <text x={0} y={0} dy={16} textAnchor="end" fill="#666" transform="rotate(-50)">
                 {date && props.selectedRange?.label === 'year' && (
-                    <FormattedDate value={date} month="long" />
+                    <FormattedDate value={date} month="2-digit" year="numeric" />
                 )}
                 {date && props.selectedRange?.label !== 'year' && (
                     <FormattedDate value={date} day="2-digit" month="2-digit" />
@@ -177,6 +180,37 @@ const CustomizedYAxisTick = (props: any) => {
     );
 };
 
+interface CustomBarProps {
+    variant: 'sent' | 'received';
+    [key: string]: any;
+}
+
+const CustomBar = (props: CustomBarProps) => {
+    const { fill, x, y, width, height, payload, variant } = props;
+
+    let forcedHeightChange = false;
+    let minHeight = height;
+    if (
+        (variant === 'sent' && Math.abs(height) < 1 && payload.sent !== '0') ||
+        (variant === 'received' && Math.abs(height) < 1 && payload.received !== '0')
+    ) {
+        // make sure small amounts are visible by forcing minHeight of 2 if abs(amount) < 1
+        minHeight = variant === 'sent' ? -2 : 2;
+        forcedHeightChange = true;
+    }
+
+    const diffPosY = forcedHeightChange ? Math.abs(minHeight) - Math.abs(height) : 0;
+    return (
+        <rect
+            fill={fill}
+            x={x}
+            y={minHeight < 0 ? y + diffPosY + minHeight : y - diffPosY}
+            width={width}
+            height={Math.abs(minHeight)}
+        />
+    );
+};
+
 const AccountTransactionsGraph = React.memo((props: Props) => {
     const { data, isLoading, selectedRange } = props;
 
@@ -195,6 +229,8 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
     //               new BigNumber(data[0].received),
     //           )
     //         : null;
+
+    const Xticks = calcTicks(selectedRange.weeks).map(getUnixTime);
 
     return (
         <Wrapper>
@@ -216,18 +252,13 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
                         >
                             <XAxis
                                 dataKey="time"
-                                // SLOW
-                                // type="number"
-                                // tickCount={86400 * 30}
-                                // domain={['dataMin', 'dataMax']}
-                                // width={10}
+                                type="number"
+                                domain={[Xticks[0], Xticks[Xticks.length - 1]]}
+                                width={10}
                                 stroke={colors.BLACK80}
-                                // tick={{ fill: colors.BLACK50 }}
-                                // tickFormatter={(tickItem: number) =>
-                                //     new Date(tickItem * 1000).toLocaleDateString()
-                                // }
                                 interval={0}
                                 tick={<CustomizedXAxisTick selectedRange={selectedRange} />}
+                                ticks={Xticks}
                             />
                             <YAxis
                                 type="number"
@@ -239,12 +270,6 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
                                 // axisLine={{ stroke: colors.BLACK80 }}
                                 // axisLine={false}
                                 // tickLine={false}
-                                // tickFormatter={(amount: string) =>
-                                //     `${formatNetworkAmount(
-                                //         amount,
-                                //         props.account.symbol,
-                                //     )} ${props.account.symbol.toUpperCase()}`
-                                // }
                             />
                             <Tooltip
                                 // position={{ y: 0, x: 0 }}
@@ -255,7 +280,7 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
                                         symbol={props.account.symbol}
                                     />
                                 }
-                                cursor={{ fill: '#fff' }}
+                                // cursor={{ fill: '#D9F3FF' }}
                             />
                             />
                             <ReferenceLine y={0} stroke={colors.BLACK80} />
@@ -264,6 +289,7 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
                                 stackId="stack"
                                 fill={colors.RED_ERROR}
                                 maxBarSize={10}
+                                shape={<CustomBar variant="sent" />}
                                 // minPointSize={1}
                             />
                             <Bar
@@ -271,6 +297,8 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
                                 stackId="stack"
                                 fill={colors.GREEN}
                                 maxBarSize={10}
+                                shape={<CustomBar variant="received" />}
+
                                 // minPointSize={data.received === '0' ? 0 : 1}
                                 // minPointSize={1}
                             />
