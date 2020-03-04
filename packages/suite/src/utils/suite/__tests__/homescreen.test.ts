@@ -3,7 +3,7 @@ import crypto from 'crypto';
 
 import * as homescreen from '../homescreen';
 
-const homescreensPath = '../suite-data/files/images/suite/homescreens';
+const homescreensPath = '../suite-data/files/images/png/homescreens';
 
 // to simplify assertions of hex return values
 const getHash = (str: string) => {

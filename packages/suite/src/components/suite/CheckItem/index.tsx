@@ -6,7 +6,9 @@ import { Checkbox, variables, colors } from '@trezor/components';
 const { FONT_SIZE } = variables;
 
 const StyledCheckbox = styled(Checkbox)`
-    margin-bottom: 22px;
+    width: 400px;
+    padding-left: 0px;
+    margin: 24px auto;
 `;
 
 const CheckboxRight = styled.div`
@@ -25,15 +27,17 @@ interface CheckItemProps {
     title: React.ReactNode;
     description: React.ReactNode;
     isChecked: boolean;
+    link?: JSX.Element;
     onClick: () => void;
 }
 
-const CheckItem = ({ title, description, isChecked, onClick, ...rest }: CheckItemProps) => {
+const CheckItem = ({ title, description, isChecked, link, onClick, ...rest }: CheckItemProps) => {
     return (
         <StyledCheckbox isChecked={isChecked} onClick={onClick} {...rest}>
             <CheckboxRight>
                 <CheckboxTitle>{title}</CheckboxTitle>
                 <CheckboxText>{description}</CheckboxText>
+                {link && link}
             </CheckboxRight>
         </StyledCheckbox>
     );

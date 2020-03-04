@@ -3,13 +3,12 @@ import Head from 'next/head';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Translation';
+import { Translation, Image } from '@suite-components';
 import { Button, P, Link, H2, Select, colors, variables, Loader } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { URLS } from '@suite-constants';
 import { AppState, Dispatch } from '@suite-types';
 import messages from '@suite/support/messages';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const Wrapper = styled.div`
     display: flex;
@@ -94,7 +93,11 @@ const Version = styled.div<{ show: boolean }>`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
-const Image = styled.img``;
+const Col = styled.div<{ justify?: string }>`
+    display: flex;
+    flex: 1;
+    justify-content: ${props => props.justify};
+`;
 
 const mapStateToProps = (state: AppState) => ({
     transport: state.suite.transport,
@@ -145,14 +148,19 @@ const InstallBridge = (props: Props) => {
                 <title>Download Bridge | Trezor Suite</title>
             </Head>
             <Content>
-                <TitleHeader>Trezor Bridge Download</TitleHeader>
+                <TitleHeader>
+                    <Translation {...messages.TR_TREZOR_BRIDGE_DOWNLOAD} />
+                </TitleHeader>
                 <Description size="small">
                     <Translation {...messages.TR_NEW_COMMUNICATION_TOOL} />
                 </Description>
                 <Version show={!!data.currentVersion}>
-                    Currently installed: Trezor Bridge {data.currentVersion}
+                    <Translation
+                        {...messages.TR_CURRENTLY_INSTALLED_TREZOR}
+                        values={{ version: data.currentVersion }}
+                    />
                 </Version>
-                <Image src={resolveStaticPath('images/suite/t-bridge-check.svg')} />
+                <Image image="T_BRIDGE_CHECK" />
                 {isLoading ? (
                     <LoaderWrapper>
                         <CenteredLoader size={50} strokeWidth={2} />
@@ -183,39 +191,44 @@ const InstallBridge = (props: Props) => {
             </Content>
 
             <Footer>
-                <Button
-                    icon="ARROW_LEFT"
-                    variant="tertiary"
-                    color={colors.BLACK50}
-                    onClick={() => props.goto('wallet-index')}
-                >
-                    <Translation {...messages.TR_TAKE_ME_BACK_TO_WALLET} />
-                </Button>
+                <Col justify="flex-start">
+                    <Button
+                        icon="ARROW_LEFT"
+                        variant="tertiary"
+                        color={colors.BLACK50}
+                        onClick={() => props.goto('wallet-index')}
+                    >
+                        <Translation {...messages.TR_TAKE_ME_BACK_TO_WALLET} />
+                    </Button>
+                </Col>
                 {!isLoading && (
                     <>
-                        <Link variant="nostyle" href={URLS.BRIDGE_CHANGELOG_URL}>
-                            <Button
-                                icon="LOG"
-                                color={colors.BLACK50}
-                                variant="tertiary"
-                                onClick={() => {}}
-                            >
-                                <Translation {...messages.TR_CHANGELOG} />
-                            </Button>
-                        </Link>
-
-                        {data && target?.signature && (
-                            <Link variant="nostyle" href={data.uri + target.signature}>
+                        <Col justify="center">
+                            <Link variant="nostyle" href={URLS.BRIDGE_CHANGELOG_URL}>
                                 <Button
+                                    icon="LOG"
                                     color={colors.BLACK50}
-                                    icon="SIGN"
                                     variant="tertiary"
                                     onClick={() => {}}
                                 >
-                                    <Translation {...messages.TR_CHECK_PGP_SIGNATURE} />
+                                    <Translation {...messages.TR_CHANGELOG} />
                                 </Button>
                             </Link>
-                        )}
+                        </Col>
+                        <Col justify="flex-end">
+                            {data && target?.signature && (
+                                <Link variant="nostyle" href={data.uri + target.signature}>
+                                    <Button
+                                        color={colors.BLACK50}
+                                        icon="SIGN"
+                                        variant="tertiary"
+                                        onClick={() => {}}
+                                    >
+                                        <Translation {...messages.TR_CHECK_PGP_SIGNATURE} />
+                                    </Button>
+                                </Link>
+                            )}
+                        </Col>
                     </>
                 )}
             </Footer>

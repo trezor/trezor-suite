@@ -30,7 +30,7 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
                 {...messages.TR_RECOVERY_TYPES_DESCRIPTION}
                 values={{
                     TR_LEARN_MORE_LINK: (
-                        <Link href={URLS.RECOVERY_MODEL_ONE_URL}>
+                        <Link size="small" href={URLS.RECOVERY_MODEL_ONE_URL}>
                             <Translation {...messages.TR_LEARN_MORE_LINK} />
                         </Link>
                     ),
@@ -42,18 +42,34 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
                 action={() => {
                     onSelect(false);
                 }}
-                title="??"
+                title={<Translation {...messages.TR_BASIC_RECOVERY} />}
                 text={<Translation {...messages.TR_BASIC_RECOVERY_OPTION} />}
-                button="???"
+                button={
+                    <Translation
+                        {...messages.TR_SELECT_CONCRETE_RECOVERY_TYPE}
+                        values={{
+                            recoveryType: <Translation {...messages.TR_BASIC_RECOVERY} />,
+                        }}
+                    />
+                }
+                imgSrc="images/svg/basic.svg"
             />
 
             <Option
                 action={() => {
                     onSelect(true);
                 }}
-                title="??"
+                title={<Translation {...messages.TR_ADVANCED_RECOVERY} />}
                 text={<Translation {...messages.TR_ADVANCED_RECOVERY_OPTION} />}
-                button="???"
+                button={
+                    <Translation
+                        {...messages.TR_SELECT_CONCRETE_RECOVERY_TYPE}
+                        values={{
+                            recoveryType: <Translation {...messages.TR_ADVANCED_RECOVERY} />,
+                        }}
+                    />
+                }
+                imgSrc="images/svg/advanced.svg"
             />
         </Wrapper>
     </>

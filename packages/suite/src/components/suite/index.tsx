@@ -1,7 +1,6 @@
 import Backdrop from './Backdrop';
 import DeviceIcon from './images/DeviceIcon';
-import UniWarningImg from './images/UniWarningImg';
-import UniErrorImg from './images/UniErrorImg';
+import Image from './images/Image';
 import CheckItem from './CheckItem';
 import ExternalLink from './ExternalLink';
 import Preloader from './Preloader';
@@ -52,7 +51,6 @@ export {
     AccountLabeling,
     AddressLabeling,
     WalletLabeling,
-    UniWarningImg,
-    UniErrorImg,
+    Image,
     QuestionTooltip,
 };

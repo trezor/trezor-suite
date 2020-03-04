@@ -6,11 +6,11 @@ interface Props {
 }
 
 const InitImg = ({ model }: Props) => (
-    <img alt="" src={resolveStaticPath(`images/firmware/firmware-init-${model}.svg`)} />
+    <img alt="" src={resolveStaticPath(`images/svg/firmware-init-${model}.svg`)} />
 );
 
 const SuccessImg = ({ model }: Props) => (
-    <img alt="" src={resolveStaticPath(`images/firmware/firmware-success-${model}.svg`)} />
+    <img alt="" src={resolveStaticPath(`images/svg/firmware-success-${model}.svg`)} />
 );
 
 // todo: ProgressImg. PRODUCT

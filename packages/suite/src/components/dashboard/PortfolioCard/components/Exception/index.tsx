@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 import { colors, variables } from '@trezor/components';
+import { Image } from '@suite-components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -26,7 +26,7 @@ const Title = styled.div`
     text-align: center;
 `;
 
-const Image = styled.img`
+const StyledImage = styled(props => <Image {...props} />)`
     display: flex;
     width: 220px;
     height: 180px;
@@ -42,7 +42,7 @@ type Props = React.HTMLAttributes<HTMLDivElement>;
 const Exception = (props: Props) => {
     return (
         <Wrapper {...props}>
-            <Image src={resolveStaticPath(`images/dashboard/empty-dashboard.svg`)} />
+            <StyledImage image="EMPTY_DASHBOARD" />
             <Content>
                 <Title>Exception page</Title>
             </Content>

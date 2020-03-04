@@ -14,6 +14,14 @@ suite check outdated:
     script:
         - ./ci/scripts/outdated.sh
 
+suite check multiple same svgs:
+    stage: deploy artifacts, others
+    only:
+        refs:
+            - develop
+    script:
+        - node ./packages/suite-data/test/test-same-svgs.js
+
 suite check unused messages:
     stage: lint, types, unit tests
     script:
