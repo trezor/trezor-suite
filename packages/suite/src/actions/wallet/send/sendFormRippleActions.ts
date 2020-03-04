@@ -3,9 +3,14 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import { Dispatch, GetState } from '@suite-types';
 import { SEND } from '@wallet-actions/constants';
-import { XRP_FLAG, VALIDATION_ERRORS } from '@wallet-constants/sendForm';
+import { XRP_FLAG } from '@wallet-constants/sendForm';
 import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { calculateMax, calculateTotal, getOutput } from '@wallet-utils/sendFormUtils';
+import {
+    calculateMax,
+    calculateTotal,
+    getOutput,
+    getReserveInXrp,
+} from '@wallet-utils/sendFormUtils';
 import Bignumber from 'bignumber.js';
 import TrezorConnect, { RipplePayment } from 'trezor-connect';
 
@@ -67,20 +72,23 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     Check destination account reserve
 */
 
-export const checkAccountReserve = (outputId: number, amount: string) => async (
+export const checkAccountReserve = (outputId: number, address: string) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
     const { send, selectedAccount } = getState().wallet;
     if (!send || selectedAccount.status !== 'loaded') return;
     const { account } = selectedAccount;
-    if (account.networkType !== 'ripple') return null;
-    const { misc } = account;
     const output = getOutput(send.outputs, outputId);
-    const address = output.address.value;
-    const amountBig = new Bignumber(amount);
+    if (output.address.error) return null;
 
-    if (!address || !amount || !misc) return null;
+    dispatch({
+        type: SEND.AMOUNT_LOADING,
+        isLoading: true,
+        outputId: output.id,
+    });
+
+    if (!address) return null;
 
     const response = await TrezorConnect.getAccountInfo({
         coin: account.symbol,
@@ -91,27 +99,23 @@ export const checkAccountReserve = (outputId: number, amount: string) => async (
 
     if (response.success) {
         const targetAccountBalance = formatNetworkAmount(response.payload.balance, account.symbol);
-        const reserve = formatNetworkAmount(misc.reserve, account.symbol);
-        const targetAccountIsActive = new Bignumber(targetAccountBalance).isGreaterThan(reserve);
-        const error =
-            !targetAccountIsActive && amountBig.isLessThan(reserve)
-                ? VALIDATION_ERRORS.XRP_CANNOT_SEND_LESS_THAN_RESERVE
-                : null;
+        const reserve = getReserveInXrp(account);
+        const isDestinationAccountEmpty = !new Bignumber(targetAccountBalance).isGreaterThan(
+            reserve || '0',
+        );
 
         dispatch({
-            type: SEND.AMOUNT_LOADING,
-            isLoading: false,
-            outputId: output.id,
+            type: SEND.XRP_IS_DESTINATION_ACCOUNT_EMPTY,
+            isDestinationAccountEmpty,
+            reserve,
         });
-
-        if (error) {
-            dispatch({
-                type: SEND.AMOUNT_ERROR,
-                error,
-                outputId: output.id,
-            });
-        }
     }
+
+    dispatch({
+        type: SEND.AMOUNT_LOADING,
+        isLoading: false,
+        outputId: output.id,
+    });
 };
 
 /*

@@ -32,6 +32,7 @@ interface NetworkTypeRipple {
         value: null | string;
         error: null | typeof VALIDATION_ERRORS.NOT_NUMBER | typeof VALIDATION_ERRORS.NOT_VALID;
     };
+    isDestinationAccountEmpty: boolean | null;
 }
 
 interface NetworkTypeEthereum {

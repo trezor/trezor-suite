@@ -7,7 +7,12 @@ import debounce from 'debounce';
 import { formatNetworkAmount, getFiatValue } from '@wallet-utils/accountUtils';
 // import { formatNetworkAmount, getAccountKey, getFiatValue } from '@wallet-utils/accountUtils';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
-import { getOutput, hasDecimals, shouldComposeBy } from '@wallet-utils/sendFormUtils';
+import {
+    getOutput,
+    hasDecimals,
+    shouldComposeBy,
+    getReserveInXrp,
+} from '@wallet-utils/sendFormUtils';
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import BigNumber from 'bignumber.js';
 import { fromWei } from 'web3-utils';
@@ -135,17 +140,24 @@ export const handleAddressChange = (outputId: number, address: string) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const { account } = getState().wallet.selectedAccount;
-    if (!account) return null;
+    const { send, selectedAccount } = getState().wallet;
+    const { account } = selectedAccount;
+    if (!account || !send) return null;
+    const { networkType } = account;
+    const output = getOutput(send.outputs, outputId);
 
     dispatch({
         type: SEND.HANDLE_ADDRESS_CHANGE,
         outputId,
         address,
         symbol: account.symbol,
-        networkType: account.networkType,
+        networkType,
         currentAccountAddress: account.descriptor,
     });
+
+    if (networkType === 'ripple') {
+        dispatch(debounce(rippleActions.checkAccountReserve(output.id, address), 700));
+    }
 
     dispatch(composeChange('address'));
 };
@@ -164,6 +176,8 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
     const isValidAmount = hasDecimals(amount, network.decimals);
+    const { isDestinationAccountEmpty } = send.networkTypeRipple;
+    const reserve = getReserveInXrp(account);
 
     if (fiatNetwork && isValidAmount) {
         const rate = fiatNetwork.rates[output.localCurrency.value.value].toString();
@@ -183,16 +197,9 @@ export const handleAmountChange = (outputId: number, amount: string) => (
         amount,
         decimals: network.decimals,
         availableBalance: account.formattedBalance,
+        isDestinationAccountEmpty,
+        reserve,
     });
-
-    if (account.networkType === 'ripple' && output.address.value && !output.address.error) {
-        dispatch({
-            type: SEND.AMOUNT_LOADING,
-            isLoading: true,
-            outputId: output.id,
-        });
-        dispatch(debounce(rippleActions.checkAccountReserve(output.id, amount), 700));
-    }
 
     dispatch(composeChange('amount'));
 };
@@ -210,6 +217,8 @@ export const handleSelectCurrencyChange = (
 
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
+    const { isDestinationAccountEmpty } = send.networkTypeRipple;
+    const reserve = getReserveInXrp(account);
 
     if (fiatNetwork && output.amount.value) {
         const rate = fiatNetwork.rates[localCurrency.value];
@@ -231,6 +240,8 @@ export const handleSelectCurrencyChange = (
             amount: amountBigNumber.toString(),
             decimals: network.decimals,
             availableBalance: account.formattedBalance,
+            isDestinationAccountEmpty,
+            reserve,
         });
     }
 
@@ -253,9 +264,11 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
     const { fiat, send, selectedAccount } = getState().wallet;
     if (!fiat || !send || selectedAccount.status !== 'loaded') return null;
     const { account, network } = selectedAccount;
+    const { isDestinationAccountEmpty } = send.networkTypeRipple;
 
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
+    const reserve = getReserveInXrp(account);
 
     if (!fiatNetwork) return null;
 
@@ -275,6 +288,8 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
         amount,
         decimals: network.decimals,
         availableBalance: account.formattedBalance,
+        isDestinationAccountEmpty,
+        reserve,
     });
 
     dispatch(composeChange('amount'));
@@ -290,6 +305,8 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
     const { account, network } = selectedAccount;
     const composedTransaction = await dispatch(compose(true));
     const output = getOutput(send.outputs, outputId);
+    const { isDestinationAccountEmpty } = send.networkTypeRipple;
+    const reserve = getReserveInXrp(account);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
 
     if (fiatNetwork && composedTransaction && composedTransaction.type !== 'error') {
@@ -328,6 +345,8 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
             amount: amountBig.isLessThan(0) ? '0' : amountBig.toString(),
             decimals: network.decimals,
             availableBalance: account.availableBalance,
+            isDestinationAccountEmpty,
+            reserve,
         });
     } else {
         dispatch({
@@ -336,6 +355,8 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
             amount: '0',
             decimals: network.decimals,
             availableBalance: account.availableBalance,
+            isDestinationAccountEmpty,
+            reserve,
         });
     }
 
