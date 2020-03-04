@@ -70,6 +70,7 @@ const ResetDeviceStep = (props: Props) => {
                 {!isShamirBackupAvailable() && (
                     <Wrapper.Controls>
                         <OnboardingButton.Cta
+                            data-test="@onboarding/only-backup-option-button"
                             onClick={() =>
                                 props.callActionAndGoToNextStep(
                                     props.resetDevice,
