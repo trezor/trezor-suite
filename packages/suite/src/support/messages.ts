@@ -2179,10 +2179,6 @@ const definedMessages = defineMessages({
         id: 'TR_REMOVE',
         defaultMessage: 'Remove',
     },
-    TR_INCLUDING_FEE: {
-        id: 'TR_INCLUDING_FEE',
-        defaultMessage: ' Including fee of',
-    },
     LOCKTIME_TITLE: {
         id: 'LOCKTIME_TITLE',
         defaultMessage: 'Add Locktime',
