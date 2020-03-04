@@ -146,12 +146,14 @@ const AccountItem = React.memo((props: Props) => {
                             </CryptoValue>
                         </HiddenPlaceholder>
                         {fiatBalance && (
-                            <StyledBadge>
-                                <FormattedNumber
-                                    value={fiatBalance}
-                                    currency={props.localCurrency}
-                                />
-                            </StyledBadge>
+                            <HiddenPlaceholder>
+                                <StyledBadge>
+                                    <FormattedNumber
+                                        value={fiatBalance}
+                                        currency={props.localCurrency}
+                                    />
+                                </StyledBadge>
+                            </HiddenPlaceholder>
                         )}
                     </Balance>
                 </Right>
