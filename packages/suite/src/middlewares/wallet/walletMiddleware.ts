@@ -5,10 +5,10 @@ import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import * as sendFormActions from '@wallet-actions/send/sendFormActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
+import * as fiatRatesActions from '@wallet-actions/fiatRatesActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 import { AppState, Action, Dispatch } from '@suite-types';
-import { handleRatesUpdate, fetchFiatRatesForTxs } from '@wallet-actions/fiatRatesActions';
 
 const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
@@ -26,15 +26,21 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
     }
 
     if (action.type === ACCOUNT.CREATE) {
+        const account = action.payload;
         // gather transactions from account.create action
-        api.dispatch(
-            transactionActions.add(action.payload.history.transactions || [], action.payload, 1),
-        );
+        api.dispatch(transactionActions.add(account.history.transactions || [], account, 1));
+        if (account.tokens) {
+            account.tokens.forEach(t => {
+                if (t.symbol) {
+                    api.dispatch(fiatRatesActions.fetchTickerRates({ symbol: t.symbol }));
+                }
+            });
+        }
     }
 
     if (action.type === TRANSACTION.ADD) {
         // fetch historical rates for each added transaction
-        api.dispatch(fetchFiatRatesForTxs(action.account, action.transactions));
+        api.dispatch(fiatRatesActions.fetchFiatRatesForTxs(action.account, action.transactions));
     }
 
     // propagate action to reducers
@@ -66,7 +72,7 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
     api.dispatch(selectedAccountActions.getStateForAction(action));
 
     if (action.type === WALLET_SETTINGS.CHANGE_NETWORKS) {
-        api.dispatch(handleRatesUpdate());
+        api.dispatch(fiatRatesActions.handleRatesUpdate());
     }
 
     return action;
