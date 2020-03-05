@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Account } from '@wallet-types';
 import { Card, FiatValue, Badge } from '@suite-components';
 // @ts-ignore no types for this lib
@@ -7,21 +7,39 @@ import ScaleText from 'react-scale-text';
 import { variables, colors, Icon, Link } from '@trezor/components';
 
 const Wrapper = styled(Card)`
-    flex-direction: column;
+    display: grid;
+    grid-column-gap: 12px;
+    grid-template-columns: 52px 4fr 1fr 1fr 44px;
     margin-bottom: 20px;
 `;
 
-const TokenItem = styled.div`
+interface ColProps {
+    justify?: 'left' | 'right';
+    paddingHorizontal?: boolean;
+}
+
+const Col = styled.div<ColProps>`
     display: flex;
-    width: 100%;
     align-items: center;
-    padding: 10px 14px;
+    padding: 10px 0px;
     color: ${colors.BLACK0};
     font-size: ${variables.FONT_SIZE.SMALL};
+    border-top: 1px solid ${colors.BLACK96};
 
-    & + & {
-        border-top: 1px solid ${colors.BLACK96};
-    }
+    ${props =>
+        props.justify &&
+        css`
+            justify-content: ${(props: ColProps) =>
+                props.justify === 'right' ? 'flex-end' : 'flex-start'};
+            text-align: ${(props: ColProps) => (props.justify === 'right' ? 'right' : 'left')};
+        `}
+
+    ${props =>
+        props.paddingHorizontal &&
+        css`
+            padding-left: 14px;
+            padding-right: 14px;
+        `}
 `;
 
 const TokenImage = styled.div`
@@ -45,18 +63,15 @@ const TokenName = styled.div`
     flex: 1;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-right: 12px;
 `;
 
 const TokenValue = styled.div`
     display: flex;
-    margin-right: 28px;
 `;
 
 const FiatWrapper = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
-    margin-right: 28px;
 `;
 
 interface Props {
@@ -70,23 +85,33 @@ const TokenList = ({ tokens, explorerUrl }: Props) => {
             {tokens &&
                 tokens.map(t => {
                     return (
-                        <TokenItem key={t.address}>
-                            <TokenImage>
-                                <ScaleText widthOnly>{t.symbol}</ScaleText>
-                            </TokenImage>
-                            <TokenName>{t.name}</TokenName>
-                            <TokenValue>{`${t.balance} ${t.symbol?.toUpperCase()}`}</TokenValue>
-                            <FiatWrapper>
-                                {t.balance && t.symbol && (
-                                    <FiatValue amount={t.balance} symbol={t.symbol}>
-                                        {({ value }) => (value ? <Badge>{value}</Badge> : null)}
-                                    </FiatValue>
-                                )}
-                            </FiatWrapper>
-                            <Link href={`${explorerUrl}${t.address}`}>
-                                <Icon icon="EXTERNAL_LINK" size={16} color={colors.BLACK25} />
-                            </Link>
-                        </TokenItem>
+                        <>
+                            <Col paddingHorizontal>
+                                <TokenImage>
+                                    <ScaleText widthOnly>{t.symbol}</ScaleText>
+                                </TokenImage>
+                            </Col>
+                            <Col>
+                                <TokenName>{t.name}</TokenName>
+                            </Col>
+                            <Col justify="right">
+                                <TokenValue>{`${t.balance} ${t.symbol?.toUpperCase()}`}</TokenValue>
+                            </Col>
+                            <Col justify="right">
+                                <FiatWrapper>
+                                    {t.balance && t.symbol && (
+                                        <FiatValue amount={t.balance} symbol={t.symbol}>
+                                            {({ value }) => (value ? <Badge>{value}</Badge> : null)}
+                                        </FiatValue>
+                                    )}
+                                </FiatWrapper>
+                            </Col>
+                            <Col paddingHorizontal>
+                                <Link href={`${explorerUrl}${t.address}`}>
+                                    <Icon icon="EXTERNAL_LINK" size={16} color={colors.BLACK25} />
+                                </Link>
+                            </Col>
+                        </>
                     );
                 })}
         </Wrapper>
