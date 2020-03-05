@@ -2,10 +2,13 @@
 import BlockbookWorker from '../workers/blockbook/index';
 // @ts-ignore no default export
 import RippleWorker from '../workers/ripple/index';
+// @ts-ignore no default export
+import BitcoindWorker from '../workers/bitcoind/index';
 
 import CONFIG from './config';
 import BlockchainLink from '../index';
 import { getInputValue, fillValues, onClear } from './utils';
+import { common } from 'ripple-lib/dist/npm/ledger/utils';
 
 const instances: BlockchainLink[] = [];
 
@@ -42,6 +45,7 @@ const handleClick = (event: MouseEvent) => {
         case 'get-account-info': {
             try {
                 const options = JSON.parse(getInputValue('get-account-info-options'));
+                console.log('options', options);
                 const payload = {
                     descriptor: getInputValue('get-account-info-address'),
                     details: getInputValue('get-account-info-mode') || 'basic',
@@ -243,7 +247,14 @@ const init = (instances: any[]) => {
 init(CONFIG);
 
 CONFIG.forEach(i => {
-    const worker: any = i.blockchain.worker.indexOf('ripple') >= 0 ? RippleWorker : BlockbookWorker;
+    let worker: any;
+    if (i.blockchain.worker.includes('bitcoind')) {
+        worker = BitcoindWorker;
+    } else if (i.blockchain.worker.includes('ripple')) {
+        worker = RippleWorker;
+    } else {
+        worker = BlockbookWorker;
+    }
     const b = new BlockchainLink({
         ...i.blockchain,
         worker,

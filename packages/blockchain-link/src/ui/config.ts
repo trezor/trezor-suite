@@ -1,6 +1,40 @@
 export default [
     {
         blockchain: {
+            name: 'BitcoinD Testnet',
+            worker: 'js/bitcoind-worker.js',
+            server: ['https://tbtc1.trezor.io', 'https://tbtc2.trezor.io'],
+            debug: true,
+        },
+        data: {
+            // address: 'xpub6BiVtCpG9fQPxnPmHXG8PhtzQdWC2Su4qWu6XW9tpWFYhxydCLJGrWBJZ5H6qTAHdPQ7pQhtpjiYZVZARo14qHiay2fvrX996oEP42u8wZy', // all-all legacy 1 (idk why xpub?)
+            address:
+                'vpub5YX1yJFY8E236pH3iNvCpThsXLxoQoC4nwraaS5h4TZwaSp1Gg9SQoxCsrumxjh7nZRQQkNfH29TEDeMvAZVmD3rpmsDnFc5Sj4JgJG6m4b', // all-all bech32 1
+            // address: 'upub5DR1Mg5nykixzYjFXWW5GghAU7dDqoPVJ2jrqFbL8sJ7Hs7jn69MP7KBnnmxn88GeZtnH8PRKV9w5MMSFX8AdEAoXY8Qd8BJPoXtpMeHMxJ', // all-all segwit 1
+            // address: 'tpubDDKn3FtHc74CaRrRbi1WFdJNaaenZkDWqq9NsEhcafnDZ4VuKeuLG2aKHm5SuwuLgAhRkkfHqcCxpnVNSrs5kJYZXwa6Ud431VnevzzzK3U', // all-all legacy 1
+
+            // address: 'tpubDDKn3FtHc74CcBfxJ3zdSNnRacuggmGwv3KEZLJP2LAuqc3HhsQR5ZAVudcQzezzXs7T6QrDtoJJYvgyDUJ9vgWx3Y7Et4Ats1Q25U1LXvU', // all-all legacy 2
+            // address: 'upub5DR1Mg5nykiy3TcYPKDyVC1vS9uoPBD5oyAx5oFAJwwPSEqekNFXboyDUogKicY6tRnBmMcdrFyMPfTSdm8qXSYrpnYuhXZWzQP1wU4xFhq', // all-all segwit 2
+
+            // address:
+            //    'upub5Df5hVPH2yM4Khs85P8nkq3x9GRcvX3FgDitXDcqSJDXgMJjVmpWPRqwqHExjQcezkjDDyU1u3ij1wUPXHaYqRHehuGtBvSPzcocpKu3wUz', // (all testnet pass "a")
+            accountInfoOptions: {
+                page: 0,
+                pageSize: 25,
+                contractFilter: undefined,
+            },
+            estimateFeeOptions: {
+                blocks: [1, 2, 10],
+            },
+            txid: '',
+            tx: '',
+            subscribe: '1G47mSr3oANXMafVrR8UC4pzV7FEAzo3r9', // Poloniex: https://www.walletexplorer.com/wallet/Poloniex.com
+            // subscribe: '0x2a0c0dbecc7e4d658f48e01e3fa353f44050c208', // Poloniex: https://www.walletexplorer.com/wallet/Poloniex.com
+        },
+        selected: true,
+    },
+    {
+        blockchain: {
             name: 'Ripple',
             worker: 'js/ripple-worker.js',
             server: ['wss://s1.ripple.com', 'wss://s-east.ripple.com', 'wss://s-west.ripple.com'],
@@ -197,7 +231,6 @@ export default [
             subscribe: '1G47mSr3oANXMafVrR8UC4pzV7FEAzo3r9', // Poloniex: https://www.walletexplorer.com/wallet/Poloniex.com
             // subscribe: '0x2a0c0dbecc7e4d658f48e01e3fa353f44050c208', // Poloniex: https://www.walletexplorer.com/wallet/Poloniex.com
         },
-        selected: true,
     },
     {
         blockchain: {

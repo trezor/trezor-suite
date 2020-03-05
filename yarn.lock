@@ -7737,6 +7737,11 @@ bitcoin-ops@^1.3.0:
   resolved "https://registry.yarnpkg.com/bitcoin-ops/-/bitcoin-ops-1.4.1.tgz#e45de620398e22fd4ca6023de43974ff42240278"
   integrity sha512-pef6gxZFztEhaE9RY9HmWVmiIHqCb2OyS4HPKkpc6CIiiOa3Qmuoylxc5P2EkU3w+5eTSifI9SEZC88idAIGow==
 
+bitcoind-rpc@^0.8.1:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/bitcoind-rpc/-/bitcoind-rpc-0.8.1.tgz#11889972e46c346870d26cf680e3a7e3e52b1ff1"
+  integrity sha512-NfhykAT/x/P1SOiog8UzltvTiv6A6d2X5VWJ3UjGeAqFLXv+IYHy+E4fFCBmgQRyIb1EIcyIZK1SVpSOGRHsaw==
+
 "blake2b-wasm@https://github.com/BitGo/blake2b-wasm#193cdb71656c1a6c7f89b05d0327bb9b758d071b":
   version "2.0.0"
   resolved "https://github.com/BitGo/blake2b-wasm#193cdb71656c1a6c7f89b05d0327bb9b758d071b"
@@ -15297,6 +15302,11 @@ json-parse-better-errors@^1.0.0, json-parse-better-errors@^1.0.1, json-parse-bet
   resolved "https://registry.yarnpkg.com/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz#bb867cfb3450e69107c131d1c514bab3dc8bcaa9"
   integrity sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==
 
+json-rpc-client@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/json-rpc-client/-/json-rpc-client-0.2.2.tgz#b2c80235ea35967066e7d0216bd331be09456df6"
+  integrity sha1-ssgCNeo1lnBm59Aha9MxvglFbfY=
+
 json-schema-traverse@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/json-schema-traverse/-/json-schema-traverse-0.4.1.tgz#69f6a87d9513ab8bb8fe63bdb0979c448e684660"
@@ -17435,6 +17445,11 @@ node-ask@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/node-ask/-/node-ask-1.0.1.tgz#caaa1076cc58e0364267a0903e3eadfac158396b"
   integrity sha1-yqoQdsxY4DZCZ6CQPj6t+sFYOWs=
+
+node-bitcoin-rpc@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/node-bitcoin-rpc/-/node-bitcoin-rpc-1.1.3.tgz#0f0832b4a7eb3d39d7c83680224be8e148f97596"
+  integrity sha1-DwgytKfrPTnXyDaAIkvo4Uj5dZY=
 
 node-dir@^0.1.10:
   version "0.1.17"
