@@ -11,7 +11,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     openModal: bindActionCreators(modalActions.openModal, dispatch),
 });
 
-interface OwnProps extends React.HTMLProps<HTMLDivElement> {
+interface OwnProps extends React.HTMLAttributes<HTMLDivElement> {
     transaction: WalletAccountTransaction;
 }
 
