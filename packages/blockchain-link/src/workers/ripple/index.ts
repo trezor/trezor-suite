@@ -169,7 +169,6 @@ interface RawTxData {
     };
     ledger_index_max: number;
     limit: number;
-    descriptor: string;
     transactions: any[];
 }
 const getRawTransactionsData = async (options: any): Promise<RawTxData> => {
@@ -390,23 +389,25 @@ const onTransaction = (event: any) => {
     const tx = event.transaction;
     if (event.transaction.TransactionType !== 'Payment') return;
 
-    const subscribed = common.getAddresses();
-    const descriptor =
-        subscribed.find(a => a === tx.Account) ||
-        subscribed.find(a => a === tx.Destination) ||
-        'unknown';
-
-    common.response({
-        id: -1,
-        type: RESPONSES.NOTIFICATION,
-        payload: {
-            type: 'notification',
+    const notify = (descriptor: string) => {
+        common.response({
+            id: -1,
+            type: RESPONSES.NOTIFICATION,
             payload: {
-                descriptor,
-                tx: utils.transformTransaction(descriptor, { ...event, ...tx }),
+                type: 'notification',
+                payload: {
+                    descriptor,
+                    tx: utils.transformTransaction(descriptor, { ...event, ...tx }),
+                },
             },
-        },
-    });
+        });
+    };
+
+    const subscribed = common.getAddresses();
+    const sent = subscribed.find(a => a === tx.Account);
+    if (sent) notify(sent);
+    const recv = subscribed.find(a => a === tx.Destination);
+    if (recv) notify(recv);
 };
 
 const subscribeAccounts = async (accounts: SubscriptionAccountInfo[]) => {
