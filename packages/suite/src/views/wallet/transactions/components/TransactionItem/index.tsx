@@ -80,11 +80,6 @@ const Token = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
-const TokenName = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
 const TokenAddress = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
@@ -119,12 +114,6 @@ const Symbol = styled.div``;
 const Amount = styled.div`
     display: flex;
     text-align: right;
-`;
-
-const TokenAmount = styled(Token)<{ txType: string }>`
-    display: inline;
-    /* color: ${props => (props.txType === 'recv' ? 'green' : 'red')}; */
-    border: none;
 `;
 
 const Addr = styled.div`
@@ -168,36 +157,10 @@ const AmountsWrapper = styled.div`
 `;
 
 const TokenTransfer = (transfer: ArrayElement<Props['transaction']['tokens']>) => {
-    if (transfer.type === 'self') {
-        return (
-            <Token>
-                <Row>
-                    <Col>
-                        <TokenName>
-                            {transfer.name} ({transfer.symbol})
-                        </TokenName>
-                        <Label>
-                            <Translation {...messages.TR_SENT_TO_SELF} />
-                        </Label>
-                    </Col>
-                </Row>
-            </Token>
-        );
-    }
     return (
         <Token>
             <Row>
                 <Col>
-                    {/* <TokenName>
-                        {transfer.name} ({transfer.symbol})
-                        <HiddenPlaceholder>
-                            <TokenAmount txType={transfer.type}>
-                                {transfer.type === 'recv' && '+'}
-                                {transfer.type !== 'recv' && '-'}
-                                {transfer.amount} {transfer.symbol}
-                            </TokenAmount>
-                        </HiddenPlaceholder>
-                    </TokenName> */}
                     <Label>
                         from:&nbsp;
                         <TokenAddress>
