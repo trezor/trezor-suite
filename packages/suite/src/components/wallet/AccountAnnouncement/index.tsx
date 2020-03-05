@@ -17,7 +17,7 @@ const Announcement = (props: Props) => {
 
     if (account) {
         if (account.networkType === 'ripple') {
-            const bigBalance = new Bignumber(account.availableBalance);
+            const bigBalance = new Bignumber(account.balance);
             const bigReserve = new Bignumber(account.misc.reserve);
             if (bigBalance.isLessThan(bigReserve)) {
                 notifications.push(<XRPReserve key="xrp" reserve={account.misc.reserve} />);
