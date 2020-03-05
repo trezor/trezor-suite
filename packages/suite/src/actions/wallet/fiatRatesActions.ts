@@ -72,7 +72,10 @@ NETWORKS.forEach(network => {
  *
  * @param {Ticker} ticker
  */
-const fetchTickerRates = (ticker: Ticker) => async (dispatch: Dispatch, _getState: GetState) => {
+export const fetchTickerRates = (ticker: Ticker) => async (
+    dispatch: Dispatch,
+    _getState: GetState,
+) => {
     try {
         const blockchainLink = blockchainLinks[ticker.symbol];
         // const param = ticker.url ? { url: ticker.url } : { symbol: ticker.symbol };
