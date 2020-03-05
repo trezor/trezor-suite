@@ -32,7 +32,7 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         if (account.tokens) {
             account.tokens.forEach(t => {
                 if (t.symbol) {
-                    api.dispatch(fiatRatesActions.fetchTickerRates({ symbol: t.symbol }));
+                    api.dispatch(fiatRatesActions.updateCurrentRates({ symbol: t.symbol }));
                 }
             });
         }
@@ -40,7 +40,7 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
 
     if (action.type === TRANSACTION.ADD) {
         // fetch historical rates for each added transaction
-        api.dispatch(fiatRatesActions.fetchFiatRatesForTxs(action.account, action.transactions));
+        api.dispatch(fiatRatesActions.updateTxsRates(action.account, action.transactions));
     }
 
     // propagate action to reducers
@@ -72,7 +72,7 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
     api.dispatch(selectedAccountActions.getStateForAction(action));
 
     if (action.type === WALLET_SETTINGS.CHANGE_NETWORKS) {
-        api.dispatch(fiatRatesActions.handleRatesUpdate());
+        api.dispatch(fiatRatesActions.updateStaleRates());
     }
 
     return action;
