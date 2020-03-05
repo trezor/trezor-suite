@@ -6,7 +6,6 @@ import {
     TX_FIAT_RATE_UPDATE,
 } from './constants/fiatRatesConstants';
 import { Network, Account } from '@wallet-types';
-import { saveFiatRates } from '@suite-actions/storageActions';
 import BlockchainLink from '@trezor/blockchain-link';
 import { CoinFiatRates, LastWeekRates } from '@wallet-reducers/fiatRateReducer';
 import NETWORKS from '@wallet-config/networks';
@@ -67,10 +66,13 @@ NETWORKS.forEach(network => {
     }
 });
 
-export const fetchTickerRates = (ticker: Ticker) => async (
-    dispatch: Dispatch,
-    _getState: GetState,
-) => {
+/**
+ * Fetch and update current fiat rates for given ticker
+ * Sends the request to Blockbook server if the coin is supported, otherwise it uses CoinGecko
+ *
+ * @param {Ticker} ticker
+ */
+const fetchTickerRates = (ticker: Ticker) => async (dispatch: Dispatch, _getState: GetState) => {
     try {
         const blockchainLink = blockchainLinks[ticker.symbol];
         // const param = ticker.url ? { url: ticker.url } : { symbol: ticker.symbol };
@@ -87,10 +89,6 @@ export const fetchTickerRates = (ticker: Ticker) => async (
                     symbol: ticker.symbol,
                 },
             });
-
-            // save to storage
-            // TODO: let's handle this in storageMiddleware so all storage operations are in one place
-            dispatch(saveFiatRates());
         }
         return response;
     } catch (error) {
@@ -99,7 +97,9 @@ export const fetchTickerRates = (ticker: Ticker) => async (
 };
 
 /**
- * Returns an array with coin tickers that need fullfil several conditions:
+ *  Returns an array with coin tickers that need fullfil several conditions.
+ *  Array of coin tickers is combined from 2 sources - config file and fiat reducer itself
+ *  Conditions:
  *  1. network for a given ticker needs to be enabled
  *  2a. no rates available yet (first fetch)
  *  OR
@@ -108,16 +108,15 @@ export const fetchTickerRates = (ticker: Ticker) => async (
  *
  * @param {((ticker: CoinFiatRates) => number | undefined)} timestampFunc
  * @param {number} interval
+ * @param {boolean} [includeTokens]
  */
 const getStaleTickers = (
     timestampFunc: (ticker: CoinFiatRates) => number | undefined,
     interval: number,
     includeTokens?: boolean,
-) => async (_dispatch: Dispatch, getState: GetState) => {
+) => async (_dispatch: Dispatch, getState: GetState): Promise<Ticker[]> => {
     const { fiat } = getState().wallet;
     const { enabledNetworks } = getState().wallet.settings;
-    // TODO: Consider removing FIAT.tickers as now we can fetch rates for any coin by calling an API with the coin symbol,
-    // and then using the coin ID from the response to finally fetch the rates
     const watchedTickers = FIAT.tickers.filter(t => enabledNetworks.includes(t.symbol));
 
     const listOfWatchedSymbols: string[] = FIAT.tickers.map(t => t.symbol);
@@ -203,7 +202,7 @@ const updateLastWeekRates = () => async (dispatch: Dispatch) => {
                 });
             }
         } catch (error) {
-            console.log('updateLastWeekRates fail', error);
+            console.log(error);
         }
     });
     await Promise.all(promises);
@@ -213,6 +212,13 @@ const updateLastWeekRates = () => async (dispatch: Dispatch) => {
     }, INTERVAL_LAST_WEEK);
 };
 
+/**
+ *  Fetch and update fiat rates for given `txs`
+ *  Sends the request to Blockbook server if the coin is supported, otherwise it uses CoinGecko
+ *
+ * @param {Account} account
+ * @param {AccountTransaction[]} txs
+ */
 export const fetchFiatRatesForTxs = (account: Account, txs: AccountTransaction[]) => async (
     dispatch: Dispatch,
 ) => {
@@ -240,12 +246,18 @@ export const fetchFiatRatesForTxs = (account: Account, txs: AccountTransaction[]
             });
         }
     } catch (error) {
-        console.log('fetchFiatRatesForTx', error);
-        console.log('txs', txs);
-        console.log('timestamps', timestamps);
+        console.error(error);
     }
 };
 
+/**
+ * Fetch the account history (received, sent amounts, num of txs) for the given interval
+ * Returned data are grouped by month (weeks >= 52) or by day (weeks < 52)
+ *
+ * @param {Account} account
+ * @param {number} weeks
+ * @returns
+ */
 export const fetchAccountHistory = async (account: Account, weeks: number) => {
     // TODO: move out of actions?
     const secondsInDay = 3600 * 24;
@@ -268,7 +280,7 @@ export const fetchAccountHistory = async (account: Account, weeks: number) => {
         }
         return null;
     } catch (error) {
-        console.log('fetchAccountHistory', error);
+        console.error(error);
     }
 };
 

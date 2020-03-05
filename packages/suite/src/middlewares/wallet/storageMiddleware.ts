@@ -7,7 +7,7 @@ import * as accountUtils from '@wallet-utils/accountUtils';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import { WalletAction } from '@wallet-types';
-import { ACCOUNT, DISCOVERY, TRANSACTION } from '@wallet-actions/constants';
+import { ACCOUNT, DISCOVERY, TRANSACTION, FIAT_RATES } from '@wallet-actions/constants';
 import { getDiscoveryForDevice } from '@wallet-actions/discoveryActions';
 import { isDeviceRemembered } from '@suite-utils/device';
 import { serializeDiscovery } from '@suite-utils/storage';
@@ -90,6 +90,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         case SUITE.SET_LANGUAGE:
         case SUITE.INITIAL_RUN_COMPLETED:
             api.dispatch(storageActions.saveSuiteSettings());
+            break;
+
+        case FIAT_RATES.RATE_UPDATE:
+            api.dispatch(storageActions.saveFiatRates());
             break;
         default:
             break;
