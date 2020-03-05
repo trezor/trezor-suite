@@ -64,7 +64,7 @@ export const calculateMax = (balance: string, fee: string, account?: Account): s
         }
 
         if (max.isLessThan(0)) return '0';
-        return max.toString();
+        return max.toFixed();
     } catch (error) {
         return '0';
     }
