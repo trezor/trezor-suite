@@ -12,7 +12,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 });
 
 interface OwnProps extends React.HTMLProps<HTMLDivElement> {
-    explorerUrl: string;
     transaction: WalletAccountTransaction;
 }
 

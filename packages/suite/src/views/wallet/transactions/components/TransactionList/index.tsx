@@ -165,11 +165,7 @@ const TransactionList = ({
                                     )}
                                 </DayHeading>
                                 {transactionsByDate[dateKey].map((tx: WalletAccountTransaction) => (
-                                    <StyledTransactionItem
-                                        key={tx.txid}
-                                        transaction={tx}
-                                        explorerUrl={`${explorerUrl}${tx.txid}`}
-                                    />
+                                    <StyledTransactionItem key={tx.txid} transaction={tx} />
                                 ))}
                             </React.Fragment>
                         );

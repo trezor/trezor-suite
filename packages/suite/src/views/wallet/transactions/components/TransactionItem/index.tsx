@@ -217,6 +217,7 @@ const TokenTransfer = (transfer: ArrayElement<Props['transaction']['tokens']>) =
 };
 
 const TransactionItem = (props: Props) => {
+    const { transaction, ...rest } = props;
     const { symbol, type, blockTime, blockHeight, amount, targets, tokens } = props.transaction;
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -248,6 +249,7 @@ const TransactionItem = (props: Props) => {
                 });
             }}
             className={props.className}
+            {...rest}
         >
             <Row>
                 <Timestamp>
