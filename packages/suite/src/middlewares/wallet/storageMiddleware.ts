@@ -46,6 +46,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         }
 
         case TRANSACTION.ADD:
+        case TRANSACTION.REMOVE:
         case TRANSACTION.FETCH_SUCCESS: {
             const device = accountUtils.findAccountDevice(action.account, api.getState().devices);
             // update only transactions for remembered device
@@ -56,7 +57,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             break;
         }
 
-        case TRANSACTION.REMOVE:
+        case TRANSACTION.RESET:
             storageActions.removeAccountTransactions(action.account);
             break;
 
