@@ -18,14 +18,10 @@ describe('Date utils', () => {
 
     test('get date with timezone', () => {
         const dateInMs = 1565797979000;
-        const dateInIso = '2014-06-25T10:00:00.000Z';
 
         expect(utils.getDateWithTimeZone(dateInMs, 'Asia/Tokyo')).toEqual(
             new Date('2019-08-15T00:52:59.000Z'),
         );
         expect(utils.getDateWithTimeZone(dateInMs)).toEqual(new Date('2019-08-14T15:52:59.000Z'));
-        expect(utils.getDateWithTimeZone(dateInIso, 'America/New_York')).toEqual(
-            new Date('2014-06-25T06:00:00.000Z'),
-        );
     });
 });
