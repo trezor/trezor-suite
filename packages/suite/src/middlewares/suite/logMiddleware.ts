@@ -52,7 +52,7 @@ const log = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
         case SUITE.AUTH_DEVICE:
             api.dispatch(
                 logActions.add(action.type, {
-                    device_id: action.payload.features?.device_id,
+                    device_id: action.payload.id,
                     state: action.payload.state,
                 }),
             );
