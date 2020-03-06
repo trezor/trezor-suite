@@ -19,9 +19,9 @@ let endpoints: string[] = [];
 // This data must be obtained from somewhere in the front end
 const loginData: LoginData = {
     username: 'rpc',
-    password: 'rpcdsfcxvxctrnfnvkkqkjvjtjnbnnkbvibnifnbkdfbdfkbndfkbnfdbfdnkeckvncxq1',
-    host: '78.47.39.234',
-    port: '8332',
+    password: 'rpc',
+    host: 'blockbook-dev.corp.sldev.cz',
+    port: '18030',
 };
 
 const cleanup = () => {
@@ -176,7 +176,8 @@ const getTransaction = async (
         // const tx = await socket.getTransaction(payload);
 
         const rpcClientObj = new RpcClient(loginData);
-        const tx: Transaction = await rpcClientObj.getTransactionInfo(payload);
+        const rawTxData: any = await rpcClientObj.getRawTransactionInfo(payload);
+        const tx: Transaction = await rpcClientObj.convertRawTransactionToNormal(rawTxData);
 
         console.log('gettransaction tx2', tx);
         // need to find sender?

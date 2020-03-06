@@ -10,7 +10,9 @@ import {
     Send,
     Transaction,
 } from '../../types/rpcbitcoind';
+
 import { VinVout } from '../../types/blockbook';
+import BigNumber from 'bignumber.js';
 
 export interface LoginData {
     username: string;
@@ -72,7 +74,7 @@ export class RpcClient {
         });
     }
     // getrawtransaction
-    getTransactionInfo(byId: string) {
+    getRawTransactionInfo(byId: string) {
         return new Promise<any>((resolve, reject) => {
             RpcBitcoinClient.call(
                 'getrawtransaction',
@@ -83,10 +85,7 @@ export class RpcClient {
                     } else if (response.error) {
                         reject(new Error(response.error.message)); // possible error from blockchain
                     } else if (response.result) {
-                        const convertedTxObj: Transaction = this.convertRawTransactionToNormal(
-                            response
-                        );
-                        resolve(convertedTxObj);
+                        resolve(response.result);
                     } else {
                         reject(new Error('bad data from RPC server')); // TODO: attach to custom error class?
                     }
@@ -95,51 +94,68 @@ export class RpcClient {
         });
     }
 
-    convertRawTransactionToNormal({ result }: any): Transaction {
-        try {
-            if (result.vin[0].vout) {
-                const senderObj = result.vout.find(({ n }) => result.vin[0].vout === n);
-                const sender = senderObj.scriptPubKey.addresses[0];
+    async convertRawTransactionToNormal(rawTxData: any): Promise<any> {
+        // get total amount in transaction with miner fee
+        let totalTransactionWithFee: BigNumber = new BigNumber(0, 8);
+        let fee: BigNumber = new BigNumber(0, 8);
 
-                result.vin.forEach(oneVin => {
-                    oneVin.addresses = [sender];
-                });
-            }
+        if (
+            rawTxData.vin &&
+            Array.isArray(rawTxData.vin) &&
+            rawTxData.vin[0].txid &&
+            rawTxData.vin[0].vout
+        ) {
+            const senderObj = rawTxData.vout.find(({ n }) => rawTxData.vin[0].vout === n);
+            const [sender] = senderObj.scriptPubKey.addresses;
 
-            const vin: [VinVout] = result.vin.map((oneVin, index) => {
-                const returnObj: any = {};
-                returnObj.n = index;
+            rawTxData.vin.forEach(oneVin => {
+                oneVin.addresses = [sender];
+            });
 
-                if (oneVin.coinbase) {
-                    returnObj.coinbase = oneVin.coinbase;
-                    returnObj.isAddress = false;
-                } else {
-                    returnObj.addresses = oneVin.addresses;
-                    returnObj.isAddress = true;
-                }
+            const inputTxs: any = [];
 
-                if (oneVin.sequence) {
-                    returnObj.sequence = oneVin.sequence;
-                }
-                
+            await Promise.all(
+                rawTxData.vin.map(async oneInput => {
+                    const oneTx = await this.getRawTransactionInfo(oneInput.txid);
+                    inputTxs.push(oneTx);
+                })
+            );
 
-
-                return {
-                    n: index,
-                    addresses: oneVin.addresses ? oneVin.addresses : [],
-                    isAddress: !oneVin.coinbase, // if coinbase -> it is mined transaction, no address
+            inputTxs.forEach(inputTx => {
+                if (inputTx.vout && Array.isArray(inputTx.vout)) {
+                    inputTx.vout.forEach(oneOut => {
+                        if (
+                            oneOut.scriptPubKey &&
+                            oneOut.scriptPubKey.addresses &&
+                            Array.isArray(oneOut.scriptPubKey.addresses) &&
+                            oneOut.scriptPubKey.addresses[0] &&
+                            oneOut.scriptPubKey.addresses[0].toLowerCase() === sender.toLowerCase()
+                        ) {
+                            totalTransactionWithFee = totalTransactionWithFee.plus(oneOut.value);
+                        }
+                    });
                 }
             });
 
-            // return {
-            //     txid: result.txid,
-            //     version: result.version,
-            //     vin: 
-            // };
-            return result;
-        } catch (e) {
-            throw new Error("Can 't find the transaction, do you have the txindex=1 enabled ?");
+            // get miner fee
+            // fee
+            if (rawTxData.vout && Array.isArray(rawTxData.vout)) {
+                let summOfVout: BigNumber = new BigNumber(0, 8);
+                rawTxData.vout.forEach(oneOutTx => {
+                    summOfVout = summOfVout.plus(oneOutTx.value);
+                });
+
+                fee = totalTransactionWithFee.minus(summOfVout);
+            }
+            console.log(
+                'final transaction: ',
+                totalTransactionWithFee.toFixed(8),
+                'total fee: ',
+                fee.toFixed(8)
+            );
+            console.log('totalTransactionWithFee', totalTransactionWithFee.toFixed(8));
         }
+        return rawTxData;
     }
     // getBlockchainInfo(): Promise {
     //     console.log('before'); // getnetworkinfo getwalletinfo
