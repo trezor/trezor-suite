@@ -109,8 +109,8 @@ const TransactionList = ({
     // if totalPages is undefined check current page and number of txs (e.g. XRP)
     // Edge case: if there is exactly 25 txs, pagination will be displayed
     const isOnLastPage = slicedTransactions.length < SETTINGS.TXS_PER_PAGE;
-    const showPagination = totalPages ? totalPages > 1 : currentPage === 1 && !isOnLastPage;
-
+    const shouldShowRipplePagination = !(currentPage === 1 && isOnLastPage); // don't show only if there is only 1 page
+    const showPagination = totalPages ? totalPages > 1 : shouldShowRipplePagination;
     return (
         <Wrapper>
             <StyledCard>
