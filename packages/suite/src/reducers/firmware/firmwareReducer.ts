@@ -2,7 +2,7 @@ import produce from 'immer';
 import { UI } from 'trezor-connect';
 import { FIRMWARE } from '@firmware-actions/constants';
 import { SUITE } from '@suite-actions/constants';
-import { Action } from '@suite-types';
+import { Action, AcquiredDevice } from '@suite-types';
 
 const INITIAL = 'initial';
 const CHECK_SEED = 'check-seed';
@@ -35,12 +35,20 @@ export interface FirmwareUpdateState {
     status: AnyStatus;
     installingProgress?: number;
     error?: string;
+    btcOnly: boolean;
+    targetRelease: AcquiredDevice['firmwareRelease'];
 }
 
 const initialState: FirmwareUpdateState = {
     status: INITIAL,
     installingProgress: undefined,
     error: undefined,
+    // user selects wheter wants btc only variant or not.
+    btcOnly: false,
+    // we need to assess next firmware outside of bootloader mode for best results.
+    // we actually can do it even in bl mode, but cant guarantee we will really get the
+    // same firmware as was initially offered in 'firmware' mode.
+    targetRelease: undefined,
 };
 
 const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Action) => {
@@ -52,6 +60,12 @@ const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Actio
             case FIRMWARE.SET_ERROR:
                 draft.status = 'error';
                 draft.error = action.payload;
+                break;
+            case FIRMWARE.SET_TARGET_RELEASE:
+                draft.targetRelease = action.payload;
+                break;
+            case FIRMWARE.TOGGLE_BTC_ONLY:
+                draft.btcOnly = !state.btcOnly;
                 break;
             case SUITE.ADD_BUTTON_REQUEST:
                 if (action.payload === 'ButtonRequest_FirmwareUpdate') {

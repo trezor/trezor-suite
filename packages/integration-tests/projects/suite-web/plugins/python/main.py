@@ -43,12 +43,14 @@ def message_received(client, server, message):
 
     cmdId = cmd["id"]
     cmdType = cmd["type"]
+    
     response = None
     try:
         if cmdType == "ping":
             server.send_message(client, "pong")
         elif cmdType == "emulator-start":
-            emulator.start()
+            version = cmd.get("version") or "2.1.4" 
+            emulator.start(version)
             response = {"success": True}
         elif cmdType == "emulator-stop":
             emulator.stop()

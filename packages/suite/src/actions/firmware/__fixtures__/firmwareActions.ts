@@ -12,10 +12,6 @@ export const firmwareUpdate = [
     {
         description: 'Success T2',
         mocks: {
-            rollout: {
-                success: new ArrayBuffer(512),
-                error: false,
-            },
             connect: {
                 success: true,
             },
@@ -41,10 +37,6 @@ export const firmwareUpdate = [
     {
         description: 'Success T1',
         mocks: {
-            rollout: {
-                success: new ArrayBuffer(512),
-                error: false,
-            },
             connect: {
                 success: true,
             },
@@ -101,40 +93,6 @@ export const firmwareUpdate = [
         },
     },
     {
-        description: 'Downloading fails for whatever reason thrown in rollout',
-        initialState: {
-            suite: {
-                device: bootloaderDevice,
-            },
-            devices: [bootloaderDevice],
-        },
-        mocks: {
-            rollout: {
-                error: 'foo',
-            },
-        },
-        result: {
-            state: { firmware: { status: 'error', error: 'failed to download firmware' } },
-        },
-    },
-    {
-        description: 'Downloading fails because rollout does not find suitable firmware',
-        initialState: {
-            suite: {
-                device: bootloaderDevice,
-            },
-            devices: [bootloaderDevice],
-        },
-        mocks: {
-            rollout: {
-                success: null,
-            },
-        },
-        result: {
-            state: { firmware: { status: 'error', error: 'failed to download firmware' } },
-        },
-    },
-    {
         description: 'FirmwareUpdate call to connect fails',
         initialState: {
             suite: {
@@ -143,10 +101,6 @@ export const firmwareUpdate = [
             devices: [bootloaderDevice],
         },
         mocks: {
-            rollout: {
-                success: new ArrayBuffer(512),
-                error: false,
-            },
             connect: {
                 success: false,
                 payload: {

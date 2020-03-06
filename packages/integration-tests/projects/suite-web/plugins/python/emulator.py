@@ -18,8 +18,29 @@ proc = None
 # log.enable_debug_output()
 
 
-def start():
+def start(version):
     global proc
+
+    # These are min firmware versions supported by current version of trezorlib 
+    # https://github.com/trezor/trezor-firmware/blob/master/python/src/trezorlib/__init__.py
+    # MINIMUM_FIRMWARE_VERSION = {
+    #     "1": (1, 8, 0),
+    #     "T": (2, 1, 0),
+    # }
+
+    path="./projects/suite-web/plugins/python/bin/"
+    command=""
+    if version[0] == "2":
+        command = path + "trezor-emu-core-v" + version + " -O0 -X heapsize=20M -m main"
+    else:
+        # todo: currently we have only 1 legacy firmare. to make it work with debuglink,
+        # custom build is neccessary as described here 
+        # https://github.com/trezor/trezor-firmware/blob/master/docs/legacy/index.md
+        command = path + "trezor.elf -O0"
+
+        # todo: add more versions maybe
+        # command = path + "trezor-emu-legacy-v" + version + " -O0"
+
     if proc is None:
         # TODO:
         # - check if emulator process is already running and kill it if so
@@ -30,19 +51,7 @@ def start():
         # - run two T2/T1 emulators
         print(os.getcwd())
         proc = Popen(
-            # todo: run from binary directly, need to solve glibc error;
-
-            # has glibc error on my machine
-            # "TREZOR_OLED_SCALE=2 ./projects/suite-web/plugins/python/bin/trezor-emu-legacy-v1.8.3 -O0",
-
-            # works but is too old and gets some firmware-old error
-            # "TREZOR_OLED_SCALE=2 ./projects/suite-web/plugins/python/bin/trezor-emu-legacy-v1.6.2 -O0",
-
-            # glibc error on my machine
-            # "./projects/suite-web/plugins/python/bin/trezor-emu-core-latest -O0 -X heapsize=20M -m main",
-
-            "./projects/suite-web/plugins/python/bin/trezor-emu-core-v2.1.4 -O0 -X heapsize=20M -m main",
-            
+            command,
             shell=True,
             preexec_fn=os.setsid
         )

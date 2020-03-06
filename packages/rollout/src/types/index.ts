@@ -1,31 +1,18 @@
+import { Features } from 'trezor-connect';
+import { parseFeatures, parseReleases, VersionArrayT1, VersionArrayT2 } from '../utils/parse';
+
 export interface Version {
     major: number;
     minor: number;
     patch: number;
 }
 
-export interface Release {
-    required: boolean;
-    version: number[];
-    bootloader_version?: number[];
-    min_bridge_version: number[];
-    min_firmware_version: number[];
-    min_bootloader_version: number[];
-    url: string;
-    fingerprint: string;
-    changelog: string;
-    rollout?: number;
-}
+export type VersionArray = VersionArrayT1 | VersionArrayT2;
 
-export interface RolloutOpts {
-    releasesListsPaths: {
-        1: string;
-        2: string;
-    };
-    baseUrl: string;
-}
+export type ReleaseList = ReturnType<typeof parseReleases>;
+export type Release = ReleaseList[number];
 
 export type Firmware = ArrayBuffer;
 
-// TODO: take Features from connect;
-export type Features = any;
+export type ParsedFeatures = ReturnType<typeof parseFeatures>;
+export type OriginalFeatures = Features;
