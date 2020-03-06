@@ -38,7 +38,9 @@ export default (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
 
         if (!device.features) {
             // unacquired message
-            api.dispatch(notificationActions.addEvent({ type: DEVICE.CONNECT_UNACQUIRED, seen, device }));
+            api.dispatch(
+                notificationActions.addEvent({ type: DEVICE.CONNECT_UNACQUIRED, seen, device }),
+            );
         } else if (!device.remember) {
             api.dispatch(notificationActions.addEvent({ type: DEVICE.CONNECT, seen, device }));
         }

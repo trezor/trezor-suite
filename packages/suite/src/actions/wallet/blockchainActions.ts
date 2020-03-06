@@ -157,24 +157,9 @@ export const onBlockMined = (block: BlockchainBlock) => async (
     getState: GetState,
 ): Promise<void> => {
     const symbol = block.coin.shortcut.toLowerCase();
-    const network = accountUtils.getSelectedNetwork(NETWORKS, symbol);
-    if (!network) return;
-
-    // TODO: update the fee (should use TrezorConnect.blockchainEstimateFee?),
-    // cache the fee (store timestamp, once every 5 min?),
-    // check if new fees are different
-
-    // dispatch({
-    //     type: BLOCKCHAIN.UPDATE_FEE,
-    //     shortcut: symbol,
-    //     feeLevels: block.coin.defaultFees,
-    // });
-
     const networkAccounts = getState().wallet.accounts.filter(a => a.symbol === symbol);
-    if (networkAccounts.length === 0) return;
-
     networkAccounts.forEach(async account => {
-        dispatch(accountActions.fetchAndUpdateAccount(account, true));
+        dispatch(accountActions.fetchAndUpdateAccount(account));
     });
 };
 
@@ -182,27 +167,21 @@ export const onNotification = (payload: BlockchainNotification) => async (
     dispatch: Dispatch,
     getState: GetState,
 ): Promise<void> => {
-    // ripple gets 2 notification for the same tx (one without blockTime then update with blockTime)
-    // btc/eth/... don't get the 2nd notification, we will add missing info to confirmed txs on blockchain.block
-    // if (payload.notification.tx.blockTime) {
-    //     // not pending
-    //     console.log('skipping not pending tx');
-    //     return;
-    // }
     const { notification } = payload;
     const symbol = payload.coin.shortcut.toLowerCase();
+    const networkAccounts = getState().wallet.accounts.filter(a => a.symbol === symbol);
     const accounts = accountUtils.findAccountsByDescriptor(
         notification.descriptor,
-        getState().wallet.accounts,
+        networkAccounts,
     );
     if (!accounts.length) return;
     const account = accounts[0];
 
-    const enhancedTx = accountUtils.enhanceTransaction(notification.tx, account);
-    const accountDevice = accountUtils.findAccountDevice(account, getState().devices);
-
+    // ripple worker sends two notifications for the same tx (pending + confirmed/rejected)
     // dispatch only recv notifications
-    if (accountDevice && enhancedTx.type === 'recv') {
+    if (notification.tx.type === 'recv' && !notification.tx.blockHeight) {
+        const enhancedTx = accountUtils.enhanceTransaction(notification.tx, account);
+        const accountDevice = accountUtils.findAccountDevice(account, getState().devices);
         dispatch(
             notificationActions.addEvent({
                 type: 'tx-received',
@@ -214,23 +193,10 @@ export const onNotification = (payload: BlockchainNotification) => async (
         );
     }
 
-    // fetch account info and update the account (txs count,...)
-    // TODO: RIPPLE: it causes an issue. Because we already added tx to the reducer,
-    // count of all account txs is greater than one returned in accountInfo.
-    // We also have outdated balance/sequence. All of that trigger removing all txs belonging to the acc in onBlockMined,
-    // (if block come before 2nd notification)
-
-    // TODO: BITCOIN: Notification returns blockTime 0, getAccountInfo has valid timestamp. should we update tx?
-
-    // dispatch(accountActions.fetchAndUpdateAccount(account));
-
-    // TODO:
-    // update all accounts just to be sure?
-    // 1: case where 'sent' blockchain notification doesn't arrive is partially handled by updating the account right after successful tx send
-    // there still might be an issue if, after sending the tx, blockbook returns stale data (?, needs more testing)
-
-    const networkAccounts = getState().wallet.accounts.filter(a => a.symbol === symbol);
-    networkAccounts.forEach(async account => {
+    // it's pointless to fetch ripple accounts
+    // TODO: investigate more how to keep ripple pending tx until they are confirmed/rejected
+    // ripple-lib doesnt send "pending" txs in history
+    if (account.networkType !== 'ripple') {
         dispatch(accountActions.fetchAndUpdateAccount(account));
-    });
+    }
 };
