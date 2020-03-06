@@ -139,7 +139,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     const address = outputs[0].address.value;
     const destinationTag = networkTypeRipple.destinationTag.value;
 
-    if (account.networkType !== 'ripple' || !destinationTag || !amount || !address) return null;
+    if (account.networkType !== 'ripple' || !amount || !address) return null;
 
     const payment: RipplePayment = {
         destination: address,

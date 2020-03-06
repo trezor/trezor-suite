@@ -1,12 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Translation';
+import { Translation, AccountLabeling } from '@suite-components';
 import messages from '@suite/support/messages';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 import { H2, Button, colors, variables } from '@trezor/components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
-import { Output } from '@wallet-types/sendForm';
 import { fromWei, toWei } from 'web3-utils';
 import { Props } from './Container';
 
@@ -80,7 +79,7 @@ export default ({
     const { outputs } = send;
     const { networkType } = account;
     const transactionInfo = getTransactionInfo(account.networkType, send);
-    if (transactionInfo.type === 'error') return null;
+    if (!transactionInfo || transactionInfo.type === 'error') return null;
     const upperCaseSymbol = account.symbol.toUpperCase();
 
     return (
@@ -94,11 +93,11 @@ export default ({
                         <Translation {...messages.TR_ADDRESS_FROM} />
                     </Label>
                     <Value>
-                        {upperCaseSymbol} Account #{account.index + 1}
+                        {upperCaseSymbol} <AccountLabeling account={account} />
                     </Value>
                 </Box>
-                {outputs.map((output: Output) => (
-                    <OutputWrapper>
+                {outputs.map(output => (
+                    <OutputWrapper key={output.id}>
                         <Box>
                             <Label>
                                 <Translation {...messages.TR_TO} />

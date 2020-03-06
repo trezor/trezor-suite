@@ -3,7 +3,7 @@ import { getAccountTransactions } from '@wallet-utils/accountUtils';
 import * as accountActions from '@wallet-actions/accountActions';
 import { TRANSACTION } from '@wallet-actions/constants';
 // import { db } from '@suite/storage';
-// import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { SETTINGS } from '@suite-config';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
@@ -15,7 +15,8 @@ export type TransactionAction =
           account: Account;
           page?: number;
       }
-    | { type: typeof TRANSACTION.REMOVE; account: Account }
+    | { type: typeof TRANSACTION.REMOVE; account: Account; txs: WalletAccountTransaction[] }
+    | { type: typeof TRANSACTION.RESET; account: Account }
     | { type: typeof TRANSACTION.UPDATE; txId: string; timestamp: number }
     | { type: typeof TRANSACTION.FETCH_INIT }
     | {
@@ -63,10 +64,25 @@ export const add = (transactions: AccountTransaction[], account: Account, page?:
  *
  * @param {Account} account
  */
-export const remove = (account: Account) => async (dispatch: Dispatch) => {
+export const reset = (account: Account) => async (dispatch: Dispatch) => {
+    dispatch({
+        type: TRANSACTION.RESET,
+        account,
+    });
+};
+
+/**
+ * Remove certain transactions for a given account
+ *
+ * @param {Account} account
+ */
+export const remove = (account: Account, txs: WalletAccountTransaction[]) => async (
+    dispatch: Dispatch,
+) => {
     dispatch({
         type: TRANSACTION.REMOVE,
         account,
+        txs,
     });
 };
 

@@ -1,3 +1,4 @@
+import { AccountTransaction } from 'trezor-connect';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { getDateWithTimeZone } from '../suite/date';
 import BigNumber from 'bignumber.js';
@@ -60,3 +61,84 @@ export const parseKey = (key: string) => {
 
 export const findTransaction = (txid: string, transactions: WalletAccountTransaction[]) =>
     transactions.find(t => t && t.txid === txid);
+
+export const analyzeTransactions = (
+    fresh: AccountTransaction[],
+    known: WalletAccountTransaction[],
+) => {
+    let addTxs: AccountTransaction[] = [];
+    const newTxs: AccountTransaction[] = [];
+    let firstKnownIndex = 0;
+    let sliceIndex = 0;
+
+    // No fresh info
+    // remove all known
+    if (fresh.length < 1) {
+        return {
+            newTransactions: [],
+            add: [],
+            remove: known,
+        };
+    }
+
+    // If there are no known confirmed txs
+    // remove all known and add all fresh
+    const gotConfirmedTxs = known.some(tx => tx.blockHeight);
+    if (!gotConfirmedTxs) {
+        return {
+            newTransactions: fresh.filter(tx => tx.blockHeight),
+            add: fresh,
+            remove: known,
+        };
+    }
+
+    // run thru all fresh txs
+    fresh.forEach((tx, i) => {
+        const height = tx.blockHeight;
+        const isLast = i + 1 === fresh.length;
+        if (!height) {
+            // add pending tx
+            addTxs.push(tx);
+        } else {
+            let index = firstKnownIndex;
+            const len = known.length;
+            // use simple for loop to have possibility to `break`
+            for (index; index < len; index++) {
+                const kTx = known[index];
+                // known tx is pending, it will be removed
+                // move sliceIndex, set firstKnownIndex
+                if (!kTx.blockHeight) {
+                    firstKnownIndex = index + 1;
+                    sliceIndex = index + 1;
+                }
+                // known tx is "older"
+                if (kTx.blockHeight && kTx.blockHeight < height) {
+                    // set sliceIndex
+                    sliceIndex = isLast ? len : index;
+                    // all fresh txs to this point needs to be added
+                    addTxs = fresh.slice(0, i + 1);
+                    // this fresh tx is brand new
+                    newTxs.push(tx);
+                    break;
+                }
+                // known tx is on the same height
+                if (kTx.blockHeight === height) {
+                    firstKnownIndex = index + 1;
+                    // known tx changed (rollback)
+                    if (kTx.blockHash !== tx.blockHash) {
+                        // set sliceIndex
+                        sliceIndex = isLast ? len : index + 1;
+                        // this fresh tx is not new but needs to be added (replace kTx)
+                        addTxs.push(tx);
+                    }
+                    break;
+                }
+            }
+        }
+    });
+    return {
+        newTransactions: newTxs,
+        add: addTxs,
+        remove: known.slice(0, sliceIndex),
+    };
+};
