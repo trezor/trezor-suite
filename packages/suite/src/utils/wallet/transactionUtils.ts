@@ -73,6 +73,8 @@ export const analyzeTransactions = (
     let firstKnownIndex = 0;
     let sliceIndex = 0;
 
+    // No fresh info
+    // remove all known
     if (fresh.length < 1) {
         return {
             newTransactions: [],
@@ -82,7 +84,7 @@ export const analyzeTransactions = (
     }
 
     // If there are no known confirmed txs
-    // just remove all known and add all fresh
+    // remove all known and add all fresh
     const gotConfirmedTxs = known.some(tx => tx.blockHeight);
     if (!gotConfirmedTxs) {
         return {
@@ -92,43 +94,48 @@ export const analyzeTransactions = (
         };
     }
 
+    // run thru all fresh txs
     fresh.forEach((tx, i) => {
         const height = tx.blockHeight;
         const isLast = i + 1 === fresh.length;
         if (!height) {
+            // add pending tx
             addTxs.push(tx);
         } else {
             let index = firstKnownIndex;
             const len = known.length;
+            // use simple for loop to have possibility to `break`
             for (index; index < len; index++) {
                 const kTx = known[index];
+                // known tx is pending, it will be removed
+                // move sliceIndex, set firstKnownIndex
                 if (!kTx.blockHeight) {
                     firstKnownIndex = index + 1;
                     sliceIndex = index + 1;
                 }
+                // known tx is "older"
                 if (kTx.blockHeight && kTx.blockHeight < height) {
+                    // set sliceIndex
                     sliceIndex = isLast ? len : index;
-                    // console.warn("-lower", kTx, tx, isLast)
+                    // all fresh txs to this point needs to be added
                     addTxs = fresh.slice(0, i + 1);
+                    // this fresh tx is brand new
                     newTxs.push(tx);
                     break;
                 }
+                // known tx is on the same height
                 if (kTx.blockHeight === height) {
                     firstKnownIndex = index + 1;
-                    // console.warn("-equal", kTx, tx)
+                    // known tx changed (rollback)
                     if (kTx.blockHash !== tx.blockHash) {
+                        // set sliceIndex
                         sliceIndex = isLast ? len : index + 1;
-                        // console.warn("+++setslice", index, isLast);
+                        // this fresh tx is not new but needs to be added (replace kTx)
                         addTxs.push(tx);
                     }
                     break;
                 }
-                // console.warn("-default", kTx, tx)
             }
-            // if (changed > 0 && validIndex < index - changed) validIndex = index - changed;
-            // if (validIndex < lastValidIndex - changed) validIndex = lastValidIndex - changed;
-            // if (validIndex < index - changed) validIndex = index - changed;
-            // console.log("Final index", index firstKnownIndex, sliceIndex);
         }
     });
     return {
