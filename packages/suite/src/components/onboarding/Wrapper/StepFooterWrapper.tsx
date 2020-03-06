@@ -6,7 +6,6 @@ const StepFooterWrapper = styled.div`
     min-height: 36px;
     text-align: center;
     justify-content: center;
-    flex: 1;
 `;
 
 export default StepFooterWrapper;

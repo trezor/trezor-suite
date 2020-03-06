@@ -10,7 +10,6 @@ const DEFAULT_PASSPHRASE_PROTECTION = true;
 const DEFAULT_SKIP_BACKUP = true;
 const DEFAULT_STRENGTH_T1 = 256;
 const DEFAULT_STRENGTH_T2 = 128;
-const DEFAULT_BACKUP_TYPE = 0;
 
 export const applySettings = (params: ApplySettings) => async (
     dispatch: Dispatch,
@@ -90,7 +89,6 @@ export const resetDevice = (params: ResetDevice = {}) => async (
             label: DEFAULT_LABEL,
             skip_backup: DEFAULT_SKIP_BACKUP,
             passphrase_protection: DEFAULT_PASSPHRASE_PROTECTION,
-            backup_type: DEFAULT_BACKUP_TYPE,
         };
     } else {
         defaults = {
@@ -98,7 +96,6 @@ export const resetDevice = (params: ResetDevice = {}) => async (
             label: DEFAULT_LABEL,
             skip_backup: DEFAULT_SKIP_BACKUP,
             passphrase_protection: DEFAULT_PASSPHRASE_PROTECTION,
-            backup_type: DEFAULT_BACKUP_TYPE,
         };
     }
 
