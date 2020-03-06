@@ -80,7 +80,6 @@ export const checkAccountReserve = (outputId: number, address: string) => async 
     if (!send || selectedAccount.status !== 'loaded') return;
     const { account } = selectedAccount;
     const output = getOutput(send.outputs, outputId);
-    if (output.address.error) return null;
 
     dispatch({
         type: SEND.AMOUNT_LOADING,

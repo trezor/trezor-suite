@@ -1,9 +1,9 @@
 // import * as storageActions from '@suite-actions/storageActions';
 import { Dispatch, GetState } from '@suite-types';
 import { SEND } from '@wallet-actions/constants';
+import { isAddressValid } from '@wallet-utils/validation';
 import { ETH_DEFAULT_GAS_LIMIT, ETH_DEFAULT_GAS_PRICE } from '@wallet-constants/sendForm';
 import { FeeLevel, Output } from '@wallet-types/sendForm';
-import debounce from 'debounce';
 import { formatNetworkAmount, getFiatValue } from '@wallet-utils/accountUtils';
 // import { formatNetworkAmount, getAccountKey, getFiatValue } from '@wallet-utils/accountUtils';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
@@ -155,8 +155,8 @@ export const handleAddressChange = (outputId: number, address: string) => (
         currentAccountAddress: account.descriptor,
     });
 
-    if (networkType === 'ripple') {
-        dispatch(debounce(rippleActions.checkAccountReserve(output.id, address), 700));
+    if (networkType === 'ripple' && isAddressValid(address, account.symbol)) {
+        dispatch(rippleActions.checkAccountReserve(output.id, address));
     }
 
     dispatch(composeChange('address'));
