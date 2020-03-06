@@ -77,4 +77,86 @@ describe('Notifications Actions', () => {
         expect(notifications.filter(n => !n.closed).length).toEqual(1);
         expect(notifications.filter(n => n.closed).length).toEqual(1);
     });
+
+    it('removeTransactionEvents', () => {
+        const store = initStore(
+            getInitialState({
+                notifications: [
+                    {
+                        id: 1,
+                        context: 'toast',
+                        type: 'tx-sent',
+                        amount: '0',
+                        descriptor: 'xpub',
+                        txid: '1',
+                    },
+                    {
+                        id: 2,
+                        context: 'event',
+                        type: 'tx-confirmed',
+                        amount: '0',
+                        descriptor: 'xpub',
+                        txid: '2',
+                    },
+                    {
+                        id: 3,
+                        context: 'event',
+                        type: 'tx-received',
+                        amount: '0',
+                        descriptor: 'xpub',
+                        txid: '3',
+                    },
+                    {
+                        id: 4,
+                        context: 'toast',
+                        type: 'backup-success',
+                    },
+                ],
+            }),
+        );
+        store.dispatch(notificationActions.removeTransactionEvents([{ txid: '1' }, { txid: '2' }]));
+        expect(store.getState().notifications.length).toEqual(2);
+        store.dispatch(notificationActions.removeTransactionEvents([{ txid: '3' }]));
+        expect(store.getState().notifications.length).toEqual(1);
+    });
+
+    it('removeAccountEvents', () => {
+        const store = initStore(
+            getInitialState({
+                notifications: [
+                    {
+                        id: 1,
+                        context: 'toast',
+                        type: 'tx-sent',
+                        amount: '0',
+                        descriptor: 'xpub',
+                        txid: '1',
+                    },
+                    {
+                        id: 2,
+                        context: 'event',
+                        type: 'tx-confirmed',
+                        amount: '0',
+                        descriptor: 'xpub',
+                        txid: '2',
+                    },
+                    {
+                        id: 3,
+                        context: 'event',
+                        type: 'tx-received',
+                        amount: '0',
+                        descriptor: 'xpub',
+                        txid: '3',
+                    },
+                    {
+                        id: 4,
+                        context: 'toast',
+                        type: 'backup-success',
+                    },
+                ],
+            }),
+        );
+        store.dispatch(notificationActions.removeAccountEvents('xpub'));
+        expect(store.getState().notifications.length).toEqual(1);
+    });
 });

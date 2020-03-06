@@ -1,7 +1,8 @@
 import { MiddlewareAPI } from 'redux';
 import { DEVICE } from 'trezor-connect';
 import { SUITE } from '@suite-actions/constants';
-import { addEvent, resetUnseen, remove } from '@suite-actions/notificationActions';
+import { TRANSACTION, ACCOUNT } from '@wallet-actions/constants';
+import * as notificationActions from '@suite-actions/notificationActions';
 import * as deviceUtils from '@suite-utils/device';
 import { AppState, Action, Dispatch } from '@suite-types';
 
@@ -19,7 +20,7 @@ export default (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
 
     if (action.type === SUITE.APP_CHANGED && prevState.router.app === 'notifications') {
         // Leaving notification app. Mark all unseen notifications as seen
-        api.dispatch(resetUnseen());
+        api.dispatch(notificationActions.resetUnseen());
     }
 
     if (action.type === DEVICE.CONNECT || action.type === DEVICE.CONNECT_UNACQUIRED) {
@@ -33,13 +34,13 @@ export default (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
             .notifications.filter(
                 n => n.type === DEVICE.CONNECT_UNACQUIRED && device.path === n.device.path,
             );
-        if (toRemove.length > 0) api.dispatch(remove(toRemove));
+        if (toRemove.length > 0) api.dispatch(notificationActions.remove(toRemove));
 
         if (!device.features) {
             // unacquired message
-            api.dispatch(addEvent({ type: DEVICE.CONNECT_UNACQUIRED, seen, device }));
+            api.dispatch(notificationActions.addEvent({ type: DEVICE.CONNECT_UNACQUIRED, seen, device }));
         } else if (!device.remember) {
-            api.dispatch(addEvent({ type: DEVICE.CONNECT, seen, device }));
+            api.dispatch(notificationActions.addEvent({ type: DEVICE.CONNECT, seen, device }));
         }
     }
 
@@ -55,7 +56,7 @@ export default (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
                     deviceUtils.isSelectedDevice(action.payload, n.device),
             );
         if (notifications.length > 0) {
-            api.dispatch(resetUnseen(notifications));
+            api.dispatch(notificationActions.resetUnseen(notifications));
         }
     }
 
@@ -71,15 +72,25 @@ export default (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
                         ? deviceUtils.isSelectedInstance(d, n.device)
                         : deviceUtils.isSelectedDevice(d, n.device),
                 );
-                api.dispatch(remove(toRemove));
+                api.dispatch(notificationActions.remove(toRemove));
             }
+        });
+    }
+
+    if (action.type === TRANSACTION.REMOVE) {
+        api.dispatch(notificationActions.removeTransactionEvents(action.txs));
+    }
+
+    if (action.type === ACCOUNT.REMOVE) {
+        action.payload.forEach(account => {
+            api.dispatch(notificationActions.removeAccountEvents(account.descriptor));
         });
     }
 
     switch (action.type) {
         // Example event: wallet creation
         case SUITE.AUTH_DEVICE:
-            api.dispatch(addEvent({ type: action.type, seen: true }));
+            api.dispatch(notificationActions.addEvent({ type: action.type, seen: true }));
             break;
         // no default
     }
