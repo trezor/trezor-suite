@@ -65,6 +65,7 @@ const update = (
 };
 
 const add = (draft: State, transactions: AccountTransaction[], account: Account, page?: number) => {
+    if (transactions.length < 1) return;
     const accountHash = getAccountKey(account.descriptor, account.symbol, account.deviceState);
     initializeAccount(draft, accountHash);
     const accountTxs = draft.transactions[accountHash];
@@ -74,7 +75,6 @@ const add = (draft: State, transactions: AccountTransaction[], account: Account,
         const enhancedTx = enhanceTransaction(tx, account);
         // first we need to make sure that tx is not undefined, then check if txid matches
         const existingTx = findTransaction(tx.txid, accountTxs);
-
         if (!existingTx) {
             // add a new transaction
             if (page) {
@@ -100,6 +100,15 @@ const add = (draft: State, transactions: AccountTransaction[], account: Account,
     });
 };
 
+const remove = (draft: State, account: Account, txs: WalletAccountTransaction[]) => {
+    const accountHash = getAccountKey(account.descriptor, account.symbol, account.deviceState);
+    const transactions = draft.transactions[accountHash] || [];
+    txs.forEach(tx => {
+        const index = transactions.findIndex(t => t.txid === tx.txid);
+        transactions.splice(index, 1);
+    });
+};
+
 export default (state: State = initialState, action: Action | WalletAction): State => {
     return produce(state, draft => {
         switch (action.type) {
@@ -114,6 +123,9 @@ export default (state: State = initialState, action: Action | WalletAction): Sta
                 add(draft, action.transactions, action.account, action.page);
                 break;
             case TRANSACTION.REMOVE:
+                remove(draft, action.account, action.txs);
+                break;
+            case TRANSACTION.RESET:
                 delete draft.transactions[
                     getAccountKey(
                         action.account.descriptor,

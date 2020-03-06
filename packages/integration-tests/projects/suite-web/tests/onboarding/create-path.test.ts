@@ -28,7 +28,7 @@ describe('Onboarding happy paths', () => {
             .click()
             .getTestElement('@onboarding/button-continue')
             .click()
-            .getTestElement('@onboarding/button-standard-backup')
+            .getTestElement('@onboarding/only-backup-option-button')
             .click()
             .getTestElement('@onboading/confirm-action-on-device')
             .should('be.visible');

@@ -19,7 +19,7 @@ import SelectDeviceStep from '@onboarding-views/steps/SelectDevice/Container';
 import HologramStep from '@onboarding-views/steps/Hologram/Container';
 import PairStep from '@onboarding-views/steps/Pair/Container';
 import FirmwareStep from '@onboarding-views/steps/Firmware/Container';
-import ShamirStep from '@onboarding-views/steps/Shamir/Container';
+import ResetDeviceStep from '@suite/views/onboarding/steps/ResetDevice/Container';
 import RecoveryStep from '@onboarding-views/steps/Recovery/Container';
 import BackupStep from '@onboarding-views/steps/Backup/Container';
 import SecurityStep from '@onboarding-views/steps/Security/Container';
@@ -118,8 +118,8 @@ const Onboarding = (props: Props) => {
                 return PairStep;
             case STEP.ID_FIRMWARE_STEP:
                 return FirmwareStep;
-            case STEP.ID_SHAMIR_STEP:
-                return ShamirStep;
+            case STEP.ID_RESET_DEVICE_STEP:
+                return ResetDeviceStep;
             case STEP.ID_RECOVERY_STEP:
                 return RecoveryStep;
             case STEP.ID_SECURITY_STEP:

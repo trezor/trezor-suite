@@ -6,6 +6,7 @@ const StepBodyWrapper = styled.div`
     align-items: center;
     text-align: center;
     width: 100%;
+    flex: 1;
 `;
 
 export default StepBodyWrapper;

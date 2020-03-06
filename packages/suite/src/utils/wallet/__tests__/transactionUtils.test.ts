@@ -1,4 +1,5 @@
 import * as utils from '../transactionUtils';
+import * as fixtures from '../__fixtures__/transactionUtils';
 
 describe('transaction utils', () => {
     it('parseKey', () => {
@@ -30,6 +31,12 @@ describe('transaction utils', () => {
                 global.JestMocks.getWalletTransaction({ blockHeight: undefined }),
                 global.JestMocks.getWalletTransaction({ blockHeight: undefined, blockTime: 0 }),
             ],
+        });
+    });
+
+    fixtures.analyzeTransactions.forEach(f => {
+        it(`analyzeTransactions: ${f.description}`, () => {
+            expect(utils.analyzeTransactions(f.fresh as any, f.known as any)).toEqual(f.result);
         });
     });
 });

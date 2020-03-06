@@ -68,7 +68,7 @@ const steps: Step[] = [
         progress: true,
     },
     {
-        id: STEP.ID_SHAMIR_STEP,
+        id: STEP.ID_RESET_DEVICE_STEP,
         disallowedDeviceStates: [
             STEP.DISALLOWED_DEVICE_IS_NOT_CONNECTED,
             STEP.DISALLOWED_DEVICE_IS_IN_BOOTLOADER,

@@ -23,7 +23,7 @@ export type AnyStepId =
     | typeof STEP.ID_SET_PIN_STEP
     | typeof STEP.ID_SECURITY_STEP
     | typeof STEP.ID_UNBOXING_STEP
-    | typeof STEP.ID_SHAMIR_STEP
+    | typeof STEP.ID_RESET_DEVICE_STEP
     | typeof STEP.ID_RECOVERY_STEP;
 
 export type AnyStepDisallowedState =

@@ -18,6 +18,7 @@ export default `
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       font-family: "TT Hoves", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      height: 100%;
     }
 
     a {

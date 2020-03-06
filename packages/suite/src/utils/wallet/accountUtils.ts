@@ -176,12 +176,7 @@ export const sortByCoin = (accounts: Account[]) => {
 };
 
 export const findAccountsByDescriptor = (descriptor: string, accounts: Account[]) =>
-    accounts.filter(
-        a =>
-            a.networkType === 'ethereum'
-                ? a.descriptor.toLowerCase() === descriptor.toLowerCase()
-                : a.descriptor === descriptor, // blockbook returns lowercase eth address
-    );
+    accounts.filter(a => a.descriptor === descriptor);
 
 export const findAccountsByAddress = (address: string, accounts: Account[]) =>
     accounts.filter(a => {
@@ -334,52 +329,20 @@ export const isTestnet = (symbol: Account['symbol']) => {
     return net?.testnet ?? false;
 };
 
-export const isAccountOutdated = (account: Account, accountInfo: AccountInfo) => {
+export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
     // changed transaction count (total + unconfirmed)
     const changedTxCount =
-        accountInfo.history.total + (accountInfo.history.unconfirmed || 0) !==
+        freshInfo.history.total + (freshInfo.history.unconfirmed || 0) >
         account.history.total + (account.history.unconfirmed || 0);
 
     // different sequence or balance
-    const changedRippleSpecific =
-        account.networkType === 'ripple'
-            ? accountInfo.misc!.sequence !== account.misc.sequence ||
-              accountInfo.balance !== account.balance
-            : false;
+    const changedRipple =
+        account.networkType === 'ripple' &&
+        (freshInfo.misc!.sequence !== account.misc.sequence ||
+            freshInfo.balance !== account.balance);
 
-    // last tx doesn't match
-    // const lastPayloadTx = accountInfo.history.transactions
-    //     ? accountInfo.history.transactions[0]
-    //     : undefined;
-    // const lastReducerTx = getAccountTransactions(
-    //     getState().wallet.transactions.transactions,
-    //     account,
-    // )[0];
-    // // .filter(t => !!t.blockTime)
-    // // [0]; // exclude pending txs
+    const changedEthereum =
+        account.networkType === 'ethereum' && freshInfo.misc!.nonce !== account.misc.nonce;
 
-    // let changedLastTx = false;
-    // if ((!lastReducerTx && lastPayloadTx) || (lastReducerTx && !lastPayloadTx)) {
-    //     changedLastTx = true;
-    // } else if (lastReducerTx && lastPayloadTx && lastReducerTx.txid !== lastPayloadTx.txid) {
-    //     changedLastTx = true;
-    // }
-
-    // if (changedTxCount || changedLastTx || changedRippleSpecific) {
-    //     console.log(changedTxCount, changedLastTx, changedRippleSpecific);
-    //     console.log('isAccountOutdated');
-    //     console.log('account', account);
-    //     console.log('accountINfo', accountInfo);
-    //     console.log('changedTxCount', changedTxCount);
-    //     console.log('changedRippleSpecific', changedRippleSpecific);
-    //     console.log('changedLastTx', changedLastTx);
-    //     console.log('lastReducerTx', lastReducerTx);
-    //     console.log('lastPayloadTx', lastPayloadTx);
-    // }
-
-    // ripple doesn't provide total txs count, rely on balance/sequence
-    if (account.networkType === 'ripple') {
-        return changedRippleSpecific;
-    }
-    return changedTxCount;
+    return changedTxCount || changedRipple || changedEthereum;
 };
