@@ -1,9 +1,8 @@
 import React from 'react';
 
 import { OnboardingButton, Wrapper } from '@onboarding-components';
-import { Translation } from '@suite-components';
+import { Translation, Image } from '@suite-components';
 import messages from '@suite/support/messages';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 
 import { Props } from './Container';
 
@@ -14,7 +13,7 @@ const FinalStep = ({ closeModalApp }: Props) => (
         </Wrapper.StepHeading>
         <Wrapper.StepBody>
             <Translation>{messages.TR_FINAL_SUBHEADING}</Translation>
-            <img src={resolveStaticPath('images/onboarding/all-done.svg')} alt="" />
+            <Image image="ALL_DONE" />
         </Wrapper.StepBody>
         <Wrapper.Controls>
             <OnboardingButton.Cta

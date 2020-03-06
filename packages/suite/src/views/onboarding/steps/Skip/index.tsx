@@ -2,13 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
-import { Translation } from '@suite-components';
+import { Translation, Image } from '@suite-components';
 import messages from '@suite/support/messages';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 
 import { Props } from './Container';
 
-const StyledImg = styled.img`
+const StyledImg = styled(props => <Image {...props} />)`
     margin: 50px 0;
 `;
 
@@ -21,7 +20,7 @@ const SkipStep = ({ closeModalApp, goToNextStep }: Props) => (
             <Text>
                 <Translation>{messages.TR_SKIP_ONBOARDING_TEXT}</Translation>
             </Text>
-            <StyledImg src={resolveStaticPath('images/onboarding/skip-warning.svg')} alt="" />
+            <StyledImg image="SKIP_WARNING" />
         </Wrapper.StepBody>
         <Wrapper.Controls>
             <OnboardingButton.Cta

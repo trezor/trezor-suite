@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { P, H2, Button } from '@trezor/components';
-import { Translation, CheckItem, UniErrorImg } from '@suite-components';
+import { Translation, CheckItem, Image } from '@suite-components';
 import messages from '@suite/support/messages';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import ModalWrapper from '@suite-components/ModalWrapper';
@@ -73,7 +73,7 @@ const WipeDevice = ({ locks, wipeDevice, onCancel }: Props) => {
                     <Translation {...messages.TR_WIPE_DEVICE_TEXT} />
                 </P>
             </Texts>
-            <UniErrorImg />
+            <Image image="UNI_ERROR" />
             <CheckItems>
                 <Col>
                     <CheckItem

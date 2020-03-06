@@ -22,7 +22,7 @@ const P_SIZES: { [key: string]: string } = {
     tiny: FONT_SIZE.TINY,
 };
 
-const Paragraph = styled.p<Props>`
+const Paragraph = styled.div<Props>`
     font-size: ${props => P_SIZES[props.size || 'normal']};
     line-height: ${props => getLineHeight(props.size)};
     color: ${props => (props.size === 'tiny' ? colors.BLACK50 : colors.BLACK0)};

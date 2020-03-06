@@ -35,7 +35,7 @@ const SelectWordCount = ({ onSelect }: Props) => (
                     onSelect(12);
                 }}
                 button={<Translation {...messages.TR_WORDS} values={{ count: '12' }} />}
-                imgSrc="images/recovery/12-words.svg"
+                imgSrc="images/svg/svg/12-words.svg"
             />
             <Option
                 variant={3}
@@ -43,7 +43,7 @@ const SelectWordCount = ({ onSelect }: Props) => (
                     onSelect(18);
                 }}
                 button={<Translation {...messages.TR_WORDS} values={{ count: '18' }} />}
-                imgSrc="images/recovery/18-words.svg"
+                imgSrc="images/svg/svg/18-words.svg"
             />
             <Option
                 variant={3}
@@ -51,7 +51,7 @@ const SelectWordCount = ({ onSelect }: Props) => (
                     onSelect(24);
                 }}
                 button={<Translation {...messages.TR_WORDS} values={{ count: '24' }} />}
-                imgSrc="images/recovery/24-words.svg"
+                imgSrc="images/svg/svg/24-words.svg"
             />
         </Wrapper>
     </>

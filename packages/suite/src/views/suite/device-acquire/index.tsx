@@ -2,8 +2,7 @@ import { SUITE } from '@suite-actions/constants';
 import styled from 'styled-components';
 import messages from '@suite/support/messages';
 import { H2, P, Button } from '@trezor/components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
-import { Translation } from '@suite-components/Translation';
+import { Translation, Image } from '@suite-components';
 import React from 'react';
 
 import { Props } from './Container';
@@ -16,7 +15,7 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const Image = styled.img`
+const ImageWrapper = styled.div`
     width: 360px;
 `;
 
@@ -35,7 +34,9 @@ const Acquire = ({ device, locks, acquireDevice }: Props) => {
             <StyledP>
                 <Translation {...messages.TR_ACQUIRE_DEVICE_DESCRIPTION} />
             </StyledP>
-            <Image src={resolveStaticPath('images/suite/device-another-session.svg')} />
+            <ImageWrapper>
+                <Image image="DEVICE_ANOTHER_SESSION" />
+            </ImageWrapper>
             <Button isLoading={locked} onClick={() => acquireDevice()}>
                 <Translation {...messages.TR_ACQUIRE_DEVICE} />
             </Button>

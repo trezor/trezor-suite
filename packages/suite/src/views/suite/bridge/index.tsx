@@ -3,13 +3,12 @@ import Head from 'next/head';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Translation';
+import { Translation, Image } from '@suite-components';
 import { Button, P, Link, H2, Select, colors, variables, Loader } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { URLS } from '@suite-constants';
 import { AppState, Dispatch } from '@suite-types';
 import messages from '@suite/support/messages';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const Wrapper = styled.div`
     display: flex;
@@ -94,8 +93,6 @@ const Version = styled.div<{ show: boolean }>`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
-const Image = styled.img``;
-
 const Col = styled.div<{ justify?: string }>`
     display: flex;
     flex: 1;
@@ -163,7 +160,7 @@ const InstallBridge = (props: Props) => {
                         values={{ version: data.currentVersion }}
                     />
                 </Version>
-                <Image src={resolveStaticPath('images/suite/t-bridge-check.svg')} />
+                <Image image="T_BRIDGE_CHECK" />
                 {isLoading ? (
                     <LoaderWrapper>
                         <CenteredLoader size={50} strokeWidth={2} />
