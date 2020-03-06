@@ -21,7 +21,6 @@ import { BlockchainInfo, NetworkInfo } from '../../types/rpcbitcoind';
 import { Utxo } from '../../types/responses';
 
 export const transformServerInfo = (blockInfo: BlockchainInfo, netInfo: NetworkInfo) => {
-    console.log('blockInfo', blockInfo);
     return {
         name: 'Bitcoin',
         shortcut: 'BTC',
@@ -29,7 +28,7 @@ export const transformServerInfo = (blockInfo: BlockchainInfo, netInfo: NetworkI
         version: netInfo.version,
         decimals: 8,
         blockHeight: blockInfo.blocks,
-        blockHash: blockInfo.bestHash,
+        blockHash: blockInfo.bestblockhash,
     };
 };
 

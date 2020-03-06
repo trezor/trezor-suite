@@ -13,7 +13,7 @@ export interface BlockchainInfo {
 }
 
 export interface NetworkInfo {
-    version: number;
+    version: string;
 }
 
 export interface BlockHash {

@@ -1,5 +1,6 @@
 import { FormattedTransactionType as RippleTransaction } from 'ripple-lib';
 import { Transaction as BlockbookTransaction } from './blockbook';
+import { Transaction as BitcoindTransaction } from './rpcbitcoind';
 import { HANDSHAKE } from '../constants/messages';
 import * as RESPONSES from '../constants/responses';
 import { AccountInfo, Transaction } from './common';
@@ -69,6 +70,10 @@ export interface GetTransaction {
         | {
               type: 'blockbook';
               tx: BlockbookTransaction;
+          }
+        | {
+              type: 'bitcoind';
+              tx: BitcoindTransaction;
           };
 }
 

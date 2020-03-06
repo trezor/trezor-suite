@@ -1,11 +1,11 @@
 import { CustomError } from '../../constants/errors';
 import { MESSAGES, RESPONSES } from '../../constants';
 import Connection from './websocket';
-import RpcConnection from './rpcclient';
+import { RpcClient, LoginData } from './rpcclient';
 import * as utils from './utils';
 
 import { Message, Response, SubscriptionAccountInfo } from '../../types';
-import { AddressNotification, BlockNotification } from '../../types/blockbook';
+import { AddressNotification, BlockNotification, Transaction } from '../../types/rpcbitcoind';
 import * as MessageTypes from '../../types/messages';
 import WorkerCommon from '../common';
 
@@ -15,6 +15,14 @@ const common = new WorkerCommon(postMessage);
 
 let api: Connection | undefined;
 let endpoints: string[] = [];
+
+// This data must be obtained from somewhere in the front end
+const loginData: LoginData = {
+    username: 'rpc',
+    password: 'rpcdsfcxvxctrnfnvkkqkjvjtjnbnnkbvibnifnbkdfbdfkbndfkbnfdbfdnkeckvncxq1',
+    host: '78.47.39.234',
+    port: '8332',
+};
 
 const cleanup = () => {
     if (api) {
@@ -80,22 +88,15 @@ const connect = async (): Promise<Connection> => {
 
 const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<void> => {
     try {
-        // only testing
-        const rpcClient = new RpcConnection();
-        const blockchainInfo = await rpcClient.getBlockchainInfo();
-        const networkInfo = await rpcClient.getNetworkInfo();
-        console.log('blockchainInfo', blockchainInfo);
-        console.log('networkInfo', networkInfo);
+        const rpcClientObj = new RpcClient(loginData);
+        const blockchainInfo = await rpcClientObj.getBlockchainInfo();
+        const networkInfo = await rpcClientObj.getNetworkInfo();
 
-        const socket = await connect();
-        const info = await socket.getServerInfo();
-        // RPC call: getnetworkinfo
-        // no arguments
         common.response({
             id: data.id,
             type: RESPONSES.GET_INFO,
             payload: {
-                url: socket.options.url,
+                url: `${loginData.host}:${loginData.port}`,
                 ...utils.transformServerInfo(blockchainInfo, networkInfo),
             },
         });
@@ -168,15 +169,23 @@ const getAccountUtxo = async (
 const getTransaction = async (
     data: { id: number } & MessageTypes.GetTransaction
 ): Promise<void> => {
+    console.log('getTransaction  getTransaction getTransaction');
     const { payload } = data;
     try {
-        const socket = await connect();
-        const tx = await socket.getTransaction(payload);
+        // const socket = await connect();
+        // const tx = await socket.getTransaction(payload);
+
+        const rpcClientObj = new RpcClient(loginData);
+        const tx: Transaction = await rpcClientObj.getTransactionInfo(payload);
+
+        console.log('gettransaction tx2', tx);
+        // need to find sender?
+
         common.response({
             id: data.id,
             type: RESPONSES.GET_TRANSACTION,
             payload: {
-                type: 'blockbook',
+                type: 'bitcoind',
                 tx,
             },
         });
