@@ -10,7 +10,7 @@ import Badge from '@suite-components/Badge';
 import { Props } from './Container';
 
 const Wrapper = styled.div<{ selected: boolean }>`
-    margin: 0px 10px 0px 10px;
+    margin: 0px 10px 1px 10px;
     display: flex;
     border-radius: 10px;
     flex-direction: column;
@@ -146,12 +146,14 @@ const AccountItem = React.memo((props: Props) => {
                             </CryptoValue>
                         </HiddenPlaceholder>
                         {fiatBalance && (
-                            <StyledBadge>
-                                <FormattedNumber
-                                    value={fiatBalance}
-                                    currency={props.localCurrency}
-                                />
-                            </StyledBadge>
+                            <HiddenPlaceholder>
+                                <StyledBadge>
+                                    <FormattedNumber
+                                        value={fiatBalance}
+                                        currency={props.localCurrency}
+                                    />
+                                </StyledBadge>
+                            </HiddenPlaceholder>
                         )}
                     </Balance>
                 </Right>

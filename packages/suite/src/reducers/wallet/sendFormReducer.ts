@@ -33,6 +33,7 @@ const initialState = (
             value: null,
             error: null,
         },
+        isDestinationAccountEmpty: null,
     },
     networkTypeEthereum: {
         transactionInfo: null,
@@ -84,7 +85,14 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
             // change input "Amount"
             case SEND.HANDLE_AMOUNT_CHANGE: {
-                const { outputId, amount, decimals, availableBalance } = action;
+                const {
+                    outputId,
+                    amount,
+                    decimals,
+                    availableBalance,
+                    isDestinationAccountEmpty,
+                    reserve,
+                } = action;
                 const output = getOutput(draft.outputs, outputId);
                 const amountBig = new Bignumber(amount);
 
@@ -111,6 +119,11 @@ export default (state: State | null = null, action: WalletAction): State | null 
                     return draft;
                 }
 
+                if (isDestinationAccountEmpty && reserve && amountBig.isLessThan(reserve)) {
+                    output.amount.error = VALIDATION_ERRORS.XRP_CANNOT_SEND_LESS_THAN_RESERVE;
+                    return draft;
+                }
+
                 break;
             }
 
@@ -119,14 +132,6 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 const { isLoading, outputId } = action;
                 const output = getOutput(draft.outputs, outputId);
                 output.amount.isLoading = isLoading;
-                return draft;
-            }
-
-            // change error state in "Amount"
-            case SEND.AMOUNT_ERROR: {
-                const { error, outputId } = action;
-                const output = getOutput(draft.outputs, outputId);
-                output.amount.error = error;
                 return draft;
             }
 
@@ -273,6 +278,13 @@ export default (state: State | null = null, action: WalletAction): State | null 
                         output => (output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH),
                     );
                 }
+                return draft;
+            }
+
+            // check if destination account is empty
+            case SEND.XRP_IS_DESTINATION_ACCOUNT_EMPTY: {
+                draft.networkTypeRipple.isDestinationAccountEmpty =
+                    action.isDestinationAccountEmpty;
                 return draft;
             }
 

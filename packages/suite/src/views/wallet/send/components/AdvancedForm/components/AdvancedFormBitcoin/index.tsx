@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import EstimatedMiningTime from '../../../EstimatedMiningTime';
 import Fee from '../Fee/Container';
 import Layout from '../Layout';
-import TransactionInfo from '../TransactionInfo/Container';
+// import TransactionInfo from '../TransactionInfo/Container';
 import Locktime from './components/Locktime';
 import ReplaceByFee from './components/ReplaceByFee';
 import { Props } from './Container';
@@ -56,7 +56,8 @@ export default ({ send }: Props) => {
                         </Row>
                     </>
                 }
-                bottom={transactionInfo?.type === 'final' ? <TransactionInfo /> : null}
+                // bottom={transactionInfo?.type === 'final' ? <TransactionInfo /> : null}
+                bottom={null}
             />
         </Wrapper>
     );

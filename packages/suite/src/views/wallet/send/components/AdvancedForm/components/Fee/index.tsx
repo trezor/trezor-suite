@@ -1,7 +1,7 @@
 import Badge from '@suite-components/Badge';
-import { Translation } from '@suite-components/Translation';
+import { Translation, QuestionTooltip } from '@suite-components';
 import messages from '@suite/support/messages';
-import { colors, Icon, P, Select, variables, Tooltip } from '@trezor/components';
+import { colors, Icon, P, Select, variables } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { fromWei, toWei } from 'web3-utils';
 import { FeeLevel } from '@wallet-types/sendForm';
@@ -18,6 +18,10 @@ import { Props } from './Container';
 const Row = styled.div`
     display: flex;
     flex-direction: column;
+`;
+
+const Text = styled.div`
+    margin-right: 3px;
 `;
 
 const StyledIcon = styled(Icon)`
@@ -137,17 +141,16 @@ export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
             <Row>
                 <Top>
                     <Label>
-                        <Translation {...messages.TR_FEE} />
-                        <Tooltip
-                            placement="top"
-                            content={<Translation {...messages.TR_SEND_FEE_TOOLTIP} />}
-                        >
-                            <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
-                        </Tooltip>
+                        <Text>
+                            <Translation {...messages.TR_FEE} />
+                        </Text>
+                        <QuestionTooltip messageId="TR_SEND_FEE_TOOLTIP" />
                     </Label>
                     <Refresh>
                         <StyledIcon icon="REFRESH" color={colors.BLACK50} size={10} />
-                        <RefreshText>Refresh</RefreshText>
+                        <RefreshText>
+                            <Translation {...messages.REFRESH} />
+                        </RefreshText>
                     </Refresh>
                 </Top>
                 <StyledSelect

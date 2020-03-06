@@ -1,7 +1,7 @@
-import { Translation } from '@suite-components/Translation';
+import { Translation, QuestionTooltip } from '@suite-components';
 import messages from '@suite/support/messages';
 import styled from 'styled-components';
-import { Textarea, colors, Icon, Tooltip } from '@trezor/components';
+import { Textarea } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Send } from '@wallet-types';
 import { getInputState } from '@wallet-utils/sendFormUtils';
@@ -13,10 +13,8 @@ const Label = styled.div`
     align-items: center;
 `;
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-    display: flex;
-    padding-left: 5px;
+const Text = styled.div`
+    margin-right: 3px;
 `;
 
 const getError = (error: Send['networkTypeEthereum']['data']['error']) => {
@@ -41,13 +39,10 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
             onChange={e => sendFormActionsEthereum.handleData(e.target.value)}
             topLabel={
                 <Label>
-                    Data
-                    <Tooltip
-                        placement="top"
-                        content={<Translation {...messages.TR_SEND_DATA_TOOLTIP} />}
-                    >
-                        <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
-                    </Tooltip>
+                    <Text>
+                        <Translation {...messages.TR_SEND_DATA} />
+                    </Text>
+                    <QuestionTooltip messageId="TR_SEND_DATA_TOOLTIP" />
                 </Label>
             }
         />

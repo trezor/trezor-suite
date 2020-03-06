@@ -1,5 +1,7 @@
 import { colors, Switch, variables, Input } from '@trezor/components';
 import React from 'react';
+import { Translation } from '@suite-components/Translation';
+import messages from '@suite/support/messages';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -43,9 +45,11 @@ export default () => {
         <Wrapper>
             <Row>
                 <Left>
-                    <Title>Add Locktime</Title>
+                    <Title>
+                        <Translation {...messages.LOCKTIME_TITLE} />
+                    </Title>
                     <Description>
-                        Allows you to postpone the transaction by set value (time or block)
+                        <Translation {...messages.LOCKTIME_DESCRIPTION} />
                     </Description>
                 </Left>
                 <Right>
