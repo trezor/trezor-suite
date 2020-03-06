@@ -84,7 +84,8 @@ export const updateCurrentRates = (ticker: Ticker) => async (
             ? await blockchainLink.getCurrentFiatRates({})
             : await fetchCurrentFiatRates(ticker);
 
-        if (response) {
+        if (response && response.rates) {
+            // dispatch only if rates are not null/undefined
             dispatch({
                 type: RATE_UPDATE,
                 payload: {
@@ -118,7 +119,7 @@ const getStaleTickers = (
     timestampFunc: (ticker: CoinFiatRates) => number | undefined,
     interval: number,
     includeTokens?: boolean,
-) => async (_dispatch: Dispatch, getState: GetState): Promise<Ticker[]> => {
+) => (_dispatch: Dispatch, getState: GetState): Ticker[] => {
     const { fiat } = getState().wallet;
     const { enabledNetworks } = getState().wallet.settings;
     const watchedTickers = FIAT.tickers.filter(t => enabledNetworks.includes(t.symbol));
@@ -154,10 +155,8 @@ const getStaleTickers = (
  */
 export const updateStaleRates = () => async (dispatch: Dispatch, _getState: GetState) => {
     try {
-        const staleTickers = await dispatch(
-            getStaleTickers(ticker => ticker.current?.ts, MAX_AGE, true),
-        );
-        const promises = staleTickers.map(updateCurrentRates);
+        const staleTickers = dispatch(getStaleTickers(ticker => ticker.current?.ts, MAX_AGE, true));
+        const promises = staleTickers.map(t => dispatch(updateCurrentRates(t)));
         await Promise.all(promises);
     } catch (error) {
         // todo: dispatch some error;
@@ -185,7 +184,7 @@ const updateLastWeekRates = () => async (dispatch: Dispatch) => {
     timestamps = timestamps.reverse();
     // console.log('timestamps', timestamps);
 
-    const staleTickers = await dispatch(getStaleTickers(ticker => ticker.lastWeek?.ts, MAX_AGE));
+    const staleTickers = dispatch(getStaleTickers(ticker => ticker.lastWeek?.ts, MAX_AGE));
 
     const promises = staleTickers.map(async ticker => {
         try {
