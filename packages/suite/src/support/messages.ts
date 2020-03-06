@@ -50,6 +50,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'There are no coins enabled in settings.',
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY',
     },
+    TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC: {
+        defaultMessage:
+            'It’s so empty here. Can’t even describe the emptiness I’m feelin’ here… You can either add new account (that will enable selected coin) or enable any coin in Settings.',
+        id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC',
+    },
     TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR: {
         defaultMessage: 'Discovery error.',
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR',
@@ -2353,6 +2358,10 @@ const definedMessages = defineMessages({
     TR_CRYPTOCURRENCY: {
         id: 'TR_CRYPTOCURRENCY',
         defaultMessage: 'Cryptocurrency',
+    },
+    TR_COIN_SETTINGS: {
+        id: 'TR_COIN_SETTINGS',
+        defaultMessage: 'Coin settings',
     },
 });
 

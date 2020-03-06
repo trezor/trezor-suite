@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Button } from '@trezor/components';
 import * as modalActions from '@suite-actions/modalActions';
+import * as routerActions from '@suite-actions/routerActions';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Dispatch } from '@suite-types';
 import { Translation, Image } from '@suite-components';
@@ -17,6 +18,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     openModal: bindActionCreators(modalActions.openModal, dispatch),
+    goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
@@ -33,10 +35,18 @@ const DiscoveryEmpty = (props: Props) => {
         <Wrapper
             title={<Translation {...messages.TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY} />}
             image={<Image image="EMPTY_WALLET" />}
+            description={<Translation {...messages.TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC} />}
         >
             <Button
+                variant="secondary"
+                isLoading={locked}
+                isDisabled={disabled}
+                onClick={() => props.goto('settings-wallet')}
+            >
+                <Translation {...messages.TR_COIN_SETTINGS} />
+            </Button>
+            <Button
                 variant="primary"
-                icon="PLUS"
                 isLoading={locked}
                 isDisabled={disabled}
                 onClick={() =>
