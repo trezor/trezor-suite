@@ -2774,13 +2774,6 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
-"@babel/runtime@7.8.7":
-  version "7.8.7"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.8.7.tgz#8fefce9802db54881ba59f90bb28719b4996324d"
-  integrity sha512-+AATMUFppJDw6aiR5NVPHqIQBlV/Pj8wY/EZH+lmvRdUo9xBaz/rF3alAwFJQavvKfeOlPE7oaaDHVbcySbCsg==
-  dependencies:
-    regenerator-runtime "^0.13.4"
-
 "@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.4.2", "@babel/runtime@^7.4.3", "@babel/runtime@^7.4.5":
   version "7.4.5"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.4.5.tgz#582bb531f5f9dc67d2fcb682979894f75e253f12"
@@ -2816,12 +2809,19 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
-"@babel/runtime@^7.6.2", "@babel/runtime@^7.8.4":
+"@babel/runtime@^7.6.2":
   version "7.8.4"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.8.4.tgz#d79f5a2040f7caa24d53e563aad49cbc05581308"
   integrity sha512-neAp3zt80trRVBI1x0azq6c57aNBqYZH8KhMm3TaB7wEI5Q4A2SHfBHE8w9gOhI/lrqxtEbXZgQIrHP+wvSGwQ==
   dependencies:
     regenerator-runtime "^0.13.2"
+
+"@babel/runtime@^7.8.7":
+  version "7.8.7"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.8.7.tgz#8fefce9802db54881ba59f90bb28719b4996324d"
+  integrity sha512-+AATMUFppJDw6aiR5NVPHqIQBlV/Pj8wY/EZH+lmvRdUo9xBaz/rF3alAwFJQavvKfeOlPE7oaaDHVbcySbCsg==
+  dependencies:
+    regenerator-runtime "^0.13.4"
 
 "@babel/standalone@^7.4.5":
   version "7.8.3"
@@ -23714,13 +23714,13 @@ tree-kill@^1.1.0, tree-kill@^1.2.2:
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
   integrity sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==
 
-trezor-connect@8.1.0-beta:
-  version "8.1.0-beta"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.0-beta.tgz#e632d1ef0fb906d8a6798ce29a5a5e50a9467a5d"
-  integrity sha512-OeOiJ3KOkUhhaGazCBYF2w8nX1imodrIlQpixTRkHJInLgGY5ZDHYq8cCyYvBrba6Taod8a8QH/N7s/FEcp7xA==
+trezor-connect@8.1.0-beta.2:
+  version "8.1.0-beta.2"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.0-beta.2.tgz#a169e343015f54bbff84058b2491c256a5538906"
+  integrity sha512-l9RH27gQVyIbMVjATPnAbWm5hrVKl/MhhBD050PjssY/F8x7Pg18UicQaCcTmZxnmgAQwJRESCxFzSxja3ZNxA==
   dependencies:
-    "@babel/runtime" "^7.8.4"
-    "@trezor/blockchain-link" "^1.0.7"
+    "@babel/runtime" "^7.8.7"
+    "@trezor/blockchain-link" "^1.0.8"
     "@trezor/utxo-lib" "^0.1.0"
     bchaddrjs "0.4.5"
     bignumber.js "^9.0.0"

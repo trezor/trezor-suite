@@ -1774,6 +1774,10 @@
                             "id": 13
                         },
                         {
+                            "name": "_Deprecated_ButtonRequest_PassphraseType",
+                            "id": 14
+                        },
+                        {
                             "name": "ButtonRequest_UnknownDerivationPath",
                             "id": 15
                         },
@@ -1895,6 +1899,15 @@
                     "type": "string",
                     "name": "passphrase",
                     "id": 1
+                },
+                {
+                    "rule": "optional",
+                    "options": {
+                        "deprecated": true
+                    },
+                    "type": "bytes",
+                    "name": "_state",
+                    "id": 2
                 },
                 {
                     "rule": "optional",
@@ -2790,6 +2803,22 @@
                     "options": {},
                     "type": "uint32",
                     "name": "sector",
+                    "id": 1
+                }
+            ],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "DebugLinkEraseSdCard",
+            "fields": [
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "format",
                     "id": 1
                 }
             ],
@@ -9547,6 +9576,10 @@
                 {
                     "name": "MessageType_DebugLinkShowText",
                     "id": 9004
+                },
+                {
+                    "name": "MessageType_DebugLinkEraseSdCard",
+                    "id": 9005
                 },
                 {
                     "name": "MessageType_EthereumGetPublicKey",

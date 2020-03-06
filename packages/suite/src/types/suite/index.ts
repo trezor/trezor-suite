@@ -63,6 +63,7 @@ export type GetState = () => AppState;
 
 export interface AcquiredDevice {
     type: 'acquired';
+    id: string | null;
     path: string;
     label: string;
     features: Features;
@@ -87,6 +88,7 @@ export interface AcquiredDevice {
 
 export interface UnknownDevice {
     type: 'unacquired' | 'unreadable';
+    id?: null;
     path: string;
     label: string;
     connected: true;

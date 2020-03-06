@@ -17,7 +17,7 @@ import {
     getFnForRule,
 } from '../rules';
 
-const { getSuiteDevice, getDeviceFeatures } = global.JestMocks;
+const { getSuiteDevice } = global.JestMocks;
 
 describe('rules', () => {
     describe('isNotConnected', () => {
@@ -30,15 +30,9 @@ describe('rules', () => {
     });
 
     describe('isNotSameDevice', () => {
-        const deviceWithDeviceId = getSuiteDevice({
-            features: getDeviceFeatures({ device_id: '1' }),
-        });
-        const deviceWithDeviceId2 = getSuiteDevice({
-            features: getDeviceFeatures({ device_id: '2' }),
-        });
-        const deviceWithoutDeviceId = getSuiteDevice({
-            features: getDeviceFeatures({ device_id: null }),
-        });
+        const deviceWithDeviceId = getSuiteDevice({}, { device_id: '1' });
+        const deviceWithDeviceId2 = getSuiteDevice({}, { device_id: '2' });
+        const deviceWithoutDeviceId = getSuiteDevice({}, { device_id: null });
 
         it('should return false for prevDeviceId === null (no device was there before, so consider it "same" device)', () => {
             expect(
@@ -66,27 +60,21 @@ describe('rules', () => {
         it('should return true for device.features.bootloader_mode === true', () => {
             expect(
                 isInBootloader({
-                    device: getSuiteDevice({
-                        features: getDeviceFeatures({ bootloader_mode: true }),
-                    }),
+                    device: getSuiteDevice({}, { bootloader_mode: true }),
                 }),
             ).toEqual(true);
         });
         it('should return false for device.features.bootloader_mode === false', () => {
             expect(
                 isInBootloader({
-                    device: getSuiteDevice({
-                        features: getDeviceFeatures({ bootloader_mode: false }),
-                    }),
+                    device: getSuiteDevice({}, { bootloader_mode: false }),
                 }),
             ).toEqual(false);
         });
         it('should return false for device.features.bootloader_mode === null', () => {
             expect(
                 isInBootloader({
-                    device: getSuiteDevice({
-                        features: getDeviceFeatures({ bootloader_mode: null }),
-                    }),
+                    device: getSuiteDevice({}, { bootloader_mode: false }),
                 }),
             ).toEqual(false);
         });
@@ -99,9 +87,7 @@ describe('rules', () => {
         it('should return false', () => {
             expect(
                 isNotNewDevice({
-                    device: getSuiteDevice({
-                        features: getDeviceFeatures({ firmware_present: false }),
-                    }),
+                    device: getSuiteDevice({}, { firmware_present: false }),
                     path: ['new'],
                 }),
             ).toEqual(false);
