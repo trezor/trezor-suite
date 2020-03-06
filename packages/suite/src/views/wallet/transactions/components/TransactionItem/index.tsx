@@ -9,6 +9,7 @@ import {
     AddressLabeling,
 } from '@suite-components';
 import { variables, colors, Button } from '@trezor/components';
+import { isTestnet } from '@wallet-utils/accountUtils';
 import { ArrayElement } from '@suite/types/utils';
 import messages from '@suite/support/messages';
 import { getDateWithTimeZone } from '@suite-utils/date';
@@ -298,18 +299,19 @@ const TransactionItem = (props: Props) => {
                     )}
                 </AmountsWrapper>
                 <AmountsWrapper>
-                    {tokens.map(t => (
-                        <HiddenPlaceholder>
-                            <FiatBalanceCol>
-                                {/* <FiatValue amount={t.amount} symbol={t.symbol}>
+                    {!isTestnet(symbol) &&
+                        tokens.map(t => (
+                            <HiddenPlaceholder>
+                                <FiatBalanceCol>
+                                    {/* <FiatValue amount={t.amount} symbol={t.symbol}>
                                     {({ value }) =>
                                         value ? <SmallBadge>{value}</SmallBadge> : null
                                     }
                                 </FiatValue> */}
-                            </FiatBalanceCol>
-                        </HiddenPlaceholder>
-                    ))}
-                    {amount !== '0' && (
+                                </FiatBalanceCol>
+                            </HiddenPlaceholder>
+                        ))}
+                    {amount !== '0' && !isTestnet(symbol) && (
                         <HiddenPlaceholder>
                             <FiatBalanceCol>
                                 <FiatValue
