@@ -15,6 +15,7 @@ import { AccountTransaction } from 'trezor-connect';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { subWeeks, getUnixTime } from 'date-fns';
 import { fetchCurrentFiatRates, getFiatRatesForTimestamps } from '@suite/services/coingecko';
+import { isTestnet } from '@suite/utils/wallet/accountUtils';
 
 type Ticker = {
     symbol: string;
@@ -225,7 +226,7 @@ const updateLastWeekRates = () => async (dispatch: Dispatch) => {
 export const updateTxsRates = (account: Account, txs: AccountTransaction[]) => async (
     dispatch: Dispatch,
 ) => {
-    if (txs?.length === 0) return;
+    if (txs?.length === 0 || isTestnet(account.symbol)) return;
 
     const timestamps = txs.map(tx => tx.blockTime ?? new Date().getTime());
     try {
@@ -262,6 +263,8 @@ export const updateTxsRates = (account: Account, txs: AccountTransaction[]) => a
  * @returns
  */
 export const fetchAccountHistory = async (account: Account, weeks: number) => {
+    if (isTestnet(account.symbol)) return;
+
     // TODO: move out of actions?
     const secondsInDay = 3600 * 24;
     const secondsInMonth = secondsInDay * 30;
@@ -291,7 +294,10 @@ const subscribeCurrentRates = () => (dispatch: Dispatch, getState: GetState) => 
     const { enabledNetworks } = getState().wallet.settings;
 
     Object.keys(blockchainLinks).forEach(symbol => {
-        if (!enabledNetworks.includes(symbol as Network['symbol'])) {
+        if (
+            !enabledNetworks.includes(symbol as Network['symbol']) ||
+            isTestnet(symbol as Network['symbol'])
+        ) {
             return;
         }
 
