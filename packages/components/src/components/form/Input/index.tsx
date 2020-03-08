@@ -194,7 +194,7 @@ const Input = ({
     topLabel,
     bottomText,
     isDisabled,
-    autoComplete = 'off',
+    autoComplete = 'new-password',
     autoCorrect = 'off',
     autoCapitalize = 'off',
     monospace,
