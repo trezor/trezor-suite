@@ -1,4 +1,5 @@
 const path = require('path');
+const CircularDependencyPlugin = require('circular-dependency-plugin');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
     enabled: process.env.ANALYZE === 'true',
 });
@@ -38,6 +39,13 @@ module.exports = withBundleAnalyzer(
                             'process.env.COMMITHASH': JSON.stringify(
                                 gitRevisionPlugin.commithash(),
                             ),
+                        }),
+                        new CircularDependencyPlugin({
+                            exclude: /a\.js|node_modules/,
+                            cwd: process.cwd(),
+                            onDetected({ module: webpackModuleRecord, paths, compilation }) {
+                                compilation.warnings.push(new Error(paths.join(' -> ')));
+                            },
                         }),
                     );
                     return config;

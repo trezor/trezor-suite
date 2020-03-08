@@ -19,6 +19,8 @@
     },
     "devDependencies": {
         "@types/next": "^9.0.0",
+        "webpack": "4.42.0",
+        "circular-dependency-plugin": "5.2.0",
         "@types/next-redux-wrapper": "^3.0.0",
         "@types/react": "^16.7.11",
         "@types/react-dom": "^16.0.11",
