@@ -17,4 +17,10 @@ export default {
     BLACK96: '#f5f5f5',
     BLACK98: '#fafafa',
     WHITE: '#ffffff',
+
+    BUTTON_PRIMARY: '#39a814',
+    BUTTON_PRIMARY_HOVER: '#259f2a',
+    BUTTON_PRIMARY_HOVER_BORDER: '#DBF3D4',
+    BUTTON_PRIMARY_FOCUS: '#1b8a20',
+    BUTTON_PRIMARY_FOCUS_BORDER: '#D8ECD6',
 } as const;
