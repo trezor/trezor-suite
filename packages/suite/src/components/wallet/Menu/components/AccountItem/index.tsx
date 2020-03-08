@@ -3,6 +3,7 @@ import { CoinLogo, colors, variables } from '@trezor/components';
 import styled, { css } from 'styled-components';
 import { getTitleForNetwork, getAccountFiatBalance } from '@wallet-utils/accountUtils';
 import { Translation } from '@suite-components/Translation';
+import { CoinBalance } from '@wallet-components';
 // import messages from '@suite/support/messages';
 import { FormattedNumber, HiddenPlaceholder } from '@suite-components';
 import AccountNavigation from './components/AccountNavigation/Container';
@@ -141,9 +142,7 @@ const AccountItem = React.memo((props: Props) => {
 
                     <Balance>
                         <HiddenPlaceholder>
-                            <CryptoValue>
-                                {account.formattedBalance} {account.symbol.toUpperCase()}
-                            </CryptoValue>
+                            <CoinBalance value={account.formattedBalance} symbol={account.symbol} />
                         </HiddenPlaceholder>
                         {fiatBalance && (
                             <HiddenPlaceholder>
