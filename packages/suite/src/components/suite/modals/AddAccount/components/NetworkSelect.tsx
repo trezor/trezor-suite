@@ -66,7 +66,7 @@ const NetworkSelect = ({
 }: Props) => (
     <Select
         placeholder="Select network..."
-        isSearchable={true}
+        isSearchable
         width={250}
         isClearable={false}
         value={buildNetworkOption(selectedNetwork || networks[0])}
