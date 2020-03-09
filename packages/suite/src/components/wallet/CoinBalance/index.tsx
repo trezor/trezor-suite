@@ -21,12 +21,25 @@ interface Props {
     symbol: Account['symbol'];
 }
 
-export default ({ value, symbol }: Props) => {
+const getBalance = (value: string) => {
     const balanceBig = new BigNumber(value);
+
+    if (balanceBig.isZero()) return '0';
+
+    const fixedBalance = new BigNumber(balanceBig.toFixed(MAX_DECIMALS, 1));
+
+    if (fixedBalance.isEqualTo(balanceBig)) {
+        return fixedBalance.toFixed();
+    }
+
+    return `~ ${fixedBalance.toFixed()}`;
+};
+
+export default ({ value, symbol }: Props) => {
     return (
         <HiddenPlaceholder>
             <Wrapper>
-                <Value>{balanceBig.toFixed(MAX_DECIMALS)}</Value>
+                <Value>{getBalance(value)}</Value>
                 <Symbol>{symbol ? symbol.toUpperCase() : symbol}</Symbol>
             </Wrapper>
         </HiddenPlaceholder>

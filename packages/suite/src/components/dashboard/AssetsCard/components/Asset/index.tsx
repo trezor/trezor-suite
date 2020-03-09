@@ -4,6 +4,7 @@ import { Account } from '@wallet-types';
 import { CoinLogo, variables } from '@trezor/components';
 import { NoRatesTooltip, HiddenPlaceholder, Badge, FiatValue } from '@suite-components';
 import LastWeekGraph from '../LastWeekGraph';
+import { CoinBalance } from '@wallet-components';
 
 const Wrapper = styled.div`
     padding: 12px 20px;
@@ -74,9 +75,7 @@ const Asset = React.memo(({ name, symbol, cryptoValue, ...rest }: Props) => {
             </Col>
             <Col>
                 <CryptoValueWrapper>
-                    <HiddenPlaceholder>
-                        {cryptoValue} {symbol.toUpperCase()}{' '}
-                    </HiddenPlaceholder>
+                    <CoinBalance value={cryptoValue} symbol={symbol} />
                 </CryptoValueWrapper>
             </Col>
             <Col>
