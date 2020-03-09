@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables, H2 } from '@trezor/components';
+import { colors, H2 } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import * as deviceUtils from '@suite-utils/device';
@@ -16,7 +16,6 @@ const Wrapper = styled(ModalWrapper)`
 `;
 
 const Description = styled.div`
-    font-size: ${variables.FONT_SIZE.BODY};
     line-height: 1.43;
     width: 90%;
     margin-bottom: 20px;
