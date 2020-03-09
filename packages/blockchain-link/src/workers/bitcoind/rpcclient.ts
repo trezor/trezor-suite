@@ -43,7 +43,6 @@ export class RpcClient {
             ): void {
                 if (error) {
                     reject(error); // error in case calling RPC
-                    console.log('error:', error);
                 } else if (response.error) {
                     reject(new Error(response.error.message)); // possible error from blockchain
                 } else if (response.result) {
@@ -94,26 +93,40 @@ export class RpcClient {
         });
     }
 
-    async convertRawTransactionToNormal(rawTxData: any): Promise<any> {
-        // get total amount in transaction with miner fee
-        let totalTransactionWithFee: BigNumber = new BigNumber(0, 8);
-        let fee: BigNumber = new BigNumber(0, 8);
+    getBlockInfo(byHash: string) {
+        return new Promise<any>((resolve, reject) => {
+            RpcBitcoinClient.call('getblock', [byHash], (error: string, response: any): void => {
+                if (error) {
+                    reject(error); // error in case calling RPC
+                } else if (response.error) {
+                    reject(new Error(response.error.message)); // possible error from blockchain
+                } else if (response.result) {
+                    resolve(response.result);
+                } else {
+                    reject(new Error('bad data from RPC server')); // TODO: attach to custom error class?
+                }
+            });
+        });
+    }
 
+    async convertRawTransactionToNormal(rawTxData: any): Promise<Transaction> {
+        const blockData = await this.getBlockInfo(rawTxData.blockhash);
+
+        // check if this is a mining transaction
+        const possibleCoinbaseTrans = this.processIfMinerTransaction(rawTxData, blockData);
+        if (possibleCoinbaseTrans !== false) {
+            return possibleCoinbaseTrans as Transaction;
+        }
+
+        // if no mining transaction -> continue
         if (
             rawTxData.vin &&
             Array.isArray(rawTxData.vin) &&
             rawTxData.vin[0].txid &&
             rawTxData.vin[0].vout
         ) {
-            const senderObj = rawTxData.vout.find(({ n }) => rawTxData.vin[0].vout === n);
-            const [sender] = senderObj.scriptPubKey.addresses;
-
-            rawTxData.vin.forEach(oneVin => {
-                oneVin.addresses = [sender];
-            });
-
+            // get input tx's
             const inputTxs: any = [];
-
             await Promise.all(
                 rawTxData.vin.map(async oneInput => {
                     const oneTx = await this.getRawTransactionInfo(oneInput.txid);
@@ -121,41 +134,166 @@ export class RpcClient {
                 })
             );
 
-            inputTxs.forEach(inputTx => {
-                if (inputTx.vout && Array.isArray(inputTx.vout)) {
-                    inputTx.vout.forEach(oneOut => {
-                        if (
-                            oneOut.scriptPubKey &&
-                            oneOut.scriptPubKey.addresses &&
-                            Array.isArray(oneOut.scriptPubKey.addresses) &&
-                            oneOut.scriptPubKey.addresses[0] &&
-                            oneOut.scriptPubKey.addresses[0].toLowerCase() === sender.toLowerCase()
-                        ) {
-                            totalTransactionWithFee = totalTransactionWithFee.plus(oneOut.value);
-                        }
-                    });
-                }
+            // detecting the sender
+            const senderObj = rawTxData.vout.find(({ n }) => rawTxData.vin[0].vout === n);
+            const [sender] = senderObj.scriptPubKey.addresses;
+
+            // transform vin & vout
+            const vins: VinVout[] = rawTxData.vin.map((oneVin, index) => {
+                const vinReturnObj: VinVout = {
+                    txid: oneVin.txid,
+                    vout: oneVin.vout,
+                    sequence: oneVin.sequence,
+                    n: index,
+                    addresses: [sender],
+                    isAddress: !!sender,
+                    hex: oneVin.scriptSig.hex,
+                };
+
+                inputTxs.forEach(oneTx => {
+                    if (oneTx.txid.toLowerCase() === oneVin.txid.toLowerCase()) {
+                        vinReturnObj.value = new BigNumber(oneTx.value)
+                            .multipliedBy(100000000)
+                            .toFixed();
+                    }
+                });
+                return vinReturnObj;
             });
 
-            // get miner fee
-            // fee
-            if (rawTxData.vout && Array.isArray(rawTxData.vout)) {
-                let summOfVout: BigNumber = new BigNumber(0, 8);
-                rawTxData.vout.forEach(oneOutTx => {
-                    summOfVout = summOfVout.plus(oneOutTx.value);
-                });
+            const vouts: VinVout[] = rawTxData.vout.map((oneVout, index) => {
+                const retObj: VinVout = {
+                    value: new BigNumber(oneVout.value).times(100000000).toFixed(),
+                    n: index,
+                    hex: oneVout.scriptPubKey.hex,
+                    isAddress: !!oneVout.scriptPubKey.addresses,
+                };
+                if (oneVout.scriptPubKey.addresses) {
+                    retObj.addresses = oneVout.scriptPubKey.addresses;
+                }
+                return retObj;
+            });
 
-                fee = totalTransactionWithFee.minus(summOfVout);
-            }
-            console.log(
-                'final transaction: ',
-                totalTransactionWithFee.toFixed(8),
-                'total fee: ',
-                fee.toFixed(8)
-            );
-            console.log('totalTransactionWithFee', totalTransactionWithFee.toFixed(8));
+            // get total tx amounts
+            const totalAmounts = this.getTxTotalAmountAndFee(inputTxs, rawTxData, sender);
+
+            const transObj: Transaction = {
+                txid: rawTxData.txid,
+                version: rawTxData.version,
+                vin: vins,
+                vout: vouts,
+                blockHash: rawTxData.blockhash,
+                blockHeight: blockData.height,
+                confirmations: rawTxData.confirmations,
+                blockTime: rawTxData.blocktime,
+                value: totalAmounts.totalTransactionIn
+                    .minus(totalAmounts.fee)
+                    .multipliedBy(100000000)
+                    .toFixed(),
+                valueIn: totalAmounts.totalTransactionIn.multipliedBy(100000000).toFixed(),
+                fees: totalAmounts.fee.multipliedBy(100000000).toFixed(),
+                hex: rawTxData.hex,
+            };
+            return transObj;
         }
-        return rawTxData;
+        throw new Error('Error at the stage of forming a data transaction from RPC.');
+    }
+
+    processIfMinerTransaction(rawTxData: any, blockData: any): boolean | Transaction {
+        if (
+            rawTxData.vin &&
+            Array.isArray(rawTxData.vin) &&
+            rawTxData.vin.length > 0 &&
+            rawTxData.vin[0].coinbase
+        ) {
+            const vins: VinVout[] = rawTxData.vin.map((oneVin, index) => {
+                return {
+                    sequence: oneVin.sequence,
+                    n: index,
+                    isAddress: false,
+                    coinbase: oneVin.coinbase,
+                };
+            });
+
+            let valueTotal = new BigNumber(0, 8);
+            const vouts: VinVout[] = rawTxData.vout.map((oneVout, index) => {
+                if (oneVout.value) {
+                    valueTotal = valueTotal.plus(new BigNumber(oneVout.value).times(100000000));
+                }
+                const retObj: VinVout = {
+                    value: new BigNumber(oneVout.value).times(100000000).toFixed(),
+                    n: index,
+                    hex: oneVout.scriptPubKey.hex,
+                    isAddress: !!oneVout.scriptPubKey.addresses,
+                    sequence: oneVout.sequence,
+                    coinbase: oneVout.coinbase,
+                };
+                if (oneVout.scriptPubKey.addresses) {
+                    retObj.addresses = oneVout.scriptPubKey.addresses;
+                }
+                return retObj;
+            });
+
+            const returnObj: Transaction = {
+                txid: rawTxData.txid,
+                version: rawTxData.version,
+                vin: vins,
+                vout: vouts,
+                blockHash: rawTxData.blockhash,
+                blockHeight: blockData.height,
+                confirmations: rawTxData.confirmations,
+                blockTime: rawTxData.blocktime,
+                value: valueTotal.toFixed(),
+                valueIn: '0',
+                fees: '0',
+                hex: rawTxData.hex,
+            };
+
+            return returnObj;
+        }
+        return false;
+    }
+
+    getTxTotalAmountAndFee(
+        fromInputsTransactions: Array<any>,
+        rawTxData: any,
+        sender: string
+    ): { totalTransactionIn: BigNumber; fee: BigNumber } {
+        let totalTransactionIn: BigNumber = new BigNumber(0, 8);
+        let fee: BigNumber = new BigNumber(0, 8);
+
+        fromInputsTransactions.forEach(inputTx => {
+            if (inputTx.vout && Array.isArray(inputTx.vout)) {
+                inputTx.vout.forEach(oneOut => {
+                    if (
+                        oneOut.scriptPubKey &&
+                        oneOut.scriptPubKey.addresses &&
+                        Array.isArray(oneOut.scriptPubKey.addresses) &&
+                        oneOut.scriptPubKey.addresses[0] &&
+                        oneOut.scriptPubKey.addresses[0].toLowerCase() === sender.toLowerCase()
+                    ) {
+                        totalTransactionIn = totalTransactionIn.plus(oneOut.value);
+                    }
+                });
+            }
+        });
+
+        // get miner fee
+        if (rawTxData.vout && Array.isArray(rawTxData.vout)) {
+            let summOfVout: BigNumber = new BigNumber(0, 8);
+            rawTxData.vout.forEach(oneOutTx => {
+                summOfVout = summOfVout.plus(oneOutTx.value);
+            });
+
+            fee = totalTransactionIn.minus(summOfVout);
+        }
+
+        if (totalTransactionIn.eq(new BigNumber(0)) === true || fee.eq(new BigNumber(0)) === true) {
+            throw new Error(
+                'The amount in the transaction or Commission is zero. There may be an error in the calculations or changes in the bitcoind API.'
+            );
+        }
+
+        return { totalTransactionIn, fee };
     }
     // getBlockchainInfo(): Promise {
     //     console.log('before'); // getnetworkinfo getwalletinfo

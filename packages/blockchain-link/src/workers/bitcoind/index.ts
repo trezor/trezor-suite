@@ -179,9 +179,6 @@ const getTransaction = async (
         const rawTxData: any = await rpcClientObj.getRawTransactionInfo(payload);
         const tx: Transaction = await rpcClientObj.convertRawTransactionToNormal(rawTxData);
 
-        console.log('gettransaction tx2', tx);
-        // need to find sender?
-
         common.response({
             id: data.id,
             type: RESPONSES.GET_TRANSACTION,
