@@ -8,6 +8,7 @@ export const SCREEN_SIZE = {
 } as const;
 
 export const FONT_SIZE = {
+    BIG: '18px',
     NORMAL: '16px',
     SMALL: '14px',
     TINY: '12px',
