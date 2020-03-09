@@ -56,8 +56,7 @@ const IMAGES = {
 } as const;
 
 type Image = keyof typeof IMAGES;
-
-type Props = React.HTMLAttributes<Omit<HTMLImageElement, 'src'>> & {
+type Props = React.ImgHTMLAttributes<Omit<HTMLImageElement, 'src'>> & {
     image: Image;
     alt?: string; // why? Seems not to be part of HTMLImageElement :(
 };

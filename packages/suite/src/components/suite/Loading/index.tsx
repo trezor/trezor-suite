@@ -14,7 +14,7 @@ const LoaderWrapper = styled(ModalWrapper)`
 `;
 
 interface Props extends ModalWrapperProps {
-    imageProps?: React.HTMLAttributes<HTMLImageElement>;
+    imageProps?: React.ImgHTMLAttributes<HTMLImageElement>;
 }
 
 const Loading = (props: Props) => (
