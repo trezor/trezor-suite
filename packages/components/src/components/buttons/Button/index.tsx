@@ -31,9 +31,9 @@ const Wrapper = styled.button<WrapperProps>`
     border: none;
     white-space: nowrap;
     cursor: ${props => (props.isDisabled ? 'default' : 'pointer')};
-    border-radius: 3px;
+    border-radius: 4px;
     font-size: ${props => getFontSize(props.variant, props.size)}; 
-    font-weight: ${props => (props.variant === 'primary' ? 600 : 500)};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${props => (props.color ? props.color : colors.BLACK25)};
     outline: none;
     padding: ${props => (props.variant === 'tertiary' ? '0px 4px' : BUTTON_PADDING[props.size])};
@@ -50,14 +50,17 @@ const Wrapper = styled.button<WrapperProps>`
         !props.isDisabled &&
         css`
             color: ${colors.WHITE};
-            border: 1px solid ${colors.GREENER};
-            background-image: linear-gradient(to top, ${colors.GREENER}, #21c100);
-            box-shadow: 0 3px 6px 0 rgba(48, 193, 0, 0.3);
+            font-weight: ${variables.FONT_WEIGHT.BOLD};
+            background: ${colors.BUTTON_PRIMARY};
 
-            &:hover,
+            &:hover {
+                box-shadow: 0 0 0 4px ${colors.BUTTON_PRIMARY_HOVER_BORDER};
+                background: ${colors.BUTTON_PRIMARY_HOVER};
+            }
+
             &:focus {
-                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2)),
-                    linear-gradient(to top, ${colors.GREENER}, #21c100);
+                box-shadow: 0 0 0 4px ${colors.BUTTON_PRIMARY_FOCUS_BORDER};
+                background: ${colors.BUTTON_PRIMARY_FOCUS};
             }
         `}
 
@@ -102,8 +105,8 @@ const Wrapper = styled.button<WrapperProps>`
         !props.isDisabled &&
         css`
             color: ${colors.WHITE};
+            font-weight: ${variables.FONT_WEIGHT.BOLD};
             background-image: linear-gradient(to top, ${colors.RED}, #f25757);
-            border: none;
             box-shadow: 0 3px 6px 0 rgba(205, 73, 73, 0.3);
 
             &:hover,
