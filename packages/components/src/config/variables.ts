@@ -1,27 +1,19 @@
 import { IconType, CoinType } from '../support/types';
 
-// Bootstrap 4 breakpoints
-/* SM - Phones */
-/* MD - Tablets */
-/* LG - Laptops/Desktops */
-/* XL - Extra Large Laptops/Desktops */
 export const SCREEN_SIZE = {
-    SM: '576px',
-    MD: '768px',
-    LG: '992px',
-    XL: '1200px',
+    SM: '576px', // phones
+    MD: '768px', // tablets
+    LG: '992px', // laptops/desktops
+    XL: '1200px', // extra Large laptops/desktops
 } as const;
 
-export const FONT_SIZE_NATIVE = {} as const;
-
 export const FONT_SIZE = {
-    BODY: '14px',
-    BUTTON: '14px',
-    H1: '36px',
-    H2: '24px',
     NORMAL: '16px',
     SMALL: '14px',
     TINY: '12px',
+    BUTTON: '14px',
+    H1: '36px',
+    H2: '24px',
 } as const;
 
 export const FONT_WEIGHT = {

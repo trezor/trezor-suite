@@ -16,7 +16,6 @@ const Wrapper = styled(ModalWrapper)`
 `;
 
 const Description = styled.div`
-    font-size: ${variables.FONT_SIZE.BODY};
     line-height: 1.43;
     width: 90%;
     margin-bottom: 20px;

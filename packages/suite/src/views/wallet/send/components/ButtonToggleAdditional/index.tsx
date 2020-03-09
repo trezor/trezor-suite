@@ -11,7 +11,6 @@ const Wrapper = styled.div`
     align-items: center;
     justify-content: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.BODY};
     color: ${colors.BLACK17};
 `;
 
