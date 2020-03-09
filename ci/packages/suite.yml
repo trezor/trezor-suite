@@ -20,7 +20,7 @@ suite check multiple same svgs:
         refs:
             - develop
     script:
-        - node ./packages/suite-data/test/test-same-svgs.js
+        - yarn workspace @trezor/suite-data test-same-svgs
 
 suite check unused messages:
     stage: lint, types, unit tests
