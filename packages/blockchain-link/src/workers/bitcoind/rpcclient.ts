@@ -138,7 +138,7 @@ export class RpcClient {
             const senderObj = rawTxData.vout.find(({ n }) => rawTxData.vin[0].vout === n);
             const [sender] = senderObj.scriptPubKey.addresses;
 
-            // transform vin & vout
+            // transform vin
             const vins: VinVout[] = rawTxData.vin.map((oneVin, index) => {
                 const vinReturnObj: VinVout = {
                     txid: oneVin.txid,
@@ -152,14 +152,26 @@ export class RpcClient {
 
                 inputTxs.forEach(oneTx => {
                     if (oneTx.txid.toLowerCase() === oneVin.txid.toLowerCase()) {
-                        vinReturnObj.value = new BigNumber(oneTx.value)
-                            .multipliedBy(100000000)
-                            .toFixed();
+                        oneTx.vout.forEach(innerVout => {
+                            if (
+                                sender &&
+                                typeof sender !== 'undefined' &&
+                                innerVout.scriptPubKey &&
+                                innerVout.scriptPubKey.addresses &&
+                                Array.isArray(innerVout.scriptPubKey.addresses) &&
+                                innerVout.scriptPubKey.addresses.includes(sender)
+                            ) {
+                                vinReturnObj.value = new BigNumber(innerVout.value)
+                                    .multipliedBy(100000000)
+                                    .toFixed();
+                            }
+                        });
                     }
                 });
                 return vinReturnObj;
             });
 
+            // transform vout
             const vouts: VinVout[] = rawTxData.vout.map((oneVout, index) => {
                 const retObj: VinVout = {
                     value: new BigNumber(oneVout.value).times(100000000).toFixed(),
