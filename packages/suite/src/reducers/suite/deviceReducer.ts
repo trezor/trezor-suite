@@ -215,13 +215,19 @@ const updateTimestamp = (draft: State, device?: TrezorDevice) => {
  * @param {boolean} hidden
  * @returns
  */
-const changePassphraseMode = (draft: State, device: TrezorDevice, hidden: boolean) => {
+const changePassphraseMode = (
+    draft: State,
+    device: TrezorDevice,
+    hidden: boolean,
+    alwaysOnDevice = false,
+) => {
     // only acquired devices
     if (!device || !device.features) return;
     const index = deviceUtils.findInstanceIndex(draft, device);
     if (!draft[index]) return;
     // update fields
     draft[index].useEmptyPassphrase = !hidden;
+    draft[index].passphraseOnDevice = alwaysOnDevice;
     // draft[index].instance = undefined;
     draft[index].ts = new Date().getTime();
 };
@@ -285,6 +291,7 @@ const createInstance = (draft: State, device: TrezorDevice) => {
     if (!device || !device.features) return;
     const newDevice: TrezorDevice = {
         ...device,
+        passphraseOnDevice: false,
         remember: false,
         state: undefined,
         ts: new Date().getTime(),
@@ -325,6 +332,7 @@ const forget = (draft: State, device: TrezorDevice) => {
         // do not forget the last instance, just reset state
         draft[index].state = undefined;
         draft[index].useEmptyPassphrase = false;
+        draft[index].passphraseOnDevice = false;
     } else {
         draft.splice(index, 1);
     }
@@ -366,7 +374,7 @@ export default (state: State = initialState, action: Action): State => {
                 updateTimestamp(draft, action.payload);
                 break;
             case SUITE.UPDATE_PASSPHRASE_MODE:
-                changePassphraseMode(draft, action.payload, action.hidden);
+                changePassphraseMode(draft, action.payload, action.hidden, action.alwaysOnDevice);
                 break;
             case SUITE.AUTH_DEVICE:
                 authDevice(draft, action.payload, action.state);
