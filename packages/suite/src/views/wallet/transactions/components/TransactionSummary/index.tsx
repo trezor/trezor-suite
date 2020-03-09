@@ -25,6 +25,7 @@ const Wrapper = styled(Card)`
 
 const GraphWrapper = styled.div`
     display: flex;
+    flex-direction: column;
     flex: 1 1 70%;
     padding: 20px;
 `;
@@ -39,6 +40,7 @@ const InfoCardsWrapper = styled.div`
 
 interface OwnProps {
     account: Account;
+    isGraphHidden: boolean;
 }
 
 interface Range {
@@ -89,6 +91,7 @@ const TransactionSummary = (props: Props) => {
     const totalSentAmount = data?.reduce((acc, d) => acc.plus(d.sent), new BigNumber(0));
     const totalReceivedAmount = data?.reduce((acc, d) => acc.plus(d.received), new BigNumber(0));
 
+    if (props.isGraphHidden) return null;
     return (
         <Wrapper>
             {/* TODO: what should be shown on error? */}

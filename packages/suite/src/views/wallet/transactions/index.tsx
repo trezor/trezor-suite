@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
-import { colors, Loader } from '@trezor/components';
+import { colors, Loader, Button } from '@trezor/components';
 import { WalletLayout } from '@wallet-components';
 import { getAccountTransactions } from '@wallet-utils/accountUtils';
 import { SETTINGS } from '@suite-config';
@@ -25,9 +25,18 @@ const LoaderText = styled.div`
     text-align: center;
 `;
 
+const Actions = styled.div`
+    display: flex;
+    padding: 0px 16px;
+    margin-bottom: 8px;
+    opacity: 0.8;
+    justify-content: space-between;
+`;
+
 export default (props: Props) => {
     const { selectedAccount, transactions } = props;
     const [selectedPage, setSelectedPage] = useState(1);
+    const [isGraphHidden, setIsGraphHidden] = useState(false);
 
     const descriptor = selectedAccount.account?.descriptor;
     const symbol = selectedAccount.account?.symbol;
@@ -69,7 +78,24 @@ export default (props: Props) => {
             )}
             {accountTransactions.length > 0 && (
                 <>
-                    {account.networkType !== 'ripple' && <TransactionSummary account={account} />}
+                    {account.networkType !== 'ripple' && (
+                        <>
+                            <Actions>
+                                <Button
+                                    variant="tertiary"
+                                    size="small"
+                                    icon={isGraphHidden ? 'ARROW_DOWN' : 'ARROW_UP'}
+                                    onClick={() => {
+                                        setIsGraphHidden(!isGraphHidden);
+                                    }}
+                                >
+                                    {isGraphHidden ? 'Show graph' : 'Hide graph'}
+                                </Button>
+                                {/* TODO: export transactions to a file */}
+                            </Actions>
+                            <TransactionSummary account={account} isGraphHidden={isGraphHidden} />
+                        </>
+                    )}
                     {account.networkType === 'ethereum' && (
                         <TokenList explorerUrl={network.explorer.account} tokens={account.tokens} />
                     )}
