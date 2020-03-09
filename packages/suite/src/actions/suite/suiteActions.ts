@@ -16,7 +16,12 @@ export type SuiteActions =
     | { type: typeof SUITE.CONNECT_INITIALIZED }
     | { type: typeof SUITE.SELECT_DEVICE; payload?: TrezorDevice }
     | { type: typeof SUITE.UPDATE_SELECTED_DEVICE; payload: TrezorDevice }
-    | { type: typeof SUITE.UPDATE_PASSPHRASE_MODE; payload: TrezorDevice; hidden: boolean }
+    | {
+          type: typeof SUITE.UPDATE_PASSPHRASE_MODE;
+          payload: TrezorDevice;
+          hidden: boolean;
+          alwaysOnDevice?: boolean;
+      }
     | { type: typeof SUITE.AUTH_DEVICE; payload: TrezorDevice; state: string }
     | { type: typeof SUITE.AUTH_FAILED; payload: TrezorDevice }
     | { type: typeof SUITE.REQUEST_AUTH_CONFIRM }

@@ -121,6 +121,15 @@ export const onPassphraseSubmit = (
         });
     }
 
+    if (passphraseOnDevice) {
+        dispatch({
+            type: SUITE.UPDATE_PASSPHRASE_MODE,
+            payload: device,
+            hidden: true,
+            alwaysOnDevice: true,
+        });
+    }
+
     TrezorConnect.uiResponse({
         type: UI.RECEIVE_PASSPHRASE,
         payload: {

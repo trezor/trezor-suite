@@ -76,6 +76,7 @@ export interface AcquiredDevice {
 
     // suite specific
     useEmptyPassphrase: boolean;
+    passphraseOnDevice?: boolean;
     remember: boolean; // device should be remembered
     connected: boolean; // device is connected
     available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
@@ -96,6 +97,7 @@ export interface UnknownDevice {
     features: undefined;
     instance?: undefined;
     useEmptyPassphrase: true;
+    passphraseOnDevice?: false;
     // types below are here just for type compatibility with AcquiredDevice
     remember?: boolean;
     authConfirm?: undefined;
