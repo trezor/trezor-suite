@@ -268,8 +268,6 @@ export const updateTxsRates = (account: Account, txs: AccountTransaction[]) => a
  * @returns
  */
 export const fetchAccountHistory = async (account: Account, weeks: number) => {
-    if (isTestnet(account.symbol)) return;
-
     // TODO: move out of actions?
     const secondsInDay = 3600 * 24;
     const secondsInMonth = secondsInDay * 30;
