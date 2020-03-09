@@ -155,7 +155,13 @@ const getStaleTickers = (
  */
 export const updateStaleRates = () => async (dispatch: Dispatch, _getState: GetState) => {
     try {
-        const staleTickers = dispatch(getStaleTickers(ticker => ticker.current?.ts, MAX_AGE, true));
+        const staleTickers = dispatch(
+            getStaleTickers(
+                ticker => (ticker.current?.rates ? ticker.current.ts : undefined),
+                MAX_AGE,
+                true,
+            ),
+        );
         const promises = staleTickers.map(t => dispatch(updateCurrentRates(t)));
         await Promise.all(promises);
     } catch (error) {
