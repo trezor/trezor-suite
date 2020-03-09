@@ -19,7 +19,7 @@ interface Props extends ModalWrapperProps {
 
 const Loading = (props: Props) => (
     <LoaderWrapper {...props} data-test="@suite/loading">
-        <Image image="SPINNER" {...props.imageProps} />
+        <Image width={80} height={80} image="SPINNER" {...props.imageProps} />
     </LoaderWrapper>
 );
 
