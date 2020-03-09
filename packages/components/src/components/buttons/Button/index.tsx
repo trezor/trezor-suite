@@ -47,35 +47,35 @@ const Wrapper = styled.button<WrapperProps>`
 
     ${props =>
         props.variant === 'primary' &&
-        !props.isDisabled &&
         css`
             color: ${colors.WHITE};
             font-weight: ${variables.FONT_WEIGHT.BOLD};
             background: ${colors.BUTTON_PRIMARY};
 
             &:hover {
-                box-shadow: 0 0 0 4px ${colors.BUTTON_PRIMARY_HOVER_BORDER};
+                box-shadow: 0 0 0 4px ${colors.BUTTON_PRIMARY_BORDER};
                 background: ${colors.BUTTON_PRIMARY_HOVER};
             }
 
             &:focus {
-                box-shadow: 0 0 0 4px ${colors.BUTTON_PRIMARY_FOCUS_BORDER};
+                box-shadow: 0 0 0 4px ${colors.BUTTON_PRIMARY_BORDER};
                 background: ${colors.BUTTON_PRIMARY_FOCUS};
             }
         `}
 
     ${props =>
         props.variant === 'secondary' &&
-        !props.isDisabled &&
         css`
-            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.05)),
-                linear-gradient(${colors.WHITE}, ${colors.WHITE});
-            border: 1px solid ${colors.BLACK70};
+            background: ${colors.BUTTON_SECONDARY};
 
-            &:hover,
+            &:hover {
+                box-shadow: 0 0 0 4px ${colors.BUTTON_SECONDARY_BORDER};
+                background: ${colors.BUTTON_SECONDARY_HOVER};
+            }
+
             &:focus {
-                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1)),
-                    linear-gradient(${colors.WHITE}, ${colors.WHITE});
+                box-shadow: 0 0 0 4px ${colors.BUTTON_SECONDARY_BORDER};
+                background: ${colors.BUTTON_SECONDARY_FOCUS};
             }
         `}
 
@@ -83,12 +83,11 @@ const Wrapper = styled.button<WrapperProps>`
         props.variant === 'tertiary' &&
         !props.isDisabled &&
         css`
-            border: none;
             padding: 0px 4px;
-
-            &:hover,
-            &:focus {
-                background: ${colors.BLACK92};
+            background: ${colors.WHITE};
+            &:focus,
+            &:hover {
+                background: ${colors.BUTTON_TERTIARY_HOVER};
             }
         `};
 
@@ -102,28 +101,37 @@ const Wrapper = styled.button<WrapperProps>`
 
     ${props =>
         props.variant === 'danger' &&
-        !props.isDisabled &&
         css`
             color: ${colors.WHITE};
             font-weight: ${variables.FONT_WEIGHT.BOLD};
-            background-image: linear-gradient(to top, ${colors.RED}, #f25757);
-            box-shadow: 0 3px 6px 0 rgba(205, 73, 73, 0.3);
+            background: ${colors.BUTTON_RED};
 
-            &:hover,
+            &:hover {
+                background: ${colors.BUTTON_RED_HOVER};
+                box-shadow: 0 0 0 4px ${colors.BUTTON_RED_BORDER};
+            }
+
             &:focus {
-                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2)),
-                    linear-gradient(to top, ${colors.RED}, #f25757);
+                box-shadow: 0 0 0 4px ${colors.BUTTON_RED_BORDER};
+                background: ${colors.BUTTON_RED_FOCUS};
             }
         `}
 
     ${props =>
         props.isDisabled &&
-        props.variant !== 'tertiary' &&
         css`
-            color: ${colors.BLACK80};
-            border: solid 1px ${colors.BLACK70};
-            background-image: linear-gradient(${colors.WHITE}, ${colors.BLACK96});
+            background: ${colors.BUTTON_DISABLED_BACKGROUND};
+            color: ${colors.BUTTON_DISABLED_TEXT};
+
+            &:hover,
+            &:focus {
+                box-shadow: none;
+                background: ${colors.BUTTON_DISABLED_BACKGROUND};
+                color: ${colors.BUTTON_DISABLED_TEXT};
+            }
         `}
+
+       
 `;
 
 const IconWrapper = styled.div<IconWrapperProps>`
