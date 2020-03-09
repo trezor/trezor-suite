@@ -9,10 +9,12 @@ import {
     AddressNotification,
     Send,
     Transaction,
+    VinVout,
+    CalculatedTotal,
 } from '../../types/rpcbitcoind';
-
-import { VinVout } from '../../types/blockbook';
+import { HDNode as BitcoinJsHDNode, Network as BitcoinJsNetwork } from '@trezor/utxo-lib';
 import BigNumber from 'bignumber.js';
+import GCSFilter from 'golomb';
 
 export interface LoginData {
     username: string;
@@ -35,9 +37,111 @@ export class RpcClient {
         );
     }
 
-    getBlockchainInfo() {
+    deriveXpub = (xpub: string, network: BitcoinJsNetwork, index: number): string => {
+        return BitcoinJsHDNode.fromBase58(xpub, network, true)
+            .derive(index)
+            .getAddress();
+    };
+
+    async subscribeOnAddress(address: string): Promise<string[]> {
+        try {
+            const blockHash = await this.getBlockHash(621834);
+            const filterInitial = await this.getBlockFilter(blockHash);
+
+            const block_filter = Buffer.from(filterInitial.filter, 'hex');
+            const P = 19;
+            const filter = GCSFilter.fromNBytes(P, block_filter);
+
+            const block_hash = Buffer.from(blockHash, 'hex');
+            const key = block_hash.reverse().slice(0, 16);
+
+            // 1. get last block height & hash
+            // 2. get scriptPubKey.hex of needed address
+            // 3. filter, find, if found ->
+            // 4. get txs from block -> show
+            const script1 = Buffer.from(
+                '0020701a8d401c84fb13e6baf169d59684e17abd9fa216c8cc5b9fc63d622ff8c58d',
+                'hex'
+            ); // mmEfi2cW9Vizeau3E6zzmRvbmzJXNrmW9Z 701a8d401c84fb13e6baf169d59684e17abd9fa216c8cc5b9fc63d622ff8c58d bc1qwqdg6squsna38e46795at95yu9atm8azzmyvckulcc7kytlcckxswvvzej
+            console.log('filter.match(key, script1)', filter.match(key, script1));
+        } catch (e) {
+            console.log(e);
+        }
+        return [];
+    }
+
+    getAccountinfo(payload: AccountInfoParams): object {
+        if (payload.details && payload.details === 'tokens') {
+            // temporary hardcoded
+            const network = {
+                messagePrefix: '\x18Bitcoin Signed Message:\n',
+                bech32: 'bc',
+                bip32: {
+                    public: 0x0488b21e,
+                    private: 0x0488ade4,
+                },
+                pubKeyHash: 0x00,
+                scriptHash: 0x05,
+                wif: 0x80,
+                coin: 'btc',
+            };
+
+            const returnObj = {
+                address:
+                    'xpub6BiVtCpG9fQPxnPmHXG8PhtzQdWC2Su4qWu6XW9tpWFYhxydCLJGrWBJZ5H6qTAHdPQ7pQhtpjiYZVZARo14qHiay2fvrX996oEP42u8wZy',
+                balance: '0',
+                totalReceived: '0',
+                totalSent: '0',
+                unconfirmedBalance: '0',
+                unconfirmedTxs: 0,
+                txs: 0,
+                usedTokens: 20,
+                // eslint-disable-next-line @typescript-eslint/no-array-constructor
+                tokens: Array(),
+            };
+
+            for (let i = 0; i <= 20; i++) {
+                returnObj.tokens.push({
+                    type: 'XPUBAddress',
+                    name: this.deriveXpub(payload.descriptor, network, i),
+                    path: `m/44'/1'/0'/0/${i}`,
+                    transfers: 0,
+                    decimals: 8,
+                });
+            }
+            return returnObj;
+        }
+        return {};
+    }
+    getBlockchainInfo(onlyLastBlockInfo = false) {
         return new Promise<any>((resolve, reject) => {
             RpcBitcoinClient.call('getblockchaininfo', [], function callback(
+                error: string,
+                response: any | BlockNotification
+            ): void {
+                if (error) {
+                    reject(error); // error in case calling RPC
+                } else if (response.error) {
+                    reject(new Error(response.error.message)); // possible error from blockchain
+                } else if (response.result) {
+                    if (onlyLastBlockInfo === true) {
+                        resolve({
+                            height: response.result.blocks,
+                            hash: response.result.bestblockhash,
+                        });
+                    } else {
+                        resolve(response.result);
+                    }
+                } else {
+                    reject(new Error('bad data from RPC server')); // TODO: attach to custom error class?
+                }
+            });
+        });
+    }
+
+    getBlockFilter(byHash) {
+        return new Promise<any>((resolve, reject) => {
+            RpcBitcoinClient.call('getblockfilter', [byHash], function callback(
                 error: string,
                 response: any
             ): void {
@@ -106,6 +210,26 @@ export class RpcClient {
                     reject(new Error('bad data from RPC server')); // TODO: attach to custom error class?
                 }
             });
+        });
+    }
+
+    getBlockHash(byHeight: number) {
+        return new Promise<string>((resolve, reject) => {
+            RpcBitcoinClient.call(
+                'getblockhash',
+                [byHeight],
+                (error: string, response: any): void => {
+                    if (error) {
+                        reject(error); // error in case calling RPC
+                    } else if (response.error) {
+                        reject(new Error(response.error.message)); // possible error from blockchain
+                    } else if (response.result) {
+                        resolve(response.result);
+                    } else {
+                        reject(new Error('bad data from RPC server')); // TODO: attach to custom error class?
+                    }
+                }
+            );
         });
     }
 
@@ -269,7 +393,7 @@ export class RpcClient {
         fromInputsTransactions: Array<any>,
         rawTxData: any,
         sender: string
-    ): { totalTransactionIn: BigNumber; fee: BigNumber } {
+    ): CalculatedTotal {
         let totalTransactionIn: BigNumber = new BigNumber(0, 8);
         let fee: BigNumber = new BigNumber(0, 8);
 

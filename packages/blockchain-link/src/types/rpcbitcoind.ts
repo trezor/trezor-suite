@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js';
+
 export interface Subscribe {
     subscribed: boolean;
 }
@@ -18,6 +20,11 @@ export interface NetworkInfo {
 
 export interface BlockHash {
     hash: string;
+}
+
+export interface CalculatedTotal {
+    totalTransactionIn: BigNumber;
+    fee: BigNumber;
 }
 
 export interface AccountInfoParams {

@@ -16,12 +16,15 @@ const common = new WorkerCommon(postMessage);
 let api: Connection | undefined;
 let endpoints: string[] = [];
 
+const blockSubscrData: BlockNotification[] = [];
+let subscrBlockIntervalLink;
+
 // This data must be obtained from somewhere in the front end
 const loginData: LoginData = {
     username: 'rpc',
-    password: 'rpc',
-    host: 'blockbook-dev.corp.sldev.cz',
-    port: '18030',
+    password: 'rpcdsfcxvxctrnfnvkkqkjvjtjnbnnkbvibnifnbkdfbdfkbndfkbnfdbfdnkeckvncxq1',
+    host: '78.47.39.234',
+    port: '8332',
 };
 
 const cleanup = () => {
@@ -107,14 +110,12 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
 
 const getBlockHash = async (data: { id: number } & MessageTypes.GetBlockHash): Promise<void> => {
     try {
-        const socket = await connect();
-        const info = await socket.getBlockHash(data.payload);
-        // RPC call: getblockhash *height*
-        // argument: height (required)
+        const rpcClientObj = new RpcClient(loginData);
+        const blockInfo = await rpcClientObj.getBlockHash(data.payload);
         common.response({
             id: data.id,
             type: RESPONSES.GET_BLOCK_HASH,
-            payload: info.hash,
+            payload: blockInfo,
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
@@ -124,19 +125,17 @@ const getBlockHash = async (data: { id: number } & MessageTypes.GetBlockHash): P
 const getAccountInfo = async (
     data: { id: number } & MessageTypes.GetAccountInfo
 ): Promise<void> => {
+    let info;
     const { payload } = data;
     try {
-        const socket = await connect();
-        const info = await socket.getAccountInfo(payload);
-        // argument: address (required)
-        // data.id = 1 basic ? (RPC cover), RPC call: getaddressinfo *address*
-        // data.id = 2 tokens ? (RPC cover), RPC call: deriveaddresses *descriptor* [+some manipulations with pkh, wpkh]
-        // data.id = 3 tokens with balance ? (RPC cover), RPC call: deriveaddresses + ? (listreceivedbyaddress (or getreceivedbyaddress) + find unspend on each transaction + calculate balance on each address)
-        // data.id = 4 transaction IDs only ? (RPC cover), RPC call: deriveaddresses + ? (listreceivedbyaddress (or getreceivedbyaddress) + find each IN transaction + how to find OUT transactions?) > return only id's transaction
-        // data.id = 5 transaction full ? (RPC cover), RPC call: deriveaddresses + ? (listreceivedbyaddress (or getreceivedbyaddress) + find each IN transaction + how to find OUT transactions?) > return full transactions list
-
-        // if user load wallet first (importaddress) + rescan, then see also (getaccount, getbalance), (listunspent, listtransactions), it will be simplier
-
+        if (payload.details && payload.details === 'tokens') {
+            const rpcClientObj = new RpcClient(loginData);
+            info = rpcClientObj.getAccountinfo(payload);
+        } else {
+            const socket = await connect();
+            info = await socket.getAccountInfo(payload);
+        }
+        // xpub6BiVtCpG9fQPxnPmHXG8PhtzQdWC2Su4qWu6XW9tpWFYhxydCLJGrWBJZ5H6qTAHdPQ7pQhtpjiYZVZARo14qHiay2fvrX996oEP42u8wZy
         common.response({
             id: data.id,
             type: RESPONSES.GET_ACCOUNT_INFO,
@@ -172,9 +171,6 @@ const getTransaction = async (
     console.log('getTransaction  getTransaction getTransaction');
     const { payload } = data;
     try {
-        // const socket = await connect();
-        // const tx = await socket.getTransaction(payload);
-
         const rpcClientObj = new RpcClient(loginData);
         const rawTxData: any = await rpcClientObj.getRawTransactionInfo(payload);
         const tx: Transaction = await rpcClientObj.convertRawTransactionToNormal(rawTxData);
@@ -275,15 +271,35 @@ const subscribeAddresses = async (addresses: string[]) => {
         socket.on('notification', onTransaction);
         common.addSubscription('notification');
     }
+    console.log('adasdasdas');
+    const rpcClientObj = new RpcClient(loginData);
+    const blockInfo = await rpcClientObj.subscribeOnAddress('test');
+
     return socket.subscribeAddresses(common.getAddresses());
 };
 
 const subscribeBlock = async () => {
-    if (common.getSubscription('block')) return { subscribed: true };
-    const socket = await connect();
-    common.addSubscription('block');
-    socket.on('block', onNewBlock);
-    return socket.subscribeBlock();
+    const rpcClient = new RpcClient(loginData);
+    const lastBlockInfo = await rpcClient.getBlockchainInfo(true);
+
+    blockSubscrData.length = 0; // clear
+    blockSubscrData.push(lastBlockInfo); // initial data, for further comparison
+
+    if (subscrBlockIntervalLink) {
+        clearInterval(subscrBlockIntervalLink); // clear if exist
+    }
+
+    subscrBlockIntervalLink = setInterval(async () => {
+        const possibleNewBlock: BlockNotification = await rpcClient.getBlockchainInfo(true);
+        const findStatus = blockSubscrData.some(oneElem => {
+            return oneElem.hash === possibleNewBlock.hash;
+        });
+
+        if (findStatus === false) {
+            blockSubscrData.unshift(possibleNewBlock);
+            onNewBlock(possibleNewBlock);
+        }
+    }, 5000);
 };
 
 const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
@@ -345,11 +361,10 @@ const unsubscribeAddresses = async (addresses?: string[]) => {
 };
 
 const unsubscribeBlock = async () => {
-    if (!common.getSubscription('block')) return { subscribed: false };
-    const socket = await connect();
-    socket.removeListener('block', onNewBlock);
-    common.removeSubscription('block');
-    return socket.unsubscribeBlock();
+    if (subscrBlockIntervalLink) {
+        clearInterval(subscrBlockIntervalLink); // clear if exist
+        subscrBlockIntervalLink = undefined;
+    }
 };
 
 const unsubscribe = async (data: { id: number } & MessageTypes.Unsubscribe): Promise<void> => {

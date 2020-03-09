@@ -7651,6 +7651,15 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
+bcrypto@~5.0.0:
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/bcrypto/-/bcrypto-5.0.4.tgz#711a67450f131fcb517824a4d496ccb83fa96fc9"
+  integrity sha512-5vNoWRFU7cJ3hjhL2O/1Q1U/L/+e2+eDkjUChRAolfrVyeyZcwV3qTTQYn+XA1eUzrZbSZaaH5ZtvJOTwUPh6A==
+  dependencies:
+    bufio "~1.0.6"
+    loady "~0.0.1"
+    nan "^2.14.0"
+
 bech32@0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/bech32/-/bech32-0.0.3.tgz#736747c4a6531c5d8937d0400498de30e93b2f9c"
@@ -8090,6 +8099,11 @@ bser@^2.0.0:
   dependencies:
     node-int64 "^0.4.0"
 
+bsert@~0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/bsert/-/bsert-0.0.10.tgz#231ac82873a1418c6ade301ab5cd9ae385895597"
+  integrity sha512-NHNwlac+WPy4t2LoNh8pXk8uaIGH3NSaIUbTTRXGpE2WEbq0te/tDykYHkFK57YKLPjv/aGHmbqvnGeVWDz57Q==
+
 btoa-lite@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/btoa-lite/-/btoa-lite-1.0.0.tgz#337766da15801210fdd956c22e9c6891ab9d0337"
@@ -8138,6 +8152,11 @@ bufferview@~1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/bufferview/-/bufferview-1.0.1.tgz#7afd74a45f937fa422a1d338c08bbfdc76cd725d"
   integrity sha1-ev10pF+Tf6QiodM4wIu/3HbNcl0=
+
+bufio@~1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/bufio/-/bufio-1.0.6.tgz#e0eb6d70b2efcc997b6f8872173540967f90fa4d"
+  integrity sha512-mjYZFRHmI9bk3Oeexu0rWjHFY+w6hGLabdmwSFzq+EFr4MHHsNOYduDVdYl71NG5pTPL7GGzUCMk9cYuV34/Qw==
 
 builder-util-runtime@8.3.0:
   version "8.3.0"
@@ -13039,6 +13058,16 @@ globrex@^0.1.1:
   resolved "https://registry.yarnpkg.com/globrex/-/globrex-0.1.2.tgz#dd5d9ec826232730cd6793a5e33a9302985e6098"
   integrity sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==
 
+golomb@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/golomb/-/golomb-1.2.0.tgz#f173c843db207f3d241b68652a77271563e9922f"
+  integrity sha512-sfEZmT9Mi7XMIYYAm9tWBQf83V3jrw+PAnNeIZtvgdcij3zIQweLX6e1/+cqRXdhxHB0Zjy7gUpEXoaDpWuGkg==
+  dependencies:
+    bcrypto "~5.0.0"
+    bsert "~0.0.10"
+    bufio "~1.0.6"
+    n64 "~0.2.10"
+
 gonzales-pe@^4.2.3, gonzales-pe@^4.2.4:
   version "4.2.4"
   resolved "https://registry.yarnpkg.com/gonzales-pe/-/gonzales-pe-4.2.4.tgz#356ae36a312c46fe0f1026dd6cb539039f8500d2"
@@ -15858,6 +15887,11 @@ loader-utils@~1.1.0:
     emojis-list "^2.0.0"
     json5 "^0.5.0"
 
+loady@~0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/loady/-/loady-0.0.1.tgz#24a99c14cfed9cd0bffed365b1836035303f7e5d"
+  integrity sha512-PW5Z13Jd0v6ZcA1P6ZVUc3EV8BJwQuAiwUvvT6VQGHoaZ1d/tu7r1QZctuKfQqwy9SFBWeAGfcIdLxhp7ZW3Rw==
+
 locate-path@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/locate-path/-/locate-path-2.0.0.tgz#2b568b265eec944c6d9c0de9c3dbbbca0354cd8e"
@@ -17147,6 +17181,11 @@ mz@^2.5.0:
     any-promise "^1.0.0"
     object-assign "^4.0.1"
     thenify-all "^1.0.0"
+
+n64@~0.2.10:
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/n64/-/n64-0.2.10.tgz#e5831073dd527e6934b880231a43f3a8e36c096a"
+  integrity sha512-uH9geV4+roR1tohsrrqSOLCJ9Mh1iFcDI+9vUuydDlDxUS1UCAWUfuGb06p3dj3flzywquJNrGsQ7lHP8+4RVQ==
 
 nan@^2.12.1, nan@^2.14.0, nan@^2.2.1:
   version "2.14.0"
