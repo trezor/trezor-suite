@@ -6,7 +6,7 @@ import { SUITE } from '@suite-actions/constants';
 import { Props } from './Container';
 import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
-import { getBip43Shortcut } from '@wallet-utils/accountUtils';
+import { getAccountTypeIntl, getBip43Shortcut } from '@wallet-utils/accountUtils';
 
 import { Section, ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/Settings';
 
@@ -36,14 +36,7 @@ export default ({ selectedAccount, locks, device, openModal }: Props) => {
     const locked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     const disabled = !!device.authConfirm;
 
-    let accountTypeName = messages.TR_ACCOUNT_TYPE_NORMAL;
-    if (account.accountType !== 'normal') {
-        accountTypeName =
-            account.accountType === 'segwit'
-                ? messages.TR_ACCOUNT_TYPE_SEGWIT
-                : messages.TR_ACCOUNT_TYPE_LEGACY;
-    }
-
+    const accountTypeName = getAccountTypeIntl(account.accountType);
     const bip43 = getBip43Shortcut(account.path);
     let accountTypeDesc = messages.TR_ACCOUNT_DETAILS_TYPE_P2PKH;
     let accountTypeShortcut = messages.TR_ACCOUNT_TYPE_P2PKH;

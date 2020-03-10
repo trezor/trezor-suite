@@ -1,53 +1,48 @@
 import React from 'react';
 import { Button, Tooltip } from '@trezor/components';
 import { Account, Network } from '@wallet-types';
+import { Translation } from '@suite-components';
+import messages from '@suite/support/messages';
 
 interface Props {
-    network?: Network;
+    network: Network;
     accounts: Account[];
     onEnableAccount: (account: Account) => void;
 }
-const AddAccountButton = (props: Props) => {
+
+export default (props: Props) => {
     if (props.accounts.length === 0) return null;
     const account = props.accounts[props.accounts.length - 1];
-    let enabled = true;
-    let description = account.path;
+    let tooltip;
     if (props.accounts.length > 1) {
         // prev account is empty, do not add another
-        enabled = false;
-        description = 'Previous account is empty';
+        tooltip = <Translation {...messages.MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY} />;
     }
     if (account.index === 0 && account.empty && account.accountType === 'normal') {
         // current (first normal) account is empty, do not add another
-        enabled = false;
-        description = 'Previous account is empty';
+        tooltip = <Translation {...messages.MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY} />;
     }
     if (account.index >= 10) {
-        enabled = false;
-        description = 'Account index is greater than 10';
+        tooltip = <Translation {...messages.MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED} />;
     }
-
-    // const accountType = getTypeForNetwork(props.network?.accountType || 'normal');
 
     const addButton = (
         <Button
             icon="PLUS"
             variant="primary"
-            isDisabled={!enabled}
+            isDisabled={!!tooltip}
             onClick={() => props.onEnableAccount(account)}
         >
-            Add account
+            <Translation {...messages.TR_ADD_ACCOUNT} />
         </Button>
     );
 
-    if (!enabled) {
+    if (tooltip) {
         return (
-            <Tooltip maxWidth={285} placement="top" content={description}>
+            <Tooltip maxWidth={285} placement="top" content={tooltip}>
                 {addButton}
             </Tooltip>
         );
     }
     return addButton;
 };
-
-export default AddAccountButton;

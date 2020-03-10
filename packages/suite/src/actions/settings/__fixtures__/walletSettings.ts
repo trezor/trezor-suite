@@ -3,7 +3,7 @@ import * as walletSettingsActions from '@settings-actions/walletSettingsActions'
 export default [
     {
         description: 'Btc should be visible as a default if no initial state provided',
-        initialState: {},
+        initialState: undefined,
         action: () => walletSettingsActions.changeCoinVisibility('ltc', true),
         result: {
             enabledNetworks: ['btc', 'ltc'],
