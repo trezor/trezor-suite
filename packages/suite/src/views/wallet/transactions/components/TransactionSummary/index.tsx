@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { colors, variables, Button } from '@trezor/components';
 import { Card } from '@suite-components';
-import { AppState } from '@suite/types/suite';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
 import { Translation } from '@suite-components/Translation';
-import { connect } from 'react-redux';
 import messages from '@suite/support/messages';
 import InfoCard from './components/InfoCard';
 import AccountTransactionsGraph from './components/AccountTransactionsGraph';
@@ -50,7 +48,7 @@ const Actions = styled.div`
     justify-content: space-between;
 `;
 
-interface OwnProps {
+interface Props {
     account: Account;
 }
 
@@ -168,15 +166,4 @@ const TransactionSummary = (props: Props) => {
     );
 };
 
-const mapStateToProps = (state: AppState) => ({
-    settings: state.wallet.settings,
-    fiat: state.wallet.fiat,
-});
-
-const mapDispatchToProps = () => ({});
-
-export type Props = ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps> &
-    OwnProps;
-
-export default connect(mapStateToProps, mapDispatchToProps)(TransactionSummary);
+export default TransactionSummary;
