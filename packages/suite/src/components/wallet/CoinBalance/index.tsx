@@ -14,7 +14,7 @@ const Symbol = styled.span`
     text-indent: 3px;
 `;
 
-const MAX_DECIMALS = 8;
+const MAX_NUMBERS = 8;
 
 interface Props {
     value: string;
@@ -24,15 +24,23 @@ interface Props {
 const getBalance = (value: string) => {
     const balanceBig = new BigNumber(value);
 
-    if (balanceBig.isZero()) return '0';
+    if (balanceBig.isZero() || !balanceBig.isNaN()) return '0';
 
-    const fixedBalance = new BigNumber(balanceBig.toFixed(MAX_DECIMALS, 1));
-
-    if (fixedBalance.isEqualTo(balanceBig)) {
-        return fixedBalance.toFixed();
+    const fixedBalance = new BigNumber(balanceBig.toFixed(MAX_NUMBERS, 1));
+    if (fixedBalance.isZero()) {
+        return '~0';
     }
 
-    return `~ ${fixedBalance.toFixed()}`;
+    const balanceWithPrecision = fixedBalance.precision(MAX_NUMBERS).toFixed();
+    const balanceWithPrecisionLength = balanceWithPrecision.length;
+    let result = balanceWithPrecision;
+
+    if (balanceWithPrecisionLength < MAX_NUMBERS) {
+        const zerosToFill = MAX_NUMBERS - balanceWithPrecisionLength + 1;
+        [...Array(zerosToFill)].map(() => (result += '0'));
+    }
+
+    return result;
 };
 
 export default ({ value, symbol }: Props) => {
