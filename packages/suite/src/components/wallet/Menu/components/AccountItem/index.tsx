@@ -70,11 +70,6 @@ const Balance = styled.div`
     flex-wrap: wrap;
 `;
 
-const CryptoValue = styled.div`
-    margin-right: 12px;
-    white-space: nowrap;
-`;
-
 const AccountHeader = styled.div<{ selected: boolean }>`
     display: flex;
     padding: 10px;

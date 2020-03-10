@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 
 export const formatCoinBalance = (value: string) => {
     const MAX_NUMBERS = 8;
+    const MAX_CRYPTO_VALUE = '100000000';
     const balanceBig = new BigNumber(value);
 
     if (balanceBig.isZero()) return '0';
@@ -15,7 +16,7 @@ export const formatCoinBalance = (value: string) => {
         return balanceBig.toFixed(MAX_NUMBERS - parts[0].length || 1 - DOT_CHAR_LENGTH, 1);
     }
 
-    if (balanceBig.isGreaterThanOrEqualTo(100000000)) return '100M+';
+    if (balanceBig.isGreaterThanOrEqualTo(MAX_CRYPTO_VALUE)) return '100M+';
 
     return balanceBig.toFixed();
 };
