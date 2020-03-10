@@ -7,8 +7,8 @@ import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { groupTransactionsByDate, parseKey, sumTransactions } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
 import { Account } from '@wallet-types';
-import TransactionItem from '../TransactionItem/Container';
-import Pagination from '../Pagination';
+import TransactionItem from './components/TransactionItem/Container';
+import Pagination from './components/Pagination';
 import messages from '@suite/support/messages';
 import { Badge, Card, FiatValue, HiddenPlaceholder, Translation } from '@suite-components';
 

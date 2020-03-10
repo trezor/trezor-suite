@@ -13,7 +13,7 @@ import { isTestnet } from '@wallet-utils/accountUtils';
 import { ArrayElement } from '@suite/types/utils';
 import messages from '@suite/support/messages';
 import { getDateWithTimeZone } from '@suite-utils/date';
-import TransactionTypeIcon from '../TransactionTypeIcon';
+import TransactionTypeIcon from './components/TransactionTypeIcon';
 import { Props } from './Container';
 
 const Wrapper = styled.div<{ isExpanded: boolean }>`
