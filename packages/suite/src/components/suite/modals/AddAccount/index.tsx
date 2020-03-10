@@ -1,264 +1,144 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import styled from 'styled-components';
-import { H2, Button, P, Link, colors, variables } from '@trezor/components';
-import { Translation, ExternalLink } from '@suite-components';
-import { changeAccountVisibility } from '@wallet-actions/accountActions';
-import { changeCoinVisibility } from '@settings-actions/walletSettingsActions';
-import * as routerActions from '@suite-actions/routerActions';
+import { Button, Link } from '@trezor/components';
+import { Translation } from '@suite-components';
 import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
-import { AppState, Dispatch, TrezorDevice } from '@suite-types';
 import { Account, Network, ExternalNetwork } from '@wallet-types';
-import ModalWrapper from '@suite-components/ModalWrapper';
 import messages from '@suite/support/messages';
-import NetworkSelect from './components/NetworkSelect';
-import AccountTypeSelect from './components/AccountTypeSelect';
-import ExternalWallet from './components/ExternalWallet';
+import NetworkUnavailable from './components/NetworkUnavailable';
+import NetworkExternal from './components/NetworkExternal';
+import NetworkInternal from './components/NetworkInternal';
 import AddAccountButton from './components/AddAccountButton';
-import { WIKI_BECH32_URL } from '@suite-constants/urls';
+import Wrapper from './components/Wrapper';
+import { Props } from './Container';
 
-const Wrapper = styled(ModalWrapper)`
-    flex-direction: column;
-    width: 100%;
-    max-width: 600px;
-    min-height: 530px;
-`;
-
-const Actions = styled.div`
-    display: flex;
-    justify-content: space-between;
-`;
-
-const Description = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${colors.BLACK50};
-    margin-bottom: 32px;
-`;
-
-const Row = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 0px;
-
-    & + & {
-        border-top: 1px solid ${colors.BLACK96};
-    }
-`;
-
-const RowTitle = styled.div`
-    display: flex;
-    color: ${colors.BLACK0};
-    font-size: ${variables.FONT_SIZE.SMALL};
-`;
-
-const StyledP = styled(P)`
-    color: ${colors.BLACK50};
-    margin-bottom: 32px;
-`;
-
-const Expander = styled.div`
-    display: flex;
-    flex: 1;
-`;
-
-const isNetworkExternal = (n: Network | ExternalNetwork | undefined): n is ExternalNetwork => {
-    return n !== undefined && EXTERNAL_NETWORKS.find(e => e.symbol === n.symbol) !== undefined;
-};
-const isNetworkInternal = (n: Network | ExternalNetwork | undefined): n is Network => {
-    return n !== undefined && NETWORKS.find(e => e.symbol === n.symbol) !== undefined;
-};
-
-const EnableNetwork = (props: {
-    selectedNetwork: Network;
-    onEnableNetwork: (symbol: Network['symbol']) => void;
-}) => (
-    <>
-        <Button
-            variant="primary"
-            onClick={() => props.onEnableNetwork(props.selectedNetwork.symbol)}
-        >
-            <Translation
-                {...messages.TR_ENABLE_NETWORK_BUTTON}
-                values={{ networkName: props.selectedNetwork.name }}
-            />
-        </Button>
-    </>
-);
-
-const mapStateToProps = (state: AppState) => ({
-    accounts: state.wallet.accounts,
-    enabledNetworks: state.wallet.settings.enabledNetworks,
-    router: state.router,
-    selectedAccount: state.wallet.selectedAccount,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    changeAccountVisibility: bindActionCreators(changeAccountVisibility, dispatch),
-    changeCoinVisibility: bindActionCreators(changeCoinVisibility, dispatch),
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
-
-type NetworkSymbol = Network['symbol'] | ExternalNetwork['symbol'];
-
-type Props = {
-    device: TrezorDevice;
-    onCancel: () => void;
-} & ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>;
-
-const AddAccount = (props: Props) => {
+export default (props: Props) => {
     // Collect all Networks without "accountType" (normal)
     const internalNetworks = NETWORKS.filter(n => !n.accountType && !n.isHidden);
     const externalNetworks = EXTERNAL_NETWORKS.filter(n => !n.isHidden);
 
-    // Collect accounts for selected device
-    const accounts = props.accounts.filter(a => a.deviceState === props.device.state);
+    // Collect device unavailable capabilities
+    const unavailableCapabilities = props.device.features
+        ? props.device.unavailableCapabilities
+        : {};
 
     // Use component state, default value is currently selected network or first network item on the list (btc)
     const { account } = props.selectedAccount;
-    let preselectedNetwork;
-    if (props.router.app === 'wallet' && account) {
-        preselectedNetwork = internalNetworks.find(n => n.symbol === account.symbol);
+    const preselectedNetwork = account
+        ? (internalNetworks.find(n => n.symbol === account.symbol) as Network)
+        : internalNetworks[0];
+
+    const [network, setNetwork] = useState<Network | ExternalNetwork>(preselectedNetwork);
+    const [accountType, setAccountType] = useState<Network | undefined>(undefined);
+
+    // Common props for Wrapper
+    const wrapperProps = {
+        selectedNetwork: network,
+        internalNetworks,
+        externalNetworks,
+        onSelectNetwork: (network: Network | ExternalNetwork) => {
+            setNetwork(network);
+            setAccountType(undefined);
+        },
+        onSelectAccountType: setAccountType,
+        onCancel: props.onCancel,
+    };
+
+    // Check device capabilities
+    // Display: unavailable network
+    const capability = unavailableCapabilities[network.symbol];
+    if (capability) {
+        return (
+            <Wrapper {...wrapperProps}>
+                <NetworkUnavailable capability={capability} network={network} />
+            </Wrapper>
+        );
     }
-    const [selectedType, setSelectedType] = useState<Network['accountType']>(undefined);
-    const [selectedSymbol, setSelectedSymbol] = useState<NetworkSymbol>(
-        preselectedNetwork ? preselectedNetwork.symbol : internalNetworks[0].symbol,
-    );
 
-    const accountTypes = NETWORKS.filter(n => n.symbol === selectedSymbol);
-    // Find selected network (from component state value)
-    const selectedNetwork = selectedType
-        ? accountTypes.find(n => (n.accountType || 'normal') === selectedType)
-        : [...internalNetworks, ...externalNetworks].find(n => n.symbol === selectedSymbol);
-
-    const isExternal = isNetworkExternal(selectedNetwork);
-    const isInternal = isNetworkInternal(selectedNetwork);
-
-    const isNetworkDisabled =
-        selectedNetwork && isNetworkInternal(selectedNetwork)
-            ? !props.enabledNetworks.includes(selectedNetwork?.symbol)
-            : false;
-
-    const availableAccounts = accounts.filter(a => a.symbol === selectedNetwork?.symbol && a.empty);
-
-    const getEmptyAccounts = (n: Network) => {
-        if (!n) return [];
-        return availableAccounts.filter(a => a.accountType === (n.accountType || 'normal'));
-    };
-
-    const filteredAccountTypes = accountTypes.filter(t => {
-        const emptyAccounts = getEmptyAccounts(t);
-        if (emptyAccounts.length === 0) return false;
-        return true;
-    });
-
-    const onSelectAccountType = (type: Network['accountType']) => {
-        setSelectedType(type);
-    };
-
-    const onSelectNetwork = (symbol: NetworkSymbol) => {
-        setSelectedSymbol(symbol);
-        setSelectedType(undefined);
-    };
-
-    const onEnableAccount = (account: Account) => {
-        props.onCancel();
-        props.changeAccountVisibility(account);
-        props.goto('wallet-index', {
-            symbol: account.symbol,
-            accountIndex: account.index,
-            accountType: account.accountType,
-        });
-    };
-
-    return (
-        <Wrapper>
-            <H2>
-                <Translation
-                    {...messages.TR_ADD_NEW_ACCOUNT}
-                    values={{ deviceLabel: props.device.label }}
-                />
-            </H2>
-
-            <Description>
-                <Translation {...messages.TR_EXPLAIN_HOW_ACCOUNT_WORK} />
-            </Description>
-            <Row>
-                <RowTitle>
-                    <Translation {...messages.TR_CRYPTOCURRENCY} />
-                </RowTitle>
-                <NetworkSelect
-                    selectedNetwork={selectedNetwork}
-                    networks={internalNetworks}
-                    externalNetworks={externalNetworks}
-                    setSelectedNetwork={onSelectNetwork}
-                />
-            </Row>
-            {!isNetworkDisabled && accountTypes.length > 1 && (
-                <Row>
-                    <RowTitle>
-                        <Translation {...messages.TR_ACCOUNT_TYPE} />
-                    </RowTitle>
-                    <AccountTypeSelect
-                        selectedNetwork={selectedNetwork}
-                        accountTypes={filteredAccountTypes}
-                        onSelectAccountType={onSelectAccountType}
-                    />
-                </Row>
-            )}
-
-            {selectedNetwork?.symbol === 'btc' &&
-                (selectedNetwork?.accountType || 'normal') === 'normal' && (
-                    <StyledP size="small" textAlign="left">
-                        <Translation {...messages.TR_BECH32_USES_MOST_MODERN} />{' '}
-                        <ExternalLink href={WIKI_BECH32_URL} size="small">
-                            <Translation {...messages.TR_LEARN_MORE} />
-                        </ExternalLink>
-                    </StyledP>
-                )}
-
-            <ExternalWallet selectedNetwork={selectedNetwork} />
-
-            <Expander />
-
-            <Actions>
-                <Button variant="secondary" onClick={() => props.onCancel()}>
-                    <Translation {...messages.TR_CANCEL} />
-                </Button>
-                {isInternal && isNetworkDisabled && (
-                    <EnableNetwork
-                        selectedNetwork={selectedNetwork as Network}
-                        onEnableNetwork={(symbol: Network['symbol']) => {
-                            props.onCancel();
-                            props.changeCoinVisibility(symbol, true);
-                            props.goto('wallet-index', {
-                                symbol,
-                                accountIndex: 0,
-                                accountType: 'normal',
-                            });
-                        }}
-                    />
-                )}
-
-                {isExternal ? (
-                    <Link href={(selectedNetwork as ExternalNetwork).url}>
+    // Display: external network
+    if (network.networkType === 'external') {
+        return (
+            <Wrapper
+                {...wrapperProps}
+                actionButton={
+                    <Link href={network.url}>
                         <Button icon="EXTERNAL_LINK" variant="primary" onClick={props.onCancel}>
                             <Translation>{messages.TR_GO_TO_EXTERNAL_WALLET}</Translation>
                         </Button>
                     </Link>
-                ) : (
-                    <AddAccountButton
-                        network={selectedNetwork as Network}
-                        accounts={getEmptyAccounts(selectedNetwork as Network)}
-                        onEnableAccount={onEnableAccount}
-                    />
-                )}
-            </Actions>
+                }
+            >
+                <NetworkExternal network={network} />
+            </Wrapper>
+        );
+    }
+
+    // Display: Network is not enabled in settings
+    if (!props.enabledNetworks.includes(network.symbol)) {
+        return (
+            <Wrapper
+                {...wrapperProps}
+                actionButton={
+                    <Button
+                        variant="primary"
+                        onClick={() => {
+                            props.onCancel();
+                            props.changeCoinVisibility(network.symbol, true);
+                            props.goto('wallet-index', {
+                                symbol: network.symbol,
+                                accountIndex: 0,
+                                accountType: 'normal',
+                            });
+                        }}
+                    >
+                        <Translation
+                            {...messages.TR_ENABLE_NETWORK_BUTTON}
+                            values={{ networkName: network.name }}
+                        />
+                    </Button>
+                }
+            />
+        );
+    }
+
+    // Collect all empty accounts related to selected device and selected accountType
+    const currentType = (accountType ? accountType.accountType : undefined) || 'normal';
+    const emptyAccounts = props.accounts.filter(
+        a =>
+            a.deviceState === props.device.state &&
+            a.symbol === network.symbol &&
+            a.accountType === currentType &&
+            a.empty,
+    );
+
+    // Collect possible accountTypes
+    const accountTypes =
+        network.networkType === 'bitcoin'
+            ? NETWORKS.filter(n => n.symbol === network.symbol)
+            : undefined;
+
+    // Display: default add account window
+    return (
+        <Wrapper
+            {...wrapperProps}
+            selectedAccountType={accountType}
+            accountTypes={accountTypes}
+            actionButton={
+                <AddAccountButton
+                    network={network}
+                    accounts={emptyAccounts}
+                    onEnableAccount={(account: Account) => {
+                        props.onCancel();
+                        props.changeAccountVisibility(account);
+                        props.goto('wallet-index', {
+                            symbol: account.symbol,
+                            accountIndex: account.index,
+                            accountType: account.accountType,
+                        });
+                    }}
+                />
+            }
+        >
+            <NetworkInternal network={accountType || network} accountTypes={accountTypes} />
         </Wrapper>
     );
 };
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddAccount);

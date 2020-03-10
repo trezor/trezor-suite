@@ -26,7 +26,7 @@ import ConfirmXpub from './confirm/Xpub/Container';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ReviewTransaction from './ReviewTransaction/Container';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
-import AddAccount from './AddAccount';
+import AddAccount from './AddAccount/Container';
 import QrScanner from './QrScanner';
 import BackgroundGallery from './BackgroundGallery';
 import TransactionDetail from './TransactionDetail';
