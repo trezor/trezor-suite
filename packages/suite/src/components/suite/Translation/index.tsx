@@ -25,26 +25,23 @@ type PrimitiveType = string | number | boolean | Date | null | undefined;
 const Translation = (props: MsgType) => {
     const values: Record<string, PrimitiveType | React.ReactNode | ExtendedMessageDescriptor> = {};
     // message passed via props (id, defaultMessage, values)
-    if (isMsgType(props)) {
-        Object.keys(props.values || []).forEach(key => {
-            // Iterates through all values. The entry may also contain a MessageDescriptor.
-            // If so, Renders MessageDescriptor by passing it to `Translation` component
-            const maybeMsg = props.values![key];
-            values[key] = isMsgType(maybeMsg) ? <Translation {...maybeMsg} /> : maybeMsg;
-        });
+    Object.keys(props.values || []).forEach(key => {
+        // Iterates through all values. The entry may also contain a MessageDescriptor.
+        // If so, Renders MessageDescriptor by passing it to `Translation` component
+        const maybeMsg = props.values![key];
+        values[key] = isMsgType(maybeMsg) ? <Translation {...maybeMsg} /> : maybeMsg;
+    });
 
-        // pass undefined to a 'values' prop in case of an empty values object
-        return (
-            <HelperTooltip messageId={props.id}>
-                <FormattedMessage
-                    id={props.id}
-                    {...messages[props.id]}
-                    values={Object.keys(values).length === 0 ? undefined : values}
-                />
-            </HelperTooltip>
-        );
-    }
-    return null;
+    // pass undefined to a 'values' prop in case of an empty values object
+    return (
+        <HelperTooltip messageId={props.id}>
+            <FormattedMessage
+                id={props.id}
+                {...messages[props.id]}
+                values={Object.keys(values).length === 0 ? undefined : values}
+            />
+        </HelperTooltip>
+    );
 };
 
 export { Translation };
