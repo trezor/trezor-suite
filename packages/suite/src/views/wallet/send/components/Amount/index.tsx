@@ -67,19 +67,9 @@ const getMessage = (
         case VALIDATION_ERRORS.NOT_ENOUGH:
             return <Translation id="TR_AMOUNT_IS_NOT_ENOUGH" />;
         case VALIDATION_ERRORS.XRP_CANNOT_SEND_LESS_THAN_RESERVE:
-            return (
-                <Translation
-                    {...messages.TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE}
-                    values={{ reserve }}
-                />
-            );
+            return <Translation id="TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE" values={{ reserve }} />;
         case VALIDATION_ERRORS.NOT_IN_RANGE_DECIMALS:
-            return (
-                <Translation
-                    {...messages.TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS}
-                    values={{ decimals }}
-                />
-            );
+            return <Translation id="TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS" values={{ decimals }} />;
         default:
             return null;
     }

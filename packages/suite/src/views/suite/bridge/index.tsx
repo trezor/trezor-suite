@@ -155,7 +155,7 @@ const InstallBridge = (props: Props) => {
                 </Description>
                 <Version show={!!data.currentVersion}>
                     <Translation
-                        {...messages.TR_CURRENTLY_INSTALLED_TREZOR}
+                        id="TR_CURRENTLY_INSTALLED_TREZOR"
                         values={{ version: data.currentVersion }}
                     />
                 </Version>
@@ -180,7 +180,7 @@ const InstallBridge = (props: Props) => {
                         <Link variant="nostyle" href={`${data.uri}${target.value}`}>
                             <DownloadBridgeButton>
                                 <Translation
-                                    {...messages.TR_DOWNLOAD_LATEST_BRIDGE}
+                                    id="TR_DOWNLOAD_LATEST_BRIDGE"
                                     values={{ version: data.latestVersion }}
                                 />
                             </DownloadBridgeButton>

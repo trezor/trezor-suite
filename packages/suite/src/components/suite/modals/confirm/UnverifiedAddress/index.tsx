@@ -81,7 +81,7 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
     if (!device.connected) {
         deviceStatus = (
             <Translation
-                {...messages.TR_DEVICE_LABEL_IS_NOT_CONNECTED}
+                id="TR_DEVICE_LABEL_IS_NOT_CONNECTED"
                 values={{ deviceLabel: device.label }}
             />
         );
@@ -91,7 +91,7 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
         const enable = !!(device.features && device.features.passphrase_protection);
         deviceStatus = (
             <Translation
-                {...messages.TR_DEVICE_LABEL_IS_UNAVAILABLE}
+                id="TR_DEVICE_LABEL_IS_UNAVAILABLE"
                 values={{ deviceLabel: device.label }}
             />
         );
@@ -109,10 +109,7 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
             <Content>
                 <H2>{deviceStatus}</H2>
                 <StyledP size="small">
-                    <Translation
-                        {...messages.TR_TO_PREVENT_PHISHING_ATTACKS_COMMA}
-                        values={{ claim }}
-                    />
+                    <Translation id="TR_TO_PREVENT_PHISHING_ATTACKS_COMMA" values={{ claim }} />
                 </StyledP>
             </Content>
             <Content>
@@ -131,7 +128,7 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
                     <Content>
                         <H2>
                             <Translation
-                                {...messages.TR_DEVICE_LABEL_IS_NOT_BACKED_UP}
+                                id="TR_DEVICE_LABEL_IS_NOT_BACKED_UP"
                                 values={{ deviceLabel: device.label }}
                             />
                         </H2>

@@ -57,7 +57,7 @@ const Index = (props: Props) => {
             <Body>
                 <P size="tiny">
                     <Translation
-                        {...messages.TR_HELP_TREZOR_SUITE_TEXT_1}
+                        id="TR_HELP_TREZOR_SUITE_TEXT_1"
                         values={{
                             TR_HELP_TREZOR_SUITE_TEXT_1_FAT: (
                                 <Bold>
@@ -87,7 +87,7 @@ const Index = (props: Props) => {
 
             <BottomP size="tiny">
                 <Translation
-                    {...messages.TR_TOS_INFORMATION}
+                    id="TR_TOS_INFORMATION"
                     values={{
                         TR_TOS_LINK: (
                             <Link href={URLS.TOS_URL}>

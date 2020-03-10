@@ -21,10 +21,7 @@ interface Props {
 export default ({ label }: Props) => (
     <Wrapper>
         <P size="small">
-            <Translation
-                {...messages.TR_DEVICE_LABEL_IS_NOT_CONNECTED}
-                values={{ deviceLabel: label }}
-            />
+            <Translation id="TR_DEVICE_LABEL_IS_NOT_CONNECTED" values={{ deviceLabel: label }} />
         </P>
         <P size="tiny">
             <Translation id="TR_PLEASE_CONNECT_YOUR_DEVICE" />

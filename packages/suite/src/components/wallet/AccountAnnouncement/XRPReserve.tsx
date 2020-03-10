@@ -12,7 +12,7 @@ interface Props {
 export default ({ reserve }: Props) => (
     <NotificationCard variant="info">
         <Translation
-            {...messages.TR_XRP_RESERVE_INFO}
+            id="TR_XRP_RESERVE_INFO"
             values={{
                 minBalance: formatNetworkAmount(reserve, 'xrp'),
                 TR_LEARN_MORE: (

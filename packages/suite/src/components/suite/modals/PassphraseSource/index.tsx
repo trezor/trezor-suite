@@ -44,7 +44,7 @@ const PassphraseSource = ({ device, getDiscoveryAuthConfirmationStatus }: Props)
             <Wrapper>
                 <Title>
                     <Translation
-                        {...messages.TR_CONFIRM_PASSPHRASE_SOURCE}
+                        id="TR_CONFIRM_PASSPHRASE_SOURCE"
                         values={{ deviceLabel: device.label }}
                     />
                 </Title>
@@ -57,7 +57,7 @@ const PassphraseSource = ({ device, getDiscoveryAuthConfirmationStatus }: Props)
         <Wrapper>
             <Title>
                 <Translation
-                    {...messages.TR_SELECT_PASSPHRASE_SOURCE}
+                    id="TR_SELECT_PASSPHRASE_SOURCE"
                     values={{ deviceLabel: device.label }}
                 />
             </Title>

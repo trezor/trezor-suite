@@ -56,7 +56,7 @@ describe('Translation component', () => {
     test('with message that holds another message object in values (passed via props)', () => {
         const component = createComponentWithIntl(
             <Translation
-                {...messages.TR_HELLO_NAME}
+                id="TR_HELLO_NAME"
                 values={{
                     TR_NAME: { ...messages.TR_NAME, values: { name: 'John' } },
                     TR_AGE: 100,
@@ -70,7 +70,7 @@ describe('Translation component', () => {
     test('with message that holds another in values (passed via props)', () => {
         const component = createComponentWithIntl(
             <Translation
-                {...messages.TR_HELLO_NAME}
+                id="TR_HELLO_NAME"
                 values={{
                     TR_NAME: (
                         <Translation>

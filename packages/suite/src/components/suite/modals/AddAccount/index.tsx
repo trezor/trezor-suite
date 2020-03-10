@@ -81,7 +81,7 @@ const EnableNetwork = (props: {
             onClick={() => props.onEnableNetwork(props.selectedNetwork.symbol)}
         >
             <Translation
-                {...messages.TR_ENABLE_NETWORK_BUTTON}
+                id="TR_ENABLE_NETWORK_BUTTON"
                 values={{ networkName: props.selectedNetwork.name }}
             />
         </Button>
@@ -177,10 +177,7 @@ const AddAccount = (props: Props) => {
     return (
         <Wrapper>
             <H2>
-                <Translation
-                    {...messages.TR_ADD_NEW_ACCOUNT}
-                    values={{ deviceLabel: props.device.label }}
-                />
+                <Translation id="TR_ADD_NEW_ACCOUNT" values={{ deviceLabel: props.device.label }} />
             </H2>
 
             <Description>

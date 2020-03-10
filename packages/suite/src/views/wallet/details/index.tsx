@@ -36,26 +36,24 @@ export default ({ selectedAccount, locks, device, openModal }: Props) => {
     const locked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     const disabled = !!device.authConfirm;
 
-    let accountTypeName = messages.TR_ACCOUNT_TYPE_NORMAL;
+    let accountTypeName = 'TR_ACCOUNT_TYPE_NORMAL';
     if (account.accountType !== 'normal') {
         accountTypeName =
-            account.accountType === 'segwit'
-                ? messages.TR_ACCOUNT_TYPE_SEGWIT
-                : messages.TR_ACCOUNT_TYPE_LEGACY;
+            account.accountType === 'segwit' ? 'TR_ACCOUNT_TYPE_SEGWIT' : 'TR_ACCOUNT_TYPE_LEGACY';
     }
 
     const bip43 = getBip43Shortcut(account.path);
-    let accountTypeDesc = messages.TR_ACCOUNT_DETAILS_TYPE_P2PKH;
-    let accountTypeShortcut = messages.TR_ACCOUNT_TYPE_P2PKH;
+    let accountTypeDesc = 'TR_ACCOUNT_DETAILS_TYPE_P2PKH';
+    let accountTypeShortcut = 'TR_ACCOUNT_TYPE_P2PKH';
     let accountTypeUrl = WIKI_P2PHK_URL;
     if (bip43 === 'bech32') {
-        accountTypeDesc = messages.TR_ACCOUNT_DETAILS_TYPE_BECH32;
-        accountTypeShortcut = messages.TR_ACCOUNT_TYPE_BECH32;
+        accountTypeDesc = 'TR_ACCOUNT_DETAILS_TYPE_BECH32';
+        accountTypeShortcut = 'TR_ACCOUNT_TYPE_BECH32';
         accountTypeUrl = WIKI_BECH32_URL;
     }
     if (bip43 === 'p2sh') {
-        accountTypeDesc = messages.TR_ACCOUNT_DETAILS_TYPE_P2SH;
-        accountTypeShortcut = messages.TR_ACCOUNT_TYPE_P2SH;
+        accountTypeDesc = 'TR_ACCOUNT_DETAILS_TYPE_P2SH';
+        accountTypeShortcut = 'TR_ACCOUNT_TYPE_P2SH';
         accountTypeUrl = WIKI_P2SH_URL;
     }
 
@@ -68,15 +66,15 @@ export default ({ selectedAccount, locks, device, openModal }: Props) => {
                 <Row>
                     <TextColumn
                         title={<Translation id="TR_ACCOUNT_DETAILS_TYPE_HEADER" />}
-                        description={<Translation {...accountTypeDesc} />}
+                        description={<Translation id={accountTypeDesc} />}
                         learnMore={accountTypeUrl}
                     />
                     <AccountTypeLabel>
                         <P size="small">
-                            <Translation {...accountTypeName} />
+                            <Translation id={accountTypeName} />
                         </P>
                         <P size="tiny">
-                            <Translation {...accountTypeShortcut} />
+                            <Translation id={accountTypeShortcut} />
                         </P>
                     </AccountTypeLabel>
                 </Row>

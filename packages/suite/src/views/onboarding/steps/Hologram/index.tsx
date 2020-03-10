@@ -58,7 +58,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                     <>
                         <Text>
                             <Translation
-                                {...messages.TR_DID_YOU_PURCHASE}
+                                id="TR_DID_YOU_PURCHASE"
                                 values={{
                                     TR_PACKAGING_LINK: (
                                         <Link href={TREZOR_PACKAGING_URL}>
@@ -72,9 +72,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                     ),
                                     TR_CONTACT_OUR_SUPPORT_LINK: (
                                         <Link href={SUPPORT_URL}>
-                                            <Translation
-                                                {...messages.TR_CONTACT_OUR_SUPPORT_LINK}
-                                            />
+                                            <Translation id="TR_CONTACT_OUR_SUPPORT_LINK" />
                                         </Link>
                                     ),
                                 }}

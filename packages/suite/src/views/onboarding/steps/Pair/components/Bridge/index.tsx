@@ -96,7 +96,7 @@ class InstallBridge extends PureComponent<Props & WrappedComponentProps, BridgeS
                 <Text size="small">
                     {status === 'installed' && (
                         <Translation
-                            {...messages.TR_TREZOR_BRIDGE_IS_RUNNING_VERSION}
+                            id="TR_TREZOR_BRIDGE_IS_RUNNING_VERSION"
                             values={{ version: this.props.transport!.version }}
                         />
                     )}

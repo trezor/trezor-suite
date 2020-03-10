@@ -30,7 +30,7 @@ const BackupStep = (props: Props) => {
                     <>
                         <Text>
                             <Translation
-                                {...messages.TR_BACKUP_SUBHEADING_1}
+                                id="TR_BACKUP_SUBHEADING_1"
                                 values={{
                                     TR_SEED_MANUAL_LINK: (
                                         <Link href={SEED_MANUAL_URL}>
@@ -58,9 +58,7 @@ const BackupStep = (props: Props) => {
                 {status === 'finished' && backup.error && (
                     <>
                         <Text>
-                            <Translation
-                                {...messages.TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION}
-                            />
+                            <Translation id="TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION" />
                         </Text>
 
                         <P>Once you click retry, device will ask you to confirm these steps:</P>

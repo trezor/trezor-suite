@@ -37,7 +37,7 @@ const AccountNotEnabled = (props: Props) => {
         <Wrapper
             title={
                 <Translation
-                    {...messages.TR_ACCOUNT_EXCEPTION_NOT_ENABLED}
+                    id="TR_ACCOUNT_EXCEPTION_NOT_ENABLED"
                     values={{ networkName: network.name }}
                 />
             }
@@ -49,10 +49,7 @@ const AccountNotEnabled = (props: Props) => {
                 isLoading={locked}
                 onClick={() => props.changeCoinVisibility(network.symbol, true)}
             >
-                <Translation
-                    {...messages.TR_ENABLE_NETWORK_BUTTON}
-                    values={{ networkName: network.name }}
-                />
+                <Translation id="TR_ENABLE_NETWORK_BUTTON" values={{ networkName: network.name }} />
             </Button>
         </Wrapper>
     );

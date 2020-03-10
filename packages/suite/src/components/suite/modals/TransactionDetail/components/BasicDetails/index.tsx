@@ -109,7 +109,7 @@ const BasicDetails = ({
                             {txDetails?.confirmations && (
                                 <Confirmations>
                                     <Translation
-                                        {...messages.TR_TX_CONFIRMATIONS}
+                                        id="TR_TX_CONFIRMATIONS"
                                         values={{ confirmationsCount: txDetails.confirmations }}
                                     />
                                     <ConfirmationsIconWrapper>

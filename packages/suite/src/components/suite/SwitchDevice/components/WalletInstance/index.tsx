@@ -103,7 +103,7 @@ const WalletInstance = ({
                 )}
                 <InstanceTitle>
                     <Translation
-                        {...messages.TR_NUM_ACCOUNTS_FIAT_VALUE}
+                        id="TR_NUM_ACCOUNTS_FIAT_VALUE"
                         values={{
                             accountsCount,
                             fiatValue: (

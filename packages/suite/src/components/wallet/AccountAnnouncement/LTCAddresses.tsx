@@ -6,7 +6,7 @@ import { URLS } from '@suite-constants';
 export default () => (
     <NotificationCard variant="info">
         <Translation
-            {...messages.TR_LTC_ADDRESS_INFO}
+            id="TR_LTC_ADDRESS_INFO"
             values={{
                 TR_LEARN_MORE: (
                     <Link variant="nostyle" href={URLS.LTC_ADDRESS_INFO_URL}>

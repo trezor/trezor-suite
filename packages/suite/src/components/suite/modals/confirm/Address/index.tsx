@@ -73,7 +73,7 @@ const ConfirmAddress = ({
         <StyledWrapper>
             <H2>
                 <Translation
-                    {...messages.TR_ADDRESS_MODAL_TITLE}
+                    id="TR_ADDRESS_MODAL_TITLE"
                     values={{ networkName: symbol.toUpperCase() }}
                 />
             </H2>

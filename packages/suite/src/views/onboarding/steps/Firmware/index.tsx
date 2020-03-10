@@ -78,7 +78,7 @@ const FirmwareStep = ({
                             <>
                                 <Text>
                                     <Translation
-                                        {...messages.TR_FIRMWARE_INSTALLED_TEXT}
+                                        id="TR_FIRMWARE_INSTALLED_TEXT"
                                         values={{
                                             version: getVersionStr(),
                                         }}
@@ -95,7 +95,7 @@ const FirmwareStep = ({
                             <>
                                 <Text>
                                     <Translation
-                                        {...messages.TR_FIRMWARE_INSTALLED_TEXT}
+                                        id="TR_FIRMWARE_INSTALLED_TEXT"
                                         values={{
                                             version: getVersionStr(),
                                         }}

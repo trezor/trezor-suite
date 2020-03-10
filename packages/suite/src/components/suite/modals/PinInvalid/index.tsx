@@ -21,7 +21,7 @@ const PinInvalid = (props: Props) => (
     <Wrapper>
         <H2>
             <Translation
-                {...messages.TR_ENTERED_PIN_NOT_CORRECT}
+                id="TR_ENTERED_PIN_NOT_CORRECT"
                 values={{ deviceLabel: props.device.label }}
             />
         </H2>

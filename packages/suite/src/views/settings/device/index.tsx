@@ -66,7 +66,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
         return (
             <SettingsLayout>
                 <Translation
-                    {...messages.TR_DEVICE_LABEL_IS_DISCONNECTED}
+                    id="TR_DEVICE_LABEL_IS_DISCONNECTED"
                     values={{ deviceLabel: device?.label || '' }}
                 />
             </SettingsLayout>

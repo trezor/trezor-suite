@@ -134,7 +134,7 @@ const Pin = ({ device, onPinSubmit }: Props) => {
                 <H2>
                     {counter === 1 && (
                         <Translation
-                            {...messages.TR_ENTER_PIN}
+                            id="TR_ENTER_PIN"
                             values={{
                                 deviceLabel: device.label,
                             }}

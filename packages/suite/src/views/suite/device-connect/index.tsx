@@ -85,7 +85,7 @@ const Index = (props: Props) => {
                 {showWebUsb && (
                     <P size="tiny">
                         <Translation
-                            {...messages.TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING}
+                            id="TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING"
                             values={{
                                 link: (
                                     <StyledLink

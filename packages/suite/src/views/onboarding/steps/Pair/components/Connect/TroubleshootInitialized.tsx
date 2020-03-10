@@ -32,12 +32,9 @@ const TroubleshootInitialized = (props: Props) => {
             {activeSubStep === null && (
                 <>
                     <Text>
+                        <Translation id="TR_DEVICE_LABEL" values={{ label: device.label }} />{' '}
                         <Translation
-                            {...messages.TR_DEVICE_LABEL}
-                            values={{ label: device.label }}
-                        />{' '}
-                        <Translation
-                            {...messages.TR_DEVICE_FIRMWARE_VERSION}
+                            id="TR_DEVICE_FIRMWARE_VERSION"
                             values={{
                                 firmware: `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`,
                             }}
@@ -80,9 +77,7 @@ const TroubleshootInitialized = (props: Props) => {
             {activeSubStep === 'is-brand-new' && (
                 <>
                     <Text>
-                        <Translation
-                            {...messages.TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE_INSTRUCTIONS}
-                        />
+                        <Translation id="TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE_INSTRUCTIONS" />
                     </Text>
                     <Wrapper.Controls>
                         <OnboardingButton.Alt onClick={() => onboardingActions.goToSubStep(null)}>

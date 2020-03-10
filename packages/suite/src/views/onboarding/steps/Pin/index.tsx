@@ -91,7 +91,7 @@ const SetPinStep = (props: Props) => {
                     <>
                         <Text>
                             <Translation
-                                {...messages.TR_PIN_ERROR_TROUBLESHOOT}
+                                id="TR_PIN_ERROR_TROUBLESHOOT"
                                 values={{
                                     TR_DOCUMENTATION: (
                                         <Link href={URLS.PIN_MANUAL_URL}>

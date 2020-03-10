@@ -30,7 +30,7 @@ const ConfirmAction = ({ device }: Props) => {
         <Wrapper data-test="@suite/modal/confirm-action-on-device">
             <Title>
                 <Translation
-                    {...messages.TR_CONFIRM_ACTION_ON_YOUR}
+                    id="TR_CONFIRM_ACTION_ON_YOUR"
                     values={{ deviceLabel: device.label }}
                 />
             </Title>

@@ -48,7 +48,7 @@ export default ({ xpub, accountPath, accountIndex, symbol, addNotification }: Pr
         <StyledWrapper>
             <H2>
                 <Translation
-                    {...messages.TR_XPUB_MODAL_TITLE}
+                    id="TR_XPUB_MODAL_TITLE"
                     values={{ networkName: symbol.toUpperCase(), accountIndex: accountIndex + 1 }}
                 />
             </H2>

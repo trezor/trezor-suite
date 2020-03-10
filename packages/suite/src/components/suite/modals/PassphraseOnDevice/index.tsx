@@ -44,7 +44,7 @@ const PassphraseOnDevice = ({ device, getDiscoveryAuthConfirmationStatus }: Prop
             <Wrapper>
                 <Title>
                     <Translation
-                        {...messages.TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON}
+                        id="TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON"
                         values={{ deviceLabel: device.label }}
                     />
                 </Title>
@@ -61,7 +61,7 @@ const PassphraseOnDevice = ({ device, getDiscoveryAuthConfirmationStatus }: Prop
         <Wrapper>
             <Title>
                 <Translation
-                    {...messages.TR_ENTER_PASSPHRASE_ON_DEVICE_LABEL}
+                    id="TR_ENTER_PASSPHRASE_ON_DEVICE_LABEL"
                     values={{ deviceLabel: device.label }}
                 />
             </Title>
