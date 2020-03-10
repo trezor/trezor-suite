@@ -5,9 +5,9 @@ import { WalletLayout } from '@wallet-components';
 import { SUITE } from '@suite-actions/constants';
 import { Props } from './Container';
 import { Translation } from '@suite-components';
-
+import messages from '@suite/support/messages';
+import { ExtendedMessageDescriptor } from '@suite-types';
 import { getBip43Shortcut } from '@wallet-utils/accountUtils';
-
 import { Section, ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/Settings';
 
 import {
@@ -36,24 +36,26 @@ export default ({ selectedAccount, locks, device, openModal }: Props) => {
     const locked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     const disabled = !!device.authConfirm;
 
-    let accountTypeName = 'TR_ACCOUNT_TYPE_NORMAL';
+    let accountTypeName: ExtendedMessageDescriptor = messages.TR_ACCOUNT_TYPE_NORMAL;
     if (account.accountType !== 'normal') {
         accountTypeName =
-            account.accountType === 'segwit' ? 'TR_ACCOUNT_TYPE_SEGWIT' : 'TR_ACCOUNT_TYPE_LEGACY';
+            account.accountType === 'segwit'
+                ? messages.TR_ACCOUNT_TYPE_SEGWIT
+                : messages.TR_ACCOUNT_TYPE_LEGACY;
     }
 
     const bip43 = getBip43Shortcut(account.path);
-    let accountTypeDesc = 'TR_ACCOUNT_DETAILS_TYPE_P2PKH';
-    let accountTypeShortcut = 'TR_ACCOUNT_TYPE_P2PKH';
+    let accountTypeDesc: ExtendedMessageDescriptor = messages.TR_ACCOUNT_DETAILS_TYPE_P2PKH;
+    let accountTypeShortcut: ExtendedMessageDescriptor = messages.TR_ACCOUNT_TYPE_P2PKH;
     let accountTypeUrl = WIKI_P2PHK_URL;
     if (bip43 === 'bech32') {
-        accountTypeDesc = 'TR_ACCOUNT_DETAILS_TYPE_BECH32';
-        accountTypeShortcut = 'TR_ACCOUNT_TYPE_BECH32';
+        accountTypeDesc = messages.TR_ACCOUNT_DETAILS_TYPE_BECH32;
+        accountTypeShortcut = messages.TR_ACCOUNT_TYPE_BECH32;
         accountTypeUrl = WIKI_BECH32_URL;
     }
     if (bip43 === 'p2sh') {
-        accountTypeDesc = 'TR_ACCOUNT_DETAILS_TYPE_P2SH';
-        accountTypeShortcut = 'TR_ACCOUNT_TYPE_P2SH';
+        accountTypeDesc = messages.TR_ACCOUNT_DETAILS_TYPE_P2SH;
+        accountTypeShortcut = messages.TR_ACCOUNT_TYPE_P2SH;
         accountTypeUrl = WIKI_P2SH_URL;
     }
 
@@ -66,15 +68,15 @@ export default ({ selectedAccount, locks, device, openModal }: Props) => {
                 <Row>
                     <TextColumn
                         title={<Translation id="TR_ACCOUNT_DETAILS_TYPE_HEADER" />}
-                        description={<Translation id={accountTypeDesc} />}
+                        description={<Translation {...accountTypeDesc} />}
                         learnMore={accountTypeUrl}
                     />
                     <AccountTypeLabel>
                         <P size="small">
-                            <Translation id={accountTypeName} />
+                            <Translation {...accountTypeName} />
                         </P>
                         <P size="tiny">
-                            <Translation id={accountTypeShortcut} />
+                            <Translation {...accountTypeShortcut} />
                         </P>
                     </AccountTypeLabel>
                 </Row>

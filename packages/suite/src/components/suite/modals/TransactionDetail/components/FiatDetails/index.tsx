@@ -93,7 +93,7 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
             </Col>
             <Col direction="column">
                 <BoxHeading>
-                    <Translation id="TR_TX_HISTORICAL_VALUE_DATE} values={{ date: '' }" />
+                    <Translation id="TR_TX_HISTORICAL_VALUE_DATE" values={{ date: '' }} />
                     <HistoricalBadge>
                         <FiatValue amount="1" symbol={tx.symbol}>
                             {fiatValue => fiatValue}

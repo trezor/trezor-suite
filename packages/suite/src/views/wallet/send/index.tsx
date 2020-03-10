@@ -7,7 +7,7 @@ import AccountSelector from '@wallet-components/AccountSelector/Container';
 import { Output } from '@wallet-types/sendForm';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-
+import messages from '@suite/support/messages';
 import Add from './components/Add/Container';
 import Address from './components/Address/Container';
 import AdditionalForm from './components/AdvancedForm';

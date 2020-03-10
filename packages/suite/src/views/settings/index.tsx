@@ -2,8 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-
-import messages from '@suite/support/messages';
 import { SUITE } from '@suite-actions/constants';
 import { Translation } from '@suite-components';
 import { SettingsLayout } from '@settings-components';

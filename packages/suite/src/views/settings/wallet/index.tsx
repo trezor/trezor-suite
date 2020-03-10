@@ -242,7 +242,7 @@ const Settings = (props: Props) => {
                         <Coin network={n} />
                         <ActionColumn>
                             <StyledLink variant="nostyle" href={n.url} size="small">
-                                <Translation {...new URL(n.url).hostname} />
+                                {new URL(n.url).hostname}
                             </StyledLink>
                         </ActionColumn>
                     </Row>

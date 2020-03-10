@@ -29,7 +29,7 @@ const getError = (
         case VALIDATION_ERRORS.NOT_NUMBER:
             return <Translation id="TR_CUSTOM_FEE_IS_NOT_VALID" />;
         case VALIDATION_ERRORS.NOT_IN_RANGE:
-            return <Translation id="TR_CUSTOM_FEE_NOT_IN_RANGE} values={{ maxFee, minFee }" />;
+            return <Translation id="TR_CUSTOM_FEE_NOT_IN_RANGE" values={{ maxFee, minFee }} />;
         default:
             return null;
     }

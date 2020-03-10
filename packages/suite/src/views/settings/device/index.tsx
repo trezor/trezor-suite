@@ -167,8 +167,8 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                         title={<Translation id="TR_FIRMWARE_VERSION" />}
                         description={
                             <Translation
+                                id="TR_YOUR_CURRENT_FIRMWARE"
                                 values={{ version: getFwVersion(device) }}
-                                {...messages.TR_YOUR_CURRENT_FIRMWARE}
                             />
                         }
                     />

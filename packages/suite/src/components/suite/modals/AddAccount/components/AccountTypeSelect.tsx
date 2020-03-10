@@ -36,7 +36,7 @@ type Option = ReturnType<typeof buildAccountTypeOption>;
 const formatLabel = (option: Option) => {
     return (
         <LabelWrapper>
-            <Translation {...option.label} />
+            {option.label && <Translation id={option.label.id} />}
             {option.network.symbol === 'btc' &&
                 (option.network.accountType ?? 'normal') === 'normal' && (
                     <TypeInfo>Bech32</TypeInfo>

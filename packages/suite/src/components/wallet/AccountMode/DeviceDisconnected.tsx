@@ -14,7 +14,7 @@ const Disconnected = ({ device }: Props) => {
     const deviceLabel = device ? device.label : '';
     return (
         <NotificationCard variant="info">
-            <Translation id="TR_DEVICE_LABEL_IS_DISCONNECTED} values={{ deviceLabel }" />
+            <Translation id="TR_DEVICE_LABEL_IS_DISCONNECTED" values={{ deviceLabel }} />
         </NotificationCard>
     );
 };
