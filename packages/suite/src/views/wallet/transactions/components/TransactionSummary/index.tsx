@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components';
+import { colors, variables, Button } from '@trezor/components';
 import { Card } from '@suite-components';
 import { AppState } from '@suite/types/suite';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -14,7 +14,12 @@ import { Await } from '@suite/types/utils';
 import { fetchAccountHistory } from '@suite/actions/wallet/fiatRatesActions';
 import BigNumber from 'bignumber.js';
 
-const Wrapper = styled(Card)`
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
+const ContentWrapper = styled(Card)`
     width: 100%;
     margin-bottom: 20px;
 
@@ -25,7 +30,6 @@ const Wrapper = styled(Card)`
 
 const GraphWrapper = styled.div`
     display: flex;
-    flex-direction: column;
     flex: 1 1 70%;
     padding: 20px;
 `;
@@ -38,9 +42,16 @@ const InfoCardsWrapper = styled.div`
     border-left: 1px solid ${colors.BLACK92};
 `;
 
+const Actions = styled.div`
+    display: flex;
+    padding: 0px 16px;
+    margin-bottom: 8px;
+    opacity: 0.8;
+    justify-content: space-between;
+`;
+
 interface OwnProps {
     account: Account;
-    isGraphHidden: boolean;
 }
 
 interface Range {
@@ -52,14 +63,16 @@ type AccountHistory = NonNullable<Await<ReturnType<typeof fetchAccountHistory>>>
 
 const TransactionSummary = (props: Props) => {
     const [data, setData] = useState<AccountHistory | null>(null);
+    const [isGraphHidden, setIsGraphHidden] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(false);
+
     const { account } = props;
 
     const [selectedRange, setSelectedRange] = useState<Range>({
         label: 'year',
         weeks: 52,
     });
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -71,7 +84,6 @@ const TransactionSummary = (props: Props) => {
                     received: formatNetworkAmount(i.received, account.symbol),
                     sent: formatNetworkAmount(`-${i.sent}`, account.symbol),
                 }));
-                console.log('processed', processed);
                 setData(processed);
             } else {
                 setError(true);
@@ -91,51 +103,67 @@ const TransactionSummary = (props: Props) => {
     const totalSentAmount = data?.reduce((acc, d) => acc.plus(d.sent), new BigNumber(0));
     const totalReceivedAmount = data?.reduce((acc, d) => acc.plus(d.received), new BigNumber(0));
 
-    if (props.isGraphHidden) return null;
     return (
         <Wrapper>
-            {/* TODO: what should be shown on error? */}
-            <GraphWrapper>
-                <AccountTransactionsGraph
-                    account={props.account}
-                    isLoading={isLoading}
-                    data={data}
-                    selectedRange={selectedRange}
-                    onSelectedRange={setSelectedRange}
-                />
-            </GraphWrapper>
-            <InfoCardsWrapper>
-                {!error && (
-                    <>
-                        <InfoCard
-                            title={<Translation {...messages.TR_INCOMING} />}
-                            value={totalReceivedAmount?.toFixed()}
-                            symbol={props.account.symbol}
-                            stripe="green"
+            <Actions>
+                <Button
+                    variant="tertiary"
+                    size="small"
+                    icon={isGraphHidden ? 'ARROW_DOWN' : 'ARROW_UP'}
+                    onClick={() => {
+                        setIsGraphHidden(!isGraphHidden);
+                    }}
+                >
+                    {isGraphHidden ? 'Show graph' : 'Hide graph'}
+                </Button>
+                {/* TODO: export transactions to a file */}
+            </Actions>
+            {!isGraphHidden && (
+                <ContentWrapper>
+                    {/* TODO: what should be shown on error? */}
+                    <GraphWrapper>
+                        <AccountTransactionsGraph
+                            account={props.account}
                             isLoading={isLoading}
-                            isNumeric
+                            data={data}
+                            selectedRange={selectedRange}
+                            onSelectedRange={setSelectedRange}
                         />
-                        <InfoCard
-                            title={<Translation {...messages.TR_OUTGOING} />}
-                            value={totalSentAmount?.toFixed()}
-                            symbol={props.account.symbol}
-                            isLoading={isLoading}
-                            stripe="red"
-                            isNumeric
-                        />
-                        <InfoCard
-                            title={<Translation {...messages.TR_NUMBER_OF_TRANSACTIONS} />}
-                            isLoading={isLoading}
-                            value={
-                                <Translation
-                                    {...messages.TR_N_TRANSACTIONS}
-                                    values={{ value: numOfTransactions }}
+                    </GraphWrapper>
+                    <InfoCardsWrapper>
+                        {!error && (
+                            <>
+                                <InfoCard
+                                    title={<Translation {...messages.TR_INCOMING} />}
+                                    value={totalReceivedAmount?.toFixed()}
+                                    symbol={props.account.symbol}
+                                    stripe="green"
+                                    isLoading={isLoading}
+                                    isNumeric
                                 />
-                            }
-                        />
-                    </>
-                )}
-            </InfoCardsWrapper>
+                                <InfoCard
+                                    title={<Translation {...messages.TR_OUTGOING} />}
+                                    value={totalSentAmount?.toFixed()}
+                                    symbol={props.account.symbol}
+                                    isLoading={isLoading}
+                                    stripe="red"
+                                    isNumeric
+                                />
+                                <InfoCard
+                                    title={<Translation {...messages.TR_NUMBER_OF_TRANSACTIONS} />}
+                                    isLoading={isLoading}
+                                    value={
+                                        <Translation
+                                            {...messages.TR_N_TRANSACTIONS}
+                                            values={{ value: numOfTransactions }}
+                                        />
+                                    }
+                                />
+                            </>
+                        )}
+                    </InfoCardsWrapper>
+                </ContentWrapper>
+            )}
         </Wrapper>
     );
 };
