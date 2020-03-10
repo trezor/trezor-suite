@@ -3,7 +3,7 @@ import { Tooltip } from '@trezor/components';
 
 import { Loaders, OnboardingButton, OnboardingIcon, Text, Wrapper } from '@onboarding-components';
 import { Translation } from '@suite-components';
-
+import messages from '@suite/support/messages';
 import { InitImg, SuccessImg } from '@firmware-components';
 import ContinueButton from './components/ContinueButton';
 import InstallButton from './components/InstallButton';

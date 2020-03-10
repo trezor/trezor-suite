@@ -6,7 +6,7 @@ import { WalletLayout } from '@wallet-components';
 import * as signVerifyActions from '@wallet-actions/signVerifyActions';
 import { WrappedComponentProps } from 'react-intl';
 import { Translation } from '@suite-components/Translation';
-
+import messages from '@suite/support/messages';
 import { StateProps, DispatchProps } from './Container';
 
 const Wrapper = styled.div`
