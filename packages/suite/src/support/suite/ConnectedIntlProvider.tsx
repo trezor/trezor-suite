@@ -3,6 +3,7 @@ import * as React from 'react';
 import { IntlProvider, MessageDescriptor } from 'react-intl';
 import { connect } from 'react-redux';
 import { AppState } from '@suite-types';
+import messages from '@suite/support/messages';
 
 // polyfill for Intl.PluralRules (e.g IE11 & Safari 12-)
 if (!Intl.PluralRules) {
@@ -30,6 +31,7 @@ type PrimitiveType = string | number | boolean | Date | null | undefined;
 
 // Add MessageDescriptor type to values entry
 export interface ExtendedMessageDescriptor extends MessageDescriptor {
+    id: keyof typeof messages;
     values?: {
         [key: string]: PrimitiveType | React.ReactElement | ExtendedMessageDescriptor;
     };

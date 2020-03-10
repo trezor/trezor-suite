@@ -193,11 +193,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
 
                 <Row>
                     <TextColumn
-                        title={
-                            <Translation>
-                                {messages.TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE}
-                            </Translation>
-                        }
+                        title={<Translation id="TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE" />}
                         description={<Translation id="TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC" />}
                     />
 
@@ -231,19 +227,11 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
 
                 <Row>
                     <TextColumn
-                        title={
-                            <Translation>
-                                {messages.TR_DEVICE_SETTINGS_PASSPHRASE_TITLE}
-                            </Translation>
-                        }
+                        title={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_TITLE" />}
                         description={
                             <>
-                                <Translation>
-                                    {messages.TR_DEVICE_SETTINGS_PASSPHRASE_DESC}
-                                </Translation>
-                                <Translation>
-                                    {messages.TR_DEVICE_SETTINGS_PASSPHRASE_DESC_MORE}
-                                </Translation>
+                                <Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_DESC" />
+                                <Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_DESC_MORE" />
                             </>
                         }
                         learnMore={PASSPHRASE_URL}
@@ -280,24 +268,16 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                             isDisabled={uiLocked}
                             data-test="@settings/device/label-submit"
                         >
-                            <Translation>
-                                {messages.TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL}
-                            </Translation>
+                            <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />
                         </ActionButton>
                     </ActionColumn>
                 </Row>
 
                 <Row>
                     <TextColumn
-                        title={
-                            <Translation>
-                                {messages.TR_DEVICE_SETTINGS_HOMESCREEN_TITLE}
-                            </Translation>
-                        }
+                        title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
                         description={
-                            <Translation>
-                                {messages.TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS}
-                            </Translation>
+                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS" />
                         }
                     />
                     <ActionColumn>
@@ -320,9 +300,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                                 isDisabled={uiLocked}
                                 variant="secondary"
                             >
-                                <Translation>
-                                    {messages.TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE}
-                                </Translation>
+                                <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
                             </ActionButton>
                         )}
 
@@ -337,9 +315,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                             data-test="@settings/device/select-from-gallery"
                             variant="secondary"
                         >
-                            <Translation>
-                                {messages.TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY}
-                            </Translation>
+                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY" />
                         </ActionButton>
                     </ActionColumn>
                 </Row>
@@ -372,11 +348,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                 {features.major_version === 2 && (
                     <Row>
                         <TextColumn
-                            title={
-                                <Translation>
-                                    {messages.TR_DEVICE_SETTINGS_DISPLAY_ROTATION}
-                                </Translation>
-                            }
+                            title={<Translation id="TR_DEVICE_SETTINGS_DISPLAY_ROTATION" />}
                         />
                         <ActionColumn>
                             {DISPLAY_ROTATIONS.map(variant => (
@@ -402,11 +374,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
             <Section borderless>
                 <Row>
                     <TextColumn
-                        title={
-                            <Translation>
-                                {messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}
-                            </Translation>
-                        }
+                        title={<Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />}
                         description={<Translation id="TR_WIPING_YOUR_DEVICE" />}
                     />
                     <ActionColumn>
@@ -420,9 +388,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                             isDisabled={uiLocked}
                             data-test="@settings/device/open-wipe-modal-button"
                         >
-                            <Translation>
-                                {messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}
-                            </Translation>
+                            <Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />
                         </ActionButton>
                     </ActionColumn>
                 </Row>

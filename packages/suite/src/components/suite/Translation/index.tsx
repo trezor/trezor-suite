@@ -4,9 +4,7 @@ import { ExtendedMessageDescriptor } from '@suite-types';
 import HelperTooltip from './components/HelperTooltip';
 import messages from '@suite/support/messages';
 
-interface MsgType extends ExtendedMessageDescriptor {
-    id: keyof typeof messages;
-}
+type MsgType = ExtendedMessageDescriptor;
 
 export const isMsgType = (props: MsgType | React.ReactNode): props is MsgType => {
     return typeof props === 'object' && props !== null && (props as MsgType).id !== undefined;

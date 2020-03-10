@@ -2,7 +2,7 @@ import React from 'react';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import * as deviceUtils from '@suite-utils/device';
 import { Translation } from '@suite-components';
-
+import messages from '@suite/support/messages';
 import { Props } from './Container';
 import WalletLabel from '../Wallet/Container';
 

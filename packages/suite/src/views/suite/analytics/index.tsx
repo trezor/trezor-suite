@@ -61,9 +61,7 @@ const Index = (props: Props) => {
                         values={{
                             TR_HELP_TREZOR_SUITE_TEXT_1_FAT: (
                                 <Bold>
-                                    <Translation>
-                                        {messages.TR_HELP_TREZOR_SUITE_TEXT_1_FAT}
-                                    </Translation>
+                                    <Translation id="TR_HELP_TREZOR_SUITE_TEXT_1_FAT" />
                                 </Bold>
                             ),
                         }}

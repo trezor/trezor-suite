@@ -11,7 +11,7 @@ interface Props {
 const Error = ({ error }: Props) => (
     <>
         <P size="small">
-            <Translation id="TR_RECOVERY_ERROR} values={{ error }" />
+            <Translation id="TR_RECOVERY_ERROR" values={{ error }} />
         </P>
         <Image image="UNI_ERROR" />
     </>

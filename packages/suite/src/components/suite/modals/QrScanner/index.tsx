@@ -168,9 +168,7 @@ const QrScanner = ({ onScan, onCancel, outputId }: Props) => {
                         <CameraPlaceholder>
                             <Error>
                                 <ErrorTitle>
-                                    <Translation>
-                                        {messages.TR_OOPS_SOMETHING_WENT_WRONG}
-                                    </Translation>
+                                    <Translation id="TR_OOPS_SOMETHING_WENT_WRONG" />
                                 </ErrorTitle>
                                 <ErrorMessage>{error}</ErrorMessage>
                             </Error>
