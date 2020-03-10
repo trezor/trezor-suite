@@ -49,14 +49,13 @@ const Expander = styled.div`
     flex: 1;
 `;
 
-type AllNetworks = Network | ExternalNetwork;
 type Props = {
-    selectedNetwork: AllNetworks;
+    selectedNetwork: Network | ExternalNetwork;
     internalNetworks: Network[];
     externalNetworks: ExternalNetwork[];
     selectedAccountType?: Network;
     accountTypes?: Network[];
-    onSelectNetwork: (network: AllNetworks) => void;
+    onSelectNetwork: (network: Network | ExternalNetwork) => void;
     onSelectAccountType: (network: Network) => void;
     onCancel: (_event: any) => void;
     children?: JSX.Element;
