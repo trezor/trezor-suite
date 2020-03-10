@@ -31,7 +31,8 @@ describe('Translation component', () => {
 
     test('with message that holds string in value (passed via props)', () => {
         const component = createComponentWithIntl(
-            <Translation id="TR_NAME" values={{ name: 'John' }} />,
+            // @ts-ignore
+            <Translation {...messages.TR_NAME} values={{ name: 'John' }} />,
         );
         const tree = component.toJSON();
         expect(tree).toMatchSnapshot();
@@ -40,7 +41,8 @@ describe('Translation component', () => {
     test('with message that holds another message object in values (passed via props)', () => {
         const component = createComponentWithIntl(
             <Translation
-                id="TR_HELLO_NAME"
+                {...messages.TR_HELLO_NAME}
+                // @ts-ignore
                 values={{
                     TR_NAME: { ...messages.TR_NAME, values: { name: 'John' } },
                     TR_AGE: 100,
@@ -53,29 +55,15 @@ describe('Translation component', () => {
 
     test('with message that holds another in values (passed via props)', () => {
         const component = createComponentWithIntl(
+            // @ts-ignore
             <Translation
-                id="TR_HELLO_NAME"
+                {...messages.TR_HELLO_NAME}
                 values={{
+                    // @ts-ignore
                     TR_NAME: <Translation {...messages.TR_NAME} values={{ name: 'John' }} />,
                     TR_AGE: 100,
                 }}
             />,
-        );
-        const tree = component.toJSON();
-        expect(tree).toMatchSnapshot();
-    });
-
-    test('with message that holds another message object in values (passed via children)', () => {
-        const component = createComponentWithIntl(
-            <Translation>
-                {{
-                    ...messages.TR_HELLO_NAME,
-                    values: {
-                        TR_NAME: { ...messages.TR_NAME, values: { name: 'John' } },
-                        TR_AGE: 100,
-                    },
-                }}
-            </Translation>,
         );
         const tree = component.toJSON();
         expect(tree).toMatchSnapshot();

@@ -1,24 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Translation component with ReactNode as a children 1`] = `
-<div>
-  test
-</div>
-`;
-
 exports[`Translation component with id, defaultMessage props 1`] = `"Hello"`;
 
-exports[`Translation component with message obj as children 1`] = `"Hello"`;
-
 exports[`Translation component with message that holds another in values (passed via props) 1`] = `
-Array [
-  "Hello ",
-  "Name: John",
-  ", 100",
-]
-`;
-
-exports[`Translation component with message that holds another message object in values (passed via children) 1`] = `
 Array [
   "Hello ",
   "Name: John",
@@ -33,9 +17,3 @@ Array [
   ", 100",
 ]
 `;
-
-exports[`Translation component with message that holds string in value (passed as children) 1`] = `"Name: John"`;
-
-exports[`Translation component with message that holds string in value (passed via props) 1`] = `"Name: John"`;
-
-exports[`Translation component with string as a children 1`] = `"test"`;
