@@ -300,9 +300,10 @@ const TransactionItem = (props: Props) => {
                 </AmountsWrapper>
                 <AmountsWrapper>
                     {!isTestnet(symbol) &&
-                        tokens.map(t => (
+                        tokens.map(_t => (
                             <HiddenPlaceholder>
                                 <FiatBalanceCol>
+                                    {/* we dont fetch historical rates for tokens */}
                                     {/* <FiatValue amount={t.amount} symbol={t.symbol}>
                                     {({ value }) =>
                                         value ? <SmallBadge>{value}</SmallBadge> : null
