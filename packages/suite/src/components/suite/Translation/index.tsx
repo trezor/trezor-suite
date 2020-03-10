@@ -28,6 +28,7 @@ const Translation = (props: MsgType) => {
             <FormattedMessage
                 id={props.id}
                 {...messages[props.id]}
+                {...props}
                 values={Object.keys(values).length === 0 ? undefined : values}
             />
         </HelperTooltip>

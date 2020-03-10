@@ -24,8 +24,7 @@ const messages = {
 
 describe('Translation component', () => {
     test('with id, defaultMessage props', () => {
-        // @ts-ignore
-        const component = createComponentWithIntl(<Translation id="TR_HELLO" />);
+        const component = createComponentWithIntl(<Translation id="TR_CANCEL" />);
         const tree = component.toJSON();
         expect(tree).toMatchSnapshot();
     });

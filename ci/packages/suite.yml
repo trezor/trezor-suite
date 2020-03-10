@@ -22,11 +22,12 @@ suite check multiple same svgs:
     script:
         - yarn workspace @trezor/suite-data test-same-svgs
 
-suite check unused messages:
-    stage: lint, types, unit tests
-    script:
-        # create the master.json first. later we shall use directly messages.ts
-        - yarn workspace @trezor/suite translations:extract
-        - yarn workspace @trezor/suite translations:unused
+# needs some fixing 
+# suite check unused messages:
+#     stage: lint, types, unit tests
+#     script:
+#         # create the master.json first. later we shall use directly messages.ts
+#         - yarn workspace @trezor/suite translations:extract
+#         - yarn workspace @trezor/suite translations:unused
 
 # TODO: add messages (values) duplicities check
