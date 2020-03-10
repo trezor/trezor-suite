@@ -14,14 +14,6 @@ export const isMsgType = (props: MsgType | React.ReactNode): props is MsgType =>
 
 type PrimitiveType = string | number | boolean | Date | null | undefined;
 
-/**
- * Util component that helps with rendering react-intl messages.
- * It extends the FormattedMessage API and adds prop 'children' (ReactNode or MessageDescriptor).
- * The standard way of using it is by passing all necessary props (id, defaultMessage) to the component (eg. by spreading message obj)
- * The alternative is to pass whole (Extended)MessageDescriptor object as a children.
- * If children prop is an object, it assumes that it is ExtendedMessageDescriptor
- * and renders FormattedMessage with the message. Otherwise it just simply render passed children.
- */
 const Translation = (props: MsgType) => {
     const values: Record<string, PrimitiveType | React.ReactNode | ExtendedMessageDescriptor> = {};
     // message passed via props (id, defaultMessage, values)
