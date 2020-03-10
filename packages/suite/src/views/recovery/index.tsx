@@ -18,7 +18,7 @@ import ModalWrapper from '@suite-components/ModalWrapper';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { InjectedModalApplicationProps, AppState, Dispatch } from '@suite-types';
 import { WordCount } from '@recovery-types';
-import messages from '@suite/support/messages';
+
 import { URLS } from '@suite-constants';
 
 const Wrapper = styled(ModalWrapper)`
@@ -139,19 +139,19 @@ const Recovery = ({
             {recovery.status === 'initial' && model === 1 && (
                 <>
                     <H2>
-                        <Translation {...messages.TR_CHECK_RECOVERY_SEED} />
+                        <Translation id="TR_CHECK_RECOVERY_SEED" />
                     </H2>
                     <StyledP>
-                        <Translation {...messages.TR_CHECK_RECOVERY_SEED_DESC_T1} />
+                        <Translation id="TR_CHECK_RECOVERY_SEED_DESC_T1" />
                     </StyledP>
                     <InfoBox>
                         <Number>1</Number>
                         <InfoBoxText>
                             <InfoBoxTitle>
-                                <Translation {...messages.TR_SELECT_NUMBER_OF_WORDS} />
+                                <Translation id="TR_SELECT_NUMBER_OF_WORDS" />
                             </InfoBoxTitle>
                             <InfoBoxDescription>
-                                <Translation {...messages.TR_YOU_EITHER_HAVE_T1} />
+                                <Translation id="TR_YOU_EITHER_HAVE_T1" />
                             </InfoBoxDescription>
                         </InfoBoxText>
                     </InfoBox>
@@ -159,23 +159,21 @@ const Recovery = ({
                         <Number>2</Number>
                         <InfoBoxText>
                             <InfoBoxTitle>
-                                <Translation {...messages.TR_ENTER_ALL_WORDS_IN_CORRECT} />
+                                <Translation id="TR_ENTER_ALL_WORDS_IN_CORRECT" />
                             </InfoBoxTitle>
                             <InfoBoxDescription>
-                                <Translation {...messages.TR_ON_YOUR_COMPUTER_ENTER} />
+                                <Translation id="TR_ON_YOUR_COMPUTER_ENTER" />
                             </InfoBoxDescription>
                         </InfoBoxText>
                     </InfoBox>
 
                     <CheckItem
-                        title={<Translation {...messages.TR_DRY_RUN_CHECK_ITEM_TITLE} />}
-                        description={
-                            <Translation {...messages.TR_DRY_RUN_CHECK_ITEM_DESCRIPTION} />
-                        }
+                        title={<Translation id="TR_DRY_RUN_CHECK_ITEM_TITLE" />}
+                        description={<Translation id="TR_DRY_RUN_CHECK_ITEM_DESCRIPTION" />}
                         isChecked={understood}
                         link={
                             <ExternalLink size="small" href={URLS.DRY_RUN_URL}>
-                                <Translation {...messages.TR_WHAT_IS_DRY_RUN} />
+                                <Translation id="TR_WHAT_IS_DRY_RUN" />
                             </ExternalLink>
                         }
                         onClick={() => setUnderstood(!understood)}
@@ -185,7 +183,7 @@ const Recovery = ({
                         onClick={() => setStatus('select-word-count')}
                         isDisabled={!understood}
                     >
-                        <Translation {...messages.TR_START} />
+                        <Translation id="TR_START" />
                     </StyledButton>
                     <Buttons>
                         <StyledButton
@@ -193,7 +191,7 @@ const Recovery = ({
                             variant="tertiary"
                             onClick={() => closeModalApp()}
                         >
-                            <Translation {...messages.TR_CANCEL} />
+                            <Translation id="TR_CANCEL" />
                         </StyledButton>
                     </Buttons>
                 </>
@@ -202,20 +200,20 @@ const Recovery = ({
             {recovery.status === 'initial' && model === 2 && (
                 <>
                     <H2>
-                        <Translation {...messages.TR_CHECK_RECOVERY_SEED} />
+                        <Translation id="TR_CHECK_RECOVERY_SEED" />
                     </H2>
                     <StyledP>
-                        <Translation {...messages.TR_CHECK_RECOVERY_SEED_DESC_T2} />
+                        <Translation id="TR_CHECK_RECOVERY_SEED_DESC_T2" />
                     </StyledP>
 
                     <InfoBox>
                         <Number>1</Number>
                         <InfoBoxText>
                             <InfoBoxTitle>
-                                <Translation {...messages.TR_SELECT_NUMBER_OF_WORDS} />
+                                <Translation id="TR_SELECT_NUMBER_OF_WORDS" />
                             </InfoBoxTitle>
                             <InfoBoxDescription>
-                                <Translation {...messages.TR_YOU_EITHER_HAVE_T2} />
+                                <Translation id="TR_YOU_EITHER_HAVE_T2" />
                             </InfoBoxDescription>
                         </InfoBoxText>
                     </InfoBox>
@@ -224,10 +222,10 @@ const Recovery = ({
                         <Number>2</Number>
                         <InfoBoxText>
                             <InfoBoxTitle>
-                                <Translation {...messages.TR_ENTER_ALL_WORDS_IN_CORRECT} />
+                                <Translation id="TR_ENTER_ALL_WORDS_IN_CORRECT" />
                             </InfoBoxTitle>
                             <InfoBoxDescription>
-                                <Translation {...messages.TR_USING_TOUCHSCREEN} />
+                                <Translation id="TR_USING_TOUCHSCREEN" />
                             </InfoBoxDescription>
                         </InfoBoxText>
                     </InfoBox>
@@ -240,7 +238,7 @@ const Recovery = ({
                             variant="tertiary"
                             onClick={() => closeModalApp()}
                         >
-                            <Translation {...messages.TR_CANCEL} />
+                            <Translation id="TR_CANCEL" />
                         </StyledButton>
                     </Buttons>
                 </>
@@ -249,7 +247,7 @@ const Recovery = ({
             {recovery.status === 'select-word-count' && (
                 <>
                     <H2>
-                        <Translation {...messages.TR_SELECT_NUMBER_OF_WORDS} />
+                        <Translation id="TR_SELECT_NUMBER_OF_WORDS" />
                     </H2>
                     <SelectWordCount onSelect={(count: WordCount) => onSetWordsCount(count)} />
                     <Buttons>
@@ -258,7 +256,7 @@ const Recovery = ({
                             variant="tertiary"
                             onClick={() => closeModalApp()}
                         >
-                            <Translation {...messages.TR_CANCEL} />
+                            <Translation id="TR_CANCEL" />
                         </StyledButton>
                     </Buttons>
                 </>
@@ -266,7 +264,7 @@ const Recovery = ({
             {recovery.status === 'select-recovery-type' && (
                 <>
                     <H2>
-                        <Translation {...messages.TR_CHOSE_RECOVERY_TYPE} />
+                        <Translation id="TR_CHOSE_RECOVERY_TYPE" />
                     </H2>
                     <SelectRecoveryType onSelect={(type: boolean) => onSetRecoveryType(type)} />
                     <Buttons>
@@ -275,7 +273,7 @@ const Recovery = ({
                             variant="tertiary"
                             onClick={() => closeModalApp()}
                         >
-                            <Translation {...messages.TR_CANCEL} />
+                            <Translation id="TR_CANCEL" />
                         </StyledButton>
                     </Buttons>
                 </>
@@ -288,7 +286,7 @@ const Recovery = ({
                         <>
                             {model === 2 && (
                                 <StyledP>
-                                    <Translation {...messages.TR_ALL_THE_WORDS} />
+                                    <Translation id="TR_ALL_THE_WORDS" />
                                 </StyledP>
                             )}
                             {modal}
@@ -299,15 +297,15 @@ const Recovery = ({
             {recovery.status === 'finished' && !recovery.error && (
                 <>
                     <H2>
-                        <Translation {...messages.TR_SEED_CHECK_SUCCESS_TITLE} />
+                        <Translation id="TR_SEED_CHECK_SUCCESS_TITLE" />
                     </H2>
                     <StyledP>
-                        <Translation {...messages.TR_SEED_CHECK_SUCCESS_DESC} />
+                        <Translation id="TR_SEED_CHECK_SUCCESS_DESC" />
                     </StyledP>
                     <Image image="UNI_SUCCESS" />
                     <Buttons>
                         <StyledButton onClick={() => closeModalApp()}>
-                            <Translation {...messages.TR_CLOSE} />
+                            <Translation id="TR_CLOSE" />
                         </StyledButton>
                     </Buttons>
                 </>
@@ -316,12 +314,12 @@ const Recovery = ({
             {recovery.status === 'finished' && recovery.error && (
                 <>
                     <H2>
-                        <Translation {...messages.TR_SEED_CHECK_FAIL_TITLE} />
+                        <Translation id="TR_SEED_CHECK_FAIL_TITLE" />
                     </H2>
                     <Error error={recovery.error} />
                     <Buttons>
                         <StyledButton onClick={() => closeModalApp()}>
-                            <Translation {...messages.TR_CLOSE} />
+                            <Translation id="TR_CLOSE" />
                         </StyledButton>
                     </Buttons>
                 </>

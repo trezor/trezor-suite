@@ -5,7 +5,6 @@ import { injectIntl, WrappedComponentProps } from 'react-intl';
 
 import { Select } from '@trezor/components';
 import { BIP_39 } from '@suite-constants';
-import messages from '@suite/support/messages';
 
 const options = BIP_39.map(item => ({ label: item, value: item }));
 

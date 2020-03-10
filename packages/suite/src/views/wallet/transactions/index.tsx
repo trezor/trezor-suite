@@ -6,7 +6,7 @@ import { WalletLayout } from '@wallet-components';
 import { getAccountTransactions } from '@wallet-utils/accountUtils';
 import { SETTINGS } from '@suite-config';
 import TransactionList from './components/TransactionList';
-import messages from '@suite/support/messages';
+
 import NoTransactions from './components/NoTransactions';
 import PricePanel from './components/PricePanel';
 
@@ -55,7 +55,7 @@ export default (props: Props) => {
                 <LoaderWrapper>
                     <Loader size={40} />
                     <LoaderText>
-                        <Translation {...messages.TR_LOADING_TRANSACTIONS} />
+                        <Translation id="TR_LOADING_TRANSACTIONS" />
                     </LoaderText>
                 </LoaderWrapper>
             )}

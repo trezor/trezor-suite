@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
 import { CoinLogo, H2 } from '@trezor/components';
-import messages from '@suite/support/messages';
+
 import { ExtendedMessageDescriptor } from '@suite-types';
 import Title from '@wallet-components/Title';
 import { getTitleForNetwork, getTypeForNetwork } from '@wallet-utils/accountUtils';

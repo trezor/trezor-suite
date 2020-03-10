@@ -5,7 +5,6 @@ import { P, H2 } from '@trezor/components';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import { TrezorDevice } from '@suite-types';
-import messages from '@suite/support/messages';
 
 const Wrapper = styled(ModalWrapper)`
     flex-direction: column;
@@ -29,7 +28,7 @@ const PinInvalid = (props: Props) => (
         <DeviceConfirmImage device={props.device} />
         <Divider />
         <P size="small">
-            <Translation {...messages.TR_RETRYING_DOT_DOT} />
+            <Translation id="TR_RETRYING_DOT_DOT" />
         </P>
     </Wrapper>
 );

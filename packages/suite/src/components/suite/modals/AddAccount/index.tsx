@@ -11,7 +11,7 @@ import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { AppState, Dispatch, TrezorDevice } from '@suite-types';
 import { Account, Network, ExternalNetwork } from '@wallet-types';
 import ModalWrapper from '@suite-components/ModalWrapper';
-import messages from '@suite/support/messages';
+
 import NetworkSelect from './components/NetworkSelect';
 import AccountTypeSelect from './components/AccountTypeSelect';
 import ExternalWallet from './components/ExternalWallet';
@@ -184,11 +184,11 @@ const AddAccount = (props: Props) => {
             </H2>
 
             <Description>
-                <Translation {...messages.TR_EXPLAIN_HOW_ACCOUNT_WORK} />
+                <Translation id="TR_EXPLAIN_HOW_ACCOUNT_WORK" />
             </Description>
             <Row>
                 <RowTitle>
-                    <Translation {...messages.TR_CRYPTOCURRENCY} />
+                    <Translation id="TR_CRYPTOCURRENCY" />
                 </RowTitle>
                 <NetworkSelect
                     selectedNetwork={selectedNetwork}
@@ -200,7 +200,7 @@ const AddAccount = (props: Props) => {
             {!isNetworkDisabled && accountTypes.length > 1 && (
                 <Row>
                     <RowTitle>
-                        <Translation {...messages.TR_ACCOUNT_TYPE} />
+                        <Translation id="TR_ACCOUNT_TYPE" />
                     </RowTitle>
                     <AccountTypeSelect
                         selectedNetwork={selectedNetwork}
@@ -213,9 +213,9 @@ const AddAccount = (props: Props) => {
             {selectedNetwork?.symbol === 'btc' &&
                 (selectedNetwork?.accountType || 'normal') === 'normal' && (
                     <StyledP size="small" textAlign="left">
-                        <Translation {...messages.TR_BECH32_USES_MOST_MODERN} />{' '}
+                        <Translation id="TR_BECH32_USES_MOST_MODERN" />{' '}
                         <ExternalLink href={WIKI_BECH32_URL} size="small">
-                            <Translation {...messages.TR_LEARN_MORE} />
+                            <Translation id="TR_LEARN_MORE" />
                         </ExternalLink>
                     </StyledP>
                 )}
@@ -226,7 +226,7 @@ const AddAccount = (props: Props) => {
 
             <Actions>
                 <Button variant="secondary" onClick={() => props.onCancel()}>
-                    <Translation {...messages.TR_CANCEL} />
+                    <Translation id="TR_CANCEL" />
                 </Button>
                 {isInternal && isNetworkDisabled && (
                     <EnableNetwork
@@ -246,7 +246,7 @@ const AddAccount = (props: Props) => {
                 {isExternal ? (
                     <Link href={(selectedNetwork as ExternalNetwork).url}>
                         <Button icon="EXTERNAL_LINK" variant="primary" onClick={props.onCancel}>
-                            <Translation {...messages.TR_GO_TO_EXTERNAL_WALLET} />
+                            <Translation id="TR_GO_TO_EXTERNAL_WALLET" />
                         </Button>
                     </Link>
                 ) : (

@@ -2,8 +2,11 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import HelperTooltip from './components/HelperTooltip';
+import messages from '@suite/support/messages';
 
-type MsgType = ExtendedMessageDescriptor;
+interface MsgType extends ExtendedMessageDescriptor {
+    id: keyof typeof messages;
+}
 
 export const isMsgType = (props: MsgType | React.ReactNode): props is MsgType => {
     return typeof props === 'object' && props !== null && (props as MsgType).id !== undefined;
@@ -34,7 +37,8 @@ const Translation = (props: MsgType) => {
         return (
             <HelperTooltip messageId={props.id}>
                 <FormattedMessage
-                    {...props}
+                    id={props.id}
+                    {...messages[props.id]}
                     values={Object.keys(values).length === 0 ? undefined : values}
                 />
             </HelperTooltip>

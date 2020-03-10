@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { P, colors } from '@trezor/components';
 import { Translation } from '@suite-components';
-import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -28,7 +27,7 @@ export default ({ label }: Props) => (
             />
         </P>
         <P size="tiny">
-            <Translation {...messages.TR_PLEASE_CONNECT_YOUR_DEVICE} />
+            <Translation id="TR_PLEASE_CONNECT_YOUR_DEVICE" />
         </P>
     </Wrapper>
 );

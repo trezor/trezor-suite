@@ -4,7 +4,6 @@ import { Button } from '@trezor/components';
 import ButtonPin from './components/ButtonPin';
 import InputPin from './components/InputPin';
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -148,7 +147,7 @@ const PinInput = (props: Props) => {
 
             <PinFooter>
                 <Button variant="primary" fullWidth onClick={submit}>
-                    <Translation {...messages.TR_ENTER_PIN} />
+                    <Translation id="TR_ENTER_PIN" />
                 </Button>
             </PinFooter>
         </Wrapper>

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Switch } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+
 import { SUITE } from '@suite-actions/constants';
 import { Section, ActionColumn, Row, TextColumn } from '@suite-components/Settings';
 import { AppState, Dispatch } from '@suite-types';
@@ -27,8 +27,8 @@ const Analytics = ({ locks, analytics, toggleAnalytics }: Props) => {
         <Section borderless>
             <Row>
                 <TextColumn
-                    title={<Translation {...messages.TR_ALLOW_ANALYTICS} />}
-                    description={<Translation {...messages.TR_ALLOW_ANALYTICS_DESCRIPTION} />}
+                    title={<Translation id="TR_ALLOW_ANALYTICS" />}
+                    description={<Translation id="TR_ALLOW_ANALYTICS_DESCRIPTION" />}
                     learnMore="todo some link"
                 />
                 <ActionColumn>

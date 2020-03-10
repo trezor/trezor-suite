@@ -1,7 +1,7 @@
 import React from 'react';
 import { Translation } from '@suite-components';
 import { ExtendedMessageDescriptor } from '@suite-types';
-import messages from '@suite/support/messages';
+
 import { Props } from './Container';
 
 export default (props: Props) => {

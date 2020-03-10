@@ -10,7 +10,7 @@ import {
 } from '@suite-components';
 import { variables, colors, Button } from '@trezor/components';
 import { ArrayElement } from '@suite/types/utils';
-import messages from '@suite/support/messages';
+
 import { getDateWithTimeZone } from '@suite-utils/date';
 import TransactionTypeIcon from '../TransactionTypeIcon';
 import { Props } from './Container';
@@ -173,7 +173,7 @@ const TokenTransfer = (transfer: ArrayElement<Props['transaction']['tokens']>) =
                             {transfer.name} ({transfer.symbol})
                         </TokenName>
                         <Label>
-                            <Translation {...messages.TR_SENT_TO_SELF} />
+                            <Translation id="TR_SENT_TO_SELF" />
                         </Label>
                     </Col>
                 </Row>
@@ -257,14 +257,14 @@ const TransactionItem = React.memo((props: Props) => {
                     {type === 'self' && (
                         <Target>
                             <Addr>
-                                <Translation {...messages.TR_SENT_TO_SELF} />
+                                <Translation id="TR_SENT_TO_SELF" />
                             </Addr>
                         </Target>
                     )}
                     {isUnknown && (
                         <Target>
                             <Addr>
-                                <Translation {...messages.TR_UNKNOWN_TRANSACTION} />
+                                <Translation id="TR_UNKNOWN_TRANSACTION" />
                             </Addr>
                         </Target>
                     )}

@@ -2,7 +2,7 @@ import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import * as STEP from '@onboarding-constants/steps';
 import { SUPPORT_URL, TREZOR_PACKAGING_URL, TREZOR_RESELLERS_URL } from '@suite-constants/urls';
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+
 import { Link, variables } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
@@ -27,13 +27,13 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
-                <Translation {...messages.TR_HOLOGRAM_STEP_HEADING} />
+                <Translation id="TR_HOLOGRAM_STEP_HEADING" />
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {activeSubStep !== 'hologram-different' && (
                     <>
                         <Text>
-                            <Translation {...messages.TR_HOLOGRAM_STEP_SUBHEADING} />
+                            <Translation id="TR_HOLOGRAM_STEP_SUBHEADING" />
                         </Text>
                         <HologramWrapper>
                             <Hologram model={model || actualModel || 2} />
@@ -43,13 +43,13 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                 data-test="@onboarding/button-hologram-different"
                                 onClick={() => onboardingActions.goToSubStep('hologram-different')}
                             >
-                                <Translation {...messages.TR_HOLOGRAM_STEP_ACTION_NOT_OK} />
+                                <Translation id="TR_HOLOGRAM_STEP_ACTION_NOT_OK" />
                             </OnboardingButton.Alt>
                             <OnboardingButton.Cta
                                 data-test="@onboarding/continue-button"
                                 onClick={() => onboardingActions.goToNextStep()}
                             >
-                                <Translation {...messages.TR_HOLOGRAM_STEP_ACTION_OK} />
+                                <Translation id="TR_HOLOGRAM_STEP_ACTION_OK" />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -62,12 +62,12 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                 values={{
                                     TR_PACKAGING_LINK: (
                                         <Link href={TREZOR_PACKAGING_URL}>
-                                            <Translation {...messages.TR_PACKAGING_LINK} />
+                                            <Translation id="TR_PACKAGING_LINK" />
                                         </Link>
                                     ),
                                     TR_RESELLERS_LINK: (
                                         <Link href={TREZOR_RESELLERS_URL}>
-                                            <Translation {...messages.TR_RESELLERS_LINK} />
+                                            <Translation id="TR_RESELLERS_LINK" />
                                         </Link>
                                     ),
                                     TR_CONTACT_OUR_SUPPORT_LINK: (
@@ -93,7 +93,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                     data-test="button-contact-support"
                                     style={{ width: '100%' }}
                                 >
-                                    <Translation {...messages.TR_CONTACT_SUPPORT} />
+                                    <Translation id="TR_CONTACT_SUPPORT" />
                                 </OnboardingButton.Cta>
                             </Link>
                         </Wrapper.Controls>
@@ -109,7 +109,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                             )
                         }
                     >
-                        <Translation {...messages.TR_BACK} />
+                        <Translation id="TR_BACK" />
                     </OnboardingButton.Back>
                 </Wrapper.Controls>
             </Wrapper.StepFooter>

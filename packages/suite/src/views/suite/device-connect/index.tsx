@@ -7,7 +7,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import { Translation, WebusbButton, Image } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import HelpBuyIcons from '@suite-components/ProgressBar/components/HelpBuyIcons';
-import messages from '@suite/support/messages';
+
 import { Dispatch, AppState } from '@suite-types';
 import { isWebUSB } from '@suite-utils/transport';
 
@@ -66,7 +66,7 @@ const Index = (props: Props) => {
             <HelpBuyIcons showBuy showHelp />
             <Title>
                 <H2>
-                    <Translation {...messages.TR_CONNECT_TREZOR} />
+                    <Translation id="TR_CONNECT_TREZOR" />
                 </H2>
             </Title>
             <Image

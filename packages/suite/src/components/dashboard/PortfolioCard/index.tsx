@@ -6,7 +6,6 @@ import Loading from './components/Loading';
 import Exception from './components/Exception';
 import EmptyWallet from './components/EmptyWallet';
 import { Card, Translation, FormattedNumber, HiddenPlaceholder } from '@suite-components';
-import messages from '@suite/support/messages';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -99,7 +98,7 @@ const PortfolioCard = ({
             <Header>
                 <Left>
                     <HeaderTitle>
-                        <Translation {...messages.TR_TOTAL_PORTFOLIO_VALUE} />
+                        <Translation id="TR_TOTAL_PORTFOLIO_VALUE" />
                     </HeaderTitle>
                     <ValueWrapper>
                         <HiddenPlaceholder intensity={7}>
@@ -116,10 +115,10 @@ const PortfolioCard = ({
                         variant="secondary"
                         onClick={receiveClickHandler}
                     >
-                        <Translation {...messages.TR_RECEIVE} />
+                        <Translation id="TR_RECEIVE" />
                     </ActionButton>
                     <ActionButton isDisabled={!!mode} variant="primary" onClick={buyClickHandler}>
-                        <Translation {...messages.TR_BUY} />
+                        <Translation id="TR_BUY" />
                     </ActionButton>
                 </Right>
             </Header>

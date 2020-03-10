@@ -9,7 +9,7 @@ import * as modalActions from '@suite-actions/modalActions';
 import { AppState, Dispatch } from '@suite-types';
 import { IconType } from '@trezor/components/lib/support/types';
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+
 import { SUPPORT_URL } from '@suite-constants/urls';
 
 const mapStateToProps = (state: AppState) => ({
@@ -92,19 +92,19 @@ const Item = ({ label, icon, onClick, isActive, ...props }: ItemProps) => (
 
 const ITEMS = [
     {
-        label: <Translation {...messages.TR_GENERAL} />,
+        label: <Translation id="TR_GENERAL" />,
         'data-test': '@settings/menu/general',
         icon: 'SETTINGS',
         route: 'settings-index',
     },
     {
-        label: <Translation {...messages.TR_DEVICE} />,
+        label: <Translation id="TR_DEVICE" />,
         'data-test': '@settings/menu/device',
         icon: 'TREZOR',
         route: 'settings-device',
     },
     {
-        label: <Translation {...messages.TR_COINS} />,
+        label: <Translation id="TR_COINS" />,
         'data-test': '@settings/menu/wallet',
         icon: 'COINS',
         route: 'settings-wallet',
@@ -115,7 +115,7 @@ const SettignsMenu = ({ goto, router, openModal }: Props) => {
     return (
         <ContentWrapper>
             <Heading>
-                <Translation {...messages.TR_SETTINGS} />
+                <Translation id="TR_SETTINGS" />
             </Heading>
             <Items>
                 {ITEMS.map(i => (
@@ -139,7 +139,7 @@ const SettignsMenu = ({ goto, router, openModal }: Props) => {
                         icon="SUPPORT"
                         label={
                             <Link variant="nostyle" href={SUPPORT_URL}>
-                                <Translation {...messages.TR_SUPPORT} />
+                                <Translation id="TR_SUPPORT" />
                             </Link>
                         }
                     />
@@ -147,7 +147,7 @@ const SettignsMenu = ({ goto, router, openModal }: Props) => {
                         data-test="@settings/menu/log"
                         icon="LOG"
                         onClick={() => openModal({ type: 'log' })}
-                        label={<Translation {...messages.TR_SHOW_LOG} />}
+                        label={<Translation id="TR_SHOW_LOG" />}
                     />
                 </Items>
             </Bottom>

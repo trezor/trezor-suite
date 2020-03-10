@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { colors } from '@trezor/components';
-import messages from '@suite/support/messages';
 
 const { getSuiteDevice } = global.JestMocks;
 

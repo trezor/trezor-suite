@@ -1,5 +1,5 @@
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+
 import { Button, H2, P, Icon, colors } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
@@ -33,11 +33,11 @@ interface Props {
 const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup }: Props) => (
     <Wrapper>
         <H2>
-            <Translation {...messages.TR_YOUR_TREZOR_IS_NOT_BACKED_UP} />
+            <Translation id="TR_YOUR_TREZOR_IS_NOT_BACKED_UP" />
         </H2>
         <Icon size={32} color={colors.YELLOW} icon="WARNING" />
         <StyledP size="small">
-            <Translation {...messages.TR_IF_YOUR_DEVICE_IS_EVER_LOST} />
+            <Translation id="TR_IF_YOUR_DEVICE_IS_EVER_LOST" />
         </StyledP>
         <Row>
             <BackupButton
@@ -47,14 +47,14 @@ const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup }: Props) => (
                 }}
                 fullWidth
             >
-                <Translation {...messages.TR_CREATE_BACKUP_IN_3_MINUTES} />
+                <Translation id="TR_CREATE_BACKUP_IN_3_MINUTES" />
             </BackupButton>
             <Button
                 variant="secondary"
                 onClick={() => onReceiveConfirmation(true)}
                 data-test="@no-backup/take-risk-button"
             >
-                <Translation {...messages.TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK} />
+                <Translation id="TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK" />
             </Button>
         </Row>
     </Wrapper>

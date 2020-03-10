@@ -1,6 +1,6 @@
 import React from 'react';
 import { NotificationCard, Translation } from '@suite-components';
-import messages from '@suite/support/messages';
+
 import { AppState } from '@suite-types';
 
 interface Props {

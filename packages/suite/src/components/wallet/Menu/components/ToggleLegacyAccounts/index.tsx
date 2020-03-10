@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
 import { colors, Icon } from '@trezor/components';
-import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -36,7 +35,7 @@ const Toggle = ({ onToggle, isOpen }: Props) => {
                 setTouched(true);
             }}
         >
-            <Translation {...messages.TR_LEGACY_ACCOUNTS} />
+            <Translation id="TR_LEGACY_ACCOUNTS" />
             <Icon
                 canAnimate={touched}
                 isActive={isOpen}

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { P, Switch, Link, colors } from '@trezor/components';
 
 import { SUITE } from '@suite-actions/constants';
-import messages from '@suite/support/messages';
+
 import { Translation } from '@suite-components';
 import { SettingsLayout } from '@settings-components';
 import { getFwVersion } from '@suite-utils/device';
@@ -74,10 +74,10 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
     }
 
     const DISPLAY_ROTATIONS = [
-        { label: <Translation {...messages.TR_NORTH} />, value: 0 },
-        { label: <Translation {...messages.TR_EAST} />, value: 90 },
-        { label: <Translation {...messages.TR_SOUTH} />, value: 180 },
-        { label: <Translation {...messages.TR_WEST} />, value: 270 },
+        { label: <Translation id="TR_NORTH" />, value: 0 },
+        { label: <Translation id="TR_EAST" />, value: 90 },
+        { label: <Translation id="TR_SOUTH" />, value: 180 },
+        { label: <Translation id="TR_WEST" />, value: 270 },
     ] as const;
 
     const { features } = device;
@@ -99,11 +99,11 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
 
     return (
         <SettingsLayout>
-            <Section header={<Translation {...messages.TR_BACKUP} />}>
+            <Section header={<Translation id="TR_BACKUP" />}>
                 <Row>
                     <TextColumn
-                        title={<Translation {...messages.TR_BACKUP_RECOVERY_SEED} />}
-                        description={<Translation {...messages.TR_RECOVERY_SEED_IS} />}
+                        title={<Translation id="TR_BACKUP_RECOVERY_SEED" />}
+                        description={<Translation id="TR_RECOVERY_SEED_IS" />}
                         learnMore={SEED_MANUAL_URL}
                     />
                     <ActionColumn>
@@ -114,9 +114,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                                 uiLocked || !features.needs_backup || features.unfinished_backup
                             }
                         >
-                            {features.needs_backup && (
-                                <Translation {...messages.TR_CREATE_BACKUP} />
-                            )}
+                            {features.needs_backup && <Translation id="TR_CREATE_BACKUP" />}
                             {!features.needs_backup &&
                                 !features.unfinished_backup &&
                                 'Backup successful'}
@@ -128,11 +126,11 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                 {features.unfinished_backup && (
                     <BackupFailedRow data-test="@settings/device/failed-backup-row">
                         <P size="tiny">
-                            <Translation {...messages.TR_BACKUP_FAILED} />
+                            <Translation id="TR_BACKUP_FAILED" />
                         </P>
                         <ActionColumn>
                             <BackupFailedLink href={FAILED_BACKUP_URL}>
-                                <Translation {...messages.TR_WHAT_TO_DO_NOW} />
+                                <Translation id="TR_WHAT_TO_DO_NOW" />
                             </BackupFailedLink>
                         </ActionColumn>
                     </BackupFailedRow>
@@ -141,8 +139,8 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                 {!features.unfinished_backup && (
                     <Row>
                         <TextColumn
-                            title={<Translation {...messages.TR_CHECK_RECOVERY_SEED} />}
-                            description={<Translation {...messages.TR_RECOVERY_SEED_IS} />}
+                            title={<Translation id="TR_CHECK_RECOVERY_SEED" />}
+                            description={<Translation id="TR_RECOVERY_SEED_IS" />}
                             learnMore={DRY_RUN_URL}
                         />
                         <ActionColumn>
@@ -156,7 +154,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                                 }
                                 variant="secondary"
                             >
-                                <Translation {...messages.TR_CHECK_SEED} />
+                                <Translation id="TR_CHECK_SEED" />
                             </ActionButton>
                         </ActionColumn>
                     </Row>
@@ -166,7 +164,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
             <Section header="Security">
                 <Row>
                     <TextColumn
-                        title={<Translation {...messages.TR_FIRMWARE_VERSION} />}
+                        title={<Translation id="TR_FIRMWARE_VERSION" />}
                         description={
                             <Translation
                                 values={{ version: getFwVersion(device) }}
@@ -200,9 +198,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                                 {messages.TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE}
                             </Translation>
                         }
-                        description={
-                            <Translation {...messages.TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC} />
-                        }
+                        description={<Translation id="TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC" />}
                     />
 
                     <ActionColumn>
@@ -269,9 +265,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
 
             <Section header="Personalization">
                 <Row>
-                    <TextColumn
-                        title={<Translation {...messages.TR_DEVICE_SETTINGS_DEVICE_LABEL} />}
-                    />
+                    <TextColumn title={<Translation id="TR_DEVICE_SETTINGS_DEVICE_LABEL" />} />
                     <ActionColumn>
                         <ActionInput
                             variant="small"
@@ -413,7 +407,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                                 {messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}
                             </Translation>
                         }
-                        description={<Translation {...messages.TR_WIPING_YOUR_DEVICE} />}
+                        description={<Translation id="TR_WIPING_YOUR_DEVICE" />}
                     />
                     <ActionColumn>
                         <ActionButton

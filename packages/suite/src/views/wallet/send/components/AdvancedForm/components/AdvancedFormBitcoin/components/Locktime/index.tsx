@@ -1,7 +1,7 @@
 import { colors, Switch, variables, Input } from '@trezor/components';
 import React from 'react';
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -46,10 +46,10 @@ export default () => {
             <Row>
                 <Left>
                     <Title>
-                        <Translation {...messages.LOCKTIME_TITLE} />
+                        <Translation id="LOCKTIME_TITLE" />
                     </Title>
                     <Description>
-                        <Translation {...messages.LOCKTIME_DESCRIPTION} />
+                        <Translation id="LOCKTIME_DESCRIPTION" />
                     </Description>
                 </Left>
                 <Right>

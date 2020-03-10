@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { P, Link, variables } from '@trezor/components';
 import { Option } from '@onboarding-components';
-import messages from '@suite/support/messages';
+
 import { Translation } from '@suite-components';
 import { URLS } from '@suite-constants';
 
@@ -31,7 +31,7 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
                 values={{
                     TR_LEARN_MORE_LINK: (
                         <Link size="small" href={URLS.RECOVERY_MODEL_ONE_URL}>
-                            <Translation {...messages.TR_LEARN_MORE_LINK} />
+                            <Translation id="TR_LEARN_MORE_LINK" />
                         </Link>
                     ),
                 }}
@@ -42,13 +42,13 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
                 action={() => {
                     onSelect(false);
                 }}
-                title={<Translation {...messages.TR_BASIC_RECOVERY} />}
-                text={<Translation {...messages.TR_BASIC_RECOVERY_OPTION} />}
+                title={<Translation id="TR_BASIC_RECOVERY" />}
+                text={<Translation id="TR_BASIC_RECOVERY_OPTION" />}
                 button={
                     <Translation
                         {...messages.TR_SELECT_CONCRETE_RECOVERY_TYPE}
                         values={{
-                            recoveryType: <Translation {...messages.TR_BASIC_RECOVERY} />,
+                            recoveryType: <Translation id="TR_BASIC_RECOVERY" />,
                         }}
                     />
                 }
@@ -59,13 +59,13 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
                 action={() => {
                     onSelect(true);
                 }}
-                title={<Translation {...messages.TR_ADVANCED_RECOVERY} />}
-                text={<Translation {...messages.TR_ADVANCED_RECOVERY_OPTION} />}
+                title={<Translation id="TR_ADVANCED_RECOVERY" />}
+                text={<Translation id="TR_ADVANCED_RECOVERY_OPTION" />}
                 button={
                     <Translation
                         {...messages.TR_SELECT_CONCRETE_RECOVERY_TYPE}
                         values={{
-                            recoveryType: <Translation {...messages.TR_ADVANCED_RECOVERY} />,
+                            recoveryType: <Translation id="TR_ADVANCED_RECOVERY" />,
                         }}
                     />
                 }

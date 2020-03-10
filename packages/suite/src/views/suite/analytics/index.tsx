@@ -10,7 +10,6 @@ import { Analytics } from '@suite-components/Settings';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import { URLS } from '@suite-constants';
 import { Translation, Image } from '@suite-components';
-import messages from '@suite/support/messages';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;
 
@@ -53,7 +52,7 @@ const Index = (props: Props) => {
     return (
         <Wrapper>
             <H2>
-                <Translation {...messages.TR_HELP_TREZOR_SUITE} />
+                <Translation id="TR_HELP_TREZOR_SUITE" />
             </H2>
             <Body>
                 <P size="tiny">
@@ -71,7 +70,7 @@ const Index = (props: Props) => {
                     />
                 </P>
                 <Bold>
-                    <Translation {...messages.TR_HELP_TREZOR_SUITE_TEXT_2} />
+                    <Translation id="TR_HELP_TREZOR_SUITE_TEXT_2" />
                 </Bold>
 
                 <StyledImg image="ANALYTICS" />
@@ -82,7 +81,7 @@ const Index = (props: Props) => {
                     onClick={() => props.goto('onboarding-index')}
                     data-test="@analytics/go-to-onboarding-button"
                 >
-                    <Translation {...messages.TR_CONTINUE} />
+                    <Translation id="TR_CONTINUE" />
                 </Button>
             </Body>
 
@@ -92,7 +91,7 @@ const Index = (props: Props) => {
                     values={{
                         TR_TOS_LINK: (
                             <Link href={URLS.TOS_URL}>
-                                <Translation {...messages.TR_TOS_LINK} />
+                                <Translation id="TR_TOS_LINK" />
                             </Link>
                         ),
                     }}

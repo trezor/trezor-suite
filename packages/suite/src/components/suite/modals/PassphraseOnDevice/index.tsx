@@ -6,7 +6,7 @@ import { Translation } from '@suite-components/Translation';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { Dispatch, TrezorDevice } from '@suite-types';
-import messages from '@suite/support/messages';
+
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 
 const Wrapper = styled(ModalWrapper)`
@@ -51,7 +51,7 @@ const PassphraseOnDevice = ({ device, getDiscoveryAuthConfirmationStatus }: Prop
                 <DeviceConfirmImage device={device} />
                 {/* TODO: similar text is in Passphrase modal */}
                 <P size="small">
-                    <Translation {...messages.TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE} />
+                    <Translation id="TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE" />
                 </P>
             </Wrapper>
         );
@@ -67,7 +67,7 @@ const PassphraseOnDevice = ({ device, getDiscoveryAuthConfirmationStatus }: Prop
             </Title>
             <DeviceConfirmImage device={device} />
             <P size="small">
-                <Translation {...messages.TR_PASSPHRASE_CASE_SENSITIVE} />
+                <Translation id="TR_PASSPHRASE_CASE_SENSITIVE" />
             </P>
         </Wrapper>
     );

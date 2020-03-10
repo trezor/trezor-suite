@@ -2,7 +2,6 @@ import React from 'react';
 import { NotificationCard, Translation } from '@suite-components';
 import { Link } from '@trezor/components';
 import { URLS } from '@suite-constants';
-import messages from '@suite/support/messages';
 
 export default () => (
     <NotificationCard variant="info">
@@ -11,7 +10,7 @@ export default () => (
             values={{
                 TR_LEARN_MORE: (
                     <Link variant="nostyle" href={URLS.LTC_ADDRESS_INFO_URL}>
-                        <Translation {...messages.TR_LEARN_MORE_LINK} />
+                        <Translation id="TR_LEARN_MORE_LINK" />
                     </Link>
                 ),
             }}

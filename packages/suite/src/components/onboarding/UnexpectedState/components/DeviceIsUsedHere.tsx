@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { H2, P } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { Wrapper, OnboardingButton } from '@onboarding-components';
-import messages from '@suite/support/messages';
+
 import * as suiteActions from '@suite-actions/suiteActions';
 import { Dispatch } from '@suite-types';
 
@@ -18,14 +18,14 @@ type Props = ReturnType<typeof mapDispatchToProps>;
 const DeviceIsUsedHere = ({ actionCta }: Props) => (
     <>
         <H2>
-            <Translation {...messages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_HEADING} />
+            <Translation id="TR_DEVICE_IS_USED_IN_OTHER_WINDOW_HEADING" />
         </H2>
         <P size="small">
-            <Translation {...messages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_TEXT} />
+            <Translation id="TR_DEVICE_IS_USED_IN_OTHER_WINDOW_TEXT" />
         </P>
         <Wrapper.Controls>
             <OnboardingButton.Cta onClick={() => actionCta()}>
-                <Translation {...messages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_BUTTON} />
+                <Translation id="TR_DEVICE_IS_USED_IN_OTHER_WINDOW_BUTTON" />
             </OnboardingButton.Cta>
         </Wrapper.Controls>
     </>

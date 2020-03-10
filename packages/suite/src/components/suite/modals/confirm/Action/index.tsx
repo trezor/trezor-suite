@@ -5,7 +5,6 @@ import ModalWrapper from '@suite-components/ModalWrapper';
 import { Translation } from '@suite-components/Translation';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import { TrezorDevice } from '@suite-types';
-import messages from '@suite/support/messages';
 
 const Wrapper = styled(ModalWrapper)`
     max-width: 360px;

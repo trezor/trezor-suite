@@ -3,7 +3,7 @@ import { AppState, TrezorDevice } from '@suite-types';
 import { Button, colors } from '@trezor/components';
 import { Account, Send } from '@wallet-types';
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import styled from 'styled-components';
@@ -105,7 +105,7 @@ export default ({ send, suite, account, device, modalActions }: Props) => {
                     isDisabled={isComposing ? false : isDisabled(send, suite, device, networkType)}
                     onClick={() => modalActions.openModal({ type: 'review-transaction' })}
                 >
-                    <Translation {...messages.TR_SEND_REVIEW_TRANSACTION} />
+                    <Translation id="TR_SEND_REVIEW_TRANSACTION" />
                 </ButtonReview>
             </Row>
         </Wrapper>

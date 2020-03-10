@@ -9,7 +9,7 @@ import * as STEP from '@onboarding-constants/steps';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { Text, Wrapper, OnboardingButton } from '@onboarding-components';
-import messages from '@suite/support/messages';
+
 import { AppState, Dispatch } from '@suite-types';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -30,16 +30,16 @@ const IsNotNewDevice = ({ actionAlt, closeModalApp, device }: Props) => {
     return (
         <>
             <H2>
-                <Translation {...messages.TR_IS_NOT_NEW_DEVICE_HEADING} />
+                <Translation id="TR_IS_NOT_NEW_DEVICE_HEADING" />
             </H2>
             <Text>
-                <Translation {...messages.TR_IS_NOT_NEW_DEVICE} />
+                <Translation id="TR_IS_NOT_NEW_DEVICE" />
             </Text>
             <Image image="UNI_WARNING" />
             <Wrapper.Controls>
                 <Link href={SUPPORT_URL}>
                     <OnboardingButton.Cta style={{ width: '100%' }}>
-                        <Translation {...messages.TR_CONTACT_SUPPORT} />
+                        <Translation id="TR_CONTACT_SUPPORT" />
                     </OnboardingButton.Cta>
                 </Link>
 

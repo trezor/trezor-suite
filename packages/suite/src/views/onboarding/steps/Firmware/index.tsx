@@ -3,7 +3,7 @@ import { Tooltip } from '@trezor/components';
 
 import { Loaders, OnboardingButton, OnboardingIcon, Text, Wrapper } from '@onboarding-components';
 import { Translation } from '@suite-components';
-import messages from '@suite/support/messages';
+
 import { InitImg, SuccessImg } from '@firmware-components';
 import ContinueButton from './components/ContinueButton';
 import InstallButton from './components/InstallButton';
@@ -59,17 +59,17 @@ const FirmwareStep = ({
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
-                <Translation {...messages.TR_FIRMWARE_HEADING} />
+                <Translation id="TR_FIRMWARE_HEADING" />
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {status === 'initial' && (
                     <>
-                        {!device && <Translation {...messages.TR_CONNECT_YOUR_DEVICE} />}
+                        {!device && <Translation id="TR_CONNECT_YOUR_DEVICE" />}
 
                         {getFirmwareStatus() === 'none' && (
                             <>
                                 <Text>
-                                    <Translation {...messages.TR_FIRMWARE_SUBHEADING} />
+                                    <Translation id="TR_FIRMWARE_SUBHEADING" />
                                 </Text>
                             </>
                         )}
@@ -115,7 +115,7 @@ const FirmwareStep = ({
                         {getFirmwareStatus() === 'valid' && (
                             <>
                                 <Text>
-                                    <Translation {...messages.TR_FIRMWARE_INSTALLED} />
+                                    <Translation id="TR_FIRMWARE_INSTALLED" />
                                 </Text>
                                 <SuccessImg model={model} />
                             </>
@@ -211,7 +211,7 @@ const FirmwareStep = ({
                                 isDisabled={!isConnected}
                                 onClick={firmwareUpdateActions.firmwareUpdate}
                             >
-                                <Translation {...messages.TR_RETRY} />
+                                <Translation id="TR_RETRY" />
                             </OnboardingButton.Cta>
                         </Tooltip>
                     )}

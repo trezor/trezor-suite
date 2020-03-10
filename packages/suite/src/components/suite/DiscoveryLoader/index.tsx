@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Loading from '@suite-components/Loading';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+
 import { variables, colors } from '@trezor/components';
 
 const Wrapper = styled(ModalWrapper)`
@@ -41,10 +41,10 @@ const DiscoveryLoader = (props: Props) => {
     return (
         <Wrapper {...props} data-test="@discovery/loader">
             <Title>
-                <Translation {...messages.TR_COIN_DISCOVERY_IN_PROGRESS} />
+                <Translation id="TR_COIN_DISCOVERY_IN_PROGRESS" />
             </Title>
             <Description>
-                <Translation {...messages.TR_TO_FIND_YOUR_ACCOUNTS_AND} />
+                <Translation id="TR_TO_FIND_YOUR_ACCOUNTS_AND" />
             </Description>
             <Expand>
                 <Loading padding="0px" />

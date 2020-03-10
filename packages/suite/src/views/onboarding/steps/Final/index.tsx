@@ -2,17 +2,16 @@ import React from 'react';
 
 import { OnboardingButton, Wrapper } from '@onboarding-components';
 import { Translation, Image } from '@suite-components';
-import messages from '@suite/support/messages';
 
 import { Props } from './Container';
 
 const FinalStep = ({ closeModalApp }: Props) => (
     <Wrapper.Step data-test="@onboarding/final">
         <Wrapper.StepHeading>
-            <Translation {...messages.TR_FINAL_HEADING} />
+            <Translation id="TR_FINAL_HEADING" />
         </Wrapper.StepHeading>
         <Wrapper.StepBody>
-            <Translation {...messages.TR_FINAL_SUBHEADING} />
+            <Translation id="TR_FINAL_SUBHEADING" />
             <Image image="ALL_DONE" />
         </Wrapper.StepBody>
         <Wrapper.Controls>

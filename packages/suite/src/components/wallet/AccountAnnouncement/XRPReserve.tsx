@@ -2,7 +2,7 @@ import React from 'react';
 import { NotificationCard, Translation } from '@suite-components';
 import { Link } from '@trezor/components';
 import { URLS } from '@suite-constants';
-import messages from '@suite/support/messages';
+
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 
 interface Props {
@@ -17,7 +17,7 @@ export default ({ reserve }: Props) => (
                 minBalance: formatNetworkAmount(reserve, 'xrp'),
                 TR_LEARN_MORE: (
                     <Link variant="nostyle" href={URLS.XRP_MANUAL_URL}>
-                        <Translation {...messages.TR_LEARN_MORE_LINK} />
+                        <Translation id="TR_LEARN_MORE_LINK" />
                     </Link>
                 ),
             }}

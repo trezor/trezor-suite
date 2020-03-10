@@ -3,7 +3,7 @@ import { CoinLogo, colors, variables } from '@trezor/components';
 import styled, { css } from 'styled-components';
 import { getTitleForNetwork, getAccountFiatBalance } from '@wallet-utils/accountUtils';
 import { Translation } from '@suite-components/Translation';
-// import messages from '@suite/support/messages';
+//
 import { FormattedNumber, HiddenPlaceholder } from '@suite-components';
 import AccountNavigation from './components/AccountNavigation/Container';
 import Badge from '@suite-components/Badge';

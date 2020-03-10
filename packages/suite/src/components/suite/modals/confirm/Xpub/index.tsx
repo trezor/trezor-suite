@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button, H2, colors } from '@trezor/components';
 import { copyToClipboard } from '@suite-utils/dom';
 import { Translation, QrCode } from '@suite-components';
-import messages from '@suite/support/messages';
+
 import { Props } from './Container';
 
 const StyledWrapper = styled.div`
@@ -56,7 +56,7 @@ export default ({ xpub, accountPath, accountIndex, symbol, addNotification }: Pr
             <Address data-test="@xpub-modal/xpub-field">{xpub}</Address>
             <Row ref={htmlElement}>
                 <Button variant="secondary" onClick={copyAddress}>
-                    <Translation {...messages.TR_XPUB_MODAL_CLIPBOARD} />
+                    <Translation id="TR_XPUB_MODAL_CLIPBOARD" />
                 </Button>
             </Row>
         </StyledWrapper>

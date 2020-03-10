@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
 
 const Wrapper = styled.div``;
 const Content = styled.div``;
@@ -17,18 +16,18 @@ const VerifyAddressTooltip = ({ isConnected, isAvailable, addressUnverified }: P
         {addressUnverified && (
             <Content>
                 {isConnected && isAvailable ? (
-                    <Translation {...messages.TR_UNVERIFIED_ADDRESS_COMMA_SHOW} />
+                    <Translation id="TR_UNVERIFIED_ADDRESS_COMMA_SHOW" />
                 ) : (
-                    <Translation {...messages.TR_UNVERIFIED_ADDRESS_COMMA_CONNECT} />
+                    <Translation id="TR_UNVERIFIED_ADDRESS_COMMA_CONNECT" />
                 )}
             </Content>
         )}
         {!addressUnverified && (
             <Content>
                 {isConnected ? (
-                    <Translation {...messages.TR_SHOW_ON_TREZOR} />
+                    <Translation id="TR_SHOW_ON_TREZOR" />
                 ) : (
-                    <Translation {...messages.TR_CONNECT_YOUR_TREZOR_TO_CHECK} />
+                    <Translation id="TR_CONNECT_YOUR_TREZOR_TO_CHECK" />
                 )}
             </Content>
         )}

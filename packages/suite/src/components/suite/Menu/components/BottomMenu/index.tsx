@@ -2,7 +2,7 @@ import React from 'react';
 import { Props as ContainerProps } from '../../Container';
 import styled, { css } from 'styled-components';
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+
 import { findRouteByName } from '@suite-utils/router';
 import { Icon, colors, Switch, Tooltip } from '@trezor/components';
 import { BOTTOM_MENU_ITEMS, MENU_PADDING } from '@suite-constants/menu';
@@ -136,10 +136,7 @@ const BottomMenu = (props: Props) => (
             <MenuItemWrapper>
                 <SubMenuText>Discreet</SubMenuText>
                 <SwitchWrapper>
-                    <Tooltip
-                        placement="right"
-                        content={<Translation {...messages.TR_DISCREET_TOOLTIP} />}
-                    >
+                    <Tooltip placement="right" content={<Translation id="TR_DISCREET_TOOLTIP" />}>
                         <Switch
                             isSmall
                             checked={props.discreetMode}

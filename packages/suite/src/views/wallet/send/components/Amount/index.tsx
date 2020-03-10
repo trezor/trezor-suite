@@ -1,5 +1,5 @@
 import { Translation, QuestionTooltip } from '@suite-components';
-import messages from '@suite/support/messages';
+
 import { Account, Network } from '@wallet-types';
 import React from 'react';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -61,11 +61,11 @@ const getMessage = (
 
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
-            return <Translation {...messages.TR_AMOUNT_IS_NOT_SET} />;
+            return <Translation id="TR_AMOUNT_IS_NOT_SET" />;
         case VALIDATION_ERRORS.NOT_NUMBER:
-            return <Translation {...messages.TR_AMOUNT_IS_NOT_NUMBER} />;
+            return <Translation id="TR_AMOUNT_IS_NOT_NUMBER" />;
         case VALIDATION_ERRORS.NOT_ENOUGH:
-            return <Translation {...messages.TR_AMOUNT_IS_NOT_ENOUGH} />;
+            return <Translation id="TR_AMOUNT_IS_NOT_ENOUGH" />;
         case VALIDATION_ERRORS.XRP_CANNOT_SEND_LESS_THAN_RESERVE:
             return (
                 <Translation
@@ -122,7 +122,7 @@ export default ({ fiat, sendFormActions, output, selectedAccount }: Props) => {
                     topLabel={
                         <Label>
                             <Text>
-                                <Translation {...messages.TR_AMOUNT} />
+                                <Translation id="TR_AMOUNT" />
                             </Text>
                             <QuestionTooltip messageId="TR_SEND_AMOUNT_TOOLTIP" />
                         </Label>

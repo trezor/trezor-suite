@@ -2400,6 +2400,10 @@ const definedMessages = defineMessages({
         id: 'TR_COIN_SETTINGS',
         defaultMessage: 'Coin settings',
     },
+    TR_AA: {
+        id: 'TR_AA',
+        defaultMessage: 'aaaa',
+    },
 });
 
 export default definedMessages;

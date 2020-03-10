@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 import { H2, Link, variables, colors } from '@trezor/components';
 import { PinInput, Loading, Translation, Image } from '@suite-components';
 import { Dispatch, TrezorDevice } from '@suite-types';
-import messages from '@suite/support/messages';
+
 import { URLS } from '@suite-constants';
 import * as modalActions from '@suite-actions/modalActions';
 
@@ -111,21 +111,21 @@ const Pin = ({ device, onPinSubmit }: Props) => {
             {!features?.pin_protection && (
                 <Col gray>
                     <H2>
-                        <Translation {...messages.TR_SET_UP_NEW_PIN} />
+                        <Translation id="TR_SET_UP_NEW_PIN" />
                     </H2>
                     <Text>
-                        <Translation {...messages.TR_SET_UP_STRONG_PIN_TO_PROTECT} />
+                        <Translation id="TR_SET_UP_STRONG_PIN_TO_PROTECT" />
                     </Text>
                     <Text>
-                        <Translation {...messages.TR_MAXIMUM_LENGTH_IS_9_DIGITS} />
+                        <Translation id="TR_MAXIMUM_LENGTH_IS_9_DIGITS" />
                     </Text>
                     <Expand>
                         <StyledImg image="SET_UP_PIN_DIALOG" />
                     </Expand>
                     <Description>
-                        <Translation {...messages.TR_HOW_PIN_WORKS} />{' '}
+                        <Translation id="TR_HOW_PIN_WORKS" />{' '}
                         <Link href={URLS.PIN_MANUAL_URL}>
-                            <Translation {...messages.TR_LEARN_MORE_LINK} />
+                            <Translation id="TR_LEARN_MORE_LINK" />
                         </Link>
                     </Description>
                 </Col>
@@ -140,17 +140,17 @@ const Pin = ({ device, onPinSubmit }: Props) => {
                             }}
                         />
                     )}
-                    {counter > 1 && <Translation {...messages.TR_CONFIRM_PIN} />}
+                    {counter > 1 && <Translation id="TR_CONFIRM_PIN" />}
                 </H2>
                 <Description>
-                    <Translation {...messages.TR_THE_PIN_LAYOUT_IS_DISPLAYED} />
+                    <Translation id="TR_THE_PIN_LAYOUT_IS_DISPLAYED" />
                 </Description>
                 <PinInput onPinSubmit={submit} />
                 {features?.pin_protection && (
                     <BottomMessage>
-                        <Translation {...messages.TR_HOW_PIN_WORKS} />{' '}
+                        <Translation id="TR_HOW_PIN_WORKS" />{' '}
                         <Link href={URLS.PIN_MANUAL_URL}>
-                            <Translation {...messages.TR_LEARN_MORE_LINK} />
+                            <Translation id="TR_LEARN_MORE_LINK" />
                         </Link>
                     </BottomMessage>
                 )}

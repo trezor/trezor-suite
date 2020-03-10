@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import { Translation, Image } from '@suite-components';
-import messages from '@suite/support/messages';
 
 import { Props } from './Container';
 
@@ -14,11 +13,11 @@ const StyledImg = styled(props => <Image {...props} />)`
 const SkipStep = ({ closeModalApp, goToNextStep }: Props) => (
     <Wrapper.Step>
         <Wrapper.StepHeading>
-            <Translation {...messages.TR_SKIP_ONBOARDING_HEADING} />
+            <Translation id="TR_SKIP_ONBOARDING_HEADING" />
         </Wrapper.StepHeading>
         <Wrapper.StepBody>
             <Text>
-                <Translation {...messages.TR_SKIP_ONBOARDING_TEXT} />
+                <Translation id="TR_SKIP_ONBOARDING_TEXT" />
             </Text>
             <StyledImg image="SKIP_WARNING" />
         </Wrapper.StepBody>

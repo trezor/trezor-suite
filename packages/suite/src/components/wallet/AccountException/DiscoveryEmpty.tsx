@@ -7,7 +7,6 @@ import * as routerActions from '@suite-actions/routerActions';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Dispatch } from '@suite-types';
 import { Translation, Image } from '@suite-components';
-import messages from '@suite/support/messages';
 
 import Wrapper from './components/Wrapper';
 
@@ -33,9 +32,9 @@ const DiscoveryEmpty = (props: Props) => {
     const locked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     return (
         <Wrapper
-            title={<Translation {...messages.TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY} />}
+            title={<Translation id="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY" />}
             image={<Image image="EMPTY_WALLET" />}
-            description={<Translation {...messages.TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC} />}
+            description={<Translation id="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC" />}
         >
             <Button
                 variant="secondary"
@@ -43,7 +42,7 @@ const DiscoveryEmpty = (props: Props) => {
                 isDisabled={disabled}
                 onClick={() => props.goto('settings-wallet')}
             >
-                <Translation {...messages.TR_COIN_SETTINGS} />
+                <Translation id="TR_COIN_SETTINGS" />
             </Button>
             <Button
                 variant="primary"
@@ -56,7 +55,7 @@ const DiscoveryEmpty = (props: Props) => {
                     })
                 }
             >
-                <Translation {...messages.TR_ADD_ACCOUNT} />
+                <Translation id="TR_ADD_ACCOUNT" />
             </Button>
         </Wrapper>
     );

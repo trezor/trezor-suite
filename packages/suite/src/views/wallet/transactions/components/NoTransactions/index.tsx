@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors, variables, H2, Button } from '@trezor/components';
 import { Translation, Image } from '@suite-components';
-import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -57,18 +56,18 @@ const NoTransactions = ({ receive, buy }: Props) => {
         <Wrapper>
             <Content>
                 <Title>
-                    <Translation {...messages.TR_ACCOUNT_IS_EMPTY} />
+                    <Translation id="TR_ACCOUNT_IS_EMPTY" />
                 </Title>
                 <Description>
-                    <Translation {...messages.TR_ONCE_YOU_SEND_OR_RECEIVE} />
+                    <Translation id="TR_ONCE_YOU_SEND_OR_RECEIVE" />
                 </Description>
                 <StyledImage image="EMPTY_WALLET" />
                 <Actions>
                     <ActionButton variant="secondary" onClick={receive}>
-                        <Translation {...messages.TR_RECEIVE} />
+                        <Translation id="TR_RECEIVE" />
                     </ActionButton>
                     <ActionButton variant="primary" onClick={buy}>
-                        <Translation {...messages.TR_BUY} />
+                        <Translation id="TR_BUY" />
                     </ActionButton>
                 </Actions>
             </Content>

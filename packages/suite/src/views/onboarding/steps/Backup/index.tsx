@@ -6,7 +6,7 @@ import { Translation } from '@suite-components';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
 import { canStart, canContinue } from '@backup-utils';
 import { SEED_MANUAL_URL } from '@suite-constants/urls';
-import messages from '@suite/support/messages';
+
 import { Props } from './Container';
 
 const BackupStep = (props: Props) => {
@@ -34,7 +34,7 @@ const BackupStep = (props: Props) => {
                                 values={{
                                     TR_SEED_MANUAL_LINK: (
                                         <Link href={SEED_MANUAL_URL}>
-                                            <Translation {...messages.TR_SEED_MANUAL_LINK} />
+                                            <Translation id="TR_SEED_MANUAL_LINK" />
                                         </Link>
                                     ),
                                 }}
@@ -49,7 +49,7 @@ const BackupStep = (props: Props) => {
                                 onClick={() => props.backupDevice()}
                                 isDisabled={!canStart(backup.userConfirmed, locks)}
                             >
-                                <Translation {...messages.TR_START_BACKUP} />
+                                <Translation id="TR_START_BACKUP" />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -75,7 +75,7 @@ const BackupStep = (props: Props) => {
                                 }}
                                 isDisabled={!device || !device.connected}
                             >
-                                <Translation {...messages.TR_RETRY} />
+                                <Translation id="TR_RETRY" />
                             </OnboardingButton.Cta>
                             <OnboardingButton.Alt
                                 onClick={() => {
@@ -92,7 +92,7 @@ const BackupStep = (props: Props) => {
                 {status === 'finished' && !backup.error && (
                     <>
                         <Text>
-                            <Translation {...messages.TR_BACKUP_FINISHED_TEXT} />
+                            <Translation id="TR_BACKUP_FINISHED_TEXT" />
                         </Text>
 
                         <AfterBackupCheckboxes />
@@ -103,7 +103,7 @@ const BackupStep = (props: Props) => {
                                 onClick={() => props.goToNextStep()}
                                 isDisabled={!canContinue(backup.userConfirmed)}
                             >
-                                <Translation {...messages.TR_BACKUP_FINISHED_BUTTON} />
+                                <Translation id="TR_BACKUP_FINISHED_BUTTON" />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>

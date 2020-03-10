@@ -40,14 +40,14 @@ describe('Translation component', () => {
     });
 
     test('with id, defaultMessage props', () => {
-        const component = createComponentWithIntl(<Translation {...messages.TR_HELLO} />);
+        const component = createComponentWithIntl(<Translation id="TR_HELLO" />);
         const tree = component.toJSON();
         expect(tree).toMatchSnapshot();
     });
 
     test('with message that holds string in value (passed via props)', () => {
         const component = createComponentWithIntl(
-            <Translation {...messages.TR_NAME} values={{ name: 'John' }} />,
+            <Translation id="TR_NAME} values={{ name: 'John' }" />,
         );
         const tree = component.toJSON();
         expect(tree).toMatchSnapshot();

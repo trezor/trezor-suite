@@ -7,7 +7,7 @@ import { Button, P, H2, colors } from '@trezor/components';
 import { copyToClipboard } from '@suite-utils/dom';
 import { TrezorDevice, Dispatch } from '@suite-types';
 import { Translation, QrCode } from '@suite-components';
-import messages from '@suite/support/messages';
+
 import CheckOnTrezor from './components/CheckOnTrezor';
 import DeviceDisconnected from './components/DeviceDisconnected';
 
@@ -79,7 +79,7 @@ const ConfirmAddress = ({
             </H2>
             {networkType === 'bitcoin' && (
                 <P size="tiny">
-                    <Translation {...messages.TR_ADDRESS_MODAL_BTC_DESCRIPTION} />
+                    <Translation id="TR_ADDRESS_MODAL_BTC_DESCRIPTION" />
                 </P>
             )}
             <QrCode value={address} addressPath={addressPath} />
@@ -88,7 +88,7 @@ const ConfirmAddress = ({
             {!device.connected && <DeviceDisconnected label={device.label} />}
             <Row ref={htmlElement}>
                 <Button variant="secondary" onClick={copyAddress}>
-                    <Translation {...messages.TR_ADDRESS_MODAL_CLIPBOARD} />
+                    <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
                 </Button>
             </Row>
         </StyledWrapper>

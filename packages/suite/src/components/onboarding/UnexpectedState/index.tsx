@@ -4,7 +4,7 @@ import { P } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import * as STEP from '@onboarding-constants/steps';
 import { AnyStepDisallowedState } from '@onboarding-types/steps';
-import messages from '@suite/support/messages';
+
 import Reconnect from './components/Reconnect';
 import IsSameDevice from './components/IsSameDevice';
 import IsNotNewDevice from './components/IsNotNewDevice';
@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 
 const IsNotInBootloader = () => (
     <P>
-        <Translation {...messages.TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER} />
+        <Translation id="TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER" />
     </P>
 );
 interface UnexpectedStateProps {

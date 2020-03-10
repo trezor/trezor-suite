@@ -7,7 +7,7 @@ import { Button, P, H2 } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { Dispatch, InjectedModalApplicationProps } from '@suite-types';
 import { Translation, Image } from '@suite-components';
-import messages from '@suite/support/messages';
+
 import ModalWrapper from '@suite-components/ModalWrapper';
 
 const Wrapper = styled(ModalWrapper)`
@@ -34,10 +34,10 @@ const Index = (props: Props) => {
     return (
         <Wrapper data-test="@welcome">
             <H2>
-                <Translation {...messages.TR_WELCOME_MODAL_HEADING} />
+                <Translation id="TR_WELCOME_MODAL_HEADING" />
             </H2>
             <P size="tiny">
-                <Translation {...messages.TR_WELCOME_MODAL_TEXT} />
+                <Translation id="TR_WELCOME_MODAL_TEXT" />
             </P>
             <StyledImg image="WELCOME" />
 
@@ -45,7 +45,7 @@ const Index = (props: Props) => {
                 data-test="@welcome/continue-button"
                 onClick={() => props.goto('suite-analytics')}
             >
-                <Translation {...messages.TR_BEGIN} />
+                <Translation id="TR_BEGIN" />
             </Button>
         </Wrapper>
     );

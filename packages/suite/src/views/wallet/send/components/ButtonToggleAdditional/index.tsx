@@ -2,7 +2,7 @@ import React from 'react';
 import { variables, colors, Icon } from '@trezor/components';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+
 import { DispatchProps } from '../../Container';
 
 const Wrapper = styled.div`
@@ -34,9 +34,9 @@ export default (props: Props) => (
     <Wrapper>
         <Text onClick={() => props.sendFormActions.toggleAdditionalFormVisibility()}>
             {props.isActive ? (
-                <Translation {...messages.TR_HIDE_ADVANCED_OPTIONS} />
+                <Translation id="TR_HIDE_ADVANCED_OPTIONS" />
             ) : (
-                <Translation {...messages.TR_SHOW_ADVANCED_OPTIONS} />
+                <Translation id="TR_SHOW_ADVANCED_OPTIONS" />
             )}
 
             <ToggleIcon
