@@ -10,8 +10,8 @@ import { URLS } from '@suite-constants';
 
 interface Props {
     symbol?: Account['symbol'];
-    title?: string | ExtendedMessageDescriptor;
-    message?: string | ExtendedMessageDescriptor;
+    title: ExtendedMessageDescriptor;
+    message: ExtendedMessageDescriptor;
 }
 
 const getInfoUrl = (symbol?: Props['symbol']) => {
