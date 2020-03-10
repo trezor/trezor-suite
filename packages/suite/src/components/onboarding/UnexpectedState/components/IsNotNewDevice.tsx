@@ -30,16 +30,16 @@ const IsNotNewDevice = ({ actionAlt, closeModalApp, device }: Props) => {
     return (
         <>
             <H2>
-                <Translation>{messages.TR_IS_NOT_NEW_DEVICE_HEADING}</Translation>
+                <Translation {...messages.TR_IS_NOT_NEW_DEVICE_HEADING} />
             </H2>
             <Text>
-                <Translation>{messages.TR_IS_NOT_NEW_DEVICE}</Translation>
+                <Translation {...messages.TR_IS_NOT_NEW_DEVICE} />
             </Text>
             <Image image="UNI_WARNING" />
             <Wrapper.Controls>
                 <Link href={SUPPORT_URL}>
                     <OnboardingButton.Cta style={{ width: '100%' }}>
-                        <Translation>{messages.TR_CONTACT_SUPPORT}</Translation>
+                        <Translation {...messages.TR_CONTACT_SUPPORT} />
                     </OnboardingButton.Cta>
                 </Link>
 

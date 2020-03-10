@@ -28,7 +28,7 @@ const LearnMoreWrapper = styled(Link)`
 
 const LearnMore = ({ href, ...props }: { href: string }) => (
     <LearnMoreWrapper href={href} {...props}>
-        <Translation>{messages.TR_LEARN_MORE_LINK}</Translation>
+        <Translation {...messages.TR_LEARN_MORE_LINK} />
     </LearnMoreWrapper>
 );
 

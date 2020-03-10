@@ -53,7 +53,7 @@ const Index = (props: Props) => {
     return (
         <Wrapper>
             <H2>
-                <Translation>{messages.TR_HELP_TREZOR_SUITE}</Translation>
+                <Translation {...messages.TR_HELP_TREZOR_SUITE} />
             </H2>
             <Body>
                 <P size="tiny">
@@ -71,7 +71,7 @@ const Index = (props: Props) => {
                     />
                 </P>
                 <Bold>
-                    <Translation>{messages.TR_HELP_TREZOR_SUITE_TEXT_2}</Translation>
+                    <Translation {...messages.TR_HELP_TREZOR_SUITE_TEXT_2} />
                 </Bold>
 
                 <StyledImg image="ANALYTICS" />
@@ -82,7 +82,7 @@ const Index = (props: Props) => {
                     onClick={() => props.goto('onboarding-index')}
                     data-test="@analytics/go-to-onboarding-button"
                 >
-                    <Translation>{messages.TR_CONTINUE}</Translation>
+                    <Translation {...messages.TR_CONTINUE} />
                 </Button>
             </Body>
 

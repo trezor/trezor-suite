@@ -20,7 +20,7 @@ const Text = styled.div`
 const getError = (error: Send['networkTypeEthereum']['data']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.NOT_HEX:
-            return <Translation>{messages.TR_ETH_DATA_NOT_HEX}</Translation>;
+            return <Translation {...messages.TR_ETH_DATA_NOT_HEX} />;
         default:
             return null;
     }

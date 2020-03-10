@@ -200,7 +200,7 @@ const Settings = (props: Props) => {
             </P>
 
             <CoinsGroup
-                label={<Translation>{messages.TR_COINS}</Translation>}
+                label={<Translation {...messages.TR_COINS} />}
                 enabledNetworks={enabledMainnetNetworks}
                 filterFn={mainnetNetworksFilterFn}
                 onToggleOneFn={props.changeCoinVisibility}
@@ -215,8 +215,8 @@ const Settings = (props: Props) => {
             />
 
             <CoinsGroup
-                label={<Translation>{messages.TR_TESTNET_COINS}</Translation>}
-                description={<Translation>{messages.TR_TESTNET_COINS_EXPLAINED}</Translation>}
+                label={<Translation {...messages.TR_TESTNET_COINS} />}
+                description={<Translation {...messages.TR_TESTNET_COINS_EXPLAINED} />}
                 enabledNetworks={enabledTestnetNetworks}
                 filterFn={testnetNetworksFilterFn}
                 onToggleOneFn={props.changeCoinVisibility}
@@ -231,9 +231,9 @@ const Settings = (props: Props) => {
             />
 
             <SectionHeader>
-                <Translation>{messages.TR_3RD_PARTY_WALLETS}</Translation>
+                <Translation {...messages.TR_3RD_PARTY_WALLETS} />
                 <P size="tiny">
-                    <Translation>{messages.TR_3RD_PARTY_WALLETS_DESC}</Translation>
+                    <Translation {...messages.TR_3RD_PARTY_WALLETS_DESC} />
                 </P>
             </SectionHeader>
             <Section>
@@ -242,7 +242,7 @@ const Settings = (props: Props) => {
                         <Coin network={n} />
                         <ActionColumn>
                             <StyledLink variant="nostyle" href={n.url} size="small">
-                                <Translation>{new URL(n.url).hostname}</Translation>
+                                <Translation {...new URL(n.url).hostname} />
                             </StyledLink>
                         </ActionColumn>
                     </Row>

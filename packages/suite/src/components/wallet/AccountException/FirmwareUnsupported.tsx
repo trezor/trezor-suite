@@ -72,10 +72,10 @@ const FirmwareUnsupported = (props: Props) => (
                 </CoinLogoWrapper>
             )}
             <H2>
-                <Translation>{props.title}</Translation>
+                <Translation {...props.title} />
             </H2>
             <Message>
-                <Translation>{props.message}</Translation>
+                <Translation {...props.message} />
             </Message>
             <Link href={getInfoUrl(props.symbol)}>
                 <Button>

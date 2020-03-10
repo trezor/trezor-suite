@@ -116,11 +116,11 @@ const QrScanner = ({ onScan, onCancel, outputId }: Props) => {
             err.name === 'NotReadableError' ||
             err.name === 'TrackStartError'
         ) {
-            setError(<Translation>{messages.TR_CAMERA_PERMISSION_DENIED}</Translation>);
+            setError(<Translation {...messages.TR_CAMERA_PERMISSION_DENIED} />);
         } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
-            setError(<Translation>{messages.TR_CAMERA_NOT_RECOGNIZED}</Translation>);
+            setError(<Translation {...messages.TR_CAMERA_NOT_RECOGNIZED} />);
         } else {
-            setError(<Translation>{messages.TR_UNKNOWN_ERROR_SEE_CONSOLE}</Translation>);
+            setError(<Translation {...messages.TR_UNKNOWN_ERROR_SEE_CONSOLE} />);
         }
     };
 
@@ -143,7 +143,7 @@ const QrScanner = ({ onScan, onCancel, outputId }: Props) => {
         <Wrapper>
             <Padding>
                 <H2>
-                    <Translation>{messages.TR_SCAN_QR_CODE}</Translation>
+                    <Translation {...messages.TR_SCAN_QR_CODE} />
                 </H2>
                 <Info>
                     <Translation {...messages.TR_FOR_EASIER_AND_SAFER_INPUT} />

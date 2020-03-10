@@ -27,10 +27,8 @@ const Analytics = ({ locks, analytics, toggleAnalytics }: Props) => {
         <Section borderless>
             <Row>
                 <TextColumn
-                    title={<Translation>{messages.TR_ALLOW_ANALYTICS}</Translation>}
-                    description={
-                        <Translation>{messages.TR_ALLOW_ANALYTICS_DESCRIPTION}</Translation>
-                    }
+                    title={<Translation {...messages.TR_ALLOW_ANALYTICS} />}
+                    description={<Translation {...messages.TR_ALLOW_ANALYTICS_DESCRIPTION} />}
                     learnMore="todo some link"
                 />
                 <ActionColumn>

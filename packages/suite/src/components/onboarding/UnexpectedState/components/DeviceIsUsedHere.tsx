@@ -18,14 +18,14 @@ type Props = ReturnType<typeof mapDispatchToProps>;
 const DeviceIsUsedHere = ({ actionCta }: Props) => (
     <>
         <H2>
-            <Translation>{messages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_HEADING}</Translation>
+            <Translation {...messages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_HEADING} />
         </H2>
         <P size="small">
-            <Translation>{messages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_TEXT}</Translation>
+            <Translation {...messages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_TEXT} />
         </P>
         <Wrapper.Controls>
             <OnboardingButton.Cta onClick={() => actionCta()}>
-                <Translation>{messages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_BUTTON}</Translation>
+                <Translation {...messages.TR_DEVICE_IS_USED_IN_OTHER_WINDOW_BUTTON} />
             </OnboardingButton.Cta>
         </Wrapper.Controls>
     </>

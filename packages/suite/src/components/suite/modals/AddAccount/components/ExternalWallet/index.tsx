@@ -40,7 +40,7 @@ const ExternalWallet = ({ selectedNetwork }: Props) => {
     return (
         <Wrapper>
             <H2>
-                <Translation>{getHeader(symbol)}</Translation>
+                <Translation {...getHeader(symbol)} />
             </H2>
             <StyledP size="small">
                 This coin is only accessible via an external wallet. It is supported by Trezor but

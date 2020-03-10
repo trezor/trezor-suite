@@ -17,18 +17,18 @@ const VerifyAddressTooltip = ({ isConnected, isAvailable, addressUnverified }: P
         {addressUnverified && (
             <Content>
                 {isConnected && isAvailable ? (
-                    <Translation>{messages.TR_UNVERIFIED_ADDRESS_COMMA_SHOW}</Translation>
+                    <Translation {...messages.TR_UNVERIFIED_ADDRESS_COMMA_SHOW} />
                 ) : (
-                    <Translation>{messages.TR_UNVERIFIED_ADDRESS_COMMA_CONNECT}</Translation>
+                    <Translation {...messages.TR_UNVERIFIED_ADDRESS_COMMA_CONNECT} />
                 )}
             </Content>
         )}
         {!addressUnverified && (
             <Content>
                 {isConnected ? (
-                    <Translation>{messages.TR_SHOW_ON_TREZOR}</Translation>
+                    <Translation {...messages.TR_SHOW_ON_TREZOR} />
                 ) : (
-                    <Translation>{messages.TR_CONNECT_YOUR_TREZOR_TO_CHECK}</Translation>
+                    <Translation {...messages.TR_CONNECT_YOUR_TREZOR_TO_CHECK} />
                 )}
             </Content>
         )}

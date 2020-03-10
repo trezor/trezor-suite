@@ -51,9 +51,9 @@ const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Pr
 
     return (
         <SettingsLayout>
-            <Section header={<Translation>{messages.TR_LANGUAGE}</Translation>}>
+            <Section header={<Translation {...messages.TR_LANGUAGE} />}>
                 <Row>
-                    <TextColumn title={<Translation>{messages.TR_LANGUAGE}</Translation>} />
+                    <TextColumn title={<Translation {...messages.TR_LANGUAGE} />} />
                     <ActionColumn>
                         <ActionSelect
                             value={{
@@ -72,9 +72,9 @@ const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Pr
                 </Row>
             </Section>
 
-            <Section header={<Translation>{messages.TR_CURRENCY}</Translation>}>
+            <Section header={<Translation {...messages.TR_CURRENCY} />}>
                 <Row>
-                    <TextColumn title={<Translation>{messages.TR_PRIMARY_FIAT}</Translation>} />
+                    <TextColumn title={<Translation {...messages.TR_PRIMARY_FIAT} />} />
                     <ActionColumn>
                         <ActionSelect
                             onChange={(option: { value: string; label: string }) =>
@@ -89,16 +89,16 @@ const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Pr
             </Section>
 
             {/* TODO: KEEP IT HERE AND UNCOMMENT WHEN READY */}
-            {/* <Section header={<Translation>{messages.TR_LABELING}</Translation>}>
+            {/* <Section header={<Translation {...messages.TR_LABELING} />}>
                 <Row>
-                    <TextColumn title={<Translation>{messages.TR_CONNECT_DROPBOX}</Translation>} />
+                    <TextColumn title={<Translation {...messages.TR_CONNECT_DROPBOX} />} />
                     <ActionColumn>
                         <ActionButton
                             onClick={() => console.log('fooo')}
                             isDisabled={uiLocked}
                             variant="secondary"
                         >
-                            <Translation>{messages.TR_CONNECT_DROPBOX}</Translation>
+                            <Translation {...messages.TR_CONNECT_DROPBOX} />
                         </ActionButton>
                     </ActionColumn>
                 </Row>
@@ -110,10 +110,8 @@ const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Pr
                 <Section borderless>
                     <Row>
                         <TextColumn
-                            title={<Translation>{messages.TR_SUITE_VERSION}</Translation>}
-                            description={
-                                <Translation>{messages.TR_YOUR_CURRENT_VERSION}</Translation>
-                            }
+                            title={<Translation {...messages.TR_SUITE_VERSION} />}
+                            description={<Translation {...messages.TR_YOUR_CURRENT_VERSION} />}
                         />
                         <ActionColumn>
                             <ActionButton
@@ -121,7 +119,7 @@ const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Pr
                                 isDisabled={uiLocked}
                                 variant="secondary"
                             >
-                                <Translation>{messages.TR_CHECK_FOR_UPDATES}</Translation>
+                                <Translation {...messages.TR_CHECK_FOR_UPDATES} />
                             </ActionButton>
                         </ActionColumn>
                     </Row>

@@ -34,10 +34,10 @@ const Index = (props: Props) => {
     return (
         <Wrapper data-test="@welcome">
             <H2>
-                <Translation>{messages.TR_WELCOME_MODAL_HEADING}</Translation>
+                <Translation {...messages.TR_WELCOME_MODAL_HEADING} />
             </H2>
             <P size="tiny">
-                <Translation>{messages.TR_WELCOME_MODAL_TEXT}</Translation>
+                <Translation {...messages.TR_WELCOME_MODAL_TEXT} />
             </P>
             <StyledImg image="WELCOME" />
 
@@ -45,7 +45,7 @@ const Index = (props: Props) => {
                 data-test="@welcome/continue-button"
                 onClick={() => props.goto('suite-analytics')}
             >
-                <Translation>{messages.TR_BEGIN}</Translation>
+                <Translation {...messages.TR_BEGIN} />
             </Button>
         </Wrapper>
     );

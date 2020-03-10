@@ -246,7 +246,7 @@ const AddAccount = (props: Props) => {
                 {isExternal ? (
                     <Link href={(selectedNetwork as ExternalNetwork).url}>
                         <Button icon="EXTERNAL_LINK" variant="primary" onClick={props.onCancel}>
-                            <Translation>{messages.TR_GO_TO_EXTERNAL_WALLET}</Translation>
+                            <Translation {...messages.TR_GO_TO_EXTERNAL_WALLET} />
                         </Button>
                     </Link>
                 ) : (

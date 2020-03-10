@@ -99,11 +99,11 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
 
     return (
         <SettingsLayout>
-            <Section header={<Translation>{messages.TR_BACKUP}</Translation>}>
+            <Section header={<Translation {...messages.TR_BACKUP} />}>
                 <Row>
                     <TextColumn
-                        title={<Translation>{messages.TR_BACKUP_RECOVERY_SEED}</Translation>}
-                        description={<Translation>{messages.TR_RECOVERY_SEED_IS}</Translation>}
+                        title={<Translation {...messages.TR_BACKUP_RECOVERY_SEED} />}
+                        description={<Translation {...messages.TR_RECOVERY_SEED_IS} />}
                         learnMore={SEED_MANUAL_URL}
                     />
                     <ActionColumn>
@@ -115,7 +115,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                             }
                         >
                             {features.needs_backup && (
-                                <Translation>{messages.TR_CREATE_BACKUP}</Translation>
+                                <Translation {...messages.TR_CREATE_BACKUP} />
                             )}
                             {!features.needs_backup &&
                                 !features.unfinished_backup &&
@@ -128,11 +128,11 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                 {features.unfinished_backup && (
                     <BackupFailedRow data-test="@settings/device/failed-backup-row">
                         <P size="tiny">
-                            <Translation>{messages.TR_BACKUP_FAILED}</Translation>
+                            <Translation {...messages.TR_BACKUP_FAILED} />
                         </P>
                         <ActionColumn>
                             <BackupFailedLink href={FAILED_BACKUP_URL}>
-                                <Translation>{messages.TR_WHAT_TO_DO_NOW}</Translation>
+                                <Translation {...messages.TR_WHAT_TO_DO_NOW} />
                             </BackupFailedLink>
                         </ActionColumn>
                     </BackupFailedRow>
@@ -141,8 +141,8 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                 {!features.unfinished_backup && (
                     <Row>
                         <TextColumn
-                            title={<Translation>{messages.TR_CHECK_RECOVERY_SEED}</Translation>}
-                            description={<Translation>{messages.TR_RECOVERY_SEED_IS}</Translation>}
+                            title={<Translation {...messages.TR_CHECK_RECOVERY_SEED} />}
+                            description={<Translation {...messages.TR_RECOVERY_SEED_IS} />}
                             learnMore={DRY_RUN_URL}
                         />
                         <ActionColumn>
@@ -156,7 +156,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                                 }
                                 variant="secondary"
                             >
-                                <Translation>{messages.TR_CHECK_SEED}</Translation>
+                                <Translation {...messages.TR_CHECK_SEED} />
                             </ActionButton>
                         </ActionColumn>
                     </Row>
@@ -166,7 +166,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
             <Section header="Security">
                 <Row>
                     <TextColumn
-                        title={<Translation>{messages.TR_FIRMWARE_VERSION}</Translation>}
+                        title={<Translation {...messages.TR_FIRMWARE_VERSION} />}
                         description={
                             <Translation
                                 values={{ version: getFwVersion(device) }}
@@ -270,9 +270,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
             <Section header="Personalization">
                 <Row>
                     <TextColumn
-                        title={
-                            <Translation>{messages.TR_DEVICE_SETTINGS_DEVICE_LABEL}</Translation>
-                        }
+                        title={<Translation {...messages.TR_DEVICE_SETTINGS_DEVICE_LABEL} />}
                     />
                     <ActionColumn>
                         <ActionInput
@@ -415,7 +413,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                                 {messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}
                             </Translation>
                         }
-                        description={<Translation>{messages.TR_WIPING_YOUR_DEVICE}</Translation>}
+                        description={<Translation {...messages.TR_WIPING_YOUR_DEVICE} />}
                     />
                     <ActionColumn>
                         <ActionButton

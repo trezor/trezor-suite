@@ -45,20 +45,6 @@ describe('Translation component', () => {
         expect(tree).toMatchSnapshot();
     });
 
-    test('with message obj as children', () => {
-        const component = createComponentWithIntl(<Translation>{messages.TR_HELLO}</Translation>);
-        const tree = component.toJSON();
-        expect(tree).toMatchSnapshot();
-    });
-
-    test('with message that holds string in value (passed as children)', () => {
-        const component = createComponentWithIntl(
-            <Translation>{{ ...messages.TR_NAME, values: { name: 'John' } }}</Translation>,
-        );
-        const tree = component.toJSON();
-        expect(tree).toMatchSnapshot();
-    });
-
     test('with message that holds string in value (passed via props)', () => {
         const component = createComponentWithIntl(
             <Translation {...messages.TR_NAME} values={{ name: 'John' }} />,

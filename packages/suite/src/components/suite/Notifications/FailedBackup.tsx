@@ -16,7 +16,7 @@ export default ({ device }: Props) => {
         <Wrapper variant="info">
             <Translation {...messages.TR_FAILED_BACKUP} />
             <Link variant="nostyle" href={URLS.FAILED_BACKUP_URL}>
-                <Translation>{messages.TR_WHAT_TO_DO_NOW}</Translation>
+                <Translation {...messages.TR_WHAT_TO_DO_NOW} />
             </Link>
         </Wrapper>
     );

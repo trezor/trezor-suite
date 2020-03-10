@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 
 const IsNotInBootloader = () => (
     <P>
-        <Translation>{messages.TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER}</Translation>
+        <Translation {...messages.TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER} />
     </P>
 );
 interface UnexpectedStateProps {

@@ -20,11 +20,11 @@ const Text = styled.div`
 const getErrorMessage = (error: Output['address']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
-            return <Translation>{messages.TR_ADDRESS_IS_NOT_SET}</Translation>;
+            return <Translation {...messages.TR_ADDRESS_IS_NOT_SET} />;
         case VALIDATION_ERRORS.NOT_VALID:
-            return <Translation>{messages.TR_ADDRESS_IS_NOT_VALID}</Translation>;
+            return <Translation {...messages.TR_ADDRESS_IS_NOT_VALID} />;
         case VALIDATION_ERRORS.XRP_CANNOT_SEND_TO_MYSELF:
-            return <Translation>{messages.TR_XRP_CANNOT_SEND_TO_MYSELF}</Translation>;
+            return <Translation {...messages.TR_XRP_CANNOT_SEND_TO_MYSELF} />;
         default:
             return undefined;
     }

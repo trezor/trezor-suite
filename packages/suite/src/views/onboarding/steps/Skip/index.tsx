@@ -14,11 +14,11 @@ const StyledImg = styled(props => <Image {...props} />)`
 const SkipStep = ({ closeModalApp, goToNextStep }: Props) => (
     <Wrapper.Step>
         <Wrapper.StepHeading>
-            <Translation>{messages.TR_SKIP_ONBOARDING_HEADING}</Translation>
+            <Translation {...messages.TR_SKIP_ONBOARDING_HEADING} />
         </Wrapper.StepHeading>
         <Wrapper.StepBody>
             <Text>
-                <Translation>{messages.TR_SKIP_ONBOARDING_TEXT}</Translation>
+                <Translation {...messages.TR_SKIP_ONBOARDING_TEXT} />
             </Text>
             <StyledImg image="SKIP_WARNING" />
         </Wrapper.StepBody>

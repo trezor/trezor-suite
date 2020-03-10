@@ -115,7 +115,7 @@ const SettignsMenu = ({ goto, router, openModal }: Props) => {
     return (
         <ContentWrapper>
             <Heading>
-                <Translation>{messages.TR_SETTINGS}</Translation>
+                <Translation {...messages.TR_SETTINGS} />
             </Heading>
             <Items>
                 {ITEMS.map(i => (

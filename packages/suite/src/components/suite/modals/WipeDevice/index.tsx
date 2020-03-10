@@ -105,7 +105,7 @@ const WipeDevice = ({ locks, wipeDevice, onCancel }: Props) => {
                         isDisabled={uiLocked || !checkbox1 || !checkbox2}
                         data-test="@wipe/wipe-button"
                     >
-                        <Translation>{messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE}</Translation>
+                        <Translation {...messages.TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE} />
                     </StyledButton>
                     <StyledButton icon="CROSS" variant="tertiary" onClick={onCancel}>
                         <Translation {...messages.TR_CANCEL} />
