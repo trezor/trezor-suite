@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H2, P, Button } from '@trezor/components-v2';
+import { H2, P, Button } from '@trezor/components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const Wrapper = styled.div`

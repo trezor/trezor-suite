@@ -2,7 +2,7 @@ import produce from 'immer';
 import { RESIZE } from '@suite-actions/constants';
 import { getNumberFromPxString } from '@suite-utils/string';
 import { Action } from '@suite-types';
-import { variables } from '@trezor/components-v2';
+import { variables } from '@trezor/components';
 
 const sizes = {
     UNAVAILABLE: getNumberFromPxString(variables.SCREEN_SIZE.UNAVAILABLE),
