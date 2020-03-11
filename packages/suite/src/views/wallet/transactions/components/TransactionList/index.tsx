@@ -9,7 +9,6 @@ import { SETTINGS } from '@suite-config';
 import { Account } from '@wallet-types';
 import TransactionItem from './components/TransactionItem/Container';
 import Pagination from './components/Pagination';
-import messages from '@suite/support/messages';
 import { Badge, Card, FiatValue, HiddenPlaceholder, Translation } from '@suite-components';
 
 const Wrapper = styled.div``;
@@ -110,8 +109,8 @@ const TransactionList = ({
     // if totalPages is undefined check current page and number of txs (e.g. XRP)
     // Edge case: if there is exactly 25 txs, pagination will be displayed
     const isOnLastPage = slicedTransactions.length < SETTINGS.TXS_PER_PAGE;
-    const showPagination = totalPages ? totalPages > 1 : currentPage === 1 && !isOnLastPage;
-
+    const shouldShowRipplePagination = !(currentPage === 1 && isOnLastPage);
+    const showPagination = totalPages ? totalPages > 1 : shouldShowRipplePagination;
     return (
         <Wrapper>
             <StyledCard>
@@ -124,7 +123,7 @@ const TransactionList = ({
                                 <DayHeading>
                                     {dateKey === 'pending' ? (
                                         <P>
-                                            <Translation {...messages.TR_PENDING} />
+                                            <Translation id="TR_PENDING" />
                                         </P>
                                     ) : (
                                         <>

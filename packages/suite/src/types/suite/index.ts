@@ -63,6 +63,7 @@ export type GetState = () => AppState;
 
 export interface AcquiredDevice {
     type: 'acquired';
+    id: string | null;
     path: string;
     label: string;
     features: Features;
@@ -75,6 +76,7 @@ export interface AcquiredDevice {
 
     // suite specific
     useEmptyPassphrase: boolean;
+    passphraseOnDevice?: boolean;
     remember: boolean; // device should be remembered
     connected: boolean; // device is connected
     available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
@@ -87,6 +89,7 @@ export interface AcquiredDevice {
 
 export interface UnknownDevice {
     type: 'unacquired' | 'unreadable';
+    id?: null;
     path: string;
     label: string;
     connected: true;
@@ -94,6 +97,7 @@ export interface UnknownDevice {
     features: undefined;
     instance?: undefined;
     useEmptyPassphrase: true;
+    passphraseOnDevice?: false;
     // types below are here just for type compatibility with AcquiredDevice
     remember?: boolean;
     authConfirm?: undefined;

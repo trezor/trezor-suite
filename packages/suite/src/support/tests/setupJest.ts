@@ -75,14 +75,16 @@ export const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>
         };
     }
 
+    const features = getDeviceFeatures(feat);
     return {
+        id: features.device_id,
         path: '',
         label: 'My Trezor',
         firmware: 'valid',
         status: 'available',
         mode: 'normal',
         state: undefined,
-        features: getDeviceFeatures(feat),
+        features,
         ...dev,
         type: 'acquired',
         unavailableCapabilities: {},

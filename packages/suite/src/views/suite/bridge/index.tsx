@@ -8,7 +8,6 @@ import { Button, P, Link, H2, Select, colors, variables, Loader } from '@trezor/
 import * as routerActions from '@suite-actions/routerActions';
 import { URLS } from '@suite-constants';
 import { AppState, Dispatch } from '@suite-types';
-import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -149,14 +148,14 @@ const InstallBridge = (props: Props) => {
             </Head>
             <Content>
                 <TitleHeader>
-                    <Translation {...messages.TR_TREZOR_BRIDGE_DOWNLOAD} />
+                    <Translation id="TR_TREZOR_BRIDGE_DOWNLOAD" />
                 </TitleHeader>
                 <Description size="small">
-                    <Translation {...messages.TR_NEW_COMMUNICATION_TOOL} />
+                    <Translation id="TR_NEW_COMMUNICATION_TOOL" />
                 </Description>
                 <Version show={!!data.currentVersion}>
                     <Translation
-                        {...messages.TR_CURRENTLY_INSTALLED_TREZOR}
+                        id="TR_CURRENTLY_INSTALLED_TREZOR"
                         values={{ version: data.currentVersion }}
                     />
                 </Version>
@@ -165,7 +164,7 @@ const InstallBridge = (props: Props) => {
                     <LoaderWrapper>
                         <CenteredLoader size={50} strokeWidth={2} />
                         <P>
-                            <Translation {...messages.TR_GATHERING_INFO} />
+                            <Translation id="TR_GATHERING_INFO" />
                         </P>
                     </LoaderWrapper>
                 ) : (
@@ -181,7 +180,7 @@ const InstallBridge = (props: Props) => {
                         <Link variant="nostyle" href={`${data.uri}${target.value}`}>
                             <DownloadBridgeButton>
                                 <Translation
-                                    {...messages.TR_DOWNLOAD_LATEST_BRIDGE}
+                                    id="TR_DOWNLOAD_LATEST_BRIDGE"
                                     values={{ version: data.latestVersion }}
                                 />
                             </DownloadBridgeButton>
@@ -198,7 +197,7 @@ const InstallBridge = (props: Props) => {
                         color={colors.BLACK50}
                         onClick={() => props.goto('wallet-index')}
                     >
-                        <Translation {...messages.TR_TAKE_ME_BACK_TO_WALLET} />
+                        <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
                     </Button>
                 </Col>
                 {!isLoading && (
@@ -211,7 +210,7 @@ const InstallBridge = (props: Props) => {
                                     variant="tertiary"
                                     onClick={() => {}}
                                 >
-                                    <Translation {...messages.TR_CHANGELOG} />
+                                    <Translation id="TR_CHANGELOG" />
                                 </Button>
                             </Link>
                         </Col>
@@ -224,7 +223,7 @@ const InstallBridge = (props: Props) => {
                                         variant="tertiary"
                                         onClick={() => {}}
                                     >
-                                        <Translation {...messages.TR_CHECK_PGP_SIGNATURE} />
+                                        <Translation id="TR_CHECK_PGP_SIGNATURE" />
                                     </Button>
                                 </Link>
                             )}

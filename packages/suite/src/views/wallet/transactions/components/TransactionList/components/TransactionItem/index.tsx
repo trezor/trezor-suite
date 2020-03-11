@@ -11,7 +11,7 @@ import {
 import { variables, colors, Button } from '@trezor/components';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import { ArrayElement } from '@suite/types/utils';
-import messages from '@suite/support/messages';
+
 import { getDateWithTimeZone } from '@suite-utils/date';
 import TransactionTypeIcon from './components/TransactionTypeIcon';
 import { Props } from './Container';
@@ -229,14 +229,14 @@ const TransactionItem = (props: Props) => {
                     {type === 'self' && (
                         <Target>
                             <Addr>
-                                <Translation {...messages.TR_SENT_TO_SELF} />
+                                <Translation id="TR_SENT_TO_SELF" />
                             </Addr>
                         </Target>
                     )}
                     {isUnknown && (
                         <Target>
                             <Addr>
-                                <Translation {...messages.TR_UNKNOWN_TRANSACTION} />
+                                <Translation id="TR_UNKNOWN_TRANSACTION" />
                             </Addr>
                         </Target>
                     )}

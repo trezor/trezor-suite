@@ -2,6 +2,7 @@ import { Output, State, EthTransactionData, EthPreparedTransaction } from '@wall
 import { Account } from '@wallet-types';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import BigNumber from 'bignumber.js';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { toHex, toWei } from 'web3-utils';
 import { Transaction } from 'ethereumjs-tx';
 
@@ -52,11 +53,16 @@ export const calculateTotal = (amount: string, fee: string): string => {
     }
 };
 
-export const calculateMax = (balance: string, fee: string): string => {
+export const calculateMax = (balance: string, fee: string, account?: Account): string => {
     try {
         const balanceBig = new BigNumber(balance);
-        // TODO - minus pendings
-        const max = balanceBig.minus(fee);
+        let max = balanceBig.minus(fee);
+
+        if (account && account.networkType === 'ripple') {
+            const { misc } = account;
+            max = max.minus(misc.reserve);
+        }
+
         if (max.isLessThan(0)) return '0';
         return max.toFixed();
     } catch (error) {
@@ -83,7 +89,10 @@ export const getInputState = (
     error: typeof VALIDATION_ERRORS[keyof typeof VALIDATION_ERRORS] | null,
     value: string | null,
     noSuccess?: boolean,
+    isMandatory?: boolean,
 ) => {
+    if (!isMandatory && !value) return undefined;
+
     if (error) {
         return 'error';
     }
@@ -147,4 +156,10 @@ export const prepareEthereumTransaction = (txInfo: EthTransactionData) => {
 export const serializeEthereumTx = (tx: any) => {
     const ethTx = new Transaction(tx, { chain: tx.chainId });
     return `0x${ethTx.serialize().toString('hex')}`;
+};
+
+export const getReserveInXrp = (account: Account) => {
+    if (account.networkType !== 'ripple') return null;
+    const { misc } = account;
+    return formatNetworkAmount(misc.reserve, account.symbol);
 };

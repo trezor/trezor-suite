@@ -22,15 +22,12 @@ export type SendFormActions =
           error?: typeof VALIDATION_ERRORS.XRP_CANNOT_SEND_LESS_THAN_RESERVE;
           decimals: number;
           availableBalance: Account['availableBalance'];
+          isDestinationAccountEmpty: boolean | null;
+          reserve: string | null;
       }
     | {
           type: typeof SEND.AMOUNT_LOADING;
           isLoading: boolean;
-          outputId: number;
-      }
-    | {
-          type: typeof SEND.AMOUNT_ERROR;
-          error: typeof VALIDATION_ERRORS.XRP_CANNOT_SEND_LESS_THAN_RESERVE | null;
           outputId: number;
       }
     | {
@@ -75,6 +72,7 @@ export type SendFormBtcActions =
 
 export type SendFormXrpActions =
     | { type: typeof SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE; destinationTag: string }
+    | { type: typeof SEND.XRP_IS_DESTINATION_ACCOUNT_EMPTY; isDestinationAccountEmpty: boolean }
     | { type: typeof SEND.XRP_PRECOMPOSED_TX; payload: PrecomposedTransactionXrp };
 
 export type SendFormEthActions =

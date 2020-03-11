@@ -82,15 +82,14 @@ export const getTitleForNetwork = (symbol: Account['symbol']) => {
 };
 
 // same as 'getTypeForNetwork' below except it returns proper value for NORMAL account type
-export const getAccountTypeIntl = (accountType: Account['accountType']) => {
+export const getAccountTypeIntl = (accountType: Network['accountType']) => {
     switch (accountType) {
-        case ACCOUNT_TYPE.NORMAL:
-            return messages.TR_NETWORK_TYPE_NORMAL;
         case ACCOUNT_TYPE.SEGWIT:
-            return messages.TR_NETWORK_TYPE_SEGWIT;
+            return messages.TR_ACCOUNT_TYPE_SEGWIT;
         case ACCOUNT_TYPE.LEGACY:
-            return messages.TR_NETWORK_TYPE_LEGACY;
-        // no default
+            return messages.TR_ACCOUNT_TYPE_LEGACY;
+        default:
+            return messages.TR_ACCOUNT_TYPE_NORMAL;
     }
 };
 
@@ -99,9 +98,9 @@ export const getTypeForNetwork = (accountType: Account['accountType']) => {
         case ACCOUNT_TYPE.NORMAL:
             return null;
         case ACCOUNT_TYPE.SEGWIT:
-            return messages.TR_NETWORK_TYPE_SEGWIT;
+            return messages.TR_ACCOUNT_TYPE_SEGWIT;
         case ACCOUNT_TYPE.LEGACY:
-            return messages.TR_NETWORK_TYPE_LEGACY;
+            return messages.TR_ACCOUNT_TYPE_LEGACY;
         // no default
     }
 };
@@ -120,6 +119,13 @@ export const getBip43Shortcut = (path: string) => {
         default:
             return 'unknown';
     }
+};
+
+export const getBip43Intl = (path: string) => {
+    const bip43 = getBip43Shortcut(path);
+    if (bip43 === 'bech32') return messages.TR_ACCOUNT_TYPE_BECH32;
+    if (bip43 === 'p2sh') return messages.TR_ACCOUNT_TYPE_P2SH;
+    return messages.TR_ACCOUNT_TYPE_P2PKH;
 };
 
 export const stripNetworkAmount = (amount: string, decimals: number) => {

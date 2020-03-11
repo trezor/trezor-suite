@@ -1,11 +1,11 @@
-import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+import { Translation, QuestionTooltip } from '@suite-components';
+
 import { Account, Network } from '@wallet-types';
 import React from 'react';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import styled from 'styled-components';
 import { Output } from '@wallet-types/sendForm';
-import { Input, colors, Icon, Tooltip } from '@trezor/components';
+import { Input } from '@trezor/components';
 import { VALIDATION_ERRORS, LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 
@@ -19,9 +19,8 @@ const Wrapper = styled.div`
     flex: 1;
 `;
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-    padding-left: 5px;
+const Text = styled.div`
+    margin-right: 3px;
 `;
 
 const StyledInput = styled(Input)`
@@ -62,25 +61,15 @@ const getMessage = (
 
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
-            return <Translation {...messages.TR_AMOUNT_IS_NOT_SET} />;
+            return <Translation id="TR_AMOUNT_IS_NOT_SET" />;
         case VALIDATION_ERRORS.NOT_NUMBER:
-            return <Translation {...messages.TR_AMOUNT_IS_NOT_NUMBER} />;
+            return <Translation id="TR_AMOUNT_IS_NOT_NUMBER" />;
         case VALIDATION_ERRORS.NOT_ENOUGH:
-            return <Translation {...messages.TR_AMOUNT_IS_NOT_ENOUGH} />;
+            return <Translation id="TR_AMOUNT_IS_NOT_ENOUGH" />;
         case VALIDATION_ERRORS.XRP_CANNOT_SEND_LESS_THAN_RESERVE:
-            return (
-                <Translation
-                    {...messages.TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE}
-                    values={{ reserve }}
-                />
-            );
+            return <Translation id="TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE" values={{ reserve }} />;
         case VALIDATION_ERRORS.NOT_IN_RANGE_DECIMALS:
-            return (
-                <Translation
-                    {...messages.TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS}
-                    values={{ decimals }}
-                />
-            );
+            return <Translation id="TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS" values={{ decimals }} />;
         default:
             return null;
     }
@@ -104,7 +93,7 @@ const hasRates = (
     return false;
 };
 
-export default ({ fiat, sendFormActions, intl, output, selectedAccount }: Props) => {
+export default ({ fiat, sendFormActions, output, selectedAccount }: Props) => {
     if (selectedAccount.status !== 'loaded') return null;
 
     const { account, network } = selectedAccount;
@@ -122,13 +111,10 @@ export default ({ fiat, sendFormActions, intl, output, selectedAccount }: Props)
                     state={getInputState(error, value, isLoading)}
                     topLabel={
                         <Label>
-                            {intl.formatMessage(messages.TR_AMOUNT)}
-                            <Tooltip
-                                placement="top"
-                                content={<Translation {...messages.TR_SEND_AMOUNT_TOOLTIP} />}
-                            >
-                                <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
-                            </Tooltip>
+                            <Text>
+                                <Translation id="TR_AMOUNT" />
+                            </Text>
+                            <QuestionTooltip messageId="TR_SEND_AMOUNT_TOOLTIP" />
                         </Label>
                     }
                     button={{

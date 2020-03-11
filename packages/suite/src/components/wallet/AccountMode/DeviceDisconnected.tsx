@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { NotificationCard, Translation } from '@suite-components';
-import messages from '@suite/support/messages';
+
 import { AppState } from '@suite-types';
 
 const mapStateToProps = (state: AppState) => ({
@@ -14,7 +14,7 @@ const Disconnected = ({ device }: Props) => {
     const deviceLabel = device ? device.label : '';
     return (
         <NotificationCard variant="info">
-            <Translation {...messages.TR_DEVICE_LABEL_IS_DISCONNECTED} values={{ deviceLabel }} />
+            <Translation id="TR_DEVICE_LABEL_IS_DISCONNECTED" values={{ deviceLabel }} />
         </NotificationCard>
     );
 };

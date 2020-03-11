@@ -51,9 +51,7 @@ const connectDevice = (draft: State, device: Device) => {
 
     const { features } = device;
     // find affected devices with current "device_id" (acquired only)
-    const affectedDevices = draft.filter(
-        d => d.features && d.features.device_id === features.device_id,
-    ) as AcquiredDevice[];
+    const affectedDevices = draft.filter(d => d.features && d.id === device.id) as AcquiredDevice[];
     // find unacquired device with current "path" (unacquired device will become acquired)
     const unacquiredDevices = draft.filter(d => d.path.length > 0 && d.path === device.path);
     // get not affected devices
@@ -70,12 +68,12 @@ const connectDevice = (draft: State, device: Device) => {
     // prepare new device
     const newDevice: TrezorDevice = {
         ...device,
-        useEmptyPassphrase: !device.features.passphrase_protection,
+        useEmptyPassphrase: !features.passphrase_protection,
         remember: false,
         connected: true,
         available: true,
         authConfirm: false,
-        instance: device.features.passphrase_protection
+        instance: features.passphrase_protection
             ? deviceUtils.getNewInstanceNumber(draft, device) || 1
             : undefined,
         buttonRequests: [],
@@ -121,14 +119,12 @@ const changeDevice = (
     // change only acquired devices
     if (!device.features) return;
 
-    const { features } = device;
     // find devices with the same "device_id"
     const affectedDevices = draft.filter(
         d =>
             d.features &&
             d.connected &&
-            (d.features.device_id === features.device_id ||
-                (d.path.length > 0 && d.path === device.path)),
+            (d.id === device.id || (d.path.length > 0 && d.path === device.path)),
     ) as AcquiredDevice[];
 
     const otherDevices = draft.filter(d => affectedDevices.indexOf(d as AcquiredDevice) === -1);
@@ -141,7 +137,7 @@ const changeDevice = (
         // merge incoming device with State
         const changedDevices = affectedDevices.map(d => {
             // change availability according to "passphrase_protection" field
-            if (d.instance && !features.passphrase_protection) {
+            if (d.instance && !device.features.passphrase_protection) {
                 return merge(d, { ...device, ...extended, available: !d.state });
             }
             return merge(d, { ...device, ...extended, available: true });
@@ -219,13 +215,19 @@ const updateTimestamp = (draft: State, device?: TrezorDevice) => {
  * @param {boolean} hidden
  * @returns
  */
-const changePassphraseMode = (draft: State, device: TrezorDevice, hidden: boolean) => {
+const changePassphraseMode = (
+    draft: State,
+    device: TrezorDevice,
+    hidden: boolean,
+    alwaysOnDevice = false,
+) => {
     // only acquired devices
     if (!device || !device.features) return;
     const index = deviceUtils.findInstanceIndex(draft, device);
     if (!draft[index]) return;
     // update fields
     draft[index].useEmptyPassphrase = !hidden;
+    draft[index].passphraseOnDevice = alwaysOnDevice;
     // draft[index].instance = undefined;
     draft[index].ts = new Date().getTime();
 };
@@ -289,6 +291,7 @@ const createInstance = (draft: State, device: TrezorDevice) => {
     if (!device || !device.features) return;
     const newDevice: TrezorDevice = {
         ...device,
+        passphraseOnDevice: false,
         remember: false,
         state: undefined,
         ts: new Date().getTime(),
@@ -329,6 +332,7 @@ const forget = (draft: State, device: TrezorDevice) => {
         // do not forget the last instance, just reset state
         draft[index].state = undefined;
         draft[index].useEmptyPassphrase = false;
+        draft[index].passphraseOnDevice = false;
     } else {
         draft.splice(index, 1);
     }
@@ -370,7 +374,7 @@ export default (state: State = initialState, action: Action): State => {
                 updateTimestamp(draft, action.payload);
                 break;
             case SUITE.UPDATE_PASSPHRASE_MODE:
-                changePassphraseMode(draft, action.payload, action.hidden);
+                changePassphraseMode(draft, action.payload, action.hidden, action.alwaysOnDevice);
                 break;
             case SUITE.AUTH_DEVICE:
                 authDevice(draft, action.payload, action.state);

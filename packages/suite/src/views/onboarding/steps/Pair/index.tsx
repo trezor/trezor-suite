@@ -6,7 +6,6 @@ import { OnboardingButton, Text, Wrapper, Loaders } from '@onboarding-components
 import { Translation, Image } from '@suite-components';
 import WebusbButton from '@suite-components/WebusbButton';
 import { isWebUSB } from '@suite-utils/transport';
-import messages from '@suite/support/messages';
 
 import Bridge from './components/Bridge/Container';
 import { Props } from './Container';
@@ -71,7 +70,7 @@ const PairDeviceStep = (props: Props) => {
                                 {getConnectedDeviceStatus() === 'ok' && (
                                     <>
                                         <Text>
-                                            <Translation {...messages.TR_FOUND_OK_DEVICE} />
+                                            <Translation id="TR_FOUND_OK_DEVICE" />
                                         </Text>
                                         <Wrapper.Controls>
                                             <OnboardingButton.Cta
@@ -80,7 +79,7 @@ const PairDeviceStep = (props: Props) => {
                                                     props.onboardingActions.goToNextStep()
                                                 }
                                             >
-                                                <Translation {...messages.TR_CONTINUE} />
+                                                <Translation id="TR_CONTINUE" />
                                             </OnboardingButton.Cta>
                                         </Wrapper.Controls>
                                     </>

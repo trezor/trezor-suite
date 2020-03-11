@@ -4,7 +4,7 @@ import { colors, variables } from '@trezor/components';
 import FiatValue from '@suite-components/FiatValue/Container';
 import Badge from '@suite-components/Badge';
 import { Translation, HiddenPlaceholder } from '@suite-components';
-import messages from '@suite/support/messages';
+
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import Box from '../Box';
 import BoxRow from '../BoxRow';
@@ -50,7 +50,7 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
         <Grid>
             <Col direction="column">
                 <BoxHeading>
-                    <Translation {...messages.TR_TX_CURRENT_VALUE} />{' '}
+                    <Translation id="TR_TX_CURRENT_VALUE" />{' '}
                     {/* such a weird syntax, but basically all I want is show date in parentheses: (formattedDate) */}
                     <FiatValue amount="1" symbol={tx.symbol}>
                         {({ timestamp }) => (
@@ -75,19 +75,16 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                     </FiatValue>
                 </BoxHeading>
                 <Box>
-                    <BoxRow
-                        title={<Translation {...messages.TR_TOTAL_OUTPUT} />}
-                        alignContent="right"
-                    >
-                        {totalOutput ? (
+                    <BoxRow title={<Translation id="TR_TOTAL_OUTPUT" />} alignContent="right">
+                        {totalOutput && (
                             <HiddenPlaceholder>
                                 <FiatValue amount={totalOutput} symbol={tx.symbol}>
                                     {({ value }) => value ?? null}
                                 </FiatValue>
                             </HiddenPlaceholder>
-                        ) : null}
+                        )}
                     </BoxRow>
-                    <BoxRow title={<Translation {...messages.TR_TX_FEE} />} alignContent="right">
+                    <BoxRow title={<Translation id="TR_TX_FEE" />} alignContent="right">
                         <HiddenPlaceholder>
                             <FiatValue amount={tx.fee} symbol={tx.symbol}>
                                 {({ value }) => value ?? null}
@@ -99,7 +96,7 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
             <Col direction="column">
                 <BoxHeading>
                     <Translation
-                        {...messages.TR_TX_HISTORICAL_VALUE_DATE}
+                        id="TR_TX_HISTORICAL_VALUE_DATE"
                         values={{
                             date: tx.blockTime ? (
                                 <FormattedDate
@@ -121,11 +118,8 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                     </FiatValue>
                 </BoxHeading>
                 <Box>
-                    <BoxRow
-                        title={<Translation {...messages.TR_TOTAL_OUTPUT} />}
-                        alignContent="right"
-                    >
-                        {totalOutput ? (
+                    <BoxRow title={<Translation id="TR_TOTAL_OUTPUT" />} alignContent="right">
+                        {totalOutput && (
                             <HiddenPlaceholder>
                                 <FiatValue
                                     amount={totalOutput}
@@ -135,16 +129,16 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                                     {({ value }) => value ?? null}
                                 </FiatValue>
                             </HiddenPlaceholder>
-                        ) : null}
+                        )}
                     </BoxRow>
-                    <BoxRow title={<Translation {...messages.TR_TX_FEE} />} alignContent="right">
-                        {totalOutput ? (
+                    <BoxRow title={<Translation id="TR_TX_FEE" />} alignContent="right">
+                        {totalOutput && (
                             <HiddenPlaceholder>
                                 <FiatValue amount={tx.fee} symbol={tx.symbol} source={tx.rates}>
                                     {({ value }) => value ?? null}
                                 </FiatValue>
                             </HiddenPlaceholder>
-                        ) : null}
+                        )}
                     </BoxRow>
                 </Box>
             </Col>

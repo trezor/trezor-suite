@@ -1,13 +1,18 @@
 // import * as storageActions from '@suite-actions/storageActions';
 import { Dispatch, GetState } from '@suite-types';
 import { SEND } from '@wallet-actions/constants';
+import { isAddressValid } from '@wallet-utils/validation';
 import { ETH_DEFAULT_GAS_LIMIT, ETH_DEFAULT_GAS_PRICE } from '@wallet-constants/sendForm';
 import { FeeLevel, Output } from '@wallet-types/sendForm';
-import debounce from 'debounce';
 import { formatNetworkAmount, getFiatValue } from '@wallet-utils/accountUtils';
 // import { formatNetworkAmount, getAccountKey, getFiatValue } from '@wallet-utils/accountUtils';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
-import { getOutput, hasDecimals, shouldComposeBy } from '@wallet-utils/sendFormUtils';
+import {
+    getOutput,
+    hasDecimals,
+    shouldComposeBy,
+    getReserveInXrp,
+} from '@wallet-utils/sendFormUtils';
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import BigNumber from 'bignumber.js';
 import { fromWei } from 'web3-utils';
@@ -35,7 +40,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             : feeInfo.levels.concat({
                   label: 'custom',
                   feePerUnit: '0',
-                  blocks: 0,
+                  blocks: -1,
               });
 
     if (account.networkType === 'ethereum') {
@@ -135,17 +140,24 @@ export const handleAddressChange = (outputId: number, address: string) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const { account } = getState().wallet.selectedAccount;
-    if (!account) return null;
+    const { send, selectedAccount } = getState().wallet;
+    if (!send || selectedAccount.status !== 'loaded') return null;
+    const { account } = selectedAccount;
+    const { networkType } = account;
+    const output = getOutput(send.outputs, outputId);
 
     dispatch({
         type: SEND.HANDLE_ADDRESS_CHANGE,
         outputId,
         address,
         symbol: account.symbol,
-        networkType: account.networkType,
+        networkType,
         currentAccountAddress: account.descriptor,
     });
+
+    if (networkType === 'ripple' && isAddressValid(address, account.symbol)) {
+        dispatch(rippleActions.checkAccountReserve(output.id, address));
+    }
 
     dispatch(composeChange('address'));
 };
@@ -164,6 +176,8 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
     const isValidAmount = hasDecimals(amount, network.decimals);
+    const { isDestinationAccountEmpty } = send.networkTypeRipple;
+    const reserve = getReserveInXrp(account);
 
     if (fiatNetwork && isValidAmount) {
         const rate = fiatNetwork.current?.rates[output.localCurrency.value.value].toString();
@@ -183,16 +197,9 @@ export const handleAmountChange = (outputId: number, amount: string) => (
         amount,
         decimals: network.decimals,
         availableBalance: account.formattedBalance,
+        isDestinationAccountEmpty,
+        reserve,
     });
-
-    if (account.networkType === 'ripple' && output.address.value && !output.address.error) {
-        dispatch({
-            type: SEND.AMOUNT_LOADING,
-            isLoading: true,
-            outputId: output.id,
-        });
-        dispatch(debounce(rippleActions.checkAccountReserve(output.id, amount), 700));
-    }
 
     dispatch(composeChange('amount'));
 };
@@ -210,6 +217,8 @@ export const handleSelectCurrencyChange = (
 
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
+    const { isDestinationAccountEmpty } = send.networkTypeRipple;
+    const reserve = getReserveInXrp(account);
 
     if (fiatNetwork && output.amount.value) {
         const rate = fiatNetwork.current?.rates[localCurrency.value];
@@ -231,6 +240,8 @@ export const handleSelectCurrencyChange = (
             amount: amountBigNumber.toString(),
             decimals: network.decimals,
             availableBalance: account.formattedBalance,
+            isDestinationAccountEmpty,
+            reserve,
         });
     }
 
@@ -253,9 +264,11 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
     const { fiat, send, selectedAccount } = getState().wallet;
     if (!fiat || !send || selectedAccount.status !== 'loaded') return null;
     const { account, network } = selectedAccount;
+    const { isDestinationAccountEmpty } = send.networkTypeRipple;
 
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
+    const reserve = getReserveInXrp(account);
 
     if (!fiatNetwork) return null;
 
@@ -275,6 +288,8 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
         amount,
         decimals: network.decimals,
         availableBalance: account.formattedBalance,
+        isDestinationAccountEmpty,
+        reserve,
     });
 
     dispatch(composeChange('amount'));
@@ -290,6 +305,8 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
     const { account, network } = selectedAccount;
     const composedTransaction = await dispatch(compose(true));
     const output = getOutput(send.outputs, outputId);
+    const { isDestinationAccountEmpty } = send.networkTypeRipple;
+    const reserve = getReserveInXrp(account);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
 
     if (fiatNetwork && composedTransaction && composedTransaction.type !== 'error') {
@@ -313,21 +330,15 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
     }
 
     if (composedTransaction && composedTransaction.type !== 'error') {
-        const availableBalanceBig = new BigNumber(account.availableBalance);
-
-        const amount = formatNetworkAmount(
-            availableBalanceBig.minus(composedTransaction.fee).toString(),
-            account.symbol,
-        );
-
-        const amountBig = new BigNumber(amount);
-
+        const maxBig = new BigNumber(formatNetworkAmount(composedTransaction.max, account.symbol));
         dispatch({
             type: SEND.HANDLE_AMOUNT_CHANGE,
             outputId,
-            amount: amountBig.isLessThan(0) ? '0' : amountBig.toString(),
+            amount: maxBig.isLessThanOrEqualTo(0) ? '0' : maxBig.toFixed(network.decimals),
             decimals: network.decimals,
             availableBalance: account.availableBalance,
+            isDestinationAccountEmpty,
+            reserve,
         });
     } else {
         dispatch({
@@ -336,6 +347,8 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
             amount: '0',
             decimals: network.decimals,
             availableBalance: account.availableBalance,
+            isDestinationAccountEmpty,
+            reserve,
         });
     }
 

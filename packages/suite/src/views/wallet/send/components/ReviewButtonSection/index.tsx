@@ -1,16 +1,13 @@
 import { SUITE } from '@suite-actions/constants';
 import { AppState, TrezorDevice } from '@suite-types';
-import { Button, colors, variables } from '@trezor/components';
+import { Button, colors } from '@trezor/components';
 import { Account, Send } from '@wallet-types';
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
-import { PrecomposedTransactionXrp, PrecomposedTransactionEth } from '@wallet-types/sendForm';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import styled from 'styled-components';
 
-import EstimatedMiningTime from '../EstimatedMiningTime';
 import { Props } from './Container';
 
 const Wrapper = styled.div`
@@ -35,11 +32,6 @@ const Row = styled.div`
     &:last-child {
         padding-bottom: 0;
     }
-`;
-
-const Bold = styled.div`
-    padding-left: 4px;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
 const isDisabled = (
@@ -100,22 +92,10 @@ const isDisabled = (
     return isDisabled;
 };
 
-const getSendAmount = (
-    transactionInfo: PrecomposedTransactionXrp | PrecomposedTransactionEth,
-    symbol: Account['symbol'],
-) => {
-    if (transactionInfo && transactionInfo.type !== 'error') {
-        return `${formatNetworkAmount(transactionInfo.totalSpent, symbol)} ${symbol.toUpperCase()}`;
-    }
-
-    return null;
-};
-
 export default ({ send, suite, account, device, modalActions }: Props) => {
     if (!send || !account || !device) return null;
-    const { isComposing, customFee } = send;
-    const { networkType, symbol } = account;
-    const transactionInfo = getTransactionInfo(networkType, send);
+    const { isComposing } = send;
+    const { networkType } = account;
 
     return (
         <Wrapper>
@@ -125,27 +105,9 @@ export default ({ send, suite, account, device, modalActions }: Props) => {
                     isDisabled={isComposing ? false : isDisabled(send, suite, device, networkType)}
                     onClick={() => modalActions.openModal({ type: 'review-transaction' })}
                 >
-                    <Translation {...messages.TR_SEND_REVIEW_TRANSACTION} />
+                    <Translation id="TR_SEND_REVIEW_TRANSACTION" />
                 </ButtonReview>
             </Row>
-            {transactionInfo?.type === 'final' && (
-                <>
-                    <Row>
-                        Send <Bold>{getSendAmount(transactionInfo, symbol)}</Bold>
-                    </Row>
-                    <Row>
-                        Including fee of{' '}
-                        <Bold>{formatNetworkAmount(transactionInfo.fee, symbol)}</Bold>
-                    </Row>
-                    {networkType === 'bitcoin' && !customFee.value && (
-                        <Row>
-                            <EstimatedMiningTime
-                                seconds={send.feeInfo.blockTime * send.selectedFee.blocks * 60}
-                            />
-                        </Row>
-                    )}
-                </>
-            )}
         </Wrapper>
     );
 };

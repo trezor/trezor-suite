@@ -4,7 +4,7 @@ import { FormattedDate } from 'react-intl';
 import { H2, Icon, P, Button, colors } from '@trezor/components';
 import { SuiteLayout, Translation, Image } from '@suite-components';
 import hocNotification, { ViewProps } from '@suite-components/hocNotification';
-import messages from '@suite/support/messages';
+
 import { Props } from './Container';
 
 const Wrapper = styled.div`
@@ -89,10 +89,10 @@ export default (props: Props) => {
             <SuiteLayout title="Notifications">
                 <EmptyWrapper>
                     <H2>
-                        <Translation {...messages.NOTIFICATIONS_EMPTY_TITLE} />
+                        <Translation id="NOTIFICATIONS_EMPTY_TITLE" />
                     </H2>
                     <P size="tiny">
-                        <Translation {...messages.NOTIFICATIONS_EMPTY_DESC} />
+                        <Translation id="NOTIFICATIONS_EMPTY_DESC" />
                     </P>
                     <StyledImage image="UNI_EMPTY_PAGE" />
                 </EmptyWrapper>
@@ -103,7 +103,7 @@ export default (props: Props) => {
         <SuiteLayout title="Notifications">
             <Wrapper>
                 <H2>
-                    <Translation {...messages.NOTIFICATIONS_TITLE} />
+                    <Translation id="NOTIFICATIONS_TITLE" />
                 </H2>
                 {notifications.map(n => hocNotification(n, NotificationView))}
             </Wrapper>

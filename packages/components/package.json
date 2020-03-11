@@ -20,7 +20,7 @@
     "dependencies": {
         "@tippy.js/react": "^3.1.1",
         "@types/react-select": "^3.0.10",
-        "@types/styled-components": "^4.4.2",
+        "@types/styled-components": "^5.0.1",
         "react-select": "^3.0.8",
         "react-svg": "^11.0.7",
         "react-switch": "^5.0.1"
@@ -47,18 +47,18 @@
         "randomcolor": "^0.5.4",
         "react-docgen-typescript-loader": "^3.6.0",
         "start-server-and-test": "^1.10.8",
-        "styled-components": "^4.3.2",
+        "styled-components": "^5.0.1",
         "stylelint": "13.2.0",
         "stylelint-config-recommended": "^3.0.0",
         "stylelint-config-styled-components": "^0.1.1",
         "stylelint-custom-processor-loader": "^0.6.0",
         "stylelint-processor-styled-components": "^1.10.0",
         "typescript-styled-plugin": "^0.15.0",
-        "webpack": "^4.41.6"
+        "webpack": "^4.42.0"
     },
     "peerDependencies": {
         "react": "16.9.0",
         "react-native": "^0.59.4",
-        "styled-components": "^4.3.2"
+        "styled-components": "^5.0.1"
     }
 }

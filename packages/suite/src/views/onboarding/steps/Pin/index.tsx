@@ -4,7 +4,7 @@ import { UI } from 'trezor-connect';
 
 import { Link } from '@trezor/components';
 import { Translation, Image } from '@suite-components';
-import messages from '@suite/support/messages';
+
 import { URLS } from '@suite-constants';
 import { Text, OnboardingButton, Wrapper } from '@onboarding-components';
 import { Props } from './Container';
@@ -44,18 +44,16 @@ const SetPinStep = (props: Props) => {
         <Wrapper.Step data-test="@onboarding/pin">
             <Wrapper.StepHeading>
                 {getStatus() === 'initial' && 'PIN'}
-                {getStatus() === 'first' && <Translation {...messages.TR_PIN_HEADING_FIRST} />}
-                {getStatus() === 'second' && <Translation {...messages.TR_PIN_HEADING_REPEAT} />}
-                {getStatus() === 'success' && <Translation {...messages.TR_PIN_HEADING_SUCCESS} />}
-                {getStatus() === 'mismatch' && (
-                    <Translation {...messages.TR_PIN_HEADING_MISMATCH} />
-                )}
+                {getStatus() === 'first' && <Translation id="TR_PIN_HEADING_FIRST" />}
+                {getStatus() === 'second' && <Translation id="TR_PIN_HEADING_REPEAT" />}
+                {getStatus() === 'success' && <Translation id="TR_PIN_HEADING_SUCCESS" />}
+                {getStatus() === 'mismatch' && <Translation id="TR_PIN_HEADING_MISMATCH" />}
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {getStatus() === 'initial' && (
                     <>
                         <Text>
-                            <Translation {...messages.TR_PIN_SUBHEADING} />
+                            <Translation id="TR_PIN_SUBHEADING" />
                         </Text>
 
                         <Image image="T_PIN_ASK" />
@@ -66,7 +64,7 @@ const SetPinStep = (props: Props) => {
                                     props.changePin();
                                 }}
                             >
-                                <Translation {...messages.TR_SET_PIN} />
+                                <Translation id="TR_SET_PIN" />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -75,7 +73,7 @@ const SetPinStep = (props: Props) => {
                 {getStatus() === 'success' && (
                     <>
                         <Text>
-                            <Translation {...messages.TR_PIN_SET_SUCCESS} />
+                            <Translation id="TR_PIN_SET_SUCCESS" />
                         </Text>
                         <Image image="T_PIN_SUCCESS" />
                         <Wrapper.Controls>
@@ -83,7 +81,7 @@ const SetPinStep = (props: Props) => {
                                 data-test="@onboarding/pin/continue-button"
                                 onClick={() => props.goToNextStep()}
                             >
-                                <Translation {...messages.TR_CONTINUE} />
+                                <Translation id="TR_CONTINUE" />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -93,11 +91,11 @@ const SetPinStep = (props: Props) => {
                     <>
                         <Text>
                             <Translation
-                                {...messages.TR_PIN_ERROR_TROUBLESHOOT}
+                                id="TR_PIN_ERROR_TROUBLESHOOT"
                                 values={{
                                     TR_DOCUMENTATION: (
                                         <Link href={URLS.PIN_MANUAL_URL}>
-                                            <Translation {...messages.TR_DOCUMENTATION} />
+                                            <Translation id="TR_DOCUMENTATION" />
                                         </Link>
                                     ),
                                 }}
@@ -110,7 +108,7 @@ const SetPinStep = (props: Props) => {
                                     props.changePin();
                                 }}
                             >
-                                <Translation {...messages.TR_START_AGAIN} />
+                                <Translation id="TR_START_AGAIN" />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -122,7 +120,7 @@ const SetPinStep = (props: Props) => {
                     icon="CROSS"
                     onClick={() => props.goToNextStep()}
                 >
-                    <Translation {...messages.TR_SKIP} />
+                    <Translation id="TR_SKIP" />
                 </OnboardingButton.Back>
             </Wrapper.StepFooter>
         </Wrapper.Step>

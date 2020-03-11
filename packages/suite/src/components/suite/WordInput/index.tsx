@@ -2,10 +2,9 @@ import React, { useEffect } from 'react';
 import { createFilter } from 'react-select';
 import styled, { keyframes } from 'styled-components';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
-
+import messages from '@suite/support/messages';
 import { Select } from '@trezor/components';
 import { BIP_39 } from '@suite-constants';
-import messages from '@suite/support/messages';
 
 const options = BIP_39.map(item => ({ label: item, value: item }));
 

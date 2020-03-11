@@ -14,7 +14,7 @@ import OnlineStatus from '@suite-support/OnlineStatus';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import CypressExportStore from '@suite-support/CypressExportStore';
 import Router from '@suite-support/Router';
-import messages from '@suite/support/messages';
+
 import { isDev } from '@suite-utils/build';
 import TrezorConnect from 'trezor-connect';
 import { SENTRY } from '@suite-config';
@@ -71,7 +71,7 @@ class TrezorSuiteApp extends App<Props> {
                                 additionalClassName="trezor-webusb-button"
                                 style={{ width: '100%', position: 'absolute', top: '-1000px' }}
                             >
-                                <Translation {...messages.TR_CHECK_FOR_DEVICES} />
+                                <Translation id="TR_CHECK_FOR_DEVICES" />
                             </Button>
                             <Router />
                             <ToastContainer />

@@ -4,7 +4,7 @@ import TrezorConnect, { UI } from 'trezor-connect';
 import { H2, P, Link } from '@trezor/components';
 import { Translation, WordInputAdvanced } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
-import messages from '@suite/support/messages';
+
 import { URLS } from '@suite-constants';
 
 const Wrapper = styled(ModalWrapper)`
@@ -25,10 +25,10 @@ const Word = ({ count }: Props) => {
     return (
         <Wrapper>
             <H2>
-                <Translation {...messages.TR_FOLLOW_INSTRUCTIONS_ON_DEVICE} />
+                <Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />
             </H2>
             <P size="tiny">
-                <Translation {...messages.TR_ADVANCED_RECOVERY_TEXT} />
+                <Translation id="TR_ADVANCED_RECOVERY_TEXT" />
             </P>
             <WordInputAdvanced
                 count={count}
@@ -38,9 +38,9 @@ const Word = ({ count }: Props) => {
             />
             <BottomText>
                 <P size="tiny">
-                    <Translation {...messages.TR_ADVANCED_RECOVERY_NOT_SURE} />{' '}
+                    <Translation id="TR_ADVANCED_RECOVERY_NOT_SURE" />{' '}
                     <Link size="tiny" href={URLS.WIKI_ADVANCED_RECOVERY}>
-                        <Translation {...messages.TR_LEARN_MORE_LINK} />
+                        <Translation id="TR_LEARN_MORE_LINK" />
                     </Link>
                 </P>
             </BottomText>

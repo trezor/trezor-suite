@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import Fee from '../Fee/Container';
 import Layout from '../Layout';
-import TransactionInfo from '../TransactionInfo/Container';
+// import TransactionInfo from '../TransactionInfo/Container';
 import DestinationTag from './components/DestinationTag/Container';
 import { Props } from './Container';
 
@@ -15,14 +15,15 @@ const Wrapper = styled.div`
 
 export default ({ send, account }: Props) => {
     if (!send || !account) return null;
-    const { transactionInfo } = send.networkTypeRipple;
+    // const { transactionInfo } = send.networkTypeRipple;
 
     return (
         <Wrapper>
             <Layout
                 left={<Fee />}
                 right={<DestinationTag />}
-                bottom={transactionInfo?.type === 'final' ? <TransactionInfo /> : null}
+                bottom={null}
+                // bottom={transactionInfo?.type === 'final' ? <TransactionInfo /> : null}
             />
         </Wrapper>
     );

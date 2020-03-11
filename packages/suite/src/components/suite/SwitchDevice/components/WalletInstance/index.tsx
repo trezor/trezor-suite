@@ -4,7 +4,6 @@ import { Button, Switch, colors, variables } from '@trezor/components';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { Props } from './Container';
 import { FormattedNumber, WalletLabeling, Translation } from '@suite-components';
-import messages from '@suite/support/messages';
 
 const Wrapper = styled.div<{ selected: boolean }>`
     display: flex;
@@ -99,12 +98,12 @@ const WalletInstance = ({
                 )}
                 {!discoveryProcess && (
                     <InstanceType>
-                        <Translation {...messages.TR_UNDISCOVERED_WALLET} />
+                        <Translation id="TR_UNDISCOVERED_WALLET" />
                     </InstanceType>
                 )}
                 <InstanceTitle>
                     <Translation
-                        {...messages.TR_NUM_ACCOUNTS_FIAT_VALUE}
+                        id="TR_NUM_ACCOUNTS_FIAT_VALUE"
                         values={{
                             accountsCount,
                             fiatValue: (
@@ -132,7 +131,7 @@ const WalletInstance = ({
                             variant="secondary"
                             onClick={() => forgetDevice(instance)}
                         >
-                            <Translation {...messages.TR_HIDE_WALLET} />
+                            <Translation id="TR_HIDE_WALLET" />
                         </ForgetButton>
                     </Col>
                 </>

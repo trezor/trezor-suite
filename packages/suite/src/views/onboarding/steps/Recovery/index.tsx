@@ -3,7 +3,6 @@ import React from 'react';
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import { SelectWordCount, SelectRecoveryType, Error } from '@recovery-components';
 import { Translation, Loading, Image } from '@suite-components';
-import messages from '@suite/support/messages';
 
 import { Props } from './Container';
 
@@ -50,7 +49,7 @@ const RecoveryStep = (props: Props) => {
                 {recovery.status === 'initial' && model === 2 && (
                     <>
                         <Text>
-                            <Translation {...messages.TR_RECOVER_SUBHEADING_MODEL_T} />
+                            <Translation id="TR_RECOVER_SUBHEADING_MODEL_T" />
                         </Text>
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
@@ -59,7 +58,7 @@ const RecoveryStep = (props: Props) => {
                                     recoverDevice();
                                 }}
                             >
-                                <Translation {...messages.TR_START_RECOVERY} />
+                                <Translation id="TR_START_RECOVERY" />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -79,7 +78,7 @@ const RecoveryStep = (props: Props) => {
                                     setStatus('initial');
                                 }}
                             >
-                                <Translation {...messages.TR_BACK} />
+                                <Translation id="TR_BACK" />
                             </OnboardingButton.Alt>
                         </Wrapper.Controls>
                     </>
@@ -115,7 +114,7 @@ const RecoveryStep = (props: Props) => {
                                     resetReducer();
                                 }}
                             >
-                                <Translation {...messages.TR_RETRY} />
+                                <Translation id="TR_RETRY" />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>

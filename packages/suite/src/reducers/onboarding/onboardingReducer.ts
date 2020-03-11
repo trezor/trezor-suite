@@ -50,7 +50,7 @@ const setPrevDevice = (state: OnboardingState, device: Device) => {
     if (!state.prevDevice || !state.prevDevice.features) {
         return device;
     }
-    if (state.prevDevice.features.device_id !== device.features.device_id) {
+    if (state.prevDevice.id !== device.id) {
         return state.prevDevice;
     }
     return device;

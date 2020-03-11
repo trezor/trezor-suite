@@ -74,8 +74,8 @@ export const isSelectedInstance = (selected?: TrezorDevice, device?: TrezorDevic
         device &&
         selected.features &&
         device.features &&
-        device.features.device_id &&
-        selected.features.device_id === device.features.device_id &&
+        device.id &&
+        selected.id === device.id &&
         selected.instance === device.instance
     );
 
@@ -84,10 +84,10 @@ export const isSelectedDevice = (selected?: TrezorDevice | Device, device?: Trez
     if (!selected.features && !device.features) return selected.path === device.path;
     return !!(
         selected.features &&
-        selected.features.device_id &&
+        selected.id &&
         device.features &&
-        device.features.device_id &&
-        selected.features.device_id === device.features.device_id
+        device.id &&
+        selected.id === device.id
     );
 };
 
@@ -112,7 +112,7 @@ export const getNewInstanceNumber = (devices: TrezorDevice[], device: TrezorDevi
     // find all instances with device "device_id"
     // and sort them by instance number
     const affectedDevices = devices
-        .filter(d => d.features && d.features.device_id === device.features.device_id)
+        .filter(d => d.features && d.id === device.id)
         .sort((a, b) => {
             if (!a.instance) {
                 return -1;
@@ -135,11 +135,7 @@ export const getNewInstanceNumber = (devices: TrezorDevice[], device: TrezorDevi
  */
 export const findInstanceIndex = (draft: TrezorDevice[], device: AcquiredDevice) =>
     draft.findIndex(
-        d =>
-            d.features &&
-            d.features.device_id &&
-            d.features.device_id === device.features.device_id &&
-            d.instance === device.instance,
+        d => d.features && d.id && d.id === device.id && d.instance === device.instance,
     );
 
 /**
@@ -155,13 +151,13 @@ export const getSelectedDevice = (
 ): TrezorDevice | undefined => {
     // selected device is not acquired
     if (!device.features) return devices.find(d => d.path === device.path);
-    const { path, instance, features } = device;
+    const { path, instance } = device;
 
     return devices.find(d => {
         if ((!d.features || d.mode === 'bootloader') && d.path === path) {
             return true;
         }
-        if (d.instance === instance && d.features && d.features.device_id === features.device_id) {
+        if (d.instance === instance && d.features && d.id === device.id) {
             return true;
         }
 
@@ -228,12 +224,12 @@ export const getDeviceInstances = (
     devices: TrezorDevice[],
     exclude = false,
 ): AcquiredDevice[] => {
-    if (!device || !device.features || !device.features.device_id) return [];
+    if (!device || !device.features || !device.id) return [];
     return devices
         .filter(
             d =>
                 d.features &&
-                d.features.device_id === device.features.device_id &&
+                d.id === device.id &&
                 (!exclude || (exclude && d.instance !== device.instance)),
         )
         .sort((a, b) => {
@@ -256,9 +252,7 @@ export const getFirstDeviceInstance = (devices: TrezorDevice[]) => {
             const instances = getDeviceInstances(dev, devices);
             if (instances.length < 1) return result.concat(dev);
             // `device_id` already exists in result
-            const alreadyExists = result.find(
-                r => r.features && dev.features && r.features.device_id === dev.features.device_id,
-            );
+            const alreadyExists = result.find(r => r.features && dev.features && r.id === dev.id);
             if (alreadyExists) return result;
             // base (np passphrase) or first passphrase instance
             return result.concat(instances[0]);

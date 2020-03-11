@@ -18,12 +18,12 @@ export const isNotSameDevice = ({
     // todo: typescript
     prevDevice: any;
 }) => {
-    const prevDeviceId = prevDevice && prevDevice.features && prevDevice.features.device_id;
+    const prevDeviceId = prevDevice && prevDevice.features && prevDevice.id;
     // if no device was connected before, assume it is same device
     if (!prevDeviceId) {
         return false;
     }
-    const deviceId = device && device.features && device.features.device_id;
+    const deviceId = device && device.features && device.id;
     if (!deviceId) {
         return null;
     }

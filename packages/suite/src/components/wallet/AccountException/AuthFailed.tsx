@@ -6,7 +6,7 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Dispatch } from '@suite-types';
 import { Translation, Image } from '@suite-components';
-import messages from '@suite/support/messages';
+
 import Wrapper from './components/Wrapper';
 
 const mapStateToProps = (state: AppState) => ({
@@ -24,12 +24,12 @@ const AuthFailed = ({ locks, authDevice }: Props) => {
     const locked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     return (
         <Wrapper
-            title={<Translation {...messages.TR_ACCOUNT_EXCEPTION_AUTH_ERROR} />}
+            title={<Translation id="TR_ACCOUNT_EXCEPTION_AUTH_ERROR" />}
             description="TODO: Error generic text"
             image={<Image image="UNI_ERROR" />}
         >
             <Button variant="primary" icon="PLUS" isLoading={locked} onClick={authDevice}>
-                <Translation {...messages.TR_RETRY} />
+                <Translation id="TR_RETRY" />
             </Button>
         </Wrapper>
     );

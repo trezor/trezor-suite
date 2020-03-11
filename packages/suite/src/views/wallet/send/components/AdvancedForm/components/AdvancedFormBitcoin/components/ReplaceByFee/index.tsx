@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Translation } from '@suite-components/Translation';
 
 import { variables, colors, Switch } from '@trezor/components';
 
@@ -33,9 +34,11 @@ export default () => {
     return (
         <Wrapper>
             <Left>
-                <Title>Replace by fee (RBF)</Title>
+                <Title>
+                    <Translation id="REPLACE_BY_FEE_TITLE" />
+                </Title>
                 <Description>
-                    RBF allows to bump fee later in case you want the transaction to be mined faster
+                    <Translation id="REPLACE_BY_FEE_DESCRIPTION" />
                 </Description>
             </Left>
             <Right>
