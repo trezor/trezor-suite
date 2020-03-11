@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Account } from '@wallet-types';
-import { FormattedNumber } from 'react-intl';
 import { formatCoinBalance } from '@wallet-utils/balanceUtils';
 import { HiddenPlaceholder } from '@suite-components';
 
