@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import { Translation } from '@suite-components/Translation';
 
 import { findRouteByName } from '@suite-utils/router';
-import { Icon, colors, Switch, Tooltip } from '@trezor/components';
+import { Icon, colors, Switch, Tooltip, variables } from '@trezor/components';
 import { BOTTOM_MENU_ITEMS, MENU_PADDING } from '@suite-constants/menu';
 import Divider from '../Divider';
 import NotificationsBadge from './NotificationsBadge';
@@ -30,11 +30,15 @@ const IconWrapper = styled.div`
 
 const SubMenu = styled.div`
     display: flex;
+    padding-right: 10px;
+    align-items: center;
+    color: ${colors.WHITE};
+    justify-content: space-between;
 `;
 
 const SubMenuText = styled.div`
     display: flex;
-    flex: 1;
+    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 interface ComponentProps {
@@ -87,8 +91,6 @@ const StyledDivider = styled(Divider)`
 
 const SwitchWrapper = styled.div`
     display: flex;
-    margin-left: 20px;
-    flex: 1;
 `;
 
 interface Props {
@@ -133,20 +135,22 @@ const BottomMenu = (props: Props) => (
         })}
         <StyledDivider className="divider" />
         <SubMenu>
-            <MenuItemWrapper>
-                <SubMenuText>Discreet</SubMenuText>
-                <SwitchWrapper>
-                    <Tooltip placement="right" content={<Translation id="TR_DISCREET_TOOLTIP" />}>
-                        <Switch
-                            isSmall
-                            checked={props.discreetMode}
-                            onChange={checked => {
-                                props.setDiscreetMode(checked);
-                            }}
-                        />
-                    </Tooltip>
-                </SwitchWrapper>
-            </MenuItemWrapper>
+            <SubMenuText>Discreet</SubMenuText>
+            <SwitchWrapper>
+                <Tooltip
+                    placement="right"
+                    offset={50}
+                    content={<Translation id="TR_DISCREET_TOOLTIP" />}
+                >
+                    <Switch
+                        isSmall
+                        checked={props.discreetMode}
+                        onChange={checked => {
+                            props.setDiscreetMode(checked);
+                        }}
+                    />
+                </Tooltip>
+            </SwitchWrapper>
         </SubMenu>
     </Wrapper>
 );
