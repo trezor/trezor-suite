@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Account } from '@wallet-types';
+import { FormattedNumber } from 'react-intl';
 import { formatCoinBalance } from '@wallet-utils/balanceUtils';
 import { HiddenPlaceholder } from '@suite-components';
 
@@ -20,10 +21,11 @@ interface Props {
 }
 
 export default ({ value, symbol }: Props) => {
+    const coinBalance = formatCoinBalance(value);
     return (
         <HiddenPlaceholder>
             <Wrapper>
-                <Value>{formatCoinBalance(value)}</Value>
+                <Value>{coinBalance}</Value>
                 <Symbol>{symbol ? symbol.toUpperCase() : symbol}</Symbol>
             </Wrapper>
         </HiddenPlaceholder>
