@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import TrezorConnect, { UI } from 'trezor-connect';
 import { H2, P } from '@trezor/components';
 import { Translation, WordInput } from '@suite-components';
-import messages from '@suite/support/messages';
 
 const ModalWrapper = styled.div`
     padding: 32px 40px;
@@ -14,12 +13,12 @@ const Word = () => {
     return (
         <ModalWrapper>
             <H2>
-                <Translation {...messages.TR_FOLLOW_INSTRUCTIONS_ON_DEVICE} />
+                <Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />
             </H2>
 
             <P size="tiny">
-                <Translation {...messages.TR_ENTER_SEED_WORDS_INSTRUCTION} />{' '}
-                <Translation {...messages.TR_RANDOM_SEED_WORDS_DISCLAIMER} />
+                <Translation id="TR_ENTER_SEED_WORDS_INSTRUCTION" />{' '}
+                <Translation id="TR_RANDOM_SEED_WORDS_DISCLAIMER" />
             </P>
             <WordInput
                 onSubmit={value =>

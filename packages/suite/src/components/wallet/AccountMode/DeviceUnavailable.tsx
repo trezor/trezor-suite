@@ -7,7 +7,7 @@ import { Button, colors } from '@trezor/components';
 import { SUITE } from '@suite-actions/constants';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { NotificationCard, Translation } from '@suite-components';
-import messages from '@suite/support/messages';
+
 import { AppState, Dispatch } from '@suite-types';
 
 const mapStateToProps = (state: AppState) => ({
@@ -24,7 +24,7 @@ const Disconnected = ({ locks, applySettings }: Props) => {
     const progress = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     return (
         <NotificationCard variant="info">
-            <Translation {...messages.TR_ACCOUNT_PASSPHRASE_DISABLED} />
+            <Translation id="TR_ACCOUNT_PASSPHRASE_DISABLED" />
             <Button
                 variant="tertiary"
                 icon="REFRESH"
@@ -33,7 +33,7 @@ const Disconnected = ({ locks, applySettings }: Props) => {
                 isLoading={progress}
                 disabled={progress}
             >
-                <Translation {...messages.TR_ACCOUNT_ENABLE_PASSPHRASE} />
+                <Translation id="TR_ACCOUNT_ENABLE_PASSPHRASE" />
             </Button>
         </NotificationCard>
     );

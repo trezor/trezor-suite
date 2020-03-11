@@ -1,7 +1,7 @@
 import React from 'react';
 import { OnboardingButton } from '@onboarding-components';
 import { Translation } from '@suite-components';
-import messages from '@suite/support/messages';
+
 import { Tooltip } from '@trezor/components';
 
 interface ButtonProps {
@@ -27,7 +27,7 @@ const InstallButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) =>
                 isDisabled={!isConnected || !isInBootloader}
                 onClick={() => onClick()}
             >
-                <Translation {...messages.TR_INSTALL} />
+                <Translation id="TR_INSTALL" />
             </OnboardingButton.Cta>
         </Tooltip>
     );

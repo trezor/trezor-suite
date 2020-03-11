@@ -269,7 +269,8 @@ export default (notification: NotificationEntry, View: React.ComponentType<ViewP
                 notification,
                 icon: 'INFO',
                 message: {
-                    id: notification.type,
+                    // TODO: proper msg definition
+                    id: notification.type as 'TR_404_DESCRIPTION',
                     defaultMessage: notification.type,
                 },
             });

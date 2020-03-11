@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { P } from '@trezor/components';
 import { Translation } from '@suite-components';
-import messages from '@suite/support/messages';
+
 import { homescreensT1, homescreensT2 } from '@suite-constants';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
@@ -76,7 +76,7 @@ const BackgroundGallery = ({ device, applySettings }: Props) => {
     return (
         <ModalWrapper>
             <StyledP>
-                <Translation {...messages.TR_BACKGROUND_GALLERY} />
+                <Translation id="TR_BACKGROUND_GALLERY" />
             </StyledP>
 
             {device.features.major_version === 1 && (

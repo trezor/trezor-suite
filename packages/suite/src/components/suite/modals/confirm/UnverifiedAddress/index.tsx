@@ -7,7 +7,6 @@ import { Translation } from '@suite-components/Translation';
 import { Button, P, H2, Link, colors } from '@trezor/components';
 import { useKeyPress } from '@suite-utils/dom';
 import { TrezorDevice, Dispatch } from '@suite-types';
-import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     max-width: 370px;
@@ -82,24 +81,24 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
     if (!device.connected) {
         deviceStatus = (
             <Translation
-                {...messages.TR_DEVICE_LABEL_IS_NOT_CONNECTED}
+                id="TR_DEVICE_LABEL_IS_NOT_CONNECTED"
                 values={{ deviceLabel: device.label }}
             />
         );
-        claim = <Translation {...messages.TR_PLEASE_CONNECT_YOUR_DEVICE} />;
+        claim = <Translation id="TR_PLEASE_CONNECT_YOUR_DEVICE" />;
     } else {
         // corner-case where device is connected but it is unavailable because it was created with different "passphrase_protection" settings
         const enable = !!(device.features && device.features.passphrase_protection);
         deviceStatus = (
             <Translation
-                {...messages.TR_DEVICE_LABEL_IS_UNAVAILABLE}
+                id="TR_DEVICE_LABEL_IS_UNAVAILABLE"
                 values={{ deviceLabel: device.label }}
             />
         );
         claim = enable ? (
-            <Translation {...messages.TR_PLEASE_ENABLE_PASSPHRASE} />
+            <Translation id="TR_PLEASE_ENABLE_PASSPHRASE" />
         ) : (
-            <Translation {...messages.TR_PLEASE_DISABLE_PASSPHRASE} />
+            <Translation id="TR_PLEASE_DISABLE_PASSPHRASE" />
         );
     }
 
@@ -110,19 +109,16 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
             <Content>
                 <H2>{deviceStatus}</H2>
                 <StyledP size="small">
-                    <Translation
-                        {...messages.TR_TO_PREVENT_PHISHING_ATTACKS_COMMA}
-                        values={{ claim }}
-                    />
+                    <Translation id="TR_TO_PREVENT_PHISHING_ATTACKS_COMMA" values={{ claim }} />
                 </StyledP>
             </Content>
             <Content>
                 <Row>
                     <Button onClick={() => verifyAddress()}>
-                        <Translation {...messages.TR_TRY_AGAIN} />
+                        <Translation id="TR_TRY_AGAIN" />
                     </Button>
                     <Button variant="danger" onClick={() => unverifiedAddress()}>
-                        <Translation {...messages.TR_SHOW_UNVERIFIED_ADDRESS} />
+                        <Translation id="TR_SHOW_UNVERIFIED_ADDRESS" />
                     </Button>
                 </Row>
             </Content>
@@ -132,19 +128,19 @@ const ConfirmUnverifiedAddress: FunctionComponent<Props> = ({
                     <Content>
                         <H2>
                             <Translation
-                                {...messages.TR_DEVICE_LABEL_IS_NOT_BACKED_UP}
+                                id="TR_DEVICE_LABEL_IS_NOT_BACKED_UP"
                                 values={{ deviceLabel: device.label }}
                             />
                         </H2>
                         <StyledP size="small">
-                            <Translation {...messages.TR_IF_YOUR_DEVICE_IS_EVER_LOST} />
+                            <Translation id="TR_IF_YOUR_DEVICE_IS_EVER_LOST" />
                         </StyledP>
                     </Content>
                     <Content>
                         <Row>
                             <Link href={`/?backup#${device.path}`}>
                                 <Button>
-                                    <Translation {...messages.TR_CREATE_BACKUP_IN_3_MINUTES} />
+                                    <Translation id="TR_CREATE_BACKUP_IN_3_MINUTES" />
                                 </Button>
                             </Link>
                         </Row>

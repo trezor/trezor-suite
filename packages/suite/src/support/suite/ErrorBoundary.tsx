@@ -71,7 +71,7 @@ export default ErrorBoundary;
 // IntlProvider. Not sure if we need so much to have this translated here.
 
 // import { Translation } from '@suite-components/Translation';
-// import messages from '@suite/support/messages';
+//
 
 // TR_ERROR_OCCURRED: {
 //     id: 'TR_ERROR_OCCURRED',

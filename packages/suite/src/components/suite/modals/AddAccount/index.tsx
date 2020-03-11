@@ -62,7 +62,7 @@ export default (props: Props) => {
                 actionButton={
                     <Link href={network.url}>
                         <Button icon="EXTERNAL_LINK" variant="primary" onClick={props.onCancel}>
-                            <Translation>{messages.TR_GO_TO_EXTERNAL_WALLET}</Translation>
+                            <Translation id="TR_GO_TO_EXTERNAL_WALLET" />
                         </Button>
                     </Link>
                 }

@@ -6,10 +6,9 @@ import { SUITE } from '@suite-actions/constants';
 import { Props } from './Container';
 import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
+import { ExtendedMessageDescriptor } from '@suite-types';
 import { getAccountTypeIntl, getBip43Shortcut } from '@wallet-utils/accountUtils';
-
 import { Section, ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/Settings';
-
 import {
     WIKI_XPUB_URL,
     WIKI_BECH32_URL,
@@ -38,8 +37,8 @@ export default ({ selectedAccount, locks, device, openModal }: Props) => {
 
     const accountTypeName = getAccountTypeIntl(account.accountType);
     const bip43 = getBip43Shortcut(account.path);
-    let accountTypeDesc = messages.TR_ACCOUNT_DETAILS_TYPE_P2PKH;
-    let accountTypeShortcut = messages.TR_ACCOUNT_TYPE_P2PKH;
+    let accountTypeDesc: ExtendedMessageDescriptor = messages.TR_ACCOUNT_DETAILS_TYPE_P2PKH;
+    let accountTypeShortcut: ExtendedMessageDescriptor = messages.TR_ACCOUNT_TYPE_P2PKH;
     let accountTypeUrl = WIKI_P2PHK_URL;
     if (bip43 === 'bech32') {
         accountTypeDesc = messages.TR_ACCOUNT_DETAILS_TYPE_BECH32;
@@ -55,12 +54,12 @@ export default ({ selectedAccount, locks, device, openModal }: Props) => {
     return (
         <WalletLayout title="Account details" account={selectedAccount}>
             <H2>
-                <Translation {...messages.TR_ACCOUNT_DETAILS_HEADER} />
+                <Translation id="TR_ACCOUNT_DETAILS_HEADER" />
             </H2>
             <Section>
                 <Row>
                     <TextColumn
-                        title={<Translation {...messages.TR_ACCOUNT_DETAILS_TYPE_HEADER} />}
+                        title={<Translation id="TR_ACCOUNT_DETAILS_TYPE_HEADER" />}
                         description={<Translation {...accountTypeDesc} />}
                         learnMore={accountTypeUrl}
                     />
@@ -75,8 +74,8 @@ export default ({ selectedAccount, locks, device, openModal }: Props) => {
                 </Row>
                 <Row>
                     <TextColumn
-                        title={<Translation {...messages.TR_ACCOUNT_DETAILS_XPUB_HEADER} />}
-                        description={<Translation {...messages.TR_ACCOUNT_DETAILS_XPUB} />}
+                        title={<Translation id="TR_ACCOUNT_DETAILS_XPUB_HEADER" />}
+                        description={<Translation id="TR_ACCOUNT_DETAILS_XPUB" />}
                         learnMore={WIKI_XPUB_URL}
                     />
                     <ActionColumn>
@@ -96,7 +95,7 @@ export default ({ selectedAccount, locks, device, openModal }: Props) => {
                             isLoading={locked && !disabled}
                             isDisabled={disabled}
                         >
-                            <Translation {...messages.TR_ACCOUNT_DETAILS_XPUB_BUTTON} />
+                            <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
                         </ActionButton>
                     </ActionColumn>
                 </Row>

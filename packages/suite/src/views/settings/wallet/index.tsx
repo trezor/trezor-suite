@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { P, Switch, Icon, variables, colors, CoinLogo, Button } from '@trezor/components';
 import { Translation, ExternalLink } from '@suite-components';
-import messages from '@suite/support/messages';
 import { SettingsLayout } from '@settings-components';
 import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { UnavailableCapability } from 'trezor-connect';
@@ -105,14 +104,14 @@ interface CoinsGroupProps {
 const Unavailable = ({ type }: { type: UnavailableCapability }) => {
     switch (type) {
         case 'no-capability':
-            return <Translation {...messages.FW_CAPABILITY_NO_CAPABILITY} />;
+            return <Translation id="FW_CAPABILITY_NO_CAPABILITY" />;
         case 'no-support':
-            return <Translation {...messages.FW_CAPABILITY_NO_SUPPORT} />;
+            return <Translation id="FW_CAPABILITY_NO_SUPPORT" />;
         case 'update-required':
-            return <Translation {...messages.FW_CAPABILITY_UPDATE_REQUIRED} />;
+            return <Translation id="FW_CAPABILITY_UPDATE_REQUIRED" />;
         // case 'trezor-connect-outdated':
         default:
-            return <Translation {...messages.FW_CAPABILITY_CONNECT_OUTDATED} />;
+            return <Translation id="FW_CAPABILITY_CONNECT_OUTDATED" />;
     }
 };
 
@@ -142,7 +141,7 @@ const CoinsGroup = ({
                     onClick={() => onActivateAll()}
                     data-test={`@settings/wallet/coins-group/${props.type}/activate-all`}
                 >
-                    <Translation {...messages.TR_ACTIVATE_ALL} />
+                    <Translation id="TR_ACTIVATE_ALL" />
                 </Button>
                 <Button
                     isDisabled={enabledNetworks.length === 0}
@@ -152,7 +151,7 @@ const CoinsGroup = ({
                     onClick={() => onDeactivateAll()}
                     data-test={`@settings/wallet/coins-group/${props.type}/deactivate-all`}
                 >
-                    <Translation {...messages.TR_DEACTIVATE_ALL} />
+                    <Translation id="TR_DEACTIVATE_ALL" />
                 </Button>
             </ToggleButtons>
         </Header>
@@ -164,7 +163,7 @@ const CoinsGroup = ({
                     <ActionColumn>
                         <AdvancedSettings>
                             <SettingsIcon icon="SETTINGS" size={12} color={colors.BLACK25} />
-                            <Translation {...messages.TR_ADVANCED_SETTINGS} />
+                            <Translation id="TR_ADVANCED_SETTINGS" />
                         </AdvancedSettings>
                         {!unavailableCapabilities[n.symbol] && (
                             <Switch
@@ -214,11 +213,11 @@ const Settings = (props: Props) => {
     return (
         <SettingsLayout>
             <P size="tiny">
-                <Translation {...messages.TR_COINS_SETTINGS_ALSO_DEFINES} />
+                <Translation id="TR_COINS_SETTINGS_ALSO_DEFINES" />
             </P>
 
             <CoinsGroup
-                label={<Translation>{messages.TR_COINS}</Translation>}
+                label={<Translation id="TR_COINS" />}
                 enabledNetworks={enabledMainnetNetworks}
                 filterFn={mainnetNetworksFilterFn}
                 onToggleOneFn={props.changeCoinVisibility}
@@ -236,8 +235,8 @@ const Settings = (props: Props) => {
             />
 
             <CoinsGroup
-                label={<Translation>{messages.TR_TESTNET_COINS}</Translation>}
-                description={<Translation>{messages.TR_TESTNET_COINS_EXPLAINED}</Translation>}
+                label={<Translation id="TR_TESTNET_COINS" />}
+                description={<Translation id="TR_TESTNET_COINS_EXPLAINED" />}
                 enabledNetworks={enabledTestnetNetworks}
                 filterFn={testnetNetworksFilterFn}
                 onToggleOneFn={props.changeCoinVisibility}
@@ -255,9 +254,9 @@ const Settings = (props: Props) => {
             />
 
             <SectionHeader>
-                <Translation>{messages.TR_3RD_PARTY_WALLETS}</Translation>
+                <Translation id="TR_3RD_PARTY_WALLETS" />
                 <P size="tiny">
-                    <Translation>{messages.TR_3RD_PARTY_WALLETS_DESC}</Translation>
+                    <Translation id="TR_3RD_PARTY_WALLETS_DESC" />
                 </P>
             </SectionHeader>
             <Section>
@@ -266,7 +265,7 @@ const Settings = (props: Props) => {
                         <Coin network={n} />
                         <ActionColumn>
                             <StyledLink variant="nostyle" href={n.url} size="small">
-                                <Translation>{new URL(n.url).hostname}</Translation>
+                                {new URL(n.url).hostname}
                             </StyledLink>
                         </ActionColumn>
                     </Row>

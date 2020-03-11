@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { H2, P, Button } from '@trezor/components';
 import { Translation, Loading } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
-import messages from '@suite/support/messages';
+
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Dispatch } from '@suite-types';
@@ -46,16 +46,16 @@ const PinMismatch = ({ changePin }: Props) => {
     return (
         <Wrapper>
             <H2>
-                <Translation {...messages.TR_PIN_MISMATCH_HEADING} />
+                <Translation id="TR_PIN_MISMATCH_HEADING" />
             </H2>
             <P size="small">
-                <Translation {...messages.TR_PIN_MISMATCH_TEXT} />
+                <Translation id="TR_PIN_MISMATCH_TEXT" />
             </P>
             <Video autoPlay loop>
                 <source src={resolveStaticPath(`videos/suite/pin-mismatch.mp4`)} type="video/mp4" />
             </Video>
             <Button onClick={onTryAgain}>
-                <Translation {...messages.TR_TRY_AGAIN} />
+                <Translation id="TR_TRY_AGAIN" />
             </Button>
         </Wrapper>
     );

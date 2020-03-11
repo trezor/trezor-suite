@@ -5,7 +5,7 @@ import { Translation } from '@suite-components/Translation';
 import { Input, Select } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { getInputState } from '@wallet-utils/sendFormUtils';
-import messages from '@suite/support/messages';
+
 import { Props } from './Container';
 
 const Wrapper = styled.div`
@@ -25,13 +25,11 @@ const getError = (
 ) => {
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
-            return <Translation {...messages.TR_CUSTOM_FEE_IS_NOT_SET} />;
+            return <Translation id="TR_CUSTOM_FEE_IS_NOT_SET" />;
         case VALIDATION_ERRORS.NOT_NUMBER:
-            return <Translation {...messages.TR_CUSTOM_FEE_IS_NOT_VALID} />;
+            return <Translation id="TR_CUSTOM_FEE_IS_NOT_VALID" />;
         case VALIDATION_ERRORS.NOT_IN_RANGE:
-            return (
-                <Translation {...messages.TR_CUSTOM_FEE_NOT_IN_RANGE} values={{ maxFee, minFee }} />
-            );
+            return <Translation id="TR_CUSTOM_FEE_NOT_IN_RANGE" values={{ maxFee, minFee }} />;
         default:
             return null;
     }

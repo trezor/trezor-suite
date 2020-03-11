@@ -1,6 +1,6 @@
 import React from 'react';
 import { Translation, Image } from '@suite-components';
-import messages from '@suite/support/messages';
+
 import Wrapper from './components/Wrapper';
 
 /**
@@ -10,7 +10,7 @@ import Wrapper from './components/Wrapper';
 const AccountNotExists = () => {
     return (
         <Wrapper
-            title={<Translation {...messages.TR_ACCOUNT_EXCEPTION_NOT_EXIST} />}
+            title={<Translation id="TR_ACCOUNT_EXCEPTION_NOT_EXIST" />}
             image={<Image image="EMPTY_WALLET" />}
         />
     );

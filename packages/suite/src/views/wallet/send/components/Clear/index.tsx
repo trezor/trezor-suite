@@ -1,6 +1,6 @@
 import React from 'react';
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+
 import styled from 'styled-components';
 import { Icon, colors, variables } from '@trezor/components';
 import { DispatchProps } from '../../Container';
@@ -38,7 +38,7 @@ export default ({ sendFormActions }: Props) => (
         <In onClick={() => sendFormActions.clear()}>
             <StyledIcon size={8} color={colors.BLACK50} icon="CROSS" />
             <ClearText>
-                <Translation {...messages.TR_CLEAR} />
+                <Translation id="TR_CLEAR" />
             </ClearText>
         </In>
     </Wrapper>

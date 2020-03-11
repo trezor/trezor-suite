@@ -5,7 +5,7 @@ import { Button, colors } from '@trezor/components';
 import { NotificationCard, Translation } from '@suite-components';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { SUITE } from '@suite-actions/constants';
-import messages from '@suite/support/messages';
+
 import { AppState, Dispatch } from '@suite-types';
 
 const mapStateToProps = (state: AppState) => ({
@@ -22,7 +22,7 @@ const AuthConfirmFailed = ({ locks, authConfirm }: Props) => {
     const progress = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     return (
         <NotificationCard variant="warning">
-            <Translation {...messages.TR_AUTH_CONFIRM_FAILED_TITLE} />
+            <Translation id="TR_AUTH_CONFIRM_FAILED_TITLE" />
             <Button
                 data-test="@passphrase-missmatch/retry-button"
                 variant="tertiary"
@@ -31,7 +31,7 @@ const AuthConfirmFailed = ({ locks, authConfirm }: Props) => {
                 onClick={authConfirm}
                 isLoading={progress}
             >
-                <Translation {...messages.TR_AUTH_CONFIRM_FAILED_RETRY} />
+                <Translation id="TR_AUTH_CONFIRM_FAILED_RETRY" />
             </Button>
         </NotificationCard>
     );

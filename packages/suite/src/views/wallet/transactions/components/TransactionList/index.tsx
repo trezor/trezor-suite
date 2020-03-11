@@ -9,7 +9,7 @@ import { SETTINGS } from '@suite-config';
 import { Account } from '@wallet-types';
 import TransactionItem from '../TransactionItem/Container';
 import Pagination from '../Pagination';
-import messages from '@suite/support/messages';
+
 import { Badge, Card, FiatValue, HiddenPlaceholder, Translation } from '@suite-components';
 
 const Wrapper = styled.div``;
@@ -122,7 +122,7 @@ const TransactionList = ({
                                 <DayHeading>
                                     {dateKey === 'pending' ? (
                                         <P>
-                                            <Translation {...messages.TR_PENDING} />
+                                            <Translation id="TR_PENDING" />
                                         </P>
                                     ) : (
                                         <>

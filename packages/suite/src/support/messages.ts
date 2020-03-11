@@ -2437,6 +2437,6 @@ const definedMessages = defineMessages({
         id: 'MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED',
         defaultMessage: 'Account index is greater than 10',
     },
-});
+} as const);
 
 export default definedMessages;

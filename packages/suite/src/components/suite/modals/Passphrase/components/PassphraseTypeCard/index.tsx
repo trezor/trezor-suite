@@ -3,7 +3,7 @@ import { useKeyPress } from '@suite-utils/dom';
 import styled, { css } from 'styled-components';
 import { Button, colors, variables, Input, Checkbox } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+
 import { MAX_PASSPHRASE_LENGTH } from '@suite-constants/passphrase';
 import { countBytesInString } from '@suite-utils/string';
 import PasswordStrengthIndicator from '@suite-components/PasswordStrengthIndicator';
@@ -143,7 +143,7 @@ const PassphraseTypeCard = (props: Props) => {
                             onClick={() => setEnabled(!enabled)}
                             isChecked={enabled}
                         >
-                            <Translation {...messages.TR_I_UNDERSTAND_PASSPHRASE} />
+                            <Translation id="TR_I_UNDERSTAND_PASSPHRASE" />
                         </Checkbox>
                     </Content>
                 )}
@@ -158,9 +158,7 @@ const PassphraseTypeCard = (props: Props) => {
                             innerRef={ref}
                             display="block"
                             bottomText={
-                                isTooLong ? (
-                                    <Translation {...messages.TR_PASSPHRASE_TOO_LONG} />
-                                ) : null
+                                isTooLong ? <Translation id="TR_PASSPHRASE_TOO_LONG" /> : null
                             }
                             state={isTooLong ? 'error' : undefined}
                             variant="small"
@@ -192,7 +190,7 @@ const PassphraseTypeCard = (props: Props) => {
                             onClick={() => submit(value, true)}
                             fullWidth
                         >
-                            <Translation {...messages.TR_ENTER_PASSPHRASE_ON_DEVICE} />
+                            <Translation id="TR_ENTER_PASSPHRASE_ON_DEVICE" />
                         </ActionButton>
                     )}
                     {props.recreateWallet && (
@@ -203,7 +201,7 @@ const PassphraseTypeCard = (props: Props) => {
                             size="small"
                             onClick={props.recreateWallet}
                         >
-                            <Translation {...messages.TR_TRY_AGAIN} />
+                            <Translation id="TR_TRY_AGAIN" />
                         </RetryButton>
                     )}
                 </Actions>
