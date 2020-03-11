@@ -1,39 +1,27 @@
-import * as animations from './config/animations';
 import colors from './config/colors';
 import * as variables from './config/variables';
 
 import { Button, ButtonProps } from './components/buttons/Button';
 import { ButtonPin, ButtonPinProps } from './components/buttons/Pin';
-
-import { Input, InputProps } from './components/inputs/Input';
-import { InputPin, InputPinProps } from './components/inputs/Pin';
-import { TextArea, TextareaProps } from './components/Textarea';
-import { Checkbox, CheckboxProps } from './components/Checkbox';
-import { Switch, SwitchProps } from './components/Switch';
-import { TrezorImage, TrezorImageProps } from './components/TrezorImage';
-import { TrezorLogo, TrezorLogoProps } from './components/TrezorLogo';
-import { LanguagePicker, LanguagePickerProps } from './components/LanguagePicker';
-import { Select, SelectProps } from './components/selects/Select';
-import { AsyncSelect, AsyncSelectProps } from './components/selects/AsyncSelect';
-
-import { H1, H2, H3, H4, H5, H6 } from './components/Heading';
-import { Link, LinkProps } from './components/Link';
-import { P, ParagraphProps } from './components/Paragraph';
-import { Tooltip, TooltipProps } from './components/Tooltip';
-
-import { Modal, ModalProps } from './components/Modal';
+import { Input, InputProps } from './components/form/Input';
+import { Textarea, TextareaProps } from './components/form/Textarea';
+import { Select, SelectProps } from './components/form/Select';
+import { Checkbox, CheckboxProps } from './components/form/Checkbox';
+import { Switch, SwitchProps } from './components/form/Switch';
 import { Icon, IconProps } from './components/Icon';
-import { CoinLogo, CoinLogoProps } from './components/CoinLogo';
-import { Loader, LoaderProps } from './components/Loader';
-import { Notification, NotificationProps } from './components/Notification';
+import { H1, H2 } from './components/typography/Heading';
+import { P } from './components/typography/Paragraph';
 import { Prompt, PromptProps } from './components/Prompt';
-import { Header, HeaderProps } from './components/Header';
-
-import utils from './utils';
+import { Link, LinkProps } from './components/typography/Link';
+import { Modal, ModalProps } from './components/Modal';
+import { CoinLogo, CoinLogoProps } from './components/logos/CoinLogo';
+import { TrezorLogo, TrezorLogoProps } from './components/logos/TrezorLogo';
+import { Loader, LoaderProps } from './components/loaders/Loader';
+import { Tooltip, TooltipProps } from './components/Tooltip';
+import * as types from './support/types';
 
 export {
     colors,
-    animations,
     variables,
     Button,
     ButtonProps,
@@ -41,49 +29,32 @@ export {
     ButtonPinProps,
     Input,
     InputProps,
-    InputPin,
-    InputPinProps,
-    TextArea,
+    Textarea,
     TextareaProps,
+    Select,
+    SelectProps,
     Checkbox,
     CheckboxProps,
     Switch,
     SwitchProps,
-    Select,
-    SelectProps,
-    AsyncSelect,
-    AsyncSelectProps,
-    H1,
-    H2,
-    H3,
-    H4,
-    H5,
-    H6,
-    Link,
-    LinkProps,
-    P,
-    ParagraphProps,
-    Tooltip,
-    TooltipProps,
-    Modal,
-    ModalProps,
     Icon,
     IconProps,
+    H1,
+    H2,
+    P,
+    Link,
+    Prompt,
+    PromptProps,
+    LinkProps,
+    Modal,
+    ModalProps,
     CoinLogo,
     CoinLogoProps,
-    TrezorImage,
-    TrezorImageProps,
     TrezorLogo,
     TrezorLogoProps,
     Loader,
     LoaderProps,
-    Notification,
-    NotificationProps,
-    Prompt,
-    PromptProps,
-    Header,
-    HeaderProps,
-    LanguagePicker,
-    LanguagePickerProps,
-    utils,
+    Tooltip,
+    TooltipProps,
+    types,
 };

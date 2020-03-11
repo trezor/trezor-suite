@@ -15,6 +15,7 @@ const Wrapper = styled.div<{ noPadding?: boolean }>`
     padding: 0px 32px 32px 32px;
     padding-top: ${props => (props.noPadding ? '8px' : '16px')};
     max-width: 1024px;
+    height: 100%;
 `;
 
 type Props = {

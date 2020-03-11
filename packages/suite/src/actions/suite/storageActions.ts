@@ -5,7 +5,7 @@ import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { Account, Send } from '@wallet-types';
 import { getAccountKey } from '@wallet-utils/accountUtils';
 import { Discovery } from '@wallet-reducers/discoveryReducer';
-import { serializeDiscovery } from '@suite-utils/storage';
+import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
 
 export type StorageActions =
     | { type: typeof STORAGE.LOAD }
@@ -25,8 +25,8 @@ export const removeSendForm = async (accountKey: string) => {
 };
 
 export const saveDevice = async (device: TrezorDevice) => {
-    if (!device || !device.features || !device.remember) return;
-    return db.addItem('devices', { ...device, path: '', connected: false }, device.state);
+    if (!device || !device.features || !device.state) return;
+    return db.addItem('devices', serializeDevice(device), device.state);
 };
 
 export const removeAccount = async (account: Account) => {

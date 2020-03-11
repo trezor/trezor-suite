@@ -1,34 +1,34 @@
 # TREZOR SUITE MONOREPO
+
 ![img](https://repository-images.githubusercontent.com/148657224/439f6100-765f-11e9-9bff-b725eef3c4a6)
 
 ## Packages
 
-Name            | Packages
---------------- | ----------
-suite           | [core](./packages/suite), [web](./packages/suite-web), [desktop](./packages/suite-desktop), [native](./packages/suite-native), [data](./packages/suite-data), [storage](./packages/suite-storage)
-components      | [components](./packages/components), [storybook](./packages/components-storybook), [storybook native](./packages/components-storybook-native), [components-v2](./packages/components-v2), [storybook-v2](./packages/components-storybook-v2)
-rollout         | [rollout](./packages/rollout)
-blockchain-link | [blockchain-link](./packages/blockchain-link)
-translations-manager | [translations-manager](./packages/translations-manager)
-integration-tests | [integration-tests](./packages/integration-tests)
-types | [typescript-typings](./packages/typescript-typings)
-
+| Name                 | Packages                                                                                                                                                                                          |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| suite                | [core](./packages/suite), [web](./packages/suite-web), [desktop](./packages/suite-desktop), [native](./packages/suite-native), [data](./packages/suite-data), [storage](./packages/suite-storage) |
+| components           | [components](./packages/components), [storybook native](./packages/components-storybook-native)                                                                                                   |
+| rollout              | [rollout](./packages/rollout)                                                                                                                                                                     |
+| blockchain-link      | [blockchain-link](./packages/blockchain-link)                                                                                                                                                     |
+| translations-manager | [translations-manager](./packages/translations-manager)                                                                                                                                           |
+| integration-tests    | [integration-tests](./packages/integration-tests)                                                                                                                                                 |
 
 ## Development
+
 Before you start make sure you have downloaded and installed [Node.js LTS](https://nodejs.org/en/download/), [Yarn](https://yarnpkg.com/lang/en/docs/install/) and git.
 
+-   `git clone git@github.com:trezor/trezor-suite.git`
+-   `yarn`
+-   `yarn build:libs`
 
-- `git clone git@github.com:trezor/trezor-suite.git`
-- `yarn`
-- `yarn build:libs`
-
-*To set up your dev environment for a native platform (iOS/Android) follow [these additional steps](https://github.com/trezor/trezor-suite/tree/develop/packages/suite-native#development).*
+_To set up your dev environment for a native platform (iOS/Android) follow [these additional steps](https://github.com/trezor/trezor-suite/tree/develop/packages/suite-native#development)._
 
 Run a dev build:
-- `yarn suite:dev` (web app)
-- `yarn suite:dev:desktop` (electron app)
-- `yarn suite:dev:android` (react-native Android)
-- `yarn suite:dev:ios` (react-native iOS)
+
+-   `yarn suite:dev` (web app)
+-   `yarn suite:dev:desktop` (electron app)
+-   `yarn suite:dev:android` (react-native Android)
+-   `yarn suite:dev:ios` (react-native iOS)
 
 ## Contribute
 
@@ -42,21 +42,22 @@ Please report suspected security vulnerabilities in private to [security@satoshi
 
 #### Priority
 
-Label     | Meaning (SLA)
-----------|--------------
-P1 Urgent | The current release + potentially immediate hotfix (30 days)
-P2 High   | The next release (60 days)
-P3 Medium | Within the next 3 releases (90 days)
-P4 Low    | Anything outside the next 3 releases (120 days)
+| Label     | Meaning (SLA)                                                |
+| --------- | ------------------------------------------------------------ |
+| P1 Urgent | The current release + potentially immediate hotfix (30 days) |
+| P2 High   | The next release (60 days)                                   |
+| P3 Medium | Within the next 3 releases (90 days)                         |
+| P4 Low    | Anything outside the next 3 releases (120 days)              |
 
 #### Severity
 
-Label       | Impact
-------------|-------
-S1 Blocker  | Outage, broken feature with no workaround
-S2 Critical | Broken feature, workaround too complex & unacceptable
-S3 Major    | Broken feature, workaround acceptable
-S4 Low      | Functionality inconvenience or cosmetic issue
+| Label       | Impact                                                |
+| ----------- | ----------------------------------------------------- |
+| S1 Blocker  | Outage, broken feature with no workaround             |
+| S2 Critical | Broken feature, workaround too complex & unacceptable |
+| S3 Major    | Broken feature, workaround acceptable                 |
+| S4 Low      | Functionality inconvenience or cosmetic issue         |
 
 ## IDE specific settings
+
 Find specific settings for Integrated Development Environments (IDE) in [IDE.md](./IDE.md)

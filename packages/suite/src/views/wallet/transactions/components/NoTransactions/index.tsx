@@ -1,9 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables, H2, Button } from '@trezor/components-v2';
-import { resolveStaticPath } from '@suite-utils/nextjs';
-import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+import { colors, variables, H2, Button } from '@trezor/components';
+import { Translation, Image } from '@suite-components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -32,7 +30,7 @@ const Description = styled.div`
     margin-bottom: 10px;
 `;
 
-const Image = styled.img`
+const StyledImage = styled(props => <Image {...props} />)`
     width: 340px;
     height: 280px;
     margin-bottom: 40px;
@@ -48,20 +46,29 @@ const ActionButton = styled(Button)`
     min-width: 160px;
 `;
 
-const NoTransactions = () => {
+interface Props {
+    receive: () => any;
+    buy: () => any;
+}
+
+const NoTransactions = ({ receive, buy }: Props) => {
     return (
         <Wrapper>
             <Content>
                 <Title>
-                    <Translation {...messages.TR_ACCOUNT_IS_EMPTY} />
+                    <Translation id="TR_ACCOUNT_IS_EMPTY" />
                 </Title>
                 <Description>
-                    <Translation {...messages.TR_ONCE_YOU_SEND_OR_RECEIVE} />
+                    <Translation id="TR_ONCE_YOU_SEND_OR_RECEIVE" />
                 </Description>
-                <Image src={resolveStaticPath(`images/wallet/wallet-empty.svg`)} />
+                <StyledImage image="EMPTY_WALLET" />
                 <Actions>
-                    <ActionButton variant="secondary">Receive BTC</ActionButton>
-                    <ActionButton variant="primary">Buy BTC</ActionButton>
+                    <ActionButton variant="secondary" onClick={receive}>
+                        <Translation id="TR_RECEIVE" />
+                    </ActionButton>
+                    <ActionButton variant="primary" onClick={buy}>
+                        <Translation id="TR_BUY" />
+                    </ActionButton>
                 </Actions>
             </Content>
         </Wrapper>

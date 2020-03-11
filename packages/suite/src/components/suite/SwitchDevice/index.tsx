@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables, H2 } from '@trezor/components-v2';
+import { colors, H2 } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import * as deviceUtils from '@suite-utils/device';
 import DeviceItem from './components/DeviceItem/Container';
-import messages from '@suite/support/messages';
+
 import { Props } from './Container';
 
 const Wrapper = styled(ModalWrapper)`
@@ -16,7 +16,6 @@ const Wrapper = styled(ModalWrapper)`
 `;
 
 const Description = styled.div`
-    font-size: ${variables.FONT_SIZE.BODY};
     line-height: 1.43;
     width: 90%;
     margin-bottom: 20px;
@@ -52,10 +51,10 @@ const SwitchDeviceModal = (props: Props) => {
         <Wrapper>
             <In>
                 <H2>
-                    <Translation {...messages.TR_SWITCH_DEVICE} />
+                    <Translation id="TR_SWITCH_DEVICE" />
                 </H2>
                 <Description>
-                    <Translation {...messages.TR_THIS_IS_PLACE_TO_SEE_ALL} />
+                    <Translation id="TR_THIS_IS_PLACE_TO_SEE_ALL" />
                 </Description>
                 {sortedDevices.map(device => (
                     <DeviceItem

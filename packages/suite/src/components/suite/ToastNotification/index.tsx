@@ -1,53 +1,40 @@
-import React, { useEffect } from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { ToastContainer, toast } from 'react-toastify';
-import * as notificationActions from '@suite-actions/notificationActions';
-import { AppState, Dispatch } from '@suite-types';
+import React from 'react';
+import styled from 'styled-components';
+import { Button, Icon, variables, colors } from '@trezor/components';
+import { Translation } from '@suite-components';
+import { ViewProps } from '@suite-components/hocNotification';
 
-const mapStateToProps = (state: AppState) => ({
-    notifications: state.notifications,
-});
+const Wrapper = styled.div`
+    display: flex;
+    align-items: center;
+    font-size: ${variables.FONT_SIZE.SMALL};
+`;
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    close: bindActionCreators(notificationActions.close, dispatch),
-});
+const Text = styled.div`
+    padding: 0px 16px;
+    flex: 1;
+`;
 
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+// button margin-left: auto;
 
-const getContent = (notification: any) => {
-    switch (notification.type) {
-        case 'auth-confirm-error':
-            return notification.error;
-        case 'copy-to-clipboard-success':
-            return `Address ${notification.address} copied to clipboard`;
-        case 'copy-to-clipboard-error':
-            return notification.error;
-        case 'verify-address-error':
-            return notification.error;
-        default:
-            return notification.type;
-    }
+export default ({ icon, message, action, actionLabel }: ViewProps) => {
+    return (
+        <Wrapper>
+            {icon && <Icon icon={icon} size={12} color={colors.WHITE} />}
+            <Text>
+                <Translation {...message} />
+            </Text>
+            {action && actionLabel && (
+                <Button
+                    variant="tertiary"
+                    icon="ARROW_RIGHT"
+                    alignIcon="right"
+                    color={colors.WHITE}
+                    onClick={action}
+                >
+                    <Translation {...actionLabel} />
+                </Button>
+            )}
+        </Wrapper>
+    );
 };
-
-const Notifications = ({ notifications, close }: Props) => {
-    useEffect(() => {
-        notifications
-            .filter(n => !n.hidden)
-            .forEach(n => {
-                // const exists = Object.keys(state).find(k => k === n.key);
-                const shouldBeDisplayed = !toast.isActive(n.id);
-                if (shouldBeDisplayed) {
-                    toast(getContent(n), {
-                        position: 'bottom-center',
-                        toastId: n.id,
-                        onClose: () => close(n.id),
-                    });
-                }
-            });
-    }, [close, notifications]);
-
-    return <ToastContainer />;
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Notifications);

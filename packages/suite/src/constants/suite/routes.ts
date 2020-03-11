@@ -139,6 +139,12 @@ const routes = [
         params: walletParams,
     },
     {
+        name: 'wallet-details',
+        pattern: '/wallet/details',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
         name: 'passwords-index',
         pattern: '/passwords',
         app: 'passwords',
@@ -152,6 +158,11 @@ const routes = [
         name: 'portfolio-index',
         pattern: '/portfolio',
         app: 'portfolio',
+    },
+    {
+        name: 'notifications-index',
+        pattern: '/notifications',
+        app: 'notifications',
     },
 ] as const;
 

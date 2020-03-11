@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components-v2';
+import { colors, variables } from '@trezor/components';
 import FiatValue from '@suite-components/FiatValue/Container';
 import Badge from '@suite-components/Badge';
-import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+import { Translation, HiddenPlaceholder } from '@suite-components';
+
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import Box from '../Box';
 import BoxRow from '../BoxRow';
@@ -48,7 +48,7 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
         <Grid>
             <Col direction="column">
                 <BoxHeading>
-                    <Translation {...messages.TR_TX_CURRENT_VALUE} />{' '}
+                    <Translation id="TR_TX_CURRENT_VALUE" />{' '}
                     {/* such a weird syntax, but basically all I want is show date in parentheses: (formattedDate) */}
                     <FiatValue amount="1" symbol={tx.symbol}>
                         {(_fiatValue, _fiatRate, currentFiatRateTimestamp) => (
@@ -73,26 +73,27 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                     </Badge>
                 </BoxHeading>
                 <Box>
-                    <BoxRow
-                        title={<Translation {...messages.TR_TOTAL_OUTPUT} />}
-                        alignContent="right"
-                    >
+                    <BoxRow title={<Translation id="TR_TOTAL_OUTPUT" />} alignContent="right">
                         {totalOutput && (
-                            <FiatValue amount={totalOutput} symbol={tx.symbol}>
-                                {fiatValue => fiatValue}
-                            </FiatValue>
+                            <HiddenPlaceholder>
+                                <FiatValue amount={totalOutput} symbol={tx.symbol}>
+                                    {fiatValue => fiatValue}
+                                </FiatValue>
+                            </HiddenPlaceholder>
                         )}
                     </BoxRow>
-                    <BoxRow title={<Translation {...messages.TR_TX_FEE} />} alignContent="right">
-                        <FiatValue amount={tx.fee} symbol={tx.symbol}>
-                            {(fiatValue, _timestamp) => fiatValue}
-                        </FiatValue>
+                    <BoxRow title={<Translation id="TR_TX_FEE" />} alignContent="right">
+                        <HiddenPlaceholder>
+                            <FiatValue amount={tx.fee} symbol={tx.symbol}>
+                                {(fiatValue, _timestamp) => fiatValue}
+                            </FiatValue>
+                        </HiddenPlaceholder>
                     </BoxRow>
                 </Box>
             </Col>
             <Col direction="column">
                 <BoxHeading>
-                    <Translation {...messages.TR_TX_HISTORICAL_VALUE_DATE} values={{ date: '' }} />
+                    <Translation id="TR_TX_HISTORICAL_VALUE_DATE" values={{ date: '' }} />
                     <HistoricalBadge>
                         <FiatValue amount="1" symbol={tx.symbol}>
                             {fiatValue => fiatValue}
@@ -100,18 +101,19 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                     </HistoricalBadge>
                 </BoxHeading>
                 <Box>
-                    <BoxRow
-                        title={<Translation {...messages.TR_TOTAL_OUTPUT} />}
-                        alignContent="right"
-                    >
-                        <FiatValue amount="1" symbol={tx.symbol}>
-                            {fiatValue => fiatValue}
-                        </FiatValue>
+                    <BoxRow title={<Translation id="TR_TOTAL_OUTPUT" />} alignContent="right">
+                        <HiddenPlaceholder>
+                            <FiatValue amount="1" symbol={tx.symbol}>
+                                {fiatValue => fiatValue}
+                            </FiatValue>
+                        </HiddenPlaceholder>
                     </BoxRow>
-                    <BoxRow title={<Translation {...messages.TR_TX_FEE} />} alignContent="right">
-                        <FiatValue amount="1" symbol={tx.symbol}>
-                            {fiatValue => fiatValue}
-                        </FiatValue>
+                    <BoxRow title={<Translation id="TR_TX_FEE" />} alignContent="right">
+                        <HiddenPlaceholder>
+                            <FiatValue amount="1" symbol={tx.symbol}>
+                                {fiatValue => fiatValue}
+                            </FiatValue>
+                        </HiddenPlaceholder>
                     </BoxRow>
                 </Box>
             </Col>

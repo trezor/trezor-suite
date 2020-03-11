@@ -1,5 +1,6 @@
 import animations from './animations';
 import { notifications } from './notifications';
+import { variables } from '@trezor/components';
 
 export default `
     #__next {
@@ -14,10 +15,11 @@ export default `
 
     body, html {
       background: white;
-      font-size: 14px;
+      font-size: ${variables.FONT_SIZE.NORMAL};
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       font-family: "TT Hoves", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      height: 100%;
     }
 
     a {

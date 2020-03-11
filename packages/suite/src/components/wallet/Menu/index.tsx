@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
-import { Loader, colors } from '@trezor/components-v2';
+import { Loader, colors } from '@trezor/components';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
@@ -14,7 +14,6 @@ import { Translation } from '@suite-components';
 import AccountItem from './components/AccountItem/Container';
 import AddAccountButton from './components/AddAccount';
 import ToggleLegacyAccounts from './components/ToggleLegacyAccounts';
-import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     height: auto;
@@ -64,7 +63,7 @@ const Menu = ({ device, accounts, selectedAccount, getDiscoveryForDevice, openMo
         return (
             <TitleWrapper>
                 <TitleText>
-                    <Translation {...messages.TR_ACCOUNTS_MENU_TITLE} />
+                    <Translation id="TR_ACCOUNTS_MENU_TITLE" />
                 </TitleText>{' '}
                 <TitleActions>
                     <Loader size={16} />
@@ -113,7 +112,7 @@ const Menu = ({ device, accounts, selectedAccount, getDiscoveryForDevice, openMo
         <Wrapper>
             <TitleWrapper>
                 <TitleText>
-                    <Translation {...messages.TR_ACCOUNTS_MENU_TITLE} />
+                    <Translation id="TR_ACCOUNTS_MENU_TITLE" />
                 </TitleText>{' '}
                 <TitleActions>
                     {discoveryIsRunning && <Loader size={16} />}
@@ -126,7 +125,7 @@ const Menu = ({ device, accounts, selectedAccount, getDiscoveryForDevice, openMo
                                 })
                             }
                             disabled={addAccountDisabled}
-                            tooltipContent={<Translation {...messages.TR_ADD_ACCOUNT} />}
+                            tooltipContent={<Translation id="TR_ADD_ACCOUNT" />}
                         />
                     )}
                 </TitleActions>

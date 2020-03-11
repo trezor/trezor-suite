@@ -1,24 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { Button, H2, P, colors, variables } from '@trezor/components-v2';
+import { Button, H2, P, colors, variables } from '@trezor/components';
 
 import { SelectWordCount, SelectRecoveryType, Error } from '@recovery-components';
-import { ProgressBar, Loading } from '@suite-components';
+import {
+    ProgressBar,
+    Loading,
+    Translation,
+    CheckItem,
+    ExternalLink,
+    Image,
+} from '@suite-components';
+import ModalWrapper from '@suite-components/ModalWrapper';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { InjectedModalApplicationProps, AppState, Dispatch } from '@suite-types';
 import { WordCount } from '@recovery-types';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 
-const Wrapper = styled.div`
-    width: 60vw;
+import { URLS } from '@suite-constants';
+
+const Wrapper = styled(ModalWrapper)`
+    min-width: 60vw;
+    max-width: 80vw;
     min-height: 80vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 40px;
 `;
 
 const Row = styled.div`
@@ -48,7 +57,7 @@ const InfoBoxText = styled.div`
     width: 360px;
     flex-direction: column;
     text-align: left;
-    margin-left: 8px;
+    margin-left: 12px;
 `;
 const InfoBoxTitle = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -62,8 +71,8 @@ const InfoBoxDescription = styled.div`
 `;
 
 const Number = styled.div`
-    width: 15px;
-    height: 15px;
+    width: 16px;
+    height: 16px;
     background-color: ${colors.BLACK70};
     border-radius: 50%;
     color: ${colors.WHITE};
@@ -103,6 +112,7 @@ const Recovery = ({
     setStatus,
 }: Props) => {
     const model = device?.features?.major_version;
+    const [understood, setUnderstood] = useState(false);
 
     const onSetWordsCount = (count: WordCount) => {
         setWordsCount(count);
@@ -128,33 +138,52 @@ const Recovery = ({
 
             {recovery.status === 'initial' && model === 1 && (
                 <>
-                    <H2>Check recovery seed</H2>
+                    <H2>
+                        <Translation id="TR_CHECK_RECOVERY_SEED" />
+                    </H2>
                     <StyledP>
-                        Your wallet backup, the recovery seed, is entered entirely on the Trezor
-                        Model T, through the device screen. We avoid passing any of your sensitive
-                        information to a potentially insecure computer or web browser.
+                        <Translation id="TR_CHECK_RECOVERY_SEED_DESC_T1" />
                     </StyledP>
                     <InfoBox>
                         <Number>1</Number>
                         <InfoBoxText>
-                            <InfoBoxTitle>Select number of words in your seed</InfoBoxTitle>
+                            <InfoBoxTitle>
+                                <Translation id="TR_SELECT_NUMBER_OF_WORDS" />
+                            </InfoBoxTitle>
                             <InfoBoxDescription>
-                                You either have a seed containing 12, 18 or 24 words.
+                                <Translation id="TR_YOU_EITHER_HAVE_T1" />
                             </InfoBoxDescription>
                         </InfoBoxText>
                     </InfoBox>
                     <InfoBox>
                         <Number>2</Number>
                         <InfoBoxText>
-                            <InfoBoxTitle>Enter all words in the correct order</InfoBoxTitle>
+                            <InfoBoxTitle>
+                                <Translation id="TR_ENTER_ALL_WORDS_IN_CORRECT" />
+                            </InfoBoxTitle>
                             <InfoBoxDescription>
-                                Using the touchscreen display you enter all the words in the correct
-                                order until completed.
+                                <Translation id="TR_ON_YOUR_COMPUTER_ENTER" />
                             </InfoBoxDescription>
                         </InfoBoxText>
                     </InfoBox>
-                    <StyledButton onClick={() => setStatus('select-word-count')}>
-                        Start
+
+                    <CheckItem
+                        title={<Translation id="TR_DRY_RUN_CHECK_ITEM_TITLE" />}
+                        description={<Translation id="TR_DRY_RUN_CHECK_ITEM_DESCRIPTION" />}
+                        isChecked={understood}
+                        link={
+                            <ExternalLink size="small" href={URLS.DRY_RUN_URL}>
+                                <Translation id="TR_WHAT_IS_DRY_RUN" />
+                            </ExternalLink>
+                        }
+                        onClick={() => setUnderstood(!understood)}
+                    />
+
+                    <StyledButton
+                        onClick={() => setStatus('select-word-count')}
+                        isDisabled={!understood}
+                    >
+                        <Translation id="TR_START" />
                     </StyledButton>
                     <Buttons>
                         <StyledButton
@@ -162,7 +191,7 @@ const Recovery = ({
                             variant="tertiary"
                             onClick={() => closeModalApp()}
                         >
-                            Cancel seed check
+                            <Translation id="TR_CANCEL" />
                         </StyledButton>
                     </Buttons>
                 </>
@@ -170,19 +199,21 @@ const Recovery = ({
 
             {recovery.status === 'initial' && model === 2 && (
                 <>
-                    <H2>Check recovery seed</H2>
+                    <H2>
+                        <Translation id="TR_CHECK_RECOVERY_SEED" />
+                    </H2>
                     <StyledP>
-                        Your wallet backup, the recovery seed, is entered entirely on the Trezor
-                        Model T, through the device screen. We avoid passing any of your sensitive
-                        information to a potentially insecure computer or web browser.
+                        <Translation id="TR_CHECK_RECOVERY_SEED_DESC_T2" />
                     </StyledP>
 
                     <InfoBox>
                         <Number>1</Number>
                         <InfoBoxText>
-                            <InfoBoxTitle>Select number of words in your seed</InfoBoxTitle>
+                            <InfoBoxTitle>
+                                <Translation id="TR_SELECT_NUMBER_OF_WORDS" />
+                            </InfoBoxTitle>
                             <InfoBoxDescription>
-                                You either have a seed containing 12, 18 or 24 words.
+                                <Translation id="TR_YOU_EITHER_HAVE_T2" />
                             </InfoBoxDescription>
                         </InfoBoxText>
                     </InfoBox>
@@ -190,10 +221,11 @@ const Recovery = ({
                     <InfoBox>
                         <Number>2</Number>
                         <InfoBoxText>
-                            <InfoBoxTitle>Enter all words in the correct order</InfoBoxTitle>
+                            <InfoBoxTitle>
+                                <Translation id="TR_ENTER_ALL_WORDS_IN_CORRECT" />
+                            </InfoBoxTitle>
                             <InfoBoxDescription>
-                                Using the touchscreen display you enter all the words in the correct
-                                order until completed.
+                                <Translation id="TR_USING_TOUCHSCREEN" />
                             </InfoBoxDescription>
                         </InfoBoxText>
                     </InfoBox>
@@ -206,7 +238,7 @@ const Recovery = ({
                             variant="tertiary"
                             onClick={() => closeModalApp()}
                         >
-                            Cancel seed check
+                            <Translation id="TR_CANCEL" />
                         </StyledButton>
                     </Buttons>
                 </>
@@ -214,7 +246,9 @@ const Recovery = ({
 
             {recovery.status === 'select-word-count' && (
                 <>
-                    <H2>Select number of words</H2>
+                    <H2>
+                        <Translation id="TR_SELECT_NUMBER_OF_WORDS" />
+                    </H2>
                     <SelectWordCount onSelect={(count: WordCount) => onSetWordsCount(count)} />
                     <Buttons>
                         <StyledButton
@@ -222,14 +256,16 @@ const Recovery = ({
                             variant="tertiary"
                             onClick={() => closeModalApp()}
                         >
-                            Cancel seed check
+                            <Translation id="TR_CANCEL" />
                         </StyledButton>
                     </Buttons>
                 </>
             )}
             {recovery.status === 'select-recovery-type' && (
                 <>
-                    <H2>Chose recovery type</H2>
+                    <H2>
+                        <Translation id="TR_CHOSE_RECOVERY_TYPE" />
+                    </H2>
                     <SelectRecoveryType onSelect={(type: boolean) => onSetRecoveryType(type)} />
                     <Buttons>
                         <StyledButton
@@ -237,7 +273,7 @@ const Recovery = ({
                             variant="tertiary"
                             onClick={() => closeModalApp()}
                         >
-                            Cancel seed check
+                            <Translation id="TR_CANCEL" />
                         </StyledButton>
                     </Buttons>
                 </>
@@ -248,12 +284,9 @@ const Recovery = ({
                     {!modal && <Loading />}
                     {modal && (
                         <>
-                            <H2>Follow instructions on your device</H2>
                             {model === 2 && (
                                 <StyledP>
-                                    All the words are entered only on the device as a extra security
-                                    feature. Please enter all the words in the correct order
-                                    carefully.
+                                    <Translation id="TR_ALL_THE_WORDS" />
                                 </StyledP>
                             )}
                             {modal}
@@ -263,21 +296,31 @@ const Recovery = ({
             )}
             {recovery.status === 'finished' && !recovery.error && (
                 <>
-                    <H2>Great success.</H2>
-                    <StyledP>Seed you have entered now matches the seed in device</StyledP>
-                    <img alt="" src={resolveStaticPath('images/suite/uni-success.svg')} />
+                    <H2>
+                        <Translation id="TR_SEED_CHECK_SUCCESS_TITLE" />
+                    </H2>
+                    <StyledP>
+                        <Translation id="TR_SEED_CHECK_SUCCESS_DESC" />
+                    </StyledP>
+                    <Image image="UNI_SUCCESS" />
                     <Buttons>
-                        <StyledButton onClick={() => closeModalApp()}>Close</StyledButton>
+                        <StyledButton onClick={() => closeModalApp()}>
+                            <Translation id="TR_CLOSE" />
+                        </StyledButton>
                     </Buttons>
                 </>
             )}
 
             {recovery.status === 'finished' && recovery.error && (
                 <>
-                    <H2>Seed check failed</H2>
+                    <H2>
+                        <Translation id="TR_SEED_CHECK_FAIL_TITLE" />
+                    </H2>
                     <Error error={recovery.error} />
                     <Buttons>
-                        <StyledButton onClick={() => closeModalApp()}>Close</StyledButton>
+                        <StyledButton onClick={() => closeModalApp()}>
+                            <Translation id="TR_CLOSE" />
+                        </StyledButton>
                     </Buttons>
                 </>
             )}

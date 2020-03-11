@@ -1,7 +1,5 @@
-export const ADD = '@notification/add';
+export const TOAST = '@notification/toast';
+export const EVENT = '@notification/event';
 export const CLOSE = '@notification/close';
+export const RESET_UNSEEN = '@notification/reset-unseen';
 export const REMOVE = '@notification/remove';
-// todo: filtering notifications, by app? by context?
-// export const TAG = {
-//     FIRMWARE: 'firmware',
-// } as const;

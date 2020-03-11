@@ -27,6 +27,14 @@ export type UserContextPayload =
           cancelable?: boolean;
       }
     | {
+          type: 'xpub';
+          xpub: string;
+          accountPath: string;
+          accountIndex: number;
+          accountType: Account['accountType'];
+          symbol: Account['symbol'];
+      }
+    | {
           type: 'passphrase-duplicate';
           device: TrezorDevice;
           duplicate: TrezorDevice;
@@ -48,6 +56,12 @@ export type UserContextPayload =
       }
     | {
           type: 'log';
+      }
+    | {
+          type: 'pin-mismatch';
+      }
+    | {
+          type: 'wipe-device';
       };
 
 export type ModalActions =
@@ -71,6 +85,10 @@ export const onCancel = (): Action => ({
  */
 export const onPinSubmit = (payload: string) => () => {
     TrezorConnect.uiResponse({ type: UI.RECEIVE_PIN, payload });
+};
+
+export const onPinCancel = () => {
+    TrezorConnect.cancel('pin-cancelled');
 };
 
 /**
@@ -100,6 +118,15 @@ export const onPassphraseSubmit = (
             type: SUITE.UPDATE_PASSPHRASE_MODE,
             payload: device,
             hidden: false,
+        });
+    }
+
+    if (passphraseOnDevice) {
+        dispatch({
+            type: SUITE.UPDATE_PASSPHRASE_MODE,
+            payload: device,
+            hidden: true,
+            alwaysOnDevice: true,
         });
     }
 

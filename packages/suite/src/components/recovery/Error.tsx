@@ -1,9 +1,8 @@
 import React from 'react';
 
-import { P } from '@trezor/components-v2';
-import messages from '@suite/support/messages';
-import { Translation } from '@suite-components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
+import { P } from '@trezor/components';
+
+import { Translation, Image } from '@suite-components';
 
 interface Props {
     error?: string;
@@ -12,9 +11,9 @@ interface Props {
 const Error = ({ error }: Props) => (
     <>
         <P size="small">
-            <Translation {...messages.TR_RECOVERY_ERROR} values={{ error }} />
+            <Translation id="TR_RECOVERY_ERROR" values={{ error }} />
         </P>
-        <img alt="" src={resolveStaticPath('images/suite/uni-error.svg')} />
+        <Image image="UNI_ERROR" />
     </>
 );
 

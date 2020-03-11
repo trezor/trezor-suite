@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
-import { colors, Button } from '@trezor/components-v2';
-import { Card } from '@suite-components';
+import { colors, Button } from '@trezor/components';
+import { Card, HiddenPlaceholder } from '@suite-components';
 import { parseBIP44Path, formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { ChildProps as Props } from '../../index';
+import { ChildProps as Props } from '../../Container';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -15,7 +15,7 @@ const GridTable = styled.div<{ header?: boolean; fresh?: boolean; revealed?: boo
     grid-template-columns: minmax(60px, 1fr) 4fr 110px 3fr;
     color: ${colors.BLACK50};
     font-size: 12px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid ${colors.BLACK96};
     &:first-child,
     &:last-child {
         border: 0px;
@@ -93,7 +93,9 @@ const Item = ({ addr, symbol, onClick, revealed, index }: any) => {
                 {address}
             </GridItem>
             <GridItem right>{addr.transfers < 1 ? 'Not used yet' : addr.transfers}</GridItem>
-            <GridItem amount>{amount}</GridItem>
+            <GridItem amount>
+                <HiddenPlaceholder>{amount}</HiddenPlaceholder>
+            </GridItem>
         </GridTable>
     );
 };

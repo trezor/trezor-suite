@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect, { UI } from 'trezor-connect';
 import { RECOVERY } from '@recovery-actions/constants';
 
-// todo
-import { submitWord } from '@onboarding-actions/connectActions';
 import { Dispatch, GetState, Action } from '@suite-types';
 import { WordCount } from '@recovery-types';
 
@@ -46,8 +44,8 @@ const setStatus = (status: SeedInputStatus): Action => ({
 });
 
 // todo bip39 type
-const submit = (word: string) => async (dispatch: Dispatch) => {
-    await dispatch(submitWord({ word }));
+const submit = (word: string) => async () => {
+    TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: word });
 };
 
 const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {

@@ -1,11 +1,11 @@
 import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
-import { Button, colors, variables, Icon } from '@trezor/components-v2';
+import { Button, colors, variables, Icon } from '@trezor/components';
 import { Translation } from '@suite-components';
 import Card from '@suite-components/Card';
 import * as deviceUtils from '@suite-utils/device';
-import messages from '@suite/support/messages';
+
 import WalletInstance from '../WalletInstance/Container';
 import { Props } from './Container';
 import ColHeader from './components/ColHeader';
@@ -137,7 +137,9 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
 
     const isWalletContext =
         !!backgroundRoute &&
-        (backgroundRoute.app === 'wallet' || backgroundRoute.app === 'dashboard');
+        (backgroundRoute.app === 'wallet' ||
+            backgroundRoute.app === 'dashboard' ||
+            backgroundRoute.app === 'notifications');
     const hasDeviceSelection =
         !isWalletContext && !deviceUtils.isSelectedDevice(selectedDevice, device);
     const hasAtLeastOneWallet = props.instances.find(d => d.state);
@@ -171,9 +173,9 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                         <DeviceTitle>{device.label}</DeviceTitle>
                         <DeviceStatus color={device.connected ? colors.GREEN : colors.BLACK50}>
                             {device.connected ? (
-                                <Translation {...messages.TR_CONNECTED} />
+                                <Translation id="TR_CONNECTED" />
                             ) : (
-                                <Translation {...messages.TR_DISCONNECTED} />
+                                <Translation id="TR_DISCONNECTED" />
                             )}
                         </DeviceStatus>
                     </Col>
@@ -185,7 +187,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                                     {/* TODO: warning icon */}
                                     <Icon icon="INFO" size={14} color={colors.RED_ERROR} />
                                 </AttentionIconWrapper>
-                                <Translation {...messages.TR_DEVICE_NEEDS_ATTENTION} />
+                                <Translation id="TR_DEVICE_NEEDS_ATTENTION" />
                             </Attention>
                             <Button
                                 variant="secondary"
@@ -193,7 +195,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                                 // icon="REFRESH"
                                 onClick={() => onSolveIssueClick()}
                             >
-                                <Translation {...messages.TR_SOLVE_ISSUE} />
+                                <Translation id="TR_SOLVE_ISSUE" />
                             </Button>
                         </Row>
                     )}
@@ -204,7 +206,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                             variant="secondary"
                             onClick={() => selectDeviceInstance(device)}
                         >
-                            <Translation {...messages.TR_SELECT_DEVICE} />
+                            <Translation id="TR_SELECT_DEVICE" />
                         </ChooseDevice>
                     )}
                 </DeviceHeader>
@@ -214,18 +216,14 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                     {isWalletContext && (
                         <WalletsTooltips>
                             <RememberWallet
-                                tooltipContent={
-                                    <Translation {...messages.TR_REMEMBER_ALLOWS_YOU_TO} />
-                                }
+                                tooltipContent={<Translation id="TR_REMEMBER_ALLOWS_YOU_TO" />}
                             >
-                                <Translation {...messages.TR_REMEMBER_WALLET} />
+                                <Translation id="TR_REMEMBER_WALLET" />
                             </RememberWallet>
                             <HideWallet
-                                tooltipContent={
-                                    <Translation {...messages.TR_HIDE_WALLET_EXPLANATION} />
-                                }
+                                tooltipContent={<Translation id="TR_HIDE_WALLET_EXPLANATION" />}
                             >
-                                <Translation {...messages.TR_HIDE_WALLET} />
+                                <Translation id="TR_HIDE_WALLET" />
                             </HideWallet>
                         </WalletsTooltips>
                     )}
@@ -249,7 +247,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                                 disabled={!device.connected || !hasAtLeastOneWallet} // TODO: tooltip?
                                 onClick={async () => addDeviceInstance(device)}
                             >
-                                <Translation {...messages.TR_ADD_HIDDEN_WALLET} />
+                                <Translation id="TR_ADD_HIDDEN_WALLET" />
                             </Button>
                         </AddWallet>
                     )}

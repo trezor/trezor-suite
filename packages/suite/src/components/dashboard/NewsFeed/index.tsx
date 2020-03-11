@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import Card from '@suite-components/Card';
-import { colors, Button, variables } from '@trezor/components-v2';
+import { colors, Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import messages from '@suite/support/messages';
+
 // import parser from 'fast-xml-parser';
 
 const StyledCard = styled(Card)`
@@ -152,7 +152,7 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
         <Section {...rest}>
             <SectionHeader>
                 <SectionTitle>
-                    <Translation {...messages.TR_WHATS_NEW} />
+                    <Translation id="TR_WHATS_NEW" />
                 </SectionTitle>
                 <SectionAction>
                     <Button
@@ -163,7 +163,7 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                             console.log('do something');
                         }}
                     >
-                        <Translation {...messages.TR_MARK_ALL_AS_READ} />
+                        <Translation id="TR_MARK_ALL_AS_READ" />
                     </Button>
                 </SectionAction>
             </SectionHeader>
@@ -193,7 +193,7 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                     ))} */}
                     <NewsItem>
                         <Left>
-                            <NewsImage src={resolveStaticPath('images/dashboard/fake1.png')} />
+                            <NewsImage src={resolveStaticPath('images/png/fake1.png')} />
                         </Left>
                         <Outline>{/* <OutlineIcon show /> */}</Outline>
                         <Right>
@@ -208,14 +208,14 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                             </Description>
                             <CTAWrapper>
                                 <CTAButton size="small" variant="tertiary">
-                                    <Translation {...messages.TR_READ_MORE} />
+                                    <Translation id="TR_READ_MORE" />
                                 </CTAButton>
                             </CTAWrapper>
                         </Right>
                     </NewsItem>
                     <NewsItem>
                         <Left>
-                            <NewsImage src={resolveStaticPath('images/dashboard/fake2.png')} />
+                            <NewsImage src={resolveStaticPath('images/png/fake2.png')} />
                         </Left>
                         <Outline>{/* <OutlineIcon show /> */}</Outline>
                         <Right>
@@ -246,7 +246,7 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                         console.log('do something');
                     }}
                 >
-                    <Translation {...messages.TR_SHOW_OLDER_NEWS} />
+                    <Translation id="TR_SHOW_OLDER_NEWS" />
                 </Button>
             </BottomAction>
         </Section>

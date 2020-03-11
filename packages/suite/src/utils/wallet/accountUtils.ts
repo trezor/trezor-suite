@@ -2,10 +2,10 @@ import {
     State as TransactionsState,
     WalletAccountTransaction,
 } from '@wallet-reducers/transactionReducer';
-import { AccountTransaction } from 'trezor-connect';
+import { AccountTransaction, AccountInfo } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import messages from '@suite/support/messages';
-import { NETWORK_TYPE, ACCOUNT_TYPE } from '@wallet-constants/account';
+import { ACCOUNT_TYPE } from '@wallet-constants/account';
 import { Account, Network, Fiat, WalletParams } from '@wallet-types';
 import { AppState } from '@suite-types';
 import { NETWORKS } from '@wallet-config';
@@ -82,15 +82,14 @@ export const getTitleForNetwork = (symbol: Account['symbol']) => {
 };
 
 // same as 'getTypeForNetwork' below except it returns proper value for NORMAL account type
-export const getAccountTypeIntl = (accountType: Account['accountType']) => {
+export const getAccountTypeIntl = (accountType: Network['accountType']) => {
     switch (accountType) {
-        case ACCOUNT_TYPE.NORMAL:
-            return messages.TR_NETWORK_TYPE_NORMAL;
         case ACCOUNT_TYPE.SEGWIT:
-            return messages.TR_NETWORK_TYPE_SEGWIT;
+            return messages.TR_ACCOUNT_TYPE_SEGWIT;
         case ACCOUNT_TYPE.LEGACY:
-            return messages.TR_NETWORK_TYPE_LEGACY;
-        // no default
+            return messages.TR_ACCOUNT_TYPE_LEGACY;
+        default:
+            return messages.TR_ACCOUNT_TYPE_NORMAL;
     }
 };
 
@@ -99,11 +98,34 @@ export const getTypeForNetwork = (accountType: Account['accountType']) => {
         case ACCOUNT_TYPE.NORMAL:
             return null;
         case ACCOUNT_TYPE.SEGWIT:
-            return messages.TR_NETWORK_TYPE_SEGWIT;
+            return messages.TR_ACCOUNT_TYPE_SEGWIT;
         case ACCOUNT_TYPE.LEGACY:
-            return messages.TR_NETWORK_TYPE_LEGACY;
+            return messages.TR_ACCOUNT_TYPE_LEGACY;
         // no default
     }
+};
+
+export const getBip43Shortcut = (path: string) => {
+    if (typeof path !== 'string') return 'unknown';
+    // https://github.com/bitcoin/bips/blob/master/bip-0043.mediawiki
+    const bip43 = path.split('/')[1];
+    switch (bip43) {
+        case `84'`:
+            return 'bech32';
+        case `49'`:
+            return 'p2sh';
+        case `44'`:
+            return 'p2phk';
+        default:
+            return 'unknown';
+    }
+};
+
+export const getBip43Intl = (path: string) => {
+    const bip43 = getBip43Shortcut(path);
+    if (bip43 === 'bech32') return messages.TR_ACCOUNT_TYPE_BECH32;
+    if (bip43 === 'p2sh') return messages.TR_ACCOUNT_TYPE_P2SH;
+    return messages.TR_ACCOUNT_TYPE_P2PKH;
 };
 
 export const stripNetworkAmount = (amount: string, decimals: number) => {
@@ -159,46 +181,23 @@ export const sortByCoin = (accounts: Account[]) => {
     });
 };
 
-export const isAddressInAccount = (
-    networkType: Network['networkType'],
-    address: string,
-    accounts: Account[],
-) => {
-    const filteredAccounts = accounts.filter(account => account.networkType === networkType);
+export const findAccountsByDescriptor = (descriptor: string, accounts: Account[]) =>
+    accounts.filter(a => a.descriptor === descriptor);
 
-    switch (networkType) {
-        case NETWORK_TYPE.BITCOIN: {
-            return filteredAccounts.find(account => {
-                const { addresses } = account;
-                if (addresses) {
-                    const foundAccountUnused = addresses.unused.find(
-                        item => item.address === address,
-                    );
-                    if (foundAccountUnused) {
-                        return account;
-                    }
-                    const foundAccountUsed = addresses.used.find(item => item.address === address);
-                    if (foundAccountUsed) {
-                        return account;
-                    }
-                }
-                return false;
-            });
+export const findAccountsByAddress = (address: string, accounts: Account[]) =>
+    accounts.filter(a => {
+        if (a.addresses) {
+            return (
+                a.addresses.used.find(u => u.address === address) ||
+                a.addresses.unused.find(u => u.address === address) ||
+                a.addresses.change.find(u => u.address === address) ||
+                a.descriptor === address
+            );
         }
+        return a.descriptor === address;
+    });
 
-        case NETWORK_TYPE.RIPPLE:
-        case NETWORK_TYPE.ETHEREUM: {
-            const foundAccount = filteredAccounts.find(account => account.descriptor === address);
-            if (foundAccount) {
-                return foundAccount;
-            }
-            return false;
-        }
-        // no default
-    }
-};
-
-export const getAccountDevice = (devices: AppState['devices'], account: Account) =>
+export const findAccountDevice = (account: Account, devices: AppState['devices']) =>
     devices.find(d => d.state === account.deviceState);
 
 export const getAllAccounts = (deviceState: string | typeof undefined, accounts: Account[]) =>
@@ -326,4 +325,22 @@ export const getTotalFiatBalance = (
 export const isTestnet = (symbol: Account['symbol']) => {
     const net = NETWORKS.find(n => n.symbol === symbol);
     return net?.testnet ?? false;
+};
+
+export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
+    // changed transaction count (total + unconfirmed)
+    const changedTxCount =
+        freshInfo.history.total + (freshInfo.history.unconfirmed || 0) >
+        account.history.total + (account.history.unconfirmed || 0);
+
+    // different sequence or balance
+    const changedRipple =
+        account.networkType === 'ripple' &&
+        (freshInfo.misc!.sequence !== account.misc.sequence ||
+            freshInfo.balance !== account.balance);
+
+    const changedEthereum =
+        account.networkType === 'ethereum' && freshInfo.misc!.nonce !== account.misc.nonce;
+
+    return changedTxCount || changedRipple || changedEthereum;
 };

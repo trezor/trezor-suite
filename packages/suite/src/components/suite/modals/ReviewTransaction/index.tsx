@@ -1,12 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+import { Translation, AccountLabeling } from '@suite-components';
+
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
-import { H2, Button, colors, variables } from '@trezor/components-v2';
+import { H2, Button, colors, variables } from '@trezor/components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
-import { Output } from '@wallet-types/sendForm';
 import { fromWei, toWei } from 'web3-utils';
 import { Props } from './Container';
 
@@ -80,34 +79,34 @@ export default ({
     const { outputs } = send;
     const { networkType } = account;
     const transactionInfo = getTransactionInfo(account.networkType, send);
-    if (transactionInfo.type === 'error') return null;
+    if (!transactionInfo || transactionInfo.type === 'error') return null;
     const upperCaseSymbol = account.symbol.toUpperCase();
 
     return (
         <Wrapper>
             <H2>
-                <Translation {...messages.TR_MODAL_CONFIRM_TX_TITLE} />
+                <Translation id="TR_MODAL_CONFIRM_TX_TITLE" />
             </H2>
             <Content>
                 <Box>
                     <Label>
-                        <Translation {...messages.TR_ADDRESS_FROM} />
+                        <Translation id="TR_ADDRESS_FROM" />
                     </Label>
                     <Value>
-                        {upperCaseSymbol} Account #{account.index}
+                        {upperCaseSymbol} <AccountLabeling account={account} />
                     </Value>
                 </Box>
-                {outputs.map((output: Output) => (
-                    <OutputWrapper>
+                {outputs.map(output => (
+                    <OutputWrapper key={output.id}>
                         <Box>
                             <Label>
-                                <Translation {...messages.TR_TO} />
+                                <Translation id="TR_TO" />
                             </Label>
                             <Value>{output.address.value}</Value>
                         </Box>
                         <Box>
                             <Label>
-                                <Translation {...messages.TR_AMOUNT} />
+                                <Translation id="TR_AMOUNT" />
                             </Label>
                             <Value>
                                 {output.amount.value} {upperCaseSymbol}
@@ -118,9 +117,9 @@ export default ({
                 <Box>
                     <Label>
                         {networkType === 'ethereum' ? (
-                            <Translation {...messages.TR_GAS_PRICE} />
+                            <Translation id="TR_GAS_PRICE" />
                         ) : (
-                            <Translation {...messages.TR_FEE} />
+                            <Translation id="TR_FEE" />
                         )}
                     </Label>
                     <Value>
@@ -135,7 +134,7 @@ export default ({
                     variant="secondary"
                     onClick={() => modalActions.onCancel()}
                 >
-                    <Translation {...messages.TR_EDIT} />
+                    <Translation id="TR_EDIT" />
                 </Button>
                 <Button
                     onClick={() => {
@@ -153,7 +152,7 @@ export default ({
                         }
                     }}
                 >
-                    <Translation {...messages.TR_MODAL_CONFIRM_TX_BUTTON} />
+                    <Translation id="TR_MODAL_CONFIRM_TX_BUTTON" />
                 </Button>
             </Buttons>
         </Wrapper>

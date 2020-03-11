@@ -1,14 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Button } from '@trezor/components-v2';
-import { resolveStaticPath } from '@suite-utils/nextjs';
+import { Button } from '@trezor/components';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Dispatch } from '@suite-types';
 import { Network, Discovery } from '@wallet-types';
-import { Translation } from '@suite-components';
-import messages from '@suite/support/messages';
+import { Translation, Image } from '@suite-components';
+
 import Wrapper from './components/Wrapper';
 
 const mapStateToProps = (state: AppState) => ({
@@ -42,12 +41,12 @@ const AccountNotLoaded = (props: Props) => {
 
     return (
         <Wrapper
-            title={<Translation {...messages.TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR} />}
+            title={<Translation id="TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR" />}
             description="TODO: Error message from discovery field"
-            image={resolveStaticPath(`images/wallet/wallet-empty.svg`)}
+            image={<Image image="EMPTY_WALLET" />}
         >
             <Button variant="primary" icon="PLUS" isLoading={locked} onClick={restart}>
-                <Translation {...messages.TR_RETRY} />
+                <Translation id="TR_RETRY" />
             </Button>
         </Wrapper>
     );

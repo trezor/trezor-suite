@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Icon, colors, variables } from '@trezor/components-v2';
+import { Icon, colors, variables } from '@trezor/components';
 import { ITEMS, HIDDEN_ITEMS } from '@wallet-config/menu';
 import { Props } from './Container';
 
@@ -52,7 +52,7 @@ const AccountNavigation = (props: Props) => {
     return (
         <Wrapper>
             {ITEMS.map(item => {
-                if (!item.isHidden()) {
+                if (!item.isHidden(account.networkType)) {
                     return (
                         <StyledNavLink
                             data-test={`@wallet/menu/${item.route}`}

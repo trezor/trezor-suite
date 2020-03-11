@@ -3,12 +3,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
-import { Button, P, H2 } from '@trezor/components-v2';
-import { resolveStaticPath } from '@suite-utils/nextjs';
+import { Button, P, H2 } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { Dispatch, InjectedModalApplicationProps } from '@suite-types';
-import { Translation } from '@suite-components';
-import messages from '@suite/support/messages';
+import { Translation, Image } from '@suite-components';
+
 import ModalWrapper from '@suite-components/ModalWrapper';
 
 const Wrapper = styled(ModalWrapper)`
@@ -20,7 +19,7 @@ const Wrapper = styled(ModalWrapper)`
     min-width: 60vw;
 `;
 
-const StyledImg = styled.img`
+const StyledImg = styled(props => <Image {...props} />)`
     margin-top: 40px;
     margin-bottom: 15px;
 `;
@@ -35,20 +34,18 @@ const Index = (props: Props) => {
     return (
         <Wrapper data-test="@welcome">
             <H2>
-                <Translation>{messages.TR_WELCOME_MODAL_HEADING}</Translation>
+                <Translation id="TR_WELCOME_MODAL_HEADING" />
             </H2>
             <P size="tiny">
-                {/* todo: remove, temporarily here, instead of cyka blyat */}
-                The one place for all your crypto matters.
-                {/* <Translation>{messages.TR_WELCOME_MODAL_TEXT}</Translation> */}
+                <Translation id="TR_WELCOME_MODAL_TEXT" />
             </P>
-            <StyledImg alt="" src={resolveStaticPath('images/welcome/welcome.svg')} />
+            <StyledImg image="WELCOME" />
 
             <Button
                 data-test="@welcome/continue-button"
                 onClick={() => props.goto('suite-analytics')}
             >
-                <Translation>{messages.TR_BEGIN}</Translation>
+                <Translation id="TR_BEGIN" />
             </Button>
         </Wrapper>
     );

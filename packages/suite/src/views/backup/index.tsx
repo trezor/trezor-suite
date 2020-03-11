@@ -3,15 +3,14 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 
-import { H2, P, Button, ButtonProps, colors } from '@trezor/components-v2';
+import { H2, P, Button, ButtonProps, colors } from '@trezor/components';
 import * as backupActions from '@backup-actions/backupActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { Dispatch, AppState, InjectedModalApplicationProps } from '@suite-types';
-import { ProgressBar, Loading } from '@suite-components';
+import { ProgressBar, Loading, Image } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
 import { canStart, canContinue } from '@backup-utils';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const Wrapper = styled(ModalWrapper)`
     min-height: 80vh;
@@ -80,7 +79,7 @@ const Backup = (props: Props) => {
         return (
             <Wrapper data-test="@backup/no-device">
                 <H2>Reconnect your device</H2>
-                <img src={resolveStaticPath('images/suite/connect-device.svg')} alt="" />
+                <Image image="CONNECT_DEVICE" />
                 <Buttons>
                     <CloseButton onClick={onClose} />
                 </Buttons>
@@ -161,7 +160,7 @@ const Backup = (props: Props) => {
                 <>
                     <H2>Backup failed!</H2>
                     <StyledP data-test="@backup/error-message">{backup.error}</StyledP>
-                    <img src={resolveStaticPath('images/suite/uni-error.svg')} alt="" />
+                    <Image image="UNI_ERROR" />
                     <Buttons>
                         <Col>
                             <CloseButton onClick={onClose} />

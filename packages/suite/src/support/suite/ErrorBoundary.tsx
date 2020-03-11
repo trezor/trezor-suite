@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import * as Sentry from '@sentry/browser';
-import { H1, P, Button } from '@trezor/components-v2';
+import { H1, P, Button } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -71,7 +71,7 @@ export default ErrorBoundary;
 // IntlProvider. Not sure if we need so much to have this translated here.
 
 // import { Translation } from '@suite-components/Translation';
-// import messages from '@suite/support/messages';
+//
 
 // TR_ERROR_OCCURRED: {
 //     id: 'TR_ERROR_OCCURRED',

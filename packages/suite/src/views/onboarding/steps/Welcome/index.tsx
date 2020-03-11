@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Translation } from '@suite-components';
 import { Text, Option, Wrapper } from '@onboarding-components';
-import messages from '@suite/support/messages';
+
 import { Props } from './Container';
 
 const WelcomeStep = (props: Props) => {
@@ -10,11 +10,11 @@ const WelcomeStep = (props: Props) => {
         <Wrapper.Step data-test="@onboarding/welcome-step">
             <Wrapper.StepBody>
                 <Wrapper.StepHeading>
-                    <Translation {...messages.TR_WELCOME_TO_TREZOR} />
+                    <Translation id="TR_WELCOME_TO_TREZOR" />
                 </Wrapper.StepHeading>
 
                 <Text>
-                    <Translation {...messages.TR_WELCOME_TO_TREZOR_TEXT} />
+                    <Translation id="TR_WELCOME_TO_TREZOR_TEXT" />
                 </Text>
 
                 <Wrapper.Options>
@@ -26,7 +26,7 @@ const WelcomeStep = (props: Props) => {
                         title="I'm new to all this"
                         text="I want to be guided through onboarding process"
                         button="Begin onboarding"
-                        imgSrc="images/onboarding/new-user.svg"
+                        imgSrc="images/svg/new-user.svg"
                     />
                     <Option
                         data-test="@onboarding/skip-button"
@@ -36,7 +36,7 @@ const WelcomeStep = (props: Props) => {
                         title="I have initialized device"
                         text="My device is initialized and I used Wallet or Suite before"
                         button="Skip onboarding"
-                        imgSrc="images/onboarding/existing-user.svg"
+                        imgSrc="images/svg/existing-user.svg"
                     />
                 </Wrapper.Options>
             </Wrapper.StepBody>

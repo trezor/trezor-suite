@@ -1,9 +1,13 @@
 import { defineMessages } from 'react-intl';
 
 const definedMessages = defineMessages({
-    CANNOT_SEND_TO_MYSELF: {
+    TR_XRP_CANNOT_SEND_TO_MYSELF: {
         defaultMessage: 'Cannot send to myself',
         id: 'CANNOT_SEND_TO_MYSELF',
+    },
+    TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE: {
+        defaultMessage: 'Not enough XRP above the required unspendable reserve ({reserve} XRP)',
+        id: 'TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE',
     },
     TR_3RD_PARTY_WALLETS: {
         defaultMessage: '3rd party wallets',
@@ -45,6 +49,11 @@ const definedMessages = defineMessages({
     TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY: {
         defaultMessage: 'There are no coins enabled in settings.',
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY',
+    },
+    TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC: {
+        defaultMessage:
+            'It’s so empty here. Can’t even describe the emptiness I’m feelin’ here… You can either add new account (that will enable selected coin) or enable any coin in Settings.',
+        id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC',
     },
     TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR: {
         defaultMessage: 'Discovery error.',
@@ -107,10 +116,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Add hidden wallet',
         id: 'TR_ADD_HIDDEN_WALLET',
     },
-    TR_ADD_NEW_ACCOUNT: {
-        defaultMessage: 'Add new account',
-        id: 'TR_ADD_NEW_ACCOUNT',
-    },
     TR_ADDITIONAL_SECURITY_FEATURES: {
         defaultMessage: 'Additional security features are waiting to be done.',
         id: 'TR_ADDITIONAL_SECURITY_FEATURES',
@@ -154,11 +159,25 @@ const definedMessages = defineMessages({
         defaultMessage: '{networkName} receive address',
         id: 'TR_ADDRESS_MODAL_TITLE',
     },
+    TR_XPUB_MODAL_CLIPBOARD: {
+        defaultMessage: 'Copy public key',
+        id: 'TR_XPUB_MODAL_CLIPBOARD',
+    },
+    TR_XPUB_MODAL_TITLE: {
+        defaultMessage: '{networkName} Account {accountIndex} public key (XPUB)',
+        id: 'TR_XPUB_MODAL_TITLE',
+    },
+    TR_ADVANCED_RECOVERY: {
+        defaultMessage: 'advanced recovery',
+        description: 'Enter words via obfuscated pin matrix, recovery takes about 5 minutes.',
+        id: 'TR_ADVANCED_RECOVERY',
+    },
     TR_ADVANCED_RECOVERY_OPTION: {
-        defaultMessage: 'Advanced recovery (5 minutes)',
+        defaultMessage: 'Advanced recovery',
         description: 'Button for selecting advanced recovery option',
         id: 'TR_ADVANCED_RECOVERY_OPTION',
     },
+
     TR_ADVANCED_SETTINGS: {
         defaultMessage: 'Advanced settings',
         description: 'Shows advanced sending form',
@@ -192,10 +211,6 @@ const definedMessages = defineMessages({
     TR_AMOUNT_IS_NOT_SET: {
         defaultMessage: 'Amount is not set',
         id: 'TR_AMOUNT_IS_NOT_SET',
-    },
-    TR_AND: {
-        defaultMessage: 'and',
-        id: 'TR_AND',
     },
     TR_ASSETS: {
         defaultMessage: 'Assets',
@@ -265,10 +280,20 @@ const definedMessages = defineMessages({
         description: 'Explanation what recovery seed is',
         id: 'TR_BACKUP_SUBHEADING_1',
     },
+    TR_BASIC_RECOVERY: {
+        defaultMessage: 'basic recovery',
+        id: 'TR_BASIC_RECOVERY',
+    },
     TR_BASIC_RECOVERY_OPTION: {
-        defaultMessage: 'Basic recovery (2 minutes)',
-        description: 'Button for selecting basic recovery option',
+        defaultMessage: 'Enter words on your computer, recovery takes about 2 minutes.',
+        description: 'Enter words on your computer, recovery takes about 2 minutes.',
         id: 'TR_BASIC_RECOVERY_OPTION',
+    },
+    TR_SELECT_CONCRETE_RECOVERY_TYPE: {
+        id: 'TR_SELECT_CONCRETE_RECOVERY_TYPE',
+        defaultMessage: 'Select {recoveryType}',
+        description:
+            '{recoveryType} stands for either TR_BASIC_RECOVERY or TR_ADVANCED_RECOVERY. Used as button description',
     },
     TR_BCH_ADDRESS_INFO: {
         defaultMessage:
@@ -300,10 +325,6 @@ const definedMessages = defineMessages({
     TR_CANNOT_SEND_TO_MYSELF: {
         defaultMessage: 'Cannot send to myself',
         id: 'CANNOT_SEND_TO_MYSELF',
-    },
-    TR_CARDANO_WALLET: {
-        defaultMessage: 'Cardano wallet',
-        id: 'TR_CARDANO_WALLET',
     },
     TR_CHANGELOG: {
         defaultMessage: 'Changelog',
@@ -397,10 +418,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Connect Trezor to continue...',
         id: 'TR_CONNECT_TREZOR',
     },
-    TR_CONNECT_TREZOR_TO_CONTINUE: {
-        defaultMessage: 'Connect Trezor to continue',
-        id: 'TR_CONNECT_TREZOR_TO_CONTINUE',
-    },
     TR_CONNECT_YOUR_DEVICE: {
         defaultMessage: 'Connect your device',
         description: 'Prompt to user to connect his device.',
@@ -472,10 +489,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Continue',
         description: 'Continue button',
         id: 'TR_CONTINUE',
-    },
-    TR_COPIED: {
-        defaultMessage: 'Copied!',
-        id: 'TR_COPIED',
     },
     TR_COPY_TO_CLIPBOARD: {
         defaultMessage: 'Copy to clipboard',
@@ -684,14 +697,6 @@ const definedMessages = defineMessages({
         description: 'Link to trezor documentation (wiki)',
         id: 'TR_DOCUMENTATION',
     },
-    TR_DONT_HAVE_A_TREZOR: {
-        defaultMessage: "Don't have a Trezor? {getOne}",
-        id: 'TR_DONT_HAVE_A_TREZOR',
-    },
-    TR_DONT_UPGRADE_BRIDGE: {
-        defaultMessage: "No, I don't want to upgrade Bridge now",
-        id: 'TR_DONT_UPGRADE_BRIDGE',
-    },
     TR_DOUBLE_CLICK_IT_TO_RUN_INSTALLER: {
         defaultMessage: 'Double click it to run installer',
         description: 'Instruction for installing Trezor Bridge',
@@ -735,17 +740,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Enter PIN',
         description: 'Button. Submit PIN',
         id: 'TR_ENTER_PIN',
-    },
-    TR_ENTER_PIN_HEADING: {
-        defaultMessage: 'Enter PIN',
-        description: '',
-        id: 'TR_ENTER_PIN_HEADING',
-    },
-    TR_ENTER_PIN_TEXT: {
-        defaultMessage:
-            'Your device gets locked anytime you disconnect it. You now need to enter your PIN to continue.',
-        description: '',
-        id: 'TR_ENTER_PIN_TEXT',
     },
     TR_ENTER_SEED_WORDS_INSTRUCTION: {
         defaultMessage: 'Enter words from your seed in order displayed on your device.',
@@ -833,12 +827,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Firmware version',
         id: 'TR_FIRMWARE_VERSION',
     },
-    TR_FIRST_PIN_ENTERED: {
-        defaultMessage:
-            'Good. You entered a new pin. But to make sure you did not make mistake, please enter it again. Look at your device now, numbers are now different.',
-        description: 'Text describing what happens after user enters PIN for the first time.',
-        id: 'TR_FIRST_PIN_ENTERED',
-    },
     TR_FIRST_SEEN: {
         defaultMessage: 'First Seen',
         id: 'TR_FIRST_SEEN',
@@ -853,10 +841,10 @@ const definedMessages = defineMessages({
         description: 'Case when device was connected and it is in expected state (not initialized)',
         id: 'TR_FOUND_OK_DEVICE',
     },
-    // TR_GAS_LIMIT: {
-    //         defaultMessage: 'Gas limit',
-    //         id: 'TR_GAS_LIMIT',
-    // },
+    TR_GAS_LIMIT: {
+        defaultMessage: 'Gas limit',
+        id: 'TR_GAS_LIMIT',
+    },
     // TR_GAS_LIMIT_REFERS_TO: {
     //         defaultMessage:
     //                 'Gas limit refers to the maximum amount of gas user is willing to spend on a particular transaction. {TR_GAS_QUOTATION}. Increasing the gas limit will not get the transaction confirmed sooner. Default value for sending {gasLimitTooltipCurrency} is {gasLimitTooltipValue}.',
@@ -887,11 +875,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'General',
         description: 'Category in Settings',
         id: 'TR_GENERAL',
-    },
-    TR_GET_ONE: {
-        defaultMessage: 'Get one',
-        description: 'Part of the sentence: Dont have a Trezor? Get one',
-        id: 'TR_GET_ONE',
     },
     TR_GO_TO_EXTERNAL_WALLET: {
         defaultMessage: 'Go to external wallet',
@@ -990,6 +973,10 @@ const definedMessages = defineMessages({
             'Instruction what to do when user knows the device he is holding was manipulated by him, not someone else.',
         id: 'TR_INSTRUCTION_TO_SKIP',
     },
+    TR_IS_NOT_NEW_DEVICE_HEADING: {
+        defaultMessage: 'Device does not appear to be that new',
+        id: 'TR_IS_NOT_NEW_DEVICE_HEADING',
+    },
     TR_IS_NOT_NEW_DEVICE: {
         defaultMessage:
             'According to your decision in a previous step, this was supposed to be a fresh device. But we were able to detect already installed firmware on it.',
@@ -1009,10 +996,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Learn more',
         description: 'Link to Trezor wiki.',
         id: 'TR_LEARN_MORE',
-    },
-    TR_LEARN_MORE_ABOUT_LATEST_VERSION: {
-        defaultMessage: 'Learn more about latest version in {TR_CHANGELOG}.',
-        id: 'TR_LEARN_MORE_ABOUT_LATEST_VERSION',
     },
     TR_LEARN_MORE_LINK: {
         defaultMessage: 'Learn more.',
@@ -1080,11 +1063,6 @@ const definedMessages = defineMessages({
         description: 'Name of Trezor model T',
         id: 'TR_MODEL_T',
     },
-    TR_MORE_WORDS_TO_ENTER: {
-        defaultMessage: '{count} words to enter.',
-        description: 'How many words will user need to enter before recovery is finished.',
-        id: 'TR_MORE_WORDS_TO_ENTER',
-    },
     TR_NAV_RECEIVE: {
         defaultMessage: 'Receive',
         description: 'Title of the navigation tab that contains the account address',
@@ -1094,6 +1072,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Send',
         description: 'Title of the navigation tab that contains a form for sending funds',
         id: 'TR_NAV_SEND',
+    },
+    TR_NAV_DETAILS: {
+        defaultMessage: 'Account details',
+        id: 'TR_NAV_DETAILS',
     },
     TR_NAV_SIGN_AND_VERIFY: {
         defaultMessage: 'Sign & Verify',
@@ -1105,10 +1087,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Transactions',
         description: 'Title of the navigation tab that contains tx history.',
         id: 'TR_NAV_TRANSACTIONS',
-    },
-    TR_NEM_WALLET: {
-        defaultMessage: 'NEM wallet',
-        id: 'TR_NEM_WALLET',
     },
     TR_NETWORK_BITCOIN: {
         defaultMessage: 'Bitcoin',
@@ -1173,18 +1151,6 @@ const definedMessages = defineMessages({
     TR_NETWORK_TEZOS: {
         defaultMessage: 'Tezos',
         id: 'TR_NETWORK_TEZOS',
-    },
-    TR_NETWORK_TYPE_LEGACY: {
-        defaultMessage: 'legacy',
-        id: 'TR_NETWORK_TYPE_LEGACY',
-    },
-    TR_NETWORK_TYPE_NORMAL: {
-        defaultMessage: 'normal',
-        id: 'TR_NETWORK_TYPE_NORMAL',
-    },
-    TR_NETWORK_TYPE_SEGWIT: {
-        defaultMessage: 'segwit',
-        id: 'TR_NETWORK_TYPE_SEGWIT',
     },
     TR_NETWORK_UNKNOWN: {
         defaultMessage: 'unknown',
@@ -1276,7 +1242,7 @@ const definedMessages = defineMessages({
         id: 'TR_PASSPHRASE_TOO_LONG',
     },
     TR_PASSPHRASE_WALLET: {
-        defaultMessage: 'Passphrase wallet',
+        defaultMessage: 'Passphrase wallet #{id}',
         id: 'TR_PASSPHRASE_WALLET',
     },
     TR_PENDING: {
@@ -1344,7 +1310,7 @@ const definedMessages = defineMessages({
     },
     TR_RANDOM_SEED_WORDS_DISCLAIMER: {
         defaultMessage:
-            'Please note, that to maximaze security, your device will ask you to enter {count} fake words that are not part of your seed.',
+            'You might be asked to retype some words that are not part of your recovery seed.',
         description:
             'User is instructed to enter words from seed (backup) into the form in browser',
         id: 'TR_RANDOM_SEED_WORDS_DISCLAIMER',
@@ -1474,7 +1440,7 @@ const definedMessages = defineMessages({
         id: 'TR_SELECT_YOUR_DEVICE_HEADING',
     },
     TR_SEND: {
-        defaultMessage: 'Send {amount}',
+        defaultMessage: 'Send',
         id: 'TR_SEND',
     },
     TR_SEND_NETWORK: {
@@ -1613,6 +1579,10 @@ const definedMessages = defineMessages({
         description: 'Button.',
         id: 'TR_START_RECOVERY',
     },
+    TR_START: {
+        defaultMessage: 'Start',
+        id: 'TR_START',
+    },
     TR_STATUS: {
         defaultMessage: 'Status',
         id: 'TR_STATUS',
@@ -1621,10 +1591,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Status unknown',
         description: 'Device status',
         id: 'TR_STATUS_UNKNOWN',
-    },
-    TR_STELLAR_WALLET: {
-        defaultMessage: 'Stellar wallet',
-        id: 'TR_STELLAR_WALLET',
     },
     TR_SUITE_VERSION: {
         defaultMessage: 'Suite version',
@@ -1650,10 +1616,6 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Testnet coins dont have any value but you still may use them to learn and experiment.',
         id: 'TR_TESTNET_COINS_EXPLAINED',
-    },
-    TR_TEZOS_WALLET: {
-        defaultMessage: 'Tezos wallet',
-        id: 'TR_TEZOS_WALLET',
     },
     TR_THE_PIN_LAYOUT_IS_DISPLAYED: {
         defaultMessage: 'The PIN layout is displayed on your Trezor.',
@@ -1783,9 +1745,9 @@ const definedMessages = defineMessages({
         defaultMessage: '(Unknown transaction)',
         id: 'TR_UNKNOWN_TRANSACTION',
     },
-    TR_UNKOWN_ERROR_SEE_CONSOLE: {
+    TR_UNKNOWN_ERROR_SEE_CONSOLE: {
         defaultMessage: 'Unknown error. See console logs for details.',
-        id: 'TR_UNKOWN_ERROR_SEE_CONSOLE',
+        id: 'TR_UNKNOWN_ERROR_SEE_CONSOLE',
     },
     TR_UNLOCK: {
         defaultMessage: 'Unlock',
@@ -1795,6 +1757,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Unreadable',
         description: 'Device status',
         id: 'TR_UNREADABLE',
+    },
+    TR_UNACQUIRED: {
+        defaultMessage: 'Unrecognized device',
+        description: 'Device status',
+        id: 'TR_UNACQUIRED',
     },
     TR_UNVERIFIED_ADDRESS_COMMA_CONNECT: {
         defaultMessage: 'Unverified address, connect your Trezor to verify it',
@@ -1856,10 +1823,6 @@ const definedMessages = defineMessages({
     //         defaultMessage: 'Verifying address error',
     //         id: 'TR_VERIFYING_ADDRESS_ERROR',
     // },
-    TR_VERSION_IS_LOADING: {
-        defaultMessage: 'Version is loading',
-        id: 'TR_VERSION_IS_LOADING',
-    },
     TR_WAIT_FOR_FILE_TO_DOWNLOAD: {
         defaultMessage: 'Wait for file to download',
         description: 'Instruction for installing Trezor Bridge',
@@ -1869,11 +1832,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Wait for your device to reboot',
         description: 'Info what is happening with users device.',
         id: 'TR_WAIT_FOR_REBOOT',
-    },
-    TR_WALLET: {
-        defaultMessage: 'Wallet',
-        description: 'Category in Settings',
-        id: 'TR_WALLET',
     },
     TR_WALLET_DUPLICATE_DESC: {
         defaultMessage: 'The hidden wallet that you are trying to create already exists',
@@ -2028,6 +1986,457 @@ const definedMessages = defineMessages({
         id: 'TR_SEND_AMOUNT_TOOLTIP',
         defaultMessage: 'TR_SEND_AMOUNT_TOOLTIP',
     },
-});
+    TR_PIN_MISMATCH_HEADING: {
+        id: 'TR_PIN_MISMATCH_HEADING',
+        defaultMessage: 'Pin mismatch',
+    },
+    TR_PIN_MISMATCH_TEXT: {
+        id: 'TR_PIN_MISMATCH_TEXT',
+        defaultMessage: 'Pin mismatch text',
+    },
+    TR_SHOW_LOG: {
+        id: 'TR_SHOW_LOG',
+        defaultMessage: 'Show log',
+    },
+    TR_ACCOUNT_DETAILS_HEADER: {
+        id: 'TR_ACCOUNT_DETAILS_HEADER',
+        defaultMessage: 'Account Details',
+    },
+    TR_ACCOUNT_DETAILS_TYPE_HEADER: {
+        id: 'TR_ACCOUNT_DETAILS_TYPE_HEADER',
+        defaultMessage: 'Account type',
+    },
+    TR_ACCOUNT_DETAILS_TYPE_BECH32: {
+        id: 'TR_ACCOUNT_DETAILS_TYPE_BECH32',
+        defaultMessage:
+            'Bech32 uses the most modern addresses for smallest transaction fees. Be aware that it may not be compatible with old bitcoin services.',
+    },
+    TR_ACCOUNT_DETAILS_TYPE_P2SH: {
+        id: 'TR_ACCOUNT_DETAILS_TYPE_P2SH',
+        defaultMessage:
+            'Pay to script hash (P2SH) is an advanced type of transaction used in Bitcoin and other similar crypto currencies. Unlike P2PKH, it allows sender to commit funds to a hash of an arbitrary valid script.',
+    },
+    TR_ACCOUNT_DETAILS_TYPE_P2PKH: {
+        id: 'TR_ACCOUNT_DETAILS_TYPE_P2PKH',
+        defaultMessage:
+            'Legacy Pay-to-Public-Key-Hash (P2PKH) is the basic type of transaction used in Bitcoin and other similar crypto currencies.',
+    },
+    TR_ACCOUNT_DETAILS_XPUB_HEADER: {
+        id: 'TR_ACCOUNT_DETAILS_XPUB_HEADER',
+        defaultMessage: 'Public key (XPUB)',
+    },
+    TR_ACCOUNT_DETAILS_XPUB: {
+        id: 'TR_ACCOUNT_DETAILS_XPUB',
+        defaultMessage:
+            'Be careful with your account public key (XPUB). When you expose your public key to a third party, you allow them to see your entire transaction history.',
+    },
+    TR_ACCOUNT_DETAILS_XPUB_BUTTON: {
+        id: 'TR_ACCOUNT_DETAILS_XPUB_BUTTON',
+        defaultMessage: 'Show public key',
+    },
+    TR_ACCOUNT_TYPE_NORMAL: {
+        id: 'TR_ACCOUNT_TYPE_NORMAL',
+        defaultMessage: 'Normal',
+    },
+    TR_ACCOUNT_TYPE_SEGWIT: {
+        id: 'TR_ACCOUNT_TYPE_SEGWIT',
+        defaultMessage: 'SegWit',
+    },
+    TR_ACCOUNT_TYPE_LEGACY: {
+        id: 'TR_ACCOUNT_TYPE_LEGACY',
+        defaultMessage: 'Legacy',
+    },
+    TR_ACCOUNT_TYPE_BECH32: {
+        id: 'TR_ACCOUNT_TYPE_BECH32',
+        defaultMessage: 'Bech32',
+    },
+    TR_ACCOUNT_TYPE_P2SH: {
+        id: 'TR_ACCOUNT_TYPE_P2SH',
+        defaultMessage: 'P2SH',
+    },
+    TR_ACCOUNT_TYPE_P2PKH: {
+        id: 'TR_ACCOUNT_TYPE_P2PKH',
+        defaultMessage: 'P2PKH',
+    },
+    TOAST_ACQUIRE_ERROR: {
+        id: 'TOAST_ACQUIRE_ERROR',
+        defaultMessage: 'Acquire error {error}',
+    },
+    TOAST_AUTH_FAILED: {
+        id: 'TOAST_AUTH_FAILED',
+        defaultMessage: 'Authorization error: {error}',
+    },
+    TOAST_AUTH_CONFIRM_ERROR: {
+        id: 'TOAST_AUTH_CONFIRM_ERROR',
+        defaultMessage: 'Passphrase confirmation error: {error}',
+    },
+    TOAST_AUTH_CONFIRM_ERROR_DEFAULT: {
+        id: 'TOAST_AUTH_CONFIRM_ERROR_DEFAULT',
+        defaultMessage: 'Invalid passphrase',
+    },
+    TOAST_DISCOVERY_ERROR: {
+        id: 'TOAST_DISCOVERY_ERROR',
+        defaultMessage: 'Account discovery error {error}',
+    },
+    TOAST_BACKUP_FAILED: {
+        id: 'TOAST_BACKUP_FAILED',
+        defaultMessage: 'Backup failed',
+    },
+    TOAST_BACKUP_SUCCESS: {
+        id: 'TOAST_BACKUP_SUCCESS',
+        defaultMessage: 'Pin changed',
+    },
+    TOAST_SETTINGS_APPLIED: {
+        id: 'TOAST_SETTINGS_APPLIED',
+        defaultMessage: 'Settings applied',
+    },
+    TOAST_PIN_CHANGED: {
+        id: 'TOAST_PIN_CHANGED',
+        defaultMessage: 'Pin changed',
+    },
+    TOAST_DEVICE_WIPED: {
+        id: 'TOAST_DEVICE_WIPED',
+        defaultMessage: 'Pin changed',
+    },
+    TOAST_COPY_TO_CLIPBOARD: {
+        id: 'TOAST_COPY_TO_CLIPBOARD',
+        defaultMessage: 'Copied to clipboard',
+    },
+    TOAST_TX_SENT: {
+        id: 'TOAST_TX_SENT',
+        defaultMessage: '{amount} sent from {account}',
+    },
+    TOAST_TX_RECEIVED: {
+        id: 'TOAST_TX_RECEIVED',
+        defaultMessage: '{amount} received on {account}',
+    },
+    TOAST_TX_CONFIRMED: {
+        id: 'TOAST_TX_CONFIRMED',
+        defaultMessage: 'Transaction {amount} on {account} successfully confirmed',
+    },
+    TOAST_TX_BUTTON: {
+        id: 'TOAST_TX_BUTTON',
+        defaultMessage: 'View details',
+    },
+    TOAST_SIGN_TX_ERROR: {
+        id: 'TOAST_SIGN_TX_ERROR',
+        defaultMessage: 'Sign transaction error: {error}',
+    },
+    TOAST_VERIFY_ADDRESS_ERROR: {
+        id: 'TOAST_VERIFY_ADDRESS_ERROR',
+        defaultMessage: 'Verify address error: {error}',
+    },
+    TOAST_SIGN_MESSAGE_ERROR: {
+        id: 'TOAST_SIGN_MESSAGE_ERROR',
+        defaultMessage: 'Sign message error: {error}',
+    },
+    TOAST_VERIFY_MESSAGE_ERROR: {
+        id: 'TOAST_VERIFY_MESSAGE_ERROR',
+        defaultMessage: 'Verify message error: {error}',
+    },
+    TOAST_GENERIC_ERROR: {
+        id: 'TOAST_GENERIC_ERROR',
+        defaultMessage: 'Error: {error}',
+    },
+    TR_RECIPIENT: {
+        id: 'TR_RECIPIENT',
+        defaultMessage: 'Recipient',
+    },
+    TR_SCAN: {
+        id: 'TR_SCAN',
+        defaultMessage: 'Scan',
+    },
+    TR_REMOVE: {
+        id: 'TR_REMOVE',
+        defaultMessage: 'Remove',
+    },
+    LOCKTIME_TITLE: {
+        id: 'LOCKTIME_TITLE',
+        defaultMessage: 'Add Locktime',
+    },
+    LOCKTIME_DESCRIPTION: {
+        id: 'LOCKTIME_DESCRIPTION',
+        defaultMessage: 'Allows you to postpone the transaction by set value (time or block)',
+    },
+    REPLACE_BY_FEE_TITLE: {
+        id: 'REPLACE_BY_FEE_TITLE',
+        defaultMessage: 'Replace by fee (RBF)',
+    },
+    REPLACE_BY_FEE_DESCRIPTION: {
+        id: 'REPLACE_BY_FEE_DESCRIPTION',
+        defaultMessage:
+            'RBF allows to bump fee later in case you want the transaction to be mined faster',
+    },
+    REFRESH: {
+        id: 'REFRESH',
+        defaultMessage: 'Refresh',
+    },
+    NOTIFICATIONS_TITLE: {
+        id: 'NOTIFICATIONS_TITLE',
+        defaultMessage: 'Notifications',
+    },
+    NOTIFICATIONS_EMPTY_TITLE: {
+        id: 'NOTIFICATIONS_EMPTY_TITLE',
+        defaultMessage: 'No notifications to show',
+    },
+    NOTIFICATIONS_EMPTY_DESC: {
+        id: 'NOTIFICATIONS_EMPTY_DESC',
+        defaultMessage:
+            'Here you will see all important notifications once they happen. For now, there’s nothing to see.',
+    },
+    LABELING_ACCOUNT: {
+        id: 'LABELING_ACCOUNT',
+        defaultMessage: 'Account #{index}',
+    },
+    LABELING_ACCOUNT_WITH_TYPE: {
+        id: 'LABELING_ACCOUNT_WITH_TYPE',
+        defaultMessage: 'Account #{index} ({type})',
+    },
+    TR_DISCREET_TOOLTIP: {
+        id: 'TR_DISCREET_TOOLTIP',
+        defaultMessage: '[FIX THIS TEXT] This is a descreeeet mode',
+    },
+    TR_TREZOR_BRIDGE_DOWNLOAD: {
+        id: 'TR_TREZOR_BRIDGE_DOWNLOAD',
+        defaultMessage: 'Trezor Bridge Download',
+    },
+    TR_CURRENTLY_INSTALLED_TREZOR: {
+        id: 'TR_CURRENTLY_INSTALLED_TREZOR',
+        defaultMessage: 'Currently installed: Trezor Bridge {version}',
+    },
+    EVENT_DEVICE_CONNECT: {
+        id: 'EVENT_DEVICE_CONNECT',
+        defaultMessage: 'Device {label} connected',
+    },
+    EVENT_DEVICE_CONNECT_UNACQUIRED: {
+        id: 'EVENT_DEVICE_CONNECT_UNACQUIRED',
+        defaultMessage: '{label} connected',
+    },
+    EVENT_WALLET_CREATED: {
+        id: 'EVENT_WALLET_CREATED',
+        defaultMessage: '{walletLabel} created',
+    },
+    TR_WIPE_DEVICE_HEADING: {
+        id: 'TR_WIPE_DEVICE_HEADING',
+        defaultMessage: 'Before you wipe your device…',
+    },
+    TR_WIPE_DEVICE_TEXT: {
+        id: 'TR_WIPE_DEVICE_TEXT',
+        defaultMessage:
+            'Wiping the device removes all its content. Only wipe your device if you have your recovery seed with you or when there are no assets on the device.',
+    },
+    TR_WIPE_DEVICE_CHECKBOX_1_TITLE: {
+        id: 'TR_WIPE_DEVICE_CHECKBOX_1_TITLE',
+        defaultMessage: 'I understand this action deletes all data on the device',
+    },
+    TR_WIPE_DEVICE_CHECKBOX_1_DESCRIPTION: {
+        id: 'TR_WIPE_DEVICE_CHECKBOX_1_DESCRIPTION',
+        defaultMessage:
+            'Device will be completely wiped. All data and history will be deleted. You will need a recovery seed to recover your wallet.',
+    },
+    TR_WIPE_DEVICE_CHECKBOX_2_TITLE: {
+        id: 'TR_WIPE_DEVICE_CHECKBOX_2_TITLE',
+        defaultMessage: 'I understand this action does not affect my funds',
+    },
+    TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION: {
+        id: 'TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION',
+        defaultMessage:
+            'Your assets are safe only if you have created a recovery seed. Make sure you have your seed or you know where you keep it.',
+    },
+    TR_CANCEL: {
+        id: 'TR_CANCEL',
+        defaultMessage: 'Cancel',
+    },
+    TR_SEND_DATA: {
+        id: 'TR_SEND_DATA',
+        defaultMessage: 'Data',
+    },
+    TR_FOLLOW_INSTRUCTIONS_ON_DEVICE: {
+        id: 'TR_FOLLOW_INSTRUCTIONS_ON_DEVICE',
+        defaultMessage: 'Follow instructions on your device',
+    },
+    TR_ADVANCED_RECOVERY_TEXT: {
+        id: 'TR_ADVANCED_RECOVERY_TEXT',
+        defaultMessage:
+            'Words need to be entered according to the matrix on device but clicking on buttons below.',
+    },
+    TR_ADVANCED_RECOVERY_NOT_SURE: {
+        id: 'TR_ADVANCED_RECOVERY_NOT_SURE',
+        defaultMessage: 'Not sure how advanced method works?',
+    },
+    TR_CHECK_RECOVERY_SEED_DESC_T1: {
+        id: 'TR_CHECK_RECOVERY_SEED_DESC_T1',
+        defaultMessage:
+            'Your wallet backup, the recovery seed, is entered on your computer (host) and your device shows which word to type. You will also be asked to enter words not in your seed, that is a security meassure to ensure nobody can read what key is being pressed.',
+    },
+    TR_SELECT_NUMBER_OF_WORDS: {
+        id: 'TR_SELECT_NUMBER_OF_WORDS',
+        defaultMessage: 'Select number of words in your seed.',
+    },
+    TR_YOU_EITHER_HAVE_T1: {
+        id: 'TR_YOU_EITHER_HAVE_T1',
+        defaultMessage: 'You either have a seed containing 12, 18 or 24 words. ',
+    },
+    TR_YOU_EITHER_HAVE_T2: {
+        id: 'TR_YOU_EITHER_HAVE_T2',
+        defaultMessage: 'You either have a seed containing 12, 18, 24, 33 words. ',
+    },
+    TR_ENTER_ALL_WORDS_IN_CORRECT: {
+        id: 'TR_ENTER_ALL_WORDS_IN_CORRECT',
+        defaultMessage: 'Enter all words in the correct order',
+    },
+    TR_ON_YOUR_COMPUTER_ENTER: {
+        id: 'TR_ON_YOUR_COMPUTER_ENTER',
+        defaultMessage:
+            'On your computer enter each word carefully according to the order showed on device.',
+    },
+    TR_CHECK_RECOVERY_SEED_DESC_T2: {
+        id: 'TR_CHECK_RECOVERY_SEED_DESC_T2',
+        defaultMessage:
+            'Your wallet backup, the recovery seed, is entered entirely on the Trezor Model T, through the device screen. We avoid passing any of your sensitive information to a potentially insecure computer or web browser.',
+    },
+    TR_USING_TOUCHSCREEN: {
+        id: 'TR_USING_TOUCHSCREEN',
+        defaultMessage:
+            'Using the touchscreen display you enter all the words in the correct order until completed.',
+    },
+    TR_CHOSE_RECOVERY_TYPE: {
+        id: 'TR_CHOSE_RECOVERY_TYPE',
+        defaultMessage: 'Chose recovery type',
+    },
+    TR_ALL_THE_WORDS: {
+        id: 'TR_ALL_THE_WORDS',
+        defaultMessage:
+            'All the words are entered only on the device as a extra security feature. Please enter all the words in the correct order carefully.',
+    },
+    TR_SEED_CHECK_SUCCESS_TITLE: {
+        id: 'TR_SEED_CHECK_SUCCESS_TITLE',
+        defaultMessage: 'Backup seed successfully checked!',
+    },
+    TR_SEED_CHECK_SUCCESS_DESC: {
+        id: 'TR_SEED_CHECK_SUCCESS_DESC',
+        defaultMessage:
+            'Your seed is valid and has just been successfully checked. Please take great care of it and/or hide it back where you are goint to find it.',
+    },
+    TR_SEED_CHECK_FAIL_TITLE: {
+        id: 'TR_SEED_CHECK_FAIL_TITLE',
+        defaultMessage: 'Seed check failed',
+    },
+    TR_WORD_DOES_NOT_EXIST: {
+        id: 'TR_WORD_DOES_NOT_EXIST',
+        defaultMessage: 'Word "{word}" does not exist in bip39 word list.',
+        description:
+            'In recovery or dry run, appears when user types a string that is not a substring of any word included in bip39 word list.',
+    },
+    TR_BACKSPACE: {
+        id: 'TR_BACKSPACE',
+        defaultMessage: 'Backspace',
+        description: 'Keyboard key',
+    },
+    TR_DRY_RUN_CHECK_ITEM_TITLE: {
+        id: 'TR_DRY_RUN_CHECK_ITEM_TITLE',
+        defaultMessage: 'I understand this is only check and it won’t affect my seed',
+    },
+    TR_DRY_RUN_CHECK_ITEM_DESCRIPTION: {
+        id: 'TR_DRY_RUN_CHECK_ITEM_DESCRIPTION',
+        defaultMessage:
+            'To learn more about why and how to do a backup seed, please visit our blog post where we explain the process.',
+    },
+    TR_WHAT_IS_DRY_RUN: {
+        id: 'TR_WHAT_IS_DRY_RUN',
+        defaultMessage: 'what is dry run',
+    },
+    TR_ACCOUNT_TYPE: {
+        id: 'TR_ACCOUNT_TYPE',
+        defaultMessage: 'Account Type',
+    },
+    TR_CRYPTOCURRENCY: {
+        id: 'TR_CRYPTOCURRENCY',
+        defaultMessage: 'Cryptocurrency',
+    },
+    TR_COIN_SETTINGS: {
+        id: 'TR_COIN_SETTINGS',
+        defaultMessage: 'Coin settings',
+    },
+    FW_CAPABILITY_NO_CAPABILITY: {
+        id: 'FW_CAPABILITY_NO_CAPABILITY',
+        defaultMessage: 'Not supported',
+        description: 'Firmware with missing capability (eg: LTC on Bitcoin-only FW, XRP on T1...)',
+    },
+    FW_CAPABILITY_NO_CAPABILITY_DESC: {
+        id: 'FW_CAPABILITY_NO_CAPABILITY_DESC',
+        defaultMessage: 'Firmware does not have capability to work with {networkName}',
+    },
+    FW_CAPABILITY_NO_SUPPORT: {
+        id: 'FW_CAPABILITY_NO_SUPPORT',
+        defaultMessage: 'Not supported',
+        description:
+            'Similar to missing capability but tested on different level (coin info is missing in trezor-connect)',
+    },
+    FW_CAPABILITY_UPDATE_REQUIRED: {
+        id: 'FW_CAPABILITY_UPDATE_REQUIRED',
+        defaultMessage: 'Update required',
+        description: 'Firmware is too OLD use this coin',
+    },
+    FW_CAPABILITY_UPDATE_REQUIRED_DESC: {
+        id: 'FW_CAPABILITY_UPDATE_REQUIRED_DESC',
+        defaultMessage: 'Firmware needs to be updated to work with {networkName}',
+    },
+    FW_CAPABILITY_CONNECT_OUTDATED: {
+        id: 'FW_CAPABILITY_CONNECT_OUTDATED',
+        defaultMessage: 'Application update required',
+        description: 'Firmware is too NEW use this coin (trezor-connect is outdated)',
+    },
+    MODAL_ADD_ACCOUNT_TITLE: {
+        id: 'MODAL_ADD_ACCOUNT_TITLE',
+        defaultMessage: 'Add new account',
+    },
+    MODAL_ADD_ACCOUNT_DESC: {
+        id: 'MODAL_ADD_ACCOUNT_DESC',
+        defaultMessage:
+            'Explanation how account works and some other info that is useful for a new user and does not annoy hard core user.',
+    },
+    MODAL_ADD_ACCOUNT_NETWORK_MAINNET: {
+        id: 'MODAL_ADD_ACCOUNT_NETWORK_MAINNET',
+        defaultMessage: 'Main networks',
+    },
+    MODAL_ADD_ACCOUNT_NETWORK_TESTNET: {
+        id: 'MODAL_ADD_ACCOUNT_NETWORK_TESTNET',
+        defaultMessage: 'Testnet networks',
+    },
+    MODAL_ADD_ACCOUNT_NETWORK_EXTERNAL: {
+        id: 'MODAL_ADD_ACCOUNT_NETWORK_EXTERNAL',
+        defaultMessage: 'External networks',
+    },
+    MODAL_ADD_ACCOUNT_NEM_WALLET: {
+        id: 'MODAL_ADD_ACCOUNT_NEM_WALLET',
+        defaultMessage: 'NEM wallet',
+    },
+    MODAL_ADD_ACCOUNT_STELLAR_WALLET: {
+        id: 'MODAL_ADD_ACCOUNT_STELLAR_WALLET',
+        defaultMessage: 'Stellar wallet',
+    },
+    MODAL_ADD_ACCOUNT_CARDANO_WALLET: {
+        id: 'MODAL_ADD_ACCOUNT_CARDANO_WALLET',
+        defaultMessage: 'Cardano wallet',
+    },
+    MODAL_ADD_ACCOUNT_TEZOS_WALLET: {
+        id: 'MODAL_ADD_ACCOUNT_TEZOS_WALLET',
+        defaultMessage: 'Tezos wallet',
+    },
+    MODAL_ADD_ACCOUNT_NETWORK_EXTERNAL_DESC: {
+        id: 'MODAL_ADD_ACCOUNT_NETWORK_EXTERNAL_DESC',
+        defaultMessage:
+            'This coin is only accessible via an external wallet. It is supported by Trezor but not by Trezor Suite app.',
+    },
+    MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY: {
+        id: 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY',
+        defaultMessage: 'Previous account is empty',
+    },
+    MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED: {
+        id: 'MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED',
+        defaultMessage: 'Account index is greater than 10',
+    },
+} as const);
 
 export default definedMessages;

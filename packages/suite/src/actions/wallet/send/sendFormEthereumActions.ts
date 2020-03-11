@@ -24,14 +24,16 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount, send } = getState().wallet;
     if (selectedAccount.status !== 'loaded' || !send) return null;
     const { account } = selectedAccount;
+    const { selectedFee } = send;
+    const isFeeValid = !new BigNumber(selectedFee.feePerUnit).isNaN();
 
     let tx;
     const output = getOutput(send.outputs, 0);
     const amountInSatoshi = networkAmountToSatoshi(output.amount.value, account.symbol).toString();
     const { availableBalance } = account;
     const feeInSatoshi = calculateEthFee(
-        toWei(send.selectedFee.feePerUnit, 'gwei'),
-        send.selectedFee.feeLimit || '0',
+        toWei(isFeeValid ? selectedFee.feePerUnit : '0', 'gwei'),
+        selectedFee.feeLimit || '0',
     );
     const totalSpentBig = new BigNumber(calculateTotal(amountInSatoshi, feeInSatoshi));
     const max = new BigNumber(calculateMax(availableBalance, feeInSatoshi));
@@ -101,9 +103,10 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         gasPrice: gasPrice.value,
         nonce: account.misc.nonce,
     });
-
+    // TODO: @Vladimir
+    // use import { EthereumTransaction } from 'trezor-connect'; instead of EthPreparedTransaction
     // @ts-ignore
-    const signedTransaction = await TrezorConnect.ethereumSignTransaction({
+    const signedTx = await TrezorConnect.ethereumSignTransaction({
         device: {
             path: selectedDevice.path,
             instance: selectedDevice.instance,
@@ -114,23 +117,42 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         transaction,
     });
 
-    transaction.r = signedTransaction.payload.r;
-    transaction.s = signedTransaction.payload.s;
-    transaction.v = signedTransaction.payload.v;
+    if (!signedTx.success) {
+        dispatch(
+            notificationActions.addToast({ type: 'sign-tx-error', error: signedTx.payload.error }),
+        );
+        return;
+    }
+
+    transaction.r = signedTx.payload.r;
+    transaction.s = signedTx.payload.s;
+    transaction.v = signedTx.payload.v;
 
     const serializedTx = serializeEthereumTx(transaction);
 
-    const res = await TrezorConnect.pushTransaction({
+    // TODO: add possibility to show serialized tx without pushing (locktime)
+    const sentTx = await TrezorConnect.pushTransaction({
         tx: serializedTx,
         coin: network.symbol,
     });
 
-    if (res.success) {
+    if (sentTx.success) {
         dispatch(commonActions.clear());
-        dispatch(notificationActions.add({ type: 'sign-tx-success', txid: res.payload.txid }));
+        dispatch(
+            // @ts-ignore @Vladimir: amount !== string
+            notificationActions.addToast({
+                type: 'tx-sent',
+                amount: amount.value,
+                device: selectedDevice,
+                descriptor: account.descriptor,
+                txid: sentTx.payload.txid,
+            }),
+        );
         dispatch(accountActions.fetchAndUpdateAccount(account));
     } else {
-        dispatch(notificationActions.add({ type: 'sign-tx-error', error: res.payload.error }));
+        dispatch(
+            notificationActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),
+        );
     }
 };
 
@@ -156,8 +178,7 @@ export const handleGasPrice = (gasPrice: string) => (dispatch: Dispatch, getStat
             label: 'custom',
             feePerUnit: gasPrice,
             feeLimit: gasLimit,
-            feePerTx: '1',
-            blocks: 1,
+            blocks: -1,
             value: fee,
         },
     });
@@ -186,8 +207,7 @@ export const handleGasLimit = (gasLimit: string) => (dispatch: Dispatch, getStat
             label: 'custom',
             feePerUnit: gasPrice,
             feeLimit: gasLimit,
-            feePerTx: '1',
-            blocks: 1,
+            blocks: -1,
         },
     });
 
@@ -219,9 +239,10 @@ export const handleData = (data: string) => async (dispatch: Dispatch, getState:
         },
     });
 
-    // @ts-ignore // TODO FIX FALLBACK LEVELS
+    if (!newFeeLevels.success) return null;
+
     const level = newFeeLevels.payload.levels[0];
-    const gasLimit = level.feeLimit;
+    const gasLimit = level.feeLimit || '0'; // TODO: default
     const gasPrice = fromWei(level.feePerUnit, 'gwei');
 
     // update custom fee
@@ -231,8 +252,7 @@ export const handleData = (data: string) => async (dispatch: Dispatch, getState:
             label: 'custom',
             feePerUnit: gasPrice,
             feeLimit: gasLimit,
-            feePerTx: '1',
-            blocks: 1,
+            blocks: -1,
         },
     });
 

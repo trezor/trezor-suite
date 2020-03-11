@@ -87,6 +87,7 @@ const Dashboard = (props: Props) => {
     });
 
     const deviceAccounts = device ? accountUtils.getAllAccounts(device.state, props.accounts) : [];
+    const isDeviceEmpty = device ? deviceAccounts.every(a => a.empty) : null;
     const instanceBalance = accountUtils.getTotalFiatBalance(
         deviceAccounts,
         props.localCurrency,
@@ -103,6 +104,7 @@ const Dashboard = (props: Props) => {
             <Wrapper data-test="@dashboard/index">
                 <PortfolioCard
                     mode={dashboardMode}
+                    isDeviceEmpty={isDeviceEmpty}
                     portfolioValue={instanceBalance}
                     localCurrency={props.localCurrency}
                     buyClickHandler={() => props.goto('wallet-receive')}

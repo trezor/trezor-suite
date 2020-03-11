@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { colors } from '@trezor/components-v2';
+import { colors } from '@trezor/components';
 
 const Badge = styled.div`
     display: flex;

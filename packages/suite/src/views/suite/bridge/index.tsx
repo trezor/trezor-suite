@@ -3,77 +3,74 @@ import Head from 'next/head';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Translation';
-
-import { Select, colors, variables, Loader } from '@trezor/components';
-import { Button, P, Link, H1 } from '@trezor/components-v2';
+import { Translation, Image } from '@suite-components';
+import { Button, P, Link, H2, Select, colors, variables, Loader } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { URLS } from '@suite-constants';
 import { AppState, Dispatch } from '@suite-types';
-import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    max-width: 780px;
     justify-content: center;
-    padding: 60px 24px 30px 24px;
+    padding: 50px 0px 30px 0px;
     flex: 1;
 `;
 
-const Top = styled.div`
+const Content = styled.div`
     display: flex;
     flex-direction: column;
-    max-width: 500px;
     text-align: center;
     flex: 1;
-    padding-top: 30px;
+    padding: 0px 110px;
+    /* min-width: 560px; */
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: 0px;
+        min-width: 0px;
+    }
 `;
 
-const Bottom = styled.div`
-    padding-bottom: 20px;
+const Description = styled(P)`
+    color: ${colors.BLACK50};
 `;
 
-const TitleHeader = styled(H1)`
+const Footer = styled.div`
+    margin-top: 72px;
     display: flex;
-    font-size: ${variables.FONT_SIZE.HUGE};
+    padding: 0px 42px;
+    justify-content: space-between;
+    width: 100%;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: 0px 12px;
+    }
+`;
+
+const TitleHeader = styled(H2)`
+    display: flex;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
 `;
 
-const Version = styled.span`
-    color: ${colors.GREEN_PRIMARY};
-    padding: 6px 10px;
-    border: 1px solid ${colors.GREEN_PRIMARY};
-    border-radius: 3px;
-    font-size: ${variables.FONT_SIZE.BASE};
-    font-weight: ${variables.FONT_WEIGHT.LIGHT};
-    margin-left: 24px;
-`;
-
-const LearnMoreText = styled.span`
-    margin-right: 4px;
-`;
-
 const SelectWrapper = styled(Select)`
-    margin-right: 10px;
-    width: 180px;
-    margin-bottom: 5px;
+    width: 100%;
 `;
 
 const Download = styled.div`
     margin: 24px auto;
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
+    align-content: center;
+    flex-direction: column;
 `;
 
-const DownloadBridgeButton = styled(Button)``;
-
-const GoBack = styled(Link)`
-    display: flex;
-    justify-content: center;
+const DownloadBridgeButton = styled(Button)`
+    margin-top: 12px;
+    min-width: 280px;
 `;
 
 const CenteredLoader = styled(Loader)`
@@ -84,7 +81,21 @@ const CenteredLoader = styled(Loader)`
 const LoaderWrapper = styled.div`
     margin: 15px 0 25px 0;
     align-items: center;
+    /* same height as content so it won't feel jumpy */
+    min-height: 98px;
     justify-items: center;
+`;
+
+const Version = styled.div<{ show: boolean }>`
+    visibility: ${props => (props.show ? 'visible' : 'hidden')};
+    margin-top: 10px;
+    font-size: ${variables.FONT_SIZE.SMALL};
+`;
+
+const Col = styled.div<{ justify?: string }>`
+    display: flex;
+    flex: 1;
+    justify-content: ${props => props.justify};
 `;
 
 const mapStateToProps = (state: AppState) => ({
@@ -101,30 +112,27 @@ type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchT
 interface Installer {
     label: string;
     value: string;
-    signature: string;
-    preferred: boolean;
+    signature?: string;
+    preferred?: boolean;
 }
 
 const InstallBridge = (props: Props) => {
     const [selectedTarget, setSelectedTarget] = useState<Installer | null>(null);
 
-    // todo: typescript any. use type from connect?
-    const installers = props.transport
-        ? props.transport.bridge.packages.map((p: any) => ({
-              label: p.name,
-              value: p.url,
-              signature: p.signature,
-              preferred: p.preferred,
-          }))
-        : [];
+    const installers: Installer[] =
+        props.transport && props.transport.bridge
+            ? props.transport.bridge.packages.map(p => ({
+                  label: p.name,
+                  value: p.url,
+                  signature: p.signature,
+                  preferred: p.preferred,
+              }))
+            : [];
 
-    const preferredTarget = installers.find((i: Installer) => i.preferred === true);
+    const preferredTarget = installers.find(i => i.preferred === true);
     const data = {
-        currentVersion:
-            props.transport && props.transport.type === 'bridge'
-                ? `Your version ${props.transport!.version}`
-                : 'Not installed',
-        latestVersion: props.transport ? props.transport.bridge.version.join('.') : null,
+        currentVersion: props.transport?.type === 'bridge' ? props.transport!.version : null,
+        latestVersion: props.transport?.bridge ? props.transport.bridge.version.join('.') : null,
         installers,
         target: preferredTarget || installers[0],
         uri: URLS.TREZOR_DATA_URL,
@@ -138,24 +146,25 @@ const InstallBridge = (props: Props) => {
             <Head>
                 <title>Download Bridge | Trezor Suite</title>
             </Head>
-            <Top>
+            <Content>
                 <TitleHeader>
-                    Trezor Bridge
-                    {isLoading && (
-                        <Version>
-                            <Translation {...messages.TR_VERSION_IS_LOADING} />
-                        </Version>
-                    )}
-                    {props.transport && <Version>{data && data.currentVersion}</Version>}
+                    <Translation id="TR_TREZOR_BRIDGE_DOWNLOAD" />
                 </TitleHeader>
-                <P>
-                    <Translation {...messages.TR_NEW_COMMUNICATION_TOOL} />
-                </P>
+                <Description size="small">
+                    <Translation id="TR_NEW_COMMUNICATION_TOOL" />
+                </Description>
+                <Version show={!!data.currentVersion}>
+                    <Translation
+                        id="TR_CURRENTLY_INSTALLED_TREZOR"
+                        values={{ version: data.currentVersion }}
+                    />
+                </Version>
+                <Image image="T_BRIDGE_CHECK" />
                 {isLoading ? (
                     <LoaderWrapper>
                         <CenteredLoader size={50} strokeWidth={2} />
                         <P>
-                            <Translation {...messages.TR_GATHERING_INFO} />
+                            <Translation id="TR_GATHERING_INFO" />
                         </P>
                     </LoaderWrapper>
                 ) : (
@@ -168,54 +177,60 @@ const InstallBridge = (props: Props) => {
                             options={installers}
                         />
 
-                        <Link href={`${data.uri}${target.value}`}>
-                            <DownloadBridgeButton icon="RECEIVE">
+                        <Link variant="nostyle" href={`${data.uri}${target.value}`}>
+                            <DownloadBridgeButton>
                                 <Translation
-                                    {...messages.TR_DOWNLOAD_LATEST_BRIDGE}
+                                    id="TR_DOWNLOAD_LATEST_BRIDGE"
                                     values={{ version: data.latestVersion }}
                                 />
                             </DownloadBridgeButton>
                         </Link>
                     </Download>
                 )}
+            </Content>
 
-                <P size="small">
-                    <LearnMoreText>
-                        <Translation
-                            {...messages.TR_LEARN_MORE_ABOUT_LATEST_VERSION}
-                            values={{
-                                TR_CHANGELOG: (
-                                    <Link href={URLS.BRIDGE_CHANGELOG_URL}>
-                                        <Translation {...messages.TR_CHANGELOG} />
-                                    </Link>
-                                ),
-                            }}
-                        />
-                    </LearnMoreText>
-                </P>
-
-                <P>
-                    {target && data && target.signature && (
-                        <Link href={data.uri + target.signature}>
-                            <Translation {...messages.TR_CHECK_PGP_SIGNATURE} />
-                        </Link>
-                    )}
-                </P>
-            </Top>
-
-            <Bottom>
-                {props.transport &&
-                    props.transport.type &&
-                    props.device &&
-                    props.device.type !== 'unreadable' && (
-                        <P>
-                            <Translation {...messages.TR_DONT_UPGRADE_BRIDGE} />
-                            <GoBack onClick={() => props.goto('wallet-index')}>
-                                <Translation {...messages.TR_TAKE_ME_BACK_TO_WALLET} />
-                            </GoBack>
-                        </P>
-                    )}
-            </Bottom>
+            <Footer>
+                <Col justify="flex-start">
+                    <Button
+                        icon="ARROW_LEFT"
+                        variant="tertiary"
+                        color={colors.BLACK50}
+                        onClick={() => props.goto('wallet-index')}
+                    >
+                        <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
+                    </Button>
+                </Col>
+                {!isLoading && (
+                    <>
+                        <Col justify="center">
+                            <Link variant="nostyle" href={URLS.BRIDGE_CHANGELOG_URL}>
+                                <Button
+                                    icon="LOG"
+                                    color={colors.BLACK50}
+                                    variant="tertiary"
+                                    onClick={() => {}}
+                                >
+                                    <Translation id="TR_CHANGELOG" />
+                                </Button>
+                            </Link>
+                        </Col>
+                        <Col justify="flex-end">
+                            {data && target?.signature && (
+                                <Link variant="nostyle" href={data.uri + target.signature}>
+                                    <Button
+                                        color={colors.BLACK50}
+                                        icon="SIGN"
+                                        variant="tertiary"
+                                        onClick={() => {}}
+                                    >
+                                        <Translation id="TR_CHECK_PGP_SIGNATURE" />
+                                    </Button>
+                                </Link>
+                            )}
+                        </Col>
+                    </>
+                )}
+            </Footer>
         </Wrapper>
     );
 };

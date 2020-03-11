@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link, H2, P } from '@trezor/components-v2';
+import { Link, H2, P } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;

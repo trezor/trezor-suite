@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { P, Link, colors, variables } from '@trezor/components-v2';
+import { P, Link, colors, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
 
 interface TextColumnProps {
     title: React.ReactNode;
@@ -28,7 +27,7 @@ const LearnMoreWrapper = styled(Link)`
 
 const LearnMore = ({ href, ...props }: { href: string }) => (
     <LearnMoreWrapper href={href} {...props}>
-        <Translation>{messages.TR_LEARN_MORE_LINK}</Translation>
+        <Translation id="TR_LEARN_MORE_LINK" />
     </LearnMoreWrapper>
 );
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Props } from './Container';
-import { colors } from '@trezor/components-v2';
+import { colors } from '@trezor/components';
 import styled from 'styled-components';
 
 import TopMenu from './components/TopMenu';
@@ -17,7 +17,11 @@ const Wrapper = styled.div`
 const Menu = (props: Props) => {
     return (
         <Wrapper>
-            <TopMenu selectedDevice={props.selectedDevice} goto={props.goto} />
+            <TopMenu
+                deviceCount={props.devices.length}
+                selectedDevice={props.selectedDevice}
+                goto={props.goto}
+            />
             <MainMenu app={props.router.app} goto={props.goto} />
             <BottomMenu
                 app={props.router.app}

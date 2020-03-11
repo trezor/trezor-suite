@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { P, colors } from '@trezor/components-v2';
+import { P, colors } from '@trezor/components';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import { Translation } from '@suite-components';
-import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -31,10 +30,10 @@ const StyledImage = styled(DeviceConfirmImage)`
 export default ({ device }: any) => (
     <Wrapper>
         <P size="small">
-            <Translation {...messages.TR_ADDRESS_MODAL_CHECK_ON_TREZOR} />
+            <Translation id="TR_ADDRESS_MODAL_CHECK_ON_TREZOR" />
         </P>
         <P size="tiny">
-            <Translation {...messages.TR_ADDRESS_MODAL_CHECK_ON_TREZOR_DESC} />
+            <Translation id="TR_ADDRESS_MODAL_CHECK_ON_TREZOR_DESC" />
         </P>
         <StyledImage device={device} />
     </Wrapper>

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Translation } from '@suite-components';
-import messages from '@suite/support/messages';
-import { Button, colors } from '@trezor/components-v2';
+
+import { Button, colors } from '@trezor/components';
 import Wrapper from './components/Wrapper';
 import { Props as BaseProps } from './index';
 
@@ -22,14 +22,14 @@ const UpdateFirmware = ({ device, goto }: Props) => {
 
     return (
         <Wrapper variant="info">
-            <Translation {...messages.TR_NEW_TREZOR_FIRMWARE_IS_AVAILABLE_DOT} />
+            <Translation id="TR_NEW_TREZOR_FIRMWARE_IS_AVAILABLE_DOT" />
             <Button
                 variant="tertiary"
                 color={colors.WHITE}
                 onClick={() => goto('firmware-index')}
                 data-test="@notification/update-firmware/button"
             >
-                <Translation {...messages.TR_SHOW_DETAILS} />
+                <Translation id="TR_SHOW_DETAILS" />
             </Button>
         </Wrapper>
     );

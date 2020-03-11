@@ -1,13 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { variables, colors } from '@trezor/components-v2';
+import { variables, colors } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { Dispatch, TrezorDevice } from '@suite-types';
 import ModalWrapper from '../../ModalWrapper';
-import messages from '@suite/support/messages';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     getDiscoveryAuthConfirmationStatus: () =>
@@ -45,7 +44,7 @@ const PassphraseSource = ({ device, getDiscoveryAuthConfirmationStatus }: Props)
             <Wrapper>
                 <Title>
                     <Translation
-                        {...messages.TR_CONFIRM_PASSPHRASE_SOURCE}
+                        id="TR_CONFIRM_PASSPHRASE_SOURCE"
                         values={{ deviceLabel: device.label }}
                     />
                 </Title>
@@ -58,7 +57,7 @@ const PassphraseSource = ({ device, getDiscoveryAuthConfirmationStatus }: Props)
         <Wrapper>
             <Title>
                 <Translation
-                    {...messages.TR_SELECT_PASSPHRASE_SOURCE}
+                    id="TR_SELECT_PASSPHRASE_SOURCE"
                     values={{ deviceLabel: device.label }}
                 />
             </Title>

@@ -3,16 +3,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
-import { Button, P, H2, Link, variables, colors } from '@trezor/components-v2';
-import { resolveStaticPath } from '@suite-utils/nextjs';
+import { Button, P, H2, Link, variables, colors } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { Dispatch, InjectedModalApplicationProps } from '@suite-types';
 import { Analytics } from '@suite-components/Settings';
 import ModalWrapper from '@suite-components/ModalWrapper';
-
 import { URLS } from '@suite-constants';
-import { Translation } from '@suite-components';
-import messages from '@suite/support/messages';
+import { Translation, Image } from '@suite-components';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;
 
@@ -41,7 +38,7 @@ const Bold = styled.span`
     color: ${colors.BLACK50};
 `;
 
-const StyledImg = styled.img`
+const StyledImg = styled(props => <Image {...props} />)`
     margin-top: 23px;
 `;
 
@@ -55,28 +52,26 @@ const Index = (props: Props) => {
     return (
         <Wrapper>
             <H2>
-                <Translation>{messages.TR_HELP_TREZOR_SUITE}</Translation>
+                <Translation id="TR_HELP_TREZOR_SUITE" />
             </H2>
             <Body>
                 <P size="tiny">
                     <Translation
-                        {...messages.TR_HELP_TREZOR_SUITE_TEXT_1}
+                        id="TR_HELP_TREZOR_SUITE_TEXT_1"
                         values={{
                             TR_HELP_TREZOR_SUITE_TEXT_1_FAT: (
                                 <Bold>
-                                    <Translation>
-                                        {messages.TR_HELP_TREZOR_SUITE_TEXT_1_FAT}
-                                    </Translation>
+                                    <Translation id="TR_HELP_TREZOR_SUITE_TEXT_1_FAT" />
                                 </Bold>
                             ),
                         }}
                     />
                 </P>
                 <Bold>
-                    <Translation>{messages.TR_HELP_TREZOR_SUITE_TEXT_2}</Translation>
+                    <Translation id="TR_HELP_TREZOR_SUITE_TEXT_2" />
                 </Bold>
 
-                <StyledImg alt="" src={resolveStaticPath('images/welcome/analytics.svg')} />
+                <StyledImg image="ANALYTICS" />
 
                 <Analytics />
 
@@ -84,17 +79,17 @@ const Index = (props: Props) => {
                     onClick={() => props.goto('onboarding-index')}
                     data-test="@analytics/go-to-onboarding-button"
                 >
-                    <Translation>{messages.TR_CONTINUE}</Translation>
+                    <Translation id="TR_CONTINUE" />
                 </Button>
             </Body>
 
             <BottomP size="tiny">
                 <Translation
-                    {...messages.TR_TOS_INFORMATION}
+                    id="TR_TOS_INFORMATION"
                     values={{
                         TR_TOS_LINK: (
                             <Link href={URLS.TOS_URL}>
-                                <Translation {...messages.TR_TOS_LINK} />
+                                <Translation id="TR_TOS_LINK" />
                             </Link>
                         ),
                     }}

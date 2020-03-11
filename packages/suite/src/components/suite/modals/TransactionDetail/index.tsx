@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 // import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+import { Translation } from '@suite-components';
+
 import ModalWrapper from '@suite-components/ModalWrapper';
-import { H2, Link, Button } from '@trezor/components-v2';
+import { H2, Link, Button } from '@trezor/components';
 import { AppState } from '@suite-types';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import TrezorConnect from 'trezor-connect';
@@ -81,7 +81,6 @@ const TransactionDetail = (props: Props) => {
         // fetch tx details and store them inside the local state 'txDetails'
         const fetchTxDetails = async () => {
             setIsFetching(true);
-            // @ts-ignore
             const res = await TrezorConnect.blockchainGetTransactions({
                 txs: [tx.txid],
                 coin: tx.symbol,
@@ -99,7 +98,7 @@ const TransactionDetail = (props: Props) => {
     return (
         <Wrapper>
             <Title>
-                <Translation {...messages.TR_TRANSACTION_DETAILS} />
+                <Translation id="TR_TRANSACTION_DETAILS" />
             </Title>
             <BasicDetails
                 tx={tx}
@@ -115,11 +114,11 @@ const TransactionDetail = (props: Props) => {
             <IODetails tx={tx} txDetails={txDetails} isFetching={isFetching} />
             <Buttons>
                 <Button variant="secondary" onClick={() => props.onCancel()}>
-                    <Translation {...messages.TR_CLOSE} />
+                    <Translation id="TR_CLOSE" />
                 </Button>
                 <Button alignIcon="right" icon="EXTERNAL_LINK" variant="secondary">
                     <Link variant="nostyle" href={explorerUrl}>
-                        <Translation {...messages.TR_SHOW_DETAILS_IN_BLOCK_EXPLORER} />
+                        <Translation id="TR_SHOW_DETAILS_IN_BLOCK_EXPLORER" />
                     </Link>
                 </Button>
             </Buttons>

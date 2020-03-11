@@ -1,7 +1,10 @@
 import TrezorConnect, { AccountInfo } from 'trezor-connect';
 import { ACCOUNT } from '@wallet-actions/constants';
 import { DiscoveryItem } from '@wallet-actions/discoveryActions';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import * as notificationActions from '@suite-actions/notificationActions';
+import * as transactionActions from '@wallet-actions/transactionActions';
+import * as accountUtils from '@wallet-utils/accountUtils';
+import { analyzeTransactions } from '@wallet-utils/transactionUtils';
 import { NETWORKS } from '@wallet-config';
 import { Account, Network } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
@@ -59,14 +62,16 @@ export const create = (
         descriptor: accountInfo.descriptor,
         accountType: discoveryItem.accountType,
         symbol: discoveryItem.coin,
-        // empty: accountInfo.empty,
         empty: accountInfo.empty,
         visible:
             !accountInfo.empty ||
             (discoveryItem.accountType === 'normal' && discoveryItem.index === 0),
         balance: accountInfo.balance,
         availableBalance: accountInfo.availableBalance,
-        formattedBalance: formatNetworkAmount(accountInfo.availableBalance, discoveryItem.coin),
+        formattedBalance: accountUtils.formatNetworkAmount(
+            accountInfo.availableBalance,
+            discoveryItem.coin,
+        ),
         tokens: accountInfo.tokens,
         addresses: accountInfo.addresses,
         utxo: accountInfo.utxo,
@@ -82,7 +87,10 @@ export const update = (account: Account, accountInfo: AccountInfo): AccountActio
         ...accountInfo,
         path: account.path,
         empty: accountInfo.empty,
-        formattedBalance: formatNetworkAmount(accountInfo.availableBalance, account.symbol),
+        formattedBalance: accountUtils.formatNetworkAmount(
+            accountInfo.availableBalance,
+            account.symbol,
+        ),
         ...getAccountSpecific(accountInfo, account.networkType),
     },
 });
@@ -110,16 +118,57 @@ export const changeAccountVisibility = (payload: Account) => ({
 
 export const fetchAndUpdateAccount = (account: Account) => async (
     dispatch: Dispatch,
-    _getState: GetState,
+    getState: GetState,
 ) => {
+    // we need to fetch at least the number of unconfirmed txs
+    const pageSize =
+        (account.history.unconfirmed || 0) > SETTINGS.TXS_PER_PAGE
+            ? account.history.unconfirmed
+            : SETTINGS.TXS_PER_PAGE;
     const response = await TrezorConnect.getAccountInfo({
         coin: account.symbol,
         descriptor: account.descriptor,
         details: 'txs',
-        pageSize: SETTINGS.TXS_PER_PAGE,
+        page: 1, // useful for every network except ripple
+        pageSize,
     });
 
     if (response.success) {
-        dispatch(update(account, response.payload));
+        const { payload } = response;
+
+        const accountTxs = accountUtils.getAccountTransactions(
+            getState().wallet.transactions.transactions,
+            account,
+        );
+
+        const analyze = analyzeTransactions(payload.history.transactions || [], accountTxs);
+        if (analyze.remove.length > 0) {
+            // TODO: remove notif in middleware
+            dispatch(transactionActions.remove(account, analyze.remove));
+        }
+        if (analyze.add.length > 0) {
+            dispatch(transactionActions.add(analyze.add.reverse(), account));
+        }
+
+        const accountDevice = accountUtils.findAccountDevice(account, getState().devices);
+        analyze.newTransactions.forEach(tx => {
+            dispatch(
+                notificationActions.addEvent({
+                    type: 'tx-confirmed',
+                    amount: accountUtils.formatNetworkAmount(tx.amount, account.symbol),
+                    device: accountDevice,
+                    descriptor: account.descriptor,
+                    txid: tx.txid,
+                }),
+            );
+        });
+
+        if (
+            analyze.remove.length > 0 ||
+            analyze.add.length > 0 ||
+            accountUtils.isAccountOutdated(account, payload)
+        ) {
+            dispatch(update(account, payload));
+        }
     }
 };

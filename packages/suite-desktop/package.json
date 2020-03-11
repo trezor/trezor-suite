@@ -51,7 +51,7 @@
             ]
         },
         "mac": {
-            "icon": "build/static/images/suite/icons/64x64.png",
+            "icon": "build/static/images/icons/64x64.png",
             "artifactName": "${productName}-${version}.${ext}",
             "entitlements": "entitlements.mac.inherit.plist",
             "entitlementsInherit": "entitlements.mac.inherit.plist",
@@ -60,12 +60,12 @@
             ]
         },
         "win": {
-            "icon": "build/static/images/suite/icons/64x64.png",
+            "icon": "build/static/images/icons/64x64.png",
             "artifactName": "${productName}-${version}.${ext}",
             "target": "portable"
         },
         "linux": {
-            "icon": "build/static/images/suite/icons/64x64.png",
+            "icon": "build/static/images/icons/64x64.png",
             "artifactName": "${productName}-${version}.${ext}",
             "target": "AppImage"
         }

@@ -1,67 +1,37 @@
-import { Translation } from '@suite-components/Translation';
-import { AppState } from '@suite-types';
+import { Translation, AddressLabeling, QuestionTooltip } from '@suite-components';
 import styled from 'styled-components';
-import { Icon, colors, Input, Tooltip } from '@trezor/components-v2';
-import messages from '@suite/support/messages';
+import { Input } from '@trezor/components';
+
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { Account, Network } from '@wallet-types';
 import { Output } from '@wallet-types/sendForm';
-import { getAccountDevice, isAddressInAccount } from '@wallet-utils/accountUtils';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import { Props } from './Container';
-
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-    padding-left: 5px;
-`;
 
 const Label = styled.div`
     display: flex;
     align-items: center;
 `;
 
-const getMessage = (
-    error: Output['address']['error'],
-    networkType: Network['networkType'],
-    address: Output['address']['value'],
-    accounts: Account[],
-    devices: AppState['devices'],
-) => {
-    if (address && error !== VALIDATION_ERRORS.CANNOT_SEND_TO_MYSELF) {
-        const account = isAddressInAccount(networkType, address, accounts);
-        if (account) {
-            const device = getAccountDevice(devices, account);
-            if (device) {
-                return `${device.label} Account #${account.index + 1}`;
-            }
-        }
-    }
+const Text = styled.div`
+    margin-right: 3px;
+`;
 
+const getErrorMessage = (error: Output['address']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
-            return <Translation>{messages.TR_ADDRESS_IS_NOT_SET}</Translation>;
+            return <Translation id="TR_ADDRESS_IS_NOT_SET" />;
         case VALIDATION_ERRORS.NOT_VALID:
-            return <Translation>{messages.TR_ADDRESS_IS_NOT_VALID}</Translation>;
-        case VALIDATION_ERRORS.CANNOT_SEND_TO_MYSELF:
-            return <Translation>{messages.TR_CANNOT_SEND_TO_MYSELF}</Translation>;
+            return <Translation id="TR_ADDRESS_IS_NOT_VALID" />;
+        case VALIDATION_ERRORS.XRP_CANNOT_SEND_TO_MYSELF:
+            return <Translation id="TR_XRP_CANNOT_SEND_TO_MYSELF" />;
         default:
             return undefined;
     }
 };
 
-export default ({
-    output,
-    intl,
-    account,
-    accounts,
-    devices,
-    openModal,
-    sendFormActions,
-}: Props) => {
+export default ({ output, account, openModal, sendFormActions }: Props) => {
     if (!account) return null;
-
-    const { networkType } = account;
     const { address, id } = output;
     const { value, error } = address;
 
@@ -72,16 +42,13 @@ export default ({
             monospace
             topLabel={
                 <Label>
-                    {intl.formatMessage(messages.TR_RECIPIENT_ADDRESS)}
-                    <Tooltip
-                        placement="top"
-                        content={<Translation {...messages.TR_RECIPIENT_ADDRESS_TOOLTIP} />}
-                    >
-                        <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
-                    </Tooltip>
+                    <Text>
+                        <Translation id="TR_RECIPIENT_ADDRESS" />
+                    </Text>
+                    <QuestionTooltip messageId="TR_RECIPIENT_ADDRESS_TOOLTIP" />
                 </Label>
             }
-            bottomText={getMessage(error, networkType, value, accounts, devices)}
+            bottomText={getErrorMessage(error) || <AddressLabeling address={value} knownOnly />}
             button={{
                 icon: 'QR',
                 onClick: () =>
@@ -89,7 +56,7 @@ export default ({
                         type: 'qr-reader',
                         outputId: id,
                     }),
-                text: 'Scan',
+                text: <Translation id="TR_SCAN" />,
             }}
             value={value || ''}
             onChange={e => sendFormActions.handleAddressChange(id, e.target.value)}

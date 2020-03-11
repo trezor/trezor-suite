@@ -1,10 +1,11 @@
-import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+import { Translation, QuestionTooltip } from '@suite-components';
+
 import { Account, Network } from '@wallet-types';
 import React from 'react';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import styled from 'styled-components';
 import { Output } from '@wallet-types/sendForm';
-import { Input, colors, Icon, Tooltip } from '@trezor/components-v2';
+import { Input } from '@trezor/components';
 import { VALIDATION_ERRORS, LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 
@@ -18,9 +19,8 @@ const Wrapper = styled.div`
     flex: 1;
 `;
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-    padding-left: 5px;
+const Text = styled.div`
+    margin-right: 3px;
 `;
 
 const StyledInput = styled(Input)`
@@ -51,21 +51,25 @@ const EqualsSign = styled.div`
     padding: ${LABEL_HEIGHT + 15}px 20px 0;
 `;
 
-const getMessage = (error: Output['amount']['error'], decimals: Network['decimals']) => {
+const getMessage = (
+    error: Output['amount']['error'],
+    decimals: Network['decimals'],
+    reserve: string | null,
+    isLoading: Output['amount']['isLoading'],
+) => {
+    if (isLoading && !error) return 'Loading'; // TODO loader or text?
+
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
-            return <Translation {...messages.TR_AMOUNT_IS_NOT_SET} />;
+            return <Translation id="TR_AMOUNT_IS_NOT_SET" />;
         case VALIDATION_ERRORS.NOT_NUMBER:
-            return <Translation {...messages.TR_AMOUNT_IS_NOT_NUMBER} />;
+            return <Translation id="TR_AMOUNT_IS_NOT_NUMBER" />;
         case VALIDATION_ERRORS.NOT_ENOUGH:
-            return <Translation {...messages.TR_AMOUNT_IS_NOT_ENOUGH} />;
+            return <Translation id="TR_AMOUNT_IS_NOT_ENOUGH" />;
+        case VALIDATION_ERRORS.XRP_CANNOT_SEND_LESS_THAN_RESERVE:
+            return <Translation id="TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE" values={{ reserve }} />;
         case VALIDATION_ERRORS.NOT_IN_RANGE_DECIMALS:
-            return (
-                <Translation
-                    {...messages.TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS}
-                    values={{ decimals }}
-                />
-            );
+            return <Translation id="TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS" values={{ decimals }} />;
         default:
             return null;
     }
@@ -89,29 +93,28 @@ const hasRates = (
     return false;
 };
 
-export default ({ fiat, sendFormActions, intl, output, selectedAccount }: Props) => {
+export default ({ fiat, sendFormActions, output, selectedAccount }: Props) => {
     if (selectedAccount.status !== 'loaded') return null;
 
     const { account, network } = selectedAccount;
     const { symbol } = account;
     const { decimals } = network;
     const { id, amount, fiatValue, localCurrency } = output;
-    const { value, error } = amount;
+    const { value, error, isLoading } = amount;
+    const reserve =
+        account.networkType === 'ripple' ? formatNetworkAmount(account.misc.reserve, symbol) : null;
 
     return (
         <Wrapper>
             <Left>
                 <StyledInput
-                    state={getInputState(error, value)}
+                    state={getInputState(error, value, isLoading)}
                     topLabel={
                         <Label>
-                            {intl.formatMessage(messages.TR_AMOUNT)}
-                            <Tooltip
-                                placement="top"
-                                content={<Translation {...messages.TR_SEND_AMOUNT_TOOLTIP} />}
-                            >
-                                <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
-                            </Tooltip>
+                            <Text>
+                                <Translation id="TR_AMOUNT" />
+                            </Text>
+                            <QuestionTooltip messageId="TR_SEND_AMOUNT_TOOLTIP" />
                         </Label>
                     }
                     button={{
@@ -123,7 +126,7 @@ export default ({ fiat, sendFormActions, intl, output, selectedAccount }: Props)
                     display="block"
                     value={value || ''}
                     onChange={e => sendFormActions.handleAmountChange(id, e.target.value)}
-                    bottomText={getMessage(error, decimals)}
+                    bottomText={getMessage(error, decimals, reserve, isLoading)}
                 />
                 <CurrencySelect key="currency-select" symbol={symbol} tokens={account.tokens} />
             </Left>

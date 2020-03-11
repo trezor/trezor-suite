@@ -4,6 +4,7 @@ export const SET_ADDITIONAL_FORM_VISIBILITY = '@wallet-send-form/set-additional-
 export const HANDLE_ADDRESS_CHANGE = '@wallet-send-form/handle-address';
 export const COMPOSE_PROGRESS = '@wallet-send-form/compose-progress';
 export const HANDLE_AMOUNT_CHANGE = '@wallet-send-form/handle-amount';
+export const AMOUNT_LOADING = '@wallet-send-form/amount-loading';
 export const SET_MAX = '@wallet-send-form/set-max';
 
 export const HANDLE_SELECT_CURRENCY_CHANGE = '@wallet-send-form/handle-local-currency';
@@ -28,4 +29,6 @@ export const ETH_HANDLE_DATA = '@wallet-send-form/eth-handle-data';
 
 // xrp
 export const XRP_HANDLE_DESTINATION_TAG_CHANGE = '@wallet-send-form/xrp-handle-destination-tag';
+export const XRP_IS_DESTINATION_ACCOUNT_EMPTY =
+    '@wallet-send-form/xrp-is-destination-account-empty';
 export const XRP_PRECOMPOSED_TX = '@wallet-send-form/xrp-precomposed-tx';

@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { P } from '@trezor/components-v2';
-import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+import { P } from '@trezor/components';
+import { Translation } from '@suite-components';
+
 import { homescreensT1, homescreensT2 } from '@suite-constants';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
@@ -69,14 +69,14 @@ const BackgroundGallery = ({ device, applySettings }: Props) => {
         const element = document.getElementById(image);
         if (element instanceof HTMLImageElement) {
             const hex = elementToHomescreen(element, device.features.major_version);
-            applySettings({ homescreen: hex, device });
+            applySettings({ homescreen: hex });
         }
     };
 
     return (
         <ModalWrapper>
             <StyledP>
-                <Translation {...messages.TR_BACKGROUND_GALLERY} />
+                <Translation id="TR_BACKGROUND_GALLERY" />
             </StyledP>
 
             {device.features.major_version === 1 && (
@@ -86,7 +86,7 @@ const BackgroundGallery = ({ device, applySettings }: Props) => {
                             key={image}
                             id={image}
                             onClick={() => setHomescreen(image)}
-                            src={resolveStaticPath(`images/suite/homescreens/t1/${image}.png`)}
+                            src={resolveStaticPath(`images/png/homescreens/t1/${image}.png`)}
                         />
                     ))}
                 </BackgroundGalleryT1>
@@ -99,7 +99,7 @@ const BackgroundGallery = ({ device, applySettings }: Props) => {
                             key={image}
                             id={image}
                             onClick={() => setHomescreen(image)}
-                            src={resolveStaticPath(`images/suite/homescreens/t2/${image}.png`)}
+                            src={resolveStaticPath(`images/png/homescreens/t2/${image}.png`)}
                         />
                     ))}
                 </BackgroundGalleryT2>

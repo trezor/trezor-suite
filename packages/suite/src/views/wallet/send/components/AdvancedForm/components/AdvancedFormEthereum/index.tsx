@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import Fee from '../Fee/Container';
 import Layout from '../Layout';
-import TransactionInfo from '../TransactionInfo/Container';
+// import TransactionInfo from '../TransactionInfo/Container';
 import Data from './components/Data/Container';
 import GasLimit from './components/GasLimit/Container';
 import GasPrice from './components/GasPrice/Container';
@@ -21,7 +21,7 @@ const Row = styled.div`
 
 export default ({ send, account }: Props) => {
     if (!send || !account) return null;
-    const { transactionInfo } = send.networkTypeEthereum;
+    // const { transactionInfo } = send.networkTypeEthereum;
 
     return (
         <Wrapper>
@@ -42,7 +42,8 @@ export default ({ send, account }: Props) => {
                     </>
                 }
                 middle={<Data />}
-                bottom={transactionInfo?.type === 'final' ? <TransactionInfo /> : null}
+                bottom={null}
+                // bottom={transactionInfo?.type === 'final' ? <TransactionInfo /> : null}
             />
         </Wrapper>
     );

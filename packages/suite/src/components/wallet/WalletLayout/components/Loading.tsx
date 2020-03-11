@@ -24,7 +24,7 @@ const AccountLoader = ({ type }: Props) => {
     const title = getMessage(type) || messages.TR_LOADING_ACCOUNT;
     return (
         <NotificationCard variant="loader">
-            <Translation>{title}</Translation>
+            <Translation {...title} />
         </NotificationCard>
     );
 };

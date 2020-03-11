@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { P, colors } from '@trezor/components-v2';
+import { P, colors } from '@trezor/components';
 import { Translation } from '@suite-components';
-import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -22,13 +21,10 @@ interface Props {
 export default ({ label }: Props) => (
     <Wrapper>
         <P size="small">
-            <Translation
-                {...messages.TR_DEVICE_LABEL_IS_NOT_CONNECTED}
-                values={{ deviceLabel: label }}
-            />
+            <Translation id="TR_DEVICE_LABEL_IS_NOT_CONNECTED" values={{ deviceLabel: label }} />
         </P>
         <P size="tiny">
-            <Translation {...messages.TR_PLEASE_CONNECT_YOUR_DEVICE} />
+            <Translation id="TR_PLEASE_CONNECT_YOUR_DEVICE" />
         </P>
     </Wrapper>
 );

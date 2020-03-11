@@ -1,6 +1,6 @@
-import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
-import { Input, Icon, colors, Tooltip } from '@trezor/components-v2';
+import { Translation, QuestionTooltip } from '@suite-components';
+
+import { Input } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Send } from '@wallet-types';
 import styled from 'styled-components';
@@ -14,16 +14,14 @@ const Label = styled.div`
     align-items: center;
 `;
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-    display: flex;
-    padding-left: 5px;
+const Text = styled.div`
+    margin-right: 3px;
 `;
 
 const getError = (error: Send['networkTypeEthereum']['gasPrice']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.NOT_NUMBER:
-            return <Translation>{messages.TR_ETH_GAS_PRICE_NOT_NUMBER}</Translation>;
+            return <Translation id="TR_ETH_GAS_PRICE_NOT_NUMBER" />;
         default:
             return null;
     }
@@ -41,13 +39,10 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
             state={getInputState(error, value, true)}
             topLabel={
                 <Label>
-                    Gas Price
-                    <Tooltip
-                        placement="top"
-                        content={<Translation {...messages.TR_SEND_GAS_PRICE_TOOLTIP} />}
-                    >
-                        <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
-                    </Tooltip>
+                    <Text>
+                        <Translation id="TR_GAS_PRICE" />
+                    </Text>
+                    <QuestionTooltip messageId="TR_SEND_GAS_PRICE_TOOLTIP" />
                 </Label>
             }
             bottomText={getError(error)}

@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
 import * as modalActions from '@suite-actions/modalActions';
 import { Output } from '@wallet-types/sendForm';
 import * as sendFormActions from '@wallet-actions/send/sendFormActions';
@@ -11,8 +10,6 @@ import Component from './index';
 const mapStateToProps = (state: AppState) => ({
     account: state.wallet.selectedAccount.account,
     send: state.wallet.send,
-    accounts: state.wallet.accounts,
-    devices: state.devices,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -26,6 +23,6 @@ export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 interface MergedProps extends StateProps {
     output: Output;
 }
-export type Props = MergedProps & DispatchProps & WrappedComponentProps;
+export type Props = MergedProps & DispatchProps;
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(Component));
+export default connect(mapStateToProps, mapDispatchToProps)(Component);

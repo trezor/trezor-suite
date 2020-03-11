@@ -6,7 +6,7 @@ export const ID_BACKUP_STEP = 'backup';
 export const ID_PAIR_DEVICE_STEP = 'pair-device';
 export const ID_FINAL_STEP = 'final';
 export const ID_FIRMWARE_STEP = 'firmware';
-export const ID_SHAMIR_STEP = 'shamir';
+export const ID_RESET_DEVICE_STEP = 'reset-device';
 export const ID_SELECT_DEVICE_STEP = 'select-device';
 export const ID_SET_PIN_STEP = 'set-pin';
 export const ID_SECURITY_STEP = 'security';
@@ -19,7 +19,6 @@ export const DISALLOWED_IS_NOT_SAME_DEVICE = 'is-not-same-device';
 export const DISALLOWED_DEVICE_IS_NOT_CONNECTED = 'device-is-not-connected';
 export const DISALLOWED_DEVICE_IS_NOT_USED_HERE = 'device-is-not-used-here';
 export const DISALLOWED_DEVICE_IS_IN_BOOTLOADER = 'device-is-in-bootloader';
-export const DISALLOWED_DEVICE_IS_REQUESTING_PIN = 'device-is-not-requesting-pin';
 export const DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE = 'is-not-new-device';
 
 export const PATH_RECOVERY = 'recovery';

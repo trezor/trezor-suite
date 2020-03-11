@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Translation } from '@suite-components';
-import messages from '@suite/support/messages';
+
 import Wrapper from './components/Wrapper';
 
 interface Props {
@@ -11,7 +11,7 @@ export default ({ isOnline }: Props) => {
     if (isOnline) return null;
     return (
         <Wrapper variant="warning">
-            <Translation {...messages.TR_YOU_WERE_DISCONNECTED_DOT} />
+            <Translation id="TR_YOU_WERE_DISCONNECTED_DOT" />
         </Wrapper>
     );
 };

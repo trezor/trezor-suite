@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, colors } from '@trezor/components-v2';
-import { Tooltip } from '@trezor/components';
-// import messages from '@suite/support/messages';
+import { Icon, colors, Tooltip } from '@trezor/components';
+//
 
 interface Props {
     onClick?: () => any;
@@ -37,7 +36,7 @@ const AddAccountButton = ({ onClick, tooltipContent, disabled }: Props) => {
         <Wrapper onClick={clickHandler}>
             {/* <RowAddAccountWrapper disabled={disabled}> */}
             <Icon icon="PLUS" size={16} color={disabled ? colors.BLACK92 : colors.BLACK17} />
-            {/* <Translation {...messages.TR_ADD_ACCOUNT} /> */}
+            {/* <Translation id="TR_ADD_ACCOUNT" /> */}
             {/* </RowAddAccountWrapper> */}
         </Wrapper>
     );

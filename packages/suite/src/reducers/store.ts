@@ -16,6 +16,9 @@ import onboardingReducers from '@onboarding-reducers';
 import recoveryReducers from '@recovery-reducers';
 import firmwareReducers from '@firmware-reducers';
 import backupReducers from '@backup-reducers';
+// toastMiddleware can be used only in suite-desktop and suite-web
+// it's not included into `@suite-middlewares` index
+import toastMiddleware from '@suite-middlewares/toastMiddleware';
 
 const rootReducer = combineReducers({
     ...suiteReducers,
@@ -30,6 +33,7 @@ export type AppState = ReturnType<typeof rootReducer>;
 
 const middlewares = [
     thunkMiddleware,
+    toastMiddleware,
     ...suiteMiddlewares,
     ...walletMiddlewares,
     ...onboardingMiddlewares,
@@ -42,7 +46,7 @@ const enhancers: any[] = [];
 if (buildUtils.isDev()) {
     const excludeLogger = (_getState: any, action: any): boolean => {
         // '@@router/LOCATION_CHANGE'
-        const excluded = ['LOG_TO_EXCLUDE', 'log__add', undefined];
+        const excluded = ['@log/add', undefined];
         const pass = excluded.filter(act => action.type === act);
         return pass.length === 0;
     };

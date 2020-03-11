@@ -1,17 +1,16 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from '@trezor/components-v2';
+import { Link, H2 } from '@trezor/components';
 
-import { Translation } from '@suite-components';
+import { Translation, Image } from '@suite-components';
 import { SUPPORT_URL } from '@suite-constants/urls';
 import * as STEP from '@onboarding-constants/steps';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { Text, Wrapper, OnboardingButton } from '@onboarding-components';
-import messages from '@suite/support/messages';
+
 import { AppState, Dispatch } from '@suite-types';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     actionAlt: bindActionCreators(onboardingActions.removePath, dispatch),
@@ -30,14 +29,17 @@ const IsNotNewDevice = ({ actionAlt, closeModalApp, device }: Props) => {
 
     return (
         <>
+            <H2>
+                <Translation id="TR_IS_NOT_NEW_DEVICE_HEADING" />
+            </H2>
             <Text>
-                <Translation>{messages.TR_IS_NOT_NEW_DEVICE}</Translation>
+                <Translation id="TR_IS_NOT_NEW_DEVICE" />
             </Text>
-            <img alt="" src={resolveStaticPath('images/suite/uni-warning.svg')} />
+            <Image image="UNI_WARNING" />
             <Wrapper.Controls>
                 <Link href={SUPPORT_URL}>
                     <OnboardingButton.Cta style={{ width: '100%' }}>
-                        <Translation>{messages.TR_CONTACT_SUPPORT}</Translation>
+                        <Translation id="TR_CONTACT_SUPPORT" />
                     </OnboardingButton.Cta>
                 </Link>
 

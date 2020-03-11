@@ -1,4 +1,4 @@
-import TrezorConnect, { BackupDeviceParams } from 'trezor-connect';
+import TrezorConnect, { CommonParams } from 'trezor-connect';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { BACKUP } from '@backup-actions/constants';
 
@@ -46,14 +46,14 @@ export const resetReducer = () => (dispatch: Dispatch) => {
     });
 };
 
-export const backupDevice = (params: BackupDeviceParams = {}) => async (
+export const backupDevice = (params: CommonParams = {}) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
     const { device } = getState().suite;
     if (!device) {
         return dispatch(
-            notificationActions.add({
+            notificationActions.addToast({
                 type: 'error',
                 error: 'Device not connected',
             }),
@@ -72,13 +72,13 @@ export const backupDevice = (params: BackupDeviceParams = {}) => async (
         },
     });
     if (!result.success) {
-        dispatch(notificationActions.add({ type: 'backup-failed' }));
+        dispatch(notificationActions.addToast({ type: 'backup-failed' }));
         dispatch({
             type: BACKUP.SET_ERROR,
             payload: result.payload.error,
         });
     } else {
-        dispatch(notificationActions.add({ type: 'backup-success' }));
+        dispatch(notificationActions.addToast({ type: 'backup-success' }));
     }
     dispatch({
         type: BACKUP.SET_STATUS,

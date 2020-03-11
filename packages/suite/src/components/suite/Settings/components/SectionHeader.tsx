@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components-v2';
+import { colors, variables } from '@trezor/components';
 
 const SectionHeader = styled.div`
     color: ${colors.BLACK50};

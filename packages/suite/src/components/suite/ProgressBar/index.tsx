@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Link, colors } from '@trezor/components-v2';
-import { URLS } from '@suite-constants';
+import { colors } from '@trezor/components';
+
+import HelpBuyIcons from './components/HelpBuyIcons';
 
 const Wrapper = styled.div`
     width: 100%;
-    height: 6px;
+    height: 40px;
     justify-content: center;
     align-items: center;
-    margin-bottom: 40px;
 `;
 
 const BarContainer = styled.div``;
@@ -47,13 +47,6 @@ const GreenBar = styled(Bar)<BarProps>`
     transition: all 0.5s;
 `;
 
-const IconsContainer = styled.div`
-    margin: 20px 0;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-`;
-
 interface Props {
     total: number;
     current: number;
@@ -61,22 +54,6 @@ interface Props {
     showHelp?: boolean;
     hidden?: boolean;
 }
-
-const BuyButton = () => (
-    <Button variant="tertiary" icon="TREZOR" size="small" style={{ backgroundColor: 'initial' }}>
-        <Link variant="nostyle" href={URLS.SHOP_URL}>
-            Buy Trezor
-        </Link>
-    </Button>
-);
-
-const HelpButton = () => (
-    <Button variant="tertiary" icon="SUPPORT" size="small" style={{ backgroundColor: 'initial' }}>
-        <Link variant="nostyle" href={URLS.SUPPORT_URL}>
-            Help
-        </Link>
-    </Button>
-);
 
 const ProgressBar = (props: Props) => {
     const { total, current, showBuy, showHelp, hidden } = props;
@@ -90,10 +67,7 @@ const ProgressBar = (props: Props) => {
                         <GrayBar width={`${Math.min(progress, 100)}%`} />
                         <BackgroundBar />
                     </BarContainer>
-                    <IconsContainer>
-                        {showBuy ? <BuyButton /> : <div />}
-                        {showHelp ? <HelpButton /> : <div />}
-                    </IconsContainer>
+                    <HelpBuyIcons showBuy={showBuy} showHelp={showHelp} />
                 </>
             )}
         </Wrapper>

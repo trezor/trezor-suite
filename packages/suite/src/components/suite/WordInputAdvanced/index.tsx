@@ -1,10 +1,11 @@
 import React, { useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { ButtonPin } from '@trezor/components';
-import { Button } from '@trezor/components-v2';
+import { Button } from '@trezor/components';
+
+import ButtonPin from '@suite-components/PinInput/components/ButtonPin';
+import { Translation } from '@suite-components';
 
 const Wrapper = styled.div`
-    width: 260px;
     display: flex;
     flex-direction: column;
 `;
@@ -12,17 +13,13 @@ const Wrapper = styled.div`
 const Row = styled.div`
     display: flex;
     justify-content: center;
-    width: 100%;
     button {
-        width: 30%;
-        padding-bottom: 30%;
-        margin: 1%;
+        margin: 4px;
     }
 `;
 
 const Backspace = styled(Button)`
-    width: 95%;
-    margin: 2%;
+    margin: 8px;
 `;
 
 interface Props {
@@ -131,8 +128,8 @@ const WordInputAdvanced = (props: Props) => {
                     </Row>
                 </>
             )}
-            <Backspace variant="secondary" onClick={() => backspace()} icon="ARROW_LEFT">
-                Backspace
+            <Backspace variant="tertiary" onClick={() => backspace()} icon="ARROW_LEFT">
+                <Translation id="TR_BACKSPACE" />
             </Backspace>
         </Wrapper>
     );

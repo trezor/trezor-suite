@@ -1,14 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Button } from '@trezor/components-v2';
-import { resolveStaticPath } from '@suite-utils/nextjs';
+import { Button } from '@trezor/components';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Dispatch } from '@suite-types';
 import { Network, Discovery } from '@wallet-types';
-import { Translation } from '@suite-components';
-import messages from '@suite/support/messages';
+import { Translation, Image } from '@suite-components';
+
 import Wrapper from './components/Wrapper';
 
 const mapStateToProps = (state: AppState) => ({
@@ -38,11 +37,11 @@ const AccountNotEnabled = (props: Props) => {
         <Wrapper
             title={
                 <Translation
-                    {...messages.TR_ACCOUNT_EXCEPTION_NOT_ENABLED}
+                    id="TR_ACCOUNT_EXCEPTION_NOT_ENABLED"
                     values={{ networkName: network.name }}
                 />
             }
-            image={resolveStaticPath(`images/wallet/wallet-empty.svg`)}
+            image={<Image image="EMPTY_WALLET" />}
         >
             <Button
                 variant="primary"
@@ -50,10 +49,7 @@ const AccountNotEnabled = (props: Props) => {
                 isLoading={locked}
                 onClick={() => props.changeCoinVisibility(network.symbol, true)}
             >
-                <Translation
-                    {...messages.TR_ENABLE_NETWORK_BUTTON}
-                    values={{ networkName: network.name }}
-                />
+                <Translation id="TR_ENABLE_NETWORK_BUTTON" values={{ networkName: network.name }} />
             </Button>
         </Wrapper>
     );

@@ -3,7 +3,7 @@ import React from 'react';
 import { Translation } from '@suite-components';
 import * as STEP from '@onboarding-constants/steps';
 import { Text, Option, Wrapper, OnboardingButton } from '@onboarding-components';
-import messages from '@suite/support/messages';
+
 import { Props } from './Container';
 
 const CreateOrRecoverStep = (props: Props) => {
@@ -11,11 +11,11 @@ const CreateOrRecoverStep = (props: Props) => {
         <Wrapper.Step>
             <Wrapper.StepBody>
                 <Wrapper.StepHeading>
-                    <Translation {...messages.TR_WELCOME_TO_TREZOR} />
+                    <Translation id="TR_WELCOME_TO_TREZOR" />
                 </Wrapper.StepHeading>
 
                 <Text>
-                    <Translation {...messages.TR_WELCOME_TO_TREZOR_TEXT} />
+                    <Translation id="TR_WELCOME_TO_TREZOR_TEXT" />
                 </Text>
 
                 <Wrapper.Options>
@@ -28,7 +28,7 @@ const CreateOrRecoverStep = (props: Props) => {
                         title="Create new Wallet"
                         text="If you never had any Wallet or want to create fresh one"
                         button="Create a new Wallet"
-                        imgSrc="images/onboarding/create-new.svg"
+                        imgSrc="images/svg/create-new.svg"
                     />
                     <Option
                         data-test="@onboarding/path-recovery-button"
@@ -39,7 +39,7 @@ const CreateOrRecoverStep = (props: Props) => {
                         title="Restore existing wallet"
                         text="Using either your single backup seed or Shamir backup seed"
                         button="Restore existing wallet"
-                        imgSrc="images/onboarding/recover-from-seed.svg"
+                        imgSrc="images/svg/recover-from-seed.svg"
                     />
                 </Wrapper.Options>
             </Wrapper.StepBody>

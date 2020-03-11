@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { colors } from '@trezor/components-v2';
+import { colors } from '@trezor/components';
 import messages from '@suite/support/messages';
 
 const { getSuiteDevice } = global.JestMocks;
@@ -344,6 +344,7 @@ const isDeviceRemembered = [
 ];
 
 const d = (obj: any) => ({
+    id: obj.id,
     path: obj.path ? obj.path : obj.id,
     features: obj.id
         ? {

@@ -2,14 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { variables, colors, Button } from '@trezor/components-v2';
+import { variables, colors, Button } from '@trezor/components';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Dispatch, TrezorDevice } from '@suite-types';
 import ModalWrapper from '../../ModalWrapper';
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
 
 const mapStateToProps = (state: AppState) => ({
     locks: state.suite.locks,
@@ -66,10 +65,10 @@ const PassphraseDuplicate = ({
     return (
         <Wrapper>
             <Title>
-                <Translation {...messages.TR_WALLET_DUPLICATE_TITLE} />
+                <Translation id="TR_WALLET_DUPLICATE_TITLE" />
             </Title>
             <Description>
-                <Translation {...messages.TR_WALLET_DUPLICATE_DESC} />
+                <Translation id="TR_WALLET_DUPLICATE_DESC" />
             </Description>
             <DeviceConfirmImage device={device} />
             <Actions>
@@ -79,7 +78,7 @@ const PassphraseDuplicate = ({
                     isLoading={progress}
                     fullWidth
                 >
-                    <Translation {...messages.TR_WALLET_DUPLICATE_SWITCH} />
+                    <Translation id="TR_WALLET_DUPLICATE_SWITCH" />
                 </Button>
                 <Button
                     variant="secondary"
@@ -87,7 +86,7 @@ const PassphraseDuplicate = ({
                     isLoading={progress}
                     fullWidth
                 >
-                    <Translation {...messages.TR_WALLET_DUPLICATE_RETRY} />
+                    <Translation id="TR_WALLET_DUPLICATE_RETRY" />
                 </Button>
             </Actions>
         </Wrapper>

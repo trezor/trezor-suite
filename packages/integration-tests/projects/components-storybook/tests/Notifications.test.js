@@ -1,42 +1,44 @@
 describe('Notifications', () => {
     beforeEach(() => {
-        cy.viewport(1008, 768);
-        cy.loadContent(
-            '/iframe.html?selectedKind=Notifications&selectedStory=All&full=0&addons=1&stories=1&panelRight=1&addonPanel=storybooks%2Fstorybook-addon-knobs'
-        );
+        cy.viewport(1024, 768);
     });
 
     [
-        'notification_basic_success',
-        'notification_basic_info',
-        'notification_basic_warning',
-        'notification_basic_error',
-        'notification_cancelable_success',
-        'notification_cancelable_info',
-        'notification_cancelable_warning',
-        'notification_cancelable_error',
-        'notification_cancelable_action_success',
-        'notification_cancelable_action_info',
-        'notification_cancelable_action_warning',
-        'notification_cancelable_action_error',
-        'notification_cancelable_action_loading_success',
-        'notification_cancelable_action_loading_info',
-        'notification_cancelable_action_loading_warning',
-        'notification_cancelable_action_loading_error',
+        'notification-success',
+        'notification-cta-success',
+        'notification-second-cta-success',
+        'notification-loading-success',
+        'notification-desc-success',
+        'notification-desc-cta-success',
+        'notification-desc-second-cta-success',
+        'notification-desc-loading-success',
+        'notification-info',
+        'notification-cta-info',
+        'notification-second-cta-info',
+        'notification-loading-info',
+        'notification-desc-info',
+        'notification-desc-cta-info',
+        'notification-desc-second-cta-info',
+        'notification-desc-loading-info',
+        'notification-warning',
+        'notification-cta-warning',
+        'notification-second-cta-warning',
+        'notification-loading-warning',
+        'notification-desc-warning',
+        'notification-desc-cta-warning',
+        'notification-desc-second-cta-warning',
+        'notification-desc-loading-warning',
+        'notification-error',
+        'notification-cta-error',
+        'notification-second-cta-error',
+        'notification-loading-error',
+        'notification-desc-error',
+        'notification-desc-cta-error',
+        'notification-desc-second-cta-error',
+        'notification-desc-loading-error',
     ].forEach(testName => {
         it(`${testName}`, () => {
-            cy.getTestElement(testName)
-                .find('.loading')
-                .each(el => {
-                    cy.get(el).should('not.exist');
-                });
-
-            cy.getTestElement(testName)
-                .find('svg')
-                .each(el => {
-                    cy.get(el).should('be.visible');
-                });
-
+            cy.loadContent('/iframe.html?selectedKind=Notifications&selectedStory=All&full=0');
             cy.getTestElement(testName)
                 .should('be.visible')
                 .matchImageSnapshot();

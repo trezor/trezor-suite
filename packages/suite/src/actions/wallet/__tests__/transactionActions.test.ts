@@ -90,7 +90,7 @@ describe('Transaction Actions', () => {
                 error: null,
             }),
         );
-        store.dispatch(transactionActions.remove(account1 as Account));
+        store.dispatch(transactionActions.reset(account1 as Account));
         // removed txs for acc1
         expect(
             getAccountTransactions(

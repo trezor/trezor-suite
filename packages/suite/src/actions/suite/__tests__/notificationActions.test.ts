@@ -42,9 +42,16 @@ const initStore = (state: State) => {
 describe('Notifications Actions', () => {
     it('add notifications', () => {
         const store = initStore(getInitialState(undefined));
-        store.dispatch(notificationActions.add({ type: 'tx-confirmed', txid: 'abcd' }));
+        store.dispatch(
+            notificationActions.addToast({
+                type: 'tx-sent',
+                amount: '0',
+                descriptor: 'xpub',
+                txid: 'abcd',
+            }),
+        );
         expect(store.getState().notifications.length).toEqual(1);
-        store.dispatch(notificationActions.add({ type: 'tx-confirmed', txid: 'xyz0' }));
+        store.dispatch(notificationActions.addToast({ type: 'copy-to-clipboard' }));
         expect(store.getState().notifications.length).toEqual(2);
     });
 
@@ -52,15 +59,104 @@ describe('Notifications Actions', () => {
         const store = initStore(
             getInitialState({
                 notifications: [
-                    { id: 1, type: 'tx-confirmed', txid: 'abcd', device: undefined },
-                    { id: 2, type: 'tx-confirmed', txid: 'xyz0', device: undefined },
+                    { id: 1, context: 'toast', type: 'copy-to-clipboard' },
+                    {
+                        id: 2,
+                        context: 'toast',
+                        type: 'tx-sent',
+                        amount: '0',
+                        descriptor: 'xpub',
+                        txid: 'abcd',
+                    },
                 ],
             }),
         );
         store.dispatch(notificationActions.close(1));
         store.dispatch(notificationActions.close(10)); // does not exists
         const { notifications } = store.getState();
-        expect(notifications.filter(n => !n.hidden).length).toEqual(1);
-        expect(notifications.filter(n => n.hidden).length).toEqual(1);
+        expect(notifications.filter(n => !n.closed).length).toEqual(1);
+        expect(notifications.filter(n => n.closed).length).toEqual(1);
+    });
+
+    it('removeTransactionEvents', () => {
+        const store = initStore(
+            getInitialState({
+                notifications: [
+                    {
+                        id: 1,
+                        context: 'toast',
+                        type: 'tx-sent',
+                        amount: '0',
+                        descriptor: 'xpub',
+                        txid: '1',
+                    },
+                    {
+                        id: 2,
+                        context: 'event',
+                        type: 'tx-confirmed',
+                        amount: '0',
+                        descriptor: 'xpub',
+                        txid: '2',
+                    },
+                    {
+                        id: 3,
+                        context: 'event',
+                        type: 'tx-received',
+                        amount: '0',
+                        descriptor: 'xpub',
+                        txid: '3',
+                    },
+                    {
+                        id: 4,
+                        context: 'toast',
+                        type: 'backup-success',
+                    },
+                ],
+            }),
+        );
+        store.dispatch(notificationActions.removeTransactionEvents([{ txid: '1' }, { txid: '2' }]));
+        expect(store.getState().notifications.length).toEqual(2);
+        store.dispatch(notificationActions.removeTransactionEvents([{ txid: '3' }]));
+        expect(store.getState().notifications.length).toEqual(1);
+    });
+
+    it('removeAccountEvents', () => {
+        const store = initStore(
+            getInitialState({
+                notifications: [
+                    {
+                        id: 1,
+                        context: 'toast',
+                        type: 'tx-sent',
+                        amount: '0',
+                        descriptor: 'xpub',
+                        txid: '1',
+                    },
+                    {
+                        id: 2,
+                        context: 'event',
+                        type: 'tx-confirmed',
+                        amount: '0',
+                        descriptor: 'xpub',
+                        txid: '2',
+                    },
+                    {
+                        id: 3,
+                        context: 'event',
+                        type: 'tx-received',
+                        amount: '0',
+                        descriptor: 'xpub',
+                        txid: '3',
+                    },
+                    {
+                        id: 4,
+                        context: 'toast',
+                        type: 'backup-success',
+                    },
+                ],
+            }),
+        );
+        store.dispatch(notificationActions.removeAccountEvents('xpub'));
+        expect(store.getState().notifications.length).toEqual(1);
     });
 });

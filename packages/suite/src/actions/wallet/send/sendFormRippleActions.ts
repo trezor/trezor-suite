@@ -1,11 +1,18 @@
+import * as commonActions from './sendFormCommonActions';
 import * as notificationActions from '@suite-actions/notificationActions';
+import * as accountActions from '@wallet-actions/accountActions';
 import { Dispatch, GetState } from '@suite-types';
 import { SEND } from '@wallet-actions/constants';
 import { XRP_FLAG } from '@wallet-constants/sendForm';
-import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
-import { calculateMax, calculateTotal, getOutput } from '@wallet-utils/sendFormUtils';
+import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
+import {
+    calculateMax,
+    calculateTotal,
+    getOutput,
+    getReserveInXrp,
+} from '@wallet-utils/sendFormUtils';
 import Bignumber from 'bignumber.js';
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect, { RipplePayment } from 'trezor-connect';
 
 /*
     Compose xrp transaction
@@ -21,8 +28,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     const feeInSatoshi = send.selectedFee.feePerUnit;
     let tx;
     const totalSpentBig = new Bignumber(calculateTotal(amountInSatoshi, feeInSatoshi));
-
-    const max = new Bignumber(calculateMax(availableBalance, feeInSatoshi));
+    const max = new Bignumber(calculateMax(availableBalance, feeInSatoshi, account));
     const payloadData = {
         totalSpent: totalSpentBig.toString(),
         fee: feeInSatoshi,
@@ -63,6 +69,55 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
 };
 
 /*
+    Check destination account reserve
+*/
+
+export const checkAccountReserve = (outputId: number, address: string) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { send, selectedAccount } = getState().wallet;
+    if (!send || selectedAccount.status !== 'loaded') return;
+    const { account } = selectedAccount;
+    const output = getOutput(send.outputs, outputId);
+
+    dispatch({
+        type: SEND.AMOUNT_LOADING,
+        isLoading: true,
+        outputId: output.id,
+    });
+
+    if (!address) return null;
+
+    const response = await TrezorConnect.getAccountInfo({
+        coin: account.symbol,
+        descriptor: address,
+    });
+
+    // TODO: handle error state
+
+    if (response.success) {
+        const targetAccountBalance = formatNetworkAmount(response.payload.balance, account.symbol);
+        const reserve = getReserveInXrp(account);
+        const isDestinationAccountEmpty = !new Bignumber(targetAccountBalance).isGreaterThan(
+            reserve || '0',
+        );
+
+        dispatch({
+            type: SEND.XRP_IS_DESTINATION_ACCOUNT_EMPTY,
+            isDestinationAccountEmpty,
+            reserve,
+        });
+    }
+
+    dispatch({
+        type: SEND.AMOUNT_LOADING,
+        isLoading: false,
+        outputId: output.id,
+    });
+};
+
+/*
     Change value in input "destination tag"
  */
 export const handleDestinationTagChange = (destinationTag: string) => (dispatch: Dispatch) => {
@@ -71,12 +126,6 @@ export const handleDestinationTagChange = (destinationTag: string) => (dispatch:
         destinationTag,
     });
 };
-
-interface Payment {
-    destination: string | null;
-    destinationTag?: number | null;
-    amount: string | null;
-}
 
 /*
     Send transaction
@@ -87,28 +136,31 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!send || !selectedDevice || selectedAccount.status !== 'loaded') return;
 
     const { account } = selectedAccount;
+    const { symbol } = account;
     const { selectedFee, outputs, networkTypeRipple } = send;
-    const { destinationTag } = networkTypeRipple;
+    const amount = outputs[0].amount.value;
+    const address = outputs[0].address.value;
+    const destinationTag = networkTypeRipple.destinationTag.value;
 
-    if (account.networkType !== 'ripple' || !destinationTag) return null;
+    if (account.networkType !== 'ripple' || !amount || !address) return null;
 
-    const payment: Payment = {
-        destination: outputs[0].address.value,
-        amount: networkAmountToSatoshi(outputs[0].amount.value, account.symbol),
+    const payment: RipplePayment = {
+        destination: address,
+        amount: networkAmountToSatoshi(amount, symbol),
     };
 
-    if (destinationTag.value) {
-        payment.destinationTag = parseInt(destinationTag.value || '0', 10);
+    if (destinationTag) {
+        payment.destinationTag = parseInt(destinationTag, 10);
     }
 
-    // @ts-ignore
-    const signedTransaction = await TrezorConnect.rippleSignTransaction({
+    const { path, instance, state, useEmptyPassphrase } = selectedDevice;
+    const signedTx = await TrezorConnect.rippleSignTransaction({
         device: {
-            path: selectedDevice.path,
-            instance: selectedDevice.instance,
-            state: selectedDevice.state,
+            path,
+            instance,
+            state,
         },
-        useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
+        useEmptyPassphrase,
         path: account.path,
         transaction: {
             fee: selectedFee.feePerUnit,
@@ -118,34 +170,37 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         },
     });
 
-    if (!signedTransaction || !signedTransaction.success) {
+    if (!signedTx.success) {
         dispatch(
-            notificationActions.add({
+            notificationActions.addToast({
                 type: 'sign-tx-error',
-                error: signedTransaction.payload.error,
+                error: signedTx.payload.error,
             }),
         );
         return;
     }
 
-    const push = await TrezorConnect.pushTransaction({
-        tx: signedTransaction.payload.serializedTx,
+    // TODO: add possibility to show serialized tx without pushing (locktime)
+    const sentTx = await TrezorConnect.pushTransaction({
+        tx: signedTx.payload.serializedTx,
         coin: account.symbol,
     });
 
-    if (!push.success) {
+    if (sentTx.success) {
+        dispatch(commonActions.clear());
         dispatch(
-            notificationActions.add({
-                type: 'sign-tx-error',
-                error: push.payload.error,
+            notificationActions.addToast({
+                type: 'tx-sent',
+                amount,
+                device: selectedDevice,
+                descriptor: account.descriptor,
+                txid: sentTx.payload.txid,
             }),
         );
+        dispatch(accountActions.fetchAndUpdateAccount(account));
     } else {
         dispatch(
-            notificationActions.add({
-                type: 'sign-tx-success',
-                txid: push.payload.txid,
-            }),
+            notificationActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),
         );
     }
 };

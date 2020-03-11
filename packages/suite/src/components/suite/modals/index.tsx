@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import FocusLock from 'react-focus-lock';
 
 import { UI } from 'trezor-connect';
-import { Modal as ModalComponent } from '@trezor/components-v2';
+import { Modal as ModalComponent } from '@trezor/components';
 
 import * as modalActions from '@suite-actions/modalActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -13,6 +13,7 @@ import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
 
 import Pin from './Pin';
 import PinInvalid from './PinInvalid';
+import PinMismatch from './PinMismatch';
 import Passphrase from './Passphrase';
 import PassphraseSource from './PassphraseSource';
 import PassphraseOnDevice from './PassphraseOnDevice';
@@ -21,13 +22,16 @@ import ConfirmAction from './confirm/Action';
 import Word from './Word';
 import WordAdvanced from './WordAdvanced';
 import ConfirmAddress from './confirm/Address';
+import ConfirmXpub from './confirm/Xpub/Container';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ReviewTransaction from './ReviewTransaction/Container';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
-import AddAccount from './AddAccount';
+import AddAccount from './AddAccount/Container';
 import QrScanner from './QrScanner';
 import BackgroundGallery from './BackgroundGallery';
 import TransactionDetail from './TransactionDetail';
+import Log from './Log';
+import WipeDevice from './WipeDevice';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -53,7 +57,7 @@ const getDeviceContextModal = (props: Props) => {
     switch (modal.windowType) {
         // T1 firmware
         case UI.REQUEST_PIN:
-            return <Pin device={device} />;
+            return <Pin device={device} onCancel={modalActions.onPinCancel} />;
         // T1 firmware
         case UI.INVALID_PIN:
             return <PinInvalid device={device} />;
@@ -88,6 +92,7 @@ const getDeviceContextModal = (props: Props) => {
         case 'ButtonRequest_ConfirmWord': // dispatch on BackupDevice call for model One
         case 'ButtonRequest_ConfirmOutput':
         case 'ButtonRequest_WipeDevice':
+        case 'ButtonRequest_UnknownDerivationPath':
             // case 'ButtonRequest_FirmwareUpdate': // ? fake UI event, see firmwareActions
             return <ConfirmAction device={device} />;
         default:
@@ -138,6 +143,8 @@ const getUserContextModal = (props: Props) => {
                     onCancel={payload.cancelable ? modalActions.onCancel : undefined}
                 />
             );
+        case 'xpub':
+            return <ConfirmXpub {...payload} onCancel={modalActions.onCancel} />;
         case 'device-background-gallery':
             return (
                 <BackgroundGallery
@@ -145,6 +152,8 @@ const getUserContextModal = (props: Props) => {
                     onCancel={modalActions.onCancel}
                 />
             );
+        case 'wipe-device':
+            return <WipeDevice onCancel={modalActions.onCancel} />;
         case 'qr-reader':
             return <QrScanner outputId={payload.outputId} onCancel={modalActions.onCancel} />;
         case 'transaction-detail':
@@ -153,6 +162,10 @@ const getUserContextModal = (props: Props) => {
             return <PassphraseDuplicate device={payload.device} duplicate={payload.duplicate} />;
         case 'review-transaction':
             return <ReviewTransaction />;
+        case 'pin-mismatch':
+            return <PinMismatch onCancel={modalActions.onCancel} />;
+        case 'log':
+            return <Log onCancel={modalActions.onCancel} />;
         default:
             return null;
     }
@@ -189,12 +202,12 @@ const Modal = (props: Props) => {
                 onCancel={modalComponent.props.onCancel}
                 padding="0px"
             >
-                {modalComponent}
+                <FocusLock>{modalComponent}</FocusLock>
             </ModalComponent>
         );
     }
 
-    return <FocusLock>{modalComponent}</FocusLock>;
+    return modalComponent;
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Modal);

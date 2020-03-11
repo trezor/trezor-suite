@@ -1,13 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import FormattedNumber from '@suite-components/FormattedNumber';
-import { colors, Button } from '@trezor/components-v2';
+import { colors, Button } from '@trezor/components';
 import BigNumber from 'bignumber.js';
 import Loading from './components/Loading';
 import Exception from './components/Exception';
 import EmptyWallet from './components/EmptyWallet';
-import { Card, Translation } from '@suite-components';
-import messages from '@suite/support/messages';
+import { Card, Translation, FormattedNumber, HiddenPlaceholder } from '@suite-components';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -74,6 +72,7 @@ export interface Props extends React.HTMLAttributes<HTMLDivElement> {
     mode?: DashboardMode;
     portfolioValue: BigNumber;
     localCurrency: string;
+    isDeviceEmpty: boolean | null;
     buyClickHandler: () => void;
     receiveClickHandler: () => void;
 }
@@ -84,13 +83,14 @@ const PortfolioCard = ({
     localCurrency,
     buyClickHandler,
     receiveClickHandler,
+    isDeviceEmpty,
     ...rest
 }: Props) => {
     let body = null;
     if (mode) {
         body = mode.status === 'exception' ? <Exception /> : <Loading />;
     } else {
-        body = portfolioValue.gt(0) ? <EmptyWallet /> : <EmptyWallet />;
+        body = isDeviceEmpty ? <EmptyWallet /> : <EmptyWallet />;
     }
 
     return (
@@ -98,13 +98,15 @@ const PortfolioCard = ({
             <Header>
                 <Left>
                     <HeaderTitle>
-                        <Translation {...messages.TR_TOTAL_PORTFOLIO_VALUE} />
+                        <Translation id="TR_TOTAL_PORTFOLIO_VALUE" />
                     </HeaderTitle>
                     <ValueWrapper>
-                        <FormattedNumber
-                            value={portfolioValue.toString()}
-                            currency={localCurrency}
-                        />
+                        <HiddenPlaceholder intensity={7}>
+                            <FormattedNumber
+                                value={portfolioValue.toString()}
+                                currency={localCurrency}
+                            />
+                        </HiddenPlaceholder>
                     </ValueWrapper>
                 </Left>
                 <Right>
@@ -113,10 +115,10 @@ const PortfolioCard = ({
                         variant="secondary"
                         onClick={receiveClickHandler}
                     >
-                        <Translation {...messages.TR_RECEIVE} />
+                        <Translation id="TR_RECEIVE" />
                     </ActionButton>
                     <ActionButton isDisabled={!!mode} variant="primary" onClick={buyClickHandler}>
-                        <Translation {...messages.TR_BUY} />
+                        <Translation id="TR_BUY" />
                     </ActionButton>
                 </Right>
             </Header>

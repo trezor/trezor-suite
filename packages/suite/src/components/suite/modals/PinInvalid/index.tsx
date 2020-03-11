@@ -1,11 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
-import { P, H2 } from '@trezor/components-v2';
+import { P, H2 } from '@trezor/components';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import { TrezorDevice } from '@suite-types';
-import messages from '@suite/support/messages';
 
 const Wrapper = styled(ModalWrapper)`
     flex-direction: column;
@@ -22,14 +21,14 @@ const PinInvalid = (props: Props) => (
     <Wrapper>
         <H2>
             <Translation
-                {...messages.TR_ENTERED_PIN_NOT_CORRECT}
+                id="TR_ENTERED_PIN_NOT_CORRECT"
                 values={{ deviceLabel: props.device.label }}
             />
         </H2>
         <DeviceConfirmImage device={props.device} />
         <Divider />
         <P size="small">
-            <Translation {...messages.TR_RETRYING_DOT_DOT} />
+            <Translation id="TR_RETRYING_DOT_DOT" />
         </P>
     </Wrapper>
 );

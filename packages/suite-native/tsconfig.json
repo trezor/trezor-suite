@@ -240,10 +240,6 @@
             "@recovery-middlewares/*": ["./src/middlewares/recovery/*", "../../packages/suite/src/middlewares/recovery/*"],
             "@recovery-middlewares": ["./src/middlewares/recovery/index", "../../packages/suite/src/middlewares/recovery/index"],
         },
-        "typeRoots": [
-            "../../node_modules/@trezor/typescript-typings/types",
-            "../../node_modules/@types",
-        ],
         "module": "esnext",
         "noUnusedParameters": true,
         "sourceMap": true,

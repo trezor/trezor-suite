@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
 import * as modalActions from '@suite-actions/modalActions';
 import { Output } from '@wallet-types/sendForm';
 import * as sendFormActions from '@wallet-actions/send/sendFormActions';
@@ -27,6 +26,7 @@ export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 interface MergedProps extends StateProps {
     output: Output;
 }
-export type Props = MergedProps & DispatchProps & WrappedComponentProps;
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(Component));
+export type Props = MergedProps & DispatchProps;
+
+export default connect(mapStateToProps, mapDispatchToProps)(Component);

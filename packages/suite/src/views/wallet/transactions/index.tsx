@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
-import { colors, Loader } from '@trezor/components-v2';
+import { colors, Loader } from '@trezor/components';
 import { WalletLayout } from '@wallet-components';
 import { getAccountTransactions } from '@wallet-utils/accountUtils';
 import { SETTINGS } from '@suite-config';
 import TransactionList from './components/TransactionList';
-import messages from '@suite/support/messages';
+
 import NoTransactions from './components/NoTransactions';
 import PricePanel from './components/PricePanel';
 
@@ -55,11 +55,16 @@ export default (props: Props) => {
                 <LoaderWrapper>
                     <Loader size={40} />
                     <LoaderText>
-                        <Translation {...messages.TR_LOADING_TRANSACTIONS} />
+                        <Translation id="TR_LOADING_TRANSACTIONS" />
                     </LoaderText>
                 </LoaderWrapper>
             )}
-            {accountTransactions.length === 0 && !transactions.isLoading && <NoTransactions />}
+            {accountTransactions.length === 0 && !transactions.isLoading && (
+                <NoTransactions
+                    receive={() => props.goto('wallet-receive', undefined, true)}
+                    buy={() => {}}
+                />
+            )}
             {accountTransactions.length > 0 && (
                 <TransactionList
                     explorerUrl={network.explorer.tx}

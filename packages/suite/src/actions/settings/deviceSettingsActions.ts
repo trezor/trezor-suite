@@ -1,11 +1,17 @@
-import TrezorConnect, { ApplySettingsParams, ChangePinParams } from 'trezor-connect';
-import { add as addNotification } from '@suite-actions/notificationActions';
+/* eslint-disable @typescript-eslint/camelcase */
+import TrezorConnect, { ApplySettings, ChangePin, ResetDevice } from 'trezor-connect';
+import { addToast } from '@suite-actions/notificationActions';
+import * as modalActions from '@suite-actions/modalActions';
 
 import { Dispatch, GetState } from '@suite-types';
 
-//  TODO: should be reworked to deviceManagementActions
+const DEFAULT_LABEL = 'My Trezor';
+const DEFAULT_PASSPHRASE_PROTECTION = true;
+const DEFAULT_SKIP_BACKUP = true;
+const DEFAULT_STRENGTH_T1 = 256;
+const DEFAULT_STRENGTH_T2 = 128;
 
-export const applySettings = (params: ApplySettingsParams) => async (
+export const applySettings = (params: ApplySettings) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -19,13 +25,13 @@ export const applySettings = (params: ApplySettingsParams) => async (
     });
 
     if (result.success) {
-        dispatch(addNotification({ type: 'settings-applied' }));
+        dispatch(addToast({ type: 'settings-applied' }));
     } else {
-        dispatch(addNotification({ type: 'error', error: result.payload.error }));
+        dispatch(addToast({ type: 'error', error: result.payload.error }));
     }
 };
 
-export const changePin = (params: ChangePinParams) => async (
+export const changePin = (params: ChangePin = {}) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -37,11 +43,12 @@ export const changePin = (params: ChangePinParams) => async (
         },
         ...params,
     });
-
     if (result.success) {
-        dispatch(addNotification({ type: 'pin-changed' }));
+        dispatch(addToast({ type: 'pin-changed' }));
+    } else if (result.payload.code === 'Failure_PinMismatch') {
+        dispatch(modalActions.openModal({ type: 'pin-mismatch' }));
     } else {
-        dispatch(addNotification({ type: 'error', error: result.payload.error }));
+        dispatch(addToast({ type: 'error', error: result.payload.error }));
     }
 };
 
@@ -55,9 +62,9 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
     });
 
     if (result.success) {
-        dispatch(addNotification({ type: 'device-wiped' }));
+        dispatch(addToast({ type: 'device-wiped' }));
     } else {
-        dispatch(addNotification({ type: 'error', error: result.payload.error }));
+        dispatch(addToast({ type: 'error', error: result.payload.error }));
     }
 
     // todo: evaluate in future, see https://github.com/trezor/trezor-suite/issues/1064
@@ -67,4 +74,42 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
     //         payload: device,
     //     });
     // }
+};
+
+export const resetDevice = (params: ResetDevice = {}) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { device } = getState().suite;
+    if (!device) return;
+    let defaults = {};
+    if (device.features?.major_version === 1) {
+        defaults = {
+            strength: DEFAULT_STRENGTH_T1,
+            label: DEFAULT_LABEL,
+            skip_backup: DEFAULT_SKIP_BACKUP,
+            passphrase_protection: DEFAULT_PASSPHRASE_PROTECTION,
+        };
+    } else {
+        defaults = {
+            strength: DEFAULT_STRENGTH_T2,
+            label: DEFAULT_LABEL,
+            skip_backup: DEFAULT_SKIP_BACKUP,
+            passphrase_protection: DEFAULT_PASSPHRASE_PROTECTION,
+        };
+    }
+
+    const result = await TrezorConnect.resetDevice({
+        device: {
+            path: device.path,
+        },
+        ...defaults,
+        ...params,
+    });
+    if (result.success) {
+        dispatch(addToast({ type: 'settings-applied' }));
+    } else {
+        dispatch(addToast({ type: 'error', error: result.payload.error }));
+    }
+    return result;
 };

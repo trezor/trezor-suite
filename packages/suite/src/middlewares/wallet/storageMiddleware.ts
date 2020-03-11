@@ -15,8 +15,6 @@ import { serializeDiscovery } from '@suite-utils/storage';
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
     action: SuiteAction | WalletAction,
 ): Promise<SuiteAction | WalletAction> => {
-    // @ts-ignore
-    const prevState = api.getState();
     // pass action
     next(action);
 
@@ -31,7 +29,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
 
         case ACCOUNT.CREATE:
         case ACCOUNT.UPDATE: {
-            const device = accountUtils.getAccountDevice(api.getState().devices, action.payload);
+            const device = accountUtils.findAccountDevice(action.payload, api.getState().devices);
             // update only transactions for remembered device
             if (isDeviceRemembered(device)) {
                 storageActions.saveAccounts([action.payload]);
@@ -48,8 +46,9 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         }
 
         case TRANSACTION.ADD:
+        case TRANSACTION.REMOVE:
         case TRANSACTION.FETCH_SUCCESS: {
-            const device = accountUtils.getAccountDevice(api.getState().devices, action.account);
+            const device = accountUtils.findAccountDevice(action.account, api.getState().devices);
             // update only transactions for remembered device
             if (isDeviceRemembered(device)) {
                 storageActions.removeAccountTransactions(action.account);
@@ -58,7 +57,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             break;
         }
 
-        case TRANSACTION.REMOVE:
+        case TRANSACTION.RESET:
             storageActions.removeAccountTransactions(action.account);
             break;
 

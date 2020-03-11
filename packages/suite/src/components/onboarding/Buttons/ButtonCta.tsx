@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@trezor/components-v2';
+import { Button } from '@trezor/components';
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     isDisabled?: boolean;

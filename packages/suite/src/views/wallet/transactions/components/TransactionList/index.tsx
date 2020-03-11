@@ -1,19 +1,16 @@
 /* eslint-disable radix */
 import React, { useMemo } from 'react';
 import { FormattedDate } from 'react-intl';
-import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
-import { P, colors, variables } from '@trezor/components-v2';
+import { P, colors, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { groupTransactionsByDate, parseKey, sumTransactions } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
 import { Account } from '@wallet-types';
 import TransactionItem from '../TransactionItem/Container';
 import Pagination from '../Pagination';
-import messages from '@suite/support/messages';
-import Card from '@suite-components/Card';
-import Badge from '@suite-components/Badge';
-import FiatValue from '@suite-components/FiatValue/Container';
+
+import { Badge, Card, FiatValue, HiddenPlaceholder, Translation } from '@suite-components';
 
 const Wrapper = styled.div``;
 
@@ -112,8 +109,8 @@ const TransactionList = ({
     // if totalPages is undefined check current page and number of txs (e.g. XRP)
     // Edge case: if there is exactly 25 txs, pagination will be displayed
     const isOnLastPage = slicedTransactions.length < SETTINGS.TXS_PER_PAGE;
-    const showPagination = totalPages ? totalPages > 1 : currentPage === 1 && !isOnLastPage;
-
+    const shouldShowRipplePagination = !(currentPage === 1 && isOnLastPage);
+    const showPagination = totalPages ? totalPages > 1 : shouldShowRipplePagination;
     return (
         <Wrapper>
             <StyledCard>
@@ -125,7 +122,7 @@ const TransactionList = ({
                                 <DayHeading>
                                     {dateKey === 'pending' ? (
                                         <P>
-                                            <Translation {...messages.TR_PENDING} />
+                                            <Translation id="TR_PENDING" />
                                         </P>
                                     ) : (
                                         <>
@@ -138,23 +135,27 @@ const TransactionList = ({
                                                 />
                                             </DateWrapper>
                                             <DayAmountWrapper>
-                                                <DayAmount>
-                                                    {totalAmountPerDay.gte(0) && '+'}
-                                                    {totalAmountPerDay.toFixed()}{' '}
-                                                    {props.symbol.toUpperCase()}
-                                                </DayAmount>
-                                                <FiatValue
-                                                    amount={totalAmountPerDay.toFixed()}
-                                                    symbol={props.symbol}
-                                                >
-                                                    {fiatValue =>
-                                                        fiatValue && (
-                                                            <FiatDayAmount>
-                                                                <Badge>{fiatValue}</Badge>
-                                                            </FiatDayAmount>
-                                                        )
-                                                    }
-                                                </FiatValue>
+                                                <HiddenPlaceholder>
+                                                    <DayAmount>
+                                                        {totalAmountPerDay.gte(0) && '+'}
+                                                        {totalAmountPerDay.toFixed()}{' '}
+                                                        {props.symbol.toUpperCase()}
+                                                    </DayAmount>
+                                                </HiddenPlaceholder>
+                                                <HiddenPlaceholder>
+                                                    <FiatValue
+                                                        amount={totalAmountPerDay.toFixed()}
+                                                        symbol={props.symbol}
+                                                    >
+                                                        {fiatValue =>
+                                                            fiatValue && (
+                                                                <FiatDayAmount>
+                                                                    <Badge>{fiatValue}</Badge>
+                                                                </FiatDayAmount>
+                                                            )
+                                                        }
+                                                    </FiatValue>
+                                                </HiddenPlaceholder>
                                             </DayAmountWrapper>
                                         </>
                                     )}

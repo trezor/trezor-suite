@@ -2,14 +2,13 @@ import React from 'react';
 import { Translation } from '@suite-components';
 import { Wrapper, Text, OnboardingButton, Option } from '@onboarding-components';
 
-import messages from '@suite/support/messages';
 import { Props } from './Container';
 
 const SelectDeviceStep = ({ onboardingActions }: Props) => {
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
-                <Translation {...messages.TR_SELECT_YOUR_DEVICE_HEADING} />
+                <Translation id="TR_SELECT_YOUR_DEVICE_HEADING" />
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 <Text>
@@ -24,9 +23,9 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                             onboardingActions.goToNextStep();
                         }}
                         title="Trezor One"
-                        text={<Translation {...messages.TR_MODEL_ONE} />}
+                        text={<Translation id="TR_MODEL_ONE" />}
                         button="Select Trezor One"
-                        imgSrc="images/onboarding/model-1.svg"
+                        imgSrc="images/svg/model-1.svg"
                     />
                     <Option
                         data-test="@onboarding/option-model-t-path"
@@ -35,9 +34,9 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                             onboardingActions.goToNextStep();
                         }}
                         title="Trezor One"
-                        text={<Translation {...messages.TR_MODEL_T} />}
+                        text={<Translation id="TR_MODEL_T" />}
                         button="Select Trezor T"
-                        imgSrc="images/onboarding/model-2.svg"
+                        imgSrc="images/svg/model-2.svg"
                     />
                 </Wrapper.Options>
             </Wrapper.StepBody>

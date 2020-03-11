@@ -3,9 +3,9 @@ import styled from 'styled-components';
 const StepFooterWrapper = styled.div`
     display: flex;
     margin-top: auto;
-    max-height: 35px;
+    min-height: 36px;
     text-align: center;
-    flex: 1;
+    justify-content: center;
 `;
 
 export default StepFooterWrapper;

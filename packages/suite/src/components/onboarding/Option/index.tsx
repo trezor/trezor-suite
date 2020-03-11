@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, variables, colors } from '@trezor/components-v2';
+import { Button, variables, colors } from '@trezor/components';
 
 import { resolveStaticPath } from '@suite-utils/nextjs';
 
@@ -32,10 +32,14 @@ const Image = styled.img``;
 
 const Title = styled.div`
     font-size: ${FONT_SIZE.NORMAL};
+
+    ::first-letter {
+        text-transform: capitalize;
+    }
 `;
 
 const Text = styled.div`
-    font-size: ${FONT_SIZE.SMALL};
+    font-size: ${FONT_SIZE.BIG};
     color: ${colors.BLACK50};
 `;
 

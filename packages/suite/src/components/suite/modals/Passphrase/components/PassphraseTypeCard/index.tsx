@@ -1,9 +1,9 @@
 import React, { useState, createRef, useLayoutEffect } from 'react';
 import { useKeyPress } from '@suite-utils/dom';
 import styled, { css } from 'styled-components';
-import { Button, colors, variables, Input, Checkbox } from '@trezor/components-v2';
+import { Button, colors, variables, Input, Checkbox } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+
 import { MAX_PASSPHRASE_LENGTH } from '@suite-constants/passphrase';
 import { countBytesInString } from '@suite-utils/string';
 import PasswordStrengthIndicator from '@suite-components/PasswordStrengthIndicator';
@@ -56,13 +56,28 @@ const InputWrapper = styled(Content)`
     width: 100%;
 `;
 
+const PassphraseInput = styled(Input)`
+    color: ${colors.BLACK0};
+    font-size: ${variables.FONT_SIZE.SMALL};
+`;
+
 const Actions = styled.div`
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     /* margin-top: 20px; */
 `;
 
+const ActionButton = styled(Button)`
+    & + & {
+        margin-top: 8px;
+    }
+`;
+
 const RetryButton = styled(Button)`
-    margin: 16px auto 0px;
+    align-self: center;
+    margin-top: 16px;
 `;
 
 const Padding = styled.div<{ singleColModal?: boolean }>`
@@ -108,7 +123,12 @@ const PassphraseTypeCard = (props: Props) => {
     };
 
     if (enterPressed) {
-        submit(value);
+        // Trigger submit on pressing Enter in case of single col modal (creating/confirming hidden wallet)
+        // In case of two-col modal (selecting between standard and hidden wallet)
+        // only the hidden wallet part handle the enter press.
+        if (props.singleColModal || props.showPassphraseInput) {
+            submit(value);
+        }
     }
 
     return (
@@ -123,13 +143,13 @@ const PassphraseTypeCard = (props: Props) => {
                             onClick={() => setEnabled(!enabled)}
                             isChecked={enabled}
                         >
-                            <Translation {...messages.TR_I_UNDERSTAND_PASSPHRASE} />
+                            <Translation id="TR_I_UNDERSTAND_PASSPHRASE" />
                         </Checkbox>
                     </Content>
                 )}
                 {props.showPassphraseInput && (
                     <InputWrapper>
-                        <Input
+                        <PassphraseInput
                             data-test="@passhphrase/input"
                             onChange={event => setValue(event.target.value)}
                             placeholder="Enter passphrase"
@@ -138,14 +158,14 @@ const PassphraseTypeCard = (props: Props) => {
                             innerRef={ref}
                             display="block"
                             bottomText={
-                                isTooLong ? (
-                                    <Translation {...messages.TR_PASSPHRASE_TOO_LONG} />
-                                ) : null
+                                isTooLong ? <Translation id="TR_PASSPHRASE_TOO_LONG" /> : null
                             }
                             state={isTooLong ? 'error' : undefined}
                             variant="small"
                             button={{
                                 iconSize: 18,
+                                iconColor: colors.BLACK70,
+                                iconColorHover: colors.BLACK70,
                                 icon: showPassword ? 'HIDE' : 'SHOW',
                                 onClick: () => setShowPassword(!showPassword),
                             }}
@@ -154,7 +174,7 @@ const PassphraseTypeCard = (props: Props) => {
                     </InputWrapper>
                 )}
                 <Actions>
-                    <Button
+                    <ActionButton
                         data-test="@passphrase/submit-button"
                         isDisabled={!enabled || isTooLong}
                         variant={props.singleColModal ? 'primary' : props.colorVariant}
@@ -162,16 +182,16 @@ const PassphraseTypeCard = (props: Props) => {
                         fullWidth
                     >
                         {props.submitLabel}
-                    </Button>
+                    </ActionButton>
                     {props.showPassphraseInput && props.offerPassphraseOnDevice && (
-                        <Button
+                        <ActionButton
                             isDisabled={!enabled}
                             variant="secondary"
                             onClick={() => submit(value, true)}
                             fullWidth
                         >
-                            <Translation {...messages.TR_ENTER_PASSPHRASE_ON_DEVICE} />
-                        </Button>
+                            <Translation id="TR_ENTER_PASSPHRASE_ON_DEVICE" />
+                        </ActionButton>
                     )}
                     {props.recreateWallet && (
                         <RetryButton
@@ -181,7 +201,7 @@ const PassphraseTypeCard = (props: Props) => {
                             size="small"
                             onClick={props.recreateWallet}
                         >
-                            <Translation {...messages.TR_TRY_AGAIN} />
+                            <Translation id="TR_TRY_AGAIN" />
                         </RetryButton>
                     )}
                 </Actions>

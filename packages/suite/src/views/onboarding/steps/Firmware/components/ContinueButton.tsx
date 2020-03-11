@@ -1,7 +1,7 @@
 import React from 'react';
 import { OnboardingButton } from '@onboarding-components';
-import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+import { Translation } from '@suite-components';
+
 import { Tooltip } from '@trezor/components';
 
 interface ButtonProps {
@@ -28,7 +28,7 @@ const ContinueButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) =
                 isDisabled={!isConnected || isInBootloader}
                 onClick={() => onClick()}
             >
-                <Translation {...messages.TR_CONTINUE} />
+                <Translation id="TR_CONTINUE" />
             </OnboardingButton.Cta>
         </Tooltip>
     );

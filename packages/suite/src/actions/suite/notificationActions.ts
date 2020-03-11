@@ -1,43 +1,54 @@
 import { NOTIFICATION } from './constants';
 import { Dispatch, GetState } from '@suite-types';
-import { NotificationPayload, NotificationEntry } from '@suite-reducers/notificationReducer';
+import {
+    ToastPayload,
+    ToastNotification,
+    EventPayload,
+    EventNotification,
+    NotificationEntry,
+} from '@suite-reducers/notificationReducer';
+import * as notificationUtils from '@suite-utils/notification';
 
 export type NotificationActions =
     | {
-          type: typeof NOTIFICATION.ADD;
-          payload: NotificationEntry;
+          type: typeof NOTIFICATION.TOAST;
+          payload: ToastNotification;
+      }
+    | {
+          type: typeof NOTIFICATION.EVENT;
+          payload: EventNotification;
       }
     | {
           type: typeof NOTIFICATION.CLOSE;
           payload: number;
+      }
+    | {
+          type: typeof NOTIFICATION.REMOVE;
+          payload: NotificationEntry[] | NotificationEntry;
+      }
+    | {
+          type: typeof NOTIFICATION.RESET_UNSEEN;
+          payload?: NotificationEntry[];
       };
 
-// type Single = Omit<NotificationPayload['type'], 'acquire-error|auth-failed'>;
-// type Single = Exclude<NotificationPayload['type'], 'acquire-error' | 'auth-failed' | 'auth-confirm-error'>;
-// type WithoutPayload = 'settings-applied' | 'pin-changed' | 'device-wiped' | 'backup-success';
-// Generate this from NotificationPayload
-
-// type Add = {
-//     (type: 'auth-failed', payload: string): any;
-//     (type: 'auth-failed2', error: number): any;
-// };
-
-// export const add2: Add = (type: any, payload?: any) => (dispatch: Dispatch, getState: GetState) => {
-//     dispatch({
-//         type: NOTIFICATION.ADD,
-//         payload: {
-//             id: new Date().getTime(),
-//             device: getState().suite.device,
-//             type,
-//             payload,
-//         },
-//     });
-// };
-
-export const add = (payload: NotificationPayload) => (dispatch: Dispatch, getState: GetState) => {
+export const addToast = (payload: ToastPayload) => (dispatch: Dispatch, getState: GetState) => {
     dispatch({
-        type: NOTIFICATION.ADD,
+        type: NOTIFICATION.TOAST,
         payload: {
+            context: 'toast',
+            id: new Date().getTime(),
+            device: getState().suite.device,
+            seen: true,
+            ...payload,
+        },
+    });
+};
+
+export const addEvent = (payload: EventPayload) => (dispatch: Dispatch, getState: GetState) => {
+    dispatch({
+        type: NOTIFICATION.EVENT,
+        payload: {
+            context: 'event',
             id: new Date().getTime(),
             device: getState().suite.device,
             ...payload,
@@ -49,6 +60,34 @@ export const close = (id: number): NotificationActions => ({
     type: NOTIFICATION.CLOSE,
     payload: id,
 });
+
+export const resetUnseen = (payload?: NotificationEntry[]): NotificationActions => ({
+    type: NOTIFICATION.RESET_UNSEEN,
+    payload,
+});
+
+export const remove = (payload: NotificationEntry[] | NotificationEntry): NotificationActions => ({
+    type: NOTIFICATION.REMOVE,
+    payload,
+});
+
+export const removeTransactionEvents = (txs: { txid: string }[]) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    txs.forEach(tx => {
+        const entries = notificationUtils.findTransactionEvents(tx.txid, getState().notifications);
+        if (entries.length > 0) dispatch(remove(entries));
+    });
+};
+
+export const removeAccountEvents = (descriptor: string) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const entries = notificationUtils.findTransactionEvents(descriptor, getState().notifications);
+    if (entries.length > 0) dispatch(remove(entries));
+};
 
 // TODO: didnt touch it right now. imho not used anywhere now. relates to route handling probably.
 // called from RouterService

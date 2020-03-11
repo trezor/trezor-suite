@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="256px" height="256px" fill="#000000" viewBox="0 0 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <path d="M256,128 C256,139.04 247.04,148 236,148 L148,148 L148,236 C148,247.04 139.04,256 128,256 C116.96,256 108,247.04 108,236 L108,148 L20,148 C8.96,148 0,139.04 0,128 C0,116.96 8.96,108 20,108 L108,108 L108,20 C108,8.96 116.96,0 128,0 C139.04,0 148,8.96 148,20 L148,108 L236,108 C247.04,108 256,116.96 256,128 Z" id="Path"></path>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <polygon points="13.8 10.2 24 10.2 24 13.8 13.8 13.8 13.8 24 10.2 24 10.2 13.8 0 13.8 3.44999989e-08 10.2 10.2 10.2 10.2 0 13.8 5.74999993e-09"></polygon>
 </svg>

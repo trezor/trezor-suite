@@ -22,7 +22,9 @@ export const passThroughInitialRun = () => {
         .getTestElement('@onboarding/skip-button')
         .click()
         .getTestElement('@onboarding/skip-button')
-        .click();
+        .click()
+        .getTestElement('@suite/loading')
+        .should('not.exist');
 };
 
 export const passThroughBackup = () => {

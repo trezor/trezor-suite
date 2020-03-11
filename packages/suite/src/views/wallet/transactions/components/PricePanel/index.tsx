@@ -1,16 +1,19 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { colors, variables, CoinLogo } from '@trezor/components-v2';
-import Card from '@suite-components/Card';
+import { colors, variables, CoinLogo } from '@trezor/components';
+import {
+    HiddenPlaceholder,
+    Card,
+    Badge,
+    FormattedNumber,
+    NoRatesTooltip,
+    FiatValue,
+} from '@suite-components';
 import { AppState } from '@suite/types/suite';
 import { getAccountFiatBalance, getTitleForNetwork, isTestnet } from '@wallet-utils/accountUtils';
-import Badge from '@suite-components/Badge';
 import { Account } from '@wallet-types';
-import FormattedNumber from '@suite-components/FormattedNumber';
-import NoRatesTooltip from '@suite-components/NoRatesTooltip';
 import { Translation } from '@suite-components/Translation';
 import { connect } from 'react-redux';
-import FiatValue from '@suite-components/FiatValue/Container';
 
 const Wrapper = styled(Card)`
     width: 100%;
@@ -107,12 +110,16 @@ const PricePanel = (props: Props) => {
         <Wrapper>
             <Col>
                 <CoinLogo size={24} symbol={props.account.symbol} />
-                <Balance>
-                    {props.account.formattedBalance} {props.account.symbol.toUpperCase()}
-                </Balance>
-                <Badge>
-                    <FormattedNumber value={fiatBalance} currency={localCurrency} />
-                </Badge>
+                <HiddenPlaceholder intensity={7}>
+                    <Balance>
+                        {props.account.formattedBalance} {props.account.symbol.toUpperCase()}
+                    </Balance>
+                </HiddenPlaceholder>
+                <HiddenPlaceholder>
+                    <Badge>
+                        <FormattedNumber value={fiatBalance} currency={localCurrency} />
+                    </Badge>
+                </HiddenPlaceholder>
             </Col>
             {!isTestnet(props.account.symbol) && (
                 <Col>

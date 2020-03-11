@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import FocusLock from 'react-focus-lock';
 import { SUITE } from '@suite-actions/constants';
-import { Modal as ModalComponent } from '@trezor/components-v2';
+import { Modal as ModalComponent } from '@trezor/components';
 import Loading from '@suite-components/Loading';
 import DiscoveryLoader from '@suite-components/DiscoveryLoader';
 import Modals from '@suite-components/modals';
@@ -146,12 +147,14 @@ const Preloader = (props: Props) => {
         return (
             <>
                 <ModalComponent cancelable={cancelable} onCancel={props.closeModalApp}>
-                    <ApplicationModal
-                        cancelable={cancelable}
-                        closeModalApp={props.closeModalApp}
-                        getBackgroundRoute={props.getBackgroundRoute}
-                        modal={hasActionModal ? <Modals background={false} /> : null}
-                    />
+                    <FocusLock>
+                        <ApplicationModal
+                            cancelable={cancelable}
+                            closeModalApp={props.closeModalApp}
+                            getBackgroundRoute={props.getBackgroundRoute}
+                            modal={hasActionModal ? <Modals background={false} /> : null}
+                        />
+                    </FocusLock>
                 </ModalComponent>
                 {props.children}
             </>
@@ -174,7 +177,9 @@ const Preloader = (props: Props) => {
                 {hasActionModal && <Modals />}
                 {!hasActionModal && (
                     <ModalComponent>
-                        <ApplicationStateModal />
+                        <FocusLock>
+                            <ApplicationStateModal />
+                        </FocusLock>
                     </ModalComponent>
                 )}
                 {props.children}

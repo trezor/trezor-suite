@@ -2,11 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-
-import messages from '@suite/support/messages';
 import { SUITE } from '@suite-actions/constants';
-import { Translation, SuiteLayout } from '@suite-components';
-import { Menu as SettingsMenu } from '@settings-components';
+import { Translation } from '@suite-components';
+import { SettingsLayout } from '@settings-components';
 import {
     Section,
     ActionColumn,
@@ -50,95 +48,82 @@ const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Pr
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
 
     return (
-        <SuiteLayout title="Settings" secondaryMenu={<SettingsMenu />}>
-            {/* todo: imho base padding should be in SuiteLayout, but it would break WalletLayout, so I have it temporarily here */}
-            <div
-                style={{
-                    padding: '30px',
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                }}
-            >
-                <Section header={<Translation>{messages.TR_LANGUAGE}</Translation>}>
-                    <Row>
-                        <TextColumn title={<Translation>{messages.TR_LANGUAGE}</Translation>} />
-                        <ActionColumn>
-                            <ActionSelect
-                                value={{
-                                    value: language,
-                                    // sorry for ! but dont know how to force typescript to stay calm
-                                    label: LANGUAGES.find(l => l.code === language)!.name,
-                                }}
-                                options={LANGUAGES.map(l => ({ value: l.code, label: l.name }))}
-                                // todo: Select should preserve type information
-                                onChange={(option: {
-                                    value: typeof LANGUAGES[number]['code'];
-                                    label: typeof LANGUAGES[number]['name'];
-                                }) => fetchLocale(option.value)}
-                            />
-                        </ActionColumn>
-                    </Row>
-                </Section>
+        <SettingsLayout>
+            <Section header={<Translation id="TR_LANGUAGE" />}>
+                <Row>
+                    <TextColumn title={<Translation id="TR_LANGUAGE" />} />
+                    <ActionColumn>
+                        <ActionSelect
+                            value={{
+                                value: language,
+                                // sorry for ! but dont know how to force typescript to stay calm
+                                label: LANGUAGES.find(l => l.code === language)!.name,
+                            }}
+                            options={LANGUAGES.map(l => ({ value: l.code, label: l.name }))}
+                            // todo: Select should preserve type information
+                            onChange={(option: {
+                                value: typeof LANGUAGES[number]['code'];
+                                label: typeof LANGUAGES[number]['name'];
+                            }) => fetchLocale(option.value)}
+                        />
+                    </ActionColumn>
+                </Row>
+            </Section>
 
-                <Section header={<Translation>{messages.TR_CURRENCY}</Translation>}>
-                    <Row>
-                        <TextColumn title={<Translation>{messages.TR_PRIMARY_FIAT}</Translation>} />
-                        <ActionColumn>
-                            <ActionSelect
-                                onChange={(option: { value: string; label: string }) =>
-                                    setLocalCurrency(option.value)
-                                }
-                                value={buildCurrencyOption(wallet.settings.localCurrency)}
-                                options={FIAT.currencies.map(c => buildCurrencyOption(c))}
-                                isDisabled={uiLocked}
-                            />
-                        </ActionColumn>
-                    </Row>
-                </Section>
+            <Section header={<Translation id="TR_CURRENCY" />}>
+                <Row>
+                    <TextColumn title={<Translation id="TR_PRIMARY_FIAT" />} />
+                    <ActionColumn>
+                        <ActionSelect
+                            onChange={(option: { value: string; label: string }) =>
+                                setLocalCurrency(option.value)
+                            }
+                            value={buildCurrencyOption(wallet.settings.localCurrency)}
+                            options={FIAT.currencies.map(c => buildCurrencyOption(c))}
+                            isDisabled={uiLocked}
+                        />
+                    </ActionColumn>
+                </Row>
+            </Section>
 
-                <Section header={<Translation>{messages.TR_LABELING}</Translation>}>
+            {/* TODO: KEEP IT HERE AND UNCOMMENT WHEN READY */}
+            {/* <Section header={<Translation id="TR_LABELING" />}>
+                <Row>
+                    <TextColumn title={<Translation id="TR_CONNECT_DROPBOX} />" />
+                    <ActionColumn>
+                        <ActionButton
+                            onClick={() => console.log('fooo')}
+                            isDisabled={uiLocked}
+                            variant="secondary"
+                        >
+                            <Translation id="TR_CONNECT_DROPBOX" />
+                        </ActionButton>
+                    </ActionColumn>
+                </Row>
+            </Section> */}
+
+            <Analytics />
+
+            <BottomContainer>
+                <Section borderless>
                     <Row>
                         <TextColumn
-                            title={<Translation>{messages.TR_CONNECT_DROPBOX}</Translation>}
+                            title={<Translation id="TR_SUITE_VERSION" />}
+                            description={<Translation id="TR_YOUR_CURRENT_VERSION" />}
                         />
                         <ActionColumn>
                             <ActionButton
-                                onClick={() => console.log('fooo')}
+                                onClick={() => console.log('moo')}
                                 isDisabled={uiLocked}
                                 variant="secondary"
                             >
-                                <Translation>{messages.TR_CONNECT_DROPBOX}</Translation>
+                                <Translation id="TR_CHECK_FOR_UPDATES" />
                             </ActionButton>
                         </ActionColumn>
                     </Row>
                 </Section>
-
-                <Analytics />
-
-                <BottomContainer>
-                    <Section borderless>
-                        <Row>
-                            <TextColumn
-                                title={<Translation>{messages.TR_SUITE_VERSION}</Translation>}
-                                description={
-                                    <Translation>{messages.TR_YOUR_CURRENT_VERSION}</Translation>
-                                }
-                            />
-                            <ActionColumn>
-                                <ActionButton
-                                    onClick={() => console.log('moo')}
-                                    isDisabled={uiLocked}
-                                    variant="secondary"
-                                >
-                                    <Translation>{messages.TR_CHECK_FOR_UPDATES}</Translation>
-                                </ActionButton>
-                            </ActionColumn>
-                        </Row>
-                    </Section>
-                </BottomContainer>
-            </div>
-        </SuiteLayout>
+            </BottomContainer>
+        </SettingsLayout>
     );
 };
 

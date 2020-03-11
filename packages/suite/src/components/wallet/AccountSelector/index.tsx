@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Select, colors, variables } from '@trezor/components-v2';
+import { Select, colors, variables } from '@trezor/components';
 import { Account } from '@wallet-types';
+import { HiddenPlaceholder } from '@suite-components';
 import { Props } from './Container';
 
 const Wrapper = styled.div`
@@ -32,27 +33,38 @@ const SingleAccount = styled.div`
 `;
 
 const SelectWrapper = styled.div`
-    min-width: 250px;
+    min-width: 310px;
 `;
 
 const Option = styled.div`
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+`;
+
+const OptionVal = styled.div`
+    display: flex;
+    align-items: center;
+    flex: 1;
 `;
 
 interface SelectValue {
     value: number;
     label: string;
+    symbol: Account['symbol'];
+    accountType: Account['accountType'];
 }
 
 const getOptions = (otherAccounts: Account[]) => {
     const options: SelectValue[] = [];
     otherAccounts.forEach(account => {
-        const { index, symbol } = account;
+        const { index, symbol, accountType } = account;
         options.push({
-            label: `${symbol.toUpperCase()} Account #${index + 1}`,
+            label: `${symbol.toUpperCase()} Account #${index + 1} ${
+                accountType !== 'normal' ? accountType : ''
+            }`,
             value: index,
+            symbol,
+            accountType,
         });
     });
 
@@ -77,7 +89,9 @@ export default ({ accounts, selectedAccount, title, goto, router }: Props) => {
                     <SingleAccount>
                         Account {account.symbol.toUpperCase()} #{account.index + 1}
                         <Label>
-                            {account.formattedBalance} {account.symbol.toUpperCase()}
+                            <HiddenPlaceholder>
+                                {account.formattedBalance} {account.symbol.toUpperCase()}
+                            </HiddenPlaceholder>
                         </Label>
                     </SingleAccount>
                 )}
@@ -85,9 +99,9 @@ export default ({ accounts, selectedAccount, title, goto, router }: Props) => {
                     <Select
                         isClean
                         onChange={(change: SelectValue) => {
-                            const { symbol, accountType } = account;
+                            const { symbol, accountType, value } = change;
                             goto(router.route.name, {
-                                accountIndex: change.value,
+                                accountIndex: value,
                                 symbol,
                                 accountType,
                             });
@@ -99,11 +113,13 @@ export default ({ accounts, selectedAccount, title, goto, router }: Props) => {
                             if (itemAccount) {
                                 return (
                                     <Option>
-                                        {option.label}
-                                        <Label>
-                                            {itemAccount.formattedBalance}{' '}
-                                            {itemAccount.symbol.toUpperCase()}
-                                        </Label>
+                                        <OptionVal>{option.label}</OptionVal>
+                                        <HiddenPlaceholder>
+                                            <Label>
+                                                {itemAccount.formattedBalance}{' '}
+                                                {itemAccount.symbol.toUpperCase()}
+                                            </Label>
+                                        </HiddenPlaceholder>
                                     </Option>
                                 );
                             }

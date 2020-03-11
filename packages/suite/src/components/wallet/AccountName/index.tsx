@@ -1,29 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
-import { CoinLogo, variables, colors } from '@trezor/components';
-import messages from '@suite/support/messages';
+import { CoinLogo, H2 } from '@trezor/components';
+
 import { ExtendedMessageDescriptor } from '@suite-types';
 import Title from '@wallet-components/Title';
 import { getTitleForNetwork, getTypeForNetwork } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
 
-const { FONT_WEIGHT, FONT_SIZE } = variables;
-
-const AccountTitle = styled.div`
-    font-size: ${FONT_SIZE.WALLET_TITLE};
-    font-weight: ${FONT_WEIGHT.MEDIUM};
-`;
-
 const StyledCoinLogo = styled(CoinLogo)`
     margin-right: 10px;
 `;
 
+const StyledH2 = styled(H2)`
+    display: flex;
+    align-items: center;
+    padding-top: 15px;
+`;
+
 const Label = styled.span`
-    font-size: ${variables.FONT_SIZE.BASE};
-    font-weight: ${variables.FONT_WEIGHT.NORMAL};
     text-transform: uppercase;
-    color: ${colors.TEXT_SECONDARY};
     margin-left: 5px;
 `;
 
@@ -41,7 +37,7 @@ const AccountName = ({ account, message }: Props) => {
     return (
         <Title>
             <StyledCoinLogo size={24} symbol={account.symbol} />
-            <AccountTitle>
+            <StyledH2>
                 {message && (
                     <Translation
                         {...message}
@@ -58,13 +54,11 @@ const AccountName = ({ account, message }: Props) => {
                         </LabelAddon>
                     )}
                     <Translation
-                        {...(account.imported
-                            ? messages.TR_IMPORTED_ACCOUNT_HASH
-                            : messages.TR_ACCOUNT_HASH)}
+                        id={account.imported ? 'TR_IMPORTED_ACCOUNT_HASH' : 'TR_ACCOUNT_HASH'}
                         values={{ number: String(account.index + 1) }}
                     />
                 </Label>
-            </AccountTitle>
+            </StyledH2>
         </Title>
     );
 };

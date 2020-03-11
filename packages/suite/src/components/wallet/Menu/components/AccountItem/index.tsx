@@ -1,26 +1,20 @@
 import React from 'react';
-import { CoinLogo, colors, variables } from '@trezor/components-v2';
+import { CoinLogo, colors, variables } from '@trezor/components';
 import styled, { css } from 'styled-components';
-import { getRoute } from '@suite-utils/router';
-import {
-    getTitleForNetwork,
-    // getTypeForNetwork,
-    getAccountFiatBalance,
-} from '@wallet-utils/accountUtils';
+import { getTitleForNetwork, getAccountFiatBalance } from '@wallet-utils/accountUtils';
 import { Translation } from '@suite-components/Translation';
-// import messages from '@suite/support/messages';
-import { Link, FormattedNumber } from '@suite-components';
+//
+import { FormattedNumber, HiddenPlaceholder } from '@suite-components';
 import AccountNavigation from './components/AccountNavigation/Container';
 import Badge from '@suite-components/Badge';
 import { Props } from './Container';
 
 const Wrapper = styled.div<{ selected: boolean }>`
-    margin: 0px 10px 0px 10px;
+    margin: 0px 10px 1px 10px;
     display: flex;
     border-radius: 10px;
     flex-direction: column;
     transition: background-color 0.3s, color 0.3s;
-
     ${props =>
         props.selected &&
         css`
@@ -84,6 +78,7 @@ const AccountHeader = styled.div<{ selected: boolean }>`
     display: flex;
     padding: 10px;
     border-radius: 10px;
+    cursor: pointer;
 
     ${props =>
         !props.selected &&
@@ -123,42 +118,46 @@ const AccountItem = React.memo((props: Props) => {
 
     return (
         <Wrapper selected={selected}>
-            <Link
-                variant="nostyle"
-                href={getRoute('wallet-index', {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                })}
+            <AccountHeader
+                selected={selected}
+                onClick={() =>
+                    props.goto('wallet-index', {
+                        symbol: account.symbol,
+                        accountIndex: account.index,
+                        accountType: account.accountType,
+                    })
+                }
             >
-                <AccountHeader selected={selected}>
-                    <Left>
-                        <LogoWrapper>
-                            <CoinLogo size={16} symbol={account.symbol} />
-                        </LogoWrapper>
-                    </Left>
-                    <Right>
-                        <AccountName>
-                            <Translation {...getTitleForNetwork(account.symbol)} />
-                            <AccountNumber># {account.index + 1}</AccountNumber>
-                        </AccountName>
+                <Left>
+                    <LogoWrapper>
+                        <CoinLogo size={16} symbol={account.symbol} />
+                    </LogoWrapper>
+                </Left>
+                <Right>
+                    <AccountName>
+                        <Translation {...getTitleForNetwork(account.symbol)} />
+                        <AccountNumber># {account.index + 1}</AccountNumber>
+                    </AccountName>
 
-                        <Balance>
+                    <Balance>
+                        <HiddenPlaceholder>
                             <CryptoValue>
                                 {account.formattedBalance} {account.symbol.toUpperCase()}
                             </CryptoValue>
-                            {fiatBalance && (
+                        </HiddenPlaceholder>
+                        {fiatBalance && (
+                            <HiddenPlaceholder>
                                 <StyledBadge>
                                     <FormattedNumber
                                         value={fiatBalance}
                                         currency={props.localCurrency}
                                     />
                                 </StyledBadge>
-                            )}
-                        </Balance>
-                    </Right>
-                </AccountHeader>
-            </Link>
+                            </HiddenPlaceholder>
+                        )}
+                    </Balance>
+                </Right>
+            </AccountHeader>
             {selected && <AccountNavigation />}
         </Wrapper>
     );

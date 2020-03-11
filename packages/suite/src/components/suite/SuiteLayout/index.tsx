@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors } from '@trezor/components-v2';
 import SmallLayout from './components/SmallLayout';
+import { connect } from 'react-redux';
+import { colors } from '@trezor/components';
 import SuiteNotifications from '@suite-components/Notifications';
 import Head from 'next/head';
 import { Props } from './Container';
@@ -45,6 +46,7 @@ const AppWrapper = styled.div`
 const MaxWithWrapper = styled.div<{ withMenu: boolean }>`
     max-width: 1024px;
     max-width: ${props => (props.withMenu ? '786px' : '1024px')};
+    height: 100%;
 `;
 
 export default (props: Props) => {

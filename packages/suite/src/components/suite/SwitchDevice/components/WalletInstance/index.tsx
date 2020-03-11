@@ -1,11 +1,9 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Button, Switch, colors, variables } from '@trezor/components-v2';
+import { Button, Switch, colors, variables } from '@trezor/components';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { Props } from './Container';
-import { FormattedNumber } from '@suite-components';
-import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+import { FormattedNumber, WalletLabeling, Translation } from '@suite-components';
 
 const Wrapper = styled.div<{ selected: boolean }>`
     display: flex;
@@ -83,7 +81,6 @@ const WalletInstance = ({
     const discoveryProcess = instance.state ? getDiscovery(instance.state) : null;
     const deviceAccounts = accountUtils.getAllAccounts(instance.state, accounts);
     const accountsCount = deviceAccounts.length;
-    const noPassphraseInstance = instance.useEmptyPassphrase!!;
     const instanceBalance = accountUtils.getTotalFiatBalance(deviceAccounts, localCurrency, fiat);
 
     return (
@@ -96,21 +93,17 @@ const WalletInstance = ({
             <Col grow={1} onClick={() => selectDeviceInstance(instance)}>
                 {discoveryProcess && (
                     <InstanceType>
-                        {noPassphraseInstance ? (
-                            <Translation {...messages.TR_NO_PASSPHRASE_WALLET} />
-                        ) : (
-                            <Translation {...messages.TR_PASSPHRASE_WALLET} />
-                        )}
+                        <WalletLabeling device={instance} />
                     </InstanceType>
                 )}
                 {!discoveryProcess && (
                     <InstanceType>
-                        <Translation {...messages.TR_UNDISCOVERED_WALLET} />
+                        <Translation id="TR_UNDISCOVERED_WALLET" />
                     </InstanceType>
                 )}
                 <InstanceTitle>
                     <Translation
-                        {...messages.TR_NUM_ACCOUNTS_FIAT_VALUE}
+                        id="TR_NUM_ACCOUNTS_FIAT_VALUE"
                         values={{
                             accountsCount,
                             fiatValue: (
@@ -138,7 +131,7 @@ const WalletInstance = ({
                             variant="secondary"
                             onClick={() => forgetDevice(instance)}
                         >
-                            <Translation {...messages.TR_HIDE_WALLET} />
+                            <Translation id="TR_HIDE_WALLET" />
                         </ForgetButton>
                     </Col>
                 </>

@@ -5,10 +5,8 @@ import { NETWORKS } from '@wallet-config';
 import Asset from './components/Asset';
 import { Account } from '@wallet-types';
 import { AppState } from '@suite-types';
-import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
-import { colors, Loader } from '@trezor/components-v2';
+import { colors, Loader } from '@trezor/components';
 import { Card, Translation } from '@suite-components';
-import messages from '@suite/support/messages';
 
 const Header = styled.div`
     display: flex;
@@ -60,14 +58,14 @@ const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props)
                 <HeaderTitle>
                     {/* todo */}
                     <div>
-                        <Translation {...messages.TR_ASSETS} />
+                        <Translation id="TR_ASSETS" />
                     </div>
                     <div>
-                        <Translation {...messages.TR_VALUES} />
+                        <Translation id="TR_VALUES" />
                     </div>
                     <div />
                     <div>
-                        <Translation {...messages.TR_EXCHANGE_RATE} />
+                        <Translation id="TR_EXCHANGE_RATE" />
                     </div>
                     <div />
                 </HeaderTitle>
@@ -83,12 +81,6 @@ const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props)
                     new BigNumber(0),
                 );
 
-                const fiatRates = rates.find(f => f.symbol === symbol);
-                const localCurrencyRate = fiatRates
-                    ? toFiatCurrency('1', localCurrency, fiatRates)
-                    : null;
-                const fiatvalue = assetBalance.multipliedBy(localCurrencyRate || 0);
-
                 return (
                     <StyledAsset
                         data-test="@dashboard/asset-card"
@@ -96,9 +88,6 @@ const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props)
                         name={network.name}
                         symbol={network.symbol}
                         cryptoValue={assetBalance.toFixed()}
-                        fiatValue={fiatvalue}
-                        exchangeRate={localCurrencyRate}
-                        localCurrency={localCurrency}
                     />
                 );
             })}

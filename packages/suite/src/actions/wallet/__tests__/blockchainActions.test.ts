@@ -1,14 +1,35 @@
+/* eslint-disable global-require */
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import accountsReducer from '@wallet-reducers/accountsReducer';
-import * as blockchainActions from '../blockchainActions';
+import transactionReducer from '@wallet-reducers/transactionReducer';
+import notificationsReducer from '@suite-reducers/notificationReducer';
 import { BLOCKCHAIN } from '../constants';
+import * as blockchainActions from '../blockchainActions';
+import * as fixtures from '../__fixtures__/blockchainActions';
 
 jest.mock('trezor-connect', () => {
     let fixture: any;
     return {
         __esModule: true, // this property makes it work
         default: {
+            getAccountInfo: () =>
+                fixture
+                    ? {
+                          success: true,
+                          payload: fixture,
+                      }
+                    : {
+                          success: false,
+                      },
+            blockchainGetTransactions: () => {
+                return {
+                    success: true,
+                    payload: {
+                        txid: 'foo',
+                    },
+                };
+            },
             blockchainEstimateFee: () =>
                 fixture || {
                     success: false,
@@ -22,15 +43,32 @@ jest.mock('trezor-connect', () => {
 });
 
 type AccountsState = ReturnType<typeof accountsReducer>;
+type TransactionsState = ReturnType<typeof transactionReducer>;
 interface InitialState {
     accounts?: AccountsState;
+    transactions?: TransactionsState['transactions'];
 }
 
-export const getInitialState = (state: InitialState | undefined) => {
+export const getInitialState = (state?: InitialState) => {
     const accounts = state ? state.accounts : [];
+    const txs = state ? state.transactions : undefined;
+    const initAction: any = { type: 'foo' };
     return {
         wallet: {
-            accounts: accountsReducer(accounts, { type: 'foo' } as any),
+            accounts: accountsReducer(accounts, initAction),
+            transactions: transactionReducer(
+                {
+                    transactions: txs || {},
+                    isLoading: false,
+                    error: null,
+                },
+                initAction,
+            ),
+        },
+        notifications: notificationsReducer([], initAction),
+        devices: [{ state: 'deviceState' }], // device is needed for notification/event
+        suite: {
+            device: { state: 'deviceState' }, // device is needed for notification/event
         },
     };
 };
@@ -41,21 +79,51 @@ const mockStore = configureStore<State, any>([thunk]);
 const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
-        const action = store.getActions().pop();
-        const { accounts } = store.getState().wallet;
+        const actions = store.getActions();
+        const action = actions[actions.length - 1];
+        const { accounts, transactions } = store.getState().wallet;
         store.getState().wallet.accounts = accountsReducer(accounts, action);
-        // add action back to stack
-        store.getActions().push(action);
+        store.getState().wallet.transactions = transactionReducer(transactions, action);
+        store.getState().notifications = notificationsReducer(
+            store.getState().notifications,
+            action,
+        );
     });
     return store;
 };
 
 describe('Blockchain Actions', () => {
     it('init', async () => {
-        const state = getInitialState({});
-        const store = initStore(state);
+        const store = initStore(getInitialState());
         await store.dispatch(blockchainActions.init());
         const action = store.getActions().pop();
         expect(action.type).toEqual(BLOCKCHAIN.READY);
+    });
+
+    fixtures.onBlock.forEach(f => {
+        it(`onBlock: ${f.description}`, async () => {
+            // set fixtures in trezor-connect
+            require('trezor-connect').setTestFixtures(f.connect);
+            const store = initStore(getInitialState(f.state as any));
+            await store.dispatch(blockchainActions.onBlockMined(f.block as any));
+            if (!f.result) {
+                expect(store.getActions().length).toEqual(0);
+            } else {
+                const actions = store.getActions().filter(a => a.type !== '@notification/event');
+                expect(actions.length).toEqual(f.result.length);
+                actions.forEach((action, index) => {
+                    expect(action.type).toEqual(f.result[index]);
+                });
+                if (f.resultTxs) {
+                    const txs = store.getState().wallet.transactions.transactions;
+                    Object.keys(txs).forEach(key => {
+                        // @ts-ignore
+                        const resTxs = f.resultTxs[key];
+                        expect(txs[key].length).toEqual(resTxs.length);
+                        txs[key].forEach((t, i) => expect(t).toMatchObject(resTxs[i]));
+                    });
+                }
+            }
+        });
     });
 });

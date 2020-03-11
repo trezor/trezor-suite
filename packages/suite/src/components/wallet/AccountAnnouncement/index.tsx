@@ -17,20 +17,20 @@ const Announcement = (props: Props) => {
 
     if (account) {
         if (account.networkType === 'ripple') {
-            const bigBalance = new Bignumber(account.availableBalance);
+            const bigBalance = new Bignumber(account.balance);
             const bigReserve = new Bignumber(account.misc.reserve);
             if (bigBalance.isLessThan(bigReserve)) {
-                notifications.push(<XRPReserve reserve={account.misc.reserve} />);
+                notifications.push(<XRPReserve key="xrp" reserve={account.misc.reserve} />);
             }
         }
         if (account.symbol === 'ltc') {
-            notifications.push(<LTCAddresses />);
+            notifications.push(<LTCAddresses key="ltc" />);
         }
         if (account.symbol === 'bch') {
-            notifications.push(<BCHAddresses />);
+            notifications.push(<BCHAddresses key="bch" />);
         }
         if (account.imported) {
-            notifications.push(<AccountImported />);
+            notifications.push(<AccountImported key="imported" />);
         }
     }
 

@@ -1,11 +1,11 @@
-import { colors } from '@trezor/components-v2';
+import { colors } from '@trezor/components';
 
 export const notifications = `
     .Toastify__toast-container {
         z-index: 10001;
         position: fixed;
         padding: 4px;
-        width: 320px;
+        max-width: 800px;
         box-sizing: border-box;
         border-radius: 6px;
     }
@@ -33,8 +33,9 @@ export const notifications = `
 
     .Toastify__toast-container--bottom-center {
         bottom: 1em;
-        left: 50%;
-        margin-left: -160px;
+        left: 0;
+        right: 0;
+        margin: 0px auto;
     }
 
     .Toastify__toast-container--bottom-right {
@@ -68,12 +69,11 @@ export const notifications = `
     .Toastify__toast {
         position: relative;
         background: white;
-        border: 1px solid ${colors.BLACK96};
         min-height: 50px;
         box-sizing: border-box;
         margin-bottom: 1rem;
-        padding: 8px;
-        border-radius: 1px;
+        padding: 16px;
+        border-radius: 6px;
         box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.1), 0 2px 15px 0 rgba(0, 0, 0, 0.05);
         display: flex;
         justify-content: space-between;
@@ -82,6 +82,7 @@ export const notifications = `
         font-family: sans-serif;
         cursor: pointer;
         direction: ltr;
+        word-break: break-all;
     }
 
     .Toastify__toast--rtl {
@@ -89,8 +90,8 @@ export const notifications = `
     }
 
     .Toastify__toast--default {
-        background: ${colors.WHITE};
-        color: ${colors.BLACK0};
+        background: ${colors.BLACK17};
+        color: ${colors.WHITE};
     }
 
     .Toastify__toast--info {

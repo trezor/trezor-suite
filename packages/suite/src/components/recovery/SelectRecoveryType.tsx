@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { P, Link, variables } from '@trezor/components-v2';
+import { P, Link, variables } from '@trezor/components';
 import { Option } from '@onboarding-components';
-import messages from '@suite/support/messages';
+
 import { Translation } from '@suite-components';
 import { URLS } from '@suite-constants';
 
@@ -27,11 +27,11 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
     <>
         <P size="small">
             <Translation
-                {...messages.TR_RECOVERY_TYPES_DESCRIPTION}
+                id="TR_RECOVERY_TYPES_DESCRIPTION"
                 values={{
                     TR_LEARN_MORE_LINK: (
-                        <Link href={URLS.RECOVERY_MODEL_ONE_URL}>
-                            <Translation {...messages.TR_LEARN_MORE_LINK} />
+                        <Link size="small" href={URLS.RECOVERY_MODEL_ONE_URL}>
+                            <Translation id="TR_LEARN_MORE_LINK" />
                         </Link>
                     ),
                 }}
@@ -42,18 +42,34 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
                 action={() => {
                     onSelect(false);
                 }}
-                title="??"
-                text={<Translation {...messages.TR_BASIC_RECOVERY_OPTION} />}
-                button="???"
+                title={<Translation id="TR_BASIC_RECOVERY" />}
+                text={<Translation id="TR_BASIC_RECOVERY_OPTION" />}
+                button={
+                    <Translation
+                        id="TR_SELECT_CONCRETE_RECOVERY_TYPE"
+                        values={{
+                            recoveryType: <Translation id="TR_BASIC_RECOVERY" />,
+                        }}
+                    />
+                }
+                imgSrc="images/svg/basic.svg"
             />
 
             <Option
                 action={() => {
                     onSelect(true);
                 }}
-                title="??"
-                text={<Translation {...messages.TR_ADVANCED_RECOVERY_OPTION} />}
-                button="???"
+                title={<Translation id="TR_ADVANCED_RECOVERY" />}
+                text={<Translation id="TR_ADVANCED_RECOVERY_OPTION" />}
+                button={
+                    <Translation
+                        id="TR_SELECT_CONCRETE_RECOVERY_TYPE"
+                        values={{
+                            recoveryType: <Translation id="TR_ADVANCED_RECOVERY" />,
+                        }}
+                    />
+                }
+                imgSrc="images/svg/advanced.svg"
             />
         </Wrapper>
     </>

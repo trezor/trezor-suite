@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
-import { Translation } from '@suite-components/Translation';
-import { variables, colors, Button } from '@trezor/components-v2';
+import {
+    Translation,
+    HiddenPlaceholder,
+    FiatValue,
+    Badge,
+    AddressLabeling,
+} from '@suite-components';
+import { variables, colors, Button } from '@trezor/components';
 import { ArrayElement } from '@suite/types/utils';
-import messages from '@suite/support/messages';
+
 import { getDateWithTimeZone } from '@suite-utils/date';
 import TransactionTypeIcon from '../TransactionTypeIcon';
-import Badge from '@suite/components/suite/Badge';
-import FiatValue from '@suite-components/FiatValue/Container';
 import { Props } from './Container';
 
 const Wrapper = styled.div<{ isExpanded: boolean }>`
@@ -17,10 +21,6 @@ const Wrapper = styled.div<{ isExpanded: boolean }>`
     padding: 12px 16px;
     flex-direction: column;
     cursor: pointer;
-
-    /* &:hover {
-        background: ${colors.BLACK96};
-    } */
 `;
 
 const Timestamp = styled.div`
@@ -173,7 +173,7 @@ const TokenTransfer = (transfer: ArrayElement<Props['transaction']['tokens']>) =
                             {transfer.name} ({transfer.symbol})
                         </TokenName>
                         <Label>
-                            <Translation {...messages.TR_SENT_TO_SELF} />
+                            <Translation id="TR_SENT_TO_SELF" />
                         </Label>
                     </Col>
                 </Row>
@@ -186,17 +186,25 @@ const TokenTransfer = (transfer: ArrayElement<Props['transaction']['tokens']>) =
                 <Col>
                     <TokenName>
                         {transfer.name} ({transfer.symbol})
-                        <TokenAmount txType={transfer.type}>
-                            {transfer.type === 'recv' && '+'}
-                            {transfer.type !== 'recv' && '-'}
-                            {transfer.amount} {transfer.symbol}
-                        </TokenAmount>
+                        <HiddenPlaceholder>
+                            <TokenAmount txType={transfer.type}>
+                                {transfer.type === 'recv' && '+'}
+                                {transfer.type !== 'recv' && '-'}
+                                {transfer.amount} {transfer.symbol}
+                            </TokenAmount>
+                        </HiddenPlaceholder>
                     </TokenName>
                     <Label>
-                        From:&nbsp;<TokenAddress>{transfer.from}</TokenAddress>
+                        From:&nbsp;
+                        <TokenAddress>
+                            <AddressLabeling address={transfer.from} />
+                        </TokenAddress>
                     </Label>
                     <Label>
-                        To:&nbsp;<TokenAddress>{transfer.to}</TokenAddress>
+                        To:&nbsp;
+                        <TokenAddress>
+                            <AddressLabeling address={transfer.to} />
+                        </TokenAddress>
                     </Label>
                 </Col>
             </Row>
@@ -212,7 +220,12 @@ const TransactionItem = React.memo((props: Props) => {
         // It is ok to ignore eslint. the list is never reordered/filtered, items have no ids, list/items do not change
         // eslint-disable-next-line react/no-array-index-key
         <Target key={i}>
-            {target.addresses && target.addresses.map(addr => <Addr key={addr}>{addr}</Addr>)}
+            {target.addresses &&
+                target.addresses.map(addr => (
+                    <Addr key={addr}>
+                        <AddressLabeling address={addr} />
+                    </Addr>
+                ))}
         </Target>
     ));
 
@@ -244,14 +257,14 @@ const TransactionItem = React.memo((props: Props) => {
                     {type === 'self' && (
                         <Target>
                             <Addr>
-                                <Translation {...messages.TR_SENT_TO_SELF} />
+                                <Translation id="TR_SENT_TO_SELF" />
                             </Addr>
                         </Target>
                     )}
                     {isUnknown && (
                         <Target>
                             <Addr>
-                                <Translation {...messages.TR_UNKNOWN_TRANSACTION} />
+                                <Translation id="TR_UNKNOWN_TRANSACTION" />
                             </Addr>
                         </Target>
                     )}
@@ -289,23 +302,27 @@ const TransactionItem = React.memo((props: Props) => {
                 </Targets>
                 {amount !== '0' && (
                     <>
-                        <Balance>
-                            <Amount>
-                                {type === 'recv' && '+'}
-                                {type !== 'recv' && '-'}
-                                {amount}&nbsp;
-                            </Amount>
-                            <Symbol>{symbol.toUpperCase()}</Symbol>
-                        </Balance>
-                        <FiatValue amount={amount} symbol={symbol}>
-                            {fiatValue =>
-                                fiatValue && (
-                                    <FiatBalance>
-                                        <SmallBadge>{fiatValue}</SmallBadge>
-                                    </FiatBalance>
-                                )
-                            }
-                        </FiatValue>
+                        <HiddenPlaceholder>
+                            <Balance>
+                                <Amount>
+                                    {type === 'recv' && '+'}
+                                    {type !== 'recv' && '-'}
+                                    {amount}&nbsp;
+                                </Amount>
+                                <Symbol>{symbol.toUpperCase()}</Symbol>
+                            </Balance>
+                        </HiddenPlaceholder>
+                        <HiddenPlaceholder>
+                            <FiatValue amount={amount} symbol={symbol}>
+                                {fiatValue =>
+                                    fiatValue && (
+                                        <FiatBalance>
+                                            <SmallBadge>{fiatValue}</SmallBadge>
+                                        </FiatBalance>
+                                    )
+                                }
+                            </FiatValue>
+                        </HiddenPlaceholder>
                     </>
                 )}
             </Row>
@@ -321,7 +338,9 @@ const TransactionItem = React.memo((props: Props) => {
                                         <Target>
                                             {target.addresses &&
                                                 target.addresses.map(addr => (
-                                                    <Addr key={addr}>{addr}</Addr>
+                                                    <Addr key={addr}>
+                                                        <AddressLabeling address={addr} />
+                                                    </Addr>
                                                 ))}
                                         </Target>
                                     </Targets>

@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { P, variables } from '@trezor/components-v2';
+import { P, variables } from '@trezor/components';
 import { Option } from '@onboarding-components';
-import messages from '@suite/support/messages';
+
 import { WordCount } from '@recovery-types';
 import { Translation } from '@suite-components';
 
@@ -26,7 +26,7 @@ interface Props {
 const SelectWordCount = ({ onSelect }: Props) => (
     <>
         <P size="small">
-            <Translation {...messages.TR_RECOVER_SUBHEADING} />
+            <Translation id="TR_RECOVER_SUBHEADING" />
         </P>
         <Wrapper>
             <Option
@@ -34,24 +34,24 @@ const SelectWordCount = ({ onSelect }: Props) => (
                 action={() => {
                     onSelect(12);
                 }}
-                button={<Translation {...messages.TR_WORDS} values={{ count: '12' }} />}
-                imgSrc="images/recovery/12-words.svg"
+                button={<Translation id="TR_WORDS" values={{ count: '12' }} />}
+                imgSrc="images/svg/svg/12-words.svg"
             />
             <Option
                 variant={3}
                 action={() => {
                     onSelect(18);
                 }}
-                button={<Translation {...messages.TR_WORDS} values={{ count: '18' }} />}
-                imgSrc="images/recovery/18-words.svg"
+                button={<Translation id="TR_WORDS" values={{ count: '18' }} />}
+                imgSrc="images/svg/svg/18-words.svg"
             />
             <Option
                 variant={3}
                 action={() => {
                     onSelect(24);
                 }}
-                button={<Translation {...messages.TR_WORDS} values={{ count: '24' }} />}
-                imgSrc="images/recovery/24-words.svg"
+                button={<Translation id="TR_WORDS" values={{ count: '24' }} />}
+                imgSrc="images/svg/svg/24-words.svg"
             />
         </Wrapper>
     </>
