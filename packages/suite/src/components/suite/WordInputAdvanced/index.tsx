@@ -4,7 +4,6 @@ import { Button } from '@trezor/components';
 
 import ButtonPin from '@suite-components/PinInput/components/ButtonPin';
 import { Translation } from '@suite-components';
-import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -130,7 +129,7 @@ const WordInputAdvanced = (props: Props) => {
                 </>
             )}
             <Backspace variant="tertiary" onClick={() => backspace()} icon="ARROW_LEFT">
-                <Translation {...messages.TR_BACKSPACE} />
+                <Translation id="TR_BACKSPACE" />
             </Backspace>
         </Wrapper>
     );

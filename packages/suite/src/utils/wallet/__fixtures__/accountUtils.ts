@@ -485,8 +485,8 @@ export const accountTitleFixture = [
 
 export const accountTypeFixture = [
     { networkType: 'normal', title: null },
-    { networkType: 'segwit', title: 'segwit' },
-    { networkType: 'legacy', title: 'legacy' },
+    { networkType: 'segwit', title: 'SegWit' },
+    { networkType: 'legacy', title: 'Legacy' },
 ];
 
 export const parseBIP44Path = [

@@ -5,13 +5,13 @@ import { CoinLogo, colors, Button, H2, P, Link } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import { Account } from '@wallet-types';
-import messages from '@suite/support/messages';
+
 import { URLS } from '@suite-constants';
 
 interface Props {
     symbol?: Account['symbol'];
-    title?: string | ExtendedMessageDescriptor;
-    message?: string | ExtendedMessageDescriptor;
+    title: ExtendedMessageDescriptor;
+    message: ExtendedMessageDescriptor;
 }
 
 const getInfoUrl = (symbol?: Props['symbol']) => {
@@ -72,14 +72,14 @@ const FirmwareUnsupported = (props: Props) => (
                 </CoinLogoWrapper>
             )}
             <H2>
-                <Translation>{props.title}</Translation>
+                <Translation {...props.title} />
             </H2>
             <Message>
-                <Translation>{props.message}</Translation>
+                <Translation {...props.message} />
             </Message>
             <Link href={getInfoUrl(props.symbol)}>
                 <Button>
-                    <Translation {...messages.TR_FIND_OUT_MORE_INFO} />
+                    <Translation id="TR_FIND_OUT_MORE_INFO" />
                 </Button>
             </Link>
         </Row>

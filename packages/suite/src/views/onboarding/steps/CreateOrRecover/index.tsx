@@ -3,7 +3,7 @@ import React from 'react';
 import { Translation } from '@suite-components';
 import * as STEP from '@onboarding-constants/steps';
 import { Text, Option, Wrapper, OnboardingButton } from '@onboarding-components';
-import messages from '@suite/support/messages';
+
 import { Props } from './Container';
 
 const CreateOrRecoverStep = (props: Props) => {
@@ -11,11 +11,11 @@ const CreateOrRecoverStep = (props: Props) => {
         <Wrapper.Step>
             <Wrapper.StepBody>
                 <Wrapper.StepHeading>
-                    <Translation {...messages.TR_WELCOME_TO_TREZOR} />
+                    <Translation id="TR_WELCOME_TO_TREZOR" />
                 </Wrapper.StepHeading>
 
                 <Text>
-                    <Translation {...messages.TR_WELCOME_TO_TREZOR_TEXT} />
+                    <Translation id="TR_WELCOME_TO_TREZOR_TEXT" />
                 </Text>
 
                 <Wrapper.Options>

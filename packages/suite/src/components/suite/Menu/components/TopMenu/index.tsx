@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
-import { colors, Icon } from '@trezor/components';
+import { colors, Icon, variables } from '@trezor/components';
 import Divider from '../Divider';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
 import { Props as ContainerProps } from '../../Container';
@@ -19,10 +19,10 @@ const DeviceStatus = styled.div``;
 const DeviceRow = styled.div<{ triggerAnim?: boolean }>`
     height: 36px;
     color: ${colors.WHITE};
+    font-size: ${variables.FONT_SIZE.TINY};
     margin-top: 14px;
     display: flex;
     font-weight: bold;
-    font-size: 90%;
     align-items: center;
     justify-content: center;
     cursor: pointer;

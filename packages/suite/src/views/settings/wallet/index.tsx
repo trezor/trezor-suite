@@ -1,16 +1,13 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { P, Switch, Icon, variables, colors, CoinLogo, Button } from '@trezor/components';
 import { Translation, ExternalLink } from '@suite-components';
-import messages from '@suite/support/messages';
 import { SettingsLayout } from '@settings-components';
-import { AppState, Dispatch } from '@suite-types';
 import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
+import { UnavailableCapability } from 'trezor-connect';
 import { Network, ExternalNetwork } from '@wallet-types';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { SectionHeader, Section, ActionColumn, Row } from '@suite-components/Settings';
+import { Props } from './Container';
 
 const Header = styled.div`
     display: flex;
@@ -69,6 +66,12 @@ const AdvancedSettings = styled.div`
     visibility: hidden;
 `;
 
+const UnavailableLabel = styled.div`
+    font-size: ${variables.FONT_SIZE.TINY};
+    color: ${colors.BLACK25};
+    white-space: nowrap;
+`;
+
 const SettingsIcon = styled(Icon)`
     position: relative;
     top: 2px;
@@ -95,7 +98,22 @@ interface CoinsGroupProps {
     filterFn: FilterFn;
     enabledNetworks: Network['symbol'][];
     type: 'mainnet' | 'testnet'; // used in tests
+    unavailableCapabilities: { [key: string]: UnavailableCapability };
 }
+
+const Unavailable = ({ type }: { type: UnavailableCapability }) => {
+    switch (type) {
+        case 'no-capability':
+            return <Translation id="FW_CAPABILITY_NO_CAPABILITY" />;
+        case 'no-support':
+            return <Translation id="FW_CAPABILITY_NO_SUPPORT" />;
+        case 'update-required':
+            return <Translation id="FW_CAPABILITY_UPDATE_REQUIRED" />;
+        // case 'trezor-connect-outdated':
+        default:
+            return <Translation id="FW_CAPABILITY_CONNECT_OUTDATED" />;
+    }
+};
 
 const CoinsGroup = ({
     label,
@@ -105,6 +123,7 @@ const CoinsGroup = ({
     onToggleOneFn,
     filterFn,
     enabledNetworks,
+    unavailableCapabilities,
     ...props
 }: CoinsGroupProps) => (
     <CoinsGroupWrapper data-test="@settings/wallet/coins-group">
@@ -122,7 +141,7 @@ const CoinsGroup = ({
                     onClick={() => onActivateAll()}
                     data-test={`@settings/wallet/coins-group/${props.type}/activate-all`}
                 >
-                    <Translation {...messages.TR_ACTIVATE_ALL} />
+                    <Translation id="TR_ACTIVATE_ALL" />
                 </Button>
                 <Button
                     isDisabled={enabledNetworks.length === 0}
@@ -132,7 +151,7 @@ const CoinsGroup = ({
                     onClick={() => onDeactivateAll()}
                     data-test={`@settings/wallet/coins-group/${props.type}/deactivate-all`}
                 >
-                    <Translation {...messages.TR_DEACTIVATE_ALL} />
+                    <Translation id="TR_DEACTIVATE_ALL" />
                 </Button>
             </ToggleButtons>
         </Header>
@@ -144,14 +163,21 @@ const CoinsGroup = ({
                     <ActionColumn>
                         <AdvancedSettings>
                             <SettingsIcon icon="SETTINGS" size={12} color={colors.BLACK25} />
-                            <Translation {...messages.TR_ADVANCED_SETTINGS} />
+                            <Translation id="TR_ADVANCED_SETTINGS" />
                         </AdvancedSettings>
-                        <Switch
-                            onChange={(visible: boolean) => {
-                                onToggleOneFn(n.symbol, visible);
-                            }}
-                            checked={enabledNetworks.includes(n.symbol)}
-                        />
+                        {!unavailableCapabilities[n.symbol] && (
+                            <Switch
+                                onChange={(visible: boolean) => {
+                                    onToggleOneFn(n.symbol, visible);
+                                }}
+                                checked={enabledNetworks.includes(n.symbol)}
+                            />
+                        )}
+                        {unavailableCapabilities[n.symbol] && (
+                            <UnavailableLabel>
+                                <Unavailable type={unavailableCapabilities[n.symbol]} />
+                            </UnavailableLabel>
+                        )}
                     </ActionColumn>
                 </CoinRow>
             ))}
@@ -159,32 +185,23 @@ const CoinsGroup = ({
     </CoinsGroupWrapper>
 );
 
-const mapStateToProps = (state: AppState) => ({
-    wallet: state.wallet,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    changeCoinVisibility: bindActionCreators(walletSettingsActions.changeCoinVisibility, dispatch),
-    changeNetworks: bindActionCreators(walletSettingsActions.changeNetworks, dispatch),
-});
-
-export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-
 const Settings = (props: Props) => {
     const { enabledNetworks } = props.wallet.settings;
+    const unavailableCapabilities =
+        props.device && props.device.features ? props.device.unavailableCapabilities : {};
 
-    const mainnetNetworksFilterFn = (n: Network) => {
-        return !n.accountType && !n.testnet;
-    };
+    const mainnetNetworksFilterFn = (n: Network) => !n.accountType && !n.testnet;
 
-    const testnetNetworksFilterFn = (n: Network) => {
-        return !n.accountType && 'testnet' in n && n.testnet === true;
-    };
+    const testnetNetworksFilterFn = (n: Network) =>
+        !n.accountType && 'testnet' in n && n.testnet === true;
+
+    const unavailableNetworksFilterFn = (symbol: Network['symbol']) =>
+        !unavailableCapabilities[symbol];
 
     const enabledMainnetNetworks: Network['symbol'][] = [];
     const enabledTestnetNetworks: Network['symbol'][] = [];
-    enabledNetworks.forEach(en => {
-        const network = NETWORKS.find(n => n.symbol === en);
+    enabledNetworks.forEach(symbol => {
+        const network = NETWORKS.find(n => n.symbol === symbol);
         if (!network) return;
         if (network.testnet) {
             enabledTestnetNetworks.push(network.symbol);
@@ -196,44 +213,50 @@ const Settings = (props: Props) => {
     return (
         <SettingsLayout>
             <P size="tiny">
-                <Translation {...messages.TR_COINS_SETTINGS_ALSO_DEFINES} />
+                <Translation id="TR_COINS_SETTINGS_ALSO_DEFINES" />
             </P>
 
             <CoinsGroup
-                label={<Translation>{messages.TR_COINS}</Translation>}
+                label={<Translation id="TR_COINS" />}
                 enabledNetworks={enabledMainnetNetworks}
                 filterFn={mainnetNetworksFilterFn}
                 onToggleOneFn={props.changeCoinVisibility}
                 onActivateAll={() =>
                     props.changeNetworks([
-                        ...enabledTestnetNetworks,
-                        ...NETWORKS.filter(mainnetNetworksFilterFn).map(n => n.symbol),
+                        ...enabledTestnetNetworks.filter(unavailableNetworksFilterFn),
+                        ...NETWORKS.filter(mainnetNetworksFilterFn)
+                            .map(n => n.symbol)
+                            .filter(unavailableNetworksFilterFn),
                     ])
                 }
                 onDeactivateAll={() => props.changeNetworks(enabledTestnetNetworks)}
                 type="mainnet"
+                unavailableCapabilities={unavailableCapabilities}
             />
 
             <CoinsGroup
-                label={<Translation>{messages.TR_TESTNET_COINS}</Translation>}
-                description={<Translation>{messages.TR_TESTNET_COINS_EXPLAINED}</Translation>}
+                label={<Translation id="TR_TESTNET_COINS" />}
+                description={<Translation id="TR_TESTNET_COINS_EXPLAINED" />}
                 enabledNetworks={enabledTestnetNetworks}
                 filterFn={testnetNetworksFilterFn}
                 onToggleOneFn={props.changeCoinVisibility}
                 onActivateAll={() =>
                     props.changeNetworks([
-                        ...enabledMainnetNetworks,
-                        ...NETWORKS.filter(testnetNetworksFilterFn).map(n => n.symbol),
+                        ...enabledMainnetNetworks.filter(unavailableNetworksFilterFn),
+                        ...NETWORKS.filter(testnetNetworksFilterFn)
+                            .map(n => n.symbol)
+                            .filter(unavailableNetworksFilterFn),
                     ])
                 }
                 onDeactivateAll={() => props.changeNetworks(enabledMainnetNetworks)}
                 type="testnet"
+                unavailableCapabilities={unavailableCapabilities}
             />
 
             <SectionHeader>
-                <Translation>{messages.TR_3RD_PARTY_WALLETS}</Translation>
+                <Translation id="TR_3RD_PARTY_WALLETS" />
                 <P size="tiny">
-                    <Translation>{messages.TR_3RD_PARTY_WALLETS_DESC}</Translation>
+                    <Translation id="TR_3RD_PARTY_WALLETS_DESC" />
                 </P>
             </SectionHeader>
             <Section>
@@ -242,7 +265,7 @@ const Settings = (props: Props) => {
                         <Coin network={n} />
                         <ActionColumn>
                             <StyledLink variant="nostyle" href={n.url} size="small">
-                                <Translation>{new URL(n.url).hostname}</Translation>
+                                {new URL(n.url).hostname}
                             </StyledLink>
                         </ActionColumn>
                     </Row>
@@ -251,5 +274,6 @@ const Settings = (props: Props) => {
         </SettingsLayout>
     );
 };
+// authorization
 
-export default connect(mapStateToProps, mapDispatchToProps)(Settings);
+export default Settings;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+
 import styled from 'styled-components';
 import { Icon, colors, variables } from '@trezor/components';
 import { DispatchProps } from '../../../../Container';
@@ -27,6 +27,6 @@ interface Props {
 export default ({ sendFormActionsBitcoin, outputId }: Props) => (
     <Wrapper onClick={() => sendFormActionsBitcoin.removeRecipient(outputId)}>
         <StyledIcon size={12} color={colors.BLACK50} icon="CLEAR" />
-        <Translation {...messages.TR_REMOVE} />
+        <Translation id="TR_REMOVE" />
     </Wrapper>
 );

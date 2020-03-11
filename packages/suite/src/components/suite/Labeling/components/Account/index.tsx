@@ -18,7 +18,7 @@ export default (props: Props) => {
     } else if (accounts[0].accountType !== 'normal') {
         accountLabel = (
             <Translation
-                {...messages.LABELING_ACCOUNT_WITH_TYPE}
+                id="LABELING_ACCOUNT_WITH_TYPE"
                 values={{
                     index: accounts[0].index + 1,
                     type:
@@ -31,7 +31,7 @@ export default (props: Props) => {
     } else {
         accountLabel = (
             <Translation
-                {...messages.LABELING_ACCOUNT}
+                id="LABELING_ACCOUNT"
                 values={{
                     index: accounts[0].index + 1,
                 }}

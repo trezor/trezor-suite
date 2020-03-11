@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors, Button, variables } from '@trezor/components';
 import { Translation, Image } from '@suite-components';
-import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -59,10 +58,10 @@ const EmptyWallet = (props: Props) => {
             <StyledImage image="EMPTY_DASHBOARD" />
             <Content>
                 <Title>
-                    <Translation {...messages.TR_YOUR_WALLET_IS_READY_WHAT} />
+                    <Translation id="TR_YOUR_WALLET_IS_READY_WHAT" />
                 </Title>
                 <SecurityItem>
-                    <Translation {...messages.TR_ADDITIONAL_SECURITY_FEATURES} />
+                    <Translation id="TR_ADDITIONAL_SECURITY_FEATURES" />
                     <InlineButton
                         variant="tertiary"
                         size="small"
@@ -72,11 +71,11 @@ const EmptyWallet = (props: Props) => {
                             console.log('do something');
                         }}
                     >
-                        <Translation {...messages.TR_FINISH_ADVANCED_SECURITY} />
+                        <Translation id="TR_FINISH_ADVANCED_SECURITY" />
                     </InlineButton>
                 </SecurityItem>
                 <SecurityItem>
-                    <Translation {...messages.TR_LOOKING_FOR_QUICK_EASY} />
+                    <Translation id="TR_LOOKING_FOR_QUICK_EASY" />
                     <InlineButton
                         variant="tertiary"
                         size="small"

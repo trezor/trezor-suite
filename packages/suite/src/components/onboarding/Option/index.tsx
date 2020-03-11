@@ -39,7 +39,7 @@ const Title = styled.div`
 `;
 
 const Text = styled.div`
-    font-size: ${FONT_SIZE.SMALL};
+    font-size: ${FONT_SIZE.BIG};
     color: ${colors.BLACK50};
 `;
 

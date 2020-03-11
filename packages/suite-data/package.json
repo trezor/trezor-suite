@@ -9,7 +9,8 @@
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "Trezor data",
     "scripts": {
-        "copy-static-files": "ts-node ./index.ts"
+        "copy-static-files": "ts-node ./index.ts",
+        "test-same-svgs": "ts-node ./test/test-same-svgs.ts"
     },
     "dependencies": {},
     "devDependencies": {

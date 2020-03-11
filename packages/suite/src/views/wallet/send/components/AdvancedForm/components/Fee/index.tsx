@@ -1,6 +1,6 @@
 import Badge from '@suite-components/Badge';
 import { Translation, QuestionTooltip } from '@suite-components';
-import messages from '@suite/support/messages';
+
 import { colors, Icon, P, Select, variables } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { fromWei, toWei } from 'web3-utils';
@@ -142,14 +142,14 @@ export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
                 <Top>
                     <Label>
                         <Text>
-                            <Translation {...messages.TR_FEE} />
+                            <Translation id="TR_FEE" />
                         </Text>
                         <QuestionTooltip messageId="TR_SEND_FEE_TOOLTIP" />
                     </Label>
                     <Refresh>
                         <StyledIcon icon="REFRESH" color={colors.BLACK50} size={10} />
                         <RefreshText>
-                            <Translation {...messages.REFRESH} />
+                            <Translation id="REFRESH" />
                         </RefreshText>
                     </Refresh>
                 </Top>

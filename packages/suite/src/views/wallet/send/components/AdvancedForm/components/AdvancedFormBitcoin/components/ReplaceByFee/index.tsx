@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
 
 import { variables, colors, Switch } from '@trezor/components';
 
@@ -36,10 +35,10 @@ export default () => {
         <Wrapper>
             <Left>
                 <Title>
-                    <Translation {...messages.REPLACE_BY_FEE_TITLE} />
+                    <Translation id="REPLACE_BY_FEE_TITLE" />
                 </Title>
                 <Description>
-                    <Translation {...messages.REPLACE_BY_FEE_DESCRIPTION} />
+                    <Translation id="REPLACE_BY_FEE_DESCRIPTION" />
                 </Description>
             </Left>
             <Right>

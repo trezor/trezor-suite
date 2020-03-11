@@ -2,9 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { Select, CoinLogo } from '@trezor/components';
 import { Network, ExternalNetwork } from '@wallet-types';
+import { Translation } from '@suite-components';
+import messages from '@suite/support/messages';
 
 const buildNetworkOption = (network: Network | ExternalNetwork) => ({
-    value: network.symbol,
+    value: network,
     label: network.name,
 });
 
@@ -13,15 +15,15 @@ const buildNetworkOptions = (networks: Network[], externalNetworks: ExternalNetw
     const testNetworks = networks.filter(n => n.testnet);
     return [
         {
-            label: 'Main networks',
+            label: <Translation {...messages.MODAL_ADD_ACCOUNT_NETWORK_MAINNET} />,
             options: mainNetworks.map(n => buildNetworkOption(n)),
         },
         {
-            label: 'Testnet networks',
+            label: <Translation {...messages.MODAL_ADD_ACCOUNT_NETWORK_TESTNET} />,
             options: testNetworks.map(n => buildNetworkOption(n)),
         },
         {
-            label: 'External networks',
+            label: <Translation {...messages.MODAL_ADD_ACCOUNT_NETWORK_EXTERNAL} />,
             options: externalNetworks.map(n => buildNetworkOption(n)),
         },
     ];
@@ -45,35 +47,27 @@ const LogoWrapper = styled.div`
 const NetworkOption = ({ value, label }: Option) => (
     <OptionWrapper>
         <LogoWrapper>
-            <CoinLogo size={20} symbol={value} />
+            <CoinLogo size={20} symbol={value.symbol} />
         </LogoWrapper>
         <div>{label}</div>
     </OptionWrapper>
 );
 
 interface Props {
-    selectedNetwork?: Network | ExternalNetwork;
-    networks: Network[];
+    network: Network | ExternalNetwork;
+    internalNetworks: Network[];
     externalNetworks: ExternalNetwork[];
-    setSelectedNetwork: (n: Network['symbol'] | ExternalNetwork['symbol']) => void;
+    setSelectedNetwork: (n: Network | ExternalNetwork) => void;
 }
 
-const NetworkSelect = ({
-    selectedNetwork,
-    networks,
-    externalNetworks,
-    setSelectedNetwork,
-}: Props) => (
+export default ({ network, internalNetworks, externalNetworks, setSelectedNetwork }: Props) => (
     <Select
-        placeholder="Select network..."
-        isSearchable={false}
+        isSearchable
         width={250}
         isClearable={false}
-        value={buildNetworkOption(selectedNetwork || networks[0])}
-        options={buildNetworkOptions(networks, externalNetworks)}
+        value={buildNetworkOption(network)}
+        options={buildNetworkOptions(internalNetworks, externalNetworks)}
         formatOptionLabel={NetworkOption}
         onChange={(option: Option) => setSelectedNetwork(option.value)}
     />
 );
-
-export default NetworkSelect;

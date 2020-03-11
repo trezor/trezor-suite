@@ -108,7 +108,7 @@ class SignVerify extends Component<Props> {
                 <Wrapper>
                     <Sign>
                         <Title>
-                            <Translation {...messages.TR_SIGN_MESSAGE} />
+                            <Translation id="TR_SIGN_MESSAGE" />
                         </Title>
                         <Row>
                             <Input
@@ -147,7 +147,7 @@ class SignVerify extends Component<Props> {
                                 onClick={this.props.signVerifyActions.clearSign}
                                 variant="secondary"
                             >
-                                <Translation {...messages.TR_CLEAR} />
+                                <Translation id="TR_CLEAR" />
                             </StyledButton>
                             <StyledButton
                                 // isDisabled={!device.connected}
@@ -157,13 +157,13 @@ class SignVerify extends Component<Props> {
                                 //      signVerifyActions.sign(account.accountPath, signMessage)
                                 // }
                             >
-                                <Translation {...messages.TR_SIGN} />
+                                <Translation id="TR_SIGN" />
                             </StyledButton>
                         </RowButtons>
                     </Sign>
                     <Verify>
                         <Title>
-                            <Translation {...messages.TR_VERIFY_MESSAGE} />
+                            <Translation id="TR_VERIFY_MESSAGE" />
                         </Title>
                         <Row>
                             <Input
@@ -200,7 +200,7 @@ class SignVerify extends Component<Props> {
                         </Row>
                         <RowButtons>
                             <StyledButton onClick={signVerifyActions.clearVerify}>
-                                <Translation {...messages.TR_CLEAR} />
+                                <Translation id="TR_CLEAR" />
                             </StyledButton>
                             <StyledButton
                                 // isDisabled={!!verifyAddressError || !device.connected}
@@ -215,7 +215,7 @@ class SignVerify extends Component<Props> {
                                     }
                                 }}
                             >
-                                <Translation {...messages.TR_VERIFY} />
+                                <Translation id="TR_VERIFY" />
                             </StyledButton>
                         </RowButtons>
                     </Verify>

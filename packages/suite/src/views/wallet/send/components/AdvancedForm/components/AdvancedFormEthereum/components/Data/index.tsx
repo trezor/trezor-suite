@@ -1,5 +1,5 @@
 import { Translation, QuestionTooltip } from '@suite-components';
-import messages from '@suite/support/messages';
+
 import styled from 'styled-components';
 import { Textarea } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
@@ -20,7 +20,7 @@ const Text = styled.div`
 const getError = (error: Send['networkTypeEthereum']['data']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.NOT_HEX:
-            return <Translation>{messages.TR_ETH_DATA_NOT_HEX}</Translation>;
+            return <Translation id="TR_ETH_DATA_NOT_HEX" />;
         default:
             return null;
     }
@@ -40,7 +40,7 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
             topLabel={
                 <Label>
                     <Text>
-                        <Translation {...messages.TR_SEND_DATA} />
+                        <Translation id="TR_SEND_DATA" />
                     </Text>
                     <QuestionTooltip messageId="TR_SEND_DATA_TOOLTIP" />
                 </Label>

@@ -13,6 +13,7 @@ const Wrapper = styled.div`
 
 const MenuItemWrapper = styled.div`
     background: ${colors.BLACK17};
+    font-size: ${variables.FONT_SIZE.SMALL};
     display: flex;
     margin-top: 5px;
 `;

@@ -9,7 +9,7 @@ import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as deviceUtils from '@suite-utils/device';
 import Loading from '@suite-components/Loading';
-import messages from '@suite/support/messages';
+
 import { AppState, Dispatch, TrezorDevice } from '@suite-types';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import { PASSPHRASE_URL } from '@suite-constants/urls';
@@ -94,19 +94,19 @@ const Passphrase = (props: Props) => {
                 recreateWallet={authConfirmation ? onRecreate : undefined}
                 title={
                     !authConfirmation ? (
-                        <Translation {...messages.TR_ENTER_PASSPHRASE} />
+                        <Translation id="TR_ENTER_PASSPHRASE" />
                     ) : (
-                        <Translation {...messages.TR_CONFIRM_EMPTY_HIDDEN_WALLET} />
+                        <Translation id="TR_CONFIRM_EMPTY_HIDDEN_WALLET" />
                     )
                 }
                 description={
                     !authConfirmation ? (
-                        <Translation {...messages.TR_UNLOCK} />
+                        <Translation id="TR_UNLOCK" />
                     ) : (
-                        <Translation {...messages.TR_THIS_HIDDEN_WALLET_IS_EMPTY} />
+                        <Translation id="TR_THIS_HIDDEN_WALLET_IS_EMPTY" />
                     )
                 }
-                submitLabel={<Translation {...messages.TR_CONFIRM_PASSPHRASE} />}
+                submitLabel={<Translation id="TR_CONFIRM_PASSPHRASE" />}
                 colorVariant="secondary"
                 offerPassphraseOnDevice={onDeviceOffer}
                 onSubmit={onSubmit}
@@ -120,9 +120,9 @@ const Passphrase = (props: Props) => {
     if (!noPassphraseOffer) {
         return (
             <PassphraseTypeCard
-                title={<Translation {...messages.TR_PASSPHRASE_HIDDEN_WALLET} />}
-                description={<Translation {...messages.TR_ENTER_EXISTING_PASSPHRASE} />}
-                submitLabel={<Translation {...messages.TR_ACCESS_HIDDEN_WALLET} />}
+                title={<Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />}
+                description={<Translation id="TR_ENTER_EXISTING_PASSPHRASE" />}
+                submitLabel={<Translation id="TR_ACCESS_HIDDEN_WALLET" />}
                 colorVariant="secondary"
                 offerPassphraseOnDevice={onDeviceOffer}
                 showPassphraseInput
@@ -137,10 +137,10 @@ const Passphrase = (props: Props) => {
         <ModalWrapper>
             <Wrapper>
                 <H2>
-                    <Translation {...messages.TR_SELECT_WALLET_TO_ACCESS} />
+                    <Translation id="TR_SELECT_WALLET_TO_ACCESS" />
                 </H2>
                 <Description>
-                    <Translation {...messages.TR_CHOOSE_BETWEEN_NO_PASSPHRASE} />
+                    <Translation id="TR_CHOOSE_BETWEEN_NO_PASSPHRASE" />
                 </Description>
                 <Link variant="nostyle" href={PASSPHRASE_URL}>
                     <Button
@@ -151,24 +151,22 @@ const Passphrase = (props: Props) => {
                         color={colors.BLACK25}
                         onClick={() => {}}
                     >
-                        <Translation {...messages.TR_WHAT_IS_PASSPHRASE} />
+                        <Translation id="TR_WHAT_IS_PASSPHRASE" />
                     </Button>
                 </Link>
                 <WalletsWrapper>
                     <PassphraseTypeCard
-                        title={<Translation {...messages.TR_NO_PASSPHRASE_WALLET} />}
-                        description={
-                            <Translation {...messages.TR_TO_ACCESS_STANDARD_NO_PASSPHRASE} />
-                        }
-                        submitLabel={<Translation {...messages.TR_ACCESS_STANDARD_WALLET} />}
+                        title={<Translation id="TR_NO_PASSPHRASE_WALLET" />}
+                        description={<Translation id="TR_TO_ACCESS_STANDARD_NO_PASSPHRASE" />}
+                        submitLabel={<Translation id="TR_ACCESS_STANDARD_WALLET" />}
                         colorVariant="primary"
                         offerPassphraseOnDevice={onDeviceOffer}
                         onSubmit={onSubmit}
                     />
                     <PassphraseTypeCard
-                        title={<Translation {...messages.TR_PASSPHRASE_HIDDEN_WALLET} />}
-                        description={<Translation {...messages.TR_ENTER_EXISTING_PASSPHRASE} />}
-                        submitLabel={<Translation {...messages.TR_ACCESS_HIDDEN_WALLET} />}
+                        title={<Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />}
+                        description={<Translation id="TR_ENTER_EXISTING_PASSPHRASE" />}
+                        submitLabel={<Translation id="TR_ACCESS_HIDDEN_WALLET" />}
                         colorVariant="secondary"
                         offerPassphraseOnDevice={onDeviceOffer}
                         showPassphraseInput

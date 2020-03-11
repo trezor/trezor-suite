@@ -51,7 +51,6 @@ const GreenCircle = styled(Circle)`
 `;
 
 const Title = styled.div<{ isLoading: boolean }>`
-    font-size: ${variables.FONT_SIZE.BODY};
     color: ${colors.BLACK0};
     text-align: center;
     margin-bottom: 8px;

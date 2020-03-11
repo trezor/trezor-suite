@@ -8,7 +8,7 @@ import { Translation } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { AppState, Dispatch } from '@suite-types';
-import messages from '@suite/support/messages';
+
 import { copyToClipboard } from '@suite-utils/dom';
 
 const Wrapper = styled(ModalWrapper)`
@@ -67,14 +67,14 @@ const Log = (props: Props) => {
     return (
         <Wrapper ref={htmlElement}>
             <H2>
-                <Translation {...messages.TR_LOG} />
+                <Translation id="TR_LOG" />
             </H2>
             <StyledParagraph size="small">
-                <Translation {...messages.TR_ATTENTION_COLON_THE_LOG_CONTAINS} />
+                <Translation id="TR_ATTENTION_COLON_THE_LOG_CONTAINS" />
             </StyledParagraph>
             <LogWrapper>{getFormattedLog()}</LogWrapper>
             <ButtonCopy onClick={() => copy()} data-test="@log/copy-button">
-                <Translation {...messages.TR_COPY_TO_CLIPBOARD} />
+                <Translation id="TR_COPY_TO_CLIPBOARD" />
             </ButtonCopy>
         </Wrapper>
     );

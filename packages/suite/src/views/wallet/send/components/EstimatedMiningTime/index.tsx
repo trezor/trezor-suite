@@ -2,7 +2,7 @@ import { formatDuration } from '@suite-utils/date';
 import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
-import messages from '@suite/support/messages';
+
 import { variables, colors } from '@trezor/components';
 
 const Wrapper = styled.div`
@@ -22,7 +22,7 @@ interface Props {
 export default ({ seconds }: Props) => {
     return (
         <Wrapper>
-            <Translation {...messages.TR_ESTIMATED_TIME} />
+            <Translation id="TR_ESTIMATED_TIME" />
             <Bold>{formatDuration(seconds)}</Bold>
         </Wrapper>
     );

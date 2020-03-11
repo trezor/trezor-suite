@@ -116,10 +116,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Add hidden wallet',
         id: 'TR_ADD_HIDDEN_WALLET',
     },
-    TR_ADD_NEW_ACCOUNT: {
-        defaultMessage: 'Add new account',
-        id: 'TR_ADD_NEW_ACCOUNT',
-    },
     TR_ADDITIONAL_SECURITY_FEATURES: {
         defaultMessage: 'Additional security features are waiting to be done.',
         id: 'TR_ADDITIONAL_SECURITY_FEATURES',
@@ -329,10 +325,6 @@ const definedMessages = defineMessages({
     TR_CANNOT_SEND_TO_MYSELF: {
         defaultMessage: 'Cannot send to myself',
         id: 'CANNOT_SEND_TO_MYSELF',
-    },
-    TR_CARDANO_WALLET: {
-        defaultMessage: 'Cardano wallet',
-        id: 'TR_CARDANO_WALLET',
     },
     TR_CHANGELOG: {
         defaultMessage: 'Changelog',
@@ -1096,10 +1088,6 @@ const definedMessages = defineMessages({
         description: 'Title of the navigation tab that contains tx history.',
         id: 'TR_NAV_TRANSACTIONS',
     },
-    TR_NEM_WALLET: {
-        defaultMessage: 'NEM wallet',
-        id: 'TR_NEM_WALLET',
-    },
     TR_NETWORK_BITCOIN: {
         defaultMessage: 'Bitcoin',
         id: 'TR_NETWORK_BITCOIN',
@@ -1163,18 +1151,6 @@ const definedMessages = defineMessages({
     TR_NETWORK_TEZOS: {
         defaultMessage: 'Tezos',
         id: 'TR_NETWORK_TEZOS',
-    },
-    TR_NETWORK_TYPE_LEGACY: {
-        defaultMessage: 'legacy',
-        id: 'TR_NETWORK_TYPE_LEGACY',
-    },
-    TR_NETWORK_TYPE_NORMAL: {
-        defaultMessage: 'normal',
-        id: 'TR_NETWORK_TYPE_NORMAL',
-    },
-    TR_NETWORK_TYPE_SEGWIT: {
-        defaultMessage: 'segwit',
-        id: 'TR_NETWORK_TYPE_SEGWIT',
     },
     TR_NETWORK_UNKNOWN: {
         defaultMessage: 'unknown',
@@ -1616,10 +1592,6 @@ const definedMessages = defineMessages({
         description: 'Device status',
         id: 'TR_STATUS_UNKNOWN',
     },
-    TR_STELLAR_WALLET: {
-        defaultMessage: 'Stellar wallet',
-        id: 'TR_STELLAR_WALLET',
-    },
     TR_SUITE_VERSION: {
         defaultMessage: 'Suite version',
         id: 'TR_SUITE_VERSION',
@@ -1644,10 +1616,6 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Testnet coins dont have any value but you still may use them to learn and experiment.',
         id: 'TR_TESTNET_COINS_EXPLAINED',
-    },
-    TR_TEZOS_WALLET: {
-        defaultMessage: 'Tezos wallet',
-        id: 'TR_TEZOS_WALLET',
     },
     TR_THE_PIN_LAYOUT_IS_DISPLAYED: {
         defaultMessage: 'The PIN layout is displayed on your Trezor.',
@@ -2378,19 +2346,9 @@ const definedMessages = defineMessages({
         id: 'TR_WHAT_IS_DRY_RUN',
         defaultMessage: 'what is dry run',
     },
-    TR_BECH32_USES_MOST_MODERN: {
-        id: 'TR_BECH32_USES_MOST_MODERN',
-        defaultMessage:
-            'Bech32 uses the most modern addresses for smallest transaction fees. Be aware that it may not be compatible with old bitcoin services.',
-    },
     TR_ACCOUNT_TYPE: {
         id: 'TR_ACCOUNT_TYPE',
         defaultMessage: 'Account Type',
-    },
-    TR_EXPLAIN_HOW_ACCOUNT_WORK: {
-        id: 'TR_EXPLAIN_HOW_ACCOUNT_WORK',
-        defaultMessage:
-            'Explain how account work and some other info that is useful for a new user and does not annoy hard core user. Ok that’s enough text and I can stop now.',
     },
     TR_CRYPTOCURRENCY: {
         id: 'TR_CRYPTOCURRENCY',
@@ -2400,6 +2358,85 @@ const definedMessages = defineMessages({
         id: 'TR_COIN_SETTINGS',
         defaultMessage: 'Coin settings',
     },
-});
+    FW_CAPABILITY_NO_CAPABILITY: {
+        id: 'FW_CAPABILITY_NO_CAPABILITY',
+        defaultMessage: 'Not supported',
+        description: 'Firmware with missing capability (eg: LTC on Bitcoin-only FW, XRP on T1...)',
+    },
+    FW_CAPABILITY_NO_CAPABILITY_DESC: {
+        id: 'FW_CAPABILITY_NO_CAPABILITY_DESC',
+        defaultMessage: 'Firmware does not have capability to work with {networkName}',
+    },
+    FW_CAPABILITY_NO_SUPPORT: {
+        id: 'FW_CAPABILITY_NO_SUPPORT',
+        defaultMessage: 'Not supported',
+        description:
+            'Similar to missing capability but tested on different level (coin info is missing in trezor-connect)',
+    },
+    FW_CAPABILITY_UPDATE_REQUIRED: {
+        id: 'FW_CAPABILITY_UPDATE_REQUIRED',
+        defaultMessage: 'Update required',
+        description: 'Firmware is too OLD use this coin',
+    },
+    FW_CAPABILITY_UPDATE_REQUIRED_DESC: {
+        id: 'FW_CAPABILITY_UPDATE_REQUIRED_DESC',
+        defaultMessage: 'Firmware needs to be updated to work with {networkName}',
+    },
+    FW_CAPABILITY_CONNECT_OUTDATED: {
+        id: 'FW_CAPABILITY_CONNECT_OUTDATED',
+        defaultMessage: 'Application update required',
+        description: 'Firmware is too NEW use this coin (trezor-connect is outdated)',
+    },
+    MODAL_ADD_ACCOUNT_TITLE: {
+        id: 'MODAL_ADD_ACCOUNT_TITLE',
+        defaultMessage: 'Add new account',
+    },
+    MODAL_ADD_ACCOUNT_DESC: {
+        id: 'MODAL_ADD_ACCOUNT_DESC',
+        defaultMessage:
+            'Explanation how account works and some other info that is useful for a new user and does not annoy hard core user.',
+    },
+    MODAL_ADD_ACCOUNT_NETWORK_MAINNET: {
+        id: 'MODAL_ADD_ACCOUNT_NETWORK_MAINNET',
+        defaultMessage: 'Main networks',
+    },
+    MODAL_ADD_ACCOUNT_NETWORK_TESTNET: {
+        id: 'MODAL_ADD_ACCOUNT_NETWORK_TESTNET',
+        defaultMessage: 'Testnet networks',
+    },
+    MODAL_ADD_ACCOUNT_NETWORK_EXTERNAL: {
+        id: 'MODAL_ADD_ACCOUNT_NETWORK_EXTERNAL',
+        defaultMessage: 'External networks',
+    },
+    MODAL_ADD_ACCOUNT_NEM_WALLET: {
+        id: 'MODAL_ADD_ACCOUNT_NEM_WALLET',
+        defaultMessage: 'NEM wallet',
+    },
+    MODAL_ADD_ACCOUNT_STELLAR_WALLET: {
+        id: 'MODAL_ADD_ACCOUNT_STELLAR_WALLET',
+        defaultMessage: 'Stellar wallet',
+    },
+    MODAL_ADD_ACCOUNT_CARDANO_WALLET: {
+        id: 'MODAL_ADD_ACCOUNT_CARDANO_WALLET',
+        defaultMessage: 'Cardano wallet',
+    },
+    MODAL_ADD_ACCOUNT_TEZOS_WALLET: {
+        id: 'MODAL_ADD_ACCOUNT_TEZOS_WALLET',
+        defaultMessage: 'Tezos wallet',
+    },
+    MODAL_ADD_ACCOUNT_NETWORK_EXTERNAL_DESC: {
+        id: 'MODAL_ADD_ACCOUNT_NETWORK_EXTERNAL_DESC',
+        defaultMessage:
+            'This coin is only accessible via an external wallet. It is supported by Trezor but not by Trezor Suite app.',
+    },
+    MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY: {
+        id: 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY',
+        defaultMessage: 'Previous account is empty',
+    },
+    MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED: {
+        id: 'MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED',
+        defaultMessage: 'Account index is greater than 10',
+    },
+} as const);
 
 export default definedMessages;

@@ -1,5 +1,5 @@
 import { Translation, QuestionTooltip } from '@suite-components';
-import messages from '@suite/support/messages';
+
 import { Input } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Send } from '@wallet-types';
@@ -21,7 +21,7 @@ const Text = styled.div`
 const getError = (error: Send['networkTypeEthereum']['gasPrice']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.NOT_NUMBER:
-            return <Translation {...messages.TR_ETH_GAS_PRICE_NOT_NUMBER} />;
+            return <Translation id="TR_ETH_GAS_PRICE_NOT_NUMBER" />;
         default:
             return null;
     }
@@ -40,7 +40,7 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
             topLabel={
                 <Label>
                     <Text>
-                        <Translation {...messages.TR_GAS_PRICE} />
+                        <Translation id="TR_GAS_PRICE" />
                     </Text>
                     <QuestionTooltip messageId="TR_SEND_GAS_PRICE_TOOLTIP" />
                 </Label>

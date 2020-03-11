@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image, Translation } from '@suite-components';
-import messages from '@suite/support/messages';
+
 import Wrapper from './components/Wrapper';
 
 /**
@@ -10,7 +10,7 @@ import Wrapper from './components/Wrapper';
 const DiscoveryFailed = () => {
     return (
         <Wrapper
-            title={<Translation {...messages.TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR} />}
+            title={<Translation id="TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR" />}
             image={<Image image="UNI_ERROR" />}
         />
     );

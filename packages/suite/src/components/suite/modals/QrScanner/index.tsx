@@ -7,7 +7,7 @@ import { Translation } from '@suite-components/Translation';
 import { parseUri } from '@suite-utils/parseUri';
 import { H2, P, Icon, colors, variables, Link, Button } from '@trezor/components';
 import * as sendFormActions from '@wallet-actions/send/sendFormActions';
-import messages from '@suite/support/messages';
+
 import * as URLS from '@suite-constants/urls';
 import { Dispatch } from '@suite-types';
 
@@ -116,11 +116,11 @@ const QrScanner = ({ onScan, onCancel, outputId }: Props) => {
             err.name === 'NotReadableError' ||
             err.name === 'TrackStartError'
         ) {
-            setError(<Translation>{messages.TR_CAMERA_PERMISSION_DENIED}</Translation>);
+            setError(<Translation id="TR_CAMERA_PERMISSION_DENIED" />);
         } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
-            setError(<Translation>{messages.TR_CAMERA_NOT_RECOGNIZED}</Translation>);
+            setError(<Translation id="TR_CAMERA_NOT_RECOGNIZED" />);
         } else {
-            setError(<Translation>{messages.TR_UNKNOWN_ERROR_SEE_CONSOLE}</Translation>);
+            setError(<Translation id="TR_UNKNOWN_ERROR_SEE_CONSOLE" />);
         }
     };
 
@@ -143,14 +143,14 @@ const QrScanner = ({ onScan, onCancel, outputId }: Props) => {
         <Wrapper>
             <Padding>
                 <H2>
-                    <Translation>{messages.TR_SCAN_QR_CODE}</Translation>
+                    <Translation id="TR_SCAN_QR_CODE" />
                 </H2>
                 <Info>
-                    <Translation {...messages.TR_FOR_EASIER_AND_SAFER_INPUT} />
+                    <Translation id="TR_FOR_EASIER_AND_SAFER_INPUT" />
                 </Info>
                 <StyledLink variant="nostyle" href={URLS.WIKI_QR_CODE}>
                     <Button size="small" variant="tertiary">
-                        <Translation {...messages.TR_LEARN_MORE} />
+                        <Translation id="TR_LEARN_MORE" />
                     </Button>
                 </StyledLink>
                 {!readerLoaded && !error && (
@@ -159,7 +159,7 @@ const QrScanner = ({ onScan, onCancel, outputId }: Props) => {
                             <IconWrapper>
                                 <Icon icon="QR" size={100} />
                             </IconWrapper>
-                            <Translation {...messages.TR_PLEASE_ALLOW_YOUR_CAMERA} />
+                            <Translation id="TR_PLEASE_ALLOW_YOUR_CAMERA" />
                         </CameraPlaceholder>
                     </CameraPlaceholderWrapper>
                 )}
@@ -168,9 +168,7 @@ const QrScanner = ({ onScan, onCancel, outputId }: Props) => {
                         <CameraPlaceholder>
                             <Error>
                                 <ErrorTitle>
-                                    <Translation>
-                                        {messages.TR_OOPS_SOMETHING_WENT_WRONG}
-                                    </Translation>
+                                    <Translation id="TR_OOPS_SOMETHING_WENT_WRONG" />
                                 </ErrorTitle>
                                 <ErrorMessage>{error}</ErrorMessage>
                             </Error>
@@ -198,7 +196,7 @@ const QrScanner = ({ onScan, onCancel, outputId }: Props) => {
                             // TODO: enable legacyMode and call openImageDialog? https://github.com/JodusNodus/react-qr-reader#readme
                         }}
                     >
-                        <Translation {...messages.TR_UPLOAD_IMAGE} />
+                        <Translation id="TR_UPLOAD_IMAGE" />
                     </Button>
                 </Actions>
             </Padding>
