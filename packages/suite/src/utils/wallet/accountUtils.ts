@@ -307,13 +307,11 @@ export const getAccountFiatBalance = (
     const fiatRates = fiat.find(f => f.symbol === account.symbol);
     if (fiatRates) {
         const fiatBalance = toFiatCurrency(
-            account.balance,
+            account.formattedBalance,
             localCurrency,
             fiatRates.current?.rates,
         );
-        if (fiatBalance) {
-            return formatNetworkAmount(fiatBalance, account.symbol);
-        }
+        return fiatBalance;
     }
 };
 
