@@ -138,7 +138,14 @@ export const subscribe = () => async (_dispatch: Dispatch, getState: GetState) =
         });
     });
 
-    return Promise.all(promises);
+    // does it belong here?
+    const fiatRatesPromises = Object.keys(sortedAccounts).map(coin => {
+        return TrezorConnect.blockchainSubscribeFiatRates({
+            coin,
+        });
+    });
+
+    return Promise.all(promises.concat(fiatRatesPromises));
 };
 
 export const reconnect = (symbol: Network['symbol']) => async (

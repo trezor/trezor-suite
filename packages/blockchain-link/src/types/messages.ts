@@ -45,6 +45,11 @@ export interface GetAccountUtxo {
     payload: string; // address or xpub
 }
 
+export interface GetTransaction {
+    type: typeof MESSAGES.GET_TRANSACTION;
+    payload: string;
+}
+
 export interface GetFiatRatesTickersList {
     type: typeof MESSAGES.GET_FIAT_RATES_TICKERS_LIST;
     payload: {
@@ -55,11 +60,6 @@ export interface GetFiatRatesTickersList {
 export interface GetAccountBalanceHistory {
     type: typeof MESSAGES.GET_ACCOUNT_BALANCE_HISTORY;
     payload: AccountBalanceHistoryParams;
-}
-
-export interface GetTransaction {
-    type: typeof MESSAGES.GET_TRANSACTION;
-    payload: string;
 }
 
 export interface GetCurrentFiatRates {

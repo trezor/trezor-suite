@@ -5,6 +5,7 @@ import { BLOCKCHAIN } from '@wallet-actions/constants';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
+import * as fiatRatesActions from '@wallet-actions/fiatRatesActions';
 import { loadStorage } from '@suite-actions/storageActions';
 import { fetchLocale } from '@settings-actions/languageActions';
 import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
@@ -71,6 +72,10 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
         case CONNECT_BLOCKCHAIN.NOTIFICATION:
             api.dispatch(blockchainActions.onNotification(action.payload));
             break;
+        case CONNECT_BLOCKCHAIN.FIAT_RATES_UPDATE: {
+            api.dispatch(fiatRatesActions.onUpdateRate(action.payload));
+            break;
+        }
 
         case DEVICE.CONNECT:
         case DEVICE.CONNECT_UNACQUIRED:
