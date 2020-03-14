@@ -22,7 +22,7 @@ const AssetLogoWrapper = styled.div`
 
 const AssetName = styled.div`
     color: #808080;
-    font-size: 12px;
+    font-size: ${variables.FONT_SIZE.TINY};
     padding-top: 1px;
 `;
 
@@ -50,6 +50,7 @@ const CryptoValueWrapper = styled(Col)`
     margin-right: 32px;
     text-align: right;
     white-space: nowrap;
+    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 const FiatValueWrapper = styled(Col)``;
 
