@@ -289,19 +289,6 @@ const onNewBlock = (event: BlockNotification) => {
     });
 };
 
-const onNewFiatRates = (event: FiatRatesNotification) => {
-    common.response({
-        id: -1,
-        type: RESPONSES.NOTIFICATION,
-        payload: {
-            type: 'fiatRates',
-            payload: {
-                rates: event.rates,
-            },
-        },
-    });
-};
-
 const onTransaction = (event: AddressNotification) => {
     if (!event.tx) return;
     const descriptor = event.address;
@@ -317,6 +304,19 @@ const onTransaction = (event: AddressNotification) => {
                 tx: account
                     ? utils.transformTransaction(account.descriptor, account.addresses, event.tx)
                     : utils.transformTransaction(descriptor, undefined, event.tx),
+            },
+        },
+    });
+};
+
+const onNewFiatRates = (event: FiatRatesNotification) => {
+    common.response({
+        id: -1,
+        type: RESPONSES.NOTIFICATION,
+        payload: {
+            type: 'fiatRates',
+            payload: {
+                rates: event.rates,
             },
         },
     });
