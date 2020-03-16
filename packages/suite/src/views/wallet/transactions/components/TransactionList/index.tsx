@@ -2,7 +2,7 @@
 import React, { useMemo } from 'react';
 import { FormattedDate } from 'react-intl';
 import styled from 'styled-components';
-import { P, colors, variables } from '@trezor/components';
+import { colors, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { groupTransactionsByDate, parseKey, sumTransactions } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
@@ -121,9 +121,9 @@ const TransactionList = ({
                             <React.Fragment key={dateKey}>
                                 <DayHeading>
                                     {dateKey === 'pending' ? (
-                                        <P>
+                                        <DateWrapper>
                                             <Translation id="TR_PENDING" />
-                                        </P>
+                                        </DateWrapper>
                                     ) : (
                                         <>
                                             <DateWrapper>
