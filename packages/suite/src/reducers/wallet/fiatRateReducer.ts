@@ -6,12 +6,12 @@ import { Network } from '@wallet-types';
 
 export interface CurrentFiatRates {
     symbol: string;
-    rates: { [key: string]: number };
+    rates: { [key: string]: number | undefined };
     ts: number;
 }
 
 export interface TimestampedRates {
-    rates: { [key: string]: number };
+    rates: { [key: string]: number | undefined };
     ts: number;
 }
 

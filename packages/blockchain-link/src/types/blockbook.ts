@@ -145,7 +145,7 @@ export type Fee = {
 }[];
 
 export interface FiatRates {
-    [symbol: string]: number;
+    [symbol: string]: number | undefined;
 }
 
 export interface BlockNotification {
