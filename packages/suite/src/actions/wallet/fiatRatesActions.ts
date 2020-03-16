@@ -6,7 +6,6 @@ import {
     TX_FIAT_RATE_UPDATE,
 } from './constants/fiatRatesConstants';
 import { Network, Account } from '@wallet-types';
-import BlockchainLink from '@trezor/blockchain-link';
 import { CoinFiatRates, LastWeekRates } from '@wallet-reducers/fiatRateReducer';
 import NETWORKS from '@wallet-config/networks';
 // @ts-ignore
@@ -19,7 +18,6 @@ import { isTestnet } from '@suite/utils/wallet/accountUtils';
 
 // TODO:
 // Switching off network -> remove rates?, unsubscribe
-// Remove blockchain link dep (try catch around connect methods with coingecko as a fallback)
 // TS types in connect
 
 type Ticker = {
@@ -58,18 +56,6 @@ const INTERVAL = 1000 * 60; // 1 min
 const MAX_AGE = 1000 * 60 * 10; // 10 mins
 const INTERVAL_LAST_WEEK = 1000 * 60 * 60 * 4; // 4 hours
 
-const blockchainLinks: Partial<{ [k: string]: BlockchainLink | undefined }> = {};
-NETWORKS.forEach(network => {
-    if (network.blockbook) {
-        blockchainLinks[network.symbol] = new BlockchainLink({
-            name: network.symbol,
-            worker: BlockbookWorker,
-            server: (network.blockbook as unknown) as string[],
-            debug: false,
-        });
-    }
-});
-
 export const updateRate = (
     ts: FiatRatesPayload['ts'],
     rates: FiatRatesPayload['rates'],
@@ -84,8 +70,8 @@ export const updateRate = (
 });
 
 /**
- * Fetch and update current fiat rates for given ticker
- * Sends the request to Blockbook server if the coin is supported, otherwise it uses CoinGecko
+ * Fetch and update current fiat rates for a given ticker
+ * Primary source of rates is TrezorConnect, coingecko serves as a fallback
  *
  * @param {Ticker} ticker
  */
@@ -94,17 +80,14 @@ export const updateCurrentRates = (ticker: Ticker) => async (
     _getState: GetState,
 ) => {
     try {
-        const blockchainLink = blockchainLinks[ticker.symbol];
-        // const param = ticker.url ? { url: ticker.url } : { symbol: ticker.symbol };
-        const response = blockchainLink
-            ? (await TrezorConnect.blockchainGetCurrentFiatRates({ coin: ticker.symbol }))?.payload
-            : await fetchCurrentFiatRates(ticker);
+        const response = await TrezorConnect.blockchainGetCurrentFiatRates({ coin: ticker.symbol });
+        const results = response.success ? response.payload : await fetchCurrentFiatRates(ticker);
 
-        if (response && response.rates) {
+        if (results && results.rates) {
             // dispatch only if rates are not null/undefined
-            dispatch(updateRate(response.ts * 1000, response.rates, ticker.symbol));
+            dispatch(updateRate(results.ts * 1000, results.rates, ticker.symbol));
         }
-        return response;
+        return results;
     } catch (error) {
         console.error(error);
     }
@@ -202,22 +185,20 @@ const updateLastWeekRates = () => async (dispatch: Dispatch) => {
 
     const promises = staleTickers.map(async ticker => {
         try {
-            const blockchainLink = blockchainLinks[ticker.symbol];
-            const response = blockchainLink
-                ? (
-                      await TrezorConnect.blockchainGetFiatRatesForTimestamps({
-                          coin: ticker.symbol,
-                          timestamps,
-                      })
-                  )?.payload
+            const response = await TrezorConnect.blockchainGetFiatRatesForTimestamps({
+                coin: ticker.symbol,
+                timestamps,
+            });
+            const results = response.success
+                ? response.payload
                 : await getFiatRatesForTimestamps(ticker.symbol, timestamps);
 
-            if (response?.tickers) {
+            if (results?.tickers) {
                 dispatch({
                     type: LAST_WEEK_RATES_UPDATE,
                     payload: {
                         symbol: ticker.symbol,
-                        tickers: response.tickers,
+                        tickers: results.tickers,
                         ts: new Date().getTime(),
                     },
                 });
@@ -231,7 +212,7 @@ const updateLastWeekRates = () => async (dispatch: Dispatch) => {
 
 /**
  *  Fetch and update fiat rates for given `txs`
- *  Sends the request to Blockbook server if the coin is supported, otherwise it uses CoinGecko
+ *  Primary source of rates is TrezorConnect, coingecko serves as a fallback
  *
  * @param {Account} account
  * @param {AccountTransaction[]} txs
@@ -243,22 +224,22 @@ export const updateTxsRates = (account: Account, txs: AccountTransaction[]) => a
 
     const timestamps = txs.map(tx => tx.blockTime ?? new Date().getTime());
     try {
-        const blockchainLink = blockchainLinks[account.symbol as Network['symbol']];
-        const response = blockchainLink
-            ? (
-                  await TrezorConnect.blockchainGetFiatRatesForTimestamps({
-                      coin: account.symbol,
-                      timestamps,
-                  })
-              )?.payload
+        const response = await TrezorConnect.blockchainGetFiatRatesForTimestamps({
+            coin: account.symbol,
+            timestamps,
+        });
+
+        const results = response.success
+            ? response.payload
             : await getFiatRatesForTimestamps(account.symbol, timestamps);
-        if (response?.tickers) {
+
+        if (results?.tickers) {
             txs.forEach((tx, i) => {
                 dispatch({
                     type: TX_FIAT_RATE_UPDATE,
                     payload: {
                         txid: tx.txid,
-                        updateObject: { rates: response.tickers[i]?.rates },
+                        updateObject: { rates: results.tickers[i]?.rates },
                         account,
                         ts: new Date().getTime(),
                     },
@@ -273,6 +254,7 @@ export const updateTxsRates = (account: Account, txs: AccountTransaction[]) => a
 /**
  * Fetch the account history (received, sent amounts, num of txs) for the given interval
  * Returned data are grouped by month (weeks >= 52) or by day (weeks < 52)
+ * No XRP support
  *
  * @param {Account} account
  * @param {number} weeks
@@ -286,16 +268,14 @@ export const fetchAccountHistory = async (account: Account, weeks: number) => {
     const startDate = subWeeks(new Date(), weeks);
     const endDate = new Date();
     try {
-        const blockchainLink = blockchainLinks[account.symbol as Network['symbol']];
-        const response = blockchainLink
-            ? await TrezorConnect.blockchainGetAccountBalanceHistory({
-                  coin: account.symbol,
-                  descriptor: account.descriptor,
-                  from: Math.floor(startDate.getTime() / 1000),
-                  to: Math.floor(endDate.getTime() / 1000),
-                  groupBy: weeks >= 52 ? secondsInMonth : secondsInDay,
-              })
-            : null;
+        const response =
+            (await TrezorConnect.blockchainGetAccountBalanceHistory({
+                coin: account.symbol,
+                descriptor: account.descriptor,
+                from: Math.floor(startDate.getTime() / 1000),
+                to: Math.floor(endDate.getTime() / 1000),
+                groupBy: weeks >= 52 ? secondsInMonth : secondsInDay,
+            })) ?? null;
 
         if (response?.success) {
             return response.payload;
@@ -307,7 +287,6 @@ export const fetchAccountHistory = async (account: Account, weeks: number) => {
 };
 
 export const onUpdateRate = (res: any) => async (dispatch: Dispatch) => {
-    console.log('onUpdateRate', res);
     if (!res?.rates) return;
     dispatch(
         updateRate(getUnixTime(new Date()) * 1000, res.rates, res.coin.shortcut.toLowerCase()),
