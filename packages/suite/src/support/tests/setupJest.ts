@@ -1,9 +1,8 @@
 /* WARNING! This file should be imported ONLY in tests! */
 /* eslint-disable @typescript-eslint/camelcase */
 import { Device, Features } from 'trezor-connect';
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { TrezorDevice } from '@suite-types';
-import { Account } from '@wallet-types';
+import { Account, WalletAccountTransaction } from '@wallet-types';
 
 /**
  * Generate wallet account

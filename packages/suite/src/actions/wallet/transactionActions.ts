@@ -2,10 +2,8 @@ import TrezorConnect, { AccountTransaction } from 'trezor-connect';
 import { getAccountTransactions } from '@wallet-utils/accountUtils';
 import * as accountActions from '@wallet-actions/accountActions';
 import { TRANSACTION } from '@wallet-actions/constants';
-// import { db } from '@suite/storage';
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { SETTINGS } from '@suite-config';
-import { Account } from '@wallet-types';
+import { Account, WalletAccountTransaction } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 
 export type TransactionAction =
@@ -24,28 +22,6 @@ export type TransactionAction =
       }
     | { type: typeof TRANSACTION.FETCH_ERROR; error: string };
 
-// export const add = (transaction: WalletAccountTransaction) => async (
-//     dispatch: Dispatch,
-// ): Promise<void> => {
-//     try {
-//         await db.addItem('txs', transaction).then(_key => {
-//             dispatch({
-//                 type: TRANSACTION.ADD,
-//                 transaction,
-//             });
-//         });
-//     } catch (error) {
-//         if (error && error.name === 'ConstraintError') {
-//             console.log('Tx with such id already exists');
-//         } else if (error) {
-//             console.error(error.name);
-//             console.error(error.message);
-//         } else {
-//             console.error(error);
-//         }
-//     }
-// };
-
 export const add = (transactions: AccountTransaction[], account: Account, page?: number) => async (
     dispatch: Dispatch,
 ) => {
@@ -56,6 +32,7 @@ export const add = (transactions: AccountTransaction[], account: Account, page?:
         page,
     });
 };
+
 /**
  * Remove all transactions for a given account
  *

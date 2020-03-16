@@ -9,9 +9,7 @@ import {
     LAST_WEEK_RATES_UPDATE,
     TX_FIAT_RATE_UPDATE,
 } from './constants/fiatRatesConstants';
-import { Network, Account } from '@wallet-types';
-import { CoinFiatRates, LastWeekRates } from '@wallet-reducers/fiatRateReducer';
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import { Network, Account, CoinFiatRates, WalletAccountTransaction } from '@wallet-types';
 
 // TODO:
 // Switching off network -> remove rates?, unsubscribe
@@ -42,7 +40,7 @@ export type FiatRateActions =
           type: typeof LAST_WEEK_RATES_UPDATE;
           payload: {
               symbol: Network['symbol'] | string;
-              tickers: LastWeekRates['tickers'];
+              tickers: NonNullable<CoinFiatRates['lastWeek']>['tickers'];
               ts: number;
           };
       };

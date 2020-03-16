@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as modalActions from '@suite-actions/modalActions';
 import { AppState, Dispatch } from '@suite-types';
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import { WalletAccountTransaction } from '@wallet-types';
 import Component from './index';
 
 const mapStateToProps = (_state: AppState) => ({});

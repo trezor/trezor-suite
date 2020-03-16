@@ -1,5 +1,5 @@
 import { AccountTransaction } from 'trezor-connect';
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import { WalletAccountTransaction } from '@wallet-types';
 import { getDateWithTimeZone } from '../suite/date';
 import BigNumber from 'bignumber.js';
 

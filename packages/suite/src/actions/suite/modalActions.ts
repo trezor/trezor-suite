@@ -1,8 +1,7 @@
 import TrezorConnect, { UI } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
 import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
-import { Account } from '@wallet-types';
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import { Account, WalletAccountTransaction } from '@wallet-types';
 
 export type UserContextPayload =
     | {

@@ -14,6 +14,7 @@ import { AccountActions } from '@wallet-actions/accountActions';
 import { Discovery as Discovery$ } from '@wallet-reducers/discoveryReducer';
 import { Account as Account$ } from '@wallet-reducers/accountsReducer';
 import { CoinFiatRates as CoinFiatRates$ } from '@wallet-reducers/fiatRateReducer';
+import { WalletAccountTransaction as WalletAccountTransaction$ } from '@wallet-reducers/transactionReducer';
 
 import { FiatRateActions } from '@wallet-actions/fiatRatesActions';
 import { BlockchainActions } from '@wallet-actions/blockchainActions';
@@ -35,6 +36,7 @@ export type Icon = Icon$;
 export type CoinFiatRates = CoinFiatRates$;
 export type Discovery = Discovery$;
 export type WalletParams = WalletParams$;
+export type WalletAccountTransaction = WalletAccountTransaction$;
 
 interface BlockchainLinkToken {
     name: string;
@@ -73,7 +75,6 @@ export interface BlockchainLinkTransaction {
     tokens?: BlockchainLinkToken[];
     sequence?: number; // eth: nonce || ripple: sequence
 }
-// TODO END
 
 export interface Transaction extends BlockchainLinkTransaction {
     deviceState: string;

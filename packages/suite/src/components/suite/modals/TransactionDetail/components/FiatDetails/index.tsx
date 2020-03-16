@@ -5,12 +5,12 @@ import FiatValue from '@suite-components/FiatValue/Container';
 import Badge from '@suite-components/Badge';
 import { Translation, HiddenPlaceholder } from '@suite-components';
 
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import Box from '../Box';
 import BoxRow from '../BoxRow';
 import { FormattedDate } from 'react-intl';
 import NoRatesTooltip from '@suite/components/suite/NoRatesTooltip';
 import { getDateWithTimeZone } from '@suite-utils/date';
+import { WalletAccountTransaction } from '@wallet-types';
 
 const Grid = styled.div`
     display: grid;
