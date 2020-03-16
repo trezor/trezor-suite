@@ -116,11 +116,7 @@ const BasicDetails = ({
                                     <ConfirmationsIconWrapper>
                                         <Tooltip
                                             placement="top"
-                                            content={
-                                                <Translation
-                                                    {...messages.TX_CONFIRMATIONS_EXPLAIN}
-                                                />
-                                            }
+                                            content={<Translation id="TX_CONFIRMATIONS_EXPLAIN" />}
                                         >
                                             <Icon
                                                 icon="QUESTION"
