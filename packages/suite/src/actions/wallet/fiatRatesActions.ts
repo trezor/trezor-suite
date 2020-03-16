@@ -1,3 +1,7 @@
+import TrezorConnect, { AccountTransaction } from 'trezor-connect';
+import { subWeeks, getUnixTime } from 'date-fns';
+import { fetchCurrentFiatRates, getFiatRatesForTimestamps } from '@suite/services/coingecko';
+import { isTestnet } from '@suite/utils/wallet/accountUtils';
 import { FIAT } from '@suite-config';
 import { Dispatch, GetState } from '@suite-types';
 import {
@@ -7,14 +11,7 @@ import {
 } from './constants/fiatRatesConstants';
 import { Network, Account } from '@wallet-types';
 import { CoinFiatRates, LastWeekRates } from '@wallet-reducers/fiatRateReducer';
-import NETWORKS from '@wallet-config/networks';
-// @ts-ignore
-import BlockbookWorker from '@trezor/blockchain-link/build/web/blockbook-worker';
-import TrezorConnect, { AccountTransaction } from 'trezor-connect';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
-import { subWeeks, getUnixTime } from 'date-fns';
-import { fetchCurrentFiatRates, getFiatRatesForTimestamps } from '@suite/services/coingecko';
-import { isTestnet } from '@suite/utils/wallet/accountUtils';
 
 // TODO:
 // Switching off network -> remove rates?, unsubscribe
