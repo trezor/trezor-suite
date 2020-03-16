@@ -21,7 +21,8 @@ const AccountTypeLabel = styled.div`
     align-items: center;
     justify-content: center;
     line-height: 20px;
-    p:first-child {
+
+    div:first-child {
         padding-right: 8px;
     }
 `;

@@ -84,20 +84,12 @@ const Wrapper = styled.button<WrapperProps>`
         !props.isDisabled &&
         css`
             padding: 0px 4px;
-            background: ${colors.WHITE};
             &:focus,
             &:hover {
+                color: ${colors.BLACK25};
                 background: ${colors.BUTTON_TERTIARY_HOVER};
             }
         `};
-
-    ${props =>
-        props.isDisabled &&
-        props.variant === 'tertiary' &&
-        css`
-            color: ${colors.BLACK80};
-            border: none;
-        `}
 
     ${props =>
         props.variant === 'danger' &&
@@ -131,7 +123,19 @@ const Wrapper = styled.button<WrapperProps>`
             }
         `}
 
-       
+    ${props =>
+        props.isDisabled &&
+        props.variant === 'tertiary' &&
+        css`
+            border: none;
+            background: transparent;
+
+            &:hover,
+            &:focus {
+                box-shadow: none;
+                background: transparent;
+            }
+        `}
 `;
 
 const IconWrapper = styled.div<IconWrapperProps>`

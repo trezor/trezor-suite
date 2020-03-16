@@ -2084,7 +2084,7 @@ const definedMessages = defineMessages({
     },
     TOAST_BACKUP_SUCCESS: {
         id: 'TOAST_BACKUP_SUCCESS',
-        defaultMessage: 'Pin changed',
+        defaultMessage: 'Backup success',
     },
     TOAST_SETTINGS_APPLIED: {
         id: 'TOAST_SETTINGS_APPLIED',
@@ -2096,7 +2096,7 @@ const definedMessages = defineMessages({
     },
     TOAST_DEVICE_WIPED: {
         id: 'TOAST_DEVICE_WIPED',
-        defaultMessage: 'Pin changed',
+        defaultMessage: 'Device wiped',
     },
     TOAST_COPY_TO_CLIPBOARD: {
         id: 'TOAST_COPY_TO_CLIPBOARD',
