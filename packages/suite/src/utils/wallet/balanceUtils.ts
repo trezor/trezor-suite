@@ -13,10 +13,17 @@ export const formatCoinBalance = (value: string) => {
     if (hasDecimals) {
         const DOT_CHAR_LENGTH = 1;
         const parts = value.split('.');
-        return balanceBig.toFixed(MAX_NUMBERS - parts[0].length || 1 - DOT_CHAR_LENGTH, 1);
+        const fixed = balanceBig.toFixed(MAX_NUMBERS - parts[0].length || 1 - DOT_CHAR_LENGTH, 1);
+        const fixedBalance = new BigNumber(fixed).toString();
+
+        if (new BigNumber(fixedBalance).modulo(2).toFixed() === '0') {
+            return new BigNumber(fixed).toFixed(2);
+        }
+
+        return fixedBalance;
     }
 
-    if (balanceBig.isGreaterThanOrEqualTo(MAX_CRYPTO_VALUE)) return '100M+';
+    if (balanceBig.isGreaterThanOrEqualTo(MAX_CRYPTO_VALUE)) return '100m+';
 
     return balanceBig.toFixed();
 };
