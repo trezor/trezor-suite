@@ -3,13 +3,13 @@ import { colors } from '@trezor/components';
 
 const Badge = styled.div`
     display: flex;
+    background: ${colors.BADGE_BACKGROUND};
     align-items: center;
     font-weight: 600;
     padding: 5px;
     border-radius: 3px;
-    background-color: ${colors.BLACK92};
     text-transform: uppercase;
-    color: ${colors.BLACK50};
+    color: ${colors.BADGE_TEXT_COLOR};
     align-self: center;
     white-space: nowrap;
 `;

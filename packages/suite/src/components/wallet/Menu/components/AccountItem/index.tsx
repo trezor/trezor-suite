@@ -86,7 +86,6 @@ const AccountHeader = styled.div<{ selected: boolean }>`
 
 const StyledBadge = styled(Badge)`
     font-size: ${variables.FONT_SIZE.TINY};
-    background: ${colors.BLACK92};
 `;
 
 const AccountItem = React.memo((props: Props) => {

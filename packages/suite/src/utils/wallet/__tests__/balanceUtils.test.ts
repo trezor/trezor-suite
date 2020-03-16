@@ -1,4 +1,5 @@
 import { formatCoinBalance } from '../balanceUtils';
+
 test('formatBalanceUtils', () => {
     expect(formatCoinBalance('0')).toEqual('0');
     expect(formatCoinBalance('0.000000000000000000000000001')).toEqual('0.00');
