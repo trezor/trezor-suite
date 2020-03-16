@@ -162,13 +162,13 @@ export interface FiatRatesNotification {
     rates: FiatRates;
 }
 
-export interface CurrentFiatRates {
+export interface TimestampedFiatRates {
     ts: number;
     rates: FiatRates;
 }
 
 export interface FiatRatesForTimestamp {
-    tickers: CurrentFiatRates[];
+    tickers: TimestampedFiatRates[];
 }
 
 export interface AccountBalanceHistory {
@@ -205,7 +205,7 @@ declare function FSend(
 declare function FSend(
     method: 'getCurrentFiatRates',
     params: { currencies?: string[] }
-): Promise<CurrentFiatRates>;
+): Promise<TimestampedFiatRates>;
 declare function FSend(
     method: 'getFiatRatesTickersList',
     params: { timestamp?: number }
