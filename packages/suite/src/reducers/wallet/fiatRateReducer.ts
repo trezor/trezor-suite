@@ -48,7 +48,6 @@ const updateLastWeekRates = (
     payload: { symbol: Network['symbol'] | string; tickers: TimestampedRates[]; ts: number },
 ) => {
     const affected = state.find(f => f.symbol === payload.symbol);
-    // Object.keys(tickers).map(k => tickers[k].toFixed(2));
 
     if (!affected) {
         state.push({
