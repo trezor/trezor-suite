@@ -15,7 +15,11 @@ export const getDateWithTimeZone = (date: number, timeZone?: string) => {
     }
 };
 
-export const getTicksBetweenTimestamps = (from: Date, to: Date, interval: 'month' | 'day') => {
+export const getTicksBetweenTimestamps = (
+    from: Date,
+    to: Date,
+    interval: 'month' | 'day' | '2-day',
+) => {
     let fromDate = from;
     const toDate = to;
 
@@ -32,6 +36,9 @@ export const getTicksBetweenTimestamps = (from: Date, to: Date, interval: 'month
         if (interval === 'day') {
             fromDate = addDays(fromDate, 1);
         }
+        if (interval === '2-day') {
+            fromDate = addDays(fromDate, 2);
+        }
     }
     months.push(fromDate);
     return months;
@@ -40,5 +47,16 @@ export const getTicksBetweenTimestamps = (from: Date, to: Date, interval: 'month
 export const calcTicks = (weeks: number) => {
     const startDate = subWeeks(new Date(), weeks);
     const endDate = new Date();
-    return getTicksBetweenTimestamps(startDate, endDate, weeks === 52 ? 'month' : 'day');
+    let interval: 'month' | 'day' | '2-day' = 'month';
+    if (weeks < 52) {
+        interval = 'day';
+    }
+    if (weeks === 4) {
+        interval = '2-day';
+    }
+    if (weeks === 1) {
+        interval = 'day';
+    }
+
+    return getTicksBetweenTimestamps(startDate, endDate, interval);
 };
