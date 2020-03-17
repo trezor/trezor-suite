@@ -18,8 +18,8 @@ export const formatCoinBalance = (value: string) => {
         const fixedBalanceBig = new BigNumber(fixedBalance);
 
         // indicate the dust
-        const hasDust = fixedBalanceBig.modulo(2).toFixed() === '0';
-        if (hasDust) {
+        const noDecimalsLeft = fixedBalanceBig.modulo(2).toFixed() === '0';
+        if (noDecimalsLeft) {
             return fixedBalanceBig.toFixed(2);
         }
 
