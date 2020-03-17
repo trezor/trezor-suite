@@ -20,7 +20,10 @@ const LastWeekGraph = React.memo(({ lastWeekData, symbol, localCurrency }: Props
     if (lastWeekData) {
         const firstDataPoint = lastWeekData[0];
         const lastDataPoint = lastWeekData[lastWeekData.length - 1];
-        isGraphGreen = lastDataPoint.rates[localCurrency] > firstDataPoint.rates[localCurrency];
+        if (lastDataPoint.rates[localCurrency] && firstDataPoint.rates[localCurrency]) {
+            isGraphGreen =
+                lastDataPoint.rates[localCurrency]! > firstDataPoint.rates[localCurrency]!;
+        }
     }
 
     return (

@@ -5,7 +5,6 @@ import { BLOCKCHAIN } from '@wallet-actions/constants';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
-import * as fiatRatesActions from '@wallet-actions/fiatRatesActions';
 import { loadStorage } from '@suite-actions/storageActions';
 import { fetchLocale } from '@settings-actions/languageActions';
 import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
