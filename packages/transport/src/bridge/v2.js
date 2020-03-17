@@ -41,10 +41,9 @@ export default class BridgeTransport {
 
   stopped: boolean = false;
 
-  constructor(url?: ?string, newestVersionUrl?: ?string, newVersion?: ?string) {
+  constructor(url?: ?string, newestVersionUrl?: ?string) {
     this.url = url == null ? DEFAULT_URL : url;
     this.newestVersionUrl = newestVersionUrl == null ? DEFAULT_VERSION_URL : newestVersionUrl;
-    this.newVersion = newVersion;
   }
 
   async _post(options: IncompleteRequestOptions): Promise<mixed> {
