@@ -3,7 +3,7 @@ import { CoinLogo, colors, variables } from '@trezor/components';
 import styled, { css } from 'styled-components';
 import { getTitleForNetwork, getAccountFiatBalance } from '@wallet-utils/accountUtils';
 import { Translation } from '@suite-components/Translation';
-//
+import { CoinBalance } from '@wallet-components';
 import { FormattedNumber, HiddenPlaceholder } from '@suite-components';
 import AccountNavigation from './components/AccountNavigation/Container';
 import Badge from '@suite-components/Badge';
@@ -69,11 +69,6 @@ const Balance = styled.div`
     flex-wrap: wrap;
 `;
 
-const CryptoValue = styled.div`
-    margin-right: 12px;
-    white-space: nowrap;
-`;
-
 const AccountHeader = styled.div<{ selected: boolean }>`
     display: flex;
     padding: 10px;
@@ -91,7 +86,6 @@ const AccountHeader = styled.div<{ selected: boolean }>`
 
 const StyledBadge = styled(Badge)`
     font-size: ${variables.FONT_SIZE.TINY};
-    background: ${colors.BLACK92};
 `;
 
 const AccountItem = React.memo((props: Props) => {
@@ -141,9 +135,7 @@ const AccountItem = React.memo((props: Props) => {
 
                     <Balance>
                         <HiddenPlaceholder>
-                            <CryptoValue>
-                                {account.formattedBalance} {account.symbol.toUpperCase()}
-                            </CryptoValue>
+                            <CoinBalance value={account.formattedBalance} symbol={account.symbol} />
                         </HiddenPlaceholder>
                         {fiatBalance && (
                             <HiddenPlaceholder>

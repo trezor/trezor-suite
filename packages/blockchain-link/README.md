@@ -1,18 +1,23 @@
 # @trezor/blockchain-link
+
 API for communication with blockchain backends.
 Every type of a backed is isolated inside own worker file.
 Currently supported:
-- [blockbook](https://github.com/trezor/blockbook/)
-- [ripple-lib](https://github.com/ripple/ripple-lib/)
+
+-   [blockbook](https://github.com/trezor/blockbook/)
+-   [ripple-lib](https://github.com/ripple/ripple-lib/)
 
 ## Development:
+
 Compile and run with simple ui for the API methods.
+
 ```
 yarn
 yarn dev
 ```
 
 ## Build
+
 ```
 yarn lint
 yarn test
@@ -20,9 +25,11 @@ yarn build
 ```
 
 ## Integration
+
 ```
 yarn add @trezor/blockchain-link
 ```
+
 ```
 import BlockchainLink from '@trezor/blockchain-link';
 
@@ -41,6 +48,7 @@ try {
 ```
 
 ## Workers compilation
+
 Workers are already builded and minified inside `@trezor/blockchain-link/build/` directory.
 However if you want to compile those workers by yourself a few additional packages needs to be added to your project.
 Those dependencies are listed inside [package.json](./package.json) in `workersDependencies` field.

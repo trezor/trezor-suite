@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { CoinLogo, variables } from '@trezor/components';
 import { NoRatesTooltip, HiddenPlaceholder, Badge, FiatValue } from '@suite-components';
 import LastWeekGraph from '../LastWeekGraph';
+import { CoinBalance } from '@wallet-components';
 
 const Wrapper = styled.div`
     padding: 12px 20px;
@@ -26,10 +27,8 @@ const AssetName = styled.div`
     padding-top: 1px;
 `;
 
-// Similar Badge in DeviceItem (part of switch device modal)
-// TOOD: refactor to single component
-const SmallBadge = styled(Badge)`
-    font-size: ${variables.FONT_SIZE.TINY};
+const BadgeText = styled.div`
+    margin-right: 6px;
 `;
 
 const Col = styled.div`
@@ -82,16 +81,20 @@ const Asset = React.memo(({ name, symbol, cryptoValue, localCurrency, ...props }
             </Col>
             <Col>
                 <CryptoValueWrapper>
-                    <HiddenPlaceholder>
-                        {cryptoValue} {symbol.toUpperCase()}{' '}
-                    </HiddenPlaceholder>
+                    <CoinBalance value={cryptoValue} symbol={symbol} />
                 </CryptoValueWrapper>
             </Col>
             <Col>
                 <FiatValueWrapper>
                     <HiddenPlaceholder>
                         <FiatValue amount={cryptoValue} symbol={symbol}>
-                            {({ value }) => (value ? <SmallBadge>{value}</SmallBadge> : null)}
+                            {({ value }) =>
+                                value ? (
+                                    <Badge isGray isSmall>
+                                        {value}
+                                    </Badge>
+                                ) : null
+                            }
                         </FiatValue>
                     </HiddenPlaceholder>
                 </FiatValueWrapper>
@@ -109,9 +112,9 @@ const Asset = React.memo(({ name, symbol, cryptoValue, localCurrency, ...props }
                 <FiatValue amount={cryptoValue} symbol={symbol}>
                     {({ rate }) => {
                         return rate ? (
-                            <SmallBadge>
+                            <Badge isGray isSmall>
                                 1 {symbol.toUpperCase()} = {rate}
-                            </SmallBadge>
+                            </Badge>
                         ) : (
                             <NoRatesTooltip />
                         );

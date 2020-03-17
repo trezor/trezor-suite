@@ -38,4 +38,9 @@ export default {
 
     BUTTON_DISABLED_BACKGROUND: '#ebebeb',
     BUTTON_DISABLED_TEXT: '#b3b3b3',
+
+    BADGE_BLUE_BACKGROUND: '#d9f3ff',
+    BADGE_BLUE_TEXT_COLOR: '#0077b3',
+    BADGE_GRAY_BACKGROUND: '#ebebeb',
+    BADGE_GRAY_TEXT_COLOR: '#808080',
 } as const;

@@ -147,10 +147,6 @@ const TxIconWrapper = styled.div`
     display: flex;
 `;
 
-const SmallBadge = styled(Badge)`
-    font-size: ${variables.FONT_SIZE.TINY};
-`;
-
 const AmountsWrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -320,7 +316,7 @@ const TransactionItem = (props: Props) => {
                                     symbol={symbol}
                                     source={props.transaction.rates}
                                 >
-                                    {({ value }) => value && <SmallBadge>{value}</SmallBadge>}
+                                    {({ value }) => value && <Badge isSmall>{value}</Badge>}
                                 </FiatValue>
                             </FiatBalanceCol>
                         </HiddenPlaceholder>
@@ -361,7 +357,7 @@ const TransactionItem = (props: Props) => {
                                         {({ value }) =>
                                             value && (
                                                 <FiatBalanceCol partial>
-                                                    <SmallBadge>{value}</SmallBadge>
+                                                    <Badge isSmall>{value}</Badge>
                                                 </FiatBalanceCol>
                                             )
                                         }
