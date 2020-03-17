@@ -138,6 +138,100 @@ const handleClick = (event: MouseEvent) => {
                 .catch(onError);
             break;
 
+        case 'subscribe-fiat-rates':
+            blockchain
+                .subscribe({
+                    type: 'fiatRates',
+                    currency:
+                        getInputValue('subscribe-fiat-rates-currency') !== ''
+                            ? getInputValue('subscribe-fiat-rates-currency')
+                            : undefined,
+                })
+                .then(onResponse)
+                .catch(onError);
+            break;
+
+        case 'unsubscribe-fiat-rates':
+            blockchain
+                .unsubscribe({
+                    type: 'fiatRates',
+                })
+                .catch(onError);
+            break;
+
+        case 'get-current-fiat-rates': {
+            try {
+                blockchain
+                    .getCurrentFiatRates({
+                        currencies:
+                            getInputValue('get-current-fiat-rates-currency') !== ''
+                                ? getInputValue('get-current-fiat-rates-currency').split(',')
+                                : undefined,
+                    })
+                    .then(onResponse)
+                    .catch(onError);
+            } catch (error) {
+                onError(error);
+            }
+            break;
+        }
+
+        case 'get-fiat-rates-for-timestamps': {
+            try {
+                blockchain
+                    .getFiatRatesForTimestamps({
+                        timestamps: getInputValue('get-fiat-rates-for-timestamps-timestamps')
+                            .split(',')
+                            .map(v => Number(v)),
+                        currencies:
+                            getInputValue('get-fiat-rates-for-timestamps-currency') !== ''
+                                ? getInputValue('get-fiat-rates-for-timestamps-currency').split(',')
+                                : undefined,
+                    })
+                    .then(onResponse)
+                    .catch(onError);
+            } catch (error) {
+                onError(error);
+            }
+            break;
+        }
+        case 'get-account-balance-history': {
+            try {
+                blockchain
+                    .getAccountBalanceHistory({
+                        descriptor: getInputValue('get-account-balance-history-descriptor'),
+                        from: parseInt(getInputValue('get-account-balance-history-from'), 10),
+                        to: parseInt(getInputValue('get-account-balance-history-to'), 10),
+                        currencies: getInputValue('get-account-balance-history-currency')
+                            ? getInputValue('get-account-balance-history-currency').split(',')
+                            : undefined,
+                        groupBy: parseInt(getInputValue('get-account-balance-history-groupby'), 10),
+                    })
+                    .then(onResponse)
+                    .catch(onError);
+            } catch (error) {
+                onError(error);
+            }
+            break;
+        }
+
+        case 'get-fiat-rates-ticker-list': {
+            try {
+                blockchain
+                    .getFiatRatesTickersList({
+                        timestamp: parseInt(
+                            getInputValue('get-fiat-rates-ticker-list-timestamp'),
+                            10
+                        ),
+                    })
+                    .then(onResponse)
+                    .catch(onError);
+            } catch (error) {
+                onError(error);
+            }
+            break;
+        }
+
         default:
             break;
     }
@@ -176,6 +270,13 @@ const handleBlockEvent = (blockchain: BlockchainLink, notification: any): void =
     const network: string = getInputValue('network-type');
     if (blockchain.settings.name !== network) return;
     const parent = document.getElementById('notification-block') as HTMLElement;
+    prepareResponse(parent, notification);
+};
+
+const handleFiatRatesEvent = (blockchain: BlockchainLink, notification: any): void => {
+    const network: string = getInputValue('network-type');
+    if (blockchain.settings.name !== network) return;
+    const parent = document.getElementById('notification-fiat-rates') as HTMLElement;
     prepareResponse(parent, notification);
 };
 
@@ -252,6 +353,7 @@ CONFIG.forEach(i => {
     b.on('disconnected', handleConnectionEvent.bind(null, b, false));
     b.on('error', handleErrorEvent.bind(null, b, false));
     b.on('block', handleBlockEvent.bind(null, b));
+    b.on('fiatRates', handleFiatRatesEvent.bind(null, b));
     b.on('notification', handleNotificationEvent.bind(null, b));
     instances.push(b);
 });
