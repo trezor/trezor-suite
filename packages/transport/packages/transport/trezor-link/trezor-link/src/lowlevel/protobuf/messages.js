@@ -21,7 +21,15 @@ export class Messages {
     const messagesByType: MessageArray<number> = {};
     Object.keys(messages.MessageType).forEach(longName => {
       const typeId = messages.MessageType[longName];
-      const shortName = longName.split(`_`)[1];
+
+      let shortName = longName.split(`_`)[1];
+
+      // hack hack hack. total lib refactor needed.
+      const indexOfDeprecated = longName.indexOf(`Deprecated`);
+      if (indexOfDeprecated >= 0) {
+        shortName = longName.substr(indexOfDeprecated);
+      }
+
       messagesByType[typeId] = {
         name: shortName,
         constructor: messages[shortName],
