@@ -173,10 +173,7 @@ const getCurrentFiatRates = async (
         common.response({
             id: data.id,
             type: RESPONSES.GET_CURRENT_FIAT_RATES,
-            payload: {
-                ts: fiatRates.ts,
-                rates: fiatRates.rates,
-            },
+            payload: fiatRates,
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
@@ -189,16 +186,14 @@ const getFiatRatesForTimestamps = async (
     const { payload } = data;
     try {
         const socket = await connect();
-        const tickers = await socket.getFiatRatesForTimestamps(
+        const { tickers } = await socket.getFiatRatesForTimestamps(
             payload.timestamps,
             payload.currencies
         );
         common.response({
             id: data.id,
             type: RESPONSES.GET_FIAT_RATES_FOR_TIMESTAMPS,
-            payload: {
-                tickers: tickers.tickers,
-            },
+            payload: { tickers },
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
@@ -211,7 +206,7 @@ const getFiatRatesTickersList = async (
     const { payload } = data;
     try {
         const socket = await connect();
-        const tickers = await socket.getFiatRatesTickersList(payload.timestamp);
+        const tickers = await socket.getFiatRatesTickersList(payload);
         common.response({
             id: data.id,
             type: RESPONSES.GET_FIAT_RATES_TICKERS_LIST,

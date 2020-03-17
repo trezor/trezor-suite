@@ -11,6 +11,7 @@ import {
     FiatRatesNotification,
     AccountBalanceHistoryParams,
 } from '../../types/blockbook';
+import { GetFiatRatesForTimestamps, GetFiatRatesTickersList } from '../../types/messages';
 
 const NOT_INITIALIZED = new CustomError('websocket_not_initialized');
 
@@ -266,12 +267,12 @@ export default class Socket extends EventEmitter {
         return this.send('getBalanceHistory', payload);
     }
 
-    getFiatRatesForTimestamps(timestamps: number[], currencies?: string[]) {
-        return this.send('getFiatRatesForTimestamps', { timestamps, currencies });
+    getFiatRatesForTimestamps(payload: GetFiatRatesForTimestamps['payload']) {
+        return this.send('getFiatRatesForTimestamps', payload);
     }
 
-    getFiatRatesTickersList(timestamp?: number) {
-        return this.send('getFiatRatesTickersList', { timestamp });
+    getFiatRatesTickersList(payload: GetFiatRatesTickersList['payload']) {
+        return this.send('getFiatRatesTickersList', payload);
     }
 
     subscribeAddresses(addresses: string[]) {
