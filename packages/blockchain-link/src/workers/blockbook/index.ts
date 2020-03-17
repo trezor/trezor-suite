@@ -186,10 +186,7 @@ const getFiatRatesForTimestamps = async (
     const { payload } = data;
     try {
         const socket = await connect();
-        const { tickers } = await socket.getFiatRatesForTimestamps(
-            payload.timestamps,
-            payload.currencies
-        );
+        const { tickers } = await socket.getFiatRatesForTimestamps(payload);
         common.response({
             id: data.id,
             type: RESPONSES.GET_FIAT_RATES_FOR_TIMESTAMPS,

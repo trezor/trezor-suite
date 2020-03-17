@@ -3,15 +3,18 @@ import { EventEmitter } from 'events';
 import { CustomError } from '../../constants/errors';
 import { create as createDeferred, Deferred } from '../../utils/deferred';
 import {
-    AccountInfoParams,
-    EstimateFeeParams,
     BlockNotification,
     AddressNotification,
     Send,
     FiatRatesNotification,
-    AccountBalanceHistoryParams,
 } from '../../types/blockbook';
-import { GetFiatRatesForTimestamps, GetFiatRatesTickersList } from '../../types/messages';
+import {
+    GetFiatRatesForTimestamps,
+    GetFiatRatesTickersList,
+    AccountInfoParams,
+    EstimateFeeParams,
+    AccountBalanceHistoryParams,
+} from '../../types/messages';
 
 const NOT_INITIALIZED = new CustomError('websocket_not_initialized');
 
