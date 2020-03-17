@@ -159,10 +159,6 @@ const TxIconWrapper = styled.div`
     display: flex;
 `;
 
-const SmallBadge = styled(Badge)`
-    font-size: ${variables.FONT_SIZE.TINY};
-`;
-
 const TokenTransfer = (transfer: ArrayElement<Props['transaction']['tokens']>) => {
     if (transfer.type === 'self') {
         return (
@@ -317,7 +313,7 @@ const TransactionItem = React.memo((props: Props) => {
                                 {fiatValue =>
                                     fiatValue && (
                                         <FiatBalance>
-                                            <SmallBadge>{fiatValue}</SmallBadge>
+                                            <Badge isSmall>{fiatValue}</Badge>
                                         </FiatBalance>
                                     )
                                 }
@@ -356,7 +352,7 @@ const TransactionItem = React.memo((props: Props) => {
                                         {fiatValue =>
                                             fiatValue && (
                                                 <FiatBalance partial>
-                                                    <SmallBadge>{fiatValue}</SmallBadge>
+                                                    <Badge isSmall>{fiatValue}</Badge>
                                                 </FiatBalance>
                                             )
                                         }
