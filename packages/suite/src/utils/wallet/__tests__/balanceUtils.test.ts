@@ -1,6 +1,7 @@
 import { formatCoinBalance } from '../balanceUtils';
 
 test('formatBalanceUtils', () => {
+    expect(formatCoinBalance('ssssstring')).toEqual('0');
     expect(formatCoinBalance('0')).toEqual('0');
     expect(formatCoinBalance('0.000000000000000000000000001')).toEqual('0.00');
     expect(formatCoinBalance('0.000000000000001')).toEqual('0.00');
@@ -17,5 +18,6 @@ test('formatBalanceUtils', () => {
     expect(formatCoinBalance('200000')).toEqual('200000');
     expect(formatCoinBalance('2000000')).toEqual('2000000');
     expect(formatCoinBalance('2900000')).toEqual('2900000');
+    expect(formatCoinBalance('100000000')).toEqual('100m');
     expect(formatCoinBalance('100000001')).toEqual('100m+');
 });

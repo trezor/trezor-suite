@@ -5,7 +5,9 @@ export const formatCoinBalance = (value: string) => {
     const MAX_CRYPTO_VALUE = '100000000';
     const balanceBig = new BigNumber(value);
 
-    if (balanceBig.isZero()) return '0';
+    if (balanceBig.isZero() || balanceBig.isNaN()) return '0';
+    if (balanceBig.isEqualTo(MAX_CRYPTO_VALUE)) return '100m';
+    if (balanceBig.isGreaterThanOrEqualTo(MAX_CRYPTO_VALUE)) return '100m+';
 
     const parts = value.split('.');
     const hasDecimals = parts.length > 1;
@@ -25,8 +27,6 @@ export const formatCoinBalance = (value: string) => {
 
         return fixedBalanceBig.toString();
     }
-
-    if (balanceBig.isGreaterThanOrEqualTo(MAX_CRYPTO_VALUE)) return '100m+';
 
     return balanceBig.toFixed();
 };
