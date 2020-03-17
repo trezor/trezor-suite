@@ -3,14 +3,19 @@ import { EventEmitter } from 'events';
 import { CustomError } from '../../constants/errors';
 import { create as createDeferred, Deferred } from '../../utils/deferred';
 import {
-    AccountInfoParams,
-    EstimateFeeParams,
     BlockNotification,
     AddressNotification,
     Send,
     FiatRatesNotification,
-    AccountBalanceHistoryParams,
 } from '../../types/blockbook';
+import {
+    GetFiatRatesForTimestamps,
+    GetFiatRatesTickersList,
+    AccountInfoParams,
+    EstimateFeeParams,
+    AccountBalanceHistoryParams,
+    GetCurrentFiatRates,
+} from '../../types/messages';
 
 const NOT_INITIALIZED = new CustomError('websocket_not_initialized');
 
@@ -258,20 +263,20 @@ export default class Socket extends EventEmitter {
         return this.send('estimateFee', payload);
     }
 
-    getCurrentFiatRates(currencies?: string[]) {
-        return this.send('getCurrentFiatRates', { currencies });
+    getCurrentFiatRates(payload: GetCurrentFiatRates['payload']) {
+        return this.send('getCurrentFiatRates', payload);
     }
 
     getAccountBalanceHistory(payload: AccountBalanceHistoryParams) {
         return this.send('getBalanceHistory', payload);
     }
 
-    getFiatRatesForTimestamps(timestamps: number[], currencies?: string[]) {
-        return this.send('getFiatRatesForTimestamps', { timestamps, currencies });
+    getFiatRatesForTimestamps(payload: GetFiatRatesForTimestamps['payload']) {
+        return this.send('getFiatRatesForTimestamps', payload);
     }
 
-    getFiatRatesTickersList(timestamp?: number) {
-        return this.send('getFiatRatesTickersList', { timestamp });
+    getFiatRatesTickersList(payload: GetFiatRatesTickersList['payload']) {
+        return this.send('getFiatRatesTickersList', payload);
     }
 
     subscribeAddresses(addresses: string[]) {

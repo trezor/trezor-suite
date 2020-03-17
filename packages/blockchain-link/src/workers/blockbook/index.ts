@@ -169,14 +169,11 @@ const getCurrentFiatRates = async (
     const { payload } = data;
     try {
         const socket = await connect();
-        const fiatRates = await socket.getCurrentFiatRates(payload.currencies);
+        const fiatRates = await socket.getCurrentFiatRates(payload);
         common.response({
             id: data.id,
             type: RESPONSES.GET_CURRENT_FIAT_RATES,
-            payload: {
-                ts: fiatRates.ts,
-                rates: fiatRates.rates,
-            },
+            payload: fiatRates,
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
@@ -189,16 +186,11 @@ const getFiatRatesForTimestamps = async (
     const { payload } = data;
     try {
         const socket = await connect();
-        const tickers = await socket.getFiatRatesForTimestamps(
-            payload.timestamps,
-            payload.currencies
-        );
+        const { tickers } = await socket.getFiatRatesForTimestamps(payload);
         common.response({
             id: data.id,
             type: RESPONSES.GET_FIAT_RATES_FOR_TIMESTAMPS,
-            payload: {
-                tickers: tickers.tickers,
-            },
+            payload: { tickers },
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
@@ -211,7 +203,7 @@ const getFiatRatesTickersList = async (
     const { payload } = data;
     try {
         const socket = await connect();
-        const tickers = await socket.getFiatRatesTickersList(payload.timestamp);
+        const tickers = await socket.getFiatRatesTickersList(payload);
         common.response({
             id: data.id,
             type: RESPONSES.GET_FIAT_RATES_TICKERS_LIST,
@@ -354,8 +346,10 @@ const subscribeBlock = async () => {
 
 const subscribeFiatRates = async (currency?: string) => {
     const socket = await connect();
-    common.addSubscription('fiatRates');
-    socket.on('fiatRates', onNewFiatRates);
+    if (!common.getSubscription('fiatRates')) {
+        common.addSubscription('fiatRates');
+        socket.on('fiatRates', onNewFiatRates);
+    }
     return socket.subscribeFiatRates(currency);
 };
 

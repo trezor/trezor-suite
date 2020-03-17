@@ -1,3 +1,12 @@
+import {
+    AccountBalanceHistoryParams,
+    GetCurrentFiatRates,
+    GetFiatRatesForTimestamps,
+    GetFiatRatesTickersList,
+    AccountInfoParams,
+    EstimateFeeParams,
+} from './messages';
+
 export interface Subscribe {
     subscribed: boolean;
 }
@@ -15,18 +24,6 @@ export interface ServerInfo {
 
 export interface BlockHash {
     hash: string;
-}
-
-export interface AccountInfoParams {
-    descriptor: string;
-    details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs';
-    tokens?: 'nonzero' | 'used' | 'derived';
-    page?: number;
-    pageSize?: number;
-    from?: number;
-    to?: number;
-    contractFilter?: string;
-    gap?: number;
 }
 
 export interface XPUBAddress {
@@ -127,17 +124,6 @@ export interface Push {
     result: string;
 }
 
-export interface EstimateFeeParams {
-    blocks?: number[];
-    specific?: {
-        conservative?: boolean; // btc
-        txsize?: number; // btc transaction size
-        from?: string; // eth from
-        to?: string; // eth to
-        data?: string; // eth tx data
-    };
-}
-
 export type Fee = {
     feePerUnit: string;
     feePerTx?: string;
@@ -179,14 +165,6 @@ export interface AccountBalanceHistory {
     fiatRate: number;
 }
 
-export interface AccountBalanceHistoryParams {
-    descriptor: string;
-    from: number;
-    to: number;
-    currencies?: string[];
-    groupBy?: number;
-}
-
 export interface AvailableCurrencies {
     ts: number;
     available_currencies: string[];
@@ -204,15 +182,15 @@ declare function FSend(
 ): Promise<AccountBalanceHistory[]>;
 declare function FSend(
     method: 'getCurrentFiatRates',
-    params: { currencies?: string[] }
+    params: GetCurrentFiatRates['payload']
 ): Promise<TimestampedFiatRates>;
 declare function FSend(
     method: 'getFiatRatesTickersList',
-    params: { timestamp?: number }
+    params: GetFiatRatesTickersList['payload']
 ): Promise<AvailableCurrencies>;
 declare function FSend(
     method: 'getFiatRatesForTimestamps',
-    params: { timestamps?: number[]; currencies?: string[] }
+    params: GetFiatRatesForTimestamps['payload']
 ): Promise<FiatRatesForTimestamp>;
 declare function FSend(method: 'estimateFee', params: EstimateFeeParams): Promise<Fee>;
 declare function FSend(
