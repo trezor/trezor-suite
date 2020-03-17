@@ -180,7 +180,9 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     const reserve = getReserveInXrp(account);
 
     if (fiatNetwork && isValidAmount) {
+        // @ts-ignore TODO: undefined rates!
         const rate = fiatNetwork.current?.rates[output.localCurrency.value.value].toString();
+        // @ts-ignore TODO: undefined rates!
         const fiatValue = getFiatValue(amount, rate);
         if (rate) {
             dispatch({
@@ -223,9 +225,11 @@ export const handleSelectCurrencyChange = (
     if (fiatNetwork && output.amount.value) {
         const rate = fiatNetwork.current?.rates[localCurrency.value];
         const fiatValueBigNumber = new BigNumber(output.amount.value).multipliedBy(
+            // @ts-ignore TODO: undefined rates!
             new BigNumber(rate),
         );
         const fiatValue = fiatValueBigNumber.isNaN() ? '' : fiatValueBigNumber.toFixed(2);
+        // @ts-ignore TODO: undefined rates!
         const amountBigNumber = fiatValueBigNumber.dividedBy(new BigNumber(rate));
 
         dispatch({
@@ -272,7 +276,9 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
 
     if (!fiatNetwork) return null;
 
+    // @ts-ignore TODO: undefined rates!
     const rate = fiatNetwork.current?.rates[output.localCurrency.value.value];
+    // @ts-ignore TODO: undefined rates!
     const amountBigNumber = new BigNumber(fiatValue || '0').dividedBy(new BigNumber(rate));
     const amount = amountBigNumber.isNaN() ? '' : amountBigNumber.toFixed(network.decimals);
 
@@ -310,9 +316,11 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
 
     if (fiatNetwork && composedTransaction && composedTransaction.type !== 'error') {
+        // @ts-ignore TODO: undefined rates!
         const rate = fiatNetwork.current?.rates[output.localCurrency.value.value].toString();
         const fiatValue = getFiatValue(
             formatNetworkAmount(composedTransaction.max, account.symbol),
+            // @ts-ignore TODO: undefined rates!
             rate,
         );
         if (rate) {
