@@ -7,7 +7,7 @@ export const formatCoinBalance = (value: string) => {
 
     if (balanceBig.isZero() || balanceBig.isNaN()) return '0';
     if (balanceBig.isEqualTo(MAX_CRYPTO_VALUE)) return '100m';
-    if (balanceBig.isGreaterThanOrEqualTo(MAX_CRYPTO_VALUE)) return '100m+';
+    if (balanceBig.isGreaterThan(MAX_CRYPTO_VALUE)) return '100m+';
 
     const parts = value.split('.');
     const hasDecimals = parts.length > 1;
