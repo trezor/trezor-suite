@@ -11,10 +11,15 @@ export const formatCoinBalance = (value: string) => {
     const hasDecimals = parts.length > 1;
 
     if (hasDecimals) {
-        const fixed = balanceBig.toFixed(MAX_NUMBERS - parts[0].length || 1, 1);
-        const fixedBalanceBig = new BigNumber(fixed);
+        const firstPart = parts[0].length || 1;
+        const fixCount = MAX_NUMBERS - firstPart;
+        // fix to max visible numbers with decimals
+        const fixedBalance = balanceBig.toFixed(fixCount, 1);
+        const fixedBalanceBig = new BigNumber(fixedBalance);
 
-        if (fixedBalanceBig.modulo(2).toFixed() === '0') {
+        // indicate the dust
+        const hasDust = fixedBalanceBig.modulo(2).toFixed() === '0';
+        if (hasDust) {
             return fixedBalanceBig.toFixed(2);
         }
 
