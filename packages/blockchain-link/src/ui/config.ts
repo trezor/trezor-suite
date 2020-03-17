@@ -141,7 +141,13 @@ export default [
         blockchain: {
             name: 'Bitcoin',
             worker: 'js/blockbook-worker.js',
-            server: ['https://blockbook-dev.corp.sldev.cz:9130'],
+            server: [
+                'https://btc1.trezor.io',
+                'https://btc2.trezor.io',
+                'https://btc3.trezor.io',
+                'https://btc4.trezor.io',
+                'https://btc5.trezor.io',
+            ],
             debug: true,
         },
         data: {
