@@ -14,6 +14,7 @@ import {
     AccountInfoParams,
     EstimateFeeParams,
     AccountBalanceHistoryParams,
+    GetCurrentFiatRates,
 } from '../../types/messages';
 
 const NOT_INITIALIZED = new CustomError('websocket_not_initialized');
@@ -262,8 +263,8 @@ export default class Socket extends EventEmitter {
         return this.send('estimateFee', payload);
     }
 
-    getCurrentFiatRates(currencies?: string[]) {
-        return this.send('getCurrentFiatRates', { currencies });
+    getCurrentFiatRates(payload: GetCurrentFiatRates['payload']) {
+        return this.send('getCurrentFiatRates', payload);
     }
 
     getAccountBalanceHistory(payload: AccountBalanceHistoryParams) {

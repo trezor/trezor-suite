@@ -169,7 +169,7 @@ const getCurrentFiatRates = async (
     const { payload } = data;
     try {
         const socket = await connect();
-        const fiatRates = await socket.getCurrentFiatRates(payload.currencies);
+        const fiatRates = await socket.getCurrentFiatRates(payload);
         common.response({
             id: data.id,
             type: RESPONSES.GET_CURRENT_FIAT_RATES,
