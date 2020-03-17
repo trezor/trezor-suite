@@ -349,8 +349,10 @@ const subscribeBlock = async () => {
 
 const subscribeFiatRates = async (currency?: string) => {
     const socket = await connect();
-    common.addSubscription('fiatRates');
-    socket.on('fiatRates', onNewFiatRates);
+    if (!common.getSubscription('fiatRates')) {
+        common.addSubscription('fiatRates');
+        socket.on('fiatRates', onNewFiatRates);
+    }
     return socket.subscribeFiatRates(currency);
 };
 
