@@ -4,7 +4,11 @@ import Connection from './websocket';
 import * as utils from './utils';
 
 import { Message, Response, SubscriptionAccountInfo } from '../../types';
-import { AddressNotification, BlockNotification } from '../../types/blockbook';
+import {
+    AddressNotification,
+    BlockNotification,
+    FiatRatesNotification,
+} from '../../types/blockbook';
 import * as MessageTypes from '../../types/messages';
 import WorkerCommon from '../common';
 
@@ -142,6 +146,77 @@ const getAccountUtxo = async (
     }
 };
 
+const getAccountBalanceHistory = async (
+    data: { id: number } & MessageTypes.GetAccountBalanceHistory
+): Promise<void> => {
+    const { payload } = data;
+    try {
+        const socket = await connect();
+        const history = await socket.getAccountBalanceHistory(payload);
+        common.response({
+            id: data.id,
+            type: RESPONSES.GET_ACCOUNT_BALANCE_HISTORY,
+            payload: history,
+        });
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+    }
+};
+
+const getCurrentFiatRates = async (
+    data: { id: number } & MessageTypes.GetCurrentFiatRates
+): Promise<void> => {
+    const { payload } = data;
+    try {
+        const socket = await connect();
+        const fiatRates = await socket.getCurrentFiatRates(payload);
+        common.response({
+            id: data.id,
+            type: RESPONSES.GET_CURRENT_FIAT_RATES,
+            payload: fiatRates,
+        });
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+    }
+};
+
+const getFiatRatesForTimestamps = async (
+    data: { id: number } & MessageTypes.GetFiatRatesForTimestamps
+): Promise<void> => {
+    const { payload } = data;
+    try {
+        const socket = await connect();
+        const { tickers } = await socket.getFiatRatesForTimestamps(payload);
+        common.response({
+            id: data.id,
+            type: RESPONSES.GET_FIAT_RATES_FOR_TIMESTAMPS,
+            payload: { tickers },
+        });
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+    }
+};
+
+const getFiatRatesTickersList = async (
+    data: { id: number } & MessageTypes.GetFiatRatesTickersList
+): Promise<void> => {
+    const { payload } = data;
+    try {
+        const socket = await connect();
+        const tickers = await socket.getFiatRatesTickersList(payload);
+        common.response({
+            id: data.id,
+            type: RESPONSES.GET_FIAT_RATES_TICKERS_LIST,
+            payload: {
+                ts: tickers.ts,
+                availableCurrencies: tickers.available_currencies, // convert to camelCase
+            },
+        });
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+    }
+};
+
 const getTransaction = async (
     data: { id: number } & MessageTypes.GetTransaction
 ): Promise<void> => {
@@ -226,6 +301,19 @@ const onTransaction = (event: AddressNotification) => {
     });
 };
 
+const onNewFiatRates = (event: FiatRatesNotification) => {
+    common.response({
+        id: -1,
+        type: RESPONSES.NOTIFICATION,
+        payload: {
+            type: 'fiatRates',
+            payload: {
+                rates: event.rates,
+            },
+        },
+    });
+};
+
 const subscribeAccounts = async (accounts: SubscriptionAccountInfo[]) => {
     common.addAccounts(accounts);
     // subscribe to new blocks, confirmed and mempool transactions for given addresses
@@ -256,6 +344,15 @@ const subscribeBlock = async () => {
     return socket.subscribeBlock();
 };
 
+const subscribeFiatRates = async (currency?: string) => {
+    const socket = await connect();
+    if (!common.getSubscription('fiatRates')) {
+        common.addSubscription('fiatRates');
+        socket.on('fiatRates', onNewFiatRates);
+    }
+    return socket.subscribeFiatRates(currency);
+};
+
 const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
     const { payload } = data;
     try {
@@ -266,6 +363,8 @@ const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise
             response = await subscribeAddresses(payload.addresses);
         } else if (payload.type === 'block') {
             response = await subscribeBlock();
+        } else if (payload.type === 'fiatRates') {
+            response = await subscribeFiatRates(payload.currency);
         } else {
             throw new CustomError('invalid_param', '+type');
         }
@@ -322,6 +421,14 @@ const unsubscribeBlock = async () => {
     return socket.unsubscribeBlock();
 };
 
+const unsubscribeFiatRates = async () => {
+    if (!common.getSubscription('fiatRates')) return { subscribed: false };
+    const socket = await connect();
+    socket.removeListener('fiatRates', onNewBlock);
+    common.removeSubscription('fiatRates');
+    return socket.unsubscribeFiatRates();
+};
+
 const unsubscribe = async (data: { id: number } & MessageTypes.Unsubscribe): Promise<void> => {
     const { payload } = data;
     try {
@@ -332,6 +439,8 @@ const unsubscribe = async (data: { id: number } & MessageTypes.Unsubscribe): Pro
             response = await unsubscribeAddresses(payload.addresses);
         } else if (payload.type === 'block') {
             response = await unsubscribeBlock();
+        } else if (payload.type === 'fiatRates') {
+            response = await unsubscribeFiatRates();
         } else {
             throw new CustomError('invalid_param', '+type');
         }
@@ -391,6 +500,18 @@ onmessage = (event: { data: Message }) => {
             break;
         case MESSAGES.GET_TRANSACTION:
             getTransaction(data);
+            break;
+        case MESSAGES.GET_ACCOUNT_BALANCE_HISTORY:
+            getAccountBalanceHistory(data);
+            break;
+        case MESSAGES.GET_CURRENT_FIAT_RATES:
+            getCurrentFiatRates(data);
+            break;
+        case MESSAGES.GET_FIAT_RATES_FOR_TIMESTAMPS:
+            getFiatRatesForTimestamps(data);
+            break;
+        case MESSAGES.GET_FIAT_RATES_TICKERS_LIST:
+            getFiatRatesTickersList(data);
             break;
         case MESSAGES.ESTIMATE_FEE:
             estimateFee(data);

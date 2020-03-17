@@ -19,24 +19,26 @@ export interface GetBlockHash {
     payload: number;
 }
 
+export interface AccountInfoParams {
+    descriptor: string; // address or xpub
+    details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs'; // depth, default: 'basic'
+    tokens?: 'nonzero' | 'used' | 'derived'; // blockbook only, default: 'derived' - show all derived addresses, 'used' - show only used addresses, 'nonzero' - show only address with balance
+    page?: number; // blockbook only, page index
+    pageSize?: number; // how many transactions on page
+    from?: number; // from block
+    to?: number; // to block
+    contractFilter?: string; // blockbook only, ethereum token filter
+    gap?: number; // blockbook only, derived addresses gap
+    // since ripple-lib cannot use pages "marker" is used as first unknown point in history (block and sequence of transaction)
+    marker?: {
+        ledger: number;
+        seq: number;
+    };
+}
+
 export interface GetAccountInfo {
     type: typeof MESSAGES.GET_ACCOUNT_INFO;
-    payload: {
-        descriptor: string; // address or xpub
-        details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs'; // depth, default: 'basic'
-        tokens?: 'nonzero' | 'used' | 'derived'; // blockbook only, default: 'derived' - show all derived addresses, 'used' - show only used addresses, 'nonzero' - show only address with balance
-        page?: number; // blockbook only, page index
-        pageSize?: number; // how many transactions on page
-        from?: number; // from block
-        to?: number; // to block
-        contractFilter?: string; // blockbook only, ethereum token filter
-        gap?: number; // blockbook only, derived addresses gap
-        // since ripple-lib cannot use pages "marker" is used as first unknown point in history (block and sequence of transaction)
-        marker?: {
-            ledger: number;
-            seq: number;
-        };
-    };
+    payload: AccountInfoParams;
 }
 
 export interface GetAccountUtxo {
@@ -49,19 +51,55 @@ export interface GetTransaction {
     payload: string;
 }
 
-export interface EstimateFeeOptions {
-    blocks?: number[];
-    specific?: {
-        conservative?: boolean;
-        txsize?: number;
-        from?: string;
-        to?: string;
-        data?: string;
+export interface GetFiatRatesTickersList {
+    type: typeof MESSAGES.GET_FIAT_RATES_TICKERS_LIST;
+    payload: {
+        timestamp?: number;
     };
 }
+
+export interface AccountBalanceHistoryParams {
+    descriptor: string;
+    from: number;
+    to: number;
+    currencies?: string[];
+    groupBy?: number;
+}
+
+export interface GetAccountBalanceHistory {
+    type: typeof MESSAGES.GET_ACCOUNT_BALANCE_HISTORY;
+    payload: AccountBalanceHistoryParams;
+}
+
+export interface GetCurrentFiatRates {
+    type: typeof MESSAGES.GET_CURRENT_FIAT_RATES;
+    payload: {
+        currencies?: string[];
+    };
+}
+
+export interface GetFiatRatesForTimestamps {
+    type: typeof MESSAGES.GET_FIAT_RATES_FOR_TIMESTAMPS;
+    payload: {
+        timestamps: number[];
+        currencies?: string[];
+    };
+}
+
+export interface EstimateFeeParams {
+    blocks?: number[];
+    specific?: {
+        conservative?: boolean; // btc
+        txsize?: number; // btc transaction size
+        from?: string; // eth from
+        to?: string; // eth to
+        data?: string; // eth tx data
+    };
+}
+
 export interface EstimateFee {
     type: typeof MESSAGES.ESTIMATE_FEE;
-    payload: EstimateFeeOptions;
+    payload: EstimateFeeParams;
 }
 
 export interface Subscribe {
@@ -77,6 +115,10 @@ export interface Subscribe {
         | {
               type: 'accounts';
               accounts: SubscriptionAccountInfo[];
+          }
+        | {
+              type: 'fiatRates';
+              currency?: string;
           };
 }
 
@@ -93,6 +135,9 @@ export interface Unsubscribe {
         | {
               type: 'accounts';
               accounts?: SubscriptionAccountInfo[];
+          }
+        | {
+              type: 'fiatRates';
           };
 }
 
@@ -110,6 +155,10 @@ export type Message =
     | ({ id: number } & GetAccountInfo)
     | ({ id: number } & GetAccountUtxo)
     | ({ id: number } & GetTransaction)
+    | ({ id: number } & GetCurrentFiatRates)
+    | ({ id: number } & GetFiatRatesForTimestamps)
+    | ({ id: number } & GetAccountBalanceHistory)
+    | ({ id: number } & GetFiatRatesTickersList)
     | ({ id: number } & EstimateFee)
     | ({ id: number } & Subscribe)
     | ({ id: number } & Unsubscribe)

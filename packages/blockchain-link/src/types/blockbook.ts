@@ -1,3 +1,12 @@
+import {
+    AccountBalanceHistoryParams,
+    GetCurrentFiatRates,
+    GetFiatRatesForTimestamps,
+    GetFiatRatesTickersList,
+    AccountInfoParams,
+    EstimateFeeParams,
+} from './messages';
+
 export interface Subscribe {
     subscribed: boolean;
 }
@@ -15,18 +24,6 @@ export interface ServerInfo {
 
 export interface BlockHash {
     hash: string;
-}
-
-export interface AccountInfoParams {
-    descriptor: string;
-    details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs';
-    tokens?: 'nonzero' | 'used' | 'derived';
-    page?: number;
-    pageSize?: number;
-    from?: number;
-    to?: number;
-    contractFilter?: string;
-    gap?: number;
 }
 
 export interface XPUBAddress {
@@ -127,22 +124,15 @@ export interface Push {
     result: string;
 }
 
-export interface EstimateFeeParams {
-    blocks?: number[];
-    specific?: {
-        conservative?: boolean; // btc
-        txsize?: number; // btc transaction size
-        from?: string; // eth from
-        to?: string; // eth to
-        data?: string; // eth tx data
-    };
-}
-
 export type Fee = {
     feePerUnit: string;
     feePerTx?: string;
     feeLimit?: string;
 }[];
+
+export interface FiatRates {
+    [symbol: string]: number | undefined;
+}
 
 export interface BlockNotification {
     height: number;
@@ -154,12 +144,54 @@ export interface AddressNotification {
     tx: Transaction;
 }
 
+export interface FiatRatesNotification {
+    rates: FiatRates;
+}
+
+export interface TimestampedFiatRates {
+    ts: number;
+    rates: FiatRates;
+}
+
+export interface FiatRatesForTimestamp {
+    tickers: TimestampedFiatRates[];
+}
+
+export interface AccountBalanceHistory {
+    time: number;
+    txs: number;
+    received: string;
+    sent: string;
+    fiatRate: number;
+}
+
+export interface AvailableCurrencies {
+    ts: number;
+    available_currencies: string[];
+}
+
 declare function FSend(method: 'getInfo', params: {}): Promise<ServerInfo>;
 declare function FSend(method: 'getBlockHash', params: { height: number }): Promise<BlockHash>;
 declare function FSend(method: 'getAccountInfo', params: AccountInfoParams): Promise<AccountInfo>;
 declare function FSend(method: 'getAccountUtxo', params: AccountUtxoParams): Promise<AccountUtxo>;
 declare function FSend(method: 'getTransaction', params: { txid: string }): Promise<Transaction>;
 declare function FSend(method: 'sendTransaction', params: { hex: string }): Promise<Push>;
+declare function FSend(
+    method: 'getBalanceHistory',
+    params: AccountBalanceHistoryParams
+): Promise<AccountBalanceHistory[]>;
+declare function FSend(
+    method: 'getCurrentFiatRates',
+    params: GetCurrentFiatRates['payload']
+): Promise<TimestampedFiatRates>;
+declare function FSend(
+    method: 'getFiatRatesTickersList',
+    params: GetFiatRatesTickersList['payload']
+): Promise<AvailableCurrencies>;
+declare function FSend(
+    method: 'getFiatRatesForTimestamps',
+    params: GetFiatRatesForTimestamps['payload']
+): Promise<FiatRatesForTimestamp>;
 declare function FSend(method: 'estimateFee', params: EstimateFeeParams): Promise<Fee>;
 declare function FSend(
     method: 'subscribeAddresses',
@@ -168,4 +200,9 @@ declare function FSend(
 declare function FSend(method: 'unsubscribeAddresses', params: {}): Promise<Subscribe>;
 declare function FSend(method: 'subscribeNewBlock', params: {}): Promise<Subscribe>;
 declare function FSend(method: 'unsubscribeNewBlock', params: {}): Promise<Subscribe>;
+declare function FSend(
+    method: 'subscribeFiatRates',
+    params: { currency?: string }
+): Promise<Subscribe>;
+declare function FSend(method: 'unsubscribeFiatRates', params: {}): Promise<Subscribe>;
 export type Send = typeof FSend;

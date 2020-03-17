@@ -15,7 +15,7 @@ export const groupTransactionsByDate = (
     const r: { [key: string]: WalletAccountTransaction[] } = {};
     transactions.forEach(item => {
         let key = 'pending';
-        if (item.blockHeight && item.blockTime && item.blockTime !== 0) {
+        if (item.blockHeight && item.blockHeight > 0 && item.blockTime && item.blockTime > 0) {
             const d = getDateWithTimeZone(item.blockTime * 1000);
             // YYYY-MM-DD format
             key = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
@@ -83,10 +83,10 @@ export const analyzeTransactions = (
 
     // If there are no known confirmed txs
     // remove all known and add all fresh
-    const gotConfirmedTxs = known.some(tx => tx.blockHeight);
+    const gotConfirmedTxs = known.some(tx => tx.blockHeight && tx.blockHeight > 0);
     if (!gotConfirmedTxs) {
         return {
-            newTransactions: fresh.filter(tx => tx.blockHeight),
+            newTransactions: fresh.filter(tx => tx.blockHeight && tx.blockHeight > 0),
             add: fresh,
             remove: known,
         };
@@ -96,7 +96,7 @@ export const analyzeTransactions = (
     fresh.forEach((tx, i) => {
         const height = tx.blockHeight;
         const isLast = i + 1 === fresh.length;
-        if (!height) {
+        if (!height || height <= 0) {
             // add pending tx
             addTxs.push(tx);
         } else {
@@ -107,12 +107,12 @@ export const analyzeTransactions = (
                 const kTx = known[index];
                 // known tx is pending, it will be removed
                 // move sliceIndex, set firstKnownIndex
-                if (!kTx.blockHeight) {
+                if (!kTx.blockHeight || kTx.blockHeight <= 0) {
                     firstKnownIndex = index + 1;
                     sliceIndex = index + 1;
                 }
                 // known tx is "older"
-                if (kTx.blockHeight && kTx.blockHeight < height) {
+                if (kTx.blockHeight && kTx.blockHeight > 0 && kTx.blockHeight < height) {
                     // set sliceIndex
                     sliceIndex = isLast ? len : index;
                     // all fresh txs to this point needs to be added
