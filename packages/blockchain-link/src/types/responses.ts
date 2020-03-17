@@ -1,5 +1,5 @@
 import { FormattedTransactionType as RippleTransaction } from 'ripple-lib';
-import { Transaction as BlockbookTransaction } from './blockbook';
+import { Transaction as BlockbookTransaction, FiatRates, AccountBalanceHistory } from './blockbook';
 import { HANDSHAKE } from '../constants/messages';
 import * as RESPONSES from '../constants/responses';
 import { AccountInfo, Transaction } from './common';
@@ -72,6 +72,37 @@ export interface GetTransaction {
           };
 }
 
+export interface GetAccountBalanceHistory {
+    type: typeof RESPONSES.GET_ACCOUNT_BALANCE_HISTORY;
+    payload: AccountBalanceHistory[];
+}
+
+export interface GetCurrentFiatRates {
+    type: typeof RESPONSES.GET_CURRENT_FIAT_RATES;
+    payload: {
+        ts: number;
+        rates: FiatRates;
+    };
+}
+
+export interface GetFiatRatesForTimestamps {
+    type: typeof RESPONSES.GET_FIAT_RATES_FOR_TIMESTAMPS;
+    payload: {
+        tickers: {
+            ts: number;
+            rates: FiatRates;
+        }[];
+    };
+}
+
+export interface GetFiatRatesTickersList {
+    type: typeof RESPONSES.GET_FIAT_RATES_TICKERS_LIST;
+    payload: {
+        ts: number;
+        availableCurrencies: string[];
+    };
+}
+
 export interface EstimateFee {
     type: typeof RESPONSES.ESTIMATE_FEE;
     payload: {
@@ -107,9 +138,16 @@ export interface NotificationEvent {
     };
 }
 
+export interface FiatRatesEvent {
+    type: 'fiatRates';
+    payload: {
+        rates: FiatRates;
+    };
+}
+
 export interface Notification {
     type: typeof RESPONSES.NOTIFICATION;
-    payload: BlockEvent | NotificationEvent;
+    payload: BlockEvent | NotificationEvent | FiatRatesEvent;
 }
 
 export interface PushTransaction {
@@ -134,6 +172,10 @@ export type Response =
     | ({ id: number } & GetAccountInfo)
     | ({ id: number } & GetAccountUtxo)
     | ({ id: number } & GetTransaction)
+    | ({ id: number } & GetAccountBalanceHistory)
+    | ({ id: number } & GetCurrentFiatRates)
+    | ({ id: number } & GetFiatRatesForTimestamps)
+    | ({ id: number } & GetFiatRatesTickersList)
     | ({ id: number } & EstimateFee)
     | ({ id: number } & Subscribe)
     | ({ id: number } & Unsubscribe)

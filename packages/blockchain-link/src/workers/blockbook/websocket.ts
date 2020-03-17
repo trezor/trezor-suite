@@ -8,13 +8,15 @@ import {
     BlockNotification,
     AddressNotification,
     Send,
+    FiatRatesNotification,
+    AccountBalanceHistoryParams,
 } from '../../types/blockbook';
 
 const NOT_INITIALIZED = new CustomError('websocket_not_initialized');
 
 interface Subscription {
     id: string;
-    type: 'notification' | 'block';
+    type: 'notification' | 'block' | 'fiatRates';
     callback: (result: any) => void;
 }
 
@@ -256,6 +258,22 @@ export default class Socket extends EventEmitter {
         return this.send('estimateFee', payload);
     }
 
+    getCurrentFiatRates(currencies?: string[]) {
+        return this.send('getCurrentFiatRates', { currencies });
+    }
+
+    getAccountBalanceHistory(payload: AccountBalanceHistoryParams) {
+        return this.send('getBalanceHistory', payload);
+    }
+
+    getFiatRatesForTimestamps(timestamps: number[], currencies?: string[]) {
+        return this.send('getFiatRatesForTimestamps', { timestamps, currencies });
+    }
+
+    getFiatRatesTickersList(timestamp?: number) {
+        return this.send('getFiatRatesTickersList', { timestamp });
+    }
+
     subscribeAddresses(addresses: string[]) {
         const index = this.subscriptions.findIndex(s => s.type === 'notification');
         if (index >= 0) {
@@ -308,6 +326,34 @@ export default class Socket extends EventEmitter {
             // remove previous subscriptions
             this.subscriptions.splice(index, 1);
             return this.send('unsubscribeNewBlock', {});
+        }
+        return { subscribed: false };
+    }
+
+    subscribeFiatRates(currency?: string) {
+        const index = this.subscriptions.findIndex(s => s.type === 'fiatRates');
+        if (index >= 0) {
+            // remove previous subscriptions
+            this.subscriptions.splice(index, 1);
+        }
+        // add new subscription
+        const id = this.messageID.toString();
+        this.subscriptions.push({
+            id,
+            type: 'fiatRates',
+            callback: (result: FiatRatesNotification) => {
+                this.emit('fiatRates', result);
+            },
+        });
+        return this.send('subscribeFiatRates', { currency });
+    }
+
+    unsubscribeFiatRates() {
+        const index = this.subscriptions.findIndex(s => s.type === 'fiatRates');
+        if (index >= 0) {
+            // remove previous subscriptions
+            this.subscriptions.splice(index, 1);
+            return this.send('unsubscribeFiatRates', {});
         }
         return { subscribed: false };
     }

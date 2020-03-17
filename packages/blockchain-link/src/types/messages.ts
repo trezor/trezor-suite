@@ -1,5 +1,6 @@
 import { SubscriptionAccountInfo, BlockchainSettings } from './common';
 import * as MESSAGES from '../constants/messages';
+import { AccountBalanceHistoryParams } from './blockbook';
 
 // messages sent from blockchain.js to worker
 
@@ -49,6 +50,33 @@ export interface GetTransaction {
     payload: string;
 }
 
+export interface GetFiatRatesTickersList {
+    type: typeof MESSAGES.GET_FIAT_RATES_TICKERS_LIST;
+    payload: {
+        timestamp?: number;
+    };
+}
+
+export interface GetAccountBalanceHistory {
+    type: typeof MESSAGES.GET_ACCOUNT_BALANCE_HISTORY;
+    payload: AccountBalanceHistoryParams;
+}
+
+export interface GetCurrentFiatRates {
+    type: typeof MESSAGES.GET_CURRENT_FIAT_RATES;
+    payload: {
+        currencies?: string[];
+    };
+}
+
+export interface GetFiatRatesForTimestamps {
+    type: typeof MESSAGES.GET_FIAT_RATES_FOR_TIMESTAMPS;
+    payload: {
+        timestamps: number[];
+        currencies?: string[];
+    };
+}
+
 export interface EstimateFeeOptions {
     blocks?: number[];
     specific?: {
@@ -77,6 +105,10 @@ export interface Subscribe {
         | {
               type: 'accounts';
               accounts: SubscriptionAccountInfo[];
+          }
+        | {
+              type: 'fiatRates';
+              currency?: string;
           };
 }
 
@@ -93,6 +125,9 @@ export interface Unsubscribe {
         | {
               type: 'accounts';
               accounts?: SubscriptionAccountInfo[];
+          }
+        | {
+              type: 'fiatRates';
           };
 }
 
@@ -110,6 +145,10 @@ export type Message =
     | ({ id: number } & GetAccountInfo)
     | ({ id: number } & GetAccountUtxo)
     | ({ id: number } & GetTransaction)
+    | ({ id: number } & GetCurrentFiatRates)
+    | ({ id: number } & GetFiatRatesForTimestamps)
+    | ({ id: number } & GetAccountBalanceHistory)
+    | ({ id: number } & GetFiatRatesTickersList)
     | ({ id: number } & EstimateFee)
     | ({ id: number } & Subscribe)
     | ({ id: number } & Unsubscribe)
