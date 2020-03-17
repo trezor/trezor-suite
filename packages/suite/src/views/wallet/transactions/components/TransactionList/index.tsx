@@ -10,7 +10,7 @@ import { Account } from '@wallet-types';
 import TransactionItem from '../TransactionItem/Container';
 import Pagination from '../Pagination';
 
-import { Badge, Card, FiatValue, HiddenPlaceholder, Translation } from '@suite-components';
+import { Card, FiatValue, HiddenPlaceholder, Translation } from '@suite-components';
 
 const Wrapper = styled.div``;
 
@@ -150,7 +150,7 @@ const TransactionList = ({
                                                         {fiatValue =>
                                                             fiatValue && (
                                                                 <FiatDayAmount>
-                                                                    <Badge>{fiatValue}</Badge>
+                                                                    {fiatValue}
                                                                 </FiatDayAmount>
                                                             )
                                                         }
