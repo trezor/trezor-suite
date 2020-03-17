@@ -1,4 +1,4 @@
-import TrezorConnect, { AccountTransaction } from 'trezor-connect';
+import TrezorConnect, { AccountTransaction, BlockchainFiatRatesUpdate } from 'trezor-connect';
 import { subWeeks, getUnixTime } from 'date-fns';
 import { fetchCurrentFiatRates, getFiatRatesForTimestamps } from '@suite/services/coingecko';
 import { isTestnet } from '@suite/utils/wallet/accountUtils';
@@ -51,19 +51,6 @@ const INTERVAL = 1000 * 60; // 1 min
 const MAX_AGE = 1000 * 60 * 10; // 10 mins
 const INTERVAL_LAST_WEEK = 1000 * 60 * 60 * 4; // 4 hours
 
-export const updateRate = (
-    ts: FiatRatesPayload['ts'],
-    rates: FiatRatesPayload['rates'],
-    symbol: FiatRatesPayload['symbol'],
-) => ({
-    type: RATE_UPDATE,
-    payload: {
-        ts,
-        rates,
-        symbol,
-    },
-});
-
 /**
  * Fetch and update current fiat rates for a given ticker
  * Primary source of rates is TrezorConnect, coingecko serves as a fallback
@@ -80,7 +67,14 @@ export const updateCurrentRates = (ticker: Ticker) => async (
 
         if (results && results.rates) {
             // dispatch only if rates are not null/undefined
-            dispatch(updateRate(results.ts * 1000, results.rates, ticker.symbol));
+            dispatch({
+                type: RATE_UPDATE,
+                payload: {
+                    ts: results.ts * 1000,
+                    rates: results.rates,
+                    symbol: ticker.symbol,
+                },
+            });
         }
         return results;
     } catch (error) {
@@ -281,11 +275,16 @@ export const fetchAccountHistory = async (account: Account, weeks: number) => {
     }
 };
 
-export const onUpdateRate = (res: any) => async (dispatch: Dispatch) => {
+export const onUpdateRate = (res: BlockchainFiatRatesUpdate) => async (dispatch: Dispatch) => {
     if (!res?.rates) return;
-    dispatch(
-        updateRate(getUnixTime(new Date()) * 1000, res.rates, res.coin.shortcut.toLowerCase()),
-    );
+    dispatch({
+        type: RATE_UPDATE,
+        payload: {
+            ts: getUnixTime(new Date()) * 1000,
+            rates: res.rates,
+            symbol: res.coin.shortcut.toLowerCase(),
+        },
+    });
 };
 
 export const initRates = () => (dispatch: Dispatch) => {

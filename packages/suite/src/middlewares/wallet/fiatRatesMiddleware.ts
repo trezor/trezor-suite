@@ -1,5 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import { BLOCKCHAIN as CONNECT_BLOCKCHAIN } from 'trezor-connect';
+import { BLOCKCHAIN } from 'trezor-connect';
 import { SUITE } from '@suite-actions/constants';
 import { ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
@@ -17,7 +17,7 @@ const fiatRatesMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
             // TODO: change to WALLET.READY
             api.dispatch(fiatRatesActions.initRates());
             break;
-        case CONNECT_BLOCKCHAIN.FIAT_RATES_UPDATE:
+        case BLOCKCHAIN.FIAT_RATES_UPDATE:
             api.dispatch(fiatRatesActions.onUpdateRate(action.payload));
             break;
         case TRANSACTION.ADD:
