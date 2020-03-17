@@ -82,12 +82,7 @@ function messageToJSON(message: ProtoBuf.Builder.Message) : Object {
       res[key] = num;
     } else if (Array.isArray(value)) {
       const decodedArr = value.map((i) => {
-        if (key === `features` && meta._fieldsByName[key].type.name === `enum`) {
-          // workaround only for Features.features
-          // don't want to beak other messages of this type like "RecoveryDeviceType" etc...
-          const enumValues = meta._fieldsByName[key].resolvedType.getChildren();
-          return enumValues.find(e => e.id === i).name;
-        } else if (typeof i === `object`) {
+        if (typeof i === `object`) {
           return messageToJSON(i);
         } else {
           return i;
