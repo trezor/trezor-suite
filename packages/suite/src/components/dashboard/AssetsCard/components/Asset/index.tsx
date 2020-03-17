@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Account } from '@wallet-types';
-import { CoinLogo, variables } from '@trezor/components';
+import { CoinLogo } from '@trezor/components';
 import { NoRatesTooltip, HiddenPlaceholder, Badge, FiatValue } from '@suite-components';
 import LastWeekGraph from '../LastWeekGraph';
 import { CoinBalance } from '@wallet-components';
@@ -23,12 +23,6 @@ const AssetName = styled.div`
     color: #808080;
     font-size: 12px;
     padding-top: 1px;
-`;
-
-// Similar Badge in DeviceItem (part of switch device modal)
-// TOOD: refactor to single component
-const SmallBadge = styled(Badge)`
-    font-size: ${variables.FONT_SIZE.TINY};
 `;
 
 const BadgeText = styled.div`
@@ -82,7 +76,11 @@ const Asset = React.memo(({ name, symbol, cryptoValue, ...rest }: Props) => {
                 <FiatValueWrapper>
                     <HiddenPlaceholder>
                         <FiatValue amount={cryptoValue} symbol={symbol}>
-                            {fiatValue => <SmallBadge>{fiatValue}</SmallBadge>}
+                            {fiatValue => (
+                                <Badge isGray isSmall>
+                                    {fiatValue}
+                                </Badge>
+                            )}
                         </FiatValue>
                     </HiddenPlaceholder>
                 </FiatValueWrapper>
@@ -96,13 +94,13 @@ const Asset = React.memo(({ name, symbol, cryptoValue, ...rest }: Props) => {
                 <FiatValue amount={cryptoValue} symbol={symbol}>
                     {(_fiatValue, exchangeRate) => {
                         return exchangeRate ? (
-                            <SmallBadge>
+                            <Badge isGray isSmall>
                                 1 {symbol.toUpperCase()} = {exchangeRate}
-                            </SmallBadge>
+                            </Badge>
                         ) : (
-                            <SmallBadge>
+                            <Badge isGray isSmall>
                                 <BadgeText>N/A</BadgeText> <NoRatesTooltip />
-                            </SmallBadge>
+                            </Badge>
                         );
                     }}
                 </FiatValue>

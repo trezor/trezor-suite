@@ -1,17 +1,49 @@
-import styled from 'styled-components';
-import { colors } from '@trezor/components';
+import React from 'react';
+import styled, { css } from 'styled-components';
+import { colors, variables } from '@trezor/components';
 
-const Badge = styled.div`
+interface WrapperProps {
+    isGray?: boolean;
+    isSmall?: boolean;
+}
+
+const Badge = styled.div<WrapperProps>`
     display: flex;
-    background: ${colors.BADGE_BACKGROUND};
+    background: ${colors.BADGE_BLUE_BACKGROUND};
+    color: ${colors.BADGE_BLUE_TEXT_COLOR};
+
     align-items: center;
-    font-weight: 600;
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     padding: 5px;
     border-radius: 3px;
     text-transform: uppercase;
-    color: ${colors.BADGE_TEXT_COLOR};
     align-self: center;
     white-space: nowrap;
+
+    ${props =>
+        props.isGray &&
+        css`
+            background: ${colors.BADGE_GRAY_BACKGROUND};
+            color: ${colors.BADGE_GRAY_TEXT_COLOR};
+        `}
+
+    ${props =>
+        props.isSmall &&
+        css`
+            font-size: ${variables.FONT_SIZE.TINY};
+        `}
 `;
 
-export default Badge;
+interface Props {
+    isGray?: boolean;
+    isSmall?: boolean;
+    children: React.ReactNode;
+}
+
+export default ({ isGray = false, isSmall = false, children }: Props) => {
+    return (
+        <Badge isGray={isGray} isSmall={isSmall}>
+            {children}
+        </Badge>
+    );
+};
