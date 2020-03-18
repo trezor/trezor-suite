@@ -61,7 +61,7 @@ const FiatAmountWrapper = styled.div`
 
 const LoaderWrapper = styled.div`
     display: flex;
-    padding-top: 8px;
+    /* padding-top: 8px; */
     width: 100%;
     justify-content: center;
     align-items: center;
@@ -100,7 +100,7 @@ const InfoCard = (props: Props) => {
                 <AmountWrapper>
                     {props.isLoading && (
                         <LoaderWrapper>
-                            <Loader size={24} />
+                            <Loader size={22} />
                         </LoaderWrapper>
                     )}
 
