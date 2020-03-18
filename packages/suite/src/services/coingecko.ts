@@ -7,10 +7,8 @@ type FCFRParams = {
     url?: string;
 };
 
-interface HistoricalResponse {
+interface HistoricalResponse extends LastWeekRates {
     symbol: string;
-    tickers: LastWeekRates['tickers'];
-    ts: number;
 }
 
 /**
