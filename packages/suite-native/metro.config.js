@@ -5,8 +5,6 @@
  * @format
  */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { URL, URLSearchParams } from 'react-native-url-polyfill';
-
 const path = require('path');
 const blacklist = require('metro-config/src/defaults/blacklist');
 const nodejs = require('node-libs-browser');
@@ -37,7 +35,6 @@ module.exports = (async () => {
                 stream: nodejs.stream,
                 path: nodejs.path,
                 vm: nodejs.vm,
-                URL,
                 '@trezor/blockchain-link': path.resolve(
                     __dirname,
                     '../../packages/blockchain-link',

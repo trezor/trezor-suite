@@ -17,9 +17,9 @@ interface HistoricalResponse extends LastWeekRates {
  * @returns {Promise<any>}
  */
 export const fetchCoinList = async (): Promise<any> => {
-    const url = new URL('/api/v3/coins/list', COINGECKO_BASE_URL);
+    const url = `${COINGECKO_BASE_URL}api/v3/coins/list`;
 
-    const response = await fetch(url.toString());
+    const response = await fetch(url);
     const tokens = await response.json();
     return tokens;
 };
@@ -32,28 +32,26 @@ export const fetchCoinList = async (): Promise<any> => {
  * @returns
  */
 export const fetchCurrentFiatRates = async (params: FCFRParams) => {
-    let url: URL | null = null;
+    let url: string | null = null;
     const { symbol } = params;
 
     if (params.url) {
-        url = new URL(params.url);
+        url = params.url;
     } else if (symbol) {
         // fetch coin id from coingecko and use it to build URL for fetching rates
         const coinList = await fetchCoinList();
         const coinData = coinList.find((t: any) => t.symbol === symbol.toLowerCase());
         if (!coinData) return null;
-        url = new URL(`/api/v3/coins/${coinData.id}`, COINGECKO_BASE_URL);
+        url = `${COINGECKO_BASE_URL}api/v3/coins/${coinData.id}`;
     }
 
     if (!url) return null;
 
-    url.searchParams.set('tickers', 'false');
-    url.searchParams.set('market_data', 'true');
-    url.searchParams.set('community_data', 'false');
-    url.searchParams.set('developer_data', 'false');
-    url.searchParams.set('sparkline', 'false');
+    const queryString =
+        'tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false';
+    url = `${url}?${queryString}`;
 
-    const response = await fetch(url.toString());
+    const response = await fetch(url);
     const rates = await response.json();
     return {
         ts: new Date().getTime() / 1000,
@@ -78,14 +76,13 @@ export const getFiatRatesForTimestamps = async (
     const coinData = coinList.find((t: any) => t.symbol === symbol.toLowerCase());
     if (!coinData) return null;
 
-    const url = new URL(`/api/v3/coins/${coinData.id}/history`, COINGECKO_BASE_URL);
+    const url = `${COINGECKO_BASE_URL}/api/v3/coins/${coinData.id}/history`;
 
     const promises = timestamps.map(async t => {
         const d = new Date(t * 1000);
         const dateParam = `${d.getUTCDate()}-${d.getUTCMonth() + 1}-${d.getUTCFullYear()}`;
-        url.searchParams.set('date', dateParam);
 
-        const response = await fetch(url.toString());
+        const response = await fetch(`${url}?date=${dateParam}`);
         const data = await response.json();
         // if (!data?.market_data?.current_price) return null;
         // TODO: market_data field is missing if they are no rates available for a given date
