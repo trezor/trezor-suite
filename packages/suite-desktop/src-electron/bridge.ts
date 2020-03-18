@@ -90,8 +90,6 @@ const execute = (command: string) => {
 export const isBridgeRunning = async () => {
     const processes = await psList();
     const isRunning = processes.find(ps => ps.name.includes(TREZOR_PROCESS_NAME));
-    console.log('processes', processes);
-    console.log('isRunning', isRunning);
     return isRunning;
 };
 
@@ -104,7 +102,6 @@ export const runBridgeProcess = async () => {
     }
 
     const lib = getBridgeLibByOs();
-    console.log('lib', lib);
     if (lib) {
         spawnProcess(lib);
     }
