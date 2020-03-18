@@ -152,7 +152,7 @@ const TransactionList = ({
                                                         {({ value }) =>
                                                             value && (
                                                                 <FiatDayAmount>
-                                                                    {fiatValue}
+                                                                    {value}
                                                                 </FiatDayAmount>
                                                             )
                                                         }

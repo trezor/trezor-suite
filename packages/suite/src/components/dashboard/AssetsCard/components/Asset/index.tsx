@@ -27,10 +27,6 @@ const AssetName = styled.div`
     padding-top: 1px;
 `;
 
-const BadgeText = styled.div`
-    margin-right: 6px;
-`;
-
 const Col = styled.div`
     display: flex;
     align-items: center;
