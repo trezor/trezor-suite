@@ -18,6 +18,7 @@ let endpoints: string[] = [];
 
 const blockSubscrData: BlockNotification[] = [];
 let subscrBlockIntervalLink;
+let subscrAddressIntervalLink;
 
 // This data must be obtained from somewhere in the front end
 const loginData: LoginData = {
@@ -264,18 +265,41 @@ const subscribeAccounts = async (accounts: SubscriptionAccountInfo[]) => {
 };
 
 const subscribeAddresses = async (addresses: string[]) => {
-    common.addAddresses(addresses);
+    // common.addAddresses(addresses);
     // subscribe to new blocks, confirmed and mempool transactions for given addresses
-    const socket = await connect();
-    if (!common.getSubscription('notification')) {
-        socket.on('notification', onTransaction);
-        common.addSubscription('notification');
+    // const socket = await connect();
+    // if (!common.getSubscription('notification')) {
+    //     socket.on('notification', onTransaction);
+    //     common.addSubscription('notification');
+    // }
+    if (!addresses[0]) {
+        throw new Error('Address is not specified');
     }
-    console.log('adasdasdas');
-    const rpcClientObj = new RpcClient(loginData);
-    const blockInfo = await rpcClientObj.subscribeOnAddress('test');
 
-    return socket.subscribeAddresses(common.getAddresses());
+    const rpcClient = new RpcClient(loginData);
+    let foundedTxs: AddressNotification[] = [];
+
+    if (subscrAddressIntervalLink) {
+        clearInterval(subscrAddressIntervalLink); // clear if exist
+    }
+
+    subscrAddressIntervalLink = setInterval(async () => {
+        const possibleNewBlock: BlockNotification = await rpcClient.getBlockchainInfo(true);
+        const findStatus = blockSubscrData.some(oneElem => {
+            return oneElem.hash === possibleNewBlock.hash;
+        });
+
+        // TODO: change to true then after testing
+        if (findStatus === false) {
+            blockSubscrData.unshift(possibleNewBlock);
+            foundedTxs = await rpcClient.searchAddressInBlock(addresses[0], possibleNewBlock.hash);
+            foundedTxs.forEach(oneTx => {
+                onTransaction(oneTx);
+            });
+        }
+    }, 5000);
+
+    return foundedTxs;
 };
 
 const subscribeBlock = async () => {

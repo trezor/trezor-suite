@@ -12,9 +12,21 @@ import {
     VinVout,
     CalculatedTotal,
 } from '../../types/rpcbitcoind';
-import { HDNode as BitcoinJsHDNode, Network as BitcoinJsNetwork } from '@trezor/utxo-lib';
+import {
+    HDNode as BitcoinJsHDNode,
+    networks as BitcoinJsNetwork,
+    address as BitcoinJsAddress,
+} from '@trezor/utxo-lib';
 import BigNumber from 'bignumber.js';
 import GCSFilter from 'golomb';
+import Base58check from 'base58check';
+
+// const SEGWIT_INPUT_SCRIPT_LENGTH = 51; // actually 50.25, but let's make extra room
+// const INPUT_SCRIPT_LENGTH = 109;
+// const P2PKH_OUTPUT_SCRIPT_LENGTH = 25;
+// const P2SH_OUTPUT_SCRIPT_LENGTH = 23;
+// const P2WPKH_OUTPUT_SCRIPT_LENGTH = 22;
+// const P2WSH_OUTPUT_SCRIPT_LENGTH = 34;
 
 export interface LoginData {
     username: string;
@@ -43,52 +55,79 @@ export class RpcClient {
             .getAddress();
     };
 
-    async subscribeOnAddress(address: string): Promise<string[]> {
+    isBech32(address: string): boolean {
         try {
-            const blockHash = await this.getBlockHash(621834);
-            const filterInitial = await this.getBlockFilter(blockHash);
-
-            const block_filter = Buffer.from(filterInitial.filter, 'hex');
-            const P = 19;
-            const filter = GCSFilter.fromNBytes(P, block_filter);
-
-            const block_hash = Buffer.from(blockHash, 'hex');
-            const key = block_hash.reverse().slice(0, 16);
-
-            // 1. get last block height & hash
-            // 2. get scriptPubKey.hex of needed address
-            // 3. filter, find, if found ->
-            // 4. get txs from block -> show
-            const script1 = Buffer.from(
-                '0020701a8d401c84fb13e6baf169d59684e17abd9fa216c8cc5b9fc63d622ff8c58d',
-                'hex'
-            ); // mmEfi2cW9Vizeau3E6zzmRvbmzJXNrmW9Z 701a8d401c84fb13e6baf169d59684e17abd9fa216c8cc5b9fc63d622ff8c58d bc1qwqdg6squsna38e46795at95yu9atm8azzmyvckulcc7kytlcckxswvvzej
-            console.log('filter.match(key, script1)', filter.match(key, script1));
+            BitcoinJsAddress.fromBech32(address);
+            return true;
         } catch (e) {
-            console.log(e);
+            return false;
         }
-        return [];
+    }
+
+    async searchAddressInBlock(address: string, blockHash: string): Promise<AddressNotification[]> {
+        const decodedAddrObj = Base58check.decode(address, 'hex'); // TODO: find this method in utxo trezor lib
+        const hexPubKey = `76a914${decodedAddrObj.data}88ac`; // TODO: find method for various adressess in uxo trezor lib
+
+        const filterInitial = await this.getBlockFilter(blockHash);
+        const block_filter = Buffer.from(filterInitial.filter, 'hex');
+        const P = 19;
+        const filter = GCSFilter.fromNBytes(P, block_filter);
+        const block_hash = Buffer.from(blockHash, 'hex');
+        const key = block_hash.reverse().slice(0, 16);
+
+        const search = Buffer.from(hexPubKey, 'hex');
+
+        let foundedTxs: any[] = [];
+        if (filter.match(key, search) === true) {
+            const totalTxs = await this.getBlockTxs(blockHash);
+            foundedTxs = await this.iterateTxsInBlock(address, blockHash);
+        }
+        return foundedTxs;
+    }
+
+    async iterateTxsInBlock(
+        searchedAddr: string,
+        blockhash: string
+    ): Promise<AddressNotification[]> {
+        const allTxs = await this.getBlockTxs(blockhash);
+        const returnTxs: AddressNotification[] = [];
+        await Promise.all(
+            allTxs.map(async oneTxId => {
+                const oneTxObj = await this.getRawTransactionInfo(oneTxId, blockhash);
+
+                if (oneTxObj.vout && Array.isArray(oneTxObj.vout)) {
+                    oneTxObj.vout.forEach(async oneVout => {
+                        if (
+                            oneVout.scriptPubKey &&
+                            oneVout.scriptPubKey.addresses &&
+                            this.checkAddressInArr(oneVout.scriptPubKey.addresses, searchedAddr) ===
+                                true
+                        ) {
+                            const tx = await this.convertRawTransactionToNormal(oneTxObj);
+                            const notif: AddressNotification = {
+                                address: searchedAddr,
+                                tx,
+                            };
+                            returnTxs.push(notif);
+                        }
+                    });
+                }
+            })
+        );
+
+        return returnTxs;
+    }
+
+    checkAddressInArr(arrAddr, neededAddr) {
+        return arrAddr.some(oneAddr => {
+            return neededAddr === oneAddr;
+        });
     }
 
     getAccountinfo(payload: AccountInfoParams): object {
         if (payload.details && payload.details === 'tokens') {
-            // temporary hardcoded
-            const network = {
-                messagePrefix: '\x18Bitcoin Signed Message:\n',
-                bech32: 'bc',
-                bip32: {
-                    public: 0x0488b21e,
-                    private: 0x0488ade4,
-                },
-                pubKeyHash: 0x00,
-                scriptHash: 0x05,
-                wif: 0x80,
-                coin: 'btc',
-            };
-
             const returnObj = {
-                address:
-                    'xpub6BiVtCpG9fQPxnPmHXG8PhtzQdWC2Su4qWu6XW9tpWFYhxydCLJGrWBJZ5H6qTAHdPQ7pQhtpjiYZVZARo14qHiay2fvrX996oEP42u8wZy',
+                address: payload.descriptor,
                 balance: '0',
                 totalReceived: '0',
                 totalSent: '0',
@@ -103,7 +142,7 @@ export class RpcClient {
             for (let i = 0; i <= 20; i++) {
                 returnObj.tokens.push({
                     type: 'XPUBAddress',
-                    name: this.deriveXpub(payload.descriptor, network, i),
+                    name: this.deriveXpub(payload.descriptor, BitcoinJsNetwork.testnet, i),
                     path: `m/44'/1'/0'/0/${i}`,
                     transfers: 0,
                     decimals: 8,
@@ -158,6 +197,25 @@ export class RpcClient {
         });
     }
 
+    getBlockTxs(byHash) {
+        return new Promise<any>((resolve, reject) => {
+            RpcBitcoinClient.call('getblock', [byHash], function callback(
+                error: string,
+                response: any
+            ): void {
+                if (error) {
+                    reject(error); // error in case calling RPC
+                } else if (response.error) {
+                    reject(new Error(response.error.message)); // possible error from blockchain
+                } else if (response.result && response.result.tx) {
+                    resolve(response.result.tx);
+                } else {
+                    reject(new Error('bad data from RPC server')); // TODO: attach to custom error class?
+                }
+            });
+        });
+    }
+
     getNetworkInfo() {
         return new Promise<any>((resolve, reject) => {
             RpcBitcoinClient.call('getnetworkinfo', [], function callback(
@@ -177,11 +235,15 @@ export class RpcClient {
         });
     }
     // getrawtransaction
-    getRawTransactionInfo(byId: string) {
+    getRawTransactionInfo(byId: string, inBlockHash?: string) {
         return new Promise<any>((resolve, reject) => {
+            let parametersArr = [byId, 1];
+            if (inBlockHash) {
+                parametersArr = [byId, 1, inBlockHash];
+            }
             RpcBitcoinClient.call(
                 'getrawtransaction',
-                [byId, 1],
+                parametersArr,
                 (error: string, response: any): void => {
                     if (error) {
                         reject(error); // error in case calling RPC
