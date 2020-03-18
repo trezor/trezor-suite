@@ -31,7 +31,7 @@ const Wrapper = styled.div<WrapperProps>`
 const Image = styled.img``;
 
 const Title = styled.div`
-    font-size: ${FONT_SIZE.NORMAL};
+    font-size: ${FONT_SIZE.BIG};
 
     ::first-letter {
         text-transform: capitalize;
@@ -39,7 +39,7 @@ const Title = styled.div`
 `;
 
 const Text = styled.div`
-    font-size: ${FONT_SIZE.BIG};
+    font-size: ${FONT_SIZE.NORMAL};
     color: ${colors.BLACK50};
 `;
 

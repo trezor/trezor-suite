@@ -12,8 +12,7 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 <Text>
-                    Trezor One features two buttons and a monochromatic screen, Trezor T is the
-                    high-end model featuring touch-screen display.
+                    <Translation id="TR_MODELS_DESC" />
                 </Text>
                 <Wrapper.Options>
                     <Option
@@ -22,9 +21,14 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                             onboardingActions.selectTrezorModel(1);
                             onboardingActions.goToNextStep();
                         }}
-                        title="Trezor One"
-                        text={<Translation id="TR_MODEL_ONE" />}
-                        button="Select Trezor One"
+                        title={<Translation id="TR_MODEL_ONE" />}
+                        text={<Translation id="TR_MODEL_ONE_DESC" />}
+                        button={
+                            <Translation
+                                id="TR_SELECT_MODEL"
+                                values={{ model: <Translation id="TR_MODEL_ONE" /> }}
+                            />
+                        }
                         imgSrc="images/svg/model-1.svg"
                     />
                     <Option
@@ -33,9 +37,14 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                             onboardingActions.selectTrezorModel(2);
                             onboardingActions.goToNextStep();
                         }}
-                        title="Trezor One"
-                        text={<Translation id="TR_MODEL_T" />}
-                        button="Select Trezor T"
+                        title={<Translation id="TR_MODEL_T" />}
+                        text={<Translation id="TR_MODEL_T_DESC" />}
+                        button={
+                            <Translation
+                                id="TR_SELECT_MODEL"
+                                values={{ model: <Translation id="TR_MODEL_T" /> }}
+                            />
+                        }
                         imgSrc="images/svg/model-2.svg"
                     />
                 </Wrapper.Options>
@@ -47,7 +56,7 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                             onboardingActions.goToPreviousStep();
                         }}
                     >
-                        Back
+                        <Translation id="TR_BACK" />
                     </OnboardingButton.Back>
                 </Wrapper.Controls>
             </Wrapper.StepFooter>
