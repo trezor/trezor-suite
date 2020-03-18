@@ -48,6 +48,16 @@ const Actions = styled.div`
     justify-content: space-between;
 `;
 
+const ErrorMessage = styled.div`
+    display: flex;
+    width: 100%;
+    padding: 32px;
+    align-items: center;
+    justify-content: center;
+    color: ${colors.BLACK50};
+    font-size: ${variables.FONT_SIZE.SMALL};
+`;
+
 interface Props {
     account: Account;
 }
@@ -119,47 +129,52 @@ const TransactionSummary = (props: Props) => {
             {!isGraphHidden && (
                 <ContentWrapper>
                     {/* TODO: what should be shown on error? */}
-                    <GraphWrapper>
-                        <AccountTransactionsGraph
-                            account={props.account}
-                            isLoading={isLoading}
-                            data={data}
-                            selectedRange={selectedRange}
-                            onSelectedRange={setSelectedRange}
-                        />
-                    </GraphWrapper>
-                    <InfoCardsWrapper>
-                        {!error && (
-                            <>
-                                <InfoCard
-                                    title={<Translation {...messages.TR_INCOMING} />}
-                                    value={totalReceivedAmount?.toFixed()}
-                                    symbol={props.account.symbol}
-                                    stripe="green"
+                    {error && <ErrorMessage>Could not load data</ErrorMessage>}
+                    {!error && (
+                        <>
+                            <GraphWrapper>
+                                <AccountTransactionsGraph
+                                    account={props.account}
                                     isLoading={isLoading}
-                                    isNumeric
+                                    data={data}
+                                    selectedRange={selectedRange}
+                                    onSelectedRange={setSelectedRange}
                                 />
-                                <InfoCard
-                                    title={<Translation {...messages.TR_OUTGOING} />}
-                                    value={totalSentAmount?.toFixed()}
-                                    symbol={props.account.symbol}
-                                    isLoading={isLoading}
-                                    stripe="red"
-                                    isNumeric
-                                />
-                                <InfoCard
-                                    title={<Translation {...messages.TR_NUMBER_OF_TRANSACTIONS} />}
-                                    isLoading={isLoading}
-                                    value={
-                                        <Translation
-                                            {...messages.TR_N_TRANSACTIONS}
-                                            values={{ value: numOfTransactions }}
-                                        />
-                                    }
-                                />
-                            </>
-                        )}
-                    </InfoCardsWrapper>
+                            </GraphWrapper>
+                            <InfoCardsWrapper>
+                                <>
+                                    <InfoCard
+                                        title={<Translation {...messages.TR_INCOMING} />}
+                                        value={totalReceivedAmount?.toFixed()}
+                                        symbol={props.account.symbol}
+                                        stripe="green"
+                                        isLoading={isLoading}
+                                        isNumeric
+                                    />
+                                    <InfoCard
+                                        title={<Translation {...messages.TR_OUTGOING} />}
+                                        value={totalSentAmount?.toFixed()}
+                                        symbol={props.account.symbol}
+                                        isLoading={isLoading}
+                                        stripe="red"
+                                        isNumeric
+                                    />
+                                    <InfoCard
+                                        title={
+                                            <Translation {...messages.TR_NUMBER_OF_TRANSACTIONS} />
+                                        }
+                                        isLoading={isLoading}
+                                        value={
+                                            <Translation
+                                                {...messages.TR_N_TRANSACTIONS}
+                                                values={{ value: numOfTransactions }}
+                                            />
+                                        }
+                                    />
+                                </>
+                            </InfoCardsWrapper>
+                        </>
+                    )}
                 </ContentWrapper>
             )}
         </Wrapper>
