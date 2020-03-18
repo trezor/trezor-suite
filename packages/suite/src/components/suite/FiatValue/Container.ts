@@ -16,22 +16,22 @@ interface Params {
 }
 
 // TODO: doesn't work like it should
-type CommonOwnProps = {
+interface CommonOwnProps {
     amount: string;
     symbol: Network['symbol'] | string;
     fiatCurrency?: string;
     children?: (props: Params) => React.ReactElement | null;
-};
+}
 
-type DefaultSourceProps = CommonOwnProps & {
-    source?: undefined;
-    useCustomSource?: undefined;
-};
+interface DefaultSourceProps extends CommonOwnProps {
+    source?: never;
+    useCustomSource?: never;
+}
 
-type CustomSourceProps = CommonOwnProps & {
+interface CustomSourceProps extends CommonOwnProps {
     source: NonNullable<TimestampedRates['rates']> | null;
     useCustomSource: boolean;
-};
+}
 
 type OwnProps = DefaultSourceProps | CustomSourceProps;
 
