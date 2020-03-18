@@ -16,6 +16,7 @@ interface Params {
 }
 
 // TODO: doesn't work like it should
+// https://github.com/DefinitelyTyped/DefinitelyTyped/issues/35315
 interface CommonOwnProps {
     amount: string;
     symbol: Network['symbol'] | string;
