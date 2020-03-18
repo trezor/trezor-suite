@@ -7,7 +7,7 @@ import * as electronLocalshortcut from 'electron-localshortcut';
 import * as store from './store';
 import { isBridgeRunning, runBridgeProcess } from './bridge';
 
-let mainWindow: BrowserWindow | undefined;
+let mainWindow: BrowserWindow;
 const PROTOCOL = 'file';
 const src = isDev
     ? 'http://localhost:8000/'
@@ -115,6 +115,7 @@ app.on('ready', init);
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
     app.quit();
+    // @ts-ignore
     mainWindow = undefined;
 });
 
