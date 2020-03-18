@@ -84,8 +84,6 @@ const IOBoxAddress = styled.div`
 `;
 
 const HistoricalBadge = styled(props => <Badge {...props} />)`
-    background: #b3b3b3;
-    color: white;
     margin-left: 8px;
 `;
 

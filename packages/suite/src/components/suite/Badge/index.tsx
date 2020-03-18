@@ -34,15 +34,15 @@ const Badge = styled.div<WrapperProps>`
         `}
 `;
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
     isGray?: boolean;
     isSmall?: boolean;
     children: React.ReactNode;
 }
 
-export default ({ isGray = false, isSmall = false, children }: Props) => {
+export default ({ isGray = false, isSmall = false, children, ...props }: Props) => {
     return (
-        <Badge isGray={isGray} isSmall={isSmall}>
+        <Badge isGray={isGray} isSmall={isSmall} {...props}>
             {children}
         </Badge>
     );
