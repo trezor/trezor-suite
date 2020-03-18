@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import styled, { css } from 'styled-components';
 import { Account } from '@wallet-types';
 import { Card, FiatValue, Badge } from '@suite-components';
@@ -85,7 +85,7 @@ const TokenList = ({ tokens, explorerUrl }: Props) => {
             {tokens &&
                 tokens.map(t => {
                     return (
-                        <>
+                        <Fragment key={t.address}>
                             <Col paddingHorizontal>
                                 <TokenImage>
                                     <ScaleText widthOnly>{t.symbol}</ScaleText>
@@ -111,7 +111,7 @@ const TokenList = ({ tokens, explorerUrl }: Props) => {
                                     <Icon icon="EXTERNAL_LINK" size={16} color={colors.BLACK25} />
                                 </Link>
                             </Col>
-                        </>
+                        </Fragment>
                     );
                 })}
         </Wrapper>
