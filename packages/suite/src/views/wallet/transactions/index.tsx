@@ -3,7 +3,7 @@ import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
 import { colors, Loader } from '@trezor/components';
 import { WalletLayout } from '@wallet-components';
-import { getAccountTransactions } from '@wallet-utils/accountUtils';
+import { getAccountTransactions, isTestnet } from '@wallet-utils/accountUtils';
 import { SETTINGS } from '@suite-config';
 import TransactionList from './components/TransactionList';
 
@@ -71,7 +71,11 @@ export default (props: Props) => {
                 <>
                     {account.networkType !== 'ripple' && <TransactionSummary account={account} />}
                     {account.networkType === 'ethereum' && (
-                        <TokenList explorerUrl={network.explorer.account} tokens={account.tokens} />
+                        <TokenList
+                            isTestnet={isTestnet(account.symbol)}
+                            explorerUrl={network.explorer.account}
+                            tokens={account.tokens}
+                        />
                     )}
                     <TransactionList
                         explorerUrl={network.explorer.tx}

@@ -9,7 +9,8 @@ import { variables, colors, Icon, Link } from '@trezor/components';
 const Wrapper = styled(Card)`
     display: grid;
     grid-column-gap: 12px;
-    grid-template-columns: 52px 4fr 1fr 1fr 44px;
+    grid-template-columns: ${(props: { isTestnet?: boolean }) =>
+        props.isTestnet ? '52px 4fr 1fr 44px' : '52px 4fr 1fr 1fr 44px'};
     margin-bottom: 20px;
 `;
 
@@ -77,11 +78,12 @@ const FiatWrapper = styled.div`
 interface Props {
     tokens: Account['tokens'];
     explorerUrl: string;
+    isTestnet?: boolean;
 }
 
-const TokenList = ({ tokens, explorerUrl }: Props) => {
+const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
     return (
-        <Wrapper>
+        <Wrapper isTestnet={isTestnet}>
             {tokens &&
                 tokens.map(t => {
                     return (
@@ -97,15 +99,19 @@ const TokenList = ({ tokens, explorerUrl }: Props) => {
                             <Col justify="right">
                                 <TokenValue>{`${t.balance} ${t.symbol?.toUpperCase()}`}</TokenValue>
                             </Col>
-                            <Col justify="right">
-                                <FiatWrapper>
-                                    {t.balance && t.symbol && (
-                                        <FiatValue amount={t.balance} symbol={t.symbol}>
-                                            {({ value }) => (value ? <Badge>{value}</Badge> : null)}
-                                        </FiatValue>
-                                    )}
-                                </FiatWrapper>
-                            </Col>
+                            {!isTestnet && (
+                                <Col justify="right">
+                                    <FiatWrapper>
+                                        {t.balance && t.symbol && (
+                                            <FiatValue amount={t.balance} symbol={t.symbol}>
+                                                {({ value }) =>
+                                                    value ? <Badge>{value}</Badge> : null
+                                                }
+                                            </FiatValue>
+                                        )}
+                                    </FiatWrapper>
+                                </Col>
+                            )}
                             <Col paddingHorizontal>
                                 <Link href={`${explorerUrl}${t.address}`}>
                                     <Icon icon="EXTERNAL_LINK" size={16} color={colors.BLACK25} />
