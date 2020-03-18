@@ -111,7 +111,7 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                         }}
                     />
 
-                    <FiatValue amount="1" symbol={tx.symbol} source={tx.rates}>
+                    <FiatValue amount="1" symbol={tx.symbol} source={tx.rates} useCustomSource>
                         {({ value }) =>
                             value ? <HistoricalBadge>{value}</HistoricalBadge> : <NoRatesTooltip />
                         }
@@ -125,6 +125,7 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                                     amount={totalOutput}
                                     symbol={tx.symbol}
                                     source={tx.rates}
+                                    useCustomSource
                                 >
                                     {({ value }) => value ?? null}
                                 </FiatValue>
@@ -134,7 +135,12 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                     <BoxRow title={<Translation id="TR_TX_FEE" />} alignContent="right">
                         {totalOutput && (
                             <HiddenPlaceholder>
-                                <FiatValue amount={tx.fee} symbol={tx.symbol} source={tx.rates}>
+                                <FiatValue
+                                    amount={tx.fee}
+                                    symbol={tx.symbol}
+                                    source={tx.rates}
+                                    useCustomSource
+                                >
                                     {({ value }) => value ?? null}
                                 </FiatValue>
                             </HiddenPlaceholder>

@@ -15,14 +15,14 @@ import FormattedNumber from '../FormattedNumber';
  * @param {Props} { amount, symbol, fiatCurrency, ...props }
  * @returns
  */
-const FiatValue = ({ amount, symbol, fiatCurrency, source = 'current', ...props }: Props) => {
+const FiatValue = ({ amount, symbol, fiatCurrency, source, useCustomSource, ...props }: Props) => {
     const targetCurrency = fiatCurrency ?? props.settings.localCurrency;
-    const fiatRates = props.fiat.find(f => f.symbol === symbol);
-    const ratesSource = source === 'current' ? fiatRates?.current?.rates : source;
-    const fiatRateValue = ratesSource?.[targetCurrency] ?? null;
-    const fiat = fiatRates ? toFiatCurrency(amount, targetCurrency, ratesSource) : null;
+    const currentFiatRates = props.fiat.find(f => f.symbol === symbol)?.current;
+    const ratesSource = useCustomSource ? source : currentFiatRates?.rates;
+    const fiat = ratesSource ? toFiatCurrency(amount, targetCurrency, ratesSource) : null;
     if (fiat) {
         const fiatValueComponent = <FormattedNumber currency={targetCurrency} value={fiat} />;
+        const fiatRateValue = ratesSource?.[targetCurrency] ?? null;
         const fiatRateComponent = fiatRateValue ? (
             <FormattedNumber currency={targetCurrency} value={fiatRateValue} />
         ) : null;
@@ -30,7 +30,7 @@ const FiatValue = ({ amount, symbol, fiatCurrency, source = 'current', ...props 
         return props.children({
             value: fiatValueComponent,
             rate: fiatRateComponent,
-            timestamp: source !== 'current' ? null : fiatRates!.current?.ts ?? null,
+            timestamp: useCustomSource ? null : currentFiatRates?.ts ?? null,
         });
     }
     if (!props.children) return null;

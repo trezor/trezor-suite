@@ -131,6 +131,7 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                                                     amount={inputAmount}
                                                     symbol={tx.symbol}
                                                     source={tx.rates}
+                                                    useCustomSource
                                                 >
                                                     {({ value }) =>
                                                         value ? (
@@ -179,6 +180,7 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                                                     amount={outputAmount}
                                                     symbol={tx.symbol}
                                                     source={tx.rates}
+                                                    useCustomSource
                                                 >
                                                     {({ value }) =>
                                                         value ? (

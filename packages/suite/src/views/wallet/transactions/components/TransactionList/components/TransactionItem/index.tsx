@@ -315,6 +315,7 @@ const TransactionItem = (props: Props) => {
                                     amount={amount}
                                     symbol={symbol}
                                     source={props.transaction.rates}
+                                    useCustomSource
                                 >
                                     {({ value }) => value && <Badge isSmall>{value}</Badge>}
                                 </FiatValue>

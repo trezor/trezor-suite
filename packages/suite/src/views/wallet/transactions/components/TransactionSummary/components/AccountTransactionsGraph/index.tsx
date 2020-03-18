@@ -120,6 +120,7 @@ const CustomTooltip = ({
                         amount={payload[0].payload.received}
                         symbol={symbol}
                         source={payload[0].payload.rates}
+                        useCustomSource
                     >
                         {({ value }) => (value ? <> ({value})</> : null)}
                     </FiatValue>
@@ -131,6 +132,7 @@ const CustomTooltip = ({
                         amount={payload[0].payload.sent}
                         symbol={symbol}
                         source={payload[0].payload.rates}
+                        useCustomSource
                     >
                         {({ value }) => (value ? <> ({value})</> : null)}
                     </FiatValue>
@@ -262,22 +264,15 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
                                 orientation="right"
                                 domain={['dataMin', 'dataMax']}
                                 stroke={colors.BLACK80}
-                                // tick={{ fill: colors.BLACK50 }}
                                 tick={<CustomizedYAxisTick />}
-                                // axisLine={{ stroke: colors.BLACK80 }}
-                                // axisLine={false}
-                                // tickLine={false}
                             />
                             <Tooltip
-                                // position={{ y: 0, x: 0 }}
-                                // allowEscapeViewBox={{ x: true }}
                                 content={
                                     <CustomTooltip
                                         selectedRange={selectedRange}
                                         symbol={props.account.symbol}
                                     />
                                 }
-                                // cursor={{ fill: '#D9F3FF' }}
                             />
                             />
                             <ReferenceLine y={0} stroke={colors.BLACK80} />
@@ -287,7 +282,6 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
                                 fill={colors.RED_ERROR}
                                 barSize={10}
                                 shape={<CustomBar variant="sent" />}
-                                // minPointSize={1}
                             />
                             <Bar
                                 dataKey={(data: AccountHistory[number]) => Number(data.received)}
@@ -295,8 +289,6 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
                                 fill={colors.GREEN}
                                 barSize={10}
                                 shape={<CustomBar variant="received" />}
-                                // minPointSize={data.received === '0' ? 0 : 1}
-                                // minPointSize={1}
                             />
                         </BarChart>
                     </ResponsiveContainer>

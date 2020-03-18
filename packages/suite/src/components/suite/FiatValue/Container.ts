@@ -15,13 +15,25 @@ interface Params {
     timestamp: number | null;
 }
 
-type OwnProps = {
+// TODO: doesn't work like it should
+type CommonOwnProps = {
     amount: string;
     symbol: Network['symbol'] | string;
     fiatCurrency?: string;
-    source?: TimestampedRates['rates'] | 'current';
     children?: (props: Params) => React.ReactElement | null;
 };
+
+type DefaultSourceProps = CommonOwnProps & {
+    source?: undefined;
+    useCustomSource?: undefined;
+};
+
+type CustomSourceProps = CommonOwnProps & {
+    source: NonNullable<TimestampedRates['rates']> | null;
+    useCustomSource: boolean;
+};
+
+type OwnProps = DefaultSourceProps | CustomSourceProps;
 
 export type Props = ReturnType<typeof mapStateToProps> & OwnProps;
 

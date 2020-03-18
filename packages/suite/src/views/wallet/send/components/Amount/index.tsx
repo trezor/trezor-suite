@@ -1,6 +1,6 @@
-import { Translation, QuestionTooltip } from '@suite-components';
+import { Translation, QuestionTooltip, FiatValue } from '@suite-components';
 
-import { Account, Network } from '@wallet-types';
+import { Network } from '@wallet-types';
 import React from 'react';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import styled from 'styled-components';
@@ -75,25 +75,7 @@ const getMessage = (
     }
 };
 
-const hasRates = (
-    fiat: any,
-    localCurrency: Output['localCurrency']['value'],
-    symbol: Account['symbol'],
-) => {
-    const fiatNetwork = fiat.find((item: any) => item.symbol === symbol);
-
-    if (fiatNetwork) {
-        const rate = fiatNetwork.rates[localCurrency.value].toString();
-
-        if (rate) {
-            return true;
-        }
-    }
-
-    return false;
-};
-
-export default ({ fiat, sendFormActions, output, selectedAccount }: Props) => {
+export default ({ sendFormActions, output, selectedAccount }: Props) => {
     if (selectedAccount.status !== 'loaded') return null;
 
     const { account, network } = selectedAccount;
@@ -130,21 +112,25 @@ export default ({ fiat, sendFormActions, output, selectedAccount }: Props) => {
                 />
                 <CurrencySelect key="currency-select" symbol={symbol} tokens={account.tokens} />
             </Left>
-            {hasRates(fiat, localCurrency.value, symbol) && (
-                <>
-                    <EqualsSign>=</EqualsSign>
-                    <Right>
-                        <FiatComponent
-                            outputId={id}
-                            key="fiat-input"
-                            state={error ? 'error' : undefined}
-                            sendFormActions={sendFormActions}
-                            value={fiatValue.value}
-                            localCurrency={localCurrency.value}
-                        />
-                    </Right>
-                </>
-            )}
+            <FiatValue amount="1" fiatCurrency={localCurrency.value.value} symbol={symbol}>
+                {({ rate }) =>
+                    rate && (
+                        <>
+                            <EqualsSign>=</EqualsSign>
+                            <Right>
+                                <FiatComponent
+                                    outputId={id}
+                                    key="fiat-input"
+                                    state={error ? 'error' : undefined}
+                                    sendFormActions={sendFormActions}
+                                    value={fiatValue.value}
+                                    localCurrency={localCurrency.value}
+                                />
+                            </Right>
+                        </>
+                    )
+                }
+            </FiatValue>
         </Wrapper>
     );
 };
