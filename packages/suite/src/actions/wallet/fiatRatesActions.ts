@@ -8,11 +8,10 @@ import {
     RATE_UPDATE,
     LAST_WEEK_RATES_UPDATE,
     TX_FIAT_RATE_UPDATE,
+    RATE_REMOVE,
 } from './constants/fiatRatesConstants';
 import { Network, Account, CoinFiatRates, WalletAccountTransaction } from '@wallet-types';
-
-// TODO:
-// Switching off network -> remove rates?, unsubscribe
+import { NETWORKS } from '@suite/config/wallet';
 
 type Ticker = {
     symbol: string;
@@ -25,6 +24,10 @@ export type FiatRateActions =
     | {
           type: typeof RATE_UPDATE;
           payload: FiatRatesPayload;
+      }
+    | {
+          type: typeof RATE_REMOVE;
+          symbol: string;
       }
     | {
           type: typeof TX_FIAT_RATE_UPDATE;
@@ -49,6 +52,27 @@ const INTERVAL = 1000 * 60; // 1 min
 // which rates should be considered outdated and updated;
 const MAX_AGE = 1000 * 60 * 10; // 10 mins
 const INTERVAL_LAST_WEEK = 1000 * 60 * 60 * 4; // 4 hours
+
+export const remove = (symbol: string) => (dispatch: Dispatch) => {
+    dispatch({
+        type: RATE_REMOVE,
+        symbol,
+    });
+};
+
+export const removeRatesForDisabledNetworks = () => (dispatch: Dispatch, getState: GetState) => {
+    const { enabledNetworks } = getState().wallet.settings;
+    const { fiat } = getState().wallet;
+    const mainNetworks = NETWORKS.map(n => n.symbol);
+    fiat.forEach(f => {
+        const symbol = f.symbol as Network['symbol'];
+        if (mainNetworks.includes(symbol) && !enabledNetworks.includes(symbol)) {
+            // one of the main networks is disabled
+            dispatch(remove(f.symbol));
+        }
+        // TODO: figure out removing token rates
+    });
+};
 
 /**
  * Fetch and update current fiat rates for a given ticker

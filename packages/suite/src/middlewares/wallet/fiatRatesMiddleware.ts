@@ -37,6 +37,7 @@ const fiatRatesMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
             break;
         }
         case WALLET_SETTINGS.CHANGE_NETWORKS:
+            api.dispatch(fiatRatesActions.removeRatesForDisabledNetworks());
             api.dispatch(fiatRatesActions.updateStaleRates());
             break;
         default:

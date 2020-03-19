@@ -122,6 +122,10 @@ export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: Ge
     );
 };
 
+export const removeFiatRate = (symbol: string) => (_dispatch: Dispatch, getState: GetState) => {
+    return db.removeItemByPK('fiatRates', symbol);
+};
+
 export const saveFiatRates = () => (_dispatch: Dispatch, getState: GetState) => {
     return db.addItems('fiatRates', getState().wallet.fiat, true);
 };

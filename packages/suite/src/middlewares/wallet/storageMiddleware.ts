@@ -82,6 +82,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             break;
 
         case WALLET_SETTINGS.CHANGE_NETWORKS:
+            api.dispatch(storageActions.saveWalletSettings());
+            api.dispatch(storageActions.saveFiatRates());
+            break;
+
         case WALLET_SETTINGS.CHANGE_EXTERNAL_NETWORKS:
         case WALLET_SETTINGS.SET_HIDE_BALANCE:
         case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
@@ -95,6 +99,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
 
         case FIAT_RATES.RATE_UPDATE:
             api.dispatch(storageActions.saveFiatRates());
+            break;
+
+        case FIAT_RATES.RATE_REMOVE:
+            api.dispatch(storageActions.removeFiatRate(action.symbol));
             break;
         default:
             break;

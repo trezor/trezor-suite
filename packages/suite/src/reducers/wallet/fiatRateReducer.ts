@@ -1,6 +1,10 @@
 import produce from 'immer';
 import { Action } from '@suite-types';
-import { RATE_UPDATE, LAST_WEEK_RATES_UPDATE } from '@wallet-actions/constants/fiatRatesConstants';
+import {
+    RATE_UPDATE,
+    LAST_WEEK_RATES_UPDATE,
+    RATE_REMOVE,
+} from '@wallet-actions/constants/fiatRatesConstants';
 import { STORAGE } from '@suite-actions/constants';
 import { Network } from '@wallet-types';
 
@@ -27,6 +31,11 @@ export interface CoinFiatRates {
 }
 
 export const initialState: CoinFiatRates[] = [];
+
+const remove = (state: CoinFiatRates[], symbol: string) => {
+    const index = state.findIndex(f => f.symbol === symbol);
+    state.splice(index, 1);
+};
 
 const updateCurrentRates = (state: CoinFiatRates[], current: CurrentFiatRates) => {
     const { symbol } = current;
@@ -63,6 +72,9 @@ const updateLastWeekRates = (
 export default (state: CoinFiatRates[] = initialState, action: Action): CoinFiatRates[] => {
     return produce(state, draft => {
         switch (action.type) {
+            case RATE_REMOVE:
+                remove(draft, action.symbol);
+                break;
             case RATE_UPDATE:
                 updateCurrentRates(draft, action.payload);
                 break;
