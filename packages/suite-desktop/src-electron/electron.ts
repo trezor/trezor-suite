@@ -36,7 +36,7 @@ const registerShortcuts = (window: BrowserWindow) => {
 
 const init = async () => {
     try {
-        // TODO: not neccesarry since suite will send a request to start bridge via IPC
+        // TODO: not necessary since suite will send a request to start bridge via IPC
         // but right now removing it causes showing the download bridge modal for a sec
         await runBridgeProcess();
     } catch (error) {
