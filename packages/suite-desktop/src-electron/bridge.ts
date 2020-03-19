@@ -50,9 +50,13 @@ const getBridgeLibByOs = () => {
     const os = getOS();
     const arch = getArch();
     const bridgeVersion = getBridgeVersion();
-    const filePath = `public/static/bridge/${bridgeVersion}`;
-    const prefixedFilePath = isDev ? filePath : `build/${filePath}`;
-    const bridgeStaticFolder = join(__dirname, `../${prefixedFilePath}`);
+    const filePath = `static/bridge/${bridgeVersion}`;
+    const prefixedFilePath = isDev ? `public/${filePath}` : `build/${filePath}`;
+    const bridgeStaticPath = join(__dirname, `../${prefixedFilePath}`);
+    // bridge binaries need to be unpacked from asar archive otherwise spawning the bridge process won't work
+    const bridgeStaticFolder = isDev
+        ? bridgeStaticPath
+        : bridgeStaticPath.replace('app.asar', 'app.asar.unpacked');
 
     switch (os) {
         case 'mac':
