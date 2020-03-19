@@ -52,14 +52,15 @@ const Wrapper = styled.button<WrapperProps>`
             font-weight: ${variables.FONT_WEIGHT.BOLD};
             background: ${colors.BUTTON_PRIMARY};
 
-            &:hover {
+            &:hover,
+            &:focus {
                 box-shadow: 0 0 0 4px ${colors.BUTTON_PRIMARY_BORDER};
                 background: ${colors.BUTTON_PRIMARY_HOVER};
             }
 
-            &:focus {
+            &:active {
                 box-shadow: 0 0 0 4px ${colors.BUTTON_PRIMARY_BORDER};
-                background: ${colors.BUTTON_PRIMARY_FOCUS};
+                background: ${colors.BUTTON_PRIMARY_ACTIVE};
             }
         `}
 
@@ -68,14 +69,15 @@ const Wrapper = styled.button<WrapperProps>`
         css`
             background: ${colors.BUTTON_SECONDARY};
 
-            &:hover {
+            &:hover,
+            &:focus {
                 box-shadow: 0 0 0 4px ${colors.BUTTON_SECONDARY_BORDER};
                 background: ${colors.BUTTON_SECONDARY_HOVER};
             }
 
-            &:focus {
+            &:active {
                 box-shadow: 0 0 0 4px ${colors.BUTTON_SECONDARY_BORDER};
-                background: ${colors.BUTTON_SECONDARY_FOCUS};
+                background: ${colors.BUTTON_SECONDARY_ACTIVE};
             }
         `}
 
@@ -84,8 +86,9 @@ const Wrapper = styled.button<WrapperProps>`
         !props.isDisabled &&
         css`
             padding: 0px 4px;
-            &:focus,
-            &:hover {
+            &:active,
+            &:hover,
+            &:focus {
                 color: ${colors.BLACK25};
                 background: ${colors.BUTTON_TERTIARY_HOVER};
             }
@@ -98,14 +101,15 @@ const Wrapper = styled.button<WrapperProps>`
             font-weight: ${variables.FONT_WEIGHT.BOLD};
             background: ${colors.BUTTON_RED};
 
-            &:hover {
+            &:hover,
+            &:focus {
                 background: ${colors.BUTTON_RED_HOVER};
                 box-shadow: 0 0 0 4px ${colors.BUTTON_RED_BORDER};
             }
 
-            &:focus {
+            &:active {
                 box-shadow: 0 0 0 4px ${colors.BUTTON_RED_BORDER};
-                background: ${colors.BUTTON_RED_FOCUS};
+                background: ${colors.BUTTON_RED_ACTIVE};
             }
         `}
 
@@ -116,7 +120,7 @@ const Wrapper = styled.button<WrapperProps>`
             color: ${colors.BUTTON_DISABLED_TEXT};
 
             &:hover,
-            &:focus {
+            &:active {
                 box-shadow: none;
                 background: ${colors.BUTTON_DISABLED_BACKGROUND};
                 color: ${colors.BUTTON_DISABLED_TEXT};
@@ -131,7 +135,7 @@ const Wrapper = styled.button<WrapperProps>`
             background: transparent;
 
             &:hover,
-            &:focus {
+            &:active {
                 box-shadow: none;
                 background: transparent;
             }

@@ -1058,10 +1058,20 @@ const definedMessages = defineMessages({
         description: 'Name of Trezor model 1',
         id: 'TR_MODEL_ONE',
     },
+    TR_MODEL_ONE_DESC: {
+        defaultMessage: 'Two buttons and a mono-chromatic screen',
+        description: 'Description of Trezor model 1',
+        id: 'TR_MODEL_ONE_DESC',
+    },
     TR_MODEL_T: {
         defaultMessage: 'Model T',
         description: 'Name of Trezor model T',
         id: 'TR_MODEL_T',
+    },
+    TR_MODEL_T_DESC: {
+        defaultMessage: 'Full-color touch-screen display',
+        description: 'Description of Trezor model T',
+        id: 'TR_MODEL_T_DESC',
     },
     TR_NAV_RECEIVE: {
         defaultMessage: 'Receive',
@@ -2456,6 +2466,16 @@ const definedMessages = defineMessages({
     MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED: {
         id: 'MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED',
         defaultMessage: 'Account index is greater than 10',
+    },
+    TR_SELECT_MODEL: {
+        id: 'TR_SELECT_MODEL',
+        defaultMessage: 'Select {model}',
+        descrition: '{model} is translation -eiter TR_MODEL_T or TR_MODEL_ONE',
+    },
+    TR_MODELS_DESC: {
+        id: 'TR_MODELS_DESC',
+        defaultMessage:
+            'Trezor One features two buttons and a monochromatic screen, Trezor T is the high-end model featuring touch-screen display.',
     },
 } as const);
 

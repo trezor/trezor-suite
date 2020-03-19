@@ -84,13 +84,7 @@ const Asset = React.memo(({ name, symbol, cryptoValue, localCurrency, ...props }
                 <FiatValueWrapper>
                     <HiddenPlaceholder>
                         <FiatValue amount={cryptoValue} symbol={symbol}>
-                            {({ value }) =>
-                                value ? (
-                                    <Badge isGray isSmall>
-                                        {value}
-                                    </Badge>
-                                ) : null
-                            }
+                            {({ value }) => (value ? <Badge isSmall>{value}</Badge> : null)}
                         </FiatValue>
                     </HiddenPlaceholder>
                 </FiatValueWrapper>
@@ -108,7 +102,7 @@ const Asset = React.memo(({ name, symbol, cryptoValue, localCurrency, ...props }
                 <FiatValue amount={cryptoValue} symbol={symbol}>
                     {({ rate }) => {
                         return rate ? (
-                            <Badge isGray isSmall>
+                            <Badge isSmall>
                                 1 {symbol.toUpperCase()} = {rate}
                             </Badge>
                         ) : (

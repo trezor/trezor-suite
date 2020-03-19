@@ -9,6 +9,7 @@ import DeviceSeedless from '@suite-views/device-seedless';
 import DeviceUnknown from '@suite-views/device-unknown';
 import DeviceUnreadable from '@suite-views/device-unreadable';
 import DeviceUpdateRequired from '@suite-views/device-update-required';
+import DeviceRecoveryMode from '@suite-views/device-recovery-mode';
 import SwitchDevice from '@suite-views/switch-device';
 import Version from '@suite-views/version';
 import Welcome from '@suite-views/welcome';
@@ -25,6 +26,7 @@ export {
     DeviceUnknown,
     DeviceUnreadable,
     DeviceUpdateRequired,
+    DeviceRecoveryMode,
     SwitchDevice,
     Version,
     Welcome,
