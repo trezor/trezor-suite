@@ -132,20 +132,18 @@ export const subscribe = () => async (_dispatch: Dispatch, getState: GetState) =
     });
 
     const promises = Object.keys(sortedAccounts).map(coin => {
-        return TrezorConnect.blockchainSubscribe({
-            accounts: sortedAccounts[coin],
-            coin,
-        });
+        return [
+            TrezorConnect.blockchainSubscribe({
+                accounts: sortedAccounts[coin],
+                coin,
+            }),
+            TrezorConnect.blockchainSubscribeFiatRates({
+                coin,
+            }),
+        ];
     });
 
-    // does it belong here?
-    const fiatRatesPromises = Object.keys(sortedAccounts).map(coin => {
-        return TrezorConnect.blockchainSubscribeFiatRates({
-            coin,
-        });
-    });
-
-    return Promise.all(promises.concat(fiatRatesPromises));
+    return Promise.all(promises.flat());
 };
 
 export const reconnect = (symbol: Network['symbol']) => async (
