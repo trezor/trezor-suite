@@ -306,28 +306,22 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
     const composedTransaction = await dispatch(compose(true));
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
-    if (!fiatNetwork) return null;
-    const rate = fiatNetwork.current?.rates[output.localCurrency.value.value];
     const { isDestinationAccountEmpty } = send.networkTypeRipple;
     const reserve = getReserveInXrp(account);
 
-    if (rate && fiatNetwork && composedTransaction && composedTransaction.type !== 'error') {
-        const fiatValue = getFiatValue(
-            formatNetworkAmount(composedTransaction.max, account.symbol),
-            rate.toString(),
-        );
+    if (fiatNetwork && composedTransaction && composedTransaction.type !== 'error') {
+        const rate = fiatNetwork.current?.rates[output.localCurrency.value.value];
         if (rate) {
+            const fiatValue = getFiatValue(
+                formatNetworkAmount(composedTransaction.max, account.symbol),
+                rate.toString(),
+            );
             dispatch({
                 type: SEND.HANDLE_FIAT_VALUE_CHANGE,
                 outputId,
                 fiatValue,
             });
         }
-        dispatch({
-            type: SEND.HANDLE_FIAT_VALUE_CHANGE,
-            outputId,
-            fiatValue,
-        });
     }
 
     if (composedTransaction && composedTransaction.type !== 'error') {
