@@ -36,6 +36,8 @@ const registerShortcuts = (window: BrowserWindow) => {
 
 const init = async () => {
     try {
+        // TODO: not neccesarry since suite will send a request to start bridge via IPC
+        // but right now removing it causes showing the download bridge modal for a sec
         await runBridgeProcess();
     } catch (error) {
         // do nothing
@@ -116,7 +118,10 @@ app.on('window-all-closed', () => {
     mainWindow = undefined;
 });
 
-app.on('before-quit', () => {
+app.on('before-quit', async () => {
+    // TODO: be aware that although it kills the bridge process, another one will start because of start-bridge msgs from ipc
+    // (BridgeStatus component sends the request every time it loses transport.type)
+    await killBridgeProcess();
     if (mainWindow) {
         // remove onclose listener
         mainWindow.removeAllListeners();
@@ -127,7 +132,6 @@ app.on('before-quit', () => {
 
 app.on('will-quit', async () => {
     // try to unregister shortcuts
-    await killBridgeProcess();
     try {
         electronLocalshortcut.unregisterAll(mainWindow);
     } catch (error) {
