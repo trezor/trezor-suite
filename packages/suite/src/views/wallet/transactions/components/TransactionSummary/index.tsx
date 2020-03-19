@@ -83,10 +83,11 @@ const TransactionSummary = (props: Props) => {
     });
 
     useEffect(() => {
+        let isSubscribed = true; // to make sure we are not updating state after component unmount
         const fetchData = async () => {
             setIsLoading(true);
             const res = await fetchAccountHistory(account, selectedRange!.weeks);
-            if (res) {
+            if (res && isSubscribed) {
                 const processed = res.map(i => ({
                     ...i,
                     received: formatNetworkAmount(i.received, account.symbol),
@@ -105,6 +106,9 @@ const TransactionSummary = (props: Props) => {
             setError(false);
             fetchData();
         }
+        return () => {
+            isSubscribed = false;
+        };
     }, [account, selectedRange, setData]);
 
     const numOfTransactions = data?.reduce((acc, d) => (acc += d.txs), 0);
