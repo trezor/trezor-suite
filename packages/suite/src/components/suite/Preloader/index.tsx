@@ -27,6 +27,7 @@ import {
     DeviceUnknown,
     DeviceUnreadable,
     DeviceUpdateRequired,
+    DeviceRecoveryMode,
     SwitchDevice,
     Version,
     Welcome,
@@ -77,6 +78,10 @@ const getSuiteApplicationState = (props: Props) => {
 
     // device features unknown (this shouldn't happened tho)
     if (!device.features) return DeviceUnknown;
+
+    // similar to initialize, there is no seed in device
+    // difference is it is in recovery mode.
+    if (device.features.recovery_mode) return DeviceRecoveryMode;
 
     // device is not initialized
     if (device.mode === 'initialize') return DeviceInitialize;
