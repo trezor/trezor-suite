@@ -85,7 +85,7 @@ const TransactionSummary = (props: Props) => {
     useEffect(() => {
         let isSubscribed = true; // to make sure we are not updating state after component unmount
         const fetchData = async () => {
-            setIsLoading(true);
+            if (isSubscribed) setIsLoading(true);
             const res = await fetchAccountHistory(account, selectedRange!.weeks);
             if (res && isSubscribed) {
                 const processed = res.map(i => ({
