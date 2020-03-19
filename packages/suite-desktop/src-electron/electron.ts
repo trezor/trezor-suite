@@ -130,7 +130,7 @@ app.on('before-quit', async () => {
     }
 });
 
-app.on('will-quit', async () => {
+app.on('will-quit', () => {
     // try to unregister shortcuts
     try {
         electronLocalshortcut.unregisterAll(mainWindow);
