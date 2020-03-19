@@ -15,8 +15,6 @@ interface Params {
     timestamp: number | null;
 }
 
-// TODO: doesn't work like it should
-// https://github.com/DefinitelyTyped/DefinitelyTyped/issues/35315
 interface CommonOwnProps {
     amount: string;
     symbol: Network['symbol'] | string;
@@ -30,7 +28,7 @@ interface DefaultSourceProps extends CommonOwnProps {
 }
 
 interface CustomSourceProps extends CommonOwnProps {
-    source: NonNullable<TimestampedRates['rates']> | null;
+    source: TimestampedRates['rates'] | undefined | null;
     useCustomSource: boolean;
 }
 
@@ -38,4 +36,5 @@ type OwnProps = DefaultSourceProps | CustomSourceProps;
 
 export type Props = ReturnType<typeof mapStateToProps> & OwnProps;
 
-export default connect(mapStateToProps)(Component);
+// redux is breaking types union https://github.com/DefinitelyTyped/DefinitelyTyped/issues/35315
+export default connect(mapStateToProps)(Component) as (props: OwnProps) => JSX.Element | null;
