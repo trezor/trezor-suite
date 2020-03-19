@@ -13,7 +13,6 @@ import { Network, Account, CoinFiatRates, WalletAccountTransaction } from '@wall
 
 // TODO:
 // Switching off network -> remove rates?, unsubscribe
-// TS types in connect
 
 type Ticker = {
     symbol: string;
@@ -250,7 +249,6 @@ export const updateTxsRates = (account: Account, txs: AccountTransaction[]) => a
  * @returns
  */
 export const fetchAccountHistory = async (account: Account, weeks: number) => {
-    // TODO: move out of actions?
     const secondsInDay = 3600 * 24;
     const secondsInMonth = secondsInDay * 30;
 
