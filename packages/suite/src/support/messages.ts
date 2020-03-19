@@ -2309,7 +2309,7 @@ const definedMessages = defineMessages({
     },
     TR_YOU_EITHER_HAVE_T2: {
         id: 'TR_YOU_EITHER_HAVE_T2',
-        defaultMessage: 'You either have a seed containing 12, 18, 24, 33 words. ',
+        defaultMessage: 'You either have a seed containing 12, 18, 20, 24, 33 words. ',
     },
     TR_ENTER_ALL_WORDS_IN_CORRECT: {
         id: 'TR_ENTER_ALL_WORDS_IN_CORRECT',

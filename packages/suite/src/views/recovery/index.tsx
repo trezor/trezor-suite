@@ -219,7 +219,7 @@ const Recovery = ({
                     />
 
                     <StyledButton
-                        onClick={() => setStatus('select-word-count')}
+                        onClick={() => (model === 1 ? setStatus('select-word-count') : checkSeed())}
                         isDisabled={!understood}
                     >
                         <Translation id="TR_START" />
