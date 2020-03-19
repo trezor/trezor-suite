@@ -5,7 +5,7 @@ import * as path from 'path';
 import * as url from 'url';
 import * as electronLocalshortcut from 'electron-localshortcut';
 import * as store from './store';
-import { isBridgeRunning, runBridgeProcess } from './bridge';
+import { runBridgeProcess, killBridgeProcess } from './bridge';
 
 let mainWindow: BrowserWindow;
 const PROTOCOL = 'file';
@@ -36,10 +36,7 @@ const registerShortcuts = (window: BrowserWindow) => {
 
 const init = async () => {
     try {
-        const isBridgeProcessRunning = await isBridgeRunning();
-        if (!isBridgeProcessRunning) {
-            await runBridgeProcess();
-        }
+        await runBridgeProcess();
     } catch (error) {
         // do nothing
     }
@@ -128,8 +125,9 @@ app.on('before-quit', () => {
     }
 });
 
-app.on('will-quit', () => {
+app.on('will-quit', async () => {
     // try to unregister shortcuts
+    await killBridgeProcess();
     try {
         electronLocalshortcut.unregisterAll(mainWindow);
     } catch (error) {
