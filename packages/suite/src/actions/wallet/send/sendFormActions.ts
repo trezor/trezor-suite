@@ -180,11 +180,9 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     const reserve = getReserveInXrp(account);
 
     if (fiatNetwork && isValidAmount) {
-        // @ts-ignore TODO: undefined rates!
-        const rate = fiatNetwork.current?.rates[output.localCurrency.value.value].toString();
-        // @ts-ignore TODO: undefined rates!
-        const fiatValue = getFiatValue(amount, rate);
+        const rate = fiatNetwork.current?.rates[output.localCurrency.value.value];
         if (rate) {
+            const fiatValue = getFiatValue(amount, rate.toString());
             dispatch({
                 type: SEND.HANDLE_FIAT_VALUE_CHANGE,
                 outputId,
@@ -224,29 +222,28 @@ export const handleSelectCurrencyChange = (
 
     if (fiatNetwork && output.amount.value) {
         const rate = fiatNetwork.current?.rates[localCurrency.value];
-        const fiatValueBigNumber = new BigNumber(output.amount.value).multipliedBy(
-            // @ts-ignore TODO: undefined rates!
-            new BigNumber(rate),
-        );
-        const fiatValue = fiatValueBigNumber.isNaN() ? '' : fiatValueBigNumber.toFixed(2);
-        // @ts-ignore TODO: undefined rates!
-        const amountBigNumber = fiatValueBigNumber.dividedBy(new BigNumber(rate));
+        if (rate) {
+            const fiatValueBigNumber = new BigNumber(output.amount.value).multipliedBy(
+                new BigNumber(rate),
+            );
+            const fiatValue = fiatValueBigNumber.isNaN() ? '' : fiatValueBigNumber.toFixed(2);
+            const amountBigNumber = fiatValueBigNumber.dividedBy(new BigNumber(rate));
 
-        dispatch({
-            type: SEND.HANDLE_FIAT_VALUE_CHANGE,
-            outputId,
-            fiatValue,
-        });
-
-        dispatch({
-            type: SEND.HANDLE_AMOUNT_CHANGE,
-            outputId,
-            amount: amountBigNumber.toString(),
-            decimals: network.decimals,
-            availableBalance: account.formattedBalance,
-            isDestinationAccountEmpty,
-            reserve,
-        });
+            dispatch({
+                type: SEND.HANDLE_FIAT_VALUE_CHANGE,
+                outputId,
+                fiatValue,
+            });
+            dispatch({
+                type: SEND.HANDLE_AMOUNT_CHANGE,
+                outputId,
+                amount: amountBigNumber.toString(),
+                decimals: network.decimals,
+                availableBalance: account.formattedBalance,
+                isDestinationAccountEmpty,
+                reserve,
+            });
+        }
     }
 
     dispatch({
@@ -272,13 +269,10 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
 
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
-    const reserve = getReserveInXrp(account);
-
     if (!fiatNetwork) return null;
-
-    // @ts-ignore TODO: undefined rates!
     const rate = fiatNetwork.current?.rates[output.localCurrency.value.value];
-    // @ts-ignore TODO: undefined rates!
+    const reserve = getReserveInXrp(account);
+    if (!rate) return null;
     const amountBigNumber = new BigNumber(fiatValue || '0').dividedBy(new BigNumber(rate));
     const amount = amountBigNumber.isNaN() ? '' : amountBigNumber.toFixed(network.decimals);
 
@@ -311,17 +305,16 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
     const { account, network } = selectedAccount;
     const composedTransaction = await dispatch(compose(true));
     const output = getOutput(send.outputs, outputId);
+    const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
+    if (!fiatNetwork) return null;
+    const rate = fiatNetwork.current?.rates[output.localCurrency.value.value];
     const { isDestinationAccountEmpty } = send.networkTypeRipple;
     const reserve = getReserveInXrp(account);
-    const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
 
-    if (fiatNetwork && composedTransaction && composedTransaction.type !== 'error') {
-        // @ts-ignore TODO: undefined rates!
-        const rate = fiatNetwork.current?.rates[output.localCurrency.value.value].toString();
+    if (rate && fiatNetwork && composedTransaction && composedTransaction.type !== 'error') {
         const fiatValue = getFiatValue(
             formatNetworkAmount(composedTransaction.max, account.symbol),
-            // @ts-ignore TODO: undefined rates!
-            rate,
+            rate.toString(),
         );
         if (rate) {
             dispatch({
