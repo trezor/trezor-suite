@@ -1,12 +1,13 @@
 import express, { Application } from 'express';
-import fetchFeedData from './src';
+import fetcher from './src';
 
 const app: Application = express();
 const PORT = process.env.PORT || 3003;
 
 app.get('/', (_req, res) => {
-    fetchFeedData(data => {
-        res.end(data, 'utf-8');
+    fetcher((_status, data) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(data);
     });
 });
 
