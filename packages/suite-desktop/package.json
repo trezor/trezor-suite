@@ -33,6 +33,7 @@
         },
         "files": [
             "build/**/*",
+            "!build/static/bridge/**/*",
             "dist/*.js",
             "entitlements.mac.inherit.plist",
             "package.json"
@@ -53,6 +54,9 @@
             ]
         },
         "mac": {
+            "files": [
+                "build/static/bridge/**/trezord-mac"
+            ],
             "icon": "build/static/images/icons/64x64.png",
             "artifactName": "${productName}-${version}.${ext}",
             "entitlements": "entitlements.mac.inherit.plist",
@@ -62,11 +66,18 @@
             ]
         },
         "win": {
+            "files": [
+                "build/static/bridge/**/trezord-win.exe"
+            ],
             "icon": "build/static/images/icons/64x64.png",
             "artifactName": "${productName}-${version}.${ext}",
             "target": "portable"
         },
         "linux": {
+            "files": [
+                "build/static/bridge/**/trezord-linux-x32",
+                "build/static/bridge/**/trezord-linux-x64"
+            ],
             "icon": "build/static/images/icons/64x64.png",
             "artifactName": "${productName}-${version}.${ext}",
             "target": "AppImage"
