@@ -176,6 +176,7 @@ const TokenTransfer = (transfer: ArrayElement<Props['transaction']['tokens']>) =
     );
 };
 
+// TODO: refactor
 const TransactionItem = (props: Props) => {
     const { transaction, ...rest } = props;
     const { symbol, type, blockTime, blockHeight, amount, targets, tokens } = props.transaction;

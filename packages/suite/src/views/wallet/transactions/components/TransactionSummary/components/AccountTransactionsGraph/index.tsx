@@ -1,25 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedDate } from 'react-intl';
 import { colors, variables, Loader } from '@trezor/components';
-import { FiatValue } from '@suite-components';
 import { Account } from '@wallet-types';
-import BigNumber from 'bignumber.js';
-import {
-    BarChart,
-    Tooltip,
-    Bar,
-    ReferenceLine,
-    ResponsiveContainer,
-    YAxis,
-    XAxis,
-    TooltipProps,
-} from 'recharts';
+import { BarChart, Tooltip, Bar, ReferenceLine, ResponsiveContainer, YAxis, XAxis } from 'recharts';
 import { fetchAccountHistory } from '@suite/actions/wallet/fiatRatesActions';
 import { Await } from '@suite/types/utils';
 import RangeSelector from './components/RangeSelector';
-import { getDateWithTimeZone, calcTicks } from '@suite/utils/suite/date';
+import { calcTicks } from '@suite/utils/suite/date';
 import { getUnixTime } from 'date-fns';
+import CustomTooltip from './components/CustomTooltip';
+import CustomXAxisTick from './components/CustomXAxisTick';
+import CustomYAxisTick from './components/CustomYAxisTick';
+import CustomBar from './components/CustomBar';
 
 const Wrapper = styled.div`
     display: flex;
@@ -37,42 +29,6 @@ const Description = styled.div`
     flex: 1;
 `;
 
-// const YAxisWrapper = styled.div`
-//     font-size: ${variables.FONT_SIZE.TINY};
-//     white-space: nowrap;
-//     color: ${colors.BLACK80};
-// `;
-
-const CustomTooltipWrapper = styled.div<{ coordinate: { x: number; y: number } }>`
-    display: flex;
-    flex-direction: column;
-    color: ${colors.WHITE};
-    background: rgba(0, 0, 0, 0.8);
-    padding: 12px 12px;
-    border-radius: 3px;
-    transform: ${props => `translate(0px, ${props.coordinate.y - 100}px)`};
-
-    line-height: 1.5;
-`;
-
-const Row = styled.div`
-    display: flex;
-    white-space: nowrap;
-    align-items: baseline;
-`;
-
-const DateWrapper = styled.div`
-    display: flex;
-    margin-bottom: 4px;
-`;
-
-const Rect = styled.div<{ color: string }>`
-    width: 8px;
-    height: 8px;
-    background: ${props => props.color};
-    margin-right: 4px;
-`;
-
 type AccountHistory = NonNullable<Await<ReturnType<typeof fetchAccountHistory>>>;
 
 interface Props {
@@ -87,128 +43,6 @@ interface Range {
     label: string;
     weeks: number;
 }
-
-interface CustomTooltipProps extends TooltipProps {
-    symbol: Account['symbol'];
-    selectedRange: Range;
-}
-
-const CustomTooltip = ({
-    active,
-    payload,
-    coordinate,
-    symbol,
-    selectedRange,
-}: CustomTooltipProps) => {
-    if (active && payload) {
-        const date = getDateWithTimeZone(payload[0].payload.time * 1000);
-        return (
-            <CustomTooltipWrapper coordinate={coordinate!}>
-                <DateWrapper>
-                    {date && selectedRange?.label === 'year' && (
-                        //
-                        <FormattedDate value={date} year="numeric" month="2-digit" />
-                    )}
-                    {date && selectedRange?.label !== 'year' && (
-                        <FormattedDate value={date} year="numeric" month="2-digit" day="2-digit" />
-                    )}
-                </DateWrapper>
-                <Row>
-                    <Rect color={colors.GREEN} /> Received {payload[0].payload.received}{' '}
-                    {symbol.toUpperCase()}
-                    <FiatValue
-                        amount={payload[0].payload.received}
-                        symbol={symbol}
-                        source={payload[0].payload.rates}
-                        useCustomSource
-                    >
-                        {({ value }) => (value ? <> ({value})</> : null)}
-                    </FiatValue>
-                </Row>
-                <Row>
-                    <Rect color={colors.RED_ERROR} /> Sent {payload[0].payload.sent}{' '}
-                    {symbol.toUpperCase()}
-                    <FiatValue
-                        amount={payload[0].payload.sent}
-                        symbol={symbol}
-                        source={payload[0].payload.rates}
-                        useCustomSource
-                    >
-                        {({ value }) => (value ? <> ({value})</> : null)}
-                    </FiatValue>
-                </Row>
-            </CustomTooltipWrapper>
-        );
-    }
-
-    return null;
-};
-
-interface CustomXAxisProps {
-    selectedRange: Range;
-    [k: string]: any;
-}
-
-const CustomizedXAxisTick = (props: CustomXAxisProps) => {
-    const { x, y, payload } = props;
-    const date = getDateWithTimeZone(payload.value * 1000);
-    return (
-        <g transform={`translate(${x},${y})`}>
-            <text x={0} y={0} dy={16} textAnchor="end" fill="#666" transform="rotate(-50)">
-                {date && props.selectedRange?.label === 'year' && (
-                    <FormattedDate value={date} month="2-digit" year="numeric" />
-                )}
-                {date && props.selectedRange?.label !== 'year' && (
-                    <FormattedDate value={date} day="2-digit" month="2-digit" />
-                )}
-            </text>
-        </g>
-    );
-};
-
-const CustomizedYAxisTick = (props: any) => {
-    const { x, y, payload } = props;
-
-    return (
-        // <YAxisWrapper>
-        <g transform={`translate(${x},${y})`}>
-            <text x={0} y={0} dy={2} textAnchor="start" fill="#666">
-                {new BigNumber(payload.value).toFixed(2)}
-            </text>
-        </g>
-        // </YAxisWrapper>
-    );
-};
-
-interface CustomBarProps {
-    variant: 'sent' | 'received';
-    [key: string]: any;
-}
-
-const CustomBar = (props: CustomBarProps) => {
-    const { fill, x, y, width, height, payload, variant } = props;
-    let forcedHeightChange = false;
-    let minHeight = height;
-    if (
-        (variant === 'sent' && Math.abs(height) < 1 && payload.sent !== '0') ||
-        (variant === 'received' && Math.abs(height) < 1 && payload.received !== '0')
-    ) {
-        // make sure small amounts are visible by forcing minHeight of 2 if abs(amount) < 1
-        minHeight = variant === 'sent' ? -2 : 2;
-        forcedHeightChange = true;
-    }
-
-    const diffPosY = forcedHeightChange ? Math.abs(minHeight) - Math.abs(height) : 0;
-    return (
-        <rect
-            fill={fill}
-            x={x}
-            y={minHeight < 0 ? y + diffPosY + minHeight : y - diffPosY}
-            width={width}
-            height={Math.abs(minHeight)}
-        />
-    );
-};
 
 const AccountTransactionsGraph = React.memo((props: Props) => {
     const { data, isLoading, selectedRange } = props;
@@ -256,7 +90,7 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
                                 width={10}
                                 stroke={colors.BLACK80}
                                 interval={0}
-                                tick={<CustomizedXAxisTick selectedRange={selectedRange} />}
+                                tick={<CustomXAxisTick selectedRange={selectedRange} />}
                                 ticks={XTicks}
                             />
                             <YAxis
@@ -264,7 +98,7 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
                                 orientation="right"
                                 domain={['dataMin', 'dataMax']}
                                 stroke={colors.BLACK80}
-                                tick={<CustomizedYAxisTick />}
+                                tick={<CustomYAxisTick />}
                             />
                             <Tooltip
                                 content={
