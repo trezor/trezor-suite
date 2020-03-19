@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 interface CustomBarProps {
     variant: 'sent' | 'received';
     [key: string]: any;

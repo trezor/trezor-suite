@@ -1,7 +1,6 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 
-
 const CustomYAxisTick = (props: any) => {
     const { x, y, payload } = props;
 
