@@ -40,10 +40,6 @@ export default class MyDocument extends Document {
             <html lang="en">
                 <Head>
                     <meta charSet="utf-8" />
-                    <script
-                        type="text/javascript"
-                        src={resolveStaticPath('browser-detection/index.js')}
-                    />
                     <link
                         media="all"
                         rel="stylesheet"
