@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { SuiteLayout } from '@suite-components';
 import { Menu } from '@wallet-components';
-import Loading from './components/Loading';
+import AccountLoader from './components/AccountLoader';
 import Exception from '@wallet-components/AccountException';
 import AccountMode from '@wallet-components/AccountMode';
 import AccountAnnouncement from '@wallet-components/AccountAnnouncement';
@@ -31,7 +31,7 @@ const WalletLayout = (props: Props) => {
     if (account.status === 'loading') {
         return (
             <SuiteLayout title={title} secondaryMenu={<Menu />}>
-                <Loading type={account.loader} />
+                <AccountLoader type={account.loader} />
             </SuiteLayout>
         );
     }
