@@ -354,6 +354,7 @@ const TransactionItem = (props: Props) => {
                                         amount={target.amount || '0'}
                                         symbol={symbol}
                                         source={props.transaction.rates}
+                                        useCustomSource
                                     >
                                         {({ value }) =>
                                             value && (
