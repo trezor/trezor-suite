@@ -18,6 +18,7 @@ import {
     fixtures,
     interruptionFixtures,
     changeNetworksFixtures,
+    unavailableCapabilities,
 } from '../__fixtures__/discoveryActions';
 
 const { getSuiteDevice } = global.JestMocks;
@@ -155,6 +156,7 @@ export const getInitialState = () => ({
     suite: {
         device: SUITE_DEVICE,
     },
+    devices: [SUITE_DEVICE],
     wallet: {
         discovery: discoveryReducer(undefined, { type: 'foo' } as any),
         accounts: accountsReducer(undefined, { type: 'foo' } as any),
@@ -165,21 +167,24 @@ export const getInitialState = () => ({
     },
 });
 
-const mockStore = configureStore<ReturnType<typeof getInitialState>, any>([thunk]);
+type State = ReturnType<typeof getInitialState>;
 
-const updateStore = (store: ReturnType<typeof mockStore>) => {
-    // there is not much redux logic in this test
-    // just update state on every action manually
-    const action = store.getActions().pop();
-    const { accounts, discovery, settings } = store.getState().wallet;
+const mockStore = configureStore<State, any>([thunk]);
 
-    store.getState().wallet = {
-        accounts: accountsReducer(accounts, action),
-        discovery: discoveryReducer(discovery, action),
-        settings: walletSettingsReducer(settings, action),
-    };
-    // add action back to stack
-    store.getActions().push(action);
+const initStore = (state: State = getInitialState()) => {
+    const store = mockStore(state);
+    store.subscribe(() => {
+        const action = store.getActions().pop();
+        const { accounts, discovery, settings } = store.getState().wallet;
+        store.getState().wallet = {
+            accounts: accountsReducer(accounts, action),
+            discovery: discoveryReducer(discovery, action),
+            settings: walletSettingsReducer(settings, action),
+        };
+        // add action back to stack
+        store.getActions().push(action);
+    });
+    return store;
 };
 
 describe('Discovery Actions', () => {
@@ -187,13 +192,20 @@ describe('Discovery Actions', () => {
         it(f.description, async () => {
             // set fixtures in trezor-connect
             require('trezor-connect').setTestFixtures(f);
-
             const state = getInitialState();
-            const store = mockStore(state);
-            store.subscribe(() => updateStore(store));
+            const store = initStore();
+            if (f.device) {
+                state.suite.device = f.device;
+                state.devices = [f.device];
+            }
+            if (f.enabledNetworks) {
+                store.dispatch({
+                    type: WALLET_SETTINGS.CHANGE_NETWORKS,
+                    payload: f.enabledNetworks,
+                });
+            }
 
-            store.dispatch(discoveryActions.create('device-state'));
-            await store.dispatch(discoveryActions.start());
+            store.dispatch(discoveryActions.create('device-state', f.device || SUITE_DEVICE));
             await store.dispatch(discoveryActions.start());
 
             const result = store.getState().wallet.discovery[0];
@@ -211,10 +223,9 @@ describe('Discovery Actions', () => {
 
     // Detailed info about this test could be found in fixtures
     interruptionFixtures.forEach(f => {
-        it(`Start/stop/restart: ${f.description}`, async done => {
+        it(`Start/stop/change networks/start: ${f.description}`, async done => {
             require('trezor-connect').setTestFixtures(f);
-            const store = mockStore(getInitialState());
-            store.subscribe(() => updateStore(store));
+            const store = initStore();
             // additional action listener for triggering "discovery.stop" action
             store.subscribe(() => {
                 const actions = store.getActions();
@@ -228,7 +239,7 @@ describe('Discovery Actions', () => {
                 }
             });
 
-            store.dispatch(discoveryActions.create('device-state'));
+            store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
 
             // restart discovery until complete
             const loop = async (): Promise<any> => {
@@ -258,14 +269,14 @@ describe('Discovery Actions', () => {
     changeNetworksFixtures.forEach(f => {
         it(`Change network: ${f.description}`, async done => {
             require('trezor-connect').setTestFixtures(f);
-            const store = mockStore(getInitialState());
-            store.subscribe(() => updateStore(store));
-            // additional action listener for triggering "discovery.stop" action
+            const state = getInitialState();
+            const store = initStore(state);
+            // additional action listener for triggering "discovery.updateNetworkSettings" action
             store.subscribe(() => {
                 const actions = store.getActions();
                 const a = actions[actions.length - 1];
                 if (a.type === ACCOUNT.CREATE) {
-                    // call "stop" if added account is a trigger from fixtures
+                    // call "updateNetworkSettings" if added account is a trigger from fixtures
                     const trigger = f.trigger.find(t => a.payload.path.indexOf(t.path) >= 0);
                     if (trigger) {
                         store.dispatch({
@@ -277,7 +288,7 @@ describe('Discovery Actions', () => {
                 }
             });
 
-            store.dispatch(discoveryActions.create('device-state'));
+            store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
             await store.dispatch(discoveryActions.start());
             const complete = store.getActions().pop();
             expect(complete.type).toEqual(DISCOVERY.COMPLETE);
@@ -293,31 +304,66 @@ describe('Discovery Actions', () => {
         });
     });
 
+    unavailableCapabilities.forEach(f => {
+        it(`Change network: ${f.description}`, () => {
+            const state = getInitialState();
+            if (f.device) {
+                state.suite.device = f.device;
+                state.devices = [f.device];
+            }
+            const store = initStore(state);
+            store.dispatch(discoveryActions.create('device-state', f.device || SUITE_DEVICE));
+            store.dispatch({
+                type: WALLET_SETTINGS.CHANGE_NETWORKS,
+                payload: f.networks,
+            });
+            store.dispatch(discoveryActions.updateNetworkSettings());
+
+            const discovery = store.getState().wallet.discovery[0];
+            expect(discovery.networks).toEqual(f.discoveryNetworks);
+        });
+    });
+
     it('Start discovery without device', async () => {
-        // @ts-ignore: invalid state (suite empty)
-        const store = mockStore({
+        const state = {
             suite: {},
             wallet: {
                 accounts: [],
                 discovery: [],
             },
-        });
+        };
+        // @ts-ignore: invalid state (suite empty)
+        const store = initStore(state);
+        await store.dispatch(discoveryActions.start());
+        const action = store.getActions().pop();
+        expect(action.type).toEqual(NOTIFICATION.TOAST);
+    });
+
+    it('Start discovery with device without auth confirmation', async () => {
+        const state = getInitialState();
+        state.suite.device = getSuiteDevice({ authConfirm: true });
+        // @ts-ignore: invalid state (suite empty)
+        const store = initStore(state);
         await store.dispatch(discoveryActions.start());
         const action = store.getActions().pop();
         expect(action.type).toEqual(NOTIFICATION.TOAST);
     });
 
     it('Create discovery which already exist', async () => {
-        const store = mockStore(getInitialState());
-        store.subscribe(() => updateStore(store));
-        store.dispatch(discoveryActions.create('device-state'));
-        store.dispatch(discoveryActions.create('device-state'));
+        const store = initStore();
+        store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
+        store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
         expect(store.getState().wallet.discovery.length).toEqual(1);
     });
 
-    it('Start discovery which does not exist', async () => {
-        const store = mockStore(getInitialState());
-        store.subscribe(() => updateStore(store));
+    it('Start discovery which does not exist (discoveryActions test)', async () => {
+        const store = initStore();
+        await store.dispatch(discoveryActions.start());
+        expect(store.getState().wallet.discovery.length).toEqual(0);
+    });
+
+    it('Start discovery which does not exist (discoveryReducer test)', async () => {
+        const store = initStore();
         store.dispatch({
             type: DISCOVERY.START,
             payload: SUITE_DEVICE,
@@ -326,12 +372,8 @@ describe('Discovery Actions', () => {
     });
 
     it('Update discovery which does not exist', async () => {
-        const store = mockStore(getInitialState());
-        store.subscribe(() => updateStore(store));
-        store.dispatch({
-            type: DISCOVERY.UPDATE,
-            payload: SUITE_DEVICE,
-        });
+        const store = initStore();
+        store.dispatch(discoveryActions.update({ deviceState: 'not-existed' }));
         expect(store.getState().wallet.discovery.length).toEqual(0);
     });
 
@@ -341,9 +383,8 @@ describe('Discovery Actions', () => {
         });
         // set fixtures in trezor-connect
         require('trezor-connect').setTestFixtures(f);
-        const store = mockStore(getInitialState());
-        store.subscribe(() => updateStore(store));
-        store.dispatch(discoveryActions.create('device-state'));
+        const store = initStore();
+        store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
         store.dispatch(discoveryActions.start()).then(() => {
             const action = store.getActions().pop();
             done(expect(action.type).toEqual(DISCOVERY.STOP));
@@ -352,16 +393,45 @@ describe('Discovery Actions', () => {
     });
 
     it('Stop discovery without device (discovery not exists)', async () => {
-        // @ts-ignore: invalid state (suite empty)
-        const store = mockStore({
+        const state = {
             suite: {},
             wallet: {
                 accounts: [],
                 discovery: [],
             },
-        });
+        };
+        // @ts-ignore: invalid state (suite empty)
+        const store = initStore(state);
         await store.dispatch(discoveryActions.stop());
         expect(store.getActions()).toEqual([]);
+    });
+
+    it('Restart discovery (clear failed fields)', async () => {
+        // fail on first account
+        require('trezor-connect').setTestFixtures({
+            connect: { success: true, failedAccounts: ["m/84'/0'/0'"] },
+        });
+        const state = getInitialState();
+        const store = initStore(state);
+        store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
+        await store.dispatch(discoveryActions.start());
+        // there should be one failed account
+        expect(store.getActions().pop().type).toEqual(DISCOVERY.COMPLETE);
+        expect(store.getState().wallet.discovery[0].failed.length).toBeGreaterThan(0);
+
+        // change fixtures, this time no fail
+        require('trezor-connect').setTestFixtures({
+            connect: { success: true },
+        });
+        // restart
+        await store.dispatch(discoveryActions.restart());
+        // discovery completed, no failed account
+        expect(store.getActions().pop().type).toEqual(DISCOVERY.COMPLETE);
+        expect(store.getState().wallet.discovery[0].failed.length).toEqual(0);
+        // remove discovery
+        store.dispatch(discoveryActions.remove('device-state'));
+        // restart (discovery doesn't exists)
+        await store.dispatch(discoveryActions.restart());
     });
 
     it(`TrezorConnect responded with success but discovery was removed`, async done => {
@@ -371,9 +441,8 @@ describe('Discovery Actions', () => {
         // set fixtures in trezor-connect
         require('trezor-connect').setTestFixtures(f);
 
-        const store = mockStore(getInitialState());
-        store.subscribe(() => updateStore(store));
-        store.dispatch(discoveryActions.create('device-state'));
+        const store = initStore();
+        store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
         store.dispatch(discoveryActions.start()).then(() => {
             const action = store.getActions().pop();
             done(expect(action.type).toEqual(DISCOVERY.REMOVE));
@@ -388,9 +457,8 @@ describe('Discovery Actions', () => {
         // set fixtures in trezor-connect
         require('trezor-connect').setTestFixtures(f);
 
-        const store = mockStore(getInitialState());
-        store.subscribe(() => updateStore(store));
-        store.dispatch(discoveryActions.create('device-state'));
+        const store = initStore();
+        store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
         store.dispatch(discoveryActions.start()).then(() => {
             const action = store.getActions().pop();
             done(expect(action.type).toEqual(NOTIFICATION.TOAST));
@@ -403,6 +471,22 @@ describe('Discovery Actions', () => {
         );
     });
 
+    it('Discovery completed but device is not connected anymore', async () => {
+        require('trezor-connect').setTestFixtures({
+            connect: { success: true },
+        });
+        const mockedGetFeatures = jest.spyOn(require('trezor-connect').default, 'getFeatures');
+        const store = initStore();
+        store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
+        // "disconnect" device
+        store.getState().suite.device.connected = false;
+        await store.dispatch(discoveryActions.start());
+        const action = store.getActions().pop();
+        expect(action.type).toEqual(DISCOVERY.COMPLETE);
+        // getFeatures shouldn't be called
+        expect(mockedGetFeatures).toHaveBeenCalledTimes(0);
+    });
+
     it('First iteration malformed error (not a json)', async () => {
         const f = new Promise(resolve => {
             setTimeout(() => resolve(paramsError('not-a-json', 'bundle_fw_exception')), 100);
@@ -410,9 +494,8 @@ describe('Discovery Actions', () => {
         // set fixtures in trezor-connect
         require('trezor-connect').setTestFixtures(f);
 
-        const store = mockStore(getInitialState());
-        store.subscribe(() => updateStore(store));
-        store.dispatch(discoveryActions.create('device-state'));
+        const store = initStore();
+        store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
         await store.dispatch(discoveryActions.start());
         const action = store.getActions().pop();
         expect(action.type).toEqual(NOTIFICATION.TOAST);
@@ -425,9 +508,8 @@ describe('Discovery Actions', () => {
         // set fixtures in trezor-connect
         require('trezor-connect').setTestFixtures(f);
 
-        const store = mockStore(getInitialState());
-        store.subscribe(() => updateStore(store));
-        store.dispatch(discoveryActions.create('device-state'));
+        const store = initStore();
+        store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
         await store.dispatch(discoveryActions.start());
         const action = store.getActions().pop();
         expect(action.type).toEqual(NOTIFICATION.TOAST);
@@ -440,13 +522,15 @@ describe('Discovery Actions', () => {
         require('trezor-connect').default.getAccountInfo = () => ({
             success: true,
         });
-        const store = mockStore(getInitialState());
-        store.dispatch(discoveryActions.create('device-state'));
+        const store = initStore();
+        store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
         await store.dispatch(discoveryActions.start());
         const action = store.getActions().pop();
         // restore original mocked fn
         require('trezor-connect').default.getAccountInfo = originalFn;
-        expect(action.type).toEqual(NOTIFICATION.TOAST);
+        const result = store.getState().wallet.discovery[0];
+        expect(action.type).toEqual(DISCOVERY.COMPLETE);
+        expect(result.loaded).toEqual(0);
     });
 
     it('All accounts failed in runtime', async () => {
@@ -469,9 +553,8 @@ describe('Discovery Actions', () => {
             return originalFn(params);
         };
         // run process
-        const store = mockStore(getInitialState());
-        store.subscribe(() => updateStore(store));
-        store.dispatch(discoveryActions.create('device-state'));
+        const store = initStore();
+        store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
         await store.dispatch(discoveryActions.start());
         // restore original mocked fn
         require('trezor-connect').default.getAccountInfo = originalFn;
@@ -500,9 +583,8 @@ describe('Discovery Actions', () => {
             return paramsError(JSON.stringify(failedAccounts), 'bundle_fw_exception');
         };
         // run process
-        const store = mockStore(getInitialState());
-        store.subscribe(() => updateStore(store));
-        store.dispatch(discoveryActions.create('device-state'));
+        const store = initStore();
+        store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
         await store.dispatch(discoveryActions.start());
         // restore original mocked fn
         require('trezor-connect').default.getAccountInfo = originalFn;
@@ -514,11 +596,28 @@ describe('Discovery Actions', () => {
     });
 
     it('getDiscoveryAuthConfirmationStatus', async () => {
-        const store = mockStore(getInitialState());
-        store.subscribe(() => updateStore(store));
-        store.dispatch(discoveryActions.create('device-state', false));
+        require('trezor-connect').setTestFixtures({
+            connect: { success: true },
+        });
+        const state = getInitialState();
+        state.suite.device = getSuiteDevice({
+            state: 'device-state',
+            connected: true,
+            useEmptyPassphrase: false, // mandatory
+        });
+        const store = initStore(state);
+        const fn = discoveryActions.getDiscoveryAuthConfirmationStatus;
+
+        store.dispatch(discoveryActions.create('device-state', state.suite.device));
         await store.dispatch(discoveryActions.start());
-        const status = store.dispatch(discoveryActions.getDiscoveryAuthConfirmationStatus());
-        expect(status).toEqual(true);
+        expect(store.dispatch(fn())).toEqual(true);
+
+        // remove discovery
+        store.dispatch(discoveryActions.remove('device-state'));
+        expect(store.dispatch(fn())).toEqual(undefined);
+
+        // @ts-ignore remove device from state
+        store.getState().suite.device = undefined;
+        expect(store.dispatch(fn())).toEqual(undefined);
     });
 });
