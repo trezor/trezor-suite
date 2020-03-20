@@ -98,7 +98,9 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
 
     // 4. device state received
     if (action.type === SUITE.AUTH_DEVICE) {
-        api.dispatch(discoveryActions.create(action.state, action.payload));
+        // `device` is always present here
+        // to avoid typescript conditioning use device from action as a fallback (never used)
+        api.dispatch(discoveryActions.create(action.state, device || action.payload));
     }
 
     // 5. device state confirmation received
