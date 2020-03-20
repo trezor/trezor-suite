@@ -26,6 +26,7 @@ const fiatRatesMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
             break;
         case ACCOUNT.CREATE: {
             // fetch current rates for account's tokens
+            // TODO: new tokens could appear also on account.UPDATE
             const account = action.payload;
             if (account.tokens) {
                 account.tokens.forEach(t => {
