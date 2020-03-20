@@ -21,15 +21,20 @@ const ContentWrapper = styled(Card)`
     width: 100%;
     margin-bottom: 20px;
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
         flex-direction: column;
     }
 `;
 
 const GraphWrapper = styled.div`
     display: flex;
-    flex: 1 1 70%;
+    flex: 1 1 auto;
     padding: 20px;
+    max-width: 470px; /* workaround to prevent recharts filling all space */
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
+        max-width: 100%;
+    }
 `;
 
 const InfoCardsWrapper = styled.div`
