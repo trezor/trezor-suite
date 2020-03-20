@@ -11,11 +11,11 @@ import {
     RATE_REMOVE,
 } from './constants/fiatRatesConstants';
 import { Network, Account, CoinFiatRates, WalletAccountTransaction } from '@wallet-types';
-import { NETWORKS } from '@suite/config/wallet';
 
 type Ticker = {
     symbol: string;
     url?: string;
+    mainNetworkSymbol?: string; // symbol of thee main network. (used for tokens)
 };
 
 type FiatRatesPayload = NonNullable<CoinFiatRates['current']>;
@@ -24,10 +24,12 @@ export type FiatRateActions =
     | {
           type: typeof RATE_UPDATE;
           payload: FiatRatesPayload;
+          mainNetworkSymbol?: string;
       }
     | {
           type: typeof RATE_REMOVE;
           symbol: string;
+          mainNetworkSymbol?: string;
       }
     | {
           type: typeof TX_FIAT_RATE_UPDATE;
@@ -53,24 +55,22 @@ const INTERVAL = 1000 * 60; // 1 min
 const MAX_AGE = 1000 * 60 * 10; // 10 mins
 const INTERVAL_LAST_WEEK = 1000 * 60 * 60 * 4; // 4 hours
 
-export const remove = (symbol: string) => (dispatch: Dispatch) => {
+export const remove = (symbol: string, mainNetworkSymbol?: string) => (dispatch: Dispatch) => {
     dispatch({
         type: RATE_REMOVE,
         symbol,
+        mainNetworkSymbol,
     });
 };
 
 export const removeRatesForDisabledNetworks = () => (dispatch: Dispatch, getState: GetState) => {
     const { enabledNetworks } = getState().wallet.settings;
     const { fiat } = getState().wallet;
-    const mainNetworks = NETWORKS.map(n => n.symbol);
     fiat.forEach(f => {
-        const symbol = f.symbol as Network['symbol'];
-        if (mainNetworks.includes(symbol) && !enabledNetworks.includes(symbol)) {
-            // one of the main networks is disabled
-            dispatch(remove(f.symbol));
+        const rateNetwork = (f.mainNetworkSymbol ?? f.symbol) as Network['symbol'];
+        if (!enabledNetworks.includes(rateNetwork)) {
+            dispatch(remove(f.symbol, f.mainNetworkSymbol));
         }
-        // TODO: figure out removing token rates
     });
 };
 
@@ -92,6 +92,7 @@ export const updateCurrentRates = (ticker: Ticker) => async (
             // dispatch only if rates are not null/undefined
             dispatch({
                 type: RATE_UPDATE,
+                mainNetworkSymbol: ticker.mainNetworkSymbol,
                 payload: {
                     ts: results.ts * 1000,
                     rates: results.rates,
@@ -126,11 +127,8 @@ const getStaleTickers = (
 ) => (_dispatch: Dispatch, getState: GetState): Ticker[] => {
     const { fiat } = getState().wallet;
     const { enabledNetworks } = getState().wallet.settings;
-    const watchedTickers = FIAT.tickers.filter(t => enabledNetworks.includes(t.symbol));
-
-    const listOfWatchedSymbols: string[] = FIAT.tickers.map(t => t.symbol);
-    // all tickers that are inside reducer and not listed in FIAT.tickers (in file) => probably tokens!
-    const tokenTickers = fiat.filter(t => !listOfWatchedSymbols.includes(t.symbol));
+    const watchedCoinTickers = FIAT.tickers.filter(t => enabledNetworks.includes(t.symbol));
+    const tokenTickers = fiat.filter(t => !!t.mainNetworkSymbol);
 
     const needUpdateFn = (t: Ticker) => {
         // if no rates loaded yet, load them;
@@ -146,7 +144,7 @@ const getStaleTickers = (
     };
 
     const tickersToUpdate: Ticker[] = [];
-    watchedTickers.filter(needUpdateFn).forEach(t => tickersToUpdate.push(t));
+    watchedCoinTickers.filter(needUpdateFn).forEach(t => tickersToUpdate.push(t));
     if (includeTokens) {
         tokenTickers.filter(needUpdateFn).forEach(t => tickersToUpdate.push(t));
     }

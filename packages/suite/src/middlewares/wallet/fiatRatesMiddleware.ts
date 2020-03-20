@@ -30,7 +30,12 @@ const fiatRatesMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
             if (account.tokens) {
                 account.tokens.forEach(t => {
                     if (t.symbol) {
-                        api.dispatch(fiatRatesActions.updateCurrentRates({ symbol: t.symbol }));
+                        api.dispatch(
+                            fiatRatesActions.updateCurrentRates({
+                                symbol: t.symbol,
+                                mainNetworkSymbol: account.symbol,
+                            }),
+                        );
                     }
                 });
             }

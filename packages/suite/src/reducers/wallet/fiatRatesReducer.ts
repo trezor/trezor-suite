@@ -28,22 +28,32 @@ export interface CoinFiatRates {
     current?: CurrentFiatRates;
     lastWeek?: LastWeekRates;
     symbol: string;
+    mainNetworkSymbol?: string;
 }
 
 export const initialState: CoinFiatRates[] = [];
 
-const remove = (state: CoinFiatRates[], symbol: string) => {
-    const index = state.findIndex(f => f.symbol === symbol);
+const remove = (state: CoinFiatRates[], symbol: string, mainNetworkSymbol?: string) => {
+    const index = state.findIndex(
+        f => f.symbol === symbol && f.mainNetworkSymbol === mainNetworkSymbol,
+    );
     state.splice(index, 1);
 };
 
-const updateCurrentRates = (state: CoinFiatRates[], current: CurrentFiatRates) => {
+const updateCurrentRates = (
+    state: CoinFiatRates[],
+    current: CurrentFiatRates,
+    mainNetworkSymbol?: string,
+) => {
     const { symbol } = current;
-    const affected = state.find(f => f.symbol === symbol);
+    const affected = state.find(
+        f => f.symbol === symbol && f.mainNetworkSymbol === mainNetworkSymbol,
+    );
 
     if (!affected) {
         state.push({
             symbol,
+            mainNetworkSymbol,
             current,
             lastWeek: undefined,
         });
@@ -70,10 +80,10 @@ export default (state: CoinFiatRates[] = initialState, action: Action): CoinFiat
     return produce(state, draft => {
         switch (action.type) {
             case RATE_REMOVE:
-                remove(draft, action.symbol);
+                remove(draft, action.symbol, action.mainNetworkSymbol);
                 break;
             case RATE_UPDATE:
-                updateCurrentRates(draft, action.payload);
+                updateCurrentRates(draft, action.payload, action.mainNetworkSymbol);
                 break;
             case LAST_WEEK_RATES_UPDATE:
                 updateLastWeekRates(draft, action.payload);
