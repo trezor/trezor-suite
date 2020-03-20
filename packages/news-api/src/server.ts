@@ -1,6 +1,5 @@
 import express, { Application } from 'express';
 import fetcher from './index';
-import { Post } from './types';
 import pkg from '../package.json';
 import childProcess from 'child_process';
 
@@ -8,11 +7,12 @@ const app: Application = express();
 const PORT = process.env.PORT || 3003;
 
 app.get('/', (_req, res) => {
-    res.send('welcome welcome welcome medium fetcher api welcome welcome');
+    res.send('olaaaaaaaa I am the API for trezor news');
 });
 
-app.get('/data', (_req, res) => {
-    fetcher((statusCode, data: string | null, errorMsg) => {
+app.get('/posts', (req, res) => {
+    const { limit } = req.query;
+    fetcher(limit, (statusCode, data: string | null, errorMsg) => {
         res.setHeader('Content-Type', 'application/json');
         if (statusCode !== 200) {
             res.end(JSON.stringify({ status: 'error', errorMsg }));
