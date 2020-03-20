@@ -8,7 +8,6 @@
 const path = require('path');
 const blacklist = require('metro-config/src/defaults/blacklist');
 const nodejs = require('node-libs-browser');
-
 const { getDefaultConfig } = require('metro-config');
 
 /* eslint-enable */
