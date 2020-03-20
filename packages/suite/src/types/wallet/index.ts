@@ -13,7 +13,7 @@ import { DiscoveryActions } from '@wallet-actions/discoveryActions';
 import { AccountActions } from '@wallet-actions/accountActions';
 import { Discovery as Discovery$ } from '@wallet-reducers/discoveryReducer';
 import { Account as Account$ } from '@wallet-reducers/accountsReducer';
-import { CoinFiatRates as CoinFiatRates$ } from '@wallet-reducers/fiatRateReducer';
+import { CoinFiatRates as CoinFiatRates$ } from '@wallet-reducers/fiatRatesReducer';
 import { WalletAccountTransaction as WalletAccountTransaction$ } from '@wallet-reducers/transactionReducer';
 
 import { FiatRateActions } from '@wallet-actions/fiatRatesActions';

@@ -7,7 +7,7 @@ import { SETTINGS } from '@suite-config';
 import { Account, WalletAction, Network } from '@wallet-types';
 import { Action } from '@suite-types';
 import { STORAGE } from '@suite-actions/constants';
-import { TimestampedRates } from './fiatRateReducer';
+import { TimestampedRates } from './fiatRatesReducer';
 
 export interface WalletAccountTransaction extends AccountTransaction {
     id?: number;

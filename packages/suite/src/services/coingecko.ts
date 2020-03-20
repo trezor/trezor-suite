@@ -1,4 +1,4 @@
-import { LastWeekRates } from '@wallet-reducers/fiatRateReducer';
+import { LastWeekRates } from '@wallet-reducers/fiatRatesReducer';
 
 const COINGECKO_BASE_URL = 'https://api.coingecko.com/';
 
