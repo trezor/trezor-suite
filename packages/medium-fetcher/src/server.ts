@@ -12,9 +12,13 @@ app.get('/', (_req, res) => {
 });
 
 app.get('/data', (_req, res) => {
-    fetcher((_status, data: Post[] | null) => {
+    fetcher((statusCode, data: string | null, errorMsg) => {
         res.setHeader('Content-Type', 'application/json');
-        res.end(data);
+        if (statusCode !== 200) {
+            res.end(JSON.stringify({ status: 'error', errorMsg }));
+        } else {
+            res.end(data);
+        }
     });
 });
 

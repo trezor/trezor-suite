@@ -32,7 +32,7 @@ const cleanPosts = (posts: string) => {
 };
 
 export default async (
-    callback: (statusCode: number, json: Post[] | null, message?: string) => void,
+    callback: (statusCode: number, data: string | null, errMessage?: string) => void,
 ) => {
     axios
         .get(URL)
@@ -50,7 +50,7 @@ export default async (
             }
 
             const cleanedPosts = cleanPosts(posts);
-            callback(200, cleanedPosts);
+            callback(200, JSON.stringify(cleanedPosts));
         })
-        .catch(error => console.log(error));
+        .catch(error => callback(500, null, error.message));
 };
