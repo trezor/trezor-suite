@@ -6,7 +6,6 @@ import {
     RATE_REMOVE,
 } from '@wallet-actions/constants/fiatRatesConstants';
 import { STORAGE } from '@suite-actions/constants';
-import { Network } from '@wallet-types';
 
 export interface CurrentFiatRates {
     symbol: string;
@@ -20,6 +19,7 @@ export interface TimestampedRates {
 }
 
 export interface LastWeekRates {
+    symbol: string;
     tickers: TimestampedRates[];
     ts: number;
 }
@@ -52,10 +52,7 @@ const updateCurrentRates = (state: CoinFiatRates[], current: CurrentFiatRates) =
     }
 };
 
-const updateLastWeekRates = (
-    state: CoinFiatRates[],
-    payload: { symbol: Network['symbol'] | string; tickers: TimestampedRates[]; ts: number },
-) => {
+const updateLastWeekRates = (state: CoinFiatRates[], payload: LastWeekRates) => {
     const affected = state.find(f => f.symbol === payload.symbol);
 
     if (!affected) {
