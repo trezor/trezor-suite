@@ -14,6 +14,7 @@ app.get('/', (_req, res) => {
 });
 
 app.get('/status', (_req, res) => {
+    res.setHeader('Content-Type', 'application/json');
     const revision = childProcess
         .execSync('git rev-parse HEAD')
         .toString()

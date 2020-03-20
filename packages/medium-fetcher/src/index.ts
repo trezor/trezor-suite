@@ -37,8 +37,9 @@ export default async (callback: (status: number, json: string | null) => void) =
         .then(response => {
             const result = response.data.replace(`])}while(1);</x>`, '');
             const posts = getPosts(result);
+            const parsedPosts = JSON.parse(posts);
 
-            if (!posts) {
+            if (!parsedPosts) {
                 callback(
                     500,
                     "Could not parse the resource. Medium's JSON format might have changed.",
@@ -46,7 +47,6 @@ export default async (callback: (status: number, json: string | null) => void) =
             }
 
             const cleanedPosts = cleanPosts(posts);
-            console.log('cleanedPosts', cleanedPosts);
             callback(200, JSON.stringify(cleanedPosts));
         })
         .catch(error => console.log(error));
