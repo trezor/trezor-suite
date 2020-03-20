@@ -27,24 +27,22 @@ const SectionHeader = styled.div`
 
 const SectionTitle = styled.div`
     flex: 1;
-    font-size: 12px;
     margin-bottom: 2px;
-    font-weight: 600;
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-transform: uppercase;
     color: ${colors.BLACK50};
 `;
 
 const SectionAction = styled.div`
     font-size: 12px;
-    font-weight: 500;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${colors.BLACK25};
 `;
 
 const BottomAction = styled.div`
     display: flex;
     margin-top: 13px;
-    font-size: 12px;
-    font-weight: 500;
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     justify-content: center;
     color: ${colors.BLACK25};
 `;
@@ -76,7 +74,8 @@ const NewsImage = styled.img`
 
 const NewsTitle = styled.div<{ visited: boolean }>`
     font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${props => (props.visited ? variables.FONT_WEIGHT.REGULAR : 500)};
+    font-weight: ${props =>
+        props.visited ? variables.FONT_WEIGHT.REGULAR : variables.FONT_WEIGHT.MEDIUM};
     color: ${props => (props.visited ? colors.BLACK25 : colors.BLACK0)};
     margin-bottom: 2px;
 `;
@@ -93,7 +92,10 @@ const Description = styled.div<{ visited: boolean }>`
     color: ${props => (props.visited ? colors.BLACK50 : colors.BLACK25)};
 `;
 
-const CTAWrapper = styled.a``;
+const CTAWrapper = styled.a`
+    margin-top: 12px;
+`;
+
 const CTAButton = styled(Button)``;
 
 export type Props = React.HTMLAttributes<HTMLDivElement>;
