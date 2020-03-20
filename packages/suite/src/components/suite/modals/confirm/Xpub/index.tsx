@@ -55,7 +55,7 @@ export default ({ xpub, accountPath, accountIndex, symbol, addNotification }: Pr
             <QrCode value={xpub} addressPath={accountPath} />
             <Address data-test="@xpub-modal/xpub-field">{xpub}</Address>
             <Row ref={htmlElement}>
-                <Button variant="secondary" onClick={copyAddress}>
+                <Button tabIndex={0} variant="secondary" onClick={copyAddress}>
                     <Translation id="TR_XPUB_MODAL_CLIPBOARD" />
                 </Button>
             </Row>
