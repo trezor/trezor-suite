@@ -3,10 +3,10 @@ import TrezorConnect, { BundleProgress, AccountInfo, UI } from 'trezor-connect';
 import { addToast } from '@suite-actions/notificationActions';
 import { SUITE } from '@suite-actions/constants';
 import { create as createAccount } from '@wallet-actions/accountActions';
-import { DISCOVERY } from './constants';
+import { DISCOVERY } from '@wallet-actions/constants';
 import { SETTINGS } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
-import { Dispatch, GetState } from '@suite-types';
+import { Dispatch, GetState, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
 
 export type DiscoveryActions =
@@ -169,6 +169,17 @@ const getBundle = (discovery: Discovery) => (_d: Dispatch, getState: GetState): 
     const accounts = getState().wallet.accounts.filter(
         a => a.deviceState === discovery.deviceState,
     );
+
+    // corner-case: discovery is running so it's at least second iteration
+    // progress event wasn't emitted from 'trezor-connect' so there are no accounts, neither loaded or failed
+    // return empty bundle to complete discovery
+    if (
+        discovery.status === DISCOVERY.STATUS.RUNNING &&
+        !accounts.length &&
+        !discovery.failed.length
+    ) {
+        return bundle;
+    }
     const networks = NETWORKS.filter(n => discovery.networks.includes(n.symbol));
     networks.forEach(configNetwork => {
         // find all existed accounts
@@ -210,8 +221,14 @@ export const updateNetworkSettings = () => (dispatch: Dispatch, getState: GetSta
     const { enabledNetworks } = getState().wallet.settings;
     const { discovery } = getState().wallet;
     discovery.forEach(d => {
+        const device = getState().devices.find(dev => dev.state === d.deviceState);
+        const unavailableCapabilities =
+            device && device.features ? device.unavailableCapabilities : {};
         const networks = NETWORKS.filter(
-            n => enabledNetworks.includes(n.symbol) && !n.isHidden,
+            n =>
+                enabledNetworks.includes(n.symbol) &&
+                !n.isHidden &&
+                !unavailableCapabilities[n.symbol],
         ).map(n => n.symbol);
         const progress = dispatch(
             calculateProgress({
@@ -230,19 +247,21 @@ export const updateNetworkSettings = () => (dispatch: Dispatch, getState: GetSta
     });
 };
 
-export const create = (deviceState: string, useEmptyPassphrase = false) => (
+export const create = (deviceState: string, device: TrezorDevice) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
     const { enabledNetworks } = getState().wallet.settings;
-    const networks = NETWORKS.filter(n => enabledNetworks.includes(n.symbol) && !n.isHidden).map(
-        n => n.symbol,
-    );
+    const unavailableCapabilities = device.features ? device.unavailableCapabilities : {};
+    const networks = NETWORKS.filter(
+        n =>
+            enabledNetworks.includes(n.symbol) && !n.isHidden && !unavailableCapabilities[n.symbol],
+    ).map(n => n.symbol);
     dispatch({
         type: DISCOVERY.CREATE,
         payload: {
             deviceState,
-            authConfirm: !useEmptyPassphrase,
+            authConfirm: !device.useEmptyPassphrase,
             index: 0,
             status: DISCOVERY.STATUS.IDLE,
             total: LIMIT * networks.length,
@@ -262,16 +281,20 @@ export const remove = (deviceState: string): DiscoveryActions => ({
 });
 
 export const start = () => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-    // TODO:
-    // - add subscriptions
-    // - filter coin by firmware (ex: xrp on T1)
-
-    const selectedDevice = getState().suite.device;
+    const { device } = getState().suite;
     const discovery = dispatch(getDiscoveryForDevice());
-    if (!selectedDevice || selectedDevice.authConfirm || !discovery) {
+    if (!device) {
         dispatch(addToast({ type: 'discovery-error', error: 'Device not found' }));
         return;
-    } // TODO: throw error in notification?
+    }
+    if (device.authConfirm) {
+        dispatch(addToast({ type: 'discovery-error', error: 'Device auth confirmation needed' }));
+        return;
+    }
+    if (!discovery) {
+        dispatch(addToast({ type: 'discovery-error', error: 'Discovery not found' }));
+        return;
+    }
     const { deviceState } = discovery;
 
     // start process
@@ -293,22 +316,17 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
 
     // discovery process complete
     if (bundle.length === 0) {
-        if (discovery.status <= DISCOVERY.STATUS.RUNNING && selectedDevice.connected) {
+        if (discovery.status <= DISCOVERY.STATUS.RUNNING && device.connected) {
             // call getFeatures to release device session
             await TrezorConnect.getFeatures({
-                device: {
-                    path: selectedDevice.path,
-                    instance: selectedDevice.instance,
-                    state: selectedDevice.state,
-                },
+                device,
                 keepSession: false,
-                useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
+                useEmptyPassphrase: device.useEmptyPassphrase,
             });
             if (discovery.authConfirm) {
                 dispatch({ type: SUITE.REQUEST_AUTH_CONFIRM });
             }
         }
-
         dispatch(
             update(
                 {
@@ -332,15 +350,11 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
 
     TrezorConnect.on<AccountInfo>(UI.BUNDLE_PROGRESS, onBundleProgress);
     const result = await TrezorConnect.getAccountInfo({
-        device: {
-            path: selectedDevice.path,
-            instance: selectedDevice.instance,
-            state: selectedDevice.state,
-        },
+        device,
         bundle,
         keepSession: true,
         skipFinalReload: true,
-        useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
+        useEmptyPassphrase: device.useEmptyPassphrase,
     });
 
     TrezorConnect.off(UI.BUNDLE_PROGRESS, onBundleProgress);
@@ -433,21 +447,20 @@ export const stop = () => async (dispatch: Dispatch): Promise<void> => {
     }
 };
 
-export const restart = () => (dispatch: Dispatch) => {
+export const restart = () => async (dispatch: Dispatch) => {
     const discovery = dispatch(getDiscoveryForDevice());
-    if (discovery) {
-        const progress = dispatch(
-            calculateProgress({
-                ...discovery,
-                failed: [],
-            }),
-        );
-        dispatch(
-            update({
-                ...progress,
-                failed: [],
-            }),
-        );
-        dispatch(start());
-    }
+    if (!discovery) return;
+    const progress = dispatch(
+        calculateProgress({
+            ...discovery,
+            failed: [],
+        }),
+    );
+    dispatch(
+        update({
+            ...progress,
+            failed: [],
+        }),
+    );
+    await dispatch(start());
 };
