@@ -11,7 +11,7 @@
     "scripts": {
         "build": "rimraf ./build && tsc",
         "start": "yarn build && ts-node ./build/server.js",
-        "dev": "ts-node-dev --respawn --transpileOnly ./lib/server.ts"
+        "dev": "ts-node-dev --respawn --transpileOnly ./src/server.ts"
     },
     "dependencies": {
         "express": "4.17.1",

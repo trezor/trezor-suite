@@ -9,6 +9,7 @@
         "strict": true,
         "declaration": true,
         "declarationMap": true,
+        "resolveJsonModule": true,
         "noImplicitThis": true,
         "esModuleInterop": true,
         "noImplicitAny": true,
