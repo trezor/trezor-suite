@@ -7339,6 +7339,13 @@ axios@0.19.0:
     follow-redirects "1.5.10"
     is-buffer "^2.0.2"
 
+axios@0.19.2:
+  version "0.19.2"
+  resolved "https://registry.npmjs.org/axios/-/axios-0.19.2.tgz#3ea36c5d8818d0d5f8a8a97a6d36b86cdc00cb27"
+  integrity sha512-fjgm5MvRHLhx+osE2xoekY70AhARk3a6hkN+3Io1jc00jtquGvxYlKlsFUhmUET0V5te6CcZI7lcv2Ym61mjHA==
+  dependencies:
+    follow-redirects "1.5.10"
+
 axobject-query@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/axobject-query/-/axobject-query-2.0.2.tgz#ea187abe5b9002b377f925d8bf7d1c561adf38f9"
@@ -16751,11 +16758,6 @@ media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
   integrity sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g=
-
-medium-json-feed@0.0.3:
-  version "0.0.3"
-  resolved "https://registry.npmjs.org/medium-json-feed/-/medium-json-feed-0.0.3.tgz#61d57bf545769cafc1dfc3e68b901db807741bbe"
-  integrity sha512-JPFDW1Tp38/Q9+2v7CfbLUlY0lYmfqNnU655WrB3GapoWOg/QkXnU9LwvkkoA1tSmSgIpfaYmb4qmuTa4wXd7Q==
 
 mem@^1.1.0:
   version "1.1.0"

@@ -13,7 +13,7 @@
         "esModuleInterop": true,
         "noImplicitAny": true,
         "strictNullChecks": true,
-        "outDir": "./lib"
+        "outDir": "./build"
     },
     "include": ["src/**/*", "index.d.ts"],
     "exclude": [

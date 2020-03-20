@@ -1,5 +1,5 @@
 import express, { Application } from 'express';
-import fetcher from './src';
+import fetcher from './';
 
 const app: Application = express();
 const PORT = process.env.PORT || 3003;
