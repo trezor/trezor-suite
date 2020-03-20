@@ -1,11 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Card from '@suite-components/Card';
 import { colors, Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
-import { resolveStaticPath } from '@suite-utils/nextjs';
-
-// import parser from 'fast-xml-parser';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -61,33 +58,18 @@ const NewsItem = styled.div`
     }
 `;
 
-const Outline = styled.div`
-    min-width: 20px;
-    display: flex;
-`;
-
-// const OutlineIcon = styled.div<{ show: boolean }>`
-//     display: ${props => (props.show ? 'block' : 'none')};
-//     width: 6px;
-//     height: 6px;
-//     border-radius: 50%;
-//     background: ${colors.BLACK0};
-//     margin-top: 6px;
-//     margin-left: 10px;
-// `;
-
 const Left = styled.div`
     display: flex;
 `;
 
 const Right = styled.div`
     display: flex;
+    padding-left: 16px;
     flex-direction: column;
 `;
 
 const NewsImage = styled.img`
     width: 80px;
-    height: 80px;
     border-radius: 2px;
     background: #f5f5f5;
 `;
@@ -111,42 +93,57 @@ const Description = styled.div<{ visited: boolean }>`
     color: ${props => (props.visited ? colors.BLACK50 : colors.BLACK25)};
 `;
 
-const CTAWrapper = styled.div``;
+const CTAWrapper = styled.a``;
 const CTAButton = styled(Button)``;
 
 export type Props = React.HTMLAttributes<HTMLDivElement>;
 
-// const stripHTML = (html: string) => {
-//     const doc = new DOMParser().parseFromString(html, 'text/html');
-//     return doc.body.textContent || '';
-// };
-
-// TODO: state logic for read/unread articles
-// TODO: Parse real RSS feed https://blog.trezor.io/feed
-// 0. convert xml to json (fast-xml-parser) works fine
-// 1. download the rss feed using a proxy server because of cors
-// 2. images for articles are not provided (could be parsed from the article's html)
-// 3. content of an article is provided only as html, need to strip html tags to show something reasonable
-// 4. content of an article includes the author and and date which will need to be removed
 const NewsFeed = React.memo(({ ...rest }: Props) => {
-    // const [items, setItems] = useState<any[]>([]);
-    // const [error, setError] = useState<string | null>(null);
+    const [items, setItems] = useState<any[]>([]);
 
-    // useEffect(() => {
-    //     const fetchBlogFeed = async () => {
-    //         const response = await fetch(
-    //             'https://cors-anywhere.herokuapp.com/https://blog.trezor.io/feed',
-    //         ); // TODO: custom proxy
-    //         if (!response.ok) setError(response.statusText);
-    //         if (response.body) {
-    //             const xmlData = await response.text();
-    //             const result = parser.parse(xmlData);
-    //             console.log(result);
-    //             setItems(result.rss.channel.item);
-    //         }
-    //     };
-    //     fetchBlogFeed();
-    // }, []);
+    useEffect(() => {
+        setItems([
+            {
+                title:
+                    'Gift yourself…anything! Use your Trezor to buy gift cards from around the world.',
+                thumbnail: 'https://cdn-images-1.medium.com/max/1024/1*0yuYSkoDM901kMqDNySzhg.jpeg',
+                pubDate: '2020-03-11 17:08:43',
+                link:
+                    'https://blog.trezor.io/gift-yourself-anything-use-your-trezor-to-buy-gift-cards-from-around-the-world-20f5051acf60?source=rss-b8686215a986------2',
+                description:
+                    'Most of you have probably heard this ‘gotcha’ from your nocoiner friends, colleagues, and relatives in the past. The good news is, the answer is very straightforward; yes, you can buy everything with bitcoin. The options had been there for a long time, and now it is easier than ever.',
+            },
+            {
+                title: 'The Economics of Halving: What Will Happen to the Price?',
+                thumbnail: 'https://cdn-images-1.medium.com/max/1024/1*0wmHo0Di1nAco9_9LBDXXg.jpeg',
+                pubDate: '2020-02-20 16:56:59',
+                link:
+                    'https://blog.trezor.io/the-economics-of-halving-what-will-happen-to-the-price-dab6df11755a?source=rss-b8686215a986------2',
+                description:
+                    'Bitcoin is circling $10,000 again, and of course, you are wondering what will happen next. 2020 is a special year for Bitcoin in many ways. One of them is even written by Satoshi Nakamoto himself into its DNA — yes, the halving. The next halving is estimated to occur on 12 May 2020, so let’s take a closer look at what will happen afterwards.',
+            },
+            {
+                title:
+                    'Almost all of the Secure Element microchip manufacturers require non-disclosure agreements to be…',
+                thumbnail:
+                    'https://medium.com/_/stat?event=post.clientViewed&referrerSource=full_rss&postId=c97c743457d5',
+                pubDate: '2020-01-31 15:14:02',
+                link:
+                    'https://medium.com/@satoshilabs/almost-all-of-the-secure-element-microchip-manufacturers-require-non-disclosure-agreements-to-be-c97c743457d5?source=rss-b8686215a986------2',
+                description:
+                    'Almost all of the Secure Element microchip manufacturers require non-disclosure agreements to be signed, meaning that the hardware wallet manufactures using these chips in their devices might be prevented from publicly disclosing any discovered flaws or backdoors in the hardware. We’re currently looking into multiple chips on the market that could be used in the next generation of Trezor devices.',
+            },
+            {
+                title: 'Our Response to the Read Protection Downgrade Attack',
+                thumbnail: 'https://cdn-images-1.medium.com/max/1024/1*08VFZOY7rd6BRF7pMSUaNQ.png',
+                pubDate: '2020-01-31 14:39:10',
+                link:
+                    'https://blog.trezor.io/our-response-to-the-read-protection-downgrade-attack-28d23f8949c6?source=rss-b8686215a986------2',
+                description:
+                    'This article addresses the Read Protection (RDP) Downgrade attack discovered in both Trezor One and Trezor Model T by the Kraken Security Labs researchers on 30 October 2019. Here you can find information about how this physical attack works and how you can protect yourself against it if you’re concerned that you might be affected. In the second part of the article, we explain our threat model and say a few things about physical security.',
+            },
+        ]);
+    }, []);
 
     return (
         <Section {...rest}>
@@ -169,72 +166,23 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
             </SectionHeader>
             <Content>
                 <StyledCard>
-                    {/* {items.map(item => (
+                    {items.map(item => (
                         <NewsItem>
                             <Left>
-                                <NewsImage />
+                                <NewsImage src={item.thumbnail} />
                             </Left>
-                            <Outline>
-                                <OutlineIcon show />
-                            </Outline>
                             <Right>
                                 <NewsTitle visited={false}>{item.title}</NewsTitle>
                                 <Timestamp visited={false}>{item.pubDate}</Timestamp>
-                                <Description visited={false}>
-                                    {stripHTML(item['content:encoded'])}
-                                </Description>
-                                <CTAWrapper>
+                                <Description visited={false}>{item.description}</Description>
+                                <CTAWrapper href={item.link}>
                                     <CTAButton size="small" variant="tertiary">
                                         Read more
                                     </CTAButton>
                                 </CTAWrapper>
                             </Right>
                         </NewsItem>
-                    ))} */}
-                    <NewsItem>
-                        <Left>
-                            <NewsImage src={resolveStaticPath('images/png/fake1.png')} />
-                        </Left>
-                        <Outline>{/* <OutlineIcon show /> */}</Outline>
-                        <Right>
-                            <NewsTitle visited={false}>
-                                Blog: Where in the world are my coins?
-                            </NewsTitle>
-                            <Timestamp visited={false}>today</Timestamp>
-                            <Description visited={false}>
-                                Your coins aren’t in your hardware wallet. But don’t panic! By the
-                                time you finish reading this article, you’ll have a better
-                                understanding of where your coins are…
-                            </Description>
-                            <CTAWrapper>
-                                <CTAButton size="small" variant="tertiary">
-                                    <Translation id="TR_READ_MORE" />
-                                </CTAButton>
-                            </CTAWrapper>
-                        </Right>
-                    </NewsItem>
-                    <NewsItem>
-                        <Left>
-                            <NewsImage src={resolveStaticPath('images/png/fake2.png')} />
-                        </Left>
-                        <Outline>{/* <OutlineIcon show /> */}</Outline>
-                        <Right>
-                            <NewsTitle visited={false}>
-                                Update: Trezor T firmware v 2.3.0 update available
-                            </NewsTitle>
-                            <Timestamp visited={false}>yesterday</Timestamp>
-                            <Description visited={false}>
-                                Security update for Trezor T just got out and is ready to be
-                                installed. This update is highly recommended as it patches some
-                                security issues.
-                            </Description>
-                            <CTAWrapper>
-                                <CTAButton size="small" variant="tertiary">
-                                    Update now
-                                </CTAButton>
-                            </CTAWrapper>
-                        </Right>
-                    </NewsItem>
+                    ))}
                 </StyledCard>
             </Content>
             <BottomAction>
