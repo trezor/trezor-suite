@@ -31,7 +31,9 @@ const cleanPosts = (posts: string) => {
     return result;
 };
 
-export default async (callback: (status: number, json: string | null) => void) => {
+export default async (
+    callback: (statusCode: number, json: Post[] | null, message?: string) => void,
+) => {
     axios
         .get(URL)
         .then(response => {
@@ -42,12 +44,13 @@ export default async (callback: (status: number, json: string | null) => void) =
             if (!parsedPosts) {
                 callback(
                     500,
+                    null,
                     "Could not parse the resource. Medium's JSON format might have changed.",
                 );
             }
 
             const cleanedPosts = cleanPosts(posts);
-            callback(200, JSON.stringify(cleanedPosts));
+            callback(200, cleanedPosts);
         })
         .catch(error => console.log(error));
 };

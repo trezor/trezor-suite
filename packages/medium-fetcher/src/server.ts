@@ -1,5 +1,6 @@
 import express, { Application } from 'express';
 import fetcher from './index';
+import { Post } from './types';
 import pkg from '../package.json';
 import childProcess from 'child_process';
 
@@ -7,7 +8,11 @@ const app: Application = express();
 const PORT = process.env.PORT || 3003;
 
 app.get('/', (_req, res) => {
-    fetcher((_status, data) => {
+    res.send('welcome welcome welcome medium fetcher api welcome welcome');
+});
+
+app.get('/data', (_req, res) => {
+    fetcher((_status, data: Post[] | null) => {
         res.setHeader('Content-Type', 'application/json');
         res.end(data);
     });
