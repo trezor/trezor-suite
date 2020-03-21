@@ -90,11 +90,11 @@ const Asset = React.memo(({ name, symbol, cryptoValue, ...rest }: Props) => {
                 <FiatValue amount={cryptoValue} symbol={symbol}>
                     {(_fiatValue, exchangeRate) => {
                         return exchangeRate ? (
-                            <Badge isSmall>
+                            <Badge isSmall isGray>
                                 1 {symbol.toUpperCase()} = {exchangeRate}
                             </Badge>
                         ) : (
-                            <Badge isSmall>
+                            <Badge isSmall isGray>
                                 <BadgeText>N/A</BadgeText> <NoRatesTooltip />
                             </Badge>
                         );
