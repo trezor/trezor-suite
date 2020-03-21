@@ -135,6 +135,41 @@ export const fixtures = [
                 code: undefined,
             },
         },
+        // this device is used only to cover missing unavailableCapabilities case
+        device: global.JestMocks.getSuiteDevice({
+            state: 'device-state',
+            type: 'unacquired',
+        }),
+    },
+    {
+        description: 'UnavailableCapability: XRP, discovery empty',
+        connect: {
+            success: true,
+        },
+        device: global.JestMocks.getSuiteDevice({
+            state: 'device-state',
+            connected: true,
+            unavailableCapabilities: { xrp: 'no-capability' },
+        }),
+        enabledNetworks: ['xrp'],
+        result: {
+            failed: [],
+        },
+    },
+    {
+        description: 'UnavailableCapability: XRP, discovery not empty',
+        connect: {
+            success: true,
+        },
+        device: global.JestMocks.getSuiteDevice({
+            state: 'device-state',
+            connected: true,
+            unavailableCapabilities: { xrp: 'no-capability' },
+        }),
+        enabledNetworks: ['btc', 'xrp'],
+        result: {
+            failed: [],
+        },
     },
 ];
 
@@ -243,5 +278,38 @@ export const changeNetworksFixtures = [
                 networks: ['btc', 'ltc'],
             },
         ],
+    },
+];
+
+export const unavailableCapabilities = [
+    {
+        description: 'UnavailableCapability: Enable XRP',
+        device: global.JestMocks.getSuiteDevice({
+            state: 'device-state',
+            connected: true,
+            unavailableCapabilities: { xrp: 'no-capability' },
+        }),
+        networks: ['btc', 'xrp'],
+        discoveryNetworks: ['btc', 'btc', 'btc'],
+    },
+    {
+        description: 'UnavailableCapability: Only LTC',
+        device: global.JestMocks.getSuiteDevice({
+            state: 'device-state',
+            connected: true,
+            unavailableCapabilities: { ltc: 'no-capability' },
+        }),
+        networks: ['ltc'],
+        discoveryNetworks: [],
+    },
+    {
+        description: 'UnavailableCapability: Device without features',
+        // this device is used only to cover missing unavailableCapabilities case
+        device: global.JestMocks.getSuiteDevice({
+            state: 'device-state',
+            type: 'unacquired',
+        }),
+        networks: ['xrp'],
+        discoveryNetworks: ['xrp'],
     },
 ];
