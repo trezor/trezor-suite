@@ -1,7 +1,12 @@
 import TrezorConnect, { AccountTransaction, BlockchainFiatRatesUpdate } from 'trezor-connect';
 import { subWeeks, getUnixTime } from 'date-fns';
-import { fetchCurrentFiatRates, getFiatRatesForTimestamps } from '@suite/services/coingecko';
-import { isTestnet } from '@suite/utils/wallet/accountUtils';
+import {
+    fetchCurrentFiatRates,
+    getFiatRatesForTimestamps,
+    fetchLastWeekRates,
+} from '@suite/services/coingecko';
+import { isTestnet } from '@wallet-utils/accountUtils';
+import { splitTimestampsByInterval } from '@suite-utils/date';
 import { FIAT } from '@suite-config';
 import { Dispatch, GetState } from '@suite-types';
 import {
@@ -10,13 +15,13 @@ import {
     TX_FIAT_RATE_UPDATE,
     RATE_REMOVE,
 } from './constants/fiatRatesConstants';
-import { Network, Account, CoinFiatRates, WalletAccountTransaction } from '@wallet-types';
-
-type Ticker = {
-    symbol: string;
-    url?: string;
-    mainNetworkSymbol?: string; // symbol of thee main network. (used for tokens)
-};
+import {
+    Network,
+    Account,
+    CoinFiatRates,
+    WalletAccountTransaction,
+    FiatTicker,
+} from '@wallet-types';
 
 type FiatRatesPayload = NonNullable<CoinFiatRates['current']>;
 
@@ -51,9 +56,10 @@ export type FiatRateActions =
 
 // how often should suite check for outdated rates;
 const INTERVAL = 1000 * 60; // 1 min
+const INTERVAL_LAST_WEEK = 1000 * 60 * 60 * 1; // 1 hour
 // which rates should be considered outdated and updated;
 const MAX_AGE = 1000 * 60 * 10; // 10 mins
-const INTERVAL_LAST_WEEK = 1000 * 60 * 60 * 4; // 4 hours
+const MAX_AGE_LAST_WEEK = 1000 * 60 * 60 * 1; // 1 hour
 
 export const remove = (symbol: string, mainNetworkSymbol?: string) => (dispatch: Dispatch) => {
     dispatch({
@@ -78,9 +84,9 @@ export const removeRatesForDisabledNetworks = () => (dispatch: Dispatch, getStat
  * Fetch and update current fiat rates for a given ticker
  * Primary source of rates is TrezorConnect, coingecko serves as a fallback
  *
- * @param {Ticker} ticker
+ * @param {FiatTicker} ticker
  */
-export const updateCurrentRates = (ticker: Ticker) => async (
+export const updateCurrentRates = (ticker: FiatTicker) => async (
     dispatch: Dispatch,
     _getState: GetState,
 ) => {
@@ -121,16 +127,16 @@ export const updateCurrentRates = (ticker: Ticker) => async (
  * @param {boolean} [includeTokens]
  */
 const getStaleTickers = (
-    timestampFunc: (ticker: CoinFiatRates) => number | undefined,
+    timestampFunc: (ticker: CoinFiatRates) => number | undefined | null,
     interval: number,
     includeTokens?: boolean,
-) => (_dispatch: Dispatch, getState: GetState): Ticker[] => {
+) => (_dispatch: Dispatch, getState: GetState): FiatTicker[] => {
     const { fiat } = getState().wallet;
     const { enabledNetworks } = getState().wallet.settings;
     const watchedCoinTickers = FIAT.tickers.filter(t => enabledNetworks.includes(t.symbol));
     const tokenTickers = fiat.filter(t => !!t.mainNetworkSymbol);
 
-    const needUpdateFn = (t: Ticker) => {
+    const needUpdateFn = (t: FiatTicker) => {
         // if no rates loaded yet, load them;
         if (fiat.length === 0) return true;
         const alreadyWatchedTicker = fiat.find(f => f.symbol === t.symbol);
@@ -143,7 +149,7 @@ const getStaleTickers = (
         return Date.now() - timestamp > interval;
     };
 
-    const tickersToUpdate: Ticker[] = [];
+    const tickersToUpdate: FiatTicker[] = [];
     watchedCoinTickers.filter(needUpdateFn).forEach(t => tickersToUpdate.push(t));
     if (includeTokens) {
         tokenTickers.filter(needUpdateFn).forEach(t => tickersToUpdate.push(t));
@@ -174,24 +180,27 @@ export const updateStaleRates = () => async (dispatch: Dispatch, _getState: GetS
 };
 
 /**
- * Updates the price data for the past 7 days in 4-hour interval (42 data points)
+ * Updates the price data for the past 7 days in 1-hour interval (168 data points)
  */
-const updateLastWeekRates = () => async (dispatch: Dispatch) => {
-    const day = 86400;
-    const hour = 3600;
+export const updateLastWeekRates = () => async (dispatch: Dispatch, getState: GetState) => {
+    const { localCurrency } = getState().wallet.settings;
+
     const currentTimestamp = Math.floor(new Date().getTime() / 1000) - 120; // unix timestamp in seconds - 2 mins
-    let timestamps: number[] = [];
-    const weekAgoTimestamp = currentTimestamp - 7 * day;
+    const weekAgoTimestamp = currentTimestamp - 7 * 86400;
 
-    // calc timestamps in 4 hours intervals the last 7 days
-    let timestamp = currentTimestamp;
-    while (timestamp > weekAgoTimestamp) {
-        timestamp -= 4 * hour;
-        timestamps.push(timestamp);
-    }
-    timestamps = timestamps.reverse();
+    // calc timestamps in 1 hour intervals the last 7 days
+    const timestamps = splitTimestampsByInterval(weekAgoTimestamp, currentTimestamp, 3600, true);
 
-    const staleTickers = dispatch(getStaleTickers(ticker => ticker.lastWeek?.ts, MAX_AGE));
+    const lastWeekStaleFn = (coinRates: CoinFiatRates) => {
+        if (coinRates.lastWeek?.tickers[0]?.rates[localCurrency]) {
+            // if there is a rate for localCurrency then decided based on timestamp
+            return coinRates.lastWeek?.ts;
+        }
+        // no rates for localCurrency
+        return null;
+    };
+
+    const staleTickers = dispatch(getStaleTickers(lastWeekStaleFn, MAX_AGE_LAST_WEEK));
 
     const promises = staleTickers.map(async ticker => {
         try {
@@ -201,7 +210,7 @@ const updateLastWeekRates = () => async (dispatch: Dispatch) => {
             });
             const results = response.success
                 ? response.payload
-                : await getFiatRatesForTimestamps(ticker.symbol, timestamps);
+                : await fetchLastWeekRates(ticker, localCurrency);
 
             if (results?.tickers) {
                 dispatch({
@@ -241,7 +250,7 @@ export const updateTxsRates = (account: Account, txs: AccountTransaction[]) => a
 
         const results = response.success
             ? response.payload
-            : await getFiatRatesForTimestamps(account.symbol, timestamps);
+            : await getFiatRatesForTimestamps({ symbol: account.symbol }, timestamps);
 
         if (results?.tickers) {
             txs.forEach((tx, i) => {

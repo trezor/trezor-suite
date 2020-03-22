@@ -8,7 +8,7 @@ import {
     SendFormXrpActions,
     SendFormEthActions,
 } from '@wallet-types/sendForm';
-
+import { FiatTicker as FiatTicker$ } from '@wallet-types/fiatRates';
 import { DiscoveryActions } from '@wallet-actions/discoveryActions';
 import { AccountActions } from '@wallet-actions/accountActions';
 import { Discovery as Discovery$ } from '@wallet-reducers/discoveryReducer';
@@ -37,6 +37,7 @@ export type CoinFiatRates = CoinFiatRates$;
 export type Discovery = Discovery$;
 export type WalletParams = WalletParams$;
 export type WalletAccountTransaction = WalletAccountTransaction$;
+export type FiatTicker = FiatTicker$;
 
 interface BlockchainLinkToken {
     name: string;

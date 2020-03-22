@@ -46,6 +46,10 @@ const fiatRatesMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
             api.dispatch(fiatRatesActions.removeRatesForDisabledNetworks());
             api.dispatch(fiatRatesActions.updateStaleRates());
             break;
+        case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
+            // for coins relying on coingecko we only fetch rates for one fiat currency
+            api.dispatch(fiatRatesActions.updateLastWeekRates());
+            break;
         default:
             break;
     }

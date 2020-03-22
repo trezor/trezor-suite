@@ -49,7 +49,7 @@ const LastWeekGraph = React.memo(({ lastWeekData, symbol, localCurrency }: Props
                 <Area
                     isAnimationActive={false}
                     type="monotone"
-                    dataKey={data => data.rates.eur}
+                    dataKey={data => data.rates[localCurrency]}
                     stroke={isGraphGreen ? greenStroke : redStroke}
                     fill={isGraphGreen ? 'url(#greenAreaGradient)' : 'url(#redAreaGradient)'}
                 />
