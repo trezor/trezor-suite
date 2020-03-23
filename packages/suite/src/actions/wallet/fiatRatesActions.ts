@@ -90,8 +90,8 @@ export const updateCurrentRates = (ticker: FiatTicker) => async (
     dispatch: Dispatch,
     _getState: GetState,
 ) => {
+    const response = await TrezorConnect.blockchainGetCurrentFiatRates({ coin: ticker.symbol });
     try {
-        const response = await TrezorConnect.blockchainGetCurrentFiatRates({ coin: ticker.symbol });
         const results = response.success ? response.payload : await fetchCurrentFiatRates(ticker);
 
         if (results && results.rates) {
@@ -204,11 +204,11 @@ export const updateLastWeekRates = () => async (dispatch: Dispatch, getState: Ge
     const staleTickers = dispatch(getStaleTickers(lastWeekStaleFn, MAX_AGE_LAST_WEEK));
 
     const promises = staleTickers.map(async ticker => {
+        const response = await TrezorConnect.blockchainGetFiatRatesForTimestamps({
+            coin: ticker.symbol,
+            timestamps,
+        });
         try {
-            const response = await TrezorConnect.blockchainGetFiatRatesForTimestamps({
-                coin: ticker.symbol,
-                timestamps,
-            });
             const results = response.success
                 ? response.payload
                 : await fetchLastWeekRates(ticker, localCurrency);
@@ -243,12 +243,11 @@ export const updateTxsRates = (account: Account, txs: AccountTransaction[]) => a
     if (txs?.length === 0 || isTestnet(account.symbol)) return;
 
     const timestamps = txs.map(tx => tx.blockTime ?? getBlockbookSafeTime());
+    const response = await TrezorConnect.blockchainGetFiatRatesForTimestamps({
+        coin: account.symbol,
+        timestamps,
+    });
     try {
-        const response = await TrezorConnect.blockchainGetFiatRatesForTimestamps({
-            coin: account.symbol,
-            timestamps,
-        });
-
         const results = response.success
             ? response.payload
             : await getFiatRatesForTimestamps({ symbol: account.symbol }, timestamps);
@@ -286,22 +285,17 @@ export const fetchAccountHistory = async (account: Account, weeks: number) => {
 
     const startDate = subWeeks(new Date(), weeks);
     const endDate = new Date();
-    try {
-        const response =
-            (await TrezorConnect.blockchainGetAccountBalanceHistory({
-                coin: account.symbol,
-                descriptor: account.descriptor,
-                from: Math.floor(startDate.getTime() / 1000),
-                to: Math.floor(endDate.getTime() / 1000),
-                groupBy: weeks >= 52 ? secondsInMonth : secondsInDay,
-            })) ?? null;
+    const response =
+        (await TrezorConnect.blockchainGetAccountBalanceHistory({
+            coin: account.symbol,
+            descriptor: account.descriptor,
+            from: Math.floor(startDate.getTime() / 1000),
+            to: Math.floor(endDate.getTime() / 1000),
+            groupBy: weeks >= 52 ? secondsInMonth : secondsInDay,
+        })) ?? null;
 
-        if (response?.success) {
-            return response.payload;
-        }
-        return null;
-    } catch (error) {
-        console.error(error);
+    if (response?.success) {
+        return response.payload;
     }
 };
 
