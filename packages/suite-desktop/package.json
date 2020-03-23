@@ -27,7 +27,7 @@
         "asarUnpack": [
             "build/static/bridge/**/*"
         ],
-        "electronVersion": "7.1.4",
+        "electronVersion": "8.1.1",
         "directories": {
             "output": "build-electron"
         },
