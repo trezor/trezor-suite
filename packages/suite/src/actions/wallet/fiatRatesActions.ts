@@ -285,14 +285,13 @@ export const fetchAccountHistory = async (account: Account, weeks: number) => {
 
     const startDate = subWeeks(new Date(), weeks);
     const endDate = new Date();
-    const response =
-        (await TrezorConnect.blockchainGetAccountBalanceHistory({
-            coin: account.symbol,
-            descriptor: account.descriptor,
-            from: Math.floor(startDate.getTime() / 1000),
-            to: Math.floor(endDate.getTime() / 1000),
-            groupBy: weeks >= 52 ? secondsInMonth : secondsInDay,
-        })) ?? null;
+    const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
+        coin: account.symbol,
+        descriptor: account.descriptor,
+        from: Math.floor(startDate.getTime() / 1000),
+        to: Math.floor(endDate.getTime() / 1000),
+        groupBy: weeks >= 52 ? secondsInMonth : secondsInDay,
+    });
 
     if (response?.success) {
         return response.payload;
