@@ -259,3 +259,13 @@ export const getFirstDeviceInstance = (devices: TrezorDevice[]) => {
         }, [] as TrezorDevice[])
         .sort(sortByPriority);
 };
+
+export const isBitcoinOnly = (device: TrezorDevice) => {
+    const { features } = device;
+    return (
+        features &&
+        features.capabilities &&
+        features.capabilities.length > 0 &&
+        !features.capabilities.includes('Capability_Bitcoin_like')
+    );
+};

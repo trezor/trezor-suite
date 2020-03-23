@@ -8,7 +8,7 @@ import { SUITE } from '@suite-actions/constants';
 
 import { Translation } from '@suite-components';
 import { SettingsLayout } from '@settings-components';
-import { getFwVersion } from '@suite-utils/device';
+import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import {
     SEED_MANUAL_URL,
     DRY_RUN_URL,
@@ -166,10 +166,13 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                     <TextColumn
                         title={<Translation id="TR_FIRMWARE_VERSION" />}
                         description={
-                            <Translation
-                                id="TR_YOUR_CURRENT_FIRMWARE"
-                                values={{ version: getFwVersion(device) }}
-                            />
+                            <>
+                                <Translation
+                                    id="TR_YOUR_CURRENT_FIRMWARE"
+                                    values={{ version: getFwVersion(device) }}
+                                />
+                                {isBitcoinOnly(device) && ' (bitcoin-only)'}
+                            </>
                         }
                     />
                     <ActionColumn>
@@ -177,11 +180,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                             variant="secondary"
                             onClick={() => goto('firmware-index', { cancelable: true })}
                             data-test="@settings/device/update-button"
-                            isDisabled={
-                                uiLocked
-                                // TODO: for development and testing purposes is disable disabled
-                                // || (device && !['required', 'outdated'].includes(device.firmware))
-                            }
+                            isDisabled={uiLocked}
                         >
                             {device &&
                                 ['required', 'outdated'].includes(device.firmware) &&

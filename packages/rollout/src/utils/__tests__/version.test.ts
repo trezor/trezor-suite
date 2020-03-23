@@ -4,12 +4,12 @@ describe('Version Utils', () => {
     describe('is newer', () => {
         // older
         it('it should return false [0, 0, 1] [0, 0, 2]', () => {
-            const result = versionUtils.isNewer([0, 0, 1], [0, 0, 2]);
+            const result = versionUtils.isNewer([1, 0, 1], [1, 0, 2]);
             expect(result).toBe(false);
         });
 
         it('it should return false [0, 1, 1] [0, 2, 1]', () => {
-            const result = versionUtils.isNewer([0, 1, 1], [0, 2, 1]);
+            const result = versionUtils.isNewer([1, 1, 1], [1, 2, 1]);
             expect(result).toBe(false);
         });
 
@@ -25,12 +25,12 @@ describe('Version Utils', () => {
 
         // newer
         it('it should return true [0, 0, 2] [0, 0, 1]', () => {
-            const result = versionUtils.isNewer([0, 0, 2], [0, 0, 1]);
+            const result = versionUtils.isNewer([1, 0, 2], [1, 0, 1]);
             expect(result).toBe(true);
         });
 
         it('it should return true [0, 2, 1] [0, 1, 1]', () => {
-            const result = versionUtils.isNewer([0, 2, 1], [0, 1, 1]);
+            const result = versionUtils.isNewer([1, 2, 1], [1, 1, 1]);
             expect(result).toBe(true);
         });
 
@@ -89,12 +89,6 @@ describe('Version Utils', () => {
         it('it should parse', () => {
             const parsed = versionUtils.parse([1, 0, 1]);
             expect(parsed).toEqual({ major: 1, minor: 0, patch: 1 });
-        });
-
-        it('it shouldnt parse', () => {
-            expect(() => {
-                versionUtils.parse([1]);
-            }).toThrow('Wrong version arr');
         });
     });
 });

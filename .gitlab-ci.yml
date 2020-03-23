@@ -63,3 +63,4 @@ include:
     - ci/packages/suite-web.yml
     - ci/packages/suite-desktop.yml
     - ci/packages/suite-native.yml
+    - ci/packages/rollout.yml

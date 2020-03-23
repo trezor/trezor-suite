@@ -19,6 +19,14 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
             // if current status is error, reset to initial status on device disconnect
             if (status === 'error' || status === 'done') {
                 api.dispatch(firmwareActions.resetReducer());
+                break;
+            }
+            // when device disconnects and it is not in bootloader, save its target
+            // firmwareRelease for future use. note that we do not save firmwareRelease
+            // in bootloader, which also means that we do not save it when no firmware is installed
+            // but in this case we may safely fallback to firmwareRelease of currently connected device
+            if (action.payload.features && action.payload.mode !== 'bootloader') {
+                api.dispatch(firmwareActions.setTargetRelease(action.payload.firmwareRelease));
             }
 
             break;

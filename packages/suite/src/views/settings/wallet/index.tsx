@@ -167,6 +167,7 @@ const CoinsGroup = ({
                         </AdvancedSettings>
                         {!unavailableCapabilities[n.symbol] && (
                             <Switch
+                                data-test={`@settings/wallet/network/${n.symbol}`}
                                 onChange={(visible: boolean) => {
                                     onToggleOneFn(n.symbol, visible);
                                 }}

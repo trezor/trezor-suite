@@ -1,59 +1,27 @@
-import { mockRandom } from 'jest-mock-random';
-import { isInProbability, getScore } from '../score';
+import { getScore } from '../score';
 
 describe('Score Utils', () => {
-    describe('isInProbability()', () => {
-        it('should not be in probability with higher score', () => {
-            const result = isInProbability(0.21, 0.3);
-            expect(result).toBe(false);
-        });
-
-        it('should be in probability with lower score', () => {
-            const result = isInProbability(0.21, 0.1);
-            expect(result).toBe(true);
-        });
-
-        it('should be in probability if score is equal', () => {
-            const result = isInProbability(0.51, 0.51);
-            expect(result).toBe(true);
-        });
-
-        it('should fail without score param', () => {
-            expect(() => {
-                isInProbability(0, null);
-            }).toThrow(
-                'score not supplied. If you want to override this functionality, just pass 0'
-            );
-        });
-
-        it('should fail with score param null', () => {
-            expect(() => {
-                isInProbability(0, null);
-            }).toThrow(
-                'score not supplied. If you want to override this functionality, just pass 0'
-            );
-        });
-
-        it('should not fail with score param 0', () => {
-            expect(() => {
-                isInProbability(0, 0);
-            }).not.toThrow(
-                'score not supplied. If you want to override this functionality, just pass 0'
-            );
-        });
-    });
-
     describe('getScore()', () => {
-        it('test random case 0.907862123418226', () => {
-            mockRandom(0.907862123418226);
-            const score = getScore();
-            expect(score).toBe('0.91');
+        const inputs = [
+            '17BdA1CBDE11943C1D48653CD',
+            '27BdA1CBDE11943C1D48653CD',
+            '37BdA1CBDE11943C1D48653CD',
+            '47BdA1CBDE11943C1D48653CD',
+        ];
+
+        inputs.forEach(i => {
+            it(`${i} should return between 0 and 1`, () => {
+                const result = getScore(i);
+                expect(result).toBeLessThanOrEqual(1);
+                expect(result).toBeGreaterThanOrEqual(0);
+            });
         });
 
-        it('test random case 0.512862123418226', () => {
-            mockRandom(0.512862123418226);
-            const score = getScore();
-            expect(score).toBe('0.51');
+        const ts = Date.now();
+        it(`actually any input should return between 0 and 1, even timestamp ${ts}`, () => {
+            const result = getScore(String(ts));
+            expect(result).toBeLessThanOrEqual(1);
+            expect(result).toBeGreaterThanOrEqual(0);
         });
     });
 });
