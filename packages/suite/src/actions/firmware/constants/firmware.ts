@@ -1,4 +1,6 @@
-export const SET_UPDATE_STATUS = '@firmware/firmware-set-update-status';
-export const ENABLE_REDUCER = '@firmware/firmware-enable-reducer';
-export const RESET_REDUCER = '@firmware/firmware-reset-reducer';
-export const SET_ERROR = '@firmware/firmware-set-error';
+export const SET_TARGET_RELEASE = '@firmware/set-target-release';
+export const SET_UPDATE_STATUS = '@firmware/set-update-status';
+export const ENABLE_REDUCER = '@firmware/enable-reducer';
+export const RESET_REDUCER = '@firmware/reset-reducer';
+export const SET_ERROR = '@firmware/set-error';
+export const TOGGLE_BTC_ONLY = '@firmware/toggle-btc-only';

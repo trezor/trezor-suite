@@ -20,31 +20,6 @@ interface InitialState {
     devices?: TrezorDevice[];
 }
 
-jest.mock('@trezor/rollout', () => {
-    let fixture: Fixture;
-
-    const getFw = async () => {
-        if (typeof fixture === 'undefined' || !fixture.mocks || !fixture.mocks.rollout) {
-            return 'Default error. Fixtures not set';
-        }
-        const { rollout } = fixture.mocks;
-        if (rollout.error) {
-            throw rollout.error;
-        }
-
-        return Promise.resolve(rollout.success);
-    };
-    return {
-        __esModule: true, // this property makes it work
-        default: () => ({
-            getFw,
-        }),
-        setTestFixtures: (f: Fixture) => {
-            fixture = f;
-        },
-    };
-});
-
 jest.mock('trezor-connect', () => {
     let fixture: Fixture;
 
@@ -80,7 +55,6 @@ jest.mock('trezor-connect', () => {
 
 export const getInitialState = (override?: InitialState): any => {
     const suite = override ? override.suite : undefined;
-    const firmware = override ? override.firmware : undefined;
     const devices = override ? override.devices : [];
 
     return {
@@ -95,7 +69,7 @@ export const getInitialState = (override?: InitialState): any => {
             locks: [],
             ...suite,
         },
-        firmware,
+        firmware: firmwareReducer(undefined, { type: 'foo' } as any),
         devices,
     };
 };
@@ -122,7 +96,6 @@ describe('Firmware Actions', () => {
             it(f.description, async () => {
                 // set fixtures
                 require('trezor-connect').setTestFixtures(f);
-                require('@trezor/rollout').setTestFixtures(f);
 
                 const state = getInitialState(f.initialState);
                 const store = mockStore(state);

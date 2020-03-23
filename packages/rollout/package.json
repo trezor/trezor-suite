@@ -1,33 +1,37 @@
 {
     "name": "@trezor/rollout",
-    "version": "1.0.0",
+    "version": "1.0.4",
     "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor/trezor-suite/packages/rollout",
     "keywords": [
         "Trezor",
         "trezor-rollout",
         "trezor firmware update"
     ],
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "Small javascript library to get latest safe firmware version for trezor update.",
     "main": "lib/index.js",
     "module": "lib/index.es.js",
-    "types": "lib/index.d.ts",
+    "types": "lib/src/index.d.ts",
     "scripts": {
         "test:unit": "jest",
         "test:watch": "jest --watch",
-        "lint": "eslint '**/*{.ts,.tsx}'",
+        "test:e2e": "ts-node ./start-e2e.ts",
+        "lint": "eslint . --ext .ts",
         "type-check": "tsc --project tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
-        "clean": "rimraf lib",
-        "build:lib": "yarn run clean && npx rollup -c rollup.config.js"
+        "build:lib": "rimraf lib && tsc --p ./tsconfig.lib.json"
     },
     "dependencies": {
-        "cross-fetch": "^3.0.4"
+        "cross-fetch": "^3.0.4",
+        "runtypes": "^4.2.0"
     },
-    "devDependencies": {
-        "jest-mock-random": "^1.0.3",
-        "rollup": "^0.67.4",
-        "rollup-plugin-cleanup": "^3.0.0",
-        "rollup-plugin-typescript2": "^0.21.2"
-    }
+    "devDependencies": {}
 }

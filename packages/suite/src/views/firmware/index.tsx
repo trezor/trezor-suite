@@ -50,7 +50,10 @@ const ChangesSummary = styled.div`
     background-color: ${colors.BLACK96};
     border: 1px solid ${colors.BLACK80};
     padding: 20px;
+    margin: 20px;
     max-width: 600px;
+    max-height: 300px;
+    overflow-y: auto;
 `;
 
 // see here:
@@ -63,7 +66,6 @@ const SeedImg = styled(props => <Image {...props} />)`
 const FromVersionToVersion = styled.div`
     display: flex;
     justify-content: center;
-    margin: 20px 0;
     font-size: ${FONT_SIZE.NORMAL};
 `;
 
@@ -81,7 +83,7 @@ const ToVersion = styled.div`
     color: ${colors.BLACK0};
 `;
 
-const NewBadge = styled.div`
+const Badge = styled.div`
     height: 18px;
     font-size: 10px;
     font-weight: ${FONT_WEIGHT.DEMI_BOLD};
@@ -124,6 +126,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     firmwareUpdate: bindActionCreators(firmwareActions.firmwareUpdate, dispatch),
     resetReducer: bindActionCreators(firmwareActions.resetReducer, dispatch),
     setStatus: bindActionCreators(firmwareActions.setStatus, dispatch),
+    toggleBtcOnly: bindActionCreators(firmwareActions.toggleBtcOnly, dispatch),
 });
 
 type Props = ReturnType<typeof mapDispatchToProps> &
@@ -137,11 +140,14 @@ const Firmware = ({
     firmware,
     device,
     setStatus,
+    toggleBtcOnly,
 }: Props) => {
     const onClose = () => {
         closeModalApp();
         resetReducer();
     };
+
+    const btcOnlyAvailable = device?.features && device.firmwareRelease.release.url_bitcoinonly;
 
     const statesInProgessBar = [
         'initial',
@@ -207,7 +213,7 @@ const Firmware = ({
                 {firmware.status !== 'waiting-for-bootloader' && (
                     <>
                         <H2>No device</H2>
-                        <StyledP>No device connected :( </StyledP>
+                        <StyledP>No device connected </StyledP>
                     </>
                 )}
                 <Buttons>
@@ -273,16 +279,43 @@ const Firmware = ({
                             <FromVersionToVersion>
                                 <FromVersion>version {getFwVersion(device)}</FromVersion>
                                 <BetweenVersionArrow>→</BetweenVersionArrow>
-                                <ToVersion>version {firmwareRelease.version.join('.')}</ToVersion>
-                                <NewBadge>NEW</NewBadge>
+                                <ToVersion>
+                                    version {firmwareRelease.release.version.join('.')}
+                                </ToVersion>
+                                <Badge>NEW</Badge>
+                                {firmware.btcOnly && <Badge>BTC only</Badge>}
                             </FromVersionToVersion>
-                            <ChangesSummary>
-                                {device.firmwareRelease.changelog.split('*').map(r => (
-                                    <P key={r} size="small">
-                                        {r}
-                                    </P>
-                                ))}
-                            </ChangesSummary>
+
+                            {device.firmwareRelease.changelog?.length > 0 && (
+                                <ChangesSummary>
+                                    {device.firmwareRelease.changelog.map((c: any) => (
+                                        <div key={c.url}>
+                                            <P>{c.version.join('.')}</P>
+                                            <P size="small">{c.changelog}</P>
+                                        </div>
+                                    ))}
+                                </ChangesSummary>
+                            )}
+
+                            {btcOnlyAvailable && !firmware.btcOnly && (
+                                <StyledP>
+                                    Alternatively, you may install{' '}
+                                    <WhatsNewLink onClick={toggleBtcOnly}>
+                                        Btc only firmware
+                                    </WhatsNewLink>
+                                </StyledP>
+                            )}
+
+                            {btcOnlyAvailable && firmware.btcOnly && (
+                                <StyledP>
+                                    Alternatively, you may switch to{' '}
+                                    <WhatsNewLink onClick={toggleBtcOnly}>
+                                        full-featured firmware
+                                    </WhatsNewLink>{' '}
+                                    from bitcoin-only
+                                </StyledP>
+                            )}
+
                             <Buttons>
                                 <Col>
                                     <StyledButton
@@ -381,6 +414,18 @@ const Firmware = ({
                             >
                                 Ok let's do it
                             </StyledButton>
+                        </Col>
+                    </Buttons>
+                </>
+            )}
+            {firmware.status === 'done' && (
+                <>
+                    <H2>Success</H2>
+                    <SuccessImg model={model} />
+
+                    <Buttons>
+                        <Col>
+                            <StyledButton onClick={onClose}>Ok</StyledButton>
                         </Col>
                     </Buttons>
                 </>

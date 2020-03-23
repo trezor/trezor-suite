@@ -1,8 +1,10 @@
 import React from 'react';
+import styled from 'styled-components';
+
 import { Tooltip } from '@trezor/components';
 
 import { Loaders, OnboardingButton, OnboardingIcon, Text, Wrapper } from '@onboarding-components';
-import { Translation } from '@suite-components';
+import { Translation, Image } from '@suite-components';
 import messages from '@suite/support/messages';
 import { InitImg, SuccessImg } from '@firmware-components';
 import ContinueButton from './components/ContinueButton';
@@ -10,14 +12,21 @@ import InstallButton from './components/InstallButton';
 
 import { Props } from './Container';
 
+const InlineLink = styled.span`
+    text-decoration: underline;
+    cursor: pointer;
+`;
+
 const FirmwareStep = ({
     device,
+    firmware,
+    goToNextStep,
+    goToPreviousStep,
     firmwareUpdate,
-    onboardingActions,
-    firmwareUpdateActions,
+    toggleBtcOnly,
     intl,
 }: Props) => {
-    const { status, error } = firmwareUpdate;
+    const { status, error, btcOnly } = firmware;
     const isConnected = !!device;
     const isInBootloader = Boolean(device && device.features && device.mode === 'bootloader');
 
@@ -55,6 +64,7 @@ const FirmwareStep = ({
     };
 
     const model = device?.features?.major_version || 2;
+    const btcOnlyAvailable = device?.features && device.firmwareRelease.release.url_bitcoinonly;
 
     return (
         <Wrapper.Step>
@@ -109,7 +119,28 @@ const FirmwareStep = ({
                         )}
 
                         {['outdated', 'required', 'none'].includes(getFirmwareStatus()) && (
-                            <InitImg model={model} />
+                            <>
+                                {btcOnlyAvailable && !btcOnly && (
+                                    <Text>
+                                        Alternatively you can{' '}
+                                        <InlineLink onClick={toggleBtcOnly}>
+                                            {' '}
+                                            install Bitcoin-only firmware{' '}
+                                        </InlineLink>{' '}
+                                        (later reverse back to full-featured).
+                                    </Text>
+                                )}
+                                {btcOnlyAvailable && btcOnly && (
+                                    <Text>
+                                        <InlineLink onClick={toggleBtcOnly}>
+                                            Switch back{' '}
+                                        </InlineLink>{' '}
+                                        to full featured firmware.
+                                    </Text>
+                                )}
+
+                                <InitImg model={model} />
+                            </>
                         )}
 
                         {getFirmwareStatus() === 'valid' && (
@@ -144,9 +175,13 @@ const FirmwareStep = ({
                 )}
 
                 {status === 'error' && (
-                    <Text>
-                        Ups. Something went wrong with this fw update. Ended up with error: {error}
-                    </Text>
+                    <>
+                        <Text>
+                            Ups. Something went wrong with this fw update. Ended up with error:{' '}
+                            {error}
+                        </Text>
+                        <Image image="UNI_ERROR" />
+                    </>
                 )}
 
                 {[
@@ -182,9 +217,10 @@ const FirmwareStep = ({
                             ) && (
                                 <>
                                     <InstallButton
+                                        btcOnly={btcOnly}
                                         isConnected={isConnected}
                                         isInBootloader={isInBootloader}
-                                        onClick={firmwareUpdateActions.firmwareUpdate}
+                                        onClick={firmwareUpdate}
                                     />
                                 </>
                             )}
@@ -194,7 +230,7 @@ const FirmwareStep = ({
                                     <ContinueButton
                                         isConnected={isConnected}
                                         isInBootloader={isInBootloader}
-                                        onClick={onboardingActions.goToNextStep}
+                                        onClick={goToNextStep}
                                     />
                                 </>
                             )}
@@ -209,7 +245,7 @@ const FirmwareStep = ({
                         >
                             <OnboardingButton.Cta
                                 isDisabled={!isConnected}
-                                onClick={firmwareUpdateActions.firmwareUpdate}
+                                onClick={firmwareUpdate}
                             >
                                 <Translation id="TR_RETRY" />
                             </OnboardingButton.Cta>
@@ -224,7 +260,7 @@ const FirmwareStep = ({
                         Switch to btc only firmware
                     </OnboardingButton.Back>
                 )} */}
-                <OnboardingButton.Back onClick={() => onboardingActions.goToPreviousStep()}>
+                <OnboardingButton.Back onClick={() => goToPreviousStep()}>
                     Back
                 </OnboardingButton.Back>
             </Wrapper.StepFooter>

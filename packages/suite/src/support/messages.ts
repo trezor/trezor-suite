@@ -2457,6 +2457,14 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Trezor One features two buttons and a monochromatic screen, Trezor T is the high-end model featuring touch-screen display.',
     },
+    TR_INSTALL_BTC_ONLY: {
+        id: 'TR_INSTALL_BTC_ONLY',
+        defaultMessage: 'Install bitcoin-only firmware',
+    },
+    TR_INSTALL_FULL: {
+        id: 'TR_INSTALL_FULL',
+        defaultMessage: 'Install full-featured firmware',
+    },
 } as const);
 
 export default definedMessages;

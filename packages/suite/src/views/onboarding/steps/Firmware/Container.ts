@@ -9,17 +9,14 @@ import Step from './index';
 
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
-    firmwareUpdate: state.firmware,
+    firmware: state.firmware,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    onboardingActions: {
-        goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
-        goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
-    },
-    firmwareUpdateActions: {
-        firmwareUpdate: bindActionCreators(firmwareUpdateActions.firmwareUpdate, dispatch),
-    },
+    goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
+    goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
+    firmwareUpdate: bindActionCreators(firmwareUpdateActions.firmwareUpdate, dispatch),
+    toggleBtcOnly: bindActionCreators(firmwareUpdateActions.toggleBtcOnly, dispatch),
 });
 
 export type Props = ReturnType<typeof mapStateToProps> &

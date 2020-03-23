@@ -38,6 +38,7 @@ module.exports = (async () => {
                     __dirname,
                     '../../packages/blockchain-link',
                 ),
+                '@trezor/rollout': path.resolve(__dirname, '../../packages/rollout'),
             },
             // https://github.com/facebook/metro/issues/265
             blacklistRE: blacklist([

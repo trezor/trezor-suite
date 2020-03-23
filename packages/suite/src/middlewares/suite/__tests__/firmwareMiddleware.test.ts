@@ -166,7 +166,7 @@ describe('firmware middleware', () => {
         ]);
     });
 
-    it('DEVICE.DISCONNECT do nothing if not expected payload (hunting coverage)', async () => {
+    it('DEVICE.DISCONNECT if firmware status is not done or error, update target release on device disconnect', async () => {
         const store = initStore(
             getInitialState(undefined, {
                 status: 'started',
@@ -179,7 +179,7 @@ describe('firmware middleware', () => {
         });
 
         const result = store.getActions();
-        result.pop();
-        expect(result).toEqual([]);
+        result.shift();
+        expect(result[0].type).toEqual(FIRMWARE.SET_TARGET_RELEASE);
     });
 });
