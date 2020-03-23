@@ -6,7 +6,7 @@ import {
     fetchLastWeekRates,
 } from '@suite/services/coingecko';
 import { isTestnet } from '@wallet-utils/accountUtils';
-import { splitTimestampsByInterval } from '@suite-utils/date';
+import { splitTimestampsByInterval, getBlockbookSafeTime } from '@suite-utils/date';
 import { FIAT } from '@suite-config';
 import { Dispatch, GetState } from '@suite-types';
 import {
@@ -185,7 +185,8 @@ export const updateStaleRates = () => async (dispatch: Dispatch, _getState: GetS
 export const updateLastWeekRates = () => async (dispatch: Dispatch, getState: GetState) => {
     const { localCurrency } = getState().wallet.settings;
 
-    const currentTimestamp = Math.floor(new Date().getTime() / 1000) - 120; // unix timestamp in seconds - 2 mins (blockbook returns empty object if timestamp is too fresh)
+    // unix timestamp in seconds - 3 mins (blockbook returns empty object if timestamp is too fresh)
+    const currentTimestamp = getBlockbookSafeTime();
     const weekAgoTimestamp = currentTimestamp - 7 * 86400;
 
     // calc timestamps in 1 hour intervals the last 7 days
@@ -241,7 +242,7 @@ export const updateTxsRates = (account: Account, txs: AccountTransaction[]) => a
 ) => {
     if (txs?.length === 0 || isTestnet(account.symbol)) return;
 
-    const timestamps = txs.map(tx => tx.blockTime ?? new Date().getTime());
+    const timestamps = txs.map(tx => tx.blockTime ?? getBlockbookSafeTime());
     try {
         const response = await TrezorConnect.blockchainGetFiatRatesForTimestamps({
             coin: account.symbol,

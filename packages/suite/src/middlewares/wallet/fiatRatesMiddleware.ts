@@ -14,7 +14,7 @@ const fiatRatesMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
 
     switch (action.type) {
         case SUITE.READY:
-            // TODO: change to WALLET.READY
+            // TODO: change to WALLET.READY (Dashboard needs rates too so WALLET.RAEADY doesn't suffice)
             api.dispatch(fiatRatesActions.initRates());
             break;
         case BLOCKCHAIN.FIAT_RATES_UPDATE:

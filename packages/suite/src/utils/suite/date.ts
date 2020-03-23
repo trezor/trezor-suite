@@ -88,3 +88,13 @@ export const splitTimestampsByInterval = (
     if (include) timestamps.push(to);
     return timestamps;
 };
+/**
+ * Returns Blockbook-safe current unix timestamps.
+ * Little workaround for Blockbook. Blockbook doesn't return rates data for too recent timestamps.
+ *
+ * @returns
+ */
+export const getBlockbookSafeTime = () => {
+    const timestamp = Math.floor(new Date().getTime() / 1000);
+    return timestamp - 180; // current time - 3 mins
+};
