@@ -84,6 +84,7 @@ export const create = (
     },
 });
 
+// TODO: imo we could extract payload object to seperate function and use it in create, update methods
 export const update = (account: Account, accountInfo: AccountInfo): AccountActions => ({
     type: ACCOUNT.UPDATE,
     payload: {
@@ -95,6 +96,11 @@ export const update = (account: Account, accountInfo: AccountInfo): AccountActio
             accountInfo.availableBalance,
             account.symbol,
         ),
+        tokens: accountInfo.tokens?.map(t => ({
+            ...t,
+            symbol: t.symbol ? t.symbol.toLowerCase() : t.symbol,
+            balance: t.balance ? accountUtils.formatAmount(t.balance, t.decimals) : t.balance,
+        })),
         ...getAccountSpecific(accountInfo, account.networkType),
     },
 });

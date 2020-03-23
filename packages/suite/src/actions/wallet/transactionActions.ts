@@ -100,9 +100,7 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
     });
 
     if (result && result.success) {
-        // TODO
-        // @ts-ignore
-        const updatedAccount: Account = accountActions.update(account, result.payload).payload;
+        const updatedAccount = accountActions.update(account, result.payload).payload as Account;
         dispatch({
             type: TRANSACTION.FETCH_SUCCESS,
         });

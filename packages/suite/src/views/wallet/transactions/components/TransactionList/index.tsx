@@ -142,8 +142,7 @@ const TransactionList = ({
                                                         {props.symbol.toUpperCase()}
                                                     </DayAmount>
                                                 </HiddenPlaceholder>
-                                                {/* PRDIM NA TO */}
-                                                {/* TODO: calc average rate of all txs in a day and use that? */}
+                                                {/* TODO: daily deltas are multiplied by current rate instead of the rate for given day. if someone notices. calc average rate of all txs in a day and use that? */}
                                                 <HiddenPlaceholder>
                                                     <FiatValue
                                                         amount={totalAmountPerDay.toFixed()}
