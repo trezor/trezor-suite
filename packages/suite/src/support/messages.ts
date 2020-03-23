@@ -1752,7 +1752,7 @@ const definedMessages = defineMessages({
         id: 'TR_UNKNOWN_CONFIRMATION_TIME',
     },
     TR_UNKNOWN_TRANSACTION: {
-        defaultMessage: '(Unknown transaction)',
+        defaultMessage: 'Unknown transaction',
         id: 'TR_UNKNOWN_TRANSACTION',
     },
     TR_UNKNOWN_ERROR_SEE_CONSOLE: {
@@ -2205,6 +2205,26 @@ const definedMessages = defineMessages({
     TR_DISCREET_TOOLTIP: {
         id: 'TR_DISCREET_TOOLTIP',
         defaultMessage: '[FIX THIS TEXT] This is a descreeeet mode',
+    },
+    TX_CONFIRMATIONS_EXPLAIN: {
+        id: 'TX_CONFIRMATIONS_EXPLAIN',
+        defaultMessage: 'TODO TODO TODO ExPlAnAtIoN',
+    },
+    TR_LAST_UPDATE: {
+        id: 'TR_LAST_UPDATE',
+        defaultMessage: 'Last update: {value}',
+    },
+    TR_LIVE: {
+        id: 'TR_LIVE',
+        defaultMessage: 'Live',
+    },
+    TR_NUMBER_OF_TRANSACTIONS: {
+        id: 'TR_NUMBER_OF_TRANSACTIONS',
+        defaultMessage: 'Number of transactions',
+    },
+    TR_N_TRANSACTIONS: {
+        id: 'TR_N_TRANSACTIONS',
+        defaultMessage: '{value} {value, plural, one {transaction} other {transactions}}',
     },
     TR_TREZOR_BRIDGE_DOWNLOAD: {
         id: 'TR_TREZOR_BRIDGE_DOWNLOAD',

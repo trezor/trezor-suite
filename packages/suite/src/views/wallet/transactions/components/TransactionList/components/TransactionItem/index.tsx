@@ -9,10 +9,11 @@ import {
     AddressLabeling,
 } from '@suite-components';
 import { variables, colors, Button } from '@trezor/components';
+import { isTestnet } from '@wallet-utils/accountUtils';
 import { ArrayElement } from '@suite/types/utils';
 
 import { getDateWithTimeZone } from '@suite-utils/date';
-import TransactionTypeIcon from '../TransactionTypeIcon';
+import TransactionTypeIcon from './components/TransactionTypeIcon';
 import { Props } from './Container';
 
 const Wrapper = styled.div<{ isExpanded: boolean }>`
@@ -76,41 +77,34 @@ const Target = styled.div`
 const Token = styled.div`
     display: flex;
     flex-direction: column;
-    border: 1px solid #f2f2f2;
-    border-radius: 3px;
-    padding: 4px 8px;
-    background: #fafafa;
-`;
-
-const TokenName = styled.div`
-    color: ${colors.BLACK0};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.BLACK50};
+    font-size: ${variables.FONT_SIZE.TINY};
 `;
 
 const TokenAddress = styled.div`
-    color: ${colors.BLACK0};
-    /* font-family: ${variables.FONT_FAMILY.MONOSPACE}; */
-    font-size: ${variables.FONT_SIZE.SMALL};
     overflow: hidden;
     text-overflow: ellipsis;
+    color: ${colors.BLACK0};
 `;
 
 const Label = styled.div`
-    color: ${colors.BLACK80};
-    font-size: ${variables.FONT_SIZE.SMALL};
     display: flex;
+
+    & + & {
+        margin-top: 8px;
+    }
 `;
 
-const Balance = styled.div<{ partial?: boolean }>`
+const Balance = styled.div<{ partial?: boolean; secondary?: boolean }>`
     display: flex;
     flex-direction: row;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => (props.partial === true ? colors.BLACK50 : colors.BLACK0)};
+    margin-top: ${props => (props.secondary ? '8px' : '0px')};
+    font-size: ${props => (props.secondary ? variables.FONT_SIZE.TINY : variables.FONT_SIZE.SMALL)};
+    color: ${props => (props.partial || props.secondary ? colors.BLACK50 : colors.BLACK0)};
     margin-left: 1rem;
 `;
 
-const FiatBalance = styled(Balance)`
+const FiatBalanceCol = styled(Balance)`
     min-width: 100px;
     justify-content: flex-end;
     text-align: right;
@@ -121,12 +115,6 @@ const Symbol = styled.div``;
 const Amount = styled.div`
     display: flex;
     text-align: right;
-`;
-
-const TokenAmount = styled(Token)<{ txType: string }>`
-    display: inline;
-    /* color: ${props => (props.txType === 'recv' ? 'green' : 'red')}; */
-    border: none;
 `;
 
 const Addr = styled.div`
@@ -159,45 +147,25 @@ const TxIconWrapper = styled.div`
     display: flex;
 `;
 
+const AmountsWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+`;
+
 const TokenTransfer = (transfer: ArrayElement<Props['transaction']['tokens']>) => {
-    if (transfer.type === 'self') {
-        return (
-            <Token>
-                <Row>
-                    <Col>
-                        <TokenName>
-                            {transfer.name} ({transfer.symbol})
-                        </TokenName>
-                        <Label>
-                            <Translation id="TR_SENT_TO_SELF" />
-                        </Label>
-                    </Col>
-                </Row>
-            </Token>
-        );
-    }
     return (
         <Token>
             <Row>
                 <Col>
-                    <TokenName>
-                        {transfer.name} ({transfer.symbol})
-                        <HiddenPlaceholder>
-                            <TokenAmount txType={transfer.type}>
-                                {transfer.type === 'recv' && '+'}
-                                {transfer.type !== 'recv' && '-'}
-                                {transfer.amount} {transfer.symbol}
-                            </TokenAmount>
-                        </HiddenPlaceholder>
-                    </TokenName>
                     <Label>
-                        From:&nbsp;
+                        from:&nbsp;
                         <TokenAddress>
                             <AddressLabeling address={transfer.from} />
                         </TokenAddress>
                     </Label>
                     <Label>
-                        To:&nbsp;
+                        to:&nbsp;
                         <TokenAddress>
                             <AddressLabeling address={transfer.to} />
                         </TokenAddress>
@@ -208,7 +176,9 @@ const TokenTransfer = (transfer: ArrayElement<Props['transaction']['tokens']>) =
     );
 };
 
-const TransactionItem = React.memo((props: Props) => {
+// TODO: refactor
+const TransactionItem = (props: Props) => {
+    const { transaction, ...rest } = props;
     const { symbol, type, blockTime, blockHeight, amount, targets, tokens } = props.transaction;
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -227,7 +197,9 @@ const TransactionItem = React.memo((props: Props) => {
 
     // blockbook cannot parse some txs
     // eg. tx with eth smart contract that creates a new token has no valid target
-    const isUnknown = type === 'sent' && targets.length === 1 && targets[0].addresses === null;
+    const isUnknown =
+        (type === 'sent' && targets.length === 1 && targets[0].addresses === null) ||
+        type === 'unknown';
     return (
         <Wrapper
             isExpanded={isExpanded}
@@ -238,12 +210,13 @@ const TransactionItem = React.memo((props: Props) => {
                 });
             }}
             className={props.className}
+            {...rest}
         >
             <Row>
                 <Timestamp>
                     {blockHeight !== 0 && blockTime && blockTime > 0 && (
                         <FormattedDate
-                            value={getDateWithTimeZone(blockTime * 1000)}
+                            value={getDateWithTimeZone(blockTime * 1000) ?? undefined}
                             hour="numeric"
                             minute="numeric"
                         />
@@ -296,10 +269,22 @@ const TransactionItem = React.memo((props: Props) => {
                     {tokens &&
                         tokens.map(token => <TokenTransfer key={token.address} {...token} />)}
                 </Targets>
-                {amount !== '0' && (
-                    <>
+                <AmountsWrapper>
+                    {tokens.map(t => (
                         <HiddenPlaceholder>
                             <Balance>
+                                <Amount>
+                                    {t.type === 'recv' && '+'}
+                                    {t.type !== 'recv' && '-'}
+                                    {t.amount}&nbsp;
+                                </Amount>
+                                <Symbol>{t.symbol.toUpperCase()}</Symbol>
+                            </Balance>
+                        </HiddenPlaceholder>
+                    ))}
+                    {amount !== '0' && (
+                        <HiddenPlaceholder>
+                            <Balance secondary={tokens.length > 0}>
                                 <Amount>
                                     {type === 'recv' && '+'}
                                     {type !== 'recv' && '-'}
@@ -308,19 +293,37 @@ const TransactionItem = React.memo((props: Props) => {
                                 <Symbol>{symbol.toUpperCase()}</Symbol>
                             </Balance>
                         </HiddenPlaceholder>
+                    )}
+                </AmountsWrapper>
+                <AmountsWrapper>
+                    {!isTestnet(symbol) &&
+                        tokens.map(_t => (
+                            <HiddenPlaceholder>
+                                <FiatBalanceCol>
+                                    {/* we dont fetch historical rates for tokens */}
+                                    {/* <FiatValue amount={t.amount} symbol={t.symbol}>
+                                    {({ value }) =>
+                                        value ? <SmallBadge>{value}</SmallBadge> : null
+                                    }
+                                </FiatValue> */}
+                                </FiatBalanceCol>
+                            </HiddenPlaceholder>
+                        ))}
+                    {amount !== '0' && !isTestnet(symbol) && (
                         <HiddenPlaceholder>
-                            <FiatValue amount={amount} symbol={symbol}>
-                                {fiatValue =>
-                                    fiatValue && (
-                                        <FiatBalance>
-                                            <Badge isSmall>{fiatValue}</Badge>
-                                        </FiatBalance>
-                                    )
-                                }
-                            </FiatValue>
+                            <FiatBalanceCol>
+                                <FiatValue
+                                    amount={amount}
+                                    symbol={symbol}
+                                    source={props.transaction.rates}
+                                    useCustomSource
+                                >
+                                    {({ value }) => value && <Badge isSmall>{value}</Badge>}
+                                </FiatValue>
+                            </FiatBalanceCol>
                         </HiddenPlaceholder>
-                    </>
-                )}
+                    )}
+                </AmountsWrapper>
             </Row>
             {isExpanded && (
                 <ExpandedList>
@@ -348,12 +351,17 @@ const TransactionItem = React.memo((props: Props) => {
                                         </Amount>
                                         <Symbol>{symbol.toUpperCase()}</Symbol>
                                     </Balance>
-                                    <FiatValue amount={target.amount || '0'} symbol={symbol}>
-                                        {fiatValue =>
-                                            fiatValue && (
-                                                <FiatBalance partial>
-                                                    <Badge isSmall>{fiatValue}</Badge>
-                                                </FiatBalance>
+                                    <FiatValue
+                                        amount={target.amount || '0'}
+                                        symbol={symbol}
+                                        source={props.transaction.rates}
+                                        useCustomSource
+                                    >
+                                        {({ value }) =>
+                                            value && (
+                                                <FiatBalanceCol partial>
+                                                    <Badge isSmall>{value}</Badge>
+                                                </FiatBalanceCol>
                                             )
                                         }
                                     </FiatValue>
@@ -365,6 +373,6 @@ const TransactionItem = React.memo((props: Props) => {
             )}
         </Wrapper>
     );
-});
+};
 
 export default TransactionItem;

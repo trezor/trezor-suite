@@ -9,24 +9,32 @@ import FormattedNumber from '../FormattedNumber';
  * null is returned if there was some problem with conversion (eg. missing rates)
  *
  * Advanced usage is with passing a function as a children prop.
- * The function will called (and rendered) with 3 params: fiatValue, fiatRateValue, fiatRateTimestamp.
+ * The function will called (and rendered) with 1 object param: {fiatValue, fiatRateValue, fiatRateTimestamp}.
  *
+ *  In case of custom source of fiat rates returned timestamp is null;
  * @param {Props} { amount, symbol, fiatCurrency, ...props }
  * @returns
  */
-const FiatValue = ({ amount, symbol, fiatCurrency, ...props }: Props) => {
+const FiatValue = ({ amount, symbol, fiatCurrency, source, useCustomSource, ...props }: Props) => {
     const targetCurrency = fiatCurrency ?? props.settings.localCurrency;
-    const fiatRates = props.fiat.find(f => f.symbol === symbol);
-
-    const fiatRateValue = fiatRates?.rates?.[targetCurrency] ?? null;
-    const fiat = fiatRates ? toFiatCurrency(amount, targetCurrency, fiatRates) : null;
+    const currentFiatRates = props.fiat.find(f => f.symbol === symbol)?.current;
+    const ratesSource = useCustomSource ? source : currentFiatRates?.rates;
+    const fiat = ratesSource ? toFiatCurrency(amount, targetCurrency, ratesSource) : null;
     if (fiat) {
-        const fiatValue = <FormattedNumber currency={targetCurrency} value={fiat} />;
-        if (!props.children) return fiatValue;
-        return props.children(fiatValue, fiatRateValue, fiatRates!.timestamp);
+        const fiatValueComponent = <FormattedNumber currency={targetCurrency} value={fiat} />;
+        const fiatRateValue = ratesSource?.[targetCurrency] ?? null;
+        const fiatRateComponent = fiatRateValue ? (
+            <FormattedNumber currency={targetCurrency} value={fiatRateValue} />
+        ) : null;
+        if (!props.children) return fiatValueComponent;
+        return props.children({
+            value: fiatValueComponent,
+            rate: fiatRateComponent,
+            timestamp: useCustomSource ? null : currentFiatRates?.ts ?? null,
+        });
     }
     if (!props.children) return null;
-    return props.children(null, null, null);
+    return props.children({ value: null, rate: null, timestamp: null });
 };
 
 export default FiatValue;

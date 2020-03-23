@@ -3,12 +3,14 @@ import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
 import { colors, Loader } from '@trezor/components';
 import { WalletLayout } from '@wallet-components';
-import { getAccountTransactions } from '@wallet-utils/accountUtils';
+import { getAccountTransactions, isTestnet } from '@wallet-utils/accountUtils';
 import { SETTINGS } from '@suite-config';
 import TransactionList from './components/TransactionList';
 
 import NoTransactions from './components/NoTransactions';
 import PricePanel from './components/PricePanel';
+import TransactionSummary from './components/TransactionSummary';
+import TokenList from './components/TokenList';
 
 import { Props } from './Container';
 
@@ -66,15 +68,25 @@ export default (props: Props) => {
                 />
             )}
             {accountTransactions.length > 0 && (
-                <TransactionList
-                    explorerUrl={network.explorer.tx}
-                    transactions={accountTransactions}
-                    currentPage={selectedPage}
-                    totalPages={total}
-                    onPageSelected={onPageSelected}
-                    perPage={SETTINGS.TXS_PER_PAGE}
-                    symbol={account.symbol}
-                />
+                <>
+                    {account.networkType !== 'ripple' && <TransactionSummary account={account} />}
+                    {account.networkType === 'ethereum' && (
+                        <TokenList
+                            isTestnet={isTestnet(account.symbol)}
+                            explorerUrl={network.explorer.account}
+                            tokens={account.tokens}
+                        />
+                    )}
+                    <TransactionList
+                        explorerUrl={network.explorer.tx}
+                        transactions={accountTransactions}
+                        currentPage={selectedPage}
+                        totalPages={total}
+                        onPageSelected={onPageSelected}
+                        perPage={SETTINGS.TXS_PER_PAGE}
+                        symbol={account.symbol}
+                    />
+                </>
             )}
         </WalletLayout>
     );

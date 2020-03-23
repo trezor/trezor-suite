@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import signVerifyReducer from './signVerifyReducer';
 import settingsReducer from './settingsReducer';
-import fiatRateReducer from './fiatRateReducer';
+import fiatRateReducer from './fiatRatesReducer';
 import transactionReducer from './transactionReducer';
 import discoveryReducer from './discoveryReducer';
 import accountsReducer from './accountsReducer';

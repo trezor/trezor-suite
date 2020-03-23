@@ -180,9 +180,9 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     const reserve = getReserveInXrp(account);
 
     if (fiatNetwork && isValidAmount) {
-        const rate = fiatNetwork.rates[output.localCurrency.value.value].toString();
-        const fiatValue = getFiatValue(amount, rate);
+        const rate = fiatNetwork.current?.rates[output.localCurrency.value.value];
         if (rate) {
+            const fiatValue = getFiatValue(amount, rate.toString());
             dispatch({
                 type: SEND.HANDLE_FIAT_VALUE_CHANGE,
                 outputId,
@@ -221,28 +221,29 @@ export const handleSelectCurrencyChange = (
     const reserve = getReserveInXrp(account);
 
     if (fiatNetwork && output.amount.value) {
-        const rate = fiatNetwork.rates[localCurrency.value];
-        const fiatValueBigNumber = new BigNumber(output.amount.value).multipliedBy(
-            new BigNumber(rate),
-        );
-        const fiatValue = fiatValueBigNumber.isNaN() ? '' : fiatValueBigNumber.toFixed(2);
-        const amountBigNumber = fiatValueBigNumber.dividedBy(new BigNumber(rate));
+        const rate = fiatNetwork.current?.rates[localCurrency.value];
+        if (rate) {
+            const fiatValueBigNumber = new BigNumber(output.amount.value).multipliedBy(
+                new BigNumber(rate),
+            );
+            const fiatValue = fiatValueBigNumber.isNaN() ? '' : fiatValueBigNumber.toFixed(2);
+            const amountBigNumber = fiatValueBigNumber.dividedBy(new BigNumber(rate));
 
-        dispatch({
-            type: SEND.HANDLE_FIAT_VALUE_CHANGE,
-            outputId,
-            fiatValue,
-        });
-
-        dispatch({
-            type: SEND.HANDLE_AMOUNT_CHANGE,
-            outputId,
-            amount: amountBigNumber.toString(),
-            decimals: network.decimals,
-            availableBalance: account.formattedBalance,
-            isDestinationAccountEmpty,
-            reserve,
-        });
+            dispatch({
+                type: SEND.HANDLE_FIAT_VALUE_CHANGE,
+                outputId,
+                fiatValue,
+            });
+            dispatch({
+                type: SEND.HANDLE_AMOUNT_CHANGE,
+                outputId,
+                amount: amountBigNumber.toString(),
+                decimals: network.decimals,
+                availableBalance: account.formattedBalance,
+                isDestinationAccountEmpty,
+                reserve,
+            });
+        }
     }
 
     dispatch({
@@ -268,11 +269,10 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
 
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
-    const reserve = getReserveInXrp(account);
-
     if (!fiatNetwork) return null;
-
-    const rate = fiatNetwork.rates[output.localCurrency.value.value];
+    const rate = fiatNetwork.current?.rates[output.localCurrency.value.value];
+    const reserve = getReserveInXrp(account);
+    if (!rate) return null;
     const amountBigNumber = new BigNumber(fiatValue || '0').dividedBy(new BigNumber(rate));
     const amount = amountBigNumber.isNaN() ? '' : amountBigNumber.toFixed(network.decimals);
 
@@ -305,28 +305,23 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
     const { account, network } = selectedAccount;
     const composedTransaction = await dispatch(compose(true));
     const output = getOutput(send.outputs, outputId);
+    const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
     const { isDestinationAccountEmpty } = send.networkTypeRipple;
     const reserve = getReserveInXrp(account);
-    const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
 
     if (fiatNetwork && composedTransaction && composedTransaction.type !== 'error') {
-        const rate = fiatNetwork.rates[output.localCurrency.value.value].toString();
-        const fiatValue = getFiatValue(
-            formatNetworkAmount(composedTransaction.max, account.symbol),
-            rate,
-        );
+        const rate = fiatNetwork.current?.rates[output.localCurrency.value.value];
         if (rate) {
+            const fiatValue = getFiatValue(
+                formatNetworkAmount(composedTransaction.max, account.symbol),
+                rate.toString(),
+            );
             dispatch({
                 type: SEND.HANDLE_FIAT_VALUE_CHANGE,
                 outputId,
                 fiatValue,
             });
         }
-        dispatch({
-            type: SEND.HANDLE_FIAT_VALUE_CHANGE,
-            outputId,
-            fiatValue,
-        });
     }
 
     if (composedTransaction && composedTransaction.type !== 'error') {

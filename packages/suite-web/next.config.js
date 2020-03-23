@@ -11,7 +11,6 @@ const webpack = require('webpack');
 const packageJson = require('./package.json');
 
 const gitRevisionPlugin = new GitRevisionPlugin();
-
 module.exports = withBundleAnalyzer(
     withCustomBabelConfig(
         withTranspileModules(
@@ -40,6 +39,14 @@ module.exports = withBundleAnalyzer(
                             ),
                         }),
                     );
+                    config.module.rules.push({
+                        test: /.*-worker\.(js|ts)$/, // blockchain-link workers are inside /workers/(blockbook|ripple)/ lib
+                        loader: 'worker-loader',
+                        options: {
+                            name: 'static/[hash].worker.js',
+                            publicPath: '/_next/',
+                        },
+                    });
                     return config;
                 },
             }),

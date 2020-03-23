@@ -2,10 +2,8 @@ import TrezorConnect, { AccountTransaction } from 'trezor-connect';
 import { getAccountTransactions } from '@wallet-utils/accountUtils';
 import * as accountActions from '@wallet-actions/accountActions';
 import { TRANSACTION } from '@wallet-actions/constants';
-// import { db } from '@suite/storage';
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { SETTINGS } from '@suite-config';
-import { Account } from '@wallet-types';
+import { Account, WalletAccountTransaction } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 
 export type TransactionAction =
@@ -21,33 +19,8 @@ export type TransactionAction =
     | { type: typeof TRANSACTION.FETCH_INIT }
     | {
           type: typeof TRANSACTION.FETCH_SUCCESS;
-          transactions: AccountTransaction[];
-          account: Account;
-          page: number;
       }
     | { type: typeof TRANSACTION.FETCH_ERROR; error: string };
-
-// export const add = (transaction: WalletAccountTransaction) => async (
-//     dispatch: Dispatch,
-// ): Promise<void> => {
-//     try {
-//         await db.addItem('txs', transaction).then(_key => {
-//             dispatch({
-//                 type: TRANSACTION.ADD,
-//                 transaction,
-//             });
-//         });
-//     } catch (error) {
-//         if (error && error.name === 'ConstraintError') {
-//             console.log('Tx with such id already exists');
-//         } else if (error) {
-//             console.error(error.name);
-//             console.error(error.message);
-//         } else {
-//             console.error(error);
-//         }
-//     }
-// };
 
 export const add = (transactions: AccountTransaction[], account: Account, page?: number) => async (
     dispatch: Dispatch,
@@ -59,6 +32,7 @@ export const add = (transactions: AccountTransaction[], account: Account, page?:
         page,
     });
 };
+
 /**
  * Remove all transactions for a given account
  *
@@ -126,11 +100,12 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
     });
 
     if (result && result.success) {
-        const updatedAccount = accountActions.update(account, result.payload).payload;
-        // TODO
-        // @ts-ignore
+        const updatedAccount = accountActions.update(account, result.payload).payload as Account;
         dispatch({
             type: TRANSACTION.FETCH_SUCCESS,
+        });
+        dispatch({
+            type: TRANSACTION.ADD,
             account: updatedAccount,
             transactions: result.payload.history.transactions || [],
             page,

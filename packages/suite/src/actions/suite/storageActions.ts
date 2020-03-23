@@ -122,6 +122,12 @@ export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: Ge
     );
 };
 
+export const removeFiatRate = (symbol: string) => (_dispatch: Dispatch, _getState: GetState) => {
+    // TODO: just to be safe store and delete by compound index [symbol, mainNetworkSymbol]
+    // check if it's fine to have mainNetworkSymbol undefined
+    return db.removeItemByPK('fiatRates', symbol);
+};
+
 export const saveFiatRates = () => (_dispatch: Dispatch, getState: GetState) => {
     return db.addItems('fiatRates', getState().wallet.fiat, true);
 };

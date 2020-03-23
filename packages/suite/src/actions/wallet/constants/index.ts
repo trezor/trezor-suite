@@ -7,5 +7,17 @@ import * as TOKEN from './token';
 import * as TRANSACTION from './transactionConstants';
 import * as DISCOVERY from './discoveryConstants';
 import * as WALLET from './walletConstants';
+import * as FIAT_RATES from './fiatRatesConstants';
 
-export { BLOCKCHAIN, SIGN_VERIFY, TOKEN, RECEIVE, ACCOUNT, TRANSACTION, DISCOVERY, WALLET, SEND };
+export {
+    BLOCKCHAIN,
+    SIGN_VERIFY,
+    TOKEN,
+    RECEIVE,
+    ACCOUNT,
+    TRANSACTION,
+    DISCOVERY,
+    WALLET,
+    SEND,
+    FIAT_RATES,
+};

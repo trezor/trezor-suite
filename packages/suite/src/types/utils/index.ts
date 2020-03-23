@@ -18,3 +18,10 @@ export type ConstWithOptionalFields<Const extends { [key: string]: any }, Fields
 
 // Extract item from union
 export type ItemExtractor<M> = Extract<M, { type: M }>;
+
+// Unwrap type from Promise
+export type Await<T> = T extends {
+    then(onfulfilled?: (value: infer U) => unknown): unknown;
+}
+    ? U
+    : T;

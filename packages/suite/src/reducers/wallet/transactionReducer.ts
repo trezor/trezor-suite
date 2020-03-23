@@ -1,12 +1,13 @@
 import produce from 'immer';
 import { AccountTransaction } from 'trezor-connect';
-import { ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
+import { ACCOUNT, TRANSACTION, FIAT_RATES } from '@wallet-actions/constants';
 import { getAccountKey, enhanceTransaction } from '@wallet-utils/accountUtils';
 import { findTransaction } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
 import { Account, WalletAction, Network } from '@wallet-types';
 import { Action } from '@suite-types';
 import { STORAGE } from '@suite-actions/constants';
+import { TimestampedRates } from './fiatRatesReducer';
 
 export interface WalletAccountTransaction extends AccountTransaction {
     id?: number;
@@ -14,6 +15,7 @@ export interface WalletAccountTransaction extends AccountTransaction {
     deviceState: string;
     descriptor: string;
     symbol: Network['symbol'];
+    rates?: TimestampedRates['rates'];
 }
 
 export interface State {
@@ -42,6 +44,24 @@ const initializeAccount = (draft: State, accountHash: string) => {
     if (!draft.transactions[accountHash]) {
         draft.transactions[accountHash] = [];
     }
+};
+
+const update = (
+    draft: State,
+    account: Account,
+    txid: string,
+    updateObject: Partial<WalletAccountTransaction>,
+) => {
+    const accountHash = getAccountKey(account.descriptor, account.symbol, account.deviceState);
+    initializeAccount(draft, accountHash);
+    const accountTxs = draft.transactions[accountHash];
+    if (!accountTxs) return;
+
+    const index = accountTxs.findIndex(t => t && t.txid === txid);
+    accountTxs[index] = {
+        ...accountTxs[index],
+        ...updateObject,
+    };
 };
 
 const add = (draft: State, transactions: AccountTransaction[], account: Account, page?: number) => {
@@ -94,10 +114,6 @@ export default (state: State = initialState, action: Action | WalletAction): Sta
         switch (action.type) {
             case STORAGE.LOADED:
                 return action.payload.wallet.transactions;
-            case ACCOUNT.CREATE:
-                // gather transactions from account.create action
-                add(draft, action.payload.history.transactions || [], action.payload, 1);
-                break;
             case ACCOUNT.REMOVE:
                 action.payload.forEach(a => {
                     delete draft.transactions[getAccountKey(a.descriptor, a.symbol, a.deviceState)];
@@ -118,6 +134,14 @@ export default (state: State = initialState, action: Action | WalletAction): Sta
                     )
                 ];
                 break;
+            case FIAT_RATES.TX_FIAT_RATE_UPDATE:
+                update(
+                    draft,
+                    action.payload.account,
+                    action.payload.txid,
+                    action.payload.updateObject,
+                );
+                break;
             case TRANSACTION.UPDATE:
                 // TODO
                 break;
@@ -125,7 +149,6 @@ export default (state: State = initialState, action: Action | WalletAction): Sta
                 draft.isLoading = true;
                 break;
             case TRANSACTION.FETCH_SUCCESS:
-                add(draft, action.transactions, action.account, action.page);
                 draft.isLoading = false;
                 break;
             case TRANSACTION.FETCH_ERROR:

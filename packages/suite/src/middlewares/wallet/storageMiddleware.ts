@@ -7,7 +7,7 @@ import * as accountUtils from '@wallet-utils/accountUtils';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import { WalletAction } from '@wallet-types';
-import { ACCOUNT, DISCOVERY, TRANSACTION } from '@wallet-actions/constants';
+import { ACCOUNT, DISCOVERY, TRANSACTION, FIAT_RATES } from '@wallet-actions/constants';
 import { getDiscoveryForDevice } from '@wallet-actions/discoveryActions';
 import { isDeviceRemembered } from '@suite-utils/device';
 import { serializeDiscovery } from '@suite-utils/storage';
@@ -46,8 +46,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         }
 
         case TRANSACTION.ADD:
-        case TRANSACTION.REMOVE:
-        case TRANSACTION.FETCH_SUCCESS: {
+        case TRANSACTION.REMOVE: {
             const device = accountUtils.findAccountDevice(action.account, api.getState().devices);
             // update only transactions for remembered device
             if (isDeviceRemembered(device)) {
@@ -83,6 +82,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             break;
 
         case WALLET_SETTINGS.CHANGE_NETWORKS:
+            api.dispatch(storageActions.saveWalletSettings());
+            api.dispatch(storageActions.saveFiatRates());
+            break;
+
         case WALLET_SETTINGS.CHANGE_EXTERNAL_NETWORKS:
         case WALLET_SETTINGS.SET_HIDE_BALANCE:
         case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
@@ -92,6 +95,14 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         case SUITE.SET_LANGUAGE:
         case SUITE.INITIAL_RUN_COMPLETED:
             api.dispatch(storageActions.saveSuiteSettings());
+            break;
+
+        case FIAT_RATES.RATE_UPDATE:
+            api.dispatch(storageActions.saveFiatRates());
+            break;
+
+        case FIAT_RATES.RATE_REMOVE:
+            api.dispatch(storageActions.removeFiatRate(action.symbol));
             break;
         default:
             break;

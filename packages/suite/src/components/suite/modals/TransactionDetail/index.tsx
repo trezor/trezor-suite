@@ -7,7 +7,7 @@ import { Translation } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import { H2, Link, Button } from '@trezor/components';
 import { AppState } from '@suite-types';
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import { WalletAccountTransaction } from '@wallet-types';
 import TrezorConnect from 'trezor-connect';
 import NETWORKS from '@wallet-config/networks';
 import BasicDetails from './components/BasicDetails';

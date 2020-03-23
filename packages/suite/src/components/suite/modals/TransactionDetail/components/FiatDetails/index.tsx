@@ -5,10 +5,12 @@ import FiatValue from '@suite-components/FiatValue/Container';
 import Badge from '@suite-components/Badge';
 import { Translation, HiddenPlaceholder } from '@suite-components';
 
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import Box from '../Box';
 import BoxRow from '../BoxRow';
 import { FormattedDate } from 'react-intl';
+import NoRatesTooltip from '@suite/components/suite/NoRatesTooltip';
+import { getDateWithTimeZone } from '@suite-utils/date';
+import { WalletAccountTransaction } from '@wallet-types';
 
 const Grid = styled.div`
     display: grid;
@@ -51,13 +53,13 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                     <Translation id="TR_TX_CURRENT_VALUE" />{' '}
                     {/* such a weird syntax, but basically all I want is show date in parentheses: (formattedDate) */}
                     <FiatValue amount="1" symbol={tx.symbol}>
-                        {(_fiatValue, _fiatRate, currentFiatRateTimestamp) => (
+                        {({ timestamp }) => (
                             <>
-                                {currentFiatRateTimestamp && (
+                                {timestamp && (
                                     <>
                                         (
                                         <FormattedDate
-                                            value={currentFiatRateTimestamp}
+                                            value={timestamp}
                                             year="numeric"
                                             month="2-digit"
                                             day="2-digit"
@@ -68,16 +70,16 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                             </>
                         )}
                     </FiatValue>
-                    <Badge>
-                        <FiatValue amount="1" symbol={tx.symbol} />
-                    </Badge>
+                    <FiatValue amount="1" symbol={tx.symbol}>
+                        {({ value }) => (value ? <Badge>{value}</Badge> : <NoRatesTooltip />)}
+                    </FiatValue>
                 </BoxHeading>
                 <Box>
                     <BoxRow title={<Translation id="TR_TOTAL_OUTPUT" />} alignContent="right">
                         {totalOutput && (
                             <HiddenPlaceholder>
                                 <FiatValue amount={totalOutput} symbol={tx.symbol}>
-                                    {fiatValue => fiatValue}
+                                    {({ value }) => value ?? null}
                                 </FiatValue>
                             </HiddenPlaceholder>
                         )}
@@ -85,7 +87,7 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                     <BoxRow title={<Translation id="TR_TX_FEE" />} alignContent="right">
                         <HiddenPlaceholder>
                             <FiatValue amount={tx.fee} symbol={tx.symbol}>
-                                {(fiatValue, _timestamp) => fiatValue}
+                                {({ value }) => value ?? null}
                             </FiatValue>
                         </HiddenPlaceholder>
                     </BoxRow>
@@ -93,27 +95,56 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
             </Col>
             <Col direction="column">
                 <BoxHeading>
-                    <Translation id="TR_TX_HISTORICAL_VALUE_DATE" values={{ date: '' }} />
-                    <HistoricalBadge>
-                        <FiatValue amount="1" symbol={tx.symbol}>
-                            {fiatValue => fiatValue}
-                        </FiatValue>
-                    </HistoricalBadge>
+                    <Translation
+                        id="TR_TX_HISTORICAL_VALUE_DATE"
+                        values={{
+                            date: tx.blockTime ? (
+                                <FormattedDate
+                                    value={getDateWithTimeZone(tx.blockTime * 1000) ?? undefined}
+                                    year="numeric"
+                                    month="2-digit"
+                                    day="2-digit"
+                                />
+                            ) : (
+                                ''
+                            ),
+                        }}
+                    />
+
+                    <FiatValue amount="1" symbol={tx.symbol} source={tx.rates} useCustomSource>
+                        {({ value }) =>
+                            value ? <HistoricalBadge>{value}</HistoricalBadge> : <NoRatesTooltip />
+                        }
+                    </FiatValue>
                 </BoxHeading>
                 <Box>
                     <BoxRow title={<Translation id="TR_TOTAL_OUTPUT" />} alignContent="right">
-                        <HiddenPlaceholder>
-                            <FiatValue amount="1" symbol={tx.symbol}>
-                                {fiatValue => fiatValue}
-                            </FiatValue>
-                        </HiddenPlaceholder>
+                        {totalOutput && (
+                            <HiddenPlaceholder>
+                                <FiatValue
+                                    amount={totalOutput}
+                                    symbol={tx.symbol}
+                                    source={tx.rates}
+                                    useCustomSource
+                                >
+                                    {({ value }) => value ?? null}
+                                </FiatValue>
+                            </HiddenPlaceholder>
+                        )}
                     </BoxRow>
                     <BoxRow title={<Translation id="TR_TX_FEE" />} alignContent="right">
-                        <HiddenPlaceholder>
-                            <FiatValue amount="1" symbol={tx.symbol}>
-                                {fiatValue => fiatValue}
-                            </FiatValue>
-                        </HiddenPlaceholder>
+                        {totalOutput && (
+                            <HiddenPlaceholder>
+                                <FiatValue
+                                    amount={tx.fee}
+                                    symbol={tx.symbol}
+                                    source={tx.rates}
+                                    useCustomSource
+                                >
+                                    {({ value }) => value ?? null}
+                                </FiatValue>
+                            </HiddenPlaceholder>
+                        )}
                     </BoxRow>
                 </Box>
             </Col>

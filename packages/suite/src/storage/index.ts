@@ -1,12 +1,10 @@
 import SuiteDB, { StorageUpdateMessage, OnUpgradeFunc } from '@trezor/suite-storage';
 import { DBSchema } from 'idb';
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
 import { SuiteState } from '@suite-reducers/suiteReducer';
-import { Fiat } from '@wallet-reducers/fiatRateReducer';
 import { State as SendFormState } from '@wallet-types/sendForm';
 import { AcquiredDevice } from '@suite-types';
-import { Account, Discovery } from '@wallet-types';
+import { Account, Discovery, CoinFiatRates, WalletAccountTransaction } from '@wallet-types';
 import { migrate } from './migrations';
 
 const VERSION = 12;
@@ -60,7 +58,7 @@ export interface SuiteDBSchema extends DBSchema {
     };
     fiatRates: {
         key: string;
-        value: Fiat;
+        value: CoinFiatRates;
     };
 }
 

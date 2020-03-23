@@ -83,6 +83,14 @@ const IOBoxAddress = styled.div`
     margin-bottom: 10px;
 `;
 
+const HistoricalBadge = styled(props => <Badge {...props} />)`
+    margin-left: 8px;
+`;
+
+const BadgesWrapper = styled.div`
+    display: flex;
+`;
+
 interface Props {
     tx: WalletAccountTransaction;
     txDetails: any;
@@ -93,37 +101,52 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
     return (
         <Wrapper>
             {!txDetails && isFetching && <Loader size={32} />}
-            {txDetails && (
+            {txDetails?.vin && txDetails?.vout && (
                 <>
                     <Col direction="column">
-                        {txDetails &&
-                            txDetails.vin.map((input: any) => {
-                                let inputAmount = formatNetworkAmount(input.value, tx.symbol);
-                                inputAmount = inputAmount === '-1' ? '0' : inputAmount;
-                                return (
-                                    <IOBox key={input.hex}>
-                                        <IOBoxAddress>
-                                            {input.addresses.map((addr: string) => addr)}
-                                        </IOBoxAddress>
-                                        {/* <IOBoxPath>placeholder</IOBoxPath> */}
-                                        <IOBoxAmountWrapper>
+                        {txDetails.vin?.map((input: any) => {
+                            let inputAmount = formatNetworkAmount(input.value, tx.symbol);
+                            inputAmount = inputAmount === '-1' ? '0' : inputAmount;
+                            return (
+                                <IOBox key={input.hex}>
+                                    <IOBoxAddress>
+                                        {input.addresses.map((addr: string) => addr)}
+                                    </IOBoxAddress>
+                                    {/* <IOBoxPath>placeholder</IOBoxPath> */}
+                                    <IOBoxAmountWrapper>
+                                        <HiddenPlaceholder>
+                                            <Amount>{`${inputAmount} ${tx.symbol.toUpperCase()}`}</Amount>
+                                        </HiddenPlaceholder>
+
+                                        <BadgesWrapper>
                                             <HiddenPlaceholder>
-                                                <Amount>{`${inputAmount} ${tx.symbol.toUpperCase()}`}</Amount>
+                                                <FiatValue amount={inputAmount} symbol={tx.symbol}>
+                                                    {({ value }) =>
+                                                        value ? <Badge>{value}</Badge> : null
+                                                    }
+                                                </FiatValue>
                                             </HiddenPlaceholder>
-                                            <Badge>
-                                                <HiddenPlaceholder>
-                                                    <FiatValue
-                                                        amount={inputAmount}
-                                                        symbol={tx.symbol}
-                                                    >
-                                                        {(fiatValue, _timestamp) => fiatValue}
-                                                    </FiatValue>
-                                                </HiddenPlaceholder>
-                                            </Badge>
-                                        </IOBoxAmountWrapper>
-                                    </IOBox>
-                                );
-                            })}
+                                            <HiddenPlaceholder>
+                                                <FiatValue
+                                                    amount={inputAmount}
+                                                    symbol={tx.symbol}
+                                                    source={tx.rates}
+                                                    useCustomSource
+                                                >
+                                                    {({ value }) =>
+                                                        value ? (
+                                                            <HistoricalBadge>
+                                                                {value}
+                                                            </HistoricalBadge>
+                                                        ) : null
+                                                    }
+                                                </FiatValue>
+                                            </HiddenPlaceholder>
+                                        </BadgesWrapper>
+                                    </IOBoxAmountWrapper>
+                                </IOBox>
+                            );
+                        })}
                     </Col>
 
                     <IconWrapper>
@@ -131,34 +154,48 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                     </IconWrapper>
 
                     <Col direction="column">
-                        {txDetails &&
-                            txDetails.vout.map((output: any) => {
-                                let outputAmount = formatNetworkAmount(output.value, tx.symbol);
-                                outputAmount = outputAmount === '-1' ? '0' : outputAmount;
-                                return (
-                                    <IOBox key={output.hex}>
-                                        <IOBoxAddress>
-                                            {output.addresses.map((addr: string) => addr)}
-                                        </IOBoxAddress>
-                                        {/* <IOBoxPath>todo: bip44 path</IOBoxPath> */}
-                                        <IOBoxAmountWrapper>
+                        {txDetails.vout?.map((output: any) => {
+                            let outputAmount = formatNetworkAmount(output.value, tx.symbol);
+                            outputAmount = outputAmount === '-1' ? '0' : outputAmount;
+                            return (
+                                <IOBox key={output.hex}>
+                                    <IOBoxAddress>
+                                        {output.addresses.map((addr: string) => addr)}
+                                    </IOBoxAddress>
+                                    {/* <IOBoxPath>todo: bip44 path</IOBoxPath> */}
+                                    <IOBoxAmountWrapper>
+                                        <HiddenPlaceholder>
+                                            <Amount>{`${outputAmount} ${tx.symbol.toUpperCase()}`}</Amount>
+                                        </HiddenPlaceholder>
+                                        <BadgesWrapper>
                                             <HiddenPlaceholder>
-                                                <Amount>{`${outputAmount} ${tx.symbol.toUpperCase()}`}</Amount>
+                                                <FiatValue amount={outputAmount} symbol={tx.symbol}>
+                                                    {({ value }) =>
+                                                        value ? <Badge>{value}</Badge> : null
+                                                    }
+                                                </FiatValue>
                                             </HiddenPlaceholder>
                                             <HiddenPlaceholder>
-                                                <Badge>
-                                                    <FiatValue
-                                                        amount={outputAmount}
-                                                        symbol={tx.symbol}
-                                                    >
-                                                        {(fiatValue, _timestamp) => fiatValue}
-                                                    </FiatValue>
-                                                </Badge>
+                                                <FiatValue
+                                                    amount={outputAmount}
+                                                    symbol={tx.symbol}
+                                                    source={tx.rates}
+                                                    useCustomSource
+                                                >
+                                                    {({ value }) =>
+                                                        value ? (
+                                                            <HistoricalBadge>
+                                                                {value}
+                                                            </HistoricalBadge>
+                                                        ) : null
+                                                    }
+                                                </FiatValue>
                                             </HiddenPlaceholder>
-                                        </IOBoxAmountWrapper>
-                                    </IOBox>
-                                );
-                            })}
+                                        </BadgesWrapper>
+                                    </IOBoxAmountWrapper>
+                                </IOBox>
+                            );
+                        })}
                     </Col>
                 </>
             )}

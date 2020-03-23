@@ -3,13 +3,11 @@ import React, { useMemo } from 'react';
 import { FormattedDate } from 'react-intl';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { groupTransactionsByDate, parseKey, sumTransactions } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
-import { Account } from '@wallet-types';
-import TransactionItem from '../TransactionItem/Container';
-import Pagination from '../Pagination';
-
+import { Account, WalletAccountTransaction } from '@wallet-types';
+import TransactionItem from './components/TransactionItem/Container';
+import Pagination from './components/Pagination';
 import { Card, FiatValue, HiddenPlaceholder, Translation } from '@suite-components';
 
 const Wrapper = styled.div``;
@@ -67,6 +65,7 @@ const FiatDayAmount = styled(DayAmount)`
     min-width: 100px;
     justify-content: flex-end;
     text-align: right;
+    margin-left: 16px;
 `;
 
 const DateWrapper = styled.div`
@@ -116,6 +115,7 @@ const TransactionList = ({
             <StyledCard>
                 <Transactions>
                     {Object.keys(transactionsByDate).map(dateKey => {
+                        const parsedDate = parseKey(dateKey);
                         const totalAmountPerDay = sumTransactions(transactionsByDate[dateKey]);
                         return (
                             <React.Fragment key={dateKey}>
@@ -128,7 +128,7 @@ const TransactionList = ({
                                         <>
                                             <DateWrapper>
                                                 <FormattedDate
-                                                    value={parseKey(dateKey)}
+                                                    value={parsedDate ?? undefined}
                                                     day="numeric"
                                                     month="long"
                                                     year="numeric"
@@ -142,15 +142,16 @@ const TransactionList = ({
                                                         {props.symbol.toUpperCase()}
                                                     </DayAmount>
                                                 </HiddenPlaceholder>
+                                                {/* TODO: daily deltas are multiplied by current rate instead of the rate for given day. if someone notices. calc average rate of all txs in a day and use that? */}
                                                 <HiddenPlaceholder>
                                                     <FiatValue
                                                         amount={totalAmountPerDay.toFixed()}
                                                         symbol={props.symbol}
                                                     >
-                                                        {fiatValue =>
-                                                            fiatValue && (
+                                                        {({ value }) =>
+                                                            value && (
                                                                 <FiatDayAmount>
-                                                                    {fiatValue}
+                                                                    {value}
                                                                 </FiatDayAmount>
                                                             )
                                                         }
@@ -161,11 +162,7 @@ const TransactionList = ({
                                     )}
                                 </DayHeading>
                                 {transactionsByDate[dateKey].map((tx: WalletAccountTransaction) => (
-                                    <StyledTransactionItem
-                                        key={tx.txid}
-                                        transaction={tx}
-                                        explorerUrl={`${explorerUrl}${tx.txid}`}
-                                    />
+                                    <StyledTransactionItem key={tx.txid} transaction={tx} />
                                 ))}
                             </React.Fragment>
                         );

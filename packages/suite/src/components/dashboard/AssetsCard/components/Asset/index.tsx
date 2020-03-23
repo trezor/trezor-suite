@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Account } from '@wallet-types';
-import { CoinLogo } from '@trezor/components';
+import { AppState } from '@suite-types';
+import { connect } from 'react-redux';
+import { CoinLogo, variables } from '@trezor/components';
 import { NoRatesTooltip, HiddenPlaceholder, Badge, FiatValue } from '@suite-components';
 import LastWeekGraph from '../LastWeekGraph';
 import { CoinBalance } from '@wallet-components';
@@ -21,12 +23,8 @@ const AssetLogoWrapper = styled.div`
 
 const AssetName = styled.div`
     color: #808080;
-    font-size: 12px;
+    font-size: ${variables.FONT_SIZE.TINY};
     padding-top: 1px;
-`;
-
-const BadgeText = styled.div`
-    margin-right: 6px;
 `;
 
 const Col = styled.div`
@@ -47,18 +45,28 @@ const CryptoValueWrapper = styled(Col)`
     margin-right: 32px;
     text-align: right;
     white-space: nowrap;
+    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 const FiatValueWrapper = styled(Col)``;
 
-export interface Props extends React.HTMLAttributes<HTMLDivElement> {
+interface OwnProps extends React.HTMLAttributes<HTMLDivElement> {
     name: string;
     symbol: Account['symbol'];
     cryptoValue: string;
+    localCurrency: string;
 }
 
-const Asset = React.memo(({ name, symbol, cryptoValue, ...rest }: Props) => {
+const mapStateToProps = (state: AppState) => ({
+    fiat: state.wallet.fiat,
+});
+
+export type Props = ReturnType<typeof mapStateToProps> & OwnProps;
+
+const Asset = React.memo(({ name, symbol, cryptoValue, localCurrency, ...props }: Props) => {
+    const lastWeekData = props.fiat.find(r => r.symbol === symbol)?.lastWeek?.tickers;
+
     return (
-        <Wrapper {...rest}>
+        <Wrapper {...props}>
             <Col>
                 <AssetLogoWrapper>
                     <CoinLogo symbol={symbol} size={16} />
@@ -76,33 +84,35 @@ const Asset = React.memo(({ name, symbol, cryptoValue, ...rest }: Props) => {
                 <FiatValueWrapper>
                     <HiddenPlaceholder>
                         <FiatValue amount={cryptoValue} symbol={symbol}>
-                            {fiatValue => <Badge isSmall>{fiatValue}</Badge>}
+                            {({ value }) => (value ? <Badge isSmall>{value}</Badge> : null)}
                         </FiatValue>
                     </HiddenPlaceholder>
                 </FiatValueWrapper>
             </Col>
             <Col>
                 <GraphWrapper>
-                    <LastWeekGraph symbol={symbol} />
+                    <LastWeekGraph
+                        lastWeekData={lastWeekData}
+                        symbol={symbol}
+                        localCurrency={localCurrency}
+                    />
                 </GraphWrapper>
             </Col>
             <Col>
                 <FiatValue amount={cryptoValue} symbol={symbol}>
-                    {(_fiatValue, exchangeRate) => {
-                        return exchangeRate ? (
+                    {({ rate }) =>
+                        rate ? (
                             <Badge isSmall isGray>
-                                1 {symbol.toUpperCase()} = {exchangeRate}
+                                1 {symbol.toUpperCase()} = {rate}
                             </Badge>
                         ) : (
-                            <Badge isSmall isGray>
-                                <BadgeText>N/A</BadgeText> <NoRatesTooltip />
-                            </Badge>
-                        );
-                    }}
+                            <NoRatesTooltip />
+                        )
+                    }
                 </FiatValue>
             </Col>
         </Wrapper>
     );
 });
 
-export default Asset;
+export default connect(mapStateToProps)(Asset);

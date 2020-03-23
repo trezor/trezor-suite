@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { colors, variables, CoinLogo } from '@trezor/components';
+import { colors, variables, CoinLogo, Tooltip, Icon } from '@trezor/components';
 import {
     HiddenPlaceholder,
     Card,
@@ -14,6 +14,9 @@ import { getAccountFiatBalance, getTitleForNetwork, isTestnet } from '@wallet-ut
 import { Account } from '@wallet-types';
 import { Translation } from '@suite-components/Translation';
 import { connect } from 'react-redux';
+import { differenceInMinutes } from 'date-fns';
+import { FormattedRelativeTime } from 'react-intl';
+import messages from '@suite/support/messages';
 
 const Wrapper = styled(Card)`
     width: 100%;
@@ -79,7 +82,7 @@ const FlickerAnimation = keyframes`
     }
 `;
 
-const Live = styled.div`
+const LiveWrapper = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
@@ -89,6 +92,10 @@ const Live = styled.div`
     animation: ${FlickerAnimation} 2s 3;
 `;
 
+const Live = styled.div`
+    display: flex;
+`;
+
 const Dot = styled.div`
     display: flex;
     width: 6px;
@@ -96,6 +103,15 @@ const Dot = styled.div`
     background-color: ${colors.GREEN};
     border-radius: 50%;
     margin-right: 3px;
+    margin-top: -1px;
+`;
+
+const LastUpdate = styled.div`
+    text-transform: none;
+`;
+
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
 `;
 
 interface OwnProps {
@@ -104,7 +120,9 @@ interface OwnProps {
 
 const PricePanel = (props: Props) => {
     const { localCurrency } = props.settings;
-    const fiatBalance = getAccountFiatBalance(props.account, localCurrency, props.fiat) || 0;
+    const fiatBalance = getAccountFiatBalance(props.account, localCurrency, props.fiat);
+    const MAX_AGE = 5; // after 5 minutes the ticker will show tooltip with info about last update instead of blinking LIVE text
+    const rateAge = (timestamp: number) => differenceInMinutes(new Date(), new Date(timestamp));
 
     return (
         <Wrapper>
@@ -115,11 +133,13 @@ const PricePanel = (props: Props) => {
                         {props.account.formattedBalance} {props.account.symbol.toUpperCase()}
                     </Balance>
                 </HiddenPlaceholder>
-                <HiddenPlaceholder>
-                    <Badge>
-                        <FormattedNumber value={fiatBalance} currency={localCurrency} />
-                    </Badge>
-                </HiddenPlaceholder>
+                {fiatBalance && (
+                    <HiddenPlaceholder intensity={7}>
+                        <Badge>
+                            <FormattedNumber value={fiatBalance} currency={localCurrency} />
+                        </Badge>
+                    </HiddenPlaceholder>
+                )}
             </Col>
             {!isTestnet(props.account.symbol) && (
                 <Col>
@@ -130,20 +150,58 @@ const PricePanel = (props: Props) => {
                                 ({props.account.symbol.toUpperCase()})
                             </TickerTitle>
                             <FiatValue amount="1" symbol={props.account.symbol}>
-                                {(fiatValue, _timestamp) =>
-                                    fiatValue ? (
-                                        <Live key={props.account.symbol}>
-                                            <Dot /> Live
-                                        </Live>
-                                    ) : (
-                                        <NoRatesTooltip />
-                                    )
+                                {({ value, timestamp }) =>
+                                    value && timestamp ? (
+                                        <>
+                                            {rateAge(timestamp) >= MAX_AGE ? (
+                                                <Tooltip
+                                                    maxWidth={285}
+                                                    placement="top"
+                                                    content={
+                                                        <LastUpdate>
+                                                            <Translation
+                                                                {...messages.TR_LAST_UPDATE}
+                                                                values={{
+                                                                    value: (
+                                                                        <FormattedRelativeTime
+                                                                            value={
+                                                                                rateAge(timestamp) *
+                                                                                -60
+                                                                            }
+                                                                            numeric="auto"
+                                                                            updateIntervalInSeconds={
+                                                                                10
+                                                                            }
+                                                                        />
+                                                                    ),
+                                                                }}
+                                                            />
+                                                        </LastUpdate>
+                                                    }
+                                                >
+                                                    <StyledIcon
+                                                        icon="QUESTION"
+                                                        color={colors.BLACK50}
+                                                        hoverColor={colors.BLACK25}
+                                                        size={14}
+                                                    />
+                                                </Tooltip>
+                                            ) : (
+                                                <LiveWrapper key={props.account.symbol}>
+                                                    <Dot />
+                                                    <Live>
+                                                        <Translation {...messages.TR_LIVE} />
+                                                    </Live>
+                                                </LiveWrapper>
+                                            )}
+                                        </>
+                                    ) : null
                                 }
                             </FiatValue>
                         </Row>
                         <TickerPrice>
                             <FiatValue amount="1" symbol={props.account.symbol}>
-                                {(fiatValue, _timestamp) => fiatValue ?? <>n/a</>}
+                                {({ value }) => value ?? <NoRatesTooltip />}
                             </FiatValue>
                         </TickerPrice>
                     </Ticker>

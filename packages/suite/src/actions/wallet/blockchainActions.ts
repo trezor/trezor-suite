@@ -132,13 +132,18 @@ export const subscribe = () => async (_dispatch: Dispatch, getState: GetState) =
     });
 
     const promises = Object.keys(sortedAccounts).map(coin => {
-        return TrezorConnect.blockchainSubscribe({
-            accounts: sortedAccounts[coin],
-            coin,
-        });
+        return [
+            TrezorConnect.blockchainSubscribe({
+                accounts: sortedAccounts[coin],
+                coin,
+            }),
+            TrezorConnect.blockchainSubscribeFiatRates({
+                coin,
+            }),
+        ];
     });
 
-    return Promise.all(promises);
+    return Promise.all(promises.flat());
 };
 
 export const reconnect = (symbol: Network['symbol']) => async (

@@ -1,5 +1,5 @@
 import { AccountTransaction } from 'trezor-connect';
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import { WalletAccountTransaction } from '@wallet-types';
 import { getDateWithTimeZone } from '../suite/date';
 import BigNumber from 'bignumber.js';
 
@@ -16,9 +16,16 @@ export const groupTransactionsByDate = (
     transactions.forEach(item => {
         let key = 'pending';
         if (item.blockHeight && item.blockHeight > 0 && item.blockTime && item.blockTime > 0) {
-            const d = getDateWithTimeZone(item.blockTime * 1000);
-            // YYYY-MM-DD format
-            key = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+            const t = item.blockTime * 1000;
+            const d = getDateWithTimeZone(t);
+            if (d) {
+                // YYYY-MM-DD format
+                key = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+            } else {
+                console.log(
+                    `Error during grouping transaction by date. Failed timestamp conversion (${t})`,
+                );
+            }
         }
         if (!r[key]) {
             r[key] = [];

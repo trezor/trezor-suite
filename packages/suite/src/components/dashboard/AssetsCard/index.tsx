@@ -88,6 +88,7 @@ const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props)
                         name={network.name}
                         symbol={network.symbol}
                         cryptoValue={assetBalance.toFixed()}
+                        localCurrency={localCurrency}
                     />
                 );
             })}
