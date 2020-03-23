@@ -143,9 +143,7 @@ const toif = (w: number, h: number, imageData: ImageData) => {
     if (length.length % 2 > 0) {
         length = evenPad(length);
     }
-    length = chunkString(2, length)
-        .reverse()
-        .join('');
+    length = chunkString(2, length).reverse().join('');
     header += rightPad(8, length);
 
     return header + byteArrayToHexString(packed);

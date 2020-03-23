@@ -59,10 +59,7 @@ jest.mock('trezor-connect', () => {
         // emit BUNDLE_PROGRESS
         for (let i = 0; i < params.bundle.length; i++) {
             const param = params.bundle[i];
-            const accountType = param.path
-                .split('/')
-                .slice(0, 3)
-                .join('/');
+            const accountType = param.path.split('/').slice(0, 3).join('/');
             let isEmpty = true;
             let isFailed = false;
 

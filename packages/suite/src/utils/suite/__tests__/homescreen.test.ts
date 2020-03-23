@@ -7,10 +7,7 @@ const homescreensPath = '../suite-data/files/images/png/homescreens';
 
 // to simplify assertions of hex return values
 const getHash = (str: string) => {
-    return crypto
-        .createHash('md5')
-        .update(str)
-        .digest('hex');
+    return crypto.createHash('md5').update(str).digest('hex');
 };
 
 const getMockElementToImageData = (image: HTMLImageElement) => {

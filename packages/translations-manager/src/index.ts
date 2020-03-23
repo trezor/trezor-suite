@@ -99,11 +99,7 @@ export const buildCSV = (inputFilePath: string, outputFilePath: string, language
         fs.readFileSync(inputFilePath, 'utf-8'),
     ); // this contains our master data;
     const csvArrays = Object.entries(messages).map(([k, v]) =>
-        createRowArray(k, v).concat(
-            Array(languages.length)
-                .join('.')
-                .split('.'),
-        ),
+        createRowArray(k, v).concat(Array(languages.length).join('.').split('.')),
     );
     const cols = ['key', 'source', 'context'].concat(languages);
     fs.writeFileSync(
