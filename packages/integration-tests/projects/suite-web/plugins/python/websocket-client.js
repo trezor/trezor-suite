@@ -123,7 +123,7 @@ class Controller extends EventEmitter {
             if (dfd) {
                 if (!success) {
                     dfd.reject(
-                        new Error(`websocket_error_message${resp.error.message || resp.error}`),
+                        new Error(`websocket_error_message: ${resp.error.message || resp.error}`),
                     );
                 } else {
                     dfd.resolve(resp);
@@ -166,7 +166,7 @@ class Controller extends EventEmitter {
         ws.once('error', error => {
             this.dispose();
             console.log(error);
-            dfd.reject(new Error('websocket_runtime_error', error.message));
+            dfd.reject(new Error('websocket_runtime_error: ', error.message));
         });
         ws.on('open', () => {
             this.init();

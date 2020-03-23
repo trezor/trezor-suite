@@ -1,16 +1,17 @@
 import React from 'react';
+import { Tooltip } from '@trezor/components';
+
 import { OnboardingButton } from '@onboarding-components';
 import { Translation } from '@suite-components';
-
-import { Tooltip } from '@trezor/components';
 
 interface ButtonProps {
     onClick: () => void;
     isConnected: boolean;
     isInBootloader: boolean;
+    btcOnly: boolean;
 }
 
-const InstallButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) => {
+const InstallButton = ({ isConnected, isInBootloader, btcOnly, onClick }: ButtonProps) => {
     let content = '';
     if (!isConnected) {
         content = 'Connect device to continue';
@@ -27,7 +28,8 @@ const InstallButton = ({ isConnected, isInBootloader, onClick }: ButtonProps) =>
                 isDisabled={!isConnected || !isInBootloader}
                 onClick={() => onClick()}
             >
-                <Translation id="TR_INSTALL" />
+                {btcOnly && <Translation id="TR_INSTALL_BTC_ONLY" />}
+                {!btcOnly && <Translation id="TR_INSTALL_FULL" />}
             </OnboardingButton.Cta>
         </Tooltip>
     );

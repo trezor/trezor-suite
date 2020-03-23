@@ -1,15 +1,15 @@
 import TrezorConnect from 'trezor-connect';
-import Rollout from '@trezor/rollout';
-
 import { FIRMWARE } from '@firmware-actions/constants';
 import { AnyStatus } from '@firmware-reducers/firmwareReducer';
-import { Dispatch, GetState, Action } from '@suite-types';
+import { Dispatch, GetState, Action, AcquiredDevice } from '@suite-types';
 
 export type FirmwareActions =
     | { type: typeof FIRMWARE.SET_UPDATE_STATUS; payload: AnyStatus }
+    | { type: typeof FIRMWARE.SET_TARGET_RELEASE; payload: AcquiredDevice['firmwareRelease'] }
     | { type: typeof FIRMWARE.RESET_REDUCER }
     | { type: typeof FIRMWARE.ENABLE_REDUCER; payload: boolean }
-    | { type: typeof FIRMWARE.SET_ERROR; payload: string | undefined };
+    | { type: typeof FIRMWARE.SET_ERROR; payload: string | undefined }
+    | { type: typeof FIRMWARE.TOGGLE_BTC_ONLY };
 
 export const resetReducer = () => (dispatch: Dispatch) => {
     dispatch({
@@ -22,8 +22,22 @@ export const setStatus = (payload: AnyStatus): Action => ({
     payload,
 });
 
+export const setTargetRelease = (payload: AcquiredDevice['firmwareRelease']) => (
+    dispatch: Dispatch,
+) => {
+    dispatch({
+        type: FIRMWARE.SET_TARGET_RELEASE,
+        payload,
+    });
+};
+
+export const toggleBtcOnly = (): Action => ({
+    type: FIRMWARE.TOGGLE_BTC_ONLY,
+});
+
 export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
+    const { btcOnly, targetRelease } = getState().firmware;
 
     dispatch(resetReducer());
     if (!device || !device.connected || !device.features) {
@@ -43,29 +57,14 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
 
     dispatch(setStatus('downloading'));
 
-    const rollout = Rollout({
-        releasesListsPaths: {
-            1: 'data/firmware/1/releases.json',
-            2: 'data/firmware/2/releases.json',
-        },
-        baseUrl: 'https://wallet.trezor.io',
-    });
-
-    let fw;
-    try {
-        fw = await rollout.getFw(device.features);
-        if (!fw) {
-            throw new Error('no firmware found');
-        }
-    } catch (error) {
-        dispatch({ type: FIRMWARE.SET_ERROR, payload: 'failed to download firmware' });
-        return;
-    }
     const payload = {
-        payload: fw,
         keepSession: false,
         skipFinalReload: true,
-        device,
+        device: {
+            path: device.path,
+        },
+        btcOnly,
+        version: targetRelease?.release?.version || device.firmwareRelease?.release?.version,
     };
 
     dispatch(setStatus('started'));

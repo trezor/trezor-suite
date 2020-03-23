@@ -4,7 +4,8 @@
  * @example cy.getTestElement('my-fancy-attr-name')
  */
 
-export const getTestElement = (selector: string, options) => {
+
+export const getTestElement = (selector: string, options?: Parameters<typeof cy.get>[1]) => {
     return cy.get(`[data-test="${selector}"]`, options);
 };
 
