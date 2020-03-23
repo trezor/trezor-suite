@@ -5,7 +5,7 @@ import * as path from 'path';
 import * as url from 'url';
 import * as electronLocalshortcut from 'electron-localshortcut';
 import * as store from './store';
-import { isBridgeRunning, runBridgeProcess } from './bridge';
+import { runBridgeProcess, killBridgeProcess } from './bridge';
 
 let mainWindow: BrowserWindow;
 const PROTOCOL = 'file';
@@ -36,10 +36,9 @@ const registerShortcuts = (window: BrowserWindow) => {
 
 const init = async () => {
     try {
-        const isBridgeProcessRunning = await isBridgeRunning();
-        if (!isBridgeProcessRunning) {
-            await runBridgeProcess();
-        }
+        // TODO: not necessary since suite will send a request to start bridge via IPC
+        // but right now removing it causes showing the download bridge modal for a sec
+        await runBridgeProcess();
     } catch (error) {
         // do nothing
     }
@@ -119,7 +118,10 @@ app.on('window-all-closed', () => {
     mainWindow = undefined;
 });
 
-app.on('before-quit', () => {
+app.on('before-quit', async () => {
+    // TODO: be aware that although it kills the bridge process, another one will start because of start-bridge msgs from ipc
+    // (BridgeStatus component sends the request every time it loses transport.type)
+    await killBridgeProcess();
     if (mainWindow) {
         // remove onclose listener
         mainWindow.removeAllListeners();

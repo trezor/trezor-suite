@@ -84,9 +84,9 @@ export const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>
         mode: 'normal',
         state: undefined,
         features,
+        unavailableCapabilities: {},
         ...dev,
         type: 'acquired',
-        unavailableCapabilities: {},
     };
 };
 

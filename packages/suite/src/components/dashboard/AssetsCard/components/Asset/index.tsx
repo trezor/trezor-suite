@@ -100,15 +100,15 @@ const Asset = React.memo(({ name, symbol, cryptoValue, localCurrency, ...props }
             </Col>
             <Col>
                 <FiatValue amount={cryptoValue} symbol={symbol}>
-                    {({ rate }) => {
-                        return rate ? (
-                            <Badge isSmall>
+                    {({ rate }) =>
+                        rate ? (
+                            <Badge isSmall isGray>
                                 1 {symbol.toUpperCase()} = {rate}
                             </Badge>
                         ) : (
                             <NoRatesTooltip />
-                        );
-                    }}
+                        )
+                    }
                 </FiatValue>
             </Col>
         </Wrapper>
