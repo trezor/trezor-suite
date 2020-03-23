@@ -18,11 +18,13 @@ const LastWeekGraph = React.memo(({ lastWeekData, symbol, localCurrency }: Props
     let isGraphGreen = false;
 
     if (lastWeekData) {
-        const firstDataPoint = lastWeekData[0];
-        const lastDataPoint = lastWeekData[lastWeekData.length - 1];
-        if (lastDataPoint.rates[localCurrency] && firstDataPoint.rates[localCurrency]) {
-            isGraphGreen =
-                lastDataPoint.rates[localCurrency]! > firstDataPoint.rates[localCurrency]!;
+        const firstDataPoint = lastWeekData[0]?.rates?.[localCurrency];
+        // sometimes blockbook returns empty rates for too recent timestamp, just try one before
+        let lastDataPoint = lastWeekData[lastWeekData.length - 1]?.rates?.[localCurrency];
+        lastDataPoint =
+            lastDataPoint ?? lastWeekData[lastWeekData.length - 2]?.rates?.[localCurrency];
+        if (lastDataPoint && firstDataPoint) {
+            isGraphGreen = lastDataPoint > firstDataPoint;
         }
     }
 
