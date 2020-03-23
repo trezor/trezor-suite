@@ -1,5 +1,5 @@
 diff --git a/node_modules/app-builder-lib/out/targets/ArchiveTarget.js b/node_modules/app-builder-lib/out/targets/ArchiveTarget.js
-index fcd3fcc..bc8527d 100755
+index 72a59df..9095aad 100755
 --- a/node_modules/app-builder-lib/out/targets/ArchiveTarget.js
 +++ b/node_modules/app-builder-lib/out/targets/ArchiveTarget.js
 @@ -120,7 +120,7 @@ class ArchiveTarget extends _core().Target {

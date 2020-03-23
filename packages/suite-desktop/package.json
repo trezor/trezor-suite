@@ -26,7 +26,7 @@
         "asar": true,
         "asarUnpack": [
             "build/static/bridge/**/*"
-          ],
+        ],
         "electronVersion": "7.1.4",
         "directories": {
             "output": "build-electron"
@@ -100,8 +100,8 @@
         "@types/react": "^16.7.11",
         "@types/react-dom": "^16.0.11",
         "@types/react-redux": "^7.1.5",
-        "electron": "^7.1.4",
-        "electron-builder": "22.1.0",
+        "electron": "^8.1.1",
+        "electron-builder": "^22.4.1",
         "git-revision-webpack-plugin": "^3.0.4",
         "next-plugin-custom-babel-config": "^1.0.2",
         "next-redux-wrapper": "^4.0.1",
