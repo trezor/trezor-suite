@@ -68,8 +68,9 @@ const Right = styled.div`
 
 const NewsImage = styled.img`
     width: 80px;
+    height: 80px;
     border-radius: 2px;
-    background: #f5f5f5;
+    object-fit: cover;
 `;
 
 const NewsTitle = styled.div<{ visited: boolean }>`
