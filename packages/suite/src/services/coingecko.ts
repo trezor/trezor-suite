@@ -58,9 +58,11 @@ export const fetchCurrentFiatRates = async (ticker: FiatTicker) => {
 
     const response = await fetch(url);
     const rates = await response.json();
+    if (!rates) return null;
+
     return {
         ts: new Date().getTime() / 1000,
-        rates: rates.market_data.current_price,
+        rates: rates.market_data?.current_price,
         symbol: rates.symbol,
     };
 };
@@ -89,11 +91,9 @@ export const getFiatRatesForTimestamps = async (
 
         const response = await fetch(`${url}?date=${dateParam}`);
         const data = await response.json();
-        // if (!data?.market_data?.current_price) return null;
-        // TODO: market_data field is missing if they are no rates available for a given date
         return {
             ts: t,
-            rates: data.market_data.current_price,
+            rates: data?.market_data?.current_price,
         };
     });
 

@@ -185,7 +185,7 @@ export const updateStaleRates = () => async (dispatch: Dispatch, _getState: GetS
 export const updateLastWeekRates = () => async (dispatch: Dispatch, getState: GetState) => {
     const { localCurrency } = getState().wallet.settings;
 
-    const currentTimestamp = Math.floor(new Date().getTime() / 1000) - 120; // unix timestamp in seconds - 2 mins
+    const currentTimestamp = Math.floor(new Date().getTime() / 1000) - 120; // unix timestamp in seconds - 2 mins (blockbook returns empty object if timestamp is too fresh)
     const weekAgoTimestamp = currentTimestamp - 7 * 86400;
 
     // calc timestamps in 1 hour intervals the last 7 days
