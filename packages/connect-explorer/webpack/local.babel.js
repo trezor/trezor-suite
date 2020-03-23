@@ -147,7 +147,7 @@ module.exports = {
         new webpack.NamedModulesPlugin(),
 
         new webpack.DefinePlugin({
-            LOCAL: JSON.stringify(`http://localhost:${PORT}/`),
+            LOCAL: JSON.stringify(`https://localhost:${PORT}/`),
         }),
 
         // ignore node lib from trezor-link
