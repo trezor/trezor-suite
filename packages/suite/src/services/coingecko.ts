@@ -20,7 +20,14 @@ export const fetchCoinList = async (): Promise<any> => {
     return tokens;
 };
 
-export const buildCoinUrl = async (ticker: FiatTicker) => {
+/**
+ * Build coinUrl from the `ticker.url` if available.
+ * Otherwise fetch coin ID from CoinGecko and use that.
+ *
+ * @param {FiatTicker} ticker
+ * @returns
+ */
+const buildCoinUrl = async (ticker: FiatTicker) => {
     let coinUrl: string | null = null;
     const { symbol } = ticker;
     if (ticker.url) {
@@ -59,7 +66,7 @@ export const fetchCurrentFiatRates = async (ticker: FiatTicker) => {
 };
 
 /**
- * Returns the historical rate for a given symbol, timesttamp fetched from CoinGecko API.
+ * Returns the historical rate for a given symbol, timestamp fetched from CoinGecko API.
  * Be aware that the data granularity is 1 day.
  * Returns null if coin for a given symbol was not found.
  *
@@ -98,6 +105,15 @@ export const getFiatRatesForTimestamps = async (
     };
 };
 
+/**
+ * Returns the historical rates for the past 7 days
+ * Be aware that the data granularity is 1 day.
+ * Returns null if coin for a given symbol was not found.
+ *
+ * @param {FiatTicker} ticker
+ * @param {string} localCurrency
+ * @returns {(Promise<HistoricalResponse | null>)}
+ */
 export const fetchLastWeekRates = async (
     ticker: FiatTicker,
     localCurrency: string,
