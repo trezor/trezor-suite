@@ -19,9 +19,7 @@ const cleanData = (data: any, limit = 5) => {
             thumbnail,
             pubDate,
             link,
-            description: $('p')
-                .first()
-                .text(),
+            description: $('p').first().text(),
         });
     }
 
