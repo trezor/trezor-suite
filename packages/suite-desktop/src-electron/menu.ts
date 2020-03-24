@@ -2,6 +2,8 @@ import { app, shell, Menu } from 'electron';
 
 const isMac = process.platform === 'darwin';
 
+app.setName('Trezor Suite'); // overrides @trezor/suite-desktop app name in menu
+
 const menuTemplate = [
     // { role: 'appMenu' }
     ...(isMac

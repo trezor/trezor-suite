@@ -5,7 +5,7 @@ import * as path from 'path';
 import * as url from 'url';
 import * as electronLocalshortcut from 'electron-localshortcut';
 import * as store from './store';
-import { runBridgeProcess, killBridgeProcess } from './bridge';
+import { runBridgeProcess } from './bridge';
 import mainMenu from './menu';
 
 let mainWindow: BrowserWindow;
@@ -17,8 +17,6 @@ const src = isDev
           protocol: PROTOCOL,
           slashes: true,
       });
-
-app.setName('Trezor Suite'); // overrides @trezor/suite-desktop app name in menu
 
 const registerShortcuts = (window: BrowserWindow) => {
     // internally uses before-input-event, which should be safer than adding globalShortcut and removing it on blur event
