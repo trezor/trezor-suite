@@ -5,7 +5,7 @@ import { XRP_FLAG } from '@wallet-constants/sendForm';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as commonActions from './sendFormCommonActions';
-import { formatNetworkAmount, networkAmountToSatoshi } from '@wallet-utils/accountUtils';
+import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import {
     calculateMax,
     calculateTotal,
@@ -97,16 +97,10 @@ export const checkAccountReserve = (outputId: number, address: string) => async 
     // TODO: handle error state
 
     if (response.success) {
-        const targetAccountBalance = formatNetworkAmount(response.payload.balance, account.symbol);
-        const reserve = getReserveInXrp(account);
-        const isDestinationAccountEmpty = !new Bignumber(targetAccountBalance).isGreaterThan(
-            reserve || '0',
-        );
-
         dispatch({
             type: SEND.XRP_IS_DESTINATION_ACCOUNT_EMPTY,
-            isDestinationAccountEmpty,
-            reserve,
+            isDestinationAccountEmpty: response.payload.empty,
+            reserve: getReserveInXrp(account),
         });
     }
 
