@@ -1,8 +1,10 @@
-import { Dispatch, GetState } from '@suite-types';
+import TrezorConnect from 'trezor-connect';
+import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
-import * as commonActions from './sendFormCommonActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as accountActions from '@wallet-actions/accountActions';
+import * as commonActions from './sendFormCommonActions';
+import { composeChange } from './sendFormActions';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { toWei, fromWei } from 'web3-utils';
 import {
@@ -13,9 +15,7 @@ import {
     calculateTotal,
     getOutput,
 } from '@wallet-utils/sendFormUtils';
-import BigNumber from 'bignumber.js';
-import TrezorConnect from 'trezor-connect';
-import { composeChange } from './sendFormActions';
+import { Dispatch, GetState } from '@suite-types';
 
 /*
     Compose eth transaction
@@ -85,19 +85,17 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     const selectedDevice = getState().suite.device;
     if (selectedAccount.status !== 'loaded' || !send || !selectedDevice) return null;
     const { account, network } = selectedAccount;
-    if (account.networkType !== 'ethereum' || !network.chainId) return null;
-
-    const output = getOutput(send.outputs, 0);
-    const { address, amount } = output;
-    const { networkTypeEthereum } = send;
-    const { data, gasPrice, gasLimit } = networkTypeEthereum;
+    const amount = send.outputs[0].amount.value;
+    const address = send.outputs[0].address.value;
+    if (account.networkType !== 'ethereum' || !network.chainId || !amount || !address) return null;
+    const { data, gasPrice, gasLimit } = send.networkTypeEthereum;
 
     const transaction = prepareEthereumTransaction({
         network: network.symbol,
         chainId: network.chainId,
         from: account.descriptor,
-        to: address.value,
-        amount: amount.value,
+        to: address,
+        amount,
         data: data.value,
         gasLimit: gasLimit.value,
         gasPrice: gasPrice.value,
@@ -139,10 +137,9 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     if (sentTx.success) {
         dispatch(commonActions.clear());
         dispatch(
-            // @ts-ignore @Vladimir: amount !== string
             notificationActions.addToast({
                 type: 'tx-sent',
-                amount: amount.value,
+                formattedAmount: `${amount} ${account.symbol.toUpperCase()}`, // TODO: erc20 symbol
                 device: selectedDevice,
                 descriptor: account.descriptor,
                 txid: sentTx.payload.txid,

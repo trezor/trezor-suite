@@ -32,9 +32,7 @@ export default ({ account, send }: Props) => {
         <Wrapper>
             <Item>
                 <Title>Fee:</Title>
-                <Value>
-                    {formatNetworkAmount(transactionInfo.fee, symbol)} {symbol.toUpperCase()}
-                </Value>
+                <Value>{formatNetworkAmount(transactionInfo.fee, symbol, true)}</Value>
             </Item>
             {transactionInfo.bytes && (
                 <Item>

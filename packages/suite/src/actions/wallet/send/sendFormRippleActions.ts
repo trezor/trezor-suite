@@ -1,18 +1,18 @@
-import * as commonActions from './sendFormCommonActions';
-import * as notificationActions from '@suite-actions/notificationActions';
-import * as accountActions from '@wallet-actions/accountActions';
-import { Dispatch, GetState } from '@suite-types';
+import TrezorConnect, { RipplePayment } from 'trezor-connect';
+import Bignumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
 import { XRP_FLAG } from '@wallet-constants/sendForm';
-import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
+import * as notificationActions from '@suite-actions/notificationActions';
+import * as accountActions from '@wallet-actions/accountActions';
+import * as commonActions from './sendFormCommonActions';
+import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import {
     calculateMax,
     calculateTotal,
     getOutput,
     getReserveInXrp,
 } from '@wallet-utils/sendFormUtils';
-import Bignumber from 'bignumber.js';
-import TrezorConnect, { RipplePayment } from 'trezor-connect';
+import { Dispatch, GetState } from '@suite-types';
 
 /*
     Compose xrp transaction
@@ -97,16 +97,10 @@ export const checkAccountReserve = (outputId: number, address: string) => async 
     // TODO: handle error state
 
     if (response.success) {
-        const targetAccountBalance = formatNetworkAmount(response.payload.balance, account.symbol);
-        const reserve = getReserveInXrp(account);
-        const isDestinationAccountEmpty = !new Bignumber(targetAccountBalance).isGreaterThan(
-            reserve || '0',
-        );
-
         dispatch({
             type: SEND.XRP_IS_DESTINATION_ACCOUNT_EMPTY,
-            isDestinationAccountEmpty,
-            reserve,
+            isDestinationAccountEmpty: response.payload.empty,
+            reserve: getReserveInXrp(account),
         });
     }
 
@@ -191,7 +185,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         dispatch(
             notificationActions.addToast({
                 type: 'tx-sent',
-                amount,
+                formattedAmount: `${amount} ${account.symbol.toUpperCase()}`,
                 device: selectedDevice,
                 descriptor: account.descriptor,
                 txid: sentTx.payload.txid,

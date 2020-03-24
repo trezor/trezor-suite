@@ -64,7 +64,7 @@ const getFeeValue = (
         return fromWei(gasPriceInWei, 'ether');
     }
 
-    return `${formatNetworkAmount(transactionInfo.fee, symbol)}`;
+    return `${formatNetworkAmount(transactionInfo.fee, symbol, true)}`;
 };
 
 export default ({
@@ -122,10 +122,7 @@ export default ({
                             <Translation id="TR_FEE" />
                         )}
                     </Label>
-                    <Value>
-                        {getFeeValue(transactionInfo, networkType, account.symbol)}{' '}
-                        {upperCaseSymbol}
-                    </Value>
+                    <Value>{getFeeValue(transactionInfo, networkType, account.symbol)}</Value>
                 </Box>
             </Content>
             <Buttons>

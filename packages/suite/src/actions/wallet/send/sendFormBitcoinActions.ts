@@ -1,14 +1,14 @@
-import * as notificationActions from '@suite-actions/notificationActions';
-import { Dispatch, GetState } from '@suite-types';
-import * as accountActions from '@wallet-actions/accountActions';
+import TrezorConnect from 'trezor-connect';
+import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
 import { BTC_RBF_SEQUENCE } from '@wallet-constants/sendForm';
-import { Account } from '@wallet-types';
-import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
-import { getLocalCurrency } from '@wallet-utils/settingsUtils';
-import TrezorConnect from 'trezor-connect';
-
+import * as notificationActions from '@suite-actions/notificationActions';
+import * as accountActions from '@wallet-actions/accountActions';
 import * as commonActions from './sendFormCommonActions';
+import { formatNetworkAmount, networkAmountToSatoshi } from '@wallet-utils/accountUtils';
+import { getLocalCurrency } from '@wallet-utils/settingsUtils';
+import { Dispatch, GetState } from '@suite-types';
+import { Account } from '@wallet-types';
 
 /*
     Compose transaction
@@ -176,12 +176,16 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         coin: account.symbol,
     });
 
+    const spentWithoutFee = new BigNumber(transactionInfo.totalSpent)
+        .minus(transactionInfo.fee)
+        .toString();
+
     if (sentTx.success) {
         dispatch(commonActions.clear());
         dispatch(
             notificationActions.addToast({
                 type: 'tx-sent',
-                amount: transactionInfo.totalSpent,
+                formattedAmount: formatNetworkAmount(spentWithoutFee, account.symbol, true),
                 device: selectedDevice,
                 descriptor: account.descriptor,
                 txid: sentTx.payload.txid,

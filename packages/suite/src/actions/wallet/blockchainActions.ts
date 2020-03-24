@@ -172,28 +172,25 @@ export const onNotification = (payload: BlockchainNotification) => async (
     dispatch: Dispatch,
     getState: GetState,
 ): Promise<void> => {
-    const { notification } = payload;
+    const { descriptor, tx } = payload.notification;
     const symbol = payload.coin.shortcut.toLowerCase();
     const networkAccounts = getState().wallet.accounts.filter(a => a.symbol === symbol);
-    const accounts = accountUtils.findAccountsByDescriptor(
-        notification.descriptor,
-        networkAccounts,
-    );
+    const accounts = accountUtils.findAccountsByDescriptor(descriptor, networkAccounts);
     if (!accounts.length) return;
     const account = accounts[0];
 
     // ripple worker sends two notifications for the same tx (pending + confirmed/rejected)
     // dispatch only recv notifications
-    if (notification.tx.type === 'recv' && !notification.tx.blockHeight) {
-        const enhancedTx = accountUtils.enhanceTransaction(notification.tx, account);
+    if (tx.type === 'recv' && !tx.blockHeight) {
         const accountDevice = accountUtils.findAccountDevice(account, getState().devices);
+        const formattedAmount = accountUtils.formatNetworkAmount(tx.amount, account.symbol, true);
         dispatch(
             notificationActions.addEvent({
                 type: 'tx-received',
-                amount: enhancedTx.amount,
+                formattedAmount,
                 device: accountDevice,
                 descriptor: account.descriptor,
-                txid: enhancedTx.txid,
+                txid: tx.txid,
             }),
         );
     }

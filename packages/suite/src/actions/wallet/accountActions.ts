@@ -165,7 +165,11 @@ export const fetchAndUpdateAccount = (account: Account) => async (
             dispatch(
                 notificationActions.addEvent({
                     type: 'tx-confirmed',
-                    amount: accountUtils.formatNetworkAmount(tx.amount, account.symbol),
+                    formattedAmount: accountUtils.formatNetworkAmount(
+                        tx.amount,
+                        account.symbol,
+                        true,
+                    ),
                     device: accountDevice,
                     descriptor: account.descriptor,
                     txid: tx.txid,

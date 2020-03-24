@@ -329,7 +329,7 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
         dispatch({
             type: SEND.HANDLE_AMOUNT_CHANGE,
             outputId,
-            amount: maxBig.isLessThanOrEqualTo(0) ? '0' : maxBig.toFixed(network.decimals),
+            amount: maxBig.isLessThanOrEqualTo(0) ? '0' : maxBig.toFixed(network.decimals), // TODO: why is this here? shoudnt formatNetworkAmount do the job?
             decimals: network.decimals,
             availableBalance: account.availableBalance,
             isDestinationAccountEmpty,
