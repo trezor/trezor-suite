@@ -10,6 +10,7 @@ import Modals from '@suite-components/modals';
 import * as routerActions from '@suite-actions/routerActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { AppState, Dispatch } from '@suite-types';
+import ModalWrapper from '@suite-components/ModalWrapper';
 
 import Firmware from '@firmware-views';
 import Onboarding from '@onboarding-views';
@@ -182,9 +183,11 @@ const Preloader = (props: Props) => {
                 {hasActionModal && <Modals />}
                 {!hasActionModal && (
                     <ModalComponent>
-                        <FocusLock>
-                            <ApplicationStateModal />
-                        </FocusLock>
+                        <ModalWrapper>
+                            <FocusLock>
+                                <ApplicationStateModal />
+                            </FocusLock>
+                        </ModalWrapper>
                     </ModalComponent>
                 )}
                 {props.children}

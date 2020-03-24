@@ -6,10 +6,11 @@ import { AppState, Action, Dispatch } from '@suite-types';
 const recovery = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
 ): Action => {
-    const prevApp = api.getState().router.app;
+    const {app} = api.getState().router;
     // pass action
     next(action);
-    if (action.type === SUITE.APP_CHANGED && (prevApp === 'recovery' || prevApp === 'onboarding')) {
+
+    if (action.type === SUITE.APP_CHANGED && (app === 'recovery' || app === 'onboarding')) {
         api.dispatch(recoveryActions.resetReducer());
     }
 

@@ -1,6 +1,6 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { acquireDevice } from '@suite-actions/suiteActions';
+import { recoverDevice, checkSeed } from '@recovery-actions/recoveryActions';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Dispatch, AppState } from '@suite-types';
 import View from './index';
@@ -11,7 +11,8 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    acquireDevice: bindActionCreators(acquireDevice, dispatch),
+    recoverDevice: bindActionCreators(recoverDevice, dispatch),
+    checkSeed: bindActionCreators(checkSeed, dispatch),
 });
 
 export type Props = ReturnType<typeof mapStateToProps> &

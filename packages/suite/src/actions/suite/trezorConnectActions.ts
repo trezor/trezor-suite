@@ -68,7 +68,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         await TrezorConnect.init({
             connectSrc,
             transportReconnect: true,
-            debug: true,
+            debug: false,
             popup: false,
             webusb: process.env.SUITE_TYPE === 'web',
             pendingTransportEvent: getState().devices.length < 1,
