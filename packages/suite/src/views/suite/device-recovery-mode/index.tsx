@@ -1,11 +1,10 @@
 import React from 'react';
-import TrezorConnect from 'trezor-connect';
 import { H2, P, Button } from '@trezor/components';
 import { Loading } from '@suite-components';
 
 import { Props } from './Container';
 
-const Index = ({ locks, recoverDevice, checkSeed }: Props) => (
+const Index = ({ locks, checkSeed }: Props) => (
     <>
         {locks.length > 0 && <Loading />}
         {locks.length === 0 && (

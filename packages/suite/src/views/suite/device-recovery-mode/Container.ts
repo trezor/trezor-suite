@@ -1,6 +1,6 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { recoverDevice, checkSeed } from '@recovery-actions/recoveryActions';
+import { checkSeed } from '@recovery-actions/recoveryActions';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Dispatch, AppState } from '@suite-types';
 import View from './index';
@@ -11,7 +11,8 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    recoverDevice: bindActionCreators(recoverDevice, dispatch),
+    // todo: check if not dry_run
+    // recoverDevice: bindActionCreators(recoverDevice, dispatch),
     checkSeed: bindActionCreators(checkSeed, dispatch),
 });
 

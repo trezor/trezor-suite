@@ -6,7 +6,7 @@ import { AppState, Action, Dispatch } from '@suite-types';
 const recovery = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
 ): Action => {
-    const {app} = api.getState().router;
+    const { app } = api.getState().router;
     // pass action
     next(action);
 

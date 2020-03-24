@@ -5,11 +5,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { variables } from '@trezor/components';
-import { AnyStepDisallowedState, Step } from '@onboarding-types/steps';
+import { Step } from '@onboarding-types/steps';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as STEP from '@onboarding-constants/steps';
 import steps from '@onboarding-config/steps';
-import { getFnForRule } from '@onboarding-utils/rules';
 
 import WelcomeStep from '@onboarding-views/steps/Welcome/Container';
 import SkipStep from '@onboarding-views/steps/Skip/Container';
@@ -25,7 +24,7 @@ import BackupStep from '@onboarding-views/steps/Backup/Container';
 import SecurityStep from '@onboarding-views/steps/Security/Container';
 import SetPinStep from '@onboarding-views/steps/Pin/Container';
 import FinalStep from '@onboarding-views/steps/Final/Container';
-import { UnexpectedState } from '@onboarding-components';
+import UnexpectedState from '@onboarding-views/unexpected-states';
 import { ProgressBar } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import { AppState, Dispatch, InjectedModalApplicationProps } from '@suite-types';
@@ -58,9 +57,7 @@ const ActionModalWrapper = styled.div`
 
 const mapStateToProps = (state: AppState) => {
     return {
-        device: state.suite.device,
         // onboarding reducer
-        prevDevice: state.onboarding.prevDevice,
         activeStepId: state.onboarding.activeStepId,
         path: state.onboarding.path,
     };
@@ -75,7 +72,7 @@ type Props = ReturnType<typeof mapStateToProps> &
     InjectedModalApplicationProps;
 
 const Onboarding = (props: Props) => {
-    const { activeStepId, device, prevDevice, path, modal } = props;
+    const { activeStepId, modal } = props;
 
     const getStep = () => {
         const lookup = steps.find((step: Step) => step.id === activeStepId);
@@ -85,20 +82,6 @@ const Onboarding = (props: Props) => {
         }
         return lookup;
     };
-
-    const getError = () => {
-        const activeStep = getStep();
-        if (!activeStep.disallowedDeviceStates) {
-            return null;
-        }
-
-        return activeStep.disallowedDeviceStates.find((state: AnyStepDisallowedState) => {
-            const fn = getFnForRule(state);
-            return fn({ device, prevDevice, path });
-        });
-    };
-
-    const errorState = getError();
 
     const getStepComponent = () => {
         switch (activeStepId) {
@@ -151,21 +134,14 @@ const Onboarding = (props: Props) => {
                 hidden={!getStep().progress}
             />
 
-            {errorState && (
-                <UnexpectedState
-                    caseType={errorState}
-                    prevModel={
-                        (prevDevice && prevDevice.features && prevDevice.features.major_version) ||
-                        2
-                    }
-                />
-            )}
-            {!errorState && modal && (
-                <ActionModalWrapper data-test="@onboading/confirm-action-on-device">
-                    {modal}
-                </ActionModalWrapper>
-            )}
-            {!errorState && !modal && <StepComponent />}
+            <UnexpectedState>
+                {modal && (
+                    <ActionModalWrapper data-test="@onboading/confirm-action-on-device">
+                        {modal}
+                    </ActionModalWrapper>
+                )}
+                {!modal && <StepComponent />}
+            </UnexpectedState>
         </Wrapper>
     );
 };
