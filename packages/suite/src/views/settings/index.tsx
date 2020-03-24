@@ -17,6 +17,7 @@ import {
 import { AppState, Dispatch } from '@suite-types';
 import { FIAT, LANGUAGES } from '@suite-config';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import * as storageActions from '@suite-actions/storageActions';
 import * as languageActions from '@settings-actions/languageActions';
 
 const buildCurrencyOption = (currency: string) => {
@@ -35,6 +36,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     setLocalCurrency: bindActionCreators(walletSettingsActions.setLocalCurrency, dispatch),
+    clearStores: bindActionCreators(storageActions.clearStores, dispatch),
     fetchLocale: bindActionCreators(languageActions.fetchLocale, dispatch),
 });
 
@@ -44,7 +46,14 @@ const BottomContainer = styled.div`
     margin-top: auto;
 `;
 
-const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Props) => {
+const Settings = ({
+    locks,
+    wallet,
+    language,
+    setLocalCurrency,
+    fetchLocale,
+    clearStores,
+}: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
 
     return (
@@ -105,6 +114,25 @@ const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Pr
             <Analytics />
 
             <BottomContainer>
+                <Section borderless>
+                    <Row>
+                        <TextColumn
+                            title={<Translation id="TR_SUITE_STORAGE" />}
+                            description={<Translation id="TR_CLEAR_STORAGE_DESCRIPTION" />}
+                        />
+                        <ActionColumn>
+                            <ActionButton
+                                onClick={() => {
+                                    clearStores();
+                                }}
+                                variant="secondary"
+                            >
+                                <Translation id="TR_CLEAR_STORAGE" />
+                            </ActionButton>
+                        </ActionColumn>
+                    </Row>
+                </Section>
+
                 <Section borderless>
                     <Row>
                         <TextColumn

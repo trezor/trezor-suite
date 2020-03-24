@@ -2485,6 +2485,23 @@ const definedMessages = defineMessages({
         id: 'TR_INSTALL_FULL',
         defaultMessage: 'Install full-featured firmware',
     },
+    TR_SUITE_STORAGE: {
+        id: 'TR_SUITE_STORAGE',
+        defaultMessage: 'Suite Storage',
+    },
+    TR_CLEAR_STORAGE: {
+        id: 'TR_CLEAR_STORAGE',
+        defaultMessage: 'Clear storage',
+    },
+    TR_STORAGE_CLEARED: {
+        id: 'TR_STORAGE_CLEARED',
+        defaultMessage: 'Storage cleared! Please restart the app.',
+    },
+    TR_CLEAR_STORAGE_DESCRIPTION: {
+        id: 'TR_CLEAR_STORAGE_DESCRIPTION',
+        defaultMessage:
+            'If you are experiencing problems, clearing the storage is a good first step to try to resolve the issue.',
+    },
 } as const);
 
 export default definedMessages;

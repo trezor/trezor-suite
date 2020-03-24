@@ -166,7 +166,13 @@ class CommonDB<TDBStructure> {
         return (Promise.resolve() as unknown) as Promise<StoreValue<TDBStructure, TStoreName>[]>;
     };
 
-    static clearStores = async <TDBStructure>(
+    clearStores = async <TStoreName extends StoreNames<TDBStructure>>(
+        _storeNames?: TStoreName[]
+    ) => {
+        return Promise.resolve();
+    };
+
+    static removeStores = async <TDBStructure>(
         _db: IDBPDatabase<TDBStructure>,
         _transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[]>,
         _remove?: boolean

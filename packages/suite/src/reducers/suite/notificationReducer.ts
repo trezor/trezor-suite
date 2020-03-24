@@ -38,6 +38,9 @@ export type ToastPayload = (
           type: 'copy-to-clipboard';
       }
     | {
+          type: 'clear-storage';
+      }
+    | {
           type:
               | 'error'
               | 'auth-failed'

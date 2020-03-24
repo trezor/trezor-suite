@@ -5,6 +5,7 @@ import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { Account, Send } from '@wallet-types';
 import { getAccountKey } from '@wallet-utils/accountUtils';
 import { Discovery } from '@wallet-reducers/discoveryReducer';
+import * as notificationActions from '@suite-actions/notificationActions';
 import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
 
 export type StorageActions =
@@ -141,6 +142,15 @@ export const saveSuiteSettings = () => (_dispatch: Dispatch, getState: GetState)
             initialRun: suite.initialRun,
         },
         'suite',
+    );
+};
+
+export const clearStores = () => async (dispatch: Dispatch, _getState: GetState) => {
+    await db.clearStores();
+    dispatch(
+        notificationActions.addToast({
+            type: 'clear-storage',
+        }),
     );
 };
 

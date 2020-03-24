@@ -225,6 +225,13 @@ export default (notification: NotificationEntry, View: React.ComponentType<ViewP
                 },
             });
 
+        case 'clear-storage':
+            return simple(View, {
+                notification,
+                icon: 'INFO',
+                message: messages.TR_STORAGE_CLEARED,
+            });
+
         // Events:
         case DEVICE.CONNECT:
             return withAction(View, {

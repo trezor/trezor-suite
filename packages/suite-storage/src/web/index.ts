@@ -327,7 +327,34 @@ class CommonDB<TDBStructure> {
         return tx.store.getAll();
     };
 
-    static clearStores = async <TDBStructure>(
+    clearStores = async <TStoreName extends StoreNames<TDBStructure>>(
+        storeNames?: TStoreName[]
+    ) => {
+        const db = await this.getDB();
+
+        const extractStoreNames = () => {
+            const names: StoreNames<TDBStructure>[] = [];
+            const list = db.objectStoreNames;
+            const { length } = list;
+            for (let i = 0; i < length; i++) {
+                const storeName = list.item(i);
+                if (storeName) {
+                    names.push(storeName);
+                }
+            }
+            return names;
+        };
+
+        const list = storeNames ?? extractStoreNames();
+        const promises = list.map(storeName => {
+            const transaction = db.transaction(storeName, 'readwrite');
+            const objectStore = transaction.objectStore(storeName);
+            return objectStore.clear();
+        });
+        await Promise.all(promises);
+    };
+
+    static removeStores = async <TDBStructure>(
         db: IDBPDatabase<TDBStructure>,
         transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[]>,
         remove?: boolean
