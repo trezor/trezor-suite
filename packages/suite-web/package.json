@@ -15,7 +15,7 @@
         "@sentry/browser": "^5.15.0",
         "@trezor/suite": "^1.0.0",
         "next": "^9.3.1",
-        "next-redux-wrapper": "^4.0.1",
+        "next-redux-wrapper": "^5.0.0",
         "worker-loader": "^2.0.0"
     },
     "devDependencies": {
