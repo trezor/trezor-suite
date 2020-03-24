@@ -2500,7 +2500,7 @@ const definedMessages = defineMessages({
     TR_CLEAR_STORAGE_DESCRIPTION: {
         id: 'TR_CLEAR_STORAGE_DESCRIPTION',
         defaultMessage:
-            'If you are experiencing problems, clearing the storage is a good first step to try to resolve the issue.',
+            'If you are experiencing problems, clearing the storage is a good first step to try to resolve the issue. During this process the app will restart itself.',
     },
 } as const);
 

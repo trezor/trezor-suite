@@ -124,6 +124,15 @@ const Settings = ({
                             <ActionButton
                                 onClick={() => {
                                     clearStores();
+                                    // @ts-ignore global.ipcRenderer is declared in @desktop/preloader.js
+                                    const { ipcRenderer } = global;
+                                    if (ipcRenderer) {
+                                        // relaunch desktop app
+                                        ipcRenderer.send('restart-app');
+                                    } else {
+                                        // reload the web
+                                        window.location.reload();
+                                    }
                                 }}
                                 variant="secondary"
                             >
