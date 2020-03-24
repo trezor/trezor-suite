@@ -132,7 +132,7 @@ app.on('before-quit', () => {
 
         // TODO: be aware that although it kills the bridge process, another one will start because of start-bridge msgs from ipc
         // (BridgeStatus component sends the request every time it loses transport.type)
-        killBridgeProcess();
+        // killBridgeProcess();
     }
 });
 
