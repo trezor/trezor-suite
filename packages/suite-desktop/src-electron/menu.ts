@@ -97,7 +97,7 @@ const menuTemplate = [
     },
 ];
 
-// @ts-ignore
+// @ts-ignore should be fine https://www.electronjs.org/docs/api/menu#main-process
 const mainMenu = Menu.buildFromTemplate(menuTemplate);
 
 export default mainMenu;
