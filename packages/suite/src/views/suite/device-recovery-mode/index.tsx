@@ -1,20 +1,52 @@
 import React from 'react';
-import { H2, P, Button } from '@trezor/components';
-import { Loading } from '@suite-components';
+import styled from 'styled-components';
+import { H2, Button } from '@trezor/components';
+import { Loading, Translation } from '@suite-components';
 
 import { Props } from './Container';
 
-const Index = ({ locks, checkSeed }: Props) => (
-    <>
-        {locks.length > 0 && <Loading />}
-        {locks.length === 0 && (
+const Wrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+`;
+
+const Buttons = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 20px;
+`;
+
+const Index = ({ recovery, device, checkSeed, recoverDevice, goToStep, addPath }: Props) => (
+    <Wrapper>
+        {recovery.status === 'in-progress' && <Loading />}
+        {recovery.status === 'initial' && (
             <>
-                <H2>Your device is in recovery mode.</H2>
-                <P>Finish recovery on device screen or cancel it</P>
-                <Button onClick={() => checkSeed()}>check seed</Button>
+                <H2>
+                    <Translation id="TR_DEVICE_IN_RECOVERY_MODE" />
+                </H2>
+                <Buttons>
+                    {!device?.features?.initialized && (
+                        <Button
+                            onClick={() => {
+                                recoverDevice();
+                                goToStep('recovery');
+                                addPath('recovery');
+                            }}
+                        >
+                            <Translation id="TR_CONTINUE" />
+                        </Button>
+                    )}
+                    {device?.features?.initialized && (
+                        <Button onClick={() => checkSeed()}>
+                            <Translation id="TR_CONTINUE" />
+                        </Button>
+                    )}
+                </Buttons>
             </>
         )}
-    </>
+    </Wrapper>
 );
 
 export default Index;

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import { AppState } from '@suite-types';
 import { Translation } from '@suite-components/Translation';
+import { DeviceRecoveryMode } from '@suite-views';
 import * as STEP from '@onboarding-constants/steps';
 import steps from '@onboarding-config/steps';
 import { Step } from '@onboarding-types/steps';
@@ -12,15 +13,6 @@ import Reconnect from './components/Reconnect';
 import IsSameDevice from './components/IsSameDevice';
 import IsNotNewDevice from './components/IsNotNewDevice';
 import DeviceIsUsedHere from './components/DeviceIsUsedHere';
-
-const mapStateToProps = (state: AppState) => ({
-    onboarding: state.onboarding,
-    suite: state.suite,
-});
-
-type Props = ReturnType<typeof mapStateToProps> & {
-    children: React.ReactNode;
-};
 
 const Wrapper = styled.div`
     margin: auto 30px auto 30px;
@@ -33,6 +25,15 @@ const IsInBootloader = () => (
         <Translation id="TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER" />
     </P>
 );
+
+const mapStateToProps = (state: AppState) => ({
+    onboarding: state.onboarding,
+    suite: state.suite,
+});
+
+type Props = ReturnType<typeof mapStateToProps> & {
+    children: React.ReactNode;
+};
 
 const UnexpectedState = ({ onboarding, suite, children }: Props) => {
     const { prevDevice, path, activeStepId } = onboarding;
@@ -75,7 +76,10 @@ const UnexpectedState = ({ onboarding, suite, children }: Props) => {
             case STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE:
                 return device?.type === 'unacquired';
             case STEP.DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE:
+                // todo check
                 return isNotNewDevice();
+            case STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE:
+                return device?.features?.recovery_mode;
             default:
                 return null;
         }
@@ -97,6 +101,8 @@ const UnexpectedState = ({ onboarding, suite, children }: Props) => {
                 return <DeviceIsUsedHere />;
             case STEP.DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE:
                 return <IsNotNewDevice />;
+            case STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE:
+                return <DeviceRecoveryMode />;
             default:
                 return null;
         }

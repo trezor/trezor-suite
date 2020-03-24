@@ -1,19 +1,22 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { checkSeed } from '@recovery-actions/recoveryActions';
+import * as recoveryActions from '@recovery-actions/recoveryActions';
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Dispatch, AppState } from '@suite-types';
 import View from './index';
 
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
-    locks: state.suite.locks,
+    recovery: state.recovery,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     // todo: check if not dry_run
-    // recoverDevice: bindActionCreators(recoverDevice, dispatch),
-    checkSeed: bindActionCreators(checkSeed, dispatch),
+    addPath: bindActionCreators(onboardingActions.addPath, dispatch),
+    goToStep: bindActionCreators(onboardingActions.goToStep, dispatch),
+    recoverDevice: bindActionCreators(recoveryActions.recoverDevice, dispatch),
+    checkSeed: bindActionCreators(recoveryActions.checkSeed, dispatch),
 });
 
 export type Props = ReturnType<typeof mapStateToProps> &

@@ -2485,6 +2485,10 @@ const definedMessages = defineMessages({
         id: 'TR_INSTALL_FULL',
         defaultMessage: 'Install full-featured firmware',
     },
+    TR_DEVICE_IN_RECOVERY_MODE: {
+        id: 'TR_DEVICE_IN_RECOVERY_MODE',
+        defaultMessage: 'Your device is in recovery mode.',
+    },
 } as const);
 
 export default definedMessages;
