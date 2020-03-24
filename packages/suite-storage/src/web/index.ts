@@ -356,8 +356,7 @@ class CommonDB<TDBStructure> {
 
     static removeStores = async <TDBStructure>(
         db: IDBPDatabase<TDBStructure>,
-        transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[]>,
-        remove?: boolean
+        transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[]>
     ) => {
         const list = db.objectStoreNames;
         const { length } = list;
@@ -365,11 +364,7 @@ class CommonDB<TDBStructure> {
             const storeName = list.item(i);
             if (storeName) {
                 const objectStore = transaction.objectStore(storeName);
-                // eslint-disable-next-line no-await-in-loop
-                await objectStore.clear();
-                if (remove) {
-                    db.deleteObjectStore(storeName);
-                }
+                db.deleteObjectStore(storeName);
             }
         }
     };

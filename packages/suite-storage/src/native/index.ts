@@ -174,8 +174,7 @@ class CommonDB<TDBStructure> {
 
     static removeStores = async <TDBStructure>(
         _db: IDBPDatabase<TDBStructure>,
-        _transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[]>,
-        _remove?: boolean
+        _transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[]>
     ) => {
         return Promise.resolve();
     };
