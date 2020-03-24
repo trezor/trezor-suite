@@ -83,7 +83,7 @@ const Actions = styled.div`
 const DEFAULT_LIMIT = 10;
 
 const Item = ({ addr, symbol, onClick, revealed, index }: any) => {
-    const amount = addr.received ? `${formatNetworkAmount(addr.received, symbol)} ${symbol}` : null;
+    const amount = addr.received ? formatNetworkAmount(addr.received, symbol, true) : null;
     const address =
         addr.transfers < 1 || revealed ? addr.address : `${addr.address.substring(0, 15)}…`;
     return (

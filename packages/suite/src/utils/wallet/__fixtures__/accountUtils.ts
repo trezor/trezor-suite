@@ -536,29 +536,6 @@ export const parseBIP44Path = [
     },
 ];
 
-export const formatNetworkAmount = [
-    {
-        amount: '1',
-        symbol: 'btc',
-        result: '0.00000001',
-    },
-    {
-        amount: '1',
-        symbol: 'eth',
-        result: '0.000000000000000001',
-    },
-    {
-        amount: '1',
-        symbol: 'xrp',
-        result: '0.000001',
-    },
-    {
-        amount: '1',
-        symbol: 'dummy-symbol',
-        result: '1',
-    },
-];
-
 export const sortByCoin = [
     {
         accounts: [

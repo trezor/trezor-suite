@@ -160,9 +160,14 @@ export const networkAmountToSatoshi = (amount: string | null, symbol: Account['s
     }
 };
 
-export const formatNetworkAmount = (amount: string, symbol: Account['symbol']) => {
+export const formatNetworkAmount = (
+    amount: string,
+    symbol: Account['symbol'],
+    withSymbol = false,
+) => {
     const network = NETWORKS.find(n => n.symbol === symbol);
     if (!network) return amount;
+    if (withSymbol) return `${formatAmount(amount, network.decimals)} ${symbol.toUpperCase()}`;
     return formatAmount(amount, network.decimals);
 };
 
