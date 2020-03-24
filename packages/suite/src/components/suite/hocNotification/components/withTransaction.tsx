@@ -48,12 +48,8 @@ export default (View: React.ComponentType<ViewProps>, props: StrictViewProps) =>
                 ? blockchain[account.symbol].blockHeight - tx.blockHeight
                 : 0;
 
-        // tx CAN be undefined at the time of displaying notification (eg: tx-sent)
-        // use notification.amount until tx could be found in reducer
-        const txAmount = tx ? tx.amount : notification.amount;
-
         props.message.values = {
-            amount: `${txAmount} ${account.symbol.toUpperCase()}`,
+            amount: notification.formattedAmount,
             account: <AccountLabeling account={found} />,
             confirmations,
         };

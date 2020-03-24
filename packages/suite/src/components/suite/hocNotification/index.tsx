@@ -130,7 +130,7 @@ export default (notification: NotificationEntry, View: React.ComponentType<ViewP
                 message: {
                     ...messages.TOAST_TX_RECEIVED,
                     values: {
-                        amount: notification.amount,
+                        amount: notification.formattedAmount,
                         account: notification.descriptor,
                     },
                 },
@@ -144,7 +144,7 @@ export default (notification: NotificationEntry, View: React.ComponentType<ViewP
                 message: {
                     ...messages.TOAST_TX_SENT,
                     values: {
-                        amount: notification.amount,
+                        amount: notification.formattedAmount,
                         account: notification.descriptor,
                     },
                 },
@@ -158,7 +158,7 @@ export default (notification: NotificationEntry, View: React.ComponentType<ViewP
                 message: {
                     ...messages.TOAST_TX_CONFIRMED,
                     values: {
-                        amount: notification.amount,
+                        amount: notification.formattedAmount,
                         account: notification.descriptor,
                     },
                 },

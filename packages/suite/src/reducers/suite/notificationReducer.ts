@@ -29,7 +29,7 @@ export type ToastPayload = (
       }
     | {
           type: 'tx-sent';
-          amount: string;
+          formattedAmount: string;
           device?: TrezorDevice;
           descriptor: string;
           txid: string;
@@ -63,7 +63,7 @@ export type EventPayload = (
       }
     | {
           type: 'tx-received' | 'tx-confirmed';
-          amount: string;
+          formattedAmount: string;
           device?: TrezorDevice;
           descriptor: string;
           txid: string;
