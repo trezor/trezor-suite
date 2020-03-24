@@ -121,15 +121,16 @@ app.on('window-all-closed', () => {
     mainWindow = undefined;
 });
 
-app.on('before-quit', async () => {
-    // TODO: be aware that although it kills the bridge process, another one will start because of start-bridge msgs from ipc
-    // (BridgeStatus component sends the request every time it loses transport.type)
-    await killBridgeProcess();
+app.on('before-quit', () => {
     if (mainWindow) {
         // remove onclose listener
         mainWindow.removeAllListeners();
         // store window bounds
         store.setWinBounds(mainWindow);
+
+        // TODO: be aware that although it kills the bridge process, another one will start because of start-bridge msgs from ipc
+        // (BridgeStatus component sends the request every time it loses transport.type)
+        killBridgeProcess();
     }
 });
 
