@@ -354,9 +354,7 @@ class CommonDB<TDBStructure> {
         await Promise.all(promises);
     };
 
-    static removeStores = async <TDBStructure>(
-        db: IDBPDatabase<TDBStructure>,
-    ) => {
+    static removeStores = async <TDBStructure>(db: IDBPDatabase<TDBStructure>) => {
         const list = db.objectStoreNames;
         const { length } = list;
         for (let i = 0; i < length; i++) {

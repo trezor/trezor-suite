@@ -2495,7 +2495,7 @@ const definedMessages = defineMessages({
     },
     TR_STORAGE_CLEARED: {
         id: 'TR_STORAGE_CLEARED',
-        defaultMessage: 'Storage cleared! Please restart the app.',
+        defaultMessage: 'Storage cleared!',
     },
     TR_CLEAR_STORAGE_DESCRIPTION: {
         id: 'TR_CLEAR_STORAGE_DESCRIPTION',
