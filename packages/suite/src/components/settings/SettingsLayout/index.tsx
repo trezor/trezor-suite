@@ -18,7 +18,7 @@ type Props = {
 };
 
 const SettingsLayout = (props: Props) => {
-    const title = props.title || 'Trezor Suite | Settings';
+    const title = props.title || 'Settings';
 
     return (
         <SuiteLayout title={title} secondaryMenu={<Menu />}>
