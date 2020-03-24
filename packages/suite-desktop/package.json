@@ -105,6 +105,6 @@
         "git-revision-webpack-plugin": "^3.0.4",
         "next-plugin-custom-babel-config": "^1.0.2",
         "next-redux-wrapper": "^4.0.1",
-        "next-transpile-modules": "^2.3.1"
+        "next-transpile-modules": "^3.1.0"
     }
 }
