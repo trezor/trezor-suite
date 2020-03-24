@@ -19,6 +19,7 @@ import { FIAT, LANGUAGES } from '@suite-config';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as storageActions from '@suite-actions/storageActions';
 import * as languageActions from '@settings-actions/languageActions';
+import * as routerActions from '@suite-actions/routerActions';
 
 const buildCurrencyOption = (currency: string) => {
     return {
@@ -38,6 +39,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     setLocalCurrency: bindActionCreators(walletSettingsActions.setLocalCurrency, dispatch),
     clearStores: bindActionCreators(storageActions.clearStores, dispatch),
     fetchLocale: bindActionCreators(languageActions.fetchLocale, dispatch),
+    goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
@@ -53,6 +55,7 @@ const Settings = ({
     setLocalCurrency,
     fetchLocale,
     clearStores,
+    goto,
 }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
 
@@ -130,8 +133,12 @@ const Settings = ({
                                         // relaunch desktop app
                                         ipcRenderer.send('restart-app');
                                     } else {
-                                        // reload the web
-                                        window.location.reload();
+                                        // redirect to / and reload the web
+                                        goto('suite-index');
+                                        setTimeout(() => {
+                                            // hacky way to wait until the user is redirected
+                                            window.location.reload();
+                                        }, 2000);
                                     }
                                 }}
                                 variant="secondary"
