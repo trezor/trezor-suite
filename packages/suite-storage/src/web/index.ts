@@ -363,7 +363,6 @@ class CommonDB<TDBStructure> {
         for (let i = 0; i < length; i++) {
             const storeName = list.item(i);
             if (storeName) {
-                const objectStore = transaction.objectStore(storeName);
                 db.deleteObjectStore(storeName);
             }
         }
