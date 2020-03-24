@@ -356,7 +356,6 @@ class CommonDB<TDBStructure> {
 
     static removeStores = async <TDBStructure>(
         db: IDBPDatabase<TDBStructure>,
-        transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[]>
     ) => {
         const list = db.objectStoreNames;
         const { length } = list;

@@ -75,7 +75,7 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
     // if (shouldInitDB) {
     if (oldVersion < VERSION) {
         try {
-            await SuiteDB.removeStores<SuiteDBSchema>(db, transaction, true);
+            await SuiteDB.removeStores<SuiteDBSchema>(db);
         } catch (err) {
             console.error('error during removing all stores', err);
         }
