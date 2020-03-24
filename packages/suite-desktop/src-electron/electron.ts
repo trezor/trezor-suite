@@ -18,6 +18,8 @@ const src = isDev
           slashes: true,
       });
 
+app.setName('Trezor Suite'); // overrides @trezor/suite-desktop app name in menu
+
 const registerShortcuts = (window: BrowserWindow) => {
     // internally uses before-input-event, which should be safer than adding globalShortcut and removing it on blur event
     // https://github.com/electron/electron/issues/8491#issuecomment-274790124
