@@ -1,4 +1,4 @@
-import { app, session, BrowserWindow, ipcMain, shell } from 'electron';
+import { app, session, BrowserWindow, ipcMain, shell, Menu } from 'electron';
 import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 import * as path from 'path';
@@ -6,6 +6,7 @@ import * as url from 'url';
 import * as electronLocalshortcut from 'electron-localshortcut';
 import * as store from './store';
 import { runBridgeProcess, killBridgeProcess } from './bridge';
+import mainMenu from './menu';
 
 let mainWindow: BrowserWindow;
 const PROTOCOL = 'file';
@@ -60,7 +61,9 @@ const init = async () => {
             preload: path.join(__dirname, 'preload.js'),
         },
     });
-    mainWindow.removeMenu();
+
+    Menu.setApplicationMenu(mainMenu);
+    mainWindow.setMenuBarVisibility(false);
 
     if (process.platform === 'darwin') {
         // On OS X it is common for applications and their menu bar
