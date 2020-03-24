@@ -36,11 +36,11 @@
         "type-check": "tsc --project tsconfig.json"
     },
     "devDependencies": {
-        "@babel/register": "^7.8.6",
-        "@babel/runtime": "^7.8.7",
+        "@babel/register": "^7.9.0",
+        "@babel/runtime": "^7.9.2",
         "babel-eslint": "^10.1.0",
         "babel-jest": "^25.1.0",
-        "babel-loader": "^8.0.6",
+        "babel-loader": "^8.1.0",
         "bignumber.js": "^9.0.0",
         "eslint-config-airbnb-base": "^14.0.0",
         "eslint-loader": "^3.0.3",
