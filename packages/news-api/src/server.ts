@@ -7,7 +7,7 @@ const app: Application = express();
 const PORT = process.env.PORT || 3003;
 
 app.get('/', (_req, res) => {
-    res.send('olaaaaaaaa I am the API for trezor news');
+    res.send(`trezor news api`);
 });
 
 app.get('/posts', (req, res) => {
@@ -24,10 +24,7 @@ app.get('/posts', (req, res) => {
 
 app.get('/status', (_req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    const revision = childProcess
-        .execSync('git rev-parse HEAD')
-        .toString()
-        .trim();
+    const revision = childProcess.execSync('git rev-parse HEAD').toString().trim();
 
     res.end(
         JSON.stringify({ status: 'OK', app: pkg.name, version: pkg.version, commit: revision }),

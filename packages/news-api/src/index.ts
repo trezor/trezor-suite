@@ -14,13 +14,15 @@ const cleanData = (data: any, limit = 5) => {
         if (result.length > limit) break;
         const { title, thumbnail, pubDate, link, description } = data[i];
         const $ = cheerio.load(description);
-        result.push({
-            title,
-            thumbnail,
-            pubDate,
-            link,
-            description: $('p').first().text(),
-        });
+        if (link.includes('blog.trezor.io')) {
+            result.push({
+                title,
+                thumbnail,
+                pubDate,
+                link,
+                description: $('p').first().text(),
+            });
+        }
     }
 
     return result;
