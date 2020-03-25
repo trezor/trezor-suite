@@ -1,12 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, H2 } from '@trezor/components';
+import { colors, H2, Button } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import * as deviceUtils from '@suite-utils/device';
 import DeviceItem from './components/DeviceItem/Container';
 
 import { Props } from './Container';
+import WebusbButton from '../WebusbButton';
 
 const Wrapper = styled(ModalWrapper)`
     flex-direction: column;
@@ -18,8 +19,13 @@ const Wrapper = styled(ModalWrapper)`
 const Description = styled.div`
     line-height: 1.43;
     width: 90%;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     color: ${colors.BLACK50};
+`;
+
+const CheckForDevicesWrapper = styled.div`
+    display: flex;
+    margin-bottom: 30px;
 `;
 
 const In = styled.div`
@@ -56,6 +62,13 @@ const SwitchDeviceModal = (props: Props) => {
                 <Description>
                     <Translation id="TR_THIS_IS_PLACE_TO_SEE_ALL" />
                 </Description>
+                <CheckForDevicesWrapper>
+                    <WebusbButton ready>
+                        <Button icon="PLUS" variant="tertiary">
+                            <Translation id="TR_CHECK_FOR_DEVICES" />
+                        </Button>
+                    </WebusbButton>
+                </CheckForDevicesWrapper>
                 {sortedDevices.map(device => (
                     <DeviceItem
                         key={device.path}

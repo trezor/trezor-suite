@@ -63,16 +63,16 @@ class TrezorSuiteApp extends App<Props> {
                     <IntlProvider>
                         <>
                             {/*
-                                initially rendered webusb button, only for web. whether displayed or not 
-                                is handled by suite/components/Webusb component
+                                just beucase we need make trezor-connect render the iframe
                             */}
-                            <Button
-                                icon="PLUS"
-                                additionalClassName="trezor-webusb-button"
-                                style={{ width: '100%', position: 'absolute', top: '-1000px' }}
-                            >
-                                <Translation id="TR_CHECK_FOR_DEVICES" />
-                            </Button>
+                            <div
+                                className="trezor-webusb-button"
+                                style={{
+                                    width: '100%',
+                                    position: 'absolute',
+                                    top: '-1000px',
+                                }}
+                            />
                             <Router />
                             <ToastContainer />
                             <Preloader>
