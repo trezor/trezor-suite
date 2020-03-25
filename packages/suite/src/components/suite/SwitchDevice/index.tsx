@@ -4,6 +4,7 @@ import { colors, H2, Button } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import * as deviceUtils from '@suite-utils/device';
+import { isWebUSB } from '@suite-utils/transport';
 import DeviceItem from './components/DeviceItem/Container';
 
 import { Props } from './Container';
@@ -38,6 +39,7 @@ const In = styled.div`
 
 const SwitchDeviceModal = (props: Props) => {
     const { devices, selectedDevice, modal } = props;
+    const showWebUsb = isWebUSB(props.transport);
     // return action modal, it could be requested by Trezor while enabling passphrase encryption
     if (modal) return modal;
     // exclude selectedDevice from list, because other devices could have a higher priority
@@ -62,13 +64,15 @@ const SwitchDeviceModal = (props: Props) => {
                 <Description tabIndex={0}>
                     <Translation id="TR_THIS_IS_PLACE_TO_SEE_ALL" />
                 </Description>
-                <CheckForDevicesWrapper>
-                    <WebusbButton ready>
-                        <Button icon="PLUS" variant="tertiary">
-                            <Translation id="TR_CHECK_FOR_DEVICES" />
-                        </Button>
-                    </WebusbButton>
-                </CheckForDevicesWrapper>
+                {showWebUsb && (
+                    <CheckForDevicesWrapper>
+                        <WebusbButton ready>
+                            <Button icon="PLUS" variant="tertiary">
+                                <Translation id="TR_CHECK_FOR_DEVICES" />
+                            </Button>
+                        </WebusbButton>
+                    </CheckForDevicesWrapper>
+                )}
                 {sortedDevices.map(device => (
                     <DeviceItem
                         key={device.path}
