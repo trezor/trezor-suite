@@ -83,7 +83,7 @@ const InstancesWrapper = styled(Card)`
 
 const StyledWalletInstance = styled(WalletInstance)`
     & + & {
-        border-top: 2px solid ${colors.BLACK96};
+        /* border-top: 2px solid ${colors.BLACK96}; */
     }
 `;
 
