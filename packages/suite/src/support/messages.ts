@@ -2502,6 +2502,10 @@ const definedMessages = defineMessages({
         defaultMessage:
             'If you are experiencing problems, clearing the storage is a good first step to try to resolve the issue. During this process the app will restart itself.',
     },
+    TR_CHOOSE_WALLET: {
+        id: 'TR_CHOOSE_WALLET',
+        defaultMessage: 'Choose wallet',
+    },
 } as const);
 
 export default definedMessages;

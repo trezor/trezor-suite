@@ -57,9 +57,9 @@ const SwitchDeviceModal = (props: Props) => {
         <Wrapper>
             <In>
                 <H2>
-                    <Translation id="TR_SWITCH_DEVICE" />
+                    <Translation id="TR_CHOOSE_WALLET" />
                 </H2>
-                <Description>
+                <Description tabIndex={0}>
                     <Translation id="TR_THIS_IS_PLACE_TO_SEE_ALL" />
                 </Description>
                 <CheckForDevicesWrapper>
