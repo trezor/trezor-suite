@@ -171,3 +171,8 @@ ipcMain.on('start-bridge', async () => {
         // TODO: return error message to suite?
     }
 });
+
+ipcMain.on('restart-app', () => {
+    app.relaunch();
+    app.exit();
+});
