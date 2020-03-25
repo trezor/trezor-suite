@@ -1,0 +1,12 @@
+version: '2.0'
+services:
+  trezor-env:
+    image: trezor-env:latest
+    ports:
+    - "21325:21325"
+    - "9001:9001"
+  # test-source: 
+  test-runner:
+    build: .
+    links:
+    - test-runner
