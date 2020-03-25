@@ -1,11 +1,12 @@
-import { app, session, BrowserWindow, ipcMain, shell } from 'electron';
+import { app, session, BrowserWindow, ipcMain, shell, Menu } from 'electron';
 import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 import * as path from 'path';
 import * as url from 'url';
 import * as electronLocalshortcut from 'electron-localshortcut';
 import * as store from './store';
-import { runBridgeProcess, killBridgeProcess } from './bridge';
+import { runBridgeProcess } from './bridge';
+import mainMenu from './menu';
 
 let mainWindow: BrowserWindow;
 const PROTOCOL = 'file';
@@ -60,7 +61,9 @@ const init = async () => {
             preload: path.join(__dirname, 'preload.js'),
         },
     });
-    mainWindow.removeMenu();
+
+    Menu.setApplicationMenu(mainMenu);
+    mainWindow.setMenuBarVisibility(false);
 
     if (process.platform === 'darwin') {
         // On OS X it is common for applications and their menu bar
@@ -118,15 +121,16 @@ app.on('window-all-closed', () => {
     mainWindow = undefined;
 });
 
-app.on('before-quit', async () => {
-    // TODO: be aware that although it kills the bridge process, another one will start because of start-bridge msgs from ipc
-    // (BridgeStatus component sends the request every time it loses transport.type)
-    await killBridgeProcess();
+app.on('before-quit', () => {
     if (mainWindow) {
         // remove onclose listener
         mainWindow.removeAllListeners();
         // store window bounds
         store.setWinBounds(mainWindow);
+
+        // TODO: be aware that although it kills the bridge process, another one will start because of start-bridge msgs from ipc
+        // (BridgeStatus component sends the request every time it loses transport.type)
+        // killBridgeProcess();
     }
 });
 
