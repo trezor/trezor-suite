@@ -84,6 +84,13 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                             </HiddenPlaceholder>
                         )}
                     </BoxRow>
+                    <BoxRow title={<Translation id="TR_AMOUNT" />} alignContent="right">
+                        <HiddenPlaceholder>
+                            <FiatValue amount={tx.amount} symbol={tx.symbol}>
+                                {({ value }) => value ?? null}
+                            </FiatValue>
+                        </HiddenPlaceholder>
+                    </BoxRow>
                     <BoxRow title={<Translation id="TR_TX_FEE" />} alignContent="right">
                         <HiddenPlaceholder>
                             <FiatValue amount={tx.fee} symbol={tx.symbol}>
@@ -132,19 +139,29 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                             </HiddenPlaceholder>
                         )}
                     </BoxRow>
+                    <BoxRow title={<Translation id="TR_AMOUNT" />} alignContent="right">
+                        <HiddenPlaceholder>
+                            <FiatValue
+                                amount={tx.amount}
+                                symbol={tx.symbol}
+                                source={tx.rates}
+                                useCustomSource
+                            >
+                                {({ value }) => value ?? null}
+                            </FiatValue>
+                        </HiddenPlaceholder>
+                    </BoxRow>
                     <BoxRow title={<Translation id="TR_TX_FEE" />} alignContent="right">
-                        {totalOutput && (
-                            <HiddenPlaceholder>
-                                <FiatValue
-                                    amount={tx.fee}
-                                    symbol={tx.symbol}
-                                    source={tx.rates}
-                                    useCustomSource
-                                >
-                                    {({ value }) => value ?? null}
-                                </FiatValue>
-                            </HiddenPlaceholder>
-                        )}
+                        <HiddenPlaceholder>
+                            <FiatValue
+                                amount={tx.fee}
+                                symbol={tx.symbol}
+                                source={tx.rates}
+                                useCustomSource
+                            >
+                                {({ value }) => value ?? null}
+                            </FiatValue>
+                        </HiddenPlaceholder>
                     </BoxRow>
                 </Box>
             </Col>
