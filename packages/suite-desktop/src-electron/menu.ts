@@ -1,10 +1,9 @@
-import { app, shell, Menu } from 'electron';
+import { app, shell, Menu, MenuItem } from 'electron';
 
 const isMac = process.platform === 'darwin';
 
-app.setName('Trezor Suite'); // overrides @trezor/suite-desktop app name in menu
-
-const menuTemplate = [
+// @ts-ignore should be fine https://www.electronjs.org/docs/api/menu#main-process
+const menuTemplate: MenuItem[] = [
     // { role: 'appMenu' }
     ...(isMac
         ? [
@@ -97,7 +96,4 @@ const menuTemplate = [
     },
 ];
 
-// @ts-ignore should be fine https://www.electronjs.org/docs/api/menu#main-process
-const mainMenu = Menu.buildFromTemplate(menuTemplate);
-
-export default mainMenu;
+export const buildMainMenu = () => Menu.buildFromTemplate(menuTemplate);
