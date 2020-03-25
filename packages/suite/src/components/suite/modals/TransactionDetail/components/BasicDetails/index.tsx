@@ -1,13 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
+import { FormattedDate } from 'react-intl';
 import { Icon, colors, variables, Link, Loader, Tooltip } from '@trezor/components';
 import { Translation, HiddenPlaceholder } from '@suite-components';
-
-import { FormattedDate } from 'react-intl';
 import Box from '../Box';
 import BoxRow from '../BoxRow';
 import { getDateWithTimeZone } from '@suite-utils/date';
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import { WalletAccountTransaction } from '@wallet-types';
 
 const COLOR_TEXT_PRIMARY = colors.BLACK0;
 
@@ -92,7 +91,6 @@ const BasicDetails = ({
 }: Props) => {
     const isConfirmed = tx.blockHeight !== 0 && tx.blockTime && tx.blockTime > 0;
     const assetSymbol = tx.symbol.toUpperCase();
-
     return (
         <>
             <Box>
@@ -193,6 +191,9 @@ const BasicDetails = ({
                     <HiddenPlaceholder>
                         {totalOutput && `${totalOutput} ${assetSymbol}`}
                     </HiddenPlaceholder>
+                </BoxRow>
+                <BoxRow title={<Translation id="TR_AMOUNT" />}>
+                    <HiddenPlaceholder>{`${tx.amount} ${assetSymbol}`}</HiddenPlaceholder>
                 </BoxRow>
                 <BoxRow title={<Translation id="TR_TX_FEE" />}>
                     <HiddenPlaceholder>{`${tx.fee} ${assetSymbol}`}</HiddenPlaceholder>
