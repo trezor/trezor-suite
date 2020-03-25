@@ -46,6 +46,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Authorization error.',
         id: 'TR_ACCOUNT_EXCEPTION_AUTH_ERROR',
     },
+    TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC: {
+        defaultMessage: 'You are not allowed to work with this device. Wrong PIN entered.',
+        id: 'TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC',
+    },
     TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY: {
         defaultMessage: 'There are no coins enabled in settings.',
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY',

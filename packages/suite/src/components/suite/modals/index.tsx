@@ -196,14 +196,16 @@ const Modal = (props: Props) => {
     const useBackground = typeof props.background === 'boolean' ? props.background : true;
     if (useBackground) {
         return (
-            <ModalComponent
-                // if modal has onCancel action set cancelable to true and pass the onCancel action
-                cancelable={modalComponent.props.onCancel}
-                onCancel={modalComponent.props.onCancel}
-                padding="0px"
-            >
-                <FocusLock>{modalComponent}</FocusLock>
-            </ModalComponent>
+            <FocusLock>
+                <ModalComponent
+                    // if modal has onCancel action set cancelable to true and pass the onCancel action
+                    cancelable={modalComponent.props.onCancel}
+                    onCancel={modalComponent.props.onCancel}
+                    padding="0px"
+                >
+                    {modalComponent}
+                </ModalComponent>
+            </FocusLock>
         );
     }
 
