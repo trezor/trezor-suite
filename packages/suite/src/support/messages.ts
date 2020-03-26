@@ -2594,6 +2594,16 @@ const definedMessages = defineMessages({
         id: 'RECEIVE_TABLE_NOT_USED',
         defaultMessage: 'Not used yet',
     },
+    TR_SHOW_MORE: {
+        defaultMessage: 'Show more',
+        description: 'Show more used address',
+        id: 'TR_SHOW_MORE',
+    },
+    TR_SHOW_LESS: {
+        defaultMessage: 'Show less',
+        description: 'Show less used address',
+        id: 'TR_SHOW_LESS',
+    },
 } as const);
 
 export default definedMessages;
