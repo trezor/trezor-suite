@@ -15,7 +15,7 @@ describe('Passphrase', () => {
         cy.log('passphrase abc');
         // add 1st hidden wallet
         cy.getTestElement('@menu/switch-device').click();
-        cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
+        cy.getTestElement('@switch-device/add-wallet-button').click();
         cy.task('sendDecision');
         // first input
         cy.getTestElement('@passhphrase/input').type('abc');
@@ -43,7 +43,7 @@ describe('Passphrase', () => {
         cy.log('passphrase def');
         // add 2nd hidden wallet
         cy.getTestElement('@menu/switch-device').click();
-        cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
+        cy.getTestElement('@switch-device/add-wallet-button').click();
         cy.getTestElement('@passhphrase/input').type('def');
         cy.getTestElement('@passphrase/submit-button').click();
         // confirm

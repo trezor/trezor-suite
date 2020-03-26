@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { variables, Link, P, H2 } from '@trezor/components';
+import { variables, Link, P, H2, Button } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { Translation, WebusbButton, Image } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
@@ -32,7 +32,6 @@ const Wrapper = styled(ModalWrapper)`
 
 const ButtonWrapper = styled.div`
     display: flex;
-    width: 200px;
     margin-bottom: 20px;
 `;
 
@@ -77,7 +76,11 @@ const Index = (props: Props) => {
 
             {showWebUsb && (
                 <ButtonWrapper>
-                    <WebusbButton ready={imageLoaded} />
+                    <WebusbButton ready={imageLoaded}>
+                        <Button icon="PLUS">
+                            <Translation id="TR_CHECK_FOR_DEVICES" />
+                        </Button>
+                    </WebusbButton>
                 </ButtonWrapper>
             )}
 

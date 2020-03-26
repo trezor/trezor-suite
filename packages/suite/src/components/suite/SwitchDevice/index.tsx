@@ -1,12 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, H2 } from '@trezor/components';
+import { colors, H2, Button } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import * as deviceUtils from '@suite-utils/device';
+import { isWebUSB } from '@suite-utils/transport';
 import DeviceItem from './components/DeviceItem/Container';
 
 import { Props } from './Container';
+import WebusbButton from '../WebusbButton';
 
 const Wrapper = styled(ModalWrapper)`
     flex-direction: column;
@@ -18,8 +20,13 @@ const Wrapper = styled(ModalWrapper)`
 const Description = styled.div`
     line-height: 1.43;
     width: 90%;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     color: ${colors.BLACK50};
+`;
+
+const CheckForDevicesWrapper = styled.div`
+    display: flex;
+    margin-bottom: 30px;
 `;
 
 const In = styled.div`
@@ -32,6 +39,7 @@ const In = styled.div`
 
 const SwitchDeviceModal = (props: Props) => {
     const { devices, selectedDevice, modal } = props;
+    const showWebUsb = isWebUSB(props.transport);
     // return action modal, it could be requested by Trezor while enabling passphrase encryption
     if (modal) return modal;
     // exclude selectedDevice from list, because other devices could have a higher priority
@@ -51,11 +59,20 @@ const SwitchDeviceModal = (props: Props) => {
         <Wrapper>
             <In>
                 <H2>
-                    <Translation id="TR_SWITCH_DEVICE" />
+                    <Translation id="TR_CHOOSE_WALLET" />
                 </H2>
-                <Description>
+                <Description tabIndex={0}>
                     <Translation id="TR_THIS_IS_PLACE_TO_SEE_ALL" />
                 </Description>
+                {showWebUsb && (
+                    <CheckForDevicesWrapper>
+                        <WebusbButton ready>
+                            <Button icon="SEARCH" variant="tertiary">
+                                <Translation id="TR_CHECK_FOR_DEVICES" />
+                            </Button>
+                        </WebusbButton>
+                    </CheckForDevicesWrapper>
+                )}
                 {sortedDevices.map(device => (
                     <DeviceItem
                         key={device.path}
