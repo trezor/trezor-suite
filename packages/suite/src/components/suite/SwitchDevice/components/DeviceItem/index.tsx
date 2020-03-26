@@ -1,7 +1,7 @@
 import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
-import { Button, colors, variables, Icon } from '@trezor/components';
+import { Button, colors, variables, Icon, Tooltip } from '@trezor/components';
 import { Translation } from '@suite-components';
 import Card from '@suite-components/Card';
 import * as deviceUtils from '@suite-utils/device';
@@ -89,7 +89,7 @@ const StyledWalletInstance = styled(WalletInstance)`
 
 const AddWallet = styled.div`
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
 `;
 
 const DeviceHeader = styled.div`
@@ -240,15 +240,21 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                     </InstancesWrapper>
                     {isWalletContext && (
                         <AddWallet>
-                            <Button
-                                data-test="@switch-device/add-hidden-wallet-button"
-                                variant="tertiary"
-                                icon="PLUS"
-                                disabled={!device.connected || !hasAtLeastOneWallet} // TODO: tooltip?
-                                onClick={async () => addDeviceInstance(device)}
+                            <Tooltip
+                                enabled={!device.connected || !hasAtLeastOneWallet}
+                                placement="top"
+                                content={<Translation id="TR_TO_ACCESS_OTHER_WALLETS" />}
                             >
-                                <Translation id="TR_ADD_HIDDEN_WALLET" />
-                            </Button>
+                                <Button
+                                    data-test="@switch-device/add-wallet-button"
+                                    variant="tertiary"
+                                    icon="PLUS"
+                                    isDisabled={!device.connected || !hasAtLeastOneWallet}
+                                    onClick={async () => addDeviceInstance(device)}
+                                >
+                                    <Translation id="TR_ADD_WALLET" />
+                                </Button>
+                            </Tooltip>
                         </AddWallet>
                     )}
                 </WalletsWrapper>

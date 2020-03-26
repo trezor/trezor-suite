@@ -112,9 +112,9 @@ const definedMessages = defineMessages({
         defaultMessage: 'Add account',
         id: 'TR_ADD_ACCOUNT',
     },
-    TR_ADD_HIDDEN_WALLET: {
-        defaultMessage: 'Add hidden wallet',
-        id: 'TR_ADD_HIDDEN_WALLET',
+    TR_ADD_WALLET: {
+        defaultMessage: 'Add wallet',
+        id: 'TR_ADD_WALLET',
     },
     TR_ADDITIONAL_SECURITY_FEATURES: {
         defaultMessage: 'Additional security features are waiting to be done.',
@@ -2505,6 +2505,10 @@ const definedMessages = defineMessages({
     TR_CHOOSE_WALLET: {
         id: 'TR_CHOOSE_WALLET',
         defaultMessage: 'Choose wallet',
+    },
+    TR_TO_ACCESS_OTHER_WALLETS: {
+        id: 'TR_TO_ACCESS_OTHER_WALLETS',
+        defaultMessage: 'To access other wallets please connect your device.',
     },
 } as const);
 

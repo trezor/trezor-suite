@@ -67,7 +67,7 @@ const SwitchDeviceModal = (props: Props) => {
                 {showWebUsb && (
                     <CheckForDevicesWrapper>
                         <WebusbButton ready>
-                            <Button icon="PLUS" variant="tertiary">
+                            <Button icon="SEARCH" variant="tertiary">
                                 <Translation id="TR_CHECK_FOR_DEVICES" />
                             </Button>
                         </WebusbButton>
