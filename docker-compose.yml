@@ -1,0 +1,46 @@
+version: '3'
+services:
+  bridge:
+    build:
+      context: .
+      dockerfile: ./packages/integration-tests/docker/bridge/Dockerfile
+    #this works by some dark magic
+    ports:
+      - "127.0.0.1:21325:11325"
+    network_mode: "host"
+    command: >
+      bash -c "redir --lport 11325 --cport 21325 --caddr 127.0.0.1 &
+      ./trezord-go -e 21324 -u=false"
+  dev_server:
+    build: 
+      context: .
+      dockerfile: ./packages/integration-tests/docker/webserver/Dockerfile
+    ports:
+      - "3001:3000"
+    volumes:
+    - ./:/suite
+    command: yarn && yarn build:libs
+    network_mode: "host"
+    command: >
+      bash -c "yarn
+      && yarn build:libs
+      && yarn suite:dev"  
+  emu:
+    build:
+      context: .
+      dockerfile: './packages/integration-tests/docker/emu/Dockerfile'
+    ports:
+      - "21324:21324/udp"
+    environment:
+      - DISPLAY=unix$DISPLAY
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    network_mode: "host"
+    command:
+      bash -c "TREZOR_OLED_SCALE=3 ./trezor.elf"
+      # command: >
+    #  # bash -c "./trezor-emu-core-v2.1.4 -O0 -X heapsize=20M -m main"
+
+
+  
+

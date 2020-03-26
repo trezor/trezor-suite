@@ -1,12 +1,20 @@
-version: '2.0'
+version: '3.3'
 services:
-  trezor-env:
-    image: trezor-env:latest
-    ports:
-    - "21325:21325"
-    - "9001:9001"
+  # trezor-env:
+  #   build: '../../docker/trezor-env'
+  #   # image: trezor-env:latest
+  #   ports:
+  #   - "21325:21325"
+  #   - "9001:9001"
   # test-source: 
-  test-runner:
-    build: .
-    links:
-    - test-runner
+  webserver:
+    build: 
+      context: .
+      dockerfile: ./packages/integration-tests/docker/webserver/Dockerfile
+      # args:
+      #   tag: "webserver"
+    # links:
+    # - trezor-env
+    # volumes:
+    # - "./:/suite"
+
