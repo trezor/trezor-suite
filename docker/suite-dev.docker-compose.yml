@@ -2,8 +2,8 @@ version: '3'
 services:
   trezor-env:
     build:
-      context: .
-      dockerfile: ./packages/integration-tests/docker/trezor-env/Dockerfile
+      context: . # . stands for pwd, so docker-compose must be called from root
+      dockerfile: ./trezor-env/Dockerfile
     network_mode: "host"
     environment:
       - DISPLAY=unix$DISPLAY
@@ -14,14 +14,14 @@ services:
     command: >
       bash -c "python3 ./python/main.py"
   
-  dev_server:
+  suite-dev:
     build: 
-      context: .
-      dockerfile: ./packages/integration-tests/docker/webserver/Dockerfile
+      context: . 
+      dockerfile: ./suite-dev/Dockerfile
     ports:
-      - "3001:3000"
+      - "3000:3000"
     volumes:
-    - ./:/suite
+    - ../:/suite
     command: yarn && yarn build:libs
     network_mode: "host"
     command: >

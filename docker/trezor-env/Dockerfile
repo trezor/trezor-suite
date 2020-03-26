@@ -36,13 +36,8 @@ ENV XDG_RUNTIME_DIR "/var/tmp"
 ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
 
-COPY ./packages/integration-tests/bin/trezor-emu-core-v2.1.4 ./trezor-emu-core-v2.1.4
-
-COPY ./packages/integration-tests/docker/trezor-env/python /python
-COPY ./packages/integration-tests/bin /trezor-bin
+COPY ./trezor-env/python /python
 
 RUN python3 --version
 RUN python3 -m pip --version
 RUN trezorctl version
-
-# ENTRYPOINT ["./python/python3", "main.py"]

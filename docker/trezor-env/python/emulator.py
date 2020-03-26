@@ -28,9 +28,12 @@ def start(version):
     #     "T": (2, 1, 0),
     # }
 
-    path="./trezor-bin/"
+    # hack
+    version = "1"
+
+    path="./python/bin/"
+
     command=""
-    version = "1";
     if version[0] == "2":
         command = path + "trezor-emu-core-v" + version + " -O0 -X heapsize=20M -m main"
     else:
