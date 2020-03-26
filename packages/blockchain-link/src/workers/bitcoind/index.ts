@@ -129,9 +129,14 @@ const getAccountInfo = async (
     let info;
     const { payload } = data;
     try {
+        console.log('payload.details', payload.details);
+        // tokenBalances
         if (payload.details && payload.details === 'tokens') {
             const rpcClientObj = new RpcClient(loginData);
             info = rpcClientObj.getAccountinfo(payload);
+        } else if (payload.details && payload.details === 'tokenBalances') {
+            const rpcClientObj = new RpcClient(loginData);
+            info = await rpcClientObj.getAccountInfoWithTokenBalances(payload);
         } else {
             const socket = await connect();
             info = await socket.getAccountInfo(payload);
@@ -145,6 +150,7 @@ const getAccountInfo = async (
         common.debug('RESPONSES.GET_ACCOUNT_INFO', RESPONSES.GET_ACCOUNT_INFO);
         common.debug('utils.transformAccountInfo(info)', utils.transformAccountInfo(info));
     } catch (error) {
+        console.log('e:', error);
         common.errorHandler({ id: data.id, error });
     }
 };
@@ -277,7 +283,7 @@ const subscribeAddresses = async (addresses: string[]) => {
     }
 
     const rpcClient = new RpcClient(loginData);
-    let foundedTxs: AddressNotification[] = [];
+    const foundedTxs: AddressNotification[] = [];
 
     if (subscrAddressIntervalLink) {
         clearInterval(subscrAddressIntervalLink); // clear if exist
@@ -292,10 +298,10 @@ const subscribeAddresses = async (addresses: string[]) => {
         // TODO: change to true then after testing
         if (findStatus === false) {
             blockSubscrData.unshift(possibleNewBlock);
-            foundedTxs = await rpcClient.searchAddressInBlock(addresses[0], possibleNewBlock.hash);
-            foundedTxs.forEach(oneTx => {
-                onTransaction(oneTx);
-            });
+            // foundedTxs = await rpcClient.searchAddressInBlock(addresses[0], possibleNewBlock.hash);  // TODO: fix this after testing token balance accountInfo
+            // foundedTxs.forEach(oneTx => {
+            //     onTransaction(oneTx);
+            // });
         }
     }, 5000);
 

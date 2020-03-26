@@ -49,6 +49,16 @@ export interface XPUBAddress {
     totalReceived: string;
 }
 
+export interface DerivedAddress {
+    type: 'DerivedAddress';
+    name: string;
+    path: string;
+    transfers: number;
+    balance: string;
+    totalSent: string;
+    totalReceived: string;
+}
+
 export interface ERC20 {
     type: 'ERC20';
     name?: string;
@@ -162,6 +172,22 @@ export interface BlockNotification {
 export interface AddressNotification {
     address: string;
     tx: Transaction;
+}
+
+export interface AggregatedFiltersAndHash {
+    filter: string;
+    blockhash: string;
+}
+
+export interface PassedBlock {
+    walletAddr: string;
+    blockHash: string;
+}
+
+export interface BlockhashTx {
+    txid: string;
+    inBlockhash: string;
+    rawTx: any;
 }
 
 declare function FSend(method: 'getInfo', params: {}): Promise<BlockchainInfo>;

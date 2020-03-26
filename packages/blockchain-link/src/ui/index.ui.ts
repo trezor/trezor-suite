@@ -13,6 +13,7 @@ import { common } from 'ripple-lib/dist/npm/ledger/utils';
 const instances: BlockchainLink[] = [];
 
 const handleClick = (event: MouseEvent) => {
+    // localStorage.setItem('agrregatedFiltersAndHash', 'sdfds');
     const target = event.target as HTMLElement;
     if (target.nodeName.toLowerCase() !== 'button') return;
     const network: string = getInputValue('network-type');
