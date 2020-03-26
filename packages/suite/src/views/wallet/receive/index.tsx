@@ -7,7 +7,7 @@ import FreshAddress from './components/FreshAddress';
 import UsedAddresses from './components/UsedAddresses';
 import { Props } from './Container';
 
-export default ({ selectedAccount, receive, locks, device, showAddress }: Props) => {
+export default ({ selectedAccount, receive, locks, device, showAddress, addToast }: Props) => {
     if (!device || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Receive" account={selectedAccount} />;
     }
@@ -24,6 +24,7 @@ export default ({ selectedAccount, receive, locks, device, showAddress }: Props)
                 account={account}
                 addresses={receive}
                 showAddress={showAddress}
+                addToast={addToast}
                 disabled={disabled}
                 locked={locked}
             />
@@ -31,6 +32,7 @@ export default ({ selectedAccount, receive, locks, device, showAddress }: Props)
                 account={account}
                 addresses={receive}
                 showAddress={showAddress}
+                addToast={addToast}
                 disabled={disabled}
                 locked={locked}
             />

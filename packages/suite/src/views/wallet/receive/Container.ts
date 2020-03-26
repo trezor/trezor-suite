@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl } from 'react-intl';
+import * as notificationActions from '@suite-actions/notificationActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
 
 import { AppState, Dispatch } from '@suite-types';
@@ -16,6 +17,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     showAddress: bindActionCreators(receiveActions.showAddress, dispatch),
+    addToast: bindActionCreators(notificationActions.addToast, dispatch),
 });
 
 export type StateProps = ReturnType<typeof mapStateToProps>;
@@ -26,6 +28,7 @@ export interface ChildProps {
     account: NonNullable<Props['selectedAccount']['account']>;
     addresses: Props['receive'];
     showAddress: Props['showAddress'];
+    addToast: Props['addToast'];
     disabled: boolean;
     locked: boolean;
 }

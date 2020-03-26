@@ -2,6 +2,7 @@ import React from 'react';
 import { H2, P } from '@trezor/components';
 import { Account } from '@wallet-types';
 import styled from 'styled-components';
+import { Translation } from '@suite-components';
 
 interface Props {
     account: Account;
@@ -12,14 +13,15 @@ const Content = styled.div`
 `;
 
 export default ({ account }: Props) => {
+    const title = (
+        <Translation id="RECEIVE_TITLE" values={{ symbol: account.symbol.toUpperCase() }} />
+    );
     if (account.networkType === 'bitcoin') {
         return (
             <Content>
-                <H2>Receive {account.symbol.toUpperCase()}</H2>
+                <H2>{title}</H2>
                 <P size="tiny">
-                    To receive any funds you need to get a fresh receive address. It is advised to
-                    always use a fresh one as this prevents anyone else to track your transactions.
-                    You can reuse an address but we recommend not doing it unless it is necessary.
+                    <Translation id="RECEIVE_DESC_BITCOIN" />
                 </P>
             </Content>
         );
@@ -27,10 +29,12 @@ export default ({ account }: Props) => {
     if (account.networkType === 'ethereum') {
         return (
             <Content>
-                <H2>Receive {account.symbol.toUpperCase()}</H2>
-                <P size="tiny">Use this address to receive tokens as well.</P>
+                <H2>{title}</H2>
+                <P size="tiny">
+                    <Translation id="RECEIVE_DESC_ETHEREUM" />
+                </P>
             </Content>
         );
     }
-    return <H2>Receive {account.symbol.toUpperCase()}</H2>;
+    return <H2>{title}</H2>;
 };
