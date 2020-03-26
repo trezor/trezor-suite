@@ -3,7 +3,7 @@ import { Translation } from '@suite-components/Translation';
 
 import styled from 'styled-components';
 import { Icon, colors, variables } from '@trezor/components';
-import { DispatchProps } from '../../Container';
+import { Props } from './Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -28,10 +28,6 @@ const ClearText = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     padding-top: 2px;
 `;
-
-interface Props {
-    sendFormActions: DispatchProps['sendFormActions'];
-}
 
 export default ({ sendFormActions }: Props) => (
     <Wrapper>
