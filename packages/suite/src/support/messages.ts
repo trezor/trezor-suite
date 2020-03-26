@@ -46,6 +46,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Authorization error.',
         id: 'TR_ACCOUNT_EXCEPTION_AUTH_ERROR',
     },
+    TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC: {
+        defaultMessage: 'You are not allowed to work with this device. Wrong PIN entered.',
+        id: 'TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC',
+    },
     TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY: {
         defaultMessage: 'There are no coins enabled in settings.',
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY',
@@ -2519,6 +2523,30 @@ const definedMessages = defineMessages({
         id: 'TR_REMEMBER_HEADING',
         defaultMessage: 'Remember',
         description: 'Heading above col with "remember wallet" buttons in switch wallets modal',
+    },
+    TR_SKIP_ONBOARDING: {
+        id: 'TR_SKIP_ONBOARDING',
+        defaultMessage: 'Skip onboarding',
+    },
+    TR_MY_DEVICE_IS_INITIALIZED: {
+        id: 'TR_MY_DEVICE_IS_INITIALIZED',
+        defaultMessage: 'My device is initialized and I used Wallet or Suite before',
+    },
+    TR_I_HAVE_INITIALIZED_DEVICE: {
+        id: 'TR_I_HAVE_INITIALIZED_DEVICE',
+        defaultMessage: 'I have initialized device',
+    },
+    TR_BEGIN_ONBOARDING: {
+        id: 'TR_BEGIN_ONBOARDING',
+        defaultMessage: 'Begin onboarding',
+    },
+    TR_I_WANT_TO_BE_GUIDED_THROUGH: {
+        id: 'TR_I_WANT_TO_BE_GUIDED_THROUGH',
+        defaultMessage: 'I want to be guided through onboarding process',
+    },
+    TR_IM_NEW_TO_ALL_THIS: {
+        id: 'TR_IM_NEW_TO_ALL_THIS',
+        defaultMessage: "I'm new to all this",
     },
 } as const);
 

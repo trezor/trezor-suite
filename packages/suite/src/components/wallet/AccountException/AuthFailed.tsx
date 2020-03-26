@@ -25,7 +25,7 @@ const AuthFailed = ({ locks, authDevice }: Props) => {
     return (
         <Wrapper
             title={<Translation id="TR_ACCOUNT_EXCEPTION_AUTH_ERROR" />}
-            description="TODO: Error generic text"
+            description={<Translation id="TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC" />}
             image={<Image image="UNI_ERROR" />}
         >
             <Button variant="primary" icon="PLUS" isLoading={locked} onClick={authDevice}>
