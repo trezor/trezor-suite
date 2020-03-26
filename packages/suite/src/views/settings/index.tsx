@@ -66,6 +66,7 @@ const Settings = ({
                     <TextColumn title={<Translation id="TR_LANGUAGE" />} />
                     <ActionColumn>
                         <ActionSelect
+                            variant="small"
                             value={{
                                 value: language,
                                 // sorry for ! but dont know how to force typescript to stay calm
@@ -87,6 +88,7 @@ const Settings = ({
                     <TextColumn title={<Translation id="TR_PRIMARY_FIAT" />} />
                     <ActionColumn>
                         <ActionSelect
+                            variant="small"
                             onChange={(option: { value: string; label: string }) =>
                                 setLocalCurrency(option.value)
                             }

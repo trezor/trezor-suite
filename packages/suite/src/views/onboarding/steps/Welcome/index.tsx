@@ -23,9 +23,9 @@ const WelcomeStep = (props: Props) => {
                         action={() => {
                             props.goToNextStep('create-or-recover');
                         }}
-                        title="I'm new to all this"
-                        text="I want to be guided through onboarding process"
-                        button="Begin onboarding"
+                        title={<Translation id="TR_IM_NEW_TO_ALL_THIS" />}
+                        text={<Translation id="TR_I_WANT_TO_BE_GUIDED_THROUGH" />}
+                        button={<Translation id="TR_BEGIN_ONBOARDING" />}
                         imgSrc="images/svg/new-user.svg"
                     />
                     <Option
@@ -33,9 +33,9 @@ const WelcomeStep = (props: Props) => {
                         action={() => {
                             props.goToNextStep('skip');
                         }}
-                        title="I have initialized device"
-                        text="My device is initialized and I used Wallet or Suite before"
-                        button="Skip onboarding"
+                        title={<Translation id="TR_I_HAVE_INITIALIZED_DEVICE" />}
+                        text={<Translation id="TR_MY_DEVICE_IS_INITIALIZED" />}
+                        button={<Translation id="TR_SKIP_ONBOARDING" />}
                         imgSrc="images/svg/existing-user.svg"
                     />
                 </Wrapper.Options>
