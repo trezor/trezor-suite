@@ -8,7 +8,12 @@ import { getLocalCurrency } from '@wallet-utils/settingsUtils';
     Cache action in send form
 */
 
-export const cache = () => async (_dispatch: Dispatch, getState: GetState) => {
+export const cache = () => async (dispatch: Dispatch, getState: GetState) => {
+    dispatch({
+        type: SEND.SET_TOUCHED,
+        touched: true,
+    });
+
     const { account } = getState().wallet.selectedAccount;
     const { send } = getState().wallet;
     if (!account || !send) return null;
@@ -35,4 +40,8 @@ export const clear = () => (dispatch: Dispatch, getState: GetState) => {
     );
 
     dispatch(cache());
+    dispatch({
+        type: SEND.SET_TOUCHED,
+        touched: false,
+    });
 };

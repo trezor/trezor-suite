@@ -31,6 +31,10 @@ export type SendFormActions =
           outputId: number;
       }
     | {
+          type: typeof SEND.SET_TOUCHED;
+          touched: boolean;
+      }
+    | {
           type: typeof SEND.SET_MAX;
           outputId: number;
       }

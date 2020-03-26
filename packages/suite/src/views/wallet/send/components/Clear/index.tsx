@@ -1,8 +1,7 @@
 import React from 'react';
 import { Translation } from '@suite-components/Translation';
-
 import styled from 'styled-components';
-import { Icon, colors, variables } from '@trezor/components';
+import { colors, Button } from '@trezor/components';
 import { Props } from './Container';
 
 const Wrapper = styled.div`
@@ -12,10 +11,6 @@ const Wrapper = styled.div`
     margin: 8px 0 16px 0;
 `;
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-`;
-
 const In = styled.div`
     cursor: pointer;
     display: flex;
@@ -23,19 +18,16 @@ const In = styled.div`
     color: ${colors.BLACK50};
 `;
 
-const ClearText = styled.div`
-    padding-left: 4px;
-    font-size: ${variables.FONT_SIZE.TINY};
-    padding-top: 2px;
-`;
-
-export default ({ sendFormActions }: Props) => (
-    <Wrapper>
-        <In onClick={() => sendFormActions.clear()}>
-            <StyledIcon size={8} color={colors.BLACK50} icon="CROSS" />
-            <ClearText>
-                <Translation id="TR_CLEAR" />
-            </ClearText>
-        </In>
-    </Wrapper>
-);
+export default ({ sendFormActions, send }: Props) => {
+    if (!send) return null;
+    const { touched } = send;
+    return (
+        <Wrapper>
+            <In onClick={() => sendFormActions.clear()}>
+                <Button variant="tertiary" isDisabled={!touched} icon="CROSS" alignIcon="right">
+                    <Translation id="TR_CLEAR" />
+                </Button>
+            </In>
+        </Wrapper>
+    );
+};
