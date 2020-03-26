@@ -28,8 +28,9 @@ def start(version):
     #     "T": (2, 1, 0),
     # }
 
-    path="./projects/suite-web/plugins/python/bin/"
+    path="./trezor-bin/"
     command=""
+    version = "1";
     if version[0] == "2":
         command = path + "trezor-emu-core-v" + version + " -O0 -X heapsize=20M -m main"
     else:

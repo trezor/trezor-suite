@@ -44,7 +44,7 @@ def start():
         # TODO:
         # - check if trezord process is already running and kill it if so
         # - check if Popen process starts without error (if 21325 port is listening)
-        base = "./projects/suite-web/plugins/python/bin/trezord-go -ed 21324:21325"
+        base = "./trezor-bin/trezord-go -ed 21324:21325 -u=false"
         command = base + " -u=false" if 'CI' in os.environ else base
         print(command)
         proc = Popen(
