@@ -772,7 +772,7 @@ const definedMessages = defineMessages({
         id: 'TR_ETH_GAS_PRICE_NOT_NUMBER',
     },
     TR_EXCHANGE_RATE: {
-        defaultMessage: 'Exchange rate',
+        defaultMessage: 'Exchange rate (7d)',
         id: 'TR_EXCHANGE_RATE',
     },
     TR_FAILED_BACKUP: {
