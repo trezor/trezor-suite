@@ -131,12 +131,8 @@ const WalletInstance = ({
                         />
                     </SwitchCol>
                     <Col>
-                        <ForgetButton
-                            size="small"
-                            variant="secondary"
-                            onClick={() => forgetDevice(instance)}
-                        >
-                            <Translation id="TR_HIDE_WALLET" />
+                        <ForgetButton variant="secondary" onClick={() => forgetDevice(instance)}>
+                            <Translation id="TR_EJECT_WALLET" />
                         </ForgetButton>
                     </Col>
                 </>

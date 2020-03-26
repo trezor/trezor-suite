@@ -121,8 +121,8 @@ const AttentionIconWrapper = styled.div`
 // TODO: this is going to be a problem with different col headers length since they won't be aligned with the columns inside WalletInstance
 const RememberWallet = styled(ColHeader)``;
 const HideWallet = styled(ColHeader)`
-    margin-left: 32px;
-    margin-right: 16px;
+    margin-left: 78px;
+    margin-right: 38px;
 `;
 
 const DeviceItem = (props: Props & WrappedComponentProps) => {
@@ -218,12 +218,12 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                             <RememberWallet
                                 tooltipContent={<Translation id="TR_REMEMBER_ALLOWS_YOU_TO" />}
                             >
-                                <Translation id="TR_REMEMBER_WALLET" />
+                                <Translation id="TR_REMEMBER_HEADING" />
                             </RememberWallet>
                             <HideWallet
-                                tooltipContent={<Translation id="TR_HIDE_WALLET_EXPLANATION" />}
+                                tooltipContent={<Translation id="TR_EJECT_WALLET_EXPLANATION" />}
                             >
-                                <Translation id="TR_HIDE_WALLET" />
+                                <Translation id="TR_EJECT_HEADING" />
                             </HideWallet>
                         </WalletsTooltips>
                     )}

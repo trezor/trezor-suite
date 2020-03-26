@@ -907,13 +907,13 @@ const definedMessages = defineMessages({
         description: 'Hide advanced sending form',
         id: 'TR_HIDE_ADVANCED_OPTIONS',
     },
-    TR_HIDE_WALLET: {
-        defaultMessage: 'Hide wallet',
-        id: 'TR_HIDE_WALLET',
+    TR_EJECT_WALLET: {
+        defaultMessage: 'Eject wallet',
+        id: 'TR_EJECT_WALLET',
     },
-    TR_HIDE_WALLET_EXPLANATION: {
-        defaultMessage: "Explanation what the 'hide wallet' button does",
-        id: 'TR_HIDE_WALLET_EXPLANATION',
+    TR_EJECT_WALLET_EXPLANATION: {
+        defaultMessage: "Explanation what the 'eject wallet' button does",
+        id: 'TR_EJECT_WALLET_EXPLANATION',
     },
     TR_HOLOGRAM_STEP_ACTION_NOT_OK: {
         defaultMessage: 'My hologram looks different',
@@ -2509,6 +2509,16 @@ const definedMessages = defineMessages({
     TR_TO_ACCESS_OTHER_WALLETS: {
         id: 'TR_TO_ACCESS_OTHER_WALLETS',
         defaultMessage: 'To access other wallets please connect your device.',
+    },
+    TR_EJECT_HEADING: {
+        id: 'TR_EJECT_HEADING',
+        defaultMessage: 'Eject',
+        description: 'Heading above col with "eject wallet" buttons in switch wallets modal',
+    },
+    TR_REMEMBER_HEADING: {
+        id: 'TR_REMEMBER_HEADING',
+        defaultMessage: 'Remember',
+        description: 'Heading above col with "remember wallet" buttons in switch wallets modal',
     },
 } as const);
 
