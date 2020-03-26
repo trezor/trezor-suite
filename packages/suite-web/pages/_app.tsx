@@ -1,10 +1,8 @@
 import React from 'react';
 import App, { AppContext } from 'next/app';
 import { Provider as ReduxProvider } from 'react-redux';
-import { Translation } from '@suite-components/Translation';
 import withRedux from 'next-redux-wrapper';
 import * as Sentry from '@sentry/browser';
-import { Button } from '@trezor/components';
 import { initStore } from '@suite/reducers/store';
 import Preloader from '@suite-components/Preloader';
 import { ToastContainer } from 'react-toastify';
