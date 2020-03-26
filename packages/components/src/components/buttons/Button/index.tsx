@@ -86,11 +86,14 @@ const Wrapper = styled.button<WrapperProps>`
         !props.isDisabled &&
         css`
             padding: 0px 4px;
-            &:active,
             &:hover,
             &:focus {
                 color: ${colors.BLACK25};
                 background: ${colors.BUTTON_TERTIARY_HOVER};
+            }
+            &:active {
+                color: ${colors.BLACK25};
+                background: ${colors.BUTTON_TERTIARY_ACTIVE};
             }
         `};
 
