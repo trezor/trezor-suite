@@ -29,7 +29,7 @@ def start(version):
     # }
 
     # hack
-    version = "1"
+    # version = "1"
 
     path="./python/bin/"
 

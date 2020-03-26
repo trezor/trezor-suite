@@ -46,9 +46,10 @@
             log.innerHTML = escaped + "<br>" + log.innerHTML;
         }
 
-        function emulatorStart() {
+        function emulatorStart(version) {
             _send({
-                type: 'emulator-start'
+                type: 'emulator-start',
+                version,
             });
         }
 
@@ -117,7 +118,10 @@
 <body onload="init();">
     <div>
         <h3>Emulator</h3>
-        <button onclick="emulatorStart(); return false;">Start</button>
+        <button onclick="emulatorStart(); return false;">Start 2.1.4</button>
+        <button onclick="emulatorStart('2.2.0'); return false;">Start 2.2.0</button>
+        <button onclick="emulatorStart('1.8.3'); return false;">Start 1.8.3</button>
+
         <button onclick="emulatorSetup(); return false;">Setup</button>
         <button onclick="emulatorDecision(); return false;">Decision</button>
         <button onclick="emulatorStop(); return false;">Stop</button>

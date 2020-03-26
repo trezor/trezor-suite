@@ -1,5 +1,5 @@
 # buster is for debian 10. the same version as firmware team has in its Dockerfile.
-FROM node:12-buster
+FROM debian:10
 
 RUN apt-get update && apt-get install -y \ 
     build-essential \
@@ -19,7 +19,7 @@ RUN pip3 install --upgrade setuptools
 RUN pip3 install trezor
 RUN pip3 install termcolor
 
-USER root
+# USER root
 
 # "fake" dbus address to prevent errors
 # https://github.com/SeleniumHQ/docker-selenium/issues/87
@@ -29,13 +29,13 @@ ENV DBUS_SESSION_BUS_ADDRESS=/dev/null
 ENV TERM xterm
 
 # trezor emu
-# ENV SDL_VIDEODRIVER "dummy"
 ENV XDG_RUNTIME_DIR "/var/tmp"
 
 # trezorctl https://click.palletsprojects.com/en/7.x/python3/
 ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
 
+# copy python websocket server and all binaries
 COPY ./trezor-env/python /python
 
 RUN python3 --version
