@@ -256,8 +256,10 @@ export class RpcClient {
         return returnArr;
     }
 
-    getAccountinfo(payload: AccountInfoParams): object {
+    async getAccountinfo(payload: AccountInfoParams): Promise<object> {
         if (payload.details && payload.details === 'tokens') {
+            const mainAddrTxs = await this.getTxs(payload.descriptor);
+
             const returnObj = {
                 address: payload.descriptor,
                 balance: '0',
@@ -265,7 +267,7 @@ export class RpcClient {
                 totalSent: '0',
                 unconfirmedBalance: '0',
                 unconfirmedTxs: 0,
-                txs: 0,
+                txs: mainAddrTxs.length,
                 usedTokens: 20,
                 // eslint-disable-next-line @typescript-eslint/no-array-constructor
                 tokens: Array(),
@@ -300,12 +302,12 @@ export class RpcClient {
                 decimals: 8,
             });
         }
+
         await Promise.all(
-            (returnObj.tokens = returnObj.tokens.map(async oneTokenObj => {
+            returnObj.tokens.map(async oneTokenObj => {
                 const txs = await this.getTxs(oneTokenObj.name);
                 oneTokenObj.transfers = txs.length;
-                return oneTokenObj;
-            }))
+            })
         );
 
         return returnObj;

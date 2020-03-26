@@ -133,7 +133,7 @@ const getAccountInfo = async (
         // tokenBalances
         if (payload.details && payload.details === 'tokens') {
             const rpcClientObj = new RpcClient(loginData);
-            info = rpcClientObj.getAccountinfo(payload);
+            info = await rpcClientObj.getAccountinfo(payload);
         } else if (payload.details && payload.details === 'tokenBalances') {
             const rpcClientObj = new RpcClient(loginData);
             info = await rpcClientObj.getAccountInfoWithTokenBalances(payload);
