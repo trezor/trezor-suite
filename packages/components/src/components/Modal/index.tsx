@@ -1,10 +1,11 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { useKeyPress } from '../../utils/hooks';
+import { useKeyPress, useOnClickOutside } from '../../utils/hooks';
 
 import { Link } from '../typography/Link';
 import { Icon } from '../Icon';
 import { colors, variables } from '../../config';
+import { useRef } from 'react';
 
 const ModalContainer = styled.div`
     position: fixed;
@@ -55,7 +56,7 @@ const StyledIcon = styled(Icon)`
     padding: 20px 14px;
 `;
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
     children: React.ReactNode;
     cancelable?: boolean;
     cancelText?: string;
@@ -72,14 +73,21 @@ const Modal = ({
     ...rest
 }: Props) => {
     const escPressed = useKeyPress('Escape');
+    const ref = useRef<HTMLDivElement>(null);
 
     if (cancelable && onCancel && escPressed) {
         onCancel();
     }
 
+    useOnClickOutside(ref, () => {
+        if (cancelable && onCancel) {
+            onCancel();
+        }
+    });
+
     return (
         <ModalContainer {...rest}>
-            <ModalWindow padding={padding}>
+            <ModalWindow ref={ref} padding={padding}>
                 {cancelable && (
                     <StyledLink onClick={onCancel}>
                         {cancelText || ''}
