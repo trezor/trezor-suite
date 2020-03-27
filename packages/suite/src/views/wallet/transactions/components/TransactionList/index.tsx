@@ -27,6 +27,8 @@ const StyledTransactionItem = styled(TransactionItem)`
 `;
 
 const DayHeading = styled.div`
+    position: sticky;
+    top: 0;
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
     min-height: 35px; /* same as height of baddge with fiat value plus padding */

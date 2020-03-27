@@ -2548,6 +2548,62 @@ const definedMessages = defineMessages({
         id: 'TR_IM_NEW_TO_ALL_THIS',
         defaultMessage: "I'm new to all this",
     },
+    RECEIVE_TITLE: {
+        id: 'RECEIVE_TITLE',
+        defaultMessage: 'Receive {symbol}',
+    },
+    RECEIVE_DESC_BITCOIN: {
+        id: 'RECEIVE_DESC_BITCOIN',
+        defaultMessage:
+            'To receive any funds you need to get a fresh receive address. It is advised to always use a fresh one as this prevents anyone else to track your transactions. You can reuse an address but we recommend not doing it unless it is necessary.',
+    },
+    RECEIVE_DESC_ETHEREUM: {
+        id: 'RECEIVE_DESC_ETHEREUM',
+        defaultMessage: 'Use this address to receive tokens as well.',
+    },
+    RECEIVE_ADDRESS_FRESH: {
+        id: 'RECEIVE_ADDRESS_FRESH',
+        defaultMessage: 'Fresh address',
+    },
+    RECEIVE_ADDRESS: {
+        id: 'RECEIVE_ADDRESS',
+        defaultMessage: 'Fresh address',
+        description: 'Alternative title for alt-coins',
+    },
+    RECEIVE_ADDRESS_REVEAL: {
+        id: 'RECEIVE_ADDRESS_REVEAL',
+        defaultMessage: 'Reveal full address',
+    },
+    RECEIVE_ADDRESS_LIMIT_EXCEEDED: {
+        id: 'RECEIVE_ADDRESS_LIMIT_EXCEEDED',
+        defaultMessage: 'Limit exceeded...',
+    },
+    RECEIVE_TABLE_PATH: {
+        id: 'RECEIVE_TABLE_PATH',
+        defaultMessage: 'Path',
+    },
+    RECEIVE_TABLE_ADDRESS: {
+        id: 'RECEIVE_TABLE_ADDRESS',
+        defaultMessage: 'Address',
+    },
+    RECEIVE_TABLE_RECEIVED: {
+        id: 'RECEIVE_TABLE_RECEIVED',
+        defaultMessage: 'Total received',
+    },
+    RECEIVE_TABLE_NOT_USED: {
+        id: 'RECEIVE_TABLE_NOT_USED',
+        defaultMessage: 'Not used yet',
+    },
+    TR_SHOW_MORE: {
+        defaultMessage: 'Show more',
+        description: 'Show more used address',
+        id: 'TR_SHOW_MORE',
+    },
+    TR_SHOW_LESS: {
+        defaultMessage: 'Show less',
+        description: 'Show less used address',
+        id: 'TR_SHOW_LESS',
+    },
 } as const);
 
 export default definedMessages;
