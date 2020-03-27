@@ -135,10 +135,6 @@ const SecurityFeatures = ({
               variant: 'primary',
               icon: 'CHECK',
               heading: 'Discreet mode enabled!',
-              cta: {
-                  label: 'Disable discreet mode',
-                  action: () => setDiscreetMode(false),
-              },
           };
 
     const cards = [backupData, pinData, hiddenWalletData, discreetModeData];
