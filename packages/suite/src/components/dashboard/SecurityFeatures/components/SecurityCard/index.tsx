@@ -90,8 +90,8 @@ export interface Props extends CardProps {
     cta?: {
         label: React.ReactNode;
         action?: () => void;
+        dataTest?: string;
     };
-    'data-test'?: string;
 }
 
 const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Props) => {
@@ -114,10 +114,12 @@ const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Pro
                 {cta && !isLoading && (
                     <Action>
                         <Button
-                            data-test={`@dashboard/security-card/${rest['data-test']}/button`}
                             variant="tertiary"
                             size="small"
                             onClick={cta.action}
+                            {...(cta.dataTest
+                                ? { 'data-test': `@dashboard/security-card/${cta.dataTest}/button` }
+                                : {})}
                             {...(variant === 'secondary'
                                 ? { icon: 'ARROW_RIGHT', alignIcon: 'right' }
                                 : {})}

@@ -73,6 +73,7 @@ const SecurityFeatures = ({
               description: 'Recovery seed is an offline backup of your device',
               cta: {
                   label: 'Backup now',
+                  dataTest: 'backup',
                   action: () => {
                       goto('backup-index');
                   },
@@ -92,6 +93,7 @@ const SecurityFeatures = ({
               description: 'Set strong PIN number against unauthorized access',
               cta: {
                   label: 'Enable',
+                  dataTest: 'pin',
                   action: () => {
                       changePin({});
                   },
@@ -112,6 +114,7 @@ const SecurityFeatures = ({
               cta: {
                   label: 'Create hidden wallet',
                   action: () => createDeviceInstance(device as AcquiredDevice),
+                  dataTest: 'hidden-wallet',
               },
           }
         : {
@@ -129,6 +132,7 @@ const SecurityFeatures = ({
               cta: {
                   label: 'Try Discreet mode',
                   action: () => setDiscreetMode(true),
+                  dataTest: 'discreet',
               },
           }
         : {
@@ -138,7 +142,6 @@ const SecurityFeatures = ({
           };
 
     const cards = [backupData, pinData, hiddenWalletData, discreetModeData];
-    const dataTest = ['backup', 'pin', 'hidden-wallet', 'discreet'];
 
     return (
         <Section {...rest}>
@@ -161,14 +164,13 @@ const SecurityFeatures = ({
                 {!isHidden &&
                     cards.map((card, i) => (
                         <SecurityCard
-                            key={dataTest[i]}
+                            // eslint-disable-next-line react/no-array-index-key
+                            key={i}
                             variant={isDisabled ? 'disabled' : card.variant}
-                            // variant="disabled"
                             icon={card.icon}
                             heading={card.heading}
                             description={card.description}
                             cta={card.cta}
-                            data-test={dataTest[i]}
                         />
                     ))}
             </Content>
