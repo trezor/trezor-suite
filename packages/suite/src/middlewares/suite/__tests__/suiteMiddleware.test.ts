@@ -114,7 +114,9 @@ describe('suite middleware', () => {
                 payload: {
                     suite: {
                         language: 'cs',
-                        initialRun: true,
+                        flags: {
+                            initialRun: true,
+                        },
                     },
                 },
             });

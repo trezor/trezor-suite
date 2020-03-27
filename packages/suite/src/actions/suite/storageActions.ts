@@ -139,7 +139,6 @@ export const saveSuiteSettings = () => (_dispatch: Dispatch, getState: GetState)
         'suiteSettings',
         {
             language: suite.language,
-            initialRun: suite.initialRun,
             flags: suite.flags,
         },
         'suite',

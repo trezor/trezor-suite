@@ -93,7 +93,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             break;
 
         case SUITE.SET_LANGUAGE:
-        case SUITE.INITIAL_RUN_COMPLETED:
         case SUITE.SET_FLAG:
             api.dispatch(storageActions.saveSuiteSettings());
             break;

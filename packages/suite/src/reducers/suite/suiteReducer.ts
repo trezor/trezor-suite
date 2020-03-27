@@ -10,6 +10,7 @@ export interface DebugModeOptions {
 }
 
 interface Flags {
+    initialRun: boolean;
     // recoveryCompleted: boolean;
     // pinCompleted: boolean;
     // passphraseCompleted: boolean;
@@ -17,7 +18,6 @@ interface Flags {
 }
 
 export interface SuiteState {
-    initialRun: boolean;
     online: boolean;
     loading: boolean;
     loaded: boolean;
@@ -33,7 +33,6 @@ export interface SuiteState {
 }
 
 const initialState: SuiteState = {
-    initialRun: true,
     online: true,
     loading: false,
     loaded: false,
@@ -45,6 +44,7 @@ const initialState: SuiteState = {
     },
     analytics: false,
     flags: {
+        initialRun: true,
         // recoveryCompleted: false;
         // pinCompleted: false;
         // passphraseCompleted: false;
@@ -73,7 +73,7 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 break;
 
             case STORAGE.LOADED:
-                draft.initialRun = action.payload.suite.initialRun;
+                draft.flags.initialRun = action.payload.suite.flags.initialRun;
                 draft.language = action.payload.suite.language;
                 break;
 
@@ -86,10 +86,6 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 draft.loading = false;
                 draft.loaded = false;
                 draft.error = action.error;
-                break;
-
-            case SUITE.INITIAL_RUN_COMPLETED:
-                draft.initialRun = false;
                 break;
 
             case SUITE.SELECT_DEVICE:

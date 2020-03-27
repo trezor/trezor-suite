@@ -100,7 +100,7 @@ export const initialRedirection = [
         description: `already initialized`,
         state: {
             suite: {
-                initialRun: false,
+                flags: { initialRun: false },
             },
         },
         app: 'unknown', // app will be set later, after SUITE.READY

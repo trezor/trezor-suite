@@ -128,9 +128,7 @@ describe('Suite Actions', () => {
             const state = getInitialState(f.state);
             const store = initStore(state);
             store.dispatch(suiteActions.initialRunCompleted());
-            expect(store.getState().suite).toMatchObject({
-                initialRun: false,
-            });
+            expect(store.getState().suite.flags.initialRun).toBe(false);
         });
     });
 

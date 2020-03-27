@@ -188,7 +188,7 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.loadStorage());
 
         expect(getLastAction(store).payload.suite.language).toEqual('cs');
-        expect(getLastAction(store).payload.suite.initialRun).toEqual(false);
+        expect(getLastAction(store).payload.suite.flags.initialRun).toEqual(false);
         // @ts-ignore
         global.fetch = f;
     });

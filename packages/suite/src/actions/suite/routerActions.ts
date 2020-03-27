@@ -126,11 +126,11 @@ export const closeModalApp = (preserveParams = true) => async (dispatch: Dispatc
 
 /**
  * Called from `@suite-middlewares/suiteMiddleware`
- * Redirects to requested modal app or welcome screen if `suite.initialRun` is set to true
+ * Redirects to requested modal app or welcome screen if `suite.flags.initialRun` is set to true
  */
 export const initialRedirection = () => async (dispatch: Dispatch, getState: GetState) => {
     const route = findRoute(Router.pathname + window.location.hash);
-    const { initialRun } = getState().suite;
+    const { initialRun } = getState().suite.flags;
     if (route && route.isModal) {
         await dispatch(goto(route.name));
     } else if (initialRun) {
