@@ -42,4 +42,5 @@ export const ICONS = {
     EYE: require('../../images/icons/eye.svg'),
     EYE_CROSSED: require('../../images/icons/eye_crossed.svg'),
     NOTIFICATIONS: require('../../images/icons/notifications.svg'),
+    LABELING: require('../../images/icons/labeling.svg'),
 };

@@ -20,19 +20,24 @@ const Wrapper = styled.div<{ selected: boolean }>`
     }
 
     &:first-of-type {
-        border-top-left-radius: 3px;
-        border-top-right-radius: 3px;
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px;
     }
 
     &:last-of-type {
-        border-bottom-left-radius: 3px;
-        border-bottom-right-radius: 3px;
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
     }
 
     ${props =>
         props.selected &&
         css`
-            background: ${colors.BLACK96};
+            background: #eaf8e5;
+            border: 1px solid ${colors.GREEN};
+
+            &:hover {
+                background: #eaf8e5;
+            }
         `}
 `;
 
@@ -126,12 +131,8 @@ const WalletInstance = ({
                         />
                     </SwitchCol>
                     <Col>
-                        <ForgetButton
-                            size="small"
-                            variant="secondary"
-                            onClick={() => forgetDevice(instance)}
-                        >
-                            <Translation id="TR_HIDE_WALLET" />
+                        <ForgetButton variant="secondary" onClick={() => forgetDevice(instance)}>
+                            <Translation id="TR_EJECT_WALLET" />
                         </ForgetButton>
                     </Col>
                 </>

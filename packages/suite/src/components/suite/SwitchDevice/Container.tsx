@@ -6,6 +6,7 @@ const mapStateToProps = (state: AppState) => ({
     router: state.router,
     selectedDevice: state.suite.device,
     devices: state.devices,
+    transport: state.suite.transport,
 });
 
 export type Props = ReturnType<typeof mapStateToProps> & InjectedModalApplicationProps;

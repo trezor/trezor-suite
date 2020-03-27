@@ -46,6 +46,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Authorization error.',
         id: 'TR_ACCOUNT_EXCEPTION_AUTH_ERROR',
     },
+    TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC: {
+        defaultMessage: 'You are not allowed to work with this device. Wrong PIN entered.',
+        id: 'TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC',
+    },
     TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY: {
         defaultMessage: 'There are no coins enabled in settings.',
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY',
@@ -112,9 +116,9 @@ const definedMessages = defineMessages({
         defaultMessage: 'Add account',
         id: 'TR_ADD_ACCOUNT',
     },
-    TR_ADD_HIDDEN_WALLET: {
-        defaultMessage: 'Add hidden wallet',
-        id: 'TR_ADD_HIDDEN_WALLET',
+    TR_ADD_WALLET: {
+        defaultMessage: 'Add wallet',
+        id: 'TR_ADD_WALLET',
     },
     TR_ADDITIONAL_SECURITY_FEATURES: {
         defaultMessage: 'Additional security features are waiting to be done.',
@@ -907,13 +911,13 @@ const definedMessages = defineMessages({
         description: 'Hide advanced sending form',
         id: 'TR_HIDE_ADVANCED_OPTIONS',
     },
-    TR_HIDE_WALLET: {
-        defaultMessage: 'Hide wallet',
-        id: 'TR_HIDE_WALLET',
+    TR_EJECT_WALLET: {
+        defaultMessage: 'Eject wallet',
+        id: 'TR_EJECT_WALLET',
     },
-    TR_HIDE_WALLET_EXPLANATION: {
-        defaultMessage: "Explanation what the 'hide wallet' button does",
-        id: 'TR_HIDE_WALLET_EXPLANATION',
+    TR_EJECT_WALLET_EXPLANATION: {
+        defaultMessage: "Explanation what the 'eject wallet' button does",
+        id: 'TR_EJECT_WALLET_EXPLANATION',
     },
     TR_HOLOGRAM_STEP_ACTION_NOT_OK: {
         defaultMessage: 'My hologram looks different',
@@ -2488,6 +2492,121 @@ const definedMessages = defineMessages({
     TR_DEVICE_IN_RECOVERY_MODE: {
         id: 'TR_DEVICE_IN_RECOVERY_MODE',
         defaultMessage: 'Your device is in recovery mode.',
+    },
+    TR_SUITE_STORAGE: {
+        id: 'TR_SUITE_STORAGE',
+        defaultMessage: 'Suite Storage',
+    },
+    TR_CLEAR_STORAGE: {
+        id: 'TR_CLEAR_STORAGE',
+        defaultMessage: 'Clear storage',
+    },
+    TR_STORAGE_CLEARED: {
+        id: 'TR_STORAGE_CLEARED',
+        defaultMessage: 'Storage cleared!',
+    },
+    TR_CLEAR_STORAGE_DESCRIPTION: {
+        id: 'TR_CLEAR_STORAGE_DESCRIPTION',
+        defaultMessage:
+            'If you are experiencing problems, clearing the storage is a good first step to try to resolve the issue. During this process the app will restart itself.',
+    },
+    TR_CHOOSE_WALLET: {
+        id: 'TR_CHOOSE_WALLET',
+        defaultMessage: 'Choose wallet',
+    },
+    TR_TO_ACCESS_OTHER_WALLETS: {
+        id: 'TR_TO_ACCESS_OTHER_WALLETS',
+        defaultMessage: 'To access other wallets please connect your device.',
+    },
+    TR_EJECT_HEADING: {
+        id: 'TR_EJECT_HEADING',
+        defaultMessage: 'Eject',
+        description: 'Heading above col with "eject wallet" buttons in switch wallets modal',
+    },
+    TR_REMEMBER_HEADING: {
+        id: 'TR_REMEMBER_HEADING',
+        defaultMessage: 'Remember',
+        description: 'Heading above col with "remember wallet" buttons in switch wallets modal',
+    },
+    TR_SKIP_ONBOARDING: {
+        id: 'TR_SKIP_ONBOARDING',
+        defaultMessage: 'Skip onboarding',
+    },
+    TR_MY_DEVICE_IS_INITIALIZED: {
+        id: 'TR_MY_DEVICE_IS_INITIALIZED',
+        defaultMessage: 'My device is initialized and I used Wallet or Suite before',
+    },
+    TR_I_HAVE_INITIALIZED_DEVICE: {
+        id: 'TR_I_HAVE_INITIALIZED_DEVICE',
+        defaultMessage: 'I have initialized device',
+    },
+    TR_BEGIN_ONBOARDING: {
+        id: 'TR_BEGIN_ONBOARDING',
+        defaultMessage: 'Begin onboarding',
+    },
+    TR_I_WANT_TO_BE_GUIDED_THROUGH: {
+        id: 'TR_I_WANT_TO_BE_GUIDED_THROUGH',
+        defaultMessage: 'I want to be guided through onboarding process',
+    },
+    TR_IM_NEW_TO_ALL_THIS: {
+        id: 'TR_IM_NEW_TO_ALL_THIS',
+        defaultMessage: "I'm new to all this",
+    },
+    RECEIVE_TITLE: {
+        id: 'RECEIVE_TITLE',
+        defaultMessage: 'Receive {symbol}',
+    },
+    RECEIVE_DESC_BITCOIN: {
+        id: 'RECEIVE_DESC_BITCOIN',
+        defaultMessage:
+            'To receive any funds you need to get a fresh receive address. It is advised to always use a fresh one as this prevents anyone else to track your transactions. You can reuse an address but we recommend not doing it unless it is necessary.',
+    },
+    RECEIVE_DESC_ETHEREUM: {
+        id: 'RECEIVE_DESC_ETHEREUM',
+        defaultMessage: 'Use this address to receive tokens as well.',
+    },
+    RECEIVE_ADDRESS_FRESH: {
+        id: 'RECEIVE_ADDRESS_FRESH',
+        defaultMessage: 'Fresh address',
+    },
+    RECEIVE_ADDRESS: {
+        id: 'RECEIVE_ADDRESS',
+        defaultMessage: 'Fresh address',
+        description: 'Alternative title for alt-coins',
+    },
+    RECEIVE_ADDRESS_REVEAL: {
+        id: 'RECEIVE_ADDRESS_REVEAL',
+        defaultMessage: 'Reveal full address',
+    },
+    RECEIVE_ADDRESS_LIMIT_EXCEEDED: {
+        id: 'RECEIVE_ADDRESS_LIMIT_EXCEEDED',
+        defaultMessage: 'Limit exceeded...',
+    },
+    RECEIVE_TABLE_PATH: {
+        id: 'RECEIVE_TABLE_PATH',
+        defaultMessage: 'Path',
+    },
+    RECEIVE_TABLE_ADDRESS: {
+        id: 'RECEIVE_TABLE_ADDRESS',
+        defaultMessage: 'Address',
+    },
+    RECEIVE_TABLE_RECEIVED: {
+        id: 'RECEIVE_TABLE_RECEIVED',
+        defaultMessage: 'Total received',
+    },
+    RECEIVE_TABLE_NOT_USED: {
+        id: 'RECEIVE_TABLE_NOT_USED',
+        defaultMessage: 'Not used yet',
+    },
+    TR_SHOW_MORE: {
+        defaultMessage: 'Show more',
+        description: 'Show more used address',
+        id: 'TR_SHOW_MORE',
+    },
+    TR_SHOW_LESS: {
+        defaultMessage: 'Show less',
+        description: 'Show less used address',
+        id: 'TR_SHOW_LESS',
     },
 } as const);
 

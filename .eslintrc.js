@@ -26,7 +26,6 @@ module.exports = {
     rules: {
         // I believe type is enforced by callers.
         '@typescript-eslint/explicit-function-return-type': 'off',
-        'import/order': 'off',
         // Enforce arrow functions only is afaik not possible. But this helps.
         'func-style': [
             'error',
@@ -44,10 +43,14 @@ module.exports = {
         ],
         // I believe shadowing is a nice language feature.
         'no-shadow': 'off',
+        'import/order': 'off',
         // Does not work with TypeScript export type.
         'import/prefer-default-export': 'off',
         // Does not work with Babel react-native to react-native-web
         'import/no-unresolved': 'off',
+        "import/extensions": ["error", "never"],
+        'import/no-extraneous-dependencies': 'off',
+        'import/no-cycle': 'off',
         // We have types.
         'react/prop-types': 'off',
         // It's fine.
@@ -74,14 +77,13 @@ module.exports = {
         '@typescript-eslint/explicit-member-accessibility': 'off',
         '@typescript-eslint/no-explicit-any': 'off',
         'react/destructuring-assignment': 'off',
-        'import/no-extraneous-dependencies': 'off',
-        'import/no-cycle': 'off',
         'prettier/prettier': 'error',
         'react/require-default-props': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
         // new rules (eslint 6) temporary disabled until components-v2 and ts-ignore resolve
         'react/jsx-props-no-spreading': 'off',
         '@typescript-eslint/ban-ts-ignore': 'off',
+        // We need empty functions for mocking modules for react-native
         '@typescript-eslint/no-empty-function': 'off',
     },
 };

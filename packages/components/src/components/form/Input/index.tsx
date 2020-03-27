@@ -33,7 +33,7 @@ const StyledInput = styled.input<Props>`
     outline: none;
     box-sizing: border-box;
     width: 100%;
-    height: ${props => (props.variant === 'small' ? '38px' : '48px')};
+    height: ${props => (props.variant === 'small' ? '36px' : '48px')};
     text-align: ${props => props.align || 'left'};
     color: ${props => getStateColor(props.state)};
 

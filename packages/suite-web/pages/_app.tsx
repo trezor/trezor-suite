@@ -1,10 +1,8 @@
 import React from 'react';
 import App, { AppContext } from 'next/app';
 import { Provider as ReduxProvider } from 'react-redux';
-import { Translation } from '@suite-components/Translation';
 import withRedux from 'next-redux-wrapper';
 import * as Sentry from '@sentry/browser';
-import { Button } from '@trezor/components';
 import { initStore } from '@suite/reducers/store';
 import Preloader from '@suite-components/Preloader';
 import { ToastContainer } from 'react-toastify';
@@ -63,16 +61,16 @@ class TrezorSuiteApp extends App<Props> {
                     <IntlProvider>
                         <>
                             {/*
-                                initially rendered webusb button, only for web. whether displayed or not 
-                                is handled by suite/components/Webusb component
+                                just beucase we need make trezor-connect render the iframe
                             */}
-                            <Button
-                                icon="PLUS"
-                                additionalClassName="trezor-webusb-button"
-                                style={{ width: '100%', position: 'absolute', top: '-1000px' }}
-                            >
-                                <Translation id="TR_CHECK_FOR_DEVICES" />
-                            </Button>
+                            <div
+                                className="trezor-webusb-button"
+                                style={{
+                                    width: '100%',
+                                    position: 'absolute',
+                                    top: '-1000px',
+                                }}
+                            />
                             <Router />
                             <ToastContainer />
                             <Preloader>

@@ -11,37 +11,40 @@ import React, { useEffect } from 'react';
 
 interface Props {
     ready: boolean; // are all animations finished?
+    children?: React.ReactNode;
 }
 
-const WebusbButton = ({ ready }: Props) => {
+const WebusbButton = ({ ready, children }: Props) => {
+    const childRef = React.createRef<HTMLButtonElement>();
+
     const getOffset = (el: HTMLElement) => {
-        const { top, left, right } = el.getBoundingClientRect();
+        const { top, left, width, height } = el.getBoundingClientRect();
         return {
             top: top + window.pageYOffset,
             left: left + window.pageXOffset,
-            right: right + window.pageXOffset,
+            height,
+            width,
         };
     };
 
     useEffect(() => {
         const moveWebusbIn = () => {
-            const elem = document.getElementsByClassName('trezor-webusb-button')[0] as HTMLElement;
-            const placeholder = document.getElementById('web-usb-placeholder');
+            // iframe is injected to div.trezor-webusb-button rendered in _app.tsx
             const iframe = document.getElementsByTagName('iframe')[0];
-            if (!elem || !placeholder) return;
-            const { top, left, right } = getOffset(placeholder);
-            elem.style.top = `${top}px`;
-            elem.style.left = `${left}px`;
-            elem.style.width = `${right - left}px`;
-            iframe.style.width = `${right - left}px`;
-            elem.style.zIndex = '9999999';
+            if (!iframe || !childRef.current) return;
+            const { top, left, width, height } = getOffset(childRef.current);
+            iframe.style.top = `${top + 1000}px`;
+            iframe.style.left = `${left}px`;
+            iframe.style.width = `${width}px`;
+            iframe.style.height = `${height}px`;
+            iframe.style.zIndex = '9999999';
         };
 
         const moveWebusbOut = () => {
-            const elem = document.getElementsByClassName('trezor-webusb-button')[0] as HTMLElement;
-            if (!elem) return;
-            elem.style.zIndex = '-1000';
-            elem.style.top = '-1000px';
+            const iframe = document.getElementsByTagName('iframe')[0];
+            if (!iframe) return;
+            iframe.style.zIndex = '-1000';
+            iframe.style.top = '-1000px';
         };
 
         const onResize = () => {
@@ -59,9 +62,12 @@ const WebusbButton = ({ ready }: Props) => {
                 window.removeEventListener('resize', onResize);
             };
         }
-    }, [ready]);
+    }, [childRef, ready]);
 
-    return <div id="web-usb-placeholder" style={{ width: '100%', height: '40px' }} />;
+    if (React.isValidElement(children)) {
+        return React.cloneElement(children, { ref: childRef });
+    }
+    return null;
 };
 
 export default WebusbButton;

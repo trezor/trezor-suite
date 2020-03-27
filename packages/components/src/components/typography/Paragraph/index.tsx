@@ -35,7 +35,7 @@ const Paragraph = styled.div<Props>`
         `}
 `;
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
     children: React.ReactNode;
     className?: string;
     size?: ParagraphSize;

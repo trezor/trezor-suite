@@ -17,7 +17,9 @@ import {
 import { AppState, Dispatch } from '@suite-types';
 import { FIAT, LANGUAGES } from '@suite-config';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import * as storageActions from '@suite-actions/storageActions';
 import * as languageActions from '@settings-actions/languageActions';
+import * as routerActions from '@suite-actions/routerActions';
 
 const buildCurrencyOption = (currency: string) => {
     return {
@@ -35,7 +37,9 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     setLocalCurrency: bindActionCreators(walletSettingsActions.setLocalCurrency, dispatch),
+    clearStores: bindActionCreators(storageActions.clearStores, dispatch),
     fetchLocale: bindActionCreators(languageActions.fetchLocale, dispatch),
+    goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
@@ -44,7 +48,15 @@ const BottomContainer = styled.div`
     margin-top: auto;
 `;
 
-const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Props) => {
+const Settings = ({
+    locks,
+    wallet,
+    language,
+    setLocalCurrency,
+    fetchLocale,
+    clearStores,
+    goto,
+}: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
 
     return (
@@ -54,6 +66,7 @@ const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Pr
                     <TextColumn title={<Translation id="TR_LANGUAGE" />} />
                     <ActionColumn>
                         <ActionSelect
+                            variant="small"
                             value={{
                                 value: language,
                                 // sorry for ! but dont know how to force typescript to stay calm
@@ -75,6 +88,7 @@ const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Pr
                     <TextColumn title={<Translation id="TR_PRIMARY_FIAT" />} />
                     <ActionColumn>
                         <ActionSelect
+                            variant="small"
                             onChange={(option: { value: string; label: string }) =>
                                 setLocalCurrency(option.value)
                             }
@@ -105,6 +119,38 @@ const Settings = ({ locks, wallet, language, setLocalCurrency, fetchLocale }: Pr
             <Analytics />
 
             <BottomContainer>
+                <Section borderless>
+                    <Row>
+                        <TextColumn
+                            title={<Translation id="TR_SUITE_STORAGE" />}
+                            description={<Translation id="TR_CLEAR_STORAGE_DESCRIPTION" />}
+                        />
+                        <ActionColumn>
+                            <ActionButton
+                                onClick={() => {
+                                    clearStores();
+                                    // @ts-ignore global.ipcRenderer is declared in @desktop/preloader.js
+                                    const { ipcRenderer } = global;
+                                    if (ipcRenderer) {
+                                        // relaunch desktop app
+                                        ipcRenderer.send('restart-app');
+                                    } else {
+                                        // redirect to / and reload the web
+                                        goto('suite-index');
+                                        setTimeout(() => {
+                                            // hacky way to wait until the user is redirected
+                                            window.location.reload();
+                                        }, 2000);
+                                    }
+                                }}
+                                variant="secondary"
+                            >
+                                <Translation id="TR_CLEAR_STORAGE" />
+                            </ActionButton>
+                        </ActionColumn>
+                    </Row>
+                </Section>
+
                 <Section borderless>
                     <Row>
                         <TextColumn

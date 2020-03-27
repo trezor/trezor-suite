@@ -86,11 +86,14 @@ const Wrapper = styled.button<WrapperProps>`
         !props.isDisabled &&
         css`
             padding: 0px 4px;
-            &:active,
             &:hover,
             &:focus {
                 color: ${colors.BLACK25};
                 background: ${colors.BUTTON_TERTIARY_HOVER};
+            }
+            &:active {
+                color: ${colors.BLACK25};
+                background: ${colors.BUTTON_TERTIARY_ACTIVE};
             }
         `};
 
@@ -182,55 +185,63 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     alignIcon?: 'left' | 'right';
 }
 
-const Button = ({
-    children,
-    className,
-    variant = 'primary',
-    size = 'large',
-    icon,
-    additionalClassName,
-    color,
-    fullWidth = false,
-    isDisabled = false,
-    isLoading = false,
-    alignIcon = 'left',
-    onChange,
-    ...rest
-}: Props) => {
-    const newClassName = additionalClassName ? `${className} ${additionalClassName}` : className;
-    const IconComponent = icon ? (
-        <IconWrapper alignIcon={alignIcon}>
-            <Icon
-                icon={icon}
-                size={size === 'large' ? 10 : 8}
-                color={color || getIconColor(variant, isDisabled)}
-            />
-        </IconWrapper>
-    ) : null;
-    const Loader = (
-        <IconWrapper alignIcon={alignIcon}>
-            <FluidSpinner size={10} color={color} />
-        </IconWrapper>
-    );
-    return (
-        <Wrapper
-            className={newClassName}
-            variant={variant}
-            size={size}
-            onChange={onChange}
-            isDisabled={isDisabled}
-            disabled={isDisabled || isLoading}
-            fullWidth={fullWidth}
-            color={color}
-            {...rest}
-        >
-            {!isLoading && alignIcon === 'left' && IconComponent}
-            {isLoading && alignIcon === 'left' && Loader}
-            {children}
-            {!isLoading && alignIcon === 'right' && IconComponent}
-            {isLoading && alignIcon === 'right' && Loader}
-        </Wrapper>
-    );
-};
+const Button = React.forwardRef(
+    (
+        {
+            children,
+            className,
+            variant = 'primary',
+            size = 'large',
+            icon,
+            additionalClassName,
+            color,
+            fullWidth = false,
+            isDisabled = false,
+            isLoading = false,
+            alignIcon = 'left',
+            onChange,
+            ...rest
+        }: Props,
+        ref?: React.Ref<HTMLButtonElement>
+    ) => {
+        const newClassName = additionalClassName
+            ? `${className} ${additionalClassName}`
+            : className;
+        const IconComponent = icon ? (
+            <IconWrapper alignIcon={alignIcon}>
+                <Icon
+                    icon={icon}
+                    size={size === 'large' ? 10 : 8}
+                    color={color || getIconColor(variant, isDisabled)}
+                />
+            </IconWrapper>
+        ) : null;
+        const Loader = (
+            <IconWrapper alignIcon={alignIcon}>
+                <FluidSpinner size={10} color={color} />
+            </IconWrapper>
+        );
+        return (
+            <Wrapper
+                className={newClassName}
+                variant={variant}
+                size={size}
+                onChange={onChange}
+                isDisabled={isDisabled}
+                disabled={isDisabled || isLoading}
+                fullWidth={fullWidth}
+                color={color}
+                ref={ref}
+                {...rest}
+            >
+                {!isLoading && alignIcon === 'left' && IconComponent}
+                {isLoading && alignIcon === 'left' && Loader}
+                {children}
+                {!isLoading && alignIcon === 'right' && IconComponent}
+                {isLoading && alignIcon === 'right' && Loader}
+            </Wrapper>
+        );
+    }
+);
 
 export { Button, Props as ButtonProps };

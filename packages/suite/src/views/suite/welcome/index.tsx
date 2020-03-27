@@ -36,7 +36,7 @@ const Index = (props: Props) => {
             <H2>
                 <Translation id="TR_WELCOME_MODAL_HEADING" />
             </H2>
-            <P size="tiny">
+            <P tabIndex={0} size="tiny">
                 <Translation id="TR_WELCOME_MODAL_TEXT" />
             </P>
             <StyledImg image="WELCOME" />
