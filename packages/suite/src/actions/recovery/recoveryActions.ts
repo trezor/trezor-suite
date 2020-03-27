@@ -68,6 +68,14 @@ const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
         dispatch(setError(response.payload.error));
     }
 
+    if (device.features.recovery_mode) {
+        TrezorConnect.getFeatures({
+            device: {
+                path: device.path,
+            },
+        });
+    }
+
     dispatch(setStatus('finished'));
 };
 
@@ -89,7 +97,13 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!response.success) {
         dispatch(setError(response.payload.error));
     }
-
+    if (device.features.recovery_mode) {
+        TrezorConnect.getFeatures({
+            device: {
+                path: device.path,
+            },
+        });
+    }
     dispatch(setStatus('finished'));
 };
 

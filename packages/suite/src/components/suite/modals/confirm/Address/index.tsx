@@ -89,7 +89,7 @@ const ConfirmAddress = ({
             {device.connected && <CheckOnTrezor device={device} />}
             {!device.connected && <DeviceDisconnected label={device.label} />}
             <Row ref={htmlElement}>
-                <Button variant="secondary" onClick={copyAddress}>
+                <Button variant="primary" onClick={copyAddress}>
                     <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
                 </Button>
             </Row>

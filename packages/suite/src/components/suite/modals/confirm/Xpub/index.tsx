@@ -57,7 +57,7 @@ export default ({ xpub, accountPath, accountIndex, symbol, addNotification }: Pr
                 {xpub}
             </Address>
             <Row ref={htmlElement}>
-                <Button variant="secondary" onClick={copyAddress}>
+                <Button variant="primary" onClick={copyAddress}>
                     <Translation id="TR_XPUB_MODAL_CLIPBOARD" />
                 </Button>
             </Row>
