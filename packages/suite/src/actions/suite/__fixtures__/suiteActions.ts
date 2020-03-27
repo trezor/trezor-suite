@@ -64,7 +64,9 @@ const reducerActions = [
                         flags: {
                             initialRun: false,
                         },
-                        language: 'cs',
+                        settings: {
+                            language: 'cs',
+                        },
                     },
                 },
             },
@@ -74,7 +76,9 @@ const reducerActions = [
                 flags: {
                     initialRun: false,
                 },
-                language: 'cs',
+                settings: {
+                    language: 'cs',
+                },
             },
         ],
     },
@@ -179,7 +183,9 @@ const reducerActions = [
         ],
         result: [
             {
-                language: 'cz',
+                settings: {
+                    language: 'cz',
+                },
                 messages: {
                     key: 'value',
                 },

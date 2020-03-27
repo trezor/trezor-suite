@@ -17,8 +17,8 @@ const MessageWrapper = styled.span`
 `;
 
 const mapStateToProps = (state: AppState) => ({
-    translationMode: state.suite.debug.translationMode,
-    language: state.suite.language,
+    translationMode: state.suite.settings.debug.translationMode,
+    language: state.suite.settings.language,
 });
 
 const mapDispatchToProps = (_dispatch: Dispatch) => ({});

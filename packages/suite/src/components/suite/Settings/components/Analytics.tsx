@@ -11,7 +11,7 @@ import * as analyticsActions from '@suite-actions/analyticsActions';
 
 const mapStateToProps = (state: AppState) => ({
     locks: state.suite.locks,
-    analytics: state.suite.analytics,
+    analytics: state.suite.settings.analytics,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

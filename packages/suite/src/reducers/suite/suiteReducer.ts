@@ -17,6 +17,12 @@ interface Flags {
     discreetModeCompleted: boolean;
 }
 
+interface SuiteSettings {
+    analytics: boolean;
+    language: typeof LANGUAGES[number]['code'];
+    debug: DebugModeOptions;
+}
+
 export interface SuiteState {
     online: boolean;
     loading: boolean;
@@ -24,31 +30,31 @@ export interface SuiteState {
     error?: string;
     transport?: Partial<TransportInfo>;
     device?: TrezorDevice;
-    language: typeof LANGUAGES[number]['code'];
     messages: { [key: string]: any };
     locks: Lock[];
-    debug: DebugModeOptions;
-    analytics: boolean;
     flags: Flags;
+    settings: SuiteSettings;
 }
 
 const initialState: SuiteState = {
     online: true,
     loading: false,
     loaded: false,
-    language: 'en',
     messages: {},
     locks: [],
-    debug: {
-        translationMode: false,
-    },
-    analytics: false,
     flags: {
         initialRun: true,
         // recoveryCompleted: false;
         // pinCompleted: false;
         // passphraseCompleted: false;
         discreetModeCompleted: false,
+    },
+    settings: {
+        language: 'en',
+        analytics: false,
+        debug: {
+            translationMode: false,
+        },
     },
 };
 
@@ -73,8 +79,8 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 break;
 
             case STORAGE.LOADED:
-                draft.flags.initialRun = action.payload.suite.flags.initialRun;
-                draft.language = action.payload.suite.language;
+                draft.flags = action.payload.suite.flags;
+                draft.settings = action.payload.suite.settings;
                 break;
 
             case SUITE.READY:
@@ -94,12 +100,12 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 break;
 
             case SUITE.SET_LANGUAGE:
-                draft.language = action.locale;
+                draft.settings.language = action.locale;
                 draft.messages = action.messages;
                 break;
 
             case SUITE.SET_DEBUG_MODE:
-                draft.debug = { ...draft.debug, ...action.payload };
+                draft.settings.debug = { ...draft.settings.debug, ...action.payload };
                 break;
 
             case SUITE.SET_FLAG:
@@ -107,7 +113,7 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 break;
 
             case SUITE.TOGGLE_ANALYTICS:
-                draft.analytics = !state.analytics;
+                draft.settings.analytics = !state.settings.analytics;
                 break;
 
             case TRANSPORT.START:
