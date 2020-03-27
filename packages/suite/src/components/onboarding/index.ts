@@ -1,6 +1,5 @@
 import Option from './Option';
 import Text from './Text';
-import UnexpectedState from './UnexpectedState';
 
 import ControlsWrapper from './Wrapper/ControlsWrapper';
 import OptionsWrapper from './Wrapper/OptionsWrapper';
@@ -40,4 +39,4 @@ const Wrapper = {
     Step: StepWrapper,
 };
 
-export { OnboardingButton, OnboardingIcon, Loaders, Text, UnexpectedState, Wrapper, Option };
+export { OnboardingButton, OnboardingIcon, Loaders, Text, Wrapper, Option };

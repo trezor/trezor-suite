@@ -76,6 +76,7 @@ const Number = styled.div`
     background-color: ${colors.BLACK70};
     border-radius: 50%;
     color: ${colors.WHITE};
+    font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
@@ -219,7 +220,7 @@ const Recovery = ({
                     />
 
                     <StyledButton
-                        onClick={() => setStatus('select-word-count')}
+                        onClick={() => (model === 1 ? setStatus('select-word-count') : checkSeed())}
                         isDisabled={!understood}
                     >
                         <Translation id="TR_START" />

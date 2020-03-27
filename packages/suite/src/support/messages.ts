@@ -2313,7 +2313,7 @@ const definedMessages = defineMessages({
     },
     TR_YOU_EITHER_HAVE_T2: {
         id: 'TR_YOU_EITHER_HAVE_T2',
-        defaultMessage: 'You either have a seed containing 12, 18, 24, 33 words. ',
+        defaultMessage: 'You either have a seed containing 12, 18, 20, 24, 33 words. ',
     },
     TR_ENTER_ALL_WORDS_IN_CORRECT: {
         id: 'TR_ENTER_ALL_WORDS_IN_CORRECT',
@@ -2488,6 +2488,10 @@ const definedMessages = defineMessages({
     TR_INSTALL_FULL: {
         id: 'TR_INSTALL_FULL',
         defaultMessage: 'Install full-featured firmware',
+    },
+    TR_DEVICE_IN_RECOVERY_MODE: {
+        id: 'TR_DEVICE_IN_RECOVERY_MODE',
+        defaultMessage: 'Your device is in recovery mode.',
     },
     TR_SUITE_STORAGE: {
         id: 'TR_SUITE_STORAGE',

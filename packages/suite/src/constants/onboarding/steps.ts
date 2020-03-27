@@ -20,6 +20,7 @@ export const DISALLOWED_DEVICE_IS_NOT_CONNECTED = 'device-is-not-connected';
 export const DISALLOWED_DEVICE_IS_NOT_USED_HERE = 'device-is-not-used-here';
 export const DISALLOWED_DEVICE_IS_IN_BOOTLOADER = 'device-is-in-bootloader';
 export const DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE = 'is-not-new-device';
+export const DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE = 'is-in-recovery-mode';
 
 export const PATH_RECOVERY = 'recovery';
 export const PATH_CREATE = 'create';

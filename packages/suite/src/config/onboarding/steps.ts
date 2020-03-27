@@ -8,12 +8,14 @@ const steps: Step[] = [
         buy: true,
         help: false,
         progress: false,
+        disallowedDeviceStates: [STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE],
     },
     {
         id: STEP.ID_SKIP_STEP,
         buy: true,
         help: false,
         progress: false,
+        disallowedDeviceStates: [STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE],
     },
     {
         id: STEP.ID_CREATE_OR_RECOVER,
@@ -21,6 +23,7 @@ const steps: Step[] = [
         buy: true,
         help: true,
         progress: true,
+        disallowedDeviceStates: [STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE],
     },
     {
         id: STEP.ID_NEW_OR_USED,
@@ -32,14 +35,20 @@ const steps: Step[] = [
     {
         id: STEP.ID_SELECT_DEVICE_STEP,
         path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW],
-        disallowedDeviceStates: [STEP.DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE],
+        disallowedDeviceStates: [
+            STEP.DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE,
+            STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE,
+        ],
         buy: true,
         help: true,
         progress: true,
     },
     {
         id: STEP.ID_UNBOXING_STEP,
-        disallowedDeviceStates: [STEP.DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE],
+        disallowedDeviceStates: [
+            STEP.DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE,
+            STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE,
+        ],
         path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW],
         buy: true,
         help: true,
@@ -50,6 +59,7 @@ const steps: Step[] = [
         disallowedDeviceStates: [
             STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE,
             STEP.DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE,
+            STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE,
         ],
         path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW, STEP.PATH_USED],
         buy: true,
@@ -61,6 +71,7 @@ const steps: Step[] = [
         disallowedDeviceStates: [
             STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE,
             // STEP.DISALLOWED_IS_NOT_SAME_DEVICE,
+            STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE,
         ],
         path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW, STEP.PATH_USED],
         buy: false,
@@ -74,6 +85,7 @@ const steps: Step[] = [
             STEP.DISALLOWED_DEVICE_IS_IN_BOOTLOADER,
             STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE,
             STEP.DISALLOWED_IS_NOT_SAME_DEVICE,
+            STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE,
         ],
         path: [STEP.PATH_CREATE, STEP.PATH_NEW, STEP.PATH_USED],
         buy: false,
@@ -100,6 +112,7 @@ const steps: Step[] = [
             STEP.DISALLOWED_DEVICE_IS_IN_BOOTLOADER,
             STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE,
             STEP.DISALLOWED_IS_NOT_SAME_DEVICE,
+            STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE,
         ],
         path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW, STEP.PATH_USED],
         buy: false,
@@ -113,6 +126,7 @@ const steps: Step[] = [
             STEP.DISALLOWED_DEVICE_IS_IN_BOOTLOADER,
             STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE,
             STEP.DISALLOWED_IS_NOT_SAME_DEVICE,
+            STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE,
         ],
         path: [STEP.PATH_CREATE, STEP.PATH_NEW, STEP.PATH_USED],
         buy: false,
@@ -126,6 +140,7 @@ const steps: Step[] = [
             STEP.DISALLOWED_DEVICE_IS_IN_BOOTLOADER,
             STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE,
             STEP.DISALLOWED_IS_NOT_SAME_DEVICE,
+            STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE,
         ],
         path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW, STEP.PATH_USED],
         buy: false,
