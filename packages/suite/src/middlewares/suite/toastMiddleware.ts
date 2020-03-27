@@ -27,6 +27,7 @@ export default (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
         toastId: payload.id,
         onClose: () => api.dispatch(close(payload.id)),
         closeButton: false,
+        hideProgressBar: true,
     });
     return action;
 };
