@@ -42,7 +42,7 @@ const Title = styled.div<{ isLoading: boolean }>`
     margin-bottom: 8px;
     margin-top: 20px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    
+
     ${props =>
         props.isLoading &&
         css`
