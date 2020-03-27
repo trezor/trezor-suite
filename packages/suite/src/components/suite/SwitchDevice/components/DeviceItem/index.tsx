@@ -1,7 +1,7 @@
 import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
-import { Button, colors, variables, Icon, Tooltip } from '@trezor/components';
+import { Button, colors, variables, Icon } from '@trezor/components';
 import { Translation } from '@suite-components';
 import Card from '@suite-components/Card';
 import * as deviceUtils from '@suite-utils/device';
@@ -10,6 +10,7 @@ import WalletInstance from '../WalletInstance/Container';
 import { Props } from './Container';
 import ColHeader from './components/ColHeader';
 import DeviceImage from '@suite-components/images/DeviceImage';
+import AddWalletButton from './components/AddWalletButton';
 
 const DeviceWrapper = styled.div`
     display: flex;
@@ -142,7 +143,6 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
             backgroundRoute.app === 'notifications');
     const hasDeviceSelection =
         !isWalletContext && !deviceUtils.isSelectedDevice(selectedDevice, device);
-    const hasAtLeastOneWallet = props.instances.find(d => d.state);
 
     const selectDeviceInstance = async (instance: Props['device']) => {
         await props.selectDevice(instance);
@@ -239,23 +239,11 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                         ))}
                     </InstancesWrapper>
                     {isWalletContext && (
-                        <AddWallet>
-                            <Tooltip
-                                enabled={!device.connected || !hasAtLeastOneWallet}
-                                placement="top"
-                                content={<Translation id="TR_TO_ACCESS_OTHER_WALLETS" />}
-                            >
-                                <Button
-                                    data-test="@switch-device/add-wallet-button"
-                                    variant="tertiary"
-                                    icon="PLUS"
-                                    isDisabled={!device.connected || !hasAtLeastOneWallet}
-                                    onClick={async () => addDeviceInstance(device)}
-                                >
-                                    <Translation id="TR_ADD_WALLET" />
-                                </Button>
-                            </Tooltip>
-                        </AddWallet>
+                        <AddWalletButton
+                            device={device}
+                            instances={props.instances}
+                            addDeviceInstance={addDeviceInstance}
+                        />
                     )}
                 </WalletsWrapper>
             )}
