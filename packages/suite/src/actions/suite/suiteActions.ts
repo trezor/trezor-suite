@@ -39,6 +39,11 @@ export type SuiteActions =
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | { type: typeof SUITE.LOCK_DEVICE; payload: boolean }
     | { type: typeof SUITE.LOCK_ROUTER; payload: boolean }
+    | {
+          type: typeof SUITE.SET_FLAG;
+          key: keyof AppState['suite']['flags'];
+          value: boolean;
+      }
     | { type: typeof SUITE.APP_CHANGED; payload: AppState['router']['app'] }
     | { type: typeof SUITE.TOGGLE_ANALYTICS }
     | {
@@ -76,6 +81,12 @@ export const updateOnlineStatus = (payload: boolean) => ({
  */
 export const onSuiteReady = (): Action => ({
     type: SUITE.READY,
+});
+
+export const setFlag = (key: keyof AppState['suite']['flags'], value: boolean): Action => ({
+    type: SUITE.SET_FLAG,
+    key,
+    value,
 });
 
 /**

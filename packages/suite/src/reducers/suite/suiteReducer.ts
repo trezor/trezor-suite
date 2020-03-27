@@ -9,6 +9,13 @@ export interface DebugModeOptions {
     translationMode: boolean;
 }
 
+interface Flags {
+    // recoveryCompleted: boolean;
+    // pinCompleted: boolean;
+    // passphraseCompleted: boolean;
+    discreetModeCompleted: boolean;
+}
+
 export interface SuiteState {
     initialRun: boolean;
     online: boolean;
@@ -22,6 +29,7 @@ export interface SuiteState {
     locks: Lock[];
     debug: DebugModeOptions;
     analytics: boolean;
+    flags: Flags;
 }
 
 const initialState: SuiteState = {
@@ -36,6 +44,12 @@ const initialState: SuiteState = {
         translationMode: false,
     },
     analytics: false,
+    flags: {
+        // recoveryCompleted: false;
+        // pinCompleted: false;
+        // passphraseCompleted: false;
+        discreetModeCompleted: false,
+    },
 };
 
 const changeLock = (draft: SuiteState, lock: Lock, enabled: boolean) => {
@@ -45,6 +59,10 @@ const changeLock = (draft: SuiteState, lock: Lock, enabled: boolean) => {
         const index = draft.locks.lastIndexOf(lock);
         draft.locks.splice(index, 1);
     }
+};
+
+const setFlag = (draft: SuiteState, key: keyof Flags, value: boolean) => {
+    draft.flags[key] = value;
 };
 
 export default (state: SuiteState = initialState, action: Action): SuiteState => {
@@ -86,6 +104,10 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
 
             case SUITE.SET_DEBUG_MODE:
                 draft.debug = { ...draft.debug, ...action.payload };
+                break;
+
+            case SUITE.SET_FLAG:
+                setFlag(draft, action.key, action.value);
                 break;
 
             case SUITE.TOGGLE_ANALYTICS:

@@ -38,7 +38,7 @@ const SectionAction = styled.div`
 const SecurityFeatures = ({
     device,
     isDisabled,
-    discreetMode,
+    flags,
     setDiscreetMode,
     createDeviceInstance,
     goto,
@@ -46,7 +46,7 @@ const SecurityFeatures = ({
     ...rest
 }: Props) => {
     const [isHidden, setIsHidden] = useState(false);
-
+    const { discreetModeCompleted } = flags;
     let needsBackup;
     let pinEnabled;
     let hiddenWalletCreated;
@@ -62,7 +62,7 @@ const SecurityFeatures = ({
     const featuresCompleted =
         Number(!needsBackup) +
         Number(pinEnabled) +
-        Number(discreetMode) +
+        Number(discreetModeCompleted) +
         Number(hiddenWalletCreated);
 
     const backupData: CardProps = needsBackup
@@ -120,7 +120,7 @@ const SecurityFeatures = ({
               heading: 'Passphrase protection enabled!',
           };
 
-    const discreetModeData: CardProps = !discreetMode
+    const discreetModeData: CardProps = !discreetModeCompleted
         ? {
               variant: 'secondary',
               icon: 'WALLET',
