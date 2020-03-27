@@ -1,6 +1,7 @@
 import { Response, BlockchainSettings, SubscriptionAccountInfo } from '../types';
 import { MESSAGES, RESPONSES } from '../constants';
 import { CustomError } from '../constants/errors';
+import { removeEmpty } from '../utils/workers';
 
 class WorkerCommon {
     post: (data: Response) => void;
@@ -77,7 +78,7 @@ class WorkerCommon {
     }
 
     response(data: Response) {
-        this.post.call(null, this.removeEmpty(data));
+        this.post.call(null, removeEmpty(data));
     }
 
     validateAddresses(addr: string[]) {
@@ -197,14 +198,6 @@ class WorkerCommon {
             [a[i], a[j]] = [a[j], a[i]];
         }
         return a;
-    }
-
-    removeEmpty(obj: Response) {
-        Object.keys(obj).forEach(key => {
-            if (obj[key] && typeof obj[key] === 'object') this.removeEmpty(obj[key]);
-            else if (obj[key] === undefined) delete obj[key];
-        });
-        return obj;
     }
 
     debug(...args: any[]) {

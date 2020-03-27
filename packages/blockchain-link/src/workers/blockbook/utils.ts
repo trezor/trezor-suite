@@ -18,6 +18,7 @@ import {
 } from '../../types/blockbook';
 
 import { Utxo } from '../../types/responses';
+import { removeEmpty } from '../../utils/workers';
 
 export const transformServerInfo = (payload: ServerInfo) => {
     return {
@@ -313,7 +314,7 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
 };
 
 export const transformAccountUtxo = (payload: BlockbookAccountUtxo): Utxo[] => {
-    return payload.map(utxo => ({
+    const transformedPayload = payload.map(utxo => ({
         txid: utxo.txid,
         vout: utxo.vout,
         amount: utxo.value,
@@ -323,4 +324,6 @@ export const transformAccountUtxo = (payload: BlockbookAccountUtxo): Utxo[] => {
         confirmations: utxo.confirmations,
         coinbase: utxo.coinbase,
     }));
+
+    return removeEmpty(transformedPayload);
 };
