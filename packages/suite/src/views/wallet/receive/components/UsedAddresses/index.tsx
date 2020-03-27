@@ -1,75 +1,106 @@
-import React, { useState } from 'react';
+import React, { useState, createRef } from 'react';
 import styled, { css } from 'styled-components';
-import { colors, Button } from '@trezor/components';
-import { Card, HiddenPlaceholder } from '@suite-components';
+import { colors, Button, Icon } from '@trezor/components';
+import { Card, Translation, HiddenPlaceholder, FiatValue, Badge } from '@suite-components';
 import { parseBIP44Path, formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { copyToClipboard } from '@suite-utils/dom';
 import { ChildProps as Props } from '../../Container';
+import { AccountAddress } from 'trezor-connect';
+import { Network, ReceiveInfo } from '@wallet-types';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
     margin-bottom: 40px;
+    padding: 0px 20px 20px 20px;
 `;
 
-const GridTable = styled.div<{ header?: boolean; fresh?: boolean; revealed?: boolean }>`
+const GridTable = styled.div`
     display: grid;
-    grid-template-columns: minmax(60px, 1fr) 4fr 110px 3fr;
+    grid-template-columns: auto 0.65fr 0.35fr auto;
     color: ${colors.BLACK50};
     font-size: 12px;
-    border-bottom: 1px solid ${colors.BLACK96};
-    &:first-child,
-    &:last-child {
-        border: 0px;
-    }
-    ${props =>
-        props.header &&
-        css`
-            background: ${colors.BLACK96};
-            text-transform: uppercase;
-            font-weight: 600;
-        `};
-    ${props =>
-        (props.fresh || props.revealed) &&
-        css`
-            color: ${colors.BLACK0};
-        `};
+    padding: 8px 0px;
     @media all and (max-width: 1024px) {
-        grid-template-columns: 1fr;
+        grid-template-columns: auto 1fr auto;
+        grid-auto-flow: dense;
     }
 `;
 
-const GridItem = styled.div<{ right?: boolean; onClick?: Function; amount?: boolean }>`
-    padding: 16px 4px;
-    &:first-child {
-        padding-left: 16px;
+// min-width: 0; // to resolve an issue with truncate text
+const GridItem = styled.div<{ revealed?: boolean; onClick?: Function }>`
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    white-space: nowrap;
+    padding: 8px 24px;
+    border-bottom: 2px solid ${colors.BLACK96};
+    &:nth-child(1n) {
+        padding-left: 0px;
     }
-    &:last-child {
-        padding-right: 16px;
+    &:nth-child(4n) {
+        padding-right: 0px;
+    }
+    &:nth-last-child(-n + 4) {
+        border: 0;
     }
     ${props =>
-        props.right &&
-        css`
-            text-align: right;
-            padding-right: 8px;
-        `};
-    ${props =>
-        props.amount &&
+        props.revealed &&
         css`
             color: ${colors.BLACK0};
-            text-transform: uppercase;
         `};
     ${props =>
         props.onClick &&
         css`
             cursor: pointer;
         `};
+
     @media all and (max-width: 1024px) {
-        padding: 4px;
-        text-align: left;
-        &:first-child,
-        &:last-child {
-            padding: 4px;
+        border: 0;
+        padding: 8px;
+        &:nth-child(4n + 3) {
+            top: 43px;
+            padding-top: 0px;
+            padding-right: 0px;
+            grid-column: 1 / 4;
+            border-bottom: 2px solid ${colors.BLACK96};
+        }
+        &:nth-child(1),
+        &:nth-child(2),
+        &:nth-child(4) {
+            padding-top: 20px;
+        }
+        &:nth-last-child(-n + 4) {
+            border: 0;
         }
     }
+`;
+
+const HeaderItem = styled(GridItem)`
+    background: ${colors.WHITE};
+    text-transform: uppercase;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    padding-top: 20px;
+`;
+
+const IconButton = styled(Button)`
+    padding: 0px 0px;
+    background: transparent;
+    &:hover,
+    &:active,
+    &:focus {
+        background: transparent;
+    }
+
+    ${props =>
+        props.isDisabled &&
+        css`
+            svg {
+                fill: ${colors.BLACK80};
+            }
+        `};
 `;
 
 const Actions = styled.div`
@@ -82,25 +113,69 @@ const Actions = styled.div`
 
 const DEFAULT_LIMIT = 10;
 
-const Item = ({ addr, symbol, onClick, revealed, index }: any) => {
-    const amount = addr.received ? formatNetworkAmount(addr.received, symbol, true) : null;
-    const address =
-        addr.transfers < 1 || revealed ? addr.address : `${addr.address.substring(0, 15)}…`;
+interface ItemProps {
+    index: number;
+    addr: AccountAddress;
+    symbol: Network['symbol'];
+    revealed?: ReceiveInfo;
+    onClick: (_ev: any) => void;
+    onCopy: (_ev: any) => void;
+}
+
+const Item = ({ addr, symbol, onClick, onCopy, revealed, index }: ItemProps) => {
+    const amount = formatNetworkAmount(addr.received || '0', symbol, true);
+    const [amountF] = amount.split(' ');
+    const fresh = addr.transfers < 1;
+    const isRevealed = !!revealed;
+    const address = revealed ? addr.address : `${addr.address.substring(0, 15)}…`;
     return (
-        <GridTable fresh={addr.transfers < 1}>
-            <GridItem>/{parseBIP44Path(addr.path)!.addrIndex}</GridItem>
-            <GridItem data-test={`@wallet/receive/used-address/${index}`} onClick={onClick}>
+        <>
+            <GridItem revealed={isRevealed}>/{parseBIP44Path(addr.path)!.addrIndex}</GridItem>
+            <GridItem
+                data-test={`@wallet/receive/used-address/${index}`}
+                revealed={isRevealed}
+                onClick={onClick}
+            >
                 {address}
+                {revealed && !revealed.isVerified && (
+                    <Icon
+                        size={14}
+                        icon="WARNING"
+                        color={colors.RED}
+                        style={{ marginLeft: '12px' }}
+                    />
+                )}
             </GridItem>
-            <GridItem right>{addr.transfers < 1 ? 'Not used yet' : addr.transfers}</GridItem>
-            <GridItem amount>
-                <HiddenPlaceholder>{amount}</HiddenPlaceholder>
+            <GridItem revealed={isRevealed}>
+                {!fresh && (
+                    <>
+                        <HiddenPlaceholder>{amount}</HiddenPlaceholder>
+                        <FiatValue amount={amountF} symbol={symbol}>
+                            {({ value }) =>
+                                value ? (
+                                    <Badge>
+                                        <HiddenPlaceholder>{value}</HiddenPlaceholder>
+                                    </Badge>
+                                ) : null
+                            }
+                        </FiatValue>
+                    </>
+                )}
+                {fresh && <Translation id="RECEIVE_TABLE_NOT_USED" />}
             </GridItem>
-        </GridTable>
+            <GridItem>
+                {/* <IconButton variant="tertiary">
+                    <Icon size={16} icon="LABELING" />
+                </IconButton> */}
+                <IconButton variant="tertiary" isDisabled={!revealed} onClick={onCopy}>
+                    <Icon size={16} icon="COPY" />
+                </IconButton>
+            </GridItem>
+        </>
     );
 };
 
-const UsedAddresses = ({ account, addresses, showAddress }: Props) => {
+const UsedAddresses = ({ account, addresses, showAddress, addToast }: Props) => {
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
     if (account.networkType !== 'bitcoin' || !account.addresses) return null;
     const { used, unused } = account.addresses;
@@ -118,43 +193,61 @@ const UsedAddresses = ({ account, addresses, showAddress }: Props) => {
     const actionShowVisible = limit < list.length;
     const actionHideVisible = limit > DEFAULT_LIMIT;
 
+    const htmlElement = createRef<HTMLDivElement>();
+
+    const copyAddress = (address: string) => {
+        const result = copyToClipboard(address, htmlElement.current);
+        if (typeof result !== 'string') {
+            addToast({ type: 'copy-to-clipboard' });
+        }
+    };
+
     return (
         <StyledCard>
-            <GridTable header>
-                <GridItem>Path</GridItem>
-                <GridItem>Address</GridItem>
-                <GridItem right>Transactions</GridItem>
-                <GridItem>Total received</GridItem>
+            <GridTable>
+                <HeaderItem>
+                    <Translation id="RECEIVE_TABLE_PATH" />
+                </HeaderItem>
+                <HeaderItem>
+                    <Translation id="RECEIVE_TABLE_ADDRESS" />
+                </HeaderItem>
+                <HeaderItem>
+                    <Translation id="RECEIVE_TABLE_RECEIVED" />
+                </HeaderItem>
+                <HeaderItem />
+                {list.slice(0, limit).map((addr, index) => (
+                    <Item
+                        index={index}
+                        key={addr.path}
+                        addr={addr}
+                        symbol={account.symbol}
+                        revealed={addresses.find(f => f.address === addr.address)}
+                        onClick={() => showAddress(addr.path, addr.address)}
+                        onCopy={() => copyAddress(addr.address)}
+                    />
+                ))}
             </GridTable>
-            {list.slice(0, limit).map((addr, index) => (
-                <Item
-                    index={index}
-                    key={addr.path}
-                    addr={addr}
-                    symbol={account.symbol}
-                    revealed={!!addresses.find(f => f.address === addr.address)}
-                    onClick={() => showAddress(addr.path, addr.address)}
-                />
-            ))}
             {actionButtonsVisible && (
                 <Actions>
                     {actionShowVisible && (
                         <Button
                             variant="tertiary"
+                            size="small"
                             icon="ARROW_DOWN"
                             alignIcon="right"
                             onClick={() => setLimit(limit + 20)}
                         >
-                            Show more
+                            <Translation id="TR_SHOW_MORE" />
                         </Button>
                     )}
                     {actionHideVisible && (
                         <Button
                             variant="tertiary"
+                            size="small"
                             icon="ARROW_UP"
                             onClick={() => setLimit(DEFAULT_LIMIT)}
                         >
-                            Show less
+                            <Translation id="TR_SHOW_LESS" />
                         </Button>
                     )}
                 </Actions>

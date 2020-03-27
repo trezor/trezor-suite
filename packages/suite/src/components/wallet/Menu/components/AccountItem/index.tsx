@@ -20,6 +20,9 @@ const Wrapper = styled.div<{ selected: boolean }>`
         css`
             /* TODO: add from components */
             background: #f5f5f5;
+            position: sticky;
+            top: 0;
+            bottom: 0;
         `}
 `;
 
