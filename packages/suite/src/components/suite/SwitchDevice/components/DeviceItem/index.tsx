@@ -88,11 +88,6 @@ const StyledWalletInstance = styled(WalletInstance)`
     }
 `;
 
-const AddWallet = styled.div`
-    display: flex;
-    justify-content: center;
-`;
-
 const DeviceHeader = styled.div`
     display: flex;
     align-items: center;
