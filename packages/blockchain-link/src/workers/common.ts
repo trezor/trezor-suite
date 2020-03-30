@@ -1,7 +1,8 @@
 import { Response, BlockchainSettings, SubscriptionAccountInfo } from '../types';
 import { MESSAGES, RESPONSES } from '../constants';
 import { CustomError } from '../constants/errors';
-import { removeEmpty } from '../utils/workers';
+
+declare function postMessage(data: Response): void;
 
 class WorkerCommon {
     post: (data: Response) => void;
@@ -10,7 +11,7 @@ class WorkerCommon {
     addresses: string[];
     accounts: SubscriptionAccountInfo[];
     subscription: { [key: string]: boolean };
-    constructor(postFn: (data: Response) => void) {
+    constructor(postFn?: (data: Response) => void) {
         this.addresses = [];
         this.accounts = [];
         this.subscription = {};
@@ -20,11 +21,7 @@ class WorkerCommon {
             server: [],
         };
         this.debugPrefix = '[UnknownWorker]';
-        this.post = () =>
-            console.warn('BlockchainLink:workers.common: postMessage method is not set');
-        if (typeof postFn !== 'undefined') {
-            this.post = postFn;
-        }
+        this.post = postFn || postMessage;
     }
 
     handshake() {
@@ -78,7 +75,7 @@ class WorkerCommon {
     }
 
     response(data: Response) {
-        this.post.call(null, removeEmpty(data));
+        this.post.call(null, this.removeEmpty(data));
     }
 
     validateAddresses(addr: string[]) {
@@ -198,6 +195,15 @@ class WorkerCommon {
             [a[i], a[j]] = [a[j], a[i]];
         }
         return a;
+    }
+
+    removeEmpty(obj: Response) {
+        Object.keys(obj).forEach(key => {
+            if (Array.isArray(obj[key])) obj[key].map(o => this.removeEmpty(o));
+            if (obj[key] && typeof obj[key] === 'object') this.removeEmpty(obj[key]);
+            else if (obj[key] === undefined) delete obj[key];
+        });
+        return obj;
     }
 
     debug(...args: any[]) {

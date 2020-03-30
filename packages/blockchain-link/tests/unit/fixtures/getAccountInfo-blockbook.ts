@@ -445,48 +445,4 @@ export default [
             history: {},
         },
     },
-    {
-        description: 'clean array as response - undefined token name',
-        params: {
-            descriptor: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
-        },
-        serverFixtures: [
-            {
-                method: 'getAccountInfo',
-                response: {
-                    data: {
-                        address: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
-                        txs: 1,
-                        nonTokenTxs: 0,
-                        tokens: [
-                            {
-                                type: 'ERC20',
-                                name: undefined,
-                                symbol: 'TKNNME',
-                                contract: '0x0',
-                                balance: '1',
-                            },
-                        ],
-                    },
-                },
-            },
-        ],
-        response: {
-            descriptor: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
-            empty: false,
-            history: {
-                total: 1,
-                tokens: 1,
-            },
-            tokens: [
-                {
-                    type: 'ERC20',
-                    symbol: 'TKNNME',
-                    address: '0x0',
-                    balance: '1',
-                    decimals: 0,
-                },
-            ],
-        },
-    },
 ];
