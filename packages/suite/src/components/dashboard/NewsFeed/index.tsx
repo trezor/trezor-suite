@@ -67,16 +67,15 @@ const Right = styled.div`
 `;
 
 const NewsImage = styled.img`
-    width: 80px;
-    height: 80px;
+    width: 280px;
+    height: 140px;
     border-radius: 2px;
     object-fit: cover;
 `;
 
 const NewsTitle = styled.div<{ visited: boolean }>`
     font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${props =>
-        props.visited ? variables.FONT_WEIGHT.REGULAR : variables.FONT_WEIGHT.MEDIUM};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     color: ${props => (props.visited ? colors.BLACK25 : colors.BLACK0)};
     margin-bottom: 2px;
 `;
@@ -88,7 +87,6 @@ const Timestamp = styled.div<{ visited: boolean }>`
 `;
 
 const Description = styled.div<{ visited: boolean }>`
-    flex: 1;
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${props => (props.visited ? colors.BLACK50 : colors.BLACK25)};
 `;
@@ -124,17 +122,6 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                     'https://blog.trezor.io/the-economics-of-halving-what-will-happen-to-the-price-dab6df11755a?source=rss-b8686215a986------2',
                 description:
                     'Bitcoin is circling $10,000 again, and of course, you are wondering what will happen next. 2020 is a special year for Bitcoin in many ways. One of them is even written by Satoshi Nakamoto himself into its DNA — yes, the halving. The next halving is estimated to occur on 12 May 2020, so let’s take a closer look at what will happen afterwards.',
-            },
-            {
-                title:
-                    'Almost all of the Secure Element microchip manufacturers require non-disclosure agreements to be…',
-                thumbnail:
-                    'https://medium.com/_/stat?event=post.clientViewed&referrerSource=full_rss&postId=c97c743457d5',
-                pubDate: '2020-01-31 15:14:02',
-                link:
-                    'https://medium.com/@satoshilabs/almost-all-of-the-secure-element-microchip-manufacturers-require-non-disclosure-agreements-to-be-c97c743457d5?source=rss-b8686215a986------2',
-                description:
-                    'Almost all of the Secure Element microchip manufacturers require non-disclosure agreements to be signed, meaning that the hardware wallet manufactures using these chips in their devices might be prevented from publicly disclosing any discovered flaws or backdoors in the hardware. We’re currently looking into multiple chips on the market that could be used in the next generation of Trezor devices.',
             },
             {
                 title: 'Our Response to the Read Protection Downgrade Attack',

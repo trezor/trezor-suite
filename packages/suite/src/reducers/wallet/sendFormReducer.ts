@@ -24,6 +24,7 @@ const initialState = (
             localCurrency: { value: localCurrency },
         },
     ],
+    touched: false,
     isComposing: false,
     customFee: { value: null, error: null },
     isAdditionalFormVisible: false,
@@ -56,6 +57,12 @@ export default (state: State | null = null, action: WalletAction): State | null 
             // show additional form
             case SEND.SET_ADDITIONAL_FORM_VISIBILITY: {
                 draft.isAdditionalFormVisible = !state.isAdditionalFormVisible;
+                break;
+            }
+
+            // set touched
+            case SEND.SET_TOUCHED: {
+                draft.touched = action.touched;
                 break;
             }
 

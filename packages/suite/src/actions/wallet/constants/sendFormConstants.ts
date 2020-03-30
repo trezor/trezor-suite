@@ -13,6 +13,7 @@ export const HANDLE_FEE_VALUE_CHANGE = '@wallet-send-form/handle-fee-value';
 export const HANDLE_CUSTOM_FEE_VALUE_CHANGE = '@wallet-send-form/handle-custom-fee-value';
 
 export const CLEAR = '@wallet-send-form/clear';
+export const SET_TOUCHED = '@wallet-send-form/set-touched';
 export const DISPOSE = '@wallet-send-form/dispose';
 export const DELETE_TRANSACTION_INFO = '@wallet-send-form/delete-tx-info';
 

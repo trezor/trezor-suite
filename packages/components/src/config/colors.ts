@@ -1,5 +1,7 @@
 export default {
-    GREEN: '#30c100',
+    BACKGROUND: '#f7f7f7',
+
+    GREEN: '#30C101',
     GREENER: '#259f2a',
     YELLOW: '#fdcb33',
     YELLOWER: '#e9b000',

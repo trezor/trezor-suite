@@ -201,6 +201,7 @@ class WorkerCommon {
 
     removeEmpty(obj: Response) {
         Object.keys(obj).forEach(key => {
+            if (Array.isArray(obj[key])) obj[key].map(o => this.removeEmpty(o));
             if (obj[key] && typeof obj[key] === 'object') this.removeEmpty(obj[key]);
             else if (obj[key] === undefined) delete obj[key];
         });

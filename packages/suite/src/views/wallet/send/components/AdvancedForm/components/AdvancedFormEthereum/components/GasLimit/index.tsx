@@ -37,7 +37,7 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
         <Input
             variant="small"
             disabled={selectedFee.label === 'custom' && data.value !== null}
-            state={getInputState(error, value, true)}
+            state={getInputState(error, value, true, true)}
             topLabel={
                 <Label>
                     <Text>

@@ -58,7 +58,7 @@ export default ({ send, sendFormActions, account }: Props) => {
                 <Input
                     display="block"
                     variant="small"
-                    state={getInputState(error, value, true)}
+                    state={getInputState(error, value, true, false)}
                     bottomText={getError(error, maxFee, minFee)}
                     value={value || ''}
                     onChange={e => {
