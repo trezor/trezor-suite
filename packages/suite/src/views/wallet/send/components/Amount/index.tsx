@@ -90,7 +90,7 @@ export default ({ sendFormActions, output, selectedAccount }: Props) => {
         <Wrapper>
             <Left>
                 <StyledInput
-                    state={getInputState(error, value, isLoading)}
+                    state={getInputState(error, value, isLoading, true)}
                     topLabel={
                         <Label>
                             <Text>

@@ -37,7 +37,7 @@ export default ({ output, account, openModal, sendFormActions }: Props) => {
 
     return (
         <Input
-            state={getInputState(error, value)}
+            state={getInputState(error, value, false, true)}
             display="block"
             monospace
             topLabel={

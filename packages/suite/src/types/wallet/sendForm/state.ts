@@ -56,6 +56,7 @@ interface NetworkTypeBitcoin {
 }
 
 export interface State {
+    touched: boolean;
     deviceState: string;
     outputs: Output[];
     isComposing: boolean;

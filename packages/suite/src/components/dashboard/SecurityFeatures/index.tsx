@@ -82,7 +82,7 @@ const SecurityFeatures = ({
         : {
               variant: 'primary',
               icon: 'CHECK',
-              heading: 'Recovery seed created!',
+              heading: 'Backup seed created successfully!',
           };
 
     const pinData: CardProps = !pinEnabled

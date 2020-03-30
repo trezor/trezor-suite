@@ -33,9 +33,9 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
 
     return (
         <Textarea
-            state={getInputState(error, value)}
+            state={getInputState(error, value, false, false)}
             value={value || ''}
-            bottomText={getError(error)}
+            bottomText={value && getError(error)}
             onChange={e => sendFormActionsEthereum.handleData(e.target.value)}
             topLabel={
                 <Label>

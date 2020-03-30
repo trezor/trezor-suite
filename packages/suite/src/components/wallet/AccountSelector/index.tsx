@@ -79,7 +79,9 @@ export default ({ accounts, selectedAccount, title, goto, router }: Props) => {
         (otherAccount: Account) => account.symbol === otherAccount.symbol && otherAccount.visible,
     );
     const options = getOptions(otherAccounts);
-    const accountValue = options.find(option => option.value === account.index);
+    const accountValue = options.find(
+        option => option.value === account.index && option.accountType === account.accountType,
+    );
 
     return (
         <Wrapper>

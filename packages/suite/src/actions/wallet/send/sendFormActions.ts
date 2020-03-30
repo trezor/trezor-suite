@@ -424,7 +424,7 @@ export const toggleAdditionalFormVisibility = () => (dispatch: Dispatch, getStat
     if (!send || selectedAccount.status !== 'loaded') return;
 
     dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
-    dispatch(commonActions.cache());
+    dispatch(commonActions.cache(false));
 };
 
 export const dispose = () => (dispatch: Dispatch, _getState: GetState) => {
