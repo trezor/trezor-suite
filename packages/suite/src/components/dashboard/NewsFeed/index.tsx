@@ -7,10 +7,12 @@ import { Translation } from '@suite-components/Translation';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
+    width: 100%;
 `;
 
 const Section = styled.div`
     display: flex;
+    width: 100%;
     flex-direction: column;
 `;
 
@@ -42,13 +44,13 @@ const SectionAction = styled.div`
     color: ${colors.BLACK25};
 `;
 
-const BottomAction = styled.div`
-    display: flex;
-    margin-top: 13px;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    justify-content: center;
-    color: ${colors.BLACK25};
-`;
+// const BottomAction = styled.div`
+//     display: flex;
+//     margin-top: 13px;
+//     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+//     justify-content: center;
+//     color: ${colors.BLACK25};
+// `;
 
 const NewsItem = styled.div`
     display: flex;
@@ -98,6 +100,13 @@ const CTAWrapper = styled.a`
     margin-top: 12px;
 `;
 
+const Error = styled.div`
+    display: flex;
+    padding: 24px;
+    width: 100%;
+    justify-content: center;
+`;
+
 const CTAButton = styled(Button)``;
 
 export type Props = React.HTMLAttributes<HTMLDivElement>;
@@ -126,22 +135,24 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                 <SectionTitle>
                     <Translation id="TR_WHATS_NEW" />
                 </SectionTitle>
-                <SectionAction>
-                    <Button
-                        variant="tertiary"
-                        size="small"
-                        icon="CHECK"
-                        onClick={() => {
-                            console.log('do something');
-                        }}
-                    >
-                        <Translation id="TR_MARK_ALL_AS_READ" />
-                    </Button>
-                </SectionAction>
+                {!fetchError && (
+                    <SectionAction>
+                        <Button
+                            variant="tertiary"
+                            size="small"
+                            icon="CHECK"
+                            onClick={() => {
+                                console.log('do something');
+                            }}
+                        >
+                            <Translation id="TR_MARK_ALL_AS_READ" />
+                        </Button>
+                    </SectionAction>
+                )}
             </SectionHeader>
             <Content>
-                {fetchError && 'Error while fetching the news'}
                 <StyledCard>
+                    <Error>{fetchError && 'Error while fetching the news'}</Error>
                     {items.map(item => (
                         <NewsItem key={item.link}>
                             <Left>
