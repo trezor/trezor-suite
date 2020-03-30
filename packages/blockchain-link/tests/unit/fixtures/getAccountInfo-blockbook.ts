@@ -445,4 +445,34 @@ export default [
             history: {},
         },
     },
+    {
+        description: 'clean array as response - undefined descriptor value',
+        params: {
+            descriptor: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
+        },
+        serverFixtures: [
+            {
+                method: 'getAccountInfo',
+                response: {
+                    data: [
+                        {
+                            address: undefined,
+                            tokens: [
+                                {
+                                    type: 'not-ERC20',
+                                    path: "m/44'/0'/100'/1/0",
+                                    name: '1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d',
+                                    transfers: 0,
+                                },
+                            ],
+                        },
+                    ],
+                },
+            },
+        ],
+        response: {
+            empty: false,
+            history: {},
+        },
+    },
 ];
