@@ -64,6 +64,7 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
     //         : null;
 
     const XTicks = calcTicks(selectedRange.weeks).map(getUnixTime);
+    const xAxisPadding = selectedRange.label === 'year' ? 3600 * 24 * 7 : 3600 * 12; // 7 days or 12 hours
 
     return (
         <Wrapper>
@@ -86,8 +87,11 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
                             <XAxis
                                 dataKey="time"
                                 type="number"
-                                domain={[XTicks[0], XTicks[XTicks.length - 1]]}
-                                width={10}
+                                domain={[
+                                    XTicks[0] - xAxisPadding,
+                                    XTicks[XTicks.length - 1] + xAxisPadding,
+                                ]}
+                                // width={10}
                                 stroke={colors.BLACK80}
                                 interval={0}
                                 tick={<CustomXAxisTick selectedRange={selectedRange} />}
@@ -114,14 +118,14 @@ const AccountTransactionsGraph = React.memo((props: Props) => {
                                 dataKey={(data: AccountHistory[number]) => Number(data.sent)}
                                 stackId="stack"
                                 fill={colors.RED_ERROR}
-                                barSize={10}
+                                barSize={8}
                                 shape={<CustomBar variant="sent" />}
                             />
                             <Bar
                                 dataKey={(data: AccountHistory[number]) => Number(data.received)}
                                 stackId="stack"
                                 fill={colors.GREEN}
-                                barSize={10}
+                                barSize={8}
                                 shape={<CustomBar variant="received" />}
                             />
                         </BarChart>
