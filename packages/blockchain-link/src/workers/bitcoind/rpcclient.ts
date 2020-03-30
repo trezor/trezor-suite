@@ -16,6 +16,8 @@ import {
     AggregatedFiltersAndHash,
     PassedBlock,
     BlockhashTx,
+    TotalBalance,
+    GroupedTxs,
 } from '../../types/rpcbitcoind';
 import {
     HDNode as BitcoinJsHDNode,
@@ -83,7 +85,7 @@ export class RpcClient {
     ): Promise<Array<AggregatedFiltersAndHash>> {
         const batchArr: any[] = [];
         const aggregatedFiltersAndHash: AggregatedFiltersAndHash[] = [];
-        console.log('addFiltersToHashes started');
+        console.log('addFiltersToHashes started, must be called 1 time');
         hashesSeparated.forEach(oneArrWithHashes => {
             const tempBatchArr = oneArrWithHashes.map(oneHash => {
                 return { method: 'getblockfilter', params: [oneHash.result] };
@@ -94,9 +96,15 @@ export class RpcClient {
 
         await Promise.all(
             batchArr.map(async oneBatch => {
-                console.log('oneBatch', oneBatch);
+                console.log(
+                    `oneBatch of blockhashes with length ${oneBatch.length} wants to get blockFilters, before rpc send`
+                );
                 const hashes = await this.clientBatch.batch(oneBatch);
-                console.log('hashes', hashes);
+                console.log(
+                    'filters for oneBatch with hashes was arrived with length: ',
+                    hashes.length
+                );
+
                 blockHashes.push(hashes);
 
                 oneBatch.forEach((oneCommand, index) => {
@@ -107,7 +115,7 @@ export class RpcClient {
                 });
             })
         );
-        console.log('addFiltersToHashes completed');
+        console.log('addFiltersToHashes completed, must be called 1 time');
         this.cachedFiltersHashes = aggregatedFiltersAndHash;
         return aggregatedFiltersAndHash;
     }
@@ -135,48 +143,64 @@ export class RpcClient {
         const block_hash = Buffer.from(blockHash, 'hex');
         const key = block_hash.reverse().slice(0, 16);
         const search = Buffer.from(hexPubKey, 'hex');
-
+        let isMatched = false;
         if (filter.match(key, search) === true) {
-            return true;
+            console.log('was MATCHED');
+            isMatched = true;
         }
-        return false;
+        return isMatched;
     }
 
     async getBatchedRawTxs(txsAndBlock: Array<BlockhashTx>): Promise<Array<any>> {
         const batchArr = txsAndBlock.map(oneTx => {
-            return { method: 'getrawtransaction', params: [oneTx.txid, 1, oneTx.inBlockhash] };
+            return { method: 'getrawtransaction', params: [oneTx.txid, 1, oneTx.inBlockHash] };
         });
         const rawTxsData = await this.clientBatch.batch(batchArr);
         return rawTxsData;
     }
 
-    async iterateTxsInBlock(
+    async iterateOutTxsInBlock(
         walletAddr: string,
         allTxs: Array<any>
     ): Promise<AddressNotification[]> {
         const returnTxs: AddressNotification[] = [];
         await Promise.all(
             allTxs.map(async oneTxObj => {
-                if (oneTxObj.vout && Array.isArray(oneTxObj.vout)) {
-                    oneTxObj.vout.map(async oneVout => {
-                        if (
-                            oneVout.scriptPubKey &&
-                            oneVout.scriptPubKey.addresses &&
-                            this.checkAddressInArr(oneVout.scriptPubKey.addresses, walletAddr) ===
-                                true
-                        ) {
-                            const tx = await this.convertRawTransactionToNormal(oneTxObj);
-                            const notif: AddressNotification = {
-                                address: walletAddr,
-                                tx,
-                            };
-                            returnTxs.push(notif);
-                        }
-                    });
+                if (oneTxObj.rawTxData.vout && Array.isArray(oneTxObj.rawTxData.vout)) {
+                    console.log(
+                        'first if passed, vout:',
+                        oneTxObj.rawTxData.vout,
+                        Array.isArray(oneTxObj.rawTxData.vout)
+                    );
+                    await Promise.all(
+                        oneTxObj.rawTxData.vout.map(async oneVout => {
+                            if (
+                                oneVout.scriptPubKey &&
+                                oneVout.scriptPubKey.addresses &&
+                                this.checkAddressInArr(
+                                    oneVout.scriptPubKey.addresses,
+                                    walletAddr
+                                ) === true
+                            ) {
+                                console.log('found true', oneVout.scriptPubKey, walletAddr);
+                                console.log('oneTxObj', oneTxObj);
+                                oneTxObj.rawTxData.blockhash = oneTxObj.inBlockHash;
+                                const tx = await this.convertRawTransactionToNormal(
+                                    oneTxObj.rawTxData
+                                );
+                                const notif: AddressNotification = {
+                                    address: walletAddr,
+                                    tx,
+                                };
+                                returnTxs.push(notif);
+                                console.log('returnTxs', returnTxs);
+                            }
+                        })
+                    );
                 }
             })
         );
-
+        console.log('returnTxs zzz', returnTxs);
         return returnTxs;
     }
 
@@ -199,21 +223,21 @@ export class RpcClient {
     // }
 
     async prepareBlockchainData(): Promise<Array<AggregatedFiltersAndHash>> {
-        console.log('prepareBlockchainData started');
         if (this.cachedFiltersHashes) {
             console.log('prepareBlockchainData get from cache');
             return this.cachedFiltersHashes; // TODO: create update check if new block arrived
         }
 
+        console.log('prepareBlockchainData started without cache');
         const lastHeight: number = (await this.getBlockchainInfo(true)).height;
-        const blocksArr: number[] = Array.from(Array(lastHeight).keys()).reverse();
+        const blocksArr: number[] = Array.from(Array(100000).keys()).reverse();
 
         const batchHashCommands: object = {};
         let actualProp = 'someProp';
 
-        // divided into chunks due to limitations/errors in js/rpc (one chunk <= 50 000 elements)
+        // divided into chunks due to limitations/errors in js/rpc (one chunk <= 100 000 elements)
         blocksArr.forEach((oneBlock, index) => {
-            if (index % 50000 === 0) {
+            if (index % 100000 === 0) {
                 actualProp = `someProp${index}`;
                 batchHashCommands[actualProp] = [];
                 batchHashCommands[actualProp].push({ method: 'getblockhash', params: [oneBlock] });
@@ -225,11 +249,17 @@ export class RpcClient {
 
         await Promise.all(
             Object.keys(batchHashCommands).map(async oneBatch => {
-                const hashes = await this.clientBatch.batch(batchHashCommands[oneBatch]);
-                blockHashes.push(hashes);
+                try {
+                    console.log('before batch execution for knowing blockhashes');
+                    const hashes = await this.clientBatch.batch(batchHashCommands[oneBatch]);
+                    blockHashes.push(hashes);
+                    console.log('was received blockhashes with length', hashes.length);
+                } catch (e) {
+                    console.log('error inside batch hashes', e);
+                }
             })
         );
-
+        console.log('before addFiltersToHashes, must be called 1 time for all blockhashes');
         this.cachedFiltersHashes = await this.addFiltersToHashes(blockHashes);
 
         console.log('prepareBlockchainData init & return');
@@ -253,25 +283,70 @@ export class RpcClient {
             })
         );
 
+        // add previous blocks
+        await Promise.all(
+            returnArr.map(async oneRecord => {
+                const result = await this.getBlockInfo(oneRecord.blockHash);
+
+                const isBlockAlreadyExist = returnArr.some(oneElem => {
+                    return oneElem.blockHash === result.previousblockhash;
+                });
+                if (isBlockAlreadyExist === false) {
+                    returnArr.push({ walletAddr, blockHash: result.previousblockhash });
+                }
+            })
+        );
+
+        // add one next block blocks
+        await Promise.all(
+            returnArr.map(async oneRecord => {
+                const result = await this.getBlockInfo(oneRecord.blockHash);
+
+                const isBlockAlreadyExist = returnArr.some(oneElem => {
+                    if (result.nextblockhash && result.nextblockhash.length > 5) {
+                        return oneElem.blockHash === result.previousblockhash;
+                    }
+                    return true;
+                });
+
+                if (isBlockAlreadyExist === false) {
+                    returnArr.push({ walletAddr, blockHash: result.previousblockhash });
+                }
+            })
+        );
+
+        console.log('collected confirmed blocks to find our addr + prev. blocks', returnArr); // we need to scan those and previous blocks
         return returnArr;
     }
 
     async getAccountinfo(payload: AccountInfoParams): Promise<object> {
-        if (payload.details && payload.details === 'tokens') {
+        if (payload.details && (payload.details === 'tokens' || payload.details === 'basic')) {
             const mainAddrTxs = await this.getTxs(payload.descriptor);
-
+            const balanceObj: TotalBalance = this.getAvailableBalance(
+                mainAddrTxs.inputTxs,
+                mainAddrTxs.voutTxs,
+                payload.descriptor
+            );
+            // 1FxqeJa3gx35q9VEFJPp2yWb25bHmu8eGx
+            console.log(
+                'balanceObj.totalReceived.toFixed(8), balanceObj.totalSpent.toFixed(8)',
+                balanceObj.totalReceived.toFixed(8),
+                balanceObj.totalSpent.toFixed(8)
+            );
             const returnObj = {
                 address: payload.descriptor,
-                balance: '0',
-                totalReceived: '0',
-                totalSent: '0',
+                balance: balanceObj.finalBalance,
+                totalReceived: balanceObj.totalReceived,
+                totalSent: balanceObj.totalSpent,
                 unconfirmedBalance: '0',
                 unconfirmedTxs: 0,
-                txs: mainAddrTxs.length,
+                txs: mainAddrTxs.allTxs.length,
                 usedTokens: 20,
                 // eslint-disable-next-line @typescript-eslint/no-array-constructor
                 tokens: Array(),
             };
+
+            console.log('returnObj', returnObj);
             return returnObj;
         }
         return {};
@@ -287,7 +362,7 @@ export class RpcClient {
             totalSent: '0',
             unconfirmedBalance: '0',
             unconfirmedTxs: 0,
-            txs: mainAddrTxs.length,
+            txs: mainAddrTxs.allTxs.length,
             usedTokens: 20,
             // eslint-disable-next-line @typescript-eslint/no-array-constructor
             tokens: Array(),
@@ -306,32 +381,107 @@ export class RpcClient {
         await Promise.all(
             returnObj.tokens.map(async oneTokenObj => {
                 const txs = await this.getTxs(oneTokenObj.name);
-                oneTokenObj.transfers = txs.length;
+                oneTokenObj.transfers = txs.allTxs.length;
             })
         );
 
         return returnObj;
     }
 
-    async getTxs(byWalletAddr: string): Promise<Array<AddressNotification>> {
-        await this.prepareBlockchainData();
+    async getTxs(byWalletAddr: string): Promise<GroupedTxs> {
+        await this.prepareBlockchainData(); // 1FxqeJa3gx35q9VEFJPp2yWb25bHmu8eGx in 99701, 99700 tx blocks, 2 transactions
         const passedBlocks: PassedBlock[] = await this.getPassedBlocks(byWalletAddr);
         const allTxs: BlockhashTx[] = [];
 
         await Promise.all(
             passedBlocks.map(async onePassedBlock => {
-                const allTxsForBlock: BlockhashTx = await this.getBlockTxs(
+                const allTxsForBlock: BlockhashTx[] = await this.getBlockTxs(
                     onePassedBlock.blockHash
                 );
-                allTxs.push(allTxsForBlock);
+                allTxs.push(...allTxsForBlock);
             })
         );
-        const foundedTxs: AddressNotification[] = await this.iterateTxsInBlock(
+
+        const foundedTxs: AddressNotification[] = [];
+        // find transactons in VOUT [real it is input tx on needed wallet; + balance]
+        const voutTxs: AddressNotification[] = await this.iterateOutTxsInBlock(
             byWalletAddr,
             allTxs
         );
+        foundedTxs.push(...voutTxs);
 
-        return foundedTxs;
+        // find transactons in VIN [real it is output tx on needed wallet; - balance]
+        const inputTxs = await this.findInputTxs(allTxs, foundedTxs, byWalletAddr);
+        foundedTxs.push(...inputTxs);
+
+        return { allTxs: foundedTxs, inputTxs, voutTxs };
+    }
+
+    getAvailableBalance(
+        spended: AddressNotification[],
+        received: AddressNotification[],
+        neededAddr: string
+    ): TotalBalance {
+        const decodedAddrObj = Base58check.decode(neededAddr, 'hex'); // TODO: find this method in utxo trezor lib
+        const hexPubKey = `76a914${decodedAddrObj.data}88ac`; // TODO: find method for various adressess in uxo trezor lib
+
+        let finalBalance = new BigNumber(0, 8);
+        let totalReceived = new BigNumber(0, 8);
+        let totalSpent = new BigNumber(0, 8);
+
+        received.forEach((oneTx: AddressNotification) => {
+            oneTx.tx.vout.forEach(oneVout => {
+                if (oneVout.hex === hexPubKey) {
+                    if (oneVout.value) {
+                        finalBalance = finalBalance.plus(new BigNumber(oneVout.value));
+                        totalReceived = totalReceived.plus(new BigNumber(oneVout.value));
+                    }
+                }
+            });
+        });
+
+        spended.forEach((oneTx: AddressNotification) => {
+            oneTx.tx.vout.forEach(oneVout => {
+                if (oneVout.value) {
+                    finalBalance = finalBalance.minus(new BigNumber(oneVout.value));
+                    totalSpent = totalSpent.plus(new BigNumber(oneVout.value));
+                }
+            });
+        });
+
+        return { finalBalance, totalReceived, totalSpent };
+    }
+
+    async findInputTxs(
+        allTxs: BlockhashTx[],
+        passedVoutTxs: AddressNotification[],
+        walletAddr: string
+    ): Promise<Array<AddressNotification>> {
+        const foundedInTxs: BlockhashTx[] = [];
+        const returnTxs: AddressNotification[] = [];
+
+        passedVoutTxs.forEach(onePassedTx => {
+            allTxs.forEach(oneTx => {
+                if (
+                    oneTx.rawTxData.vin &&
+                    Array.isArray(oneTx.rawTxData.vin) &&
+                    oneTx.rawTxData.vin[0] &&
+                    oneTx.rawTxData.vin[0].txid === onePassedTx.tx.txid
+                ) {
+                    foundedInTxs.push(oneTx);
+                }
+            });
+        });
+
+        await Promise.all(
+            foundedInTxs.map(async (oneTx: BlockhashTx) => {
+                oneTx.rawTxData.blockhash = oneTx.inBlockHash;
+                const tx = await this.convertRawTransactionToNormal(oneTx.rawTxData);
+                returnTxs.push({ address: walletAddr, tx });
+            })
+        );
+
+        return returnTxs;
     }
 
     getBlockchainInfo(onlyLastBlockInfo = false) {
@@ -380,7 +530,7 @@ export class RpcClient {
     }
 
     getBlockTxs(byHash) {
-        return new Promise<BlockhashTx>((resolve, reject) => {
+        return new Promise<Array<BlockhashTx>>((resolve, reject) => {
             RpcBitcoinClient.call('getblock', [byHash, 2], function callback(
                 error: string,
                 response: any
@@ -390,7 +540,7 @@ export class RpcClient {
                 } else if (response.error) {
                     reject(new Error(response.error.message)); // possible error from blockchain
                 } else if (response.result && response.result.tx) {
-                    const returnObj: BlockhashTx = response.result.tx.map(oneTx => {
+                    const returnObj: BlockhashTx[] = response.result.tx.map(oneTx => {
                         return { txid: oneTx.txid, inBlockHash: byHash, rawTxData: oneTx };
                     });
                     resolve(returnObj);
@@ -482,6 +632,10 @@ export class RpcClient {
     }
 
     async convertRawTransactionToNormal(rawTxData: any): Promise<Transaction> {
+        if (rawTxData.inBlockHash) {
+            rawTxData.blockhash = rawTxData.inBlockHash;
+        }
+        console.log('rawTxData', rawTxData);
         const blockData = await this.getBlockInfo(rawTxData.blockhash);
 
         // check if this is a mining transaction
@@ -506,8 +660,8 @@ export class RpcClient {
                 })
             );
 
-            // detecting the sender
-            const senderObj = rawTxData.vout.find(({ n }) => rawTxData.vin[0].vout === n);
+            // detecting the sender?
+            const senderObj = inputTxs[0].vout.find(({ n }) => rawTxData.vin[0].vout === n);
             const [sender] = senderObj.scriptPubKey.addresses;
 
             // transform vin
@@ -559,7 +713,6 @@ export class RpcClient {
 
             // get total tx amounts
             const totalAmounts = this.getTxTotalAmountAndFee(inputTxs, rawTxData, sender);
-
             const transObj: Transaction = {
                 txid: rawTxData.txid,
                 version: rawTxData.version,
@@ -656,24 +809,27 @@ export class RpcClient {
                         oneOut.scriptPubKey.addresses[0].toLowerCase() === sender.toLowerCase()
                     ) {
                         totalTransactionIn = totalTransactionIn.plus(oneOut.value);
+                        console.log('doing calculations', totalTransactionIn.toFixed(8));
                     }
                 });
             }
-        });
+        }); // 0
 
         // get miner fee
         if (rawTxData.vout && Array.isArray(rawTxData.vout)) {
             let summOfVout: BigNumber = new BigNumber(0, 8);
+            console.log('rawTxData.vout', rawTxData.vout);
             rawTxData.vout.forEach(oneOutTx => {
                 summOfVout = summOfVout.plus(oneOutTx.value);
             });
 
             fee = totalTransactionIn.minus(summOfVout);
+            console.log('doing calculations fee', fee.toFixed(8));
         }
 
-        if (totalTransactionIn.eq(new BigNumber(0)) === true || fee.eq(new BigNumber(0)) === true) {
+        if (totalTransactionIn.eq(new BigNumber(0)) === true) {
             throw new Error(
-                'The amount in the transaction or Commission is zero. There may be an error in the calculations or changes in the bitcoind API.'
+                'The amount in the transaction is zero. There may be an error in the calculations or changes in the bitcoind API.'
             );
         }
 

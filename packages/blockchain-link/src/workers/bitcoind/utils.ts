@@ -14,9 +14,9 @@ import {
     AccountUtxo as BlockbookAccountUtxo,
     Transaction as BlockbookTransaction,
     VinVout,
-} from '../../types/blockbook';
-
-import { BlockchainInfo, NetworkInfo } from '../../types/rpcbitcoind';
+    BlockchainInfo,
+    NetworkInfo,
+} from '../../types/rpcbitcoind';
 
 import { Utxo } from '../../types/responses';
 
@@ -285,14 +285,11 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
     const empty = payload.txs === 0 && payload.unconfirmedTxs === 0;
     const unconfirmed = new BigNumber(payload.unconfirmedBalance);
     // reduce or increase availableBalance
-    const availableBalance =
-        !unconfirmed.isNaN() && !unconfirmed.isZero()
-            ? unconfirmed.plus(payload.balance).toString()
-            : payload.balance;
-
+    const availableBalance = payload.balance.dividedBy(100000000).toFixed(8);
+    console.log('availableBalance', availableBalance);
     return {
         descriptor,
-        balance: payload.balance,
+        balance: availableBalance,
         availableBalance,
         empty,
         tokens,

@@ -70,9 +70,9 @@ export interface ERC20 {
 
 export interface AccountInfo {
     address: string;
-    balance: string;
-    totalReceived: string;
-    totalSent: string;
+    balance: BigNumber;
+    totalReceived: BigNumber;
+    totalSent: BigNumber;
     txs: number;
     unconfirmedBalance: string;
     unconfirmedTxs: number;
@@ -186,8 +186,21 @@ export interface PassedBlock {
 
 export interface BlockhashTx {
     txid: string;
-    inBlockhash: string;
-    rawTx: any;
+    inBlockHash: string;
+    rawTxData: any;
+}
+
+// in BTC
+export interface TotalBalance {
+    finalBalance: BigNumber;
+    totalReceived: BigNumber;
+    totalSpent: BigNumber;
+}
+
+export interface GroupedTxs {
+    allTxs: AddressNotification[];
+    inputTxs: AddressNotification[];
+    voutTxs: AddressNotification[];
 }
 
 declare function FSend(method: 'getInfo', params: {}): Promise<BlockchainInfo>;
