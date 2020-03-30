@@ -6,10 +6,7 @@ RUN apt-get update && apt-get install -y \
     # required by core/emulator
     scons \
     libsdl2-dev \
-    libsdl2-image-dev \
-    # why not
-    zip \
-    rsync
+    libsdl2-image-dev 
 
 RUN apt-get install -y \
     python3-dev \
@@ -19,7 +16,7 @@ RUN pip3 install --upgrade setuptools
 RUN pip3 install trezor
 RUN pip3 install termcolor
 
-# USER root
+USER root
 
 # "fake" dbus address to prevent errors
 # https://github.com/SeleniumHQ/docker-selenium/issues/87
@@ -36,8 +33,14 @@ ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
 
 # copy python websocket server and all binaries
-COPY ./trezor-env/python /python
+COPY ./trezor-env/controller /controller
+# COPY ./trezor-env/controller/bin/. /
+# COPY ./trezor-env/controller/bin/. /
 
 RUN python3 --version
 RUN python3 -m pip --version
 RUN trezorctl version
+
+WORKDIR /controller
+
+# docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" 12f69fb0d096 /bin/bash

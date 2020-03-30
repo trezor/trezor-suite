@@ -1,0 +1,26 @@
+version: '3'
+services:
+  trezor-env:
+    build:
+      context: . # . stands for pwd, so docker-compose must be called from root
+      dockerfile: ./trezor-env/Dockerfile
+    network_mode: "host"
+    environment: 
+      - DISPLAY=$DISPLAY
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    command: >
+      bash -c "python3 ./main.py"
+      
+  cypress:
+    # the Docker image to use from https://github.com/cypress-io/cypress-docker-images
+    image: "cypress/included" # todo: pin version
+    # depends_on:
+    environment:
+      # pass base url to test pointing at the web application
+      - CYPRESS_baseUrl=http://localhost:3000
+    # share the current folder as volume to avoid copying
+    working_dir: /e2e
+    volumes:
+      - ./:/e2e

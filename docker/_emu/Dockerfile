@@ -41,6 +41,8 @@ ENV XDG_RUNTIME_DIR "/var/tmp"
 ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
 
-COPY ./packages/integration-tests/bin/trezor-emu-core-v2.1.4 ./trezor-emu-core-v2.1.4
-COPY ./packages/integration-tests/bin/trezor-emu-core-v2.2.0 ./trezor-emu-core-v2.2.0
-COPY ./packages/integration-tests/bin/trezor.elf ./trezor.elf
+COPY ./bin /trezor
+
+# and then run it with 
+# docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" 12f69fb0d096 /bin/bash
+

@@ -1,0 +1,33 @@
+version: '3'
+services:
+  trezor-env:
+    build:
+      context: . # . stands for pwd, so docker-compose must be called from root
+      dockerfile: ./trezor-env/Dockerfile
+    network_mode: "host"
+    container_name: trezor-env
+    environment: 
+      - DISPLAY=$DISPLAY
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    command: >
+      bash -c "python3 ./main.py"
+
+  # todo: add possibility to run dev server in docker
+  suite-dev:
+    build: 
+      context: . 
+      dockerfile: ./suite-dev/Dockerfile
+    network_mode: "host"
+    container_name: suite-dev
+    volumes:
+      - ../:/suite:ro
+    # command: >
+    #   bash -c "ls -la ../suite-orig"
+    command: "../run-inside.sh"
+    # command: >
+    #   bash -c "echo 'copying' && cp . ../suite-copy && echo 'copying done' && cd ../suite-copy && yarn
+    #   && yarn build:libs
+    #   && yarn suite:dev"  
+  
