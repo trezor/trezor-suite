@@ -446,7 +446,7 @@ export default [
         },
     },
     {
-        description: 'clean array as response - undefined descriptor value',
+        description: 'clean array as response - undefined token name',
         params: {
             descriptor: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
         },
@@ -454,25 +454,39 @@ export default [
             {
                 method: 'getAccountInfo',
                 response: {
-                    data: [
-                        {
-                            address: undefined,
-                            tokens: [
-                                {
-                                    type: 'not-ERC20',
-                                    path: "m/44'/0'/100'/1/0",
-                                    name: '1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d',
-                                    transfers: 0,
-                                },
-                            ],
-                        },
-                    ],
+                    data: {
+                        address: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
+                        txs: 1,
+                        nonTokenTxs: 0,
+                        tokens: [
+                            {
+                                type: 'ERC20',
+                                name: undefined,
+                                symbol: 'TKNNME',
+                                contract: '0x0',
+                                balance: '1',
+                            },
+                        ],
+                    },
                 },
             },
         ],
         response: {
+            descriptor: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
             empty: false,
-            history: {},
+            history: {
+                total: 1,
+                tokens: 1,
+            },
+            tokens: [
+                {
+                    type: 'ERC20',
+                    symbol: 'TKNNME',
+                    address: '0x0',
+                    balance: '1',
+                    decimals: 0,
+                },
+            ],
         },
     },
 ];
