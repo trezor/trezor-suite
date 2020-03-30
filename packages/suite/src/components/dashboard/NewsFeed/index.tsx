@@ -38,19 +38,13 @@ const SectionTitle = styled.div`
     color: ${colors.BLACK50};
 `;
 
-const SectionAction = styled.div`
-    font-size: 12px;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+const BottomAction = styled.div`
+    display: flex;
+    margin-top: 13px;
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    justify-content: center;
     color: ${colors.BLACK25};
 `;
-
-// const BottomAction = styled.div`
-//     display: flex;
-//     margin-top: 13px;
-//     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-//     justify-content: center;
-//     color: ${colors.BLACK25};
-// `;
 
 const NewsItem = styled.div`
     display: flex;
@@ -71,29 +65,29 @@ const Right = styled.div`
     flex-direction: column;
 `;
 
-const NewsImage = styled.img`
+const Image = styled.img`
     width: 280px;
     height: 140px;
     border-radius: 2px;
     object-fit: cover;
 `;
 
-const NewsTitle = styled.div<{ visited: boolean }>`
+const Title = styled.div<{ visited: boolean }>`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${props => (props.visited ? colors.BLACK25 : colors.BLACK0)};
+    color: ${colors.BLACK0};
     margin-bottom: 2px;
 `;
 
 const Timestamp = styled.div<{ visited: boolean }>`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => (props.visited ? colors.BLACK50 : colors.BLACK25)};
+    color: ${colors.BLACK25};
     margin-bottom: 5px;
 `;
 
 const Description = styled.div<{ visited: boolean }>`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => (props.visited ? colors.BLACK50 : colors.BLACK25)};
+    color: ${colors.BLACK25};
 `;
 
 const CTAWrapper = styled.a`
@@ -107,24 +101,27 @@ const Error = styled.div`
     justify-content: center;
 `;
 
-const CTAButton = styled(Button)``;
-
 export type Props = React.HTMLAttributes<HTMLDivElement>;
 
 const NewsFeed = React.memo(({ ...rest }: Props) => {
     const [items, setItems] = useState<any[]>([]);
     const [fetchError, setFetchError] = useState(false);
+    const [fetchCount, incrementFetchCount] = useState(3);
 
     useEffect(() => {
-        const postCount = 3;
         const origin =
             !!process.env.DEV_SERVER === true || process.env.BUILD === 'development'
-                ? 'https://staging-news.trezor.io'
+                ? // ? 'http://localhost:3003'
+                  'https://staging-news.trezor.io'
                 : 'https://news.trezor.io';
         axios
-            .get(`${origin}/posts?limit=${postCount}`)
+            .get(`${origin}/posts?limit=3`)
             .then(response => {
-                setItems(response.data);
+                if (response.data.length > 1) {
+                    setItems(response.data);
+                } else {
+                    setFetchError(true);
+                }
             })
             .catch(() => setFetchError(true));
     }, []);
@@ -135,55 +132,47 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                 <SectionTitle>
                     <Translation id="TR_WHATS_NEW" />
                 </SectionTitle>
-                {!fetchError && (
-                    <SectionAction>
-                        <Button
-                            variant="tertiary"
-                            size="small"
-                            icon="CHECK"
-                            onClick={() => {
-                                console.log('do something');
-                            }}
-                        >
-                            <Translation id="TR_MARK_ALL_AS_READ" />
-                        </Button>
-                    </SectionAction>
-                )}
             </SectionHeader>
             <Content>
                 <StyledCard>
-                    <Error>{fetchError && 'Error while fetching the news'}</Error>
+                    {fetchError && (
+                        <Error>
+                            <Translation id="TR_DASHBOARD_NEWS_ERROR" />
+                        </Error>
+                    )}
                     {items.map(item => (
                         <NewsItem key={item.link}>
                             <Left>
-                                <NewsImage src={item.thumbnail} />
+                                <Image src={item.thumbnail} />
                             </Left>
                             <Right>
-                                <NewsTitle visited={false}>{item.title}</NewsTitle>
+                                <CTAWrapper target="_blank" href={item.link}>
+                                    <Title visited={false}>{item.title}</Title>
+                                </CTAWrapper>
                                 <Timestamp visited={false}>{item.pubDate}</Timestamp>
                                 <Description visited={false}>{item.description}</Description>
-                                <CTAWrapper href={item.link}>
-                                    <CTAButton size="small" variant="tertiary">
-                                        Read more
-                                    </CTAButton>
+                                <CTAWrapper target="_blank" href={item.link}>
+                                    <Button size="small" variant="tertiary">
+                                        <Translation id="TR_READ_MORE" />
+                                    </Button>
                                 </CTAWrapper>
                             </Right>
                         </NewsItem>
                     ))}
                 </StyledCard>
             </Content>
-            {/* <BottomAction>
-                <Button
-                    variant="tertiary"
-                    size="small"
-                    icon="ARROW_DOWN"
-                    onClick={() => {
-                        console.log('do something');
-                    }}
-                >
-                    <Translation id="TR_SHOW_OLDER_NEWS" />
-                </Button>
-            </BottomAction> */}
+            {items.length === fetchCount && (
+                <BottomAction>
+                    <Button
+                        variant="tertiary"
+                        size="small"
+                        icon="ARROW_DOWN"
+                        onClick={() => incrementFetchCount(fetchCount + 3)}
+                    >
+                        <Translation id="TR_SHOW_OLDER_NEWS" />
+                    </Button>
+                </BottomAction>
+            )}
         </Section>
     );
 });

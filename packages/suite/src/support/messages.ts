@@ -2612,6 +2612,10 @@ const definedMessages = defineMessages({
         description: 'Show less used address',
         id: 'TR_SHOW_LESS',
     },
+    TR_DASHBOARD_NEWS_ERROR: {
+        defaultMessage: 'Error while fetching the news',
+        id: 'TR_DASHBOARD_NEWS_ERROR',
+    },
 } as const);
 
 export default definedMessages;
