@@ -5,8 +5,8 @@ import {
     getFiatRatesForTimestamps,
     fetchLastWeekRates,
 } from '@suite/services/coingecko';
-import { isTestnet } from '@wallet-utils/accountUtils';
-import { splitTimestampsByInterval, getBlockbookSafeTime } from '@suite-utils/date';
+import { isTestnet, formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { splitTimestampsByInterval, getBlockbookSafeTime, resetTime } from '@suite-utils/date';
 import { FIAT } from '@suite-config';
 import { Dispatch, GetState } from '@suite-types';
 import {
@@ -271,30 +271,39 @@ export const updateTxsRates = (account: Account, txs: AccountTransaction[]) => a
 };
 
 /**
- * Fetch the account history (received, sent amounts, num of txs) for the given interval
- * Returned data are grouped by month (weeks >= 52) or by day (weeks < 52)
+ * Fetch the account history (received, sent amounts, num of txs) for the given `startDate`, `endDate`.
+ * Returned data are grouped by `groupBy` seconds
  * No XRP support
  *
  * @param {Account} account
- * @param {number} weeks
+ * @param {Date} startDate
+ * @param {Date} endDate
+ * @param {number} groupBy
  * @returns
  */
-export const fetchAccountHistory = async (account: Account, weeks: number) => {
-    const secondsInDay = 3600 * 24;
-    const secondsInMonth = secondsInDay * 30;
-
-    const startDate = subWeeks(new Date(), weeks);
-    const endDate = new Date();
+export const fetchAccountHistory = async (
+    account: Account,
+    startDate: Date,
+    endDate: Date,
+    groupBy: number,
+) => {
+    const secondsInMonth = 3600 * 24 * 30;
+    const setDayToFirstOfMonth = groupBy >= secondsInMonth;
     const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
         coin: account.symbol,
         descriptor: account.descriptor,
-        from: Math.floor(startDate.getTime() / 1000),
-        to: Math.floor(endDate.getTime() / 1000),
-        groupBy: weeks >= 52 ? secondsInMonth : secondsInDay,
+        from: getUnixTime(startDate),
+        to: getUnixTime(endDate),
+        groupBy,
     });
 
     if (response?.success) {
-        return response.payload;
+        return response.payload.map(h => ({
+            ...h,
+            received: formatNetworkAmount(h.received, account.symbol),
+            sent: formatNetworkAmount(`-${h.sent}`, account.symbol),
+            time: resetTime(h.time, setDayToFirstOfMonth), // adapts to local timezone
+        }));
     }
 };
 

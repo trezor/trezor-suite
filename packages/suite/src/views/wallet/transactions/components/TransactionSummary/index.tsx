@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { colors, variables, Button } from '@trezor/components';
 import { Card } from '@suite-components';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
 import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
@@ -11,6 +10,7 @@ import AccountTransactionsGraph from './components/AccountTransactionsGraph';
 import { Await } from '@suite/types/utils';
 import { fetchAccountHistory } from '@suite/actions/wallet/fiatRatesActions';
 import BigNumber from 'bignumber.js';
+import { subWeeks } from 'date-fns';
 
 const Wrapper = styled.div`
     display: flex;
@@ -91,14 +91,15 @@ const TransactionSummary = (props: Props) => {
         let isSubscribed = true; // to make sure we are not updating state after component unmount
         const fetchData = async () => {
             if (isSubscribed) setIsLoading(true);
-            const res = await fetchAccountHistory(account, selectedRange!.weeks);
+            const startDate = subWeeks(new Date(), selectedRange.weeks);
+            const endDate = new Date();
+            const secondsInDay = 3600 * 24;
+            const secondsInMonth = secondsInDay * 30;
+            const groupBy = selectedRange.weeks >= 52 ? secondsInMonth : secondsInDay;
+            const res = await fetchAccountHistory(account, startDate, endDate, groupBy);
+
             if (res && isSubscribed) {
-                const processed = res.map(i => ({
-                    ...i,
-                    received: formatNetworkAmount(i.received, account.symbol),
-                    sent: formatNetworkAmount(`-${i.sent}`, account.symbol),
-                }));
-                setData(processed);
+                setData(res);
             } else {
                 setError(true);
             }

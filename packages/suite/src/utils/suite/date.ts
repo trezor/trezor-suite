@@ -1,13 +1,27 @@
-import { formatDistance, isBefore, addMonths, subWeeks, addDays, fromUnixTime } from 'date-fns';
+import {
+    formatDistance,
+    isBefore,
+    addMonths,
+    subWeeks,
+    addDays,
+    fromUnixTime,
+    getUnixTime,
+    startOfDay,
+    startOfMonth,
+} from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 
 export const formatDuration = (seconds: number) =>
     formatDistance(0, seconds * 1000, { includeSeconds: true });
 
+export const getLocalTimeZone = () => {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+};
+
 export const getDateWithTimeZone = (date: number, timeZone?: string) => {
     try {
         const unixDate = fromUnixTime(date / 1000);
-        const tz = timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const tz = timeZone || getLocalTimeZone();
         return utcToZonedTime(unixDate, tz);
     } catch (err) {
         console.error(err);
@@ -20,6 +34,7 @@ export const getTicksBetweenTimestamps = (
     to: Date,
     interval: 'month' | 'day' | '2-day',
 ) => {
+    const months = [];
     let fromDate = from;
     const toDate = to;
 
@@ -27,10 +42,14 @@ export const getTicksBetweenTimestamps = (
         return [];
     }
 
-    const months = [];
+    // set hh:mm:ss to 00:00:00
+    fromDate = startOfDay(fromDate);
+
     while (isBefore(fromDate, toDate)) {
         months.push(fromDate);
         if (interval === 'month') {
+            // set date to 1 in case of monthly timestamps
+            fromDate = startOfMonth(fromDate);
             fromDate = addMonths(fromDate, 1);
         }
         if (interval === 'day') {
@@ -40,7 +59,7 @@ export const getTicksBetweenTimestamps = (
             fromDate = addDays(fromDate, 2);
         }
     }
-    months.push(fromDate);
+    // months.push(toDate);
     return months;
 };
 
@@ -97,4 +116,45 @@ export const splitTimestampsByInterval = (
 export const getBlockbookSafeTime = () => {
     const timestamp = Math.floor(new Date().getTime() / 1000);
     return timestamp - 180; // current time - 3 mins
+};
+
+/**
+ * Sets hh:mm:ss to 00:00:00 in local timezone (UTC time may be different).
+ * If `resetDay` is true  sets date to the first of the month
+ * Returns unix timestamp
+ *
+ * @param {number} ts
+ * @param {number} weeks
+ * @returns
+ */
+export const resetTime = (ts: number, resetDay?: boolean) => {
+    let sanitizedTimestamp = fromUnixTime(ts);
+
+    sanitizedTimestamp = startOfDay(sanitizedTimestamp);
+    if (resetDay) {
+        sanitizedTimestamp = startOfMonth(sanitizedTimestamp);
+    }
+    return getUnixTime(sanitizedTimestamp);
+};
+
+/**
+ * Sets hh:mm:ss to 00:00:00 in UTC.
+ * If `resetDay` is true  sets date to the first of the month
+ * Returns unix timestamp
+ *
+ * @param {number} ts
+ * @param {number} weeks
+ * @returns
+ */
+export const resetUTCTime = (ts: number, resetDay?: boolean) => {
+    let sanitizedTimestamp = fromUnixTime(ts);
+    sanitizedTimestamp = fromUnixTime(sanitizedTimestamp.setUTCHours(0) / 1000);
+    sanitizedTimestamp = fromUnixTime(sanitizedTimestamp.setUTCMinutes(0) / 1000);
+    sanitizedTimestamp = fromUnixTime(sanitizedTimestamp.setUTCSeconds(0) / 1000);
+
+    if (resetDay) {
+        sanitizedTimestamp = fromUnixTime(sanitizedTimestamp.setUTCDate(1) / 1000);
+    }
+    const sanitizedUnixTimestamp = getUnixTime(sanitizedTimestamp);
+    return sanitizedUnixTimestamp;
 };
