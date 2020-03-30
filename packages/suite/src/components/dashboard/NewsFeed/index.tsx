@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 import Card from '@suite-components/Card';
 import { colors, Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
@@ -15,6 +16,8 @@ const Section = styled.div`
 
 const Content = styled.div`
     display: flex;
+    justify-content: center;
+    align-items: center;
 `;
 
 const SectionHeader = styled.div`
@@ -101,38 +104,20 @@ export type Props = React.HTMLAttributes<HTMLDivElement>;
 
 const NewsFeed = React.memo(({ ...rest }: Props) => {
     const [items, setItems] = useState<any[]>([]);
+    const [fetchError, setFetchError] = useState(false);
 
     useEffect(() => {
-        setItems([
-            {
-                title:
-                    'Gift yourself…anything! Use your Trezor to buy gift cards from around the world.',
-                thumbnail: 'https://cdn-images-1.medium.com/max/1024/1*0yuYSkoDM901kMqDNySzhg.jpeg',
-                pubDate: '2020-03-11 17:08:43',
-                link:
-                    'https://blog.trezor.io/gift-yourself-anything-use-your-trezor-to-buy-gift-cards-from-around-the-world-20f5051acf60?source=rss-b8686215a986------2',
-                description:
-                    'Most of you have probably heard this ‘gotcha’ from your nocoiner friends, colleagues, and relatives in the past. The good news is, the answer is very straightforward; yes, you can buy everything with bitcoin. The options had been there for a long time, and now it is easier than ever.',
-            },
-            {
-                title: 'The Economics of Halving: What Will Happen to the Price?',
-                thumbnail: 'https://cdn-images-1.medium.com/max/1024/1*0wmHo0Di1nAco9_9LBDXXg.jpeg',
-                pubDate: '2020-02-20 16:56:59',
-                link:
-                    'https://blog.trezor.io/the-economics-of-halving-what-will-happen-to-the-price-dab6df11755a?source=rss-b8686215a986------2',
-                description:
-                    'Bitcoin is circling $10,000 again, and of course, you are wondering what will happen next. 2020 is a special year for Bitcoin in many ways. One of them is even written by Satoshi Nakamoto himself into its DNA — yes, the halving. The next halving is estimated to occur on 12 May 2020, so let’s take a closer look at what will happen afterwards.',
-            },
-            {
-                title: 'Our Response to the Read Protection Downgrade Attack',
-                thumbnail: 'https://cdn-images-1.medium.com/max/1024/1*08VFZOY7rd6BRF7pMSUaNQ.png',
-                pubDate: '2020-01-31 14:39:10',
-                link:
-                    'https://blog.trezor.io/our-response-to-the-read-protection-downgrade-attack-28d23f8949c6?source=rss-b8686215a986------2',
-                description:
-                    'This article addresses the Read Protection (RDP) Downgrade attack discovered in both Trezor One and Trezor Model T by the Kraken Security Labs researchers on 30 October 2019. Here you can find information about how this physical attack works and how you can protect yourself against it if you’re concerned that you might be affected. In the second part of the article, we explain our threat model and say a few things about physical security.',
-            },
-        ]);
+        const postCount = 3;
+        const origin =
+            !!process.env.DEV_SERVER === true || process.env.BUILD === 'development'
+                ? 'https://staging-news.trezor.io'
+                : 'https://news.trezor.io';
+        axios
+            .get(`${origin}/posts?limit=${postCount}`)
+            .then(response => {
+                setItems(response.data);
+            })
+            .catch(() => setFetchError(true));
     }, []);
 
     return (
@@ -155,9 +140,10 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                 </SectionAction>
             </SectionHeader>
             <Content>
+                {fetchError && 'Error while fetching the news'}
                 <StyledCard>
                     {items.map(item => (
-                        <NewsItem>
+                        <NewsItem key={item.link}>
                             <Left>
                                 <NewsImage src={item.thumbnail} />
                             </Left>
@@ -175,7 +161,7 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                     ))}
                 </StyledCard>
             </Content>
-            <BottomAction>
+            {/* <BottomAction>
                 <Button
                     variant="tertiary"
                     size="small"
@@ -186,7 +172,7 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                 >
                     <Translation id="TR_SHOW_OLDER_NEWS" />
                 </Button>
-            </BottomAction>
+            </BottomAction> */}
         </Section>
     );
 });

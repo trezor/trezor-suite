@@ -26,6 +26,9 @@ module.exports = withBundleAnalyzer(
                     '@trezor',
                     '../packages/suite/src', // issue: https://github.com/zeit/next.js/issues/5666
                 ],
+                env: {
+                    DEV_SERVER: true,
+                },
                 exportTrailingSlash: true,
                 assetPrefix: process.env.assetPrefix || '',
                 webpack: (config, options) => {
