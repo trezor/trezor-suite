@@ -1,5 +1,5 @@
 import { Translation, Image } from '@suite-components';
-import { Button, H2, P, Icon, colors } from '@trezor/components';
+import { Button, H2, P } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
 
