@@ -1,28 +1,21 @@
-import { Translation } from '@suite-components/Translation';
-
+import { Translation, Image } from '@suite-components';
 import { Button, H2, P, Icon, colors } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-    max-width: 370px;
-    padding: 30px 48px;
+    max-width: 600px;
+    padding: 40px;
 `;
 
-const BackupButton = styled(Button)`
-    margin-bottom: 10px;
+const ImageWrapper = styled.div`
+    padding: 60px 0px;
 `;
 
-const StyledP = styled(P)`
-    /* boost-specificity hack to override P base styling */
-    && {
-        padding-bottom: 20px;
-    }
-`;
-
-const Row = styled.div`
+const Actions = styled.div`
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-between;
 `;
 
 interface Props {
@@ -35,28 +28,29 @@ const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup }: Props) => (
         <H2>
             <Translation id="TR_YOUR_TREZOR_IS_NOT_BACKED_UP" />
         </H2>
-        <Icon size={32} color={colors.YELLOW} icon="WARNING" />
-        <StyledP size="small">
+        <P size="small">
             <Translation id="TR_IF_YOUR_DEVICE_IS_EVER_LOST" />
-        </StyledP>
-        <Row>
-            <BackupButton
-                onClick={() => {
-                    onReceiveConfirmation(false);
-                    onCreateBackup();
-                }}
-                fullWidth
-            >
-                <Translation id="TR_CREATE_BACKUP_IN_3_MINUTES" />
-            </BackupButton>
+        </P>
+        <ImageWrapper>
+            <Image image="UNI_ERROR" />
+        </ImageWrapper>
+        <Actions>
             <Button
                 variant="secondary"
                 onClick={() => onReceiveConfirmation(true)}
                 data-test="@no-backup/take-risk-button"
             >
-                <Translation id="TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK" />
+                <Translation id="TR_SHOW_ADDRESS_ANYWAY" />
             </Button>
-        </Row>
+            <Button
+                onClick={() => {
+                    onReceiveConfirmation(false);
+                    onCreateBackup();
+                }}
+            >
+                <Translation id="TR_CREATE_BACKUP" />
+            </Button>
+        </Actions>
     </Wrapper>
 );
 
