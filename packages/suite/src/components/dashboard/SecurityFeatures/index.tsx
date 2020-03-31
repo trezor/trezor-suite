@@ -181,7 +181,12 @@ const SecurityFeatures = ({
     return (
         <Section {...rest}>
             <SectionHeader>
-                <SectionTitle>Security Features (Completed {featuresCompleted} of 4)</SectionTitle>
+                <SectionTitle>
+                    <Translation
+                        id="TR_SECURITY_FEATURES_COMPLETED_N"
+                        values={{ n: featuresCompleted, m: 4 }}
+                    />
+                </SectionTitle>
                 <SectionAction>
                     <Button
                         variant="tertiary"

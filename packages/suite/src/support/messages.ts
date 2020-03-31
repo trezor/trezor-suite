@@ -2692,6 +2692,10 @@ const definedMessages = defineMessages({
         id: 'TR_BACKUP_YOUR_DEVICE',
         defaultMessage: 'Backup your device',
     },
+    TR_SECURITY_FEATURES_COMPLETED_N: {
+        id: 'TR_SECURITY_FEATURES_COMPLETED_N',
+        defaultMessage: 'Security Features (Completed {n} of {m})',
+    },
 } as const);
 
 export default definedMessages;
