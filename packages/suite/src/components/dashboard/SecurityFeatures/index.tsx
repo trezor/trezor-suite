@@ -50,7 +50,7 @@ const SecurityFeatures = ({
     ...rest
 }: Props) => {
     const [isHidden, setIsHidden] = useState(false);
-    const [isTrezorActionEnabled, status] = useTrezorActionEnabled();
+    const [isTrezorActionEnabled] = useTrezorActionEnabled();
 
     const { discreetModeCompleted } = flags;
     let needsBackup;
