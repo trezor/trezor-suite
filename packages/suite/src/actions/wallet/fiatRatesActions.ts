@@ -1,5 +1,5 @@
 import TrezorConnect, { AccountTransaction, BlockchainFiatRatesUpdate } from 'trezor-connect';
-import { subWeeks, getUnixTime } from 'date-fns';
+import { getUnixTime } from 'date-fns';
 import {
     fetchCurrentFiatRates,
     getFiatRatesForTimestamps,
