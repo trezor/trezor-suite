@@ -18,10 +18,10 @@ export const useTrezorActionEnabled = () => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.UI);
 
     useEffect(() => {
-        if (device?.connected || uiLocked || deviceLocked) {
-            setIsEnabled(true);
-        } else {
+        if (!device?.connected || uiLocked || deviceLocked) {
             setIsEnabled(false);
+        } else {
+            setIsEnabled(true);
         }
         setStatus({
             deviceDisconnected: !!device?.connected,
