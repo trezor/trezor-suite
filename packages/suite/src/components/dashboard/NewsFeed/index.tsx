@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Card from '@suite-components/Card';
 import { colors, Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
+import { useFetchNews } from '@dashboard-hooks/news';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -103,29 +104,8 @@ const Error = styled.div`
 export type Props = React.HTMLAttributes<HTMLDivElement>;
 
 const NewsFeed = React.memo(({ ...rest }: Props) => {
-    const [items, setItems] = useState<any[]>([]);
     const [itemsVisibleCount, incrementVisibleCount] = useState(3);
-    const [fetchError, setFetchError] = useState(false);
-    const [fetchCount, incrementFetchCount] = useState(4);
-
-    useEffect(() => {
-        const origin =
-            !!process.env.DEV_SERVER === true || process.env.BUILD === 'development'
-                ? // ? 'http://localhost:3003'
-                  'https://staging-news.trezor.io'
-                : 'https://news.trezor.io';
-
-        fetch(`${origin}/posts?limit=${fetchCount}`)
-            .then(response => response.json())
-            .then(response => {
-                if (response.length > 1) {
-                    setItems(response);
-                } else {
-                    setFetchError(true);
-                }
-            })
-            .catch(() => setFetchError(true));
-    }, [fetchCount]);
+    const { items, isError, fetchCount, incrementFetchCount } = useFetchNews();
 
     return (
         <Section {...rest}>
@@ -136,7 +116,7 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
             </SectionHeader>
             <Content>
                 <StyledCard>
-                    {fetchError && (
+                    {isError && (
                         <Error>
                             <Translation id="TR_DASHBOARD_NEWS_ERROR" />
                         </Error>
