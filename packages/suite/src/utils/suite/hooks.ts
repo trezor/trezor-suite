@@ -21,14 +21,14 @@ export const useTrezorActionEnabled = () => {
         if (device?.connected || uiLocked || deviceLocked) {
             setIsEnabled(true);
             setStatus({
-                deviceDisconnected: true,
+                deviceDisconnected: !!device?.connected,
                 deviceLocked,
                 uiLocked,
             });
         } else {
             setIsEnabled(false);
             setStatus({
-                deviceDisconnected: false,
+                deviceDisconnected: !!device?.connected,
                 deviceLocked: false,
                 uiLocked: false,
             });
