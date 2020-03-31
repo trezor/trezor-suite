@@ -7,6 +7,7 @@ const StyledCard = styled(Card)`
     display: flex;
     flex-direction: column;
     width: 230px;
+    min-height: 210px; /* so it doesn't jump when all cards are completed */
     justify-content: center;
     padding: 16px 0;
     align-items: center;
