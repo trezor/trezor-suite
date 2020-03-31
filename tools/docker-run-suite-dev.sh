@@ -9,6 +9,7 @@
 
 # todo: resolve selective xhost permissions
 xhost +
+docker volume create nodemodules
 
 docker-compose -f ./docker/docker-compose.suite-dev.yml up --build --remove-orphans -d
 

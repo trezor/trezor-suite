@@ -1,0 +1,20 @@
+version: '2'
+services:
+  suite-base:
+    image: node:12
+    network_mode: "host"
+    volumes:
+      - ..:/usr/src/service
+      - nodemodules:/usr/src/service/node_modules
+    environment:
+      - NODE_ENV=development
+    working_dir: /usr/src/service
+
+  suite-install:
+    extends:
+      service: suite-base
+    command: bash -c "yarn && yarn build:libs"
+    
+volumes:
+  nodemodules:
+    external: true

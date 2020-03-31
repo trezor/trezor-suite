@@ -1,6 +1,8 @@
 # schema version '3' does not support 'extends' keyword anymore
 # https://stackoverflow.com/questions/52587643/how-to-extend-service-in-docker-compose-v3
 
+# todo: 
+# add 'build' service separating build and dev step. this would speed up everyday dev setup: https://hackernoon.com/a-better-way-to-develop-node-js-with-docker-cd29d3a0093 
 version: '2'
 services:
   trezor-env:
@@ -18,12 +20,11 @@ services:
       bash -c "python3 ./main.py"
 
   suite-dev:
-    build: 
-      context: . 
-      dockerfile: ./suite-dev/Dockerfile
-    network_mode: "host"
-    container_name: suite-dev
-    volumes:
-      - ../:/suite:ro
-    command: "../run-inside.sh"
-  
+    extends:
+      service: suite-base
+      file: docker-compose.suite-base.yml
+    command: bash -c "yarn suite:dev"
+
+volumes:
+  nodemodules:
+    external: true

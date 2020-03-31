@@ -142,7 +142,7 @@ const Onboarding = (props: Props) => {
             <Head>
                 <title>Onboarding | Trezor Suite</title>
             </Head>
-
+            <div>nazdar</div>
             <ProgressBar
                 total={steps.filter(s => s.progress).length}
                 current={steps.findIndex(step => activeStepId === step.id)}
