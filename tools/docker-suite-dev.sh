@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# script that will spin up local dev environment for trezor-suite
+
+# todos:
+# - figure out how to handle hot reload
+# - rebuild libs (and maybe packages) only if they changed
+# - improve "controller" html page to provide some basic info on development setup
+
+# todo: resolve selective xhost permissions
+xhost +
+# docker volume create nodemodules
+
+docker-compose -f ./docker/docker-compose.suite-dev.yml up --build --remove-orphans -d
+
+while ! nc -z localhost 3000; do
+  echo "Waiting for dev server to launch on localhost:3000...(it takes really long now)"
+  sleep 3
+done
+
+google-chrome http://localhost:3000
+google-chrome ./docker/trezor-env/websocket-client.html
+
+echo "containers now run in detached mode, to see logs type: "
+echo "docker logs -f $(docker ps -aqf name=trezor-env)"
+echo "docker logs -f $(docker ps -aqf name=suite-dev)"
+echo "to stop them: "
+echo "docker-compose -f ./docker/docker-compose.suite-dev.yml down"
+
+#google-chrome http://127.0.0.1:21325/status/
+
+
