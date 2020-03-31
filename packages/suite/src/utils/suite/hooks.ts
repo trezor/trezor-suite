@@ -3,8 +3,18 @@ import { useSelector as useReduxSelector, TypedUseSelectorHook } from 'react-red
 import { AppState } from '@suite-types';
 import { SUITE } from '@suite/actions/suite/constants';
 
+/**
+ * Properly typed useSelector hook, use this one instead of directly importing it from react-redux.
+ */
 export const useSelector: TypedUseSelectorHook<AppState> = useReduxSelector;
 
+/**
+ * React hook that returns array with 2 items.
+ * First item is boolean indicating whether we can make a call to the device.
+ * Second item is an object describing conditions that that were not satisfied (device disconnected, locks,...).
+ *
+ * @returns
+ */
 export const useTrezorActionEnabled = () => {
     const [isEnabled, setIsEnabled] = useState(false);
     const [status, setStatus] = useState<{
