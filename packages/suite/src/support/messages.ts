@@ -502,10 +502,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Create backup',
         id: 'TR_CREATE_BACKUP',
     },
-    TR_CREATE_BACKUP_IN_3_MINUTES: {
-        defaultMessage: 'Create a backup in 3 minutes',
-        id: 'TR_CREATE_BACKUP_IN_3_MINUTES',
-    },
     TR_CURRENCY: {
         defaultMessage: 'Currency',
         id: 'TR_CURRENCY',
