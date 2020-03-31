@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { colors, Button } from '@trezor/components';
+import { Translation } from '@suite-components';
 import SecurityCard, { Props as CardProps } from './components/SecurityCard';
 import { Props } from './Container';
 import { AcquiredDevice } from '@suite/types/suite';
@@ -71,10 +72,10 @@ const SecurityFeatures = ({
         ? {
               variant: 'secondary',
               icon: 'SIGN',
-              heading: 'Backup your device',
-              description: 'Recovery seed is an offline backup of your device',
+              heading: <Translation id="TR_BACKUP_YOUR_DEVICE" />,
+              description: <Translation id="TR_RECOVERY_SEED_IS_OFFLINE" />,
               cta: {
-                  label: 'Backup now',
+                  label: <Translation id="TR_BACKUP_NOW" />,
                   dataTest: 'backup',
                   action: () => {
                       goto('backup-index');
@@ -84,9 +85,9 @@ const SecurityFeatures = ({
         : {
               variant: 'primary',
               icon: 'CHECK',
-              heading: 'Backup seed created successfully!',
+              heading: <Translation id="TR_BACKUP_SEED_CREATED_SUCCESSFULLY" />,
               cta: {
-                  label: 'Check seed in Settings',
+                  label: <Translation id="TR_CHECK_SEED_IN_SETTINGS" />,
                   dataTest: 'seed-link',
                   action: () => {
                       goto('settings-device');
@@ -98,8 +99,8 @@ const SecurityFeatures = ({
         ? {
               variant: 'secondary',
               icon: 'WALLET',
-              heading: 'Enable PIN',
-              description: 'Set strong PIN number against unauthorized access',
+              heading: <Translation id="TR_ENABLE_PIN" />,
+              description: <Translation id="TR_SET_STRONG_PIN_NUMBER_AGAINST" />,
               cta: {
                   label: 'Enable',
                   dataTest: 'pin',
@@ -111,9 +112,9 @@ const SecurityFeatures = ({
         : {
               variant: 'primary',
               icon: 'CHECK',
-              heading: 'Device protected by PIN!',
+              heading: <Translation id="TR_DEVICE_PROTECTED_BY_PIN!" />,
               cta: {
-                  label: 'Change PIN in settings',
+                  label: <Translation id="TR_CHANGE_PIN_IN_SETTINGS" />,
                   dataTest: 'pin-link',
                   action: () => {
                       goto('settings-device');
@@ -125,10 +126,10 @@ const SecurityFeatures = ({
         ? {
               variant: 'secondary',
               icon: 'WALLET',
-              heading: 'Passphrase',
-              description: 'Enable passphrase description',
+              heading: <Translation id="TR_PASSPHRASE" />,
+              description: <Translation id="TR_ENABLE_PASSPHRASE_DESCRIPTION" />,
               cta: {
-                  label: 'Enable passphrase',
+                  label: <Translation id="TR_ENABLE_PASSPHRASE" />,
                   action: () =>
                       applySettings({
                           // eslint-disable-next-line @typescript-eslint/camelcase
@@ -140,9 +141,9 @@ const SecurityFeatures = ({
         : {
               variant: 'primary',
               icon: 'CHECK',
-              heading: 'Passphrase protection enabled!',
+              heading: <Translation id="TR_PASSPHRASE_PROTECTION_ENABLED" />,
               cta: {
-                  label: 'Create hidden wallet',
+                  label: <Translation id="TR_CREATE_HIDDEN_WALLET" />,
                   action: () => createDeviceInstance(device as AcquiredDevice),
                   dataTest: 'create-hidden-wallet',
               },
@@ -152,10 +153,10 @@ const SecurityFeatures = ({
         ? {
               variant: 'secondary',
               icon: 'WALLET',
-              heading: 'Discreet mode',
-              description: 'Try to temporarily hide away all balance-related numbers',
+              heading: <Translation id="TR_DISCREET_MODE" />,
+              description: <Translation id="TR_TRY_TO_TEMPORARILY_HIDE" />,
               cta: {
-                  label: 'Try Discreet mode',
+                  label: <Translation id="TR_TRY_DISCREET_MODE" />,
                   action: () => setDiscreetMode(true),
                   dataTest: 'discreet',
               },
@@ -163,9 +164,13 @@ const SecurityFeatures = ({
         : {
               variant: 'primary',
               icon: 'CHECK',
-              heading: 'Discreet mode tried out!',
+              heading: <Translation id="TR_DISCREET_MODE_TRIED_OUT" />,
               cta: {
-                  label: 'Toggle discreet mode',
+                  label: discreetMode ? (
+                      <Translation id="TR_DISABLE_DISCREET_MODE" />
+                  ) : (
+                      <Translation id="TR_ENABLE_DISCREET_MODE" />
+                  ),
                   action: () => setDiscreetMode(!discreetMode),
                   dataTest: 'toggle-discreet',
               },
