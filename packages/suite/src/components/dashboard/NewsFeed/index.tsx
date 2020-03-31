@@ -105,8 +105,9 @@ export type Props = React.HTMLAttributes<HTMLDivElement>;
 
 const NewsFeed = React.memo(({ ...rest }: Props) => {
     const [items, setItems] = useState<any[]>([]);
+    const [itemsVisibleCount, incrementVisibleCount] = useState(3);
     const [fetchError, setFetchError] = useState(false);
-    const [fetchCount, incrementFetchCount] = useState(3);
+    const [fetchCount, incrementFetchCount] = useState(4);
 
     useEffect(() => {
         const origin =
@@ -115,7 +116,7 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                   'https://staging-news.trezor.io'
                 : 'https://news.trezor.io';
         axios
-            .get(`${origin}/posts?limit=3`)
+            .get(`${origin}/posts?limit=${fetchCount}`)
             .then(response => {
                 if (response.data.length > 1) {
                     setItems(response.data);
@@ -140,7 +141,7 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                             <Translation id="TR_DASHBOARD_NEWS_ERROR" />
                         </Error>
                     )}
-                    {items.map(item => (
+                    {items.slice(0, itemsVisibleCount).map(item => (
                         <NewsItem key={item.link}>
                             <Left>
                                 <Image src={item.thumbnail} />
@@ -161,13 +162,16 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                     ))}
                 </StyledCard>
             </Content>
-            {items.length === fetchCount && (
+            {items.length > itemsVisibleCount && (
                 <BottomAction>
                     <Button
                         variant="tertiary"
                         size="small"
                         icon="ARROW_DOWN"
-                        onClick={() => incrementFetchCount(fetchCount + 3)}
+                        onClick={() => {
+                            incrementVisibleCount(itemsVisibleCount + 3);
+                            incrementFetchCount(fetchCount + 3);
+                        }}
                     >
                         <Translation id="TR_SHOW_OLDER_NEWS" />
                     </Button>
