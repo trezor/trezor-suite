@@ -125,7 +125,7 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                 }
             })
             .catch(() => setFetchError(true));
-    }, []);
+    }, [fetchCount]);
 
     return (
         <Section {...rest}>
