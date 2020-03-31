@@ -83,6 +83,7 @@ export interface Props extends CardProps {
         label: React.ReactNode;
         action?: () => void;
         dataTest?: string;
+        isDisabled?: boolean;
     };
 }
 
@@ -90,6 +91,7 @@ const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Pro
     const cardIcon = (
         <Icon icon={icon} size={30} color={variant === 'primary' ? colors.WHITE : colors.BLACK0} />
     );
+
     const isLoading = variant === 'disabled';
 
     return (
@@ -105,6 +107,7 @@ const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Pro
                     <Button
                         variant="tertiary"
                         size="small"
+                        isDisabled={cta.isDisabled}
                         onClick={cta.action}
                         {...(cta.dataTest
                             ? { 'data-test': `@dashboard/security-card/${cta.dataTest}/button` }

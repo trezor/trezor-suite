@@ -5,6 +5,7 @@ import { Translation } from '@suite-components';
 import SecurityCard, { Props as CardProps } from './components/SecurityCard';
 import { Props } from './Container';
 import { AcquiredDevice } from '@suite/types/suite';
+import { useTrezorActionEnabled } from '@suite-utils/hooks';
 
 const Section = styled.div`
     display: flex;
@@ -49,6 +50,8 @@ const SecurityFeatures = ({
     ...rest
 }: Props) => {
     const [isHidden, setIsHidden] = useState(false);
+    const [isTrezorActionEnabled, status] = useTrezorActionEnabled();
+
     const { discreetModeCompleted } = flags;
     let needsBackup;
     let pinEnabled;
@@ -107,6 +110,7 @@ const SecurityFeatures = ({
                   action: () => {
                       changePin({});
                   },
+                  isDisabled: !isTrezorActionEnabled,
               },
           }
         : {
@@ -136,6 +140,7 @@ const SecurityFeatures = ({
                           use_passphrase: true,
                       }),
                   dataTest: 'hidden-wallet',
+                  isDisabled: !isTrezorActionEnabled,
               },
           }
         : {
@@ -146,6 +151,7 @@ const SecurityFeatures = ({
                   label: <Translation id="TR_CREATE_HIDDEN_WALLET" />,
                   action: () => createDeviceInstance(device as AcquiredDevice),
                   dataTest: 'create-hidden-wallet',
+                  isDisabled: !isTrezorActionEnabled,
               },
           };
 
