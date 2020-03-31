@@ -9,7 +9,12 @@ rsync -arv --exclude='*/' . ../suite-copy
 rsync -arv .git ../suite-copy
 
 # todo: we possibly don't need to copy all packages
-rsync -arv --exclude 'node_modules/' ./packages/* ../suite-copy/packages
+rsync -arv \
+    --exclude 'node_modules/' \
+    --exclude 'suite-native/' \
+    --exclude 'suite-desktop/' \
+    --exclude '.next/' \
+    ./packages/* ../suite-copy/packages
 
 cd ../suite-copy
 yarn

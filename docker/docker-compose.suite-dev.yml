@@ -1,3 +1,6 @@
+# schema version '3' does not support 'extends' keyword anymore
+# https://stackoverflow.com/questions/52587643/how-to-extend-service-in-docker-compose-v3
+
 version: '3'
 services:
   trezor-env:
@@ -14,7 +17,6 @@ services:
     command: >
       bash -c "python3 ./main.py"
 
-  # todo: add possibility to run dev server in docker
   suite-dev:
     build: 
       context: . 
@@ -23,11 +25,5 @@ services:
     container_name: suite-dev
     volumes:
       - ../:/suite:ro
-    # command: >
-    #   bash -c "ls -la ../suite-orig"
     command: "../run-inside.sh"
-    # command: >
-    #   bash -c "echo 'copying' && cp . ../suite-copy && echo 'copying done' && cd ../suite-copy && yarn
-    #   && yarn build:libs
-    #   && yarn suite:dev"  
   

@@ -1,10 +1,14 @@
 version: '3'
 services:
   trezor-env:
+    # extends:
+    #   file: docker-compose.suite-dev.yml
+    #   service: trezor-env
     build:
       context: . # . stands for pwd, so docker-compose must be called from root
       dockerfile: ./trezor-env/Dockerfile
     network_mode: "host"
+    container_name: trezor-env
     environment: 
       - DISPLAY=$DISPLAY
       - QT_X11_NO_MITSHM=1
@@ -12,15 +16,32 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
     command: >
       bash -c "python3 ./main.py"
-      
+  suite-dev:
+    # extends:
+    #   file: docker-compose.suite-dev.yml
+    #   service: suite-dev
+    build: 
+      context: . 
+      dockerfile: ./suite-dev/Dockerfile
+    network_mode: "host"
+    container_name: suite-dev
+    volumes:
+      - ../:/suite:ro
+    command: "../run-inside.sh"
   cypress:
     # the Docker image to use from https://github.com/cypress-io/cypress-docker-images
-    image: "cypress/included" # todo: pin version
-    # depends_on:
+    image: cypress/included:4.3.0 # todo: pin version
+    depends_on:
+      - suite-dev
+      - trezor-env
+    network_mode: "host"
     environment:
-      # pass base url to test pointing at the web application
       - CYPRESS_baseUrl=http://localhost:3000
+      - DISPLAY=$DISPLAY
+      - QT_X11_NO_MITSHM=1
     # share the current folder as volume to avoid copying
     working_dir: /e2e
+    entrypoint: bash -c "yarn && cypress open --project /e2e/packages/integration-tests/projects/suite-web"
     volumes:
-      - ./:/e2e
+      - ../:/e2e
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw

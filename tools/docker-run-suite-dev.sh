@@ -7,6 +7,9 @@
 # - rebuild libs (and maybe packages) only if they changed
 # - improve "controller" html page to provide some basic info on development setup
 
+# todo: resolve selective xhost permissions
+xhost +
+
 docker-compose -f ./docker/docker-compose.suite-dev.yml up --build --remove-orphans -d
 
 while ! nc -z localhost 3000; do
