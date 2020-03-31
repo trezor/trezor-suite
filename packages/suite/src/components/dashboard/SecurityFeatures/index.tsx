@@ -39,8 +39,10 @@ const SecurityFeatures = ({
     device,
     isDisabled,
     flags,
+    discreetMode,
     setDiscreetMode,
     createDeviceInstance,
+    applySettings,
     goto,
     changePin,
     ...rest
@@ -83,6 +85,13 @@ const SecurityFeatures = ({
               variant: 'primary',
               icon: 'CHECK',
               heading: 'Backup seed created successfully!',
+              cta: {
+                  label: 'Check seed in Settings',
+                  dataTest: 'seed-link',
+                  action: () => {
+                      goto('settings-device');
+                  },
+              },
           };
 
     const pinData: CardProps = !pinEnabled
@@ -103,17 +112,28 @@ const SecurityFeatures = ({
               variant: 'primary',
               icon: 'CHECK',
               heading: 'Device protected by PIN!',
+              cta: {
+                  label: 'Change PIN in settings',
+                  dataTest: 'pin-link',
+                  action: () => {
+                      goto('settings-device');
+                  },
+              },
           };
 
     const hiddenWalletData: CardProps = !hiddenWalletCreated
         ? {
               variant: 'secondary',
               icon: 'WALLET',
-              heading: 'Hidden Wallet',
-              description: 'Create a Wallet hidden behind a strong passphrase',
+              heading: 'Passphrase',
+              description: 'Enable passphrase description',
               cta: {
-                  label: 'Create hidden wallet',
-                  action: () => createDeviceInstance(device as AcquiredDevice),
+                  label: 'Enable passphrase',
+                  action: () =>
+                      applySettings({
+                          // eslint-disable-next-line @typescript-eslint/camelcase
+                          use_passphrase: true,
+                      }),
                   dataTest: 'hidden-wallet',
               },
           }
@@ -121,6 +141,11 @@ const SecurityFeatures = ({
               variant: 'primary',
               icon: 'CHECK',
               heading: 'Passphrase protection enabled!',
+              cta: {
+                  label: 'Create hidden wallet',
+                  action: () => createDeviceInstance(device as AcquiredDevice),
+                  dataTest: 'create-hidden-wallet',
+              },
           };
 
     const discreetModeData: CardProps = !discreetModeCompleted
@@ -138,7 +163,12 @@ const SecurityFeatures = ({
         : {
               variant: 'primary',
               icon: 'CHECK',
-              heading: 'Discreet mode enabled!',
+              heading: 'Discreet mode tried out!',
+              cta: {
+                  label: 'Toggle discreet mode',
+                  action: () => setDiscreetMode(!discreetMode),
+                  dataTest: 'toggle-discreet',
+              },
           };
 
     const cards = [backupData, pinData, hiddenWalletData, discreetModeData];
