@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 import Card from '@suite-components/Card';
 import { colors, Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
@@ -115,11 +114,12 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                 ? // ? 'http://localhost:3003'
                   'https://staging-news.trezor.io'
                 : 'https://news.trezor.io';
-        axios
-            .get(`${origin}/posts?limit=${fetchCount}`)
+
+        fetch(`${origin}/posts?limit=${fetchCount}`)
+            .then(response => response.json())
             .then(response => {
-                if (response.data.length > 1) {
-                    setItems(response.data);
+                if (response.length > 1) {
+                    setItems(response);
                 } else {
                     setFetchError(true);
                 }
