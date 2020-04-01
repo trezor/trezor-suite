@@ -2,37 +2,21 @@ version: '2'
 services:
 
   suite-base:
-    image: node:12
+    build:
+      context: .
+      dockerfile: ./suite/Dockerfile
     network_mode: "host"
     volumes:
       - ..:/usr/src/service
-      - nodemodules:/usr/src/service/node_modules
+      - ../node_modules:/usr/src/service/node_modules
     environment:
       - NODE_ENV=development
+      - LOCAL_USER_ID=$LOCAL_USER_ID
     working_dir: /usr/src/service
 
   suite-install:
     extends:
       service: suite-base
-    command: bash -c "yarn && yarn build:libs"
+    command: bash -c "ls -lan && ls -lan ./packages/suite-web/public/static/translations && yarn && yarn build:libs"
 
-  # test-base:
-  #   # the Docker image to use from https://github.com/cypress-io/cypress-docker-images
-  #   image: cypress/included:4.3.0
-  #   container_name: test-runner
-  #   ipc: host
-  #   depends_on:
-  #     - suite-dev
-  #     - trezor-env
-  #   network_mode: "host"
-  #   environment:
-  #     - DISPLAY=$DISPLAY
-  #     - QT_X11_NO_MITSHM=1
-  #   working_dir: /e2e
-  #   volumes:
-  #     - ../:/e2e
-  #     - /tmp/.X11-unix:/tmp/.X11-unix:rw
-  #     - nodemodules:/e2e/node_modules
-volumes:
-  nodemodules:
-    external: true
+  

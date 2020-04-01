@@ -6,11 +6,11 @@
 # - figure out how to handle hot reload
 # - rebuild libs (and maybe packages) only if they changed
 # - improve "controller" html page to provide some basic info on development setup
+# - resolve selective xhost permissions
 
-# todo: resolve selective xhost permissions
 xhost +
-# docker volume create nodemodules
 
+export LOCAL_USER_ID=`id -u $USER`
 docker-compose -f ./docker/docker-compose.suite-dev.yml up --build --remove-orphans -d
 
 while ! nc -z localhost 3000; do
@@ -22,7 +22,9 @@ google-chrome http://localhost:3000
 google-chrome ./docker/trezor-env/websocket-client.html
 
 echo "containers now run in detached mode, to see logs type: "
+echo "trezor-env logs:"
 echo "docker logs -f $(docker ps -aqf name=trezor-env)"
+echo "suite-dev logs:"
 echo "docker logs -f $(docker ps -aqf name=suite-dev)"
 echo "to stop them: "
 echo "docker-compose -f ./docker/docker-compose.suite-dev.yml down"

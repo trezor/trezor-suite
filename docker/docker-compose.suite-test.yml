@@ -27,8 +27,3 @@ services:
     volumes:
       - ../:/e2e
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - nodemodules:/e2e/node_modules
-
-volumes:
-  nodemodules:
-    external: true  
