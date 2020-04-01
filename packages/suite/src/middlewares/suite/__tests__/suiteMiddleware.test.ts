@@ -113,8 +113,12 @@ describe('suite middleware', () => {
                 type: STORAGE.LOADED,
                 payload: {
                     suite: {
-                        language: 'cs',
-                        initialRun: true,
+                        settings: {
+                            language: 'cs',
+                        },
+                        flags: {
+                            initialRun: true,
+                        },
                     },
                 },
             });
@@ -131,8 +135,12 @@ describe('suite middleware', () => {
                 type: STORAGE.LOADED,
                 payload: {
                     suite: {
-                        language: 'cs',
-                        initialRun: false,
+                        settings: {
+                            language: 'cs',
+                        },
+                        flags: {
+                            initialRun: false,
+                        },
                     },
                 },
             });

@@ -1,10 +1,12 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import settingsReducer from '@wallet-reducers/settingsReducer';
+import suiteReducer from '@suite-reducers/suiteReducer';
 import fixtures from '../__fixtures__/walletSettings';
 
 export const getInitialState = (settings?: any) => {
     return {
+        suite: { ...suiteReducer(undefined, { type: 'foo' } as any) },
         wallet: {
             settings: {
                 ...settingsReducer(undefined, { type: 'foo' } as any),
