@@ -15,7 +15,7 @@ export const useSelector: TypedUseSelectorHook<AppState> = useReduxSelector;
  *
  * @returns
  */
-export const useTrezorActionEnabled = () => {
+export const useDeviceActionLocks = () => {
     const [isEnabled, setIsEnabled] = useState(false);
     const [status, setStatus] = useState<{
         deviceDisconnected: boolean;
