@@ -44,7 +44,7 @@ interface Range {
     weeks: number;
 }
 
-const TransactionsGraph = React.memo((props: Props) => {
+const AccountTransactionsGraph = React.memo((props: Props) => {
     const { data, isLoading, selectedRange } = props;
 
     // Will be useful if we'll wanna use custom ticks values
@@ -136,4 +136,4 @@ const TransactionsGraph = React.memo((props: Props) => {
     );
 });
 
-export default TransactionsGraph;
+export default AccountTransactionsGraph;

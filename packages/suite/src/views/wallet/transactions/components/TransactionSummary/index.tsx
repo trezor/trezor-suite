@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { colors, variables, Button } from '@trezor/components';
-import { Translation, Card, TransactionsGraph } from '@suite-components';
+import { Card } from '@suite-components';
 import { Account } from '@wallet-types';
+import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import InfoCard from './components/InfoCard';
+import AccountTransactionsGraph from './components/AccountTransactionsGraph';
 import { Await } from '@suite/types/utils';
 import { fetchAccountHistory } from '@suite/actions/wallet/fiatRatesActions';
 import BigNumber from 'bignumber.js';
@@ -141,7 +143,7 @@ const TransactionSummary = (props: Props) => {
                     {!error && (
                         <>
                             <GraphWrapper>
-                                <TransactionsGraph
+                                <AccountTransactionsGraph
                                     account={props.account}
                                     isLoading={isLoading}
                                     data={data}
