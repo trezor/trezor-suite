@@ -21,6 +21,7 @@ import WebusbButton from './WebusbButton';
 import HiddenPlaceholder from './HiddenPlaceholder/Container';
 import QrCode from './QrCode';
 import QuestionTooltip from './QuestionTooltip';
+import TransactionsGraph from './TransactionsGraph';
 
 import { Translation } from './Translation';
 import { AccountLabeling, AddressLabeling, WalletLabeling } from './Labeling';
@@ -53,4 +54,5 @@ export {
     WalletLabeling,
     Image,
     QuestionTooltip,
+    TransactionsGraph,
 };
