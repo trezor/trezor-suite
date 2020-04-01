@@ -73,7 +73,7 @@ suite-web test integration google-chrome:
         # add DEBUG=cypress:* env variable to debug cypress in ci
         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
         - export BROWSER=chrome
-        - yarn concurrently --success first --kill-others "python3 ./docker/trezor-env/controller/main.py" "cypress run --browser $BROWSER --project ./projects/suite-web"
+        - yarn concurrently --success first --kill-others "python3 ./docker/trezor-env/controller/main.py" "cypress run --browser $BROWSER --project ./packages/integration-tests/projects/suite-web"
     artifacts:
         expire_in: 7 days
         when: always

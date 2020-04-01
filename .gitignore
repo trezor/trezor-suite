@@ -29,3 +29,4 @@ dist
 
 *.code-workspace
 __docker-snapshots__
+__pychace__
