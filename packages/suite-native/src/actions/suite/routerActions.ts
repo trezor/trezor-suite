@@ -253,7 +253,7 @@ export const back = () => (dispatch: Dispatch) => {
  * Redirects to onboarding if `suite.initialRun` is set to true
  */
 export const initialRedirection = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { initialRun } = getState().suite;
+    const { initialRun } = getState().suite.flags;
     const unlocked = dispatch(isRouterUnlocked());
     if (initialRun && unlocked) {
         await dispatch(onLocationChange(getRoute('suite-welcome')));

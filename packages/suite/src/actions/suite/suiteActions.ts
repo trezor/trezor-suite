@@ -12,7 +12,6 @@ export type SuiteActions =
     | { type: typeof SUITE.INIT }
     | { type: typeof SUITE.READY }
     | { type: typeof SUITE.ERROR; error: string }
-    | { type: typeof SUITE.INITIAL_RUN_COMPLETED }
     | { type: typeof SUITE.CONNECT_INITIALIZED }
     | { type: typeof SUITE.SELECT_DEVICE; payload?: TrezorDevice }
     | { type: typeof SUITE.UPDATE_SELECTED_DEVICE; payload: TrezorDevice }
@@ -39,6 +38,11 @@ export type SuiteActions =
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | { type: typeof SUITE.LOCK_DEVICE; payload: boolean }
     | { type: typeof SUITE.LOCK_ROUTER; payload: boolean }
+    | {
+          type: typeof SUITE.SET_FLAG;
+          key: keyof AppState['suite']['flags'];
+          value: boolean;
+      }
     | { type: typeof SUITE.APP_CHANGED; payload: AppState['router']['app'] }
     | { type: typeof SUITE.TOGGLE_ANALYTICS }
     | {
@@ -47,14 +51,15 @@ export type SuiteActions =
           payload?: string;
       };
 
-/**
- * @returns {Action|void}
- */
+export const setFlag = (key: keyof AppState['suite']['flags'], value: boolean): Action => ({
+    type: SUITE.SET_FLAG,
+    key,
+    value,
+});
+
 export const initialRunCompleted = () => (dispatch: Dispatch, getState: GetState) => {
-    if (getState().suite.initialRun) {
-        dispatch({
-            type: SUITE.INITIAL_RUN_COMPLETED,
-        });
+    if (getState().suite.flags.initialRun) {
+        dispatch(setFlag('initialRun', false));
     }
 };
 

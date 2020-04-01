@@ -772,7 +772,7 @@ const definedMessages = defineMessages({
         id: 'TR_ETH_GAS_PRICE_NOT_NUMBER',
     },
     TR_EXCHANGE_RATE: {
-        defaultMessage: 'Exchange rate',
+        defaultMessage: 'Exchange rate (7d)',
         id: 'TR_EXCHANGE_RATE',
     },
     TR_FAILED_BACKUP: {
@@ -2518,6 +2518,10 @@ const definedMessages = defineMessages({
         id: 'TR_TO_ACCESS_OTHER_WALLETS',
         defaultMessage: 'To access other wallets please connect your device.',
     },
+    TR_TO_ACCESS_OTHER_WALLETS_DISCOVER: {
+        id: 'TR_TO_ACCESS_OTHER_WALLETS_DISCOVER',
+        defaultMessage: 'To access other wallets discover the undiscovered wallet first.',
+    },
     TR_EJECT_HEADING: {
         id: 'TR_EJECT_HEADING',
         defaultMessage: 'Eject',
@@ -2607,6 +2611,90 @@ const definedMessages = defineMessages({
         defaultMessage: 'Show less',
         description: 'Show less used address',
         id: 'TR_SHOW_LESS',
+    },
+    TR_RECOVERY_SEED_IS_OFFLINE: {
+        id: 'TR_RECOVERY_SEED_IS_OFFLINE',
+        defaultMessage: 'Recovery seed is an offline backup of your device',
+    },
+    TR_BACKUP_NOW: {
+        id: 'TR_BACKUP_NOW',
+        defaultMessage: 'Backup now',
+    },
+    TR_BACKUP_SEED_CREATED_SUCCESSFULLY: {
+        id: 'TR_BACKUP_SEED_CREATED_SUCCESSFULLY',
+        defaultMessage: 'Backup seed created successfully!',
+    },
+    TR_CHECK_SEED_IN_SETTINGS: {
+        id: 'TR_CHECK_SEED_IN_SETTINGS',
+        defaultMessage: 'Check seed in Settings',
+    },
+    TR_ENABLE_PIN: {
+        id: 'TR_ENABLE_PIN',
+        defaultMessage: 'Enable PIN',
+    },
+    TR_SET_STRONG_PIN_NUMBER_AGAINST: {
+        id: 'TR_SET_STRONG_PIN_NUMBER_AGAINST',
+        defaultMessage: 'Set strong PIN number against unauthorized access',
+    },
+    TR_CHANGE_PIN_IN_SETTINGS: {
+        id: 'TR_CHANGE_PIN_IN_SETTINGS',
+        defaultMessage: 'Change PIN in Settings',
+    },
+    'TR_DEVICE_PROTECTED_BY_PIN!': {
+        id: 'TR_DEVICE_PROTECTED_BY_PIN!',
+        defaultMessage: 'Device protected by PIN!',
+    },
+    TR_ENABLE_PASSPHRASE_DESCRIPTION: {
+        id: 'TR_ENABLE_PASSPHRASE_DESCRIPTION',
+        defaultMessage: 'Enable passphrase description',
+    },
+    TR_ENABLE_PASSPHRASE: {
+        id: 'TR_ENABLE_PASSPHRASE',
+        defaultMessage: 'Enable passphrase',
+    },
+    TR_PASSPHRASE: {
+        id: 'TR_PASSPHRASE',
+        defaultMessage: 'Passphrase',
+    },
+    TR_PASSPHRASE_PROTECTION_ENABLED: {
+        id: 'TR_PASSPHRASE_PROTECTION_ENABLED',
+        defaultMessage: 'Passphrase protection enabled!',
+    },
+    TR_CREATE_HIDDEN_WALLET: {
+        id: 'TR_CREATE_HIDDEN_WALLET',
+        defaultMessage: 'Create hidden wallet',
+    },
+    TR_DISCREET_MODE: {
+        id: 'TR_DISCREET_MODE',
+        defaultMessage: 'Discreet mode',
+    },
+    TR_TRY_TO_TEMPORARILY_HIDE: {
+        id: 'TR_TRY_TO_TEMPORARILY_HIDE',
+        defaultMessage: 'Try to temporarily hide away all balance-related numbers',
+    },
+    TR_TRY_DISCREET_MODE: {
+        id: 'TR_TRY_DISCREET_MODE',
+        defaultMessage: 'Try Discreet mode',
+    },
+    TR_DISCREET_MODE_TRIED_OUT: {
+        id: 'TR_DISCREET_MODE_TRIED_OUT',
+        defaultMessage: 'Discreet mode tried out!',
+    },
+    TR_ENABLE_DISCREET_MODE: {
+        id: 'TR_ENABLE_DISCREET_MODE',
+        defaultMessage: 'Enable discreet mode',
+    },
+    TR_DISABLE_DISCREET_MODE: {
+        id: 'TR_DISABLE_DISCREET_MODE',
+        defaultMessage: 'Disable discreet mode',
+    },
+    TR_BACKUP_YOUR_DEVICE: {
+        id: 'TR_BACKUP_YOUR_DEVICE',
+        defaultMessage: 'Backup your device',
+    },
+    TR_SECURITY_FEATURES_COMPLETED_N: {
+        id: 'TR_SECURITY_FEATURES_COMPLETED_N',
+        defaultMessage: 'Security Features (Completed {n} of {m})',
     },
 } as const);
 

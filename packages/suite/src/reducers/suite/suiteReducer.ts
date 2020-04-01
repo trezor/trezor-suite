@@ -9,33 +9,53 @@ export interface DebugModeOptions {
     translationMode: boolean;
 }
 
-export interface SuiteState {
+interface Flags {
     initialRun: boolean;
+    // recoveryCompleted: boolean;
+    // pinCompleted: boolean;
+    // passphraseCompleted: boolean;
+    discreetModeCompleted: boolean;
+}
+
+interface SuiteSettings {
+    analytics: boolean;
+    language: typeof LANGUAGES[number]['code'];
+    debug: DebugModeOptions;
+}
+
+export interface SuiteState {
     online: boolean;
     loading: boolean;
     loaded: boolean;
     error?: string;
     transport?: Partial<TransportInfo>;
     device?: TrezorDevice;
-    language: typeof LANGUAGES[number]['code'];
     messages: { [key: string]: any };
     locks: Lock[];
-    debug: DebugModeOptions;
-    analytics: boolean;
+    flags: Flags;
+    settings: SuiteSettings;
 }
 
 const initialState: SuiteState = {
-    initialRun: true,
     online: true,
     loading: false,
     loaded: false,
-    language: 'en',
     messages: {},
     locks: [],
-    debug: {
-        translationMode: false,
+    flags: {
+        initialRun: true,
+        // recoveryCompleted: false;
+        // pinCompleted: false;
+        // passphraseCompleted: false;
+        discreetModeCompleted: false,
     },
-    analytics: false,
+    settings: {
+        language: 'en',
+        analytics: false,
+        debug: {
+            translationMode: false,
+        },
+    },
 };
 
 const changeLock = (draft: SuiteState, lock: Lock, enabled: boolean) => {
@@ -47,6 +67,10 @@ const changeLock = (draft: SuiteState, lock: Lock, enabled: boolean) => {
     }
 };
 
+const setFlag = (draft: SuiteState, key: keyof Flags, value: boolean) => {
+    draft.flags[key] = value;
+};
+
 export default (state: SuiteState = initialState, action: Action): SuiteState => {
     return produce(state, draft => {
         switch (action.type) {
@@ -55,8 +79,8 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 break;
 
             case STORAGE.LOADED:
-                draft.initialRun = action.payload.suite.initialRun;
-                draft.language = action.payload.suite.language;
+                draft.flags = action.payload.suite.flags;
+                draft.settings = action.payload.suite.settings;
                 break;
 
             case SUITE.READY:
@@ -70,26 +94,26 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 draft.error = action.error;
                 break;
 
-            case SUITE.INITIAL_RUN_COMPLETED:
-                draft.initialRun = false;
-                break;
-
             case SUITE.SELECT_DEVICE:
             case SUITE.UPDATE_SELECTED_DEVICE:
                 draft.device = action.payload;
                 break;
 
             case SUITE.SET_LANGUAGE:
-                draft.language = action.locale;
+                draft.settings.language = action.locale;
                 draft.messages = action.messages;
                 break;
 
             case SUITE.SET_DEBUG_MODE:
-                draft.debug = { ...draft.debug, ...action.payload };
+                draft.settings.debug = { ...draft.settings.debug, ...action.payload };
+                break;
+
+            case SUITE.SET_FLAG:
+                setFlag(draft, action.key, action.value);
                 break;
 
             case SUITE.TOGGLE_ANALYTICS:
-                draft.analytics = !state.analytics;
+                draft.settings.analytics = !state.settings.analytics;
                 break;
 
             case TRANSPORT.START:

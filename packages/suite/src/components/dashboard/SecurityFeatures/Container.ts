@@ -11,15 +11,17 @@ import SecurityFeatures from './index';
 const mapStateToProps = (state: AppState) => ({
     discovery: state.wallet.discovery,
     accounts: state.wallet.accounts,
+    discreetMode: state.wallet.settings.discreetMode,
     fiat: state.wallet.fiat,
     device: state.suite.device,
-    discreetMode: state.wallet.settings.discreetMode,
+    flags: state.suite.flags,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     setDiscreetMode: bindActionCreators(walletSettingsActions.setDiscreetMode, dispatch),
     createDeviceInstance: bindActionCreators(suiteActions.createDeviceInstance, dispatch),
     changePin: bindActionCreators(deviceSettingsActions.changePin, dispatch),
+    applySettings: bindActionCreators(deviceSettingsActions.applySettings, dispatch),
     goto: bindActionCreators(routerActions.goto, dispatch),
 });
 

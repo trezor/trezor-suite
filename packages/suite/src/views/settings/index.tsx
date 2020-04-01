@@ -32,7 +32,7 @@ const mapStateToProps = (state: AppState) => ({
     // device: state.suite.device,
     locks: state.suite.locks,
     wallet: state.wallet,
-    language: state.suite.language,
+    language: state.suite.settings.language,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

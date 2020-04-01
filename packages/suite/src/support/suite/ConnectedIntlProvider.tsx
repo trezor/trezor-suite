@@ -42,12 +42,12 @@ export interface Messages {
 }
 
 const mapStateToProps = (state: AppState) => ({
-    locale: state.suite.language,
+    locale: state.suite.settings.language,
     messages: state.suite.messages,
 });
 
 interface ReactIntlProps {
-    locale: AppState['suite']['language'];
+    locale: AppState['suite']['settings']['language'];
     messages: AppState['suite']['messages'];
 }
 

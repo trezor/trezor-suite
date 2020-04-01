@@ -138,8 +138,8 @@ export const saveSuiteSettings = () => (_dispatch: Dispatch, getState: GetState)
     db.addItem(
         'suiteSettings',
         {
-            language: suite.language,
-            initialRun: suite.initialRun,
+            settings: suite.settings,
+            flags: suite.flags,
         },
         'suite',
     );
@@ -194,6 +194,14 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                 suite: {
                     ...initialState.suite,
                     ...suite,
+                    flags: {
+                        ...initialState.suite.flags,
+                        ...suite?.flags,
+                    },
+                    settings: {
+                        ...initialState.suite.settings,
+                        ...suite?.settings,
+                    },
                 },
                 devices,
                 wallet: {

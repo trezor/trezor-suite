@@ -274,9 +274,19 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
             total: payload.totalPages,
         };
     }
-    let misc;
+    let misc: AccountInfo['misc'] = {};
     if (typeof payload.nonce === 'string') {
-        misc = { nonce: payload.nonce };
+        misc.nonce = payload.nonce;
+    }
+    if (payload.erc20Contract) {
+        const token = transformTokenInfo([{ type: 'ERC20', ...payload.erc20Contract }]);
+        if (token) {
+            const [erc20Contract] = token;
+            misc.erc20Contract = erc20Contract;
+        }
+    }
+    if (Object.keys(misc).length < 1) {
+        misc = undefined;
     }
     const descriptor = payload.address;
     const addresses = transformAddresses(payload.tokens);

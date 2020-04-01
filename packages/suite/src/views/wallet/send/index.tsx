@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-
 import { colors } from '@trezor/components';
 import { WalletLayout } from '@wallet-components';
 import AccountName from '@wallet-components/AccountName';
@@ -13,7 +12,7 @@ import Address from './components/Address/Container';
 import AdditionalForm from './components/AdvancedForm';
 import Amount from './components/Amount/Container';
 import ButtonToggleAdditional from './components/ButtonToggleAdditional';
-import Clear from './components/Clear';
+import Clear from './components/Clear/Container';
 import OutputHeader from './components/OutputHeader';
 import ReviewButtonSection from './components/ReviewButtonSection/Container';
 import { Props } from './Container';
@@ -77,7 +76,7 @@ export default ({
         <WalletLayout title="Send" account={selectedAccount}>
             <AccountName account={account} message={accountNameMessage} />
             <AccountSelector title="Send from Account" />
-            <Clear sendFormActions={sendFormActions} />
+            <Clear />
             {send.outputs.map((output: Output) => (
                 <OutputWrapper key={output.id}>
                     <OutputHeader

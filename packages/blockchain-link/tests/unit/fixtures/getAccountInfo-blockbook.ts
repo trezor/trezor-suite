@@ -445,4 +445,65 @@ export default [
             history: {},
         },
     },
+    {
+        description: 'ETH (Ropsten) smart contract',
+        params: {
+            descriptor: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
+        },
+        serverFixtures: [
+            {
+                method: 'getAccountInfo',
+                response: {
+                    data: {
+                        address: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
+                        erc20Contract: {
+                            contract: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
+                            name: 'Grzegorz Brzęczyszczykiewicz',
+                            symbol: 'GRZBRZ',
+                            decimals: 3,
+                        },
+                    },
+                },
+            },
+        ],
+        response: {
+            descriptor: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
+            empty: false,
+            history: {},
+            misc: {
+                erc20Contract: {
+                    type: 'ERC20',
+                    address: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
+                    name: 'Grzegorz Brzęczyszczykiewicz',
+                    symbol: 'GRZBRZ',
+                    decimals: 3,
+                },
+            },
+        },
+    },
+    {
+        description: 'ETH (Ropsten) smart contract type unknown',
+        params: {
+            descriptor: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
+        },
+        serverFixtures: [
+            {
+                method: 'getAccountInfo',
+                response: {
+                    data: {
+                        address: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
+                        erc20Contract: {
+                            type: 'not-ERC20',
+                        },
+                    },
+                },
+            },
+        ],
+        response: {
+            descriptor: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
+            empty: false,
+            history: {},
+            misc: undefined,
+        },
+    },
 ];

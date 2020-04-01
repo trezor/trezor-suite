@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Translation, AccountLabeling } from '@suite-components';
 
@@ -77,6 +77,7 @@ export default ({
 }: Props) => {
     if (!account || !send) return null;
     const { outputs } = send;
+    const [disabled, setDisabled] = useState(false);
     const { networkType } = account;
     const transactionInfo = getTransactionInfo(account.networkType, send);
     if (!transactionInfo || transactionInfo.type === 'error') return null;
@@ -134,7 +135,10 @@ export default ({
                     <Translation id="TR_EDIT" />
                 </Button>
                 <Button
+                    isDisabled={disabled}
                     onClick={() => {
+                        // disable just for second to prevent double click
+                        setDisabled(true);
                         switch (networkType) {
                             case 'bitcoin':
                                 sendFormActionsBitcoin.send();
@@ -147,6 +151,10 @@ export default ({
                                 break;
                             // no default
                         }
+                        // return disabled value
+                        setTimeout(() => {
+                            setDisabled(false);
+                        }, 1000);
                     }}
                 >
                     <Translation id="TR_MODAL_CONFIRM_TX_BUTTON" />

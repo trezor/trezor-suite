@@ -145,10 +145,15 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!transactionInfo || transactionInfo.type !== 'final') return;
     const { transaction } = transactionInfo;
 
-    const inputs = transaction.inputs.map(vin => ({
-        ...vin,
+    const inputs = transaction.inputs.map(input => ({
+        ...input,
         sequence: BTC_RBF_SEQUENCE,
     }));
+
+    // connect undefined amount hotfix
+    inputs.forEach(input => {
+        if (!input.amount) delete input.amount;
+    });
 
     // TODO: add more params to alt coins txs (zcash: version_branch_id & version, etc...)
     const signedTx = await TrezorConnect.signTransaction({

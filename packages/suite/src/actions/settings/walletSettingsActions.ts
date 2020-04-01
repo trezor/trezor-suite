@@ -1,5 +1,6 @@
 import { Dispatch, GetState } from '@suite-types';
 import { WALLET_SETTINGS } from './constants';
+import * as suiteActions from '@suite-actions/suiteActions';
 import { Network, ExternalNetwork } from '@wallet-types';
 
 export type WalletSettingsActions =
@@ -16,10 +17,15 @@ export const setLocalCurrency = (localCurrency: string) => ({
     localCurrency: localCurrency.toLowerCase(),
 });
 
-export const setDiscreetMode = (toggled: boolean) => ({
-    type: WALLET_SETTINGS.SET_HIDE_BALANCE,
-    toggled,
-});
+export const setDiscreetMode = (toggled: boolean) => (dispatch: Dispatch, getState: GetState) => {
+    dispatch({
+        type: WALLET_SETTINGS.SET_HIDE_BALANCE,
+        toggled,
+    });
+    if (!getState().suite.flags.discreetModeCompleted) {
+        dispatch(suiteActions.setFlag('discreetModeCompleted', true));
+    }
+};
 
 export const changeCoinVisibility = (symbol: Network['symbol'], shouldBeVisible: boolean) => (
     dispatch: Dispatch,

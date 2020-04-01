@@ -1,3 +1,10 @@
+# 1.0.10
+
+#### changes
+
+-   Better clearing of `undefined` fields inside nested objects in `Response`
+-   Added `misc.erc20Contract` field to getAccountInfo response (fetching info about ERC20 smart contract)
+
 # 1.0.9
 
 #### changes

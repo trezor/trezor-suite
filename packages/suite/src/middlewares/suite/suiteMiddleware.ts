@@ -42,7 +42,7 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             // 2. redirecting user into onboarding (if needed), there is custom loader for waiting on connect
             // both might be done in parallel
             await Promise.all([
-                api.dispatch(fetchLocale(action.payload.suite.language)),
+                api.dispatch(fetchLocale(action.payload.suite.settings.language)),
                 api.dispatch(routerActions.initialRedirection()),
             ]);
             // 3. init connect;

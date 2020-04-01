@@ -16,8 +16,10 @@ const createComponentWithIntl = (children: React.ReactChild, props?: Props) => {
     const mockStore = configureStore([]);
     const store = mockStore({
         suite: {
-            debug: {
-                translationMode: false,
+            settings: {
+                debug: {
+                    translationMode: false,
+                },
             },
         },
     });

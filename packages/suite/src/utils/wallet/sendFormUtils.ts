@@ -91,7 +91,9 @@ export const getInputState = (
     noSuccess?: boolean,
     isMandatory?: boolean,
 ) => {
-    if (!isMandatory && !value) return undefined;
+    if (!isMandatory && !value) {
+        return undefined;
+    }
 
     if (error) {
         return 'error';

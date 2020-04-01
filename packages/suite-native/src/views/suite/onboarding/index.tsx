@@ -11,7 +11,7 @@ import InitialRun from './components/InitialRun';
 import { AppState, Dispatch } from '@suite-types';
 
 const mapStateToProps = (state: AppState) => ({
-    initialRun: state.suite.initialRun,
+    initialRun: state.suite.flags.initialRun,
     router: state.router,
     devices: state.devices,
 });

@@ -4,30 +4,18 @@ import Card, { Props as CardProps } from '@suite-components/Card';
 import { colors, Button, Icon, variables, IconProps } from '@trezor/components';
 
 const StyledCard = styled(Card)`
+    display: flex;
     flex-direction: column;
     width: 230px;
+    min-height: 210px; /* so it doesn't jump when all cards are completed */
+    justify-content: center;
+    padding: 16px 0;
+    align-items: center;
+    transition: background-color 0.7s ease-out;
 
     & + & {
         margin-left: 20px;
     }
-`;
-
-const Body = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 16px 24px 16px;
-    min-height: 160px;
-`;
-
-const Header = styled.div<Pick<Props, 'variant'>>`
-    display: flex;
-    border-radius: 6px 6px 0px 0px;
-    height: 68px;
-    background: ${props => (props.variant === 'primary' ? '#31C102' : colors.BLACK92)};
-    justify-content: center;
-    transition: background-color 0.7s ease-out;
 `;
 
 const Circle = styled.div`
@@ -38,7 +26,6 @@ const Circle = styled.div`
     width: 58px;
     height: 58px;
     border-radius: 50%;
-    margin-top: 40px;
     transition: background-color 0.7s ease-out;
 `;
 
@@ -54,6 +41,9 @@ const Title = styled.div<{ isLoading: boolean }>`
     color: ${colors.BLACK0};
     text-align: center;
     margin-bottom: 8px;
+    margin-top: 20px;
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+
     ${props =>
         props.isLoading &&
         css`
@@ -68,6 +58,8 @@ const Description = styled.div<{ isLoading: boolean }>`
     color: ${colors.BLACK50};
     text-align: center;
     flex: 1;
+    padding: 0 10px;
+
     ${props =>
         props.isLoading &&
         css`
@@ -90,43 +82,44 @@ export interface Props extends CardProps {
     cta?: {
         label: React.ReactNode;
         action?: () => void;
+        dataTest?: string;
+        isDisabled?: boolean;
     };
-    'data-test'?: string;
 }
 
 const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Props) => {
     const cardIcon = (
         <Icon icon={icon} size={30} color={variant === 'primary' ? colors.WHITE : colors.BLACK0} />
     );
+
     const isLoading = variant === 'disabled';
 
     return (
         <StyledCard {...rest}>
-            <Header variant={variant}>
-                <Circle>
-                    {!isLoading &&
-                        (variant === 'primary' ? <GreenCircle>{cardIcon}</GreenCircle> : cardIcon)}
-                </Circle>
-            </Header>
-            <Body>
-                <Title isLoading={isLoading}>{heading}</Title>
-                <Description isLoading={isLoading}>{description}</Description>
-                {cta && !isLoading && (
-                    <Action>
-                        <Button
-                            data-test={`@dashboard/security-card/${rest['data-test']}/button`}
-                            variant="tertiary"
-                            size="small"
-                            onClick={cta.action}
-                            {...(variant === 'secondary'
-                                ? { icon: 'ARROW_RIGHT', alignIcon: 'right' }
-                                : {})}
-                        >
-                            {cta.label}
-                        </Button>
-                    </Action>
-                )}
-            </Body>
+            <Circle>
+                {!isLoading &&
+                    (variant === 'primary' ? <GreenCircle>{cardIcon}</GreenCircle> : cardIcon)}
+            </Circle>
+            <Title isLoading={isLoading}>{heading}</Title>
+            <Description isLoading={isLoading}>{description}</Description>
+            {cta && !isLoading && (
+                <Action>
+                    <Button
+                        variant="tertiary"
+                        size="small"
+                        isDisabled={cta.isDisabled}
+                        onClick={cta.action}
+                        {...(cta.dataTest
+                            ? { 'data-test': `@dashboard/security-card/${cta.dataTest}/button` }
+                            : {})}
+                        {...(variant === 'secondary'
+                            ? { icon: 'ARROW_RIGHT', alignIcon: 'right' }
+                            : {})}
+                    >
+                        {cta.label}
+                    </Button>
+                </Action>
+            )}
         </StyledCard>
     );
 };
