@@ -67,7 +67,7 @@ const PassphraseDuplicate = ({
             <Title>
                 <Translation id="TR_WALLET_DUPLICATE_TITLE" />
             </Title>
-            <Description>
+            <Description tabIndex={0}>
                 <Translation id="TR_WALLET_DUPLICATE_DESC" />
             </Description>
             <DeviceConfirmImage device={device} />

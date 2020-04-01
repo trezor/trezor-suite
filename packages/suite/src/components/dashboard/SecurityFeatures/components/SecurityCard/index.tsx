@@ -7,6 +7,7 @@ const StyledCard = styled(Card)`
     display: flex;
     flex-direction: column;
     width: 230px;
+    min-height: 210px; /* so it doesn't jump when all cards are completed */
     justify-content: center;
     padding: 16px 0;
     align-items: center;
@@ -81,14 +82,16 @@ export interface Props extends CardProps {
     cta?: {
         label: React.ReactNode;
         action?: () => void;
+        dataTest?: string;
+        isDisabled?: boolean;
     };
-    'data-test'?: string;
 }
 
 const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Props) => {
     const cardIcon = (
         <Icon icon={icon} size={30} color={variant === 'primary' ? colors.WHITE : colors.BLACK0} />
     );
+
     const isLoading = variant === 'disabled';
 
     return (
@@ -102,10 +105,13 @@ const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Pro
             {cta && !isLoading && (
                 <Action>
                     <Button
-                        data-test={`@dashboard/security-card/${rest['data-test']}/button`}
                         variant="tertiary"
                         size="small"
+                        isDisabled={cta.isDisabled}
                         onClick={cta.action}
+                        {...(cta.dataTest
+                            ? { 'data-test': `@dashboard/security-card/${cta.dataTest}/button` }
+                            : {})}
                         {...(variant === 'secondary'
                             ? { icon: 'ARROW_RIGHT', alignIcon: 'right' }
                             : {})}

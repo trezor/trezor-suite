@@ -61,16 +61,24 @@ const reducerActions = [
                 type: STORAGE.LOADED,
                 payload: {
                     suite: {
-                        initialRun: false,
-                        language: 'cs',
+                        flags: {
+                            initialRun: false,
+                        },
+                        settings: {
+                            language: 'cs',
+                        },
                     },
                 },
             },
         ],
         result: [
             {
-                initialRun: false,
-                language: 'cs',
+                flags: {
+                    initialRun: false,
+                },
+                settings: {
+                    language: 'cs',
+                },
             },
         ],
     },
@@ -175,7 +183,9 @@ const reducerActions = [
         ],
         result: [
             {
-                language: 'cz',
+                settings: {
+                    language: 'cz',
+                },
                 messages: {
                     key: 'value',
                 },
@@ -222,7 +232,10 @@ const initialRun = [
     {
         description: `initialRunCompleted (initialRun = false)`,
         state: {
-            initialRun: false,
+            flags: {
+                initialRun: false,
+                discreetModeCompleted: false,
+            },
         },
     },
 ];

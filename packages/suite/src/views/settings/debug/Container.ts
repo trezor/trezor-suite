@@ -7,7 +7,7 @@ import DebugSettings from './index';
 import { setDebugMode } from '@suite-actions/suiteActions';
 
 const mapStateToProps = (state: AppState) => ({
-    debug: state.suite.debug,
+    debug: state.suite.settings.debug,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
