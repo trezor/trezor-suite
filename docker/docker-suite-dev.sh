@@ -14,7 +14,7 @@ xhost +
 docker-compose -f ./docker/docker-compose.suite-dev.yml up --build --remove-orphans -d
 
 while ! nc -z localhost 3000; do
-  echo "Waiting for dev server to launch on localhost:3000...(it takes really long now)"
+  echo "Waiting for dev server to launch on localhost:3000..."
   sleep 3
 done
 

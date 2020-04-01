@@ -28,7 +28,8 @@ def start(version):
     #     "T": (2, 1, 0),
     # }
 
-    path="./bin"
+    # normalize path to be relative to this folder, not pwd
+    path = os.path.join(os.path.dirname(__file__), './bin')
 
     command=""
     if version[0] == "2":

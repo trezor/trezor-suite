@@ -4,7 +4,6 @@ services:
   suite-base:
     image: node:12
     network_mode: "host"
-    userns_mode: "host"
     volumes:
       - ..:/usr/src/service
       - nodemodules:/usr/src/service/node_modules
