@@ -1,47 +1,34 @@
 version: '2'
 services:
-  trezor-env:
+  trezor-env:  
     extends:
       file: docker-compose.suite-dev.yml
       service: trezor-env
-    # build:
-    #   context: . # . stands for pwd, so docker-compose must be called from root
-    #   dockerfile: ./trezor-env/Dockerfile
-    # network_mode: "host"
-    # container_name: trezor-env
-    # environment: 
-    #   - DISPLAY=$DISPLAY
-    #   - QT_X11_NO_MITSHM=1
-    # volumes:
-    #   - /tmp/.X11-unix:/tmp/.X11-unix:rw
-    # command: >
-    #   bash -c "python3 ./main.py"
   suite-dev:
     extends:
       file: docker-compose.suite-dev.yml
       service: suite-dev
-    # build: 
-    #   context: . 
-    #   dockerfile: ./suite-dev/Dockerfile
-    # network_mode: "host"
-    # container_name: suite-dev
-    # volumes:
-    #   - ../:/suite:ro
-    # command: "../run-inside.sh"
-  cypress:
+  test-open:
     # the Docker image to use from https://github.com/cypress-io/cypress-docker-images
-    image: cypress/included:4.3.0 # todo: pin version
+    image: cypress/included:4.3.0
+    container_name: test-runner
+    ipc: host
     depends_on:
       - suite-dev
       - trezor-env
     network_mode: "host"
     environment:
       - CYPRESS_baseUrl=http://localhost:3000
+      - CYPRESS_defaultCommandTimeout=60000 # on dev server, due to on-demand compilation nature of next.js, we need much longer timeout
       - DISPLAY=$DISPLAY
       - QT_X11_NO_MITSHM=1
-    # share the current folder as volume to avoid copying
     working_dir: /e2e
     entrypoint: bash -c "yarn && cypress open --project /e2e/packages/integration-tests/projects/suite-web"
     volumes:
       - ../:/e2e
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - nodemodules:/e2e/node_modules
+
+volumes:
+  nodemodules:
+    external: true  

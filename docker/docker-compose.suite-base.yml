@@ -1,5 +1,6 @@
 version: '2'
 services:
+
   suite-base:
     image: node:12
     network_mode: "host"
@@ -14,7 +15,23 @@ services:
     extends:
       service: suite-base
     command: bash -c "yarn && yarn build:libs"
-    
+  # test-base:
+  #   # the Docker image to use from https://github.com/cypress-io/cypress-docker-images
+  #   image: cypress/included:4.3.0
+  #   container_name: test-runner
+  #   ipc: host
+  #   depends_on:
+  #     - suite-dev
+  #     - trezor-env
+  #   network_mode: "host"
+  #   environment:
+  #     - DISPLAY=$DISPLAY
+  #     - QT_X11_NO_MITSHM=1
+  #   working_dir: /e2e
+  #   volumes:
+  #     - ../:/e2e
+  #     - /tmp/.X11-unix:/tmp/.X11-unix:rw
+  #     - nodemodules:/e2e/node_modules
 volumes:
   nodemodules:
     external: true
