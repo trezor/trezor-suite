@@ -5,7 +5,7 @@ import { Translation } from '@suite-components';
 import SecurityCard, { Props as CardProps } from './components/SecurityCard';
 import { Props } from './Container';
 import { AcquiredDevice } from '@suite/types/suite';
-import { useTrezorActionEnabled } from '@suite-utils/hooks';
+import { useDeviceActionLocks } from '@suite-utils/hooks';
 
 const Section = styled.div`
     display: flex;
@@ -50,7 +50,7 @@ const SecurityFeatures = ({
     ...rest
 }: Props) => {
     const [isHidden, setIsHidden] = useState(false);
-    const [isTrezorActionEnabled] = useTrezorActionEnabled();
+    const [isTrezorActionEnabled] = useDeviceActionLocks();
 
     const { discreetModeCompleted } = flags;
     let needsBackup;
