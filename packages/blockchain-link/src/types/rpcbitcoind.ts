@@ -98,7 +98,7 @@ export type AccountUtxo = {
     path: string;
     confirmations: number;
     coinbase?: boolean;
-}[];
+};
 
 export interface VinVout {
     n: number;
@@ -190,7 +190,7 @@ export interface BlockhashTx {
     rawTxData: any;
 }
 
-// in BTC
+// in satoshi
 export interface TotalBalance {
     finalBalance: BigNumber;
     totalReceived: BigNumber;

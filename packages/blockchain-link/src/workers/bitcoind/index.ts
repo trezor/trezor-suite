@@ -163,8 +163,8 @@ const getAccountUtxo = async (
 ): Promise<void> => {
     const { payload } = data;
     try {
-        const socket = await connect();
-        const utxos = await socket.getAccountUtxo(payload);
+        const rpcClientObj = new RpcClient(loginData);
+        const utxos = await rpcClientObj.getAccountUtxo(payload);
         common.response({
             id: data.id,
             type: RESPONSES.GET_ACCOUNT_UTXO,

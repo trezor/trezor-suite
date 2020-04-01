@@ -310,7 +310,7 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
     };
 };
 
-export const transformAccountUtxo = (payload: BlockbookAccountUtxo): Utxo[] => {
+export const transformAccountUtxo = (payload: BlockbookAccountUtxo[]): Utxo[] => {
     return payload.map(utxo => ({
         txid: utxo.txid,
         vout: utxo.vout,

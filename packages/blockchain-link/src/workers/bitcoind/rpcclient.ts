@@ -18,6 +18,8 @@ import {
     BlockhashTx,
     TotalBalance,
     GroupedTxs,
+    AccountUtxo,
+    AccountUtxoParams,
 } from '../../types/rpcbitcoind';
 import {
     HDNode as BitcoinJsHDNode,
@@ -145,7 +147,7 @@ export class RpcClient {
         const search = Buffer.from(hexPubKey, 'hex');
         let isMatched = false;
         if (filter.match(key, search) === true) {
-            console.log('was MATCHED');
+            console.log('was MATCHED', address, blockHash);
             isMatched = true;
         }
         return isMatched;
@@ -167,11 +169,6 @@ export class RpcClient {
         await Promise.all(
             allTxs.map(async oneTxObj => {
                 if (oneTxObj.rawTxData.vout && Array.isArray(oneTxObj.rawTxData.vout)) {
-                    console.log(
-                        'first if passed, vout:',
-                        oneTxObj.rawTxData.vout,
-                        Array.isArray(oneTxObj.rawTxData.vout)
-                    );
                     await Promise.all(
                         oneTxObj.rawTxData.vout.map(async oneVout => {
                             if (
@@ -182,8 +179,6 @@ export class RpcClient {
                                     walletAddr
                                 ) === true
                             ) {
-                                console.log('found true', oneVout.scriptPubKey, walletAddr);
-                                console.log('oneTxObj', oneTxObj);
                                 oneTxObj.rawTxData.blockhash = oneTxObj.inBlockHash;
                                 const tx = await this.convertRawTransactionToNormal(
                                     oneTxObj.rawTxData
@@ -193,14 +188,13 @@ export class RpcClient {
                                     tx,
                                 };
                                 returnTxs.push(notif);
-                                console.log('returnTxs', returnTxs);
                             }
                         })
                     );
                 }
             })
         );
-        console.log('returnTxs zzz', returnTxs);
+
         return returnTxs;
     }
 
@@ -230,8 +224,8 @@ export class RpcClient {
 
         console.log('prepareBlockchainData started without cache');
         const lastHeight: number = (await this.getBlockchainInfo(true)).height;
-        const blocksArr: number[] = Array.from(Array(100000).keys()).reverse();
-
+        const blocksArr: number[] = Array.from(Array(150000).keys()).reverse();
+        // const blocksArr = this.createArrayWithRange(450000, 560000, 1); // test purposes
         const batchHashCommands: object = {};
         let actualProp = 'someProp';
 
@@ -250,16 +244,13 @@ export class RpcClient {
         await Promise.all(
             Object.keys(batchHashCommands).map(async oneBatch => {
                 try {
-                    console.log('before batch execution for knowing blockhashes');
                     const hashes = await this.clientBatch.batch(batchHashCommands[oneBatch]);
                     blockHashes.push(hashes);
-                    console.log('was received blockhashes with length', hashes.length);
                 } catch (e) {
                     console.log('error inside batch hashes', e);
                 }
             })
         );
-        console.log('before addFiltersToHashes, must be called 1 time for all blockhashes');
         this.cachedFiltersHashes = await this.addFiltersToHashes(blockHashes);
 
         console.log('prepareBlockchainData init & return');
@@ -315,8 +306,38 @@ export class RpcClient {
             })
         );
 
-        console.log('collected confirmed blocks to find our addr + prev. blocks', returnArr); // we need to scan those and previous blocks
         return returnArr;
+    }
+
+    async getAccountUtxo(walletAddr: string): Promise<Array<AccountUtxo>> {
+        const mainAddrTxs = await this.getTxs(walletAddr);
+        const unspent: AddressNotification[] = this.calculateUnspent(
+            mainAddrTxs.inputTxs,
+            mainAddrTxs.voutTxs,
+            walletAddr
+        );
+
+        const returnObj: AccountUtxo[] = [];
+        unspent.forEach(oneUnspent => {
+            oneUnspent.tx.vout.forEach(oneVout => {
+                if (oneVout.isAddress && oneVout.addresses && Array.isArray(oneVout.addresses)) {
+                    oneVout.addresses.forEach(oneAddr => {
+                        if (oneAddr.toLowerCase() === walletAddr.toLowerCase()) {
+                            returnObj.push({
+                                txid: oneUnspent.tx.txid,
+                                vout: oneVout.n,
+                                value: oneVout.value as string,
+                                height: oneUnspent.tx.blockHeight,
+                                address: walletAddr,
+                                path: '',
+                                confirmations: oneUnspent.tx.confirmations,
+                            });
+                        }
+                    });
+                }
+            });
+        });
+        return returnObj;
     }
 
     async getAccountinfo(payload: AccountInfoParams): Promise<object> {
@@ -329,9 +350,11 @@ export class RpcClient {
             );
             // 1FxqeJa3gx35q9VEFJPp2yWb25bHmu8eGx
             console.log(
-                'balanceObj.totalReceived.toFixed(8), balanceObj.totalSpent.toFixed(8)',
-                balanceObj.totalReceived.toFixed(8),
-                balanceObj.totalSpent.toFixed(8)
+                'balanceObj.totalReceived, balanceObj.totalSpent',
+                'totalBalance',
+                balanceObj.totalReceived.dividedBy(100000000).toFixed(),
+                balanceObj.totalSpent.dividedBy(100000000).toFixed(),
+                balanceObj.finalBalance.dividedBy(100000000).toFixed()
             );
             const returnObj = {
                 address: payload.descriptor,
@@ -346,7 +369,6 @@ export class RpcClient {
                 tokens: Array(),
             };
 
-            console.log('returnObj', returnObj);
             return returnObj;
         }
         return {};
@@ -393,14 +415,23 @@ export class RpcClient {
         const passedBlocks: PassedBlock[] = await this.getPassedBlocks(byWalletAddr);
         const allTxs: BlockhashTx[] = [];
 
+        const getBlockTxsBatch: Array<any> = [];
+
         await Promise.all(
             passedBlocks.map(async onePassedBlock => {
-                const allTxsForBlock: BlockhashTx[] = await this.getBlockTxs(
-                    onePassedBlock.blockHash
-                );
-                allTxs.push(...allTxsForBlock);
+                getBlockTxsBatch.push({
+                    method: 'getblock',
+                    params: [onePassedBlock.blockHash, 2],
+                });
             })
         );
+        const blocksWithTxs = await this.clientBatch.batch(getBlockTxsBatch);
+        blocksWithTxs.forEach(oneBlock => {
+            const txs = oneBlock.result.tx.map(oneTx => {
+                return { txid: oneTx.txid, inBlockHash: oneBlock.result.hash, rawTxData: oneTx };
+            });
+            allTxs.push(...txs);
+        });
 
         const foundedTxs: AddressNotification[] = [];
         // find transactons in VOUT [real it is input tx on needed wallet; + balance]
@@ -408,13 +439,45 @@ export class RpcClient {
             byWalletAddr,
             allTxs
         );
+
         foundedTxs.push(...voutTxs);
 
         // find transactons in VIN [real it is output tx on needed wallet; - balance]
         const inputTxs = await this.findInputTxs(allTxs, foundedTxs, byWalletAddr);
         foundedTxs.push(...inputTxs);
 
-        return { allTxs: foundedTxs, inputTxs, voutTxs };
+        const foundedTxsFiltered = this.removeDuplicatesTx(foundedTxs);
+        const inputTxsFiltered = this.removeDuplicatesTx(inputTxs);
+
+        return { allTxs: foundedTxsFiltered, inputTxs: inputTxsFiltered, voutTxs };
+    }
+
+    removeDuplicatesTx(givenArr: AddressNotification[]): Array<AddressNotification> {
+        const foundedTxsFiltered: AddressNotification[] = [];
+
+        givenArr.forEach((oneTx: AddressNotification) => {
+            if (foundedTxsFiltered.length === 0) {
+                foundedTxsFiltered.push(oneTx);
+            }
+
+            const isExist = foundedTxsFiltered.some((oneFilteredTx: AddressNotification) => {
+                return oneFilteredTx.tx.txid.toLowerCase() === oneTx.tx.txid.toLowerCase();
+            });
+            if (isExist === false) {
+                foundedTxsFiltered.push(oneTx);
+            }
+        });
+        // debug
+        // const foundedTxsFilteredDebug: AddressNotification[] = [];
+        // foundedTxsFiltered.forEach((oneTx: AddressNotification) => {
+        //     if (
+        //         oneTx.tx.txid !== '01be602894ecb1f74cc75f05db1a048a5564d1439e6583d22e85222cb4fdb079'
+        //     ) {
+        //         foundedTxsFilteredDebug.push(oneTx);
+        //     }
+        // });
+        // return foundedTxsFilteredDebug;
+        return foundedTxsFiltered;
     }
 
     getAvailableBalance(
@@ -441,15 +504,51 @@ export class RpcClient {
         });
 
         spended.forEach((oneTx: AddressNotification) => {
-            oneTx.tx.vout.forEach(oneVout => {
-                if (oneVout.value) {
-                    finalBalance = finalBalance.minus(new BigNumber(oneVout.value));
-                    totalSpent = totalSpent.plus(new BigNumber(oneVout.value));
+            oneTx.tx.vin.forEach(oneVin => {
+                if (
+                    oneVin.value &&
+                    oneVin.isAddress === true &&
+                    oneVin.addresses &&
+                    Array.isArray(oneVin.addresses) &&
+                    oneVin.addresses[0] &&
+                    oneVin.addresses[0].toLowerCase() === neededAddr.toLowerCase()
+                ) {
+                    finalBalance = finalBalance.minus(new BigNumber(oneVin.value));
+                    totalSpent = totalSpent.plus(new BigNumber(oneVin.value));
                 }
             });
         });
 
         return { finalBalance, totalReceived, totalSpent };
+    }
+
+    calculateUnspent(
+        spended: AddressNotification[],
+        received: AddressNotification[],
+        neededAddr: string
+    ): AddressNotification[] {
+        const unspent = [...received];
+
+        if (received.length > spended.length) {
+            spended.forEach(oneSpentTx => {
+                oneSpentTx.tx.vin.forEach(oneVinTx => {
+                    unspent.forEach((oneRecievedTx, index) => {
+                        if (oneVinTx.txid?.toLowerCase() === oneRecievedTx.tx.txid.toLowerCase()) {
+                            unspent.splice(index, 1);
+                        }
+                    });
+                });
+            });
+        }
+
+        return unspent;
+    }
+
+    createArrayWithRange(start: number, end: number, step: number): Array<number> {
+        return Array.from(
+            Array.from(Array(Math.ceil((end - start) / step)).keys()),
+            x => start + x * step
+        );
     }
 
     async findInputTxs(
@@ -462,13 +561,12 @@ export class RpcClient {
 
         passedVoutTxs.forEach(onePassedTx => {
             allTxs.forEach(oneTx => {
-                if (
-                    oneTx.rawTxData.vin &&
-                    Array.isArray(oneTx.rawTxData.vin) &&
-                    oneTx.rawTxData.vin[0] &&
-                    oneTx.rawTxData.vin[0].txid === onePassedTx.tx.txid
-                ) {
-                    foundedInTxs.push(oneTx);
+                if (oneTx.rawTxData.vin && Array.isArray(oneTx.rawTxData.vin)) {
+                    oneTx.rawTxData.vin.forEach(oneVin => {
+                        if (oneVin.txid === onePassedTx.tx.txid) {
+                            foundedInTxs.push(oneTx);
+                        }
+                    });
                 }
             });
         });
@@ -635,7 +733,6 @@ export class RpcClient {
         if (rawTxData.inBlockHash) {
             rawTxData.blockhash = rawTxData.inBlockHash;
         }
-        console.log('rawTxData', rawTxData);
         const blockData = await this.getBlockInfo(rawTxData.blockhash);
 
         // check if this is a mining transaction
@@ -649,7 +746,7 @@ export class RpcClient {
             rawTxData.vin &&
             Array.isArray(rawTxData.vin) &&
             rawTxData.vin[0].txid &&
-            rawTxData.vin[0].vout
+            typeof rawTxData.vin[0].vout !== 'undefined'
         ) {
             // get input tx's
             const inputTxs: any = [];
@@ -660,10 +757,6 @@ export class RpcClient {
                 })
             );
 
-            // detecting the sender?
-            const senderObj = inputTxs[0].vout.find(({ n }) => rawTxData.vin[0].vout === n);
-            const [sender] = senderObj.scriptPubKey.addresses;
-
             // transform vin
             const vins: VinVout[] = rawTxData.vin.map((oneVin, index) => {
                 const vinReturnObj: VinVout = {
@@ -671,12 +764,30 @@ export class RpcClient {
                     vout: oneVin.vout,
                     sequence: oneVin.sequence,
                     n: index,
-                    addresses: [sender],
-                    isAddress: !!sender,
+                    addresses: [],
+                    isAddress: false,
                     hex: oneVin.scriptSig.hex,
                 };
 
                 inputTxs.forEach(oneTx => {
+                    // detecting the sender?
+                    const senderObj = oneTx.vout.find(oneVout => {
+                        return oneVin.vout === oneVout.n;
+                    });
+                    if (typeof senderObj === 'undefined') {
+                        console.log('senderObj === undefined oneTx.vout', oneTx.vout);
+                        console.log('senderObj === undefined oneVin.vout', oneVin.vout);
+
+                        console.log('senderObj === undefined rawtxdata', rawTxData);
+                        console.log('senderObj === undefined input onetx', oneTx);
+                    }
+
+                    if (typeof senderObj === 'undefined') {
+                        return; // terminate forEach for debug purposes
+                    }
+
+                    const sender = senderObj.scriptPubKey.addresses[0];
+
                     if (oneTx.txid.toLowerCase() === oneVin.txid.toLowerCase()) {
                         oneTx.vout.forEach(innerVout => {
                             if (
@@ -690,6 +801,8 @@ export class RpcClient {
                                 vinReturnObj.value = new BigNumber(innerVout.value)
                                     .multipliedBy(100000000)
                                     .toFixed();
+                                vinReturnObj.addresses = [sender];
+                                vinReturnObj.isAddress = true;
                             }
                         });
                     }
@@ -712,7 +825,7 @@ export class RpcClient {
             });
 
             // get total tx amounts
-            const totalAmounts = this.getTxTotalAmountAndFee(inputTxs, rawTxData, sender);
+            const totalAmounts = this.getTxTotalAmountAndFee(inputTxs, rawTxData, 'fgfgfgf');
             const transObj: Transaction = {
                 txid: rawTxData.txid,
                 version: rawTxData.version,
@@ -801,16 +914,15 @@ export class RpcClient {
         fromInputsTransactions.forEach(inputTx => {
             if (inputTx.vout && Array.isArray(inputTx.vout)) {
                 inputTx.vout.forEach(oneOut => {
-                    if (
-                        oneOut.scriptPubKey &&
-                        oneOut.scriptPubKey.addresses &&
-                        Array.isArray(oneOut.scriptPubKey.addresses) &&
-                        oneOut.scriptPubKey.addresses[0] &&
-                        oneOut.scriptPubKey.addresses[0].toLowerCase() === sender.toLowerCase()
-                    ) {
-                        totalTransactionIn = totalTransactionIn.plus(oneOut.value);
-                        console.log('doing calculations', totalTransactionIn.toFixed(8));
-                    }
+                    // if ( TODO: CHECK IF THIS IS NEEDED
+                    //     oneOut.scriptPubKey &&
+                    //     oneOut.scriptPubKey.addresses &&
+                    //     Array.isArray(oneOut.scriptPubKey.addresses) &&
+                    //     oneOut.scriptPubKey.addresses[0] &&
+                    //     oneOut.scriptPubKey.addresses[0].toLowerCase() === sender.toLowerCase()
+                    // ) {
+                    totalTransactionIn = totalTransactionIn.plus(oneOut.value);
+                    // }
                 });
             }
         }); // 0
@@ -818,13 +930,12 @@ export class RpcClient {
         // get miner fee
         if (rawTxData.vout && Array.isArray(rawTxData.vout)) {
             let summOfVout: BigNumber = new BigNumber(0, 8);
-            console.log('rawTxData.vout', rawTxData.vout);
+
             rawTxData.vout.forEach(oneOutTx => {
                 summOfVout = summOfVout.plus(oneOutTx.value);
             });
 
             fee = totalTransactionIn.minus(summOfVout);
-            console.log('doing calculations fee', fee.toFixed(8));
         }
 
         if (totalTransactionIn.eq(new BigNumber(0)) === true) {
