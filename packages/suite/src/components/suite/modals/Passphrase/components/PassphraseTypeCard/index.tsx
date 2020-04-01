@@ -49,6 +49,7 @@ const Content = styled.div`
     flex-direction: column;
     color: ${colors.BLACK50};
     margin-bottom: 32px;
+    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 const InputWrapper = styled(Content)`
@@ -186,7 +187,8 @@ const PassphraseTypeCard = (props: Props) => {
                     {props.showPassphraseInput && props.offerPassphraseOnDevice && (
                         <ActionButton
                             isDisabled={!enabled}
-                            variant="secondary"
+                            variant="tertiary"
+                            icon="T2"
                             onClick={() => submit(value, true)}
                             fullWidth
                         >
