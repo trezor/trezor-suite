@@ -502,10 +502,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Create backup',
         id: 'TR_CREATE_BACKUP',
     },
-    TR_CREATE_BACKUP_IN_3_MINUTES: {
-        defaultMessage: 'Create a backup in 3 minutes',
-        id: 'TR_CREATE_BACKUP_IN_3_MINUTES',
-    },
     TR_CURRENCY: {
         defaultMessage: 'Currency',
         id: 'TR_CURRENCY',
@@ -1308,11 +1304,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Please connect your device to continue with the verification process',
         id: 'TR_PLEASE_CONNECT_YOUR_DEVICE',
     },
-    TR_PLEASE_DISABLE_PASSPHRASE: {
-        defaultMessage:
-            'Please disable passphrase settings to continue with the verification process.',
-        id: 'TR_PLEASE_DISABLE_PASSPHRASE',
-    },
     TR_PLEASE_ENABLE_PASSPHRASE: {
         defaultMessage:
             'Please enable passphrase settings to continue with the verification process.',
@@ -1492,9 +1483,9 @@ const definedMessages = defineMessages({
         defaultMessage: 'Settings',
         id: 'TR_SETTINGS',
     },
-    TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK: {
-        defaultMessage: 'Show address, I will take the risk',
-        id: 'TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK',
+    TR_SHOW_ADDRESS_ANYWAY: {
+        defaultMessage: 'Show address anyway',
+        id: 'TR_SHOW_ADDRESS_ANYWAY',
     },
     TR_SHOW_ADVANCED_OPTIONS: {
         defaultMessage: 'Show advanced options',
