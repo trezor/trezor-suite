@@ -15,6 +15,7 @@ services:
     extends:
       service: suite-base
     command: bash -c "yarn && yarn build:libs"
+
   # test-base:
   #   # the Docker image to use from https://github.com/cypress-io/cypress-docker-images
   #   image: cypress/included:4.3.0

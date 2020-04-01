@@ -26,42 +26,58 @@ suite-web deploy dev:
     tags:
         - deploy
 
+# suite-web test integration google-chrome:
+#     stage: integration testing
+#     script:
+#         #  Would like not to have npx here, but cypress requires binary at: /root/.cache/Cypress/3.4.1/Cypress/Cypress
+#         #  And it is not packed with artifacts
+#         - npx cypress install
+#         # add DEBUG=cypress:* env variable to debug cypress in ci
+#         - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} BROWSER=chrome yarn workspace @trezor/integration-tests test:suite-web:ci:run
+#     artifacts:
+#         expire_in: 7 days
+#         when: always
+#         paths:
+#             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
+#             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
+#     dependencies: []
+
+# suite-web test integration google-chrome-beta:
+#     only:
+#         - schedules
+#     stage: integration testing
+#     script:
+#         - npx cypress install
+#         - apt-get update && apt-get upgrade -y
+#         - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} BROWSER=/usr/bin/google-chrome-beta yarn workspace @trezor/integration-tests test:suite-web:ci:run 
+#     artifacts:
+#         expire_in: 7 days
+#         when: always
+#         paths:
+#             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
+#             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
+#     dependencies: []
+
+# suite-web test security:
+#     stage: deploy artifacts, others
+#     only: 
+#         - schedules
+#     script: 
+#         yarn is-website-vulnerable ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} | node ./ci/scripts/check-vulnerabilities.js
+#     dependencies: []
+
 suite-web test integration google-chrome:
     stage: integration testing
     script:
-        #  Would like not to have npx here, but cypress requires binary at: /root/.cache/Cypress/3.4.1/Cypress/Cypress
-        #  And it is not packed with artifacts
         - npx cypress install
         # add DEBUG=cypress:* env variable to debug cypress in ci
-        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} BROWSER=chrome yarn workspace @trezor/integration-tests test:suite-web:ci:run
+        - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
+        - export BROWSER=chrome
+        - yarn concurrently --success first --kill-others "python3 ./docker/trezor-env/controller/main.py" "cypress run --browser $BROWSER --project ./projects/suite-web"
     artifacts:
         expire_in: 7 days
         when: always
         paths:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
-    dependencies: []
-
-suite-web test integration google-chrome-beta:
-    only:
-        - schedules
-    stage: integration testing
-    script:
-        - npx cypress install
-        - apt-get update && apt-get upgrade -y
-        - CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} BROWSER=/usr/bin/google-chrome-beta yarn workspace @trezor/integration-tests test:suite-web:ci:run 
-    artifacts:
-        expire_in: 7 days
-        when: always
-        paths:
-            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
-            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
-    dependencies: []
-
-suite-web test security:
-    stage: deploy artifacts, others
-    only: 
-        - schedules
-    script: 
-        yarn is-website-vulnerable ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} | node ./ci/scripts/check-vulnerabilities.js
     dependencies: []

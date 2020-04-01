@@ -40,27 +40,27 @@ stages:
     - build artifacts
     - deploy artifacts, others
 
-lint:
-    stage: lint, types, unit tests
-    script:
-        - lerna run lint
+# lint:
+#     stage: lint, types, unit tests
+#     script:
+#         - lerna run lint
 
-typescript:
-    stage: lint, types, unit tests
-    script:
-        - lerna run type-check
+# typescript:
+#     stage: lint, types, unit tests
+#     script:
+#         - lerna run type-check
 
-unit tests:
-    stage: lint, types, unit tests
-    script:
-        - lerna run test:unit -- --passWithNoTests
+# unit tests:
+#     stage: lint, types, unit tests
+#     script:
+#         - lerna run test:unit -- --passWithNoTests
 
 include:
     - ci/environment.yml
     - ci/install-and-build.yml
-    - ci/packages/components.yml
-    - ci/packages/suite.yml
+    # - ci/packages/components.yml
+    # - ci/packages/suite.yml
     - ci/packages/suite-web.yml
-    - ci/packages/suite-desktop.yml
-    - ci/packages/suite-native.yml
-    - ci/packages/rollout.yml
+    # - ci/packages/suite-desktop.yml
+    # - ci/packages/suite-native.yml
+    # - ci/packages/rollout.yml
