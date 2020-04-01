@@ -1,14 +1,28 @@
+Disclaimer: docker stuff is fairly new and there are couple of todos left. Also I have no idea
+if it works on Mac. Chances are it does not, yet.
+
 # Docker
 
-In `/docker` folder, you might find few handy docker scenarios. You just need to have 
-docker and docker-compose installed.
+In `/docker` folder, you might find few handy docker-compose recipes. But first check if you have docker installed.
+
+`docker --version`
+`docker-compose --version`
+
 
 ## Suite dev
 
-`docker-compose -f ./docker/suite-dev.docker-compose.yml up`
+Suite-dev helps you run local suite development server. So, in theory, you don't need to have node.js or yarn installed on your machine.
+This container shares suite folder with your machine, so if you don't have dependencies installed yet, you shall run this first:
 
-starts:
-- control panel
-- suite dev server
+`./docker/docker-suite-install.sh`
 
-## E2E test (todo)
+`./docker/docker-suite-dev.sh`
+
+This will open dev server on http://localhost:3000 and as a bonus a control panel that will allow you to start/stop trezor bridge and work
+with emulators!
+
+## Suite test
+
+Suite test opens cypress test runner and prepares everything to run tests.
+
+`./docker/docker-suite-test`

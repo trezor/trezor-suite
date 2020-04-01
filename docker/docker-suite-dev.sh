@@ -3,8 +3,6 @@
 # script that will spin up local dev environment for trezor-suite
 
 # todos:
-# - figure out how to handle hot reload
-# - rebuild libs (and maybe packages) only if they changed
 # - improve "controller" html page to provide some basic info on development setup
 # - resolve selective xhost permissions
 
@@ -28,7 +26,3 @@ echo "suite-dev logs:"
 echo "docker logs -f $(docker ps -aqf name=suite-dev)"
 echo "to stop them: "
 echo "docker-compose -f ./docker/docker-compose.suite-dev.yml down"
-
-#google-chrome http://127.0.0.1:21325/status/
-
-
