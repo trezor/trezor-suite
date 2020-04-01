@@ -60,6 +60,7 @@ export interface AccountInfo {
     transactions?: Transaction[];
     nonce?: string;
     tokens?: (XPUBAddress | ERC20)[];
+    erc20Contract?: ERC20;
 }
 
 export interface AccountUtxoParams {
