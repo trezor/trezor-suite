@@ -4,7 +4,7 @@ const NEWS_API_STAGING_URL = 'https://staging-news.trezor.io';
 const NEWS_API_PRODUCTION_URL = 'https://news.trezor.io';
 
 export function useFetchNews() {
-    const [items, setItems] = useState<any[]>([]);
+    const [posts, setPosts] = useState<any[]>([]);
     const [isError, setError] = useState(false);
     const [fetchCount, incrementFetchCount] = useState(4);
 
@@ -18,7 +18,7 @@ export function useFetchNews() {
             .then(response => response.json())
             .then(response => {
                 if (response.length > 1) {
-                    setItems(response);
+                    setPosts(response);
                 } else {
                     setError(true);
                 }
@@ -26,5 +26,5 @@ export function useFetchNews() {
             .catch(() => setError(true));
     }, [fetchCount]);
 
-    return { items, isError, incrementFetchCount, fetchCount };
+    return { posts, isError, incrementFetchCount, fetchCount };
 }
