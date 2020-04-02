@@ -6,8 +6,6 @@
 
 const { addMatchImageSnapshotPlugin } = require('cypress-image-snapshot/plugin');
 const webpack = require('@cypress/webpack-preprocessor');
-const path = require('path');
-const { spawn } = require('child_process');
 
 const { Controller } = require('./websocket-client');
 const CONSTANTS = require('../constants');

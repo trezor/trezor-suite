@@ -48,9 +48,8 @@ def start():
         # normalize path to be relative to this folder, not pwd
         path = os.path.join(os.path.dirname(__file__), './bin')
 
-        base = path + "/trezord-go -ed 21324:21325 -u=false"
-        command = base + " -u=false" if 'CI' in os.environ else base
-        print(command)
+        command = path + "/trezord-go -ed 21324:21325 -u=false"
+
         proc = Popen(
             command,
             shell=True,

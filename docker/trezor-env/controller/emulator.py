@@ -69,14 +69,6 @@ def stop():
         proc = None
 
 
-def get_udp_device():
-    devices = UdpTransport.enumerate()
-    for d in devices:
-        # debugBridge = d.find_debug()
-        return d
-    raise RuntimeError("No debuggable udp device found")
-
-
 def get_bridge_device():
     devices = BridgeTransport.enumerate()
     print(devices)
@@ -89,7 +81,6 @@ def get_bridge_device():
 
 def setup_device(mnemonic, pin, passphrase_protection, label):
     # Setup link
-    # transport = get_udp_device()
     # TODO:
     # - "path" parameter to work with correct device
     # - check if device is acquired otherwise throws "wrong previous session" from bridge
