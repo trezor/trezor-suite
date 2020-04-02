@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Card from '@suite-components/Card';
+import { isToday, format } from 'date-fns';
 import { colors, Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { useFetchNews } from '@dashboard-hooks/news';
@@ -72,20 +73,20 @@ const Image = styled.img`
     object-fit: cover;
 `;
 
-const Title = styled.div<{ visited: boolean }>`
+const Title = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     color: ${colors.BLACK0};
     margin-bottom: 2px;
 `;
 
-const Timestamp = styled.div<{ visited: boolean }>`
+const Timestamp = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${colors.BLACK25};
     margin-bottom: 5px;
 `;
 
-const Description = styled.div<{ visited: boolean }>`
+const Description = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${colors.BLACK25};
 `;
@@ -101,9 +102,15 @@ const Error = styled.div`
     justify-content: center;
 `;
 
-export type Props = React.HTMLAttributes<HTMLDivElement>;
+const getDate = (date: string) => {
+    const dateObj = new Date(date);
+    if (isToday(dateObj)) {
+        return 'Today';
+    }
+    return format(dateObj, 'MMM d');
+};
 
-const NewsFeed = React.memo(({ ...rest }: Props) => {
+export default React.memo(({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
     const [visibleCount, incrementVisibleCount] = useState(3);
     const { posts, isError, fetchCount, incrementFetchCount } = useFetchNews();
 
@@ -128,10 +135,10 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                             </Left>
                             <Right>
                                 <CTAWrapper target="_blank" href={item.link}>
-                                    <Title visited={false}>{item.title}</Title>
+                                    <Title>{item.title}</Title>
                                 </CTAWrapper>
-                                <Timestamp visited={false}>{item.pubDate}</Timestamp>
-                                <Description visited={false}>{item.description}</Description>
+                                <Timestamp>{getDate(item.pubDate)}</Timestamp>
+                                <Description>{item.description}</Description>
                                 <CTAWrapper target="_blank" href={item.link}>
                                     <Button size="small" variant="tertiary">
                                         <Translation id="TR_READ_MORE" />
@@ -160,5 +167,3 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
         </Section>
     );
 });
-
-export default NewsFeed;
