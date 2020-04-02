@@ -2687,6 +2687,14 @@ const definedMessages = defineMessages({
         id: 'TR_SECURITY_FEATURES_COMPLETED_N',
         defaultMessage: 'Security Features (Completed {n} of {m})',
     },
+    TR_COIN_NOT_FOUND: {
+        id: 'TR_COIN_NOT_FOUND',
+        defaultMessage: 'Coin not found',
+    },
+    TR_NO_ACCOUNT_FOUND: {
+        id: 'TR_NO_ACCOUNT_FOUND',
+        defaultMessage: 'No account matches the criteria',
+    },
 } as const);
 
 export default definedMessages;
