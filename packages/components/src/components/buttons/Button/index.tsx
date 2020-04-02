@@ -146,6 +146,7 @@ const Wrapper = styled.button<WrapperProps>`
 `;
 
 const IconWrapper = styled.div<IconWrapperProps>`
+    position: relative;
     display: flex;
 
     ${props =>
