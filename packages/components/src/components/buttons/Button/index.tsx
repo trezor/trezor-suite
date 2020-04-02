@@ -37,7 +37,6 @@ const Wrapper = styled.button<WrapperProps>`
     color: ${props => (props.color ? props.color : colors.BLACK25)};
     outline: none;
     padding: ${props => BUTTON_PADDING[props.size]};
-    height: 'auto';
 
     ${props =>
         props.fullWidth &&
