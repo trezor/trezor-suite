@@ -36,7 +36,7 @@ const Columns = styled.div`
 
 const AppWrapper = styled.div`
     display: flex;
-    background: ${colors.WHITE};
+    background: ${colors.BACKGROUND};
     flex-direction: column;
     overflow: auto;
     flex: 1 1 0%;

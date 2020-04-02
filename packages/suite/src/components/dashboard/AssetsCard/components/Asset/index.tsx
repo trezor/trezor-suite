@@ -15,16 +15,23 @@ const Wrapper = styled.div`
     grid-template-columns: minmax(180px, 2fr) repeat(auto-fit, minmax(80px, 1fr));
 `;
 
-const AssetLogoWrapper = styled.div`
+const LogoWrapper = styled.div`
     padding-right: 6px;
     display: flex;
     align-items: center;
 `;
 
-const AssetName = styled.div`
+const Coin = styled.div`
+    display: flex;
+`;
+
+const Symbol = styled.div`
     color: #808080;
+    display: flex;
+    align-items: center;
+    padding-top: 2px;
     font-size: ${variables.FONT_SIZE.TINY};
-    padding-top: 1px;
+    text-indent: 6px;
 `;
 
 const Col = styled.div`
@@ -37,8 +44,8 @@ const GraphWrapper = styled(Col)`
     flex: 1;
     width: 100%;
     height: 24px;
-    /* margin-right: 20px; */
 `;
+
 const CryptoValueWrapper = styled(Col)`
     flex: 1;
     justify-content: flex-end;
@@ -47,6 +54,7 @@ const CryptoValueWrapper = styled(Col)`
     white-space: nowrap;
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
+
 const FiatValueWrapper = styled(Col)``;
 
 interface OwnProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -68,12 +76,11 @@ const Asset = React.memo(({ name, symbol, cryptoValue, localCurrency, ...props }
     return (
         <Wrapper {...props}>
             <Col>
-                <AssetLogoWrapper>
+                <LogoWrapper>
                     <CoinLogo symbol={symbol} size={16} />
-                </AssetLogoWrapper>
-                <AssetName>
-                    {name} ({symbol.toUpperCase()})
-                </AssetName>
+                </LogoWrapper>
+                <Coin>{name}</Coin>
+                <Symbol>{symbol.toUpperCase()}</Symbol>
             </Col>
             <Col>
                 <CryptoValueWrapper>
