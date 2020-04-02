@@ -24,7 +24,7 @@ const Analytics = ({ locks, analytics, toggleAnalytics }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
 
     return (
-        <Section borderless>
+        <Section>
             <Row>
                 <TextColumn
                     title={<Translation id="TR_ALLOW_ANALYTICS" />}
