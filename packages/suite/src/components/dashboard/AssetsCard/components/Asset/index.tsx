@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Account } from '@wallet-types';
 import { AppState } from '@suite-types';
 import { connect } from 'react-redux';
-import { CoinLogo, variables } from '@trezor/components';
+import { CoinLogo, variables, colors } from '@trezor/components';
 import { NoRatesTooltip, HiddenPlaceholder, Badge, FiatValue } from '@suite-components';
 import LastWeekGraph from '../LastWeekGraph';
 import { CoinBalance } from '@wallet-components';
@@ -26,7 +26,7 @@ const Coin = styled.div`
 `;
 
 const Symbol = styled.div`
-    color: #808080;
+    color: ${colors.BLACK50};
     display: flex;
     align-items: center;
     padding-top: 2px;

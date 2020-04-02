@@ -16,7 +16,7 @@ const Content = styled.div`
     display: flex;
 `;
 
-const SectionHeader = styled.div`
+const Header = styled.div`
     display: flex;
     padding: 12px 0px;
     flex-direction: row;
@@ -24,7 +24,7 @@ const SectionHeader = styled.div`
     align-items: center;
 `;
 
-const SectionTitle = styled.div`
+const Title = styled.div`
     flex: 1;
     margin-bottom: 2px;
     font-weight: 600;
@@ -186,13 +186,13 @@ const SecurityFeatures = ({
 
     return (
         <Section {...rest}>
-            <SectionHeader>
-                <SectionTitle>
+            <Header>
+                <Title>
                     <Translation
                         id="TR_SECURITY_FEATURES_COMPLETED_N"
                         values={{ n: featuresCompleted, m: 4 }}
                     />
-                </SectionTitle>
+                </Title>
                 <SectionAction>
                     <Button
                         variant="tertiary"
@@ -205,7 +205,7 @@ const SecurityFeatures = ({
                         {isHidden ? 'Show' : 'Hide'}
                     </Button>
                 </SectionAction>
-            </SectionHeader>
+            </Header>
             <Content>
                 {!isHidden &&
                     cards.map((card, i) => (
