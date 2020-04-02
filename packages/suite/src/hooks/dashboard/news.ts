@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { isDev } from '@suite-utils/build';
 
 const NEWS_API_STAGING_URL = 'https://staging-news.trezor.io';
 const NEWS_API_PRODUCTION_URL = 'https://news.trezor.io';
@@ -9,10 +10,7 @@ export function useFetchNews() {
     const [fetchCount, incrementFetchCount] = useState(4);
 
     useEffect(() => {
-        const origin =
-            !!process.env.DEV_SERVER === true || process.env.BUILD === 'development'
-                ? NEWS_API_STAGING_URL
-                : NEWS_API_PRODUCTION_URL;
+        const origin = isDev ? NEWS_API_STAGING_URL : NEWS_API_PRODUCTION_URL;
 
         fetch(`${origin}/posts?limit=${fetchCount}`)
             .then(response => response.json())

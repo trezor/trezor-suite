@@ -26,9 +26,6 @@ module.exports = withBundleAnalyzer(
                     '@trezor',
                     '../packages/suite/src', // issue: https://github.com/zeit/next.js/issues/5666
                 ],
-                env: {
-                    DEV_SERVER: true,
-                },
                 exportTrailingSlash: true,
                 assetPrefix: process.env.assetPrefix || '',
                 webpack: (config, options) => {
@@ -36,7 +33,7 @@ module.exports = withBundleAnalyzer(
                         new webpack.DefinePlugin({
                             'process.env.SUITE_TYPE': JSON.stringify('web'),
                             'process.env.VERSION': JSON.stringify(packageJson.version),
-                            'process.env.assetPrefix': JSON.stringify(process.env.assetPrefix),
+                            'process.env.assetPrefix': JSON.stringify(process.env.assetPrefix)
                             'process.env.COMMITHASH': JSON.stringify(
                                 gitRevisionPlugin.commithash(),
                             ),

@@ -30,9 +30,6 @@ module.exports = withBundleAnalyzer(
                     '@components',
                     '../packages/components/src',
                 ],
-                env: {
-                    DEV_SERVER: true,
-                },
                 exportTrailingSlash: true,
                 assetPrefix: process.env.assetPrefix || '',
                 webpack: config => {
