@@ -33,7 +33,7 @@ module.exports = withBundleAnalyzer(
                         new webpack.DefinePlugin({
                             'process.env.SUITE_TYPE': JSON.stringify('web'),
                             'process.env.VERSION': JSON.stringify(packageJson.version),
-                            'process.env.assetPrefix': JSON.stringify(process.env.assetPrefix)
+                            'process.env.assetPrefix': JSON.stringify(process.env.assetPrefix),
                             'process.env.COMMITHASH': JSON.stringify(
                                 gitRevisionPlugin.commithash(),
                             ),
