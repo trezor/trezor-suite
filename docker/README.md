@@ -30,9 +30,7 @@ Suite test opens cypress test runner and prepares everything to run tests.
 
 # Maintenance
 
-Temporarily publish on docker-hub under mroz22 account.
+Temporarily published on docker-hub under mroz22 account.
 
 To build:
 `docker build -f ./trezor-env/Dockerfile . --tag mroz22:trezor-env`
-
-T

@@ -17,5 +17,3 @@ services:
     extends:
       service: suite-base
     command: bash -c "yarn && yarn build:libs"
-
-  
