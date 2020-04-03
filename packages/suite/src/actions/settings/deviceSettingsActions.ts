@@ -29,6 +29,8 @@ export const applySettings = (params: ApplySettings) => async (
     } else {
         dispatch(addToast({ type: 'error', error: result.payload.error }));
     }
+
+    return result;
 };
 
 export const changePin = (params: ChangePin = {}) => async (

@@ -36,8 +36,7 @@ const Wrapper = styled.button<WrapperProps>`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${props => (props.color ? props.color : colors.BLACK25)};
     outline: none;
-    padding: ${props => (props.variant === 'tertiary' ? '0px 4px' : BUTTON_PADDING[props.size])};
-    height: ${props => (props.variant === 'tertiary' ? '20px' : 'auto')};
+    padding: ${props => BUTTON_PADDING[props.size]};
 
     ${props =>
         props.fullWidth &&
@@ -85,7 +84,6 @@ const Wrapper = styled.button<WrapperProps>`
         props.variant === 'tertiary' &&
         !props.isDisabled &&
         css`
-            padding: 0px 4px;
             &:hover,
             &:focus {
                 color: ${colors.BLACK25};
@@ -146,6 +144,7 @@ const Wrapper = styled.button<WrapperProps>`
 `;
 
 const IconWrapper = styled.div<IconWrapperProps>`
+    position: relative;
     display: flex;
 
     ${props =>
