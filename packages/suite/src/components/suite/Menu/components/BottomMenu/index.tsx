@@ -139,11 +139,7 @@ const BottomMenu = (props: Props) => (
         <SubMenu>
             <SubMenuText>Discreet</SubMenuText>
             <SwitchWrapper>
-                <Tooltip
-                    placement="right"
-                    offset={'20px'}
-                    content={<Translation id="TR_DISCREET_TOOLTIP" />}
-                >
+                <Tooltip placement="right" content={<Translation id="TR_DISCREET_TOOLTIP" />}>
                     <Switch
                         isSmall
                         checked={props.discreetMode}
