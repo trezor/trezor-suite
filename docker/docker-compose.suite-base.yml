@@ -16,6 +16,6 @@ services:
   suite-install:
     extends:
       service: suite-base
-    command: bash -c "ls -lan && ls -lan ./packages/suite-web/public/static/translations && yarn && yarn build:libs"
+    command: bash -c "yarn && yarn build:libs"
 
   

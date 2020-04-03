@@ -23,8 +23,4 @@ services:
     extends:
       service: suite-base
       file: docker-compose.suite-base.yml
-    command: bash -c "ls -lan && ls -lan ./packages/suite-web/public/static/translations && yarn suite:dev"
-
-volumes:
-  nodemodules:
-    external: true  
+    command: bash -c "yarn suite:dev"
