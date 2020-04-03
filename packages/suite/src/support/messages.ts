@@ -2700,6 +2700,10 @@ const definedMessages = defineMessages({
         id: 'TR_SECURITY_FEATURES_COMPLETED_N',
         defaultMessage: 'Security Features (Completed {n} of {m})',
     },
+    TR_TODAY: {
+        id: 'TR_TODAY',
+        defaultMessage: 'Today',
+    },
 } as const);
 
 export default definedMessages;

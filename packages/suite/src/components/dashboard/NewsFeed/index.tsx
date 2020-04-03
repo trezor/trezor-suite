@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Card from '@suite-components/Card';
+import { Card, Translation } from '@suite-components';
 import { isToday, format } from 'date-fns';
-import { colors, Button, variables } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
+import { colors, Button, variables, Icon } from '@trezor/components';
 import { useFetchNews } from '@dashboard-hooks/news';
 
 const StyledCard = styled(Card)`
@@ -34,6 +33,7 @@ const SectionHeader = styled.div`
 const SectionTitle = styled.div`
     flex: 1;
     margin-bottom: 2px;
+    font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-transform: uppercase;
     color: ${colors.BLACK50};
@@ -74,7 +74,6 @@ const Image = styled.img`
 `;
 
 const Title = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     color: ${colors.BLACK0};
     margin-bottom: 2px;
@@ -83,7 +82,7 @@ const Title = styled.div`
 const Timestamp = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${colors.BLACK25};
-    margin-bottom: 5px;
+    margin: 10px 0;
 `;
 
 const Description = styled.div`
@@ -93,6 +92,24 @@ const Description = styled.div`
 
 const CTAWrapper = styled.a`
     margin-top: 12px;
+    display: flex;
+    align-items: center;
+`;
+
+const ReadMore = styled(CTAWrapper)`
+    color: ${colors.BLACK17};
+    margin: 10px 0 0 0;
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+
+    &:hover {
+        text-decoration: underline;
+    }
+`;
+
+const ReadMoreIcon = styled(Icon)`
+    color: ${colors.BLACK17};
+    padding-left: 4px;
 `;
 
 const Error = styled.div`
@@ -105,7 +122,7 @@ const Error = styled.div`
 const getDate = (date: string) => {
     const dateObj = new Date(date);
     if (isToday(dateObj)) {
-        return 'Today';
+        return <Translation id="TR_TODAY" />;
     }
     return format(dateObj, 'MMM d');
 };
@@ -139,11 +156,14 @@ export default React.memo(({ ...rest }: React.HTMLAttributes<HTMLDivElement>) =>
                                 </CTAWrapper>
                                 <Timestamp>{getDate(item.pubDate)}</Timestamp>
                                 <Description>{item.description}</Description>
-                                <CTAWrapper target="_blank" href={item.link}>
-                                    <Button size="small" variant="tertiary">
-                                        <Translation id="TR_READ_MORE" />
-                                    </Button>
-                                </CTAWrapper>
+                                <ReadMore target="_blank" href={item.link}>
+                                    <Translation id="TR_READ_MORE" />
+                                    <ReadMoreIcon
+                                        size={12}
+                                        color={colors.BLACK0}
+                                        icon="EXTERNAL_LINK"
+                                    />
+                                </ReadMore>
                             </Right>
                         </NewsItem>
                     ))}
