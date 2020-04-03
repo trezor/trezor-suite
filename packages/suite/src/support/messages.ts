@@ -2603,6 +2603,10 @@ const definedMessages = defineMessages({
         description: 'Show less used address',
         id: 'TR_SHOW_LESS',
     },
+    TR_DASHBOARD_NEWS_ERROR: {
+        defaultMessage: 'Error while fetching the news',
+        id: 'TR_DASHBOARD_NEWS_ERROR',
+    },
     TR_RECOVERY_SEED_IS_OFFLINE: {
         id: 'TR_RECOVERY_SEED_IS_OFFLINE',
         defaultMessage: 'Recovery seed is an offline backup of your device',
@@ -2686,6 +2690,10 @@ const definedMessages = defineMessages({
     TR_SECURITY_FEATURES_COMPLETED_N: {
         id: 'TR_SECURITY_FEATURES_COMPLETED_N',
         defaultMessage: 'Security Features (Completed {n} of {m})',
+    },
+    TR_TODAY: {
+        id: 'TR_TODAY',
+        defaultMessage: 'Today',
     },
     TR_COIN_NOT_FOUND: {
         id: 'TR_COIN_NOT_FOUND',
