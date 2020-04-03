@@ -6,6 +6,7 @@ if it works on Mac. Chances are it does not, yet.
 In `/docker` folder, you might find few handy docker-compose recipes. But first check if you have docker installed.
 
 `docker --version`
+
 `docker-compose --version`
 
 
@@ -33,4 +34,6 @@ Suite test opens cypress test runner and prepares everything to run tests.
 Temporarily published on docker-hub under mroz22 account.
 
 To build:
-`docker build -f ./trezor-env/Dockerfile . --tag mroz22:trezor-env`
+`cd ./docker`
+
+`docker build -f ./trezor-user-env/Dockerfile . --tag mroz22/trezor-user-env`
