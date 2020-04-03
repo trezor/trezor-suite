@@ -165,7 +165,7 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, index }: ItemProps) => 
             </GridItem>
             <GridItem>
                 {/* <IconButton variant="tertiary">
-                    <Icon size={16} icon="LABEL_OFF" />
+                    <Icon size={16} icon="LABEL" />
                 </IconButton> */}
                 <IconButton variant="tertiary" isDisabled={!revealed} onClick={onCopy}>
                     <Icon size={16} icon="COPY" />
