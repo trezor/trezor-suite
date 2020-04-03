@@ -3,7 +3,6 @@ import { defineMessages } from 'react-intl';
 const definedMessages = defineMessages({
     TR_XRP_CANNOT_SEND_TO_MYSELF: {
         defaultMessage: 'Cannot send to myself',
-     
         id: 'CANNOT_SEND_TO_MYSELF',
     },
     TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE: {
