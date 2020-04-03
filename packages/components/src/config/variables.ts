@@ -100,7 +100,7 @@ export const ICONS: IconType[] = [
     'WARNING',
     'WARNING_ACTIVE',
     'LABEL',
-    'LABEL_ON',
+    'LABEL_ACTIVE',
     'TODO',
     'DISCREET',
     'PIN',

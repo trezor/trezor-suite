@@ -47,7 +47,7 @@ describe('Icons', () => {
         'icon-warning',
         'icon-warning-active',
         'icon-label',
-        'icon-label-on',
+        'icon-label-active',
         'icon-todo',
         'icon-pin',
         'icon-backup',
