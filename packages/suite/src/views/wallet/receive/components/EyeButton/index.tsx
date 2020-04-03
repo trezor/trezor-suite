@@ -40,11 +40,7 @@ const EyeButton = (props: Props) => {
                     />
                 }
             >
-                <Icon
-                    size={16}
-                    icon={props.isAddressUnverified ? 'EYE_CROSSED' : 'EYE'}
-                    color={color}
-                />
+                <Icon size={16} icon={props.isAddressUnverified ? 'SHOW' : 'HIDE'} color={color} />
             </Tooltip>
         </Wrapper>
     );
