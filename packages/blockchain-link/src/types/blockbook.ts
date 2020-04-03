@@ -163,7 +163,7 @@ export interface AccountBalanceHistory {
     txs: number;
     received: string;
     sent: string;
-    fiatRate: number;
+    rates: FiatRates;
 }
 
 export interface AvailableCurrencies {
