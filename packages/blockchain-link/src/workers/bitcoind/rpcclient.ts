@@ -1,5 +1,6 @@
 import RpcBitcoinClient from 'node-bitcoin-rpc';
 import RpcClientBatch from 'bitcoind-rpc-client';
+import Bitcore from 'bitcore-lib';
 import { EventEmitter } from 'events';
 import { CustomError } from '../../constants/errors';
 import { create as createDeferred, Deferred } from '../../utils/deferred';
@@ -20,11 +21,13 @@ import {
     GroupedTxs,
     AccountUtxo,
     AccountUtxoParams,
+    Fee,
 } from '../../types/rpcbitcoind';
 import {
     HDNode as BitcoinJsHDNode,
     networks as BitcoinJsNetwork,
     address as BitcoinJsAddress,
+    script as BitcoinJsScript,
 } from '@trezor/utxo-lib';
 import BigNumber from 'bignumber.js';
 import GCSFilter from 'golomb';
@@ -125,10 +128,42 @@ export class RpcClient {
     async searchAddressInBlock(
         address: string,
         blockHash: string,
-        blockFilter?: string
+        blockFilter?: string,
+        publickKey?: string
     ): Promise<boolean> {
-        const decodedAddrObj = Base58check.decode(address, 'hex'); // TODO: find this method in utxo trezor lib
-        const hexPubKey = `76a914${decodedAddrObj.data}88ac`; // TODO: find method for various adressess in uxo trezor lib
+        const addressObj = Bitcore.Address.fromString(address);
+        let script;
+        switch (addressObj.type) {
+            case 'witnessscripthash': {
+                script = Bitcore.Script.buildWitnessV0Out(address);
+                break;
+            }
+            case 'witnesspubkeyhash': {
+                script = Bitcore.Script.buildPublicKeyHashOut(publickKey);
+                break;
+            }
+            case 'scripthash': {
+                script = Bitcore.Script.buildWitnessV0Out(address);
+                break;
+            }
+            case 'pubkeyhash': {
+                script = Bitcore.Script.buildPublicKeyHashOut(address);
+                break;
+            }
+            default: {
+                script = Bitcore.Script.buildPublicKeyHashOut(address);
+                break;
+            }
+        }
+        const hexPubKey = script.toHex();
+
+        let hexAdditionalKey;
+        if (publickKey) {
+            // addition search in old coinbase txs with public key in scriptPub
+            const additionalAddressMode = Bitcore.Address.fromPublicKey(publickKey);
+            const additionalScript = Bitcore.buildPublicKeyOut(additionalAddressMode);
+            hexAdditionalKey = additionalScript.toHex();
+        }
 
         let block_filter: Buffer;
         let filterInitial;
@@ -149,6 +184,16 @@ export class RpcClient {
         if (filter.match(key, search) === true) {
             console.log('was MATCHED', address, blockHash);
             isMatched = true;
+        }
+
+        // possible search in PayToPublicKey Scripts
+        if (publickKey && typeof hexAdditionalKey !== 'undefined') {
+            const searchAdditional = Buffer.from(hexAdditionalKey, 'hex');
+
+            if (filter.match(key, searchAdditional) === true) {
+                console.log('was MATCHED in additional search', address, blockHash);
+                isMatched = true;
+            }
         }
         return isMatched;
     }
@@ -471,7 +516,7 @@ export class RpcClient {
         // const foundedTxsFilteredDebug: AddressNotification[] = [];
         // foundedTxsFiltered.forEach((oneTx: AddressNotification) => {
         //     if (
-        //         oneTx.tx.txid !== '01be602894ecb1f74cc75f05db1a048a5564d1439e6583d22e85222cb4fdb079'
+        //         oneTx.tx.txid !== 'caf963882bd4f2bb8731e788c48770788099874139fcdb7f2dd2ef7e02fc6a6c'
         //     ) {
         //         foundedTxsFilteredDebug.push(oneTx);
         //     }
@@ -649,6 +694,25 @@ export class RpcClient {
         });
     }
 
+    pushTx(hex: string) {
+        return new Promise<string>((resolve, reject) => {
+            RpcBitcoinClient.call('sendrawtransaction', [hex], function callback(
+                error: string,
+                response: any
+            ): void {
+                if (error) {
+                    reject(error); // error in case calling RPC
+                } else if (response.error) {
+                    reject(new Error(response.error.message)); // possible error from blockchain
+                } else if (response.result) {
+                    resolve(response.result);
+                } else {
+                    reject(new Error('bad data from RPC server')); // TODO: attach to custom error class?
+                }
+            });
+        });
+    }
+
     getNetworkInfo() {
         return new Promise<any>((resolve, reject) => {
             RpcBitcoinClient.call('getnetworkinfo', [], function callback(
@@ -727,6 +791,38 @@ export class RpcClient {
                 }
             );
         });
+    }
+
+    async getEstimateFee(payload: EstimateFeeParams): Promise<Array<Fee>> {
+        const batchArr = payload.blocks?.map(oneBlock => {
+            let feeMode = 'CONSERVATIVE';
+            if (payload.specific?.conservative === false) {
+                feeMode = 'ECONOMICAL';
+            }
+            return { method: 'estimatesmartfee', params: [oneBlock, feeMode] };
+        });
+
+        const feeResponse = await this.clientBatch.batch(batchArr);
+
+        const feeReturn = feeResponse.map(oneResponse => {
+            if (oneResponse.error) {
+                throw new Error(oneResponse.error);
+            }
+
+            const obj: Fee = {
+                feePerUnit: new BigNumber(oneResponse.result.feerate)
+                    .multipliedBy(100000000)
+                    .toFixed(),
+            };
+            if (payload.specific?.txsize) {
+                const feePerTx = new BigNumber(oneResponse.result.feerate)
+                    .multipliedBy(new BigNumber(payload.specific?.txsize))
+                    .multipliedBy(100000000);
+                obj.feePerTx = feePerTx.toFixed(8);
+            }
+            return obj;
+        });
+        return feeReturn;
     }
 
     async convertRawTransactionToNormal(rawTxData: any): Promise<Transaction> {

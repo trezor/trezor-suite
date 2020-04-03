@@ -202,12 +202,13 @@ const pushTransaction = async (
     data: { id: number } & MessageTypes.PushTransaction
 ): Promise<void> => {
     try {
-        const socket = await connect();
-        const resp = await socket.pushTransaction(data.payload);
+        const rpcClientObj = new RpcClient(loginData);
+        const txHash = await rpcClientObj.pushTx(data.payload);
+
         common.response({
             id: data.id,
             type: RESPONSES.PUSH_TRANSACTION,
-            payload: resp.result,
+            payload: txHash,
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });
@@ -216,8 +217,8 @@ const pushTransaction = async (
 
 const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Promise<void> => {
     try {
-        const socket = await connect();
-        const resp = await socket.estimateFee(data.payload);
+        const rpcClientObj = new RpcClient(loginData);
+        const resp = await rpcClientObj.getEstimateFee(data.payload);
         common.response({
             id: data.id,
             type: RESPONSES.ESTIMATE_FEE,

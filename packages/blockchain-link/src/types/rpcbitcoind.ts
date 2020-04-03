@@ -157,12 +157,12 @@ export interface EstimateFeeParams {
         data?: string; // eth tx data
     };
 }
-
+// in satoshi
 export type Fee = {
     feePerUnit: string;
     feePerTx?: string;
     feeLimit?: string;
-}[];
+};
 
 export interface BlockNotification {
     height: number;
@@ -209,7 +209,7 @@ declare function FSend(method: 'getAccountInfo', params: AccountInfoParams): Pro
 declare function FSend(method: 'getAccountUtxo', params: AccountUtxoParams): Promise<AccountUtxo>;
 declare function FSend(method: 'getTransaction', params: { txid: string }): Promise<Transaction>;
 declare function FSend(method: 'sendTransaction', params: { hex: string }): Promise<Push>;
-declare function FSend(method: 'estimateFee', params: EstimateFeeParams): Promise<Fee>;
+declare function FSend(method: 'estimateFee', params: EstimateFeeParams): Promise<Array<Fee>>;
 declare function FSend(
     method: 'subscribeAddresses',
     params: { addresses: string[] }
