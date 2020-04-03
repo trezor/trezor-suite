@@ -9,12 +9,14 @@ describe('Icons', () => {
         'icon-arrow-left',
         'icon-arrow-right',
         'icon-check',
+        'icon-check-active',
         'icon-coins',
         'icon-copy',
         'icon-cross',
         'icon-dashboard',
         'icon-exchange',
         'icon-info',
+        'icon-info-active',
         'icon-log',
         'icon-menu',
         'icon-more',
@@ -22,6 +24,7 @@ describe('Icons', () => {
         'icon-plus',
         'icon-qr',
         'icon-question',
+        'icon-question-active',
         'icon-receive',
         'icon-refresh',
         'icon-search',
@@ -34,11 +37,25 @@ describe('Icons', () => {
         'icon-transactions',
         'icon-trezor',
         'icon-wallet',
+        'icon-wallet-hidden',
         'icon-t1',
         'icon-t2',
         'icon-show',
         'icon-hide',
         'icon-back',
+        'icon-download',
+        'icon-edit',
+        'icon-warning',
+        'icon-warning-active',
+        'icon-label',
+        'icon-label-active',
+        'icon-todo',
+        'icon-pin',
+        'icon-backup',
+        'icon-discreet',
+        'icon-collapse',
+        'icon-notification',
+        'icon-shop',
     ].forEach(testName => {
         it(`${testName}`, () => {
             cy.loadContent('/iframe.html?selectedKind=Icons&selectedStory=All&full=0');
@@ -47,9 +64,7 @@ describe('Icons', () => {
                 .each(el => {
                     cy.get(el).should('be.visible');
                 });
-            cy.getTestElement(testName)
-                .should('be.visible')
-                .matchImageSnapshot();
+            cy.getTestElement(testName).should('be.visible').matchImageSnapshot();
         });
     });
 });
