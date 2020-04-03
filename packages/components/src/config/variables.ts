@@ -61,6 +61,7 @@ export const ICONS: IconType[] = [
     'ARROW_LEFT',
     'ARROW_RIGHT',
     'CHECK',
+    'CHECK_ACTIVE',
     'COINS',
     'COPY',
     'CROSS',
@@ -107,4 +108,5 @@ export const ICONS: IconType[] = [
     'BACKUP',
     'COLLAPSE',
     'NOTIFICATION',
+    'SHOP',
 ];

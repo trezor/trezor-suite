@@ -5,6 +5,7 @@ export const ICONS = {
     ARROW_LEFT: require('../../images/icons/arrow_left.svg'),
     ARROW_RIGHT: require('../../images/icons/arrow_right.svg'),
     CHECK: require('../../images/icons/check.svg'),
+    CHECK_ACTIVE: require('../../images/icons/check_active.svg'),
     COINS: require('../../images/icons/coins.svg'),
     CLEAR: require('../../images/icons/clear.svg'),
     COPY: require('../../images/icons/copy.svg'),
@@ -53,4 +54,5 @@ export const ICONS = {
     PIN: require('../../images/icons/pin.svg'),
     BACKUP: require('../../images/icons/backup.svg'),
     COLLAPSE: require('../../images/icons/collapse.svg'),
+    SHOP: require('../../images/icons/shop.svg'),
 };

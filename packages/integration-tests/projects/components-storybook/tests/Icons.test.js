@@ -9,6 +9,7 @@ describe('Icons', () => {
         'icon-arrow-left',
         'icon-arrow-right',
         'icon-check',
+        'icon-check-active',
         'icon-coins',
         'icon-copy',
         'icon-cross',
@@ -54,6 +55,7 @@ describe('Icons', () => {
         'icon-discreet',
         'icon-collapse',
         'icon-notification',
+        'icon-shop',
     ].forEach(testName => {
         it(`${testName}`, () => {
             cy.loadContent('/iframe.html?selectedKind=Icons&selectedStory=All&full=0');
