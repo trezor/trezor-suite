@@ -2703,6 +2703,34 @@ const definedMessages = defineMessages({
         id: 'TR_NO_ACCOUNT_FOUND',
         defaultMessage: 'No account matches the criteria',
     },
+    TR_DASHBOARD: {
+        id: 'TR_DASHBOARD',
+        defaultMessage: 'Dashboard',
+    },
+    TR_WALLET: {
+        id: 'TR_WALLET',
+        defaultMessage: 'Wallet',
+    },
+    TR_EXCHANGE: {
+        id: 'TR_EXCHANGE',
+        defaultMessage: 'Exchange',
+    },
+    TR_PASSWORDS: {
+        id: 'TR_PASSWORDS',
+        defaultMessage: 'Passwords',
+    },
+    TR_PORTFOLIO: {
+        id: 'TR_PORTFOLIO',
+        defaultMessage: 'Portfolio',
+    },
+    TR_NOTIFICATIONS: {
+        id: 'TR_NOTIFICATIONS',
+        defaultMessage: 'Notifications',
+    },
+    TR_COMING_SOON: {
+        id: 'TR_COMING_SOON',
+        defaultMessage: 'Coming soon',
+    },
 } as const);
 
 export default definedMessages;
