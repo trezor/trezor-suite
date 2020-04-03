@@ -36,6 +36,7 @@ describe('Icons', () => {
         'icon-transactions',
         'icon-trezor',
         'icon-wallet',
+        'icon-wallet-hidden',
         'icon-t1',
         'icon-t2',
         'icon-show',
@@ -48,6 +49,11 @@ describe('Icons', () => {
         'icon-label-on',
         'icon-label-off',
         'icon-todo',
+        'icon-pin',
+        'icon-backup',
+        'icon-discreet',
+        'icon-collapse',
+        'icon-notification',
     ].forEach(testName => {
         it(`${testName}`, () => {
             cy.loadContent('/iframe.html?selectedKind=Icons&selectedStory=All&full=0');

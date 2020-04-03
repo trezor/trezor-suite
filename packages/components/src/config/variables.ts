@@ -88,6 +88,7 @@ export const ICONS: IconType[] = [
     'TRANSACTIONS',
     'TREZOR',
     'WALLET',
+    'WALLET_HIDDEN',
     'EXTERNAL_LINK',
     'T1',
     'T2',
@@ -101,4 +102,9 @@ export const ICONS: IconType[] = [
     'LABEL_ON',
     'LABEL_OFF',
     'TODO',
+    'DISCREET',
+    'PIN',
+    'BACKUP',
+    'COLLAPSE',
+    'NOTIFICATION',
 ];
