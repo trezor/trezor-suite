@@ -7,6 +7,7 @@ import { useFetchNews } from '@dashboard-hooks/news';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
+    padding: 20px;
     width: 100%;
 `;
 
@@ -47,12 +48,12 @@ const BottomAction = styled.div`
     color: ${colors.BLACK25};
 `;
 
-const NewsItem = styled.div`
+const Post = styled.div`
     display: flex;
-    padding: 20px;
+    padding: 20px 0;
 
     & + & {
-        margin-top: 1px solid ${colors.BLACK92};
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
     }
 `;
 
@@ -146,7 +147,7 @@ export default React.memo(({ ...rest }: React.HTMLAttributes<HTMLDivElement>) =>
                         </Error>
                     )}
                     {posts.slice(0, visibleCount).map(item => (
-                        <NewsItem key={item.link}>
+                        <Post key={item.link}>
                             <Left>
                                 <Image src={item.thumbnail} />
                             </Left>
@@ -165,7 +166,7 @@ export default React.memo(({ ...rest }: React.HTMLAttributes<HTMLDivElement>) =>
                                     />
                                 </ReadMore>
                             </Right>
-                        </NewsItem>
+                        </Post>
                     ))}
                 </StyledCard>
             </Content>
