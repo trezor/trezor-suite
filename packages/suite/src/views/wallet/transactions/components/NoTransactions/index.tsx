@@ -51,7 +51,7 @@ interface Props {
     buy: () => any;
 }
 
-const NoTransactions = ({ receive, buy }: Props) => {
+const NoTransactions = ({ receive }: Props) => {
     return (
         <Wrapper>
             <Content>
