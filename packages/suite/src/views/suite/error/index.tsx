@@ -23,7 +23,7 @@ export default () => {
                 <Translation id="TR_404_DESCRIPTION" />
             </P>
             <Image image="404" />
-            <Link target="_self" href="/">
+            <Link variant="nostyle" target="_self" href="/">
                 <Button>
                     <Translation id="TR_404_GO_TO_DASHBOARD" />
                 </Button>
