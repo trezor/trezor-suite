@@ -44,7 +44,6 @@ export const ICONS = {
     HIDE: require('../../images/icons/hide.svg'),
     BACK: require('../../images/icons/back.svg'),
     NOTIFICATION: require('../../images/icons/notification.svg'),
-    LABELING: require('../../images/icons/labeling.svg'),
     DOWNLOAD: require('../../images/icons/download.svg'),
     EDIT: require('../../images/icons/edit.svg'),
     LABEL_ON: require('../../images/icons/label_on.svg'),
