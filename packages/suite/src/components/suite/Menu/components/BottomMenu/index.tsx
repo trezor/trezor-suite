@@ -109,7 +109,7 @@ const BottomMenu = (props: Props) => (
             const isActive = routeObj ? routeObj.app === props.app : false;
 
             const defaultIcon = (
-                <Icon color={isActive ? colors.BLACK0 : colors.WHITE} size={12} icon={icon} />
+                <Icon color={isActive ? colors.BLACK0 : colors.WHITE} size={14} icon={icon} />
             );
 
             const iconComponent =

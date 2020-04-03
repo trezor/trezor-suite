@@ -1,3 +1,4 @@
+// TODO: INTL
 export const MAIN_MENU_ITEMS = [
     { text: 'Dashboard', icon: 'DASHBOARD', route: 'suite-index', isDisabled: false },
     { text: 'Wallet', icon: 'WALLET', route: 'wallet-index', isDisabled: false },
