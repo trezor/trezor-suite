@@ -45,8 +45,8 @@ suite-web test integration google-chrome:
 
 
 suite-web test integration google-chrome-beta:
-    # only:
-    #   - schedules
+    only:
+      - schedules
     stage: integration testing
     script:
         - npx cypress install

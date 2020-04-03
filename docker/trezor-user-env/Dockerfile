@@ -1,4 +1,3 @@
-# buster is for debian 10. the same version as firmware team has in its Dockerfile.
 FROM debian:10
 
 RUN apt-get update && apt-get install -y \ 
@@ -33,7 +32,7 @@ ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
 
 # copy python websocket server and all binaries
-COPY ./trezor-env/controller /controller
+COPY ./trezor-user-env/controller /controller
 
 RUN python3 --version
 RUN python3 -m pip --version

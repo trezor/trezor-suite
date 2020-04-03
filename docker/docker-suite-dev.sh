@@ -17,7 +17,7 @@ while ! nc -z localhost 3000; do
 done
 
 google-chrome http://localhost:3000
-google-chrome ./docker/trezor-env/websocket-client.html
+google-chrome ./docker/trezor-user-env/websocket-client.html
 
 echo "containers now run in detached mode, to see logs type: "
 echo "trezor-env logs:"

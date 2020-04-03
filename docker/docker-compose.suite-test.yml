@@ -1,9 +1,9 @@
 version: '2'
 services:
-  trezor-env:  
+  trezor-user-env:  
     extends:
       file: docker-compose.suite-dev.yml
-      service: trezor-env
+      service: trezor-user-env
   suite-dev:
     extends:
       file: docker-compose.suite-dev.yml
@@ -15,7 +15,7 @@ services:
     ipc: host
     depends_on:
       - suite-dev
-      - trezor-env
+      - trezor-user-env
     network_mode: "host"
     environment:
       - CYPRESS_baseUrl=http://localhost:3000
