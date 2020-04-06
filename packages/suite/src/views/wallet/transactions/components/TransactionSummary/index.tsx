@@ -28,6 +28,7 @@ const GraphWrapper = styled.div`
     display: flex;
     flex: 1 1 auto;
     padding: 20px;
+    height: 240px;
     max-width: 470px; /* workaround to prevent recharts filling all space */
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
@@ -142,6 +143,7 @@ const TransactionSummary = (props: Props) => {
                         <>
                             <GraphWrapper>
                                 <TransactionsGraph
+                                    variant="one-asset"
                                     account={props.account}
                                     isLoading={isLoading}
                                     data={data}
@@ -161,7 +163,7 @@ const TransactionSummary = (props: Props) => {
                                     />
                                     <InfoCard
                                         title={<Translation {...messages.TR_OUTGOING} />}
-                                        value={totalSentAmount?.toFixed()}
+                                        value={totalSentAmount?.negated().toFixed()}
                                         symbol={props.account.symbol}
                                         isLoading={isLoading}
                                         stripe="red"
