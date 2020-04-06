@@ -51,24 +51,35 @@ const Expand = styled.div`
     flex: 1;
 `;
 
-const Description = styled.div`
+const How = styled.div`
     color: ${colors.BLACK50};
     font-size: ${FONT_SIZE.SMALL};
     text-align: center;
 `;
 
-const Text = styled(Description)`
+const Text = styled(How)`
     margin-bottom: 15px;
-`;
-
-const BottomMessage = styled(Description)`
-    margin: 20px 30px 0;
 `;
 
 const StyledImg = styled(props => <Image {...props} />)`
     padding: 35px;
 `;
 
+const ExplanationCol = (props: { heading: React.ReactNode; description?: React.ReactNode }) => (
+    <Col gray>
+        <H2>{props.heading}</H2>
+        {props.description && props.description}
+        <Expand>
+            <StyledImg image="SET_UP_PIN_DIALOG" />
+        </Expand>
+        <How>
+            <Translation id="TR_HOW_PIN_WORKS" />{' '}
+            <Link href={URLS.PIN_MANUAL_URL}>
+                <Translation id="TR_LEARN_MORE_LINK" />
+            </Link>
+        </How>
+    </Col>
+);
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     onPinSubmit: bindActionCreators(modalActions.onPinSubmit, dispatch),
 });
@@ -83,6 +94,9 @@ const Pin = ({ device, onPinSubmit }: Props) => {
 
     const counter =
         (device.features && device.buttonRequests.filter(b => b === 'ui-request_pin').length) || 0;
+
+    const invalidCounter =
+        (device.features && device.buttonRequests.filter(b => b === 'ui-invalid_pin').length) || 0;
 
     useEffect(() => {
         setSubmitted(false);
@@ -105,55 +119,82 @@ const Pin = ({ device, onPinSubmit }: Props) => {
         );
     }
 
+    // 3 cases when we want to show left column
+    const isChangingPin = features?.pin_protection && features?.pin_cached;
+    const isSettingNewPin = !features?.pin_protection;
+    const enteredWrongPin =
+        features?.pin_protection && !features?.pin_cached && invalidCounter >= 1;
+
     // TODO: figure out responsive design
     return (
         <Wrapper>
-            {!features?.pin_protection && (
-                <Col gray>
-                    <H2>
-                        <Translation id="TR_SET_UP_NEW_PIN" />
-                    </H2>
-                    <Text>
-                        <Translation id="TR_SET_UP_STRONG_PIN_TO_PROTECT" />
-                    </Text>
-                    <Text>
-                        <Translation id="TR_MAXIMUM_LENGTH_IS_9_DIGITS" />
-                    </Text>
-                    <Expand>
-                        <StyledImg image="SET_UP_PIN_DIALOG" />
-                    </Expand>
-                    <Description>
-                        <Translation id="TR_HOW_PIN_WORKS" />{' '}
-                        <Link href={URLS.PIN_MANUAL_URL}>
-                            <Translation id="TR_LEARN_MORE_LINK" />
-                        </Link>
-                    </Description>
-                </Col>
+            {isSettingNewPin && (
+                <ExplanationCol
+                    heading={
+                        <>
+                            {counter === 1 && <Translation id="TR_SET_UP_NEW_PIN" />}
+                            {counter === 2 && <Translation id="TR_CONFIRM_PIN" />}
+                        </>
+                    }
+                    description={
+                        <>
+                            <Text>
+                                <Translation id="TR_SET_UP_STRONG_PIN_TO_PROTECT" />
+                            </Text>
+                            <Text>
+                                <Translation id="TR_MAXIMUM_LENGTH_IS_9_DIGITS" />
+                            </Text>
+                        </>
+                    }
+                />
             )}
+            {isChangingPin && (
+                <ExplanationCol
+                    heading={
+                        <>
+                            {counter === 1 && <Translation id="TR_ENTER_CURRENT_PIN" />}
+                            {counter === 2 && <Translation id="TR_SET_UP_NEW_PIN" />}
+                            {counter === 3 && <Translation id="TR_CONFIRM_NEW_PIN" />}
+                        </>
+                    }
+                    description={
+                        <>
+                            <Text>
+                                <Translation id="TR_SET_UP_STRONG_PIN_TO_PROTECT" />
+                            </Text>
+                            <Text>
+                                <Translation id="TR_MAXIMUM_LENGTH_IS_9_DIGITS" />
+                            </Text>
+                        </>
+                    }
+                />
+            )}
+            {enteredWrongPin && (
+                <ExplanationCol
+                    heading={<Translation id="TR_WRONG_PIN_ENTERED" />}
+                    description={
+                        <>
+                            <Text>
+                                <Translation id="TR_WRONG_PIN_ENTERED_DESCRIPTION" />
+                            </Text>
+                        </>
+                    }
+                />
+            )}
+
             <Col>
                 <H2>
-                    {counter === 1 && (
-                        <Translation
-                            id="TR_ENTER_PIN"
-                            values={{
-                                deviceLabel: device.label,
-                            }}
-                        />
-                    )}
-                    {counter > 1 && <Translation id="TR_CONFIRM_PIN" />}
+                    <Translation
+                        id="TR_ENTER_PIN"
+                        values={{
+                            deviceLabel: device.label,
+                        }}
+                    />
                 </H2>
-                <Description>
+                <How>
                     <Translation id="TR_THE_PIN_LAYOUT_IS_DISPLAYED" />
-                </Description>
+                </How>
                 <PinInput onPinSubmit={submit} />
-                {features?.pin_protection && (
-                    <BottomMessage>
-                        <Translation id="TR_HOW_PIN_WORKS" />{' '}
-                        <Link href={URLS.PIN_MANUAL_URL}>
-                            <Translation id="TR_LEARN_MORE_LINK" />
-                        </Link>
-                    </BottomMessage>
-                )}
             </Col>
         </Wrapper>
     );

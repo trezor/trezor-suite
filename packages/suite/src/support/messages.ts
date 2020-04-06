@@ -1474,6 +1474,22 @@ const definedMessages = defineMessages({
         defaultMessage: 'Set up new PIN',
         id: 'TR_SET_UP_NEW_PIN',
     },
+    TR_CONFIRM_NEW_PIN: {
+        defaultMessage: 'Confirm new PIN',
+        id: 'TR_CONFIRM_NEW_PIN',
+    },
+    TR_ENTER_CURRENT_PIN: {
+        defaultMessage: 'Enter current PIN',
+        id: 'TR_ENTER_CURRENT_PIN',
+    },
+    TR_WRONG_PIN_ENTERED: {
+        defaultMessage: 'You entered wrong PIN',
+        id: 'TR_WRONG_PIN_ENTERED',
+    },
+    TR_WRONG_PIN_ENTERED_DESCRIPTION: {
+        defaultMessage: 'Did you notice that matrix on your device has changed?',
+        id: 'TR_WRONG_PIN_ENTERED_DESCRIPTION',
+    },
     TR_SET_UP_STRONG_PIN_TO_PROTECT: {
         defaultMessage:
             'Set up a strong PIN to protect your device from unauthorized access. The keypad layout is displayed on your connected Trezor device.',
