@@ -80,6 +80,7 @@ const Settings = ({
                                     // sorry for ! but dont know how to force typescript to stay calm
                                     label: LANGUAGES.find(l => l.code === language)!.name,
                                 }}
+                                isDisabled
                                 options={LANGUAGES.map(l => ({ value: l.code, label: l.name }))}
                                 // todo: Select should preserve type information
                                 onChange={(option: {

@@ -1,20 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import Card from '@suite-components/Card';
-import { colors, Button, variables } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
+import { Card, Translation } from '@suite-components';
+import { isToday, format } from 'date-fns';
+import { colors, Button, variables, Icon } from '@trezor/components';
+import { useFetchNews } from '@dashboard-hooks/news';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
+    padding: 20px;
+    width: 100%;
 `;
 
 const Section = styled.div`
     display: flex;
+    width: 100%;
     flex-direction: column;
 `;
 
 const Content = styled.div`
     display: flex;
+    justify-content: center;
+    align-items: center;
 `;
 
 const SectionHeader = styled.div`
@@ -28,15 +34,10 @@ const SectionHeader = styled.div`
 const SectionTitle = styled.div`
     flex: 1;
     margin-bottom: 2px;
+    font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-transform: uppercase;
     color: ${colors.BLACK50};
-`;
-
-const SectionAction = styled.div`
-    font-size: 12px;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.BLACK25};
 `;
 
 const BottomAction = styled.div`
@@ -47,12 +48,12 @@ const BottomAction = styled.div`
     color: ${colors.BLACK25};
 `;
 
-const NewsItem = styled.div`
+const Post = styled.div`
     display: flex;
-    padding: 20px;
+    padding: 20px 0;
 
     & + & {
-        margin-top: 1px solid ${colors.BLACK92};
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
     }
 `;
 
@@ -66,74 +67,70 @@ const Right = styled.div`
     flex-direction: column;
 `;
 
-const NewsImage = styled.img`
+const Image = styled.img`
     width: 280px;
     height: 140px;
     border-radius: 2px;
     object-fit: cover;
 `;
 
-const NewsTitle = styled.div<{ visited: boolean }>`
-    font-size: ${variables.FONT_SIZE.SMALL};
+const Title = styled.div`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${props => (props.visited ? colors.BLACK25 : colors.BLACK0)};
+    color: ${colors.BLACK0};
     margin-bottom: 2px;
 `;
 
-const Timestamp = styled.div<{ visited: boolean }>`
+const Timestamp = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => (props.visited ? colors.BLACK50 : colors.BLACK25)};
-    margin-bottom: 5px;
+    color: ${colors.BLACK25};
+    margin: 10px 0;
 `;
 
-const Description = styled.div<{ visited: boolean }>`
+const Description = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => (props.visited ? colors.BLACK50 : colors.BLACK25)};
+    color: ${colors.BLACK25};
 `;
 
 const CTAWrapper = styled.a`
     margin-top: 12px;
+    display: flex;
+    align-items: center;
 `;
 
-const CTAButton = styled(Button)``;
+const ReadMore = styled(CTAWrapper)`
+    color: ${colors.BLACK17};
+    margin: 10px 0 0 0;
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
-export type Props = React.HTMLAttributes<HTMLDivElement>;
+    &:hover {
+        text-decoration: underline;
+    }
+`;
 
-const NewsFeed = React.memo(({ ...rest }: Props) => {
-    const [items, setItems] = useState<any[]>([]);
+const ReadMoreIcon = styled(Icon)`
+    color: ${colors.BLACK17};
+    padding-left: 4px;
+`;
 
-    useEffect(() => {
-        setItems([
-            {
-                title:
-                    'Gift yourself…anything! Use your Trezor to buy gift cards from around the world.',
-                thumbnail: 'https://cdn-images-1.medium.com/max/1024/1*0yuYSkoDM901kMqDNySzhg.jpeg',
-                pubDate: '2020-03-11 17:08:43',
-                link:
-                    'https://blog.trezor.io/gift-yourself-anything-use-your-trezor-to-buy-gift-cards-from-around-the-world-20f5051acf60?source=rss-b8686215a986------2',
-                description:
-                    'Most of you have probably heard this ‘gotcha’ from your nocoiner friends, colleagues, and relatives in the past. The good news is, the answer is very straightforward; yes, you can buy everything with bitcoin. The options had been there for a long time, and now it is easier than ever.',
-            },
-            {
-                title: 'The Economics of Halving: What Will Happen to the Price?',
-                thumbnail: 'https://cdn-images-1.medium.com/max/1024/1*0wmHo0Di1nAco9_9LBDXXg.jpeg',
-                pubDate: '2020-02-20 16:56:59',
-                link:
-                    'https://blog.trezor.io/the-economics-of-halving-what-will-happen-to-the-price-dab6df11755a?source=rss-b8686215a986------2',
-                description:
-                    'Bitcoin is circling $10,000 again, and of course, you are wondering what will happen next. 2020 is a special year for Bitcoin in many ways. One of them is even written by Satoshi Nakamoto himself into its DNA — yes, the halving. The next halving is estimated to occur on 12 May 2020, so let’s take a closer look at what will happen afterwards.',
-            },
-            {
-                title: 'Our Response to the Read Protection Downgrade Attack',
-                thumbnail: 'https://cdn-images-1.medium.com/max/1024/1*08VFZOY7rd6BRF7pMSUaNQ.png',
-                pubDate: '2020-01-31 14:39:10',
-                link:
-                    'https://blog.trezor.io/our-response-to-the-read-protection-downgrade-attack-28d23f8949c6?source=rss-b8686215a986------2',
-                description:
-                    'This article addresses the Read Protection (RDP) Downgrade attack discovered in both Trezor One and Trezor Model T by the Kraken Security Labs researchers on 30 October 2019. Here you can find information about how this physical attack works and how you can protect yourself against it if you’re concerned that you might be affected. In the second part of the article, we explain our threat model and say a few things about physical security.',
-            },
-        ]);
-    }, []);
+const Error = styled.div`
+    display: flex;
+    padding: 24px;
+    width: 100%;
+    justify-content: center;
+`;
+
+const getDate = (date: string) => {
+    const dateObj = new Date(date);
+    if (isToday(dateObj)) {
+        return <Translation id="TR_TODAY" />;
+    }
+    return format(dateObj, 'MMM d');
+};
+
+export default React.memo(({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
+    const [visibleCount, incrementVisibleCount] = useState(3);
+    const { posts, isError, fetchCount, incrementFetchCount } = useFetchNews();
 
     return (
         <Section {...rest}>
@@ -141,54 +138,53 @@ const NewsFeed = React.memo(({ ...rest }: Props) => {
                 <SectionTitle>
                     <Translation id="TR_WHATS_NEW" />
                 </SectionTitle>
-                <SectionAction>
-                    <Button
-                        variant="tertiary"
-                        size="small"
-                        icon="CHECK"
-                        onClick={() => {
-                            console.log('do something');
-                        }}
-                    >
-                        <Translation id="TR_MARK_ALL_AS_READ" />
-                    </Button>
-                </SectionAction>
             </SectionHeader>
             <Content>
                 <StyledCard>
-                    {items.map(item => (
-                        <NewsItem>
+                    {isError && (
+                        <Error>
+                            <Translation id="TR_DASHBOARD_NEWS_ERROR" />
+                        </Error>
+                    )}
+                    {posts.slice(0, visibleCount).map(item => (
+                        <Post key={item.link}>
                             <Left>
-                                <NewsImage src={item.thumbnail} />
+                                <Image src={item.thumbnail} />
                             </Left>
                             <Right>
-                                <NewsTitle visited={false}>{item.title}</NewsTitle>
-                                <Timestamp visited={false}>{item.pubDate}</Timestamp>
-                                <Description visited={false}>{item.description}</Description>
-                                <CTAWrapper href={item.link}>
-                                    <CTAButton size="small" variant="tertiary">
-                                        Read more
-                                    </CTAButton>
+                                <CTAWrapper target="_blank" href={item.link}>
+                                    <Title>{item.title}</Title>
                                 </CTAWrapper>
+                                <Timestamp>{getDate(item.pubDate)}</Timestamp>
+                                <Description>{item.description}</Description>
+                                <ReadMore target="_blank" href={item.link}>
+                                    <Translation id="TR_READ_MORE" />
+                                    <ReadMoreIcon
+                                        size={12}
+                                        color={colors.BLACK0}
+                                        icon="EXTERNAL_LINK"
+                                    />
+                                </ReadMore>
                             </Right>
-                        </NewsItem>
+                        </Post>
                     ))}
                 </StyledCard>
             </Content>
-            <BottomAction>
-                <Button
-                    variant="tertiary"
-                    size="small"
-                    icon="ARROW_DOWN"
-                    onClick={() => {
-                        console.log('do something');
-                    }}
-                >
-                    <Translation id="TR_SHOW_OLDER_NEWS" />
-                </Button>
-            </BottomAction>
+            {posts.length > visibleCount && (
+                <BottomAction>
+                    <Button
+                        variant="tertiary"
+                        size="small"
+                        icon="ARROW_DOWN"
+                        onClick={() => {
+                            incrementVisibleCount(visibleCount + 3);
+                            incrementFetchCount(fetchCount + 3);
+                        }}
+                    >
+                        <Translation id="TR_SHOW_OLDER_NEWS" />
+                    </Button>
+                </BottomAction>
+            )}
         </Section>
     );
 });
-
-export default NewsFeed;

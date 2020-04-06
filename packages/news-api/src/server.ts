@@ -1,10 +1,16 @@
 import express, { Application } from 'express';
 import fetcher from './index';
+import cors from 'cors';
 import pkg from '../package.json';
 import childProcess from 'child_process';
 
 const app: Application = express();
 const PORT = process.env.PORT || 3003;
+const options: cors.CorsOptions = {
+    origin: process.env.ENV === 'staging' ? '*' : 'trezor.io',
+};
+
+app.use(cors(options));
 
 app.get('/', (_req, res) => {
     res.send(`trezor news api`);

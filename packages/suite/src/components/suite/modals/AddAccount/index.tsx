@@ -60,7 +60,7 @@ export default (props: Props) => {
             <Wrapper
                 {...wrapperProps}
                 actionButton={
-                    <Link href={network.url}>
+                    <Link href={network.url} variant="nostyle">
                         <Button icon="EXTERNAL_LINK" variant="primary" onClick={props.onCancel}>
                             <Translation id="TR_GO_TO_EXTERNAL_WALLET" />
                         </Button>

@@ -2603,6 +2603,10 @@ const definedMessages = defineMessages({
         description: 'Show less used address',
         id: 'TR_SHOW_LESS',
     },
+    TR_DASHBOARD_NEWS_ERROR: {
+        defaultMessage: 'Error while fetching the news',
+        id: 'TR_DASHBOARD_NEWS_ERROR',
+    },
     TR_RECOVERY_SEED_IS_OFFLINE: {
         id: 'TR_RECOVERY_SEED_IS_OFFLINE',
         defaultMessage: 'Recovery seed is an offline backup of your device',
@@ -2687,6 +2691,10 @@ const definedMessages = defineMessages({
         id: 'TR_SECURITY_FEATURES_COMPLETED_N',
         defaultMessage: 'Security Features (Completed {n} of {m})',
     },
+    TR_TODAY: {
+        id: 'TR_TODAY',
+        defaultMessage: 'Today',
+    },
     TR_COIN_NOT_FOUND: {
         id: 'TR_COIN_NOT_FOUND',
         defaultMessage: 'Coin not found',
@@ -2694,6 +2702,34 @@ const definedMessages = defineMessages({
     TR_NO_ACCOUNT_FOUND: {
         id: 'TR_NO_ACCOUNT_FOUND',
         defaultMessage: 'No account matches the criteria',
+    },
+    TR_DASHBOARD: {
+        id: 'TR_DASHBOARD',
+        defaultMessage: 'Dashboard',
+    },
+    TR_WALLET: {
+        id: 'TR_WALLET',
+        defaultMessage: 'Wallet',
+    },
+    TR_EXCHANGE: {
+        id: 'TR_EXCHANGE',
+        defaultMessage: 'Exchange',
+    },
+    TR_PASSWORDS: {
+        id: 'TR_PASSWORDS',
+        defaultMessage: 'Passwords',
+    },
+    TR_PORTFOLIO: {
+        id: 'TR_PORTFOLIO',
+        defaultMessage: 'Portfolio',
+    },
+    TR_NOTIFICATIONS: {
+        id: 'TR_NOTIFICATIONS',
+        defaultMessage: 'Notifications',
+    },
+    TR_COMING_SOON: {
+        id: 'TR_COMING_SOON',
+        defaultMessage: 'Coming soon',
     },
 } as const);
 

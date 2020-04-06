@@ -11,7 +11,7 @@ const cleanData = (data: any, limit = 5) => {
     }
 
     for (let i = 0; i < data.length; i++) {
-        if (result.length > limit) break;
+        if (result.length >= limit) break;
         const { title, thumbnail, pubDate, link, description } = data[i];
         const $ = cheerio.load(description);
         if (link.includes('blog.trezor.io')) {

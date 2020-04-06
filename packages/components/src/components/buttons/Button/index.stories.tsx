@@ -23,7 +23,6 @@ storiesOf('Buttons', module).add(
             {
                 'Default (large)': null,
                 Small: 'small',
-                Medium: 'medium',
             },
             null
         );

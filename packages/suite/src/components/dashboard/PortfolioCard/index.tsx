@@ -118,9 +118,9 @@ const PortfolioCard = ({
                     >
                         <Translation id="TR_RECEIVE" />
                     </ActionButton>
-                    <ActionButton isDisabled={!!mode} variant="primary" onClick={buyClickHandler}>
+                    {/* <ActionButton isDisabled={!!mode} variant="primary" onClick={buyClickHandler}>
                         <Translation id="TR_BUY" />
-                    </ActionButton>
+                    </ActionButton> */}
                 </Right>
             </Header>
             <Body>{body}</Body>

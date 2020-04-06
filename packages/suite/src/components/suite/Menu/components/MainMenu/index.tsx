@@ -2,6 +2,7 @@ import React from 'react';
 import { findRouteByName } from '@suite-utils/router';
 import styled, { css } from 'styled-components';
 import { Icon, colors, variables } from '@trezor/components';
+import { Translation } from '@suite-components';
 import { MAIN_MENU_ITEMS } from '@suite-constants/menu';
 import { Props as ContainerProps } from '../../Container';
 
@@ -83,11 +84,11 @@ interface Props {
 const Menu = (props: Props) => (
     <Wrapper>
         {MAIN_MENU_ITEMS.map(item => {
-            const { route, icon, text, isDisabled } = item;
+            const { route, icon, translationId, isDisabled } = item;
             const routeObj = findRouteByName(route);
             const isActive = routeObj ? routeObj.app === props.app : false;
             return (
-                <MenuItemWrapper key={text}>
+                <MenuItemWrapper key={route}>
                     <In
                         data-test={`@suite/menu/${route}`}
                         onClick={() => !isDisabled && props.goto(routeObj!.name)}
@@ -101,8 +102,14 @@ const Menu = (props: Props) => (
                                 icon={icon}
                             />
                         </IconWrapper>
-                        <Text isActive={isActive}>{text}</Text>
-                        {isDisabled && <ComingSoon>Coming soon</ComingSoon>}
+                        <Text isActive={isActive}>
+                            <Translation id={translationId} />
+                        </Text>
+                        {isDisabled && (
+                            <ComingSoon>
+                                <Translation id="TR_COMING_SOON" />
+                            </ComingSoon>
+                        )}
                     </In>
                 </MenuItemWrapper>
             );

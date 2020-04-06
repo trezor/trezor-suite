@@ -210,7 +210,7 @@ const Button = React.forwardRef(
             <IconWrapper alignIcon={alignIcon}>
                 <Icon
                     icon={icon}
-                    size={size === 'large' ? 10 : 8}
+                    size={size === 'large' ? 14 : 12}
                     color={color || getIconColor(variant, isDisabled)}
                 />
             </IconWrapper>

@@ -17,7 +17,6 @@ import DeviceIsUsedHere from './components/DeviceIsUsedHere';
 const Wrapper = styled.div`
     margin: auto 30px auto 30px;
     text-align: center;
-    width: 100%;
 `;
 
 const IsInBootloader = () => (
