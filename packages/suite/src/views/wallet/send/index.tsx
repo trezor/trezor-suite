@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { colors } from '@trezor/components';
 import { WalletLayout } from '@wallet-components';
 import AccountName from '@wallet-components/AccountName';
 import { Card } from '@suite-components';
