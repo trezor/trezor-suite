@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { H2, Button } from '@trezor/components';
-import { Loading, Translation } from '@suite-components';
+import { Loading, Translation, Image } from '@suite-components';
 
 import { Props } from './Container';
 
@@ -18,14 +18,21 @@ const Buttons = styled.div`
     margin: 20px;
 `;
 
-const Index = ({ recovery, device, checkSeed, recoverDevice, goToStep, addPath }: Props) => (
+const StyledImage = styled(Image)`
+    flex: 1;
+`;
+
+const Index = ({ recovery, device, checkSeed, recoverDevice, goToStep, addPath }: Props) => { 
+    const image = device?.features?.major_version === 2 ? 'FIRMWARE_INIT_2' : 'FIRMWARE_INIT_1';
+
     <Wrapper>
         {recovery.status === 'in-progress' && <Loading />}
-        {recovery.status === 'initial' && (
+        {recovery.status !== 'in-progress' && (
             <>
                 <H2>
                     <Translation id="TR_DEVICE_IN_RECOVERY_MODE" />
                 </H2>
+                <StyledImage image={image} />
                 <Buttons>
                     {!device?.features?.initialized && (
                         <Button
@@ -47,6 +54,7 @@ const Index = ({ recovery, device, checkSeed, recoverDevice, goToStep, addPath }
             </>
         )}
     </Wrapper>
-);
+    )
+};
 
 export default Index;
