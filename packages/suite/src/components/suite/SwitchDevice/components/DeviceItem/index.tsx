@@ -175,7 +175,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                         </DeviceStatus>
                     </Col>
 
-                    {needsAttention && (
+                    {needsAttention ? (
                         <Row>
                             <Attention>
                                 <AttentionIconWrapper>
@@ -193,6 +193,14 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                                 <Translation id="TR_SOLVE_ISSUE" />
                             </Button>
                         </Row>
+                    ) : (
+                        <Button
+                            variant="tertiary"
+                            icon="SETTINGS"
+                            onClick={() => props.goto('settings-device')}
+                        >
+                            <Translation id="TR_DEVICE_SETTINGS" />
+                        </Button>
                     )}
 
                     {!isUnknown && hasDeviceSelection && (

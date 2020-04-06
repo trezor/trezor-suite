@@ -69,5 +69,6 @@ export default ({ network, internalNetworks, externalNetworks, setSelectedNetwor
         options={buildNetworkOptions(internalNetworks, externalNetworks)}
         formatOptionLabel={NetworkOption}
         onChange={(option: Option) => setSelectedNetwork(option.value)}
+        noOptionsMessage={() => <Translation id="TR_COIN_NOT_FOUND" />}
     />
 );

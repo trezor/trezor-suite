@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Select, colors, variables } from '@trezor/components';
 import { Account } from '@wallet-types';
-import { HiddenPlaceholder } from '@suite-components';
+import { HiddenPlaceholder, Translation } from '@suite-components';
 import { Props } from './Container';
 
 const Wrapper = styled.div`
@@ -129,6 +129,7 @@ export default ({ accounts, selectedAccount, title, goto, router }: Props) => {
                         options={options}
                         value={accountValue}
                         variant="small"
+                        noOptionsMessage={() => <Translation id="TR_NO_ACCOUNT_FOUND" />}
                     />
                 )}
             </SelectWrapper>

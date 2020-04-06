@@ -103,13 +103,13 @@ interface Props {
 const BottomMenu = (props: Props) => (
     <Wrapper>
         {BOTTOM_MENU_ITEMS.map(item => {
-            const { route, icon, text } = item;
-            const dataTestId = `@suite/menu/${text.toLocaleLowerCase()}`;
+            const { route, icon, translationId } = item;
+            const dataTestId = `@suite/menu/${route}`;
             const routeObj = findRouteByName(route);
             const isActive = routeObj ? routeObj.app === props.app : false;
 
             const defaultIcon = (
-                <Icon color={isActive ? colors.BLACK0 : colors.WHITE} size={12} icon={icon} />
+                <Icon color={isActive ? colors.BLACK0 : colors.WHITE} size={14} icon={icon} />
             );
 
             const iconComponent =
@@ -121,14 +121,16 @@ const BottomMenu = (props: Props) => (
 
             return (
                 <In
-                    key={text}
+                    key={translationId}
                     data-test={dataTestId}
                     onClick={() => props.goto(routeObj!.name)}
                     isActive={isActive}
                 >
                     <MenuItemWrapper>
                         <IconWrapper>{iconComponent}</IconWrapper>
-                        <Text isActive={isActive}>{text}</Text>
+                        <Text isActive={isActive}>
+                            <Translation id={translationId} />
+                        </Text>
                     </MenuItemWrapper>
                 </In>
             );
@@ -137,11 +139,7 @@ const BottomMenu = (props: Props) => (
         <SubMenu>
             <SubMenuText>Discreet</SubMenuText>
             <SwitchWrapper>
-                <Tooltip
-                    placement="right"
-                    offset={50}
-                    content={<Translation id="TR_DISCREET_TOOLTIP" />}
-                >
+                <Tooltip placement="right" content={<Translation id="TR_DISCREET_TOOLTIP" />}>
                     <Switch
                         isSmall
                         checked={props.discreetMode}

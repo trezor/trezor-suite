@@ -36,8 +36,7 @@ const Wrapper = styled.button<WrapperProps>`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${props => (props.color ? props.color : colors.BLACK25)};
     outline: none;
-    padding: ${props => (props.variant === 'tertiary' ? '0px 4px' : BUTTON_PADDING[props.size])};
-    height: ${props => (props.variant === 'tertiary' ? '20px' : 'auto')};
+    padding: ${props => BUTTON_PADDING[props.size]};
 
     ${props =>
         props.fullWidth &&
@@ -85,7 +84,6 @@ const Wrapper = styled.button<WrapperProps>`
         props.variant === 'tertiary' &&
         !props.isDisabled &&
         css`
-            padding: 0px 4px;
             &:hover,
             &:focus {
                 color: ${colors.BLACK25};
@@ -212,7 +210,7 @@ const Button = React.forwardRef(
             <IconWrapper alignIcon={alignIcon}>
                 <Icon
                     icon={icon}
-                    size={size === 'large' ? 10 : 8}
+                    size={size === 'large' ? 14 : 12}
                     color={color || getIconColor(variant, isDisabled)}
                 />
             </IconWrapper>

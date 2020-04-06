@@ -74,7 +74,7 @@ const SecurityFeatures = ({
     const backupData: CardProps = needsBackup
         ? {
               variant: 'secondary',
-              icon: 'SIGN',
+              icon: 'BACKUP',
               heading: <Translation id="TR_BACKUP_YOUR_DEVICE" />,
               description: <Translation id="TR_RECOVERY_SEED_IS_OFFLINE" />,
               cta: {
@@ -101,7 +101,7 @@ const SecurityFeatures = ({
     const pinData: CardProps = !pinEnabled
         ? {
               variant: 'secondary',
-              icon: 'WALLET',
+              icon: 'PIN',
               heading: <Translation id="TR_ENABLE_PIN" />,
               description: <Translation id="TR_SET_STRONG_PIN_NUMBER_AGAINST" />,
               cta: {
@@ -129,7 +129,7 @@ const SecurityFeatures = ({
     const hiddenWalletData: CardProps = !hiddenWalletCreated
         ? {
               variant: 'secondary',
-              icon: 'WALLET',
+              icon: 'WALLET_HIDDEN',
               heading: <Translation id="TR_PASSPHRASE" />,
               description: <Translation id="TR_ENABLE_PASSPHRASE_DESCRIPTION" />,
               cta: {
@@ -158,7 +158,7 @@ const SecurityFeatures = ({
     const discreetModeData: CardProps = !discreetModeCompleted
         ? {
               variant: 'secondary',
-              icon: 'WALLET',
+              icon: 'DISCREET',
               heading: <Translation id="TR_DISCREET_MODE" />,
               description: <Translation id="TR_TRY_TO_TEMPORARILY_HIDE" />,
               cta: {

@@ -502,10 +502,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Create backup',
         id: 'TR_CREATE_BACKUP',
     },
-    TR_CREATE_BACKUP_IN_3_MINUTES: {
-        defaultMessage: 'Create a backup in 3 minutes',
-        id: 'TR_CREATE_BACKUP_IN_3_MINUTES',
-    },
     TR_CURRENCY: {
         defaultMessage: 'Currency',
         id: 'TR_CURRENCY',
@@ -1308,11 +1304,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Please connect your device to continue with the verification process',
         id: 'TR_PLEASE_CONNECT_YOUR_DEVICE',
     },
-    TR_PLEASE_DISABLE_PASSPHRASE: {
-        defaultMessage:
-            'Please disable passphrase settings to continue with the verification process.',
-        id: 'TR_PLEASE_DISABLE_PASSPHRASE',
-    },
     TR_PLEASE_ENABLE_PASSPHRASE: {
         defaultMessage:
             'Please enable passphrase settings to continue with the verification process.',
@@ -1492,9 +1483,9 @@ const definedMessages = defineMessages({
         defaultMessage: 'Settings',
         id: 'TR_SETTINGS',
     },
-    TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK: {
-        defaultMessage: 'Show address, I will take the risk',
-        id: 'TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK',
+    TR_SHOW_ADDRESS_ANYWAY: {
+        defaultMessage: 'Show address anyway',
+        id: 'TR_SHOW_ADDRESS_ANYWAY',
     },
     TR_SHOW_ADVANCED_OPTIONS: {
         defaultMessage: 'Show advanced options',
@@ -2612,6 +2603,10 @@ const definedMessages = defineMessages({
         description: 'Show less used address',
         id: 'TR_SHOW_LESS',
     },
+    TR_DASHBOARD_NEWS_ERROR: {
+        defaultMessage: 'Error while fetching the news',
+        id: 'TR_DASHBOARD_NEWS_ERROR',
+    },
     TR_RECOVERY_SEED_IS_OFFLINE: {
         id: 'TR_RECOVERY_SEED_IS_OFFLINE',
         defaultMessage: 'Recovery seed is an offline backup of your device',
@@ -2695,6 +2690,46 @@ const definedMessages = defineMessages({
     TR_SECURITY_FEATURES_COMPLETED_N: {
         id: 'TR_SECURITY_FEATURES_COMPLETED_N',
         defaultMessage: 'Security Features (Completed {n} of {m})',
+    },
+    TR_TODAY: {
+        id: 'TR_TODAY',
+        defaultMessage: 'Today',
+    },
+    TR_COIN_NOT_FOUND: {
+        id: 'TR_COIN_NOT_FOUND',
+        defaultMessage: 'Coin not found',
+    },
+    TR_NO_ACCOUNT_FOUND: {
+        id: 'TR_NO_ACCOUNT_FOUND',
+        defaultMessage: 'No account matches the criteria',
+    },
+    TR_DASHBOARD: {
+        id: 'TR_DASHBOARD',
+        defaultMessage: 'Dashboard',
+    },
+    TR_WALLET: {
+        id: 'TR_WALLET',
+        defaultMessage: 'Wallet',
+    },
+    TR_EXCHANGE: {
+        id: 'TR_EXCHANGE',
+        defaultMessage: 'Exchange',
+    },
+    TR_PASSWORDS: {
+        id: 'TR_PASSWORDS',
+        defaultMessage: 'Passwords',
+    },
+    TR_PORTFOLIO: {
+        id: 'TR_PORTFOLIO',
+        defaultMessage: 'Portfolio',
+    },
+    TR_NOTIFICATIONS: {
+        id: 'TR_NOTIFICATIONS',
+        defaultMessage: 'Notifications',
+    },
+    TR_COMING_SOON: {
+        id: 'TR_COMING_SOON',
+        defaultMessage: 'Coming soon',
     },
 } as const);
 

@@ -38,7 +38,7 @@ const StyledImage = styled(props => <Image {...props} />)`
 
 const Actions = styled.div`
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     width: 100%;
 `;
 
@@ -51,7 +51,7 @@ interface Props {
     buy: () => any;
 }
 
-const NoTransactions = ({ receive, buy }: Props) => {
+const NoTransactions = ({ receive }: Props) => {
     return (
         <Wrapper>
             <Content>
@@ -66,9 +66,9 @@ const NoTransactions = ({ receive, buy }: Props) => {
                     <ActionButton variant="secondary" onClick={receive}>
                         <Translation id="TR_RECEIVE" />
                     </ActionButton>
-                    <ActionButton variant="primary" onClick={buy}>
+                    {/* <ActionButton variant="primary" onClick={buy}>
                         <Translation id="TR_BUY" />
-                    </ActionButton>
+                    </ActionButton> */}
                 </Actions>
             </Content>
         </Wrapper>

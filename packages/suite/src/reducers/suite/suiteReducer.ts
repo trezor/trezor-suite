@@ -51,7 +51,7 @@ const initialState: SuiteState = {
     },
     settings: {
         language: 'en',
-        analytics: false,
+        analytics: true,
         debug: {
             translationMode: false,
         },
