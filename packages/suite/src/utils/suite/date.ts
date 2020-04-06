@@ -10,6 +10,7 @@ import {
     startOfMonth,
 } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
+import { GraphTicksInterval } from '@suite/types/suite';
 
 export const formatDuration = (seconds: number) =>
     formatDistance(0, seconds * 1000, { includeSeconds: true });
@@ -63,15 +64,16 @@ export const getTicksBetweenTimestamps = (
     return months;
 };
 
-export const calcTicks = (weeks: number) => {
+export const calcTicks = (weeks: number, options?: { skipDays?: boolean }) => {
     const startDate = subWeeks(new Date(), weeks);
     const endDate = new Date();
-    let interval: 'month' | 'day' | '2-day' = 'month';
+    let interval: GraphTicksInterval = 'month';
+
     if (weeks < 52) {
         interval = 'day';
     }
     if (weeks === 4) {
-        interval = '2-day';
+        interval = options?.skipDays ? '2-day' : 'day';
     }
     if (weeks === 1) {
         interval = 'day';
@@ -114,7 +116,7 @@ export const splitTimestampsByInterval = (
  * @returns
  */
 export const getBlockbookSafeTime = () => {
-    const timestamp = Math.floor(new Date().getTime() / 1000);
+    const timestamp = getUnixTime(new Date());
     return timestamp - 180; // current time - 3 mins
 };
 

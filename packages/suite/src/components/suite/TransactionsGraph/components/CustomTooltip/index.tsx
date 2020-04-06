@@ -2,10 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { colors } from '@trezor/components';
-import { FiatValue } from '@suite-components';
+import { FiatValue, FormattedNumber } from '@suite-components';
 import { Account } from '@wallet-types';
 import { TooltipProps } from 'recharts';
 import { getDateWithTimeZone } from '@suite/utils/suite/date';
+import { Props as GraphProps } from '../../index';
 
 const CustomTooltipWrapper = styled.div<{ coordinate: { x: number; y: number } }>`
     display: flex;
@@ -42,20 +43,63 @@ interface Range {
     weeks: number;
 }
 
-interface CustomTooltipProps extends TooltipProps {
-    symbol: Account['symbol'];
+interface CommonProps extends TooltipProps {
     selectedRange: Range;
+    receivedValueFn: GraphProps['receivedValueFn'];
+    sentValueFn: GraphProps['sentValueFn'];
 }
+
+type Props =
+    | ({ symbol: Account['symbol']; localCurrency?: never } & CommonProps)
+    | ({ localCurrency: string; symbol?: never } & CommonProps);
 
 const CustomTooltip = ({
     active,
     payload,
     coordinate,
     symbol,
+    localCurrency,
     selectedRange,
-}: CustomTooltipProps) => {
+    ...props
+}: Props) => {
     if (active && payload) {
         const date = getDateWithTimeZone(payload[0].payload.time * 1000);
+
+        const receivedAmountString = props.receivedValueFn(payload[0].payload);
+        const sentAmountString = props.sentValueFn(payload[0].payload);
+
+        const receivedAmount = symbol ? (
+            <>
+                {receivedAmountString} {symbol.toUpperCase()}
+                <FiatValue
+                    amount={receivedAmountString}
+                    symbol={symbol}
+                    source={payload[0].payload.rates}
+                    useCustomSource
+                >
+                    {({ value }) => (value ? <> ({value})</> : null)}
+                </FiatValue>
+            </>
+        ) : (
+            <FormattedNumber currency={localCurrency} value={receivedAmountString} />
+        );
+
+        const sentAmount = symbol ? (
+            <>
+                {sentAmountString} {symbol.toUpperCase()}
+                <FiatValue
+                    amount={sentAmountString}
+                    symbol={symbol}
+                    source={payload[0].payload.rates}
+                    useCustomSource
+                >
+                    {({ value }) => (value ? <> ({value})</> : null)}
+                </FiatValue>
+            </>
+        ) : (
+            <FormattedNumber currency={localCurrency} value={sentAmountString} />
+        );
+
         return (
             <CustomTooltipWrapper coordinate={coordinate!}>
                 <DateWrapper>
@@ -68,28 +112,10 @@ const CustomTooltip = ({
                     )}
                 </DateWrapper>
                 <Row>
-                    <Rect color={colors.GREEN} /> Received {payload[0].payload.received}{' '}
-                    {symbol.toUpperCase()}
-                    <FiatValue
-                        amount={payload[0].payload.received}
-                        symbol={symbol}
-                        source={payload[0].payload.rates}
-                        useCustomSource
-                    >
-                        {({ value }) => (value ? <> ({value})</> : null)}
-                    </FiatValue>
+                    <Rect color={colors.GREEN} /> Received {receivedAmount}
                 </Row>
                 <Row>
-                    <Rect color={colors.RED_ERROR} /> Sent {payload[0].payload.sent}{' '}
-                    {symbol.toUpperCase()}
-                    <FiatValue
-                        amount={payload[0].payload.sent}
-                        symbol={symbol}
-                        source={payload[0].payload.rates}
-                        useCustomSource
-                    >
-                        {({ value }) => (value ? <> ({value})</> : null)}
-                    </FiatValue>
+                    <Rect color={colors.RED_ERROR} /> Sent {sentAmount}
                 </Row>
             </CustomTooltipWrapper>
         );

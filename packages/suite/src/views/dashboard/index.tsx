@@ -109,6 +109,8 @@ const Dashboard = (props: Props) => {
                     localCurrency={props.localCurrency}
                     buyClickHandler={() => props.goto('wallet-receive')}
                     receiveClickHandler={() => props.goto('wallet-receive')}
+                    deviceAccounts={deviceAccounts}
+                    discoveryInProgress={isLoading}
                 />
                 <Divider />
                 <AssetsCard

@@ -133,6 +133,8 @@ export const fetchLastWeekRates = async (
     }));
     if (!tickers) return null;
 
+    console.log('coingecko', tickers);
+
     return {
         symbol,
         tickers,

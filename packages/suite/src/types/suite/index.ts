@@ -119,3 +119,20 @@ export type InjectedModalApplicationProps = {
     closeModalApp: (preserveParams?: boolean) => void;
     getBackgroundRoute: () => Route$ | typeof undefined;
 };
+
+export interface GraphRange {
+    label: string;
+    weeks: number;
+}
+
+export type GraphTicksInterval = 'month' | 'day' | '2-day';
+export interface AggregatedAccountBalanceHistory {
+    time: number;
+    txs: number;
+    sentFiat: {
+        [key: string]: string;
+    };
+    receivedFiat: {
+        [key: string]: string;
+    };
+}

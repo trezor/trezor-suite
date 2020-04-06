@@ -2,16 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors, variables, Loader } from '@trezor/components';
 import { Account } from '@wallet-types';
+import { GraphRange, AggregatedAccountBalanceHistory } from '@suite-types';
 import { BarChart, Tooltip, Bar, ReferenceLine, ResponsiveContainer, YAxis, XAxis } from 'recharts';
 import { fetchAccountHistory } from '@suite/actions/wallet/fiatRatesActions';
 import { Await } from '@suite/types/utils';
 import RangeSelector from './components/RangeSelector';
-import { calcTicks } from '@suite/utils/suite/date';
-import { getUnixTime } from 'date-fns';
 import CustomTooltip from './components/CustomTooltip';
 import CustomXAxisTick from './components/CustomXAxisTick';
 import CustomYAxisTick from './components/CustomYAxisTick';
 import CustomBar from './components/CustomBar';
+import BigNumber from 'bignumber.js';
 
 const Wrapper = styled.div`
     display: flex;
@@ -31,21 +31,34 @@ const Description = styled.div`
 
 type AccountHistory = NonNullable<Await<ReturnType<typeof fetchAccountHistory>>>;
 
-interface Props {
-    account: Account;
-    data: AccountHistory | null | undefined;
+interface CommonProps {
     isLoading?: boolean;
-    selectedRange: Range;
-    onSelectedRange: (range: Range) => void;
+    selectedRange: GraphRange;
+    xTicks: number[];
+    onSelectedRange: (range: GraphRange) => void;
+}
+interface CryptoGraphProps extends CommonProps {
+    variant: 'one-asset';
+    account: Account;
+    data: AccountHistory | null;
+    receivedValueFn: (data: AccountHistory[number]) => string;
+    sentValueFn: (data: AccountHistory[number]) => string;
+    localCurrency?: never;
 }
 
-interface Range {
-    label: string;
-    weeks: number;
+interface FiatGraphProps extends CommonProps {
+    variant: 'all-assets';
+    localCurrency: string;
+    data: AggregatedAccountBalanceHistory[] | null;
+    receivedValueFn: (data: AggregatedAccountBalanceHistory) => string;
+    sentValueFn: (data: AggregatedAccountBalanceHistory) => string;
+    account?: never;
 }
+
+export type Props = CryptoGraphProps | FiatGraphProps;
 
 const TransactionsGraph = React.memo((props: Props) => {
-    const { data, isLoading, selectedRange } = props;
+    const { data, isLoading, selectedRange, xTicks } = props;
 
     // Will be useful if we'll wanna use custom ticks values
     // const minY =
@@ -63,7 +76,6 @@ const TransactionsGraph = React.memo((props: Props) => {
     //           )
     //         : null;
 
-    const XTicks = calcTicks(selectedRange.weeks).map(getUnixTime);
     const xAxisPadding = selectedRange.label === 'year' ? 3600 * 24 * 7 : 3600 * 12; // 7 days or 12 hours
 
     return (
@@ -73,7 +85,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                 {isLoading && <Loader size={24} />}
                 {!isLoading && data && data.length === 0 && <>No transactions to show</>}
                 {!isLoading && data && data.length > 0 && (
-                    <ResponsiveContainer id={props.account.symbol} height="100%" width="100%">
+                    <ResponsiveContainer height="100%" width="100%">
                         <BarChart
                             data={data}
                             stackOffset="sign"
@@ -88,41 +100,58 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 dataKey="time"
                                 type="number"
                                 domain={[
-                                    XTicks[0] - xAxisPadding,
-                                    XTicks[XTicks.length - 1] + xAxisPadding,
+                                    xTicks[0] - xAxisPadding,
+                                    xTicks[xTicks.length - 1] + xAxisPadding,
                                 ]}
                                 // width={10}
                                 stroke={colors.BLACK80}
                                 interval={0}
                                 tick={<CustomXAxisTick selectedRange={selectedRange} />}
-                                ticks={XTicks}
+                                ticks={xTicks}
                             />
                             <YAxis
                                 type="number"
                                 orientation="right"
                                 domain={['dataMin', 'dataMax']}
                                 stroke={colors.BLACK80}
-                                tick={<CustomYAxisTick />}
+                                tick={
+                                    props.variant === 'one-asset' ? (
+                                        <CustomYAxisTick symbol={props.account.symbol} />
+                                    ) : (
+                                        <CustomYAxisTick localCurrency={props.localCurrency} />
+                                    )
+                                }
                             />
                             <Tooltip
                                 content={
-                                    <CustomTooltip
-                                        selectedRange={selectedRange}
-                                        symbol={props.account.symbol}
-                                    />
+                                    props.variant === 'one-asset' ? (
+                                        <CustomTooltip
+                                            selectedRange={selectedRange}
+                                            symbol={props.account.symbol}
+                                            sentValueFn={props.sentValueFn}
+                                            receivedValueFn={props.receivedValueFn}
+                                        />
+                                    ) : (
+                                        <CustomTooltip
+                                            selectedRange={selectedRange}
+                                            localCurrency={props.localCurrency}
+                                            sentValueFn={props.sentValueFn}
+                                            receivedValueFn={props.receivedValueFn}
+                                        />
+                                    )
                                 }
                             />
                             />
                             <ReferenceLine y={0} stroke={colors.BLACK80} />
                             <Bar
-                                dataKey={(data: AccountHistory[number]) => Number(data.sent)}
+                                dataKey={(data: any) => Number(props.sentValueFn(data))}
                                 stackId="stack"
                                 fill={colors.RED_ERROR}
                                 barSize={8}
                                 shape={<CustomBar variant="sent" />}
                             />
                             <Bar
-                                dataKey={(data: AccountHistory[number]) => Number(data.received)}
+                                dataKey={(data: any) => Number(props.receivedValueFn(data))}
                                 stackId="stack"
                                 fill={colors.GREEN}
                                 barSize={8}

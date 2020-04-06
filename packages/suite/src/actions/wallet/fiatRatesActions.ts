@@ -1,4 +1,8 @@
-import TrezorConnect, { AccountTransaction, BlockchainFiatRatesUpdate } from 'trezor-connect';
+import TrezorConnect, {
+    AccountTransaction,
+    BlockchainFiatRatesUpdate,
+    BlockchainAccountBalanceHistory,
+} from 'trezor-connect';
 import { getUnixTime } from 'date-fns';
 import {
     fetchCurrentFiatRates,
@@ -8,7 +12,12 @@ import {
 import { isTestnet, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { splitTimestampsByInterval, getBlockbookSafeTime, resetTime } from '@suite-utils/date';
 import { FIAT } from '@suite-config';
-import { Dispatch, GetState } from '@suite-types';
+import {
+    Dispatch,
+    GetState,
+    EnhancedAccountBalanceHistory,
+    AggregatedAccountBalanceHistory,
+} from '@suite-types';
 import {
     RATE_UPDATE,
     LAST_WEEK_RATES_UPDATE,
@@ -22,6 +31,12 @@ import {
     WalletAccountTransaction,
     FiatTicker,
 } from '@wallet-types';
+import {
+    toFiatCurrency,
+    sumFiatValueMap,
+    calcFiatValueMap,
+} from '@wallet-utils/fiatConverterUtils';
+import BigNumber from 'bignumber.js';
 
 type FiatRatesPayload = NonNullable<CoinFiatRates['current']>;
 
@@ -200,6 +215,7 @@ export const updateLastWeekRates = () => async (dispatch: Dispatch, getState: Ge
         // no rates for localCurrency
         return null;
     };
+    console.log('last week timestamps', timestamps);
 
     const staleTickers = dispatch(getStaleTickers(lastWeekStaleFn, MAX_AGE_LAST_WEEK));
 
@@ -212,6 +228,7 @@ export const updateLastWeekRates = () => async (dispatch: Dispatch, getState: Ge
             const results = response.success
                 ? response.payload
                 : await fetchLastWeekRates(ticker, localCurrency);
+            console.log('connect', response?.payload);
 
             if (results?.tickers) {
                 dispatch({
@@ -301,10 +318,82 @@ export const fetchAccountHistory = async (
         return response.payload.map(h => ({
             ...h,
             received: formatNetworkAmount(h.received, account.symbol),
-            sent: formatNetworkAmount(`-${h.sent}`, account.symbol),
+            sent: formatNetworkAmount(h.sent, account.symbol),
             time: resetTime(h.time, setDayToFirstOfMonth), // adapts to local timezone
         }));
     }
+    return null;
+};
+
+/**
+ * Fetch aggregated history (received, sent amounts, num of txs) for given accounts.
+ * Total sent/received amounts are aggregated and returned as an object indexed by fiat currency symbol.
+ * Returned data are grouped by `groupBy` seconds
+ * No XRP support
+ *
+ * @param {Account[]} accounts
+ * @param {Date} startDate
+ * @param {Date} endDate
+ * @param {number} groupBy
+ * @returns
+ */
+export const fetchAggregatedHistory = async (
+    accounts: Account[],
+    startDate: Date,
+    endDate: Date,
+    groupBy: number,
+    ignoreTestnets?: boolean,
+): Promise<AggregatedAccountBalanceHistory[]> => {
+    const filteredAccounts = ignoreTestnets ? accounts.filter(a => !isTestnet(a.symbol)) : accounts;
+
+    console.log('fetching ts', getUnixTime(startDate), getUnixTime(endDate));
+
+    const promises = filteredAccounts.map(account =>
+        fetchAccountHistory(account, startDate, endDate, groupBy),
+    );
+    const responses = await Promise.all(promises);
+
+    const enhancedHistory = responses
+        .map((accountHistory, i) => {
+            if (accountHistory && accountHistory.length > 0) {
+                // const { symbol } = accounts[i];
+                const enhancedResponse = accountHistory.map(h => ({
+                    ...h,
+                    receivedFiat: calcFiatValueMap(h.received, h.rates || {}),
+                    sentFiat: calcFiatValueMap(h.sent, h.rates || {}),
+                }));
+                return enhancedResponse;
+            }
+            return null;
+        })
+        .filter(t => t !== null);
+
+    const flattedHistory = enhancedHistory.flat();
+    console.log('flattedHistory', flattedHistory);
+
+    const groupedByTimestamp: { [key: string]: EnhancedAccountBalanceHistory[] } = {};
+    flattedHistory.forEach(dataPoint => {
+        if (!dataPoint) return;
+        if (!groupedByTimestamp[dataPoint.time]) {
+            groupedByTimestamp[dataPoint.time] = [];
+        }
+        groupedByTimestamp[dataPoint.time].push(dataPoint);
+    });
+
+    const aggregatedData = Object.keys(groupedByTimestamp).map(timestamp => {
+        const dataPoints = groupedByTimestamp[timestamp];
+
+        return {
+            time: Number(timestamp),
+            txs: dataPoints.reduce((acc, h) => acc + h.txs, 0),
+            sentFiat: dataPoints.reduce((acc, h) => sumFiatValueMap(acc, h.sentFiat), {}),
+            receivedFiat: dataPoints.reduce((acc, h) => sumFiatValueMap(acc, h.receivedFiat), {}),
+            rates: {},
+        };
+    });
+
+    console.log('results', aggregatedData);
+    return aggregatedData;
 };
 
 export const onUpdateRate = (res: BlockchainFiatRatesUpdate) => async (dispatch: Dispatch) => {

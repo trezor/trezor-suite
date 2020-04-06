@@ -1,10 +1,12 @@
 import BigNumber from 'bignumber.js';
 import { CoinFiatRates } from '@wallet-types';
 
-const toFiatCurrency = (
+type FiatRates = NonNullable<CoinFiatRates['current']>['rates'];
+
+export const toFiatCurrency = (
     amount: string,
     fiatCurrency: string,
-    networkRates: NonNullable<CoinFiatRates['current']>['rates'] | undefined,
+    networkRates: FiatRates | undefined,
 ) => {
     // calculate amount in local currency
 
@@ -23,10 +25,10 @@ const toFiatCurrency = (
     return localAmountStr;
 };
 
-const fromFiatCurrency = (
+export const fromFiatCurrency = (
     localAmount: string,
     fiatCurrency: string,
-    networkRates: NonNullable<CoinFiatRates['current']>['rates'] | undefined,
+    networkRates: FiatRates | undefined,
     decimals: number,
 ) => {
     const rate = networkRates?.[fiatCurrency];
@@ -44,4 +46,24 @@ const fromFiatCurrency = (
     return amountStr;
 };
 
-export { toFiatCurrency, fromFiatCurrency };
+export const calcFiatValueMap = (amount: string, rates: FiatRates) => {
+    return Object.keys(rates).reduce((acc, fiatSymbol) => {
+        return {
+            ...acc,
+            [fiatSymbol]: toFiatCurrency(amount, fiatSymbol, rates),
+        };
+    }, {});
+};
+
+export const sumFiatValueMap = (
+    valueMap: { [k: string]: string },
+    obj: { [k: string]: string },
+) => {
+    const valueMapCopy = { ...valueMap };
+    Object.entries(obj).map(keyVal => {
+        const [key, val] = keyVal;
+        const previousValue = valueMapCopy[key] ?? '0';
+        valueMapCopy[key] = new BigNumber(previousValue).plus(val ?? 0).toFixed();
+    });
+    return valueMapCopy;
+};

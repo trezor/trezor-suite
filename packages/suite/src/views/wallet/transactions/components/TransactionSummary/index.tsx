@@ -8,7 +8,8 @@ import InfoCard from './components/InfoCard';
 import { Await } from '@suite/types/utils';
 import { fetchAccountHistory } from '@suite/actions/wallet/fiatRatesActions';
 import BigNumber from 'bignumber.js';
-import { subWeeks } from 'date-fns';
+import { subWeeks, getUnixTime } from 'date-fns';
+import { calcTicks } from '@suite/utils/suite/date';
 
 const Wrapper = styled.div`
     display: flex;
@@ -120,6 +121,8 @@ const TransactionSummary = (props: Props) => {
     const totalSentAmount = data?.reduce((acc, d) => acc.plus(d.sent), new BigNumber(0));
     const totalReceivedAmount = data?.reduce((acc, d) => acc.plus(d.received), new BigNumber(0));
 
+    const xTicks = calcTicks(selectedRange.weeks, { skipDays: true }).map(getUnixTime);
+
     return (
         <Wrapper>
             <Actions>
@@ -144,11 +147,14 @@ const TransactionSummary = (props: Props) => {
                             <GraphWrapper>
                                 <TransactionsGraph
                                     variant="one-asset"
+                                    xTicks={xTicks}
                                     account={props.account}
                                     isLoading={isLoading}
                                     data={data}
                                     selectedRange={selectedRange}
                                     onSelectedRange={setSelectedRange}
+                                    receivedValueFn={data => data.received}
+                                    sentValueFn={data => data.sent}
                                 />
                             </GraphWrapper>
                             <InfoCardsWrapper>
