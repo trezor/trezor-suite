@@ -382,7 +382,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                     )}
                 </Section>
 
-                <Section borderless>
+                <Section>
                     <Row>
                         <TextColumn
                             title={<Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />}
