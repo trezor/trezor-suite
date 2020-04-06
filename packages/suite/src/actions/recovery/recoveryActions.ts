@@ -95,7 +95,6 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
             path: device.path,
         },
     });
-    console.log('response', response);
 
     if (!response.success) {
         dispatch(setError(response.payload.error));

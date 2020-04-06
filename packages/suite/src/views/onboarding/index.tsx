@@ -135,7 +135,6 @@ const Onboarding = (props: Props) => {
                 showHelp={getStep().help}
                 hidden={!getStep().progress}
             />
-            {/* { modal && modal } */}
             <UnexpectedState>
                 {modal && (
                     <ActionModalWrapper data-test="@onboading/confirm-action-on-device">
