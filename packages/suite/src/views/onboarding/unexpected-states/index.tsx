@@ -28,6 +28,7 @@ const IsInBootloader = () => (
 const mapStateToProps = (state: AppState) => ({
     onboarding: state.onboarding,
     suite: state.suite,
+    recovery: state.recovery,
 });
 
 type Props = ReturnType<typeof mapStateToProps> & {
@@ -41,16 +42,19 @@ const UnexpectedState = ({ onboarding, suite, children }: Props) => {
     const activeStep = steps.find(s => s.id === activeStepId);
 
     const isNotSameDevice = () => {
-        const prevDeviceId = prevDevice && prevDevice.features && prevDevice.id;
-        // if no device was connected before, assume it is same device
-        if (!prevDeviceId) {
-            return false;
-        }
-        const deviceId = device && device.features && device.id;
-        if (!deviceId) {
-            return null;
-        }
-        return deviceId !== prevDeviceId;
+        // temporarily disabled, there is the thing with changing id in resetDevice
+        return false;
+
+        // const prevDeviceId = prevDevice && prevDevice.features && prevDevice.id;
+        // // if no device was connected before, assume it is same device
+        // if (!prevDeviceId) {
+        //     return false;
+        // }
+        // const deviceId = device && device.features && device.id;
+        // if (!deviceId) {
+        //     return null;
+        // }
+        // return deviceId !== prevDeviceId;
     };
 
     const isNotNewDevice = () => {
@@ -75,7 +79,6 @@ const UnexpectedState = ({ onboarding, suite, children }: Props) => {
             case STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE:
                 return device?.type === 'unacquired';
             case STEP.DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE:
-                // todo check
                 return isNotNewDevice();
             case STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE:
                 return device?.features?.recovery_mode;

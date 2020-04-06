@@ -121,6 +121,7 @@ const Onboarding = (props: Props) => {
 
     const StepComponent = getStepComponent();
     const stepsInPath = steps.filter(s => s.progress && isStepInPath(s, path));
+    console.log(modal);
     return (
         <Wrapper>
             <Head>
@@ -134,7 +135,7 @@ const Onboarding = (props: Props) => {
                 showHelp={getStep().help}
                 hidden={!getStep().progress}
             />
-
+            {/* { modal && modal } */}
             <UnexpectedState>
                 {modal && (
                     <ActionModalWrapper data-test="@onboading/confirm-action-on-device">

@@ -181,7 +181,6 @@ const Recovery = ({
                     <StyledP>
                         <Translation id="TR_CHECK_RECOVERY_SEED_DESC_T2" />
                     </StyledP>
-                    <div style={{ flex: 1, alignItems: 'center'}}>
 
                     <InfoBox>
                         <Number>1</Number>
@@ -206,8 +205,6 @@ const Recovery = ({
                             </InfoBoxDescription>
                         </InfoBoxText>
                     </InfoBox>
-                    </div>
-
                 </>
             )}
 

@@ -10,6 +10,7 @@ import { Props } from './Container';
 const StyledImage = styled(Image)`
     flex: 1;
 `;
+
 const RecoveryStep = (props: Props) => {
     const {
         goToNextStep,
@@ -98,7 +99,7 @@ const RecoveryStep = (props: Props) => {
                                 data-test="@onboarding/recovery/continue-button"
                                 onClick={() => goToNextStep('set-pin')}
                             >
-                                Continue
+                                <Translation id="TR_CONTINUE" />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -122,7 +123,7 @@ const RecoveryStep = (props: Props) => {
             <Wrapper.StepFooter>
                 {recovery.status !== 'in-progress' && (
                     <OnboardingButton.Back onClick={() => goToPreviousStep()}>
-                        Back
+                        <Translation id="TR_BACK" />
                     </OnboardingButton.Back>
                 )}
             </Wrapper.StepFooter>
