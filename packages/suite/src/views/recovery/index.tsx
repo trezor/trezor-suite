@@ -85,6 +85,9 @@ const StyledP = styled(P)`
     color: ${colors.BLACK50};
 `;
 
+const StyledImage = styled(Image)`
+    flex: 1;
+`;
 const mapStateToProps = (state: AppState) => ({
     recovery: state.recovery,
     locks: state.suite.locks,
@@ -295,7 +298,7 @@ const Recovery = ({
                     <StyledP>
                         <Translation id="TR_SEED_CHECK_SUCCESS_DESC" />
                     </StyledP>
-                    <Image image="UNI_SUCCESS" />
+                    <StyledImage image="UNI_SUCCESS" />
                     <Buttons>
                         <StyledButton onClick={() => closeModalApp()}>
                             <Translation id="TR_CLOSE" />

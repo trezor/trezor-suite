@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import { SelectWordCount, SelectRecoveryType, Error } from '@recovery-components';
@@ -6,6 +7,9 @@ import { Translation, Loading, Image } from '@suite-components';
 
 import { Props } from './Container';
 
+const StyledImage = styled(Image)`
+    flex: 1;
+`;
 const RecoveryStep = (props: Props) => {
     const {
         goToNextStep,
@@ -84,17 +88,11 @@ const RecoveryStep = (props: Props) => {
                     </>
                 )}
 
-                {recovery.status === 'in-progress' && (
-                    // <>
-                    //     {!modal && <Loading />}
-                    //     {modal && modal}
-                    // </>
-                    <Loading />
-                )}
+                {recovery.status === 'in-progress' && <Loading />}
 
                 {recovery.status === 'finished' && !recovery.error && (
                     <>
-                        <Image image="UNI_SUCCESS" />
+                        <StyledImage image="UNI_SUCCESS" />
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 data-test="@onboarding/recovery/continue-button"
