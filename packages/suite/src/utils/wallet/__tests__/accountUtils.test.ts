@@ -1,6 +1,5 @@
 import * as accountUtils from '../accountUtils';
 import * as fixtures from '../__fixtures__/accountUtils';
-import { NETWORKS } from '@wallet-config';
 import { Account } from '@wallet-types';
 
 describe('account utils', () => {
@@ -109,13 +108,13 @@ describe('account utils', () => {
     });
 
     it('getSelectedNetwork', () => {
-        const res = accountUtils.getSelectedNetwork(NETWORKS, 'btc');
+        const res = accountUtils.getNetwork('btc');
         if (res) {
             expect(res.name).toEqual('Bitcoin');
         } else {
             expect(res).toBeNull();
         }
-        expect(accountUtils.getSelectedNetwork(NETWORKS, 'doesntexist')).toBeNull();
+        expect(accountUtils.getNetwork('doesntexist')).toBeNull();
     });
 
     it('getAccountHash', () => {

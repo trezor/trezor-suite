@@ -2,18 +2,24 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { variables, colors } from '@trezor/components';
 
-const COLOR_BORDER = '#E6E6E6';
-const COLOR_TEXT_SECONDARY = colors.BLACK25;
-const COLOR_TEXT_PRIMARY = colors.BLACK0;
+const COLOR_BORDER = '#ccc';
+const COLOR_TEXT_SECONDARY = colors.BLACK50;
+const COLOR_TEXT_PRIMARY = '#444';
 
-const BoxRowWrapper = styled.div`
+const BoxRowWrapper = styled.div<{ heading?: boolean }>`
     display: flex;
     align-items: center;
     height: 42px;
     padding: 10px 12px;
 
+    ${props =>
+        props.heading &&
+        css`
+            background: ${colors.BLACK96};
+        `}
+
     & + & {
-        border-top: solid 2px ${COLOR_BORDER};
+        border-top: solid 1px ${COLOR_BORDER};
     }
 `;
 
@@ -21,7 +27,9 @@ const RowTitle = styled.div`
     display: flex;
     width: 160px;
     font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${COLOR_TEXT_SECONDARY};
+    text-transform: uppercase;
 `;
 
 interface RowContentProps {
@@ -31,7 +39,8 @@ interface RowContentProps {
 const RowContent = styled.div<RowContentProps>`
     display: flex;
     flex: 1;
-    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${COLOR_TEXT_PRIMARY};
     min-width: 0;
 
@@ -45,13 +54,14 @@ const RowContent = styled.div<RowContentProps>`
 `;
 interface Props {
     title: React.ReactNode;
+    isHeading?: boolean;
     alignContent?: 'right' | 'left';
     children?: React.ReactNode;
 }
 
-const BoxRow = ({ title, alignContent, children }: Props) => {
+const BoxRow = ({ title, isHeading, alignContent = 'right', children }: Props) => {
     return (
-        <BoxRowWrapper>
+        <BoxRowWrapper heading={isHeading}>
             <RowTitle>{title}</RowTitle>
             <RowContent alignContent={alignContent}>{children}</RowContent>
         </BoxRowWrapper>
