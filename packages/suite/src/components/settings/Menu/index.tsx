@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { bindActionCreators } from 'redux';
 
-import { H2, Icon, Link, colors, variables } from '@trezor/components';
+import { Icon, Link, colors, variables } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { AppState, Dispatch } from '@suite-types';
@@ -102,7 +102,7 @@ const ITEMS = [
     },
 ] as const;
 
-const SettignsMenu = ({ goto, router, openModal }: Props) => {
+const SettingsMenu = ({ goto, router, openModal }: Props) => {
     return (
         <ContentWrapper>
             <Items>
@@ -143,4 +143,4 @@ const SettignsMenu = ({ goto, router, openModal }: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SettignsMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsMenu);
