@@ -9,18 +9,39 @@ import { Section, ActionColumn, Row } from '@suite-components/Settings';
 import { useDeviceActionLocks } from '@suite-utils/hooks';
 import Coin from '../Coin';
 
+const Wrapper = styled.div`
+    margin: 4px 0 36px 0;
+`;
+
 const Header = styled.div`
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin: 12px;
 `;
 
-const Title = styled.div``;
+const StyledP = styled(P)`
+    margin-top: 4px;
+`;
 
-const CoinsGroupWrapper = styled.div``;
+const Left = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+`;
 
-const ToggleButtons = styled.div`
+const Right = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+`;
+
+const Title = styled.div`
+    font-size: ${variables.FONT_SIZE.TINY};
+    color: ${colors.BLACK25};
+    text-transform: uppercase;
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+`;
+
+const Buttons = styled.div`
     display: flex;
 `;
 
@@ -54,15 +75,13 @@ const CoinRow = styled(Row)`
     }
 `;
 
-type FilterFn = (n: Network) => boolean;
-
 interface Props {
     label: React.ReactNode;
     description?: React.ReactNode;
     onActivateAll: () => void;
     onDeactivateAll: () => void;
     onToggleOneFn: (symbol: Network['symbol'], visible: boolean) => void;
-    filterFn: FilterFn;
+    filterFn: (n: Network) => boolean;
     enabledNetworks: Network['symbol'][];
     type: 'mainnet' | 'testnet'; // used in tests
     unavailableCapabilities: { [key: string]: UnavailableCapability };
@@ -95,37 +114,41 @@ export default ({
 }: Props) => {
     const [actionEnabled] = useDeviceActionLocks();
     return (
-        <CoinsGroupWrapper data-test="@settings/wallet/coins-group">
+        <Wrapper data-test="@settings/wallet/coins-group">
             <Section
                 customHeader={
                     <Header>
-                        <Title>{label}</Title>
-                        {description && <P size="tiny">{description}</P>}
-                        <ToggleButtons>
-                            <Button
-                                isDisabled={
-                                    !actionEnabled ||
-                                    NETWORKS.filter(filterFn).length === enabledNetworks.length
-                                }
-                                variant="tertiary"
-                                size="small"
-                                icon="CHECK"
-                                onClick={() => onActivateAll()}
-                                data-test={`@settings/wallet/coins-group/${props.type}/activate-all`}
-                            >
-                                <Translation id="TR_ACTIVATE_ALL" />
-                            </Button>
-                            <Button
-                                isDisabled={!actionEnabled || enabledNetworks.length === 0}
-                                variant="tertiary"
-                                size="small"
-                                icon="CROSS"
-                                onClick={() => onDeactivateAll()}
-                                data-test={`@settings/wallet/coins-group/${props.type}/deactivate-all`}
-                            >
-                                <Translation id="TR_DEACTIVATE_ALL" />
-                            </Button>
-                        </ToggleButtons>
+                        <Left>
+                            <Title>{label}</Title>
+                            {description && <StyledP size="tiny">{description}</StyledP>}
+                        </Left>
+                        <Right>
+                            <Buttons>
+                                <Button
+                                    isDisabled={
+                                        !actionEnabled ||
+                                        NETWORKS.filter(filterFn).length === enabledNetworks.length
+                                    }
+                                    variant="tertiary"
+                                    size="small"
+                                    icon="CHECK"
+                                    onClick={() => onActivateAll()}
+                                    data-test={`@settings/wallet/coins-group/${props.type}/activate-all`}
+                                >
+                                    <Translation id="TR_ACTIVATE_ALL" />
+                                </Button>
+                                <Button
+                                    isDisabled={!actionEnabled || enabledNetworks.length === 0}
+                                    variant="tertiary"
+                                    size="small"
+                                    icon="CROSS"
+                                    onClick={() => onDeactivateAll()}
+                                    data-test={`@settings/wallet/coins-group/${props.type}/deactivate-all`}
+                                >
+                                    <Translation id="TR_DEACTIVATE_ALL" />
+                                </Button>
+                            </Buttons>
+                        </Right>
                     </Header>
                 }
             >
@@ -157,6 +180,6 @@ export default ({
                     </CoinRow>
                 ))}
             </Section>
-        </CoinsGroupWrapper>
+        </Wrapper>
     );
 };

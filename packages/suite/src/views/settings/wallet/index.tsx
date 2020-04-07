@@ -1,13 +1,14 @@
+import { SettingsLayout } from '@settings-components';
+import { ExternalLink, Translation } from '@suite-components';
+import { ActionColumn, Row, Section } from '@suite-components/Settings';
+import { H2, P, variables } from '@trezor/components';
+import { EXTERNAL_NETWORKS, NETWORKS } from '@wallet-config';
+import { Network } from '@wallet-types';
 import React from 'react';
 import styled from 'styled-components';
-import { P, H2, variables } from '@trezor/components';
-import { Translation, ExternalLink } from '@suite-components';
-import { SettingsLayout } from '@settings-components';
-import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
-import { Network } from '@wallet-types';
-import { Section, ActionColumn, Row } from '@suite-components/Settings';
-import CoinsGroup from './components/CoinsGroup';
+
 import Coin from './components/Coin';
+import CoinsGroup from './components/CoinsGroup';
 import { Props } from './Container';
 
 const StyledLink = styled(ExternalLink)`
@@ -48,7 +49,6 @@ const Settings = (props: Props) => {
             <P size="tiny">
                 <Translation id="TR_COINS_SETTINGS_ALSO_DEFINES" />
             </P>
-
             <CoinsGroup
                 label={<Translation id="TR_COINS" />}
                 enabledNetworks={enabledMainnetNetworks}
@@ -85,7 +85,6 @@ const Settings = (props: Props) => {
                 type="testnet"
                 unavailableCapabilities={unavailableCapabilities}
             />
-
             <Section
                 title={<Translation id="TR_3RD_PARTY_WALLETS" />}
                 description={<Translation id="TR_3RD_PARTY_WALLETS_DESC" />}

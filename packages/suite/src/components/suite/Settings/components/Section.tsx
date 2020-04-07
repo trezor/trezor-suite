@@ -1,19 +1,25 @@
 import React, { ReactNode, ReactElement } from 'react';
 import styled from 'styled-components';
 import Card from '@suite-components/Card';
-import { variables, colors } from '@trezor/components';
+import { variables, colors, P } from '@trezor/components';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div``;
+
+const Header = styled.div`
     padding: 12px;
+    margin-bottom: 4px;
 `;
 
 const Title = styled.div`
-    color: ${colors.BLACK50};
     font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.BOLD};
+    color: ${colors.BLACK25};
+    text-transform: uppercase;
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
-const Description = styled.div``;
+const Description = styled(P)`
+    margin-top: 4px;
+`;
 
 const Content = styled(Card)`
     flex-direction: column;
@@ -30,9 +36,13 @@ interface Props {
 const Section = ({ children, title, description, customHeader }: Props) => {
     return (
         <Wrapper>
-            {!title && customHeader}
-            {title && !customHeader && <Title>{title}</Title>}
-            {description && !customHeader && <Description>{description}</Description>}
+            <Header>
+                {!title && customHeader}
+                {title && !customHeader && <Title>{title}</Title>}
+                {description && !customHeader && (
+                    <Description size="tiny">{description}</Description>
+                )}
+            </Header>
             <Card>
                 <Content>{children}</Content>
             </Card>
