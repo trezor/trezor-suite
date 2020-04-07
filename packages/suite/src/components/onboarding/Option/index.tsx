@@ -47,7 +47,7 @@ const Text = styled.div`
 
 const StyledButton = styled(Button)`
     margin-top: auto;
-`
+`;
 interface Props {
     imgSrc?: string;
     title?: React.ReactNode;
