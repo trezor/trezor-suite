@@ -2755,6 +2755,10 @@ const definedMessages = defineMessages({
         id: 'TR_COMING_SOON',
         defaultMessage: 'Coming soon',
     },
+    TR_BACKUP_CREATED: {
+        id: 'TR_BACKUP_CREATED',
+        message: 'Backup successfully created!',
+    },
 } as const);
 
 export default definedMessages;
