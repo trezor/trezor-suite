@@ -14,25 +14,6 @@ const Section = styled.div`
     flex-direction: column;
 `;
 
-const Content = styled.div`
-    display: flex;
-`;
-
-const SectionHeader = styled.div`
-    display: flex;
-    padding: 12px 0px;
-    flex-direction: row;
-`;
-
-const SectionTitle = styled.div`
-    flex: 1;
-    font-size: 12px;
-    margin-bottom: 2px;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: ${colors.BLACK50};
-`;
-
 const Service = styled.div`
     display: flex;
     flex-direction: column;
@@ -100,24 +81,17 @@ const CONNECTION_STATUS_NAMES = {
 const ConnectionStatusCard = ({ ...rest }: Props) => {
     return (
         <Section {...rest}>
-            <SectionHeader>
-                <SectionTitle>
-                    <Translation id="TR_CONNECTION_STATUS" />
-                </SectionTitle>
-            </SectionHeader>
-            <Content>
-                <StyledCard>
-                    {services.map(service => (
-                        <Service key={service.name}>
-                            <ServiceName>{service.name}</ServiceName>
-                            <ServiceStatusWrapper color={CONNECTION_STATUS_COLORS[service.status]}>
-                                <Dot color={CONNECTION_STATUS_COLORS[service.status]} />
-                                <Status>{CONNECTION_STATUS_NAMES[service.status]}</Status>
-                            </ServiceStatusWrapper>
-                        </Service>
-                    ))}
-                </StyledCard>
-            </Content>
+            <StyledCard title={<Translation id="TR_CONNECTION_STATUS" />}>
+                {services.map(service => (
+                    <Service key={service.name}>
+                        <ServiceName>{service.name}</ServiceName>
+                        <ServiceStatusWrapper color={CONNECTION_STATUS_COLORS[service.status]}>
+                            <Dot color={CONNECTION_STATUS_COLORS[service.status]} />
+                            <Status>{CONNECTION_STATUS_NAMES[service.status]}</Status>
+                        </ServiceStatusWrapper>
+                    </Service>
+                ))}
+            </StyledCard>
         </Section>
     );
 };

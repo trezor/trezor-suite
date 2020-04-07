@@ -2,8 +2,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { AppState, Dispatch } from '@suite-types';
-
-import Index from './index';
+import Component from './index';
 
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
@@ -17,4 +16,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(Component);

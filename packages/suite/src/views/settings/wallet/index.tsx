@@ -1,59 +1,34 @@
 import React from 'react';
 import styled from 'styled-components';
-import { P, Switch, Icon, variables, colors, CoinLogo, Button } from '@trezor/components';
+import { P, Switch, Icon, variables, colors, Button } from '@trezor/components';
 import { Translation, ExternalLink } from '@suite-components';
 import { SettingsLayout } from '@settings-components';
 import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { UnavailableCapability } from 'trezor-connect';
-import { Network, ExternalNetwork } from '@wallet-types';
+import { Network } from '@wallet-types';
 import { SectionHeader, Section, ActionColumn, Row } from '@suite-components/Settings';
 import { useDeviceActionLocks } from '@suite-utils/hooks';
+import Coin from './components/Coin';
 import { Props } from './Container';
 
 const Header = styled.div`
     display: flex;
     min-height: 20px;
     justify-content: space-between;
-    padding-right: 4%;
+    align-items: center;
     margin-top: 20px;
+    border: 1px solid lime;
 `;
 
 const CoinsGroupWrapper = styled.div``;
 
 const HeaderLeft = styled.div`
-    padding-right: 4%;
+    border: 1px solid red;
 `;
 
 const ToggleButtons = styled.div`
     display: flex;
 `;
-
-const CoinWrapper = styled.div`
-    display: flex;
-    align-items: center;
-`;
-
-const CoinName = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${colors.BLACK0};
-    margin: 0 8px;
-    padding-top: 2px;
-`;
-
-const CoinSymbol = styled.div`
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.BLACK50};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    padding-top: 2px;
-`;
-
-const Coin = ({ network }: { network: Network | ExternalNetwork }) => (
-    <CoinWrapper>
-        <CoinLogo size={24} symbol={network.symbol} />
-        <CoinName> {network.name}</CoinName>
-        <CoinSymbol> {network.symbol.toUpperCase()}</CoinSymbol>
-    </CoinWrapper>
-);
 
 const AdvancedSettings = styled.div`
     display: flex;
@@ -163,28 +138,28 @@ const CoinsGroup = ({
             </Header>
 
             <Section>
-                {NETWORKS.filter(filterFn).map(n => (
-                    <CoinRow key={n.symbol}>
-                        <Coin network={n} />
+                {NETWORKS.filter(filterFn).map(network => (
+                    <CoinRow key={network.symbol}>
+                        <Coin symbol={network.symbol} name={network.name} />
                         <ActionColumn>
                             {/* hidden with display 'none' until implemented */}
                             <AdvancedSettings style={{ display: 'none' }}>
                                 <SettingsIcon icon="SETTINGS" size={12} color={colors.BLACK25} />
                                 <Translation id="TR_ADVANCED_SETTINGS" />
                             </AdvancedSettings>
-                            {!unavailableCapabilities[n.symbol] && (
+                            {!unavailableCapabilities[network.symbol] && (
                                 <Switch
-                                    data-test={`@settings/wallet/network/${n.symbol}`}
+                                    data-test={`@settings/wallet/network/${network.symbol}`}
                                     onChange={(visible: boolean) => {
-                                        onToggleOneFn(n.symbol, visible);
+                                        onToggleOneFn(network.symbol, visible);
                                     }}
-                                    checked={enabledNetworks.includes(n.symbol)}
+                                    checked={enabledNetworks.includes(network.symbol)}
                                     disabled={!actionEnabled}
                                 />
                             )}
-                            {unavailableCapabilities[n.symbol] && (
+                            {unavailableCapabilities[network.symbol] && (
                                 <UnavailableLabel>
-                                    <Unavailable type={unavailableCapabilities[n.symbol]} />
+                                    <Unavailable type={unavailableCapabilities[network.symbol]} />
                                 </UnavailableLabel>
                             )}
                         </ActionColumn>
@@ -270,12 +245,12 @@ const Settings = (props: Props) => {
                 </P>
             </SectionHeader>
             <Section>
-                {EXTERNAL_NETWORKS.map(n => (
-                    <Row key={n.symbol}>
-                        <Coin network={n} />
+                {EXTERNAL_NETWORKS.map(network => (
+                    <Row key={network.symbol}>
+                        <Coin name={network.name} symbol={network.symbol} />
                         <ActionColumn>
-                            <StyledLink variant="nostyle" href={n.url} size="small">
-                                {new URL(n.url).hostname}
+                            <StyledLink variant="nostyle" href={network.url} size="small">
+                                {new URL(network.url).hostname}
                             </StyledLink>
                         </ActionColumn>
                     </Row>

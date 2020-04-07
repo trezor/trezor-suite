@@ -134,42 +134,35 @@ export default React.memo(({ ...rest }: React.HTMLAttributes<HTMLDivElement>) =>
 
     return (
         <Section {...rest}>
-            <SectionHeader>
-                <SectionTitle>
-                    <Translation id="TR_WHATS_NEW" />
-                </SectionTitle>
-            </SectionHeader>
-            <Content>
-                <StyledCard>
-                    {isError && (
-                        <Error>
-                            <Translation id="TR_DASHBOARD_NEWS_ERROR" />
-                        </Error>
-                    )}
-                    {posts.slice(0, visibleCount).map(item => (
-                        <Post key={item.link}>
-                            <Left>
-                                <Image src={item.thumbnail} />
-                            </Left>
-                            <Right>
-                                <CTAWrapper target="_blank" href={item.link}>
-                                    <Title>{item.title}</Title>
-                                </CTAWrapper>
-                                <Timestamp>{getDate(item.pubDate)}</Timestamp>
-                                <Description>{item.description}</Description>
-                                <ReadMore target="_blank" href={item.link}>
-                                    <Translation id="TR_READ_MORE" />
-                                    <ReadMoreIcon
-                                        size={12}
-                                        color={colors.BLACK0}
-                                        icon="EXTERNAL_LINK"
-                                    />
-                                </ReadMore>
-                            </Right>
-                        </Post>
-                    ))}
-                </StyledCard>
-            </Content>
+            <StyledCard title={<Translation id="TR_WHATS_NEW" />}>
+                {isError && (
+                    <Error>
+                        <Translation id="TR_DASHBOARD_NEWS_ERROR" />
+                    </Error>
+                )}
+                {posts.slice(0, visibleCount).map(item => (
+                    <Post key={item.link}>
+                        <Left>
+                            <Image src={item.thumbnail} />
+                        </Left>
+                        <Right>
+                            <CTAWrapper target="_blank" href={item.link}>
+                                <Title>{item.title}</Title>
+                            </CTAWrapper>
+                            <Timestamp>{getDate(item.pubDate)}</Timestamp>
+                            <Description>{item.description}</Description>
+                            <ReadMore target="_blank" href={item.link}>
+                                <Translation id="TR_READ_MORE" />
+                                <ReadMoreIcon
+                                    size={12}
+                                    color={colors.BLACK0}
+                                    icon="EXTERNAL_LINK"
+                                />
+                            </ReadMore>
+                        </Right>
+                    </Post>
+                ))}
+            </StyledCard>
             {posts.length > visibleCount && (
                 <BottomAction>
                     <Button
