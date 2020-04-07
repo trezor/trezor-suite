@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { H2, Icon, P, Button, colors } from '@trezor/components';
-import { Translation, Image, Card } from '@suite-components';
-import { LayoutContext } from '@suite-components/SuiteLayout';
+import { Translation, Image, Card, LayoutContext } from '@suite-components';
+
 import hocNotification, { ViewProps } from '@suite-components/hocNotification';
 
 import { Props } from './Container';

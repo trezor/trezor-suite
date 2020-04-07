@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { LayoutContext } from '@suite-components/SuiteLayout';
+import { LayoutContext } from '@suite-components';
 import { Menu } from '@wallet-components';
 import AccountLoader from './components/AccountLoader';
 import Exception from '@wallet-components/AccountException';

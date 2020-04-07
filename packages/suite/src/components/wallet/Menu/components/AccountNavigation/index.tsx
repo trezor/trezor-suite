@@ -12,12 +12,12 @@ const { FONT_WEIGHT, FONT_SIZE } = variables;
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
-    cursor: pointer;
     flex-direction: column;
     padding: 0px 8px 8px 8px;
 `;
 
 const StyledNavLink = styled.div<{ active?: boolean }>`
+    cursor: pointer;
     font-size: ${FONT_SIZE.SMALL};
     color: ${props => (props.active ? colors.BLACK17 : colors.BLACK25)};
     background-color: ${props => (props.active ? '#e0e0e0' : 'transparent')};
@@ -59,7 +59,7 @@ export default (props: Props) => {
     const [expanded, setExpanded] = useState(false);
 
     // collect all items suitable for current networkType
-    const items = ITEMS.filter(item => !item.isHidden(account.networkType)).map(item => {
+    const items = ITEMS.filter(item => !item.isHidden(account)).map(item => {
         const active = routeName === item.route;
         return (
             <StyledNavLink
@@ -82,6 +82,7 @@ export default (props: Props) => {
     const hiddenItems = gotHiddenItems ? items.slice(VISIBLE_ITEMS_LIMIT) : [];
     const isHiddenItemSelected = !!hiddenItems.find(item => item.props.active);
     const isOpened = expanded || isHiddenItemSelected;
+    const showMoreStyles = isHiddenItemSelected ? { opacity: 0.4, cursor: 'default' } : {};
 
     return (
         <Wrapper>
@@ -89,6 +90,7 @@ export default (props: Props) => {
             {gotHiddenItems && (
                 <>
                     <StyledNavLink
+                        style={showMoreStyles}
                         onClick={() => setExpanded(isHiddenItemSelected ? true : !expanded)}
                     >
                         <IconWrapper>

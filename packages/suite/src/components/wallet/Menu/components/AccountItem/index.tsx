@@ -1,10 +1,10 @@
 import React, { forwardRef } from 'react';
 import { CoinLogo, colors, variables } from '@trezor/components';
 import styled, { css } from 'styled-components';
-import { getAccountFiatBalance } from '@wallet-utils/accountUtils';
-// import { Translation } from '@suite-components/Translation';
+import { getTitleForNetwork, getAccountFiatBalance } from '@wallet-utils/accountUtils';
+import { Translation } from '@suite-components/Translation';
 import { CoinBalance } from '@wallet-components';
-import { FormattedNumber, HiddenPlaceholder, AccountLabeling } from '@suite-components';
+import { FormattedNumber, HiddenPlaceholder } from '@suite-components';
 import Badge from '@suite-components/Badge';
 import { Props } from './Container';
 import AnimationWrapper from '../AnimationWrapper';
@@ -25,6 +25,7 @@ const Wrapper = styled.div<{ selected: boolean; type: string }>`
             position: inherit;
             top: ${props.type !== 'normal' ? '34px' : '0px'};
             bottom: 0px;
+            z-index: 1;
         `}
 `;
 
@@ -44,6 +45,8 @@ const AccountName = styled.div`
     font-size: 16px;
     font-weight: 500;
     color: ${colors.BLACK17};
+    display: flex;
+    justify-content: space-between;
     padding-bottom: 2px;
 `;
 
@@ -78,6 +81,13 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
     const { account, selected } = props;
 
     const fiatBalance = getAccountFiatBalance(account, props.localCurrency, props.fiat);
+    const accountLabel = props.labeling[`account:${account.descriptor}`] || (
+        <>
+            <Translation {...getTitleForNetwork(account.symbol)} />
+            <div># {account.index + 1}</div>
+        </>
+    );
+
     return (
         <Wrapper selected={selected} type={account.accountType} ref={ref}>
             <AccountHeader
@@ -89,11 +99,7 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
                     })
                 }
             >
-                <AccountName>
-                    <AccountLabeling account={account} />
-                    {/* <Translation {...getTitleForNetwork(account.symbol)} />
-                    <AccountNumber># {account.index + 1}</AccountNumber> */}
-                </AccountName>
+                <AccountName>{accountLabel}</AccountName>
                 <Row>
                     <CoinLogo size={16} symbol={account.symbol} />
                     <Balance>
