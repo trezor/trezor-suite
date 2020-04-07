@@ -17,7 +17,7 @@ const Header = styled.div`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    padding-bottom: 16px;
+    padding: 20px;
     border-bottom: solid 2px #f5f5f5;
 `;
 
