@@ -1,8 +1,4 @@
-import TrezorConnect, {
-    AccountTransaction,
-    BlockchainFiatRatesUpdate,
-    BlockchainAccountBalanceHistory,
-} from 'trezor-connect';
+import TrezorConnect, { AccountTransaction, BlockchainFiatRatesUpdate } from 'trezor-connect';
 import { getUnixTime } from 'date-fns';
 import {
     fetchCurrentFiatRates,
@@ -12,12 +8,7 @@ import {
 import { isTestnet, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { splitTimestampsByInterval, getBlockbookSafeTime, resetTime } from '@suite-utils/date';
 import { FIAT } from '@suite-config';
-import {
-    Dispatch,
-    GetState,
-    EnhancedAccountBalanceHistory,
-    AggregatedAccountBalanceHistory,
-} from '@suite-types';
+import { Dispatch, GetState } from '@suite-types';
 import {
     RATE_UPDATE,
     LAST_WEEK_RATES_UPDATE,
@@ -31,12 +22,8 @@ import {
     WalletAccountTransaction,
     FiatTicker,
 } from '@wallet-types';
-import {
-    toFiatCurrency,
-    sumFiatValueMap,
-    calcFiatValueMap,
-} from '@wallet-utils/fiatConverterUtils';
-import BigNumber from 'bignumber.js';
+import { AggregatedAccountBalanceHistory } from '@wallet-types/fiatRates';
+import { sumFiatValueMap, calcFiatValueMap } from '@wallet-utils/fiatConverterUtils';
 
 type FiatRatesPayload = NonNullable<CoinFiatRates['current']>;
 
@@ -354,7 +341,7 @@ export const fetchAggregatedHistory = async (
     const responses = await Promise.all(promises);
 
     const enhancedHistory = responses
-        .map((accountHistory, i) => {
+        .map((accountHistory, _i) => {
             if (accountHistory && accountHistory.length > 0) {
                 // const { symbol } = accounts[i];
                 const enhancedResponse = accountHistory.map(h => ({
@@ -368,10 +355,10 @@ export const fetchAggregatedHistory = async (
         })
         .filter(t => t !== null);
 
-    const flattedHistory = enhancedHistory.flat();
+    const flattedHistory: NonNullable<typeof enhancedHistory[number]> = enhancedHistory.flat();
     console.log('flattedHistory', flattedHistory);
 
-    const groupedByTimestamp: { [key: string]: EnhancedAccountBalanceHistory[] } = {};
+    const groupedByTimestamp: { [key: string]: typeof flattedHistory } = {};
     flattedHistory.forEach(dataPoint => {
         if (!dataPoint) return;
         if (!groupedByTimestamp[dataPoint.time]) {

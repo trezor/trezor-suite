@@ -49,65 +49,66 @@ interface CommonProps extends TooltipProps {
     sentValueFn: GraphProps['sentValueFn'];
 }
 
-type Props =
-    | ({ symbol: Account['symbol']; localCurrency?: never } & CommonProps)
-    | ({ localCurrency: string; symbol?: never } & CommonProps);
+interface OneAssetProps extends CommonProps {
+    variant: 'one-asset';
+    symbol: Account['symbol'];
+}
 
-const CustomTooltip = ({
-    active,
-    payload,
-    coordinate,
-    symbol,
-    localCurrency,
-    selectedRange,
-    ...props
-}: Props) => {
+interface AllAssetsProps extends CommonProps {
+    variant: 'all-assets';
+    localCurrency: string;
+}
+type Props = AllAssetsProps | OneAssetProps;
+
+const CustomTooltip = ({ active, payload, coordinate, ...props }: Props) => {
     if (active && payload) {
         const date = getDateWithTimeZone(payload[0].payload.time * 1000);
 
         const receivedAmountString = props.receivedValueFn(payload[0].payload);
         const sentAmountString = props.sentValueFn(payload[0].payload);
 
-        const receivedAmount = symbol ? (
-            <>
-                {receivedAmountString} {symbol.toUpperCase()}
-                <FiatValue
-                    amount={receivedAmountString}
-                    symbol={symbol}
-                    source={payload[0].payload.rates}
-                    useCustomSource
-                >
-                    {({ value }) => (value ? <> ({value})</> : null)}
-                </FiatValue>
-            </>
-        ) : (
-            <FormattedNumber currency={localCurrency} value={receivedAmountString} />
-        );
+        const receivedAmount =
+            props.variant === 'one-asset' ? (
+                <>
+                    {receivedAmountString} {props.symbol.toUpperCase()}
+                    <FiatValue
+                        amount={receivedAmountString}
+                        symbol={props.symbol}
+                        source={payload[0].payload.rates}
+                        useCustomSource
+                    >
+                        {({ value }) => (value ? <> ({value})</> : null)}
+                    </FiatValue>
+                </>
+            ) : (
+                <FormattedNumber currency={props.localCurrency} value={receivedAmountString} />
+            );
 
-        const sentAmount = symbol ? (
-            <>
-                {sentAmountString} {symbol.toUpperCase()}
-                <FiatValue
-                    amount={sentAmountString}
-                    symbol={symbol}
-                    source={payload[0].payload.rates}
-                    useCustomSource
-                >
-                    {({ value }) => (value ? <> ({value})</> : null)}
-                </FiatValue>
-            </>
-        ) : (
-            <FormattedNumber currency={localCurrency} value={sentAmountString} />
-        );
+        const sentAmount =
+            props.variant === 'one-asset' ? (
+                <>
+                    {sentAmountString} {props.symbol.toUpperCase()}
+                    <FiatValue
+                        amount={sentAmountString}
+                        symbol={props.symbol}
+                        source={payload[0].payload.rates}
+                        useCustomSource
+                    >
+                        {({ value }) => (value ? <> ({value})</> : null)}
+                    </FiatValue>
+                </>
+            ) : (
+                <FormattedNumber currency={props.localCurrency} value={sentAmountString} />
+            );
 
         return (
             <CustomTooltipWrapper coordinate={coordinate!}>
                 <DateWrapper>
-                    {date && selectedRange?.label === 'year' && (
+                    {date && props.selectedRange?.label === 'year' && (
                         //
                         <FormattedDate value={date} year="numeric" month="2-digit" />
                     )}
-                    {date && selectedRange?.label !== 'year' && (
+                    {date && props.selectedRange?.label !== 'year' && (
                         <FormattedDate value={date} year="numeric" month="2-digit" day="2-digit" />
                     )}
                 </DateWrapper>

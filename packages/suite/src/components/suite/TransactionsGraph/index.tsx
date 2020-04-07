@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors, variables, Loader } from '@trezor/components';
 import { Account } from '@wallet-types';
-import { GraphRange, AggregatedAccountBalanceHistory } from '@suite-types';
+import { GraphRange, AggregatedAccountBalanceHistory } from '@wallet-types/fiatRates';
 import { BarChart, Tooltip, Bar, ReferenceLine, ResponsiveContainer, YAxis, XAxis } from 'recharts';
 import { fetchAccountHistory } from '@suite/actions/wallet/fiatRatesActions';
 import { Await } from '@suite/types/utils';
@@ -11,7 +11,6 @@ import CustomTooltip from './components/CustomTooltip';
 import CustomXAxisTick from './components/CustomXAxisTick';
 import CustomYAxisTick from './components/CustomYAxisTick';
 import CustomBar from './components/CustomBar';
-import BigNumber from 'bignumber.js';
 
 const Wrapper = styled.div`
     display: flex;
@@ -126,6 +125,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 content={
                                     props.variant === 'one-asset' ? (
                                         <CustomTooltip
+                                            variant={props.variant}
                                             selectedRange={selectedRange}
                                             symbol={props.account.symbol}
                                             sentValueFn={props.sentValueFn}
@@ -133,6 +133,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                         />
                                     ) : (
                                         <CustomTooltip
+                                            variant={props.variant}
                                             selectedRange={selectedRange}
                                             localCurrency={props.localCurrency}
                                             sentValueFn={props.sentValueFn}

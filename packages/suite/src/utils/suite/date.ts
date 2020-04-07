@@ -10,7 +10,7 @@ import {
     startOfMonth,
 } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
-import { GraphTicksInterval } from '@suite/types/suite';
+import { GraphTicksInterval } from '@wallet-types/fiatRates';
 
 export const formatDuration = (seconds: number) =>
     formatDistance(0, seconds * 1000, { includeSeconds: true });

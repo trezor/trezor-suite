@@ -46,7 +46,7 @@ export const fromFiatCurrency = (
     return amountStr;
 };
 
-export const calcFiatValueMap = (amount: string, rates: FiatRates) => {
+export const calcFiatValueMap = (amount: string, rates: FiatRates): { [k: string]: string } => {
     return Object.keys(rates).reduce((acc, fiatSymbol) => {
         return {
             ...acc,

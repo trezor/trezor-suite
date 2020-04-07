@@ -41,12 +41,6 @@ export type WalletAccountTransaction = WalletAccountTransaction$;
 export type FiatTicker = FiatTicker$;
 export type ReceiveInfo = ReceiveInfo$;
 
-interface BlockchainLinkToken {
-    name: string;
-    symbol: string;
-    value: string;
-}
-
 export type WalletAction =
     | BlockchainActions
     | ReceiveActions
@@ -60,27 +54,3 @@ export type WalletAction =
     | DiscoveryActions
     | AccountActions
     | SelectedAccountActions;
-
-export interface BlockchainLinkTransaction {
-    type: 'send' | 'recv';
-    timestamp?: number;
-    blockHeight?: number;
-    blockHash?: string;
-    descriptor: string;
-    inputs: any;
-    outputs: any;
-
-    hash: string;
-    amount: string;
-    fee: string;
-    total: string;
-
-    tokens?: BlockchainLinkToken[];
-    sequence?: number; // eth: nonce || ripple: sequence
-}
-
-export interface Transaction extends BlockchainLinkTransaction {
-    deviceState: string;
-    symbol: string;
-    rejected?: boolean;
-}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GraphRange } from '@suite-types';
+import { GraphRange } from '@wallet-types/fiatRates';
 import { TransactionsGraph } from '@suite-components';
 import { Props } from './Container';
 import { Await } from '@suite/types/utils';
@@ -7,13 +7,23 @@ import { fetchAggregatedHistory } from '@suite/actions/wallet/fiatRatesActions';
 import { subWeeks, getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 import { calcTicks } from '@suite/utils/suite/date';
-import BigNumber from 'bignumber.js';
+import { colors, variables } from '@trezor/components';
 
 const GraphWrapper = styled.div`
     display: flex;
     flex: 1 1 auto;
     padding: 20px;
     height: 270px;
+`;
+
+const ErrorMessage = styled.div`
+    display: flex;
+    width: 100%;
+    padding: 32px;
+    align-items: center;
+    justify-content: center;
+    color: ${colors.BLACK50};
+    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 type AccountHistory = NonNullable<Await<ReturnType<typeof fetchAggregatedHistory>>>;
@@ -62,16 +72,20 @@ const DashboardGraph = (props: Props) => {
 
     return (
         <GraphWrapper>
-            <TransactionsGraph
-                variant="all-assets"
-                localCurrency={props.localCurrency}
-                xTicks={xTicks}
-                data={data}
-                selectedRange={selectedRange}
-                onSelectedRange={setSelectedRange}
-                receivedValueFn={data => data.receivedFiat[props.localCurrency]}
-                sentValueFn={data => data.sentFiat[props.localCurrency]}
-            />
+            {error && <ErrorMessage>Could not load data</ErrorMessage>}
+            {!error && (
+                <TransactionsGraph
+                    variant="all-assets"
+                    isLoading={isLoading}
+                    localCurrency={props.localCurrency}
+                    xTicks={xTicks}
+                    data={data}
+                    selectedRange={selectedRange}
+                    onSelectedRange={setSelectedRange}
+                    receivedValueFn={data => data.receivedFiat[props.localCurrency]}
+                    sentValueFn={data => data.sentFiat[props.localCurrency]}
+                />
+            )}
         </GraphWrapper>
     );
 };
