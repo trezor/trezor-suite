@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { P, Switch, Icon, variables, colors, CoinLogo, Button } from '@trezor/components';
-import { Translation, ExternalLink, Card } from '@suite-components';
+import { Translation, ExternalLink } from '@suite-components';
 import { SettingsLayout } from '@settings-components';
 import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { UnavailableCapability } from 'trezor-connect';
@@ -30,13 +30,6 @@ const ToggleButtons = styled.div`
 const CoinWrapper = styled.div`
     display: flex;
     align-items: center;
-`;
-
-const StyledCard = styled(Card)`
-    margin-top: 16px;
-    display: flex;
-    padding: 20px;
-    flex-direction: column;
 `;
 
 const CoinName = styled.div`
@@ -220,67 +213,65 @@ const Settings = (props: Props) => {
 
     return (
         <SettingsLayout>
-            <StyledCard>
+            <P size="tiny">
+                <Translation id="TR_COINS_SETTINGS_ALSO_DEFINES" />
+            </P>
+
+            <CoinsGroup
+                label={<Translation id="TR_COINS" />}
+                enabledNetworks={enabledMainnetNetworks}
+                filterFn={mainnetNetworksFilterFn}
+                onToggleOneFn={props.changeCoinVisibility}
+                onActivateAll={() =>
+                    props.changeNetworks([
+                        ...enabledTestnetNetworks.filter(unavailableNetworksFilterFn),
+                        ...NETWORKS.filter(mainnetNetworksFilterFn)
+                            .map(n => n.symbol)
+                            .filter(unavailableNetworksFilterFn),
+                    ])
+                }
+                onDeactivateAll={() => props.changeNetworks(enabledTestnetNetworks)}
+                type="mainnet"
+                unavailableCapabilities={unavailableCapabilities}
+            />
+
+            <CoinsGroup
+                label={<Translation id="TR_TESTNET_COINS" />}
+                description={<Translation id="TR_TESTNET_COINS_EXPLAINED" />}
+                enabledNetworks={enabledTestnetNetworks}
+                filterFn={testnetNetworksFilterFn}
+                onToggleOneFn={props.changeCoinVisibility}
+                onActivateAll={() =>
+                    props.changeNetworks([
+                        ...enabledMainnetNetworks.filter(unavailableNetworksFilterFn),
+                        ...NETWORKS.filter(testnetNetworksFilterFn)
+                            .map(n => n.symbol)
+                            .filter(unavailableNetworksFilterFn),
+                    ])
+                }
+                onDeactivateAll={() => props.changeNetworks(enabledMainnetNetworks)}
+                type="testnet"
+                unavailableCapabilities={unavailableCapabilities}
+            />
+
+            <SectionHeader>
+                <Translation id="TR_3RD_PARTY_WALLETS" />
                 <P size="tiny">
-                    <Translation id="TR_COINS_SETTINGS_ALSO_DEFINES" />
+                    <Translation id="TR_3RD_PARTY_WALLETS_DESC" />
                 </P>
-
-                <CoinsGroup
-                    label={<Translation id="TR_COINS" />}
-                    enabledNetworks={enabledMainnetNetworks}
-                    filterFn={mainnetNetworksFilterFn}
-                    onToggleOneFn={props.changeCoinVisibility}
-                    onActivateAll={() =>
-                        props.changeNetworks([
-                            ...enabledTestnetNetworks.filter(unavailableNetworksFilterFn),
-                            ...NETWORKS.filter(mainnetNetworksFilterFn)
-                                .map(n => n.symbol)
-                                .filter(unavailableNetworksFilterFn),
-                        ])
-                    }
-                    onDeactivateAll={() => props.changeNetworks(enabledTestnetNetworks)}
-                    type="mainnet"
-                    unavailableCapabilities={unavailableCapabilities}
-                />
-
-                <CoinsGroup
-                    label={<Translation id="TR_TESTNET_COINS" />}
-                    description={<Translation id="TR_TESTNET_COINS_EXPLAINED" />}
-                    enabledNetworks={enabledTestnetNetworks}
-                    filterFn={testnetNetworksFilterFn}
-                    onToggleOneFn={props.changeCoinVisibility}
-                    onActivateAll={() =>
-                        props.changeNetworks([
-                            ...enabledMainnetNetworks.filter(unavailableNetworksFilterFn),
-                            ...NETWORKS.filter(testnetNetworksFilterFn)
-                                .map(n => n.symbol)
-                                .filter(unavailableNetworksFilterFn),
-                        ])
-                    }
-                    onDeactivateAll={() => props.changeNetworks(enabledMainnetNetworks)}
-                    type="testnet"
-                    unavailableCapabilities={unavailableCapabilities}
-                />
-
-                <SectionHeader>
-                    <Translation id="TR_3RD_PARTY_WALLETS" />
-                    <P size="tiny">
-                        <Translation id="TR_3RD_PARTY_WALLETS_DESC" />
-                    </P>
-                </SectionHeader>
-                <Section>
-                    {EXTERNAL_NETWORKS.map(n => (
-                        <Row key={n.symbol}>
-                            <Coin network={n} />
-                            <ActionColumn>
-                                <StyledLink variant="nostyle" href={n.url} size="small">
-                                    {new URL(n.url).hostname}
-                                </StyledLink>
-                            </ActionColumn>
-                        </Row>
-                    ))}
-                </Section>
-            </StyledCard>
+            </SectionHeader>
+            <Section>
+                {EXTERNAL_NETWORKS.map(n => (
+                    <Row key={n.symbol}>
+                        <Coin network={n} />
+                        <ActionColumn>
+                            <StyledLink variant="nostyle" href={n.url} size="small">
+                                {new URL(n.url).hostname}
+                            </StyledLink>
+                        </ActionColumn>
+                    </Row>
+                ))}
+            </Section>
         </SettingsLayout>
     );
 };

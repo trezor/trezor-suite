@@ -1,19 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors } from '@trezor/components';
+import Card from '@suite-components/Card';
 import SectionHeader from './SectionHeader';
 
-const SectionWrapper = styled.div`
-    border-radius: 6px;
-    margin-top: 16px;
-    text-align: left;
-
-    & > div:not(:last-child) {
-        border-bottom: 1px solid ${colors.BLACK96};
-    }
-    & > div:not(:first-child) {
-        border-top: 1px solid ${colors.BLACK96};
-    }
+const SectionWrapper = styled(Card)`
+    flex-direction: column;
+    flex: 1;
 `;
 
 interface Props {
@@ -25,7 +17,11 @@ const Section = ({ children, header }: Props) => {
     return (
         <>
             {header && <SectionHeader>{header}</SectionHeader>}
-            <SectionWrapper>{children}</SectionWrapper>
+            <>
+                <Card>
+                    <SectionWrapper>{children}</SectionWrapper>
+                </Card>
+            </>
         </>
     );
 };
