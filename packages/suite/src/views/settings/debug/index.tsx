@@ -1,10 +1,9 @@
-import React from 'react';
-import { Switch } from '@trezor/components';
 import { SettingsLayout } from '@settings-components';
+import { ActionColumn, Row, Section, TextColumn } from '@suite-components/Settings';
+import { Switch } from '@trezor/components';
+import React from 'react';
 
 import { Props } from './Container';
-
-import { Section, ActionColumn, Row, TextColumn } from '@suite-components/Settings';
 
 const DebugSettings = (props: Props) => {
     return (

@@ -2751,6 +2751,10 @@ const definedMessages = defineMessages({
         id: 'TR_COMING_SOON',
         defaultMessage: 'Coming soon',
     },
+    TR_COINS_TO_DISCOVER: {
+        id: 'TR_COINS_TO_DISCOVER',
+        defaultMessage: 'Coins to discover',
+    },
 } as const);
 
 export default definedMessages;

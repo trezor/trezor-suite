@@ -1,5 +1,6 @@
 import { SettingsLayout } from '@settings-components';
 import { SUITE } from '@suite-actions/constants';
+import { H2 } from '@trezor/components';
 import { Translation } from '@suite-components';
 import {
     ActionButton,
@@ -40,6 +41,9 @@ export default ({
 
     return (
         <SettingsLayout>
+            <H2>
+                <Translation id="TR_COINS_TO_DISCOVER" />
+            </H2>
             <Section header={<Translation id="TR_LANGUAGE" />}>
                 <Row>
                     <TextColumn title={<Translation id="TR_LANGUAGE" />} />
