@@ -60,7 +60,7 @@ export const sumFiatValueMap = (
     obj: { [k: string]: string },
 ) => {
     const valueMapCopy = { ...valueMap };
-    Object.entries(obj).map(keyVal => {
+    Object.entries(obj).forEach(keyVal => {
         const [key, val] = keyVal;
         const previousValue = valueMapCopy[key] ?? '0';
         valueMapCopy[key] = new BigNumber(previousValue).plus(val ?? 0).toFixed();
