@@ -13,32 +13,31 @@ interface Props {
     device: TrezorDevice;
     instances: AcquiredDevice[];
     addDeviceInstance: (instance: TrezorDevice) => Promise<void>;
+    selectDeviceInstance: (instance: TrezorDevice) => Promise<void>;
 }
 
-const AddWalletButton = ({ device, instances, addDeviceInstance }: Props) => {
+const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceInstance }: Props) => {
     const hasAtLeastOneWallet = instances.find(d => d.state);
-
-    let tooltipMsg: string | JSX.Element = '';
-    if (!hasAtLeastOneWallet) {
-        tooltipMsg = <Translation id="TR_TO_ACCESS_OTHER_WALLETS_DISCOVER" />;
-    }
-    if (!device.connected) {
-        tooltipMsg = <Translation id="TR_TO_ACCESS_OTHER_WALLETS" />;
-    }
+    const undiscoveredWallet = instances.find(d => !d.state);
+    const tooltipMsg = <Translation id="TR_TO_ACCESS_OTHER_WALLETS" />;
 
     return (
         <AddWallet>
-            <Tooltip
-                enabled={!device.connected || !hasAtLeastOneWallet}
-                placement="top"
-                content={tooltipMsg}
-            >
+            <Tooltip enabled={!device.connected} placement="top" content={tooltipMsg}>
                 <Button
                     data-test="@switch-device/add-wallet-button"
                     variant="tertiary"
                     icon="PLUS"
-                    isDisabled={!device.connected || !hasAtLeastOneWallet}
-                    onClick={async () => addDeviceInstance(device)}
+                    isDisabled={!device.connected || (!hasAtLeastOneWallet && !undiscoveredWallet)}
+                    onClick={async () => {
+                        if (hasAtLeastOneWallet) {
+                            // add another instance
+                            addDeviceInstance(device);
+                        } else if (undiscoveredWallet) {
+                            // select "undiscovered" instance
+                            selectDeviceInstance(undiscoveredWallet);
+                        }
+                    }}
                 >
                     <Translation id="TR_ADD_WALLET" />
                 </Button>
