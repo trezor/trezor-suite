@@ -10,9 +10,8 @@ import { Props } from './Container';
 import AnimationWrapper from '../AnimationWrapper';
 import AccountNavigation from '../AccountNavigation';
 
-// position: inherit - get position from parent, it will be set after animation ends
+// position: inherit - get position from parent (AccountGroup), it will be set after animation ends
 // sticky top: 34, sticky header
-// sticky bottom: 56 = AddAccountButton height
 const Wrapper = styled.div<{ selected: boolean; type: string }>`
     margin: 0px 0px 2px 0px;
     display: flex;
@@ -24,8 +23,8 @@ const Wrapper = styled.div<{ selected: boolean; type: string }>`
             border-bottom: 0px;
             background: ${colors.BLACK96};
             position: inherit;
-            top: ${props.type !== 'normal' ? '33px' : '0px'};
-            bottom: 56px;
+            top: ${props.type !== 'normal' ? '34px' : '0px'};
+            bottom: 0px;
         `}
 `;
 
@@ -118,9 +117,7 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
                 <AccountNavigation
                     account={account}
                     routeName={props.router.route?.name}
-                    onClick={(route: any) => {
-                        props.goto(route, undefined, true);
-                    }}
+                    onClick={route => props.goto(route, undefined, true)}
                 />
             </AnimationWrapper>
         </Wrapper>

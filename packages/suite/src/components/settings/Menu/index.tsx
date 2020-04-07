@@ -30,22 +30,13 @@ const SECONDARY_COLOR = colors.BLACK96;
 
 const ContentWrapper = styled.div`
     padding: 0 ${LEFT_PADDING};
-    margin-top: 30px;
     display: flex;
+    flex: 1;
     flex-direction: column;
-    height: 100%;
 `;
 
 const Bottom = styled.div`
     margin-top: auto;
-`;
-
-const Heading = styled(H2)`
-    padding-left: ${LEFT_PADDING};
-    color: ${colors.BLACK50};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    text-transform: uppercase;
 `;
 
 const Items = styled.div``;
@@ -114,9 +105,6 @@ const ITEMS = [
 const SettignsMenu = ({ goto, router, openModal }: Props) => {
     return (
         <ContentWrapper>
-            <Heading>
-                <Translation id="TR_SETTINGS" />
-            </Heading>
             <Items>
                 {ITEMS.map(i => (
                     <Item

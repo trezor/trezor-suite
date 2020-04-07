@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { Icon, colors, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { ITEMS, VISIBLE_ITEMS_LIMIT } from '@wallet-config/menu';
+import { Route } from '@suite-types';
+import { Account } from '@wallet-types';
 import AnimationWrapper from '../AnimationWrapper';
 
 const { FONT_WEIGHT, FONT_SIZE } = variables;
@@ -47,9 +49,9 @@ const Text = styled.div`
 `;
 
 interface Props {
-    account: any;
-    routeName?: string;
-    onClick: (routeName: string) => void;
+    account: Account;
+    routeName?: Route['name'];
+    onClick: (routeName: Route['name']) => void;
 }
 
 export default (props: Props) => {
