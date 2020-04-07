@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { SuiteLayout } from '@suite-components';
+import { LayoutContext } from '@suite-components/SuiteLayout';
 import { Menu } from '@wallet-components';
 import AccountLoader from './components/AccountLoader';
 import Exception from '@wallet-components/AccountException';
@@ -25,26 +25,25 @@ type Props = {
 };
 
 const WalletLayout = (props: Props) => {
+    const { setLayout } = React.useContext(LayoutContext);
+    React.useMemo(() => {
+        if (setLayout) setLayout(props.title || 'Trezor Suite | Wallet', <Menu />);
+    }, [props.title, setLayout]);
     const { account } = props;
-    const title = props.title || 'Trezor Suite | Wallet';
 
     if (account.status === 'loading') {
-        return (
-            <SuiteLayout title={title} secondaryMenu={<Menu />}>
-                <AccountLoader type={account.loader} />
-            </SuiteLayout>
-        );
+        return <AccountLoader type={account.loader} />;
     }
 
     if (account.status === 'exception') {
         return (
-            <SuiteLayout title={title} secondaryMenu={<Menu />}>
+            <>
                 <AccountMode mode={account.mode} />
                 <AccountAnnouncement selectedAccount={account} />
                 <Wrapper noPadding={!!account.mode}>
                     <Exception account={account} />
                 </Wrapper>
-            </SuiteLayout>
+            </>
         );
     }
 
@@ -53,14 +52,14 @@ const WalletLayout = (props: Props) => {
     // }
 
     return (
-        <SuiteLayout title={title} secondaryMenu={<Menu />}>
+        <>
             <AccountMode mode={account.mode} />
             <AccountAnnouncement selectedAccount={account} />
             <Wrapper noPadding={!!account.mode}>
                 {/* <WalletNotifications /> */}
                 {props.children}
             </Wrapper>
-        </SuiteLayout>
+        </>
     );
 };
 
