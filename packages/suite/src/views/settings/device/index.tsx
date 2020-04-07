@@ -52,7 +52,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
     const [label, setLabel] = useState('');
     const [customHomescreen, setCustomHomescreen] = useState('');
     const fileInputElement = createRef<HTMLInputElement>();
-    const [ actionEnabled ] = useDeviceActionLocks();
+    const [actionEnabled] = useDeviceActionLocks();
 
     useEffect(() => {
         if (!device) {
@@ -110,7 +110,9 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             data-test="@settings/device/create-backup-button"
                             onClick={() => goto('backup-index', { cancelable: true })}
                             isDisabled={
-                                !actionEnabled || !features.needs_backup || features.unfinished_backup
+                                !actionEnabled ||
+                                !features.needs_backup ||
+                                features.unfinished_backup
                             }
                         >
                             {features.needs_backup && <Translation id="TR_CREATE_BACKUP" />}
@@ -149,7 +151,9 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                     goto('recovery-index', { cancelable: true });
                                 }}
                                 isDisabled={
-                                    !actionEnabled || features.needs_backup || features.unfinished_backup
+                                    !actionEnabled ||
+                                    features.needs_backup ||
+                                    features.unfinished_backup
                                 }
                                 variant="secondary"
                             >
