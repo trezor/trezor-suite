@@ -6,7 +6,6 @@ import Badge from '@suite-components/Badge';
 import { Translation, HiddenPlaceholder } from '@suite-components';
 
 import Box from '../Box';
-import BoxRow from '../BoxRow';
 import { FormattedDate } from 'react-intl';
 import NoRatesTooltip from '@suite/components/suite/NoRatesTooltip';
 import { getDateWithTimeZone } from '@suite-utils/date';
@@ -16,22 +15,6 @@ const Grid = styled.div`
     display: grid;
     /* grid-gap: 20px; */
     grid-template-columns: 3fr 1fr 1fr;
-`;
-
-const BoxHeading = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0px 12px;
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${colors.BLACK50};
-    margin-bottom: 10px;
-`;
-
-const HistoricalBadge = styled(Badge)`
-    background: #b3b3b3;
-    color: white;
 `;
 
 interface ItemProps {
