@@ -28,19 +28,6 @@ const AmountWrapper = styled.div`
     justify-content: space-between;
 `;
 
-const STRIPE_COLOR = {
-    green: colors.GREEN,
-    red: colors.RED_ERROR,
-};
-
-const Stripe = styled.div<{ variant: 'green' | 'red' }>`
-    width: 4px;
-    display: flex;
-    margin: 4px 4px;
-    border-radius: 2px;
-    background-color: ${props => STRIPE_COLOR[props.variant]};
-`;
-
 const Title = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
@@ -73,13 +60,11 @@ type Props =
           value?: JSX.Element | string;
           symbol: Account['symbol'];
           isNumeric: boolean;
-          stripe?: 'green' | 'red';
           isLoading?: boolean;
       }
     | {
           title: React.ReactNode;
           value?: JSX.Element | string;
-          stripe?: 'green' | 'red';
           symbol?: undefined;
           isNumeric?: undefined;
           isLoading?: boolean;
@@ -137,7 +122,6 @@ const InfoCard = (props: Props) => {
                     )}
                 </AmountWrapper>
             </InfoCardContent>
-            {props.stripe && <Stripe variant={props.stripe} />}
         </Wrapper>
     );
 };

@@ -15,9 +15,9 @@ const StyledCard = styled(Card)`
 
 const Header = styled.div`
     display: flex;
-    padding: 20px;
     flex-direction: row;
     flex-wrap: wrap;
+    padding-bottom: 16px;
     border-bottom: solid 2px #f5f5f5;
 `;
 

@@ -43,11 +43,14 @@ const MaxWithWrapper = styled.div`
 
 const IconWrapper = styled.div`
     margin-right: 8px;
+    margin-top: auto;
+    margin-bottom: auto;
 `;
 
 const Body = styled.div`
     display: flex;
     justify-content: space-between;
+    align-items: center;
     width: 100%;
 `;
 

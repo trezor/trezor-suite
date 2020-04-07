@@ -7,6 +7,7 @@ import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { UnavailableCapability } from 'trezor-connect';
 import { Network, ExternalNetwork } from '@wallet-types';
 import { SectionHeader, Section, ActionColumn, Row } from '@suite-components/Settings';
+import { useDeviceActionLocks } from '@suite-utils/hooks';
 import { Props } from './Container';
 
 const Header = styled.div`
@@ -125,66 +126,74 @@ const CoinsGroup = ({
     enabledNetworks,
     unavailableCapabilities,
     ...props
-}: CoinsGroupProps) => (
-    <CoinsGroupWrapper data-test="@settings/wallet/coins-group">
-        <Header>
-            <HeaderLeft>
-                <SectionHeader>{label}</SectionHeader>
-                {description && <P size="tiny">{description}</P>}
-            </HeaderLeft>
-            <ToggleButtons>
-                <Button
-                    isDisabled={NETWORKS.filter(filterFn).length === enabledNetworks.length}
-                    variant="tertiary"
-                    size="small"
-                    icon="CHECK"
-                    onClick={() => onActivateAll()}
-                    data-test={`@settings/wallet/coins-group/${props.type}/activate-all`}
-                >
-                    <Translation id="TR_ACTIVATE_ALL" />
-                </Button>
-                <Button
-                    isDisabled={enabledNetworks.length === 0}
-                    variant="tertiary"
-                    size="small"
-                    icon="CROSS"
-                    onClick={() => onDeactivateAll()}
-                    data-test={`@settings/wallet/coins-group/${props.type}/deactivate-all`}
-                >
-                    <Translation id="TR_DEACTIVATE_ALL" />
-                </Button>
-            </ToggleButtons>
-        </Header>
+}: CoinsGroupProps) => {
+    const [actionEnabled] = useDeviceActionLocks();
+    return (
+        <CoinsGroupWrapper data-test="@settings/wallet/coins-group">
+            <Header>
+                <HeaderLeft>
+                    <SectionHeader>{label}</SectionHeader>
+                    {description && <P size="tiny">{description}</P>}
+                </HeaderLeft>
+                <ToggleButtons>
+                    <Button
+                        isDisabled={
+                            !actionEnabled ||
+                            NETWORKS.filter(filterFn).length === enabledNetworks.length
+                        }
+                        variant="tertiary"
+                        size="small"
+                        icon="CHECK"
+                        onClick={() => onActivateAll()}
+                        data-test={`@settings/wallet/coins-group/${props.type}/activate-all`}
+                    >
+                        <Translation id="TR_ACTIVATE_ALL" />
+                    </Button>
+                    <Button
+                        isDisabled={!actionEnabled || enabledNetworks.length === 0}
+                        variant="tertiary"
+                        size="small"
+                        icon="CROSS"
+                        onClick={() => onDeactivateAll()}
+                        data-test={`@settings/wallet/coins-group/${props.type}/deactivate-all`}
+                    >
+                        <Translation id="TR_DEACTIVATE_ALL" />
+                    </Button>
+                </ToggleButtons>
+            </Header>
 
-        <Section>
-            {NETWORKS.filter(filterFn).map(n => (
-                <CoinRow key={n.symbol}>
-                    <Coin network={n} />
-                    <ActionColumn>
-                        <AdvancedSettings>
-                            <SettingsIcon icon="SETTINGS" size={12} color={colors.BLACK25} />
-                            <Translation id="TR_ADVANCED_SETTINGS" />
-                        </AdvancedSettings>
-                        {!unavailableCapabilities[n.symbol] && (
-                            <Switch
-                                data-test={`@settings/wallet/network/${n.symbol}`}
-                                onChange={(visible: boolean) => {
-                                    onToggleOneFn(n.symbol, visible);
-                                }}
-                                checked={enabledNetworks.includes(n.symbol)}
-                            />
-                        )}
-                        {unavailableCapabilities[n.symbol] && (
-                            <UnavailableLabel>
-                                <Unavailable type={unavailableCapabilities[n.symbol]} />
-                            </UnavailableLabel>
-                        )}
-                    </ActionColumn>
-                </CoinRow>
-            ))}
-        </Section>
-    </CoinsGroupWrapper>
-);
+            <Section>
+                {NETWORKS.filter(filterFn).map(n => (
+                    <CoinRow key={n.symbol}>
+                        <Coin network={n} />
+                        <ActionColumn>
+                            {/* hidden with display 'none' until implemented */}
+                            <AdvancedSettings style={{ display: 'none' }}>
+                                <SettingsIcon icon="SETTINGS" size={12} color={colors.BLACK25} />
+                                <Translation id="TR_ADVANCED_SETTINGS" />
+                            </AdvancedSettings>
+                            {!unavailableCapabilities[n.symbol] && (
+                                <Switch
+                                    data-test={`@settings/wallet/network/${n.symbol}`}
+                                    onChange={(visible: boolean) => {
+                                        onToggleOneFn(n.symbol, visible);
+                                    }}
+                                    checked={enabledNetworks.includes(n.symbol)}
+                                    disabled={!actionEnabled}
+                                />
+                            )}
+                            {unavailableCapabilities[n.symbol] && (
+                                <UnavailableLabel>
+                                    <Unavailable type={unavailableCapabilities[n.symbol]} />
+                                </UnavailableLabel>
+                            )}
+                        </ActionColumn>
+                    </CoinRow>
+                ))}
+            </Section>
+        </CoinsGroupWrapper>
+    );
+};
 
 const Settings = (props: Props) => {
     const { enabledNetworks } = props.wallet.settings;

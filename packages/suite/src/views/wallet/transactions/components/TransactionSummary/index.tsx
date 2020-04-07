@@ -163,7 +163,6 @@ const TransactionSummary = (props: Props) => {
                                         title={<Translation {...messages.TR_INCOMING} />}
                                         value={totalReceivedAmount?.toFixed()}
                                         symbol={props.account.symbol}
-                                        stripe="green"
                                         isLoading={isLoading}
                                         isNumeric
                                     />
@@ -172,7 +171,6 @@ const TransactionSummary = (props: Props) => {
                                         value={totalSentAmount?.negated().toFixed()}
                                         symbol={props.account.symbol}
                                         isLoading={isLoading}
-                                        stripe="red"
                                         isNumeric
                                     />
                                     <InfoCard

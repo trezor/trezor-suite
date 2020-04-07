@@ -41,7 +41,7 @@ const In = styled.div<ComponentProps>`
         props.isActive &&
         css`
             padding: 20px 0 20px 0;
-            background: ${colors.WHITE};
+            background: ${colors.BACKGROUND};
         `}
 
     ${props =>

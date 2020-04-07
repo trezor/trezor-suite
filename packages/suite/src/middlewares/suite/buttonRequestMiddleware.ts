@@ -34,6 +34,7 @@ const buttonRequest = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatc
 
     switch (action.type) {
         case UI.REQUEST_PIN:
+        case UI.INVALID_PIN:
             api.dispatch({
                 type: SUITE.ADD_BUTTON_REQUEST,
                 device: api.getState().suite.device,

@@ -19,19 +19,21 @@ const Wrapper = styled.div<WrapperProps>`
     border-radius: 6px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: center;
-    cursor: pointer;
 
     &:hover {
         box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.05);
     }
 `;
 
-const Image = styled.img``;
+const Image = styled.img`
+    height: 92px;
+    margin-bottom: 20px;
+`;
 
 const Title = styled.div`
     font-size: ${FONT_SIZE.BIG};
+    margin-bottom: 12px;
 
     ::first-letter {
         text-transform: capitalize;
@@ -43,6 +45,9 @@ const Text = styled.div`
     color: ${colors.BLACK50};
 `;
 
+const StyledButton = styled(Button)`
+    margin-top: auto;
+`;
 interface Props {
     imgSrc?: string;
     title?: React.ReactNode;
@@ -60,9 +65,9 @@ const Option = (props: Props) => {
             {imgSrc && <Image src={resolveStaticPath(imgSrc)} />}
             <Title>{title}</Title>
             <Text>{text}</Text>
-            <Button onClick={action} data-test={props['data-test']}>
+            <StyledButton onClick={action} data-test={props['data-test']}>
                 {button}
-            </Button>
+            </StyledButton>
         </Wrapper>
     );
 };

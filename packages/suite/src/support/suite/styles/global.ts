@@ -1,6 +1,6 @@
 import animations from './animations';
 import { notifications } from './notifications';
-import { variables } from '@trezor/components';
+import { variables, colors } from '@trezor/components';
 
 export default `
     #__next {
@@ -14,7 +14,7 @@ export default `
     }
 
     body, html {
-      background: white;
+      background: ${colors.BACKGROUND};
       font-size: ${variables.FONT_SIZE.NORMAL};
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
