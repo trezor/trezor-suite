@@ -22,6 +22,8 @@ import {
     AccountUtxo,
     AccountUtxoParams,
     Fee,
+    AccountInfo,
+    XPUBAddress,
 } from '../../types/rpcbitcoind';
 import {
     HDNode as BitcoinJsHDNode,
@@ -32,6 +34,8 @@ import {
 import BigNumber from 'bignumber.js';
 import GCSFilter from 'golomb';
 import Base58check from 'base58check';
+import XpubOperations from './xpubOperations';
+import * as Bjs from 'bitcoinjs-lib';
 
 // const SEGWIT_INPUT_SCRIPT_LENGTH = 51; // actually 50.25, but let's make extra room
 // const INPUT_SCRIPT_LENGTH = 109;
@@ -61,7 +65,6 @@ export class RpcClient {
             loginData.password,
             100
         );
-
         this.clientBatch = new RpcClientBatch({
             host: '78.47.39.234',
             port: 8332,
@@ -384,74 +387,213 @@ export class RpcClient {
         });
         return returnObj;
     }
-
-    async getAccountinfo(payload: AccountInfoParams): Promise<object> {
-        if (payload.details && (payload.details === 'tokens' || payload.details === 'basic')) {
-            const mainAddrTxs = await this.getTxs(payload.descriptor);
-            const balanceObj: TotalBalance = this.getAvailableBalance(
-                mainAddrTxs.inputTxs,
-                mainAddrTxs.voutTxs,
-                payload.descriptor
-            );
-            // 1FxqeJa3gx35q9VEFJPp2yWb25bHmu8eGx
-            console.log(
-                'balanceObj.totalReceived, balanceObj.totalSpent',
-                'totalBalance',
-                balanceObj.totalReceived.dividedBy(100000000).toFixed(),
-                balanceObj.totalSpent.dividedBy(100000000).toFixed(),
-                balanceObj.finalBalance.dividedBy(100000000).toFixed()
-            );
-            const returnObj = {
-                address: payload.descriptor,
-                balance: balanceObj.finalBalance,
-                totalReceived: balanceObj.totalReceived,
-                totalSent: balanceObj.totalSpent,
-                unconfirmedBalance: '0',
-                unconfirmedTxs: 0,
-                txs: mainAddrTxs.allTxs.length,
-                usedTokens: 20,
-                // eslint-disable-next-line @typescript-eslint/no-array-constructor
-                tokens: Array(),
-            };
-
-            return returnObj;
+    // 1FxqeJa3gx35q9VEFJPp2yWb25bHmu8eGx
+    async getAccountinfo(payload: AccountInfoParams): Promise<AccountInfo> {
+        if (Bitcore.Address.isValid(payload.descriptor) === false) {
+            throw new Error('You must provide a valid address');
         }
-        return {};
-    }
 
-    async getAccountInfoWithTokenBalances(payload: AccountInfoParams): Promise<object> {
         const mainAddrTxs = await this.getTxs(payload.descriptor);
+        const balanceObj: TotalBalance = this.getAvailableBalance(
+            mainAddrTxs.inputTxs,
+            mainAddrTxs.voutTxs,
+            payload.descriptor
+        );
 
-        const returnObj = {
+        const returnObj: AccountInfo = {
             address: payload.descriptor,
-            balance: '0',
-            totalReceived: '0',
-            totalSent: '0',
+            balance: balanceObj.finalBalance,
+            totalReceived: balanceObj.totalReceived,
+            totalSent: balanceObj.totalSpent,
             unconfirmedBalance: '0',
             unconfirmedTxs: 0,
+            itemsOnPage: 25,
+            totalPages: 1,
             txs: mainAddrTxs.allTxs.length,
-            usedTokens: 20,
-            // eslint-disable-next-line @typescript-eslint/no-array-constructor
-            tokens: Array(),
         };
 
+        return returnObj;
+    }
+
+    async getAccountTokens(payload: AccountInfoParams): Promise<AccountInfo> {
+        const bip84obj = new XpubOperations();
+        if (bip84obj.isExtendedPublicKey(payload.descriptor) === false) {
+            throw new Error('You must provide a valid extended public key');
+        }
+
+        const returnObj: AccountInfo = {
+            address: payload.descriptor,
+            balance: new BigNumber(0),
+            totalReceived: new BigNumber(0),
+            totalSent: new BigNumber(0),
+            unconfirmedBalance: '0',
+            unconfirmedTxs: 0,
+            txs: 0,
+            itemsOnPage: 25,
+            totalPages: 1,
+        };
+
+        const tokens: XPUBAddress[] = [];
         for (let i = 0; i <= 20; i++) {
-            returnObj.tokens.push({
+            tokens.push({
                 type: 'XPUBAddress',
-                name: this.deriveXpub(payload.descriptor, BitcoinJsNetwork.bitcoin, i),
-                path: `m/44'/1'/0'/0/${i}`,
+                name: bip84obj.isXpub(payload.descriptor)
+                    ? bip84obj.getAddressLegacy(i, payload.descriptor)
+                    : bip84obj.getAddressSegwitFromvPubOrZPub(i, payload.descriptor),
+                path: bip84obj.isXpub(payload.descriptor)
+                    ? `m/44'/0'/0'/0/${i}`
+                    : `m/89'/0'/0'/0/${i}`,
                 transfers: 0,
-                decimals: 8,
+                balance: '0',
+                totalReceived: '0',
+                totalSent: '0',
             });
         }
 
         await Promise.all(
-            returnObj.tokens.map(async oneTokenObj => {
+            tokens.map(async oneTokenObj => {
                 const txs = await this.getTxs(oneTokenObj.name);
                 oneTokenObj.transfers = txs.allTxs.length;
+
+                const balanceObj: TotalBalance = this.getAvailableBalance(
+                    txs.inputTxs,
+                    txs.voutTxs,
+                    oneTokenObj.name
+                );
+
+                returnObj.txs += txs.allTxs.length;
+                returnObj.balance = returnObj.balance.plus(balanceObj.finalBalance);
+                returnObj.totalReceived = returnObj.totalReceived.plus(balanceObj.totalReceived);
+                returnObj.totalSent = returnObj.totalSent.plus(balanceObj.totalSpent);
             })
         );
 
+        returnObj.tokens = tokens;
+        return returnObj;
+    }
+
+    async getAccountInfoWithTokenBalances(payload: AccountInfoParams): Promise<AccountInfo> {
+        const bip84obj = new XpubOperations();
+        if (bip84obj.isExtendedPublicKey(payload.descriptor) === false) {
+            throw new Error('You must provide a valid extended public key');
+        }
+
+        const returnObj: AccountInfo = {
+            address: payload.descriptor,
+            balance: new BigNumber(0),
+            totalReceived: new BigNumber(0),
+            totalSent: new BigNumber(0),
+            unconfirmedBalance: '0',
+            unconfirmedTxs: 0,
+            txs: 0,
+            itemsOnPage: 25,
+            totalPages: 1,
+        };
+
+        const tokens: XPUBAddress[] = [];
+        for (let i = 0; i <= 20; i++) {
+            tokens.push({
+                type: 'XPUBAddress',
+                name: bip84obj.isXpub(payload.descriptor)
+                    ? bip84obj.getAddressLegacy(i, payload.descriptor)
+                    : bip84obj.getAddressSegwitFromvPubOrZPub(i, payload.descriptor),
+                path: bip84obj.isXpub(payload.descriptor)
+                    ? `m/44'/0'/0'/0/${i}`
+                    : `m/89'/0'/0'/0/${i}`,
+                transfers: 0,
+                balance: '0',
+                totalReceived: '0',
+                totalSent: '0',
+            });
+        }
+
+        await Promise.all(
+            tokens.map(async oneTokenObj => {
+                const txs = await this.getTxs(oneTokenObj.name);
+                oneTokenObj.transfers = txs.allTxs.length;
+
+                const balanceObj: TotalBalance = this.getAvailableBalance(
+                    txs.inputTxs,
+                    txs.voutTxs,
+                    oneTokenObj.name
+                );
+                oneTokenObj.balance = balanceObj.finalBalance.toFixed(8);
+                oneTokenObj.totalReceived = balanceObj.totalReceived.toFixed(8);
+                oneTokenObj.totalSent = balanceObj.totalSpent.toFixed(8);
+
+                returnObj.txs += txs.allTxs.length;
+                returnObj.balance = returnObj.balance.plus(balanceObj.finalBalance);
+                returnObj.totalReceived = returnObj.totalReceived.plus(balanceObj.totalReceived);
+                returnObj.totalSent = returnObj.totalSent.plus(balanceObj.totalSpent);
+            })
+        );
+
+        returnObj.tokens = tokens;
+        return returnObj;
+    }
+
+    async getAccountInfoWithTxs(payload: AccountInfoParams): Promise<AccountInfo> {
+        const bip84obj = new XpubOperations();
+        if (bip84obj.isExtendedPublicKey(payload.descriptor) === false) {
+            throw new Error('You must provide a valid extended public key');
+        }
+
+        const returnObj: AccountInfo = {
+            address: payload.descriptor,
+            balance: new BigNumber(0),
+            totalReceived: new BigNumber(0),
+            totalSent: new BigNumber(0),
+            unconfirmedBalance: '0',
+            unconfirmedTxs: 0,
+            txs: 0,
+            itemsOnPage: 25,
+            totalPages: 1,
+        };
+
+        const tokens: XPUBAddress[] = [];
+        for (let i = 0; i <= 20; i++) {
+            tokens.push({
+                type: 'XPUBAddress',
+                name: bip84obj.isXpub(payload.descriptor)
+                    ? bip84obj.getAddressLegacy(i, payload.descriptor)
+                    : bip84obj.getAddressSegwitFromvPubOrZPub(i, payload.descriptor),
+                path: bip84obj.isXpub(payload.descriptor)
+                    ? `m/44'/0'/0'/0/${i}`
+                    : `m/89'/0'/0'/0/${i}`,
+                transfers: 0,
+                balance: '0',
+                totalReceived: '0',
+                totalSent: '0',
+            });
+        }
+
+        await Promise.all(
+            tokens.map(async oneTokenObj => {
+                const txs = await this.getTxs(oneTokenObj.name);
+                oneTokenObj.transfers = txs.allTxs.length;
+
+                const balanceObj: TotalBalance = this.getAvailableBalance(
+                    txs.inputTxs,
+                    txs.voutTxs,
+                    oneTokenObj.name
+                );
+                oneTokenObj.balance = balanceObj.finalBalance.toFixed(8);
+                oneTokenObj.totalReceived = balanceObj.totalReceived.toFixed(8);
+                oneTokenObj.totalSent = balanceObj.totalSpent.toFixed(8);
+
+                txs.allTxs.forEach(oneTxNotif => {
+                    // eslint-disable-next-line no-unused-expressions
+                    returnObj.transactions?.push(oneTxNotif.tx);
+                });
+
+                returnObj.txs += txs.allTxs.length;
+                returnObj.balance = returnObj.balance.plus(balanceObj.finalBalance);
+                returnObj.totalReceived = returnObj.totalReceived.plus(balanceObj.totalReceived);
+                returnObj.totalSent = returnObj.totalSent.plus(balanceObj.totalSpent);
+            })
+        );
+
+        returnObj.tokens = tokens;
         return returnObj;
     }
 

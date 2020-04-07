@@ -28,6 +28,8 @@ const loginData: LoginData = {
     port: '8332',
 };
 
+const rpcClientObj = new RpcClient(loginData);
+
 const cleanup = () => {
     if (api) {
         api.dispose();
@@ -92,7 +94,6 @@ const connect = async (): Promise<Connection> => {
 
 const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<void> => {
     try {
-        const rpcClientObj = new RpcClient(loginData);
         const blockchainInfo = await rpcClientObj.getBlockchainInfo();
         const networkInfo = await rpcClientObj.getNetworkInfo();
 
@@ -111,7 +112,6 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
 
 const getBlockHash = async (data: { id: number } & MessageTypes.GetBlockHash): Promise<void> => {
     try {
-        const rpcClientObj = new RpcClient(loginData);
         const blockInfo = await rpcClientObj.getBlockHash(data.payload);
         common.response({
             id: data.id,
@@ -132,19 +132,19 @@ const getAccountInfo = async (
         console.log('payload.details', payload.details);
         // tokenBalances
         if (payload.details && payload.details === 'basic') {
-            const rpcClientObj = new RpcClient(loginData);
             info = await rpcClientObj.getAccountinfo(payload);
         } else if (payload.details && payload.details === 'tokens') {
-            const rpcClientObj = new RpcClient(loginData);
-            info = await rpcClientObj.getAccountinfo(payload);
+            info = await rpcClientObj.getAccountTokens(payload);
         } else if (payload.details && payload.details === 'tokenBalances') {
-            const rpcClientObj = new RpcClient(loginData);
             info = await rpcClientObj.getAccountInfoWithTokenBalances(payload);
+        } else if (payload.details && payload.details === 'txs') {
+            info = await rpcClientObj.getAccountInfoWithTxs(payload);
         } else {
             const socket = await connect();
             info = await socket.getAccountInfo(payload);
         }
         // xpub6BiVtCpG9fQPxnPmHXG8PhtzQdWC2Su4qWu6XW9tpWFYhxydCLJGrWBJZ5H6qTAHdPQ7pQhtpjiYZVZARo14qHiay2fvrX996oEP42u8wZy
+        // xpub6B7RhrDSN1SN5jZ8EQY8u5PqKLYTZ39jJhroqtgvViM1WP92gUuJLgSYfpBkD9BXdi8f9tcXRhUFJKd9SzcnFj3QsMKpgpUsPLjgNTG5YDX
         common.response({
             id: data.id,
             type: RESPONSES.GET_ACCOUNT_INFO,
@@ -163,7 +163,6 @@ const getAccountUtxo = async (
 ): Promise<void> => {
     const { payload } = data;
     try {
-        const rpcClientObj = new RpcClient(loginData);
         const utxos = await rpcClientObj.getAccountUtxo(payload);
         common.response({
             id: data.id,
@@ -181,7 +180,6 @@ const getTransaction = async (
     console.log('getTransaction  getTransaction getTransaction');
     const { payload } = data;
     try {
-        const rpcClientObj = new RpcClient(loginData);
         const rawTxData: any = await rpcClientObj.getRawTransactionInfo(payload);
         const tx: Transaction = await rpcClientObj.convertRawTransactionToNormal(rawTxData);
 
@@ -202,7 +200,6 @@ const pushTransaction = async (
     data: { id: number } & MessageTypes.PushTransaction
 ): Promise<void> => {
     try {
-        const rpcClientObj = new RpcClient(loginData);
         const txHash = await rpcClientObj.pushTx(data.payload);
 
         common.response({
@@ -217,7 +214,6 @@ const pushTransaction = async (
 
 const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Promise<void> => {
     try {
-        const rpcClientObj = new RpcClient(loginData);
         const resp = await rpcClientObj.getEstimateFee(data.payload);
         common.response({
             id: data.id,
