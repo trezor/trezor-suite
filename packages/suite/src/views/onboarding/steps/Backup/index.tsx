@@ -1,13 +1,18 @@
 import React from 'react';
-import { Link, P } from '@trezor/components';
+import styled from 'styled-components';
+import { Link } from '@trezor/components';
 
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
-import { Translation } from '@suite-components';
+import { Translation, Image } from '@suite-components';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
 import { canStart, canContinue } from '@backup-utils';
 import { SEED_MANUAL_URL } from '@suite-constants/urls';
 
 import { Props } from './Container';
+
+const StyledImage = styled(Image)`
+    flex: 1;
+`;
 
 const BackupStep = (props: Props) => {
     const { device, backup, locks } = props;
@@ -21,9 +26,9 @@ const BackupStep = (props: Props) => {
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
-                {status === 'initial' && 'Create a backup seed'}
-                {status === 'finished' && !backup.error && 'Backup finished'}
-                {status === 'finished' && backup.error && 'Backup failed'}
+                {status === 'initial' && <Translation id="TR_CREATE_BACKUP" />}
+                {status === 'finished' && !backup.error && <Translation id="TR_BACKUP_CREATED" />}
+                {status === 'finished' && backup.error && <Translation id="TOAST_BACKUP_FAILED" />}
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {status === 'initial' && (
@@ -60,29 +65,15 @@ const BackupStep = (props: Props) => {
                         <Text>
                             <Translation id="TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION" />
                         </Text>
-
-                        <P>Once you click retry, device will ask you to confirm these steps:</P>
-                        <P>1. wipe device</P>
-                        <P>2. create new wallet</P>
-                        <P>3. start backup again</P>
-
+                        <StyledImage image="UNI_ERROR" />
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 onClick={() => {
-                                    props.retryBackup();
+                                    props.goto('suite-index');
                                 }}
-                                isDisabled={!device || !device.connected}
                             >
-                                <Translation id="TR_RETRY" />
+                                <Translation id="TR_CONTINUE" />
                             </OnboardingButton.Cta>
-                            <OnboardingButton.Alt
-                                onClick={() => {
-                                    props.goto('wallet-index');
-                                }}
-                                isDisabled={!device || !device.connected}
-                            >
-                                Go to wallet
-                            </OnboardingButton.Alt>
                         </Wrapper.Controls>
                     </>
                 )}
