@@ -8,6 +8,7 @@ interface Props {
     disabled: boolean;
 }
 
+// > div:first-of-type is a workaround for tooltip (TODO)
 const Wrapper = styled.div`
     display: flex;
     padding: 10px;
@@ -19,7 +20,6 @@ const Wrapper = styled.div`
     > div:first-of-type {
         display: block;
         flex: 1;
-        background: red;
     }
 `;
 
