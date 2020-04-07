@@ -93,6 +93,9 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch(setStatus('finished'));
 };
 
+// Recovery mode is persistent on model T. This means that device stays in recovery mode even after reconnecting.
+// In such case, we need to call again the call that brought device into recovery mode (either proper recovery
+// or seed check). This way, communication is renewed and host starts receiving messages from device again.
 const rerun = () => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
 
