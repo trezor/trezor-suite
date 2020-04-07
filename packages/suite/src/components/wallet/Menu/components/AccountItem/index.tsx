@@ -25,6 +25,7 @@ const Wrapper = styled.div<{ selected: boolean; type: string }>`
             position: inherit;
             top: ${props.type !== 'normal' ? '34px' : '0px'};
             bottom: 0px;
+            z-index: 1;
         `}
 `;
 
