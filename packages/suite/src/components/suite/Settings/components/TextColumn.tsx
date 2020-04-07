@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { P, Link, colors, variables } from '@trezor/components';
+import { Link, colors, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 
 interface TextColumnProps {
@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 
 const Description = styled.div`
     color: ${colors.BLACK50};
-    margin: 4px 16px 4px 0;
+    margin: 12px 0;
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
@@ -31,9 +31,9 @@ const LearnMore = ({ href, ...props }: { href: string }) => (
     </LearnMoreWrapper>
 );
 
-const Title = ({ children }: { children: React.ReactNode }) => {
-    return <P size="small">{children}</P>;
-};
+const Title = styled.div`
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
 
 const TextColumn = ({ title, description, learnMore }: TextColumnProps) => {
     return (
