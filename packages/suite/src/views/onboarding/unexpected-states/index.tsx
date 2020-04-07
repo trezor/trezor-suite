@@ -42,19 +42,16 @@ const UnexpectedState = ({ onboarding, suite, children }: Props) => {
     const activeStep = steps.find(s => s.id === activeStepId);
 
     const isNotSameDevice = () => {
-        // temporarily disabled, there is the thing with changing id in resetDevice
-        return false;
-
-        // const prevDeviceId = prevDevice && prevDevice.features && prevDevice.id;
-        // // if no device was connected before, assume it is same device
-        // if (!prevDeviceId) {
-        //     return false;
-        // }
-        // const deviceId = device && device.features && device.id;
-        // if (!deviceId) {
-        //     return null;
-        // }
-        // return deviceId !== prevDeviceId;
+        const prevDeviceId = prevDevice && prevDevice.features && prevDevice.id;
+        // if no device was connected before, assume it is same device
+        if (!prevDeviceId) {
+            return false;
+        }
+        const deviceId = device && device.features && device.id;
+        if (!deviceId) {
+            return null;
+        }
+        return deviceId !== prevDeviceId;
     };
 
     const isNotNewDevice = () => {

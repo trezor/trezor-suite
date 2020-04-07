@@ -121,7 +121,7 @@ const Onboarding = (props: Props) => {
 
     const StepComponent = getStepComponent();
     const stepsInPath = steps.filter(s => s.progress && isStepInPath(s, path));
-    console.log(modal);
+
     return (
         <Wrapper>
             <Head>

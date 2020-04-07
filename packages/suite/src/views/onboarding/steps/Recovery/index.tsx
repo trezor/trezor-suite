@@ -90,7 +90,6 @@ const RecoveryStep = (props: Props) => {
 
                 {recovery.status === 'in-progress' && <Loading />}
 
-                {/* {device.features.initialized && ( */}
                 {recovery.status === 'finished' && !recovery.error && (
                     <>
                         <StyledImage image="UNI_SUCCESS" />
@@ -110,8 +109,6 @@ const RecoveryStep = (props: Props) => {
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 onClick={() => {
-                                    // resetReducer();
-                                    // recoverDevice();
                                     rerun();
                                 }}
                             >

@@ -34,8 +34,8 @@ const Index = ({ recovery, device, rerun, goToStep, addPath }: Props) => (
                 <Buttons>
                     {!device?.features?.initialized && (
                         <Button
-                            onClick={async () => {
-                                await rerun();
+                            onClick={() => {
+                                rerun();
                                 goToStep('recovery');
                                 addPath('recovery');
                             }}

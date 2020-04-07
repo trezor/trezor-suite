@@ -64,21 +64,10 @@ const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
         },
     });
 
-    console.log('response', response);
-
     if (!response.success) {
         dispatch(setError(response.payload.error));
     }
 
-    // todo: does it make sense here? probably not
-    // if (device.features.recovery_mode) {
-    //     TrezorConnect.getFeatures({
-    //         device: {
-    //             path: device.path,
-    //         },
-    //     });
-    // }
-    dispatch(setError(''));
     dispatch(setStatus('finished'));
 };
 
@@ -88,7 +77,6 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!device || !device.features) return;
     dispatch(setError(''));
     dispatch(setStatus('in-progress'));
-    dispatch(setError(''));
 
     const response = await TrezorConnect.recoveryDevice({
         type: advancedRecovery ? 1 : 0,
@@ -102,14 +90,6 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
         dispatch(setError(response.payload.error));
     }
 
-    // todo: does it make sense here? probably not
-    // if (device.features.recovery_mode) {
-    //     TrezorConnect.getFeatures({
-    //         device: {
-    //             path: device.path,
-    //         },
-    //     });
-    // }
     dispatch(setStatus('finished'));
 };
 
