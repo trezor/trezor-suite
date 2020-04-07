@@ -2551,6 +2551,10 @@ const definedMessages = defineMessages({
         id: 'RECEIVE_TITLE',
         defaultMessage: 'Receive {symbol}',
     },
+    SEND_TITLE: {
+        id: 'SEND_TITLE',
+        defaultMessage: 'Send {symbol}',
+    },
     RECEIVE_DESC_BITCOIN: {
         id: 'RECEIVE_DESC_BITCOIN',
         defaultMessage:

@@ -1,12 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { WalletLayout } from '@wallet-components';
-import AccountName from '@wallet-components/AccountName';
-import { Card } from '@suite-components';
+import { Card, Translation } from '@suite-components';
+import { H2 } from '@trezor/components';
 import AccountSelector from '@wallet-components/AccountSelector/Container';
 import { Output } from '@wallet-types/sendForm';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import messages from '@suite/support/messages';
 import Add from './components/Add/Container';
 import Address from './components/Address/Container';
 import AdditionalForm from './components/AdvancedForm';
@@ -73,14 +72,12 @@ export default ({
     }
 
     const { account, network } = selectedAccount;
-    const accountNameMessage =
-        account.networkType === 'ethereum'
-            ? messages.TR_SEND_NETWORK_AND_TOKENS
-            : messages.TR_SEND_NETWORK;
 
     return (
         <WalletLayout title="Send" account={selectedAccount}>
-            <AccountName account={account} message={accountNameMessage} />
+            <H2>
+                <Translation id="SEND_TITLE" values={{ symbol: account.symbol.toUpperCase() }} />
+            </H2>
             <AccountSelector title="Send from Account" />
             <Clear />
             <StyledCard>
