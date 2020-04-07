@@ -5,7 +5,7 @@ const SectionHeader = styled.div`
     color: ${colors.BLACK50};
     margin: 40px 0 10px 0;
     text-transform: uppercase;
-    text-indent: 12px;
+    padding-left: 12px;
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.BOLD};
 `;

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { colors } from '@trezor/components';
+import { colors, variables } from '@trezor/components';
 import SuiteNotifications from '@suite-components/Notifications';
 import Head from 'next/head';
 import Menu from '@suite-components/Menu/Container';
@@ -42,8 +42,8 @@ const AppWrapper = styled.div`
     flex: 1 1 0%;
 `;
 
-const MaxWithWrapper = styled.div<{ withMenu: boolean }>`
-    max-width: 1024px;
+const MaxWidthWrapper = styled.div<{ withMenu: boolean }>`
+    max-width: ${variables.SCREEN_SIZE.XL};
     max-width: ${props => (props.withMenu ? '786px' : '1024px')};
     height: 100%;
 `;
@@ -73,9 +73,9 @@ const SuiteLayout = (props: Props) => {
                 <Columns>
                     {props.secondaryMenu && <MenuSecondary>{props.secondaryMenu}</MenuSecondary>}
                     <AppWrapper>
-                        <MaxWithWrapper withMenu={!!props.secondaryMenu}>
+                        <MaxWidthWrapper withMenu={!!props.secondaryMenu}>
                             {props.children}
-                        </MaxWithWrapper>
+                        </MaxWidthWrapper>
                     </AppWrapper>
                 </Columns>
             </Body>
