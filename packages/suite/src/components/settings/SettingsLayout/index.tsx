@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { LayoutContext } from '@suite-components/SuiteLayout';
+import { LayoutContext } from '@suite-components';
 import { Menu } from '@settings-components';
 
 const Wrapper = styled.div`
