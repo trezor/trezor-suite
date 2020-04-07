@@ -13,10 +13,8 @@ import { Props } from './Container';
 
 const Header = styled.div`
     display: flex;
-    min-height: 20px;
     justify-content: space-between;
     align-items: center;
-    margin-top: 20px;
     border: 1px solid lime;
 `;
 

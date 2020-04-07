@@ -1,9 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import Card from '@suite-components/Card';
-import SectionHeader from './SectionHeader';
+import { variables, colors } from '@trezor/components';
 
-const SectionWrapper = styled(Card)`
+const Header = styled.div`
+    color: ${colors.BLACK50};
+    padding: 12px;
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.BOLD};
+`;
+
+const Wrapper = styled(Card)`
     flex-direction: column;
     flex: 1;
 `;
@@ -16,10 +23,10 @@ interface Props {
 const Section = ({ children, header }: Props) => {
     return (
         <>
-            {header && <SectionHeader>{header}</SectionHeader>}
+            {header && <Header>{header}</Header>}
             <>
                 <Card>
-                    <SectionWrapper>{children}</SectionWrapper>
+                    <Wrapper>{children}</Wrapper>
                 </Card>
             </>
         </>
