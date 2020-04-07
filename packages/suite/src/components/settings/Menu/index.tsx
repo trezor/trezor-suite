@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
 import { bindActionCreators } from 'redux';
 
-import { H2, Icon, Link, colors, variables } from '@trezor/components';
+import { Icon, Link, colors, variables } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { AppState, Dispatch } from '@suite-types';
@@ -30,22 +30,13 @@ const SECONDARY_COLOR = colors.BLACK96;
 
 const ContentWrapper = styled.div`
     padding: 0 ${LEFT_PADDING};
-    margin-top: 30px;
     display: flex;
+    flex: 1;
     flex-direction: column;
-    height: 100%;
 `;
 
 const Bottom = styled.div`
     margin-top: auto;
-`;
-
-const Heading = styled(H2)`
-    padding-left: ${LEFT_PADDING};
-    color: ${colors.BLACK50};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    text-transform: uppercase;
 `;
 
 const Items = styled.div``;
@@ -111,12 +102,9 @@ const ITEMS = [
     },
 ] as const;
 
-const SettignsMenu = ({ goto, router, openModal }: Props) => {
+const SettingsMenu = ({ goto, router, openModal }: Props) => {
     return (
         <ContentWrapper>
-            <Heading>
-                <Translation id="TR_SETTINGS" />
-            </Heading>
             <Items>
                 {ITEMS.map(i => (
                     <Item
@@ -155,4 +143,4 @@ const SettignsMenu = ({ goto, router, openModal }: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SettignsMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsMenu);
