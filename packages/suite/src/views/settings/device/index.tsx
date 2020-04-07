@@ -4,8 +4,6 @@ import React, { useEffect, useState, createRef } from 'react';
 import styled from 'styled-components';
 import { P, Switch, Link, colors } from '@trezor/components';
 
-import { SUITE } from '@suite-actions/constants';
-
 import { Translation } from '@suite-components';
 import { SettingsLayout } from '@settings-components';
 import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
@@ -16,6 +14,7 @@ import {
     FAILED_BACKUP_URL,
 } from '@suite-constants/urls';
 import * as homescreen from '@suite-utils/homescreen';
+import { useDeviceActionLocks } from '@suite-utils/hooks';
 
 import { Props } from './Container';
 
@@ -49,11 +48,11 @@ const Col = styled.div`
     flex-direction: column;
 `;
 
-const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: Props) => {
-    const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
+const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) => {
     const [label, setLabel] = useState('');
     const [customHomescreen, setCustomHomescreen] = useState('');
     const fileInputElement = createRef<HTMLInputElement>();
+    const [ actionEnabled ] = useDeviceActionLocks();
 
     useEffect(() => {
         if (!device) {
@@ -111,7 +110,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                             data-test="@settings/device/create-backup-button"
                             onClick={() => goto('backup-index', { cancelable: true })}
                             isDisabled={
-                                uiLocked || !features.needs_backup || features.unfinished_backup
+                                !actionEnabled || !features.needs_backup || features.unfinished_backup
                             }
                         >
                             {features.needs_backup && <Translation id="TR_CREATE_BACKUP" />}
@@ -150,7 +149,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                                     goto('recovery-index', { cancelable: true });
                                 }}
                                 isDisabled={
-                                    uiLocked || features.needs_backup || features.unfinished_backup
+                                    !actionEnabled || features.needs_backup || features.unfinished_backup
                                 }
                                 variant="secondary"
                             >
@@ -180,7 +179,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                             variant="secondary"
                             onClick={() => goto('firmware-index', { cancelable: true })}
                             data-test="@settings/device/update-button"
-                            isDisabled={uiLocked}
+                            isDisabled={!actionEnabled}
                         >
                             {device &&
                                 ['required', 'outdated'].includes(device.firmware) &&
@@ -200,7 +199,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                         <Switch
                             checked={!!features.pin_protection}
                             onChange={() => changePin({ remove: features.pin_protection })}
-                            // isDisabled={uiLocked}
+                            isDisabled={!actionEnabled}
                         />
                     </ActionColumn>
                 </Row>
@@ -214,7 +213,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                         <ActionColumn>
                             <ActionButton
                                 onClick={() => changePin({ remove: false })}
-                                // isDisabled={uiLocked}
+                                isDisabled={!actionEnabled}
                                 variant="secondary"
                                 data-test="@settings/device/update-button"
                             >
@@ -244,7 +243,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                                 })
                             }
                             data-test="@settings/device/passphrase-switch"
-                            // isDisabled={uiLocked}
+                            isDisabled={!actionEnabled}
                         />
                     </ActionColumn>
                 </Row>
@@ -261,10 +260,11 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                                 setLabel(event.currentTarget.value)
                             }
                             data-test="@settings/device/label-input"
+                            readOnly={!actionEnabled}
                         />
                         <ActionButton
                             onClick={() => applySettings({ label })}
-                            isDisabled={uiLocked}
+                            isDisabled={!actionEnabled}
                             data-test="@settings/device/label-submit"
                         >
                             <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />
@@ -296,7 +296,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                                         fileInputElement.current.click();
                                     }
                                 }}
-                                isDisabled={uiLocked}
+                                isDisabled={!actionEnabled}
                                 variant="secondary"
                             >
                                 <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
@@ -310,7 +310,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                                     device,
                                 })
                             }
-                            isDisabled={uiLocked}
+                            isDisabled={!actionEnabled}
                             data-test="@settings/device/select-from-gallery"
                             variant="secondary"
                         >
@@ -337,6 +337,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                             <ActionButton
                                 variant="secondary"
                                 onClick={() => setCustomHomescreen('')}
+                                isDisabled={!actionEnabled}
                             >
                                 Drop image
                             </ActionButton>
@@ -360,7 +361,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                                         })
                                     }
                                     data-test={`@settings/device/rotation-button/${variant.value}`}
-                                    isDisabled={uiLocked}
+                                    isDisabled={!actionEnabled}
                                 >
                                     {variant.label}
                                 </RotationButton>
@@ -384,7 +385,7 @@ const Settings = ({ device, locks, applySettings, changePin, openModal, goto }: 
                                 })
                             }
                             variant="danger"
-                            isDisabled={uiLocked}
+                            isDisabled={!actionEnabled}
                             data-test="@settings/device/open-wipe-modal-button"
                         >
                             <Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />

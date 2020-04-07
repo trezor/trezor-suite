@@ -7,6 +7,7 @@ import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { UnavailableCapability } from 'trezor-connect';
 import { Network, ExternalNetwork } from '@wallet-types';
 import { SectionHeader, Section, ActionColumn, Row } from '@suite-components/Settings';
+import { useDeviceActionLocks } from '@suite-utils/hooks';
 import { Props } from './Container';
 
 const Header = styled.div`
@@ -99,7 +100,6 @@ interface CoinsGroupProps {
     enabledNetworks: Network['symbol'][];
     type: 'mainnet' | 'testnet'; // used in tests
     unavailableCapabilities: { [key: string]: UnavailableCapability };
-    controlsDisabled: boolean;
 }
 
 const Unavailable = ({ type }: { type: UnavailableCapability }) => {
@@ -125,9 +125,10 @@ const CoinsGroup = ({
     filterFn,
     enabledNetworks,
     unavailableCapabilities,
-    controlsDisabled,
     ...props
-}: CoinsGroupProps) => (
+}: CoinsGroupProps) => {
+    const [ actionEnabled ] = useDeviceActionLocks();
+    return (
     <CoinsGroupWrapper data-test="@settings/wallet/coins-group">
         <Header>
             <HeaderLeft>
@@ -136,7 +137,7 @@ const CoinsGroup = ({
             </HeaderLeft>
             <ToggleButtons>
                 <Button
-                    isDisabled={controlsDisabled || NETWORKS.filter(filterFn).length === enabledNetworks.length}
+                    isDisabled={!actionEnabled || NETWORKS.filter(filterFn).length === enabledNetworks.length}
                     variant="tertiary"
                     size="small"
                     icon="CHECK"
@@ -146,7 +147,7 @@ const CoinsGroup = ({
                     <Translation id="TR_ACTIVATE_ALL" />
                 </Button>
                 <Button
-                    isDisabled={controlsDisabled || enabledNetworks.length === 0}
+                    isDisabled={!actionEnabled || enabledNetworks.length === 0}
                     variant="tertiary"
                     size="small"
                     icon="CROSS"
@@ -163,19 +164,19 @@ const CoinsGroup = ({
                 <CoinRow key={n.symbol}>
                     <Coin network={n} />
                     <ActionColumn>
-                        {/* todo: hidden until implmented */}
-                        {/* <AdvancedSettings>
+                        {/* hidden with display 'none' until implemented */}
+                        <AdvancedSettings style={{ display: 'none' }}>
                             <SettingsIcon icon="SETTINGS" size={12} color={colors.BLACK25} />
                             <Translation id="TR_ADVANCED_SETTINGS" />
-                        </AdvancedSettings> */}
+                        </AdvancedSettings>
                         {!unavailableCapabilities[n.symbol] && (
                             <Switch
                                 data-test={`@settings/wallet/network/${n.symbol}`}
                                 onChange={(visible: boolean) => {
                                     onToggleOneFn(n.symbol, visible);
                                 }}
-                                disabled={controlsDisabled}
                                 checked={enabledNetworks.includes(n.symbol)}
+                                disabled={!actionEnabled}
                             />
                         )}
                         {unavailableCapabilities[n.symbol] && (
@@ -188,13 +189,13 @@ const CoinsGroup = ({
             ))}
         </Section>
     </CoinsGroupWrapper>
-);
+)};
 
 const Settings = (props: Props) => {
     const { enabledNetworks } = props.wallet.settings;
     const unavailableCapabilities =
         props.device && props.device.features ? props.device.unavailableCapabilities : {};
-    const controlsDisabled = !props.device || !props.device.connected;
+
     const mainnetNetworksFilterFn = (n: Network) => !n.accountType && !n.testnet;
 
     const testnetNetworksFilterFn = (n: Network) =>
@@ -237,7 +238,6 @@ const Settings = (props: Props) => {
                 onDeactivateAll={() => props.changeNetworks(enabledTestnetNetworks)}
                 type="mainnet"
                 unavailableCapabilities={unavailableCapabilities}
-                controlsDisabled={controlsDisabled}
             />
 
             <CoinsGroup
@@ -257,7 +257,6 @@ const Settings = (props: Props) => {
                 onDeactivateAll={() => props.changeNetworks(enabledMainnetNetworks)}
                 type="testnet"
                 unavailableCapabilities={unavailableCapabilities}
-                controlsDisabled={controlsDisabled}
             />
 
             <SectionHeader>
