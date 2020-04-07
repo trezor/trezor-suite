@@ -961,10 +961,10 @@ const definedMessages = defineMessages({
         description: 'Install button',
         id: 'TR_INSTALL',
     },
-    TR_INSTALLING: {
+    TR_DO_NOT_DISCONNECT: {
         defaultMessage: 'Do not disconnect your device. Installing',
         description: 'Message that is visible when installing process is in progress.',
-        id: 'TR_INSTALLING',
+        id: 'TR_DO_NOT_DISCONNECT',
     },
     TR_INSTRUCTION_TO_SKIP: {
         defaultMessage:
@@ -2757,8 +2757,110 @@ const definedMessages = defineMessages({
     },
     TR_BACKUP_CREATED: {
         id: 'TR_BACKUP_CREATED',
-        message: 'Backup successfully created!',
+        defaultMessage: 'Backup successfully created!',
     },
+    TR_FIRMWARE_INSTALL_FAILED_HEADER: {
+        id: 'TR_FIRMWARE_INSTALL_FAILED_HEADER',
+        defaultMessage: 'Firmware installation failed'
+    },
+    TR_FIRMWARE_IS_UP_TO_DATE: {
+        id: 'TR_FIRMWARE_IS_UP_TO_DATE',
+        defaultMessage: 'Firmware is up to date',
+    },
+    TR_NO_DEVICE: {
+        id: 'TR_NO_DEVICE',
+        defaultMessage: 'No device',
+    },
+    TR_NO_DEVICE_CONNECTED: {
+        id: 'TR_NO_DEVICE_CONNECTED',
+        defaultMessage: 'No device connected',
+    },
+    TR_RECONNECT_IN_BOOTLOADER: {
+        id: 'TR_RECONNECT_IN_BOOTLOADER',
+        defaultMessage: 'Reconnect your device in bootloader mode', 
+    },
+    TR_SWIPE_YOUR_FINGERS: {
+        id: 'TR_SWIPE_YOUR_FINGERS',
+        defaultMessage: 'Swipe your finger accross the touchscreen while connecting cable.'
+    },
+    TR_FIRMARE_INSTALLED_TEXT: {
+        id: 'TR_FIRMARE_INSTALLED_TEXT',
+        defaultMessage: 'Great! Your firmware is up to date and no further action is needed. Check our blog for updates or come here later.'
+    },
+    TR_TO_KEEP_YOUR_TREZOR: {
+        id: 'TR_TO_KEEP_YOUR_TREZOR',
+        defaultMessage: "To keep your Trezor up to date we recommend updating your device. Check what’s new:",
+    },
+    TR_VERSION: {
+        id: 'TR_VERSION',
+        defaultMessage: 'version',
+    },
+    TR_BTC_ONLY_LABEL: {
+        id: 'TR_BTC_ONLY_LABEL',
+        defaultMessage: 'BTC only',
+        description: 'Used as a label. Indicating that firmware that is user about to install has only bitcoin related capabilities.',
+    },
+    TR_WAITING_FOR_CONFIRMATION: {
+        id: 'TR_WAITING_FOR_CONFIRMATION', 
+        defaultMessage: 'waiting for confirmation',
+        description: 'One of states during firmware update. Waiting for users confirmation',
+    },
+    TR_INSTALLING: {
+        id: 'TR_INSTALLING', 
+        defaultMessage: 'installing',
+        description: 'One of states during firmware update. Waiting for install to finish',
+    },
+    TR_STARTED: {
+        id: 'TR_STARTED', 
+        defaultMessage: 'started',
+        description: 'One of states during firmware update. Indicating the process has started, but user was not yet prompted for confirmation',
+    },
+    TR_DOWNLOADING: {
+        id: 'TR_DOWNLOADING',
+        defaultMessage: 'Downloading',
+        description: 'Indicating that app is downloading data from external source'
+    },
+    TR_NEW_LABEL: {
+        id: "TR_NEW_LABEL",
+        defaultMessage: 'NEW',
+        description: 'Meant as a label. Used for example in firmware update when indicating which firmware version is the new one.'
+    },
+    TR_ALTERNATIVELY_YOU_MAY_INSTALL: {
+        id: 'TR_ALTERNATIVELY_YOU_MAY_INSTALL',
+        defaultMessage: 'Alternatively, you may install {TR_FIRMWARE_TYPE}',
+        description: "Firmware type is either 'bitcoin only' or 'full featured'"
+    },
+    TR_FIRMWARE_TYPE_BTC_ONLY: {
+        id: 'TR_FIRMWARE_TYPE_BTC_ONLY',
+        defaultMessage: 'bitcoin only firmware',
+        description: 'to be used inside TR_ALTERNATIVELY_YOU_MAY_INSTALL'
+    },
+    TR_FIRMWARE_TYPE_FULL: {
+        id: 'TR_FIRMWARE_TYPE_FULL',
+        defaultMessage: 'full featured firmware',
+        description: 'to be used inside TR_ALTERNATIVELY_YOU_MAY_INSTALL'
+    },
+    TR_SECURITY_CHECKPOINT_GOT_SEED: {
+        id: 'TR_SECURITY_CHECKPOINT_GOT_SEED',
+        defaultMessage: 'Security checkpoint - got a seed?', 
+    },
+    TR_BEFORE_ANY_FURTHER_ACTIONS: {
+        id: 'TR_BEFORE_ANY_FURTHER_ACTIONS',
+        defaultMessage: 'Before any further actions, please make sure that you have your recovery seed. Either safely stored or even with you as of now. In any case of improbable emergency.'
+    },
+    TR_FIRMWARE_PARTIALLY_UPDATED: {
+        id: 'TR_FIRMWARE_PARTIALLY_UPDATED',
+        defaultMessage: 'Firmware partially updated',
+    },
+    TR_BUT_THERE_IS_ANOTHER_UPDATE: {
+        id: 'TR_BUT_THERE_IS_ANOTHER_UPDATE',
+        deafaultMessage: 'But there is still another update ahead!',
+    },
+    TR_SUCCESS: {
+        id: 'TR_SUCCESS',
+        defaultMessage: 'Success',
+        description: 'Just a general "success" if we do not know what else to use'
+    }
 } as const);
 
 export default definedMessages;

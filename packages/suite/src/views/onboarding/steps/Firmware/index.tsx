@@ -55,12 +55,13 @@ const FirmwareStep = ({
             return intl.formatMessage(messages.TR_WAIT_FOR_REBOOT);
         }
         if (status === 'waiting-for-confirmation') {
-            return 'waiting for confirmation on device';
+            return intl.formatMessage(messages.TR_WAITING_FOR_CONFIRMATION);
+
         }
         if (status === 'done' || status === 'error') {
             return null;
         }
-        return intl.formatMessage(messages.TR_INSTALLING);
+        return intl.formatMessage(messages.TR_DO_NOT_DISCONNECT);
     };
 
     const model = device?.features?.major_version || 2;
