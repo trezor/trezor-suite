@@ -1,5 +1,4 @@
 import React, { useState, forwardRef, useRef } from 'react';
-import { motion } from 'framer-motion';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { colors, Icon } from '@trezor/components';
@@ -19,7 +18,7 @@ const HeaderWrapper = styled.div`
     background: ${colors.WHITE};
 `;
 
-const Header = styled(motion.header)`
+const Header = styled.header`
     display: flex;
     padding: 10px 0px;
     cursor: pointer;
@@ -53,6 +52,7 @@ export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
     if (!props.children || React.Children.count(props.children) === 0) return null;
 
     const onClick = () => {
+        if (props.opened) return;
         setExpanded(!expanded);
         setAnimatedIcon(true);
     };
@@ -92,7 +92,7 @@ export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
                         />
                         <Icon
                             canAnimate={animatedIcon}
-                            isActive={expanded}
+                            isActive={isOpened}
                             size={12}
                             color={colors.BLACK50}
                             icon="ARROW_DOWN"
