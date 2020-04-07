@@ -21,8 +21,7 @@ const RecoveryStep = (props: Props) => {
         recoverDevice,
         recovery,
         device,
-        // modal,
-        resetReducer,
+        rerun,
     } = props;
 
     if (!device || !device.features) {
@@ -91,6 +90,7 @@ const RecoveryStep = (props: Props) => {
 
                 {recovery.status === 'in-progress' && <Loading />}
 
+                {/* {device.features.initialized && ( */}
                 {recovery.status === 'finished' && !recovery.error && (
                     <>
                         <StyledImage image="UNI_SUCCESS" />
@@ -110,7 +110,9 @@ const RecoveryStep = (props: Props) => {
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 onClick={() => {
-                                    resetReducer();
+                                    // resetReducer();
+                                    // recoverDevice();
+                                    rerun();
                                 }}
                             >
                                 <Translation id="TR_RETRY" />
@@ -121,7 +123,7 @@ const RecoveryStep = (props: Props) => {
             </Wrapper.StepBody>
 
             <Wrapper.StepFooter>
-                {recovery.status !== 'in-progress' && (
+                {recovery.status === 'initial' && (
                     <OnboardingButton.Back onClick={() => goToPreviousStep()}>
                         <Translation id="TR_BACK" />
                     </OnboardingButton.Back>

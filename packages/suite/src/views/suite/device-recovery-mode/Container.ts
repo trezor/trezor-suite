@@ -12,11 +12,11 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    // todo: check if not dry_run
     addPath: bindActionCreators(onboardingActions.addPath, dispatch),
     goToStep: bindActionCreators(onboardingActions.goToStep, dispatch),
-    recoverDevice: bindActionCreators(recoveryActions.recoverDevice, dispatch),
-    checkSeed: bindActionCreators(recoveryActions.checkSeed, dispatch),
+    // recoverDevice: bindActionCreators(recoveryActions.recoverDevice, dispatch),
+    // checkSeed: bindActionCreators(recoveryActions.checkSeed, dispatch),
+    rerun: bindActionCreators(recoveryActions.rerun, dispatch),
 });
 
 export type Props = ReturnType<typeof mapStateToProps> &

@@ -18,7 +18,7 @@ import ModalWrapper from '@suite-components/ModalWrapper';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { InjectedModalApplicationProps, AppState, Dispatch } from '@suite-types';
 import { WordCount } from '@recovery-types';
-
+import { useDeviceActionLocks } from '@suite-utils/hooks';
 import { URLS } from '@suite-constants';
 
 const Wrapper = styled(ModalWrapper)`
@@ -38,12 +38,12 @@ const Row = styled.div`
 const Buttons = styled(Row)`
     justify-content: center;
     margin-top: auto;
+    flex-direction: column;
 `;
 
 const StyledButton = styled(Button)`
     min-width: 224px;
     margin-bottom: 16px;
-    margin-top: 28px;
 `;
 
 const InfoBox = styled.div`
@@ -117,7 +117,7 @@ const Recovery = ({
 }: Props) => {
     const model = device?.features?.major_version;
     const [understood, setUnderstood] = useState(false);
-
+    const [actionEnabled] = useDeviceActionLocks();
     const onSetWordsCount = (count: WordCount) => {
         setWordsCount(count);
         setStatus('select-recovery-type');
@@ -222,13 +222,15 @@ const Recovery = ({
                         onClick={() => setUnderstood(!understood)}
                     />
 
-                    <StyledButton
-                        onClick={() => (model === 1 ? setStatus('select-word-count') : checkSeed())}
-                        isDisabled={!understood}
-                    >
-                        <Translation id="TR_START" />
-                    </StyledButton>
                     <Buttons>
+                        <StyledButton
+                            onClick={() =>
+                                model === 1 ? setStatus('select-word-count') : checkSeed()
+                            }
+                            isDisabled={!understood || !actionEnabled}
+                        >
+                            <Translation id="TR_START" />
+                        </StyledButton>
                         <StyledButton
                             icon="CROSS"
                             variant="tertiary"

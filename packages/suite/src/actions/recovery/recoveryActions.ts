@@ -70,14 +70,15 @@ const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
         dispatch(setError(response.payload.error));
     }
 
-    if (device.features.recovery_mode) {
-        TrezorConnect.getFeatures({
-            device: {
-                path: device.path,
-            },
-        });
-    }
-
+    // todo: does it make sense here? probably not
+    // if (device.features.recovery_mode) {
+    //     TrezorConnect.getFeatures({
+    //         device: {
+    //             path: device.path,
+    //         },
+    //     });
+    // }
+    dispatch(setError(''));
     dispatch(setStatus('finished'));
 };
 
@@ -87,6 +88,7 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!device || !device.features) return;
     dispatch(setError(''));
     dispatch(setStatus('in-progress'));
+    dispatch(setError(''));
 
     const response = await TrezorConnect.recoveryDevice({
         type: advancedRecovery ? 1 : 0,
@@ -99,14 +101,60 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!response.success) {
         dispatch(setError(response.payload.error));
     }
-    if (device.features.recovery_mode) {
-        TrezorConnect.getFeatures({
-            device: {
-                path: device.path,
-            },
-        });
-    }
+
+    // todo: does it make sense here? probably not
+    // if (device.features.recovery_mode) {
+    //     TrezorConnect.getFeatures({
+    //         device: {
+    //             path: device.path,
+    //         },
+    //     });
+    // }
     dispatch(setStatus('finished'));
+};
+
+const rerun = () => async (dispatch: Dispatch, getState: GetState) => {
+    const { device } = getState().suite;
+
+    if (!device || !device.features) return;
+    dispatch(setStatus('in-progress'));
+
+    // user might have proceeded with recovery on screen which means that we need to
+    // reload fresh features before deciding what to do
+    const response = await TrezorConnect.getFeatures({
+        device: {
+            path: device.path,
+        },
+    });
+
+    if (!response.success) {
+        dispatch(setStatus('finished'));
+        dispatch(setError('failed to rerun recovery'));
+        return;
+    }
+
+    const features = response.payload;
+
+    // cases that we cover here:
+
+    // !initialized && !recovery_mode => set initial, clear error
+    // initialized && !recovery_mode => set initial, clear error
+    // !initialized && recovery_mode => recoveryDevice(),
+    // initialized && recovery_mode => checkSeed()
+
+    if (!features.recovery_mode) {
+        dispatch(setStatus('finished'));
+        dispatch(setError(''));
+        return;
+    }
+
+    if (!features.initialized) {
+        dispatch(recoverDevice());
+    }
+
+    if (features.initialized) {
+        dispatch(checkSeed());
+    }
 };
 
 export {
@@ -117,4 +165,5 @@ export {
     recoverDevice,
     resetReducer,
     setStatus,
+    rerun,
 };
