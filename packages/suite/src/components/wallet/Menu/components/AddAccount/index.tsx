@@ -4,7 +4,7 @@ import { Button, colors, Tooltip } from '@trezor/components';
 import { Translation } from '@suite-components';
 
 interface Props {
-    onClick: () => void;
+    onClick?: () => void;
     disabled: boolean;
 }
 
@@ -31,14 +31,20 @@ const StyledButton = styled(Button)`
 const AddAccountButton = ({ onClick, disabled }: Props) => {
     const clickHandler = !disabled ? onClick : undefined;
     const ButtonRow = (
-        <StyledButton icon="PLUS" variant="secondary" fullWidth isDisabled={disabled}>
+        <StyledButton
+            onClick={clickHandler}
+            icon="PLUS"
+            variant="secondary"
+            fullWidth
+            isDisabled={disabled}
+        >
             <Translation id="TR_ADD_ACCOUNT" />
         </StyledButton>
     );
 
     if (disabled) {
         return (
-            <Wrapper onClick={clickHandler}>
+            <Wrapper>
                 <Tooltip
                     maxWidth={200}
                     content={<Translation id="TR_ADD_ACCOUNT" />}
@@ -49,7 +55,7 @@ const AddAccountButton = ({ onClick, disabled }: Props) => {
             </Wrapper>
         );
     }
-    return <Wrapper onClick={clickHandler}>{ButtonRow}</Wrapper>;
+    return <Wrapper>{ButtonRow}</Wrapper>;
 };
 
 export default AddAccountButton;

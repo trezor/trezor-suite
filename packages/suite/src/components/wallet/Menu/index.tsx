@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
-import { Loader } from '@trezor/components';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
@@ -96,7 +95,12 @@ const Menu = ({
 
     const discovery = getDiscoveryForDevice();
     if (!device || !discovery) {
-        return <Loader size={16} />;
+        return (
+            <Wrapper>
+                <div />
+                <AddAccountButton disabled />
+            </Wrapper>
+        );
     }
 
     const isOpened = (group: Account['accountType']) =>
