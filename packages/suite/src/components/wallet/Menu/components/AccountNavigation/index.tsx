@@ -59,7 +59,7 @@ export default (props: Props) => {
     const [expanded, setExpanded] = useState(false);
 
     // collect all items suitable for current networkType
-    const items = ITEMS.filter(item => !item.isHidden(account.networkType)).map(item => {
+    const items = ITEMS.filter(item => !item.isHidden(account)).map(item => {
         const active = routeName === item.route;
         return (
             <StyledNavLink
