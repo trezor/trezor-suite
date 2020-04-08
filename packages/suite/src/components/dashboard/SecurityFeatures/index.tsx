@@ -18,7 +18,7 @@ const Content = styled.div`
 
 const Header = styled.div`
     display: flex;
-    padding: 12px 0px;
+    padding: 12px;
     flex-direction: row;
     font-size: 12px;
     align-items: center;

@@ -2755,6 +2755,18 @@ const definedMessages = defineMessages({
         id: 'TR_COMING_SOON',
         defaultMessage: 'Coming soon',
     },
+    TR_COINS_TO_DISCOVER: {
+        id: 'TR_COINS_TO_DISCOVER',
+        defaultMessage: 'Coins to discover',
+    },
+    TR_PERSONALIZATION: {
+        id: 'TR_PERSONALIZATION',
+        defaultMessage: 'Personalization',
+    },
+    TR_ADVANCED: {
+        id: 'TR_ADVANCED',
+        defaultMessage: 'Advanced',
+    },
     TR_BACKUP_CREATED: {
         id: 'TR_BACKUP_CREATED',
         message: 'Backup successfully created!',

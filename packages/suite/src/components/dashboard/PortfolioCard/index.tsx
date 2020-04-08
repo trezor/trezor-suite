@@ -21,14 +21,6 @@ const Header = styled.div`
     border-bottom: solid 2px #f5f5f5;
 `;
 
-const HeaderTitle = styled.div`
-    flex: 1;
-    font-size: 12px;
-    font-weight: 600;
-    color: ${colors.BLACK50};
-    text-transform: uppercase;
-`;
-
 const ValueWrapper = styled.div`
     font-size: 36px;
     font-weight: 300;
@@ -96,11 +88,9 @@ const PortfolioCard = ({
 
     return (
         <StyledCard {...rest}>
+            {/* <StyledCard {...rest} title={<Translation id="TR_TOTAL_PORTFOLIO_VALUE" />}> */}
             <Header>
                 <Left>
-                    <HeaderTitle>
-                        <Translation id="TR_TOTAL_PORTFOLIO_VALUE" />
-                    </HeaderTitle>
                     <ValueWrapper>
                         <HiddenPlaceholder intensity={7}>
                             <FormattedNumber

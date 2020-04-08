@@ -1,31 +1,28 @@
 /* eslint-disable @typescript-eslint/camelcase */
-
-import React, { useEffect, useState, createRef } from 'react';
-import styled from 'styled-components';
-import { P, Switch, Link, colors } from '@trezor/components';
-
-import { Translation } from '@suite-components';
 import { SettingsLayout } from '@settings-components';
-import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
+import { Translation } from '@suite-components';
 import {
-    SEED_MANUAL_URL,
+    ActionButton,
+    ActionColumn,
+    ActionInput,
+    Row,
+    Section,
+    TextColumn,
+} from '@suite-components/Settings';
+import {
     DRY_RUN_URL,
-    PASSPHRASE_URL,
     FAILED_BACKUP_URL,
+    PASSPHRASE_URL,
+    SEED_MANUAL_URL,
 } from '@suite-constants/urls';
+import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import * as homescreen from '@suite-utils/homescreen';
 import { useDeviceActionLocks } from '@suite-utils/hooks';
+import { colors, H2, Link, P, Switch } from '@trezor/components';
+import React, { createRef, useEffect, useState } from 'react';
+import styled from 'styled-components';
 
 import { Props } from './Container';
-
-import {
-    Section,
-    ActionColumn,
-    Row,
-    TextColumn,
-    ActionButton,
-    ActionInput,
-} from '@suite-components/Settings';
 
 const RotationButton = styled(ActionButton)`
     min-width: 78px;
@@ -98,7 +95,8 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
 
     return (
         <SettingsLayout>
-            <Section header={<Translation id="TR_BACKUP" />}>
+            <H2>{device.label}</H2>
+            <Section title={<Translation id="TR_BACKUP" />}>
                 <Row>
                     <TextColumn
                         title={<Translation id="TR_BACKUP_RECOVERY_SEED" />}
@@ -123,7 +121,6 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         </ActionButton>
                     </ActionColumn>
                 </Row>
-
                 {features.unfinished_backup && (
                     <BackupFailedRow data-test="@settings/device/failed-backup-row">
                         <P size="tiny">
@@ -136,7 +133,6 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         </ActionColumn>
                     </BackupFailedRow>
                 )}
-
                 {!features.unfinished_backup && (
                     <Row>
                         <TextColumn
@@ -163,8 +159,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                     </Row>
                 )}
             </Section>
-
-            <Section header="Security">
+            <Section title="Security">
                 <Row>
                     <TextColumn
                         title={<Translation id="TR_FIRMWARE_VERSION" />}
@@ -192,13 +187,11 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         </ActionButton>
                     </ActionColumn>
                 </Row>
-
                 <Row>
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE" />}
                         description={<Translation id="TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC" />}
                     />
-
                     <ActionColumn>
                         <Switch
                             checked={!!features.pin_protection}
@@ -207,7 +200,6 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         />
                     </ActionColumn>
                 </Row>
-
                 {features.pin_protection && (
                     <Row>
                         <TextColumn
@@ -252,8 +244,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                     </ActionColumn>
                 </Row>
             </Section>
-
-            <Section header="Personalization">
+            <Section title={<Translation id="TR_PERSONALIZATION" />}>
                 <Row>
                     <TextColumn title={<Translation id="TR_DEVICE_SETTINGS_DEVICE_LABEL" />} />
                     <ActionColumn>
@@ -275,7 +266,6 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         </ActionButton>
                     </ActionColumn>
                 </Row>
-
                 <Row>
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
@@ -322,7 +312,6 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         </ActionButton>
                     </ActionColumn>
                 </Row>
-
                 {customHomescreen && (
                     <Row>
                         <Col>
@@ -348,7 +337,6 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         </ActionColumn>
                     </Row>
                 )}
-
                 {features.major_version === 2 && (
                     <Row>
                         <TextColumn
@@ -374,8 +362,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                     </Row>
                 )}
             </Section>
-
-            <Section>
+            <Section title={<Translation id="TR_ADVANCED" />}>
                 <Row>
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />}

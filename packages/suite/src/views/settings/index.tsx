@@ -1,25 +1,21 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import styled from 'styled-components';
-import { SUITE } from '@suite-actions/constants';
-import { Translation } from '@suite-components';
 import { SettingsLayout } from '@settings-components';
+import { SUITE } from '@suite-actions/constants';
+import { H2 } from '@trezor/components';
+import { Translation } from '@suite-components';
 import {
-    Section,
-    ActionColumn,
-    Row,
-    TextColumn,
-    ActionSelect,
     ActionButton,
+    ActionColumn,
+    ActionSelect,
     Analytics,
+    Row,
+    Section,
+    TextColumn,
 } from '@suite-components/Settings';
-import { AppState, Dispatch } from '@suite-types';
 import { FIAT, LANGUAGES } from '@suite-config';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import * as storageActions from '@suite-actions/storageActions';
-import * as languageActions from '@settings-actions/languageActions';
-import * as routerActions from '@suite-actions/routerActions';
+import React from 'react';
+import styled from 'styled-components';
+
+import { Props } from './Container';
 
 const buildCurrencyOption = (currency: string) => {
     return {
@@ -28,27 +24,11 @@ const buildCurrencyOption = (currency: string) => {
     };
 };
 
-const mapStateToProps = (state: AppState) => ({
-    // device: state.suite.device,
-    locks: state.suite.locks,
-    wallet: state.wallet,
-    language: state.suite.settings.language,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    setLocalCurrency: bindActionCreators(walletSettingsActions.setLocalCurrency, dispatch),
-    clearStores: bindActionCreators(storageActions.clearStores, dispatch),
-    fetchLocale: bindActionCreators(languageActions.fetchLocale, dispatch),
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
-
-export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-
 const BottomContainer = styled.div`
     margin-top: auto;
 `;
 
-const Settings = ({
+export default ({
     locks,
     wallet,
     language,
@@ -61,7 +41,10 @@ const Settings = ({
 
     return (
         <SettingsLayout>
-            <Section header={<Translation id="TR_LANGUAGE" />}>
+            <H2>
+                <Translation id="TR_COINS_TO_DISCOVER" />
+            </H2>
+            <Section title={<Translation id="TR_LANGUAGE" />}>
                 <Row>
                     <TextColumn title={<Translation id="TR_LANGUAGE" />} />
                     <ActionColumn>
@@ -84,7 +67,7 @@ const Settings = ({
                 </Row>
             </Section>
 
-            <Section header={<Translation id="TR_CURRENCY" />}>
+            <Section title={<Translation id="TR_CURRENCY" />}>
                 <Row>
                     <TextColumn title={<Translation id="TR_PRIMARY_FIAT" />} />
                     <ActionColumn>
@@ -93,7 +76,7 @@ const Settings = ({
                             onChange={(option: { value: string; label: string }) =>
                                 setLocalCurrency(option.value)
                             }
-                            value={buildCurrencyOption(wallet.settings.localCurrency)}
+                            value={() => buildCurrencyOption(wallet.settings.localCurrency)}
                             options={FIAT.currencies.map(c => buildCurrencyOption(c))}
                             isDisabled={uiLocked}
                         />
@@ -173,5 +156,3 @@ const Settings = ({
         </SettingsLayout>
     );
 };
-
-export default connect(mapStateToProps, mapDispatchToProps)(Settings);
