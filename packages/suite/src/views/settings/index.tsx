@@ -42,7 +42,7 @@ export default ({
     return (
         <SettingsLayout>
             <H2>
-                <Translation id="TR_COINS_TO_DISCOVER" />
+                <Translation id="TR_GENERAL" />
             </H2>
             <Section title={<Translation id="TR_LANGUAGE" />}>
                 <Row>
