@@ -109,6 +109,10 @@ const WhatsNewLink = styled(Link)`
     margin-top: 12px;
 `;
 
+const StyledImage = styled(Image)`
+    flex: 1;
+`;
+
 const CloseButton = (props: ButtonProps) => (
     <StyledButton {...props} data-test="@firmware/close-button" variant="tertiary" icon="CROSS">
         <Translation id="TR_CLOSE" />
@@ -148,31 +152,36 @@ const Firmware = ({
 
     const btcOnlyAvailable = device?.features && device.firmwareRelease.release.url_bitcoinonly;
 
-    const statesInProgessBar = [
+    const statesInProgressBar = [
         'initial',
         'check-seed',
         'waiting-for-bootloader',
         ['waiting-for-confirmation', 'installing', 'started', 'downloading'],
+        ['wait-for-reboot', 'unplug'],
         ['done', 'partially-done', 'error'],
     ];
 
     const getTextForStatus = () => {
         switch (firmware.status) {
             case 'waiting-for-confirmation':
-                return "TR_WAITING_FOR_CONFIRMATION";
+                return 'TR_WAITING_FOR_CONFIRMATION';
             case 'installing':
-                return "TR_INSTALLING";
+                return 'TR_INSTALLING';
             case 'started':
-                return "TR_STARTED";
+                return 'TR_STARTED';
             case 'downloading':
-                return "TR_DOWNLOADING";
+                return 'TR_DOWNLOADING';
+            case 'wait-for-reboot':
+                return 'TR_WAIT_FOR_REBOOT';
+            case 'unplug':
+                return 'TR_DISCONNECT_YOUR_DEVICE';
             default:
                 throw new Error('this state does not have human readable variant');
         }
     };
 
     const getCurrentStep = () => {
-        return statesInProgessBar.findIndex(s => {
+        return statesInProgressBar.findIndex(s => {
             if (Array.isArray(s)) {
                 return s.includes(firmware.status);
             }
@@ -188,7 +197,7 @@ const Firmware = ({
                     <Translation id="TR_FIRMWARE_INSTALL_FAILED_HEADER" />
                 </H2>
                 <StyledP>{firmware.error}</StyledP>
-                <Image image="UNI_ERROR" />
+                <StyledImage image="UNI_ERROR" />
                 <Buttons>
                     <Col>
                         <CloseButton onClick={onClose} />
@@ -198,17 +207,20 @@ const Firmware = ({
         );
     }
 
-    if (!device || !device.features) {
+    if (!device || !device.features || !device?.connected) {
         return (
             <Wrapper>
                 {firmware.status === 'waiting-for-bootloader' && (
                     <>
-                        <ProgressBar total={statesInProgessBar.length} current={getCurrentStep()} />
+                        <ProgressBar
+                            total={statesInProgressBar.length}
+                            current={getCurrentStep()}
+                        />
                         <H2>
                             <Translation id="TR_RECONNECT_IN_BOOTLOADER" />
                         </H2>
                         <StyledP data-test="@firmware/connect-message">
-                        <Translation id="TR_SWIPE_YOUR_FINGERS" />
+                            <Translation id="TR_SWIPE_YOUR_FINGERS" />
                         </StyledP>
                         <InitImg model={2} />
                     </>
@@ -219,7 +231,7 @@ const Firmware = ({
                             <Translation id="TR_NO_DEVICE" />
                         </H2>
                         <StyledP>
-                        <Translation id="TR_NO_DEVICE_CONNECTED" />
+                            <Translation id="TR_NO_DEVICE_CONNECTED" />
                         </StyledP>
                     </>
                 )}
@@ -241,10 +253,13 @@ const Firmware = ({
                     <Translation id="TR_FIRMWARE_IS_UP_TO_DATE" />
                 </H2>
                 <StyledP>
-                <Translation id="TR_FIRMWARE_INSTALLED_TEXT" />
+                    <Translation id="TR_FIRMWARE_INSTALLED_TEXT" />
                 </StyledP>
                 <P size="normal">
-                    <Translation id="TR_YOUR_CURRENT_FIRMWARE" values={{version: getFwVersion(device)}}/>
+                    <Translation
+                        id="TR_YOUR_CURRENT_FIRMWARE"
+                        values={{ version: getFwVersion(device) }}
+                    />
                 </P>
 
                 <WhatsNewLink href={CHANGELOG_URL}>
@@ -264,7 +279,7 @@ const Firmware = ({
 
     return (
         <Wrapper>
-            <ProgressBar total={statesInProgessBar.length} current={getCurrentStep()} />
+            <ProgressBar total={statesInProgressBar.length} current={getCurrentStep()} />
 
             {firmware.status === 'initial' && (
                 <>
@@ -276,7 +291,7 @@ const Firmware = ({
                     {device.mode === 'bootloader' && (
                         <>
                             <StyledP>
-                               <Translation id="TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER" />
+                                <Translation id="TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER" />
                             </StyledP>
                             <Buttons>
                                 <CloseButton onClick={onClose} />
@@ -290,17 +305,21 @@ const Firmware = ({
                             </StyledP>
                             <FromVersionToVersion>
                                 <FromVersion>
-                                    <Translation id="TR_VERSION" />
-                    {' '}{getFwVersion(device)}
-                                    </FromVersion>
+                                    <Translation id="TR_VERSION" /> {getFwVersion(device)}
+                                </FromVersion>
                                 <BetweenVersionArrow>→</BetweenVersionArrow>
                                 <ToVersion>
-                                    <Translation id="TR_VERSION" /> {firmwareRelease.release.version.join('.')}
+                                    <Translation id="TR_VERSION" />{' '}
+                                    {firmwareRelease.release.version.join('.')}
                                 </ToVersion>
                                 <Badge>
                                     <Translation id="TR_NEW_LABEL" />
                                 </Badge>
-                                {firmware.btcOnly && <Badge><Translation id="TR_BTC_ONLY_LABEL" /></Badge>}
+                                {firmware.btcOnly && (
+                                    <Badge>
+                                        <Translation id="TR_BTC_ONLY_LABEL" />
+                                    </Badge>
+                                )}
                             </FromVersionToVersion>
 
                             {device.firmwareRelease.changelog?.length > 0 && (
@@ -316,17 +335,31 @@ const Firmware = ({
 
                             {btcOnlyAvailable && !firmware.btcOnly && (
                                 <StyledP>
-                                    <Translation id="TR_ALTERNATIVELY_YOU_MAY_INSTALL" values={{TR_FIRMWARE_TYPE: <WhatsNewLink onClick={toggleBtcOnly}>
-                                        <Translation id="TR_FIRMWARE_TYPE_BTC_ONLY" />
-                                    </WhatsNewLink>}}/>
+                                    <Translation
+                                        id="TR_ALTERNATIVELY_YOU_MAY_INSTALL"
+                                        values={{
+                                            TR_FIRMWARE_TYPE: (
+                                                <WhatsNewLink onClick={toggleBtcOnly}>
+                                                    <Translation id="TR_FIRMWARE_TYPE_BTC_ONLY" />
+                                                </WhatsNewLink>
+                                            ),
+                                        }}
+                                    />
                                 </StyledP>
                             )}
 
                             {btcOnlyAvailable && firmware.btcOnly && (
                                 <StyledP>
-                                    <Translation id="TR_ALTERNATIVELY_YOU_MAY_INSTALL" values={{TR_FIRMWARE_TYPE: <WhatsNewLink onClick={toggleBtcOnly}>
-                                        <Translation id="TR_FIRMWARE_TYPE_FULL" />
-                                    </WhatsNewLink>}}/>
+                                    <Translation
+                                        id="TR_ALTERNATIVELY_YOU_MAY_INSTALL"
+                                        values={{
+                                            TR_FIRMWARE_TYPE: (
+                                                <WhatsNewLink onClick={toggleBtcOnly}>
+                                                    <Translation id="TR_FIRMWARE_TYPE_FULL" />
+                                                </WhatsNewLink>
+                                            ),
+                                        }}
+                                    />
                                 </StyledP>
                             )}
 
@@ -361,7 +394,7 @@ const Firmware = ({
                                 onClick={() => setStatus('waiting-for-bootloader')}
                                 data-test="@firmware/confirm-seed-button"
                             >
-                                                                        <Translation id="TR_START" />
+                                <Translation id="TR_START" />
                             </StyledButton>
                             <CloseButton onClick={onClose} />
                         </Col>
@@ -406,9 +439,14 @@ const Firmware = ({
                 </>
             )}
 
-            {['waiting-for-confirmation', 'installing', 'started', 'downloading'].includes(
-                firmware.status,
-            ) && (
+            {[
+                'waiting-for-confirmation',
+                'installing',
+                'started',
+                'downloading',
+                'wait-for-reboot',
+                'unplug',
+            ].includes(firmware.status) && (
                 <>
                     <H2>
                         <Translation id={getTextForStatus()} />

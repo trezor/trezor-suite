@@ -64,13 +64,14 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
             path: device.path,
         },
         btcOnly,
-        version: targetRelease?.release?.version || device.firmwareRelease?.release?.version,
+        version: targetRelease?.release?.version,
+        baseUrl: 'https://wallet.trezor.io',
     };
 
     dispatch(setStatus('started'));
 
     const updateResponse = await TrezorConnect.firmwareUpdate(payload);
-
+    console.warn('updateResponse', updateResponse);
     if (!updateResponse.success) {
         return dispatch({ type: FIRMWARE.SET_ERROR, payload: updateResponse.payload.error });
     }

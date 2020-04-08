@@ -56,7 +56,6 @@ const FirmwareStep = ({
         }
         if (status === 'waiting-for-confirmation') {
             return intl.formatMessage(messages.TR_WAITING_FOR_CONFIRMATION);
-
         }
         if (status === 'done' || status === 'error') {
             return null;
