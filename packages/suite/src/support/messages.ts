@@ -2755,6 +2755,14 @@ const definedMessages = defineMessages({
         id: 'TR_COINS_TO_DISCOVER',
         defaultMessage: 'Coins to discover',
     },
+    TR_PERSONALIZATION: {
+        id: 'TR_PERSONALIZATION',
+        defaultMessage: 'Personalization',
+    },
+    TR_ADVANCED: {
+        id: 'TR_ADVANCED',
+        defaultMessage: 'Advanced',
+    },
 } as const);
 
 export default definedMessages;

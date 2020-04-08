@@ -32,7 +32,7 @@ const LearnMore = ({ href, ...props }: { href: string }) => (
 );
 
 const Title = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
 const TextColumn = ({ title, description, learnMore }: TextColumnProps) => {

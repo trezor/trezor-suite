@@ -44,7 +44,7 @@ export default ({
             <H2>
                 <Translation id="TR_COINS_TO_DISCOVER" />
             </H2>
-            <Section header={<Translation id="TR_LANGUAGE" />}>
+            <Section title={<Translation id="TR_LANGUAGE" />}>
                 <Row>
                     <TextColumn title={<Translation id="TR_LANGUAGE" />} />
                     <ActionColumn>
@@ -67,7 +67,7 @@ export default ({
                 </Row>
             </Section>
 
-            <Section header={<Translation id="TR_CURRENCY" />}>
+            <Section title={<Translation id="TR_CURRENCY" />}>
                 <Row>
                     <TextColumn title={<Translation id="TR_PRIMARY_FIAT" />} />
                     <ActionColumn>

@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import Card from '@suite-components/Card';
 import { variables, colors, P } from '@trezor/components';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+    margin-bottom: 36px;
+`;
 
 const Header = styled.div`
     padding: 12px;

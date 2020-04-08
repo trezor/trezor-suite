@@ -7,7 +7,7 @@ const { SCREEN_SIZE } = variables;
 const Wrapper = styled.div`
     display: flex;
     flex: 1;
-    padding: 0 16px;
+    padding: 0 24px;
 `;
 
 const Content = styled.div`

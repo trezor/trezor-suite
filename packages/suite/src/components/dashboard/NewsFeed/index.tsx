@@ -17,29 +17,6 @@ const Section = styled.div`
     flex-direction: column;
 `;
 
-const Content = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
-
-const SectionHeader = styled.div`
-    display: flex;
-    padding: 12px 0px;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-`;
-
-const SectionTitle = styled.div`
-    flex: 1;
-    margin-bottom: 2px;
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    text-transform: uppercase;
-    color: ${colors.BLACK50};
-`;
-
 const BottomAction = styled.div`
     display: flex;
     margin-top: 13px;

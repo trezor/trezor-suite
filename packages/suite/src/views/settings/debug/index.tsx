@@ -8,7 +8,7 @@ import { Props } from './Container';
 const DebugSettings = (props: Props) => {
     return (
         <SettingsLayout>
-            <Section header="Localization">
+            <Section title="Localization">
                 <Row>
                     <TextColumn
                         title="Translation mode"

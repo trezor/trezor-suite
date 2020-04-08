@@ -10,7 +10,7 @@ import { useDeviceActionLocks } from '@suite-utils/hooks';
 import Coin from '../Coin';
 
 const Wrapper = styled.div`
-    margin: 4px 0 36px 0;
+    margin: 4px 0 0 0;
 `;
 
 const Header = styled.div`
