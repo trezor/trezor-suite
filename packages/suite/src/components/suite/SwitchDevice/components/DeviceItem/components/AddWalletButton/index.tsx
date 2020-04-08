@@ -12,8 +12,8 @@ const AddWallet = styled.div`
 interface Props {
     device: TrezorDevice;
     instances: AcquiredDevice[];
-    addDeviceInstance: (instance: TrezorDevice) => void;
-    selectDeviceInstance: (instance: TrezorDevice) => void;
+    addDeviceInstance: (instance: TrezorDevice) => Promise<void>;
+    selectDeviceInstance: (instance: TrezorDevice) => Promise<void>;
 }
 
 const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceInstance }: Props) => {
@@ -29,7 +29,7 @@ const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceIns
                     variant="tertiary"
                     icon="PLUS"
                     isDisabled={!device.connected || (!hasAtLeastOneWallet && !undiscoveredWallet)}
-                    onClick={() => {
+                    onClick={async () => {
                         if (hasAtLeastOneWallet) {
                             // add another instance
                             addDeviceInstance(device);
