@@ -5,7 +5,7 @@ import CheckItem from './CheckItem';
 import ExternalLink from './ExternalLink';
 import Preloader from './Preloader';
 import FormattedNumber from './FormattedNumber';
-import SuiteLayout from './SuiteLayout';
+import SuiteLayout, { LayoutContext } from './SuiteLayout';
 import Card from './Card';
 import NotificationCard from './NotificationCard';
 import PinInput from './PinInput';
@@ -33,6 +33,7 @@ export {
     Preloader,
     FormattedNumber,
     SuiteLayout,
+    LayoutContext,
     Card,
     NotificationCard,
     PinInput,

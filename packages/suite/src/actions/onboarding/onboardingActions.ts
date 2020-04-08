@@ -2,8 +2,6 @@ import { ONBOARDING } from '@onboarding-actions/constants';
 import * as STEP from '@onboarding-constants/steps';
 import { AnyStepId, AnyPath } from '@onboarding-types/steps';
 import steps from '@onboarding-config/steps';
-import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import * as backupActions from '@backup-actions/backupActions';
 import { findNextStep, findPrevStep, isStepInPath } from '@onboarding-utils/steps';
 
 import { GetState, Dispatch, Action } from '@suite-types';
@@ -95,14 +93,13 @@ const goToPreviousStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: 
     const { activeStepId, path } = getState().onboarding;
     const stepsInPath = steps.filter(step => isStepInPath(step, path));
     const prevStep = findPrevStep(activeStepId, stepsInPath);
-
     // steps listed in case statements contain path decisions, so we need
     // to remove saved paths from reducers to let user change it again.
     switch (prevStep.id) {
         case STEP.ID_NEW_OR_USED:
             dispatch(removePath([STEP.PATH_NEW, STEP.PATH_USED]));
             break;
-        case STEP.ID_WELCOME_STEP:
+        case STEP.ID_CREATE_OR_RECOVER:
             dispatch(removePath([STEP.PATH_CREATE, STEP.PATH_RECOVERY]));
             break;
         default:
@@ -131,18 +128,6 @@ const enableOnboardingReducer = (payload: boolean): Action => ({
     payload,
 });
 
-// todo: decide if we want this. product!
-const retryBackup = () => async (dispatch: Dispatch) => {
-    await dispatch(deviceSettingsActions.wipeDevice());
-    await dispatch(deviceSettingsActions.resetDevice());
-    await dispatch(backupActions.backupDevice());
-};
-
-const setBackupType = (payload: number): Action => ({
-    type: ONBOARDING.SET_BACKUP_TYPE,
-    payload,
-});
-
 const callActionAndGoToNextStep = (action: any, stepId?: AnyStepId) => async (
     dispatch: Dispatch,
 ) => {
@@ -162,7 +147,5 @@ export {
     addPath,
     removePath,
     resetOnboarding,
-    retryBackup,
-    setBackupType,
     callActionAndGoToNextStep,
 };

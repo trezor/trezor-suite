@@ -1002,6 +1002,10 @@ const definedMessages = defineMessages({
         description: 'Link to Trezor wiki.',
         id: 'TR_LEARN_MORE_LINK',
     },
+    TR_SEGWIT_ACCOUNTS: {
+        defaultMessage: 'Segwit accounts',
+        id: 'TR_SEGWIT_ACCOUNTS',
+    },
     TR_LEGACY_ACCOUNTS: {
         defaultMessage: 'Legacy accounts',
         id: 'TR_LEGACY_ACCOUNTS',
@@ -1473,6 +1477,22 @@ const definedMessages = defineMessages({
     TR_SET_UP_NEW_PIN: {
         defaultMessage: 'Set up new PIN',
         id: 'TR_SET_UP_NEW_PIN',
+    },
+    TR_CONFIRM_NEW_PIN: {
+        defaultMessage: 'Confirm new PIN',
+        id: 'TR_CONFIRM_NEW_PIN',
+    },
+    TR_ENTER_CURRENT_PIN: {
+        defaultMessage: 'Enter current PIN',
+        id: 'TR_ENTER_CURRENT_PIN',
+    },
+    TR_WRONG_PIN_ENTERED: {
+        defaultMessage: 'You entered wrong PIN',
+        id: 'TR_WRONG_PIN_ENTERED',
+    },
+    TR_WRONG_PIN_ENTERED_DESCRIPTION: {
+        defaultMessage: 'Did you notice that matrix on your device has changed?',
+        id: 'TR_WRONG_PIN_ENTERED_DESCRIPTION',
     },
     TR_SET_UP_STRONG_PIN_TO_PROTECT: {
         defaultMessage:
@@ -2547,6 +2567,10 @@ const definedMessages = defineMessages({
         id: 'RECEIVE_TITLE',
         defaultMessage: 'Receive {symbol}',
     },
+    SEND_TITLE: {
+        id: 'SEND_TITLE',
+        defaultMessage: 'Send {symbol}',
+    },
     RECEIVE_DESC_BITCOIN: {
         id: 'RECEIVE_DESC_BITCOIN',
         defaultMessage:
@@ -2726,6 +2750,10 @@ const definedMessages = defineMessages({
     TR_COMING_SOON: {
         id: 'TR_COMING_SOON',
         defaultMessage: 'Coming soon',
+    },
+    TR_BACKUP_CREATED: {
+        id: 'TR_BACKUP_CREATED',
+        message: 'Backup successfully created!',
     },
 } as const);
 

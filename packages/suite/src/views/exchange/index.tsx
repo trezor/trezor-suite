@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import SuiteLayout from '@suite-components/SuiteLayout';
+import { LayoutContext } from '@suite-components';
 
 const Placeholder = styled.div`
     display: flex;
@@ -14,10 +14,15 @@ const Placeholder = styled.div`
 `;
 
 const Exchange = () => {
+    const { setLayout } = React.useContext(LayoutContext);
+    React.useMemo(() => {
+        if (setLayout) setLayout('Exchange', undefined);
+    }, [setLayout]);
+
     return (
-        <SuiteLayout>
+        <>
             <Placeholder>Exchange</Placeholder>
-        </SuiteLayout>
+        </>
     );
 };
 

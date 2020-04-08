@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { SuiteLayout } from '@suite-components';
+import { LayoutContext } from '@suite-components';
 import { Menu } from '@settings-components';
 
 const Wrapper = styled.div`
@@ -18,13 +18,12 @@ type Props = {
 };
 
 const SettingsLayout = (props: Props) => {
-    const title = props.title || 'Settings';
+    const { setLayout } = React.useContext(LayoutContext);
+    React.useMemo(() => {
+        if (setLayout) setLayout(props.title || 'Settings', <Menu />);
+    }, [props.title, setLayout]);
 
-    return (
-        <SuiteLayout title={title} secondaryMenu={<Menu />}>
-            <Wrapper>{props.children}</Wrapper>
-        </SuiteLayout>
-    );
+    return <Wrapper>{props.children}</Wrapper>;
 };
 
 export default SettingsLayout;

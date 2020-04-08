@@ -3,11 +3,9 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { H2, P, Button } from '@trezor/components';
-import { Translation, Loading } from '@suite-components';
+import { Translation, Loading, Image } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
-
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Dispatch } from '@suite-types';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -18,17 +16,16 @@ type Props = ReturnType<typeof mapDispatchToProps> & {
     onCancel: () => void;
 };
 
+const StyledImage = styled(Image)`
+    flex: 1;
+`;
+
 const Wrapper = styled(ModalWrapper)`
     display: flex;
     flex-direction: column;
     min-width: 50vw;
     min-height: 50vh;
     align-items: center;
-`;
-
-const Video = styled.video`
-    width: 500px;
-    padding: 20px;
 `;
 
 const PinMismatch = ({ changePin }: Props) => {
@@ -51,9 +48,7 @@ const PinMismatch = ({ changePin }: Props) => {
             <P size="small">
                 <Translation id="TR_PIN_MISMATCH_TEXT" />
             </P>
-            <Video autoPlay loop>
-                <source src={resolveStaticPath(`videos/suite/pin-mismatch.mp4`)} type="video/mp4" />
-            </Video>
+            <StyledImage image="UNI_ERROR" />
             <Button onClick={onTryAgain}>
                 <Translation id="TR_TRY_AGAIN" />
             </Button>

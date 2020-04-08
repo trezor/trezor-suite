@@ -6,9 +6,11 @@ import * as routerActions from '@suite-actions/routerActions';
 import AccountItem from './index';
 
 const mapStateToProps = (state: AppState) => ({
+    router: state.router,
     localCurrency: state.wallet.settings.localCurrency,
     discreetMode: state.wallet.settings.discreetMode,
     fiat: state.wallet.fiat,
+    labeling: state.labeling,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -18,6 +20,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 interface OwnProps {
     account: Account;
     selected: boolean;
+    forwardedRef?: (ref: HTMLDivElement | null) => void | null;
 }
 
 export type Props = ReturnType<typeof mapStateToProps> &

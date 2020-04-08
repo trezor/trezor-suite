@@ -120,7 +120,7 @@ const Settings = ({
             <Analytics />
 
             <BottomContainer>
-                <Section borderless>
+                <Section>
                     <Row>
                         <TextColumn
                             title={<Translation id="TR_SUITE_STORAGE" />}
@@ -152,7 +152,7 @@ const Settings = ({
                     </Row>
                 </Section>
 
-                <Section borderless>
+                <Section>
                     <Row>
                         <TextColumn
                             title={<Translation id="TR_SUITE_VERSION" />}

@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { H2, Icon, P, Button, colors } from '@trezor/components';
-import { SuiteLayout, Translation, Image } from '@suite-components';
+import { Translation, Image, Card, LayoutContext } from '@suite-components';
+
 import hocNotification, { ViewProps } from '@suite-components/hocNotification';
 
 import { Props } from './Container';
@@ -11,8 +12,15 @@ const Wrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
-    padding: 16px 32px 32px 32px;
+    padding: 16px;
     max-width: 1024px;
+`;
+
+const StyledCard = styled(Card)`
+    margin-top: 16px;
+    display: flex;
+    padding: 20px;
+    flex-direction: column;
 `;
 
 const EmptyWrapper = styled.div`
@@ -44,8 +52,6 @@ const StyledImage = styled(props => <Image {...props} />)`
 const ActionButton = styled(Button)`
     min-width: 120px;
 `;
-
-// const events:
 
 const NotificationView = (props: ViewProps) => {
     return (
@@ -84,9 +90,14 @@ export default (props: Props) => {
     // );
     const { notifications } = props;
 
+    const { setLayout } = React.useContext(LayoutContext);
+    React.useMemo(() => {
+        if (setLayout) setLayout('Notifications', undefined);
+    }, [setLayout]);
+
     if (notifications.length < 1) {
         return (
-            <SuiteLayout title="Notifications">
+            <>
                 <EmptyWrapper>
                     <H2>
                         <Translation id="NOTIFICATIONS_EMPTY_TITLE" />
@@ -96,17 +107,20 @@ export default (props: Props) => {
                     </P>
                     <StyledImage image="UNI_EMPTY_PAGE" />
                 </EmptyWrapper>
-            </SuiteLayout>
+            </>
         );
     }
+
     return (
-        <SuiteLayout title="Notifications">
+        <>
             <Wrapper>
                 <H2>
                     <Translation id="NOTIFICATIONS_TITLE" />
                 </H2>
-                {notifications.map(n => hocNotification(n, NotificationView))}
+                <StyledCard>
+                    {notifications.map(n => hocNotification(n, NotificationView))}
+                </StyledCard>
             </Wrapper>
-        </SuiteLayout>
+        </>
     );
 };

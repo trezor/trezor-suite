@@ -11,7 +11,7 @@ export const useSelector: TypedUseSelectorHook<AppState> = useReduxSelector;
 /**
  * React hook that returns array with 2 items.
  * First item is boolean indicating whether we can make a call to the device.
- * Second item is an object describing conditions that that were not satisfied (device disconnected, locks,...).
+ * Second item is an object describing conditions that were not satisfied (device disconnected, locks,...).
  *
  * @returns
  */

@@ -6,7 +6,7 @@ const Wrapper = styled.div`
     display: flex;
     border-radius: 6px;
     background: ${colors.WHITE};
-    box-shadow: 0 6px 14px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 14px 0 rgba(0, 0, 0, 0.05);
 `;
 
 export interface Props extends React.HTMLAttributes<HTMLDivElement> {

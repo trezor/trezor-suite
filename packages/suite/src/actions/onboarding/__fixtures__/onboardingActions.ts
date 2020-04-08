@@ -142,19 +142,4 @@ export default [
             toMatchObject: onboardingReducer(undefined, { type: 'foo' } as any),
         },
     },
-    {
-        description: 'setBackupType',
-        initialState: {
-            onboarding: {
-                backupType: 0,
-            },
-            suite: {
-                device: getSuiteDevice(),
-            },
-        },
-        action: () => onboardingActions.setBackupType(1),
-        expect: {
-            toMatchObject: { backupType: 1 },
-        },
-    },
 ] as const;
