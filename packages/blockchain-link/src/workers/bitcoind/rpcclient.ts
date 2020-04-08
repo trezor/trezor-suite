@@ -102,28 +102,46 @@ export class RpcClient {
         });
         const blockHashes: object[] = [];
 
+        const startTime2 = new Date().getTime();
         await Promise.all(
-            batchArr.map(async oneBatch => {
+            batchArr.map(async (oneBatch, index) => {
+                await this.giveBreak(this.getRandomNumber(1, 20));
                 console.log(
                     `oneBatch of blockhashes with length ${oneBatch.length} wants to get blockFilters, before rpc send`
                 );
-                const hashes = await this.clientBatch.batch(oneBatch);
-                console.log(
-                    'filters for oneBatch with hashes was arrived with length: ',
-                    hashes.length
-                );
+                try {
+                    // const someString = JSON.stringify(oneBatch);
+                    // console.log('someString length', someString.length);
+                    const hashes = await this.clientBatch.batch(oneBatch);
+                    blockHashes.push(hashes);
 
-                blockHashes.push(hashes);
-
-                oneBatch.forEach((oneCommand, index) => {
-                    aggregatedFiltersAndHash.push({
-                        filter: hashes[index].result.filter,
-                        blockhash: oneCommand.params[0],
+                    oneBatch.forEach((oneCommand, index) => {
+                        aggregatedFiltersAndHash.push({
+                            filter: hashes[index].result.filter,
+                            blockhash: oneCommand.params[0],
+                        });
                     });
-                });
+
+                    console.log(
+                        'filters for oneBatch with hashes was arrived with length: ',
+                        hashes.length
+                    );
+                } catch (e) {
+                    console.log(
+                        'error inside getblockfilter one batch; oneBatch.lenght',
+                        oneBatch.length,
+                        e
+                    );
+                    console.log('batchArr.length, index', batchArr.length, index);
+                    throw e;
+                }
             })
         );
-        console.log('addFiltersToHashes completed, must be called 1 time');
+        console.log(
+            (new Date().getTime() - startTime2) / 1000,
+            'seconds',
+            'addFiltersToHashes completed, must be called 1 time'
+        );
         this.cachedFiltersHashes = aggregatedFiltersAndHash;
         return aggregatedFiltersAndHash;
     }
@@ -271,15 +289,17 @@ export class RpcClient {
         }
 
         console.log('prepareBlockchainData started without cache');
+        const startTime = new Date().getTime();
         const lastHeight: number = (await this.getBlockchainInfo(true)).height;
-        const blocksArr: number[] = Array.from(Array(150000).keys()).reverse();
-        // const blocksArr = this.createArrayWithRange(450000, 560000, 1); // test purposes
+        const blocksArr: number[] = Array.from(Array(250000).keys()).reverse(); // 1FbRhCQ6f9C4jiETP2pgGLG5AzBj7JiLJN
+        // const blocksArr: number[] = [624823];
+        // const blocksArr = this.createArrayWithRange(500000, 600000, 1); // test purposes 484823, 624823
         const batchHashCommands: object = {};
         let actualProp = 'someProp';
 
         // divided into chunks due to limitations/errors in js/rpc (one chunk <= 100 000 elements)
         blocksArr.forEach((oneBlock, index) => {
-            if (index % 100000 === 0) {
+            if (index % 500 === 0) {
                 actualProp = `someProp${index}`;
                 batchHashCommands[actualProp] = [];
                 batchHashCommands[actualProp].push({ method: 'getblockhash', params: [oneBlock] });
@@ -296,13 +316,33 @@ export class RpcClient {
                     blockHashes.push(hashes);
                 } catch (e) {
                     console.log('error inside batch hashes', e);
+                    throw e;
                 }
             })
         );
-        this.cachedFiltersHashes = await this.addFiltersToHashes(blockHashes);
+        console.log(
+            (new Date().getTime() - startTime) / 1000,
+            'seconds',
+            'it took time to send and receive a hash of blocks, amount of blocks:',
+            blocksArr.length
+        );
+        try {
+            this.cachedFiltersHashes = await this.addFiltersToHashes(blockHashes);
+        } catch (e) {
+            console.log('error inside await this.addFiltersToHashes', e);
+            throw e;
+        }
 
         console.log('prepareBlockchainData init & return');
         return this.cachedFiltersHashes;
+    }
+
+    giveBreak(seconds: number): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+    }
+
+    getRandomNumber(min: number, max: number): number {
+        return Math.random() * (max - min) + min;
     }
 
     async getPassedBlocks(walletAddr: string): Promise<Array<PassedBlock>> {
