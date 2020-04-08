@@ -7,25 +7,31 @@ import TopMenu from './components/TopMenu';
 import MainMenu from './components/MainMenu';
 import BottomMenu from './components/BottomMenu';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ wide?: boolean }>`
     background: ${colors.BLACK17};
-    width: 120px;
+    width: ${props => (props.wide ? '100%' : '120px')};
+    height: 100%;
     display: flex;
     flex-direction: column;
 `;
 
 const Menu = (props: Props) => {
     return (
-        <Wrapper>
+        <Wrapper wide={props.fullWidth}>
             <TopMenu
                 deviceCount={props.devices.length}
                 selectedDevice={props.selectedDevice}
                 goto={props.goto}
             />
-            <MainMenu app={props.router.app} goto={props.goto} />
+            <MainMenu
+                app={props.router.app}
+                goto={props.goto}
+                openSecondaryMenu={props.openSecondaryMenu}
+            />
             <BottomMenu
                 app={props.router.app}
                 goto={props.goto}
+                openSecondaryMenu={props.openSecondaryMenu}
                 discreetMode={props.discreetMode}
                 setDiscreetMode={props.setDiscreetMode}
             />
