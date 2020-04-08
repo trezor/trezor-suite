@@ -100,9 +100,7 @@ export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
                     </Header>
                 </HeaderWrapper>
             )}
-            <AnimationWrapper opened={isOpened} updateOverflow>
-                {props.children}
-            </AnimationWrapper>
+            <AnimationWrapper opened={isOpened}>{props.children}</AnimationWrapper>
         </Wrapper>
     );
 });

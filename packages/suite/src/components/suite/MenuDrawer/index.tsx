@@ -47,7 +47,7 @@ interface WrapperProps {
 }
 
 const AnimatedWrapper = ({ children, wide }: WrapperProps) => {
-    const visible = { x: 0 }; // , transitionEnd: { backgroundColor: 'red' }
+    const visible = { x: 0 };
     const hidden = { x: '-100%' };
     const trans = { duration: 0.24, ease: [0.04, 0.62, 0.23, 0.98] };
     return (
