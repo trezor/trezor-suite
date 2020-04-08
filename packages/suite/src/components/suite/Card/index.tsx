@@ -10,7 +10,6 @@ const Wrapper = styled.div`
 
 const Content = styled.div`
     display: flex;
-    flex: 1;
     border-radius: 6px;
     background: ${colors.WHITE};
     box-shadow: 0 6px 14px 0 rgba(0, 0, 0, 0.05);
