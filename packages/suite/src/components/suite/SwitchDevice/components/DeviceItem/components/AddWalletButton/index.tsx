@@ -32,10 +32,11 @@ const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceIns
                     onClick={async () => {
                         if (hasAtLeastOneWallet) {
                             // add another instance
-                            addDeviceInstance(device);
-                        } else if (undiscoveredWallet) {
+                            return addDeviceInstance(device);
+                        }
+                        if (undiscoveredWallet) {
                             // select "undiscovered" instance
-                            selectDeviceInstance(undiscoveredWallet);
+                            return selectDeviceInstance(undiscoveredWallet);
                         }
                     }}
                 >
