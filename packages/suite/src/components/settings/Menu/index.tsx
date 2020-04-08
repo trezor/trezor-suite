@@ -29,7 +29,7 @@ const ACTIVE_TEXT_COLOR = colors.BLACK0;
 const SECONDARY_COLOR = colors.BLACK96;
 
 const ContentWrapper = styled.div`
-    padding: 0 ${LEFT_PADDING};
+    padding: 10px ${LEFT_PADDING};
     display: flex;
     flex: 1;
     flex-direction: column;

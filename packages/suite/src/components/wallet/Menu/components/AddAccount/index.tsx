@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, colors, Tooltip } from '@trezor/components';
 import { Translation } from '@suite-components';
+// import { useDeviceActionLocks } from '@suite-utils/hooks';
 
 interface Props {
     onClick?: () => void;
@@ -29,6 +30,7 @@ const StyledButton = styled(Button)`
 `;
 
 const AddAccountButton = ({ onClick, disabled }: Props) => {
+    // TODO: const [actionEnabled] = useDeviceActionLocks();
     const clickHandler = !disabled ? onClick : undefined;
     const ButtonRow = (
         <StyledButton
