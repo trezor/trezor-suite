@@ -25,7 +25,7 @@ const Header = styled.div`
 const Title = styled.div`
     flex: 1;
     font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-transform: uppercase;
     color: ${colors.BLACK50};
 `;
