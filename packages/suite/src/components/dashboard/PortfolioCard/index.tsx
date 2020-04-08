@@ -103,7 +103,7 @@ const PortfolioCard = ({
                 <Right>
                     <ActionButton
                         isDisabled={!!mode}
-                        variant="secondary"
+                        variant="primary"
                         onClick={receiveClickHandler}
                     >
                         <Translation id="TR_RECEIVE" />
