@@ -1,14 +1,35 @@
-import { Translation } from '@suite-components/Translation';
-import { SUPPORT_URL } from '@suite-constants/urls';
-import { colors, Icon, Link, variables } from '@trezor/components';
-import { IconType } from '@trezor/components/lib/support/types';
 import React from 'react';
+import { connect } from 'react-redux';
 import styled, { css } from 'styled-components';
+import { bindActionCreators } from 'redux';
 
-import { Props } from './Container';
+import { Icon, Link, colors, variables } from '@trezor/components';
+import * as routerActions from '@suite-actions/routerActions';
+import * as modalActions from '@suite-actions/modalActions';
+import { AppState, Dispatch } from '@suite-types';
+import { IconType } from '@trezor/components/lib/support/types';
+import { Translation } from '@suite-components/Translation';
+
+import { SUPPORT_URL } from '@suite-constants/urls';
+
+const mapStateToProps = (state: AppState) => ({
+    router: state.router,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    goto: bindActionCreators(routerActions.goto, dispatch),
+    openModal: bindActionCreators(modalActions.openModal, dispatch),
+});
+
+type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
+
+const LEFT_PADDING = '10px';
+const TEXT_COLOR = colors.BLACK25;
+const ACTIVE_TEXT_COLOR = colors.BLACK0;
+const SECONDARY_COLOR = colors.BLACK96;
 
 const ContentWrapper = styled.div`
-    padding: 0 10px;
+    padding: 0 ${LEFT_PADDING};
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -26,7 +47,7 @@ const ItemWrapper = styled.div<{ isActive?: boolean }>`
     border-radius: 6px;
     font-size: ${variables.FONT_SIZE.SMALL};
     cursor: pointer;
-    color: ${({ isActive }) => (isActive ? colors.BLACK0 : colors.BLACK25)};
+    color: ${({ isActive }) => (isActive ? ACTIVE_TEXT_COLOR : TEXT_COLOR)};
     /* todo: not in variables */
     font-weight: ${({ isActive }) => (isActive ? 500 : variables.FONT_WEIGHT.REGULAR)};
     display: flex;
@@ -35,12 +56,12 @@ const ItemWrapper = styled.div<{ isActive?: boolean }>`
     ${({ isActive }) =>
         isActive &&
         css`
-            background-color: ${colors.BLACK96};
+            background-color: ${SECONDARY_COLOR};
         `}
 `;
 
 const StyledIcon = styled(Icon)`
-    padding-left: 10px;
+    padding-left: ${LEFT_PADDING};
     padding-right: 10px;
     margin-bottom: 2px;
 `;
@@ -55,31 +76,50 @@ interface ItemProps {
 
 const Item = ({ label, icon, onClick, isActive, ...props }: ItemProps) => (
     <ItemWrapper onClick={onClick} data-test={props['data-test']} isActive={isActive}>
-        <StyledIcon color={isActive ? colors.BLACK0 : colors.BLACK25} icon={icon} size={18} />
+        <StyledIcon color={isActive ? ACTIVE_TEXT_COLOR : TEXT_COLOR} icon={icon} size={18} />
         {label}
     </ItemWrapper>
 );
 
-export default ({ openModal }: Props) => {
+const ITEMS = [
+    {
+        label: <Translation id="TR_GENERAL" />,
+        'data-test': '@settings/menu/general',
+        icon: 'SETTINGS',
+        route: 'settings-index',
+    },
+    {
+        label: <Translation id="TR_DEVICE" />,
+        'data-test': '@settings/menu/device',
+        icon: 'TREZOR',
+        route: 'settings-device',
+    },
+    {
+        label: <Translation id="TR_COINS" />,
+        'data-test': '@settings/menu/wallet',
+        icon: 'COINS',
+        route: 'settings-wallet',
+    },
+] as const;
+
+const SettingsMenu = ({ goto, router, openModal }: Props) => {
     return (
         <ContentWrapper>
             <Items>
-                <Item
-                    data-test="@settings/menu/support"
-                    icon="SUPPORT"
-                    label={
-                        <Link variant="nostyle" href={SUPPORT_URL}>
-                            <Translation id="TR_SUPPORT" />
-                        </Link>
-                    }
-                />
-                <Item
-                    data-test="@settings/menu/log"
-                    icon="LOG"
-                    onClick={() => openModal({ type: 'log' })}
-                    label={<Translation id="TR_SHOW_LOG" />}
-                />
+                {ITEMS.map(i => (
+                    <Item
+                        key={i.route}
+                        {...i}
+                        onClick={() => goto(i.route)}
+                        isActive={
+                            router &&
+                            typeof router.route !== 'undefined' &&
+                            i.route === router.route.name
+                        }
+                    />
+                ))}
             </Items>
+
             <Bottom>
                 <Items>
                     <Item
@@ -102,3 +142,5 @@ export default ({ openModal }: Props) => {
         </ContentWrapper>
     );
 };
+
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsMenu);
