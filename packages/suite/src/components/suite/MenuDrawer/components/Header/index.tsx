@@ -14,6 +14,7 @@ const Wrapper = styled.header`
 `;
 
 const Button = styled.div`
+    padding: 12px;
     cursor: pointer;
     &:hover {
         svg {
@@ -22,10 +23,12 @@ const Button = styled.div`
     }
 `;
 
+// padding-right => button width
 const Title = styled.div`
     font-size: 20px;
     flex: 1;
     text-align: center;
+    padding-right: 38px;
 `;
 
 export default ({ onClick }: { onClick: () => void }) => {

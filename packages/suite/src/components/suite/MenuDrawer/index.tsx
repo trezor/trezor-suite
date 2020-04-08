@@ -19,15 +19,19 @@ const Container = styled.div`
     left: 0px;
 `;
 
-const Wrapper = styled(motion.div)<{ wide?: boolean }>`
+const Wrapper = styled(motion.div)`
     position: absolute;
+    z-index: 2;
+    height: 100%;
+`;
+
+const LevelWrapper = styled(motion.div)<{ wide?: boolean }>`
     width: ${props => (props.wide ? '374px' : '254px')};
     flex-direction: ${props => (props.wide ? 'initial' : 'column')};
     height: 100%;
     background: ${colors.WHITE};
     overflow: hidden;
     box-shadow: 0 6px 14px 0 rgba(0, 0, 0, 0.1);
-    z-index: 2;
     display: flex;
 `;
 
@@ -46,14 +50,21 @@ interface WrapperProps {
     wide?: boolean;
 }
 
+const hidden = { position: 'absolute', x: '-100%' } as const;
+const transition = { duration: 0.33 };
+
 const AnimatedWrapper = ({ children, wide }: WrapperProps) => {
     const visible = { x: 0, transitionEnd: { position: 'relative' } } as const;
-    const hidden = { position: 'absolute', x: '-100%' } as const;
-    const trans = { duration: 0.33 };
     return (
-        <Wrapper wide={wide} initial={hidden} animate={visible} exit={hidden} transition={trans}>
+        <LevelWrapper
+            wide={wide}
+            initial={hidden}
+            animate={visible}
+            exit={hidden}
+            transition={transition}
+        >
             {children}
-        </Wrapper>
+        </LevelWrapper>
     );
 };
 
@@ -86,6 +97,9 @@ const MenuDrawer = ({ children, router, layoutSize, modalContext }: Props) => {
         }
     }, [modalContext]);
 
+    // first AnimatePresence is for opening drawer
+    // second AnimatePresence is for switching between levels
+
     return (
         <>
             <Header onClick={() => setOpened(!opened)} />
@@ -93,33 +107,40 @@ const MenuDrawer = ({ children, router, layoutSize, modalContext }: Props) => {
                 {opened && (
                     <Container>
                         <Overlay onClick={() => setOpened(false)} />
-                        <AnimatePresence>
-                            {!displayPrimary && (
-                                <AnimatedWrapper key="secondary" wide={displayBothLevels}>
-                                    {displayBothLevels && (
+                        <Wrapper
+                            initial={hidden}
+                            animate={{ x: 0 }}
+                            exit={hidden}
+                            transition={transition}
+                        >
+                            <AnimatePresence initial={false}>
+                                {!displayPrimary && (
+                                    <AnimatedWrapper key="secondary" wide={displayBothLevels}>
+                                        {displayBothLevels && (
+                                            <Menu
+                                                openSecondaryMenu={() => {
+                                                    setOpened(false);
+                                                }}
+                                            />
+                                        )}
+                                        {!displayBothLevels && (
+                                            <AppsButton onClick={() => setTopLevel(!topLevel)} />
+                                        )}
+                                        {children}
+                                    </AnimatedWrapper>
+                                )}
+                                {displayPrimary && (
+                                    <AnimatedWrapper key="primary">
                                         <Menu
-                                            openSecondaryMenu={() => {
-                                                setOpened(false);
-                                            }}
+                                            fullWidth
+                                            openSecondaryMenu={() =>
+                                                children ? setTopLevel(false) : setOpened(false)
+                                            }
                                         />
-                                    )}
-                                    {!displayBothLevels && (
-                                        <AppsButton onClick={() => setTopLevel(!topLevel)} />
-                                    )}
-                                    {children}
-                                </AnimatedWrapper>
-                            )}
-                            {displayPrimary && (
-                                <AnimatedWrapper key="primary">
-                                    <Menu
-                                        fullWidth
-                                        openSecondaryMenu={() =>
-                                            children ? setTopLevel(false) : setOpened(false)
-                                        }
-                                    />
-                                </AnimatedWrapper>
-                            )}
-                        </AnimatePresence>
+                                    </AnimatedWrapper>
+                                )}
+                            </AnimatePresence>
+                        </Wrapper>
                     </Container>
                 )}
             </AnimatePresence>
