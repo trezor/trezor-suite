@@ -6,9 +6,10 @@ const Resize = (props: Props) => {
     useEffect(() => {
         const handleResize = debounce(() => {
             props.updateWindowSize(window.innerWidth, window.innerHeight);
-        }, 700);
+        }, 300);
 
         window.addEventListener('resize', handleResize);
+        handleResize();
 
         return () => {
             window.removeEventListener('resize', handleResize);
