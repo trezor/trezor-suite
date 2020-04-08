@@ -61,7 +61,7 @@
     },
     "workersDependencies": {
         "bignumber.js": "^9.0.0",
-        "ripple-lib": "1.6.4",
+        "ripple-lib": "1.6.5",
         "tiny-worker": "^2.3.0",
         "ws": "^7.2.1"
     }

@@ -1002,6 +1002,10 @@ const definedMessages = defineMessages({
         description: 'Link to Trezor wiki.',
         id: 'TR_LEARN_MORE_LINK',
     },
+    TR_SEGWIT_ACCOUNTS: {
+        defaultMessage: 'Segwit accounts',
+        id: 'TR_SEGWIT_ACCOUNTS',
+    },
     TR_LEGACY_ACCOUNTS: {
         defaultMessage: 'Legacy accounts',
         id: 'TR_LEGACY_ACCOUNTS',
@@ -2762,6 +2766,10 @@ const definedMessages = defineMessages({
     TR_ADVANCED: {
         id: 'TR_ADVANCED',
         defaultMessage: 'Advanced',
+    },
+    TR_BACKUP_CREATED: {
+        id: 'TR_BACKUP_CREATED',
+        message: 'Backup successfully created!',
     },
 } as const);
 

@@ -1,54 +1,61 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, colors, Tooltip } from '@trezor/components';
-//
+import { Button, colors, Tooltip } from '@trezor/components';
+import { Translation } from '@suite-components';
 
 interface Props {
-    onClick?: () => any;
-    tooltipContent?: React.ReactChild;
-    disabled?: boolean;
+    onClick?: () => void;
+    disabled: boolean;
 }
 
+// > div:first-of-type is a workaround for tooltip (TODO)
 const Wrapper = styled.div`
-    width: 100%;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
+    padding: 10px;
+    position: sticky;
+    z-index: 2;
+    bottom: 0;
+    background: ${colors.WHITE};
+    box-shadow: 0 0 14px 0 rgba(0, 0, 0, 0.2);
+    > div:first-of-type {
+        display: block;
+        flex: 1;
+    }
 `;
 
-// const RowAddAccountWrapper = styled.div<Props>`
-//     width: 100%;
-//     display: flex;
-//     align-items: center;
-//     color: ${colors.TEXT_SECONDARY};
-//     padding: 20px 25px;
-//     transition: color 0.3s;
-//     &:hover {
-//         cursor: ${props => (props.disabled ? 'default' : 'pointer')};
-//         color: ${props => (props.disabled ? colors.TEXT_SECONDARY : colors.TEXT_PRIMARY)};
-//     }
-// `;
+const StyledButton = styled(Button)`
+    border: dashed 1px ${colors.BLACK50};
+    background: ${colors.WHITE};
+`;
 
-const AddAccountButton = ({ onClick, tooltipContent, disabled }: Props) => {
+const AddAccountButton = ({ onClick, disabled }: Props) => {
     const clickHandler = !disabled ? onClick : undefined;
     const ButtonRow = (
-        <Wrapper onClick={clickHandler}>
-            {/* <RowAddAccountWrapper disabled={disabled}> */}
-            <Icon icon="PLUS" size={16} color={disabled ? colors.BLACK92 : colors.BLACK17} />
-            {/* <Translation id="TR_ADD_ACCOUNT" /> */}
-            {/* </RowAddAccountWrapper> */}
-        </Wrapper>
+        <StyledButton
+            onClick={clickHandler}
+            icon="PLUS"
+            variant="secondary"
+            fullWidth
+            isDisabled={disabled}
+        >
+            <Translation id="TR_ADD_ACCOUNT" />
+        </StyledButton>
     );
 
-    if (tooltipContent && !disabled) {
+    if (disabled) {
         return (
-            <Tooltip maxWidth={200} content={tooltipContent} placement="bottom">
-                {ButtonRow}
-            </Tooltip>
+            <Wrapper>
+                <Tooltip
+                    maxWidth={200}
+                    content={<Translation id="TR_ADD_ACCOUNT" />}
+                    placement="auto"
+                >
+                    {ButtonRow}
+                </Tooltip>
+            </Wrapper>
         );
     }
-    return ButtonRow;
+    return <Wrapper>{ButtonRow}</Wrapper>;
 };
 
 export default AddAccountButton;

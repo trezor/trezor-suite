@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { H2, Icon, P, Button, colors } from '@trezor/components';
-import { SuiteLayout, Translation, Image, Card } from '@suite-components';
+import { Translation, Image, Card, LayoutContext } from '@suite-components';
+
 import hocNotification, { ViewProps } from '@suite-components/hocNotification';
 
 import { Props } from './Container';
@@ -89,9 +90,14 @@ export default (props: Props) => {
     // );
     const { notifications } = props;
 
+    const { setLayout } = React.useContext(LayoutContext);
+    React.useMemo(() => {
+        if (setLayout) setLayout('Notifications', undefined);
+    }, [setLayout]);
+
     if (notifications.length < 1) {
         return (
-            <SuiteLayout title="Notifications">
+            <>
                 <EmptyWrapper>
                     <H2>
                         <Translation id="NOTIFICATIONS_EMPTY_TITLE" />
@@ -101,12 +107,12 @@ export default (props: Props) => {
                     </P>
                     <StyledImage image="UNI_EMPTY_PAGE" />
                 </EmptyWrapper>
-            </SuiteLayout>
+            </>
         );
     }
 
     return (
-        <SuiteLayout title="Notifications">
+        <>
             <Wrapper>
                 <H2>
                     <Translation id="NOTIFICATIONS_TITLE" />
@@ -115,6 +121,6 @@ export default (props: Props) => {
                     {notifications.map(n => hocNotification(n, NotificationView))}
                 </StyledCard>
             </Wrapper>
-        </SuiteLayout>
+        </>
     );
 };
