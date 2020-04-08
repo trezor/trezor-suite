@@ -20,7 +20,7 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled(motion.div)<{ wide?: boolean }>`
-    position: relative;
+    position: absolute;
     width: ${props => (props.wide ? '374px' : '254px')};
     flex-direction: ${props => (props.wide ? 'initial' : 'column')};
     height: 100%;
@@ -47,9 +47,9 @@ interface WrapperProps {
 }
 
 const AnimatedWrapper = ({ children, wide }: WrapperProps) => {
-    const visible = { x: 0 };
-    const hidden = { x: '-100%' };
-    const trans = { duration: 0.24, ease: [0.04, 0.62, 0.23, 0.98] };
+    const visible = { x: 0, transitionEnd: { position: 'relative' } } as const;
+    const hidden = { position: 'absolute', x: '-100%' } as const;
+    const trans = { duration: 0.33 };
     return (
         <Wrapper wide={wide} initial={hidden} animate={visible} exit={hidden} transition={trans}>
             {children}
@@ -86,39 +86,40 @@ const MenuDrawer = ({ children, router, layoutSize, modalContext }: Props) => {
         }
     }, [modalContext]);
 
-    // TODO: listen for account change
     return (
         <>
             <Header onClick={() => setOpened(!opened)} />
-            <AnimatePresence initial={false}>
+            <AnimatePresence>
                 {opened && (
                     <Container>
                         <Overlay onClick={() => setOpened(false)} />
-                        {!displayPrimary && (
-                            <AnimatedWrapper key="secondary" wide={displayBothLevels}>
-                                {displayBothLevels && (
+                        <AnimatePresence>
+                            {!displayPrimary && (
+                                <AnimatedWrapper key="secondary" wide={displayBothLevels}>
+                                    {displayBothLevels && (
+                                        <Menu
+                                            openSecondaryMenu={() => {
+                                                setOpened(false);
+                                            }}
+                                        />
+                                    )}
+                                    {!displayBothLevels && (
+                                        <AppsButton onClick={() => setTopLevel(!topLevel)} />
+                                    )}
+                                    {children}
+                                </AnimatedWrapper>
+                            )}
+                            {displayPrimary && (
+                                <AnimatedWrapper key="primary">
                                     <Menu
-                                        openSecondaryMenu={() => {
-                                            setOpened(false);
-                                        }}
+                                        fullWidth
+                                        openSecondaryMenu={() =>
+                                            children ? setTopLevel(false) : setOpened(false)
+                                        }
                                     />
-                                )}
-                                {!displayBothLevels && (
-                                    <AppsButton onClick={() => setTopLevel(!topLevel)} />
-                                )}
-                                {children}
-                            </AnimatedWrapper>
-                        )}
-                        {displayPrimary && (
-                            <AnimatedWrapper key="primary">
-                                <Menu
-                                    fullWidth
-                                    openSecondaryMenu={() =>
-                                        children ? setTopLevel(false) : setOpened(false)
-                                    }
-                                />
-                            </AnimatedWrapper>
-                        )}
+                                </AnimatedWrapper>
+                            )}
+                        </AnimatePresence>
                     </Container>
                 )}
             </AnimatePresence>
