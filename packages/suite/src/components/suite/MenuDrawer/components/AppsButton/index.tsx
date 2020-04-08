@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Icon, colors } from '@trezor/components';
+import { Translation } from '@suite-components';
 
 const Wrapper = styled.header`
     width: 100%;
@@ -25,7 +26,9 @@ export default ({ onClick }: { onClick: () => void }) => {
     return (
         <Wrapper onClick={onClick}>
             <Icon icon="ARROW_LEFT" size={14} color={colors.BLACK0} />
-            <Title>Apps</Title>
+            <Title>
+                <Translation id="TR_APPS_BUTTON" />
+            </Title>
         </Wrapper>
     );
 };
