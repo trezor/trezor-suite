@@ -139,16 +139,24 @@ export default ({
                     <Row>
                         <TextColumn
                             title={<Translation id="TR_SUITE_VERSION" />}
-                            description={<Translation id="TR_YOUR_CURRENT_VERSION" />}
+                            description={
+                                <Translation
+                                    id="TR_YOUR_CURRENT_VERSION"
+                                    values={{
+                                        version: 'internal alfa release',
+                                    }}
+                                />
+                            }
                         />
                         <ActionColumn>
-                            <ActionButton
+                            {/* todo: Button hidden as it does nothing. But still keep info with version here */}
+                            {/* <ActionButton
                                 onClick={() => console.log('moo')}
                                 isDisabled={uiLocked}
                                 variant="secondary"
                             >
                                 <Translation id="TR_CHECK_FOR_UPDATES" />
-                            </ActionButton>
+                            </ActionButton> */}
                         </ActionColumn>
                     </Row>
                 </Section>
