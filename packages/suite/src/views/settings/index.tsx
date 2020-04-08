@@ -139,9 +139,14 @@ export default ({
                     <Row>
                         <TextColumn
                             title={<Translation id="TR_SUITE_VERSION" />}
-                            description={<Translation id="TR_YOUR_CURRENT_VERSION" values={{
-                                version: 'internal alfa release'
-                            }} />}
+                            description={
+                                <Translation
+                                    id="TR_YOUR_CURRENT_VERSION"
+                                    values={{
+                                        version: 'internal alfa release',
+                                    }}
+                                />
+                            }
                         />
                         <ActionColumn>
                             {/* todo: Button hidden as it does nothing. But still keep info with version here */}
