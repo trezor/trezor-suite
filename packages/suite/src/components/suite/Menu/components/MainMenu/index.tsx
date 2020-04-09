@@ -79,6 +79,7 @@ const ComingSoon = styled.div`
 interface Props {
     app: string;
     goto: ContainerProps['goto'];
+    openSecondaryMenu?: () => void;
 }
 
 const Menu = (props: Props) => (
@@ -87,11 +88,12 @@ const Menu = (props: Props) => (
             const { route, icon, translationId, isDisabled } = item;
             const routeObj = findRouteByName(route);
             const isActive = routeObj ? routeObj.app === props.app : false;
+            const callback = (isActive && props.openSecondaryMenu) || props.goto;
             return (
                 <MenuItemWrapper key={route}>
                     <In
                         data-test={`@suite/menu/${route}`}
-                        onClick={() => !isDisabled && props.goto(routeObj!.name)}
+                        onClick={() => !isDisabled && callback(routeObj!.name)}
                         isActive={isActive}
                         isDisabled={isDisabled}
                     >

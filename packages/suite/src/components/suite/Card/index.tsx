@@ -5,7 +5,6 @@ import { colors, variables } from '@trezor/components';
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    flex: 1;
 `;
 
 const Content = styled.div`

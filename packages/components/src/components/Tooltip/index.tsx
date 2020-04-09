@@ -51,9 +51,10 @@ const Tooltip = ({
     children,
     duration = 150,
     animation = 'scale',
+    className,
     ...rest
 }: TippyProps & { children: JSX.Element | JSX.Element[] | string }) => (
-    <Wrapper>
+    <Wrapper className={className}>
         <Tippy
             zIndex={10070}
             arrow

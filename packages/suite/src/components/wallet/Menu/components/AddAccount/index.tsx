@@ -2,13 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, colors, Tooltip } from '@trezor/components';
 import { Translation } from '@suite-components';
+import { TrezorDevice } from '@suite-types';
 
 interface Props {
     onClick?: () => void;
     disabled: boolean;
+    device?: TrezorDevice;
 }
 
-// > div:first-of-type is a workaround for tooltip (TODO)
 const Wrapper = styled.div`
     display: flex;
     padding: 10px;
@@ -17,9 +18,13 @@ const Wrapper = styled.div`
     bottom: 0;
     background: ${colors.WHITE};
     box-shadow: 0 0 14px 0 rgba(0, 0, 0, 0.2);
-    > div:first-of-type {
-        display: block;
-        flex: 1;
+`;
+
+// workaround to expand tooltip (and child button) to full width
+const StyledTooltip = styled(Tooltip)`
+    width: 100%;
+    > span:first-of-type {
+        width: 100%;
     }
 `;
 
@@ -28,8 +33,14 @@ const StyledButton = styled(Button)`
     background: ${colors.WHITE};
 `;
 
-const AddAccountButton = ({ onClick, disabled }: Props) => {
+const AddAccountButton = ({ onClick, disabled, device }: Props) => {
+    // TODO: const [actionEnabled] = useDeviceActionLocks();
     const clickHandler = !disabled ? onClick : undefined;
+    const tooltipMessage =
+        device && !device.connected ? (
+            <Translation id="TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT" />
+        ) : undefined;
+
     const ButtonRow = (
         <StyledButton
             onClick={clickHandler}
@@ -42,16 +53,12 @@ const AddAccountButton = ({ onClick, disabled }: Props) => {
         </StyledButton>
     );
 
-    if (disabled) {
+    if (tooltipMessage) {
         return (
             <Wrapper>
-                <Tooltip
-                    maxWidth={200}
-                    content={<Translation id="TR_ADD_ACCOUNT" />}
-                    placement="auto"
-                >
+                <StyledTooltip maxWidth={200} content={tooltipMessage} placement="top">
                     {ButtonRow}
-                </Tooltip>
+                </StyledTooltip>
             </Wrapper>
         );
     }

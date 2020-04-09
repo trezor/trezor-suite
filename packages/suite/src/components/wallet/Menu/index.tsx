@@ -19,6 +19,8 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    overflow: auto;
+    margin-top: 10px;
 `;
 
 const Scroll = styled.div`
@@ -88,7 +90,7 @@ const Menu = ({
     openModal,
 }: Props) => {
     const params = getAccountParams(router, selectedAccount.account);
-    const wrapperRef = useRef<HTMLDivElement | null>(null);
+    const wrapperRef = useRef<HTMLDivElement>(null);
     const selectedItemRef = useCallback((_item: HTMLDivElement | null) => {
         // TODO: scroll to selected item
     }, []);
@@ -174,6 +176,7 @@ const Menu = ({
                     })
                 }
                 disabled={!!addAccountDisabled}
+                device={device}
             />
         </Wrapper>
     );

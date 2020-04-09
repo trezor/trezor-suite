@@ -41,7 +41,7 @@ interface Props {
 
 export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
     const hasHeader = props.type !== 'normal';
-    const wrapperRef = useRef<HTMLDivElement | null>(null);
+    const wrapperRef = useRef<HTMLDivElement>(null);
     const [expanded, setExpanded] = useState(!!props.opened || !hasHeader);
     const isOpened = expanded || props.opened || !hasHeader;
     const [animatedIcon, setAnimatedIcon] = useState(false); // TODO: move animation to framer
@@ -100,9 +100,7 @@ export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
                     </Header>
                 </HeaderWrapper>
             )}
-            <AnimationWrapper opened={isOpened} updateOverflow>
-                {props.children}
-            </AnimationWrapper>
+            <AnimationWrapper opened={isOpened}>{props.children}</AnimationWrapper>
         </Wrapper>
     );
 });

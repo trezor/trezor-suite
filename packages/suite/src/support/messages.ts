@@ -89,9 +89,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Change passphrase settings to use this device',
         id: 'TR_ACCOUNT_PASSPHRASE_DISABLED',
     },
-    TR_ACCOUNTS_MENU_TITLE: {
-        defaultMessage: 'Accounts',
-        id: 'TR_ACCOUNTS_MENU_TITLE',
+    TR_APPS_BUTTON: {
+        defaultMessage: 'Apps',
+        description: 'Button in secondary responsive menu',
+        id: 'TR_APPS_BUTTON',
     },
     TR_ACQUIRE_DEVICE: {
         defaultMessage: 'Acquire device',
@@ -2528,6 +2529,10 @@ const definedMessages = defineMessages({
     TR_TO_ACCESS_OTHER_WALLETS: {
         id: 'TR_TO_ACCESS_OTHER_WALLETS',
         defaultMessage: 'To access other wallets please connect your device.',
+    },
+    TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT: {
+        id: 'TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT',
+        defaultMessage: 'To add new account please connect your device.',
     },
     TR_EJECT_HEADING: {
         id: 'TR_EJECT_HEADING',

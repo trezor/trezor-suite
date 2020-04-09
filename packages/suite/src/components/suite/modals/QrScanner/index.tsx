@@ -190,14 +190,14 @@ const QrScanner = ({ onScan, onCancel, outputId }: Props) => {
                 )}
 
                 <Actions>
-                    <Button
+                    {/* <Button
                         variant="secondary"
                         onClick={() => {
                             // TODO: enable legacyMode and call openImageDialog? https://github.com/JodusNodus/react-qr-reader#readme
                         }}
                     >
                         <Translation id="TR_UPLOAD_IMAGE" />
-                    </Button>
+                    </Button> */}
                 </Actions>
             </Padding>
         </Wrapper>

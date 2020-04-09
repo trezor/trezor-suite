@@ -20,9 +20,10 @@ export default ({ account }: Props) => {
         return (
             <Content>
                 <H2>{title}</H2>
-                <P size="tiny">
+                {/* temp disable description to get consistent looks across tabs */}
+                {/* <P size="tiny">
                     <Translation id="RECEIVE_DESC_BITCOIN" />
-                </P>
+                </P> */}
             </Content>
         );
     }
