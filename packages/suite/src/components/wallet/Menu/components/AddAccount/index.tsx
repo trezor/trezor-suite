@@ -46,15 +46,10 @@ const AddAccountButton = ({ onClick, disabled, tooltipMessage }: Props) => {
         </StyledButton>
     );
 
-    if (disabled) {
+    if (tooltipMessage) {
         return (
             <Wrapper>
-                <StyledTooltip
-                    enabled={!!tooltipMessage}
-                    maxWidth={200}
-                    content={tooltipMessage}
-                    placement="top"
-                >
+                <StyledTooltip maxWidth={200} content={tooltipMessage} placement="top">
                     {ButtonRow}
                 </StyledTooltip>
             </Wrapper>
