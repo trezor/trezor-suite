@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
-import { Translation } from '@suite-components';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
@@ -175,11 +174,7 @@ const Menu = ({
                     })
                 }
                 disabled={!!addAccountDisabled}
-                tooltipMessage={
-                    !device.connected ? (
-                        <Translation id="TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT" />
-                    ) : undefined
-                }
+                device={device}
             />
         </Wrapper>
     );

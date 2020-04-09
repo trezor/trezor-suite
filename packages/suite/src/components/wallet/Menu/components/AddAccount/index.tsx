@@ -2,11 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, colors, Tooltip } from '@trezor/components';
 import { Translation } from '@suite-components';
+import { TrezorDevice } from '@suite-types';
 
 interface Props {
     onClick?: () => void;
     disabled: boolean;
-    tooltipMessage?: JSX.Element;
+    device?: TrezorDevice;
 }
 
 const Wrapper = styled.div`
@@ -32,8 +33,13 @@ const StyledButton = styled(Button)`
     background: ${colors.WHITE};
 `;
 
-const AddAccountButton = ({ onClick, disabled, tooltipMessage }: Props) => {
+const AddAccountButton = ({ onClick, disabled, device }: Props) => {
     const clickHandler = !disabled ? onClick : undefined;
+    const tooltipMessage =
+        device && !device.connected ? (
+            <Translation id="TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT" />
+        ) : undefined;
+
     const ButtonRow = (
         <StyledButton
             onClick={clickHandler}
