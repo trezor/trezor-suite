@@ -90,13 +90,6 @@ const ReadMoreIcon = styled(Icon)`
     padding-left: 4px;
 `;
 
-const Error = styled.div`
-    display: flex;
-    padding: 24px;
-    width: 100%;
-    justify-content: center;
-`;
-
 const getDate = (date: string) => {
     const dateObj = new Date(date);
     if (isToday(dateObj)) {
@@ -109,14 +102,11 @@ export default React.memo(({ ...rest }: React.HTMLAttributes<HTMLDivElement>) =>
     const [visibleCount, incrementVisibleCount] = useState(3);
     const { posts, isError, fetchCount, incrementFetchCount } = useFetchNews();
 
+    if (isError) return null;
+
     return (
         <Section {...rest}>
             <StyledCard title={<Translation id="TR_WHATS_NEW" />}>
-                {isError && (
-                    <Error>
-                        <Translation id="TR_DASHBOARD_NEWS_ERROR" />
-                    </Error>
-                )}
                 {posts.slice(0, visibleCount).map(item => (
                     <Post key={item.link}>
                         <Left>
