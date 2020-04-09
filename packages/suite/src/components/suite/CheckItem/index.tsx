@@ -17,7 +17,7 @@ const CheckboxRight = styled.div`
 `;
 
 const CheckboxTitle = styled.div`
-    margin-bottom: 8px
+    margin-bottom: 8px;
 `;
 
 const CheckboxText = styled.div`
