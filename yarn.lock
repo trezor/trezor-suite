@@ -8239,9 +8239,9 @@ caseless@~0.12.0:
   integrity sha1-G2gcIf+EAzyCZUMJBolCDRhxUdw=
 
 cashaddrjs@^0.3.10, cashaddrjs@^0.3.3:
-  version "0.3.10"
-  resolved "https://registry.yarnpkg.com/cashaddrjs/-/cashaddrjs-0.3.10.tgz#8eb281573184e343cc9186c28fb95e65d5695ebc"
-  integrity sha512-x+r0TxRzLR7Z9wy9JBHCCe1d6Yong5BH//vjWB/uldNT/IEb8cMGo8HNY5/QZmCr3KYcsLIToM8u6whXfKFbRw==
+  version "0.3.11"
+  resolved "https://registry.yarnpkg.com/cashaddrjs/-/cashaddrjs-0.3.11.tgz#9c38565ccd628942c279a105cfc3122b6f4e6f57"
+  integrity sha512-TXbSJVCPa5ER9jRId0S1ZgxvAqLYowciCpgzDC66hYarQKeDRZ5wvjAa8xKPZwLEDI8t5fBL3f8PyPzz7PoMnA==
   dependencies:
     big-integer "1.6.36"
 

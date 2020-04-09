@@ -2909,6 +2909,22 @@ const definedMessages = defineMessages({
         id: 'TR_BUY_TREZOR',
         defaultMessage: 'Buy Trezor',
     },
+    TR_TRY_BRIDGE: {
+        id: 'TR_TRY_BRIDGE',
+        defaultMessage: 'Try bridge',
+        describe:
+            'Bridge is a communication deamon that some users will need to download and install. So word bridge should not be translated.',
+    },
+    TR_YOUR_DEVICE_IS_SEEDLESS: {
+        id: 'TR_YOUR_DEVICE_IS_SEEDLESS',
+        defaultMessage:
+            'Your device is in seedless mode and is not allowed to be used with this wallet.',
+    },
+    TR_YOUR_DEVICE_IS_CONNECTED_BUT_UNREADABLE: {
+        id: 'TR_YOUR_DEVICE_IS_CONNECTED_BUT_UNREADABLE',
+        defaultMessage:
+            'Your device is connected properly, but your internet browser can not communicate with it at the moment. You will need to install Trezor bridge.',
+    },
 } as const);
 
 export default definedMessages;

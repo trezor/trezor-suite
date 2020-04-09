@@ -14,14 +14,6 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     TrezorConnect.on(DEVICE_EVENT, event => {
         // dispatch event as action
         delete event.event;
-        // console.warn(event);
-        // const random = 'Random' + Date.now();
-        // if (event.payload.id && event.payload.mode === 'initialize' && event.payload.features.device_id) {
-        //     console.log('now we are mocking everchanging device id')
-        //     event.payload.id = random;
-        //     event.payload.features.device_id = random;
-        // }
-
         dispatch(event);
     });
 
@@ -70,8 +62,8 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             process.env.SUITE_TYPE === 'desktop'
                 ? resolveStaticPath('connect/')
                 : // : 'https://connect.trezor.io/8/';
-                  'https://localhost:8088/';
-        //   'https://connect.corp.sldev.cz/develop/';
+                  //   'https://localhost:8088/';
+                  'https://connect.corp.sldev.cz/develop/';
 
         await TrezorConnect.init({
             connectSrc,
