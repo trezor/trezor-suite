@@ -19,7 +19,7 @@ const Content = styled.div`
 const Title = styled(H2)`
     display: flex;
     text-align: center;
-    color: #000000;
+    color: ${colors.BLACK0};
 `;
 
 const Description = styled.div`
@@ -63,7 +63,7 @@ const NoTransactions = ({ receive }: Props) => {
                 </Description>
                 <StyledImage image="EMPTY_WALLET" />
                 <Actions>
-                    <ActionButton variant="secondary" onClick={receive}>
+                    <ActionButton variant="primary" onClick={receive}>
                         <Translation id="TR_RECEIVE" />
                     </ActionButton>
                     {/* <ActionButton variant="primary" onClick={buy}>
