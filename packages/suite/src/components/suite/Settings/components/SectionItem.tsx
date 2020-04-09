@@ -13,4 +13,4 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     children: React.ReactNode;
 }
 
-export default ({ children, ...rest }: Props) => <StyledRow>{children}</StyledRow>;
+export default ({ children, ...rest }: Props) => <StyledRow {...rest}>{children}</StyledRow>;
