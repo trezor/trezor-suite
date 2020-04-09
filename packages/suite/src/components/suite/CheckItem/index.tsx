@@ -9,13 +9,16 @@ const StyledCheckbox = styled(Checkbox)`
     width: 400px;
     padding-left: 0px;
     margin: 12px auto;
+    align-items: flex-start;
 `;
 
 const CheckboxRight = styled.div`
     text-align: left;
 `;
 
-const CheckboxTitle = styled.div``;
+const CheckboxTitle = styled.div`
+    margin-bottom: 8px
+`;
 
 const CheckboxText = styled.div`
     font-size: ${FONT_SIZE.TINY};
