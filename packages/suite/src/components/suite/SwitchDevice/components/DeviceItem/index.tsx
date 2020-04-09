@@ -246,6 +246,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                             device={device}
                             instances={props.instances}
                             addDeviceInstance={addDeviceInstance}
+                            selectDeviceInstance={selectDeviceInstance}
                         />
                     )}
                 </WalletsWrapper>
