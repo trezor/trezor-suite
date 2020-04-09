@@ -52,7 +52,7 @@ const AdvancedSettings = styled.div`
     color: ${colors.BLACK25};
     /* todo: not in variables but is in design */
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    margin-right: 4%;
+    margin-right: 12px;
     visibility: hidden;
     align-items: center;
 
@@ -165,7 +165,7 @@ export default ({
                         <Coin symbol={network.symbol} name={network.name} />
                         <ActionColumn>
                             {/* hidden with display 'none' until implemented */}
-                            <AdvancedSettings style={{ display: 'none' }}>
+                            <AdvancedSettings>
                                 <SettingsIconWrapper>
                                     <Icon icon="SETTINGS" size={16} color={colors.BLACK25} />
                                 </SettingsIconWrapper>
