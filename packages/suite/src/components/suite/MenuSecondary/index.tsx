@@ -9,7 +9,6 @@ interface Props {
 const AbsoluteWrapper = styled.aside`
     width: 254px;
     background: ${colors.WHITE};
-    padding-top: 10px;
     margin: 10px 10px 20px 10px;
     border-radius: 6px;
     overflow: hidden;

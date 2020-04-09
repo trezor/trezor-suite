@@ -34,6 +34,7 @@ const StyledButton = styled(Button)`
 `;
 
 const AddAccountButton = ({ onClick, disabled, device }: Props) => {
+    // TODO: const [actionEnabled] = useDeviceActionLocks();
     const clickHandler = !disabled ? onClick : undefined;
     const tooltipMessage =
         device && !device.connected ? (
