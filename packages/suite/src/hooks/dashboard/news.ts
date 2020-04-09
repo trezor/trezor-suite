@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { isDev } from '@suite-utils/build';
+import { Post } from '@trezor/news-api';
 
 const NEWS_API_STAGING_URL = 'https://staging-news.trezor.io';
 const NEWS_API_PRODUCTION_URL = 'https://news.trezor.io';
 
 export function useFetchNews() {
-    const [posts, setPosts] = useState<any[]>([]);
+    const [posts, setPosts] = useState<Post[]>([]);
     const [isError, setError] = useState(false);
     const [fetchCount, incrementFetchCount] = useState(4);
 

@@ -49,3 +49,5 @@ export default async (
         })
         .catch(error => callback(500, null, error.message));
 };
+
+export type Post = Post;

@@ -5,6 +5,7 @@
     "keywords": [
         "Trezor"
     ],
+    "types": "./build/src/types.d.ts",
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "Trezor medium fetcher",
     "private": true,

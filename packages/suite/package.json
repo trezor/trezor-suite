@@ -20,6 +20,7 @@
         "@formatjs/intl-pluralrules": "^1.5.3",
         "@formatjs/intl-relativetimeformat": "^4.5.10",
         "@trezor/components": "^1.0.0",
+        "@trezor/news-api": "^1.0.0",
         "@trezor/suite-data": "^1.0.0",
         "@trezor/suite-storage": "^1.0.0",
         "@types/zxcvbn": "^4.4.0",
