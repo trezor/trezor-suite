@@ -2530,9 +2530,9 @@ const definedMessages = defineMessages({
         id: 'TR_TO_ACCESS_OTHER_WALLETS',
         defaultMessage: 'To access other wallets please connect your device.',
     },
-    TR_TO_ACCESS_OTHER_WALLETS_DISCOVER: {
-        id: 'TR_TO_ACCESS_OTHER_WALLETS_DISCOVER',
-        defaultMessage: 'To access other wallets discover the undiscovered wallet first.',
+    TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT: {
+        id: 'TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT',
+        defaultMessage: 'To add new account please connect your device.',
     },
     TR_EJECT_HEADING: {
         id: 'TR_EJECT_HEADING',

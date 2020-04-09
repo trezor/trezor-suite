@@ -45,9 +45,7 @@ const Section = ({ children, title, description, customHeader }: Props) => {
                     <Description size="tiny">{description}</Description>
                 )}
             </Header>
-            <Card>
-                <Content>{children}</Content>
-            </Card>
+            <Content>{children}</Content>
         </Wrapper>
     );
 };
