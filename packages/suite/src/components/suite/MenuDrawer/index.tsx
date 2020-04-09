@@ -69,10 +69,11 @@ const AnimatedWrapper = ({ children, wide }: WrapperProps) => {
 };
 
 const MenuDrawer = ({ children, router, layoutSize, modalContext }: Props) => {
+    const [secondaryMenu, setSecondaryMenu] = useState(children);
     const [url, setUrl] = useState(router.url);
     const [opened, setOpened] = useState(false);
     const [topLevel, setTopLevel] = useState(false);
-    const displayPrimary = !children || topLevel;
+    const displayPrimary = !secondaryMenu || topLevel;
     const displayBothLevels = layoutSize === 'SMALL';
 
     // reset "topLevel" flag
@@ -96,6 +97,12 @@ const MenuDrawer = ({ children, router, layoutSize, modalContext }: Props) => {
             setOpened(false);
         }
     }, [modalContext]);
+
+    // handle children changes
+    // children needs to be memorized otherwise there will be visible re-render durning "close" animation
+    React.useMemo(() => {
+        if (!opened) setSecondaryMenu(children);
+    }, [children, opened]);
 
     // first AnimatePresence is for opening drawer
     // second AnimatePresence is for switching between levels
@@ -126,7 +133,7 @@ const MenuDrawer = ({ children, router, layoutSize, modalContext }: Props) => {
                                         {!displayBothLevels && (
                                             <AppsButton onClick={() => setTopLevel(!topLevel)} />
                                         )}
-                                        {children}
+                                        {secondaryMenu}
                                     </AnimatedWrapper>
                                 )}
                                 {displayPrimary && (
@@ -134,7 +141,9 @@ const MenuDrawer = ({ children, router, layoutSize, modalContext }: Props) => {
                                         <Menu
                                             fullWidth
                                             openSecondaryMenu={() =>
-                                                children ? setTopLevel(false) : setOpened(false)
+                                                secondaryMenu
+                                                    ? setTopLevel(false)
+                                                    : setOpened(false)
                                             }
                                         />
                                     </AnimatedWrapper>
