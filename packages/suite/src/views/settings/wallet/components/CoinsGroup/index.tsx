@@ -165,7 +165,7 @@ export default ({
                         <Coin symbol={network.symbol} name={network.name} />
                         <ActionColumn>
                             {/* hidden with display 'none' until implemented */}
-                            <AdvancedSettings>
+                            <AdvancedSettings style={{ display: 'none' }}>
                                 <SettingsIconWrapper>
                                     <Icon icon="SETTINGS" size={16} color={colors.BLACK25} />
                                 </SettingsIconWrapper>
