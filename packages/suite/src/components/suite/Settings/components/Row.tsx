@@ -1,18 +1,12 @@
-import { variables } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
 
-const { SCREEN_SIZE } = variables;
-
 const Content = styled.div`
     display: flex;
-    justify-content: space-between;
     flex: 1;
+    align-items: center;
+    justify-content: space-between;
     padding: 16px 0;
-
-    @media all and (max-width: ${SCREEN_SIZE.SM}) {
-        flex-direction: column;
-    }
 `;
 
 const Wrapper = styled.div`
@@ -27,12 +21,12 @@ const Wrapper = styled.div`
     }
 `;
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
     children: React.ReactNode;
 }
 
-export default ({ children }: Props) => (
+export default ({ children, ...rest }: Props) => (
     <Wrapper>
-        <Content>{children}</Content>
+        <Content {...rest}>{children}</Content>
     </Wrapper>
 );

@@ -7,7 +7,7 @@ import {
     ActionColumn,
     ActionSelect,
     Analytics,
-    Row,
+    SectionItem,
     Section,
     TextColumn,
 } from '@suite-components/Settings';
@@ -45,7 +45,7 @@ export default ({
                 <Translation id="TR_GENERAL" />
             </H2>
             <Section title={<Translation id="TR_LANGUAGE" />}>
-                <Row>
+                <SectionItem>
                     <TextColumn title={<Translation id="TR_LANGUAGE" />} />
                     <ActionColumn>
                         <ActionSelect
@@ -64,11 +64,11 @@ export default ({
                             }) => fetchLocale(option.value)}
                         />
                     </ActionColumn>
-                </Row>
+                </SectionItem>
             </Section>
 
             <Section title={<Translation id="TR_CURRENCY" />}>
-                <Row>
+                <SectionItem>
                     <TextColumn title={<Translation id="TR_PRIMARY_FIAT" />} />
                     <ActionColumn>
                         <ActionSelect
@@ -81,12 +81,12 @@ export default ({
                             isDisabled={uiLocked}
                         />
                     </ActionColumn>
-                </Row>
+                </SectionItem>
             </Section>
 
             {/* TODO: KEEP IT HERE AND UNCOMMENT WHEN READY */}
             {/* <Section header={<Translation id="TR_LABELING" />}>
-                <Row>
+                <SectionItem>
                     <TextColumn title={<Translation id="TR_CONNECT_DROPBOX} />" />
                     <ActionColumn>
                         <ActionButton
@@ -97,14 +97,14 @@ export default ({
                             <Translation id="TR_CONNECT_DROPBOX" />
                         </ActionButton>
                     </ActionColumn>
-                </Row>
+                </SectionItem>
             </Section> */}
 
             <Analytics />
 
             <BottomContainer>
                 <Section>
-                    <Row>
+                    <SectionItem>
                         <TextColumn
                             title={<Translation id="TR_SUITE_STORAGE" />}
                             description={<Translation id="TR_CLEAR_STORAGE_DESCRIPTION" />}
@@ -132,11 +132,11 @@ export default ({
                                 <Translation id="TR_CLEAR_STORAGE" />
                             </ActionButton>
                         </ActionColumn>
-                    </Row>
+                    </SectionItem>
                 </Section>
 
                 <Section>
-                    <Row>
+                    <SectionItem>
                         <TextColumn
                             title={<Translation id="TR_SUITE_VERSION" />}
                             description={
@@ -158,7 +158,7 @@ export default ({
                                 <Translation id="TR_CHECK_FOR_UPDATES" />
                             </ActionButton> */}
                         </ActionColumn>
-                    </Row>
+                    </SectionItem>
                 </Section>
             </BottomContainer>
         </SettingsLayout>

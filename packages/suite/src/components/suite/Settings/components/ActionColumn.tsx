@@ -7,11 +7,7 @@ export const ActionColumn = styled.div`
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    min-width: 250px;
-
-    @media all and (max-width: ${SCREEN_SIZE.SM}) {
-        flex-direction: column;
-    }
+    flex: 1;
 `;
 
 export const ActionInput = styled(Input)`
