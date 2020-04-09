@@ -6,7 +6,7 @@ import { Translation } from '@suite-components';
 interface Props {
     onClick?: () => void;
     disabled: boolean;
-    tooltipMessage?: React.ReactNode;
+    tooltipMessage?: JSX.Element;
 }
 
 const Wrapper = styled.div`
