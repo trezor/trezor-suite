@@ -116,6 +116,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Add account',
         id: 'TR_ADD_ACCOUNT',
     },
+    TR_ADD_ACCOUNT_DISABLED_EXPLAIN: {
+        defaultMessage: 'explain why the button is disabled',
+        id: 'TR_ADD_ACCOUNT_DISABLED_EXPLAIN',
+    },
     TR_ADD_WALLET: {
         defaultMessage: 'Add wallet',
         id: 'TR_ADD_WALLET',

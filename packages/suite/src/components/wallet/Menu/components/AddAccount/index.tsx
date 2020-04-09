@@ -8,7 +8,6 @@ interface Props {
     disabled: boolean;
 }
 
-// > div:first-of-type is a workaround for tooltip (TODO)
 const Wrapper = styled.div`
     display: flex;
     padding: 10px;
@@ -17,9 +16,13 @@ const Wrapper = styled.div`
     bottom: 0;
     background: ${colors.WHITE};
     box-shadow: 0 0 14px 0 rgba(0, 0, 0, 0.2);
-    > div:first-of-type {
-        display: block;
-        flex: 1;
+`;
+
+// workaround to expand tooltip (and child button) to full width
+const StyledTooltip = styled(Tooltip)`
+    width: 100%;
+    > span:first-of-type {
+        width: 100%;
     }
 `;
 
@@ -42,16 +45,16 @@ const AddAccountButton = ({ onClick, disabled }: Props) => {
         </StyledButton>
     );
 
-    if (disabled) {
+    if (!disabled) {
         return (
             <Wrapper>
-                <Tooltip
+                <StyledTooltip
                     maxWidth={200}
-                    content={<Translation id="TR_ADD_ACCOUNT" />}
-                    placement="auto"
+                    content={<Translation id="TR_ADD_ACCOUNT_DISABLED_EXPLAIN" />}
+                    placement="top"
                 >
                     {ButtonRow}
-                </Tooltip>
+                </StyledTooltip>
             </Wrapper>
         );
     }
