@@ -116,10 +116,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Add account',
         id: 'TR_ADD_ACCOUNT',
     },
-    TR_ADD_ACCOUNT_DISABLED_EXPLAIN: {
-        defaultMessage: 'explain why the button is disabled',
-        id: 'TR_ADD_ACCOUNT_DISABLED_EXPLAIN',
-    },
     TR_ADD_WALLET: {
         defaultMessage: 'Add wallet',
         id: 'TR_ADD_WALLET',
@@ -2532,6 +2528,10 @@ const definedMessages = defineMessages({
     TR_TO_ACCESS_OTHER_WALLETS: {
         id: 'TR_TO_ACCESS_OTHER_WALLETS',
         defaultMessage: 'To access other wallets please connect your device.',
+    },
+    TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT: {
+        id: 'TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT',
+        defaultMessage: 'To add new account please connect your device.',
     },
     TR_TO_ACCESS_OTHER_WALLETS_DISCOVER: {
         id: 'TR_TO_ACCESS_OTHER_WALLETS_DISCOVER',

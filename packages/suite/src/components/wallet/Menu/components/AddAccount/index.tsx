@@ -6,6 +6,7 @@ import { Translation } from '@suite-components';
 interface Props {
     onClick?: () => void;
     disabled: boolean;
+    tooltipMessage?: React.ReactNode;
 }
 
 const Wrapper = styled.div`
@@ -31,7 +32,7 @@ const StyledButton = styled(Button)`
     background: ${colors.WHITE};
 `;
 
-const AddAccountButton = ({ onClick, disabled }: Props) => {
+const AddAccountButton = ({ onClick, disabled, tooltipMessage }: Props) => {
     const clickHandler = !disabled ? onClick : undefined;
     const ButtonRow = (
         <StyledButton
@@ -45,12 +46,13 @@ const AddAccountButton = ({ onClick, disabled }: Props) => {
         </StyledButton>
     );
 
-    if (!disabled) {
+    if (disabled) {
         return (
             <Wrapper>
                 <StyledTooltip
+                    enabled={!!tooltipMessage}
                     maxWidth={200}
-                    content={<Translation id="TR_ADD_ACCOUNT_DISABLED_EXPLAIN" />}
+                    content={tooltipMessage}
                     placement="top"
                 >
                     {ButtonRow}
