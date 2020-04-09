@@ -174,6 +174,7 @@ const Menu = ({
                     })
                 }
                 disabled={!!addAccountDisabled}
+                device={device}
             />
         </Wrapper>
     );
