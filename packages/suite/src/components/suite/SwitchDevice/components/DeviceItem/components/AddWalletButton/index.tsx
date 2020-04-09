@@ -19,7 +19,6 @@ interface Props {
 
 const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceInstance }: Props) => {
     const hasAtLeastOneWallet = instances.find(d => d.state);
-    const undiscoveredWallet = instances.find(d => !d.state);
     const tooltipMsg = <Translation id="TR_TO_ACCESS_OTHER_WALLETS" />;
     const [actionEnabled] = useDeviceActionLocks();
     return (
@@ -29,17 +28,12 @@ const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceIns
                     data-test="@switch-device/add-wallet-button"
                     variant="tertiary"
                     icon="PLUS"
-                    isDisabled={!actionEnabled || (!hasAtLeastOneWallet && !undiscoveredWallet)}
-                    onClick={async () => {
-                        if (hasAtLeastOneWallet) {
-                            // add another instance
-                            return addDeviceInstance(device);
-                        }
-                        if (undiscoveredWallet) {
-                            // select "undiscovered" instance
-                            return selectDeviceInstance(undiscoveredWallet);
-                        }
-                    }}
+                    isDisabled={!actionEnabled || !hasAtLeastOneWallet}
+                    onClick={async () =>
+                        hasAtLeastOneWallet
+                            ? addDeviceInstance(device)
+                            : selectDeviceInstance(instances[0])
+                    }
                 >
                     <Translation id="TR_ADD_WALLET" />
                 </Button>
