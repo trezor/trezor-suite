@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { colors, variables, Button } from '@trezor/components';
 import { Card, TransactionsGraph, Translation } from '@suite-components';
 import { Account } from '@wallet-types';
 import messages from '@suite/support/messages';
 import InfoCard from './components/InfoCard';
-import { Await } from '@suite/types/utils';
 import BigNumber from 'bignumber.js';
-import { subWeeks, getUnixTime } from 'date-fns';
+import { getUnixTime } from 'date-fns';
 import { calcTicks } from '@suite/utils/suite/date';
 import { GraphRange } from '@suite/types/wallet/fiatRates';
 import { GraphData } from '@suite/reducers/wallet/graphReducer';
@@ -73,10 +72,10 @@ interface Props {
 const TransactionSummary = (props: Props) => {
     // const [data, setData] = useState<AccountHistory | null>(null);
     const [isGraphHidden, setIsGraphHidden] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(false);
-
-    const { account, updateGraphData } = props;
+    // const [isLoading, setIsLoading] = useState(false);
+    // const [error, setError] = useState(false);
+    const [isLoading] = useState(false);
+    const [error] = useState(false);
 
     const [selectedRange, setSelectedRange] = useState<GraphRange>({
         label: 'year',
@@ -120,7 +119,7 @@ const TransactionSummary = (props: Props) => {
                                     isLoading={isLoading}
                                     data={data}
                                     onRefresh={() =>
-                                        updateGraphData([props.account], selectedRange)
+                                        props.updateGraphData([props.account], selectedRange)
                                     }
                                     selectedRange={selectedRange}
                                     onSelectedRange={setSelectedRange}
