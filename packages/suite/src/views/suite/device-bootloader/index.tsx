@@ -1,21 +1,14 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as routerActions from '@suite-actions/routerActions';
-import { Button, P } from '@trezor/components';
-import { Dispatch } from '@suite-types';
+import { DeviceInvalidModeLayout, Translation } from '@suite-components';
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
-
-type Props = ReturnType<typeof mapDispatchToProps>;
-
-const Index = (props: Props) => (
-    <>
-        <P data-test="initialize-message">Device is in bootloader mode. Reconnect it.</P>
-        <Button onClick={() => props.goto('firmware-index')}>Or go to setup wizard</Button>
-    </>
+const Index = () => (
+    <DeviceInvalidModeLayout
+        title={<Translation id="TR_DEVICE_IN_BOOTLOADER" />}
+        text={<Translation id="TR_DEVICE_IN_BOOTLOADER_EXPLAINED" />}
+        allowSwitchDevice
+        // no resolve button here. I believe that we don't want to send user anywhere who might have accidentally connected
+        // device in bootloader mode
+    />
 );
 
-export default connect(null, mapDispatchToProps)(Index);
+export default Index;

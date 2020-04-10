@@ -64,7 +64,8 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
             path: device.path,
         },
         btcOnly,
-        version: targetRelease?.release?.version,
+        // for update (in firmware modal) target release is set. otherwise use device.firmwareRelease
+        version: targetRelease?.release?.version || device.firmwareRelease.release.version,
         baseUrl: 'https://wallet.trezor.io',
     };
 

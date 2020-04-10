@@ -1,46 +1,25 @@
-import { SUITE } from '@suite-actions/constants';
-import styled from 'styled-components';
-
-import { H2, P, Button } from '@trezor/components';
-import { Translation, Image } from '@suite-components';
 import React from 'react';
 
+import { SUITE } from '@suite-actions/constants';
+import { Button } from '@trezor/components';
+import { Translation, DeviceInvalidModeLayout } from '@suite-components';
+
 import { Props } from './Container';
-
-const Wrapper = styled.div`
-    display: flex;
-    padding: 100px 120px;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-`;
-
-const ImageWrapper = styled.div`
-    width: 360px;
-`;
-
-const StyledP = styled(P)`
-    max-width: 500px;
-`;
 
 const Acquire = ({ device, locks, acquireDevice }: Props) => {
     if (!device) return null;
     const locked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     return (
-        <Wrapper>
-            <H2>
-                <Translation id="TR_ACQUIRE_DEVICE_TITLE" />
-            </H2>
-            <StyledP>
-                <Translation id="TR_ACQUIRE_DEVICE_DESCRIPTION" />
-            </StyledP>
-            <ImageWrapper>
-                <Image image="DEVICE_ANOTHER_SESSION" />
-            </ImageWrapper>
-            <Button isLoading={locked} onClick={() => acquireDevice()}>
-                <Translation id="TR_ACQUIRE_DEVICE" />
-            </Button>
-        </Wrapper>
+        <DeviceInvalidModeLayout
+            title={<Translation id="TR_ACQUIRE_DEVICE_TITLE" />}
+            text={<Translation id="TR_ACQUIRE_DEVICE_DESCRIPTION" />}
+            image="DEVICE_ANOTHER_SESSION"
+            resolveButton={
+                <Button isLoading={locked} onClick={() => acquireDevice()}>
+                    <Translation id="TR_ACQUIRE_DEVICE" />
+                </Button>
+            }
+        />
     );
 };
 
