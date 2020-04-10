@@ -75,7 +75,7 @@ const removeCanvas = () => {
     if (el) {
         el.remove();
     }
-}
+};
 
 // assuming max = x = y here
 const isOutsideCircle = (max: number, row: number, col: number) => {
@@ -258,5 +258,5 @@ export const elementToHomescreen = (element: HTMLImageElement, model: number) =>
     const imageData = elementToImageData(element, w, h);
     const hex = imageDataToHex(imageData, model);
     removeCanvas();
-    return hex; 
+    return hex;
 };
