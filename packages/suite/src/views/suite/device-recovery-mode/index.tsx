@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { H2, Button } from '@trezor/components';
-import { Loading, Translation } from '@suite-components';
+import { Loading, Translation, Image } from '@suite-components';
 
 import { Props } from './Container';
 
@@ -18,19 +18,24 @@ const Buttons = styled.div`
     margin: 20px;
 `;
 
-const Index = ({ recovery, device, checkSeed, recoverDevice, goToStep, addPath }: Props) => (
+const StyledImage = styled(Image)`
+    flex: 1;
+`;
+
+const Index = ({ recovery, device, rerun, goToStep, addPath }: Props) => (
     <Wrapper>
         {recovery.status === 'in-progress' && <Loading />}
-        {recovery.status === 'initial' && (
+        {recovery.status !== 'in-progress' && (
             <>
                 <H2>
                     <Translation id="TR_DEVICE_IN_RECOVERY_MODE" />
                 </H2>
+                <StyledImage image="FIRMWARE_INIT_2" />
                 <Buttons>
                     {!device?.features?.initialized && (
                         <Button
                             onClick={() => {
-                                recoverDevice();
+                                rerun();
                                 goToStep('recovery');
                                 addPath('recovery');
                             }}
@@ -39,7 +44,7 @@ const Index = ({ recovery, device, checkSeed, recoverDevice, goToStep, addPath }
                         </Button>
                     )}
                     {device?.features?.initialized && (
-                        <Button onClick={() => checkSeed()}>
+                        <Button onClick={() => rerun()}>
                             <Translation id="TR_CONTINUE" />
                         </Button>
                     )}

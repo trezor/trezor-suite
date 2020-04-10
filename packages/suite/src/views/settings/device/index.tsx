@@ -144,9 +144,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         <ActionColumn>
                             <ActionButton
                                 data-test="@settings/device/check-seed-button"
-                                onClick={() => {
-                                    goto('recovery-index', { cancelable: true });
-                                }}
+                                onClick={() => goto('recovery-index', { cancelable: true })}
                                 isDisabled={
                                     !actionEnabled ||
                                     features.needs_backup ||

@@ -100,12 +100,14 @@ const routes = [
         pattern: 'recovery',
         app: 'recovery',
         isModal: true,
+        params: modalAppParams,
     },
     {
         name: 'backup-index',
         pattern: 'backup',
         app: 'backup',
         isModal: true,
+        params: modalAppParams,
     },
     {
         name: 'firmware-index',

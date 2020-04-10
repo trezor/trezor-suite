@@ -98,7 +98,8 @@ const steps: Step[] = [
             STEP.DISALLOWED_DEVICE_IS_NOT_CONNECTED,
             STEP.DISALLOWED_DEVICE_IS_IN_BOOTLOADER,
             STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE,
-            STEP.DISALLOWED_IS_NOT_SAME_DEVICE,
+            // watch out: cannot be used here! recovery is changing device_id
+            // STEP.DISALLOWED_IS_NOT_SAME_DEVICE
         ],
         path: [STEP.PATH_RECOVERY, STEP.PATH_NEW, STEP.PATH_USED],
         buy: false,
