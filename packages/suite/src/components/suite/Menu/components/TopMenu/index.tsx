@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 const DeviceStatus = styled.div`
     display: flex;
     flex-direction: column;
-    margin-top: 20px; /* 32px from the top so 20px + 12px of padding */
+    margin-top: 16px;
     padding: 12px 6px;
     border-top-left-radius: 3px;
     border-bottom-left-radius: 3px;
