@@ -2884,6 +2884,14 @@ const definedMessages = defineMessages({
         id: 'TR_DISCREET',
         defaultMessage: 'Discreet',
     },
+    TR_STANDARD_WALLET: {
+        id: 'TR_STANDARD_WALLET',
+        defaultMessage: 'Standard wallet',
+    },
+    TR_HIDDEN_WALLET: {
+        id: 'TR_HIDDEN_WALLET',
+        defaultMessage: 'Hidden wallet #{id}',
+    },
 } as const);
 
 export default definedMessages;

@@ -134,11 +134,12 @@ const TopMenu = (props: Props) => {
                             </DeviceIconWrapper>
                         </DeviceRow>
                         <WalletRow>
+                            {/* TODO: labeling support */}
                             {props.selectedDevice.useEmptyPassphrase ? (
-                                <Translation id="TR_NO_PASSPHRASE_WALLET" />
+                                <Translation id="TR_STANDARD_WALLET" />
                             ) : (
                                 <Translation
-                                    id="TR_PASSPHRASE_WALLET"
+                                    id="TR_HIDDEN_WALLET"
                                     values={{ id: props.selectedDevice.instance }}
                                 />
                             )}
