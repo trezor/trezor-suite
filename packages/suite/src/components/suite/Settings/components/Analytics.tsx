@@ -29,7 +29,8 @@ const Analytics = ({ locks, analytics, toggleAnalytics }: Props) => {
                 <TextColumn
                     title={<Translation id="TR_ALLOW_ANALYTICS" />}
                     description={<Translation id="TR_ALLOW_ANALYTICS_DESCRIPTION" />}
-                    learnMore="todo some link"
+                    // todo: disabled until we get where to redirect
+                    // learnMore="todo some link"
                 />
                 <ActionColumn>
                     <Switch checked={analytics} onChange={toggleAnalytics} isDisabled={uiLocked} />
