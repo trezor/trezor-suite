@@ -38,7 +38,9 @@ export const aggregateBalanceHistory = (
                 // const { symbol } = accounts[i];
                 const enhancedResponse = accountHistory.map(h => ({
                     ...h,
+                    // @ts-ignore incorrect types in connect
                     receivedFiat: calcFiatValueMap(h.received, h.rates || {}),
+                    // @ts-ignore incorrect types in connect
                     sentFiat: calcFiatValueMap(h.sent, h.rates || {}),
                 }));
                 return enhancedResponse;
