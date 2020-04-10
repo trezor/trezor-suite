@@ -84,6 +84,7 @@
         }
     },
     "dependencies": {
+        "@trezor/news-api": "^1.0.0",
         "@sentry/browser": "^5.15.0",
         "electron-is-dev": "^1.1.0",
         "electron-localshortcut": "^3.2.1",
