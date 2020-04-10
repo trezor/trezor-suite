@@ -2880,6 +2880,62 @@ const definedMessages = defineMessages({
         defaultMessage: 'Success',
         description: 'Just a general "success" if we do not know what else to use',
     },
+    TR_RESOLVE: {
+        id: 'TR_RESOLVE',
+        defaultMessage: 'resolve',
+    },
+    TR_DEVICE_NOT_INITIALIZED: {
+        id: 'TR_DEVICE_NOT_INITIALIZED',
+        defaultMessage: 'Device not initialized',
+        description:
+            'Device not initialized means that it has no cryptographic secret lives in it and it must be either recovered from seed or newly generated.',
+    },
+    TR_DEVICE_NOT_INITIALIZED_TEXT: {
+        id: 'TR_DEVICE_NOT_INITIALIZED_TEXT',
+        defaultMessage:
+            'You will need to go through initialization process to put your device into work',
+    },
+    TR_GO_TO_ONBOARDING: {
+        id: 'TR_GO_TO_ONBOARDING',
+        defaultMessage: 'Go to onboarding',
+    },
+    TR_NO_FIRMWARE: {
+        id: 'TR_NO_FIRMWARE',
+        defaultMessage: 'No firmware',
+    },
+    TR_NO_FIRMWARE_EXPLAINED: {
+        id: 'TR_NO_FIRMWARE_EXPLAINED',
+        defaultMessage: 'Device has no firmware installed.',
+    },
+    TR_SEEDLESS_MODE: {
+        id: 'TR_SEEDLESS_MODE',
+        defaultMessage: 'Seedless mode',
+        description:
+            'Seedless is a term. It means that device has cryptographic secret inside but has never given out recovery seed',
+    },
+    TR_SEEDLESS_MODE_EXPLAINED: {
+        id: 'TR_SEEDLESS_MODE_EXPLAINED',
+        defaultMessage:
+            'Seedless mode means that device has cryptographic secret inside but no corresponding recovery seed exists. Such devices are not allowed to be used with this wallet.',
+    },
+    TR_UNKNOWN_DEVICE: {
+        id: 'TR_UNKNOWN_DEVICE',
+        defaultMessage: 'Unknown device',
+    },
+    TR_UNREADABLE_EXPLAINED: {
+        id: 'TR_UNREADABLE_EXPLAINED',
+        defaultMessage:
+            'We cant see details about your device. It might be Trezor with old firmware or possibly any USB device. To make communication possible, you will need to install Trezor Bridge.',
+    },
+    TR_SEE_DETAILS: {
+        id: 'TR_SEE_DETAILS',
+        defaultMessage: 'See details',
+    },
+    TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED: {
+        id: 'TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED',
+        defaultMessage:
+            'Your device has firmware that is no longer supported. You will need to update it.',
+    },
 } as const);
 
 export default definedMessages;
