@@ -17,7 +17,8 @@ import { CoinFiatRates as CoinFiatRates$ } from '@wallet-reducers/fiatRatesReduc
 import { WalletAccountTransaction as WalletAccountTransaction$ } from '@wallet-reducers/transactionReducer';
 import { ReceiveInfo as ReceiveInfo$ } from '@wallet-reducers/receiveReducer';
 
-import { FiatRateActions } from '@wallet-actions/fiatRatesActions';
+import { FiatRatesActions } from '@wallet-actions/fiatRatesActions';
+import { GraphActions } from '@wallet-actions/graphActions';
 import { BlockchainActions } from '@wallet-actions/blockchainActions';
 import { TransactionAction } from '@wallet-actions/transactionActions';
 import { SelectedAccountActions } from '@wallet-actions/selectedAccountActions';
@@ -50,7 +51,8 @@ export type WalletAction =
     | SendFormEthActions
     | SignVerifyActions
     | TransactionAction
-    | FiatRateActions
+    | FiatRatesActions
+    | GraphActions
     | DiscoveryActions
     | AccountActions
     | SelectedAccountActions;

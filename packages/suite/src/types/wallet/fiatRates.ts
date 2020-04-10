@@ -5,7 +5,7 @@ export interface FiatTicker {
 }
 
 export interface GraphRange {
-    label: string;
+    label: 'week' | 'month' | 'year';
     weeks: number;
 }
 

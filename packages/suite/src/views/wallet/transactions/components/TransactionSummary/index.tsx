@@ -6,10 +6,11 @@ import { Account } from '@wallet-types';
 import messages from '@suite/support/messages';
 import InfoCard from './components/InfoCard';
 import { Await } from '@suite/types/utils';
-import { fetchAccountHistory } from '@suite/actions/wallet/fiatRatesActions';
 import BigNumber from 'bignumber.js';
 import { subWeeks, getUnixTime } from 'date-fns';
 import { calcTicks } from '@suite/utils/suite/date';
+import { GraphRange } from '@suite/types/wallet/fiatRates';
+import { GraphData } from '@suite/reducers/wallet/graphReducer';
 
 const Wrapper = styled.div`
     display: flex;
@@ -65,57 +66,24 @@ const ErrorMessage = styled.div`
 
 interface Props {
     account: Account;
+    graphData: GraphData[];
+    updateGraphData: (accounts: Account[], range: GraphRange) => void;
 }
-
-interface Range {
-    label: string;
-    weeks: number;
-}
-
-type AccountHistory = NonNullable<Await<ReturnType<typeof fetchAccountHistory>>>;
 
 const TransactionSummary = (props: Props) => {
-    const [data, setData] = useState<AccountHistory | null>(null);
+    // const [data, setData] = useState<AccountHistory | null>(null);
     const [isGraphHidden, setIsGraphHidden] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(false);
 
-    const { account } = props;
+    const { account, updateGraphData } = props;
 
-    const [selectedRange, setSelectedRange] = useState<Range>({
+    const [selectedRange, setSelectedRange] = useState<GraphRange>({
         label: 'year',
         weeks: 52,
     });
 
-    useEffect(() => {
-        let isSubscribed = true; // to make sure we are not updating state after component unmount
-        const fetchData = async () => {
-            if (isSubscribed) setIsLoading(true);
-            const startDate = subWeeks(new Date(), selectedRange.weeks);
-            const endDate = new Date();
-            const secondsInDay = 3600 * 24;
-            const secondsInMonth = secondsInDay * 30;
-            const groupBy = selectedRange.weeks >= 52 ? secondsInMonth : secondsInDay;
-            const res = await fetchAccountHistory(account, startDate, endDate, groupBy);
-
-            if (res && isSubscribed) {
-                setData(res);
-            } else {
-                setError(true);
-            }
-            setIsLoading(false);
-        };
-
-        if (selectedRange && account) {
-            setData(null);
-            setIsLoading(false);
-            setError(false);
-            fetchData();
-        }
-        return () => {
-            isSubscribed = false;
-        };
-    }, [account, selectedRange, setData]);
+    const data = props.graphData.find(d => d.interval === selectedRange.label)?.data ?? null;
 
     const numOfTransactions = data?.reduce((acc, d) => (acc += d.txs), 0);
     const totalSentAmount = data?.reduce((acc, d) => acc.plus(d.sent), new BigNumber(0));
@@ -151,6 +119,9 @@ const TransactionSummary = (props: Props) => {
                                     account={props.account}
                                     isLoading={isLoading}
                                     data={data}
+                                    onRefresh={() =>
+                                        updateGraphData([props.account], selectedRange)
+                                    }
                                     selectedRange={selectedRange}
                                     onSelectedRange={setSelectedRange}
                                     receivedValueFn={data => data.received}

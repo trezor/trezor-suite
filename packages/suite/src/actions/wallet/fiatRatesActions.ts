@@ -5,8 +5,8 @@ import {
     getFiatRatesForTimestamps,
     fetchLastWeekRates,
 } from '@suite/services/coingecko';
-import { isTestnet, formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { splitTimestampsByInterval, getBlockbookSafeTime, resetTime } from '@suite-utils/date';
+import { isTestnet } from '@wallet-utils/accountUtils';
+import { splitTimestampsByInterval, getBlockbookSafeTime } from '@suite-utils/date';
 import { FIAT } from '@suite-config';
 import { Dispatch, GetState } from '@suite-types';
 import {
@@ -22,12 +22,10 @@ import {
     WalletAccountTransaction,
     FiatTicker,
 } from '@wallet-types';
-import { AggregatedAccountBalanceHistory } from '@wallet-types/fiatRates';
-import { sumFiatValueMap, calcFiatValueMap } from '@wallet-utils/fiatConverterUtils';
 
 type FiatRatesPayload = NonNullable<CoinFiatRates['current']>;
 
-export type FiatRateActions =
+export type FiatRatesActions =
     | {
           type: typeof RATE_UPDATE;
           payload: FiatRatesPayload;
@@ -202,7 +200,6 @@ export const updateLastWeekRates = () => async (dispatch: Dispatch, getState: Ge
         // no rates for localCurrency
         return null;
     };
-    console.log('last week timestamps', timestamps);
 
     const staleTickers = dispatch(getStaleTickers(lastWeekStaleFn, MAX_AGE_LAST_WEEK));
 
@@ -215,7 +212,6 @@ export const updateLastWeekRates = () => async (dispatch: Dispatch, getState: Ge
             const results = response.success
                 ? response.payload
                 : await fetchLastWeekRates(ticker, localCurrency);
-            console.log('connect', response?.payload);
 
             if (results?.tickers) {
                 dispatch({
@@ -272,115 +268,6 @@ export const updateTxsRates = (account: Account, txs: AccountTransaction[]) => a
     } catch (error) {
         console.error(error);
     }
-};
-
-/**
- * Fetch the account history (received, sent amounts, num of txs) for the given `startDate`, `endDate`.
- * Returned data are grouped by `groupBy` seconds
- * No XRP support
- *
- * @param {Account} account
- * @param {Date} startDate
- * @param {Date} endDate
- * @param {number} groupBy
- * @returns
- */
-export const fetchAccountHistory = async (
-    account: Account,
-    startDate: Date,
-    endDate: Date,
-    groupBy: number,
-) => {
-    const secondsInMonth = 3600 * 24 * 30;
-    const setDayToFirstOfMonth = groupBy >= secondsInMonth;
-    const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
-        coin: account.symbol,
-        descriptor: account.descriptor,
-        from: getUnixTime(startDate),
-        to: getUnixTime(endDate),
-        groupBy,
-    });
-
-    if (response?.success) {
-        return response.payload.map(h => ({
-            ...h,
-            received: formatNetworkAmount(h.received, account.symbol),
-            sent: formatNetworkAmount(h.sent, account.symbol),
-            time: resetTime(h.time, setDayToFirstOfMonth), // adapts to local timezone
-        }));
-    }
-    return null;
-};
-
-/**
- * Fetch aggregated history (received, sent amounts, num of txs) for given accounts.
- * Total sent/received amounts are aggregated and returned as an object indexed by fiat currency symbol.
- * Returned data are grouped by `groupBy` seconds
- * No XRP support
- *
- * @param {Account[]} accounts
- * @param {Date} startDate
- * @param {Date} endDate
- * @param {number} groupBy
- * @returns
- */
-export const fetchAggregatedHistory = async (
-    accounts: Account[],
-    startDate: Date,
-    endDate: Date,
-    groupBy: number,
-    ignoreTestnets?: boolean,
-): Promise<AggregatedAccountBalanceHistory[]> => {
-    const filteredAccounts = ignoreTestnets ? accounts.filter(a => !isTestnet(a.symbol)) : accounts;
-
-    console.log('fetching ts', getUnixTime(startDate), getUnixTime(endDate));
-
-    const promises = filteredAccounts.map(account =>
-        fetchAccountHistory(account, startDate, endDate, groupBy),
-    );
-    const responses = await Promise.all(promises);
-
-    const enhancedHistory = responses
-        .map((accountHistory, _i) => {
-            if (accountHistory && accountHistory.length > 0) {
-                // const { symbol } = accounts[i];
-                const enhancedResponse = accountHistory.map(h => ({
-                    ...h,
-                    receivedFiat: calcFiatValueMap(h.received, h.rates || {}),
-                    sentFiat: calcFiatValueMap(h.sent, h.rates || {}),
-                }));
-                return enhancedResponse;
-            }
-            return null;
-        })
-        .filter(t => t !== null);
-
-    const flattedHistory: NonNullable<typeof enhancedHistory[number]> = enhancedHistory.flat();
-    console.log('flattedHistory', flattedHistory);
-
-    const groupedByTimestamp: { [key: string]: typeof flattedHistory } = {};
-    flattedHistory.forEach(dataPoint => {
-        if (!dataPoint) return;
-        if (!groupedByTimestamp[dataPoint.time]) {
-            groupedByTimestamp[dataPoint.time] = [];
-        }
-        groupedByTimestamp[dataPoint.time].push(dataPoint);
-    });
-
-    const aggregatedData = Object.keys(groupedByTimestamp).map(timestamp => {
-        const dataPoints = groupedByTimestamp[timestamp];
-
-        return {
-            time: Number(timestamp),
-            txs: dataPoints.reduce((acc, h) => acc + h.txs, 0),
-            sentFiat: dataPoints.reduce((acc, h) => sumFiatValueMap(acc, h.sentFiat), {}),
-            receivedFiat: dataPoints.reduce((acc, h) => sumFiatValueMap(acc, h.receivedFiat), {}),
-            rates: {},
-        };
-    });
-
-    console.log('results', aggregatedData);
-    return aggregatedData;
 };
 
 export const onUpdateRate = (res: BlockchainFiatRatesUpdate) => async (dispatch: Dispatch) => {

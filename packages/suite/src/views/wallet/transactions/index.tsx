@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Translation } from '@suite-components/Translation';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Translation } from '@suite-components/Translation';
+import { SETTINGS } from '@suite-config';
 import { colors, Loader } from '@trezor/components';
 import { WalletLayout } from '@wallet-components';
 import { getAccountTransactions, isTestnet } from '@wallet-utils/accountUtils';
-import { SETTINGS } from '@suite-config';
-import TransactionList from './components/TransactionList';
-
+import { accountGraphDataFilterFn } from '@wallet-utils/graphUtils';
 import NoTransactions from './components/NoTransactions';
 import PricePanel from './components/PricePanel';
-import TransactionSummary from './components/TransactionSummary';
 import TokenList from './components/TokenList';
-
+import TransactionList from './components/TransactionList';
+import TransactionSummary from './components/TransactionSummary';
 import { Props } from './Container';
 
 const LoaderWrapper = styled.div`
@@ -42,6 +41,7 @@ export default (props: Props) => {
 
     const { account, network } = selectedAccount;
 
+    const accountGraphData = props.graph.data.filter(d => accountGraphDataFilterFn(d, account));
     const accountTransactions = getAccountTransactions(transactions.transactions, account);
     const { size = undefined, total = undefined } = account.page || {};
 
@@ -69,7 +69,13 @@ export default (props: Props) => {
             )}
             {accountTransactions.length > 0 && (
                 <>
-                    {account.networkType !== 'ripple' && <TransactionSummary account={account} />}
+                    {account.networkType !== 'ripple' && (
+                        <TransactionSummary
+                            account={account}
+                            graphData={accountGraphData}
+                            updateGraphData={props.updateGraphData}
+                        />
+                    )}
                     {account.networkType === 'ethereum' && (
                         <TokenList
                             isTestnet={isTestnet(account.symbol)}

@@ -1,16 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables, Loader } from '@trezor/components';
+import { colors, variables, Loader, Icon } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { GraphRange, AggregatedAccountBalanceHistory } from '@wallet-types/fiatRates';
 import { BarChart, Tooltip, Bar, ReferenceLine, ResponsiveContainer, YAxis, XAxis } from 'recharts';
-import { fetchAccountHistory } from '@suite/actions/wallet/fiatRatesActions';
-import { Await } from '@suite/types/utils';
 import RangeSelector from './components/RangeSelector';
 import CustomTooltip from './components/CustomTooltip';
 import CustomXAxisTick from './components/CustomXAxisTick';
 import CustomYAxisTick from './components/CustomYAxisTick';
 import CustomBar from './components/CustomBar';
+import { BlockchainAccountBalanceHistory } from 'trezor-connect';
 
 const Wrapper = styled.div`
     display: flex;
@@ -18,6 +17,12 @@ const Wrapper = styled.div`
     width: 100%;
     font-size: ${variables.FONT_SIZE.TINY};
     white-space: nowrap;
+`;
+
+const Toolbar = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 `;
 
 const Description = styled.div`
@@ -28,13 +33,18 @@ const Description = styled.div`
     flex: 1;
 `;
 
-type AccountHistory = NonNullable<Await<ReturnType<typeof fetchAccountHistory>>>;
+const RefreshIcon = styled(Icon)`
+    cursor: pointer;
+`;
+
+type AccountHistory = BlockchainAccountBalanceHistory[];
 
 interface CommonProps {
     isLoading?: boolean;
     selectedRange: GraphRange;
     xTicks: number[];
     onSelectedRange: (range: GraphRange) => void;
+    onRefresh?: () => void;
 }
 interface CryptoGraphProps extends CommonProps {
     variant: 'one-asset';
@@ -79,7 +89,20 @@ const TransactionsGraph = React.memo((props: Props) => {
 
     return (
         <Wrapper>
-            <RangeSelector selectedRange={selectedRange} onSelectedRange={props.onSelectedRange} />
+            <Toolbar>
+                <RangeSelector
+                    selectedRange={selectedRange}
+                    onSelectedRange={props.onSelectedRange}
+                />
+                {props.onRefresh && (
+                    <RefreshIcon
+                        size={14}
+                        icon="REFRESH"
+                        hoverColor={colors.BLACK0}
+                        onClick={() => (props.onRefresh ? props.onRefresh() : undefined)}
+                    />
+                )}
+            </Toolbar>
             <Description>
                 {isLoading && <Loader size={24} />}
                 {!isLoading && data && data.length === 0 && <>No transactions to show</>}

@@ -1,13 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { GraphRange } from '@wallet-types/fiatRates';
 import { TransactionsGraph } from '@suite-components';
 import { Props } from './Container';
-import { Await } from '@suite/types/utils';
-import { fetchAggregatedHistory } from '@suite/actions/wallet/fiatRatesActions';
-import { subWeeks, getUnixTime } from 'date-fns';
+import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 import { calcTicks } from '@suite/utils/suite/date';
-import { colors, variables } from '@trezor/components';
+import { colors, variables, Button } from '@trezor/components';
+import { aggregateBalanceHistory, deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
+import { SETTINGS } from '@suite-config';
+
+const Wrapper = styled.div`
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+`;
 
 const GraphWrapper = styled.div`
     display: flex;
@@ -19,74 +25,91 @@ const GraphWrapper = styled.div`
 const ErrorMessage = styled.div`
     display: flex;
     width: 100%;
-    padding: 32px;
+    padding: 20px;
     align-items: center;
     justify-content: center;
     color: ${colors.BLACK50};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
-type AccountHistory = NonNullable<Await<ReturnType<typeof fetchAggregatedHistory>>>;
+// const SmallErrorMessage = styled.div`
+//     display: flex;
+//     padding: 16px;
+//     padding-top: 0px;
+//     color: ${colors.BLACK50};
+//     font-size: ${variables.FONT_SIZE.TINY};
+// `;
 
 const DashboardGraph = (props: Props) => {
-    const { discoveryInProgress, accounts } = props;
-    const [data, setData] = useState<AccountHistory | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(false);
-    const [selectedRange, setSelectedRange] = useState<GraphRange>({
-        label: 'year',
-        weeks: 52,
-    });
-
-    useEffect(() => {
-        let isSubscribed = true; // to make sure we are not updating state after component unmount
-        const fetchData = async () => {
-            if (isSubscribed) setIsLoading(true);
-            const startDate = subWeeks(new Date(), selectedRange.weeks);
-            const endDate = new Date();
-            const secondsInDay = 3600 * 24;
-            const secondsInMonth = secondsInDay * 30;
-            const groupBy = selectedRange.weeks >= 52 ? secondsInMonth : secondsInDay;
-            const res = await fetchAggregatedHistory(accounts, startDate, endDate, groupBy, true);
-
-            if (res && isSubscribed) {
-                setData(res);
-            } else {
-                setError(true);
-            }
-            setIsLoading(false);
-        };
-
-        if (!discoveryInProgress && selectedRange && accounts.length > 0) {
-            setData(null);
-            setIsLoading(false);
-            setError(false);
-            fetchData();
-        }
-        return () => {
-            isSubscribed = false;
-        };
-    }, [accounts, selectedRange, setData, discoveryInProgress]);
+    const { accounts, updateGraphData, selectedDevice } = props;
+    const failedAccounts = props.graph.error;
+    const { isLoading } = props.graph;
+    const [selectedRange, setSelectedRange] = useState<GraphRange>(SETTINGS.DEFAULT_GRAPH_RANGE);
+    const didMountRef = useRef(false);
 
     const xTicks = calcTicks(selectedRange.weeks).map(getUnixTime);
+    const deviceGraphData = selectedDevice
+        ? props.graph.data.filter(
+              d =>
+                  deviceGraphDataFilterFn(d, selectedDevice.state) &&
+                  d.interval === selectedRange.label,
+          )
+        : [];
+
+    const data = aggregateBalanceHistory(deviceGraphData);
+    const dataLength = data.length;
+
+    useEffect(() => {
+        if (didMountRef.current) {
+            // console.log('running use effect', accounts, selectedRange);
+            if (dataLength === 0) {
+                updateGraphData(accounts, selectedRange);
+            }
+        } else {
+            didMountRef.current = true;
+        }
+    }, [accounts, dataLength, selectedRange, updateGraphData]);
 
     return (
-        <GraphWrapper>
-            {error && <ErrorMessage>Could not load data</ErrorMessage>}
-            {!error && (
-                <TransactionsGraph
-                    variant="all-assets"
-                    isLoading={isLoading}
-                    localCurrency={props.localCurrency}
-                    xTicks={xTicks}
-                    data={data}
-                    selectedRange={selectedRange}
-                    onSelectedRange={setSelectedRange}
-                    receivedValueFn={data => data.receivedFiat[props.localCurrency]}
-                    sentValueFn={data => data.sentFiat[props.localCurrency]}
-                />
-            )}
-        </GraphWrapper>
+        <Wrapper>
+            <GraphWrapper>
+                {failedAccounts && failedAccounts.length === accounts.length ? (
+                    <ErrorMessage>
+                        Could not load data{' '}
+                        <Button
+                            onClick={() => {
+                                props.updateGraphData(accounts, selectedRange);
+                            }}
+                            icon="REFRESH"
+                            variant="tertiary"
+                            size="small"
+                        >
+                            Retry
+                        </Button>
+                    </ErrorMessage>
+                ) : (
+                    <TransactionsGraph
+                        variant="all-assets"
+                        onRefresh={() => {
+                            props.updateGraphData(accounts, selectedRange);
+                        }}
+                        isLoading={isLoading}
+                        localCurrency={props.localCurrency}
+                        xTicks={xTicks}
+                        data={data}
+                        selectedRange={selectedRange}
+                        onSelectedRange={setSelectedRange}
+                        receivedValueFn={data => data.receivedFiat[props.localCurrency]}
+                        sentValueFn={data => data.sentFiat[props.localCurrency]}
+                    />
+                )}
+            </GraphWrapper>
+            {/* {failedAccounts && failedAccounts.length > 0 && (
+                <SmallErrorMessage>
+                    *Data for {failedAccounts.length} accounts could not be loaded
+                </SmallErrorMessage>
+            )} */}
+        </Wrapper>
     );
 };
 
