@@ -1,5 +1,5 @@
 import Section from './components/Section';
-import SectionHeader from './components/SectionHeader';
+import SectionItem from './components/SectionItem';
 import TextColumn from './components/TextColumn';
 import { ActionColumn, ActionButton, ActionInput, ActionSelect } from './components/ActionColumn';
 import Row from './components/Row';
@@ -7,7 +7,7 @@ import Analytics from './components/Analytics';
 
 export {
     Section,
-    SectionHeader,
+    SectionItem,
     TextColumn,
     ActionColumn,
     Row,

@@ -1,26 +1,30 @@
 import axios from 'axios';
 import { Post } from './types';
+import parser from 'fast-xml-parser';
 import { FEED_URL } from './config';
 import cheerio from 'cheerio';
 
-const cleanData = (data: any, limit = 5) => {
+const getPosts = (data: any, limit = 5) => {
+    const posts = data.rss.channel.item;
     const result: Post[] = [];
 
     if (data.length < 1) {
         return null;
     }
 
-    for (let i = 0; i < data.length; i++) {
+    for (let i = 0; i < posts.length; i++) {
         if (result.length >= limit) break;
-        const { title, thumbnail, pubDate, link, description } = data[i];
-        const $ = cheerio.load(description);
+
+        const { title, pubDate, link } = posts[i];
+        const $ = cheerio.load(posts[i]['content:encoded']);
+
         if (link.includes('blog.trezor.io')) {
             result.push({
                 title,
-                thumbnail,
+                description: $('p').first().text(),
+                thumbnail: $('img').first().attr('src'),
                 pubDate,
                 link,
-                description: $('p').first().text(),
             });
         }
     }
@@ -35,9 +39,13 @@ export default async (
     axios
         .get(FEED_URL)
         .then(response => {
-            const data = response.data.items;
-            const parsedData = cleanData(data, limit);
-            callback(200, JSON.stringify(parsedData));
+            try {
+                const data = parser.parse(response.data, {}, true);
+                const posts = getPosts(data, limit);
+                callback(200, JSON.stringify(posts));
+            } catch (err) {
+                callback(500, null, err.message);
+            }
         })
         .catch(error => callback(500, null, error.message));
 };

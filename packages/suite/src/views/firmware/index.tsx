@@ -8,12 +8,11 @@ import * as firmwareActions from '@firmware-actions/firmwareActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { InjectedModalApplicationProps, Dispatch, AppState } from '@suite-types';
 import { getFwVersion } from '@suite-utils/device';
-import { ProgressBar } from '@suite-components';
+import { ProgressBar, Translation } from '@suite-components';
 import Image from '@suite-components/images/Image';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import { InitImg, SuccessImg } from '@firmware-components';
 import { Loaders } from '@onboarding-components';
-
 import { CHANGELOG_URL } from '@suite-constants/urls';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;
@@ -110,9 +109,13 @@ const WhatsNewLink = styled(Link)`
     margin-top: 12px;
 `;
 
+const StyledImage = styled(Image)`
+    flex: 1;
+`;
+
 const CloseButton = (props: ButtonProps) => (
     <StyledButton {...props} data-test="@firmware/close-button" variant="tertiary" icon="CROSS">
-        Exit
+        <Translation id="TR_CLOSE" />
     </StyledButton>
 );
 
@@ -149,31 +152,36 @@ const Firmware = ({
 
     const btcOnlyAvailable = device?.features && device.firmwareRelease.release.url_bitcoinonly;
 
-    const statesInProgessBar = [
+    const statesInProgressBar = [
         'initial',
         'check-seed',
         'waiting-for-bootloader',
         ['waiting-for-confirmation', 'installing', 'started', 'downloading'],
+        ['wait-for-reboot', 'unplug'],
         ['done', 'partially-done', 'error'],
     ];
 
     const getTextForStatus = () => {
         switch (firmware.status) {
             case 'waiting-for-confirmation':
-                return 'waiting for confirmation';
+                return 'TR_WAITING_FOR_CONFIRMATION';
             case 'installing':
-                return 'installing';
+                return 'TR_INSTALLING';
             case 'started':
-                return 'started';
+                return 'TR_STARTED';
             case 'downloading':
-                return 'downloading';
+                return 'TR_DOWNLOADING';
+            case 'wait-for-reboot':
+                return 'TR_WAIT_FOR_REBOOT';
+            case 'unplug':
+                return 'TR_DISCONNECT_YOUR_DEVICE';
             default:
                 throw new Error('this state does not have human readable variant');
         }
     };
 
     const getCurrentStep = () => {
-        return statesInProgessBar.findIndex(s => {
+        return statesInProgressBar.findIndex(s => {
             if (Array.isArray(s)) {
                 return s.includes(firmware.status);
             }
@@ -185,9 +193,11 @@ const Firmware = ({
     if (firmware.status === 'error') {
         return (
             <Wrapper>
-                <H2>Holy guacamole! We got an error!</H2>
+                <H2>
+                    <Translation id="TR_FIRMWARE_INSTALL_FAILED_HEADER" />
+                </H2>
                 <StyledP>{firmware.error}</StyledP>
-                <Image image="UNI_ERROR" />
+                <StyledImage image="UNI_ERROR" />
                 <Buttons>
                     <Col>
                         <CloseButton onClick={onClose} />
@@ -197,23 +207,32 @@ const Firmware = ({
         );
     }
 
-    if (!device || !device.features) {
+    if (!device || !device.features || !device?.connected) {
         return (
             <Wrapper>
                 {firmware.status === 'waiting-for-bootloader' && (
                     <>
-                        <ProgressBar total={statesInProgessBar.length} current={getCurrentStep()} />
-                        <H2>Reconnect your device in bootloader mode</H2>
+                        <ProgressBar
+                            total={statesInProgressBar.length}
+                            current={getCurrentStep()}
+                        />
+                        <H2>
+                            <Translation id="TR_RECONNECT_IN_BOOTLOADER" />
+                        </H2>
                         <StyledP data-test="@firmware/connect-message">
-                            swipe your finger accross the touchscreen while connecting cable
+                            <Translation id="TR_SWIPE_YOUR_FINGERS" />
                         </StyledP>
                         <InitImg model={2} />
                     </>
                 )}
                 {firmware.status !== 'waiting-for-bootloader' && (
                     <>
-                        <H2>No device</H2>
-                        <StyledP>No device connected </StyledP>
+                        <H2>
+                            <Translation id="TR_NO_DEVICE" />
+                        </H2>
+                        <StyledP>
+                            <Translation id="TR_NO_DEVICE_CONNECTED" />
+                        </StyledP>
                     </>
                 )}
                 <Buttons>
@@ -230,14 +249,22 @@ const Firmware = ({
     if (!device.firmwareRelease) {
         return (
             <Wrapper>
-                <H2>Firmware is up to date.</H2>
+                <H2>
+                    <Translation id="TR_FIRMWARE_IS_UP_TO_DATE" />
+                </H2>
                 <StyledP>
-                    Great! Your firmware is up to date and no further action is needed. Check our
-                    blog for updates or come here later.
+                    <Translation id="TR_FIRMWARE_INSTALLED_TEXT" />
                 </StyledP>
-                <P size="normal">version {getFwVersion(device)}</P>
+                <P size="normal">
+                    <Translation
+                        id="TR_YOUR_CURRENT_FIRMWARE"
+                        values={{ version: getFwVersion(device) }}
+                    />
+                </P>
 
-                <WhatsNewLink href={CHANGELOG_URL}>What's new</WhatsNewLink>
+                <WhatsNewLink href={CHANGELOG_URL}>
+                    <Translation id="TR_WHATS_NEW" />
+                </WhatsNewLink>
                 <Image image="UNI_SUCCESS" />
                 <Buttons>
                     <Col>
@@ -252,18 +279,19 @@ const Firmware = ({
 
     return (
         <Wrapper>
-            <ProgressBar total={statesInProgessBar.length} current={getCurrentStep()} />
+            <ProgressBar total={statesInProgressBar.length} current={getCurrentStep()} />
 
             {firmware.status === 'initial' && (
                 <>
-                    <H2>Firmware update</H2>
+                    <H2>
+                        <Translation id="TR_FIRMWARE_HEADING" />
+                    </H2>
 
                     {/* we can not show changelog if device is in bootloader mode */}
                     {device.mode === 'bootloader' && (
                         <>
                             <StyledP>
-                                Your device is in bootloader mode. Reconnect it to normal mode to
-                                continue.
+                                <Translation id="TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER" />
                             </StyledP>
                             <Buttons>
                                 <CloseButton onClick={onClose} />
@@ -273,17 +301,25 @@ const Firmware = ({
                     {device.mode !== 'bootloader' && (
                         <>
                             <StyledP>
-                                To keep your Trezor up to date we recommend updating your device.
-                                Check what’s new:
+                                <Translation id="TR_TO_KEEP_YOUR_TREZOR" />
                             </StyledP>
                             <FromVersionToVersion>
-                                <FromVersion>version {getFwVersion(device)}</FromVersion>
+                                <FromVersion>
+                                    <Translation id="TR_VERSION" /> {getFwVersion(device)}
+                                </FromVersion>
                                 <BetweenVersionArrow>→</BetweenVersionArrow>
                                 <ToVersion>
-                                    version {firmwareRelease.release.version.join('.')}
+                                    <Translation id="TR_VERSION" />{' '}
+                                    {firmwareRelease.release.version.join('.')}
                                 </ToVersion>
-                                <Badge>NEW</Badge>
-                                {firmware.btcOnly && <Badge>BTC only</Badge>}
+                                <Badge>
+                                    <Translation id="TR_NEW_LABEL" />
+                                </Badge>
+                                {firmware.btcOnly && (
+                                    <Badge>
+                                        <Translation id="TR_BTC_ONLY_LABEL" />
+                                    </Badge>
+                                )}
                             </FromVersionToVersion>
 
                             {device.firmwareRelease.changelog?.length > 0 && (
@@ -299,20 +335,31 @@ const Firmware = ({
 
                             {btcOnlyAvailable && !firmware.btcOnly && (
                                 <StyledP>
-                                    Alternatively, you may install{' '}
-                                    <WhatsNewLink onClick={toggleBtcOnly}>
-                                        Btc only firmware
-                                    </WhatsNewLink>
+                                    <Translation
+                                        id="TR_ALTERNATIVELY_YOU_MAY_INSTALL"
+                                        values={{
+                                            TR_FIRMWARE_TYPE: (
+                                                <WhatsNewLink onClick={toggleBtcOnly}>
+                                                    <Translation id="TR_FIRMWARE_TYPE_BTC_ONLY" />
+                                                </WhatsNewLink>
+                                            ),
+                                        }}
+                                    />
                                 </StyledP>
                             )}
 
                             {btcOnlyAvailable && firmware.btcOnly && (
                                 <StyledP>
-                                    Alternatively, you may switch to{' '}
-                                    <WhatsNewLink onClick={toggleBtcOnly}>
-                                        full-featured firmware
-                                    </WhatsNewLink>{' '}
-                                    from bitcoin-only
+                                    <Translation
+                                        id="TR_ALTERNATIVELY_YOU_MAY_INSTALL"
+                                        values={{
+                                            TR_FIRMWARE_TYPE: (
+                                                <WhatsNewLink onClick={toggleBtcOnly}>
+                                                    <Translation id="TR_FIRMWARE_TYPE_FULL" />
+                                                </WhatsNewLink>
+                                            ),
+                                        }}
+                                    />
                                 </StyledP>
                             )}
 
@@ -322,7 +369,7 @@ const Firmware = ({
                                         onClick={() => setStatus('check-seed')}
                                         data-test="@firmware/start-button"
                                     >
-                                        Start
+                                        <Translation id="TR_START" />
                                     </StyledButton>
                                     <CloseButton onClick={onClose} />
                                 </Col>
@@ -334,11 +381,11 @@ const Firmware = ({
 
             {firmware.status === 'check-seed' && (
                 <>
-                    <H2>Security checkpoint - got a seed?</H2>
+                    <H2>
+                        <Translation id="TR_SECURITY_CHECKPOINT_GOT_SEED" />
+                    </H2>
                     <StyledP>
-                        Before any further actions, please make sure that you have your recovery
-                        seed. Either safely stored or even with you as of now. In any case of
-                        improbable emergency.
+                        <Translation id="TR_BEFORE_ANY_FURTHER_ACTIONS" />
                     </StyledP>
                     <SeedImg image="RECOVER_FROM_SEED" />
                     <Buttons>
@@ -347,7 +394,7 @@ const Firmware = ({
                                 onClick={() => setStatus('waiting-for-bootloader')}
                                 data-test="@firmware/confirm-seed-button"
                             >
-                                Start
+                                <Translation id="TR_START" />
                             </StyledButton>
                             <CloseButton onClick={onClose} />
                         </Col>
@@ -359,9 +406,11 @@ const Firmware = ({
                 <>
                     {device && device.mode !== 'bootloader' && (
                         <>
-                            <H2>Connect your device in bootloader mode</H2>
+                            <H2>
+                                <Translation id="TR_RECONNECT_IN_BOOTLOADER" />
+                            </H2>
                             <StyledP data-test="@firmware/disconnect-message">
-                                Ok, now disconnect your device
+                                <Translation id="TR_DISCONNECT_YOUR_DEVICE" />
                             </StyledP>
 
                             <Image image="CONNECT_DEVICE" />
@@ -372,13 +421,15 @@ const Firmware = ({
                     )}
                     {device && device.mode === 'bootloader' && (
                         <>
-                            <H2>Let's unleash the kraken</H2>
+                            <H2>
+                                <Translation id="TR_START" />
+                            </H2>
                             <InitImg model={model} />
 
                             <Buttons>
                                 <Col>
                                     <StyledButton onClick={() => firmwareUpdate()}>
-                                        Start
+                                        <Translation id="TR_START" />
                                     </StyledButton>
                                     <CloseButton onClick={onClose} />
                                 </Col>
@@ -388,12 +439,17 @@ const Firmware = ({
                 </>
             )}
 
-            {['waiting-for-confirmation', 'installing', 'started', 'downloading'].includes(
-                firmware.status,
-            ) && (
+            {[
+                'waiting-for-confirmation',
+                'installing',
+                'started',
+                'downloading',
+                'wait-for-reboot',
+                'unplug',
+            ].includes(firmware.status) && (
                 <>
                     <H2>
-                        {getTextForStatus()}
+                        <Translation id={getTextForStatus()} />
                         <Loaders.Dots />
                     </H2>
                     <InitImg model={model} />
@@ -402,8 +458,12 @@ const Firmware = ({
 
             {firmware.status === 'partially-done' && (
                 <>
-                    <H2>Firmware partially upgraded</H2>
-                    <StyledP>But there is still another upgrade ahead!</StyledP>
+                    <H2>
+                        <Translation id="TR_FIRMWARE_PARTIALLY_UPDATED" />
+                    </H2>
+                    <StyledP>
+                        <Translation id="TR_BUT_THERE_IS_ANOTHER_UPDATE" />
+                    </StyledP>
                     <SuccessImg model={model} />
 
                     <Buttons>
@@ -412,7 +472,7 @@ const Firmware = ({
                                 onClick={() => resetReducer()}
                                 data-test="@modal/firmware/reset-button"
                             >
-                                Ok let's do it
+                                <Translation id="TR_START" />
                             </StyledButton>
                         </Col>
                     </Buttons>
@@ -420,12 +480,16 @@ const Firmware = ({
             )}
             {firmware.status === 'done' && (
                 <>
-                    <H2>Success</H2>
+                    <H2>
+                        <Translation id="TR_SUCCESS" />
+                    </H2>
                     <SuccessImg model={model} />
 
                     <Buttons>
                         <Col>
-                            <StyledButton onClick={onClose}>Ok</StyledButton>
+                            <StyledButton onClick={onClose}>
+                                <Translation id="TR_CONTINUE" />
+                            </StyledButton>
                         </Col>
                     </Buttons>
                 </>

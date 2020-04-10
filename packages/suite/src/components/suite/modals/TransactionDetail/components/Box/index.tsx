@@ -1,14 +1,54 @@
+import React from 'react';
 import styled from 'styled-components';
+import { Network } from '@suite/types/wallet';
+import { CoinLogo } from '@trezor/components';
 
-const COLOR_BORDER = '#E6E6E6';
+const COLOR_BORDER = '#ccc';
 
-const Box = styled.div`
-    border-radius: 3px;
-    border: solid 2px ${COLOR_BORDER};
+const StyledBox = styled.div`
+    border-radius: 4px;
+    border: solid 1px ${COLOR_BORDER};
 
     & + & {
         margin-top: 20px;
     }
 `;
+
+const LogoWrapper = styled.div`
+    position: relative;
+    display: flex;
+    justify-content: center;
+`;
+
+const WhiteCircle = styled.div`
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -24px;
+    padding: 3px;
+    background: white;
+    border-radius: 50%;
+`;
+
+interface Props {
+    children?: React.ReactNode;
+    coinLogo?: Network['symbol'];
+}
+
+const Box = (props: Props) => {
+    return (
+        <StyledBox>
+            {props.coinLogo && (
+                <LogoWrapper>
+                    <WhiteCircle>
+                        <CoinLogo size={32} symbol={props.coinLogo} />
+                    </WhiteCircle>
+                </LogoWrapper>
+            )}
+            {props.children}
+        </StyledBox>
+    );
+};
 
 export default Box;

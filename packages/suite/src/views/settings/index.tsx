@@ -1,25 +1,21 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import styled from 'styled-components';
-import { SUITE } from '@suite-actions/constants';
-import { Translation } from '@suite-components';
 import { SettingsLayout } from '@settings-components';
+import { SUITE } from '@suite-actions/constants';
+import { H2 } from '@trezor/components';
+import { Translation } from '@suite-components';
 import {
-    Section,
-    ActionColumn,
-    Row,
-    TextColumn,
-    ActionSelect,
     ActionButton,
+    ActionColumn,
+    ActionSelect,
     Analytics,
+    SectionItem,
+    Section,
+    TextColumn,
 } from '@suite-components/Settings';
-import { AppState, Dispatch } from '@suite-types';
 import { FIAT, LANGUAGES } from '@suite-config';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import * as storageActions from '@suite-actions/storageActions';
-import * as languageActions from '@settings-actions/languageActions';
-import * as routerActions from '@suite-actions/routerActions';
+import React from 'react';
+import styled from 'styled-components';
+
+import { Props } from './Container';
 
 const buildCurrencyOption = (currency: string) => {
     return {
@@ -28,27 +24,11 @@ const buildCurrencyOption = (currency: string) => {
     };
 };
 
-const mapStateToProps = (state: AppState) => ({
-    // device: state.suite.device,
-    locks: state.suite.locks,
-    wallet: state.wallet,
-    language: state.suite.settings.language,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    setLocalCurrency: bindActionCreators(walletSettingsActions.setLocalCurrency, dispatch),
-    clearStores: bindActionCreators(storageActions.clearStores, dispatch),
-    fetchLocale: bindActionCreators(languageActions.fetchLocale, dispatch),
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
-
-export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-
 const BottomContainer = styled.div`
     margin-top: auto;
 `;
 
-const Settings = ({
+export default ({
     locks,
     wallet,
     language,
@@ -61,8 +41,11 @@ const Settings = ({
 
     return (
         <SettingsLayout>
-            <Section header={<Translation id="TR_LANGUAGE" />}>
-                <Row>
+            <H2>
+                <Translation id="TR_GENERAL" />
+            </H2>
+            <Section title={<Translation id="TR_LANGUAGE" />}>
+                <SectionItem>
                     <TextColumn title={<Translation id="TR_LANGUAGE" />} />
                     <ActionColumn>
                         <ActionSelect
@@ -81,11 +64,11 @@ const Settings = ({
                             }) => fetchLocale(option.value)}
                         />
                     </ActionColumn>
-                </Row>
+                </SectionItem>
             </Section>
 
-            <Section header={<Translation id="TR_CURRENCY" />}>
-                <Row>
+            <Section title={<Translation id="TR_CURRENCY" />}>
+                <SectionItem>
                     <TextColumn title={<Translation id="TR_PRIMARY_FIAT" />} />
                     <ActionColumn>
                         <ActionSelect
@@ -93,17 +76,17 @@ const Settings = ({
                             onChange={(option: { value: string; label: string }) =>
                                 setLocalCurrency(option.value)
                             }
-                            value={buildCurrencyOption(wallet.settings.localCurrency)}
+                            value={() => buildCurrencyOption(wallet.settings.localCurrency)}
                             options={FIAT.currencies.map(c => buildCurrencyOption(c))}
                             isDisabled={uiLocked}
                         />
                     </ActionColumn>
-                </Row>
+                </SectionItem>
             </Section>
 
             {/* TODO: KEEP IT HERE AND UNCOMMENT WHEN READY */}
             {/* <Section header={<Translation id="TR_LABELING" />}>
-                <Row>
+                <SectionItem>
                     <TextColumn title={<Translation id="TR_CONNECT_DROPBOX} />" />
                     <ActionColumn>
                         <ActionButton
@@ -114,14 +97,14 @@ const Settings = ({
                             <Translation id="TR_CONNECT_DROPBOX" />
                         </ActionButton>
                     </ActionColumn>
-                </Row>
+                </SectionItem>
             </Section> */}
 
             <Analytics />
 
             <BottomContainer>
                 <Section>
-                    <Row>
+                    <SectionItem>
                         <TextColumn
                             title={<Translation id="TR_SUITE_STORAGE" />}
                             description={<Translation id="TR_CLEAR_STORAGE_DESCRIPTION" />}
@@ -149,29 +132,35 @@ const Settings = ({
                                 <Translation id="TR_CLEAR_STORAGE" />
                             </ActionButton>
                         </ActionColumn>
-                    </Row>
+                    </SectionItem>
                 </Section>
 
                 <Section>
-                    <Row>
+                    <SectionItem>
                         <TextColumn
                             title={<Translation id="TR_SUITE_VERSION" />}
-                            description={<Translation id="TR_YOUR_CURRENT_VERSION" />}
+                            description={
+                                <Translation
+                                    id="TR_YOUR_CURRENT_VERSION"
+                                    values={{
+                                        version: 'internal alfa release',
+                                    }}
+                                />
+                            }
                         />
                         <ActionColumn>
-                            <ActionButton
+                            {/* todo: Button hidden as it does nothing. But still keep info with version here */}
+                            {/* <ActionButton
                                 onClick={() => console.log('moo')}
                                 isDisabled={uiLocked}
                                 variant="secondary"
                             >
                                 <Translation id="TR_CHECK_FOR_UPDATES" />
-                            </ActionButton>
+                            </ActionButton> */}
                         </ActionColumn>
-                    </Row>
+                    </SectionItem>
                 </Section>
             </BottomContainer>
         </SettingsLayout>
     );
 };
-
-export default connect(mapStateToProps, mapDispatchToProps)(Settings);

@@ -5,6 +5,7 @@ import FocusLock from 'react-focus-lock';
 import { SUITE } from '@suite-actions/constants';
 import { Modal as ModalComponent } from '@trezor/components';
 import Loading from '@suite-components/Loading';
+import { SuiteLayout } from '@suite-components';
 import DiscoveryLoader from '@suite-components/DiscoveryLoader';
 import Modals from '@suite-components/modals';
 import * as routerActions from '@suite-actions/routerActions';
@@ -162,7 +163,7 @@ const Preloader = (props: Props) => {
                         />
                     </FocusLock>
                 </ModalComponent>
-                {props.children}
+                <SuiteLayout>{props.children}</SuiteLayout>
             </>
         );
     }
@@ -190,7 +191,7 @@ const Preloader = (props: Props) => {
                         </ModalWrapper>
                     </ModalComponent>
                 )}
-                {props.children}
+                <SuiteLayout>{props.children}</SuiteLayout>
             </>
         );
     }
@@ -199,7 +200,7 @@ const Preloader = (props: Props) => {
     return (
         <>
             <Modals />
-            {props.children}
+            <SuiteLayout>{props.children}</SuiteLayout>
         </>
     );
 };

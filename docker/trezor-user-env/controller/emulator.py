@@ -28,15 +28,17 @@ def start(version):
     #     "T": (2, 1, 0),
     # }
 
-    path="./projects/suite-web/plugins/python/bin/"
+    # normalize path to be relative to this folder, not pwd
+    path = os.path.join(os.path.dirname(__file__), './bin')
+
     command=""
     if version[0] == "2":
-        command = path + "trezor-emu-core-v" + version + " -O0 -X heapsize=20M -m main"
+        command = path + "/trezor-emu-core-v" + version + " -O0 -X heapsize=20M -m main"
     else:
         # todo: currently we have only 1 legacy firmare. to make it work with debuglink,
         # custom build is neccessary as described here 
         # https://github.com/trezor/trezor-firmware/blob/master/docs/legacy/index.md
-        command = path + "trezor.elf -O0"
+        command = path + "/trezor.elf -O0"
 
         # todo: add more versions maybe
         # command = path + "trezor-emu-legacy-v" + version + " -O0"
@@ -67,14 +69,6 @@ def stop():
         proc = None
 
 
-def get_udp_device():
-    devices = UdpTransport.enumerate()
-    for d in devices:
-        # debugBridge = d.find_debug()
-        return d
-    raise RuntimeError("No debuggable udp device found")
-
-
 def get_bridge_device():
     devices = BridgeTransport.enumerate()
     print(devices)
@@ -95,11 +89,11 @@ def setup_device(mnemonic, pin, passphrase_protection, label):
     print(transport)
     client = TrezorClientDebugLink(transport)
     client.open()
+    time.sleep(0.6)
     device.wipe(client)
     debuglink.load_device_by_mnemonic(
         client, mnemonic=mnemonic, pin=pin, passphrase_protection=passphrase_protection, label=label)
     client.close()
-    # time.sleep(1)
 
 
 def wipe_device():

@@ -233,8 +233,8 @@ export const getSelectedAccount = (
     );
 };
 
-export const getSelectedNetwork = (networks: Network[], symbol: string) => {
-    return networks.find(c => c.symbol === symbol) || null;
+export const getNetwork = (symbol: string) => {
+    return NETWORKS.find(c => c.symbol === symbol) || null;
 };
 
 /**

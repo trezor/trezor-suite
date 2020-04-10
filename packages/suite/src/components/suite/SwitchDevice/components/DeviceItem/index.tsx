@@ -58,6 +58,7 @@ const Col = styled.div<{ grow?: number }>`
 
 const ChooseDevice = styled(Button)`
     font-size: ${variables.FONT_SIZE.BUTTON};
+    margin-left: 6px;
 `;
 
 const WalletsWrapper = styled.div<{ enabled: boolean }>`
@@ -175,6 +176,15 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                         </DeviceStatus>
                     </Col>
 
+                    {!isUnknown && hasDeviceSelection && (
+                        <ChooseDevice
+                            variant="secondary"
+                            onClick={() => selectDeviceInstance(device)}
+                        >
+                            <Translation id="TR_SELECT_DEVICE" />
+                        </ChooseDevice>
+                    )}
+
                     {needsAttention ? (
                         <Row>
                             <Attention>
@@ -197,20 +207,13 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                         <Button
                             variant="tertiary"
                             icon="SETTINGS"
-                            onClick={() => props.goto('settings-device')}
+                            onClick={() => {
+                                props.goto('settings-device');
+                                selectDeviceInstance(device);
+                            }}
                         >
                             <Translation id="TR_DEVICE_SETTINGS" />
                         </Button>
-                    )}
-
-                    {!isUnknown && hasDeviceSelection && (
-                        <ChooseDevice
-                            size="small"
-                            variant="secondary"
-                            onClick={() => selectDeviceInstance(device)}
-                        >
-                            <Translation id="TR_SELECT_DEVICE" />
-                        </ChooseDevice>
                     )}
                 </DeviceHeader>
             </Device>
@@ -246,6 +249,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                             device={device}
                             instances={props.instances}
                             addDeviceInstance={addDeviceInstance}
+                            selectDeviceInstance={selectDeviceInstance}
                         />
                     )}
                 </WalletsWrapper>

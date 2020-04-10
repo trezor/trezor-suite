@@ -5,6 +5,7 @@
     <script type="text/javascript">
         var ws;
         var id = 0;
+        var bridge = false;
 
         function init() {
             // Connect to Web Socket
@@ -46,9 +47,10 @@
             log.innerHTML = escaped + "<br>" + log.innerHTML;
         }
 
-        function emulatorStart() {
+        function emulatorStart(version) {
             _send({
-                type: 'emulator-start'
+                type: 'emulator-start',
+                version,
             });
         }
 
@@ -57,12 +59,7 @@
                 type: 'emulator-wipe'
             });
         }
-
-
-        // function emulatorErase() {
-        //     _send({ type: 'emulator-erase' });
-        // }
-
+    
         function emulatorSetup() {
             _send({
                 type: 'emulator-setup',
@@ -111,25 +108,70 @@
             );
             id++;
         }
+
+        // maybe not the best idea to bombard bridge with status requests. time will show.
+        function watchBridge() {
+            setInterval(() => {
+                getBridgeStatus().then(() => {
+                    writeBridgeStatus();
+                }, () => {
+                    writeBridgeStatus();
+                });
+            }, 3000)
+        }
+
+        function getBridgeStatus() {
+            return new Promise((resolve, reject) => {
+                fetch('http://127.0.0.1:21325/status/', { mode: 'no-cors'}).then(response => {
+                    bridge = true;
+                    resolve();
+                }, (error) => {
+                    bridge = false;
+                    reject()
+                })
+            })
+        }
+
+        function writeBridgeStatus(str) {
+            var el = document.getElementById("bridge-status");
+            if (bridge) {
+                el.innerHTML = "running";
+            } else {
+                el.innerHTML = "stopped";
+            }
+        }
+        watchBridge();
+
     </script>
 </head>
 
 <body onload="init();">
     <div>
-        <h3>Emulator</h3>
-        <button onclick="emulatorStart(); return false;">Start</button>
+        <h3>Bridge commands</h3>
+        <button onclick="bridgeStart(); return false;">Start</button>
+        <button onclick="bridgeStop(); return false;">Stop</button>
+    </div>
+
+    <div>
+        <h3>Bridge status</h3>
+        <div>Status: <span id="bridge-status">unknown</span></div>
+        <div>You may also check bridge status page on http://127.0.0.1:21325/status/</div>
+    </div>
+
+    <div>
+        <h3>Emulator start</h3>
+        <button onclick="emulatorStart('2.2.0'); return false;">Start 2.2.0</button>
+        <button onclick="emulatorStart(); return false;">Start 2.1.4</button>
+        <button onclick="emulatorStart('1.8.3'); return false;">Start 1.8.3</button>
+    </div>
+    <div>
+        <h3>Emulator commands</h3>
         <button onclick="emulatorSetup(); return false;">Setup</button>
         <button onclick="emulatorDecision(); return false;">Decision</button>
         <button onclick="emulatorStop(); return false;">Stop</button>
         <button onclick="emulatorWipe(); return false;">Wipe</button>
-        <button onclick="emulatorErase(); return false;">Erase</button>
-
     </div>
-    <div>
-        <h3>Bridge</h3>
-        <button onclick="bridgeStart(); return false;">Start</button>
-        <button onclick="bridgeStop(); return false;">Stop</button>
-    </div>
+    
     <h3>Server</h3>
     <form onsubmit="onSubmit(); return false;">
         <textarea id="input" rows="3"></textarea>

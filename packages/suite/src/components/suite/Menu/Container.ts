@@ -20,6 +20,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 export type StateProps = ReturnType<typeof mapStateToProps>;
 export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-export type Props = StateProps & DispatchProps;
+export type Props = StateProps &
+    DispatchProps & {
+        fullWidth?: boolean;
+        openSecondaryMenu?: () => void;
+    };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Menu);

@@ -49,7 +49,7 @@ const StatusWrapper = styled.div`
 const ConfirmationsIconWrapper = styled.div`
     display: flex;
     align-items: center;
-    margin-left: 0.5ch;
+    margin-right: 0.5ch;
 `;
 
 const LoaderIconWrapper = styled.div`
@@ -93,13 +93,14 @@ const BasicDetails = ({
     const assetSymbol = tx.symbol.toUpperCase();
     return (
         <>
-            <Box>
+            <Box coinLogo={tx.symbol}>
+                <BoxRow title={<Translation id="TR_TX_TYPE" />}>
+                    {getHumanReadableTxType(tx)}
+                </BoxRow>
+
                 <BoxRow title={<Translation id="TR_STATUS" />}>
                     {isConfirmed ? (
                         <StatusWrapper>
-                            <>
-                                <Translation id="TR_CONFIRMED_TX" />
-                            </>
                             {isFetching && (
                                 <LoaderIconWrapper>
                                     <Loader size={16} />
@@ -126,14 +127,11 @@ const BasicDetails = ({
                                     </ConfirmationsIconWrapper>
                                 </Confirmations>
                             )}
+                            <Translation id="TR_CONFIRMED_TX" />
                         </StatusWrapper>
                     ) : (
                         <Translation id="TR_UNCONFIRMED_TX" />
                     )}
-                </BoxRow>
-
-                <BoxRow title={<Translation id="TR_TX_TYPE" />}>
-                    {getHumanReadableTxType(tx)}
                 </BoxRow>
 
                 <BoxRow
@@ -182,16 +180,16 @@ const BasicDetails = ({
             </Box>
 
             <Box>
-                <BoxRow title={<Translation id="TR_TOTAL_INPUT" />}>
-                    <HiddenPlaceholder>
-                        {totalInput && `${totalInput} ${assetSymbol}`}
-                    </HiddenPlaceholder>
-                </BoxRow>
-                <BoxRow title={<Translation id="TR_TOTAL_OUTPUT" />}>
-                    <HiddenPlaceholder>
-                        {totalOutput && `${totalOutput} ${assetSymbol}`}
-                    </HiddenPlaceholder>
-                </BoxRow>
+                {totalInput && (
+                    <BoxRow title={<Translation id="TR_TOTAL_INPUT" />}>
+                        <HiddenPlaceholder>{`${totalInput} ${assetSymbol}`}</HiddenPlaceholder>
+                    </BoxRow>
+                )}
+                {totalOutput && (
+                    <BoxRow title={<Translation id="TR_TOTAL_OUTPUT" />}>
+                        <HiddenPlaceholder>{`${totalOutput} ${assetSymbol}`}</HiddenPlaceholder>
+                    </BoxRow>
+                )}
                 <BoxRow title={<Translation id="TR_AMOUNT" />}>
                     <HiddenPlaceholder>{`${tx.amount} ${assetSymbol}`}</HiddenPlaceholder>
                 </BoxRow>

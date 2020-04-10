@@ -25,7 +25,7 @@ export const formatCoinBalance = (value: string) => {
             return fixedBalanceBig.toFixed(2);
         }
 
-        return fixedBalanceBig.toString();
+        return fixedBalanceBig.toFixed();
     }
 
     return balanceBig.toFixed();

@@ -16,19 +16,29 @@ interface Props {
 }
 
 const BuyButton = () => (
-    <Button variant="tertiary" icon="TREZOR" size="small" style={{ backgroundColor: 'initial' }}>
-        <Link variant="nostyle" href={URLS.SHOP_URL}>
+    <Link variant="nostyle" href={URLS.SHOP_URL}>
+        <Button
+            variant="tertiary"
+            icon="TREZOR"
+            size="small"
+            style={{ backgroundColor: 'initial' }}
+        >
             Buy Trezor
-        </Link>
-    </Button>
+        </Button>
+    </Link>
 );
 
 const HelpButton = () => (
-    <Button variant="tertiary" icon="SUPPORT" size="small" style={{ backgroundColor: 'initial' }}>
-        <Link variant="nostyle" href={URLS.SUPPORT_URL}>
+    <Link variant="nostyle" href={URLS.SUPPORT_URL}>
+        <Button
+            variant="tertiary"
+            icon="SUPPORT"
+            size="small"
+            style={{ backgroundColor: 'initial' }}
+        >
             Help
-        </Link>
-    </Button>
+        </Button>
+    </Link>
 );
 
 const HelpBuyIcons = (props: Props) => {

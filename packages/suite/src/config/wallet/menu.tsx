@@ -1,7 +1,9 @@
 import React from 'react';
 import { Translation } from '@suite-components/Translation';
-// import { NETWORKS } from '@wallet-config';
+import { NETWORKS } from '@wallet-config';
 import { Account } from '@wallet-types';
+
+export const VISIBLE_ITEMS_LIMIT = 3;
 
 export const ITEMS = [
     {
@@ -26,18 +28,24 @@ export const ITEMS = [
         route: 'wallet-details',
         title: <Translation id="TR_NAV_DETAILS" />,
         icon: 'INFO',
-        isHidden: (networkType: Account['networkType']) => networkType !== 'bitcoin',
+        isHidden: (account: Account) => account.networkType !== 'bitcoin',
     },
-] as const;
-
-export const HIDDEN_ITEMS = [
-    // {
-    //     route: 'wallet-sign-verify',
-    //     title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
-    //     icon: 'SIGN',
-    //     isHidden: (networkType: string) => {
-    //         const network = NETWORKS.find(c => c.symbol === networkType);
-    //         return network ? !network.hasSignVerify : false;
-    //     },
-    // },
+    {
+        route: 'wallet-sign-verify',
+        title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
+        icon: 'SIGN',
+        isHidden: (account: Account) => {
+            const network = NETWORKS.find(n => n.symbol === account.symbol);
+            return !(network && network.testnet && network.hasSignVerify);
+        },
+    },
+    {
+        route: 'suite-index',
+        title: <Translation id="TR_BUY" />,
+        icon: 'PLUS',
+        isHidden: (account: Account) => {
+            const network = NETWORKS.find(n => n.symbol === account.symbol);
+            return !(network && network.testnet);
+        },
+    },
 ] as const;

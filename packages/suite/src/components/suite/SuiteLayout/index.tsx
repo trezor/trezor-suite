@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, createContext } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { colors, variables } from '@trezor/components';
@@ -7,6 +7,7 @@ import Head from 'next/head';
 import Menu from '@suite-components/Menu/Container';
 import { AppState } from '@suite-types';
 import MenuSecondary from '@suite-components/MenuSecondary';
+import MenuDrawer from '@suite-components/MenuDrawer';
 import { DiscoveryProgress } from '@wallet-components';
 
 const PageWrapper = styled.div`
@@ -49,36 +50,77 @@ const MaxWidthWrapper = styled.div<{ withMenu: boolean }>`
 `;
 
 const mapStateToProps = (state: AppState) => ({
-    suite: state.suite,
     layoutSize: state.resize.size,
 });
 
 type Props = ReturnType<typeof mapStateToProps> & {
     children?: React.ReactNode;
-    title?: string;
-    secondaryMenu?: React.ReactNode;
 };
 
+interface BodyProps {
+    menu?: React.ReactNode;
+    children?: React.ReactNode;
+}
+
+interface LayoutContextI {
+    title?: string;
+    menu?: React.ReactNode;
+    setLayout?: (title?: string, menu?: React.ReactNode) => void;
+}
+
+export const LayoutContext = createContext<LayoutContextI>({
+    title: undefined,
+    menu: undefined,
+    setLayout: undefined,
+});
+
+const BodyWide = ({ menu, children }: BodyProps) => (
+    <Body>
+        <DiscoveryProgress />
+        <SuiteNotifications />
+        <Columns>
+            {menu && <MenuSecondary>{menu}</MenuSecondary>}
+            <AppWrapper>
+                <MaxWidthWrapper withMenu={!!menu}>{children}</MaxWidthWrapper>
+            </AppWrapper>
+        </Columns>
+    </Body>
+);
+
+const BodyNarrow = ({ menu, children }: BodyProps) => (
+    <Body>
+        <MenuDrawer>{menu}</MenuDrawer>
+        <DiscoveryProgress />
+        <SuiteNotifications />
+        <Columns>
+            <AppWrapper>{children}</AppWrapper>
+        </Columns>
+    </Body>
+);
+
 const SuiteLayout = (props: Props) => {
+    // TODO: if (props.layoutSize === 'UNAVAILABLE') return <SmallLayout />;
+    const isWide = ['MEGA', 'LARGE', 'NORMAL'].includes(props.layoutSize);
+    const [title, setTitle] = useState<string | undefined>(undefined);
+    const [menu, setMenu] = useState<any>(undefined);
+    const setLayout = React.useCallback<NonNullable<LayoutContextI['setLayout']>>(
+        (newTitle, newMenu) => {
+            setTitle(newTitle);
+            setMenu(newMenu);
+        },
+        [],
+    );
+
     return (
         <PageWrapper>
             <Head>
-                <title>{props.title ? `${props.title} | Trezor Suite` : 'Trezor Suite'}</title>
+                <title>{title ? `${title} | Trezor Suite` : 'Trezor Suite'}</title>
             </Head>
-            {props.layoutSize !== 'small' && <Menu />}
-
-            <Body>
-                <DiscoveryProgress />
-                <SuiteNotifications />
-                <Columns>
-                    {props.secondaryMenu && <MenuSecondary>{props.secondaryMenu}</MenuSecondary>}
-                    <AppWrapper>
-                        <MaxWidthWrapper withMenu={!!props.secondaryMenu}>
-                            {props.children}
-                        </MaxWidthWrapper>
-                    </AppWrapper>
-                </Columns>
-            </Body>
+            {isWide && <Menu />}
+            <LayoutContext.Provider value={{ title, menu, setLayout }}>
+                {isWide && <BodyWide menu={menu}>{props.children}</BodyWide>}
+                {!isWide && <BodyNarrow menu={menu}>{props.children}</BodyNarrow>}
+            </LayoutContext.Provider>
         </PageWrapper>
     );
 };

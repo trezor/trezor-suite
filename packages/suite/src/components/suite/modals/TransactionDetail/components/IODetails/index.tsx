@@ -10,6 +10,14 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
+`;
+
+const IOWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: column;
@@ -68,6 +76,12 @@ const IOBoxAmountWrapper = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
+const Title = styled.div`
+    color: ${colors.BLACK0};
+    text-align: center;
+    margin-bottom: 18px;
+`;
+
 const Amount = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${colors.BLACK50};
@@ -83,8 +97,8 @@ const IOBoxAddress = styled.div`
     margin-bottom: 10px;
 `;
 
-const HistoricalBadge = styled(props => <Badge {...props} />)`
-    margin-left: 8px;
+const HistoricalBadge = styled(props => <Badge {...props} isGray />)`
+    margin-right: 8px;
 `;
 
 const BadgesWrapper = styled.div`
@@ -100,9 +114,10 @@ interface Props {
 const IODetails = ({ tx, txDetails, isFetching }: Props) => {
     return (
         <Wrapper>
+            <Title>Inputs/Outputs</Title>
             {!txDetails && isFetching && <Loader size={32} />}
             {txDetails?.vin && txDetails?.vout && (
-                <>
+                <IOWrapper>
                     <Col direction="column">
                         {txDetails.vin?.map((input: any) => {
                             let inputAmount = formatNetworkAmount(input.value, tx.symbol);
@@ -120,13 +135,6 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
 
                                         <BadgesWrapper>
                                             <HiddenPlaceholder>
-                                                <FiatValue amount={inputAmount} symbol={tx.symbol}>
-                                                    {({ value }) =>
-                                                        value ? <Badge>{value}</Badge> : null
-                                                    }
-                                                </FiatValue>
-                                            </HiddenPlaceholder>
-                                            <HiddenPlaceholder>
                                                 <FiatValue
                                                     amount={inputAmount}
                                                     symbol={tx.symbol}
@@ -135,10 +143,17 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                                                 >
                                                     {({ value }) =>
                                                         value ? (
-                                                            <HistoricalBadge>
+                                                            <HistoricalBadge isGrey>
                                                                 {value}
                                                             </HistoricalBadge>
                                                         ) : null
+                                                    }
+                                                </FiatValue>
+                                            </HiddenPlaceholder>
+                                            <HiddenPlaceholder>
+                                                <FiatValue amount={inputAmount} symbol={tx.symbol}>
+                                                    {({ value }) =>
+                                                        value ? <Badge>{value}</Badge> : null
                                                     }
                                                 </FiatValue>
                                             </HiddenPlaceholder>
@@ -169,13 +184,6 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                                         </HiddenPlaceholder>
                                         <BadgesWrapper>
                                             <HiddenPlaceholder>
-                                                <FiatValue amount={outputAmount} symbol={tx.symbol}>
-                                                    {({ value }) =>
-                                                        value ? <Badge>{value}</Badge> : null
-                                                    }
-                                                </FiatValue>
-                                            </HiddenPlaceholder>
-                                            <HiddenPlaceholder>
                                                 <FiatValue
                                                     amount={outputAmount}
                                                     symbol={tx.symbol}
@@ -184,10 +192,17 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                                                 >
                                                     {({ value }) =>
                                                         value ? (
-                                                            <HistoricalBadge>
+                                                            <HistoricalBadge isGrey>
                                                                 {value}
                                                             </HistoricalBadge>
                                                         ) : null
+                                                    }
+                                                </FiatValue>
+                                            </HiddenPlaceholder>
+                                            <HiddenPlaceholder>
+                                                <FiatValue amount={outputAmount} symbol={tx.symbol}>
+                                                    {({ value }) =>
+                                                        value ? <Badge>{value}</Badge> : null
                                                     }
                                                 </FiatValue>
                                             </HiddenPlaceholder>
@@ -197,7 +212,7 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                             );
                         })}
                     </Col>
-                </>
+                </IOWrapper>
             )}
         </Wrapper>
     );

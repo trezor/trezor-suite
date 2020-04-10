@@ -1,88 +1,29 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
-import Backdrop from '@suite-components/Backdrop';
-import { colors, variables } from '@trezor/components';
-
-import { AppState } from '@suite-types';
-
-const { SCREEN_SIZE } = variables;
+import { colors } from '@trezor/components';
 
 interface Props {
-    router: AppState['router'];
-    suite: AppState['suite'];
-    isOpen?: boolean;
     children: React.ReactNode;
 }
 
-type WrapperProps = Pick<Props, 'isOpen'>;
-
-const AbsoluteWrapper = styled.aside<WrapperProps>`
-    width: 240px;
+const AbsoluteWrapper = styled.aside`
+    width: 254px;
     background: ${colors.WHITE};
-    box-shadow: 10px 0px 20px -5px rgba(0, 0, 0, 0.05);
-    z-index: 2; /* makes the shadow visible on top of the content element */
-    margin-right: 3px;
-    min-height: 600px;
-    overflow-y: auto;
-
-    /* TODO: this make nice scrollbar on webkit-like browsers however it prevents hiding the scrollbar on macs (should hide when there is no mouse connected) */
-    /* Maybe we should just use something like https://github.com/Grsmto/simplebar */
-    ::-webkit-scrollbar {
-        background-color: #fff;
-        width: 10px;
-    }
-
-    /* background of the scrollbar except button or resizer */
-    ::-webkit-scrollbar-track {
-        background-color: transparent;
-    }
-
-    /* scrollbar itself */
-    ::-webkit-scrollbar-thumb {
-        /* 7F7F7F for mac-like color */
-        background-color: #babac0;
-        border-radius: 10px;
-        border: 2px solid #fff;
-    }
-
-    /* set button(top and bottom of the scrollbar) */
-    ::-webkit-scrollbar-button {
-        display: none;
-    }
+    margin: 10px 10px 20px 10px;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 6px 14px 0 rgba(0, 0, 0, 0.1);
 `;
 
 const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
     height: 100%;
-    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
-        height: calc(100vh - 52px);
-    }
+    display: flex;
 `;
 
-const StyledBackdrop = styled(Backdrop)`
-    display: none;
-
-    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
-        display: initial;
-    }
-`;
-
-const MenuSecondary = ({ isOpen, children }: Props) => {
+export default ({ children }: Props) => {
     return (
-        <>
-            <StyledBackdrop onClick={() => {}} show={isOpen} animated />
-            <AbsoluteWrapper isOpen={isOpen}>
-                <Wrapper>{children}</Wrapper>
-            </AbsoluteWrapper>
-        </>
+        <AbsoluteWrapper>
+            <Wrapper>{children}</Wrapper>
+        </AbsoluteWrapper>
     );
 };
-
-const mapStateToProps = (state: AppState) => ({
-    router: state.router,
-    suite: state.suite,
-});
-
-export default connect(mapStateToProps)(MenuSecondary);

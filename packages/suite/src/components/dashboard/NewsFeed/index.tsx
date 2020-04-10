@@ -17,29 +17,6 @@ const Section = styled.div`
     flex-direction: column;
 `;
 
-const Content = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
-
-const SectionHeader = styled.div`
-    display: flex;
-    padding: 12px 0px;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-`;
-
-const SectionTitle = styled.div`
-    flex: 1;
-    margin-bottom: 2px;
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    text-transform: uppercase;
-    color: ${colors.BLACK50};
-`;
-
 const BottomAction = styled.div`
     display: flex;
     margin-top: 13px;
@@ -113,13 +90,6 @@ const ReadMoreIcon = styled(Icon)`
     padding-left: 4px;
 `;
 
-const Error = styled.div`
-    display: flex;
-    padding: 24px;
-    width: 100%;
-    justify-content: center;
-`;
-
 const getDate = (date: string) => {
     const dateObj = new Date(date);
     if (isToday(dateObj)) {
@@ -132,44 +102,34 @@ export default React.memo(({ ...rest }: React.HTMLAttributes<HTMLDivElement>) =>
     const [visibleCount, incrementVisibleCount] = useState(3);
     const { posts, isError, fetchCount, incrementFetchCount } = useFetchNews();
 
+    if (isError) return null;
+
     return (
         <Section {...rest}>
-            <SectionHeader>
-                <SectionTitle>
-                    <Translation id="TR_WHATS_NEW" />
-                </SectionTitle>
-            </SectionHeader>
-            <Content>
-                <StyledCard>
-                    {isError && (
-                        <Error>
-                            <Translation id="TR_DASHBOARD_NEWS_ERROR" />
-                        </Error>
-                    )}
-                    {posts.slice(0, visibleCount).map(item => (
-                        <Post key={item.link}>
-                            <Left>
-                                <Image src={item.thumbnail} />
-                            </Left>
-                            <Right>
-                                <CTAWrapper target="_blank" href={item.link}>
-                                    <Title>{item.title}</Title>
-                                </CTAWrapper>
-                                <Timestamp>{getDate(item.pubDate)}</Timestamp>
-                                <Description>{item.description}</Description>
-                                <ReadMore target="_blank" href={item.link}>
-                                    <Translation id="TR_READ_MORE" />
-                                    <ReadMoreIcon
-                                        size={12}
-                                        color={colors.BLACK0}
-                                        icon="EXTERNAL_LINK"
-                                    />
-                                </ReadMore>
-                            </Right>
-                        </Post>
-                    ))}
-                </StyledCard>
-            </Content>
+            <StyledCard title={<Translation id="TR_WHATS_NEW" />}>
+                {posts.slice(0, visibleCount).map(item => (
+                    <Post key={item.link}>
+                        <Left>
+                            <Image src={item.thumbnail} />
+                        </Left>
+                        <Right>
+                            <CTAWrapper target="_blank" href={item.link}>
+                                <Title>{item.title}</Title>
+                            </CTAWrapper>
+                            <Timestamp>{getDate(item.pubDate)}</Timestamp>
+                            <Description>{item.description}</Description>
+                            <ReadMore target="_blank" href={item.link}>
+                                <Translation id="TR_READ_MORE" />
+                                <ReadMoreIcon
+                                    size={12}
+                                    color={colors.BLACK0}
+                                    icon="EXTERNAL_LINK"
+                                />
+                            </ReadMore>
+                        </Right>
+                    </Post>
+                ))}
+            </StyledCard>
             {posts.length > visibleCount && (
                 <BottomAction>
                     <Button

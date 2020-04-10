@@ -5,3 +5,7 @@ export const capitalizeFirstLetter = (s: string) => {
 export const countBytesInString = (input: string) => {
     return encodeURI(input).split(/%..|./).length - 1;
 };
+
+export const getNumberFromPxString = (size: string): number => {
+    return parseInt(size.replace('px', ''), 10);
+};

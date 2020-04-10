@@ -1,6 +1,7 @@
 import { IconType, CoinType } from '../support/types';
 
 export const SCREEN_SIZE = {
+    UNAVAILABLE: '260px',
     SM: '576px', // phones
     MD: '768px', // tablets
     LG: '992px', // laptops/desktops

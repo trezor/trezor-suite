@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import SuiteLayout from '@suite-components/SuiteLayout';
+import { LayoutContext } from '@suite-components';
 // ConnectionStatusCard
 import { AssetsCard, PortfolioCard, SecurityFeatures, NewsFeed } from '@dashboard-components';
 import AuthConfirmFailed from '@wallet-components/AccountMode/AuthConfirmFailed';
@@ -71,6 +71,11 @@ const getDashboardMode = (props: Props, isLoading: boolean) => {
 };
 
 const Dashboard = (props: Props) => {
+    const { setLayout } = React.useContext(LayoutContext);
+    React.useMemo(() => {
+        if (setLayout) setLayout(undefined, undefined);
+    }, [setLayout]);
+
     const discovery = props.getDiscoveryForDevice();
     const { device } = props;
     const accounts = device
@@ -99,7 +104,7 @@ const Dashboard = (props: Props) => {
     const isDisabled = isLoading || !!dashboardMode;
 
     return (
-        <SuiteLayout>
+        <>
             {device && device.authConfirm && <AuthConfirmFailed />}
             <Wrapper data-test="@dashboard/index">
                 <PortfolioCard
@@ -128,7 +133,7 @@ const Dashboard = (props: Props) => {
                 </Row>
                 <Divider />
             </Wrapper>
-        </SuiteLayout>
+        </>
     );
 };
 

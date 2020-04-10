@@ -96,6 +96,7 @@ const SwitchWrapper = styled.div`
 interface Props {
     app: string;
     goto: ContainerProps['goto'];
+    openSecondaryMenu?: () => void;
     discreetMode: boolean;
     setDiscreetMode: (s: boolean) => void;
 }
@@ -107,6 +108,7 @@ const BottomMenu = (props: Props) => (
             const dataTestId = `@suite/menu/${route}`;
             const routeObj = findRouteByName(route);
             const isActive = routeObj ? routeObj.app === props.app : false;
+            const callback = (isActive && props.openSecondaryMenu) || props.goto;
 
             const defaultIcon = (
                 <Icon color={isActive ? colors.BLACK0 : colors.WHITE} size={14} icon={icon} />
@@ -123,7 +125,7 @@ const BottomMenu = (props: Props) => (
                 <In
                     key={translationId}
                     data-test={dataTestId}
-                    onClick={() => props.goto(routeObj!.name)}
+                    onClick={() => callback(routeObj!.name)}
                     isActive={isActive}
                 >
                     <MenuItemWrapper>

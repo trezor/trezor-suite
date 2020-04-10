@@ -1,12 +1,11 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { colors, variables } from '@trezor/components';
 import FiatValue from '@suite-components/FiatValue/Container';
 import Badge from '@suite-components/Badge';
 import { Translation, HiddenPlaceholder } from '@suite-components';
 
 import Box from '../Box';
-import BoxRow from '../BoxRow';
 import { FormattedDate } from 'react-intl';
 import NoRatesTooltip from '@suite/components/suite/NoRatesTooltip';
 import { getDateWithTimeZone } from '@suite-utils/date';
@@ -14,30 +13,48 @@ import { WalletAccountTransaction } from '@wallet-types';
 
 const Grid = styled.div`
     display: grid;
-    grid-gap: 20px;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    /* grid-gap: 20px; */
+    grid-template-columns: 3fr 1fr 1fr;
 `;
 
-const BoxHeading = styled.div`
+interface ItemProps {
+    heading?: boolean;
+    allCaps?: boolean;
+    alignContent?: 'left' | 'right';
+}
+
+const Item = styled.div<ItemProps>`
     display: flex;
+    overflow: hidden;   
     align-items: center;
-    justify-content: space-between;
-    padding: 0px 12px;
     font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${colors.BLACK50};
-    margin-bottom: 10px;
-`;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: #444;
+    padding: 10px 12px;
+    border-top: 1px solid #ccc;
 
-const HistoricalBadge = styled(Badge)`
-    background: #b3b3b3;
-    color: white;
-`;
+    ${props =>
+        props.alignContent &&
+        css`
+            text-align: ${(props: ItemProps) => props.alignContent};
+            justify-content: ${(props: ItemProps) =>
+                props.alignContent === 'left' ? 'flex-start' : 'flex-end'};
+        `}
 
-const Col = styled.div<{ direction: 'column' | 'row' }>`
-    display: flex;
-    flex-direction: ${props => props.direction};
-    flex: 1 1 auto;
+    ${props =>
+        props.heading &&
+        css`
+            color: #807f7f;
+            border: none;
+            background: ${colors.BLACK96};
+        `}
+
+    ${props =>
+        props.allCaps &&
+        css`
+            color: #807f7f;
+            text-transform: uppercase;
+        `}
 `;
 
 interface Props {
@@ -47,125 +64,110 @@ interface Props {
 
 const FiatDetails = ({ tx, totalOutput }: Props) => {
     return (
-        <Grid>
-            <Col direction="column">
-                <BoxHeading>
-                    <Translation id="TR_TX_CURRENT_VALUE" />{' '}
-                    {/* such a weird syntax, but basically all I want is show date in parentheses: (formattedDate) */}
+        <Box>
+            <Grid>
+                <Item heading allCaps>
+                    Fiat conversion
+                </Item>
+                <Item heading alignContent="right">
+                    {tx.blockTime && (
+                        <FormattedDate
+                            value={getDateWithTimeZone(tx.blockTime * 1000) ?? undefined}
+                            year="numeric"
+                            month="2-digit"
+                            day="2-digit"
+                        />
+                    )}
+                </Item>
+                <Item heading alignContent="right">
                     <FiatValue amount="1" symbol={tx.symbol}>
-                        {({ timestamp }) => (
-                            <>
-                                {timestamp && (
-                                    <>
-                                        (
-                                        <FormattedDate
-                                            value={timestamp}
-                                            year="numeric"
-                                            month="2-digit"
-                                            day="2-digit"
-                                        />
-                                        )
-                                    </>
-                                )}
-                            </>
-                        )}
-                    </FiatValue>
-                    <FiatValue amount="1" symbol={tx.symbol}>
-                        {({ value }) => (value ? <Badge>{value}</Badge> : <NoRatesTooltip />)}
-                    </FiatValue>
-                </BoxHeading>
-                <Box>
-                    <BoxRow title={<Translation id="TR_TOTAL_OUTPUT" />} alignContent="right">
-                        {totalOutput && (
-                            <HiddenPlaceholder>
-                                <FiatValue amount={totalOutput} symbol={tx.symbol}>
-                                    {({ value }) => value ?? null}
-                                </FiatValue>
-                            </HiddenPlaceholder>
-                        )}
-                    </BoxRow>
-                    <BoxRow title={<Translation id="TR_AMOUNT" />} alignContent="right">
-                        <HiddenPlaceholder>
-                            <FiatValue amount={tx.amount} symbol={tx.symbol}>
-                                {({ value }) => value ?? null}
-                            </FiatValue>
-                        </HiddenPlaceholder>
-                    </BoxRow>
-                    <BoxRow title={<Translation id="TR_TX_FEE" />} alignContent="right">
-                        <HiddenPlaceholder>
-                            <FiatValue amount={tx.fee} symbol={tx.symbol}>
-                                {({ value }) => value ?? null}
-                            </FiatValue>
-                        </HiddenPlaceholder>
-                    </BoxRow>
-                </Box>
-            </Col>
-            <Col direction="column">
-                <BoxHeading>
-                    <Translation
-                        id="TR_TX_HISTORICAL_VALUE_DATE"
-                        values={{
-                            date: tx.blockTime ? (
+                        {({ timestamp }) =>
+                            timestamp ? (
                                 <FormattedDate
-                                    value={getDateWithTimeZone(tx.blockTime * 1000) ?? undefined}
+                                    value={timestamp}
                                     year="numeric"
                                     month="2-digit"
                                     day="2-digit"
                                 />
-                            ) : (
-                                ''
-                            ),
-                        }}
-                    />
-
-                    <FiatValue amount="1" symbol={tx.symbol} source={tx.rates} useCustomSource>
-                        {({ value }) =>
-                            value ? <HistoricalBadge>{value}</HistoricalBadge> : <NoRatesTooltip />
+                            ) : null
                         }
                     </FiatValue>
-                </BoxHeading>
-                <Box>
-                    <BoxRow title={<Translation id="TR_TOTAL_OUTPUT" />} alignContent="right">
-                        {totalOutput && (
-                            <HiddenPlaceholder>
-                                <FiatValue
-                                    amount={totalOutput}
-                                    symbol={tx.symbol}
-                                    source={tx.rates}
-                                    useCustomSource
-                                >
-                                    {({ value }) => value ?? null}
-                                </FiatValue>
-                            </HiddenPlaceholder>
-                        )}
-                    </BoxRow>
-                    <BoxRow title={<Translation id="TR_AMOUNT" />} alignContent="right">
+                </Item>
+
+                <Item allCaps>
+                    <Translation id="TR_AMOUNT" />
+                </Item>
+                <Item alignContent="right">
+                    <HiddenPlaceholder>
+                        <FiatValue
+                            amount={tx.amount}
+                            symbol={tx.symbol}
+                            source={tx.rates}
+                            useCustomSource
+                        >
+                            {({ value }) => <Badge isGray>{value}</Badge> || <NoRatesTooltip />}
+                        </FiatValue>
+                    </HiddenPlaceholder>
+                </Item>
+                <Item alignContent="right">
+                    <HiddenPlaceholder>
+                        <FiatValue amount={tx.amount} symbol={tx.symbol}>
+                            {({ value }) => <Badge>{value}</Badge> ?? null}
+                        </FiatValue>
+                    </HiddenPlaceholder>
+                </Item>
+
+                <Item allCaps>
+                    <Translation id="TR_TOTAL_OUTPUT" />
+                </Item>
+                <Item alignContent="right">
+                    {totalOutput && (
                         <HiddenPlaceholder>
                             <FiatValue
-                                amount={tx.amount}
+                                amount={totalOutput}
                                 symbol={tx.symbol}
                                 source={tx.rates}
                                 useCustomSource
                             >
-                                {({ value }) => value ?? null}
+                                {({ value }) => <Badge isGray>{value}</Badge> ?? null}
                             </FiatValue>
                         </HiddenPlaceholder>
-                    </BoxRow>
-                    <BoxRow title={<Translation id="TR_TX_FEE" />} alignContent="right">
+                    )}
+                </Item>
+                <Item alignContent="right">
+                    {totalOutput && (
                         <HiddenPlaceholder>
-                            <FiatValue
-                                amount={tx.fee}
-                                symbol={tx.symbol}
-                                source={tx.rates}
-                                useCustomSource
-                            >
-                                {({ value }) => value ?? null}
+                            <FiatValue amount={totalOutput} symbol={tx.symbol}>
+                                {({ value }) => <Badge>{value}</Badge> ?? null}
                             </FiatValue>
                         </HiddenPlaceholder>
-                    </BoxRow>
-                </Box>
-            </Col>
-        </Grid>
+                    )}
+                </Item>
+
+                <Item allCaps>
+                    <Translation id="TR_TX_FEE" />
+                </Item>
+                <Item alignContent="right">
+                    <HiddenPlaceholder>
+                        <FiatValue
+                            amount={tx.fee}
+                            symbol={tx.symbol}
+                            source={tx.rates}
+                            useCustomSource
+                        >
+                            {({ value }) => <Badge isGray>{value}</Badge> ?? null}
+                        </FiatValue>
+                    </HiddenPlaceholder>
+                </Item>
+                <Item alignContent="right">
+                    <HiddenPlaceholder>
+                        <FiatValue amount={tx.fee} symbol={tx.symbol}>
+                            {({ value }) => <Badge>{value}</Badge> ?? null}
+                        </FiatValue>
+                    </HiddenPlaceholder>
+                </Item>
+            </Grid>
+        </Box>
     );
 };
 
