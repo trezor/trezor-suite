@@ -2880,6 +2880,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Success',
         description: 'Just a general "success" if we do not know what else to use',
     },
+    TR_DISCREET: {
+        id: 'TR_DISCREET',
+        defaultMessage: 'Discreet',
+    },
 } as const);
 
 export default definedMessages;

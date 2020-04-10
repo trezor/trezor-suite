@@ -5,12 +5,12 @@ import { Translation } from '@suite-components/Translation';
 
 import { findRouteByName } from '@suite-utils/router';
 import { Icon, colors, Switch, Tooltip, variables } from '@trezor/components';
-import { BOTTOM_MENU_ITEMS, MENU_PADDING } from '@suite-constants/menu';
+import { BOTTOM_MENU_ITEMS } from '@suite-constants/menu';
 import Divider from '../Divider';
 import NotificationsBadge from './NotificationsBadge';
 
 const Wrapper = styled.div`
-    padding: ${MENU_PADDING}px 0 10px 10px;
+    padding: 20px 0px 20px 6px;
 `;
 
 const MenuItemWrapper = styled.div`
@@ -24,33 +24,29 @@ const MenuItemWrapper = styled.div`
 const IconWrapper = styled.div`
     padding-right: 5px;
     display: flex;
-    flex: 1;
     align-items: center;
 `;
 
 const SubMenu = styled.div`
     display: flex;
     padding-right: 10px;
+    padding-left: 6px;
     align-items: center;
     color: ${colors.WHITE};
-    justify-content: space-between;
-`;
-
-const SubMenuText = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 interface ComponentProps {
-    isActive: boolean;
+    isActive?: boolean;
 }
 
 const Text = styled.div<ComponentProps>`
     color: ${colors.WHITE};
-    font-size: 12px;
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding-top: 2px;
     display: flex;
     align-items: center;
+    flex: 1;
 
     ${props =>
         props.isActive &&
@@ -61,14 +57,13 @@ const Text = styled.div<ComponentProps>`
 
 const In = styled.div<ComponentProps>`
     cursor: pointer;
-    padding: 6px 0;
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
+    padding: 6px 0px 6px 6px;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
     display: flex;
     flex: 1;
     flex-direction: flex-start;
     align-items: center;
-    padding-left: 10px;
 
     ${props =>
         props.isActive &&
@@ -111,7 +106,7 @@ const BottomMenu = (props: Props) => (
             const callback = (isActive && props.openSecondaryMenu) || props.goto;
 
             const defaultIcon = (
-                <Icon color={isActive ? colors.BLACK0 : colors.WHITE} size={14} icon={icon} />
+                <Icon color={isActive ? colors.BLACK0 : colors.WHITE} size={16} icon={icon} />
             );
 
             const iconComponent =
@@ -139,7 +134,13 @@ const BottomMenu = (props: Props) => (
         })}
         <StyledDivider className="divider" />
         <SubMenu>
-            <SubMenuText>Discreet</SubMenuText>
+            <IconWrapper>
+                <Icon color={colors.WHITE} size={16} icon={props.discreetMode ? 'HIDE' : 'SHOW'} />
+            </IconWrapper>
+            <Text>
+                <Translation id="TR_DISCREET" />
+            </Text>
+
             <SwitchWrapper>
                 <Tooltip placement="right" content={<Translation id="TR_DISCREET_TOOLTIP" />}>
                     <Switch

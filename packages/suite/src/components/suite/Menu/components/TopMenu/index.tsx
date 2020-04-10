@@ -4,33 +4,38 @@ import { colors, Icon, variables } from '@trezor/components';
 import Divider from '../Divider';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
 import { Props as ContainerProps } from '../../Container';
-import { MENU_PADDING } from '@suite-constants/menu';
 import { SHAKE } from '@suite-support/styles/animations';
+import { Translation } from '@suite-components';
 
 const Wrapper = styled.div`
-    padding-left: ${MENU_PADDING}px;
+    padding-left: 6px;
     background: ${colors.BLACK17};
     display: flex;
     flex-direction: column;
 `;
 
-const DeviceStatus = styled.div``;
-
-const DeviceRow = styled.div<{ triggerAnim?: boolean }>`
-    height: 36px;
-    color: ${colors.WHITE};
-    font-size: ${variables.FONT_SIZE.TINY};
-    margin-top: 14px;
+const DeviceStatus = styled.div`
     display: flex;
-    font-weight: bold;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    margin-top: 20px; /* 32px from the top so 20px + 12px of padding */
+    padding: 12px 6px;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
     cursor: pointer;
 
-    padding-left: 10px;
-    padding-right: 10px;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
+    &:hover {
+        background-color: ${colors.BLACK25};
+    }
+`;
+
+const DeviceRow = styled.div<{ triggerAnim?: boolean }>`
+    display: flex;
+    /* height: 36px; */
+    color: ${colors.WHITE};
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: bold;
+    align-items: center;
+    justify-content: space-between;
 
     ${props =>
         props.triggerAnim &&
@@ -40,21 +45,30 @@ const DeviceRow = styled.div<{ triggerAnim?: boolean }>`
             backface-visibility: hidden; /* used for hardware acceleration */
             perspective: 1000px; /* used for hardware acceleration */
         `}
+`;
 
-    &:hover {
-        background-color: ${colors.BLACK25};
-    }
+const WalletRow = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: ${colors.WHITE};
+    font-size: ${variables.FONT_SIZE.TINY};
+    color: ${colors.BLACK70};
+    font-weight: 500;
+    margin-top: 6px;
 `;
 
 const DeviceLabel = styled.div`
     color: ${colors.WHITE};
-    padding-left: 5px;
     display: flex;
-    flex: 1;
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const DeviceIconWrapper = styled.div`
     padding-top: 2px;
+    flex: 0;
 `;
 
 const IconWrapper = styled.div`
@@ -102,26 +116,37 @@ const TopMenu = (props: Props) => {
 
     return (
         <Wrapper>
-            <DeviceStatus>
+            <DeviceStatus
+                data-test="@menu/switch-device"
+                onClick={() => props.goto('suite-switch-device', { cancelable: true })}
+            >
                 {!props.selectedDevice && <DeviceRow />}
                 {props.selectedDevice && (
-                    <DeviceRow
-                        data-test="@menu/switch-device"
-                        onClick={() => props.goto('suite-switch-device', { cancelable: true })}
-                        triggerAnim={triggerAnim}
-                    >
-                        <DeviceIconWrapper>
-                            <DeviceIcon
-                                size={12}
-                                color={colors.GREEN}
-                                device={props.selectedDevice}
-                            />
-                        </DeviceIconWrapper>
-                        <DeviceLabel>{props.selectedDevice.label}</DeviceLabel>
-                        <IconWrapper>
-                            <Icon size={7} color={colors.WHITE} icon="ARROW_RIGHT" />
-                        </IconWrapper>
-                    </DeviceRow>
+                    <>
+                        <DeviceRow triggerAnim={triggerAnim}>
+                            <DeviceLabel>{props.selectedDevice.label}</DeviceLabel>
+                            <DeviceIconWrapper>
+                                <DeviceIcon
+                                    size={16}
+                                    color={colors.GREEN}
+                                    device={props.selectedDevice}
+                                />
+                            </DeviceIconWrapper>
+                        </DeviceRow>
+                        <WalletRow>
+                            {props.selectedDevice.useEmptyPassphrase ? (
+                                <Translation id="TR_NO_PASSPHRASE_WALLET" />
+                            ) : (
+                                <Translation
+                                    id="TR_PASSPHRASE_WALLET"
+                                    values={{ id: props.selectedDevice.instance }}
+                                />
+                            )}
+                            <IconWrapper>
+                                <Icon size={16} color={colors.BLACK70} icon="ARROW_RIGHT" />
+                            </IconWrapper>
+                        </WalletRow>
+                    </>
                 )}
             </DeviceStatus>
             <Divider />
