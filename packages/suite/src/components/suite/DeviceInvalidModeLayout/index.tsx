@@ -36,10 +36,6 @@ const Buttons = styled.div`
     justify-content: space-around;
 `;
 
-const StyledButton = styled(Button)`
-    // margin: 20px;
-`;
-
 /**
  * DeviceInvalidMode is subset of ApplicationState, see Preloader component. It shows that device is not in state
  * application can work with and user must take one of the following actions:
@@ -85,11 +81,11 @@ const DeviceInvalidModeLayout = (props: Props) => {
             <Image image={image} />
             <Buttons>
                 {resolveButton && resolveButton}
-                {/* todo: filter only physical devices */}
+                {/* todo: filter only physical devices ?? hm not sure. I still may want to browse wallet under this bl device */}
                 {allowSwitchDevice && devices.length > 1 && (
-                    <StyledButton onClick={() => goto('suite-switch-device', { cancelable: true })}>
-                        Switch device
-                    </StyledButton>
+                    <Button onClick={() => goto('suite-switch-device', { cancelable: true })}>
+                        <Translation id="TR_SWITCH_DEVICE" />
+                    </Button>
                 )}
             </Buttons>
         </Wrapper>
