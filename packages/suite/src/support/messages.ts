@@ -2936,6 +2936,15 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Your device has firmware that is no longer supported. You will need to update it.',
     },
+    TR_DEVICE_IN_BOOTLOADER: {
+        id: 'TR_DEVICE_IN_BOOTLOADER',
+        defaultMessage: 'Device in bootloader',
+    },
+    TR_DEVICE_IN_BOOTLOADER_EXPLAINED: {
+        id: 'TR_DEVICE_IN_BOOTLOADER_EXPLAINED',
+        defaultMessage:
+            'In bootloader mode, device is ready to receive firmware updates but it also means that nothing else might be done with it. To get back into normal mode simply reconnect it.',
+    },
 } as const);
 
 export default definedMessages;

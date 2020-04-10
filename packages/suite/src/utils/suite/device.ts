@@ -82,7 +82,7 @@ export const isSelectedInstance = (selected?: TrezorDevice, device?: TrezorDevic
 export const isSelectedDevice = (selected?: TrezorDevice | Device, device?: TrezorDevice) => {
     if (!selected || !device) return false;
     if (!selected.features && !device.features) return selected.path === device.path;
-    if (selected.features && selected.mode === 'bootloader') return selected.path === device.path
+    if (selected.features && selected.mode === 'bootloader') return selected.path === device.path;
     return !!(
         selected.features &&
         selected.id &&
