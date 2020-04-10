@@ -11,24 +11,24 @@ export const MAIN_MENU_ITEMS = [
         route: 'wallet-index',
         isDisabled: false,
     },
-    {
-        translationId: 'TR_PASSWORDS',
-        icon: 'PASSWORDS',
-        route: 'passwords-index',
-        isDisabled: true,
-    },
+    // {
+    //     translationId: 'TR_PASSWORDS',
+    //     icon: 'PASSWORDS',
+    //     route: 'passwords-index',
+    //     isDisabled: true,
+    // },
     {
         translationId: 'TR_EXCHANGE',
         icon: 'EXCHANGE',
         route: 'exchange-index',
         isDisabled: true,
     },
-    {
-        translationId: 'TR_PORTFOLIO',
-        icon: 'PORTFOLIO',
-        route: 'portfolio-index',
-        isDisabled: true,
-    },
+    // {
+    //     translationId: 'TR_PORTFOLIO',
+    //     icon: 'PORTFOLIO',
+    //     route: 'portfolio-index',
+    //     isDisabled: true,
+    // },
 ] as const;
 
 export const BOTTOM_MENU_ITEMS = [
@@ -39,5 +39,3 @@ export const BOTTOM_MENU_ITEMS = [
     },
     { translationId: 'TR_SETTINGS', icon: 'SETTINGS', route: 'settings-index' },
 ] as const;
-
-export const MENU_PADDING = 10;

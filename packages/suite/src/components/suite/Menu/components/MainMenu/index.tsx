@@ -27,11 +27,11 @@ interface ComponentProps {
 const In = styled.div<ComponentProps>`
     cursor: ${props => (!props.isDisabled ? 'pointer' : 'initial')};
     opacity: ${props => (!props.isDisabled ? 1 : 0.4)};
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
     display: flex;
     flex: 1;
-    margin-left: 10px;
+    margin-left: 6px;
     padding: 20px 10px 20px 0;
     flex-direction: column;
     justify-content: center;
