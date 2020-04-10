@@ -47,16 +47,18 @@ export const getTicksBetweenTimestamps = (
     fromDate = startOfDay(fromDate);
 
     while (isBefore(fromDate, toDate)) {
-        months.push(fromDate);
         if (interval === 'month') {
             // set date to 1 in case of monthly timestamps
             fromDate = startOfMonth(fromDate);
+            months.push(fromDate);
             fromDate = addMonths(fromDate, 1);
         }
         if (interval === 'day') {
+            months.push(fromDate);
             fromDate = addDays(fromDate, 1);
         }
         if (interval === '2-day') {
+            months.push(fromDate);
             fromDate = addDays(fromDate, 2);
         }
     }
