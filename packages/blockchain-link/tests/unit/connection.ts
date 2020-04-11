@@ -2,7 +2,7 @@ import createServer from '../websocket';
 import workers from './worker';
 import BlockchainLink from '../../src';
 
-workers.forEach(instance => {
+workers.slice(1).forEach(instance => {
     describe(`Connection ${instance.name}`, () => {
         let server: any;
         let blockchain: BlockchainLink;
@@ -23,7 +23,7 @@ workers.forEach(instance => {
         });
 
         it('Handle connection timeout', async () => {
-            jest.setTimeout(10000);
+            jest.setTimeout(20000);
             try {
                 blockchain.settings.server = ['wss://google.com:11111', 'wss://google.com:22222'];
                 blockchain.settings.timeout = 5000;
@@ -35,7 +35,7 @@ workers.forEach(instance => {
         });
 
         it('Handle message timeout', async () => {
-            jest.setTimeout(10000);
+            jest.setTimeout(20000);
             server.setFixtures([
                 {
                     method: instance.name === 'ripple' ? 'server_info' : 'getInfo',
