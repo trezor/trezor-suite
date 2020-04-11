@@ -2,7 +2,7 @@ import createServer from '../websocket';
 import workers from './worker';
 import BlockchainLink from '../../src';
 
-workers.slice(1).forEach(instance => {
+workers.forEach(instance => {
     describe(`Connection ${instance.name}`, () => {
         let server: any;
         let blockchain: BlockchainLink;
@@ -204,6 +204,7 @@ workers.slice(1).forEach(instance => {
         });
 
         it('Connect error (server field with invalid values)', async () => {
+            blockchain.settings.timeout = 5000;
             blockchain.settings.server = [
                 'gibberish',
                 'ws://gibberish',
