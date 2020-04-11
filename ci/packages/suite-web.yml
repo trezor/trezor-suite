@@ -31,6 +31,7 @@ suite-web test integration google-chrome:
     script:
         - npx cypress install
         # add DEBUG=cypress:* env variable to debug cypress in ci
+        - export DEBUG=cypress:*
         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
         - export BROWSER=chrome
         - yarn concurrently --success first --kill-others "python3 ./docker/trezor-user-env/controller/main.py" "cypress run --browser $BROWSER --project ./packages/integration-tests/projects/suite-web"
