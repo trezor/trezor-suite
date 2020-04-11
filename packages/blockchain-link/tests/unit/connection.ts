@@ -2,7 +2,7 @@ import createServer from '../websocket';
 import workers from './worker';
 import BlockchainLink from '../../src';
 
-workers.splice(0,1).forEach(instance => {
+workers.splice(1, 1).forEach(instance => {
     describe(`Connection ${instance.name}`, () => {
         let server: any;
         let blockchain: BlockchainLink;
