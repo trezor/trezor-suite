@@ -9,6 +9,7 @@ import { Step } from '@onboarding-types/steps';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as STEP from '@onboarding-constants/steps';
 import steps from '@onboarding-config/steps';
+import { isStepInPath } from '@onboarding-utils/steps';
 
 import WelcomeStep from '@onboarding-views/steps/Welcome/Container';
 import SkipStep from '@onboarding-views/steps/Skip/Container';
@@ -72,7 +73,7 @@ type Props = ReturnType<typeof mapStateToProps> &
     InjectedModalApplicationProps;
 
 const Onboarding = (props: Props) => {
-    const { activeStepId, modal } = props;
+    const { activeStepId, modal, path } = props;
 
     const getStep = () => {
         const lookup = steps.find((step: Step) => step.id === activeStepId);
@@ -119,6 +120,7 @@ const Onboarding = (props: Props) => {
     };
 
     const StepComponent = getStepComponent();
+    const stepsInPath = steps.filter(s => s.progress && isStepInPath(s, path));
 
     return (
         <Wrapper>
@@ -127,13 +129,12 @@ const Onboarding = (props: Props) => {
             </Head>
 
             <ProgressBar
-                total={steps.filter(s => s.progress).length}
-                current={steps.findIndex(step => activeStepId === step.id)}
+                total={stepsInPath.length}
+                current={stepsInPath.findIndex(step => activeStepId === step.id)}
                 showBuy={getStep().buy}
                 showHelp={getStep().help}
                 hidden={!getStep().progress}
             />
-
             <UnexpectedState>
                 {modal && (
                     <ActionModalWrapper data-test="@onboading/confirm-action-on-device">

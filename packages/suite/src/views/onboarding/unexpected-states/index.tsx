@@ -28,6 +28,7 @@ const IsInBootloader = () => (
 const mapStateToProps = (state: AppState) => ({
     onboarding: state.onboarding,
     suite: state.suite,
+    recovery: state.recovery,
 });
 
 type Props = ReturnType<typeof mapStateToProps> & {
@@ -75,7 +76,6 @@ const UnexpectedState = ({ onboarding, suite, children }: Props) => {
             case STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE:
                 return device?.type === 'unacquired';
             case STEP.DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE:
-                // todo check
                 return isNotNewDevice();
             case STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE:
                 return device?.features?.recovery_mode;

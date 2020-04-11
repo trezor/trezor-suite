@@ -8,6 +8,7 @@ workers.forEach(instance => {
         let blockchain: BlockchainLink;
 
         beforeEach(async () => {
+            jest.setTimeout(20000);
             server = await createServer(instance.name);
             blockchain = new BlockchainLink({
                 ...instance,
@@ -23,10 +24,9 @@ workers.forEach(instance => {
         });
 
         it('Handle connection timeout', async () => {
-            jest.setTimeout(10000);
             try {
                 blockchain.settings.server = ['wss://google.com:11111', 'wss://google.com:22222'];
-                blockchain.settings.timeout = 2500;
+                blockchain.settings.timeout = 4000;
                 await blockchain.connect();
             } catch (error) {
                 expect(error.code).toEqual('blockchain_link/connect');
@@ -35,16 +35,15 @@ workers.forEach(instance => {
         });
 
         it('Handle message timeout', async () => {
-            jest.setTimeout(10000);
             server.setFixtures([
                 {
                     method: instance.name === 'ripple' ? 'server_info' : 'getInfo',
                     response: undefined,
-                    delay: 3000, // wait 3 sec. to send response
+                    delay: 8000, // wait 8 sec. to send response
                 },
             ]);
             try {
-                blockchain.settings.timeout = 2500;
+                blockchain.settings.timeout = 4000;
                 await blockchain.getInfo();
             } catch (error) {
                 expect(error.code).toEqual('blockchain_link/websocket_timeout');
@@ -55,7 +54,6 @@ workers.forEach(instance => {
             // the only way how to test it is to check if server fixture was called
             // method defined in this fixture is the same which is used in ping function inside the worker
             // server should remove this fixture once called
-            jest.setTimeout(10000);
             server.setFixtures([
                 {
                     method: instance.name === 'ripple' ? 'server_info' : 'getBlockHash',
@@ -74,7 +72,6 @@ workers.forEach(instance => {
 
         it('Handle ping (keepAlive)', async () => {
             // similar to previous test but this time expect that ping will be called because of "keepAlive" param
-            jest.setTimeout(10000);
             server.setFixtures([
                 {
                     method: instance.name === 'ripple' ? 'server_info' : 'getBlockHash',
@@ -99,7 +96,6 @@ workers.forEach(instance => {
             // similar to previous test but this time expect that server fixtures will not be removed
             // since ping should not be called because subscription was cancelled and keepAlive is not set
             // after first ping websocket should be disconnected
-            jest.setTimeout(5000);
             server.setFixtures([
                 {
                     method: instance.name === 'ripple' ? 'server_info' : 'getBlockHash',
@@ -125,7 +121,6 @@ workers.forEach(instance => {
         });
 
         it('Handle connect event', async done => {
-            jest.setTimeout(5000); // reset from previous test
             blockchain.on('connected', done);
             const result = await blockchain.connect();
             expect(result).toEqual(true);
@@ -204,6 +199,7 @@ workers.forEach(instance => {
         });
 
         it('Connect error (server field with invalid values)', async () => {
+            blockchain.settings.timeout = 4000;
             blockchain.settings.server = [
                 'gibberish',
                 'ws://gibberish',

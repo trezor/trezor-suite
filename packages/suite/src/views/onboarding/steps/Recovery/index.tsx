@@ -1,10 +1,14 @@
 import React from 'react';
+import styled from 'styled-components';
 
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import { SelectWordCount, SelectRecoveryType, Error } from '@recovery-components';
 import { Translation, Loading, Image } from '@suite-components';
-
 import { Props } from './Container';
+
+const StyledImage = styled(Image)`
+    flex: 1;
+`;
 
 const RecoveryStep = (props: Props) => {
     const {
@@ -16,8 +20,6 @@ const RecoveryStep = (props: Props) => {
         recoverDevice,
         recovery,
         device,
-        // modal,
-        resetReducer,
     } = props;
 
     if (!device || !device.features) {
@@ -25,6 +27,26 @@ const RecoveryStep = (props: Props) => {
     }
 
     const model = device.features.major_version;
+    const handleBack = () => {
+        if (recovery.status === 'select-recovery-type') {
+            return setStatus('initial');
+        }
+        // allow to change recovery settings for T1 in case of error
+        if (recovery.status === 'finished' && recovery.error && model === 1) {
+            return setStatus('initial');
+        }
+        return goToPreviousStep();
+    };
+
+    const isBackButtonVisible = () => {
+        if (recovery.status === 'finished' && recovery.error && model === 1) {
+            return true;
+        }
+        if (recovery.status !== 'finished' && recovery.status !== 'in-progress') {
+            return true;
+        }
+        return false;
+    };
 
     return (
         <Wrapper.Step>
@@ -36,14 +58,12 @@ const RecoveryStep = (props: Props) => {
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {recovery.status === 'initial' && model === 1 && (
-                    <>
-                        <SelectWordCount
-                            onSelect={number => {
-                                setWordsCount(number);
-                                setStatus('select-recovery-type');
-                            }}
-                        />
-                    </>
+                    <SelectWordCount
+                        onSelect={number => {
+                            setWordsCount(number);
+                            setStatus('select-recovery-type');
+                        }}
+                    />
                 )}
 
                 {recovery.status === 'initial' && model === 2 && (
@@ -71,36 +91,20 @@ const RecoveryStep = (props: Props) => {
                                 recoverDevice();
                             }}
                         />
-
-                        <Wrapper.Controls>
-                            <OnboardingButton.Alt
-                                onClick={() => {
-                                    setStatus('initial');
-                                }}
-                            >
-                                <Translation id="TR_BACK" />
-                            </OnboardingButton.Alt>
-                        </Wrapper.Controls>
                     </>
                 )}
 
-                {recovery.status === 'in-progress' && (
-                    // <>
-                    //     {!modal && <Loading />}
-                    //     {modal && modal}
-                    // </>
-                    <Loading />
-                )}
+                {recovery.status === 'in-progress' && <Loading />}
 
                 {recovery.status === 'finished' && !recovery.error && (
                     <>
-                        <Image image="UNI_SUCCESS" />
+                        <StyledImage image="UNI_SUCCESS" />
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 data-test="@onboarding/recovery/continue-button"
                                 onClick={() => goToNextStep('set-pin')}
                             >
-                                Continue
+                                <Translation id="TR_CONTINUE" />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -111,7 +115,7 @@ const RecoveryStep = (props: Props) => {
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 onClick={() => {
-                                    resetReducer();
+                                    recoverDevice();
                                 }}
                             >
                                 <Translation id="TR_RETRY" />
@@ -122,9 +126,9 @@ const RecoveryStep = (props: Props) => {
             </Wrapper.StepBody>
 
             <Wrapper.StepFooter>
-                {recovery.status !== 'in-progress' && (
-                    <OnboardingButton.Back onClick={() => goToPreviousStep()}>
-                        Back
+                {isBackButtonVisible() && (
+                    <OnboardingButton.Back onClick={() => handleBack()}>
+                        <Translation id="TR_BACK" />
                     </OnboardingButton.Back>
                 )}
             </Wrapper.StepFooter>

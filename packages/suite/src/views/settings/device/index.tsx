@@ -6,6 +6,7 @@ import {
     ActionColumn,
     ActionInput,
     Row,
+    SectionItem,
     Section,
     TextColumn,
 } from '@suite-components/Settings';
@@ -97,7 +98,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
         <SettingsLayout>
             <H2>{device.label}</H2>
             <Section title={<Translation id="TR_BACKUP" />}>
-                <Row>
+                <SectionItem>
                     <TextColumn
                         title={<Translation id="TR_BACKUP_RECOVERY_SEED" />}
                         description={<Translation id="TR_RECOVERY_SEED_IS" />}
@@ -120,7 +121,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             {features.unfinished_backup && 'Backup failed'}
                         </ActionButton>
                     </ActionColumn>
-                </Row>
+                </SectionItem>
                 {features.unfinished_backup && (
                     <BackupFailedRow data-test="@settings/device/failed-backup-row">
                         <P size="tiny">
@@ -134,7 +135,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                     </BackupFailedRow>
                 )}
                 {!features.unfinished_backup && (
-                    <Row>
+                    <SectionItem>
                         <TextColumn
                             title={<Translation id="TR_CHECK_RECOVERY_SEED" />}
                             description={<Translation id="TR_RECOVERY_SEED_IS" />}
@@ -143,9 +144,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         <ActionColumn>
                             <ActionButton
                                 data-test="@settings/device/check-seed-button"
-                                onClick={() => {
-                                    goto('recovery-index', { cancelable: true });
-                                }}
+                                onClick={() => goto('recovery-index', { cancelable: true })}
                                 isDisabled={
                                     !actionEnabled ||
                                     features.needs_backup ||
@@ -156,11 +155,11 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                 <Translation id="TR_CHECK_SEED" />
                             </ActionButton>
                         </ActionColumn>
-                    </Row>
+                    </SectionItem>
                 )}
             </Section>
             <Section title="Security">
-                <Row>
+                <SectionItem>
                     <TextColumn
                         title={<Translation id="TR_FIRMWARE_VERSION" />}
                         description={
@@ -186,8 +185,8 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             {device && device.firmware === 'valid' && 'Up to date'}
                         </ActionButton>
                     </ActionColumn>
-                </Row>
-                <Row>
+                </SectionItem>
+                <SectionItem>
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE" />}
                         description={<Translation id="TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC" />}
@@ -199,9 +198,9 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             isDisabled={!actionEnabled}
                         />
                     </ActionColumn>
-                </Row>
+                </SectionItem>
                 {features.pin_protection && (
-                    <Row>
+                    <SectionItem>
                         <TextColumn
                             title="Change PIN"
                             description="In case your PIN has been exposed or you simply want to change it, here you go. There is no limit of how many times you can change your PIN."
@@ -216,10 +215,10 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                 Change PIN
                             </ActionButton>
                         </ActionColumn>
-                    </Row>
+                    </SectionItem>
                 )}
 
-                <Row>
+                <SectionItem>
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_TITLE" />}
                         description={
@@ -242,10 +241,10 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             isDisabled={!actionEnabled}
                         />
                     </ActionColumn>
-                </Row>
+                </SectionItem>
             </Section>
             <Section title={<Translation id="TR_PERSONALIZATION" />}>
-                <Row>
+                <SectionItem>
                     <TextColumn title={<Translation id="TR_DEVICE_SETTINGS_DEVICE_LABEL" />} />
                     <ActionColumn>
                         <ActionInput
@@ -265,8 +264,8 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />
                         </ActionButton>
                     </ActionColumn>
-                </Row>
-                <Row>
+                </SectionItem>
+                <SectionItem>
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
                         description={
@@ -311,9 +310,9 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY" />
                         </ActionButton>
                     </ActionColumn>
-                </Row>
+                </SectionItem>
                 {customHomescreen && (
-                    <Row>
+                    <SectionItem>
                         <Col>
                             <img
                                 width="144px"
@@ -335,10 +334,10 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                 Drop image
                             </ActionButton>
                         </ActionColumn>
-                    </Row>
+                    </SectionItem>
                 )}
                 {features.major_version === 2 && (
-                    <Row>
+                    <SectionItem>
                         <TextColumn
                             title={<Translation id="TR_DEVICE_SETTINGS_DISPLAY_ROTATION" />}
                         />
@@ -359,11 +358,11 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                 </RotationButton>
                             ))}
                         </ActionColumn>
-                    </Row>
+                    </SectionItem>
                 )}
             </Section>
             <Section title={<Translation id="TR_ADVANCED" />}>
-                <Row>
+                <SectionItem>
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />}
                         description={<Translation id="TR_WIPING_YOUR_DEVICE" />}
@@ -382,7 +381,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             <Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />
                         </ActionButton>
                     </ActionColumn>
-                </Row>
+                </SectionItem>
             </Section>
         </SettingsLayout>
     );

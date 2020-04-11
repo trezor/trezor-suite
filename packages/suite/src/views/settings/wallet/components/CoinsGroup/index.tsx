@@ -51,10 +51,14 @@ const AdvancedSettings = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${colors.BLACK25};
     /* todo: not in variables but is in design */
-    font-weight: 500;
-    margin-right: 4%;
-    min-width: 120px;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    margin-right: 12px;
     visibility: hidden;
+    align-items: center;
+
+    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        visibility: visible;
+    }
 `;
 
 const UnavailableLabel = styled.div`
@@ -63,15 +67,19 @@ const UnavailableLabel = styled.div`
     white-space: nowrap;
 `;
 
-const SettingsIcon = styled(Icon)`
-    position: relative;
-    top: 2px;
-    right: 4px;
+const SettingsIconWrapper = styled.div`
+    margin-right: 0.5ch;
 `;
 
 const CoinRow = styled(Row)`
     &:hover ${AdvancedSettings} {
         visibility: visible;
+    }
+`;
+
+const AdvancedSettingsText = styled.div`
+    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        display: none;
     }
 `;
 
@@ -158,8 +166,12 @@ export default ({
                         <ActionColumn>
                             {/* hidden with display 'none' until implemented */}
                             <AdvancedSettings style={{ display: 'none' }}>
-                                <SettingsIcon icon="SETTINGS" size={12} color={colors.BLACK25} />
-                                <Translation id="TR_ADVANCED_SETTINGS" />
+                                <SettingsIconWrapper>
+                                    <Icon icon="SETTINGS" size={16} color={colors.BLACK25} />
+                                </SettingsIconWrapper>
+                                <AdvancedSettingsText>
+                                    <Translation id="TR_ADVANCED_SETTINGS" />
+                                </AdvancedSettingsText>
                             </AdvancedSettings>
                             {!unavailableCapabilities[network.symbol] && (
                                 <Switch
