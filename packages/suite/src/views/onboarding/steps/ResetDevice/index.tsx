@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from '@trezor/components';
 import * as STEP from '@onboarding-constants/steps';
 import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components';
+import { Translation, Image } from '@suite-components';
 import { TOS_URL } from '@suite-constants/urls';
 import { Props } from './Container';
 
@@ -25,10 +26,13 @@ const ResetDeviceStep = (props: Props) => {
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {!isShamirBackupAvailable() && (
-                    <Text>
-                        You are one step from creating your wallet. By clicking the button below you
-                        agree with <Link href={TOS_URL}>TOS</Link>
-                    </Text>
+                    <>
+                        <Text>
+                            You are one step from creating your wallet. By clicking the button below
+                            you agree with <Link href={TOS_URL}>TOS</Link>
+                        </Text>
+                        <Image image="FIRMWARE_SUCCESS_1" />
+                    </>
                 )}
 
                 {isShamirBackupAvailable() && (
@@ -85,7 +89,7 @@ const ResetDeviceStep = (props: Props) => {
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
                 <OnboardingButton.Back onClick={() => props.goToPreviousStep()}>
-                    Back
+                    <Translation id="TR_BACK" />
                 </OnboardingButton.Back>
             </Wrapper.StepFooter>
         </Wrapper.Step>
