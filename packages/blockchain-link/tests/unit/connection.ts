@@ -26,7 +26,7 @@ workers.forEach(instance => {
             jest.setTimeout(10000);
             try {
                 blockchain.settings.server = ['wss://google.com:11111', 'wss://google.com:22222'];
-                blockchain.settings.timeout = 2500;
+                blockchain.settings.timeout = 5000;
                 await blockchain.connect();
             } catch (error) {
                 expect(error.code).toEqual('blockchain_link/connect');
@@ -40,11 +40,11 @@ workers.forEach(instance => {
                 {
                     method: instance.name === 'ripple' ? 'server_info' : 'getInfo',
                     response: undefined,
-                    delay: 4000, // wait 3 sec. to send response
+                    delay: 8000, // wait 8 sec. to send response
                 },
             ]);
             try {
-                blockchain.settings.timeout = 1000;
+                blockchain.settings.timeout = 5000;
                 await blockchain.getInfo();
             } catch (error) {
                 expect(error.code).toEqual('blockchain_link/websocket_timeout');
