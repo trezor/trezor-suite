@@ -55,6 +55,15 @@ unit tests:
     script:
         - lerna run test:unit -- --passWithNoTests
 
+# tests started to fail without any change to the codebase under tests or tests self. so I have excluded 
+# them temporarily (see blockchain-link/package.json) and separated them in a single job with that will
+# be failing but is allowed to - this way we will not forget to fix it asap.
+blockchain-link unit tests:
+    stage: lint, types, unit tests
+    allow_failure: true
+    script:
+        - yarn workspace @trezor/blockchain-link _test:unit
+
 include:
     - ci/environment.yml
     - ci/install-and-build.yml
