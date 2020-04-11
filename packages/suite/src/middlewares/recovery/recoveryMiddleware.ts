@@ -1,6 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 import { SUITE } from '@suite-actions/constants';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
+
 import { AppState, Action, Dispatch } from '@suite-types';
 
 const recovery = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (

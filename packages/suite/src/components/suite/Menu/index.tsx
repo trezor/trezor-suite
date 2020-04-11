@@ -9,7 +9,7 @@ import BottomMenu from './components/BottomMenu';
 
 const Wrapper = styled.div<{ wide?: boolean }>`
     background: ${colors.BLACK17};
-    width: ${props => (props.wide ? '100%' : '120px')};
+    width: ${props => (props.wide ? '100%' : '140px')};
     height: 100%;
     display: flex;
     flex-direction: column;

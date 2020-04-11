@@ -2880,6 +2880,18 @@ const definedMessages = defineMessages({
         defaultMessage: 'Success',
         description: 'Just a general "success" if we do not know what else to use',
     },
+    TR_DISCREET: {
+        id: 'TR_DISCREET',
+        defaultMessage: 'Discreet',
+    },
+    TR_STANDARD_WALLET: {
+        id: 'TR_STANDARD_WALLET',
+        defaultMessage: 'Standard wallet',
+    },
+    TR_HIDDEN_WALLET: {
+        id: 'TR_HIDDEN_WALLET',
+        defaultMessage: 'Hidden wallet #{id}',
+    },
 } as const);
 
 export default definedMessages;

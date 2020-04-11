@@ -52,7 +52,7 @@ const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
     const { advancedRecovery, wordsCount } = getState().recovery;
     const { device } = getState().suite;
     if (!device || !device.features) return;
-
+    dispatch(setError(''));
     dispatch(setStatus('in-progress'));
 
     const response = await TrezorConnect.recoveryDevice({
@@ -68,14 +68,6 @@ const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
         dispatch(setError(response.payload.error));
     }
 
-    if (device.features.recovery_mode) {
-        TrezorConnect.getFeatures({
-            device: {
-                path: device.path,
-            },
-        });
-    }
-
     dispatch(setStatus('finished'));
 };
 
@@ -83,7 +75,7 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     const { advancedRecovery, wordsCount } = getState().recovery;
     const { device } = getState().suite;
     if (!device || !device.features) return;
-
+    dispatch(setError(''));
     dispatch(setStatus('in-progress'));
 
     const response = await TrezorConnect.recoveryDevice({
@@ -97,14 +89,55 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!response.success) {
         dispatch(setError(response.payload.error));
     }
-    if (device.features.recovery_mode) {
-        TrezorConnect.getFeatures({
-            device: {
-                path: device.path,
-            },
-        });
-    }
+
     dispatch(setStatus('finished'));
+};
+
+// Recovery mode is persistent on model T. This means that device stays in recovery mode even after reconnecting.
+// In such case, we need to call again the call that brought device into recovery mode (either proper recovery
+// or seed check). This way, communication is renewed and host starts receiving messages from device again.
+const rerun = () => async (dispatch: Dispatch, getState: GetState) => {
+    const { device } = getState().suite;
+
+    if (!device || !device.features) return;
+    dispatch(setStatus('in-progress'));
+
+    // user might have proceeded with recovery on screen which means that we need to
+    // reload fresh features before deciding what to do
+    const response = await TrezorConnect.getFeatures({
+        device: {
+            path: device.path,
+        },
+    });
+
+    if (!response.success) {
+        dispatch(setStatus('finished'));
+        dispatch(setError('failed to rerun recovery'));
+        return;
+    }
+
+    const features = response.payload;
+
+    // cases that we cover here:
+
+    // !initialized && !recovery_mode => set initial, clear error
+    // initialized && !recovery_mode => set initial, clear error
+    // !initialized && recovery_mode => recoveryDevice(),
+    // initialized && recovery_mode => checkSeed()
+
+    if (!features.recovery_mode) {
+        dispatch(setStatus('finished'));
+        dispatch(setError(''));
+        return;
+    }
+
+    if (!features.initialized) {
+        dispatch(recoverDevice());
+    }
+
+    if (features.initialized) {
+        dispatch(checkSeed());
+    }
 };
 
 export {
@@ -115,4 +148,5 @@ export {
     recoverDevice,
     resetReducer,
     setStatus,
+    rerun,
 };
