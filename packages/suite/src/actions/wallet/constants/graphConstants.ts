@@ -1,4 +1,5 @@
-export const AGGREGATED_HISTORY_UPDATE = '@rate/aggregated-history-update';
-export const AGGREGATED_HISTORY_START = '@rate/aggregated-history-start';
-export const AGGREGATED_HISTORY_SUCCESS = '@rate/aggregated-history-success';
-export const AGGREGATED_HISTORY_FAIL = '@rate/aggregated-history-fail';
+export const ACCOUNT_GRAPH_START = '@graph/account-graph-start';
+export const ACCOUNT_GRAPH_SUCCESS = '@graph/account-graph-success';
+export const ACCOUNT_GRAPH_FAIL = '@graph/account-graph-fail';
+export const AGGREGATED_GRAPH_START = '@graph/aggregated-graph-start';
+export const AGGREGATED_GRAPH_SUCCESS = '@graph/aggregated-graph-success';

@@ -4,32 +4,49 @@ import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { resetTime } from '@suite-utils/date';
 import { Dispatch, GetState } from '@suite-types';
 import {
-    AGGREGATED_HISTORY_UPDATE,
-    AGGREGATED_HISTORY_START,
-    AGGREGATED_HISTORY_SUCCESS,
-    AGGREGATED_HISTORY_FAIL,
+    ACCOUNT_GRAPH_SUCCESS,
+    ACCOUNT_GRAPH_FAIL,
+    AGGREGATED_GRAPH_START,
+    AGGREGATED_GRAPH_SUCCESS,
+    ACCOUNT_GRAPH_START,
 } from './constants/graphConstants';
-import { Account, Network } from '@wallet-types';
+import { Account } from '@wallet-types';
 import { GraphRange } from '@wallet-types/fiatRates';
 
 export type GraphActions =
     | {
-          type: typeof AGGREGATED_HISTORY_UPDATE;
+          type: typeof ACCOUNT_GRAPH_SUCCESS;
           payload: {
               account: Account;
               data: BlockchainAccountBalanceHistory[];
               interval: GraphRange['label'];
           };
       }
-    | { type: typeof AGGREGATED_HISTORY_START }
-    | { type: typeof AGGREGATED_HISTORY_SUCCESS }
     | {
-          type: typeof AGGREGATED_HISTORY_FAIL;
+          type: typeof ACCOUNT_GRAPH_START;
           payload: {
-              descriptor: string;
-              deviceState: string;
-              symbol: Network['symbol'];
-          }[];
+              account: Account;
+              interval: GraphRange['label'];
+          };
+      }
+    | {
+          type: typeof ACCOUNT_GRAPH_FAIL;
+          payload: {
+              account: Account;
+              interval: GraphRange['label'];
+          };
+      }
+    | {
+          type: typeof AGGREGATED_GRAPH_START;
+          payload: {
+              interval: GraphRange['label'];
+          };
+      }
+    | {
+          type: typeof AGGREGATED_GRAPH_SUCCESS;
+          payload: {
+              interval: GraphRange['label'];
+          };
       };
 
 /**
@@ -50,6 +67,14 @@ export const fetchAccountGraphData = (
     groupBy: number,
     interval: GraphRange['label'],
 ) => async (dispatch: Dispatch, _getState: GetState) => {
+    dispatch({
+        type: ACCOUNT_GRAPH_START,
+        payload: {
+            account,
+            interval,
+        },
+    });
+
     const secondsInMonth = 3600 * 24 * 30;
     const setDayToFirstOfMonth = groupBy >= secondsInMonth;
     const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
@@ -70,7 +95,7 @@ export const fetchAccountGraphData = (
             time: resetTime(h.time, setDayToFirstOfMonth), // adapts to local timezone
         }));
         dispatch({
-            type: AGGREGATED_HISTORY_UPDATE,
+            type: ACCOUNT_GRAPH_SUCCESS,
             payload: {
                 account,
                 interval,
@@ -79,6 +104,13 @@ export const fetchAccountGraphData = (
         });
         return enhancedResponse;
     }
+    dispatch({
+        type: ACCOUNT_GRAPH_FAIL,
+        payload: {
+            account,
+            interval,
+        },
+    });
     return null;
 };
 
@@ -91,27 +123,18 @@ export const updateGraphData = (accounts: Account[], range: GraphRange) => async
     const secondsInMonth = secondsInDay * 30;
     const groupBy = range.weeks >= 52 ? secondsInMonth : secondsInDay;
 
+    const interval = range.label;
     dispatch({
-        type: AGGREGATED_HISTORY_START,
+        type: AGGREGATED_GRAPH_START,
+        payload: { interval },
     });
     const promises = accounts.map(a =>
         dispatch(fetchAccountGraphData(a, startDate, endDate, groupBy, range.label)),
     );
-    const responses = await Promise.all(promises);
-    const failedAccounts = responses.map((r, i) => (!r ? accounts[i] : null)).filter(a => !!a);
+    await Promise.all(promises);
 
-    if (failedAccounts.length > 0) {
-        dispatch({
-            type: AGGREGATED_HISTORY_FAIL,
-            payload: failedAccounts.map(a => ({
-                descriptor: a!.descriptor,
-                symbol: a!.symbol,
-                deviceState: a!.deviceState,
-            })),
-        });
-    } else {
-        dispatch({
-            type: AGGREGATED_HISTORY_SUCCESS,
-        });
-    }
+    dispatch({
+        type: AGGREGATED_GRAPH_SUCCESS,
+        payload: { interval },
+    });
 };

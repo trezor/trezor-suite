@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { colors, variables, Button } from '@trezor/components';
 import { Card, TransactionsGraph, Translation } from '@suite-components';
@@ -70,25 +70,34 @@ interface Props {
 }
 
 const TransactionSummary = (props: Props) => {
-    // const [data, setData] = useState<AccountHistory | null>(null);
+    const { updateGraphData, account } = props;
+    const didMountRef = useRef(false);
     const [isGraphHidden, setIsGraphHidden] = useState(false);
-    // const [isLoading, setIsLoading] = useState(false);
-    // const [error, setError] = useState(false);
-    const [isLoading] = useState(false);
-    const [error] = useState(false);
-
     const [selectedRange, setSelectedRange] = useState<GraphRange>({
         label: 'year',
         weeks: 52,
     });
 
-    const data = props.graphData.find(d => d.interval === selectedRange.label)?.data ?? null;
+    const intervalGraphData = props.graphData.find(d => d.interval === selectedRange.label);
+    const data = intervalGraphData?.data ?? null;
+    const error = intervalGraphData?.error ?? false;
+    const isLoading = intervalGraphData?.isLoading ?? false;
 
     const numOfTransactions = data?.reduce((acc, d) => (acc += d.txs), 0);
     const totalSentAmount = data?.reduce((acc, d) => acc.plus(d.sent), new BigNumber(0));
     const totalReceivedAmount = data?.reduce((acc, d) => acc.plus(d.received), new BigNumber(0));
 
     const xTicks = calcTicks(selectedRange.weeks, { skipDays: true }).map(getUnixTime);
+
+    useEffect(() => {
+        if (didMountRef.current) {
+            if (!data) {
+                updateGraphData([account], selectedRange);
+            }
+        } else {
+            didMountRef.current = true;
+        }
+    }, [account, data, selectedRange, updateGraphData]);
 
     return (
         <Wrapper>

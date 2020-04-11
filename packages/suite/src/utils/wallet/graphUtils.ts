@@ -16,8 +16,8 @@ export const calcFiatValueMap = (amount: string, rates: FiatRates): { [k: string
 };
 
 export const sumFiatValueMap = (
-    valueMap: { [k: string]: string },
-    obj: { [k: string]: string },
+    valueMap: { [k: string]: string | undefined },
+    obj: { [k: string]: string | undefined },
 ) => {
     const valueMapCopy = { ...valueMap };
     Object.entries(obj).forEach(keyVal => {

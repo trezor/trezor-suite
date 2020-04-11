@@ -6,7 +6,7 @@ import { FiatValue, FormattedNumber } from '@suite-components';
 import { Account } from '@wallet-types';
 import { TooltipProps } from 'recharts';
 import { getDateWithTimeZone } from '@suite/utils/suite/date';
-import { Props as GraphProps } from '../../index';
+import { Props as GraphProps, FiatGraphProps, CryptoGraphProps } from '../../index';
 
 const CustomTooltipWrapper = styled.div<{ coordinate: { x: number; y: number } }>`
     display: flex;
@@ -38,25 +38,22 @@ const Rect = styled.div<{ color: string }>`
     margin-right: 4px;
 `;
 
-interface Range {
-    label: string;
-    weeks: number;
-}
-
 interface CommonProps extends TooltipProps {
-    selectedRange: Range;
-    receivedValueFn: GraphProps['receivedValueFn'];
-    sentValueFn: GraphProps['sentValueFn'];
+    selectedRange: GraphProps['selectedRange'];
 }
 
 interface OneAssetProps extends CommonProps {
     variant: 'one-asset';
     symbol: Account['symbol'];
+    sentValueFn: CryptoGraphProps['sentValueFn'];
+    receivedValueFn: CryptoGraphProps['receivedValueFn'];
 }
 
 interface AllAssetsProps extends CommonProps {
     variant: 'all-assets';
     localCurrency: string;
+    sentValueFn: FiatGraphProps['sentValueFn'];
+    receivedValueFn: FiatGraphProps['receivedValueFn'];
 }
 type Props = AllAssetsProps | OneAssetProps;
 
@@ -72,7 +69,7 @@ const CustomTooltip = ({ active, payload, coordinate, ...props }: Props) => {
                 <>
                     {receivedAmountString} {props.symbol.toUpperCase()}
                     <FiatValue
-                        amount={receivedAmountString}
+                        amount={receivedAmountString!}
                         symbol={props.symbol}
                         source={payload[0].payload.rates}
                         useCustomSource
@@ -81,7 +78,10 @@ const CustomTooltip = ({ active, payload, coordinate, ...props }: Props) => {
                     </FiatValue>
                 </>
             ) : (
-                <FormattedNumber currency={props.localCurrency} value={receivedAmountString} />
+                <FormattedNumber
+                    currency={props.localCurrency}
+                    value={receivedAmountString ?? '0'}
+                />
             );
 
         const sentAmount =
@@ -89,7 +89,7 @@ const CustomTooltip = ({ active, payload, coordinate, ...props }: Props) => {
                 <>
                     {sentAmountString} {props.symbol.toUpperCase()}
                     <FiatValue
-                        amount={sentAmountString}
+                        amount={sentAmountString!}
                         symbol={props.symbol}
                         source={payload[0].payload.rates}
                         useCustomSource
@@ -98,7 +98,7 @@ const CustomTooltip = ({ active, payload, coordinate, ...props }: Props) => {
                     </FiatValue>
                 </>
             ) : (
-                <FormattedNumber currency={props.localCurrency} value={sentAmountString} />
+                <FormattedNumber currency={props.localCurrency} value={sentAmountString ?? '0'} />
             );
 
         return (

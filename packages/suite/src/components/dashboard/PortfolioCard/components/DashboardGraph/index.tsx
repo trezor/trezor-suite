@@ -32,20 +32,21 @@ const ErrorMessage = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
-// const SmallErrorMessage = styled.div`
-//     display: flex;
-//     padding: 16px;
-//     padding-top: 0px;
-//     color: ${colors.BLACK50};
-//     font-size: ${variables.FONT_SIZE.TINY};
-// `;
+const SmallErrorMessage = styled.div`
+    display: flex;
+    padding: 16px;
+    padding-top: 0px;
+    color: ${colors.BLACK50};
+    font-size: ${variables.FONT_SIZE.TINY};
+`;
 
 const DashboardGraph = (props: Props) => {
     const { accounts, updateGraphData, selectedDevice } = props;
-    const failedAccounts = props.graph.error;
-    const { isLoading } = props.graph;
     const [selectedRange, setSelectedRange] = useState<GraphRange>(SETTINGS.DEFAULT_GRAPH_RANGE);
     const didMountRef = useRef(false);
+
+    const isLoading = props.graph.isLoading[selectedRange.label];
+    const failedAccounts = props.graph.error[selectedRange.label];
 
     const xTicks = calcTicks(selectedRange.weeks).map(getUnixTime);
     const deviceGraphData = selectedDevice
@@ -104,11 +105,11 @@ const DashboardGraph = (props: Props) => {
                     />
                 )}
             </GraphWrapper>
-            {/* {failedAccounts && failedAccounts.length > 0 && (
+            {failedAccounts && failedAccounts.length > 0 && (
                 <SmallErrorMessage>
-                    *Data for {failedAccounts.length} accounts could not be loaded
+                    *Could not retrieve data for {failedAccounts.length} accounts.
                 </SmallErrorMessage>
-            )} */}
+            )}
         </Wrapper>
     );
 };

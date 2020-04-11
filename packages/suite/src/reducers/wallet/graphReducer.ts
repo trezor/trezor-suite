@@ -15,30 +15,50 @@ interface AccountIdentifier {
 
 export interface GraphData {
     account: AccountIdentifier;
-    interval: string;
-    data: BlockchainAccountBalanceHistory[];
+    interval: GraphRange['label'];
+    error: boolean;
+    isLoading: boolean;
+    data: BlockchainAccountBalanceHistory[] | null;
 }
 
 interface State {
+    // put interval fields in data;
     data: GraphData[];
-    error: null | AccountIdentifier[];
-    isLoading: boolean;
+    error: { [k in GraphData['interval']]: null | AccountIdentifier[] };
+    isLoading: { [k in GraphData['interval']]: boolean };
     // selectedRange: GraphRange;
 }
 
 const initialState: State = {
     data: [],
-    error: null,
-    isLoading: false,
+    error: {
+        year: null,
+        month: null,
+        week: null,
+    },
+    isLoading: {
+        year: false,
+        month: false,
+        week: false,
+    },
     // selectedRange: SETTINGS.DEFAULT_GRAPH_RANGE,
 };
 
-const update = (
-    draft: State,
-    account: Account,
-    data: BlockchainAccountBalanceHistory[],
-    interval: GraphRange['label'],
-) => {
+const updateError = (draft: State, interval?: GraphRange['label']) => {
+    const intervals = interval ? [interval] : (['week', 'month', 'year'] as const);
+
+    intervals.forEach(interval => {
+        const failedGraphData = draft.data.filter(d => !!d.error && d.interval === interval);
+        if (failedGraphData.length > 0) {
+            draft.error[interval] = failedGraphData.map(a => a.account);
+        } else {
+            draft.error[interval] = null;
+        }
+    });
+};
+
+const update = (draft: State, payload: GraphData) => {
+    const { account, data, error, interval, isLoading } = payload;
     const dataIndex = draft.data.findIndex(
         d =>
             d.account.deviceState === account.deviceState &&
@@ -48,6 +68,8 @@ const update = (
     );
     if (dataIndex !== -1) {
         draft.data[dataIndex].data = data;
+        draft.data[dataIndex].error = error;
+        draft.data[dataIndex].isLoading = isLoading;
     } else {
         draft.data.push({
             account: {
@@ -55,10 +77,14 @@ const update = (
                 descriptor: account.descriptor,
                 symbol: account.symbol,
             },
+            isLoading,
             interval,
+            error,
             data,
         });
     }
+
+    updateError(draft, interval);
 };
 
 const remove = (draft: State, accounts: Account[]) => {
@@ -74,6 +100,7 @@ const remove = (draft: State, accounts: Account[]) => {
             draft.data.splice(index, 1);
         });
     });
+    updateError(draft);
 };
 
 export default (state: State = initialState, action: WalletAction | SuiteAction): State => {
@@ -81,19 +108,20 @@ export default (state: State = initialState, action: WalletAction | SuiteAction)
         switch (action.type) {
             case STORAGE.LOADED:
                 return action.payload.wallet.graph;
-            case GRAPH.AGGREGATED_HISTORY_UPDATE:
-                update(draft, action.payload.account, action.payload.data, action.payload.interval);
+            case GRAPH.ACCOUNT_GRAPH_START:
+                update(draft, { ...action.payload, data: null, isLoading: true, error: false });
                 break;
-            case GRAPH.AGGREGATED_HISTORY_START:
-                draft.isLoading = true;
+            case GRAPH.ACCOUNT_GRAPH_SUCCESS:
+                update(draft, { ...action.payload, isLoading: false, error: false });
                 break;
-            case GRAPH.AGGREGATED_HISTORY_SUCCESS:
-                draft.isLoading = false;
-                draft.error = null;
+            case GRAPH.ACCOUNT_GRAPH_FAIL:
+                update(draft, { ...action.payload, data: null, isLoading: false, error: true });
                 break;
-            case GRAPH.AGGREGATED_HISTORY_FAIL:
-                draft.isLoading = false;
-                draft.error = action.payload;
+            case GRAPH.AGGREGATED_GRAPH_START:
+                draft.isLoading[action.payload.interval] = true;
+                break;
+            case GRAPH.AGGREGATED_GRAPH_SUCCESS:
+                draft.isLoading[action.payload.interval] = false;
                 break;
             // case ACCOUNT.UPDATE:
             //     update(draft, action.payload);

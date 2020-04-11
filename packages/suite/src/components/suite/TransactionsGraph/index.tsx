@@ -46,7 +46,7 @@ interface CommonProps {
     onSelectedRange: (range: GraphRange) => void;
     onRefresh?: () => void;
 }
-interface CryptoGraphProps extends CommonProps {
+export interface CryptoGraphProps extends CommonProps {
     variant: 'one-asset';
     account: Account;
     data: AccountHistory | null;
@@ -55,12 +55,12 @@ interface CryptoGraphProps extends CommonProps {
     localCurrency?: never;
 }
 
-interface FiatGraphProps extends CommonProps {
+export interface FiatGraphProps extends CommonProps {
     variant: 'all-assets';
     localCurrency: string;
     data: AggregatedAccountBalanceHistory[] | null;
-    receivedValueFn: (data: AggregatedAccountBalanceHistory) => string;
-    sentValueFn: (data: AggregatedAccountBalanceHistory) => string;
+    receivedValueFn: (data: AggregatedAccountBalanceHistory) => string | undefined;
+    sentValueFn: (data: AggregatedAccountBalanceHistory) => string | undefined;
     account?: never;
 }
 
