@@ -40,11 +40,11 @@ workers.forEach(instance => {
                 {
                     method: instance.name === 'ripple' ? 'server_info' : 'getInfo',
                     response: undefined,
-                    delay: 3000, // wait 3 sec. to send response
+                    delay: 4000, // wait 3 sec. to send response
                 },
             ]);
             try {
-                blockchain.settings.timeout = 2500;
+                blockchain.settings.timeout = 1000;
                 await blockchain.getInfo();
             } catch (error) {
                 expect(error.code).toEqual('blockchain_link/websocket_timeout');
