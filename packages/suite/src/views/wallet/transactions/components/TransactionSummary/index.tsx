@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { colors, variables, Button } from '@trezor/components';
-import { Card } from '@suite-components';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { Card, TransactionsGraph, Translation } from '@suite-components';
 import { Account } from '@wallet-types';
-import { Translation } from '@suite-components/Translation';
 import messages from '@suite/support/messages';
 import InfoCard from './components/InfoCard';
-import AccountTransactionsGraph from './components/AccountTransactionsGraph';
-import { Await } from '@suite/types/utils';
-import { fetchAccountHistory } from '@suite/actions/wallet/fiatRatesActions';
 import BigNumber from 'bignumber.js';
+import { getUnixTime } from 'date-fns';
+import { calcTicks } from '@suite/utils/suite/date';
+import { GraphRange } from '@suite/types/wallet/fiatRates';
+import { GraphData } from '@suite/reducers/wallet/graphReducer';
 
 const Wrapper = styled.div`
     display: flex;
@@ -30,6 +29,7 @@ const GraphWrapper = styled.div`
     display: flex;
     flex: 1 1 auto;
     padding: 20px;
+    height: 240px;
     max-width: 470px; /* workaround to prevent recharts filling all space */
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
@@ -65,60 +65,39 @@ const ErrorMessage = styled.div`
 
 interface Props {
     account: Account;
+    graphData: GraphData[];
+    updateGraphData: (accounts: Account[], range: GraphRange) => void;
 }
-
-interface Range {
-    label: string;
-    weeks: number;
-}
-
-type AccountHistory = NonNullable<Await<ReturnType<typeof fetchAccountHistory>>>;
 
 const TransactionSummary = (props: Props) => {
-    const [data, setData] = useState<AccountHistory | null>(null);
+    const { updateGraphData, account } = props;
+    const didMountRef = useRef(false);
     const [isGraphHidden, setIsGraphHidden] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(false);
-
-    const { account } = props;
-
-    const [selectedRange, setSelectedRange] = useState<Range>({
+    const [selectedRange, setSelectedRange] = useState<GraphRange>({
         label: 'year',
         weeks: 52,
     });
 
-    useEffect(() => {
-        let isSubscribed = true; // to make sure we are not updating state after component unmount
-        const fetchData = async () => {
-            if (isSubscribed) setIsLoading(true);
-            const res = await fetchAccountHistory(account, selectedRange!.weeks);
-            if (res && isSubscribed) {
-                const processed = res.map(i => ({
-                    ...i,
-                    received: formatNetworkAmount(i.received, account.symbol),
-                    sent: formatNetworkAmount(`-${i.sent}`, account.symbol),
-                }));
-                setData(processed);
-            } else {
-                setError(true);
-            }
-            setIsLoading(false);
-        };
-
-        if (selectedRange && account) {
-            setData(null);
-            setIsLoading(false);
-            setError(false);
-            fetchData();
-        }
-        return () => {
-            isSubscribed = false;
-        };
-    }, [account, selectedRange, setData]);
+    const intervalGraphData = props.graphData.find(d => d.interval === selectedRange.label);
+    const data = intervalGraphData?.data ?? null;
+    const error = intervalGraphData?.error ?? false;
+    const isLoading = intervalGraphData?.isLoading ?? false;
 
     const numOfTransactions = data?.reduce((acc, d) => (acc += d.txs), 0);
     const totalSentAmount = data?.reduce((acc, d) => acc.plus(d.sent), new BigNumber(0));
     const totalReceivedAmount = data?.reduce((acc, d) => acc.plus(d.received), new BigNumber(0));
+
+    const xTicks = calcTicks(selectedRange.weeks, { skipDays: true }).map(getUnixTime);
+
+    useEffect(() => {
+        if (didMountRef.current) {
+            if (!data) {
+                updateGraphData([account], selectedRange);
+            }
+        } else {
+            didMountRef.current = true;
+        }
+    }, [account, data, selectedRange, updateGraphData]);
 
     return (
         <Wrapper>
@@ -142,12 +121,19 @@ const TransactionSummary = (props: Props) => {
                     {!error && (
                         <>
                             <GraphWrapper>
-                                <AccountTransactionsGraph
+                                <TransactionsGraph
+                                    variant="one-asset"
+                                    xTicks={xTicks}
                                     account={props.account}
                                     isLoading={isLoading}
                                     data={data}
+                                    onRefresh={() =>
+                                        props.updateGraphData([props.account], selectedRange)
+                                    }
                                     selectedRange={selectedRange}
                                     onSelectedRange={setSelectedRange}
+                                    receivedValueFn={data => data.received}
+                                    sentValueFn={data => data.sent}
                                 />
                             </GraphWrapper>
                             <InfoCardsWrapper>
@@ -161,7 +147,7 @@ const TransactionSummary = (props: Props) => {
                                     />
                                     <InfoCard
                                         title={<Translation {...messages.TR_OUTGOING} />}
-                                        value={totalSentAmount?.toFixed()}
+                                        value={totalSentAmount?.negated().toFixed()}
                                         symbol={props.account.symbol}
                                         isLoading={isLoading}
                                         isNumeric

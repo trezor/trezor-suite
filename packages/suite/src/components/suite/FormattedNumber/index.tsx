@@ -26,8 +26,8 @@ export default (props: Props) => {
         <FormattedNumber
             currency={props.currency}
             value={bn.toNumber()}
-            minimumFractionDigits={props.minimumFractionDigits || 2}
-            maximumFractionDigits={props.minimumFractionDigits || 2}
+            minimumFractionDigits={props.minimumFractionDigits ?? 2}
+            maximumFractionDigits={props.maximumFractionDigits ?? 2}
             style={props.style || 'currency'}
         />
     );

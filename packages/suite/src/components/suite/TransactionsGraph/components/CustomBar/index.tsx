@@ -24,6 +24,8 @@ const CustomBar = (props: CustomBarProps) => {
             fill={fill}
             x={x}
             y={minHeight < 0 ? y + diffPosY + minHeight : y - diffPosY}
+            rx={2}
+            ry={2}
             width={width}
             height={Math.abs(minHeight)}
         />

@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
+import { GraphRange } from '@suite/types/wallet/fiatRates';
 
 const Wrapper = styled.div`
     display: flex;
@@ -32,11 +33,11 @@ const RANGES = [
         label: 'year',
         weeks: 52,
     },
-];
+] as const;
 
 interface Props {
-    selectedRange: typeof RANGES[number] | null;
-    onSelectedRange: (range: typeof RANGES[number]) => void;
+    selectedRange: GraphRange | null;
+    onSelectedRange: (range: GraphRange) => void;
 }
 
 const RangeSelector = (props: Props) => {

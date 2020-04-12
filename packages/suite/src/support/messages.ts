@@ -2892,6 +2892,15 @@ const definedMessages = defineMessages({
         id: 'TR_HIDDEN_WALLET',
         defaultMessage: 'Hidden wallet #{id}',
     },
+    TR_COULD_NOT_RETRIEVE_DATA: {
+        id: 'TR_COULD_NOT_RETRIEVE_DATA',
+        defaultMessage: 'Could not retrieve data',
+    },
+    TR_COULD_NOT_RETRIEVE_DATA_FOR: {
+        id: 'TR_COULD_NOT_RETRIEVE_DATA_FOR',
+        defaultMessage:
+            ' *Could not retrieve data for {accountsCount} {accountsCount, plural, one {account} other {accounts}}',
+    },
     TR_HELP: {
         id: 'TR_HELP',
         defaultMessage: 'Help',

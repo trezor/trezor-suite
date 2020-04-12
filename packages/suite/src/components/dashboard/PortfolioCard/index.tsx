@@ -5,19 +5,19 @@ import BigNumber from 'bignumber.js';
 import Loading from './components/Loading';
 import Exception from './components/Exception';
 import EmptyWallet from './components/EmptyWallet';
+import DashboardGraph from './components/DashboardGraph/Container';
 import { Card, Translation, FormattedNumber, HiddenPlaceholder } from '@suite-components';
+import { Account } from '@wallet-types';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
-    min-height: 400px;
-    padding: 20px;
 `;
 
 const Header = styled.div`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    padding-bottom: 16px;
+    padding: 20px;
     border-bottom: solid 2px #f5f5f5;
 `;
 
@@ -63,27 +63,35 @@ export type DashboardMode =
 
 export interface Props extends React.HTMLAttributes<HTMLDivElement> {
     mode?: DashboardMode;
+    deviceAccounts: Account[];
     portfolioValue: BigNumber;
     localCurrency: string;
     isDeviceEmpty: boolean | null;
+    discoveryInProgress: boolean;
     buyClickHandler: () => void;
     receiveClickHandler: () => void;
 }
 
 const PortfolioCard = ({
     mode,
+    deviceAccounts,
     portfolioValue,
     localCurrency,
     buyClickHandler,
     receiveClickHandler,
     isDeviceEmpty,
+    discoveryInProgress,
     ...rest
 }: Props) => {
     let body = null;
     if (mode) {
         body = mode.status === 'exception' ? <Exception /> : <Loading />;
     } else {
-        body = isDeviceEmpty ? <EmptyWallet /> : <EmptyWallet />;
+        body = isDeviceEmpty ? (
+            <EmptyWallet />
+        ) : (
+            <DashboardGraph discoveryInProgress={discoveryInProgress} accounts={deviceAccounts} />
+        );
     }
 
     return (

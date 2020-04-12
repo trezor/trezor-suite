@@ -1,5 +1,5 @@
 import TrezorConnect, { AccountTransaction, BlockchainFiatRatesUpdate } from 'trezor-connect';
-import { subWeeks, getUnixTime } from 'date-fns';
+import { getUnixTime } from 'date-fns';
 import {
     fetchCurrentFiatRates,
     getFiatRatesForTimestamps,
@@ -25,7 +25,7 @@ import {
 
 type FiatRatesPayload = NonNullable<CoinFiatRates['current']>;
 
-export type FiatRateActions =
+export type FiatRatesActions =
     | {
           type: typeof RATE_UPDATE;
           payload: FiatRatesPayload;
@@ -267,34 +267,6 @@ export const updateTxsRates = (account: Account, txs: AccountTransaction[]) => a
         }
     } catch (error) {
         console.error(error);
-    }
-};
-
-/**
- * Fetch the account history (received, sent amounts, num of txs) for the given interval
- * Returned data are grouped by month (weeks >= 52) or by day (weeks < 52)
- * No XRP support
- *
- * @param {Account} account
- * @param {number} weeks
- * @returns
- */
-export const fetchAccountHistory = async (account: Account, weeks: number) => {
-    const secondsInDay = 3600 * 24;
-    const secondsInMonth = secondsInDay * 30;
-
-    const startDate = subWeeks(new Date(), weeks);
-    const endDate = new Date();
-    const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
-        coin: account.symbol,
-        descriptor: account.descriptor,
-        from: Math.floor(startDate.getTime() / 1000),
-        to: Math.floor(endDate.getTime() / 1000),
-        groupBy: weeks >= 52 ? secondsInMonth : secondsInDay,
-    });
-
-    if (response?.success) {
-        return response.payload;
     }
 };
 

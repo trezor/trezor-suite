@@ -17,7 +17,8 @@ import { CoinFiatRates as CoinFiatRates$ } from '@wallet-reducers/fiatRatesReduc
 import { WalletAccountTransaction as WalletAccountTransaction$ } from '@wallet-reducers/transactionReducer';
 import { ReceiveInfo as ReceiveInfo$ } from '@wallet-reducers/receiveReducer';
 
-import { FiatRateActions } from '@wallet-actions/fiatRatesActions';
+import { FiatRatesActions } from '@wallet-actions/fiatRatesActions';
+import { GraphActions } from '@wallet-actions/graphActions';
 import { BlockchainActions } from '@wallet-actions/blockchainActions';
 import { TransactionAction } from '@wallet-actions/transactionActions';
 import { SelectedAccountActions } from '@wallet-actions/selectedAccountActions';
@@ -41,12 +42,6 @@ export type WalletAccountTransaction = WalletAccountTransaction$;
 export type FiatTicker = FiatTicker$;
 export type ReceiveInfo = ReceiveInfo$;
 
-interface BlockchainLinkToken {
-    name: string;
-    symbol: string;
-    value: string;
-}
-
 export type WalletAction =
     | BlockchainActions
     | ReceiveActions
@@ -56,31 +51,8 @@ export type WalletAction =
     | SendFormEthActions
     | SignVerifyActions
     | TransactionAction
-    | FiatRateActions
+    | FiatRatesActions
+    | GraphActions
     | DiscoveryActions
     | AccountActions
     | SelectedAccountActions;
-
-export interface BlockchainLinkTransaction {
-    type: 'send' | 'recv';
-    timestamp?: number;
-    blockHeight?: number;
-    blockHash?: string;
-    descriptor: string;
-    inputs: any;
-    outputs: any;
-
-    hash: string;
-    amount: string;
-    fee: string;
-    total: string;
-
-    tokens?: BlockchainLinkToken[];
-    sequence?: number; // eth: nonce || ripple: sequence
-}
-
-export interface Transaction extends BlockchainLinkTransaction {
-    deviceState: string;
-    symbol: string;
-    rejected?: boolean;
-}

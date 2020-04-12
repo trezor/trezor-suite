@@ -34,11 +34,11 @@ describe('Date utils', () => {
                 'month',
             ),
         ).toStrictEqual([
-            new Date('2019-11-09T15:32:10.000Z'),
-            new Date('2019-12-09T15:32:10.000Z'),
-            new Date('2020-01-09T15:32:10.000Z'),
-            new Date('2020-02-09T15:32:10.000Z'),
-            new Date('2020-03-09T15:32:10.000Z'),
+            new Date('2019-11-01T00:00:00.000Z'),
+            new Date('2019-12-01T00:00:00.000Z'),
+            new Date('2020-01-01T00:00:00.000Z'),
+            new Date('2020-02-01T00:00:00.000Z'),
+            new Date('2020-03-01T00:00:00.000Z'),
         ]);
         // end date is before start date
         expect(
