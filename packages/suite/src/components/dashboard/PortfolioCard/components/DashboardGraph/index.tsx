@@ -85,7 +85,7 @@ const DashboardGraph = (props: Props) => {
                             variant="tertiary"
                             size="small"
                         >
-                            <Translation id="TR_RETRY}" />
+                            <Translation id="TR_RETRY" />
                         </Button>
                     </ErrorMessage>
                 ) : (

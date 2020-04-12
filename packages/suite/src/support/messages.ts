@@ -2896,7 +2896,6 @@ const definedMessages = defineMessages({
         id: 'TR_COULD_NOT_RETRIEVE_DATA',
         defaultMessage: 'Could not retrieve data',
     },
-
     TR_COULD_NOT_RETRIEVE_DATA_FOR: {
         id: 'TR_COULD_NOT_RETRIEVE_DATA_FOR',
         defaultMessage:
