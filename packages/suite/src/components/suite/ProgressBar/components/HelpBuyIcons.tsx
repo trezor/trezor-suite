@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Translation } from '@suite-components';
 import { Button, Link } from '@trezor/components';
 import { URLS } from '@suite-constants';
 
@@ -23,7 +24,7 @@ const BuyButton = () => (
             size="small"
             style={{ backgroundColor: 'initial' }}
         >
-            Buy Trezor
+            <Translation id="TR_BUY_TREZOR" />
         </Button>
     </Link>
 );
@@ -36,7 +37,7 @@ const HelpButton = () => (
             size="small"
             style={{ backgroundColor: 'initial' }}
         >
-            Help
+            <Translation id="TR_HELP" />
         </Button>
     </Link>
 );

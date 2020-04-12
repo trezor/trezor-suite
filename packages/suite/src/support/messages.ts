@@ -2901,6 +2901,14 @@ const definedMessages = defineMessages({
         defaultMessage:
             ' *Could not retrieve data for {accountsCount} {accountsCount, plural, one {account} other {accounts}}',
     },
+    TR_HELP: {
+        id: 'TR_HELP',
+        defaultMessage: 'Help',
+    },
+    TR_BUY_TREZOR: {
+        id: 'TR_BUY_TREZOR',
+        defaultMessage: 'Buy Trezor',
+    },
 } as const);
 
 export default definedMessages;
