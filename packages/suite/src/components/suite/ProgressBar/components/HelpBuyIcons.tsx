@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite/components';
+import { Translation } from '@suite-components';
 import { Button, Link } from '@trezor/components';
 import { URLS } from '@suite-constants';
 
