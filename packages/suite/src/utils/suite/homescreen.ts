@@ -7,6 +7,7 @@ const T1_HEIGHT = 64;
 
 const T2_WIDTH = 144;
 const T2_HEIGHT = 144;
+const canvasId = 'homescreen-canvas';
 
 const getWidth = (model: number) => {
     if (model === 2) {
@@ -52,7 +53,6 @@ const chunkString = (size: number, str: string) => {
 };
 
 const getCanvas = () => {
-    const canvasId = 'homescreen-canvas';
     const canvas = document.getElementById(canvasId);
     if (canvas != null && canvas instanceof HTMLCanvasElement) {
         return canvas;
@@ -60,12 +60,21 @@ const getCanvas = () => {
     const newCanvas = document.createElement('canvas');
     newCanvas.id = canvasId;
     newCanvas.style.visibility = 'hidden';
+    newCanvas.style.position = 'absolute';
+    newCanvas.style.height = '0';
     const { body } = document;
     if (body == null) {
         throw new Error('document.body is null');
     }
     body.appendChild(newCanvas);
     return newCanvas;
+};
+
+const removeCanvas = () => {
+    const el = document.getElementById(canvasId);
+    if (el) {
+        el.remove();
+    }
 };
 
 // assuming max = x = y here
@@ -247,5 +256,7 @@ export const elementToHomescreen = (element: HTMLImageElement, model: number) =>
     const w = getWidth(model);
     const h = getHeight(model);
     const imageData = elementToImageData(element, w, h);
-    return imageDataToHex(imageData, model);
+    const hex = imageDataToHex(imageData, model);
+    removeCanvas();
+    return hex;
 };
