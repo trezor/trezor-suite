@@ -6,11 +6,14 @@ import { toFiatCurrency } from './fiatConverterUtils';
 
 type FiatRates = NonNullable<CoinFiatRates['current']>['rates'];
 
-export const calcFiatValueMap = (amount: string, rates: FiatRates): { [k: string]: string } => {
+export const calcFiatValueMap = (
+    amount: string,
+    rates: FiatRates,
+): { [k: string]: string | undefined } => {
     return Object.keys(rates).reduce((acc, fiatSymbol) => {
         return {
             ...acc,
-            [fiatSymbol]: toFiatCurrency(amount, fiatSymbol, rates),
+            [fiatSymbol]: toFiatCurrency(amount, fiatSymbol, rates) ?? undefined,
         };
     }, {});
 };
