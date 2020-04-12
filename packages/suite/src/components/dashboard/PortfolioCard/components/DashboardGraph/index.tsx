@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { GraphRange } from '@wallet-types/fiatRates';
-import { TransactionsGraph } from '@suite-components';
+import { TransactionsGraph, Translation } from '@suite-components';
 import { Props } from './Container';
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
@@ -76,7 +76,7 @@ const DashboardGraph = (props: Props) => {
             <GraphWrapper>
                 {failedAccounts && failedAccounts.length === accounts.length ? (
                     <ErrorMessage>
-                        Could not load data{' '}
+                        <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />{' '}
                         <Button
                             onClick={() => {
                                 props.updateGraphData(accounts, selectedRange);
@@ -85,7 +85,7 @@ const DashboardGraph = (props: Props) => {
                             variant="tertiary"
                             size="small"
                         >
-                            Retry
+                            <Translation id="TR_RETRY}" />
                         </Button>
                     </ErrorMessage>
                 ) : (
@@ -107,7 +107,10 @@ const DashboardGraph = (props: Props) => {
             </GraphWrapper>
             {failedAccounts && failedAccounts.length > 0 && (
                 <SmallErrorMessage>
-                    *Could not retrieve data for {failedAccounts.length} accounts.
+                    <Translation
+                        id="TR_COULD_NOT_RETRIEVE_DATA_FOR"
+                        values={{ accountsCount: failedAccounts.length }}
+                    />
                 </SmallErrorMessage>
             )}
         </Wrapper>
