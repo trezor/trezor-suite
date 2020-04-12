@@ -64,9 +64,9 @@ export const fetchAccountGraphData = (
     account: Account,
     startDate: Date,
     endDate: Date,
-    groupBy: number,
-    interval: GraphRange['label'],
+    range: GraphRange,
 ) => async (dispatch: Dispatch, _getState: GetState) => {
+    const interval = range.label;
     dispatch({
         type: ACCOUNT_GRAPH_START,
         payload: {
@@ -75,7 +75,10 @@ export const fetchAccountGraphData = (
         },
     });
 
-    const secondsInMonth = 3600 * 24 * 30;
+    const secondsInDay = 3600 * 24;
+    const secondsInMonth = secondsInDay * 30;
+    const groupBy = range.weeks >= 52 ? secondsInMonth : secondsInDay; // group by month or day
+
     const setDayToFirstOfMonth = groupBy >= secondsInMonth;
     const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
         coin: account.symbol,
@@ -84,8 +87,6 @@ export const fetchAccountGraphData = (
         to: getUnixTime(endDate),
         groupBy,
     });
-
-    // console.log('fetching account history ', account.descriptor);
 
     if (response?.success) {
         const enhancedResponse = response.payload.map(h => ({
@@ -119,17 +120,13 @@ export const updateGraphData = (accounts: Account[], range: GraphRange) => async
 ) => {
     const startDate = subWeeks(new Date(), range.weeks);
     const endDate = new Date();
-    const secondsInDay = 3600 * 24;
-    const secondsInMonth = secondsInDay * 30;
-    const groupBy = range.weeks >= 52 ? secondsInMonth : secondsInDay;
-
     const interval = range.label;
     dispatch({
         type: AGGREGATED_GRAPH_START,
         payload: { interval },
     });
     const promises = accounts.map(a =>
-        dispatch(fetchAccountGraphData(a, startDate, endDate, groupBy, range.label)),
+        dispatch(fetchAccountGraphData(a, startDate, endDate, range)),
     );
     await Promise.all(promises);
 
