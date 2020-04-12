@@ -1,8 +1,6 @@
 import React from 'react';
-import { P } from '@trezor/components';
+import { DeviceInvalidModeLayout, Translation } from '@suite-components';
 
 export default () => (
-    <>
-        <P>Unknown device.</P>
-    </>
+    <DeviceInvalidModeLayout title={<Translation id="TR_UNKNOWN_DEVICE" />} allowSwitchDevice />
 );

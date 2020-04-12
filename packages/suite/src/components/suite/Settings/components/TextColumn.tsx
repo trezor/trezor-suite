@@ -12,6 +12,8 @@ interface TextColumnProps {
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
+    text-align: left;
+    margin-right: 16px;
 `;
 
 const Description = styled.div`

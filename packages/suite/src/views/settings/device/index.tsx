@@ -269,7 +269,13 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
                         description={
-                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS" />
+                            // display text only for T2, it relates to what kind of image may be uploaded
+                            // but custom upload is enabled only for T2 now.
+                            features.major_version === 2 ? (
+                                <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS" />
+                            ) : (
+                                ''
+                            )
                         }
                     />
                     <ActionColumn>

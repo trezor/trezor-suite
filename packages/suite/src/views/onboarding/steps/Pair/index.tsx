@@ -1,18 +1,12 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
-
+import { Button } from '@trezor/components';
 import { OnboardingButton, Text, Wrapper, Loaders } from '@onboarding-components';
-import { Translation, Image } from '@suite-components';
-import WebusbButton from '@suite-components/WebusbButton';
+import { Translation, Image, WebusbButton } from '@suite-components';
 import { isWebUSB } from '@suite-utils/transport';
 
 import Bridge from './components/Bridge/Container';
 import { Props } from './Container';
-
-const WebusbButtonWrapper = styled.div`
-    width: 200px;
-`;
 
 const PairDeviceStep = (props: Props) => {
     const { device, transport } = props;
@@ -42,8 +36,8 @@ const PairDeviceStep = (props: Props) => {
 
     const getConnectedDeviceStatus = () => {
         if (isInBlWithFwPresent()) return 'in-bootloader';
-        if (device && device.features && device.features.initialized) return 'initialized';
-        if (device && device.features && device.features.no_backup) return 'seedles';
+        if (device?.features?.initialized) return 'initialized';
+        if (device?.features?.no_backup) return 'seedless';
         if (isDeviceUnreadable()) return 'unreadable';
         return 'ok';
     };
@@ -51,10 +45,11 @@ const PairDeviceStep = (props: Props) => {
     return (
         <Wrapper.Step data-test="@onboarding/pair-device-step">
             <Wrapper.StepHeading>
-                Connect Trezor to continue
+                <Translation id="TR_CONNECT_YOUR_DEVICE" />
                 {!isDetectingDevice() && <Loaders.Dots />}
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
+                <WebusbButton ready={imageLoaded} />
                 {!hasNoTransport() && (
                     <>
                         <Image
@@ -64,9 +59,6 @@ const PairDeviceStep = (props: Props) => {
                         />
                         {isDetectingDevice() && (
                             <>
-                                {/* {getConnectedDeviceStatus() === 'initialized' && (
-                                    <TroubleshootInitialized />
-                                )} */}
                                 {getConnectedDeviceStatus() === 'ok' && (
                                     <>
                                         <Text>
@@ -84,24 +76,25 @@ const PairDeviceStep = (props: Props) => {
                                         </Wrapper.Controls>
                                     </>
                                 )}
-                                {/* ???? */}
-                                {/* todo todo todo: we had a nice logic for disabling webusb. maybe implement
-                                into common unreadable modal? */}
-                                {/* {getConnectedDeviceStatus() === 'unreadable' && (
+                                {getConnectedDeviceStatus() === 'unreadable' && (
                                     <>
                                         <Text>
-                                            Your device is connected properly, but web interface can
-                                            not communicate with it now. You will need to install
-                                            special communication daemon.
+                                            <Translation id="TR_YOUR_DEVICE_IS_CONNECTED_BUT_UNREADABLE" />
                                         </Text>
-
-                                        <OnboardingButton.Cta
-                                            onClick={() => TrezorConnect.disableWebUSB()}
-                                        >
-                                            Try bridge
-                                        </OnboardingButton.Cta>
+                                        <Wrapper.Controls>
+                                            <OnboardingButton.Cta
+                                                onClick={() => TrezorConnect.disableWebUSB()}
+                                            >
+                                                <Translation id="TR_TRY_BRIDGE" />
+                                            </OnboardingButton.Cta>
+                                        </Wrapper.Controls>
                                     </>
-                                )} */}
+                                )}
+                                {getConnectedDeviceStatus() === 'seedless' && (
+                                    <Text>
+                                        <Translation id="TR_YOUR_DEVICE_IS_SEEDLESS" />
+                                    </Text>
+                                )}
                             </>
                         )}
 
@@ -111,14 +104,16 @@ const PairDeviceStep = (props: Props) => {
                                     <>
                                         {!isDeviceUnreadable() && (
                                             <Wrapper.Controls>
-                                                <WebusbButtonWrapper>
-                                                    <WebusbButton ready={imageLoaded} />
-                                                </WebusbButtonWrapper>
+                                                <WebusbButton ready={imageLoaded}>
+                                                    <Button icon="SEARCH">
+                                                        <Translation id="TR_CHECK_FOR_DEVICES" />
+                                                    </Button>
+                                                </WebusbButton>
                                                 <OnboardingButton.Alt
                                                     data-test="@onboarding/try-bridge-button"
                                                     onClick={() => TrezorConnect.disableWebUSB()}
                                                 >
-                                                    Try bridge
+                                                    <Translation id="TR_TRY_BRIDGE" />
                                                 </OnboardingButton.Alt>
                                             </Wrapper.Controls>
                                         )}
@@ -135,7 +130,7 @@ const PairDeviceStep = (props: Props) => {
                     <OnboardingButton.Back
                         onClick={() => props.onboardingActions.goToPreviousStep()}
                     >
-                        Back
+                        <Translation id="TR_BACK" />
                     </OnboardingButton.Back>
                 </Wrapper.Controls>
             </Wrapper.StepFooter>

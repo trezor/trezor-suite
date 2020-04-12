@@ -2909,6 +2909,87 @@ const definedMessages = defineMessages({
         id: 'TR_BUY_TREZOR',
         defaultMessage: 'Buy Trezor',
     },
+    TR_TRY_BRIDGE: {
+        id: 'TR_TRY_BRIDGE',
+        defaultMessage: 'Try bridge',
+        describe:
+            'Bridge is a communication deamon that some users will need to download and install. So word bridge should not be translated.',
+    },
+    TR_YOUR_DEVICE_IS_SEEDLESS: {
+        id: 'TR_YOUR_DEVICE_IS_SEEDLESS',
+        defaultMessage:
+            'Your device is in seedless mode and is not allowed to be used with this wallet.',
+    },
+    TR_YOUR_DEVICE_IS_CONNECTED_BUT_UNREADABLE: {
+        id: 'TR_YOUR_DEVICE_IS_CONNECTED_BUT_UNREADABLE',
+        defaultMessage:
+            'Your device is connected properly, but your internet browser can not communicate with it at the moment. You will need to install Trezor bridge.',
+    },
+    TR_RESOLVE: {
+        id: 'TR_RESOLVE',
+        defaultMessage: 'resolve',
+    },
+    TR_DEVICE_NOT_INITIALIZED: {
+        id: 'TR_DEVICE_NOT_INITIALIZED',
+        defaultMessage: 'Device not initialized',
+        description:
+            'Device not initialized means that it has no cryptographic secret lives in it and it must be either recovered from seed or newly generated.',
+    },
+    TR_DEVICE_NOT_INITIALIZED_TEXT: {
+        id: 'TR_DEVICE_NOT_INITIALIZED_TEXT',
+        defaultMessage:
+            'You will need to go through initialization process to put your device into work',
+    },
+    TR_GO_TO_ONBOARDING: {
+        id: 'TR_GO_TO_ONBOARDING',
+        defaultMessage: 'Go to onboarding',
+    },
+    TR_NO_FIRMWARE: {
+        id: 'TR_NO_FIRMWARE',
+        defaultMessage: 'No firmware',
+    },
+    TR_NO_FIRMWARE_EXPLAINED: {
+        id: 'TR_NO_FIRMWARE_EXPLAINED',
+        defaultMessage: 'Device has no firmware installed.',
+    },
+    TR_SEEDLESS_MODE: {
+        id: 'TR_SEEDLESS_MODE',
+        defaultMessage: 'Seedless mode',
+        description:
+            'Seedless is a term. It means that device has cryptographic secret inside but has never given out recovery seed',
+    },
+    TR_SEEDLESS_MODE_EXPLAINED: {
+        id: 'TR_SEEDLESS_MODE_EXPLAINED',
+        defaultMessage:
+            'Seedless mode means that device has cryptographic secret inside but no corresponding recovery seed exists. Such devices are not allowed to be used with this wallet.',
+    },
+    TR_UNKNOWN_DEVICE: {
+        id: 'TR_UNKNOWN_DEVICE',
+        defaultMessage: 'Unknown device',
+    },
+    TR_UNREADABLE_EXPLAINED: {
+        id: 'TR_UNREADABLE_EXPLAINED',
+        defaultMessage:
+            'We cant see details about your device. It might be Trezor with old firmware or possibly any USB device. To make communication possible, you will need to install Trezor Bridge.',
+    },
+    TR_SEE_DETAILS: {
+        id: 'TR_SEE_DETAILS',
+        defaultMessage: 'See details',
+    },
+    TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED: {
+        id: 'TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED',
+        defaultMessage:
+            'Your device has firmware that is no longer supported. You will need to update it.',
+    },
+    TR_DEVICE_IN_BOOTLOADER: {
+        id: 'TR_DEVICE_IN_BOOTLOADER',
+        defaultMessage: 'Device in bootloader',
+    },
+    TR_DEVICE_IN_BOOTLOADER_EXPLAINED: {
+        id: 'TR_DEVICE_IN_BOOTLOADER_EXPLAINED',
+        defaultMessage:
+            'In bootloader mode, device is ready to receive firmware updates but it also means that nothing else might be done with it. To get back into normal mode simply reconnect it.',
+    },
 } as const);
 
 export default definedMessages;

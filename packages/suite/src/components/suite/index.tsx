@@ -22,7 +22,7 @@ import HiddenPlaceholder from './HiddenPlaceholder/Container';
 import QrCode from './QrCode';
 import QuestionTooltip from './QuestionTooltip';
 import TransactionsGraph from './TransactionsGraph';
-
+import DeviceInvalidModeLayout from './DeviceInvalidModeLayout';
 import { Translation } from './Translation';
 import { AccountLabeling, AddressLabeling, WalletLabeling } from './Labeling';
 
@@ -30,6 +30,7 @@ export {
     Backdrop,
     DeviceIcon,
     CheckItem,
+    DeviceInvalidModeLayout,
     ExternalLink,
     Preloader,
     FormattedNumber,
