@@ -2954,6 +2954,10 @@ const definedMessages = defineMessages({
         id: 'TR_GO_TO_ONBOARDING',
         defaultMessage: 'Go to onboarding',
     },
+    TR_GO_TO_FIRMWARE: {
+        id: 'TR_GO_TO_FIRMWARE',
+        defaultMessage: 'Go to firmware',
+    },
     TR_NO_FIRMWARE: {
         id: 'TR_NO_FIRMWARE',
         defaultMessage: 'No firmware',
