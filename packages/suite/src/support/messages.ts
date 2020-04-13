@@ -2954,6 +2954,10 @@ const definedMessages = defineMessages({
         id: 'TR_GO_TO_ONBOARDING',
         defaultMessage: 'Go to onboarding',
     },
+    TR_GO_TO_FIRMWARE: {
+        id: 'TR_GO_TO_FIRMWARE',
+        defaultMessage: 'Go to firmware',
+    },
     TR_NO_FIRMWARE: {
         id: 'TR_NO_FIRMWARE',
         defaultMessage: 'No firmware',
@@ -2999,6 +3003,16 @@ const definedMessages = defineMessages({
         id: 'TR_DEVICE_IN_BOOTLOADER_EXPLAINED',
         defaultMessage:
             'In bootloader mode, device is ready to receive firmware updates but it also means that nothing else might be done with it. To get back into normal mode simply reconnect it.',
+    },
+    TR_LOCALIZATION: {
+        id: 'TR_LOCALIZATION',
+        defaultMessage: 'Localization',
+        description: 'Used as language localization (translation of the application)',
+    },
+    TR_APPLICATION: {
+        id: 'TR_APPLICATION',
+        defaultMessage: 'Application',
+        description: 'Computer program.',
     },
 } as const);
 

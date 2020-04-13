@@ -22,12 +22,17 @@ import { useDeviceActionLocks } from '@suite-utils/hooks';
 import { URLS } from '@suite-constants';
 
 const Wrapper = styled(ModalWrapper)`
-    min-width: 60vw;
-    max-width: 80vw;
-    min-height: 80vh;
-    display: flex;
-    flex-direction: column;
+    width: 88vw;
+    height: 90vh;
     align-items: center;
+    min-height: 560px;
+    flex-direction: column;
+
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
+        max-width: 680px;
+        min-width: 580px;
+        height: auto;
+    }
 `;
 
 const Row = styled.div`
@@ -48,7 +53,7 @@ const StyledButton = styled(Button)`
 
 const InfoBox = styled.div`
     display: flex;
-    width: 400px;
+    max-width: 400px;
     margin-top: 28px;
 `;
 
