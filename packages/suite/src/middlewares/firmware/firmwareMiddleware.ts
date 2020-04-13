@@ -1,5 +1,6 @@
+import TrezorConnect, { DEVICE } from 'trezor-connect';
 import { MiddlewareAPI } from 'redux';
-import { DEVICE } from 'trezor-connect';
+
 import { SUITE } from '@suite-actions/constants';
 import * as firmwareActions from '@firmware-actions/firmwareActions';
 import { AppState, Action, Dispatch } from '@suite-types';
@@ -31,12 +32,24 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
 
             break;
         case SUITE.SELECT_DEVICE:
+        case SUITE.UPDATE_SELECTED_DEVICE: // UPDATE_SELECTED_DEVICE is needed to handle if device is unacquired in SELECT_DEVICE
             if (
                 action.payload &&
                 action.payload.features &&
                 ['unplug', 'wait-for-reboot'].includes(status) &&
                 action.payload
             ) {
+                // firmwareActions.firmwareUpdate method sends skipFinalReload parameter into trezor-connect, which results
+                // in capabilities not being reloaded properly even after device reconnect. this is because messages definitions
+                // which are required to parse incoming message from trezor are reloaded only before call to device starts and
+                // after it ends (if there is no skipFinalReload flag). This does not apply for our case here, so we must
+                // force features reload.
+                TrezorConnect.getFeatures({
+                    device: {
+                        path: action.payload.path,
+                    },
+                    keepSession: false,
+                });
                 if (action.payload.firmware === 'valid') {
                     api.dispatch(firmwareActions.setStatus('done'));
                 } else if (['outdated', 'required'].includes(action.payload.firmware)) {
