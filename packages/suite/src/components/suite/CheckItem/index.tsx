@@ -6,10 +6,13 @@ import { Checkbox, variables, colors } from '@trezor/components';
 const { FONT_SIZE } = variables;
 
 const StyledCheckbox = styled(Checkbox)`
-    width: 400px;
     padding-left: 0px;
     margin: 12px auto;
     align-items: flex-start;
+
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
+        width: 400px;
+    }
 `;
 
 const CheckboxRight = styled.div`
