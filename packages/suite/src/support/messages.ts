@@ -3004,6 +3004,16 @@ const definedMessages = defineMessages({
         defaultMessage:
             'In bootloader mode, device is ready to receive firmware updates but it also means that nothing else might be done with it. To get back into normal mode simply reconnect it.',
     },
+    TR_LOCALIZATION: {
+        id: 'TR_LOCALIZATION',
+        defaultMessage: 'Localization',
+        description: 'Used as language localization (translation of the application)',
+    },
+    TR_APPLICATION: {
+        id: 'TR_APPLICATION',
+        defaultMessage: 'Application',
+        description: 'Computer program.',
+    },
 } as const);
 
 export default definedMessages;
