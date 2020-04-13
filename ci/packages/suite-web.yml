@@ -28,7 +28,6 @@ suite-web deploy dev:
 
 suite-web test integration google-chrome:
     stage: integration testing
-    # stared to fail with connect on sldev, nobody knows why.
     allow_failure: true
     script:
         - npx cypress install
@@ -43,28 +42,28 @@ suite-web test integration google-chrome:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
     dependencies: []
-    # retry:
-    #     max: 2
+    retry:
+        max: 2
 
-# suite-web test integration google-chrome-beta:
-#     only:
-#       - schedules
-#     allow_failure: true
-#     stage: integration testing
-#     script:
-#         - npx cypress install
-#         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
-#         - export BROWSER=/usr/bin/google-chrome-beta
-#         - yarn concurrently --success first --kill-others "python3 ./docker/trezor-user-env/controller/main.py" "cypress run --browser $BROWSER --project ./packages/integration-tests/projects/suite-web"
-#     artifacts:
-#         expire_in: 7 days
-#         when: always
-#         paths:
-#             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
-#             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
-#     dependencies: []
-#     # retry:
-#     #     max: 2
+suite-web test integration google-chrome-beta:
+    only:
+      - schedules
+    allow_failure: true
+    stage: integration testing
+    script:
+        - npx cypress install
+        - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
+        - export BROWSER=/usr/bin/google-chrome-beta
+        - yarn concurrently --success first --kill-others "python3 ./docker/trezor-user-env/controller/main.py" "cypress run --browser $BROWSER --project ./packages/integration-tests/projects/suite-web"
+    artifacts:
+        expire_in: 7 days
+        when: always
+        paths:
+            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
+    dependencies: []
+    retry:
+        max: 2
 
 suite-web test security:
     stage: deploy artifacts, others
