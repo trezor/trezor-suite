@@ -10,6 +10,7 @@ import { AppState, Dispatch } from '@suite-types';
 
 const { SCREEN_SIZE } = variables;
 const Wrapper = styled.div`
+    text-align:center;
     max-width: 80vw;
     @media (min-width: ${SCREEN_SIZE.SM}) {
         max-width: 60vw;
