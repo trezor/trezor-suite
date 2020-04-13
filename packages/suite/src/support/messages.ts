@@ -271,7 +271,7 @@ const definedMessages = defineMessages({
     },
     TR_BACKUP_FINISHED_TEXT: {
         defaultMessage:
-            'Backup is now on your recovery seed card. Once again dont lose it and keep it private!',
+            "Backup is now on your recovery seed card. Once again don't lose it and keep it private!",
         description: 'Text that appears after backup is finished',
         id: 'TR_BACKUP_FINISHED_TEXT',
     },
@@ -885,6 +885,16 @@ const definedMessages = defineMessages({
         defaultMessage: 'Continue to backup',
         description: 'Button in security page (start security setup)',
         id: 'TR_GO_TO_SECURITY',
+    },
+    TR_CONTINUE_TO_PIN: {
+        defaultMessage: 'Continue to PIN',
+        description:
+            'Button in standalone backup page that will direct user to setting up pin (in case it is not set up yet).',
+        id: 'TR_CONTINUE_TO_PIN',
+    },
+    TR_SKIP_PIN: {
+        defaultMessage: 'Skip PIN',
+        id: 'TR_SKIP_PIN',
     },
     TR_HELP_TREZOR_SUITE: {
         defaultMessage: 'Help Trezor Suite get better',
