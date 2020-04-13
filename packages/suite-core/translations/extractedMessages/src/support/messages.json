@@ -1,0 +1,5819 @@
+[
+  {
+    "id": "CANNOT_SEND_TO_MYSELF",
+    "defaultMessage": "Cannot send to myself",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 300,
+      "column": 30
+    },
+    "end": {
+      "line": 303,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_3RD_PARTY_WALLETS",
+    "defaultMessage": "3rd party wallets",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 8,
+      "column": 26
+    },
+    "end": {
+      "line": 11,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_3RD_PARTY_WALLETS_DESC",
+    "defaultMessage": "These coins are supported by Trezor but only in 3rd party wallets. These coins cannot be managed by Trezor Suite or Wallet.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 12,
+      "column": 31
+    },
+    "end": {
+      "line": 16,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_404_DESCRIPTION",
+    "defaultMessage": "Well… something is broken. Please proceed to Dashboard.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 17,
+      "column": 24
+    },
+    "end": {
+      "line": 20,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_404_GO_TO_DASHBOARD",
+    "defaultMessage": "Go to Dashboard now!",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 21,
+      "column": 28
+    },
+    "end": {
+      "line": 24,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_404_TITLE",
+    "defaultMessage": "Error 404",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 25,
+      "column": 18
+    },
+    "end": {
+      "line": 28,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ACCESS_HIDDEN_WALLET",
+    "defaultMessage": "Access Hidden Wallet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 29,
+      "column": 29
+    },
+    "end": {
+      "line": 32,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ACCESS_STANDARD_WALLET",
+    "defaultMessage": "Access standard Wallet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 33,
+      "column": 31
+    },
+    "end": {
+      "line": 36,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ACCOUNT_ENABLE_PASSPHRASE",
+    "defaultMessage": "Enable passphrase",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 37,
+      "column": 34
+    },
+    "end": {
+      "line": 40,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ACCOUNT_EXCEPTION_AUTH_ERROR",
+    "defaultMessage": "Authorization error.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 41,
+      "column": 37
+    },
+    "end": {
+      "line": 44,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY",
+    "defaultMessage": "There are no coins enabled in settings.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 45,
+      "column": 42
+    },
+    "end": {
+      "line": 48,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR",
+    "defaultMessage": "Discovery error.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 49,
+      "column": 42
+    },
+    "end": {
+      "line": 52,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ACCOUNT_EXCEPTION_NOT_ENABLED",
+    "defaultMessage": "{networkName} not enabled in settings.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 53,
+      "column": 38
+    },
+    "end": {
+      "line": 56,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ACCOUNT_EXCEPTION_NOT_EXIST",
+    "defaultMessage": "Account does not exist",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 57,
+      "column": 36
+    },
+    "end": {
+      "line": 60,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ACCOUNT_HASH",
+    "description": "Used in auto-generated account label",
+    "defaultMessage": "Account #{number}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 61,
+      "column": 21
+    },
+    "end": {
+      "line": 65,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ACCOUNT_IMPORTED_ANNOUNCEMENT",
+    "defaultMessage": "A watch-only account is a public address you’ve imported into your wallet, allowing the wallet to watch for outputs but not spend them.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 66,
+      "column": 38
+    },
+    "end": {
+      "line": 70,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ACCOUNT_IS_EMPTY",
+    "defaultMessage": "The account is empty",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 71,
+      "column": 25
+    },
+    "end": {
+      "line": 74,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ACCOUNT_PASSPHRASE_DISABLED",
+    "defaultMessage": "Change passphrase settings to use this device",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 75,
+      "column": 36
+    },
+    "end": {
+      "line": 78,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ACCOUNTS_MENU_TITLE",
+    "defaultMessage": "Accounts",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 79,
+      "column": 28
+    },
+    "end": {
+      "line": 82,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ACQUIRE_DEVICE",
+    "description": "call-to-action to use device in current window when it is used in other window",
+    "defaultMessage": "Acquire device",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 83,
+      "column": 23
+    },
+    "end": {
+      "line": 88,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ACQUIRE_DEVICE_DESCRIPTION",
+    "defaultMessage": "Please close the tab in your browser or click the button below to acquire the device since Trezor can be only used in one session.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 89,
+      "column": 35
+    },
+    "end": {
+      "line": 93,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ACQUIRE_DEVICE_TITLE",
+    "defaultMessage": "Trezor is being used in a browser",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 94,
+      "column": 29
+    },
+    "end": {
+      "line": 97,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ACTIVATE_ALL",
+    "defaultMessage": "Activate all",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 98,
+      "column": 21
+    },
+    "end": {
+      "line": 101,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ADD_ACCOUNT",
+    "defaultMessage": "Add account",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 102,
+      "column": 20
+    },
+    "end": {
+      "line": 105,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ADD_HIDDEN_WALLET",
+    "defaultMessage": "Add hidden wallet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 106,
+      "column": 26
+    },
+    "end": {
+      "line": 109,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ADD_NEW_ACCOUNT",
+    "defaultMessage": "Add new account",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 110,
+      "column": 24
+    },
+    "end": {
+      "line": 113,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ADDITIONAL_SECURITY_FEATURES",
+    "defaultMessage": "Additional security features are waiting to be done.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 114,
+      "column": 37
+    },
+    "end": {
+      "line": 117,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ADDRESS",
+    "description": "Used as label for receive/send address input",
+    "defaultMessage": "Address",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 122,
+      "column": 16
+    },
+    "end": {
+      "line": 126,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ADDRESS_IS_NOT_SET",
+    "defaultMessage": "Address is not set",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 127,
+      "column": 27
+    },
+    "end": {
+      "line": 130,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ADDRESS_IS_NOT_VALID",
+    "defaultMessage": "Address is not valid",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 131,
+      "column": 29
+    },
+    "end": {
+      "line": 134,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ADDRESS_MODAL_BTC_DESCRIPTION",
+    "defaultMessage": "Try to always use a fresh address as a prerequisite to keep your transactions and accounts untrackable by anyone else than you.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 135,
+      "column": 38
+    },
+    "end": {
+      "line": 139,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ADDRESS_MODAL_CHECK_ON_TREZOR",
+    "defaultMessage": "Check on your Trezor now",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 140,
+      "column": 38
+    },
+    "end": {
+      "line": 143,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ADDRESS_MODAL_CHECK_ON_TREZOR_DESC",
+    "defaultMessage": "For even more security you can check the receive address on your Trezor to make sure nobody hacked your Wallet.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 144,
+      "column": 43
+    },
+    "end": {
+      "line": 148,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ADDRESS_MODAL_CLIPBOARD",
+    "defaultMessage": "Copy address",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 149,
+      "column": 32
+    },
+    "end": {
+      "line": 152,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ADDRESS_MODAL_TITLE",
+    "defaultMessage": "{networkName} receive address",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 153,
+      "column": 28
+    },
+    "end": {
+      "line": 156,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ADVANCED_RECOVERY_OPTION",
+    "description": "Button for selecting advanced recovery option",
+    "defaultMessage": "Advanced recovery (5 minutes)",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 157,
+      "column": 33
+    },
+    "end": {
+      "line": 161,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ADVANCED_SETTINGS",
+    "description": "Shows advanced sending form",
+    "defaultMessage": "Advanced settings",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 162,
+      "column": 26
+    },
+    "end": {
+      "line": 166,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ALLOW_ANALYTICS",
+    "defaultMessage": "Allow anonymous data storing",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 167,
+      "column": 24
+    },
+    "end": {
+      "line": 170,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ALLOW_ANALYTICS_DESCRIPTION",
+    "defaultMessage": "Trezor Suite does NOT track any balance-related or personal data, all anonymously",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 171,
+      "column": 36
+    },
+    "end": {
+      "line": 175,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_AMOUNT",
+    "defaultMessage": "Amount",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 176,
+      "column": 15
+    },
+    "end": {
+      "line": 179,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_AMOUNT_IS_NOT_ENOUGH",
+    "defaultMessage": "Not enough funds",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 180,
+      "column": 29
+    },
+    "end": {
+      "line": 183,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS",
+    "defaultMessage": "Maximum {decimals} decimals allowed",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 184,
+      "column": 40
+    },
+    "end": {
+      "line": 187,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_AMOUNT_IS_NOT_NUMBER",
+    "defaultMessage": "Amount is not a number",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 188,
+      "column": 29
+    },
+    "end": {
+      "line": 191,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_AMOUNT_IS_NOT_SET",
+    "defaultMessage": "Amount is not set",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 192,
+      "column": 26
+    },
+    "end": {
+      "line": 195,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_AND",
+    "defaultMessage": "and",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 196,
+      "column": 12
+    },
+    "end": {
+      "line": 199,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ASSETS",
+    "defaultMessage": "Assets",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 200,
+      "column": 15
+    },
+    "end": {
+      "line": 203,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ATTENTION_COLON_THE_LOG_CONTAINS",
+    "defaultMessage": "Attention: The log contains your XPUBs. Anyone with your XPUBs can see your account history.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 204,
+      "column": 41
+    },
+    "end": {
+      "line": 208,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_AUTH_CONFIRM_FAILED_RETRY",
+    "defaultMessage": "Retry",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 209,
+      "column": 34
+    },
+    "end": {
+      "line": 212,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_AUTH_CONFIRM_FAILED_TITLE",
+    "defaultMessage": "Passphrase mismatch!",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 213,
+      "column": 34
+    },
+    "end": {
+      "line": 216,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_AUTHENTICATING_DEVICE",
+    "defaultMessage": "Authenticating device...",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 217,
+      "column": 30
+    },
+    "end": {
+      "line": 220,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BACK",
+    "description": "Back button",
+    "defaultMessage": "Back",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 221,
+      "column": 13
+    },
+    "end": {
+      "line": 225,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BACKEND_CONNECT",
+    "defaultMessage": "Connect",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 226,
+      "column": 24
+    },
+    "end": {
+      "line": 229,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BACKEND_DISCONNECTED",
+    "defaultMessage": "Backend is disconnected",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 230,
+      "column": 29
+    },
+    "end": {
+      "line": 233,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BACKGROUND_GALLERY",
+    "defaultMessage": "Homescreen background gallery",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 234,
+      "column": 27
+    },
+    "end": {
+      "line": 237,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BACKUP",
+    "defaultMessage": "Backup",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 238,
+      "column": 15
+    },
+    "end": {
+      "line": 241,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BACKUP_FAILED",
+    "defaultMessage": "Backup failed and your Wallet is not backed up. You can still use it without any problems but highly recommend you following the link and see how to successfully create a backup.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 242,
+      "column": 22
+    },
+    "end": {
+      "line": 246,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BACKUP_FINISHED_BUTTON",
+    "description": "Exit button after backup is finished",
+    "defaultMessage": "My recovery card is safe",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 247,
+      "column": 31
+    },
+    "end": {
+      "line": 251,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BACKUP_FINISHED_TEXT",
+    "description": "Text that appears after backup is finished",
+    "defaultMessage": "Backup is now on your recovery seed card. Once again dont lose it and keep it private!",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 252,
+      "column": 29
+    },
+    "end": {
+      "line": 257,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BACKUP_RECOVERY_SEED",
+    "defaultMessage": "Backup (Recovery seed)",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 258,
+      "column": 29
+    },
+    "end": {
+      "line": 261,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BACKUP_SUBHEADING_1",
+    "description": "Explanation what recovery seed is",
+    "defaultMessage": "Backup seed consisting of words is the ultimate key to your Wallet and all the important data. Trezor will generate the seed and you should write it down and store it securely.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 262,
+      "column": 28
+    },
+    "end": {
+      "line": 267,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BASIC_RECOVERY_OPTION",
+    "description": "Button for selecting basic recovery option",
+    "defaultMessage": "Basic recovery (2 minutes)",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 268,
+      "column": 30
+    },
+    "end": {
+      "line": 272,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BCH_ADDRESS_INFO",
+    "defaultMessage": "Bitcoin Cash changed the format of addresses to cashaddr. Use external tool to convert legacy addresses to the new format. {TR_LEARN_MORE}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 273,
+      "column": 25
+    },
+    "end": {
+      "line": 277,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BEGIN",
+    "defaultMessage": "Let's begin!",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 278,
+      "column": 14
+    },
+    "end": {
+      "line": 281,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BRIDGE_SUBHEADING",
+    "description": "Description what Trezor Bridge is",
+    "defaultMessage": "Trezor Bridge is a communication tool to facilitate the connection between your Trezor and your internet browser.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 282,
+      "column": 26
+    },
+    "end": {
+      "line": 287,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_BUY",
+    "defaultMessage": "Buy",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 288,
+      "column": 12
+    },
+    "end": {
+      "line": 291,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CAMERA_NOT_RECOGNIZED",
+    "defaultMessage": "The camera was not recognized.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 292,
+      "column": 30
+    },
+    "end": {
+      "line": 295,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CAMERA_PERMISSION_DENIED",
+    "defaultMessage": "Permission to access the camera was denied.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 296,
+      "column": 33
+    },
+    "end": {
+      "line": 299,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CARDANO_WALLET",
+    "defaultMessage": "Cardano wallet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 304,
+      "column": 23
+    },
+    "end": {
+      "line": 307,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CHANGELOG",
+    "description": "Part of the sentence: Learn more about latest version in {TR_CHANGELOG}.",
+    "defaultMessage": "Changelog",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 308,
+      "column": 18
+    },
+    "end": {
+      "line": 312,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CHECK_FOR_DEVICES",
+    "defaultMessage": "Check for devices",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 313,
+      "column": 26
+    },
+    "end": {
+      "line": 316,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CHECK_FOR_UPDATES",
+    "defaultMessage": "Check for updates",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 317,
+      "column": 26
+    },
+    "end": {
+      "line": 320,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CHECK_PGP_SIGNATURE",
+    "defaultMessage": "Check PGP signature",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 321,
+      "column": 28
+    },
+    "end": {
+      "line": 324,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CHECK_RECOVERY_SEED",
+    "defaultMessage": "Check recovery seed",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 325,
+      "column": 28
+    },
+    "end": {
+      "line": 328,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CHECK_SEED",
+    "defaultMessage": "Check seed",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 329,
+      "column": 19
+    },
+    "end": {
+      "line": 332,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CHECK_YOUR_DEVICE",
+    "description": "Placeholder in seed input asking user to pay attention to his device",
+    "defaultMessage": "Check your device",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 333,
+      "column": 26
+    },
+    "end": {
+      "line": 337,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CHOOSE_BETWEEN_NO_PASSPHRASE",
+    "defaultMessage": "Choose between no-passphrase or hidden wallet with passphrase.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 338,
+      "column": 37
+    },
+    "end": {
+      "line": 341,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CLEAR",
+    "description": "Clear form button",
+    "defaultMessage": "Clear",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 342,
+      "column": 14
+    },
+    "end": {
+      "line": 346,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CLOSE",
+    "defaultMessage": "Close",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 347,
+      "column": 14
+    },
+    "end": {
+      "line": 350,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_COIN_DISCOVERY_IN_PROGRESS",
+    "defaultMessage": "Coin discovery in progress…",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 351,
+      "column": 35
+    },
+    "end": {
+      "line": 354,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_COINS",
+    "defaultMessage": "Coins",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 355,
+      "column": 14
+    },
+    "end": {
+      "line": 358,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_COINS_SETTINGS_ALSO_DEFINES",
+    "defaultMessage": "Coins settings also defines the Discovery process when Trezor is connected. Each time you connect not remembered device, Trezor Suite needs to find out what accounts you have by going through each coin one by one. That can take between few seconds to few minutes if you allow all or too many coins.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 359,
+      "column": 36
+    },
+    "end": {
+      "line": 363,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONFIRM_ACTION_ON_YOUR",
+    "defaultMessage": "Confirm action on your \"{deviceLabel}\" device.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 364,
+      "column": 31
+    },
+    "end": {
+      "line": 367,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONFIRM_EMPTY_HIDDEN_WALLET",
+    "defaultMessage": "Confirm empty hidden wallet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 368,
+      "column": 36
+    },
+    "end": {
+      "line": 371,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON",
+    "defaultMessage": "Confirm empty hidden wallet passphrase on \"{deviceLabel}\" device.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 372,
+      "column": 39
+    },
+    "end": {
+      "line": 375,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONFIRM_PASSPHRASE",
+    "defaultMessage": "Confirm passphrase",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 376,
+      "column": 27
+    },
+    "end": {
+      "line": 379,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONFIRM_PASSPHRASE_SOURCE",
+    "defaultMessage": "Confirm empty hidden wallet passphrase source on \"{deviceLabel}\" device.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 380,
+      "column": 34
+    },
+    "end": {
+      "line": 383,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONFIRM_PIN",
+    "defaultMessage": "Confirm PIN",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 384,
+      "column": 20
+    },
+    "end": {
+      "line": 387,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONFIRMED_TX",
+    "defaultMessage": "Confirmed",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 388,
+      "column": 21
+    },
+    "end": {
+      "line": 391,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONNECT_DROPBOX",
+    "defaultMessage": "Connect Dropbox",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 392,
+      "column": 24
+    },
+    "end": {
+      "line": 395,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONNECT_TREZOR",
+    "defaultMessage": "Connect Trezor to continue...",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 396,
+      "column": 23
+    },
+    "end": {
+      "line": 399,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONNECT_TREZOR_TO_CONTINUE",
+    "defaultMessage": "Connect Trezor to continue",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 400,
+      "column": 35
+    },
+    "end": {
+      "line": 403,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONNECT_YOUR_DEVICE",
+    "description": "Prompt to user to connect his device.",
+    "defaultMessage": "Connect your device",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 404,
+      "column": 28
+    },
+    "end": {
+      "line": 408,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONNECT_YOUR_DEVICE_AGAIN",
+    "description": "Prompt to connect device.",
+    "defaultMessage": "Connect your device again",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 409,
+      "column": 34
+    },
+    "end": {
+      "line": 413,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONNECT_YOUR_TREZOR_TO_CHECK",
+    "defaultMessage": "Connect your Trezor to verify this address",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 414,
+      "column": 37
+    },
+    "end": {
+      "line": 417,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONNECTED",
+    "description": "Device status",
+    "defaultMessage": "Connected",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 418,
+      "column": 18
+    },
+    "end": {
+      "line": 422,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONNECTED_BOOTLOADER",
+    "description": "Device status",
+    "defaultMessage": "Connected (bootloader mode)",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 423,
+      "column": 29
+    },
+    "end": {
+      "line": 427,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER",
+    "description": "Text that indicates that user connected device in bootloader mode",
+    "defaultMessage": "Connected device is in bootloader mode. Reconnect it to continue.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 428,
+      "column": 42
+    },
+    "end": {
+      "line": 432,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONNECTED_NOT_INITIALIZED",
+    "description": "Device status",
+    "defaultMessage": "Connected (not initialized)",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 433,
+      "column": 34
+    },
+    "end": {
+      "line": 437,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONNECTED_SEEDLESS",
+    "description": "Device status",
+    "defaultMessage": "Connected (seedless mode)",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 438,
+      "column": 27
+    },
+    "end": {
+      "line": 442,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONNECTED_UPDATE_RECOMMENDED",
+    "description": "Device status",
+    "defaultMessage": "Connected (update recommended)",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 443,
+      "column": 37
+    },
+    "end": {
+      "line": 447,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONNECTED_UPDATE_REQUIRED",
+    "description": "Device status",
+    "defaultMessage": "Connected (update required)",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 448,
+      "column": 34
+    },
+    "end": {
+      "line": 452,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONNECTING_DOTDOTDOT",
+    "defaultMessage": "Connecting...",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 453,
+      "column": 29
+    },
+    "end": {
+      "line": 456,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONNECTION_STATUS",
+    "defaultMessage": "Connection Status",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 457,
+      "column": 26
+    },
+    "end": {
+      "line": 460,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONTACT_OUR_SUPPORT_LINK",
+    "description": "Part of sentence TR_DID_YOU_PURCHASE. Link to support",
+    "defaultMessage": "contact our support",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 461,
+      "column": 33
+    },
+    "end": {
+      "line": 465,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONTACT_SUPPORT",
+    "description": "Button to click to contact support",
+    "defaultMessage": "Contact support",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 466,
+      "column": 24
+    },
+    "end": {
+      "line": 470,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CONTINUE",
+    "description": "Continue button",
+    "defaultMessage": "Continue",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 471,
+      "column": 17
+    },
+    "end": {
+      "line": 475,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_COPIED",
+    "defaultMessage": "Copied!",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 476,
+      "column": 15
+    },
+    "end": {
+      "line": 479,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_COPY_TO_CLIPBOARD",
+    "defaultMessage": "Copy to clipboard",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 480,
+      "column": 26
+    },
+    "end": {
+      "line": 483,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CREATE_BACKUP",
+    "defaultMessage": "Create backup",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 484,
+      "column": 22
+    },
+    "end": {
+      "line": 487,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CREATE_BACKUP_IN_3_MINUTES",
+    "defaultMessage": "Create a backup in 3 minutes",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 488,
+      "column": 35
+    },
+    "end": {
+      "line": 491,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CURRENCY",
+    "defaultMessage": "Currency",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 492,
+      "column": 17
+    },
+    "end": {
+      "line": 495,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CUSTOM_FEE",
+    "description": "fee level",
+    "defaultMessage": "Custom",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 496,
+      "column": 19
+    },
+    "end": {
+      "line": 500,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CUSTOM_FEE_IS_NOT_SET",
+    "defaultMessage": "Fee is not set",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 501,
+      "column": 30
+    },
+    "end": {
+      "line": 504,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CUSTOM_FEE_IS_NOT_VALID",
+    "defaultMessage": "Fee is not valid",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 505,
+      "column": 32
+    },
+    "end": {
+      "line": 508,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_CUSTOM_FEE_NOT_IN_RANGE",
+    "defaultMessage": "Allowed fee is between {minFee} and {maxFee}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 509,
+      "column": 32
+    },
+    "end": {
+      "line": 512,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEACTIVATE_ALL",
+    "defaultMessage": "Deactivate all",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 513,
+      "column": 23
+    },
+    "end": {
+      "line": 516,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DESTINATION_TAG_IS_NOT_NUMBER",
+    "defaultMessage": "Destination tag is not a number",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 525,
+      "column": 38
+    },
+    "end": {
+      "line": 528,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DETECTING_BRIDGE",
+    "description": "Message to show after user clicks download bridge.",
+    "defaultMessage": "Detecting Trezor Bridge instalation",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 529,
+      "column": 25
+    },
+    "end": {
+      "line": 533,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE",
+    "description": "Category in Settings",
+    "defaultMessage": "Device",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 534,
+      "column": 15
+    },
+    "end": {
+      "line": 538,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_DISCONNECTED_DURING_ACTION",
+    "description": "Error message",
+    "defaultMessage": "Device disconnected during action",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 539,
+      "column": 42
+    },
+    "end": {
+      "line": 543,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION",
+    "description": "Error message. Instruction what to do.",
+    "defaultMessage": "You device disconnected during action which resulted in interuption of backup process. For security reasons you need to wipe your device now and start the backup process again.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 544,
+      "column": 54
+    },
+    "end": {
+      "line": 549,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_FIRMWARE_VERSION",
+    "description": "Display firmware of device",
+    "defaultMessage": "Device firmware: {firmware}.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 550,
+      "column": 32
+    },
+    "end": {
+      "line": 554,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_IS_USED_IN_OTHER_WINDOW_BUTTON",
+    "defaultMessage": "Continue",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 555,
+      "column": 46
+    },
+    "end": {
+      "line": 559,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_IS_USED_IN_OTHER_WINDOW_HEADING",
+    "defaultMessage": "Device is used in other window",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 560,
+      "column": 47
+    },
+    "end": {
+      "line": 564,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_IS_USED_IN_OTHER_WINDOW_TEXT",
+    "defaultMessage": "This is a big no no. Please dont use device in other window. Close all other windows or tabs that might be using your Trezor device.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 565,
+      "column": 44
+    },
+    "end": {
+      "line": 570,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_LABEL",
+    "description": "Display label of device",
+    "defaultMessage": "Device label: {label}.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 571,
+      "column": 21
+    },
+    "end": {
+      "line": 575,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_LABEL_IS_DISCONNECTED",
+    "defaultMessage": "Device {deviceLabel} is disconnected",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 576,
+      "column": 37
+    },
+    "end": {
+      "line": 579,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_LABEL_IS_NOT_BACKED_UP",
+    "defaultMessage": "Device {deviceLabel} is not backed up",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 580,
+      "column": 38
+    },
+    "end": {
+      "line": 583,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_LABEL_IS_NOT_CONNECTED",
+    "defaultMessage": "Device {deviceLabel} is not connected",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 584,
+      "column": 38
+    },
+    "end": {
+      "line": 587,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_LABEL_IS_UNAVAILABLE",
+    "defaultMessage": "Device \"{deviceLabel}\" is unavailable",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 588,
+      "column": 36
+    },
+    "end": {
+      "line": 591,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_NEEDS_ATTENTION",
+    "defaultMessage": "Device needs attention",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 592,
+      "column": 31
+    },
+    "end": {
+      "line": 595,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING",
+    "defaultMessage": "Device not recognized? Try installing the {link}.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 596,
+      "column": 45
+    },
+    "end": {
+      "line": 599,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_SETTINGS",
+    "defaultMessage": "Device settings",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 600,
+      "column": 24
+    },
+    "end": {
+      "line": 603,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE",
+    "defaultMessage": "Wipe device",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 604,
+      "column": 43
+    },
+    "end": {
+      "line": 607,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL",
+    "defaultMessage": "Edit Label",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 608,
+      "column": 42
+    },
+    "end": {
+      "line": 611,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_SETTINGS_DEVICE_LABEL",
+    "defaultMessage": "Device Label",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 612,
+      "column": 37
+    },
+    "end": {
+      "line": 615,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_SETTINGS_DISPLAY_ROTATION",
+    "defaultMessage": "Display rotation",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 616,
+      "column": 41
+    },
+    "end": {
+      "line": 619,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS",
+    "defaultMessage": "PNG or JPG, 144 x 144 pixels",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 620,
+      "column": 50
+    },
+    "end": {
+      "line": 623,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY",
+    "defaultMessage": "Select from gallery",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 624,
+      "column": 55
+    },
+    "end": {
+      "line": 627,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_SETTINGS_HOMESCREEN_TITLE",
+    "defaultMessage": "Homescreen background",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 628,
+      "column": 41
+    },
+    "end": {
+      "line": 631,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE",
+    "defaultMessage": "Upload image",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 632,
+      "column": 48
+    },
+    "end": {
+      "line": 635,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_SETTINGS_PASSPHRASE_DESC",
+    "defaultMessage": "Passphrase encryption adds an extra custom word to your recovery seed. This allows you to access new wallets, each hidden behind a particular passphrase. Your old accounts will be accessible with an empty passphrase.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 636,
+      "column": 40
+    },
+    "end": {
+      "line": 640,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_SETTINGS_PASSPHRASE_DESC_MORE",
+    "defaultMessage": "If you forget your passphrase, your wallet is lost for good. There is no way to recover your funds.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 641,
+      "column": 45
+    },
+    "end": {
+      "line": 645,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_SETTINGS_PASSPHRASE_TITLE",
+    "defaultMessage": "Passphrase",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 646,
+      "column": 41
+    },
+    "end": {
+      "line": 649,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC",
+    "defaultMessage": "Using PIN protection is highly recommended. PIN prevents unauthorized persons from stealing your funds even if they have physical access to your device.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 650,
+      "column": 44
+    },
+    "end": {
+      "line": 654,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE",
+    "defaultMessage": "PIN protection",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 655,
+      "column": 45
+    },
+    "end": {
+      "line": 658,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DEVICE_YOU_RECONNECTED_IS_DIFFERENT",
+    "description": "Text that indicates that user reconnected different device than he was working with before",
+    "defaultMessage": "Device you reconnected is different from the previous device. Connect the right one.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 659,
+      "column": 44
+    },
+    "end": {
+      "line": 665,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DID_YOU_PURCHASE",
+    "description": "Text to display when user is unhappy with his hologram.",
+    "defaultMessage": "Please note, that device packaging including holograms have changed over time. You can check packaging details {TR_PACKAGING_LINK}. Also be sure you made your purchase from {TR_RESELLERS_LINK}. Otherwise, the device you are holding in your hands might be a counterfeit. Please {TR_CONTACT_OUR_SUPPORT_LINK}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 666,
+      "column": 25
+    },
+    "end": {
+      "line": 671,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DISCONNECT_YOUR_DEVICE",
+    "description": "Prompt to disconnect device.",
+    "defaultMessage": "Disconnect your device",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 672,
+      "column": 31
+    },
+    "end": {
+      "line": 676,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DISCONNECTED",
+    "description": "Device status",
+    "defaultMessage": "Disconnected",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 677,
+      "column": 21
+    },
+    "end": {
+      "line": 681,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DOCUMENTATION",
+    "description": "Link to trezor documentation (wiki)",
+    "defaultMessage": "documentation",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 682,
+      "column": 22
+    },
+    "end": {
+      "line": 686,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DONT_HAVE_A_TREZOR",
+    "defaultMessage": "Don't have a Trezor? {getOne}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 687,
+      "column": 27
+    },
+    "end": {
+      "line": 690,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DONT_UPGRADE_BRIDGE",
+    "defaultMessage": "No, I don't want to upgrade Bridge now",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 691,
+      "column": 28
+    },
+    "end": {
+      "line": 694,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DOUBLE_CLICK_IT_TO_RUN_INSTALLER",
+    "description": "Instruction for installing Trezor Bridge",
+    "defaultMessage": "Double click it to run installer",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 695,
+      "column": 41
+    },
+    "end": {
+      "line": 699,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DOWNLOAD",
+    "description": "Download button",
+    "defaultMessage": "Download",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 700,
+      "column": 17
+    },
+    "end": {
+      "line": 704,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_DOWNLOAD_LATEST_BRIDGE",
+    "defaultMessage": "Download latest Bridge {version}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 705,
+      "column": 31
+    },
+    "end": {
+      "line": 708,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_EAST",
+    "defaultMessage": "East",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 709,
+      "column": 13
+    },
+    "end": {
+      "line": 712,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ENABLE_NETWORK_BUTTON",
+    "defaultMessage": "Find my {networkName} accounts",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 713,
+      "column": 30
+    },
+    "end": {
+      "line": 716,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ENTER_EXISTING_PASSPHRASE",
+    "defaultMessage": "Enter existing passphrase to access existing hidden Wallet. Or enter new passphrase to create a new hidden Wallet.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 717,
+      "column": 34
+    },
+    "end": {
+      "line": 721,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ENTER_PASSPHRASE",
+    "defaultMessage": "Enter passphrase",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 722,
+      "column": 25
+    },
+    "end": {
+      "line": 725,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ENTER_PASSPHRASE_ON_DEVICE",
+    "defaultMessage": "Enter passphrase on device",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 726,
+      "column": 35
+    },
+    "end": {
+      "line": 729,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ENTER_PASSPHRASE_ON_DEVICE_LABEL",
+    "defaultMessage": "Enter passphrase on \"{deviceLabel}\" device.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 730,
+      "column": 41
+    },
+    "end": {
+      "line": 733,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ENTER_PIN",
+    "description": "Button. Submit PIN",
+    "defaultMessage": "Enter PIN",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 734,
+      "column": 18
+    },
+    "end": {
+      "line": 738,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ENTER_PIN_HEADING",
+    "defaultMessage": "Enter PIN",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 739,
+      "column": 26
+    },
+    "end": {
+      "line": 743,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ENTER_PIN_TEXT",
+    "defaultMessage": "Your device gets locked anytime you disconnect it. You now need to enter your PIN to continue.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 744,
+      "column": 23
+    },
+    "end": {
+      "line": 749,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ENTER_SEED_WORDS_INSTRUCTION",
+    "description": "User is instructed to enter words from seed (backup) into the form in browser",
+    "defaultMessage": "Enter words from your seed in order displayed on your device.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 750,
+      "column": 37
+    },
+    "end": {
+      "line": 755,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ENTERED_PIN_NOT_CORRECT",
+    "defaultMessage": "Entered PIN for \"{deviceLabel}\" is not correct",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 756,
+      "column": 32
+    },
+    "end": {
+      "line": 759,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ESTIMATED_TIME",
+    "defaultMessage": "Estimated time",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 760,
+      "column": 23
+    },
+    "end": {
+      "line": 763,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ETH_DATA_NOT_HEX",
+    "defaultMessage": "Data is not hex",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 764,
+      "column": 25
+    },
+    "end": {
+      "line": 767,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ETH_GAS_LIMIT_NOT_NUMBER",
+    "defaultMessage": "Gas limit is not a number",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 768,
+      "column": 33
+    },
+    "end": {
+      "line": 771,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ETH_GAS_PRICE_NOT_NUMBER",
+    "defaultMessage": "Gas price is not a number",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 772,
+      "column": 33
+    },
+    "end": {
+      "line": 775,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_EXCHANGE_RATE",
+    "defaultMessage": "Exchange rate",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 776,
+      "column": 22
+    },
+    "end": {
+      "line": 779,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FAILED_BACKUP",
+    "defaultMessage": "Backup failed. This is serious.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 780,
+      "column": 22
+    },
+    "end": {
+      "line": 783,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FEE",
+    "description": "Label in Send form",
+    "defaultMessage": "Fee",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 784,
+      "column": 12
+    },
+    "end": {
+      "line": 788,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FIAT_RATES_ARE_NOT_CURRENTLY",
+    "defaultMessage": "Fiat rates are not currently available.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 789,
+      "column": 37
+    },
+    "end": {
+      "line": 792,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FINAL_HEADING",
+    "description": "Heading in newsletter step",
+    "defaultMessage": "Good job! All done",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 793,
+      "column": 22
+    },
+    "end": {
+      "line": 797,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FINAL_SUBHEADING",
+    "defaultMessage": "You did it! Not only your Trezor is initialized and ready but you also increased your security level above the average user by going through all security steps. Good job!",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 798,
+      "column": 25
+    },
+    "end": {
+      "line": 802,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FIND_OUT_MORE_INFO",
+    "defaultMessage": "Find out more info",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 803,
+      "column": 27
+    },
+    "end": {
+      "line": 806,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FINISH_ADVANCED_SECURITY",
+    "defaultMessage": "Finish advanced security",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 807,
+      "column": 33
+    },
+    "end": {
+      "line": 810,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FIRMWARE_HEADING",
+    "description": "Heading on firmware page",
+    "defaultMessage": "Firmware installation",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 811,
+      "column": 25
+    },
+    "end": {
+      "line": 815,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FIRMWARE_INSTALLED",
+    "description": "Message to display in case firmware is installed",
+    "defaultMessage": "Perfect. The newest firmware is installed. Time to continue",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 816,
+      "column": 27
+    },
+    "end": {
+      "line": 820,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FIRMWARE_INSTALLED_TEXT",
+    "description": "Text to display in case device has firmware installed but it is outdated",
+    "defaultMessage": "This device has already installed firmware version: {version}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 821,
+      "column": 32
+    },
+    "end": {
+      "line": 825,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FIRMWARE_SUBHEADING",
+    "description": "Main text on firmware page for devices without firmware.",
+    "defaultMessage": "Your Trezor is shipped without firmware installed to ensure that you can get started with the latest features right away. The authenticity of the installed firmware is always checked during device start. If the firmware is not correctly signed by SatoshiLabs, your Trezor will display a warning.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 826,
+      "column": 28
+    },
+    "end": {
+      "line": 831,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FIRMWARE_VERSION",
+    "defaultMessage": "Firmware version",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 832,
+      "column": 25
+    },
+    "end": {
+      "line": 835,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FIRST_PIN_ENTERED",
+    "description": "Text describing what happens after user enters PIN for the first time.",
+    "defaultMessage": "Good. You entered a new pin. But to make sure you did not make mistake, please enter it again. Look at your device now, numbers are now different.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 836,
+      "column": 26
+    },
+    "end": {
+      "line": 841,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FIRST_SEEN",
+    "defaultMessage": "First Seen",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 842,
+      "column": 19
+    },
+    "end": {
+      "line": 845,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FOR_EASIER_AND_SAFER_INPUT",
+    "defaultMessage": "For easier and safer input you can scan recipient’s address from a QR code using your computer camera.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 846,
+      "column": 35
+    },
+    "end": {
+      "line": 850,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_FOUND_OK_DEVICE",
+    "description": "Case when device was connected and it is in expected state (not initialized)",
+    "defaultMessage": "Found an empty device, yay! You can continue now.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 851,
+      "column": 24
+    },
+    "end": {
+      "line": 855,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_GATHERING_INFO",
+    "defaultMessage": "Gathering information, please wait...",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 882,
+      "column": 23
+    },
+    "end": {
+      "line": 885,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_GENERAL",
+    "description": "Category in Settings",
+    "defaultMessage": "General",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 886,
+      "column": 16
+    },
+    "end": {
+      "line": 890,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_GET_ONE",
+    "description": "Part of the sentence: Dont have a Trezor? Get one",
+    "defaultMessage": "Get one",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 891,
+      "column": 16
+    },
+    "end": {
+      "line": 895,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_GO_TO_EXTERNAL_WALLET",
+    "defaultMessage": "Go to external wallet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 896,
+      "column": 30
+    },
+    "end": {
+      "line": 899,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_GO_TO_SECURITY",
+    "description": "Button in security page (start security setup)",
+    "defaultMessage": "Continue to backup",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 900,
+      "column": 23
+    },
+    "end": {
+      "line": 904,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_HELP_TREZOR_SUITE",
+    "defaultMessage": "Help Trezor Suite get better",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 905,
+      "column": 26
+    },
+    "end": {
+      "line": 908,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_HELP_TREZOR_SUITE_TEXT_1",
+    "defaultMessage": "Help Trezor Suite become a better product by sending us {TR_HELP_TREZOR_SUITE_TEXT_1_FAT}.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 909,
+      "column": 33
+    },
+    "end": {
+      "line": 913,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_HELP_TREZOR_SUITE_TEXT_1_FAT",
+    "defaultMessage": "anonymous analytics data.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 914,
+      "column": 37
+    },
+    "end": {
+      "line": 917,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_HELP_TREZOR_SUITE_TEXT_2",
+    "defaultMessage": "Trezor Suite does NOT track any balance-related or personal data.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 918,
+      "column": 33
+    },
+    "end": {
+      "line": 921,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_HIDE_ADVANCED_OPTIONS",
+    "description": "Hide advanced sending form",
+    "defaultMessage": "Hide advanced options",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 922,
+      "column": 30
+    },
+    "end": {
+      "line": 926,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_HIDE_WALLET",
+    "defaultMessage": "Hide wallet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 927,
+      "column": 20
+    },
+    "end": {
+      "line": 930,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_HIDE_WALLET_EXPLANATION",
+    "defaultMessage": "Explanation what the 'hide wallet' button does",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 931,
+      "column": 32
+    },
+    "end": {
+      "line": 934,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_HOLOGRAM_STEP_ACTION_NOT_OK",
+    "description": "Button to click when hologram looks different",
+    "defaultMessage": "My hologram looks different",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 935,
+      "column": 36
+    },
+    "end": {
+      "line": 939,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_HOLOGRAM_STEP_ACTION_OK",
+    "description": "Button to click in allright case",
+    "defaultMessage": "My hologram is OK",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 940,
+      "column": 32
+    },
+    "end": {
+      "line": 944,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_HOLOGRAM_STEP_HEADING",
+    "description": "Heading on hologram step page",
+    "defaultMessage": "Hologram check",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 945,
+      "column": 30
+    },
+    "end": {
+      "line": 949,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_HOLOGRAM_STEP_SUBHEADING",
+    "description": "Subheading on hologram step page",
+    "defaultMessage": "Please make sure hologram protecting your device is authentic",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 950,
+      "column": 33
+    },
+    "end": {
+      "line": 954,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_HOW_PIN_WORKS",
+    "defaultMessage": "Not sure how PIN works?",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 955,
+      "column": 22
+    },
+    "end": {
+      "line": 958,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_I_UNDERSTAND_PASSPHRASE",
+    "defaultMessage": "I understand passphrase is not saved anywhere and can’t be restored.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 959,
+      "column": 32
+    },
+    "end": {
+      "line": 962,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_IF_YOUR_DEVICE_IS_EVER_LOST",
+    "defaultMessage": "If you lose or damage the device, your funds will be lost.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 963,
+      "column": 36
+    },
+    "end": {
+      "line": 966,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_IMPORTED_ACCOUNT_HASH",
+    "description": "Used in auto-generated label for imported accounts",
+    "defaultMessage": "Imported account #{number}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 967,
+      "column": 30
+    },
+    "end": {
+      "line": 971,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_INCOMING",
+    "defaultMessage": "Incoming",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 972,
+      "column": 17
+    },
+    "end": {
+      "line": 975,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_INSTALL",
+    "description": "Install button",
+    "defaultMessage": "Install",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 976,
+      "column": 16
+    },
+    "end": {
+      "line": 980,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_INSTALLING",
+    "description": "Message that is visible when installing process is in progress.",
+    "defaultMessage": "Do not disconnect your device. Installing",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 981,
+      "column": 19
+    },
+    "end": {
+      "line": 985,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_INSTRUCTION_TO_SKIP",
+    "description": "Instruction what to do when user knows the device he is holding was manipulated by him, not someone else.",
+    "defaultMessage": "You should skip setup and continue to wallet and check if you have any funds on this device.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 986,
+      "column": 28
+    },
+    "end": {
+      "line": 992,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_IS_NOT_NEW_DEVICE",
+    "description": "Just a message that we show after user selects that he wants to setup device as a new one but we detect that it apparently is not",
+    "defaultMessage": "According to your decision in a previous step, this was supposed to be a fresh device. But we were able to detect already installed firmware on it.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 993,
+      "column": 26
+    },
+    "end": {
+      "line": 999,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_LABELING",
+    "defaultMessage": "Labeling",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1000,
+      "column": 17
+    },
+    "end": {
+      "line": 1003,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_LANGUAGE",
+    "defaultMessage": "Language",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1004,
+      "column": 17
+    },
+    "end": {
+      "line": 1007,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_LEARN_MORE",
+    "description": "Link to Trezor wiki.",
+    "defaultMessage": "Learn more",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1008,
+      "column": 19
+    },
+    "end": {
+      "line": 1012,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_LEARN_MORE_ABOUT_LATEST_VERSION",
+    "defaultMessage": "Learn more about latest version in {TR_CHANGELOG}.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1013,
+      "column": 40
+    },
+    "end": {
+      "line": 1016,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_LEARN_MORE_LINK",
+    "description": "Link to Trezor wiki.",
+    "defaultMessage": "Learn more.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1017,
+      "column": 24
+    },
+    "end": {
+      "line": 1021,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_LEGACY_ACCOUNTS",
+    "defaultMessage": "Legacy accounts",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1022,
+      "column": 24
+    },
+    "end": {
+      "line": 1025,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_LOADING_ACCOUNT",
+    "defaultMessage": "Loading account",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1026,
+      "column": 24
+    },
+    "end": {
+      "line": 1029,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_LOADING_DEVICE_DOT_DOT_DOT",
+    "defaultMessage": "Loading device...",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1030,
+      "column": 35
+    },
+    "end": {
+      "line": 1033,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_LOADING_OTHER_ACCOUNTS",
+    "defaultMessage": "Loading other accounts...",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1034,
+      "column": 31
+    },
+    "end": {
+      "line": 1037,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_LOADING_TRANSACTIONS",
+    "defaultMessage": "Loading transactions",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1038,
+      "column": 29
+    },
+    "end": {
+      "line": 1041,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_LOG",
+    "description": "application event and error",
+    "defaultMessage": "Log",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1042,
+      "column": 12
+    },
+    "end": {
+      "line": 1046,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_LOOKING_FOR_QUICK_EASY",
+    "defaultMessage": "Looking for a quick & easy way to buy BTC? We got you covered.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1047,
+      "column": 31
+    },
+    "end": {
+      "line": 1050,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_LTC_ADDRESS_INFO",
+    "defaultMessage": "Litecoin changed the format of addresses. Find more info about how to convert your address on our blog. {TR_LEARN_MORE}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1051,
+      "column": 25
+    },
+    "end": {
+      "line": 1055,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_MARK_ALL_AS_READ",
+    "defaultMessage": "Mark all as read",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1056,
+      "column": 25
+    },
+    "end": {
+      "line": 1059,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_MAXIMUM_LENGTH_IS_9_DIGITS",
+    "defaultMessage": "Maximum length is 9 digits.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1060,
+      "column": 35
+    },
+    "end": {
+      "line": 1063,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_MESSAGE",
+    "description": "Used as a label for message input field in Sign and Verify form",
+    "defaultMessage": "Message",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1064,
+      "column": 16
+    },
+    "end": {
+      "line": 1068,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_MINED_TIME",
+    "defaultMessage": "Mined Time",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1069,
+      "column": 19
+    },
+    "end": {
+      "line": 1072,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_MODEL_ONE",
+    "description": "Name of Trezor model 1",
+    "defaultMessage": "Model one",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1073,
+      "column": 18
+    },
+    "end": {
+      "line": 1077,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_MODEL_T",
+    "description": "Name of Trezor model T",
+    "defaultMessage": "Model T",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1078,
+      "column": 16
+    },
+    "end": {
+      "line": 1082,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_MORE_WORDS_TO_ENTER",
+    "description": "How many words will user need to enter before recovery is finished.",
+    "defaultMessage": "{count} words to enter.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1083,
+      "column": 28
+    },
+    "end": {
+      "line": 1087,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NAV_RECEIVE",
+    "description": "Title of the navigation tab that contains the account address",
+    "defaultMessage": "Receive",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1088,
+      "column": 20
+    },
+    "end": {
+      "line": 1092,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NAV_SEND",
+    "description": "Title of the navigation tab that contains a form for sending funds",
+    "defaultMessage": "Send",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1093,
+      "column": 17
+    },
+    "end": {
+      "line": 1097,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NAV_SIGN_AND_VERIFY",
+    "description": "Title of the navigation tab that contains a form for signing and verifying messages",
+    "defaultMessage": "Sign & Verify",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1098,
+      "column": 28
+    },
+    "end": {
+      "line": 1103,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NAV_TRANSACTIONS",
+    "description": "Title of the navigation tab that contains tx history.",
+    "defaultMessage": "Transactions",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1104,
+      "column": 25
+    },
+    "end": {
+      "line": 1108,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NEM_WALLET",
+    "defaultMessage": "NEM wallet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1109,
+      "column": 19
+    },
+    "end": {
+      "line": 1112,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_BITCOIN",
+    "defaultMessage": "Bitcoin",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1113,
+      "column": 24
+    },
+    "end": {
+      "line": 1116,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_BITCOIN_CASH",
+    "defaultMessage": "Bitcoin Cash",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1117,
+      "column": 29
+    },
+    "end": {
+      "line": 1120,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_BITCOIN_GOLD",
+    "defaultMessage": "Bitcoin Gold",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1121,
+      "column": 29
+    },
+    "end": {
+      "line": 1124,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_BITCOIN_TESTNET",
+    "defaultMessage": "Bitcoin Testnet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1125,
+      "column": 32
+    },
+    "end": {
+      "line": 1128,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_CARDANO",
+    "defaultMessage": "Cardano",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1129,
+      "column": 24
+    },
+    "end": {
+      "line": 1132,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_DASH",
+    "defaultMessage": "Dash",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1133,
+      "column": 21
+    },
+    "end": {
+      "line": 1136,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_DIGIBYTE",
+    "defaultMessage": "Digibyte",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1137,
+      "column": 25
+    },
+    "end": {
+      "line": 1140,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_DOGECOIN",
+    "defaultMessage": "Dogecoin",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1141,
+      "column": 25
+    },
+    "end": {
+      "line": 1144,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_ETHEREUM",
+    "defaultMessage": "Ethereum",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1145,
+      "column": 25
+    },
+    "end": {
+      "line": 1148,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_ETHEREUM_CLASSIC",
+    "defaultMessage": "Ethereum Classic",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1149,
+      "column": 33
+    },
+    "end": {
+      "line": 1152,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_ETHEREUM_TESTNET",
+    "defaultMessage": "Ethereum Testnet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1153,
+      "column": 33
+    },
+    "end": {
+      "line": 1156,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_LITECOIN",
+    "defaultMessage": "Litecoin",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1157,
+      "column": 25
+    },
+    "end": {
+      "line": 1160,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_NAMECOIN",
+    "defaultMessage": "Namecoin",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1161,
+      "column": 25
+    },
+    "end": {
+      "line": 1164,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_NEM",
+    "defaultMessage": "NEM",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1165,
+      "column": 20
+    },
+    "end": {
+      "line": 1168,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_STELLAR",
+    "defaultMessage": "Stellar",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1169,
+      "column": 24
+    },
+    "end": {
+      "line": 1172,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_TEZOS",
+    "defaultMessage": "Tezos",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1173,
+      "column": 22
+    },
+    "end": {
+      "line": 1176,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_TYPE_LEGACY",
+    "defaultMessage": "legacy",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1177,
+      "column": 28
+    },
+    "end": {
+      "line": 1180,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_TYPE_NORMAL",
+    "defaultMessage": "normal",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1181,
+      "column": 28
+    },
+    "end": {
+      "line": 1184,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_TYPE_SEGWIT",
+    "defaultMessage": "segwit",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1185,
+      "column": 28
+    },
+    "end": {
+      "line": 1188,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_UNKNOWN",
+    "defaultMessage": "unknown",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1189,
+      "column": 24
+    },
+    "end": {
+      "line": 1192,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_VERTCOIN",
+    "defaultMessage": "Vertcoin",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1193,
+      "column": 25
+    },
+    "end": {
+      "line": 1196,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_XRP",
+    "defaultMessage": "XRP",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1197,
+      "column": 20
+    },
+    "end": {
+      "line": 1200,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_XRP_TESTNET",
+    "defaultMessage": "XRP Testnet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1201,
+      "column": 28
+    },
+    "end": {
+      "line": 1204,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NETWORK_ZCASH",
+    "defaultMessage": "Zcash",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1205,
+      "column": 22
+    },
+    "end": {
+      "line": 1208,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NEW_COMMUNICATION_TOOL",
+    "defaultMessage": "New communication tool to facilitate the connection between your Trezor and your internet browser.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1209,
+      "column": 31
+    },
+    "end": {
+      "line": 1213,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NEW_TREZOR_BRIDGE_IS_AVAILABLE",
+    "defaultMessage": "New Trezor Bridge is available.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1214,
+      "column": 39
+    },
+    "end": {
+      "line": 1217,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NEW_TREZOR_FIRMWARE_IS_AVAILABLE_DOT",
+    "defaultMessage": "New Trezor firmware is available.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1218,
+      "column": 45
+    },
+    "end": {
+      "line": 1221,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NO_PASSPHRASE_WALLET",
+    "defaultMessage": "No-passphrase wallet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1222,
+      "column": 29
+    },
+    "end": {
+      "line": 1225,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NORTH",
+    "defaultMessage": "North",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1230,
+      "column": 14
+    },
+    "end": {
+      "line": 1233,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_NUM_ACCOUNTS_FIAT_VALUE",
+    "description": "Used as title for a wallet instance in Switch Device modal",
+    "defaultMessage": "{accountsCount} {accountsCount, plural, one {account} other {accounts}} • {fiatValue}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1234,
+      "column": 32
+    },
+    "end": {
+      "line": 1239,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_OFFLINE",
+    "defaultMessage": "Offline",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1240,
+      "column": 16
+    },
+    "end": {
+      "line": 1243,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ONCE_YOU_SEND_OR_RECEIVE",
+    "defaultMessage": "Once you send or receive your first transaction it will show up here. Until then, wanna buy some crypto? Click the button below to begin your shopping spree!",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1244,
+      "column": 33
+    },
+    "end": {
+      "line": 1248,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ONLINE",
+    "defaultMessage": "Online",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1249,
+      "column": 15
+    },
+    "end": {
+      "line": 1252,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_OOPS_SOMETHING_WENT_WRONG",
+    "defaultMessage": "Oops! Something went wrong!",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1253,
+      "column": 34
+    },
+    "end": {
+      "line": 1256,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_OUTGOING",
+    "defaultMessage": "Outgoing",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1257,
+      "column": 17
+    },
+    "end": {
+      "line": 1260,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PACKAGING_LINK",
+    "description": "Part of sentence TR_DID_YOU_PURCHASE. Link to support",
+    "defaultMessage": "here",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1261,
+      "column": 23
+    },
+    "end": {
+      "line": 1265,
+      "column": 5
+    }
+  },
+  {
+    "id": "PASSPHRASE_CASE_SENSITIVE",
+    "defaultMessage": "Note: Passphrase is case-sensitive.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1266,
+      "column": 34
+    },
+    "end": {
+      "line": 1269,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PASSPHRASE_HIDDEN_WALLET",
+    "defaultMessage": "Passphrase (hidden) wallet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1270,
+      "column": 33
+    },
+    "end": {
+      "line": 1273,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PASSPHRASE_TOO_LONG",
+    "defaultMessage": "The passphrase length has exceed the allowed limit.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1274,
+      "column": 28
+    },
+    "end": {
+      "line": 1277,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PASSPHRASE_WALLET",
+    "defaultMessage": "Passphrase wallet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1278,
+      "column": 26
+    },
+    "end": {
+      "line": 1281,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PENDING",
+    "description": "Pending transaction with no confirmations",
+    "defaultMessage": "Pending",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1282,
+      "column": 16
+    },
+    "end": {
+      "line": 1286,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PIN_ERROR_TROUBLESHOOT",
+    "description": "Troubleshooting text after user enters second PIN incorrectly.",
+    "defaultMessage": "Are you confused, how PIN works? You can always refer to our {TR_DOCUMENTATION}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1287,
+      "column": 31
+    },
+    "end": {
+      "line": 1292,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PIN_HEADING_FIRST",
+    "description": "Heading in PIN page when entering PIN for the first time",
+    "defaultMessage": "Set new PIN",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1293,
+      "column": 26
+    },
+    "end": {
+      "line": 1297,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PIN_HEADING_MISMATCH",
+    "description": "Heading in PIN page when PIN repeated incorrectly",
+    "defaultMessage": "PIN mismatch",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1298,
+      "column": 29
+    },
+    "end": {
+      "line": 1302,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PIN_HEADING_REPEAT",
+    "description": "Heading in PIN page when repeating PIN",
+    "defaultMessage": "Repeat PIN",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1303,
+      "column": 27
+    },
+    "end": {
+      "line": 1307,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PIN_HEADING_SUCCESS",
+    "description": "Heading in PIN page when PIN set",
+    "defaultMessage": "PIN enabled",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1308,
+      "column": 28
+    },
+    "end": {
+      "line": 1312,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PIN_SET_SUCCESS",
+    "description": "Longer text indicating PIN was set succesfully.",
+    "defaultMessage": "Purfect! Your device is now secured by pin.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1313,
+      "column": 24
+    },
+    "end": {
+      "line": 1317,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PIN_SUBHEADING",
+    "description": "Subheading on PIN page",
+    "defaultMessage": "Protect device from unauthorized access by using a strong pin.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1318,
+      "column": 23
+    },
+    "end": {
+      "line": 1322,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PLEASE_ALLOW_YOUR_CAMERA",
+    "defaultMessage": "Please allow your camera to be able to scan a QR code.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1323,
+      "column": 33
+    },
+    "end": {
+      "line": 1326,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PLEASE_CONNECT_YOUR_DEVICE",
+    "defaultMessage": "Please connect your device to continue with the verification process",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1327,
+      "column": 35
+    },
+    "end": {
+      "line": 1330,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PLEASE_DISABLE_PASSPHRASE",
+    "defaultMessage": "Please disable passphrase settings to continue with the verification process.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1331,
+      "column": 34
+    },
+    "end": {
+      "line": 1335,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PLEASE_ENABLE_PASSPHRASE",
+    "defaultMessage": "Please enable passphrase settings to continue with the verification process.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1336,
+      "column": 33
+    },
+    "end": {
+      "line": 1340,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_PRIMARY_FIAT",
+    "defaultMessage": "Primary FIAT currency to display",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1341,
+      "column": 21
+    },
+    "end": {
+      "line": 1344,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RANDOM_SEED_WORDS_DISCLAIMER",
+    "description": "User is instructed to enter words from seed (backup) into the form in browser",
+    "defaultMessage": "Please note, that to maximaze security, your device will ask you to enter {count} fake words that are not part of your seed.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1345,
+      "column": 37
+    },
+    "end": {
+      "line": 1351,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_READ_MORE",
+    "defaultMessage": "Read more",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1352,
+      "column": 18
+    },
+    "end": {
+      "line": 1355,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RECEIVE",
+    "defaultMessage": "Receive",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1356,
+      "column": 16
+    },
+    "end": {
+      "line": 1359,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RECIPIENT_ADDRESS",
+    "defaultMessage": "Recipient address",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1360,
+      "column": 26
+    },
+    "end": {
+      "line": 1363,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RECONNECT_HEADER",
+    "defaultMessage": "Reconnect your device",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1364,
+      "column": 25
+    },
+    "end": {
+      "line": 1367,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RECONNECT_TEXT",
+    "defaultMessage": "We lost connection with your device. This might mean:",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1368,
+      "column": 23
+    },
+    "end": {
+      "line": 1371,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RECONNECT_TROUBLESHOOT_BRIDGE",
+    "defaultMessage": "Trezor bridge might have stopped working, try restarting",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1372,
+      "column": 38
+    },
+    "end": {
+      "line": 1376,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RECONNECT_TROUBLESHOOT_CABEL",
+    "defaultMessage": "Cable is broken, try another one",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1377,
+      "column": 37
+    },
+    "end": {
+      "line": 1381,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RECONNECT_TROUBLESHOOT_CONNECTION",
+    "defaultMessage": "Device is not well connected to the cable",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1382,
+      "column": 42
+    },
+    "end": {
+      "line": 1386,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RECOVER_SUBHEADING",
+    "description": "Subheading in recover page. Basic info about recovery",
+    "defaultMessage": "It is possible to re-create device from bip39 backup. First of all, chose number of words of your backup.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1387,
+      "column": 27
+    },
+    "end": {
+      "line": 1392,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RECOVER_SUBHEADING_MODEL_T",
+    "description": "Subheading in recover page. Basic info about recovery",
+    "defaultMessage": "On model T the entire recovery process is doable on device.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1393,
+      "column": 35
+    },
+    "end": {
+      "line": 1397,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RECOVERY_ERROR",
+    "description": "Error during recovery. For example wrong word retyped or device disconnected",
+    "defaultMessage": "Device recovery failed with error: {error}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1398,
+      "column": 23
+    },
+    "end": {
+      "line": 1402,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RECOVERY_SEED_IS",
+    "defaultMessage": "Recovery seed is a list of words in a specific order which store all the information needed.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1403,
+      "column": 25
+    },
+    "end": {
+      "line": 1407,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RECOVERY_TYPES_DESCRIPTION",
+    "description": "There are two methods of recovery for T1. This is a short explanation text.",
+    "defaultMessage": "Both methods are safe. Basic recovery uses on computer input of words in randomized order. Advanced recovery uses on-screen input to load your recovery seed. {TR_LEARN_MORE_LINK}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1408,
+      "column": 35
+    },
+    "end": {
+      "line": 1413,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_REMEMBER_ALLOWS_YOU_TO",
+    "defaultMessage": "Remember allows you to access any wallet in watch-only mode without connected device.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1414,
+      "column": 31
+    },
+    "end": {
+      "line": 1418,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_REMEMBER_WALLET",
+    "defaultMessage": "Remember wallet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1419,
+      "column": 24
+    },
+    "end": {
+      "line": 1422,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RESELLERS_LINK",
+    "description": "Part of sentence TR_DID_YOU_PURCHASE. Link to page with trusted resellers list",
+    "defaultMessage": "a trusted reseller",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1423,
+      "column": 23
+    },
+    "end": {
+      "line": 1428,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RETRY",
+    "description": "Retry button",
+    "defaultMessage": "Retry",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1429,
+      "column": 14
+    },
+    "end": {
+      "line": 1433,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RETRYING_DOT_DOT",
+    "defaultMessage": "Retrying...",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1434,
+      "column": 25
+    },
+    "end": {
+      "line": 1437,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SCAN_QR_CODE",
+    "description": "Title for the Scan QR modal dialog",
+    "defaultMessage": "Scan QR code",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1438,
+      "column": 21
+    },
+    "end": {
+      "line": 1442,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SECURITY_HEADING",
+    "description": "Heading in security page",
+    "defaultMessage": "Trezor successfully initialized!",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1443,
+      "column": 25
+    },
+    "end": {
+      "line": 1447,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SECURITY_SUBHEADING",
+    "description": "Text in security page",
+    "defaultMessage": "Your Trezor has been successfully initialized and is ready to be used. Your Wallet has been successfully created and is ready to be used as well. Wheeee!",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1448,
+      "column": 28
+    },
+    "end": {
+      "line": 1453,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SEED_MANUAL_LINK",
+    "description": "Link. Part of TR_BACKUP_SUBHEADING_1",
+    "defaultMessage": "recovery seed",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1454,
+      "column": 25
+    },
+    "end": {
+      "line": 1458,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SELECT_DEVICE",
+    "defaultMessage": "Select device",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1459,
+      "column": 22
+    },
+    "end": {
+      "line": 1462,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SELECT_PASSPHRASE_SOURCE",
+    "defaultMessage": "Select passphrase source on \"{deviceLabel}\" device.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1463,
+      "column": 33
+    },
+    "end": {
+      "line": 1466,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SELECT_WALLET_TO_ACCESS",
+    "defaultMessage": "Select a wallet to access",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1467,
+      "column": 32
+    },
+    "end": {
+      "line": 1470,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SELECT_YOUR_DEVICE_HEADING",
+    "description": "Heading on select your device page",
+    "defaultMessage": "Select your device",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1471,
+      "column": 35
+    },
+    "end": {
+      "line": 1475,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SEND",
+    "defaultMessage": "Send {amount}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1476,
+      "column": 13
+    },
+    "end": {
+      "line": 1479,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SEND_NETWORK",
+    "defaultMessage": "Send {network}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1480,
+      "column": 21
+    },
+    "end": {
+      "line": 1483,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SEND_NETWORK_AND_TOKENS",
+    "defaultMessage": "Send {network} and tokens",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1484,
+      "column": 32
+    },
+    "end": {
+      "line": 1487,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SENT_TO_SELF",
+    "defaultMessage": "(Sent to self)",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1488,
+      "column": 21
+    },
+    "end": {
+      "line": 1491,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SET_PIN",
+    "description": "Button text",
+    "defaultMessage": "Set pin",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1497,
+      "column": 16
+    },
+    "end": {
+      "line": 1501,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SET_UP_NEW_PIN",
+    "defaultMessage": "Set up new PIN",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1502,
+      "column": 23
+    },
+    "end": {
+      "line": 1505,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SET_UP_STRONG_PIN_TO_PROTECT",
+    "defaultMessage": "Set up a strong PIN to protect your device from unauthorized access. The keypad layout is displayed on your connected Trezor device.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1506,
+      "column": 37
+    },
+    "end": {
+      "line": 1510,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SETTINGS",
+    "defaultMessage": "Settings",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1511,
+      "column": 17
+    },
+    "end": {
+      "line": 1514,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SHOW_ADDRESS_I_WILL_TAKE_THE_RISK",
+    "defaultMessage": "Show address, I will take the risk",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1515,
+      "column": 42
+    },
+    "end": {
+      "line": 1518,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SHOW_ADVANCED_OPTIONS",
+    "description": "Shows advanced sending form",
+    "defaultMessage": "Show advanced options",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1519,
+      "column": 30
+    },
+    "end": {
+      "line": 1523,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SHOW_DETAILS",
+    "defaultMessage": "Show details",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1524,
+      "column": 21
+    },
+    "end": {
+      "line": 1527,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SHOW_DETAILS_IN_BLOCK_EXPLORER",
+    "defaultMessage": "Show details in Block Explorer",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1528,
+      "column": 39
+    },
+    "end": {
+      "line": 1531,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SHOW_OLDER_NEWS",
+    "defaultMessage": "Show older news",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1532,
+      "column": 24
+    },
+    "end": {
+      "line": 1535,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SHOW_ON_TREZOR",
+    "defaultMessage": "Show on Trezor",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1536,
+      "column": 23
+    },
+    "end": {
+      "line": 1539,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SHOW_UNVERIFIED_ADDRESS",
+    "defaultMessage": "Show unverified address",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1540,
+      "column": 32
+    },
+    "end": {
+      "line": 1543,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SIGN",
+    "description": "Sign button in Sign and Verify form",
+    "defaultMessage": "Sign",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1544,
+      "column": 13
+    },
+    "end": {
+      "line": 1548,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SIGN_MESSAGE",
+    "description": "Header for the Sign and Verify form",
+    "defaultMessage": "Sign Message",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1549,
+      "column": 21
+    },
+    "end": {
+      "line": 1553,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SIGNATURE",
+    "description": "Used as a label for signature input field in Sign and Verify form",
+    "defaultMessage": "Signature",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1559,
+      "column": 18
+    },
+    "end": {
+      "line": 1563,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SKIP",
+    "description": "Button. Skip one step",
+    "defaultMessage": "Skip",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1569,
+      "column": 13
+    },
+    "end": {
+      "line": 1573,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SKIP_ALL",
+    "description": "Button. Skip the entire onboarding process.",
+    "defaultMessage": "Skip onboarding",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1574,
+      "column": 17
+    },
+    "end": {
+      "line": 1578,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SKIP_ONBOARDING_HEADING",
+    "defaultMessage": "Skipping onboarding? One more thing…",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1579,
+      "column": 32
+    },
+    "end": {
+      "line": 1582,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SKIP_ONBOARDING_TEXT",
+    "defaultMessage": "If your device is initialiazed and you used Wallet or Suite before, that’s great! Did you initialize Trezor yourself? You should be the one doing it. If not, it might be dangerous.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1583,
+      "column": 29
+    },
+    "end": {
+      "line": 1587,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SKIP_SECURITY",
+    "description": "Button in security page (skip security setup)",
+    "defaultMessage": "Skip backup and PIN",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1588,
+      "column": 22
+    },
+    "end": {
+      "line": 1592,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SOLVE_ISSUE",
+    "defaultMessage": "Solve issue",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1593,
+      "column": 20
+    },
+    "end": {
+      "line": 1596,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SOUTH",
+    "defaultMessage": "South",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1597,
+      "column": 14
+    },
+    "end": {
+      "line": 1600,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_START_AGAIN",
+    "description": "Button text",
+    "defaultMessage": "Start again",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1601,
+      "column": 20
+    },
+    "end": {
+      "line": 1605,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_START_BACKUP",
+    "description": "Button text",
+    "defaultMessage": "Start backup",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1606,
+      "column": 21
+    },
+    "end": {
+      "line": 1610,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_START_RECOVERY",
+    "description": "Button.",
+    "defaultMessage": "Start recovery",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1611,
+      "column": 23
+    },
+    "end": {
+      "line": 1615,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_STATUS",
+    "defaultMessage": "Status",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1616,
+      "column": 15
+    },
+    "end": {
+      "line": 1619,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_STATUS_UNKNOWN",
+    "description": "Device status",
+    "defaultMessage": "Status unknown",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1620,
+      "column": 23
+    },
+    "end": {
+      "line": 1624,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_STELLAR_WALLET",
+    "defaultMessage": "Stellar wallet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1625,
+      "column": 23
+    },
+    "end": {
+      "line": 1628,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SUITE_VERSION",
+    "defaultMessage": "Suite version",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1629,
+      "column": 22
+    },
+    "end": {
+      "line": 1632,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SUPPORT",
+    "defaultMessage": "Support",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1633,
+      "column": 16
+    },
+    "end": {
+      "line": 1636,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SWITCH_DEVICE",
+    "defaultMessage": "Switch Device",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1637,
+      "column": 22
+    },
+    "end": {
+      "line": 1640,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TAKE_ME_BACK_TO_WALLET",
+    "defaultMessage": "Take me back to the wallet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1641,
+      "column": 31
+    },
+    "end": {
+      "line": 1644,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TESTNET_COINS",
+    "defaultMessage": "Testnet coins",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1645,
+      "column": 22
+    },
+    "end": {
+      "line": 1648,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TESTNET_COINS_EXPLAINED",
+    "defaultMessage": "Testnet coins dont have any value but you still may use them to learn and experiment.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1649,
+      "column": 32
+    },
+    "end": {
+      "line": 1653,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TEZOS_WALLET",
+    "defaultMessage": "Tezos wallet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1654,
+      "column": 21
+    },
+    "end": {
+      "line": 1657,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_THE_PIN_LAYOUT_IS_DISPLAYED",
+    "defaultMessage": "The PIN layout is displayed on your Trezor.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1658,
+      "column": 36
+    },
+    "end": {
+      "line": 1661,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_THIS_HIDDEN_WALLET_IS_EMPTY",
+    "defaultMessage": "This hidden Wallet is empty. To make sure you are in the correct Wallet, confirm Passphrase",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1662,
+      "column": 36
+    },
+    "end": {
+      "line": 1666,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE",
+    "defaultMessage": "This hidden Wallet is empty. To make sure you are in the correct Wallet, select Passphrase source.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1667,
+      "column": 43
+    },
+    "end": {
+      "line": 1671,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_THIS_IS_PLACE_TO_SEE_ALL",
+    "defaultMessage": "This is a place to see all your devices. You can further set them up in Settings but here you can switch between devices and see their statuses.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1672,
+      "column": 33
+    },
+    "end": {
+      "line": 1676,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TO_ACCESS_STANDARD_NO_PASSPHRASE",
+    "defaultMessage": "To access standard (no-passphrase) Wallet click the button below.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1677,
+      "column": 41
+    },
+    "end": {
+      "line": 1680,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TO_FIND_YOUR_ACCOUNTS_AND",
+    "defaultMessage": "To find your accounts and funds we need to perform a coin discovery which will discover all your coins.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1681,
+      "column": 34
+    },
+    "end": {
+      "line": 1685,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TO_PREVENT_PHISHING_ATTACKS_COMMA",
+    "defaultMessage": "To prevent phishing attacks, you should verify the address on your Trezor first. {claim}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1686,
+      "column": 42
+    },
+    "end": {
+      "line": 1690,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_HELP_TREZOR_SUITE_TEXT",
+    "defaultMessage": "Oh, by the way, we had to pay a hell lot of money to our lawyers to create some {TR_TOS_LINK}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1691,
+      "column": 24
+    },
+    "end": {
+      "line": 1695,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TOS_LINK",
+    "defaultMessage": "Terms & Conditions.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1696,
+      "column": 17
+    },
+    "end": {
+      "line": 1699,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TOTAL_INPUT",
+    "defaultMessage": "Total Input",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1700,
+      "column": 20
+    },
+    "end": {
+      "line": 1703,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TOTAL_OUTPUT",
+    "defaultMessage": "Total Output",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1704,
+      "column": 21
+    },
+    "end": {
+      "line": 1707,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TOTAL_PORTFOLIO_VALUE",
+    "defaultMessage": "Total portfolio value",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1708,
+      "column": 30
+    },
+    "end": {
+      "line": 1711,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TRANSACTION_DETAILS",
+    "defaultMessage": "Transaction details",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1712,
+      "column": 28
+    },
+    "end": {
+      "line": 1715,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TRANSACTION_ID",
+    "defaultMessage": "Transaction ID",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1716,
+      "column": 23
+    },
+    "end": {
+      "line": 1719,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TREZOR",
+    "description": "Link in header navigation",
+    "defaultMessage": "Trezor",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1720,
+      "column": 15
+    },
+    "end": {
+      "line": 1724,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TREZOR_BRIDGE_IS_NOT_RUNNING",
+    "defaultMessage": "Trezor Bridge is not running",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1725,
+      "column": 37
+    },
+    "end": {
+      "line": 1729,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TREZOR_BRIDGE_IS_RUNNING_VERSION",
+    "defaultMessage": "Trezor Bridge is running. Version: {version}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1730,
+      "column": 41
+    },
+    "end": {
+      "line": 1734,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TRY_AGAIN",
+    "description": "Try to run the process again",
+    "defaultMessage": "Try again",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1735,
+      "column": 18
+    },
+    "end": {
+      "line": 1739,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TX_CONFIRMATIONS",
+    "defaultMessage": "{confirmationsCount} {confirmationsCount, plural, one {confirmation} other {confirmations}}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1740,
+      "column": 25
+    },
+    "end": {
+      "line": 1744,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TX_CURRENT_VALUE",
+    "defaultMessage": "Current Value",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1745,
+      "column": 25
+    },
+    "end": {
+      "line": 1748,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TX_FEE",
+    "defaultMessage": "Fee",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1749,
+      "column": 15
+    },
+    "end": {
+      "line": 1752,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TX_HISTORICAL_VALUE_DATE",
+    "defaultMessage": "Historical Value ({date})",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1753,
+      "column": 33
+    },
+    "end": {
+      "line": 1756,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TX_TYPE",
+    "defaultMessage": "Type",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1757,
+      "column": 16
+    },
+    "end": {
+      "line": 1760,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_UNAVAILABLE",
+    "description": "Device status",
+    "defaultMessage": "Unavailable",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1761,
+      "column": 20
+    },
+    "end": {
+      "line": 1765,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_UNCONFIRMED_TX",
+    "defaultMessage": "Unconfirmed",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1766,
+      "column": 23
+    },
+    "end": {
+      "line": 1769,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_UNDISCOVERED_WALLET",
+    "defaultMessage": "Undiscovered wallet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1770,
+      "column": 28
+    },
+    "end": {
+      "line": 1773,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_UNKNOWN",
+    "defaultMessage": "Unknown",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1774,
+      "column": 16
+    },
+    "end": {
+      "line": 1777,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_UNKNOWN_CONFIRMATION_TIME",
+    "defaultMessage": "unknown",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1778,
+      "column": 34
+    },
+    "end": {
+      "line": 1781,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_UNKNOWN_TRANSACTION",
+    "defaultMessage": "(Unknown transaction)",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1782,
+      "column": 28
+    },
+    "end": {
+      "line": 1785,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_UNKOWN_ERROR_SEE_CONSOLE",
+    "defaultMessage": "Unknown error. See console logs for details.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1786,
+      "column": 33
+    },
+    "end": {
+      "line": 1789,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_UNLOCK",
+    "defaultMessage": "Unlock",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1790,
+      "column": 15
+    },
+    "end": {
+      "line": 1793,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_UNREADABLE",
+    "description": "Device status",
+    "defaultMessage": "Unreadable",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1794,
+      "column": 19
+    },
+    "end": {
+      "line": 1798,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_UNVERIFIED_ADDRESS_COMMA_CONNECT",
+    "defaultMessage": "Unverified address, connect your Trezor to verify it",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1799,
+      "column": 41
+    },
+    "end": {
+      "line": 1802,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_UNVERIFIED_ADDRESS_COMMA_SHOW",
+    "defaultMessage": "Unverified address, show on Trezor.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1803,
+      "column": 38
+    },
+    "end": {
+      "line": 1806,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_UPLOAD_IMAGE",
+    "defaultMessage": "Upload Image",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1807,
+      "column": 21
+    },
+    "end": {
+      "line": 1810,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_USED_IN_ANOTHER_WINDOW",
+    "description": "Device status",
+    "defaultMessage": "Used in other window",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1811,
+      "column": 31
+    },
+    "end": {
+      "line": 1815,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE",
+    "description": "Option to click when troubleshooting initialized device.",
+    "defaultMessage": "It is a brand new device, just unpacked",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1816,
+      "column": 45
+    },
+    "end": {
+      "line": 1820,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_USER_HAS_NOT_WORKED_WITH_THIS_DEVICE_INSTRUCTIONS",
+    "description": "What to do if device is already initialized but not by user.",
+    "defaultMessage": "In that case you should immediately contact Trezor support with detailed information on your purchase and refrain from using this device.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1821,
+      "column": 58
+    },
+    "end": {
+      "line": 1826,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_USER_HAS_WORKED_WITH_THIS_DEVICE",
+    "description": "Option to click when troubleshooting initialized device.",
+    "defaultMessage": "I have worked with it before",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1827,
+      "column": 41
+    },
+    "end": {
+      "line": 1831,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_VALUES",
+    "defaultMessage": "Values",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1832,
+      "column": 15
+    },
+    "end": {
+      "line": 1835,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_VERIFY",
+    "description": "Verify button in Sign and Verify form",
+    "defaultMessage": "Verify",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1836,
+      "column": 15
+    },
+    "end": {
+      "line": 1840,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_VERIFY_MESSAGE",
+    "description": "Header for the Sign and Verify form",
+    "defaultMessage": "Verify Message",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1841,
+      "column": 23
+    },
+    "end": {
+      "line": 1845,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_VERSION_IS_LOADING",
+    "defaultMessage": "Version is loading",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1859,
+      "column": 27
+    },
+    "end": {
+      "line": 1862,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WAIT_FOR_FILE_TO_DOWNLOAD",
+    "description": "Instruction for installing Trezor Bridge",
+    "defaultMessage": "Wait for file to download",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1863,
+      "column": 34
+    },
+    "end": {
+      "line": 1867,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WAIT_FOR_REBOOT",
+    "description": "Info what is happening with users device.",
+    "defaultMessage": "Wait for your device to reboot",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1868,
+      "column": 24
+    },
+    "end": {
+      "line": 1872,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WALLET",
+    "description": "Category in Settings",
+    "defaultMessage": "Wallet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1873,
+      "column": 15
+    },
+    "end": {
+      "line": 1877,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WALLET_DUPLICATE_DESC",
+    "defaultMessage": "The hidden wallet that you are trying to create already exists",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1878,
+      "column": 30
+    },
+    "end": {
+      "line": 1881,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WALLET_DUPLICATE_RETRY",
+    "defaultMessage": "Try again with different passphrase",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1882,
+      "column": 31
+    },
+    "end": {
+      "line": 1885,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WALLET_DUPLICATE_SWITCH",
+    "defaultMessage": "Switch to existing wallet",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1886,
+      "column": 32
+    },
+    "end": {
+      "line": 1889,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WALLET_DUPLICATE_TITLE",
+    "defaultMessage": "Passphrase duplicated",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1890,
+      "column": 31
+    },
+    "end": {
+      "line": 1893,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WAS_USED_IN_ANOTHER_WINDOW",
+    "description": "Device status",
+    "defaultMessage": "Reload session",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1894,
+      "column": 35
+    },
+    "end": {
+      "line": 1898,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WELCOME_MODAL_HEADING",
+    "defaultMessage": "Welcome to Trezor Suite!",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1899,
+      "column": 30
+    },
+    "end": {
+      "line": 1902,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WELCOME_MODAL_TEXT",
+    "defaultMessage": "The one place for all your crypto matters.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1903,
+      "column": 27
+    },
+    "end": {
+      "line": 1906,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WELCOME_TO_TREZOR",
+    "defaultMessage": "First-time user or an ol’ Trezor fella?",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1907,
+      "column": 26
+    },
+    "end": {
+      "line": 1910,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WELCOME_TO_TREZOR_TEXT",
+    "defaultMessage": "Choose your path and let the Trezor Force be with you!.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1911,
+      "column": 31
+    },
+    "end": {
+      "line": 1914,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WEST",
+    "defaultMessage": "West",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1915,
+      "column": 13
+    },
+    "end": {
+      "line": 1918,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WHAT_IS_PASSPHRASE",
+    "defaultMessage": "What is passphrase",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1919,
+      "column": 27
+    },
+    "end": {
+      "line": 1922,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WHAT_TO_DO_NOW",
+    "defaultMessage": "What to do now",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1923,
+      "column": 23
+    },
+    "end": {
+      "line": 1926,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WHATS_NEW",
+    "defaultMessage": "What's new",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1927,
+      "column": 18
+    },
+    "end": {
+      "line": 1930,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WIPING_YOUR_DEVICE",
+    "defaultMessage": "Wiping the device removes all its information. Only wipe your device if you have your device if you have your recovery seed at hand or there are no funds stored on this device.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1931,
+      "column": 27
+    },
+    "end": {
+      "line": 1935,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_WORDS",
+    "description": "Number of words. For example: 12 words",
+    "defaultMessage": "{count} words",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1936,
+      "column": 14
+    },
+    "end": {
+      "line": 1940,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_XRP_DESTINATION_TAG",
+    "defaultMessage": "Destination tag",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1941,
+      "column": 28
+    },
+    "end": {
+      "line": 1944,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_XRP_RESERVE_INFO",
+    "defaultMessage": "Ripple addresses require a minimum balance of {minBalance} XRP to activate and maintain the account. {TR_LEARN_MORE}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1945,
+      "column": 25
+    },
+    "end": {
+      "line": 1949,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_YOU_WERE_DISCONNECTED_DOT",
+    "defaultMessage": "You were disconnected.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1955,
+      "column": 34
+    },
+    "end": {
+      "line": 1958,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_YOUR_CURRENT_FIRMWARE",
+    "defaultMessage": "Your current firmware version is {version}",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1959,
+      "column": 30
+    },
+    "end": {
+      "line": 1962,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_YOUR_CURRENT_VERSION",
+    "defaultMessage": "Your current Suite version is 1.2.0",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1963,
+      "column": 29
+    },
+    "end": {
+      "line": 1966,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_YOUR_TREZOR_IS_NOT_BACKED_UP",
+    "defaultMessage": "Your Trezor is not backed up.",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1967,
+      "column": 37
+    },
+    "end": {
+      "line": 1970,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_YOUR_WALLET_IS_READY_WHAT",
+    "defaultMessage": "Your Wallet is ready. What to do now?",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1971,
+      "column": 34
+    },
+    "end": {
+      "line": 1974,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_MODAL_CONFIRM_TX_TITLE",
+    "defaultMessage": "Confirm transaction",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1975,
+      "column": 31
+    },
+    "end": {
+      "line": 1978,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_MODAL_CONFIRM_TX_BUTTON",
+    "defaultMessage": "Confirm transaction",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1979,
+      "column": 32
+    },
+    "end": {
+      "line": 1982,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_ADDRESS_FROM",
+    "defaultMessage": "From",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1983,
+      "column": 21
+    },
+    "end": {
+      "line": 1986,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_EDIT",
+    "defaultMessage": "Edit",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1987,
+      "column": 13
+    },
+    "end": {
+      "line": 1990,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_GAS_PRICE",
+    "defaultMessage": "Gas price",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1991,
+      "column": 18
+    },
+    "end": {
+      "line": 1994,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SEND_REVIEW_TRANSACTION",
+    "defaultMessage": "Review Transaction",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1995,
+      "column": 32
+    },
+    "end": {
+      "line": 1998,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_TO",
+    "defaultMessage": "To",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 1999,
+      "column": 11
+    },
+    "end": {
+      "line": 2002,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_RECIPIENT_ADDRESS_TOOLTIP",
+    "defaultMessage": "TR_RECIPIENT_ADDRESS_TOOLTIP",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 2003,
+      "column": 34
+    },
+    "end": {
+      "line": 2006,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SEND_DATA_TOOLTIP",
+    "defaultMessage": "TR_SEND_DATA_TOOLTIP",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 2007,
+      "column": 26
+    },
+    "end": {
+      "line": 2010,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SEND_GAS_LIMIT_TOOLTIP",
+    "defaultMessage": "TR_SEND_GAS_LIMIT_TOOLTIP",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 2011,
+      "column": 31
+    },
+    "end": {
+      "line": 2014,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SEND_GAS_PRICE_TOOLTIP",
+    "defaultMessage": "TR_SEND_GAS_PRICE_TOOLTIP",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 2015,
+      "column": 31
+    },
+    "end": {
+      "line": 2018,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_XRP_DESTINATION_TAG_TOOLTIP",
+    "defaultMessage": "TR_XRP_DESTINATION_TAG_TOOLTIP",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 2019,
+      "column": 36
+    },
+    "end": {
+      "line": 2022,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SEND_FEE_TOOLTIP",
+    "defaultMessage": "TR_SEND_FEE_TOOLTIP",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 2023,
+      "column": 25
+    },
+    "end": {
+      "line": 2026,
+      "column": 5
+    }
+  },
+  {
+    "id": "TR_SEND_AMOUNT_TOOLTIP",
+    "defaultMessage": "TR_SEND_AMOUNT_TOOLTIP",
+    "file": "src/support/messages.ts",
+    "start": {
+      "line": 2027,
+      "column": 28
+    },
+    "end": {
+      "line": 2030,
+      "column": 5
+    }
+  }
+]
