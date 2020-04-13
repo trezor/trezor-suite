@@ -175,6 +175,7 @@ const InstallBridge = (props: Props) => {
                             value={target}
                             onChange={setSelectedTarget}
                             options={installers}
+                            maxMenuHeight={160}
                         />
 
                         <Link variant="nostyle" href={`${data.uri}${target.value}`}>
