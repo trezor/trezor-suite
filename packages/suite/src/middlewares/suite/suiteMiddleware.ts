@@ -61,16 +61,6 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             // backend connected, suite is ready to use
             api.dispatch(suiteActions.onSuiteReady());
             break;
-        case BLOCKCHAIN.CONNECT:
-            api.dispatch(blockchainActions.updateFeeInfo(action.payload.coin.shortcut));
-            break;
-        case BLOCKCHAIN.BLOCK:
-            api.dispatch(blockchainActions.updateFeeInfo(action.payload.coin.shortcut));
-            api.dispatch(blockchainActions.onBlockMined(action.payload));
-            break;
-        case BLOCKCHAIN.NOTIFICATION:
-            api.dispatch(blockchainActions.onNotification(action.payload));
-            break;
 
         case DEVICE.CONNECT:
         case DEVICE.CONNECT_UNACQUIRED:
