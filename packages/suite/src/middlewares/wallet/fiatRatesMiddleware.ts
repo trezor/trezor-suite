@@ -1,8 +1,7 @@
 import { MiddlewareAPI } from 'redux';
-import { BLOCKCHAIN } from 'trezor-connect';
 import { SETTINGS } from '@suite-config';
 import { SUITE } from '@suite-actions/constants';
-import { ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
+import { BLOCKCHAIN, ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as fiatRatesActions from '@wallet-actions/fiatRatesActions';
 import * as graphActions from '@wallet-actions/graphActions';

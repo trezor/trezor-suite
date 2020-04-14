@@ -1,5 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import TrezorConnect, { DEVICE, BLOCKCHAIN as CONNECT_BLOCKCHAIN } from 'trezor-connect';
+import TrezorConnect, { DEVICE } from 'trezor-connect';
 import { SUITE, STORAGE, ROUTER } from '@suite-actions/constants';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
 import * as routerActions from '@suite-actions/routerActions';
@@ -60,16 +60,6 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             api.dispatch(routerActions.init());
             // backend connected, suite is ready to use
             api.dispatch(suiteActions.onSuiteReady());
-            break;
-        case CONNECT_BLOCKCHAIN.CONNECT:
-            api.dispatch(blockchainActions.updateFeeInfo(action.payload.coin.shortcut));
-            break;
-        case CONNECT_BLOCKCHAIN.BLOCK:
-            api.dispatch(blockchainActions.updateFeeInfo(action.payload.coin.shortcut));
-            api.dispatch(blockchainActions.onBlockMined(action.payload));
-            break;
-        case CONNECT_BLOCKCHAIN.NOTIFICATION:
-            api.dispatch(blockchainActions.onNotification(action.payload));
             break;
 
         case DEVICE.CONNECT:

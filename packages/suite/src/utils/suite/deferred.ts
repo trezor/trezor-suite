@@ -1,30 +1,23 @@
-export interface Deferred<T> {
-    id?: string;
-    promise: Promise<T>;
-    resolve: (t: T) => void;
+export interface Deferred<Response, Data = undefined> {
+    data?: Data;
+    promise: Promise<Response>;
+    resolve: (t: Response) => void;
     reject: (e: Error) => void;
 }
 
-export const createDeferred = <T>(): Deferred<T> => {
-    let localResolve: (t: T) => void = () => {};
+export const createDeferred = <Response = void, Data = undefined>(
+    data?: Data,
+): Deferred<Response, Data> => {
+    let localResolve: (t: Response) => void = () => {};
     let localReject: (e: Error) => void = () => {};
-    // let id: string;
 
-    const promise: Promise<T> = new Promise((resolve, reject) => {
+    const promise: Promise<Response> = new Promise((resolve, reject) => {
         localResolve = resolve;
         localReject = reject;
-        // if (typeof arg === 'function') {clear
-        //     try {
-        //         await arg();
-        //     } catch (error) {
-        //         reject(error);
-        //     }
-        // }
-        // if (typeof arg === 'string') id = arg;
     });
 
     return {
-        id: '1',
+        data,
         resolve: localResolve,
         reject: localReject,
         promise,

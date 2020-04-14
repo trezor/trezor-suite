@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Button, colors } from '@trezor/components';
@@ -8,6 +8,7 @@ import * as blockchainActions from '@wallet-actions/blockchainActions';
 import { AppState, Dispatch } from '@suite-types';
 
 const mapStateToProps = (state: AppState) => ({
+    blockchain: state.wallet.blockchain,
     selectedAccount: state.wallet.selectedAccount,
 });
 
@@ -17,9 +18,25 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-const Disconnected = ({ selectedAccount, reconnect }: Props) => {
-    // TODO: auto reconnection
+const Disconnected = ({ selectedAccount, reconnect, blockchain }: Props) => {
     const [progress, setProgress] = useState(false);
+    const [time, setTime] = useState<number | null>(null);
+    const symbol = selectedAccount.status === 'loaded' ? selectedAccount.network.symbol : undefined;
+    const reconnection =
+        symbol && blockchain[symbol] && blockchain[symbol].reconnection
+            ? blockchain[symbol].reconnection
+            : undefined;
+    const resolveTime = reconnection ? reconnection.time : 0;
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const secToResolve = Math.round((resolveTime - new Date().getTime()) / 1000);
+            setTime(secToResolve);
+        }, 500);
+        return () => {
+            clearInterval(interval);
+        };
+    }, [resolveTime]);
+
     if (selectedAccount.status !== 'loaded') return null;
     const { network } = selectedAccount;
     const click = async () => {
@@ -30,15 +47,22 @@ const Disconnected = ({ selectedAccount, reconnect }: Props) => {
         }
     };
 
+    const isResolving = typeof time === 'number' && time <= 0;
+    const displayTime =
+        time && !isResolving ? (
+            <Translation id="TR_BACKEND_RECONNECTING" values={{ time }} />
+        ) : null;
+
     return (
         <NotificationCard variant="warning">
             <Translation id="TR_BACKEND_DISCONNECTED" />
+            {displayTime}
             <Button
                 variant="tertiary"
                 icon="REFRESH"
                 color={colors.RED_ERROR}
                 onClick={click}
-                isLoading={progress}
+                isLoading={progress || isResolving}
             >
                 <Translation id="TR_BACKEND_CONNECT" />
             </Button>

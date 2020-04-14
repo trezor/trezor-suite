@@ -139,6 +139,7 @@ jest.mock('trezor-connect', () => {
             getAccountInfo,
             cancel: () => {},
         },
+        BLOCKCHAIN: {},
         UI: {
             BUNDLE_PROGRESS: 'progress',
         },

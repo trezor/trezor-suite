@@ -1,6 +1,11 @@
-import TrezorConnect, { BlockchainBlock, BlockchainNotification } from 'trezor-connect';
+import TrezorConnect, {
+    BlockchainBlock,
+    BlockchainNotification,
+    BlockchainError,
+} from 'trezor-connect';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import * as accountActions from '@wallet-actions/accountActions';
+import { getNetwork } from '@wallet-utils/accountUtils';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { State as FeeState } from '@wallet-reducers/feesReducer';
 import { NETWORKS } from '@wallet-config';
@@ -18,11 +23,20 @@ export type BlockchainActions =
           type: typeof BLOCKCHAIN.READY;
       }
     | {
+          type: typeof BLOCKCHAIN.RECONNECT_TIMEOUT_START;
+          payload: {
+              symbol: Network['symbol'];
+              id: ReturnType<typeof setTimeout>;
+              time: number;
+              count: number;
+          };
+      }
+    | {
           type: typeof BLOCKCHAIN.UPDATE_FEE;
           payload: Partial<FeeState>;
       };
 
-export const loadFeeInfo = () => async (dispatch: Dispatch, _getState: GetState) => {
+export const preloadFeeInfo = () => async (dispatch: Dispatch) => {
     // Fetch default fee levels
     const networks = NETWORKS.filter(n => !n.isHidden && !n.accountType);
     const promises = networks.map(network => {
@@ -55,8 +69,7 @@ export const loadFeeInfo = () => async (dispatch: Dispatch, _getState: GetState)
 };
 
 export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getState: GetState) => {
-    const symbolLC = symbol.toLowerCase();
-    const network = NETWORKS.find(n => n.symbol === symbolLC);
+    const network = getNetwork(symbol.toLowerCase());
     if (!network) return;
 
     const blockchainInfo = getState().wallet.blockchain[network.symbol];
@@ -84,8 +97,13 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
     }
 };
 
+// call TrezorConnect.unsubscribe, it doesn't cost anything and should emit BLOCKCHAIN.CONNECT or BLOCKCHAIN.ERROR event
+export const reconnect = (coin: Network['symbol']) => () => {
+    return TrezorConnect.blockchainUnsubscribeFiatRates({ coin });
+};
+
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
-    await dispatch(loadFeeInfo());
+    await dispatch(preloadFeeInfo());
 
     const { accounts } = getState().wallet;
     if (accounts.length <= 0) {
@@ -96,21 +114,14 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         return;
     }
 
-    const sortedAccounts: { [key: string]: Account[] } = {};
+    const coins: Network['symbol'][] = [];
     accounts.forEach(a => {
-        if (!sortedAccounts[a.symbol]) {
-            sortedAccounts[a.symbol] = [];
+        if (!coins.includes(a.symbol)) {
+            coins.push(a.symbol);
         }
-        sortedAccounts[a.symbol].push(a);
     });
 
-    const promises = Object.keys(sortedAccounts).map(coin => {
-        return TrezorConnect.blockchainSubscribe({
-            accounts: sortedAccounts[coin],
-            coin,
-        });
-    });
-
+    const promises = coins.map(coin => dispatch(reconnect(coin)));
     await Promise.all(promises);
 
     // continue suite initialization
@@ -119,12 +130,16 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 };
 
-export const subscribe = () => async (_dispatch: Dispatch, getState: GetState) => {
+export const subscribe = (symbol?: Network['symbol']) => async (
+    _dispatch: Dispatch,
+    getState: GetState,
+) => {
     const { accounts } = getState().wallet;
     if (accounts.length <= 0) return;
 
     const sortedAccounts: { [key: string]: Account[] } = {};
-    accounts.forEach(a => {
+    const accountsToSubscribe = symbol ? accounts.filter(a => a.symbol === symbol) : accounts;
+    accountsToSubscribe.forEach(a => {
         if (!sortedAccounts[a.symbol]) {
             sortedAccounts[a.symbol] = [];
         }
@@ -146,15 +161,16 @@ export const subscribe = () => async (_dispatch: Dispatch, getState: GetState) =
     return Promise.all(promises.flat());
 };
 
-export const reconnect = (symbol: Network['symbol']) => async (
-    _dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const { accounts } = getState().wallet;
-    return TrezorConnect.blockchainSubscribe({
-        accounts: accounts.filter(a => a.symbol === symbol),
-        coin: symbol,
-    });
+export const onConnect = (symbol: string) => async (dispatch: Dispatch, getState: GetState) => {
+    const network = getNetwork(symbol.toLowerCase());
+    if (!network) return;
+    const blockchain = getState().wallet.blockchain[network.symbol];
+    if (blockchain.reconnection) {
+        // reset previous timeout
+        clearTimeout(blockchain.reconnection.id);
+    }
+    await dispatch(subscribe(network.symbol));
+    await dispatch(updateFeeInfo(network.symbol));
 };
 
 export const onBlockMined = (block: BlockchainBlock) => async (
@@ -201,4 +217,39 @@ export const onNotification = (payload: BlockchainNotification) => async (
     if (account.networkType !== 'ripple') {
         dispatch(accountActions.fetchAndUpdateAccount(account));
     }
+};
+
+export const setReconnectionTimeout = (error: BlockchainError) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const network = getNetwork(error.coin.shortcut.toLowerCase());
+    if (!network) return;
+
+    const blockchain = getState().wallet.blockchain[network.symbol];
+    if (blockchain.reconnection) {
+        // reset previous timeout
+        clearTimeout(blockchain.reconnection.id);
+    }
+
+    // there is no need to reconnect since there are no accounts for this network
+    const accounts = getState().wallet.accounts.filter(a => a.symbol === network.symbol);
+    if (!accounts.length) return;
+
+    const count = blockchain.reconnection ? blockchain.reconnection.count : 0;
+    const timeout = Math.min(2500 * count, 20000);
+
+    const id = setTimeout(async () => {
+        await dispatch(reconnect(network.symbol));
+    }, timeout);
+
+    dispatch({
+        type: BLOCKCHAIN.RECONNECT_TIMEOUT_START,
+        payload: {
+            symbol: network.symbol,
+            id,
+            time: new Date().getTime() + timeout,
+            count: count + 1,
+        },
+    });
 };
