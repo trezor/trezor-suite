@@ -14,7 +14,7 @@ const Wrapper = styled.div<{ noPadding?: boolean }>`
     flex: 1;
     flex-direction: column;
     padding: 0px 32px 32px 32px;
-    padding-top: ${props => (props.noPadding ? '8px' : '16px')};
+    padding-top: 10px;
     max-width: ${MAX_WIDTH};
     height: 100%;
 `;

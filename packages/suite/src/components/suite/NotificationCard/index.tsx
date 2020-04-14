@@ -45,6 +45,7 @@ const Wrapper = styled(Card)<{ variant: Props['variant'] }>`
     color: ${props => getTextColor(props.variant)};
     margin: 8px 32px;
     padding: 16px;
+    align-items: center;
 `;
 
 const IconWrapper = styled.div`
@@ -54,6 +55,7 @@ const IconWrapper = styled.div`
 const Body = styled.div`
     display: flex;
     justify-content: space-between;
+    align-items: center;
     width: 100%;
 `;
 
