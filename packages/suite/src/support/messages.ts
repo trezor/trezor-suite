@@ -2267,6 +2267,10 @@ const definedMessages = defineMessages({
         id: 'TR_LIVE',
         defaultMessage: 'Live',
     },
+    TR_TRANSACTIONS: {
+        id: 'TR_TRANSACTIONS',
+        defaultMessage: 'Transactions',
+    },
     TR_NUMBER_OF_TRANSACTIONS: {
         id: 'TR_NUMBER_OF_TRANSACTIONS',
         defaultMessage: 'Number of transactions',

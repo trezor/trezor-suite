@@ -1,22 +1,21 @@
-import React from 'react';
-import styled, { keyframes } from 'styled-components';
-import { colors, variables, CoinLogo, Tooltip, Icon } from '@trezor/components';
 import {
-    HiddenPlaceholder,
-    Card,
     Badge,
-    FormattedNumber,
-    NoRatesTooltip,
+    Card,
     FiatValue,
+    FormattedNumber,
+    HiddenPlaceholder,
+    NoRatesTooltip,
+    Translation,
 } from '@suite-components';
-import { AppState } from '@suite/types/suite';
-import { getAccountFiatBalance, getTitleForNetwork, isTestnet } from '@wallet-utils/accountUtils';
-import { Account } from '@wallet-types';
-import { Translation } from '@suite-components/Translation';
-import { connect } from 'react-redux';
-import { differenceInMinutes } from 'date-fns';
-import { FormattedRelativeTime } from 'react-intl';
 import messages from '@suite/support/messages';
+import { CoinLogo, colors, Icon, Tooltip, variables } from '@trezor/components';
+import { getAccountFiatBalance, getTitleForNetwork, isTestnet } from '@wallet-utils/accountUtils';
+import { differenceInMinutes } from 'date-fns';
+import React from 'react';
+import { FormattedRelativeTime } from 'react-intl';
+import styled, { keyframes } from 'styled-components';
+
+import { Props } from './Container';
 
 const Wrapper = styled(Card)`
     width: 100%;
@@ -114,23 +113,23 @@ const StyledIcon = styled(Icon)`
     cursor: pointer;
 `;
 
-interface OwnProps {
-    account: Account;
-}
+export default ({ settings, selectedAccount, fiat }: Props) => {
+    const { localCurrency } = settings;
+    if (selectedAccount.status !== 'loaded') return null;
 
-const PricePanel = (props: Props) => {
-    const { localCurrency } = props.settings;
-    const fiatBalance = getAccountFiatBalance(props.account, localCurrency, props.fiat);
+    const { account } = selectedAccount;
+    const { symbol, formattedBalance } = account;
+    const fiatBalance = getAccountFiatBalance(account, localCurrency, fiat);
     const MAX_AGE = 5; // after 5 minutes the ticker will show tooltip with info about last update instead of blinking LIVE text
     const rateAge = (timestamp: number) => differenceInMinutes(new Date(), new Date(timestamp));
 
     return (
-        <Wrapper>
+        <Wrapper title={<Translation id="TR_TRANSACTIONS" />}>
             <Col>
-                <CoinLogo size={24} symbol={props.account.symbol} />
+                <CoinLogo size={24} symbol={symbol} />
                 <HiddenPlaceholder intensity={7}>
                     <Balance>
-                        {props.account.formattedBalance} {props.account.symbol.toUpperCase()}
+                        {formattedBalance} {symbol.toUpperCase()}
                     </Balance>
                 </HiddenPlaceholder>
                 {fiatBalance && (
@@ -141,15 +140,15 @@ const PricePanel = (props: Props) => {
                     </HiddenPlaceholder>
                 )}
             </Col>
-            {!isTestnet(props.account.symbol) && (
+            {!isTestnet(symbol) && (
                 <Col>
                     <Ticker>
                         <Row>
                             <TickerTitle>
-                                <Translation {...getTitleForNetwork(props.account.symbol)} /> price
-                                ({props.account.symbol.toUpperCase()})
+                                <Translation {...getTitleForNetwork(symbol)} /> price (
+                                {symbol.toUpperCase()})
                             </TickerTitle>
-                            <FiatValue amount="1" symbol={props.account.symbol}>
+                            <FiatValue amount="1" symbol={symbol}>
                                 {({ value, timestamp }) =>
                                     value && timestamp ? (
                                         <>
@@ -187,7 +186,7 @@ const PricePanel = (props: Props) => {
                                                     />
                                                 </Tooltip>
                                             ) : (
-                                                <LiveWrapper key={props.account.symbol}>
+                                                <LiveWrapper key={symbol}>
                                                     <Dot />
                                                     <Live>
                                                         <Translation {...messages.TR_LIVE} />
@@ -200,7 +199,7 @@ const PricePanel = (props: Props) => {
                             </FiatValue>
                         </Row>
                         <TickerPrice>
-                            <FiatValue amount="1" symbol={props.account.symbol}>
+                            <FiatValue amount="1" symbol={symbol}>
                                 {({ value }) => value ?? <NoRatesTooltip />}
                             </FiatValue>
                         </TickerPrice>
@@ -210,16 +209,3 @@ const PricePanel = (props: Props) => {
         </Wrapper>
     );
 };
-
-const mapStateToProps = (state: AppState) => ({
-    settings: state.wallet.settings,
-    fiat: state.wallet.fiat,
-});
-
-const mapDispatchToProps = () => ({});
-
-export type Props = ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps> &
-    OwnProps;
-
-export default connect(mapStateToProps, mapDispatchToProps)(PricePanel);

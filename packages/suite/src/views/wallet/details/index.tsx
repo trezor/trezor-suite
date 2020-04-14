@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H2, P } from '@trezor/components';
+import { P } from '@trezor/components';
 import { WalletLayout } from '@wallet-components';
 import { SUITE } from '@suite-actions/constants';
 import { Props } from './Container';
@@ -28,7 +28,6 @@ const AccountTypeLabel = styled.div`
 `;
 
 const StyledCard = styled(Card)`
-    margin-top: 16px;
     padding: 20px;
 `;
 
@@ -63,10 +62,7 @@ export default ({ selectedAccount, locks, device, openModal }: Props) => {
 
     return (
         <WalletLayout title="Account details" account={selectedAccount}>
-            <H2>
-                <Translation id="TR_ACCOUNT_DETAILS_HEADER" />
-            </H2>
-            <StyledCard>
+            <StyledCard title={<Translation id="TR_ACCOUNT_DETAILS_HEADER" />}>
                 <Section>
                     <StyledRow>
                         <TextColumn

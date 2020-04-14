@@ -55,6 +55,7 @@ const FreshAddress = ({
     locked,
     intl,
 }: Props & WrappedComponentProps) => {
+    const { symbol } = account;
     const isBitcoin = account.networkType === 'bitcoin';
     const unused = account.addresses
         ? account.addresses.unused
@@ -79,7 +80,7 @@ const FreshAddress = ({
             : undefined;
 
     return (
-        <StyledCard>
+        <StyledCard title={<Translation id="RECEIVE_TITLE" values={{ symbol }} />}>
             {addressPath && <AddressPath>{addressPath}</AddressPath>}
             <AddressContainer>
                 <AddressLabel>

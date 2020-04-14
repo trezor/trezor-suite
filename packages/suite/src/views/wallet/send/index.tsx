@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { WalletLayout } from '@wallet-components';
-import { Card } from '@suite-components';
+import { Card, Translation } from '@suite-components';
 import { Output } from '@wallet-types/sendForm';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
@@ -68,11 +68,18 @@ export default ({
         return <WalletLayout title="Send" account={selectedAccount} />;
     }
 
-    const { network } = selectedAccount;
+    const { network, account } = selectedAccount;
 
     return (
         <WalletLayout title="Send" account={selectedAccount}>
-            <StyledCard>
+            <StyledCard
+                title={
+                    <Translation
+                        id="SEND_TITLE"
+                        values={{ symbol: account.symbol.toUpperCase() }}
+                    />
+                }
+            >
                 <Clear />
                 {send.outputs.map((output: Output) => (
                     <OutputWrapper key={output.id}>
