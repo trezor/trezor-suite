@@ -98,7 +98,7 @@ const getDate = (date: string) => {
     return format(dateObj, 'MMM d');
 };
 
-export default React.memo(({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
+export default ({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
     const [visibleCount, incrementVisibleCount] = useState(3);
     const { posts, isError, fetchCount, incrementFetchCount } = useFetchNews();
 
@@ -147,4 +147,4 @@ export default React.memo(({ ...rest }: React.HTMLAttributes<HTMLDivElement>) =>
             )}
         </Section>
     );
-});
+};
