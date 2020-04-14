@@ -103,10 +103,10 @@ const SecurityFeatures = ({
         ? {
               variant: 'secondary',
               icon: 'PIN',
-              heading: <Translation id="TR_ENABLE_PIN" />,
+              heading: <Translation id="TR_PIN" />,
               description: <Translation id="TR_SET_STRONG_PIN_NUMBER_AGAINST" />,
               cta: {
-                  label: 'Enable',
+                  label: <Translation id="TR_ENABLE_PIN" />,
                   dataTest: 'pin',
                   action: () => {
                       changePin({});
@@ -117,7 +117,7 @@ const SecurityFeatures = ({
         : {
               variant: 'primary',
               icon: 'CHECK',
-              heading: <Translation id="TR_DEVICE_PROTECTED_BY_PIN!" />,
+              heading: <Translation id="TR_DEVICE_PIN_PROTECTION_ENABLED" />,
               cta: {
                   label: <Translation id="TR_CHANGE_PIN_IN_SETTINGS" />,
                   dataTest: 'pin-link',

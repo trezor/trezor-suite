@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { AppState } from '@suite-types';
 import messages from '@suite/support/messages';
 
+// TODO: removes polyfills as we are not gonna support these browsers anyway
 // polyfill for Intl.PluralRules (e.g IE11 & Safari 12-)
 if (!Intl.PluralRules) {
     require('@formatjs/intl-pluralrules/polyfill');

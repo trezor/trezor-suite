@@ -164,9 +164,11 @@ const Passphrase = (props: Props) => {
                         onSubmit={onSubmit}
                     />
                     <PassphraseTypeCard
-                        title={<Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />}
-                        description={<Translation id="TR_ENTER_EXISTING_PASSPHRASE" />}
-                        submitLabel={<Translation id="TR_ACCESS_HIDDEN_WALLET" />}
+                        title={<Translation id="TR_WALLET_SELECTION_HIDDEN_WALLET" />}
+                        description={
+                            <Translation id="TR_WALLET_SELECTION_ENTER_EXISTING_PASSPHRASE" />
+                        }
+                        submitLabel={<Translation id="TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET" />}
                         colorVariant="secondary"
                         offerPassphraseOnDevice={onDeviceOffer}
                         showPassphraseInput

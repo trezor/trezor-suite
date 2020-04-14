@@ -34,6 +34,19 @@ const definedMessages = defineMessages({
         defaultMessage: 'Access Hidden Wallet',
         id: 'TR_ACCESS_HIDDEN_WALLET',
     },
+    TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET: {
+        defaultMessage: 'Access Hidden Wallet',
+        id: 'TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET',
+    },
+    TR_WALLET_SELECTION_HIDDEN_WALLET: {
+        defaultMessage: 'Passphrase (hidden) wallet',
+        id: 'TR_WALLET_SELECTION_HIDDEN_WALLET',
+    },
+    TR_WALLET_SELECTION_ENTER_EXISTING_PASSPHRASE: {
+        defaultMessage:
+            'Enter existing passphrase to access existing hidden Wallet. Or enter new passphrase to create a new hidden Wallet.',
+        id: 'TR_WALLET_SELECTION_ENTER_EXISTING_PASSPHRASE',
+    },
     TR_ACCESS_STANDARD_WALLET: {
         defaultMessage: 'Access standard Wallet',
         id: 'TR_ACCESS_STANDARD_WALLET',
@@ -2658,6 +2671,10 @@ const definedMessages = defineMessages({
         id: 'TR_CHECK_SEED_IN_SETTINGS',
         defaultMessage: 'Check seed in Settings',
     },
+    TR_PIN: {
+        id: 'TR_PIN',
+        defaultMessage: 'PIN',
+    },
     TR_ENABLE_PIN: {
         id: 'TR_ENABLE_PIN',
         defaultMessage: 'Enable PIN',
@@ -2670,9 +2687,9 @@ const definedMessages = defineMessages({
         id: 'TR_CHANGE_PIN_IN_SETTINGS',
         defaultMessage: 'Change PIN in Settings',
     },
-    'TR_DEVICE_PROTECTED_BY_PIN!': {
-        id: 'TR_DEVICE_PROTECTED_BY_PIN!',
-        defaultMessage: 'Device protected by PIN!',
+    TR_DEVICE_PIN_PROTECTION_ENABLED: {
+        id: 'TR_DEVICE_PIN_PROTECTION_ENABLED',
+        defaultMessage: 'Trezor PIN-protected',
     },
     TR_ENABLE_PASSPHRASE_DESCRIPTION: {
         id: 'TR_ENABLE_PASSPHRASE_DESCRIPTION',
@@ -3003,6 +3020,10 @@ const definedMessages = defineMessages({
         id: 'TR_DEVICE_IN_BOOTLOADER_EXPLAINED',
         defaultMessage:
             'In bootloader mode, device is ready to receive firmware updates but it also means that nothing else might be done with it. To get back into normal mode simply reconnect it.',
+    },
+    TR_BACK_TO_ONBOARDING: {
+        id: 'TR_BACK_TO_ONBOARDING',
+        defaultMessage: 'Back to onboarding',
     },
     TR_LOCALIZATION: {
         id: 'TR_LOCALIZATION',
