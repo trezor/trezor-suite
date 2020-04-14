@@ -1,16 +1,15 @@
+import { QuestionTooltip, Translation } from '@suite-components';
 import Badge from '@suite-components/Badge';
-import { Translation, QuestionTooltip } from '@suite-components';
-
+import { capitalizeFirstLetter } from '@suite-utils/string';
 import { colors, Icon, P, Select, variables } from '@trezor/components';
 import { Account } from '@wallet-types';
-import { fromWei, toWei } from 'web3-utils';
 import { FeeLevel } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { capitalizeFirstLetter } from '@suite-utils/string';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { calculateEthFee } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import styled from 'styled-components';
+import { fromWei, toWei } from 'web3-utils';
 
 import CustomFee from './components/CustomFee/Container';
 import { Props } from './Container';
@@ -146,12 +145,14 @@ export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
                         </Text>
                         <QuestionTooltip messageId="TR_SEND_FEE_TOOLTIP" />
                     </Label>
-                    <Refresh>
-                        <StyledIcon icon="REFRESH" color={colors.BLACK50} size={10} />
-                        <RefreshText>
-                            <Translation id="REFRESH" />
-                        </RefreshText>
-                    </Refresh>
+                    {networkType === 'ethereum' && (
+                        <Refresh>
+                            <StyledIcon icon="REFRESH" color={colors.BLACK50} size={10} />
+                            <RefreshText>
+                                <Translation id="REFRESH" />
+                            </RefreshText>
+                        </Refresh>
+                    )}
                 </Top>
                 <StyledSelect
                     variant="small"

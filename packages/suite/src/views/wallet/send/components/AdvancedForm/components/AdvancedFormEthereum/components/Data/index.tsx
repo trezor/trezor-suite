@@ -1,11 +1,11 @@
-import { Translation, QuestionTooltip } from '@suite-components';
-
-import styled from 'styled-components';
+import { QuestionTooltip, Translation } from '@suite-components';
 import { Textarea } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Send } from '@wallet-types';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
+import styled from 'styled-components';
+
 import { Props } from './Container';
 
 const Label = styled.div`
