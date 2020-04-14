@@ -63,7 +63,7 @@
 	"TR_BACKUP": "Backup",
 	"TR_BACKUP_FAILED": "Backup failed and your Wallet is not backed up. You can still use it without any problems but highly recommend you following the link and see how to successfully create a backup.",
 	"TR_BACKUP_FINISHED_BUTTON": "My recovery card is safe",
-	"TR_BACKUP_FINISHED_TEXT": "Backup is now on your recovery seed card. Once again dont lose it and keep it private!",
+	"TR_BACKUP_FINISHED_TEXT": "Backup is now on your recovery seed card. Once again don't lose it and keep it private!",
 	"TR_BACKUP_RECOVERY_SEED": "Backup (Recovery seed)",
 	"TR_BACKUP_SUBHEADING_1": "Backup seed consisting of words is the ultimate key to your Wallet and all the important data. Trezor will generate the seed and you should write it down and store it securely.",
 	"TR_BASIC_RECOVERY": "basic recovery",
@@ -192,6 +192,8 @@
 	"TR_GENERAL": "General",
 	"TR_GO_TO_EXTERNAL_WALLET": "Go to external wallet",
 	"TR_GO_TO_SECURITY": "Continue to backup",
+	"TR_CONTINUE_TO_PIN": "Continue to PIN",
+	"TR_SKIP_PIN": "Skip PIN",
 	"TR_HELP_TREZOR_SUITE": "Help Trezor Suite get better",
 	"TR_HELP_TREZOR_SUITE_TEXT_1": "Help Trezor Suite become a better product by sending us {TR_HELP_TREZOR_SUITE_TEXT_1_FAT}.",
 	"TR_HELP_TREZOR_SUITE_TEXT_1_FAT": "anonymous analytics data.",
@@ -587,7 +589,7 @@
 	"TR_BACKUP_NOW": "Backup now",
 	"TR_BACKUP_SEED_CREATED_SUCCESSFULLY": "Backup seed created successfully!",
 	"TR_CHECK_SEED_IN_SETTINGS": "Check seed in Settings",
-	"TR_PIN": "Pin",
+	"TR_PIN": "PIN",
 	"TR_ENABLE_PIN": "Enable PIN",
 	"TR_SET_STRONG_PIN_NUMBER_AGAINST": "Set strong PIN number against unauthorized access",
 	"TR_CHANGE_PIN_IN_SETTINGS": "Change PIN in Settings",
@@ -656,6 +658,7 @@
 	"TR_DEVICE_NOT_INITIALIZED": "Device not initialized",
 	"TR_DEVICE_NOT_INITIALIZED_TEXT": "You will need to go through initialization process to put your device into work",
 	"TR_GO_TO_ONBOARDING": "Go to onboarding",
+	"TR_GO_TO_FIRMWARE": "Go to firmware",
 	"TR_NO_FIRMWARE": "No firmware",
 	"TR_NO_FIRMWARE_EXPLAINED": "Device has no firmware installed.",
 	"TR_SEEDLESS_MODE": "Seedless mode",
@@ -666,5 +669,7 @@
 	"TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED": "Your device has firmware that is no longer supported. You will need to update it.",
 	"TR_DEVICE_IN_BOOTLOADER": "Device in bootloader",
 	"TR_DEVICE_IN_BOOTLOADER_EXPLAINED": "In bootloader mode, device is ready to receive firmware updates but it also means that nothing else might be done with it. To get back into normal mode simply reconnect it.",
-	"TR_BACK_TO_ONBOARDING": "Back to onboarding"
+	"TR_BACK_TO_ONBOARDING": "Back to onboarding",
+	"TR_LOCALIZATION": "Localization",
+	"TR_APPLICATION": "Application"
 }
