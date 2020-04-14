@@ -1,7 +1,7 @@
 import { SettingsLayout } from '@settings-components';
 import { ExternalLink, Translation } from '@suite-components';
 import { ActionColumn, Row, Section } from '@suite-components/Settings';
-import { H2, P, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { EXTERNAL_NETWORKS, NETWORKS } from '@wallet-config';
 import { Network } from '@wallet-types';
 import React from 'react';
@@ -43,12 +43,13 @@ const Settings = (props: Props) => {
 
     return (
         <SettingsLayout>
-            <H2>
+            {/* disabled for matejs discretion */}
+            {/* <H2>
                 <Translation id="TR_COINS_TO_DISCOVER" />
-            </H2>
-            <P size="tiny">
+            </H2> */}
+            {/* <P size="tiny">
                 <Translation id="TR_COINS_SETTINGS_ALSO_DEFINES" />
-            </P>
+            </P> */}
             <CoinsGroup
                 label={<Translation id="TR_COINS" />}
                 enabledNetworks={enabledMainnetNetworks}
