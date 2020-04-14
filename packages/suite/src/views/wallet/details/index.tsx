@@ -8,7 +8,7 @@ import { Translation, Card } from '@suite-components';
 import messages from '@suite/support/messages';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import { getAccountTypeIntl, getBip43Shortcut } from '@wallet-utils/accountUtils';
-import { Section, ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/Settings';
+import { ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/Settings';
 import {
     WIKI_XPUB_URL,
     WIKI_BECH32_URL,
