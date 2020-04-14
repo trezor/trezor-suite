@@ -52,7 +52,6 @@ const WalletRow = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: ${colors.WHITE};
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${colors.BLACK70};
     font-weight: 500;
@@ -78,7 +77,7 @@ const IconWrapper = styled.div`
     align-items: center;
 `;
 
-const getWalletName = (device: TrezorDevice) => {
+const getWalletName = (device?: TrezorDevice) => {
     if (!device) return null;
     if (device.useEmptyPassphrase) {
         return <Translation id="TR_STANDARD_WALLET" />;
