@@ -27,10 +27,10 @@ const ContentWrapper = styled(Card)`
 
 const GraphWrapper = styled.div`
     display: flex;
-    flex: 1 1 auto;
+    flex: 5 1 auto;
     padding: 20px;
     height: 240px;
-    max-width: 470px; /* workaround to prevent recharts filling all space */
+    max-width: 600px; /* workaround to prevent recharts filling all space */
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
         max-width: 100%;

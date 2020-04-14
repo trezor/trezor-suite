@@ -9,7 +9,7 @@ import LastWeekGraph from '../LastWeekGraph';
 import { CoinBalance } from '@wallet-components';
 
 const Wrapper = styled.div`
-    padding: 12px 20px;
+    padding: 12px 0px;
     display: grid;
     grid-gap: 10px;
     grid-template-columns: minmax(180px, 2fr) repeat(auto-fit, minmax(80px, 1fr));

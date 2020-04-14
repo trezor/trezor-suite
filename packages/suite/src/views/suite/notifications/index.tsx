@@ -7,13 +7,14 @@ import { Translation, Image, Card, LayoutContext } from '@suite-components';
 import hocNotification, { ViewProps } from '@suite-components/hocNotification';
 
 import { Props } from './Container';
+import { MAX_WIDTH } from '@suite-constants/layout';
 
 const Wrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
     padding: 16px;
-    max-width: 1024px;
+    max-width: ${MAX_WIDTH};
 `;
 
 const StyledCard = styled(Card)`

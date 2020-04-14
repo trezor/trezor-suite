@@ -13,8 +13,9 @@ const Section = styled.div`
 `;
 
 const Content = styled.div`
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
 `;
 
 const Header = styled.div`
@@ -131,7 +132,7 @@ const SecurityFeatures = ({
         ? {
               variant: 'secondary',
               icon: 'WALLET_HIDDEN',
-              heading: <Translation id="TR_PASSPHRASE" />,
+              heading: <Translation id="TR_PASSPHRASE_PROTECTION" />,
               description: <Translation id="TR_ENABLE_PASSPHRASE_DESCRIPTION" />,
               cta: {
                   label: <Translation id="TR_ENABLE_PASSPHRASE" />,
