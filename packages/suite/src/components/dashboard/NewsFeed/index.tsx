@@ -45,6 +45,11 @@ const Left = styled.div`
 const Right = styled.div`
     display: flex;
     padding-left: 16px;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding-left: 0;
+    }
+
     flex-direction: column;
 `;
 
