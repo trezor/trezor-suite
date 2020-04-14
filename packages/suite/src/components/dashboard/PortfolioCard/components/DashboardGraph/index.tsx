@@ -72,7 +72,7 @@ const DashboardGraph = (props: Props) => {
     }, [accounts, dataLength, selectedRange, updateGraphData]);
 
     return (
-        <Wrapper>
+        <Wrapper data-test="@dashboard/graph">
             <GraphWrapper>
                 {failedAccounts && failedAccounts.length === accounts.length ? (
                     <ErrorMessage>

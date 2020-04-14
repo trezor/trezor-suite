@@ -10,7 +10,7 @@ describe('Dashboard', () => {
         cy.passThroughInitialRun();
         cy.getTestElement('@suite/loading').should('not.be.visible');
         cy.getTestElement('@dashboard/loading').should('be.visible');
-        cy.getTestElement('@dashboard/wallet-ready').should('be.visible');
+        cy.getTestElement('@dashboard/graph').should('be.visible');
     });
 
     it('Security cards. Backup button should open backup modal', () => {

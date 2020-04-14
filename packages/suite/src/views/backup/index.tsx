@@ -3,20 +3,24 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 
-import { H2, P, Button, ButtonProps, colors } from '@trezor/components';
+import { H2, P, Button, ButtonProps, variables, colors } from '@trezor/components';
 import * as backupActions from '@backup-actions/backupActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { Dispatch, AppState, InjectedModalApplicationProps } from '@suite-types';
-import { ProgressBar, Loading, Image } from '@suite-components';
+import { ProgressBar, Loading, Image, Translation } from '@suite-components';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
 import { canStart, canContinue } from '@backup-utils';
 
 const Wrapper = styled(ModalWrapper)`
-    min-height: 80vh;
-    min-width: 60vw;
-    max-width: 80vw;
+    width: 88vw;
+    min-height: 560px;
     flex-direction: column;
+
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
+        max-width: 680px;
+        min-width: 580px;
+    }
 `;
 
 const Row = styled.div`
@@ -41,6 +45,10 @@ const StyledButton = styled(Button)`
 
 const StyledP = styled(P)`
     color: ${colors.BLACK50};
+`;
+
+const StyledImage = styled(Image)`
+    margin: auto;
 `;
 
 const CloseButton = (props: ButtonProps) => (
@@ -78,8 +86,10 @@ const Backup = (props: Props) => {
     if (!device || !device.features) {
         return (
             <Wrapper data-test="@backup/no-device">
-                <H2>Reconnect your device</H2>
-                <Image image="CONNECT_DEVICE" />
+                <H2>
+                    <Translation id="TR_RECONNECT_HEADER" />
+                </H2>
+                <StyledImage image="CONNECT_DEVICE" />
                 <Buttons>
                     <CloseButton onClick={onClose} />
                 </Buttons>
@@ -93,13 +103,21 @@ const Backup = (props: Props) => {
                 total={backupStatuses.length}
                 current={backupStatuses.findIndex(s => s === backup.status) + 1}
             />
+
+            <H2>
+                {backup.status === 'initial' && <Translation id="TR_CREATE_BACKUP" />}
+                {backup.status === 'finished' && !backup.error && (
+                    <Translation id="TR_BACKUP_CREATED" />
+                )}
+                {backup.status === 'finished' && backup.error && (
+                    <Translation id="TOAST_BACKUP_FAILED" />
+                )}
+            </H2>
+
             {backup.status === 'initial' && (
                 <>
-                    <H2>Create a backup seed</H2>
                     <StyledP size="small">
-                        Backup seed consisting of predefined number of words is the ultimate key to
-                        your crypto assets. Trezor will generate the seed for you and it is in your
-                        best interrest to write it down and store securely.
+                        <Translation id="TR_BACKUP_SUBHEADING_1" />
                     </StyledP>
 
                     <PreBackupCheckboxes />
@@ -110,9 +128,11 @@ const Backup = (props: Props) => {
                                 onClick={() => backupDevice()}
                                 isDisabled={!canStart(backup.userConfirmed, locks)}
                             >
-                                Create backup seed
+                                <Translation id="TR_CREATE_BACKUP" />
                             </StyledButton>
-                            <CloseButton onClick={onClose}>Cancel backup process</CloseButton>
+                            <CloseButton onClick={onClose}>
+                                <Translation id="TR_CANCEL" />
+                            </CloseButton>
                         </Col>
                     </Buttons>
                 </>
@@ -122,9 +142,8 @@ const Backup = (props: Props) => {
 
             {backup.status === 'finished' && !backup.error && (
                 <>
-                    <H2>Backup successfully created!</H2>
                     <StyledP data-test="@backup/success-message">
-                        Great! Now get out there and hide it properly. Here are some DOs and DON’Ts:
+                        <Translation id="TR_BACKUP_FINISHED_TEXT" />
                     </StyledP>
                     <AfterBackupCheckboxes />
                     <Buttons>
@@ -139,9 +158,11 @@ const Backup = (props: Props) => {
                                             changePin({});
                                         }}
                                     >
-                                        Continue to PIN
+                                        <Translation id="TR_CONTINUE_TO_PIN" />
                                     </StyledButton>
-                                    <CloseButton onClick={onClose}>Skip PIN</CloseButton>
+                                    <CloseButton onClick={onClose}>
+                                        <Translation id="TR_SKIP_PIN" />
+                                    </CloseButton>
                                 </>
                             )}
                             {device?.features?.pin_protection && (
@@ -149,7 +170,7 @@ const Backup = (props: Props) => {
                                     isDisabled={!canContinue(backup.userConfirmed)}
                                     onClick={onClose}
                                 >
-                                    Close
+                                    <Translation id="TR_CLOSE" />
                                 </StyledButton>
                             )}
                         </Col>
@@ -158,9 +179,8 @@ const Backup = (props: Props) => {
             )}
             {backup.status === 'finished' && backup.error && (
                 <>
-                    <H2>Backup failed!</H2>
                     <StyledP data-test="@backup/error-message">{backup.error}</StyledP>
-                    <Image image="UNI_ERROR" />
+                    <StyledImage image="UNI_ERROR" />
                     <Buttons>
                         <Col>
                             <CloseButton onClick={onClose} />

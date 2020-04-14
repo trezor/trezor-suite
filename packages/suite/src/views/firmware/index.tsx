@@ -18,11 +18,17 @@ import { CHANGELOG_URL } from '@suite-constants/urls';
 const { FONT_SIZE, FONT_WEIGHT } = variables;
 
 const Wrapper = styled(ModalWrapper)`
-    min-height: 80vh;
-    min-width: 60vw;
-    max-width: 80vw;
-    flex-direction: column;
+    width: 88vw;
+    height: 90vh;
     align-items: center;
+    min-height: 560px;
+    flex-direction: column;
+
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
+        max-width: 680px;
+        min-width: 580px;
+        height: auto;
+    }
 `;
 
 const Row = styled.div`
@@ -113,6 +119,12 @@ const StyledImage = styled(Image)`
     flex: 1;
 `;
 
+const StyledH2 = styled(H2)`
+    ::first-letter {
+        text-transform: capitalize;
+    }
+`;
+
 const CloseButton = (props: ButtonProps) => (
     <StyledButton {...props} data-test="@firmware/close-button" variant="tertiary" icon="CROSS">
         <Translation id="TR_CLOSE" />
@@ -180,7 +192,7 @@ const Firmware = ({
         }
     };
 
-    const getCurrentStep = () => {
+    const getCurrentStepIndex = () => {
         return statesInProgressBar.findIndex(s => {
             if (Array.isArray(s)) {
                 return s.includes(firmware.status);
@@ -193,9 +205,9 @@ const Firmware = ({
     if (firmware.status === 'error') {
         return (
             <Wrapper>
-                <H2>
+                <StyledH2>
                     <Translation id="TR_FIRMWARE_INSTALL_FAILED_HEADER" />
-                </H2>
+                </StyledH2>
                 <StyledP>{firmware.error}</StyledP>
                 <StyledImage image="UNI_ERROR" />
                 <Buttons>
@@ -214,11 +226,11 @@ const Firmware = ({
                     <>
                         <ProgressBar
                             total={statesInProgressBar.length}
-                            current={getCurrentStep()}
+                            current={getCurrentStepIndex() + 1}
                         />
-                        <H2>
+                        <StyledH2>
                             <Translation id="TR_RECONNECT_IN_BOOTLOADER" />
-                        </H2>
+                        </StyledH2>
                         <StyledP data-test="@firmware/connect-message">
                             <Translation id="TR_SWIPE_YOUR_FINGERS" />
                         </StyledP>
@@ -227,9 +239,9 @@ const Firmware = ({
                 )}
                 {firmware.status !== 'waiting-for-bootloader' && (
                     <>
-                        <H2>
+                        <StyledH2>
                             <Translation id="TR_NO_DEVICE" />
-                        </H2>
+                        </StyledH2>
                         <StyledP>
                             <Translation id="TR_NO_DEVICE_CONNECTED" />
                         </StyledP>
@@ -249,9 +261,9 @@ const Firmware = ({
     if (!device.firmwareRelease) {
         return (
             <Wrapper>
-                <H2>
+                <StyledH2>
                     <Translation id="TR_FIRMWARE_IS_UP_TO_DATE" />
-                </H2>
+                </StyledH2>
                 <StyledP>
                     <Translation id="TR_FIRMWARE_INSTALLED_TEXT" />
                 </StyledP>
@@ -279,13 +291,13 @@ const Firmware = ({
 
     return (
         <Wrapper>
-            <ProgressBar total={statesInProgressBar.length} current={getCurrentStep()} />
+            <ProgressBar total={statesInProgressBar.length} current={getCurrentStepIndex() + 1} />
 
             {firmware.status === 'initial' && (
                 <>
-                    <H2>
+                    <StyledH2>
                         <Translation id="TR_FIRMWARE_HEADING" />
-                    </H2>
+                    </StyledH2>
 
                     {/* we can not show changelog if device is in bootloader mode */}
                     {device.mode === 'bootloader' && (
@@ -381,9 +393,9 @@ const Firmware = ({
 
             {firmware.status === 'check-seed' && (
                 <>
-                    <H2>
+                    <StyledH2>
                         <Translation id="TR_SECURITY_CHECKPOINT_GOT_SEED" />
-                    </H2>
+                    </StyledH2>
                     <StyledP>
                         <Translation id="TR_BEFORE_ANY_FURTHER_ACTIONS" />
                     </StyledP>
@@ -406,9 +418,9 @@ const Firmware = ({
                 <>
                     {device && device.mode !== 'bootloader' && (
                         <>
-                            <H2>
+                            <StyledH2>
                                 <Translation id="TR_RECONNECT_IN_BOOTLOADER" />
-                            </H2>
+                            </StyledH2>
                             <StyledP data-test="@firmware/disconnect-message">
                                 <Translation id="TR_DISCONNECT_YOUR_DEVICE" />
                             </StyledP>
@@ -421,9 +433,9 @@ const Firmware = ({
                     )}
                     {device && device.mode === 'bootloader' && (
                         <>
-                            <H2>
+                            <StyledH2>
                                 <Translation id="TR_START" />
-                            </H2>
+                            </StyledH2>
                             <InitImg model={model} />
 
                             <Buttons>
@@ -448,19 +460,19 @@ const Firmware = ({
                 'unplug',
             ].includes(firmware.status) && (
                 <>
-                    <H2>
+                    <StyledH2>
                         <Translation id={getTextForStatus()} />
                         <Loaders.Dots />
-                    </H2>
+                    </StyledH2>
                     <InitImg model={model} />
                 </>
             )}
 
             {firmware.status === 'partially-done' && (
                 <>
-                    <H2>
+                    <StyledH2>
                         <Translation id="TR_FIRMWARE_PARTIALLY_UPDATED" />
-                    </H2>
+                    </StyledH2>
                     <StyledP>
                         <Translation id="TR_BUT_THERE_IS_ANOTHER_UPDATE" />
                     </StyledP>
@@ -480,9 +492,9 @@ const Firmware = ({
             )}
             {firmware.status === 'done' && (
                 <>
-                    <H2>
+                    <StyledH2>
                         <Translation id="TR_SUCCESS" />
-                    </H2>
+                    </StyledH2>
                     <SuccessImg model={model} />
 
                     <Buttons>

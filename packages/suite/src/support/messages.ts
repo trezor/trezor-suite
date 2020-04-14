@@ -284,7 +284,7 @@ const definedMessages = defineMessages({
     },
     TR_BACKUP_FINISHED_TEXT: {
         defaultMessage:
-            'Backup is now on your recovery seed card. Once again dont lose it and keep it private!',
+            "Backup is now on your recovery seed card. Once again don't lose it and keep it private!",
         description: 'Text that appears after backup is finished',
         id: 'TR_BACKUP_FINISHED_TEXT',
     },
@@ -898,6 +898,16 @@ const definedMessages = defineMessages({
         defaultMessage: 'Continue to backup',
         description: 'Button in security page (start security setup)',
         id: 'TR_GO_TO_SECURITY',
+    },
+    TR_CONTINUE_TO_PIN: {
+        defaultMessage: 'Continue to PIN',
+        description:
+            'Button in standalone backup page that will direct user to setting up pin (in case it is not set up yet).',
+        id: 'TR_CONTINUE_TO_PIN',
+    },
+    TR_SKIP_PIN: {
+        defaultMessage: 'Skip PIN',
+        id: 'TR_SKIP_PIN',
     },
     TR_HELP_TREZOR_SUITE: {
         defaultMessage: 'Help Trezor Suite get better',
@@ -2961,6 +2971,10 @@ const definedMessages = defineMessages({
         id: 'TR_GO_TO_ONBOARDING',
         defaultMessage: 'Go to onboarding',
     },
+    TR_GO_TO_FIRMWARE: {
+        id: 'TR_GO_TO_FIRMWARE',
+        defaultMessage: 'Go to firmware',
+    },
     TR_NO_FIRMWARE: {
         id: 'TR_NO_FIRMWARE',
         defaultMessage: 'No firmware',
@@ -3010,6 +3024,16 @@ const definedMessages = defineMessages({
     TR_BACK_TO_ONBOARDING: {
         id: 'TR_BACK_TO_ONBOARDING',
         defaultMessage: 'Back to onboarding',
+    },
+    TR_LOCALIZATION: {
+        id: 'TR_LOCALIZATION',
+        defaultMessage: 'Localization',
+        description: 'Used as language localization (translation of the application)',
+    },
+    TR_APPLICATION: {
+        id: 'TR_APPLICATION',
+        defaultMessage: 'Application',
+        description: 'Computer program.',
     },
 } as const);
 

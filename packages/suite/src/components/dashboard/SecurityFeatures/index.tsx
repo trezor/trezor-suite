@@ -14,6 +14,7 @@ const Section = styled.div`
 
 const Content = styled.div`
     display: flex;
+    justify-content: space-between;
 `;
 
 const Header = styled.div`
