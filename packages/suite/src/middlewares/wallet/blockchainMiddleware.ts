@@ -23,6 +23,8 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         case BLOCKCHAIN.ERROR:
             api.dispatch(blockchainActions.setReconnectionTimeout(action.payload));
             break;
+        default:
+            break;
     }
 
     return action;
