@@ -102,13 +102,16 @@ type Props = {
     recreateWallet?: () => void;
 };
 
+const DOT = '●';
+
 const PassphraseTypeCard = (props: Props) => {
     const { authConfirmation } = props;
     const [enabled, setEnabled] = useState(!authConfirmation);
     const [value, setValue] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const inputType = showPassword ? 'text' : 'password';
+    // const inputType = showPassword ? 'text' : 'password';
     const enterPressed = useKeyPress('Enter');
+    const backspacePressed = useKeyPress('Backspace');
     const ref = createRef<HTMLInputElement>();
     const isTooLong = countBytesInString(value) > MAX_PASSPHRASE_LENGTH;
 
@@ -132,6 +135,34 @@ const PassphraseTypeCard = (props: Props) => {
         }
     }
 
+    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const tmpValue = event.target.value;
+        const newValue = [...value];
+        const len = tmpValue.length;
+        for (let i = 0; i < len; i++) {
+            const char = tmpValue.charAt(i);
+            if (char !== DOT) {
+                newValue[i] = char;
+            }
+        }
+        if (len < newValue.length) {
+            const pos = event.target.selectionStart || 0;
+            const diff = newValue.length - len;
+
+            // Check if last keypress was backspace or delete
+            if (backspacePressed) {
+                newValue.splice(pos, diff);
+            } else {
+                // Highlighted and replaced portion of the passphrase
+                newValue.splice(pos - 1, diff + 1);
+                newValue.splice(pos - 1, 0, tmpValue[pos - 1]);
+            }
+        }
+        setValue(newValue.join(''));
+    };
+
+    const displayValue = !showPassword ? value.replace(/./g, DOT) : value;
+
     return (
         <Col colorVariant={props.colorVariant} singleColModal={props.singleColModal}>
             <WalletTitle>{props.title}</WalletTitle>
@@ -151,11 +182,10 @@ const PassphraseTypeCard = (props: Props) => {
                 {props.showPassphraseInput && (
                     <InputWrapper>
                         <PassphraseInput
-                            data-test="@passhphrase/input"
-                            onChange={event => setValue(event.target.value)}
+                            data-test="@passphrase/input"
                             placeholder="Enter passphrase"
-                            type={inputType}
-                            value={value}
+                            onChange={onChange}
+                            value={displayValue}
                             innerRef={ref}
                             display="block"
                             bottomText={
