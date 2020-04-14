@@ -19,7 +19,7 @@ export const ETH_DEFAULT_GAS_PRICE = '21000';
 export const ETH_DEFAULT_GAS_LIMIT = '1';
 
 // UI
-export const LABEL_HEIGHT = 28;
+export const LABEL_HEIGHT = 30;
 
 // ERC 20
 export const TOKEN_ABI = [
