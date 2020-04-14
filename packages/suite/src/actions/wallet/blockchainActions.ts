@@ -161,9 +161,14 @@ export const subscribe = (symbol?: Network['symbol']) => async (
     return Promise.all(promises.flat());
 };
 
-export const onConnect = (symbol: string) => async (dispatch: Dispatch) => {
+export const onConnect = (symbol: string) => async (dispatch: Dispatch, getState: GetState) => {
     const network = getNetwork(symbol.toLowerCase());
     if (!network) return;
+    const blockchain = getState().wallet.blockchain[network.symbol];
+    if (blockchain.reconnection) {
+        // reset previous timeout
+        clearTimeout(blockchain.reconnection.id);
+    }
     await dispatch(subscribe(network.symbol));
     await dispatch(updateFeeInfo(network.symbol));
 };

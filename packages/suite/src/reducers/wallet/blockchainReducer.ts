@@ -45,12 +45,6 @@ const connect = (draft: BlockchainState, info: BlockchainInfo) => {
     const network = getNetwork(info.coin.shortcut.toLowerCase());
     if (!network) return;
 
-    const { reconnection } = draft[network.symbol];
-    if (reconnection) {
-        clearTimeout(reconnection.id);
-        delete draft[network.symbol].reconnection;
-    }
-
     draft[network.symbol] = {
         url: info.url,
         connected: true,
@@ -59,6 +53,7 @@ const connect = (draft: BlockchainState, info: BlockchainInfo) => {
         version: info.version,
     };
     delete draft[network.symbol].error;
+    delete draft[network.symbol].reconnection;
 };
 
 const error = (draft: BlockchainState, symbol: string, error: string) => {
