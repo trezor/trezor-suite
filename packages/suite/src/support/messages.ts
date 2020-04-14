@@ -3007,6 +3007,10 @@ const definedMessages = defineMessages({
         defaultMessage:
             'In bootloader mode, device is ready to receive firmware updates but it also means that nothing else might be done with it. To get back into normal mode simply reconnect it.',
     },
+    TR_BACK_TO_ONBOARDING: {
+        id: 'TR_BACK_TO_ONBOARDING',
+        defaultMessage: 'Back to onboarding',
+    },
 } as const);
 
 export default definedMessages;

@@ -26,12 +26,12 @@ const SkipStep = ({ closeModalApp, goToNextStep }: Props) => (
                 data-test="@onboarding/skip-button"
                 onClick={() => closeModalApp()}
             >
-                Skip onboarding
+                <Translation id="TR_SKIP_ALL" />
             </OnboardingButton.Cta>
         </Wrapper.Controls>
         <Wrapper.StepFooter>
             <OnboardingButton.Back onClick={() => goToNextStep('welcome')}>
-                Back to onboarding
+                <Translation id="TR_BACK_TO_ONBOARDING" />
             </OnboardingButton.Back>
         </Wrapper.StepFooter>
     </Wrapper.Step>
