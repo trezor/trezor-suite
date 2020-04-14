@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Icon, colors } from '@trezor/components';
+import { MAX_WIDTH } from '@suite-constants/layout';
 
 const getBgColor = (variant: Props['variant']) => {
     switch (variant) {
@@ -34,7 +35,7 @@ const Wrapper = styled.div<{ variant: Props['variant'] }>`
 `;
 
 const MaxWithWrapper = styled.div`
-    max-width: 1024px;
+    max-width: ${MAX_WIDTH};
     display: flex;
     flex: 1;
     padding: 16px;

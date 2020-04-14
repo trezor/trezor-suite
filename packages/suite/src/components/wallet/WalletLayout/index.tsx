@@ -6,6 +6,7 @@ import AccountLoader from './components/AccountLoader';
 import Exception from '@wallet-components/AccountException';
 import AccountMode from '@wallet-components/AccountMode';
 import AccountAnnouncement from '@wallet-components/AccountAnnouncement';
+import { MAX_WIDTH } from '@suite-constants/layout';
 import { AppState } from '@suite-types';
 
 const Wrapper = styled.div<{ noPadding?: boolean }>`
@@ -14,7 +15,7 @@ const Wrapper = styled.div<{ noPadding?: boolean }>`
     flex-direction: column;
     padding: 0px 32px 32px 32px;
     padding-top: 10px;
-    max-width: 1024px;
+    max-width: ${MAX_WIDTH};
     height: 100%;
 `;
 

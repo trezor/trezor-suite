@@ -2713,6 +2713,10 @@ const definedMessages = defineMessages({
         id: 'TR_PASSPHRASE',
         defaultMessage: 'Passphrase',
     },
+    TR_PASSPHRASE_PROTECTION: {
+        id: 'TR_PASSPHRASE_PROTECTION',
+        defaultMessage: 'Passphrase',
+    },
     TR_PASSPHRASE_PROTECTION_ENABLED: {
         id: 'TR_PASSPHRASE_PROTECTION_ENABLED',
         defaultMessage: 'Passphrase protection enabled!',

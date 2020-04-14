@@ -7,9 +7,9 @@ import { Action } from '@suite-types';
 const sizes = {
     UNAVAILABLE: getNumberFromPxString(variables.SCREEN_SIZE.UNAVAILABLE),
     SMALL: getNumberFromPxString(variables.SCREEN_SIZE.SM),
-    NORMAL: getNumberFromPxString(variables.SCREEN_SIZE.MD),
+    MEDIUM: getNumberFromPxString(variables.SCREEN_SIZE.MD),
     LARGE: getNumberFromPxString(variables.SCREEN_SIZE.LG),
-    MEGA: getNumberFromPxString(variables.SCREEN_SIZE.XL),
+    XLARGE: getNumberFromPxString(variables.SCREEN_SIZE.XL),
 };
 
 const getSize = (screenWidth: number | null): State['size'] => {
@@ -21,31 +21,31 @@ const getSize = (screenWidth: number | null): State['size'] => {
         return 'UNAVAILABLE';
     }
 
-    if (screenWidth >= sizes.UNAVAILABLE && screenWidth <= sizes.SMALL) {
+    if (screenWidth <= sizes.SMALL) {
         return 'TINY';
     }
 
-    if (screenWidth > sizes.SMALL && screenWidth <= sizes.NORMAL) {
+    if (screenWidth <= sizes.MEDIUM) {
         return 'SMALL';
     }
 
-    if (screenWidth > sizes.NORMAL && screenWidth <= sizes.LARGE) {
+    if (screenWidth <= sizes.LARGE) {
         return 'NORMAL';
     }
 
-    if (screenWidth > sizes.LARGE && screenWidth <= sizes.NORMAL) {
+    if (screenWidth <= sizes.XLARGE) {
         return 'LARGE';
     }
 
-    if (screenWidth > sizes.MEGA) {
-        return 'MEGA';
+    if (screenWidth > sizes.XLARGE) {
+        return 'XLARGE';
     }
 
     return 'NORMAL';
 };
 
 export interface State {
-    size: 'UNAVAILABLE' | 'TINY' | 'SMALL' | 'NORMAL' | 'LARGE' | 'MEGA';
+    size: 'UNAVAILABLE' | 'TINY' | 'SMALL' | 'NORMAL' | 'LARGE' | 'XLARGE';
     screenWidth: number | null;
     screenHeight: number | null;
 }

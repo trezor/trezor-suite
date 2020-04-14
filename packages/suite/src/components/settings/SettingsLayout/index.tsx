@@ -9,7 +9,6 @@ const Wrapper = styled.div`
     flex-direction: column;
     padding: 0px 32px 32px 32px;
     padding-top: 16px;
-    max-width: 1024px;
 `;
 
 type Props = {

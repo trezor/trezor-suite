@@ -1,6 +1,6 @@
 import React, { useState, createRef } from 'react';
 import styled, { css } from 'styled-components';
-import { colors, Button, Icon } from '@trezor/components';
+import { colors, variables, Button, Icon } from '@trezor/components';
 import { Card, Translation, HiddenPlaceholder, FiatValue, Badge } from '@suite-components';
 import { parseBIP44Path, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { copyToClipboard } from '@suite-utils/dom';
@@ -20,7 +20,7 @@ const GridTable = styled.div`
     color: ${colors.BLACK50};
     font-size: 12px;
     padding: 8px 0px;
-    @media all and (max-width: 1024px) {
+    @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
         grid-template-columns: auto 1fr auto;
         grid-auto-flow: dense;
     }
@@ -55,7 +55,7 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: Function }>`
             cursor: pointer;
         `};
 
-    @media all and (max-width: 1024px) {
+    @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
         border: 0;
         padding: 8px;
         &:nth-child(4n + 3) {

@@ -27,12 +27,13 @@ const HeaderTitle = styled.div`
 
 const StyledAsset = styled(Asset)`
     & + & {
-        border-top: 2px solid #f5f5f5;
+        border-top: 2px solid ${colors.BLACK96};
     }
 `;
 
 const StyledCard = styled(Card)`
     flex-direction: column;
+    padding: 0px 20px;
 `;
 
 // padding for loader need to math with first row height
