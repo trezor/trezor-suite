@@ -1,6 +1,5 @@
 import { SettingsLayout } from '@settings-components';
 import { SUITE } from '@suite-actions/constants';
-import { H2 } from '@trezor/components';
 import { Translation } from '@suite-components';
 import {
     ActionButton,
@@ -36,9 +35,10 @@ export default ({
 
     return (
         <SettingsLayout>
-            <H2>
+            {/* disabled for matejs discretion */}
+            {/* <H2>
                 <Translation id="TR_GENERAL" />
-            </H2>
+            </H2> */}
             <Section title={<Translation id="TR_LOCALIZATION" />}>
                 <SectionItem>
                     <TextColumn title={<Translation id="TR_LANGUAGE" />} />
