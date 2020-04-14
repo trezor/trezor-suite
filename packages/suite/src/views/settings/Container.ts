@@ -9,8 +9,8 @@ import Component from './index';
 
 const mapStateToProps = (state: AppState) => ({
     locks: state.suite.locks,
-    wallet: state.wallet,
     language: state.suite.settings.language,
+    localCurrency: state.wallet.settings.localCurrency,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
