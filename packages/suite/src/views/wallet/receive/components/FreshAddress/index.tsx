@@ -10,7 +10,6 @@ import { ChildProps as Props } from '../../Container';
 
 const StyledCard = styled(Card)`
     width: 100%;
-    margin-top: 24px;
     margin-bottom: 40px;
     padding: 32px 40px 36px 20px;
     align-items: flex-end;

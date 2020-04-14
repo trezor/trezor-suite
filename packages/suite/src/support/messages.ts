@@ -388,6 +388,11 @@ const definedMessages = defineMessages({
         description: 'Clear form button',
         id: 'TR_CLEAR',
     },
+    TR_CLEAR_ALL: {
+        defaultMessage: 'Clear all',
+        description: 'Clear form button',
+        id: 'TR_CLEAR_ALL',
+    },
     TR_CLOSE: {
         defaultMessage: 'Close',
         id: 'TR_CLOSE',
