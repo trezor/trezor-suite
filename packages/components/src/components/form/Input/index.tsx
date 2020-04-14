@@ -163,7 +163,7 @@ const Overlay = styled.div<Props>`
 `;
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
-    innerRef?: React.RefObject<HTMLInputElement>;
+    innerRef?: React.Ref<HTMLInputElement>;
     variant?: InputVariant;
     display?: InputDisplay;
     button?: InputButton;
