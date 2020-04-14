@@ -30,6 +30,7 @@ jest.mock('trezor-connect', () => {
         BLOCKCHAIN_EVENT: 'BLOCKCHAIN_EVENT',
         DEVICE: {},
         TRANSPORT: {},
+        BLOCKCHAIN: {},
         // custom method for test purpose
         setTestFixtures: (f: any) => {
             fixture = f;

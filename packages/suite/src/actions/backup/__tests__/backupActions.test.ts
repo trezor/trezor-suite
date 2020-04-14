@@ -31,6 +31,7 @@ jest.mock('trezor-connect', () => {
         },
         DEVICE: {},
         TRANSPORT: {},
+        BLOCKCHAIN: {},
         setTestFixtures: (f: any) => {
             fixture = f;
         },

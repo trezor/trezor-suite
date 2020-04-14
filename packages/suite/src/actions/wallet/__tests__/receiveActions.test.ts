@@ -58,6 +58,7 @@ jest.mock('trezor-connect', () => {
         BLOCKCHAIN_EVENT: 'BLOCKCHAIN_EVENT',
         DEVICE: {},
         TRANSPORT: {},
+        BLOCKCHAIN: {},
         UI: {
             REQUEST_BUTTON: 'ui-button',
         },

@@ -49,6 +49,7 @@ jest.mock('trezor-connect', () => {
             START: 'transport-start',
             ERROR: 'transport-error',
         },
+        BLOCKCHAIN: {},
         UI: {},
         setTestFixtures: (f: any) => {
             fixture = f;
