@@ -29,6 +29,10 @@ const Post = styled.div`
     display: flex;
     padding: 20px 0;
 
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-direction: column;
+    }
+
     & + & {
         border-top: 2px solid ${colors.BLACK96};
     }
@@ -49,6 +53,10 @@ const Image = styled.img`
     height: 140px;
     border-radius: 2px;
     object-fit: cover;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        width: 100%;
+    }
 `;
 
 const Title = styled.div`
@@ -92,6 +100,7 @@ const ReadMoreIcon = styled(Icon)`
 
 const getDate = (date: string) => {
     const dateObj = new Date(date);
+
     if (isToday(dateObj)) {
         return <Translation id="TR_TODAY" />;
     }
