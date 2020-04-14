@@ -264,6 +264,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Backend is disconnected',
         id: 'TR_BACKEND_DISCONNECTED',
     },
+    TR_BACKEND_RECONNECTING: {
+        defaultMessage: '. Reconnecting in {time} sec...',
+        description: 'Should start with dot, continuation of TR_BACKEND_DISCONNECTED',
+        id: 'TR_BACKEND_RECONNECTING',
+    },
     TR_BACKGROUND_GALLERY: {
         defaultMessage: 'Homescreen background gallery',
         id: 'TR_BACKGROUND_GALLERY',
