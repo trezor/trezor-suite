@@ -13,8 +13,9 @@ const Section = styled.div`
 `;
 
 const Content = styled.div`
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
 `;
 
 const Header = styled.div`

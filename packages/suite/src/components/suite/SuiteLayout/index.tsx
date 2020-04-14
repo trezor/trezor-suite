@@ -8,6 +8,7 @@ import Menu from '@suite-components/Menu/Container';
 import { AppState } from '@suite-types';
 import MenuSecondary from '@suite-components/MenuSecondary';
 import MenuDrawer from '@suite-components/MenuDrawer';
+import { MAX_WIDTH } from '@suite-constants/layout';
 import { DiscoveryProgress } from '@wallet-components';
 
 const PageWrapper = styled.div`
@@ -45,7 +46,7 @@ const AppWrapper = styled.div`
 
 const MaxWidthWrapper = styled.div<{ withMenu: boolean }>`
     max-width: ${variables.SCREEN_SIZE.XL};
-    max-width: ${props => (props.withMenu ? '786px' : '1024px')};
+    max-width: ${props => (props.withMenu ? '1664px' : MAX_WIDTH)};
     height: 100%;
 `;
 
@@ -100,7 +101,7 @@ const BodyNarrow = ({ menu, children }: BodyProps) => (
 
 const SuiteLayout = (props: Props) => {
     // TODO: if (props.layoutSize === 'UNAVAILABLE') return <SmallLayout />;
-    const isWide = ['MEGA', 'LARGE', 'NORMAL'].includes(props.layoutSize);
+    const isWide = ['XLARGE', 'LARGE'].includes(props.layoutSize);
     const [title, setTitle] = useState<string | undefined>(undefined);
     const [menu, setMenu] = useState<any>(undefined);
     const setLayout = React.useCallback<NonNullable<LayoutContextI['setLayout']>>(

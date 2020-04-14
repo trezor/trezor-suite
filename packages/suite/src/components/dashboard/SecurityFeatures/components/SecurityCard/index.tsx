@@ -6,7 +6,7 @@ import { colors, Button, Icon, variables, IconProps } from '@trezor/components';
 const StyledCard = styled(Card)`
     display: flex;
     flex-direction: column;
-    width: 230px;
+    /* width: 230px; */
     min-height: 210px; /* so it doesn't jump when all cards are completed */
     justify-content: center;
     padding: 16px 0;
