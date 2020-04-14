@@ -2663,7 +2663,7 @@ const definedMessages = defineMessages({
     },
     TR_PIN: {
         id: 'TR_PIN',
-        defaultMessage: 'Pin',
+        defaultMessage: 'PIN',
     },
     TR_ENABLE_PIN: {
         id: 'TR_ENABLE_PIN',
