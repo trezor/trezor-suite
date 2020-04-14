@@ -1,8 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { WalletLayout } from '@wallet-components';
-import { Card, Translation } from '@suite-components';
-import { H2 } from '@trezor/components';
-import AccountSelector from '@wallet-components/AccountSelector/Container';
+import { Card } from '@suite-components';
 import { Output } from '@wallet-types/sendForm';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
