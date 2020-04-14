@@ -168,7 +168,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                             />
                             <ReferenceLine y={0} stroke={colors.BLACK80} />
                             <Bar
-                                dataKey={(data: any) => Number(props.sentValueFn(data))}
+                                dataKey={(data: any) => -1 * Number(props.sentValueFn(data))}
                                 stackId="stack"
                                 fill={colors.RED_ERROR}
                                 barSize={8}
