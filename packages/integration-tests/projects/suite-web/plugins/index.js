@@ -120,20 +120,20 @@ module.exports = on => {
             await controller.disconnect();
             return null;
         },
-        setPasshpraseSourceEmu: async passhpraseSource => {
+        setPassphraseSourceEmu: async passphraseSource => {
             await controller.connect();
             let source;
-            if (passhpraseSource === 'ask') {
+            if (passphraseSource === 'ask') {
                 source = 0;
-            } else if (passhpraseSource === 'device') {
+            } else if (passphraseSource === 'device') {
                 source = 1;
-            } else if (passhpraseSource === 'host') {
+            } else if (passphraseSource === 'host') {
                 source = 2;
             } else {
-                throw Error('unexpected passhpraseSource');
+                throw Error('unexpected passphraseSource');
             }
             const response = await controller.send({
-                type: 'emulator-set-passhphrase-source',
+                type: 'emulator-set-passphrase-source',
                 passphrase_source: source,
             });
             await controller.disconnect();
