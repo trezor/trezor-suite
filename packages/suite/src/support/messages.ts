@@ -378,6 +378,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Choose between no-passphrase or hidden wallet with passphrase.',
         id: 'TR_CHOOSE_BETWEEN_NO_PASSPHRASE',
     },
+    TR_CLEAR: {
+        defaultMessage: 'Clear',
+        description: 'Clear form button',
+        id: 'TR_CLEAR',
+    },
     TR_CLEAR_ALL: {
         defaultMessage: 'Clear all',
         description: 'Clear form button',
