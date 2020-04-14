@@ -32,7 +32,7 @@ const StyledCard = styled(Card)`
 `;
 
 const OutputWrapper = styled.div`
-    padding: 23px 40px 60px 40px;
+    padding: 0 12px 12px 12px;
     margin-bottom: 20px;
 
     &:last-child {
@@ -45,7 +45,7 @@ const AdditionalInfoWrapper = styled.div`
 `;
 
 const AdditionalFormHeader = styled.div`
-    padding: 5px 40px;
+    padding: 5px 12px;
     display: flex;
     justify-content: space-between;
     width: 100%;
