@@ -1,8 +1,6 @@
 import React from 'react';
 import { WalletLayout } from '@wallet-components';
 import { SUITE } from '@suite-actions/constants';
-import AccountSelector from '@wallet-components/AccountSelector/Container';
-import Header from './components/Header';
 import FreshAddress from './components/FreshAddress';
 import UsedAddresses from './components/UsedAddresses';
 import { Props } from './Container';
@@ -18,8 +16,6 @@ export default ({ selectedAccount, receive, locks, device, showAddress, addToast
 
     return (
         <WalletLayout title="Receive" account={selectedAccount}>
-            <Header account={account} />
-            <AccountSelector title="Receive" />
             <FreshAddress
                 account={account}
                 addresses={receive}

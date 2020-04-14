@@ -8,7 +8,6 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    margin: 8px 0 16px 0;
 `;
 
 const In = styled.div`
@@ -25,7 +24,7 @@ export default ({ sendFormActions, send }: Props) => {
         <Wrapper>
             <In onClick={() => sendFormActions.clear()}>
                 <Button variant="tertiary" isDisabled={!touched} icon="CROSS" alignIcon="right">
-                    <Translation id="TR_CLEAR" />
+                    <Translation id="TR_CLEAR_ALL" />
                 </Button>
             </In>
         </Wrapper>

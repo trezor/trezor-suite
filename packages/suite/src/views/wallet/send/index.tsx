@@ -27,7 +27,6 @@ const Row = styled.div`
 `;
 
 const StyledCard = styled(Card)`
-    margin-top: 16px;
     display: flex;
     padding: 20px;
     flex-direction: column;
@@ -71,16 +70,12 @@ export default ({
         return <WalletLayout title="Send" account={selectedAccount} />;
     }
 
-    const { account, network } = selectedAccount;
+    const { network } = selectedAccount;
 
     return (
         <WalletLayout title="Send" account={selectedAccount}>
-            <H2>
-                <Translation id="SEND_TITLE" values={{ symbol: account.symbol.toUpperCase() }} />
-            </H2>
-            <AccountSelector title="Send from Account" />
-            <Clear />
             <StyledCard>
+                <Clear />
                 {send.outputs.map((output: Output) => (
                     <OutputWrapper key={output.id}>
                         <OutputHeader
