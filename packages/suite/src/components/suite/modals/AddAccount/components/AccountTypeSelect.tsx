@@ -11,6 +11,10 @@ const LabelWrapper = styled.div`
 `;
 
 const TypeInfo = styled.div`
+    display: flex;
+    flex: 1;
+    padding-top: 2px;
+    align-items: center;
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${colors.BLACK50};
     margin-left: 1ch;
