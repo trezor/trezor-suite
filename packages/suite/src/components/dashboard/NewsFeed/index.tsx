@@ -30,7 +30,7 @@ const Post = styled.div`
     padding: 20px 0;
 
     & + & {
-        border-top: 2px solid rgba(0, 0, 0, 0.1);
+        border-top: 2px solid ${colors.BLACK96};
     }
 `;
 
