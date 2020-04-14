@@ -10,7 +10,7 @@ const backup = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     // pass action
     next(action);
 
-    if (action.type === SUITE.APP_CHANGED && prevApp === 'backup') {
+    if (action.type === SUITE.APP_CHANGED && ['backup', 'onboarding'].includes(prevApp)) {
         api.dispatch(backupActions.resetReducer());
     }
 
