@@ -131,7 +131,7 @@ const SecurityFeatures = ({
         ? {
               variant: 'secondary',
               icon: 'WALLET_HIDDEN',
-              heading: <Translation id="TR_PASSPHRASE" />,
+              heading: <Translation id="TR_PASSPHRASE_PROTECTION" />,
               description: <Translation id="TR_ENABLE_PASSPHRASE_DESCRIPTION" />,
               cta: {
                   label: <Translation id="TR_ENABLE_PASSPHRASE" />,
