@@ -34,6 +34,19 @@ const definedMessages = defineMessages({
         defaultMessage: 'Access Hidden Wallet',
         id: 'TR_ACCESS_HIDDEN_WALLET',
     },
+    TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET: {
+        defaultMessage: 'Access Hidden Wallet',
+        id: 'TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET',
+    },
+    TR_WALLET_SELECTION_HIDDEN_WALLET: {
+        defaultMessage: 'Passphrase (hidden) wallet',
+        id: 'TR_WALLET_SELECTION_HIDDEN_WALLET',
+    },
+    TR_WALLET_SELECTION_ENTER_EXISTING_PASSPHRASE: {
+        defaultMessage:
+            'Enter existing passphrase to access existing hidden Wallet. Or enter new passphrase to create a new hidden Wallet.',
+        id: 'TR_WALLET_SELECTION_ENTER_EXISTING_PASSPHRASE',
+    },
     TR_ACCESS_STANDARD_WALLET: {
         defaultMessage: 'Access standard Wallet',
         id: 'TR_ACCESS_STANDARD_WALLET',
