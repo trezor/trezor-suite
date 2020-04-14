@@ -294,6 +294,7 @@ const createInstance = (draft: State, device: TrezorDevice) => {
         passphraseOnDevice: false,
         remember: false,
         state: undefined,
+        authConfirm: false,
         ts: new Date().getTime(),
     };
     draft.push(newDevice);
