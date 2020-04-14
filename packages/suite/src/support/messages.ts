@@ -2648,6 +2648,10 @@ const definedMessages = defineMessages({
         id: 'TR_CHECK_SEED_IN_SETTINGS',
         defaultMessage: 'Check seed in Settings',
     },
+    TR_PIN: {
+        id: 'TR_PIN',
+        defaultMessage: 'Pin',
+    },
     TR_ENABLE_PIN: {
         id: 'TR_ENABLE_PIN',
         defaultMessage: 'Enable PIN',
@@ -2660,9 +2664,9 @@ const definedMessages = defineMessages({
         id: 'TR_CHANGE_PIN_IN_SETTINGS',
         defaultMessage: 'Change PIN in Settings',
     },
-    'TR_DEVICE_PROTECTED_BY_PIN!': {
-        id: 'TR_DEVICE_PROTECTED_BY_PIN!',
-        defaultMessage: 'Device protected by PIN!',
+    TR_DEVICE_PIN_PROTECTION_ENABLED: {
+        id: 'TR_DEVICE_PIN_PROTECTION_ENABLED',
+        defaultMessage: 'Trezor PIN-protected',
     },
     TR_ENABLE_PASSPHRASE_DESCRIPTION: {
         id: 'TR_ENABLE_PASSPHRASE_DESCRIPTION',
