@@ -6,6 +6,7 @@ import DeviceIcon from '@suite-components/images/DeviceIcon';
 import { Props as ContainerProps } from '../../Container';
 import { SHAKE } from '@suite-support/styles/animations';
 import { Translation } from '@suite-components';
+import { TrezorDevice } from '@suite-types';
 
 const Wrapper = styled.div`
     padding-left: 6px;
@@ -56,6 +57,7 @@ const WalletRow = styled.div`
     color: ${colors.BLACK70};
     font-weight: 500;
     margin-top: 6px;
+    min-height: 16px;
 `;
 
 const DeviceLabel = styled.div`
@@ -76,6 +78,17 @@ const IconWrapper = styled.div`
     align-items: center;
 `;
 
+const getWalletName = (device: TrezorDevice) => {
+    if (!device) return null;
+    if (device.useEmptyPassphrase) {
+        return <Translation id="TR_STANDARD_WALLET" />;
+    }
+    if (device.state) {
+        return <Translation id="TR_HIDDEN_WALLET" values={{ id: device.instance }} />;
+    }
+    return null;
+};
+
 interface Props {
     selectedDevice: ContainerProps['selectedDevice'];
     goto: ContainerProps['goto'];
@@ -89,6 +102,8 @@ const TopMenu = (props: Props) => {
 
     const countChanged = localCount && localCount !== deviceCount;
     const timerRef = useRef<number | undefined>(undefined);
+
+    const walletName = getWalletName(props.selectedDevice);
 
     useEffect(() => {
         // clear timer on unmount
@@ -135,17 +150,14 @@ const TopMenu = (props: Props) => {
                         </DeviceRow>
                         <WalletRow>
                             {/* TODO: labeling support */}
-                            {props.selectedDevice.useEmptyPassphrase ? (
-                                <Translation id="TR_STANDARD_WALLET" />
-                            ) : (
-                                <Translation
-                                    id="TR_HIDDEN_WALLET"
-                                    values={{ id: props.selectedDevice.instance }}
-                                />
+                            {walletName && (
+                                <>
+                                    {walletName}
+                                    <IconWrapper>
+                                        <Icon size={16} color={colors.BLACK70} icon="ARROW_RIGHT" />
+                                    </IconWrapper>
+                                </>
                             )}
-                            <IconWrapper>
-                                <Icon size={16} color={colors.BLACK70} icon="ARROW_RIGHT" />
-                            </IconWrapper>
                         </WalletRow>
                     </>
                 )}
