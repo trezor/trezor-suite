@@ -76,6 +76,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Discovery error.',
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR',
     },
+    TR_ACCOUNT_EXCEPTION_DISCOVERY_DESCRIPTION: {
+        defaultMessage: 'Discovery error description',
+        id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_DESCRIPTION',
+    },
     TR_ACCOUNT_EXCEPTION_NOT_ENABLED: {
         defaultMessage: '{networkName} not enabled in settings.',
         id: 'TR_ACCOUNT_EXCEPTION_NOT_ENABLED',
