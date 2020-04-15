@@ -52,6 +52,8 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
     const fileInputElement = createRef<HTMLInputElement>();
     const [actionEnabled] = useDeviceActionLocks();
 
+    const MAX_LABEL_LENGTH = 16;
+
     useEffect(() => {
         if (!device) {
             return;
@@ -246,11 +248,21 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
             </Section>
             <Section title={<Translation id="TR_PERSONALIZATION" />}>
                 <SectionItem>
-                    <TextColumn title={<Translation id="TR_DEVICE_SETTINGS_DEVICE_LABEL" />} />
+                    <TextColumn
+                        title={<Translation id="TR_DEVICE_SETTINGS_DEVICE_LABEL" />}
+                        description={
+                            <Translation
+                                id="TR_MAX_LABEL_LENGTH_IS"
+                                values={{ length: MAX_LABEL_LENGTH }}
+                            />
+                        }
+                    />
                     <ActionColumn>
                         <ActionInput
                             variant="small"
                             value={label}
+                            wrapperProps={{ style: { width: 'initial' } }}
+                            state={label.length > MAX_LABEL_LENGTH ? 'error' : undefined}
                             onChange={(event: React.FormEvent<HTMLInputElement>) =>
                                 setLabel(event.currentTarget.value)
                             }
@@ -259,7 +271,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         />
                         <ActionButton
                             onClick={() => applySettings({ label })}
-                            isDisabled={!actionEnabled}
+                            isDisabled={!actionEnabled || label.length > MAX_LABEL_LENGTH}
                             data-test="@settings/device/label-submit"
                         >
                             <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />
