@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
@@ -13,6 +13,7 @@ import { Account, WalletParams } from '@wallet-types';
 import AccountGroup from './components/AccountGroup';
 import AccountItem from './components/AccountItem/Container';
 import AddAccountButton from './components/AddAccount';
+import { useScrollRef } from './components/useScrollRef';
 
 const Wrapper = styled.div`
     flex: 1;
@@ -90,12 +91,19 @@ const Menu = ({
     openModal,
 }: Props) => {
     const params = getAccountParams(router, selectedAccount.account);
-    const wrapperRef = useRef<HTMLDivElement>(null);
+    const { ref, dimensions, updateDimensions } = useScrollRef();
     const selectedItemRef = useCallback((_item: HTMLDivElement | null) => {
         // TODO: scroll to selected item
     }, []);
 
     const discovery = getDiscoveryForDevice();
+
+    // update Scroll dimensions whenever discovery changes (adding account)
+    // or whenever AccountGroup updates its animation
+    useEffect(() => {
+        updateDimensions();
+    }, [discovery, updateDimensions]);
+
     if (!device || !discovery) {
         return (
             <Wrapper>
@@ -145,7 +153,7 @@ const Menu = ({
     // }
 
     const buildGroup = (type: Account['accountType'], accounts: Account[]) => (
-        <AccountGroup key={type} type={type} opened={isOpened(type)}>
+        <AccountGroup key={type} type={type} opened={isOpened(type)} onUpdate={updateDimensions}>
             {accounts.map(account => {
                 const selected = !!isSelected(account);
                 const forwardedRef = selected ? selectedItemRef : undefined;
@@ -163,7 +171,7 @@ const Menu = ({
 
     return (
         <Wrapper>
-            <Scroll ref={wrapperRef}>
+            <Scroll ref={ref}>
                 {buildGroup('normal', normalAccounts)}
                 {buildGroup('segwit', segwitAccounts)}
                 {buildGroup('legacy', legacyAccounts)}
@@ -176,6 +184,7 @@ const Menu = ({
                     })
                 }
                 disabled={!!addAccountDisabled}
+                isOverlaying={dimensions && dimensions.hasScroll}
                 device={device}
             />
         </Wrapper>
