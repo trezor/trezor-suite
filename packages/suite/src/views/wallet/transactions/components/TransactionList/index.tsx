@@ -21,12 +21,6 @@ const Transactions = styled.div`
     padding: 0 16px;
 `;
 
-const StyledTransactionItem = styled(TransactionItem)`
-    /* & + & {
-        border-top: 2px solid ${colors.BLACK96};
-    } */
-`;
-
 const DayHeading = styled.div`
     position: sticky;
     top: 0;
@@ -166,7 +160,7 @@ const TransactionList = ({
                                     )}
                                 </DayHeading>
                                 {transactionsByDate[dateKey].map((tx: WalletAccountTransaction) => (
-                                    <StyledTransactionItem key={tx.txid} transaction={tx} />
+                                    <TransactionItem key={tx.txid} transaction={tx} />
                                 ))}
                             </React.Fragment>
                         );
