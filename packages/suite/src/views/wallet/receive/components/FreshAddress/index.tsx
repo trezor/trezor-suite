@@ -80,10 +80,6 @@ const FreshAddress = ({
             ? `/${parseBIP44Path(firstFreshAddress.path)!.addrIndex}`
             : undefined;
 
-    console.log('disabled', disabled);
-    console.log('locked', locked);
-    console.log('limitExceeded', limitExceeded);
-
     return (
         <StyledCard title={<Translation id="RECEIVE_TITLE" values={{ symbol }} />}>
             {addressPath && <AddressPath>{addressPath}</AddressPath>}
