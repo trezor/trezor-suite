@@ -7,6 +7,7 @@ import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
 import { parseBIP44Path } from '@wallet-utils/accountUtils';
 import { ChildProps as Props } from '../../Container';
+import { AccountAddress } from 'trezor-connect';
 
 const StyledCard = styled(Card)`
     width: 100%;
@@ -70,10 +71,22 @@ const FreshAddress = ({
     const limitExceeded = isBitcoin ? unrevealed.length < 1 : false; // xrp, eth address can be reused
     const addressLabel = isBitcoin ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS';
     const firstFreshAddress = account.addresses ? unrevealed[0] : unused[0];
-    const addressValue =
-        isBitcoin && limitExceeded
-            ? intl.formatMessage(messages.RECEIVE_ADDRESS_LIMIT_EXCEEDED)
-            : `${firstFreshAddress.address.substring(0, 15)}…`;
+
+    const getAddressValue = (address: AccountAddress) => {
+        const truncatedAddress = `${address.address.substring(0, 15)}…`;
+        if (isBitcoin) {
+            if (limitExceeded) {
+                return intl.formatMessage(messages.RECEIVE_ADDRESS_LIMIT_EXCEEDED);
+            }
+            return truncatedAddress;
+        }
+
+        // eth, ripple: already revealed address will show in its full form
+        const isRevealed = addresses ? addresses.find(f => f.address === address.address) : false;
+        return isRevealed ? address.address : truncatedAddress;
+    };
+
+    const addressValue = getAddressValue(firstFreshAddress);
     const addressPath =
         isBitcoin && !limitExceeded
             ? `/${parseBIP44Path(firstFreshAddress.path)!.addrIndex}`
