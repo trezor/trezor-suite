@@ -6,8 +6,8 @@ import {
     ActionColumn,
     ActionSelect,
     Analytics,
-    SectionItem,
     Section,
+    SectionItem,
     TextColumn,
 } from '@suite-components/Settings';
 import { FIAT, LANGUAGES } from '@suite-config';
@@ -15,18 +15,16 @@ import React from 'react';
 
 import { Props } from './Container';
 
-const buildCurrencyOption = (currency: string) => {
-    return {
-        value: currency,
-        label: currency.toUpperCase(),
-    };
-};
+const buildCurrencyOption = (currency: string) => ({
+    value: currency,
+    label: currency.toUpperCase(),
+});
 
 export default ({
     locks,
-    wallet,
     language,
     setLocalCurrency,
+    localCurrency,
     fetchLocale,
     clearStores,
     goto,
@@ -35,10 +33,6 @@ export default ({
 
     return (
         <SettingsLayout>
-            {/* disabled for matejs discretion */}
-            {/* <H2>
-                <Translation id="TR_GENERAL" />
-            </H2> */}
             <Section title={<Translation id="TR_LOCALIZATION" />}>
                 <SectionItem>
                     <TextColumn title={<Translation id="TR_LANGUAGE" />} />
@@ -47,12 +41,10 @@ export default ({
                             variant="small"
                             value={{
                                 value: language,
-                                // sorry for ! but dont know how to force typescript to stay calm
                                 label: LANGUAGES.find(l => l.code === language)!.name,
                             }}
                             isDisabled
                             options={LANGUAGES.map(l => ({ value: l.code, label: l.name }))}
-                            // todo: Select should preserve type information
                             onChange={(option: {
                                 value: typeof LANGUAGES[number]['code'];
                                 label: typeof LANGUAGES[number]['name'];
@@ -69,7 +61,7 @@ export default ({
                             onChange={(option: { value: string; label: string }) =>
                                 setLocalCurrency(option.value)
                             }
-                            value={() => buildCurrencyOption(wallet.settings.localCurrency)}
+                            value={buildCurrencyOption(localCurrency)}
                             options={FIAT.currencies.map(c => buildCurrencyOption(c))}
                             isDisabled={uiLocked}
                         />

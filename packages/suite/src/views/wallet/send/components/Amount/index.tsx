@@ -1,17 +1,16 @@
-import { Translation, QuestionTooltip, FiatValue } from '@suite-components';
-
+import { FiatValue, QuestionTooltip, Translation } from '@suite-components';
+import { Input, variables } from '@trezor/components';
+import { LABEL_HEIGHT, VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Network } from '@wallet-types';
-import React from 'react';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import styled from 'styled-components';
 import { Output } from '@wallet-types/sendForm';
-import { Input } from '@trezor/components';
-import { VALIDATION_ERRORS, LABEL_HEIGHT } from '@wallet-constants/sendForm';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getInputState } from '@wallet-utils/sendFormUtils';
+import React from 'react';
+import styled from 'styled-components';
 
-import { Props } from './Container';
 import CurrencySelect from './components/CurrencySelect';
 import FiatComponent from './components/Fiat';
+import { Props } from './Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -49,6 +48,10 @@ const EqualsSign = styled.div`
     display: flex;
     align-items: flex-start;
     padding: ${LABEL_HEIGHT + 15}px 20px 0;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        display: none;
+    }
 `;
 
 const getMessage = (

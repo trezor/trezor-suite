@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { WalletLayout } from '@wallet-components';
-import { Card } from '@suite-components';
+import { Card, Translation } from '@suite-components';
 import { Output } from '@wallet-types/sendForm';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
@@ -32,7 +32,7 @@ const StyledCard = styled(Card)`
 `;
 
 const OutputWrapper = styled.div`
-    padding: 23px 40px 60px 40px;
+    padding: 0 12px 12px 12px;
     margin-bottom: 20px;
 
     &:last-child {
@@ -45,7 +45,7 @@ const AdditionalInfoWrapper = styled.div`
 `;
 
 const AdditionalFormHeader = styled.div`
-    padding: 5px 40px;
+    padding: 5px 12px;
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -68,11 +68,18 @@ export default ({
         return <WalletLayout title="Send" account={selectedAccount} />;
     }
 
-    const { network } = selectedAccount;
+    const { network, account } = selectedAccount;
 
     return (
         <WalletLayout title="Send" account={selectedAccount}>
-            <StyledCard>
+            <StyledCard
+                title={
+                    <Translation
+                        id="SEND_TITLE"
+                        values={{ symbol: account.symbol.toUpperCase() }}
+                    />
+                }
+            >
                 <Clear />
                 {send.outputs.map((output: Output) => (
                     <OutputWrapper key={output.id}>

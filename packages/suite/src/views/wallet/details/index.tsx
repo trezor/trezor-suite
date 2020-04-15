@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H2, P } from '@trezor/components';
+import { P } from '@trezor/components';
 import { WalletLayout } from '@wallet-components';
 import { SUITE } from '@suite-actions/constants';
 import { Props } from './Container';
@@ -8,7 +8,7 @@ import { Translation, Card } from '@suite-components';
 import messages from '@suite/support/messages';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import { getAccountTypeIntl, getBip43Shortcut } from '@wallet-utils/accountUtils';
-import { Section, ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/Settings';
+import { ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/Settings';
 import {
     WIKI_XPUB_URL,
     WIKI_BECH32_URL,
@@ -28,8 +28,8 @@ const AccountTypeLabel = styled.div`
 `;
 
 const StyledCard = styled(Card)`
-    margin-top: 16px;
     padding: 20px;
+    flex-direction: column;
 `;
 
 const StyledRow = styled(Row)`
@@ -63,54 +63,49 @@ export default ({ selectedAccount, locks, device, openModal }: Props) => {
 
     return (
         <WalletLayout title="Account details" account={selectedAccount}>
-            <H2>
-                <Translation id="TR_ACCOUNT_DETAILS_HEADER" />
-            </H2>
-            <StyledCard>
-                <Section>
-                    <StyledRow>
-                        <TextColumn
-                            title={<Translation id="TR_ACCOUNT_DETAILS_TYPE_HEADER" />}
-                            description={<Translation {...accountTypeDesc} />}
-                            learnMore={accountTypeUrl}
-                        />
-                        <AccountTypeLabel>
-                            <P size="small">
-                                <Translation {...accountTypeName} />
-                            </P>
-                            <P size="tiny">
-                                <Translation {...accountTypeShortcut} />
-                            </P>
-                        </AccountTypeLabel>
-                    </StyledRow>
-                    <Row>
-                        <TextColumn
-                            title={<Translation id="TR_ACCOUNT_DETAILS_XPUB_HEADER" />}
-                            description={<Translation id="TR_ACCOUNT_DETAILS_XPUB" />}
-                            learnMore={WIKI_XPUB_URL}
-                        />
-                        <ActionColumn>
-                            <ActionButton
-                                variant="secondary"
-                                data-test="@wallets/details/show-xpub-button"
-                                onClick={() =>
-                                    openModal({
-                                        type: 'xpub',
-                                        xpub: account.descriptor,
-                                        accountPath: account.path,
-                                        accountIndex: account.index,
-                                        accountType: account.accountType,
-                                        symbol: account.symbol,
-                                    })
-                                }
-                                isLoading={locked && !disabled}
-                                isDisabled={disabled}
-                            >
-                                <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
-                            </ActionButton>
-                        </ActionColumn>
-                    </Row>
-                </Section>
+            <StyledCard title={<Translation id="TR_ACCOUNT_DETAILS_HEADER" />}>
+                <StyledRow>
+                    <TextColumn
+                        title={<Translation id="TR_ACCOUNT_DETAILS_TYPE_HEADER" />}
+                        description={<Translation {...accountTypeDesc} />}
+                        learnMore={accountTypeUrl}
+                    />
+                    <AccountTypeLabel>
+                        <P size="small">
+                            <Translation {...accountTypeName} />
+                        </P>
+                        <P size="tiny">
+                            <Translation {...accountTypeShortcut} />
+                        </P>
+                    </AccountTypeLabel>
+                </StyledRow>
+                <Row>
+                    <TextColumn
+                        title={<Translation id="TR_ACCOUNT_DETAILS_XPUB_HEADER" />}
+                        description={<Translation id="TR_ACCOUNT_DETAILS_XPUB" />}
+                        learnMore={WIKI_XPUB_URL}
+                    />
+                    <ActionColumn>
+                        <ActionButton
+                            variant="secondary"
+                            data-test="@wallets/details/show-xpub-button"
+                            onClick={() =>
+                                openModal({
+                                    type: 'xpub',
+                                    xpub: account.descriptor,
+                                    accountPath: account.path,
+                                    accountIndex: account.index,
+                                    accountType: account.accountType,
+                                    symbol: account.symbol,
+                                })
+                            }
+                            isLoading={locked && !disabled}
+                            isDisabled={disabled}
+                        >
+                            <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
+                        </ActionButton>
+                    </ActionColumn>
+                </Row>
             </StyledCard>
         </WalletLayout>
     );

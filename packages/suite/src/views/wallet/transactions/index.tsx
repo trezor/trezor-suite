@@ -7,7 +7,7 @@ import { WalletLayout } from '@wallet-components';
 import { getAccountTransactions, isTestnet } from '@wallet-utils/accountUtils';
 import { accountGraphDataFilterFn } from '@wallet-utils/graphUtils';
 import NoTransactions from './components/NoTransactions';
-import PricePanel from './components/PricePanel';
+import PricePanel from './components/PricePanel/Container';
 import TokenList from './components/TokenList';
 import TransactionList from './components/TransactionList';
 import TransactionSummary from './components/TransactionSummary';
@@ -52,7 +52,7 @@ export default (props: Props) => {
 
     return (
         <WalletLayout title="Transactions" account={props.selectedAccount}>
-            <PricePanel account={account} />
+            <PricePanel />
             {transactions.isLoading && (
                 <LoaderWrapper>
                     <Loader size={40} />
