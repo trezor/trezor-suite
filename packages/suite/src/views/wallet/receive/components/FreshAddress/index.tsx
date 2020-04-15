@@ -75,10 +75,9 @@ const FreshAddress = ({
     const getAddressValue = (address: AccountAddress) => {
         const truncatedAddress = `${address.address.substring(0, 15)}…`;
         if (isBitcoin) {
-            if (limitExceeded) {
-                return intl.formatMessage(messages.RECEIVE_ADDRESS_LIMIT_EXCEEDED);
-            }
-            return truncatedAddress;
+            return limitExceeded
+                ? intl.formatMessage(messages.RECEIVE_ADDRESS_LIMIT_EXCEEDED)
+                : truncatedAddress;
         }
 
         // eth, ripple: already revealed address will show in its full form
