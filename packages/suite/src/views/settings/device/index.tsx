@@ -98,8 +98,6 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
 
     return (
         <SettingsLayout>
-            {/* disabled for matejs discretion */}
-            {/* <H2>{device.label}</H2> */}
             <Section title={<Translation id="TR_BACKUP" />}>
                 <SectionItem>
                     <TextColumn
