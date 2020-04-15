@@ -61,8 +61,6 @@ const WalletRow = styled.div`
 
 const DeviceLabel = styled.div`
     color: ${colors.WHITE};
-    display: flex;
-    flex: 1;
     overflow: hidden;
     text-overflow: ellipsis;
     min-width: 0;
