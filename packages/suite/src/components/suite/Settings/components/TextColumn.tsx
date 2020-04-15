@@ -23,7 +23,7 @@ const Description = styled.div`
 `;
 
 const Title = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
 const TextColumn = ({ title, description, learnMore }: TextColumnProps) => {
