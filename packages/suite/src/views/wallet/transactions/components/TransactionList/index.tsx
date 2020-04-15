@@ -18,12 +18,13 @@ const StyledCard = styled(Card)`
 
 const Transactions = styled.div`
     flex-direction: column;
+    padding: 0 16px;
 `;
 
 const StyledTransactionItem = styled(TransactionItem)`
-    & + & {
+    /* & + & {
         border-top: 2px solid ${colors.BLACK96};
-    }
+    } */
 `;
 
 const DayHeading = styled.div`
@@ -31,12 +32,13 @@ const DayHeading = styled.div`
     top: 0;
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
-    min-height: 35px; /* same as height of baddge with fiat value plus padding */
+    min-height: 35px; /* same as height of badge with fiat value plus padding */
     color: ${colors.BLACK50};
+    border-bottom: 2px solid ${colors.BLACK96};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    padding: 5px 16px;
+    padding: 5px 0;
     text-transform: uppercase;
-    background: ${colors.BLACK96};
+    background: ${colors.WHITE};
     justify-content: space-between;
     align-items: center;
 

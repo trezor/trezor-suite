@@ -19,7 +19,7 @@ import { Props } from './Container';
 const Wrapper = styled.div<{ isExpanded: boolean }>`
     display: flex;
     background: ${colors.WHITE};
-    padding: 12px 16px;
+    padding: 12px 0;
     flex-direction: column;
     cursor: pointer;
 `;
