@@ -14,6 +14,7 @@ const Wrapper = styled.div``;
 
 const StyledCard = styled(Card)`
     flex-direction: column;
+    margin-bottom: 20px;
 `;
 
 const Transactions = styled.div`
