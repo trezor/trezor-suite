@@ -19,8 +19,7 @@ const GridTable = styled.div`
     grid-template-columns: auto 0.65fr 0.35fr auto;
     color: ${colors.BLACK50};
     font-size: 12px;
-    padding: 8px 0px;
-    @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
+    @media all and (max-width: ${variables.SCREEN_SIZE.MD}) {
         grid-template-columns: auto 1fr auto;
         grid-auto-flow: dense;
     }
@@ -55,7 +54,7 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: Function }>`
             cursor: pointer;
         `};
 
-    @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
+    @media all and (max-width: ${variables.SCREEN_SIZE.MD}) {
         border: 0;
         padding: 8px;
         &:nth-child(4n + 3) {
@@ -77,7 +76,6 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: Function }>`
 `;
 
 const HeaderItem = styled(GridItem)`
-    background: ${colors.WHITE};
     text-transform: uppercase;
     font-weight: 600;
     position: sticky;

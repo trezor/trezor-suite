@@ -13,7 +13,7 @@ const Wrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
-    padding: 16px;
+    padding: 16px 32px;
     max-width: ${MAX_WIDTH};
 `;
 
@@ -103,7 +103,7 @@ export default (props: Props) => {
                     <H2>
                         <Translation id="NOTIFICATIONS_EMPTY_TITLE" />
                     </H2>
-                    <P size="tiny">
+                    <P size="small">
                         <Translation id="NOTIFICATIONS_EMPTY_DESC" />
                     </P>
                     <StyledImage image="UNI_EMPTY_PAGE" />
@@ -115,10 +115,7 @@ export default (props: Props) => {
     return (
         <>
             <Wrapper>
-                <H2>
-                    <Translation id="NOTIFICATIONS_TITLE" />
-                </H2>
-                <StyledCard>
+                <StyledCard title={<Translation id="NOTIFICATIONS_TITLE" />}>
                     {notifications.map(n => hocNotification(n, NotificationView))}
                 </StyledCard>
             </Wrapper>

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link, colors, variables } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
+import { colors, variables } from '@trezor/components';
+import { Translation, ExternalLink } from '@suite-components';
 
 interface TextColumnProps {
     title: React.ReactNode;
@@ -22,17 +22,6 @@ const Description = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
-const LearnMoreWrapper = styled(Link)`
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.BLACK17};
-`;
-
-const LearnMore = ({ href, ...props }: { href: string }) => (
-    <LearnMoreWrapper href={href} {...props}>
-        <Translation id="TR_LEARN_MORE_LINK" />
-    </LearnMoreWrapper>
-);
-
 const Title = styled.div`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
@@ -42,7 +31,11 @@ const TextColumn = ({ title, description, learnMore }: TextColumnProps) => {
         <Wrapper>
             <Title>{title}</Title>
             {description && <Description>{description}</Description>}
-            {learnMore && <LearnMore href={learnMore} />}
+            {learnMore && (
+                <ExternalLink href={learnMore} size="tiny">
+                    <Translation id="TR_LEARN_MORE" />
+                </ExternalLink>
+            )}
         </Wrapper>
     );
 };

@@ -68,7 +68,7 @@ const In = styled.div<ComponentProps>`
     ${props =>
         props.isActive &&
         css`
-            background: ${colors.WHITE};
+            background: ${colors.BACKGROUND};
         `}
 
     ${props =>
