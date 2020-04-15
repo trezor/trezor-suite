@@ -5,7 +5,7 @@ import Card from '@suite-components/Card';
 import { Button, Input, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
-import { parseBIP44Path } from '@wallet-utils/accountUtils';
+import { parseBIP44Path, getNetwork } from '@wallet-utils/accountUtils';
 import { ChildProps as Props } from '../../Container';
 
 const StyledCard = styled(Card)`
@@ -67,7 +67,8 @@ const FreshAddress = ({
               },
           ];
     const unrevealed = unused.filter(a => !addresses.find(r => r.path === a.path));
-    const limitExceeded = unrevealed.length < 1;
+    const limitExceeded =
+        getNetwork(account.symbol)?.networkType === 'bitcoin' ? unrevealed.length < 1 : false; // xrp, eth address can be reused
     const addressLabel = isBitcoin ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS';
     const firstFreshAddress = account.addresses ? unrevealed[0] : unused[0];
     const addressValue =
@@ -78,6 +79,10 @@ const FreshAddress = ({
         isBitcoin && !limitExceeded
             ? `/${parseBIP44Path(firstFreshAddress.path)!.addrIndex}`
             : undefined;
+
+    console.log('disabled', disabled);
+    console.log('locked', locked);
+    console.log('limitExceeded', limitExceeded);
 
     return (
         <StyledCard title={<Translation id="RECEIVE_TITLE" values={{ symbol }} />}>
