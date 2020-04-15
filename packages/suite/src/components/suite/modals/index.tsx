@@ -79,7 +79,7 @@ const getDeviceContextModal = (props: Props) => {
         case 'ButtonRequest_PassphraseEntry':
             return <PassphraseOnDevice device={device} />;
         // Button requests
-        // todo: consider fallback (if windowType.cointains('ButtonRequest')). but add also possibility to blacklist some buttonRequests
+        // todo: consider fallback (if windowType.contains('ButtonRequest')). but add also possibility to blacklist some buttonRequests
         case 'ButtonRequest_Warning':
         case 'ButtonRequest_SignTx':
         case 'ButtonRequest_Success':
@@ -89,11 +89,11 @@ const getDeviceContextModal = (props: Props) => {
         case 'ButtonRequest_ProtectCall':
         case 'ButtonRequest_Other':
         case 'ButtonRequest_ResetDevice': // dispatched on BackupDevice call for model T, weird but true
-        case 'ButtonRequest_ConfirmWord': // dispatch on BackupDevice call for model One
+        case 'ButtonRequest_ConfirmWord': // dispatched on BackupDevice call for model One
         case 'ButtonRequest_ConfirmOutput':
         case 'ButtonRequest_WipeDevice':
         case 'ButtonRequest_UnknownDerivationPath':
-            // case 'ButtonRequest_FirmwareUpdate': // ? fake UI event, see firmwareActions
+        case 'ButtonRequest_FirmwareUpdate':
             return <ConfirmAction device={device} />;
         default:
             return null;
