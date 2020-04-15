@@ -137,8 +137,16 @@ const PassphraseTypeCard = (props: Props) => {
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const tmpValue = event.target.value;
+        // spread current value into array
         const newValue = [...value];
         const len = tmpValue.length;
+        const pos = event.target.selectionStart || len;
+        const diff = newValue.length - len;
+        if (pos < len && diff < 0) {
+            // caret position is somewhere in the middle
+            const fill = new Array(Math.abs(diff)).fill(''); // make space for new string
+            newValue.splice(pos + diff, 0, ...fill); // shift current value
+        }
         for (let i = 0; i < len; i++) {
             const char = tmpValue.charAt(i);
             if (char !== DOT) {
@@ -146,16 +154,13 @@ const PassphraseTypeCard = (props: Props) => {
             }
         }
         if (len < newValue.length) {
-            const pos = event.target.selectionStart || 0;
-            const diff = newValue.length - len;
-
             // Check if last keypress was backspace or delete
             if (backspacePressed) {
                 newValue.splice(pos, diff);
             } else {
                 // Highlighted and replaced portion of the passphrase
-                newValue.splice(pos - 1, diff + 1);
-                newValue.splice(pos - 1, 0, tmpValue[pos - 1]);
+                newValue.splice(pos - 1, diff + 1); // remove
+                newValue.splice(pos - 1, 0, tmpValue[pos - 1]); // insert
             }
         }
         setValue(newValue.join(''));
