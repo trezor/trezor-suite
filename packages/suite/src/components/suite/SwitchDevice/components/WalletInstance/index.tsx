@@ -125,7 +125,7 @@ const WalletInstance = ({
                 <>
                     <SwitchCol>
                         <Switch
-                            checked={instance.remember}
+                            checked={!!instance.remember}
                             onChange={() => rememberDevice(instance)}
                             data-test="@suite/settings/device/passphrase-switch"
                         />
