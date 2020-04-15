@@ -8,6 +8,7 @@ export const ActionColumn = styled.div`
     align-items: center;
     justify-content: flex-end;
     flex: 1;
+    flex-wrap: wrap;
 `;
 
 export const ActionInput = styled(Input)`
@@ -28,10 +29,9 @@ export const ActionSelect = styled(Select)`
 
 export const ActionButton = styled(Button)`
     min-width: 170px;
-    margin-left: 10px;
+    margin: 4px;
 
-    @media all and (max-width: ${SCREEN_SIZE.SM}) {
+    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
         min-width: 100%;
-        margin: 5px 0;
     }
 `;

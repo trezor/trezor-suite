@@ -19,7 +19,7 @@ import {
 import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import * as homescreen from '@suite-utils/homescreen';
 import { useDeviceActionLocks } from '@suite-utils/hooks';
-import { colors, Link, P, Switch } from '@trezor/components';
+import { colors, variables, Link, P, Switch } from '@trezor/components';
 import React, { createRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
@@ -27,6 +27,12 @@ import { Props } from './Container';
 
 const RotationButton = styled(ActionButton)`
     min-width: 78px;
+    margin: 4px;
+    flex-basis: 45%;
+
+    @media screen and (min-width: ${variables.SCREEN_SIZE.MD}) {
+        flex-basis: auto;
+    }
 `;
 
 const BackupFailedRow = styled(Row)`
@@ -213,7 +219,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                 variant="secondary"
                                 data-test="@settings/device/update-button"
                             >
-                                Change PIN
+                                <Translation id="TR_CHANGE_PIN" />
                             </ActionButton>
                         </ActionColumn>
                     </SectionItem>
@@ -259,7 +265,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         <ActionInput
                             variant="small"
                             value={label}
-                            wrapperProps={{ style: { width: 'initial' } }}
+                            wrapperProps={{ style: { flex: 1, alignItems: 'flex-end' } }}
                             state={label.length > MAX_LABEL_LENGTH ? 'error' : undefined}
                             onChange={(event: React.FormEvent<HTMLInputElement>) =>
                                 setLabel(event.currentTarget.value)

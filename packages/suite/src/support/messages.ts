@@ -2705,6 +2705,11 @@ const definedMessages = defineMessages({
         id: 'TR_CHANGE_PIN_IN_SETTINGS',
         defaultMessage: 'Change PIN in Settings',
     },
+    TR_CHANGE_PIN: {
+        id: 'TR_CHANGE_PIN',
+        defaultMessage: 'Change PIN',
+        description: 'Button that initiates pin change',
+    },
     TR_DEVICE_PIN_PROTECTION_ENABLED: {
         id: 'TR_DEVICE_PIN_PROTECTION_ENABLED',
         defaultMessage: 'Trezor PIN-protected',
