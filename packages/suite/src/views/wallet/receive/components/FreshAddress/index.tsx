@@ -29,7 +29,7 @@ const AddressContainer = styled.div`
 `;
 
 const AddressLabel = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding: 0 0 12px 0;
 `;
 
