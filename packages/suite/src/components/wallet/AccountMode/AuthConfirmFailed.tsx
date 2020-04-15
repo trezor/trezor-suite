@@ -24,7 +24,7 @@ const AuthConfirmFailed = ({ locks, authConfirm }: Props) => {
         <NotificationCard variant="warning">
             <Translation id="TR_AUTH_CONFIRM_FAILED_TITLE" />
             <Button
-                data-test="@passphrase-missmatch/retry-button"
+                data-test="@passphrase-mismatch/retry-button"
                 variant="tertiary"
                 icon="REFRESH"
                 color={colors.RED_ERROR}
