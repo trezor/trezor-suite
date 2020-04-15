@@ -12,7 +12,7 @@ import CheckOnTrezor from './components/CheckOnTrezor';
 import DeviceDisconnected from './components/DeviceDisconnected';
 
 const StyledWrapper = styled.div`
-    max-width: 600px;
+    max-width: 620px;
     padding: 40px;
 `;
 
