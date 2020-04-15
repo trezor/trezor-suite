@@ -27,11 +27,11 @@ const getUrl = () => {
         // I may run server on localhost to see if data flow as expected
         // return 'http://localhost:3001/';
     }
-    
-    // Temporarily, there is a server collecting and showing logged data. It helps 
+
+    // Temporarily, there is a server collecting and showing logged data. It helps
     // with development, data modeling and debugging.
     const base = 'https://track-suite.herokuapp.com/';
-    
+
     // todo: later switch to real endpoint
     // Real endpoints
     // --------------
@@ -41,7 +41,7 @@ const getUrl = () => {
     // https://data.trezor.io/suite/log/web/beta.log
     // https://data.trezor.io/suite/log/web/develop.log
     // https://data.trezor.io/suite/log/web/stable.log
-    
+
     // todo: env variables that we are going to use
     // process.env.SUITE_TYPE   stands for web | desktop
     // process.env.BUILD        stands for development | beta | production ?

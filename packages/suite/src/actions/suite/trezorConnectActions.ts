@@ -62,13 +62,13 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             process.env.SUITE_TYPE === 'desktop'
                 ? resolveStaticPath('connect/')
                 : // : 'https://connect.trezor.io/8/';
-                  //   'https://localhost:8088/';
+                  // 'https://localhost:8088/';
                   'https://connect.corp.sldev.cz/develop/';
 
         await TrezorConnect.init({
             connectSrc,
             transportReconnect: true,
-            // debug: true,
+            debug: false,
             popup: false,
             webusb: process.env.SUITE_TYPE === 'web',
             pendingTransportEvent: getState().devices.length < 1,
