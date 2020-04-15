@@ -62,14 +62,22 @@ const WalletRow = styled.div`
 const DeviceLabel = styled.div`
     color: ${colors.WHITE};
     display: flex;
-    flex: 1 1 auto;
+    flex: 1;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-width: 0;
 `;
 
 const DeviceIconWrapper = styled.div`
     padding-top: 2px;
     flex: 0;
+`;
+
+const WalletNameWrapper = styled.div`
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
 `;
 
 const IconWrapper = styled.div`
@@ -85,7 +93,7 @@ const getWalletName = (device?: TrezorDevice) => {
     if (device.state) {
         return <Translation id="TR_HIDDEN_WALLET" values={{ id: device.instance }} />;
     }
-    return null;
+    return <Translation id="TR_UNDISCOVERED_WALLET" />;
 };
 
 interface Props {
@@ -151,7 +159,7 @@ const TopMenu = (props: Props) => {
                             {/* TODO: labeling support */}
                             {walletName && (
                                 <>
-                                    {walletName}
+                                    <WalletNameWrapper>{walletName}</WalletNameWrapper>
                                     <IconWrapper>
                                         <Icon size={16} color={colors.BLACK70} icon="ARROW_RIGHT" />
                                     </IconWrapper>
