@@ -41,7 +41,6 @@ const connectDevice = (draft: State, device: Device) => {
             ...device,
             connected: true,
             available: false,
-            features: undefined,
             useEmptyPassphrase: true,
             buttonRequests: [],
             ts: new Date().getTime(),

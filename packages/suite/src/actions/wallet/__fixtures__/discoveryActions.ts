@@ -137,7 +137,6 @@ export const fixtures = [
         },
         // this device is used only to cover missing unavailableCapabilities case
         device: global.JestMocks.getSuiteDevice({
-            state: 'device-state',
             type: 'unacquired',
         }),
     },
@@ -306,7 +305,6 @@ export const unavailableCapabilities = [
         description: 'UnavailableCapability: Device without features',
         // this device is used only to cover missing unavailableCapabilities case
         device: global.JestMocks.getSuiteDevice({
-            state: 'device-state',
             type: 'unacquired',
         }),
         networks: ['xrp'],

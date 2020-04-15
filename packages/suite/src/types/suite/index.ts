@@ -4,13 +4,9 @@ import {
     UiEvent,
     DeviceEvent,
     TransportEvent,
-    Features,
-    DeviceStatus,
-    DeviceMode,
-    DeviceFirmwareStatus,
-    UnavailableCapability,
-    FirmwareRelease,
     BlockchainEvent,
+    KnownDevice,
+    UnknownDevice as UnknownDeviceBase,
 } from 'trezor-connect';
 import { RouterActions } from '@suite-actions/routerActions';
 import { Route as Route$ } from '@suite-constants/routes';
@@ -61,51 +57,22 @@ export type Action =
 export type Dispatch = ThunkDispatch<AppState, any, Action>;
 export type GetState = () => AppState;
 
-export interface AcquiredDevice {
-    type: 'acquired';
-    id: string | null;
-    path: string;
-    label: string;
-    features: Features;
-    firmware: DeviceFirmwareStatus;
-    firmwareRelease?: FirmwareRelease;
-    status: DeviceStatus;
-    mode: DeviceMode;
-    state?: string;
-    unavailableCapabilities: { [key: string]: UnavailableCapability };
-
-    // suite specific
+export interface ExtendedDevice {
     useEmptyPassphrase: boolean;
     passphraseOnDevice?: boolean;
-    remember: boolean; // device should be remembered
+    remember?: boolean; // device should be remembered
     connected: boolean; // device is connected
     available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
-    authConfirm: boolean; // device cannot be used because passphrase was not confirmed
+    authConfirm?: boolean; // device cannot be used because passphrase was not confirmed
     authFailed?: boolean; // device cannot be used because authorization process failed
     instance?: number;
     ts: number;
     buttonRequests: string[];
 }
 
-export interface UnknownDevice {
-    type: 'unacquired' | 'unreadable';
-    id?: null;
-    path: string;
-    label: string;
-    connected: true;
-    available: false;
-    features: undefined;
-    instance?: undefined;
-    useEmptyPassphrase: true;
-    passphraseOnDevice?: false;
-    // types below are here just for type compatibility with AcquiredDevice
-    remember?: boolean;
-    authConfirm?: undefined;
-    authFailed?: undefined;
-    state?: string;
-    ts: number;
-    buttonRequests: string[];
-}
+export type AcquiredDevice = KnownDevice & ExtendedDevice;
+
+export type UnknownDevice = UnknownDeviceBase & ExtendedDevice;
 
 export type TrezorDevice = AcquiredDevice | UnknownDevice;
 

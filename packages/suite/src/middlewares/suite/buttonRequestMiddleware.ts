@@ -14,6 +14,7 @@ const buttonRequest = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatc
         const { device } = api.getState().suite;
         if (
             device &&
+            device.features &&
             device.passphraseOnDevice &&
             device.features.capabilities?.includes('Capability_PassphraseEntry')
         ) {
