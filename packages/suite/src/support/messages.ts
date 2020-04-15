@@ -3057,6 +3057,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Application',
         description: 'Computer program.',
     },
+    TR_MAX_LABEL_LENGTH_IS: {
+        id: 'TR_MAX_LABEL_LENGTH_IS',
+        defaultMessage: 'Max length of label is {length} characters',
+        description: 'How many characters may be in device label.',
+    },
 } as const);
 
 export default definedMessages;
