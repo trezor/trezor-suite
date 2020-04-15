@@ -46,29 +46,45 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                             firmware: `${features.major_version}.${features.minor_version}.${features.patch_version}`,
                             // @ts-ignore todo add to features types, missing
                             backup_type: features.backup_type || 'Bip39',
+                            pin_protection: features.pin_protection,
+                            passphrase_protection: features.passphrase_protection,
                         },
                     }),
                 );
             }
             break;
         case SUITE.SET_FLAG:
-            // here we are reporting some information of user after he finishes initalRun
+            // here we are reporting some information of user after he finishes initialRun
             if (action.key === 'initialRun' && action.value === false) {
-                api.dispatch(
-                    analyticsActions.report({
-                        type: 'initial-run-completed',
-                        payload: {
-                            analytics: state.suite.settings.analytics,
-                            createSeed: state.onboarding.path.includes('create'),
-                            recoverSeed: state.onboarding.path.includes('recovery'),
-                            newDevice: state.onboarding.path.includes('new'),
-                            usedDevice: state.onboarding.path.includes('used'),
-                            // backupError: state.backup.error,
-                            recoveryError: state.recovery.error,
-                            firmwareError: state.firmware.error,
-                        },
-                    }),
-                );
+                if (state.suite.settings.analytics) {
+                    api.dispatch(
+                        analyticsActions.report(
+                            {
+                                type: 'initial-run-completed',
+                                payload: {
+                                    analytics: true,
+                                    createSeed: state.onboarding.path.includes('create'),
+                                    recoverSeed: state.onboarding.path.includes('recovery'),
+                                    newDevice: state.onboarding.path.includes('new'),
+                                    usedDevice: state.onboarding.path.includes('used'),
+                                },
+                            },
+                            false,
+                        ),
+                    );
+                } else {
+                    api.dispatch(
+                        analyticsActions.report(
+                            {
+                                type: 'initial-run-completed',
+                                payload: {
+                                    analytics: false,
+                                },
+                            },
+                            true,
+                        ),
+                    );
+                }
             }
             break;
         default:

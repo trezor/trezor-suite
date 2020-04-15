@@ -1,20 +1,29 @@
 import { SUITE } from '@suite-actions/constants';
 import { isDev } from '@suite-utils/build';
+import { Dispatch, GetState } from '@suite-types';
 
 type Payload =
     | // which transport was initiated on suite start
     { type: 'transport-type'; payload: { type: string; version: string } }
     | { type: 'device-connect'; payload: { device_id: string; firmware: string } }
+    // in case user does not allow analytics, we just log this information and nothing else
     | {
           type: 'initial-run-completed';
           payload: {
-              analytics: boolean;
+              analytics: false;
+          };
+      }
+    | {
+          type: 'initial-run-completed';
+          payload: {
+              analytics: true;
+              // how many users chose to create new wallet
               createSeed: boolean;
+              // how many users chose to do recovery
               recoverSeed: boolean;
+              // how many users clicked that they have a new/used device
               newDevice: boolean;
               usedDevice: boolean;
-              recoveryError: string | undefined;
-              firmwareError: string | undefined;
           };
       };
 
@@ -48,13 +57,23 @@ const getUrl = () => {
     return `${base}/${process.env.SUITE_TYPE}/${process.env.BUILD}.log`;
 };
 
-export const report = (data: Payload) => async () => {
-    const url = getUrl();
-    const payload = encodePayload(data);
+// the only case we want to override users 'do not log' choice is when we
+// want to log that user did not give consent to logging.
+export const report = (data: Payload, force = false) => async (
+    _dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { analytics } = getState().suite.settings;
+    if (!analytics && !force) {
+        return;
+    }
     if (isDev()) {
         // on dev, do nothing
         return;
     }
+    const url = getUrl();
+    const payload = encodePayload(data);
+
     try {
         fetch(url, {
             method: 'POST',
