@@ -14,16 +14,12 @@ const Wrapper = styled.div``;
 
 const StyledCard = styled(Card)`
     flex-direction: column;
+    margin-bottom: 20px;
 `;
 
 const Transactions = styled.div`
     flex-direction: column;
-`;
-
-const StyledTransactionItem = styled(TransactionItem)`
-    & + & {
-        border-top: 2px solid ${colors.BLACK96};
-    }
+    padding: 15px 16px;
 `;
 
 const DayHeading = styled.div`
@@ -31,12 +27,13 @@ const DayHeading = styled.div`
     top: 0;
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
-    min-height: 35px; /* same as height of baddge with fiat value plus padding */
+    min-height: 35px; /* same as height of badge with fiat value plus padding */
     color: ${colors.BLACK50};
+    border-bottom: 2px solid ${colors.BLACK96};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    padding: 5px 16px;
+    padding: 5px 0;
     text-transform: uppercase;
-    background: ${colors.BLACK96};
+    background: ${colors.WHITE};
     justify-content: space-between;
     align-items: center;
 
@@ -164,7 +161,7 @@ const TransactionList = ({
                                     )}
                                 </DayHeading>
                                 {transactionsByDate[dateKey].map((tx: WalletAccountTransaction) => (
-                                    <StyledTransactionItem key={tx.txid} transaction={tx} />
+                                    <TransactionItem key={tx.txid} transaction={tx} />
                                 ))}
                             </React.Fragment>
                         );
