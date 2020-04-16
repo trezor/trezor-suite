@@ -74,7 +74,7 @@ const EmptyWallet = (props: Props) => {
                         <Translation id="TR_FINISH_ADVANCED_SECURITY" />
                     </InlineButton>
                 </SecurityItem>
-                <SecurityItem>
+                {/* <SecurityItem>
                     <Translation id="TR_LOOKING_FOR_QUICK_EASY" />
                     <InlineButton
                         variant="tertiary"
@@ -87,7 +87,7 @@ const EmptyWallet = (props: Props) => {
                     >
                         Buy BTC
                     </InlineButton>
-                </SecurityItem>
+                </SecurityItem> */}
             </Content>
         </Wrapper>
     );
