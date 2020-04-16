@@ -13,7 +13,7 @@ import { Account, WalletParams } from '@wallet-types';
 import AccountGroup from './components/AccountGroup';
 import AccountItem from './components/AccountItem/Container';
 import AddAccountButton from './components/AddAccount';
-import { useScrollRef } from './components/useScrollRef';
+import { useScrollRef } from '@suite-hooks/useScrollRef';
 
 const Wrapper = styled.div`
     flex: 1;
