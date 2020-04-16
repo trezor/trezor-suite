@@ -306,6 +306,7 @@
 	"TR_RECOVER_SUBHEADING_MODEL_T": "On model T the entire recovery process is doable on device.",
 	"TR_RECOVERY_ERROR": "Device recovery failed with error: {error}",
 	"TR_RECOVERY_SEED_IS": "Recovery seed is a list of words in a specific order which store all the information needed.",
+	"TR_CHECK_RECOVERY_SEED_DESCRIPTION": "Recovery seed is a list of words in a specific order which store all the information needed.",
 	"TR_RECOVERY_TYPES_DESCRIPTION": "Both methods are safe. Basic recovery uses on computer input of words in randomized order. Advanced recovery uses on-screen input to load your recovery seed. {TR_LEARN_MORE_LINK}",
 	"TR_REMEMBER_ALLOWS_YOU_TO": "Remember allows you to access any wallet in watch-only mode without connected device.",
 	"TR_REMEMBER_WALLET": "Remember wallet",
@@ -677,5 +678,11 @@
 	"TR_BACK_TO_ONBOARDING": "Back to onboarding",
 	"TR_LOCALIZATION": "Localization",
 	"TR_APPLICATION": "Application",
-	"TR_MAX_LABEL_LENGTH_IS": "Max length of label is {length} characters"
+	"TR_MAX_LABEL_LENGTH_IS": "Max length of label is {length} characters",
+	"TR_I_HAVE_ENOUGH_TIME_TO_DO": "I have enough time to do a backup (few minutes)",
+	"TR_ONCE_YOU_BEGIN_THIS_PROCESS": "Once you begin this process you can’t pause it or do it again. Please ensure you have enough time to do this backup.",
+	"TR_I_AM_IN_SAFE_PRIVATE_OR": "I am in a safe private or public place away from cameras",
+	"TR_MAKE_SURE_NO_ONE_CAN_PEEK": "Make sure no one can peek above your shoulder or there are no cameras watching your screen. Nobody should ever see your seed.",
+	"TR_I_UNDERSTAND_SEED_IS_IMPORTANT": "I understand seed is important and I should keep it safe",
+	"TR_BACKUP_SEED_IS_ULTIMATE": "Backup seed is the ultimate key to your Wallet and funds. Once you lose it, it’s gone forever and there is no way to restore lost seed."
 }
