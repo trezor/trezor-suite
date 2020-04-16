@@ -1418,6 +1418,11 @@ const definedMessages = defineMessages({
             'Recovery seed is a list of words in a specific order which store all the information needed.',
         id: 'TR_RECOVERY_SEED_IS',
     },
+    TR_CHECK_RECOVERY_SEED_DESCRIPTION: {
+        defaultMessage:
+            'Recovery seed is a list of words in a specific order which store all the information needed.',
+        id: 'TR_CHECK_RECOVERY_SEED_DESCRIPTION',
+    },
     TR_RECOVERY_TYPES_DESCRIPTION: {
         defaultMessage:
             'Both methods are safe. Basic recovery uses on computer input of words in randomized order. Advanced recovery uses on-screen input to load your recovery seed. {TR_LEARN_MORE_LINK}',
@@ -3061,6 +3066,33 @@ const definedMessages = defineMessages({
         id: 'TR_MAX_LABEL_LENGTH_IS',
         defaultMessage: 'Max length of label is {length} characters',
         description: 'How many characters may be in device label.',
+    },
+    TR_I_HAVE_ENOUGH_TIME_TO_DO: {
+        id: 'TR_I_HAVE_ENOUGH_TIME_TO_DO',
+        defaultMessage: 'I have enough time to do a backup (few minutes)',
+    },
+    TR_ONCE_YOU_BEGIN_THIS_PROCESS: {
+        id: 'TR_ONCE_YOU_BEGIN_THIS_PROCESS',
+        defaultMessage:
+            'Once you begin this process you can’t pause it or do it again. Please ensure you have enough time to do this backup.',
+    },
+    TR_I_AM_IN_SAFE_PRIVATE_OR: {
+        id: 'TR_I_AM_IN_SAFE_PRIVATE_OR',
+        defaultMessage: 'I am in a safe private or public place away from cameras',
+    },
+    TR_MAKE_SURE_NO_ONE_CAN_PEEK: {
+        id: 'TR_MAKE_SURE_NO_ONE_CAN_PEEK',
+        defaultMessage:
+            'Make sure no one can peek above your shoulder or there are no cameras watching your screen. Nobody should ever see your seed.',
+    },
+    TR_I_UNDERSTAND_SEED_IS_IMPORTANT: {
+        id: 'TR_I_UNDERSTAND_SEED_IS_IMPORTANT',
+        defaultMessage: 'I understand seed is important and I should keep it safe',
+    },
+    TR_BACKUP_SEED_IS_ULTIMATE: {
+        id: 'TR_BACKUP_SEED_IS_ULTIMATE',
+        defaultMessage:
+            'Backup seed is the ultimate key to your Wallet and funds. Once you lose it, it’s gone forever and there is no way to restore lost seed.',
     },
 } as const);
 
