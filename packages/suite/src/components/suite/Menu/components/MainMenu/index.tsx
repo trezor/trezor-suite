@@ -16,7 +16,7 @@ const MenuItemWrapper = styled.div`
     background: ${colors.BLACK17};
     font-size: ${variables.FONT_SIZE.SMALL};
     display: flex;
-    margin-top: 5px;
+    flex-direction: column;
 `;
 
 interface ComponentProps {
@@ -27,8 +27,8 @@ interface ComponentProps {
 const In = styled.div<ComponentProps>`
     cursor: ${props => (!props.isDisabled ? 'pointer' : 'initial')};
     opacity: ${props => (!props.isDisabled ? 1 : 0.4)};
-    border-top-left-radius: 3px;
-    border-bottom-left-radius: 3px;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
     display: flex;
     flex: 1;
     margin-left: 6px;
@@ -70,10 +70,40 @@ const IconWrapper = styled(InnerWrapper)<ComponentProps>`
 `;
 
 const Text = styled(InnerWrapper)<ComponentProps>``;
+
 const ComingSoon = styled.div`
     font-size: 9px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     color: ${colors.WHITE};
+`;
+
+const CornerWrapper = styled.div`
+    width: 100%;
+    height: 8px;
+    display: flex;
+    justify-content: flex-end;
+`;
+
+const CornerBg = styled.div`
+    position: absolute;
+    height: 8px;
+    width: 8px;
+    background: ${colors.BACKGROUND};
+`;
+
+const Corner = styled.div`
+    height: 8px;
+    position: relative;
+    width: 8px;
+    background: ${colors.BLACK17};
+`;
+
+const CornerTop = styled(Corner)`
+    border-bottom-right-radius: 6px;
+`;
+
+const CornerBottom = styled(Corner)`
+    border-top-right-radius: 6px;
 `;
 
 interface Props {
@@ -91,6 +121,12 @@ const Menu = (props: Props) => (
             const callback = (isActive && props.openSecondaryMenu) || props.goto;
             return (
                 <MenuItemWrapper key={route}>
+                    {isActive && (
+                        <CornerWrapper>
+                            <CornerBg />
+                            <CornerTop />
+                        </CornerWrapper>
+                    )}
                     <In
                         data-test={`@suite/menu/${route}`}
                         onClick={() => !isDisabled && callback(routeObj!.name)}
@@ -113,6 +149,12 @@ const Menu = (props: Props) => (
                             </ComingSoon>
                         )}
                     </In>
+                    {isActive && (
+                        <CornerWrapper>
+                            <CornerBg />
+                            <CornerBottom />
+                        </CornerWrapper>
+                    )}
                 </MenuItemWrapper>
             );
         })}
