@@ -17,6 +17,7 @@
 	"TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY": "There are no coins enabled in settings.",
 	"TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC": "It’s so empty here. Can’t even describe the emptiness I’m feelin’ here… You can either add new account (that will enable selected coin) or enable any coin in Settings.",
 	"TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR": "Discovery error.",
+	"TR_ACCOUNT_EXCEPTION_DISCOVERY_DESCRIPTION": "Discovery error description",
 	"TR_ACCOUNT_EXCEPTION_NOT_ENABLED": "{networkName} not enabled in settings.",
 	"TR_ACCOUNT_EXCEPTION_NOT_EXIST": "Account does not exist",
 	"TR_ACCOUNT_HASH": "Account #{number}",
@@ -59,6 +60,7 @@
 	"TR_BACK": "Back",
 	"TR_BACKEND_CONNECT": "Connect",
 	"TR_BACKEND_DISCONNECTED": "Backend is disconnected",
+	"TR_BACKEND_RECONNECTING": ". Reconnecting in {time} sec...",
 	"TR_BACKGROUND_GALLERY": "Homescreen background gallery",
 	"TR_BACKUP": "Backup",
 	"TR_BACKUP_FAILED": "Backup failed and your Wallet is not backed up. You can still use it without any problems but highly recommend you following the link and see how to successfully create a backup.",
@@ -84,6 +86,7 @@
 	"TR_CHECK_YOUR_DEVICE": "Check your device",
 	"TR_CHOOSE_BETWEEN_NO_PASSPHRASE": "Choose between no-passphrase or hidden wallet with passphrase.",
 	"TR_CLEAR": "Clear",
+	"TR_CLEAR_ALL": "Clear all",
 	"TR_CLOSE": "Close",
 	"TR_COIN_DISCOVERY_IN_PROGRESS": "Coin discovery in progress…",
 	"TR_COINS": "Coins",
@@ -493,6 +496,7 @@
 	"TX_CONFIRMATIONS_EXPLAIN": "TODO TODO TODO ExPlAnAtIoN",
 	"TR_LAST_UPDATE": "Last update: {value}",
 	"TR_LIVE": "Live",
+	"TR_TRANSACTIONS": "Transactions",
 	"TR_NUMBER_OF_TRANSACTIONS": "Number of transactions",
 	"TR_N_TRANSACTIONS": "{value} {value, plural, one {transaction} other {transactions}}",
 	"TR_TREZOR_BRIDGE_DOWNLOAD": "Trezor Bridge Download",
@@ -597,6 +601,7 @@
 	"TR_ENABLE_PASSPHRASE_DESCRIPTION": "Enable passphrase description",
 	"TR_ENABLE_PASSPHRASE": "Enable passphrase",
 	"TR_PASSPHRASE": "Passphrase",
+	"TR_PASSPHRASE_PROTECTION": "Passphrase",
 	"TR_PASSPHRASE_PROTECTION_ENABLED": "Passphrase protection enabled!",
 	"TR_CREATE_HIDDEN_WALLET": "Create hidden wallet",
 	"TR_DISCREET_MODE": "Discreet mode",
@@ -671,5 +676,6 @@
 	"TR_DEVICE_IN_BOOTLOADER_EXPLAINED": "In bootloader mode, device is ready to receive firmware updates but it also means that nothing else might be done with it. To get back into normal mode simply reconnect it.",
 	"TR_BACK_TO_ONBOARDING": "Back to onboarding",
 	"TR_LOCALIZATION": "Localization",
-	"TR_APPLICATION": "Application"
+	"TR_APPLICATION": "Application",
+	"TR_MAX_LABEL_LENGTH_IS": "Max length of label is {length} characters"
 }
