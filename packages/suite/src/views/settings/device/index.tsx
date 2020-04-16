@@ -141,7 +141,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                     <SectionItem>
                         <TextColumn
                             title={<Translation id="TR_CHECK_RECOVERY_SEED" />}
-                            description={<Translation id="TR_RECOVERY_SEED_IS" />}
+                            description={<Translation id="TR_CHECK_RECOVERY_SEED_DESCRIPTION" />}
                             learnMore={DRY_RUN_URL}
                         />
                         <ActionColumn>
