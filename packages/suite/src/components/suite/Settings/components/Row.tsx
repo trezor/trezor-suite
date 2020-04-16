@@ -14,9 +14,9 @@ const Wrapper = styled.div`
     flex: 1;
     & + & {
         &::before {
-            content:"";
+            content: '';
             margin: 0 auto;
-            width: 92%;
+            width: 94%;
             border-top: 1px solid rgba(0, 0, 0, 0.1);
         }
     }

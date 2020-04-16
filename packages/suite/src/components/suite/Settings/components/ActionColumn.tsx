@@ -1,4 +1,4 @@
-import react from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Input, InputProps, Select, variables, Button } from '@trezor/components';
 
@@ -16,8 +16,6 @@ export const ActionColumn = styled.div`
 const InputWrapper = styled.div`
     margin: 4px;
     width: 100%;
-    // flex: 1;
-    // justify-content: flex-end;
     @media all and (min-width: ${SCREEN_SIZE.SM}) {
         width: 170px;
     }
@@ -28,10 +26,8 @@ export const ActionInput = (props: InputProps) => {
         <InputWrapper>
             <Input {...props} />
         </InputWrapper>
-    )
-
-}
-// wrapperProps={{ style: { flex: 1, alignItems: 'flex-end'} }}
+    );
+};
 
 export const ActionSelect = styled(Select)`
     width: 170px;
