@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, H2, Button } from '@trezor/components';
+import { colors, H2, Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import * as deviceUtils from '@suite-utils/device';
@@ -13,8 +13,12 @@ import WebusbButton from '../WebusbButton';
 const Wrapper = styled(ModalWrapper)`
     flex-direction: column;
     text-align: center;
-    width: 100%;
-    max-width: 720px;
+    width: 720px;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        min-width: 320px;
+        width: 100%;
+    }
 `;
 
 const Description = styled.div`
