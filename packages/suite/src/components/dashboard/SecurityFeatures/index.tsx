@@ -14,7 +14,7 @@ const Section = styled.div`
 
 const Content = styled.div`
     display: grid;
-    grid-gap: 10px;
+    grid-gap: 16px;
     grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
 `;
 
