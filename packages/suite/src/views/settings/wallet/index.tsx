@@ -43,15 +43,9 @@ const Settings = (props: Props) => {
 
     return (
         <SettingsLayout>
-            {/* disabled for matejs discretion */}
-            {/* <H2>
-                <Translation id="TR_COINS_TO_DISCOVER" />
-            </H2> */}
-            {/* <P size="tiny">
-                <Translation id="TR_COINS_SETTINGS_ALSO_DEFINES" />
-            </P> */}
             <CoinsGroup
                 label={<Translation id="TR_COINS" />}
+                description={<Translation id="TR_COINS_SETTINGS_ALSO_DEFINES" />}
                 enabledNetworks={enabledMainnetNetworks}
                 filterFn={mainnetNetworksFilterFn}
                 onToggleOneFn={props.changeCoinVisibility}

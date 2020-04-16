@@ -56,7 +56,7 @@ export default () => {
                     <Switch checked={false} onChange={() => console.log('change')} />
                 </Right>
             </Row>
-            <StyledInput display="block" value="" variant="small" />
+            <StyledInput value="" variant="small" />
         </Wrapper>
     );
 };

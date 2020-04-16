@@ -11,6 +11,7 @@ interface TextColumnProps {
 
 const Wrapper = styled.div`
     display: flex;
+    justify-content: center;
     flex-direction: column;
     text-align: left;
     margin-right: 16px;
@@ -23,7 +24,7 @@ const Description = styled.div`
 `;
 
 const Title = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
 const TextColumn = ({ title, description, learnMore }: TextColumnProps) => {

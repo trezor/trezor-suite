@@ -56,7 +56,6 @@ export default ({ send, sendFormActions, account }: Props) => {
         <Wrapper>
             <ItemWrapper>
                 <Input
-                    display="block"
                     variant="small"
                     state={getInputState(error, value, true, false)}
                     bottomText={getError(error, maxFee, minFee)}
@@ -67,7 +66,7 @@ export default ({ send, sendFormActions, account }: Props) => {
                 />
             </ItemWrapper>
             <ItemWrapper>
-                <Select display="block" variant="small" isDisabled value={getValue(networkType)} />
+                <Select variant="small" isDisabled value={getValue(networkType)} />
             </ItemWrapper>
         </Wrapper>
     );

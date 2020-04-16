@@ -2,7 +2,7 @@ import React from 'react';
 import ReactSelect, { Props as SelectProps } from 'react-select';
 import styled from 'styled-components';
 import { colors, variables } from '../../../config';
-import { InputDisplay, InputVariant } from '../../../support/types';
+import { InputVariant } from '../../../support/types';
 
 const selectStyle = (
     isSearchable: boolean,
@@ -105,7 +105,6 @@ interface Props extends Omit<SelectProps, 'components'> {
     isClean?: boolean;
     topLabel?: React.ReactNode;
     wrapperProps?: Record<string, any>;
-    display?: InputDisplay;
     variant?: InputVariant;
 }
 

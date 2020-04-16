@@ -220,8 +220,8 @@ const Recovery = ({
                         description={<Translation id="TR_DRY_RUN_CHECK_ITEM_DESCRIPTION" />}
                         isChecked={understood}
                         link={
-                            <ExternalLink size="small" href={URLS.DRY_RUN_URL}>
-                                <Translation id="TR_WHAT_IS_DRY_RUN" />
+                            <ExternalLink size="tiny" href={URLS.DRY_RUN_URL}>
+                                <Translation id="TR_LEARN_MORE" />
                             </ExternalLink>
                         }
                         onClick={() => setUnderstood(!understood)}

@@ -51,6 +51,9 @@ export default (state: State = initialState, action: Action): State => {
                 device: action.payload.device,
                 windowType: action.payload.code,
             };
+        case UI.FIRMWARE_PROGRESS:
+            // firmware update first sends UI.REQUEST_BUTTON. Clear it after first progress is received
+            return initialState;
         case UI.REQUEST_CONFIRMATION:
             return {
                 context: MODAL.CONTEXT_DEVICE_CONFIRMATION,

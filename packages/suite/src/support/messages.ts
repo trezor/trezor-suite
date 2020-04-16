@@ -411,7 +411,7 @@ const definedMessages = defineMessages({
     },
     TR_COINS_SETTINGS_ALSO_DEFINES: {
         defaultMessage:
-            'Coins settings also defines the Discovery process when Trezor is connected. Each time you connect not remembered device, Trezor Suite needs to find out what accounts you have by going through each coin one by one. That can take between few seconds to few minutes if you allow all or too many coins.',
+            'Coins settings also defines which network will get discovered after you connect your Trezor.',
         id: 'TR_COINS_SETTINGS_ALSO_DEFINES',
     },
     TR_CONFIRM_ACTION_ON_YOUR: {
@@ -2709,6 +2709,11 @@ const definedMessages = defineMessages({
     TR_CHANGE_PIN_IN_SETTINGS: {
         id: 'TR_CHANGE_PIN_IN_SETTINGS',
         defaultMessage: 'Change PIN in Settings',
+    },
+    TR_CHANGE_PIN: {
+        id: 'TR_CHANGE_PIN',
+        defaultMessage: 'Change PIN',
+        description: 'Button that initiates pin change',
     },
     TR_DEVICE_PIN_PROTECTION_ENABLED: {
         id: 'TR_DEVICE_PIN_PROTECTION_ENABLED',

@@ -50,7 +50,6 @@ storiesOf('Form', module).add(
                     <SubHeading>Monospace with button</SubHeading>
                     <Input
                         value="0x3Ebf31732F5A987b4f130Eb359B0975EBcbd68c8"
-                        display="block"
                         dataTest="input-block-monospace-button"
                         button={{
                             text: 'Scan',
@@ -61,7 +60,6 @@ storiesOf('Form', module).add(
                     <SubHeading>Partially hidden</SubHeading>
                     <Input
                         value="0x3Ebf31732F5A987b4f130Eb359B0975EBcbd68c8"
-                        display="block"
                         dataTest="input-block-monospace-hidden"
                         isPartiallyHidden
                         button={{

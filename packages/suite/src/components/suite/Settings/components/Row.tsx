@@ -4,18 +4,19 @@ import styled from 'styled-components';
 const Content = styled.div`
     display: flex;
     flex: 1;
-    align-items: center;
     justify-content: space-between;
-    padding: 16px 0;
+    padding: 16px 24px;
 `;
 
 const Wrapper = styled.div`
     display: flex;
+    flex-direction: column;
     flex: 1;
-    padding: 0 24px;
-
     & + & {
-        ${Content} {
+        &::before {
+            content: '';
+            margin: 0 auto;
+            width: 94%;
             border-top: 1px solid rgba(0, 0, 0, 0.1);
         }
     }

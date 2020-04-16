@@ -5,7 +5,6 @@ import {
     ActionButton,
     ActionColumn,
     ActionInput,
-    Row,
     SectionItem,
     Section,
     TextColumn,
@@ -19,18 +18,20 @@ import {
 import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import * as homescreen from '@suite-utils/homescreen';
 import { useDeviceActionLocks } from '@suite-utils/hooks';
-import { colors, Link, P, Switch } from '@trezor/components';
+import { variables, Link, P, Switch } from '@trezor/components';
 import React, { createRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { Props } from './Container';
 
 const RotationButton = styled(ActionButton)`
-    min-width: 78px;
-`;
+    min-width: 81px;
+    margin: 4px;
+    flex-basis: 45%;
 
-const BackupFailedRow = styled(Row)`
-    background-color: ${colors.BLACK96};
+    @media screen and (min-width: ${variables.SCREEN_SIZE.MD}) {
+        flex-basis: auto;
+    }
 `;
 
 const BackupFailedLink = styled(Link)`
@@ -98,13 +99,11 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
 
     return (
         <SettingsLayout>
-            {/* disabled for matejs discretion */}
-            {/* <H2>{device.label}</H2> */}
             <Section title={<Translation id="TR_BACKUP" />}>
                 <SectionItem>
                     <TextColumn
                         title={<Translation id="TR_BACKUP_RECOVERY_SEED" />}
-                        description={<Translation id="TR_RECOVERY_SEED_IS" />}
+                        description={<Translation id="TR_BACKUP_SUBHEADING_1" />}
                         learnMore={SEED_MANUAL_URL}
                     />
                     <ActionColumn>
@@ -126,7 +125,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                     </ActionColumn>
                 </SectionItem>
                 {features.unfinished_backup && (
-                    <BackupFailedRow data-test="@settings/device/failed-backup-row">
+                    <SectionItem data-test="@settings/device/failed-backup-row">
                         <P size="tiny">
                             <Translation id="TR_BACKUP_FAILED" />
                         </P>
@@ -135,7 +134,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                 <Translation id="TR_WHAT_TO_DO_NOW" />
                             </BackupFailedLink>
                         </ActionColumn>
-                    </BackupFailedRow>
+                    </SectionItem>
                 )}
                 {!features.unfinished_backup && (
                     <SectionItem>
@@ -215,7 +214,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                 variant="secondary"
                                 data-test="@settings/device/update-button"
                             >
-                                Change PIN
+                                <Translation id="TR_CHANGE_PIN" />
                             </ActionButton>
                         </ActionColumn>
                     </SectionItem>
@@ -261,7 +260,6 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         <ActionInput
                             variant="small"
                             value={label}
-                            wrapperProps={{ style: { width: 'initial' } }}
                             state={label.length > MAX_LABEL_LENGTH ? 'error' : undefined}
                             onChange={(event: React.FormEvent<HTMLInputElement>) =>
                                 setLabel(event.currentTarget.value)
