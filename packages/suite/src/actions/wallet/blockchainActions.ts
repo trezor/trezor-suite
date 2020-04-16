@@ -172,7 +172,7 @@ export const onConnect = (symbol: string) => async (dispatch: Dispatch, getState
     }
     await dispatch(subscribe(network.symbol));
     await dispatch(updateFeeInfo(network.symbol));
-    await dispatch(fiatRatesActions.initRates());
+    dispatch(fiatRatesActions.initRates());
 };
 
 export const onBlockMined = (block: BlockchainBlock) => async (
