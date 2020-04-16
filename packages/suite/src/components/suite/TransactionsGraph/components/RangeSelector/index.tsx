@@ -33,6 +33,10 @@ const RANGES = [
         label: 'year',
         weeks: 52,
     },
+    {
+        label: 'all',
+        weeks: null,
+    },
 ] as const;
 
 interface Props {

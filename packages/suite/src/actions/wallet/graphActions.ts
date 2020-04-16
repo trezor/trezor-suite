@@ -9,6 +9,7 @@ import {
     AGGREGATED_GRAPH_START,
     AGGREGATED_GRAPH_SUCCESS,
     ACCOUNT_GRAPH_START,
+    SET_SELECTED_RANGE,
 } from './constants/graphConstants';
 import { Account } from '@wallet-types';
 import { GraphRange } from '@wallet-types/fiatRates';
@@ -47,7 +48,16 @@ export type GraphActions =
           payload: {
               interval: GraphRange['label'];
           };
+      }
+    | {
+          type: typeof SET_SELECTED_RANGE;
+          payload: GraphRange;
       };
+
+export const setSelectedRange = (range: GraphRange) => ({
+    type: SET_SELECTED_RANGE,
+    payload: range,
+});
 
 /**
  * Fetch the account history (received, sent amounts, num of txs) for the given `startDate`, `endDate`.
@@ -62,8 +72,8 @@ export type GraphActions =
  */
 export const fetchAccountGraphData = (
     account: Account,
-    startDate: Date,
-    endDate: Date,
+    startDate: Date | null,
+    endDate: Date | null,
     range: GraphRange,
 ) => async (dispatch: Dispatch, _getState: GetState) => {
     const interval = range.label;
@@ -75,17 +85,29 @@ export const fetchAccountGraphData = (
         },
     });
 
+    let intervalParams = {};
     const secondsInDay = 3600 * 24;
     const secondsInMonth = secondsInDay * 30;
-    const groupBy = range.weeks >= 52 ? secondsInMonth : secondsInDay; // group by month or day
+    let groupBy = secondsInMonth;
+    if (range.weeks) {
+        groupBy = range.weeks >= 52 ? secondsInMonth : secondsInDay; // group by month or day
+        intervalParams = {
+            from: getUnixTime(startDate!),
+            to: getUnixTime(endDate!),
+            groupBy,
+        };
+    } else {
+        groupBy = secondsInMonth;
+        intervalParams = {
+            groupBy,
+        };
+    }
 
     const setDayToFirstOfMonth = groupBy >= secondsInMonth;
     const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
         coin: account.symbol,
         descriptor: account.descriptor,
-        from: getUnixTime(startDate),
-        to: getUnixTime(endDate),
-        groupBy,
+        ...intervalParams,
     });
 
     if (response?.success) {
@@ -115,18 +137,22 @@ export const fetchAccountGraphData = (
     return null;
 };
 
-export const updateGraphData = (accounts: Account[], range: GraphRange) => async (
+export const updateGraphData = (accounts: Account[]) => async (
     dispatch: Dispatch,
+    getState: GetState,
 ) => {
-    const startDate = subWeeks(new Date(), range.weeks);
-    const endDate = new Date();
-    const interval = range.label;
+    const { selectedRange } = getState().wallet.graph;
+
+    const startDate =
+        selectedRange.label === 'all' ? null : subWeeks(new Date(), selectedRange.weeks!);
+    const endDate = selectedRange.label === 'all' ? null : new Date();
+    const interval = selectedRange.label;
     dispatch({
         type: AGGREGATED_GRAPH_START,
         payload: { interval },
     });
     const promises = accounts.map(a =>
-        dispatch(fetchAccountGraphData(a, startDate, endDate, range)),
+        dispatch(fetchAccountGraphData(a, startDate, endDate, selectedRange)),
     );
     await Promise.all(promises);
 

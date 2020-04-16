@@ -33,7 +33,7 @@ export const getDateWithTimeZone = (date: number, timeZone?: string) => {
 export const getTicksBetweenTimestamps = (
     from: Date,
     to: Date,
-    interval: 'month' | 'day' | '2-day',
+    interval: 'quarter' | 'month' | 'day' | '2-day',
 ) => {
     const months = [];
     let fromDate = from;
@@ -47,6 +47,11 @@ export const getTicksBetweenTimestamps = (
     fromDate = startOfDay(fromDate);
 
     while (isBefore(fromDate, toDate)) {
+        if (interval === 'quarter') {
+            fromDate = startOfMonth(fromDate);
+            months.push(fromDate);
+            fromDate = addMonths(fromDate, 3);
+        }
         if (interval === 'month') {
             // set date to 1 in case of monthly timestamps
             fromDate = startOfMonth(fromDate);
@@ -82,6 +87,18 @@ export const calcTicks = (weeks: number, options?: { skipDays?: boolean }) => {
     }
 
     return getTicksBetweenTimestamps(startDate, endDate, interval);
+};
+
+export const calcTicksFromData = (data: { time: number }[]) => {
+    if (!data || data.length < 1) return [];
+    const startDate = data.reduce((min, current) => {
+        return current.time < min ? current.time : min;
+    }, data[0].time);
+    const endDate = data.reduce((max, current) => {
+        return current.time > max ? current.time : max;
+    }, data[0].time);
+
+    return getTicksBetweenTimestamps(fromUnixTime(startDate), fromUnixTime(endDate), 'quarter');
 };
 /**
  * Returns array of timestamps between `from` and `to` split by `interval`

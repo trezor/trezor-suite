@@ -1,10 +1,8 @@
 import { MiddlewareAPI } from 'redux';
-import { SETTINGS } from '@suite-config';
 import { SUITE } from '@suite-actions/constants';
 import { BLOCKCHAIN, ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as fiatRatesActions from '@wallet-actions/fiatRatesActions';
-import * as graphActions from '@wallet-actions/graphActions';
 import { AppState, Action, Dispatch } from '@suite-types';
 
 const fiatRatesMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
@@ -41,8 +39,6 @@ const fiatRatesMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
                     }
                 });
             }
-
-            api.dispatch(graphActions.updateGraphData([account], SETTINGS.DEFAULT_GRAPH_RANGE));
             break;
         }
         case WALLET_SETTINGS.CHANGE_NETWORKS:
