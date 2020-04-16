@@ -109,13 +109,15 @@ const PortfolioCard = ({
                     </ValueWrapper>
                 </Left>
                 <Right>
-                    <ActionButton
-                        isDisabled={!!mode}
-                        variant="primary"
-                        onClick={receiveClickHandler}
-                    >
-                        <Translation id="TR_RECEIVE" />
-                    </ActionButton>
+                    {isDeviceEmpty && (
+                        <ActionButton
+                            isDisabled={!!mode}
+                            variant="primary"
+                            onClick={receiveClickHandler}
+                        >
+                            <Translation id="TR_RECEIVE" />
+                        </ActionButton>
+                    )}
                     {/* <ActionButton isDisabled={!!mode} variant="primary" onClick={buyClickHandler}>
                         <Translation id="TR_BUY" />
                     </ActionButton> */}
