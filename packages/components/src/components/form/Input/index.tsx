@@ -3,12 +3,7 @@ import styled, { css } from 'styled-components';
 import FluidSpinner from '../../loaders/FluidSpinner';
 import { Icon } from '../../Icon';
 import { colors, variables } from '../../../config';
-import {
-    InputState,
-    InputVariant,
-    InputButton,
-    TextAlign,
-} from '../../../support/types';
+import { InputState, InputVariant, InputButton, TextAlign } from '../../../support/types';
 import { getStateColor } from '../../../utils';
 
 interface WrappedProps {
