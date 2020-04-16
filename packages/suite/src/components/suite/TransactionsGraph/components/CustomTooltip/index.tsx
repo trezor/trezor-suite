@@ -101,14 +101,16 @@ const CustomTooltip = ({ active, payload, coordinate, ...props }: Props) => {
                 <FormattedNumber currency={props.localCurrency} value={sentAmountString ?? '0'} />
             );
 
+        const showMMYYFormat =
+            props.selectedRange?.label === 'year' || props.selectedRange?.label === 'all';
         return (
             <CustomTooltipWrapper coordinate={coordinate!}>
                 <DateWrapper>
-                    {date && props.selectedRange?.label === 'year' && (
+                    {date && showMMYYFormat && (
                         //
                         <FormattedDate value={date} year="numeric" month="2-digit" />
                     )}
-                    {date && props.selectedRange?.label !== 'year' && (
+                    {date && !showMMYYFormat && (
                         <FormattedDate value={date} year="numeric" month="2-digit" day="2-digit" />
                     )}
                 </DateWrapper>

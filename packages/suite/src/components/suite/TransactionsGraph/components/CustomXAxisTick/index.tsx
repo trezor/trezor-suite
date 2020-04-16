@@ -1,13 +1,9 @@
 import React from 'react';
 import { FormattedDate } from 'react-intl';
-
-interface Range {
-    label: string;
-    weeks: number;
-}
+import { GraphRange } from '@wallet-types/fiatRates';
 
 interface CustomXAxisProps {
-    selectedRange: Range;
+    selectedRange: GraphRange;
     [k: string]: any;
 }
 
@@ -15,13 +11,15 @@ const CustomXAxisTick = (props: CustomXAxisProps) => {
     const { x, y, payload } = props;
     const date = new Date(0);
     date.setUTCSeconds(payload.value);
+    const showMMYYFormat =
+        props.selectedRange?.label === 'year' || props.selectedRange?.label === 'all';
     return (
         <g transform={`translate(${x},${y})`}>
             <text x={0} y={0} dy={16} textAnchor="end" fill="#666" transform="rotate(-50)">
-                {date && props.selectedRange?.label === 'year' && (
+                {date && showMMYYFormat && (
                     <FormattedDate value={date} month="2-digit" year="numeric" />
                 )}
-                {date && props.selectedRange?.label !== 'year' && (
+                {date && !showMMYYFormat && (
                     <FormattedDate value={date} day="2-digit" month="2-digit" />
                 )}
             </text>

@@ -85,8 +85,8 @@ const TransactionsGraph = React.memo((props: Props) => {
     //           )
     //         : null;
 
-    const xAxisPadding = selectedRange.label === 'year' ? 3600 * 24 * 7 : 3600 * 12; // 7 days or 12 hours
-
+    const xAxisPadding =
+        selectedRange.label === 'year' || selectedRange.label === 'all' ? 3600 * 24 * 7 : 3600 * 12; // 7 days or 12 hours
     return (
         <Wrapper>
             <Toolbar>
@@ -171,14 +171,14 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 dataKey={(data: any) => -1 * Number(props.sentValueFn(data))}
                                 stackId="stack"
                                 fill={colors.RED_ERROR}
-                                barSize={8}
+                                barSize={selectedRange.label === 'all' ? 4 : 8}
                                 shape={<CustomBar variant="sent" />}
                             />
                             <Bar
                                 dataKey={(data: any) => Number(props.receivedValueFn(data))}
                                 stackId="stack"
                                 fill={colors.GREEN}
-                                barSize={8}
+                                barSize={selectedRange.label === 'all' ? 4 : 8}
                                 shape={<CustomBar variant="received" />}
                             />
                         </BarChart>

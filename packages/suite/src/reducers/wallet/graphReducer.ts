@@ -5,6 +5,7 @@ import { STORAGE } from '@suite-actions/constants';
 import { WalletAction, Network, Account } from '@wallet-types';
 import { Action as SuiteAction } from '@suite-types';
 import { GraphRange } from '@suite/types/wallet/fiatRates';
+import { SETTINGS } from '@suite-config';
 // import { SETTINGS } from '@suite-config';
 
 interface AccountIdentifier {
@@ -26,17 +27,20 @@ interface State {
     data: GraphData[];
     error: { [k in GraphData['interval']]: null | AccountIdentifier[] };
     isLoading: { [k in GraphData['interval']]: boolean };
-    // selectedRange: GraphRange;
+    selectedRange: GraphRange;
 }
 
 const initialState: State = {
     data: [],
+    selectedRange: SETTINGS.DEFAULT_GRAPH_RANGE,
     error: {
+        all: null,
         year: null,
         month: null,
         week: null,
     },
     isLoading: {
+        all: false,
         year: false,
         month: false,
         week: false,
@@ -45,7 +49,7 @@ const initialState: State = {
 };
 
 const updateError = (draft: State, interval?: GraphRange['label']) => {
-    const intervals = interval ? [interval] : (['week', 'month', 'year'] as const);
+    const intervals = interval ? [interval] : (['week', 'month', 'year', 'all'] as const);
 
     intervals.forEach(interval => {
         const failedGraphData = draft.data.filter(d => !!d.error && d.interval === interval);
@@ -122,6 +126,9 @@ export default (state: State = initialState, action: WalletAction | SuiteAction)
                 break;
             case GRAPH.AGGREGATED_GRAPH_SUCCESS:
                 draft.isLoading[action.payload.interval] = false;
+                break;
+            case GRAPH.SET_SELECTED_RANGE:
+                draft.selectedRange = action.payload;
                 break;
             // case ACCOUNT.UPDATE:
             //     update(draft, action.payload);

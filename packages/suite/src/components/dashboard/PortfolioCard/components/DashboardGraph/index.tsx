@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { GraphRange } from '@wallet-types/fiatRates';
 import { TransactionsGraph, Translation } from '@suite-components';
 import { Props } from './Container';
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
-import { calcTicks } from '@suite/utils/suite/date';
+import { calcTicks, calcTicksFromData } from '@suite/utils/suite/date';
 import { colors, variables, Button } from '@trezor/components';
 import { aggregateBalanceHistory, deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
-import { SETTINGS } from '@suite-config';
 
 const Wrapper = styled.div`
     display: flex;
@@ -41,14 +40,11 @@ const SmallErrorMessage = styled.div`
 `;
 
 const DashboardGraph = (props: Props) => {
-    const { accounts, updateGraphData, selectedDevice } = props;
-    const [selectedRange, setSelectedRange] = useState<GraphRange>(SETTINGS.DEFAULT_GRAPH_RANGE);
-    const didMountRef = useRef(false);
-
+    const { accounts, selectedDevice } = props;
+    const { selectedRange } = props.graph;
     const isLoading = props.graph.isLoading[selectedRange.label];
     const failedAccounts = props.graph.error[selectedRange.label];
 
-    const xTicks = calcTicks(selectedRange.weeks).map(getUnixTime);
     const deviceGraphData = selectedDevice
         ? props.graph.data.filter(
               d =>
@@ -58,18 +54,10 @@ const DashboardGraph = (props: Props) => {
         : [];
 
     const data = aggregateBalanceHistory(deviceGraphData);
-    const dataLength = data.length;
-
-    useEffect(() => {
-        if (didMountRef.current) {
-            // console.log('running use effect', accounts, selectedRange);
-            if (dataLength === 0) {
-                updateGraphData(accounts, selectedRange);
-            }
-        } else {
-            didMountRef.current = true;
-        }
-    }, [accounts, dataLength, selectedRange, updateGraphData]);
+    const xTicks =
+        selectedRange.label === 'all'
+            ? calcTicksFromData(data).map(getUnixTime)
+            : calcTicks(selectedRange.weeks).map(getUnixTime);
 
     return (
         <Wrapper data-test="@dashboard/graph">
@@ -79,7 +67,7 @@ const DashboardGraph = (props: Props) => {
                         <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />{' '}
                         <Button
                             onClick={() => {
-                                props.updateGraphData(accounts, selectedRange);
+                                props.updateGraphData(accounts);
                             }}
                             icon="REFRESH"
                             variant="tertiary"
@@ -92,14 +80,17 @@ const DashboardGraph = (props: Props) => {
                     <TransactionsGraph
                         variant="all-assets"
                         onRefresh={() => {
-                            props.updateGraphData(accounts, selectedRange);
+                            props.updateGraphData(accounts);
                         }}
                         isLoading={isLoading}
                         localCurrency={props.localCurrency}
                         xTicks={xTicks}
                         data={data}
                         selectedRange={selectedRange}
-                        onSelectedRange={setSelectedRange}
+                        onSelectedRange={(range: GraphRange) => {
+                            props.setSelectedRange(range);
+                            props.updateGraphData(accounts);
+                        }}
                         receivedValueFn={data => data.receivedFiat[props.localCurrency]}
                         sentValueFn={data => data.sentFiat[props.localCurrency]}
                     />
