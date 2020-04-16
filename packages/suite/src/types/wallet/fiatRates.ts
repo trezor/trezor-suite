@@ -4,10 +4,15 @@ export interface FiatTicker {
     mainNetworkSymbol?: string; // symbol of thee main network. (used for tokens)
 }
 
-export interface GraphRange {
-    label: 'week' | 'month' | 'year';
-    weeks: number;
-}
+export type GraphRange =
+    | {
+          label: 'week' | 'month' | 'year';
+          weeks: number;
+      }
+    | {
+          label: 'all';
+          weeks: null;
+      };
 
 export type GraphTicksInterval = 'month' | 'day' | '2-day';
 export interface AggregatedAccountBalanceHistory {

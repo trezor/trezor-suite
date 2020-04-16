@@ -1,14 +1,14 @@
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import * as graphActions from '@wallet-actions/graphActions';
 import { AppState, Dispatch } from '@suite-types';
 import { Account } from '@wallet-types';
-import Component from './index';
-import { bindActionCreators } from 'redux';
+import Summary from './index';
 
 const mapStateToProps = (state: AppState) => ({
-    localCurrency: state.wallet.settings.localCurrency,
+    selectedAccount: state.wallet.selectedAccount,
     graph: state.wallet.graph,
-    selectedDevice: state.suite.device,
+    accounts: state.wallet.accounts,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -16,12 +16,12 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     setSelectedRange: bindActionCreators(graphActions.setSelectedRange, dispatch),
 });
 
-interface OwnProps {
-    discoveryInProgress: boolean;
-    accounts: Account[];
-}
-export type Props = ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps> &
-    OwnProps;
+type OwnProps = {
+    account: Account;
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(Component);
+export type StateProps = ReturnType<typeof mapStateToProps>;
+export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+export type Props = StateProps & DispatchProps & OwnProps;
+
+export default connect(mapStateToProps, mapDispatchToProps)(Summary);

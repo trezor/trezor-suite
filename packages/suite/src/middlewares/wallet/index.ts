@@ -3,6 +3,7 @@ import discoveryMiddleware from './discoveryMiddleware';
 import fiatRatesMiddleware from './fiatRatesMiddleware';
 import storageMiddleware from './storageMiddleware';
 import walletMiddleware from './walletMiddleware';
+import graphMiddleware from './graphMiddleware';
 
 export default [
     blockchainMiddleware,
@@ -10,4 +11,5 @@ export default [
     discoveryMiddleware,
     fiatRatesMiddleware,
     storageMiddleware,
+    graphMiddleware,
 ];
