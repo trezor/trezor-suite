@@ -6,7 +6,6 @@ import { colors, variables } from '../../../config';
 import {
     InputState,
     InputVariant,
-    InputDisplay,
     InputButton,
     TextAlign,
 } from '../../../support/types';
@@ -165,7 +164,6 @@ const Overlay = styled.div<Props>`
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     innerRef?: React.Ref<HTMLInputElement>;
     variant?: InputVariant;
-    display?: InputDisplay;
     button?: InputButton;
     topLabel?: React.ReactNode;
     bottomText?: React.ReactNode;

@@ -192,7 +192,6 @@ const PassphraseTypeCard = (props: Props) => {
                             onChange={onChange}
                             value={displayValue}
                             innerRef={ref}
-                            display="block"
                             bottomText={
                                 isTooLong ? <Translation id="TR_PASSPHRASE_TOO_LONG" /> : null
                             }

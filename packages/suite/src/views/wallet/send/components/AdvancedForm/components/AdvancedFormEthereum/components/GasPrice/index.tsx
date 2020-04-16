@@ -35,7 +35,6 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
     return (
         <Input
             variant="small"
-            display="block"
             state={getInputState(error, value, true, true)}
             topLabel={
                 <Label>

@@ -108,7 +108,6 @@ export default ({ sendFormActions, output, selectedAccount }: Props) => {
                         text: 'Send max',
                     }}
                     align="right"
-                    display="block"
                     value={value || ''}
                     onChange={e => sendFormActions.handleAmountChange(id, e.target.value)}
                     bottomText={getMessage(error, decimals, reserve, isLoading)}

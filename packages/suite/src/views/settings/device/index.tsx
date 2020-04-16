@@ -265,7 +265,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         <ActionInput
                             variant="small"
                             value={label}
-                            wrapperProps={{ style: { flex: 1, alignItems: 'flex-end' } }}
+                            wrapperProps={{ style: { flex: 1, alignItems: 'flex-end'} }}
                             state={label.length > MAX_LABEL_LENGTH ? 'error' : undefined}
                             onChange={(event: React.FormEvent<HTMLInputElement>) =>
                                 setLabel(event.currentTarget.value)

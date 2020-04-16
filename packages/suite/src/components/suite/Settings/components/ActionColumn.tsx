@@ -12,12 +12,14 @@ export const ActionColumn = styled.div`
 `;
 
 export const ActionInput = styled(Input)`
-    width: 170px;
-    @media all and (max-width: ${SCREEN_SIZE.SM}) {
-        min-width: 100%;
-        margin: 5px 0;
+    margin: 4px;
+    // flex: 1;
+    // justify-content: flex-end;
+    @media all and (min-width: ${SCREEN_SIZE.SM}) {
+        max-width: 170px;
     }
 `;
+// wrapperProps={{ style: { flex: 1, alignItems: 'flex-end'} }}
 
 export const ActionSelect = styled(Select)`
     width: 170px;

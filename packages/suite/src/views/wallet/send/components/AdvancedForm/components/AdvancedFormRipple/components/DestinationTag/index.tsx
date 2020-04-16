@@ -41,7 +41,6 @@ const AdvancedFormRipple = ({ send, sendFormActionsRipple }: Props) => {
     return (
         <Input
             state={getInputState(error, value, undefined, false)}
-            display="block"
             variant="small"
             topLabel={
                 <Label>
