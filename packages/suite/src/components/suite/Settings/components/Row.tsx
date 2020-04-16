@@ -10,10 +10,13 @@ const Content = styled.div`
 
 const Wrapper = styled.div`
     display: flex;
+    flex-direction: column;
     flex: 1;
-
     & + & {
-        ${Content} {
+        &::before {
+            content:"";
+            margin: 0 auto;
+            width: 92%;
             border-top: 1px solid rgba(0, 0, 0, 0.1);
         }
     }

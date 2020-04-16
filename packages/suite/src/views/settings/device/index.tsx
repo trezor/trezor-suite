@@ -26,7 +26,7 @@ import styled from 'styled-components';
 import { Props } from './Container';
 
 const RotationButton = styled(ActionButton)`
-    min-width: 78px;
+    min-width: 81px;
     margin: 4px;
     flex-basis: 45%;
 
@@ -265,7 +265,6 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         <ActionInput
                             variant="small"
                             value={label}
-                            wrapperProps={{ style: { flex: 1, alignItems: 'flex-end'} }}
                             state={label.length > MAX_LABEL_LENGTH ? 'error' : undefined}
                             onChange={(event: React.FormEvent<HTMLInputElement>) =>
                                 setLabel(event.currentTarget.value)

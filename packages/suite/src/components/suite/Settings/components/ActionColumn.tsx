@@ -1,5 +1,6 @@
+import react from 'react';
 import styled from 'styled-components';
-import { Input, Select, variables, Button } from '@trezor/components';
+import { Input, InputProps, Select, variables, Button } from '@trezor/components';
 
 const { SCREEN_SIZE } = variables;
 
@@ -11,14 +12,25 @@ export const ActionColumn = styled.div`
     flex-wrap: wrap;
 `;
 
-export const ActionInput = styled(Input)`
+// found no better way how to style Input..
+const InputWrapper = styled.div`
     margin: 4px;
+    width: 100%;
     // flex: 1;
     // justify-content: flex-end;
     @media all and (min-width: ${SCREEN_SIZE.SM}) {
-        max-width: 170px;
+        width: 170px;
     }
 `;
+
+export const ActionInput = (props: InputProps) => {
+    return (
+        <InputWrapper>
+            <Input {...props} />
+        </InputWrapper>
+    )
+
+}
 // wrapperProps={{ style: { flex: 1, alignItems: 'flex-end'} }}
 
 export const ActionSelect = styled(Select)`
