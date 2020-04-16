@@ -5,6 +5,7 @@ import TrezorConnect, {
 } from 'trezor-connect';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import * as accountActions from '@wallet-actions/accountActions';
+import * as fiatRatesActions from '@wallet-actions/fiatRatesActions';
 import { getNetwork } from '@wallet-utils/accountUtils';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { State as FeeState } from '@wallet-reducers/feesReducer';
@@ -171,6 +172,7 @@ export const onConnect = (symbol: string) => async (dispatch: Dispatch, getState
     }
     await dispatch(subscribe(network.symbol));
     await dispatch(updateFeeInfo(network.symbol));
+    await dispatch(fiatRatesActions.initRates());
 };
 
 export const onBlockMined = (block: BlockchainBlock) => async (

@@ -281,7 +281,10 @@ export const onUpdateRate = (res: BlockchainFiatRatesUpdate) => async (dispatch:
         },
     });
 };
-
+/**
+ * Called from blockchainActions.onConnect
+ *
+ */
 export const initRates = () => (dispatch: Dispatch) => {
     dispatch(updateStaleRates());
     dispatch(updateLastWeekRates());

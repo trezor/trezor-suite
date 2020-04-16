@@ -1,5 +1,4 @@
 import { MiddlewareAPI } from 'redux';
-import { SUITE } from '@suite-actions/constants';
 import { BLOCKCHAIN, ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as fiatRatesActions from '@wallet-actions/fiatRatesActions';
@@ -12,10 +11,6 @@ const fiatRatesMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
     next(action);
 
     switch (action.type) {
-        case SUITE.READY:
-            // TODO: change to WALLET.READY (Dashboard needs rates too so WALLET.RAEADY doesn't suffice)
-            api.dispatch(fiatRatesActions.initRates());
-            break;
         case BLOCKCHAIN.FIAT_RATES_UPDATE:
             api.dispatch(fiatRatesActions.onUpdateRate(action.payload));
             break;
