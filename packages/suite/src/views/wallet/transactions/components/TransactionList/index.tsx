@@ -19,7 +19,7 @@ const StyledCard = styled(Card)`
 
 const Transactions = styled.div`
     flex-direction: column;
-    padding: 0 16px;
+    padding: 15px 16px;
 `;
 
 const DayHeading = styled.div`
