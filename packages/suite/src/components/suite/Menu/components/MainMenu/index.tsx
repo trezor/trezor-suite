@@ -82,6 +82,10 @@ const CornerWrapper = styled.div`
     height: 8px;
     display: flex;
     justify-content: flex-end;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        display: none;
+    }
 `;
 
 const CornerBg = styled.div`
