@@ -7,17 +7,18 @@ import { TrezorDevice } from '@suite-types';
 interface Props {
     onClick?: () => void;
     disabled: boolean;
+    isOverlaying?: boolean;
     device?: TrezorDevice;
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ isOverlaying?: boolean }>`
     display: flex;
     padding: 10px;
     position: sticky;
     z-index: 2;
     bottom: 0;
     background: ${colors.WHITE};
-    box-shadow: 0 0 14px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: ${props => (props.isOverlaying ? '0 0 14px 0 rgba(0, 0, 0, 0.2)' : 'none')};
 `;
 
 // workaround to expand tooltip (and child button) to full width
@@ -33,7 +34,7 @@ const StyledButton = styled(Button)`
     background: ${colors.WHITE};
 `;
 
-const AddAccountButton = ({ onClick, disabled, device }: Props) => {
+const AddAccountButton = ({ onClick, disabled, device, isOverlaying }: Props) => {
     // TODO: const [actionEnabled] = useDeviceActionLocks();
     const clickHandler = !disabled ? onClick : undefined;
     const tooltipMessage =
@@ -55,14 +56,14 @@ const AddAccountButton = ({ onClick, disabled, device }: Props) => {
 
     if (tooltipMessage) {
         return (
-            <Wrapper>
+            <Wrapper isOverlaying={isOverlaying}>
                 <StyledTooltip maxWidth={200} content={tooltipMessage} placement="top">
                     {ButtonRow}
                 </StyledTooltip>
             </Wrapper>
         );
     }
-    return <Wrapper>{ButtonRow}</Wrapper>;
+    return <Wrapper isOverlaying={isOverlaying}>{ButtonRow}</Wrapper>;
 };
 
 export default AddAccountButton;

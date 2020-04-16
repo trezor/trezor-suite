@@ -37,6 +37,9 @@ interface Props {
     animate?: boolean;
     opened?: boolean;
     children?: React.ReactNode;
+    onAnimationStart?: () => void;
+    onUpdate?: () => void;
+    onAnimationComplete?: () => void;
 }
 
 export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
@@ -100,7 +103,9 @@ export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
                     </Header>
                 </HeaderWrapper>
             )}
-            <AnimationWrapper opened={isOpened}>{props.children}</AnimationWrapper>
+            <AnimationWrapper opened={isOpened} onUpdate={props.onUpdate}>
+                {props.children}
+            </AnimationWrapper>
         </Wrapper>
     );
 });

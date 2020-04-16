@@ -4,11 +4,12 @@ import { AnimatePresence, motion } from 'framer-motion';
 interface Props {
     opened: boolean;
     children?: React.ReactNode;
-    onAnimationStart?: () => {};
-    onAnimationComplete?: () => {};
+    onAnimationStart?: () => void;
+    onUpdate?: (latest: { [key: string]: React.ReactText }) => void;
+    onAnimationComplete?: () => void;
 }
 
-export default ({ opened, children, onAnimationStart, onAnimationComplete }: Props) => {
+export default ({ opened, children, onAnimationStart, onUpdate, onAnimationComplete }: Props) => {
     const collapsed = { overflow: 'hidden', height: 0 };
     return (
         <AnimatePresence initial={false}>
@@ -21,6 +22,7 @@ export default ({ opened, children, onAnimationStart, onAnimationComplete }: Pro
                     }}
                     exit={collapsed}
                     onAnimationStart={onAnimationStart}
+                    onUpdate={onUpdate}
                     onAnimationComplete={onAnimationComplete}
                     transition={{ duration: 0.24, ease: [0.04, 0.62, 0.23, 0.98] }}
                 >
