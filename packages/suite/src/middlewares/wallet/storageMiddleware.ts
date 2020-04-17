@@ -4,7 +4,7 @@ import * as WALLET_SETTINGS from '@suite/actions/settings/constants/walletSettin
 // import * as transactionActions from '@wallet-actions/transactionActions';
 import * as storageActions from '@suite-actions/storageActions';
 import * as accountUtils from '@wallet-utils/accountUtils';
-import { SUITE } from '@suite-actions/constants';
+import { SUITE, ANALYTICS } from '@suite-actions/constants';
 import { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import { WalletAction } from '@wallet-types';
 import { ACCOUNT, DISCOVERY, TRANSACTION, FIAT_RATES } from '@wallet-actions/constants';
@@ -94,7 +94,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
 
         case SUITE.SET_LANGUAGE:
         case SUITE.SET_FLAG:
-        case SUITE.TOGGLE_ANALYTICS:
         case SUITE.SET_DEBUG_MODE:
             api.dispatch(storageActions.saveSuiteSettings());
             break;
@@ -105,6 +104,11 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
 
         case FIAT_RATES.RATE_REMOVE:
             api.dispatch(storageActions.removeFiatRate(action.symbol));
+            break;
+
+        case ANALYTICS.INIT:
+        case ANALYTICS.DISPOSE:
+            api.dispatch(storageActions.saveAnalytics());
             break;
         default:
             break;

@@ -11,16 +11,17 @@ import * as analyticsActions from '@suite-actions/analyticsActions';
 
 const mapStateToProps = (state: AppState) => ({
     locks: state.suite.locks,
-    analytics: state.suite.settings.analytics,
+    enabled: state.analytics.enabled,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    toggleAnalytics: bindActionCreators(analyticsActions.toggleAnalytics, dispatch),
+    init: bindActionCreators(analyticsActions.init, dispatch),
+    dispose: bindActionCreators(analyticsActions.dispose, dispatch),
 });
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-const Analytics = ({ locks, analytics, toggleAnalytics }: Props) => {
+const Analytics = ({ locks, enabled, init, dispose }: Props) => {
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
 
     return (
@@ -32,7 +33,16 @@ const Analytics = ({ locks, analytics, toggleAnalytics }: Props) => {
                 // learnMore="todo some link"
             />
             <ActionColumn>
-                <Switch checked={analytics} onChange={toggleAnalytics} isDisabled={uiLocked} />
+                <Switch
+                    checked={enabled}
+                    onChange={() => {
+                        if (enabled) {
+                            return dispose();
+                        }
+                        init();
+                    }}
+                    isDisabled={uiLocked}
+                />
             </ActionColumn>
         </SectionItem>
     );

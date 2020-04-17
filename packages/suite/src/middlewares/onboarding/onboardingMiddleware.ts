@@ -24,8 +24,8 @@ const onboardingMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: 
         // 1. reset onboarding reducer to initialState
         // 2. set initialRun field in suite reducer to false (do not redirect to onboarding on first load next time)
         if (action.payload !== 'onboarding' && prevApp === 'onboarding') {
-            api.dispatch(onboardingActions.resetOnboarding());
             api.dispatch(suiteActions.initialRunCompleted());
+            api.dispatch(onboardingActions.resetOnboarding());
         }
     }
 

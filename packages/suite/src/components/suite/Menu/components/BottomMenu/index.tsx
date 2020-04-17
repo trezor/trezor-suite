@@ -48,7 +48,6 @@ const Text = styled.div<ComponentProps>`
     display: flex;
     align-items: center;
     flex: 1;
-
     ${props =>
         props.isActive &&
         css`
@@ -65,13 +64,11 @@ const In = styled.div<ComponentProps>`
     flex: 1;
     flex-direction: flex-start;
     align-items: center;
-
     ${props =>
         props.isActive &&
         css`
             background: ${colors.BACKGROUND};
         `}
-
     ${props =>
         !props.isActive &&
         css`

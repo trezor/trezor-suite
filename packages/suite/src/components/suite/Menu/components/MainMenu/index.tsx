@@ -6,6 +6,7 @@ import RoundedCorner from '../RoundedCorner';
 import { Translation } from '@suite-components';
 import { MAIN_MENU_ITEMS } from '@suite-constants/menu';
 import { Props as ContainerProps } from '../../Container';
+import { useAnalytics } from '@suite-hooks/useAnalytics';
 
 const Wrapper = styled.div`
     display: flex;
