@@ -9,7 +9,6 @@ const StyledCard = styled(Card)`
     /* width: 230px; */
     min-height: 210px; /* so it doesn't jump when all cards are completed */
     justify-content: center;
-    padding: 16px 0;
     align-items: center;
     transition: background-color 0.7s ease-out;
 

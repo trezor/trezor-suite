@@ -4,10 +4,10 @@ import { Card, Translation } from '@suite-components';
 import { isToday, format } from 'date-fns';
 import { colors, Button, variables, Icon } from '@trezor/components';
 import { useFetchNews } from '@dashboard-hooks/news';
+import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
-    padding: 20px;
     width: 100%;
 `;
 
@@ -27,7 +27,14 @@ const BottomAction = styled.div`
 
 const Post = styled.div`
     display: flex;
-    padding: 20px 0;
+
+    &:not(:first-child) {
+        padding-top: ${CARD_PADDING_SIZE};
+    }
+
+    &:not(:last-child) {
+        padding-bottom: ${CARD_PADDING_SIZE};
+    }
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: column;

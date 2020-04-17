@@ -7,11 +7,12 @@ import { Account } from '@wallet-types';
 import { AppState } from '@suite-types';
 import { colors, Loader } from '@trezor/components';
 import { Card, Translation } from '@suite-components';
+import { CARD_PADDING_SIZE } from '@suite/constants/suite/layout';
 
 const Header = styled.div`
     display: flex;
     border-radius: 6px 6px 0px 0px;
-    padding: 10px 20px;
+    padding: 10px ${CARD_PADDING_SIZE};
 `;
 
 const HeaderTitle = styled.div`
@@ -33,7 +34,7 @@ const StyledAsset = styled(Asset)`
 
 const StyledCard = styled(Card)`
     flex-direction: column;
-    padding: 0px 20px;
+    padding: 0px ${CARD_PADDING_SIZE};
 `;
 
 // padding for loader need to math with first row height
