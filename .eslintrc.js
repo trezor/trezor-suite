@@ -48,7 +48,7 @@ module.exports = {
         'import/prefer-default-export': 'off',
         // Does not work with Babel react-native to react-native-web
         'import/no-unresolved': 'off',
-        "import/extensions": ["error", "never"],
+        'import/extensions': ['error', 'never'],
         'import/no-extraneous-dependencies': 'off',
         'import/no-cycle': 'off',
         // We have types.

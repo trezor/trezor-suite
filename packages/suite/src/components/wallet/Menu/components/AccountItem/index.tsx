@@ -103,9 +103,7 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
                 <Row>
                     <CoinLogo size={16} symbol={account.symbol} />
                     <Balance>
-                        <HiddenPlaceholder>
-                            <CoinBalance value={account.formattedBalance} symbol={account.symbol} />
-                        </HiddenPlaceholder>
+                        <CoinBalance value={account.formattedBalance} symbol={account.symbol} />
                     </Balance>
                     {fiatBalance && (
                         <HiddenPlaceholder>

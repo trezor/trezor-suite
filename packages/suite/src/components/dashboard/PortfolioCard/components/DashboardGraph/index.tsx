@@ -1,6 +1,6 @@
 import React from 'react';
 import { GraphRange } from '@wallet-types/fiatRates';
-import { TransactionsGraph, Translation } from '@suite-components';
+import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
 import { Props } from './Container';
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';

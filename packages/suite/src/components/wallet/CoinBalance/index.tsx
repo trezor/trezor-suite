@@ -4,14 +4,10 @@ import { Account } from '@wallet-types';
 import { formatCoinBalance } from '@wallet-utils/balanceUtils';
 import { HiddenPlaceholder } from '@suite-components';
 
-const Wrapper = styled.div`
-    display: flex;
-`;
-
+const Wrapper = styled.div``;
 const Value = styled.span``;
-
 const Symbol = styled.span`
-    text-indent: 3px;
+    margin-left: 3px;
 `;
 
 interface Props {
@@ -19,14 +15,11 @@ interface Props {
     symbol: Account['symbol'];
 }
 
-export default ({ value, symbol }: Props) => {
-    const coinBalance = formatCoinBalance(value);
-    return (
+export default ({ value, symbol }: Props) => (
+    <Wrapper>
         <HiddenPlaceholder>
-            <Wrapper>
-                <Value>{coinBalance}</Value>
-                <Symbol>{symbol ? symbol.toUpperCase() : symbol}</Symbol>
-            </Wrapper>
+            <Value>{formatCoinBalance(value)}</Value>
+            <Symbol>{symbol ? symbol.toUpperCase() : symbol}</Symbol>
         </HiddenPlaceholder>
-    );
-};
+    </Wrapper>
+);
