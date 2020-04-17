@@ -16,7 +16,7 @@ const setup = async () => {
     process.env.RELEASES_T1 = JSON.stringify(json1);
     process.env.RELEASES_T2 = JSON.stringify(json2);
 
-    run(undefined, 'jest.config.e2e.js');
+    run(undefined, 'jest.config.integration.js');
 };
 
 setup();
