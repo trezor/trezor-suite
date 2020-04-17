@@ -40,7 +40,7 @@ describe('getBinary()', () => {
                 bootloader_mode: true,
                 firmware_present: true,
             }),
-            version: [1, 8, 3],
+            version: RELEASES_T1[0].version, // last version
             releases: RELEASES_T1,
             baseUrl: BASE_URL,
             baseUrlBeta: BETA_BASE_URL,

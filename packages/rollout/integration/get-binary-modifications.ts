@@ -1,3 +1,5 @@
+import fetch from 'cross-fetch';
+
 import { getBinary, getInfo } from '../src';
 
 const { getDeviceFeatures } = global.JestMocks;
@@ -6,8 +8,6 @@ const RELEASES_T2 = JSON.parse(process.env.RELEASES_T2);
 const RELEASES_T1 = JSON.parse(process.env.RELEASES_T1);
 const BASE_URL = process.env.BASE_FW_URL;
 const BETA_BASE_URL = process.env.BETA_BASE_FW_URL;
-
-const FW_SIZE = 526272;
 
 describe('getBinary() modifications of fw', () => {
     it('firmware installed on bootloader 1.8.0 should be return modified', async () => {
@@ -42,13 +42,18 @@ describe('getBinary() modifications of fw', () => {
             baseUrl: BASE_URL,
             baseUrlBeta: BETA_BASE_URL,
         });
+
+        // for cross-check, download again original fw and see if it was sliced
+        const response = await fetch(`${BASE_URL}/${result.release.url}`);
+        const rawFw = await response.arrayBuffer();
+
         if (result) {
-            return expect(result.binary.byteLength).toEqual(FW_SIZE - 256);
+            return expect(result.binary.byteLength).toEqual(rawFw.byteLength - 256);
         }
         expect(result).not.toBeNull();
     });
 
-    it('some of the firmwares should be return unmodifed', async () => {
+    it('some of the firmwares should be return unmodified', async () => {
         const features = getDeviceFeatures({
             major_version: 1,
             minor_version: 6,
@@ -84,8 +89,12 @@ describe('getBinary() modifications of fw', () => {
             baseUrlBeta: BETA_BASE_URL,
         });
 
+        // for cross-check, download again original fw and see if it was sliced
+        const response = await fetch(`${BASE_URL}/${result.release.url}`);
+        const rawFw = await response.arrayBuffer();
+
         if (result) {
-            return expect(result.binary.byteLength).toEqual(526272);
+            return expect(result.binary.byteLength).toEqual(rawFw.byteLength);
         }
         expect(result).not.toBeNull();
     });
@@ -127,8 +136,12 @@ describe('getBinary() modifications of fw', () => {
             baseUrlBeta: BETA_BASE_URL,
         });
 
+        // for cross-check, download again original fw and see if it was sliced
+        const response = await fetch(`${BASE_URL}/${result.release.url}`);
+        const rawFw = await response.arrayBuffer();
+
         if (result) {
-            return expect(result.binary.byteLength).toEqual(1471488);
+            return expect(result.binary.byteLength).toEqual(rawFw.byteLength);
         }
         expect(result).not.toBeNull();
     });

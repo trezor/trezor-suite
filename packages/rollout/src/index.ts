@@ -28,9 +28,9 @@ const modifyFirmware = ({
     // -----------------------
 
     // any version installed on bootloader 1.8.0 must be sliced of the first 256 bytes (containing old firmware header)
-    // unluckily, we dont know the actual bootloader of connected device, but we can assume it is 1.8.0 in case
-    // getInfo() returns firmware with version 1.8.1 or greater as it has bootloader version 1.8.0 (see releases.ts)
-    // this should be temporary until special bootloader updating firmwares are ready
+    // unluckily, we don't know the actual bootloader of connected device, but we can assume it is 1.8.0 in case
+    // getInfo() returns firmware with version 1.8.1 or greater as it has bootloader version 1.8.0 (see releases.json)
+    // this should be temporary until special bootloader updating firmware are ready
     if (
         versionUtils.isNewerOrEqual(
             [features.major_version, features.minor_version, features.patch_version],
@@ -71,7 +71,7 @@ const getChangelog = (releases: ReleaseList, features: ParsedFeatures) => {
         return releases;
     }
 
-    // otherwise we are in firware mode and because each release in releases list has
+    // otherwise we are in firmware mode and because each release in releases list has
     // version higher than the previous one, we can filter out the version that is already
     // installed and show only what's new!
     return releases.filter(r =>

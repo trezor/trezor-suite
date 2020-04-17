@@ -48,6 +48,7 @@ describe('Testing if getInfo and getBinary return same result when first called 
     });
 
     it('firmware version 1.6.3 (bootloader 1.5.1)', async () => {
+        const targetVersion = RELEASES_T1[0].version; // latest
         // first get info in firmware mode
         const info = getInfo({
             features: getDeviceFeatures({
@@ -59,7 +60,7 @@ describe('Testing if getInfo and getBinary return same result when first called 
             }),
             releases: RELEASES_T1,
         });
-        expect(info).toMatchObject({ release: { version: [1, 8, 3] } });
+        expect(info).toMatchObject({ release: { version: targetVersion } });
 
         // validate that with binary returns the same firmware
         const withBinary = await getBinary({
@@ -70,11 +71,11 @@ describe('Testing if getInfo and getBinary return same result when first called 
                 patch_version: 1,
                 firmware_present: true,
             }),
-            version: [1, 8, 3],
+            version: targetVersion,
             releases: RELEASES_T1,
             baseUrl: BASE_FW_URL,
             baseUrlBeta: BETA_BASE_URL,
         });
-        expect(withBinary).toMatchObject({ release: { version: [1, 8, 3] } });
+        expect(withBinary).toMatchObject({ release: { version: targetVersion } });
     });
 });
