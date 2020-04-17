@@ -45,7 +45,9 @@ const Section = ({ children, title, description, customHeader }: Props) => {
                     <Description size="tiny">{description}</Description>
                 )}
             </Header>
-            <Content>{children}</Content>
+            <Content largePadding noVerticalPadding>
+                {children}
+            </Content>
         </Wrapper>
     );
 };

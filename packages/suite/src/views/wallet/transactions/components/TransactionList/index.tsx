@@ -19,7 +19,6 @@ const StyledCard = styled(Card)`
 
 const Transactions = styled.div`
     flex-direction: column;
-    padding: 15px 16px;
 `;
 
 const DayHeading = styled.div`
@@ -31,13 +30,14 @@ const DayHeading = styled.div`
     color: ${colors.BLACK50};
     border-bottom: 2px solid ${colors.BLACK96};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    padding: 5px 0;
+    padding: 5px;
     text-transform: uppercase;
     background: ${colors.WHITE};
     justify-content: space-between;
     align-items: center;
 
     &:first-child {
+        padding-top: 0px;
         border-top-left-radius: 6px;
         border-top-right-radius: 6px;
     }

@@ -10,6 +10,7 @@ import { calcTicks, calcTicksFromData } from '@suite/utils/suite/date';
 import { GraphRange } from '@suite/types/wallet/fiatRates';
 import { Props } from './Container';
 import { accountGraphDataFilterFn } from '@wallet-utils/graphUtils';
+import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
 const Wrapper = styled.div`
     display: flex;
@@ -28,7 +29,7 @@ const ContentWrapper = styled(Card)`
 const GraphWrapper = styled.div`
     display: flex;
     flex: 5 1 auto;
-    padding: 20px;
+    padding: ${CARD_PADDING_SIZE};
     height: 240px;
     max-width: 600px; /* workaround to prevent recharts filling all space */
 
@@ -99,7 +100,7 @@ const TransactionSummary = (props: Props) => {
                 {/* TODO: export transactions to a file */}
             </Actions>
             {!isGraphHidden && (
-                <ContentWrapper>
+                <ContentWrapper noPadding>
                     {/* TODO: what should be shown on error? */}
                     {error && <ErrorMessage>Could not load data</ErrorMessage>}
                     {!error && (

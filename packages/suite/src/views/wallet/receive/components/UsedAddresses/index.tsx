@@ -7,11 +7,13 @@ import { copyToClipboard } from '@suite-utils/dom';
 import { ChildProps as Props } from '../../Container';
 import { AccountAddress } from 'trezor-connect';
 import { Network, ReceiveInfo } from '@wallet-types';
+import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
     margin-bottom: 40px;
-    padding: 0px 20px 20px 20px;
+    padding: ${CARD_PADDING_SIZE};
+    padding-top: 0px;
 `;
 
 const GridTable = styled.div`
@@ -67,7 +69,7 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: Function }>`
         &:nth-child(1),
         &:nth-child(2),
         &:nth-child(4) {
-            padding-top: 20px;
+            padding-top: ${CARD_PADDING_SIZE};
         }
         &:nth-last-child(-n + 4) {
             border: 0;
@@ -80,7 +82,7 @@ const HeaderItem = styled(GridItem)`
     font-weight: 600;
     position: sticky;
     top: 0;
-    padding-top: 20px;
+    padding-top: ${CARD_PADDING_SIZE};
 `;
 
 const IconButton = styled(Button)`

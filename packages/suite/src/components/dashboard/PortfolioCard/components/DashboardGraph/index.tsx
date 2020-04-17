@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { calcTicks, calcTicksFromData } from '@suite/utils/suite/date';
 import { colors, variables, Button } from '@trezor/components';
 import { aggregateBalanceHistory, deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
+import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
 const Wrapper = styled.div`
     display: flex;
@@ -17,7 +18,7 @@ const Wrapper = styled.div`
 const GraphWrapper = styled.div`
     display: flex;
     flex: 1 1 auto;
-    padding: 20px;
+    padding: ${CARD_PADDING_SIZE} 0px;
     height: 270px;
 `;
 
@@ -33,8 +34,7 @@ const ErrorMessage = styled.div`
 
 const SmallErrorMessage = styled.div`
     display: flex;
-    padding: 16px;
-    padding-top: 0px;
+    margin-top: 16px;
     color: ${colors.BLACK50};
     font-size: ${variables.FONT_SIZE.TINY};
 `;
