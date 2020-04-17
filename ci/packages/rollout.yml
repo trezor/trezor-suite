@@ -7,4 +7,4 @@ rollout test integration:
             - schedules
     stage: integration testing
     script:
-        - yarn workspace @trezor/rollout test:e2e
+        - yarn workspace @trezor/rollout test:integration
