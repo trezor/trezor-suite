@@ -6,7 +6,7 @@ import * as transactionActions from '@wallet-actions/transactionActions';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { analyzeTransactions } from '@wallet-utils/transactionUtils';
 import { NETWORKS } from '@wallet-config';
-import { Account, Network } from '@wallet-types';
+import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 import { SETTINGS } from '@suite-config';
 
@@ -15,39 +15,6 @@ export type AccountActions =
     | { type: typeof ACCOUNT.REMOVE; payload: Account[] }
     | { type: typeof ACCOUNT.CHANGE_VISIBILITY; payload: Account }
     | { type: typeof ACCOUNT.UPDATE; payload: Account };
-
-const getAccountSpecific = (accountInfo: AccountInfo, networkType: Network['networkType']) => {
-    const { misc } = accountInfo;
-    if (networkType === 'ripple') {
-        return {
-            networkType,
-            misc: {
-                sequence: misc && misc.sequence ? misc.sequence : 0,
-                reserve: misc && misc.reserve ? misc.reserve : '0',
-            },
-            marker: accountInfo.marker,
-            page: undefined,
-        };
-    }
-
-    if (networkType === 'ethereum') {
-        return {
-            networkType,
-            misc: {
-                nonce: misc && misc.nonce ? misc.nonce : '0',
-            },
-            marker: undefined,
-            page: accountInfo.page,
-        };
-    }
-
-    return {
-        networkType,
-        misc: undefined,
-        marker: undefined,
-        page: accountInfo.page,
-    };
-};
 
 export const create = (
     deviceState: string,
@@ -80,7 +47,7 @@ export const create = (
         addresses: accountInfo.addresses,
         utxo: accountInfo.utxo,
         history: accountInfo.history,
-        ...getAccountSpecific(accountInfo, discoveryItem.networkType),
+        ...accountUtils.getAccountSpecific(accountInfo, discoveryItem.networkType),
     },
 });
 
@@ -101,7 +68,7 @@ export const update = (account: Account, accountInfo: AccountInfo): AccountActio
             symbol: t.symbol ? t.symbol.toLowerCase() : t.symbol,
             balance: t.balance ? accountUtils.formatAmount(t.balance, t.decimals) : t.balance,
         })),
-        ...getAccountSpecific(accountInfo, account.networkType),
+        ...accountUtils.getAccountSpecific(accountInfo, account.networkType),
     },
 });
 
