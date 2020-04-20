@@ -1,12 +1,13 @@
-import React from 'react';
-import { Props as ContainerProps } from '../../Container';
-import styled, { css } from 'styled-components';
 import { Translation } from '@suite-components/Translation';
-
-import { findRouteByName } from '@suite-utils/router';
-import { Icon, colors, Switch, Tooltip, variables } from '@trezor/components';
 import { BOTTOM_MENU_ITEMS } from '@suite-constants/menu';
+import { findRouteByName } from '@suite-utils/router';
+import { colors, Icon, Switch, Tooltip, variables } from '@trezor/components';
+import React from 'react';
+import styled, { css } from 'styled-components';
+
+import { Props as ContainerProps } from '../../Container';
 import Divider from '../Divider';
+import RoundedCorner from '../RoundedCorner';
 import NotificationsBadge from './NotificationsBadge';
 
 const Wrapper = styled.div`
@@ -117,19 +118,23 @@ const BottomMenu = (props: Props) => (
                 );
 
             return (
-                <In
-                    key={translationId}
-                    data-test={dataTestId}
-                    onClick={() => callback(routeObj!.name)}
-                    isActive={isActive}
-                >
-                    <MenuItemWrapper>
-                        <IconWrapper>{iconComponent}</IconWrapper>
-                        <Text isActive={isActive}>
-                            <Translation id={translationId} />
-                        </Text>
-                    </MenuItemWrapper>
-                </In>
+                <>
+                    <RoundedCorner top isActive={isActive} />
+                    <In
+                        key={translationId}
+                        data-test={dataTestId}
+                        onClick={() => callback(routeObj!.name)}
+                        isActive={isActive}
+                    >
+                        <MenuItemWrapper>
+                            <IconWrapper>{iconComponent}</IconWrapper>
+                            <Text isActive={isActive}>
+                                <Translation id={translationId} />
+                            </Text>
+                        </MenuItemWrapper>
+                    </In>
+                    <RoundedCorner bottom isActive={isActive} />
+                </>
             );
         })}
         <StyledDivider className="divider" />

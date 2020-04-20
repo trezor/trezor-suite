@@ -2,6 +2,7 @@ import React from 'react';
 import { findRouteByName } from '@suite-utils/router';
 import styled, { css } from 'styled-components';
 import { Icon, colors, variables } from '@trezor/components';
+import RoundedCorner from '../RoundedCorner';
 import { Translation } from '@suite-components';
 import { MAIN_MENU_ITEMS } from '@suite-constants/menu';
 import { Props as ContainerProps } from '../../Container';
@@ -77,39 +78,6 @@ const ComingSoon = styled.div`
     color: ${colors.WHITE};
 `;
 
-const CornerWrapper = styled.div`
-    width: 100%;
-    height: 8px;
-    display: flex;
-    justify-content: flex-end;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        display: none;
-    }
-`;
-
-const CornerBg = styled.div`
-    position: absolute;
-    height: 8px;
-    width: 8px;
-    background: ${colors.BACKGROUND};
-`;
-
-const Corner = styled.div`
-    height: 8px;
-    position: relative;
-    width: 8px;
-    background: ${colors.BLACK17};
-`;
-
-const CornerTop = styled(Corner)`
-    border-bottom-right-radius: 6px;
-`;
-
-const CornerBottom = styled(Corner)`
-    border-top-right-radius: 6px;
-`;
-
 interface Props {
     app: string;
     goto: ContainerProps['goto'];
@@ -125,12 +93,7 @@ const Menu = (props: Props) => (
             const callback = (isActive && props.openSecondaryMenu) || props.goto;
             return (
                 <MenuItemWrapper key={route}>
-                    {isActive && (
-                        <CornerWrapper>
-                            <CornerBg />
-                            <CornerTop />
-                        </CornerWrapper>
-                    )}
+                    <RoundedCorner top isActive={isActive} />
                     <In
                         data-test={`@suite/menu/${route}`}
                         onClick={() => !isDisabled && callback(routeObj!.name)}
@@ -153,12 +116,7 @@ const Menu = (props: Props) => (
                             </ComingSoon>
                         )}
                     </In>
-                    {isActive && (
-                        <CornerWrapper>
-                            <CornerBg />
-                            <CornerBottom />
-                        </CornerWrapper>
-                    )}
+                    <RoundedCorner bottom isActive={isActive} />
                 </MenuItemWrapper>
             );
         })}
