@@ -6,7 +6,7 @@ import { AccountTransaction, AccountInfo } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import messages from '@suite/support/messages';
 import { ACCOUNT_TYPE } from '@wallet-constants/account';
-import { Account, Network, CoinFiatRates, WalletParams } from '@wallet-types';
+import { Account, Network, CoinFiatRates, WalletParams, Discovery } from '@wallet-types';
 import { AppState } from '@suite-types';
 import { NETWORKS } from '@wallet-config';
 import { toFiatCurrency } from './fiatConverterUtils';
@@ -354,4 +354,68 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
         account.networkType === 'ethereum' && freshInfo.misc!.nonce !== account.misc.nonce;
 
     return changedTxCount || changedRipple || changedEthereum;
+};
+
+// Used in accountActions and failed accounts
+export const getAccountSpecific = (
+    accountInfo: Partial<AccountInfo>,
+    networkType: Network['networkType'],
+) => {
+    const { misc } = accountInfo;
+    if (networkType === 'ripple') {
+        return {
+            networkType,
+            misc: {
+                sequence: misc && misc.sequence ? misc.sequence : 0,
+                reserve: misc && misc.reserve ? misc.reserve : '0',
+            },
+            marker: accountInfo.marker,
+            page: undefined,
+        };
+    }
+
+    if (networkType === 'ethereum') {
+        return {
+            networkType,
+            misc: {
+                nonce: misc && misc.nonce ? misc.nonce : '0',
+            },
+            marker: undefined,
+            page: accountInfo.page,
+        };
+    }
+
+    return {
+        networkType,
+        misc: undefined,
+        marker: undefined,
+        page: accountInfo.page,
+    };
+};
+
+// Used in wallet/Menu and Dashboard
+export const getFailedAccounts = (discovery: Discovery): Account[] => {
+    return discovery.failed.map(f => {
+        const descriptor = `failed:${f.index}:${f.symbol}:${f.accountType}`;
+        return {
+            deviceState: discovery.deviceState,
+            index: f.index,
+            path: descriptor,
+            descriptor,
+            accountType: f.accountType,
+            symbol: f.symbol,
+            empty: false,
+            visible: true,
+            balance: '0',
+            availableBalance: '0',
+            formattedBalance: '0',
+            tokens: [],
+            addresses: undefined,
+            utxo: undefined,
+            history: {
+                total: 0,
+            },
+            ...getAccountSpecific({}, getNetwork(f.symbol)!.networkType),
+        };
+    });
 };

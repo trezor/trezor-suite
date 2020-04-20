@@ -1,6 +1,6 @@
 import { ACCOUNT } from '@wallet-actions/constants';
 import { Action } from '@suite-types';
-import { Network, Account, Discovery } from '@wallet-types';
+import { Network, Account, Discovery, WalletParams } from '@wallet-types';
 
 // Context notifications view
 // Account is in "watch only" mode
@@ -19,7 +19,11 @@ export interface AccountLoading {
         | 'waiting-for-device' // No selectedDevice
         | 'auth' // Waiting for device.state
         | 'account-loading'; // Waiting for account
+    mode?: undefined;
     account?: undefined;
+    network?: Network;
+    discovery?: Discovery;
+    params?: undefined;
 }
 
 // 100% view
@@ -32,41 +36,46 @@ export type AccountException =
               | 'discovery-error' // TODO: Discovery failed on something different than expected "bundle exception"
               | 'discovery-empty'; // No network enabled in settings
           mode?: AccountWatchOnlyMode[];
+          account?: undefined;
           network?: Network;
           discovery?: Discovery;
-          account?: undefined;
+          params?: undefined;
       }
     | {
           status: 'exception';
           loader:
-              | 'discovery-error' // TODO: Discovery failed on something different than expected "bundle exception"
               | 'account-not-loaded' // Account discovery failed
               | 'account-not-enabled' // Requested account network is not enabled in settings
               | 'account-not-exists'; // Requested account network is not listed in NETWORKS
           mode?: AccountWatchOnlyMode[];
+          account?: undefined;
           network: Network;
           discovery: Discovery;
-          account?: undefined;
+          params: WalletParams;
       };
 
 export type State =
     | {
           status: 'loaded';
+          loader?: undefined;
+          mode: AccountWatchOnlyMode[] | undefined;
           account: Account;
           network: Network;
           discovery: Discovery;
-          blockchain?: any; // TODO:
+          params: WalletParams;
+          // blockchain?: any; // TODO:
           // transactions?: any; // TODO:
-          mode: AccountWatchOnlyMode[] | undefined;
-          loader?: undefined;
       }
     | AccountLoading
     | AccountException
     | {
           status: 'none';
-          account?: undefined;
           loader?: undefined;
           mode?: undefined;
+          account?: undefined;
+          network?: undefined;
+          discovery?: undefined;
+          params?: undefined;
       };
 
 export const initialState: State = {

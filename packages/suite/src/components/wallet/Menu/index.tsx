@@ -5,10 +5,9 @@ import styled from 'styled-components';
 
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as modalActions from '@suite-actions/modalActions';
-import * as discoveryActions from '@wallet-actions/discoveryActions';
-import { sortByCoin } from '@wallet-utils/accountUtils';
+import { sortByCoin, getFailedAccounts } from '@wallet-utils/accountUtils';
 import { AppState, Dispatch } from '@suite-types';
-import { Account, WalletParams } from '@wallet-types';
+import { Account } from '@wallet-types';
 
 import AccountGroup from './components/AccountGroup';
 import AccountItem from './components/AccountItem/Container';
@@ -58,45 +57,20 @@ const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
     accounts: state.wallet.accounts,
     selectedAccount: state.wallet.selectedAccount,
-    discovery: state.wallet.discovery,
-    router: state.router,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    getDiscoveryForDevice: () => dispatch(discoveryActions.getDiscoveryForDevice()),
     openModal: bindActionCreators(modalActions.openModal, dispatch),
 });
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-const getAccountParams = (router: Props['router'], account?: Account): WalletParams | void => {
-    if (router.app === 'wallet' && router.params) {
-        return router.params;
-    }
-    if (account) {
-        return {
-            accountIndex: account.index,
-            accountType: account.accountType,
-            symbol: account.symbol,
-        };
-    }
-};
-
-const Menu = ({
-    device,
-    accounts,
-    selectedAccount,
-    getDiscoveryForDevice,
-    router,
-    openModal,
-}: Props) => {
-    const params = getAccountParams(router, selectedAccount.account);
+const Menu = ({ device, accounts, selectedAccount, openModal }: Props) => {
+    const { params, discovery } = selectedAccount;
     const { ref, dimensions, updateDimensions } = useScrollRef();
     const selectedItemRef = useCallback((_item: HTMLDivElement | null) => {
         // TODO: scroll to selected item
     }, []);
-
-    const discovery = getDiscoveryForDevice();
 
     // update Scroll dimensions whenever discovery changes (adding account)
     // or whenever AccountGroup updates its animation
@@ -123,15 +97,7 @@ const Menu = ({
         account.index === params.accountIndex;
 
     const discoveryIsRunning = discovery.status <= DISCOVERY.STATUS.STOPPING;
-    const failed: any[] = discovery.failed.map(f => ({
-        ...f,
-        path: 'path',
-        descriptor: f.index + f.symbol + f.accountType,
-        visible: true,
-        balance: '0',
-        availableBalance: '0',
-        formattedBalance: '0',
-    }));
+    const failed = getFailedAccounts(discovery);
 
     const list = sortByCoin(accounts.filter(a => a.deviceState === device.state).concat(failed));
     // always show first "normal" account even if they are empty
@@ -145,29 +111,30 @@ const Menu = ({
     const addAccountDisabled =
         discoveryIsRunning || !device.connected || device.authConfirm || device.authFailed;
 
-    // const legacyHasBalance = legacyAccounts.find(a => a.availableBalance !== '0');
-    // let legacyVisible = legacyAccounts.length < 5 || discoveryIsRunning || !!legacyHasBalance;
-    // if (!legacyVisible) {
-    //     const legacyAccountIsSelected = legacyAccounts.find(a => isSelected(a));
-    //     legacyVisible = !!legacyAccountIsSelected;
-    // }
-
-    const buildGroup = (type: Account['accountType'], accounts: Account[]) => (
-        <AccountGroup key={type} type={type} opened={isOpened(type)} onUpdate={updateDimensions}>
-            {accounts.map(account => {
-                const selected = !!isSelected(account);
-                const forwardedRef = selected ? selectedItemRef : undefined;
-                return (
-                    <AccountItem
-                        key={`${account.descriptor}-${account.symbol}`}
-                        account={account}
-                        selected={selected}
-                        forwardedRef={forwardedRef}
-                    />
-                );
-            })}
-        </AccountGroup>
-    );
+    const buildGroup = (type: Account['accountType'], accounts: Account[]) => {
+        const groupHasBalance = accounts.find(a => a.availableBalance !== '0');
+        return (
+            <AccountGroup
+                key={type}
+                type={type}
+                opened={!!groupHasBalance || isOpened(type)}
+                onUpdate={updateDimensions}
+            >
+                {accounts.map(account => {
+                    const selected = !!isSelected(account);
+                    const forwardedRef = selected ? selectedItemRef : undefined;
+                    return (
+                        <AccountItem
+                            key={`${account.descriptor}-${account.symbol}`}
+                            account={account}
+                            selected={selected}
+                            forwardedRef={forwardedRef}
+                        />
+                    );
+                })}
+            </AccountGroup>
+        );
+    };
 
     return (
         <Wrapper>
