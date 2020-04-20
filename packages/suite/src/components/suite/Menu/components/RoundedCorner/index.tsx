@@ -45,13 +45,17 @@ interface Props {
     isActive?: boolean;
 }
 
-export default ({ top, bottom, isActive }: Props) => (
-    <Wrapper>
-        {isActive && (
-            <>
-                <CornerBg />
-                <Corner top={top} bottom={bottom} />
-            </>
-        )}
-    </Wrapper>
-);
+export default ({ top, bottom, isActive }: Props) => {
+    if (!isActive) return null;
+
+    return (
+        <Wrapper>
+            {isActive && (
+                <>
+                    <CornerBg />
+                    <Corner top={top} bottom={bottom} />
+                </>
+            )}
+        </Wrapper>
+    );
+};
