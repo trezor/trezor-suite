@@ -207,9 +207,10 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                         <Button
                             variant="tertiary"
                             icon="SETTINGS"
-                            onClick={() => {
-                                props.goto('settings-device');
-                                selectDeviceInstance(device);
+                            onClick={async () => {
+                                // await needed otherwise it just selects first account (???)
+                                await props.goto('settings-device');
+                                await selectDeviceInstance(device);
                             }}
                         >
                             <Translation id="TR_DEVICE_SETTINGS" />
