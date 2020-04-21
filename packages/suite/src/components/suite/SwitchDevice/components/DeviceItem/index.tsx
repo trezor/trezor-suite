@@ -162,7 +162,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
     const onDeviceSettingsClick = async () => {
         // await needed otherwise it just selects first account (???)
         await props.goto('settings-device');
-        if (isSelectedDevice(selectedDevice, device)) {
+        if (!isSelectedDevice(selectedDevice, device)) {
             await selectDeviceInstance(device);
         }
     };
