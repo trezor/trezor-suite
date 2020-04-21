@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Translation';
+import { Translation } from '@suite-components';
 import { SETTINGS } from '@suite-config';
 import { colors, Loader } from '@trezor/components';
 import { WalletLayout } from '@wallet-components';

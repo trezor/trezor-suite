@@ -5,6 +5,7 @@ import styled, { css } from 'styled-components';
 interface WrapperProps {
     intensity: number;
     discreetMode: boolean;
+    className?: string;
 }
 
 const Wrapper = styled.span<WrapperProps>`
@@ -20,8 +21,8 @@ const Wrapper = styled.span<WrapperProps>`
         `}
 `;
 
-export default ({ children, discreetMode, intensity = 4 }: Props) => (
-    <Wrapper discreetMode={discreetMode} intensity={intensity}>
+export default ({ children, discreetMode, intensity = 4, className }: Props) => (
+    <Wrapper discreetMode={discreetMode} intensity={intensity} className={className}>
         {children}
     </Wrapper>
 );
