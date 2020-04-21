@@ -45,7 +45,7 @@ const PinMismatch = ({ changePin }: Props) => {
             <H2>
                 <Translation id="TR_PIN_MISMATCH_HEADING" />
             </H2>
-            <P tabIndex={0} size="small">
+            <P size="small">
                 <Translation id="TR_PIN_MISMATCH_TEXT" />
             </P>
             <StyledImage image="UNI_ERROR" />

@@ -295,7 +295,7 @@ const Firmware = ({
 
             {firmware.status === 'initial' && (
                 <>
-                    <StyledH2 tabIndex={0}>
+                    <StyledH2>
                         <Translation id="TR_FIRMWARE_HEADING" />
                     </StyledH2>
 

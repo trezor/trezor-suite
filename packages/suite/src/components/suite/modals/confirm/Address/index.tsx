@@ -83,9 +83,7 @@ const ConfirmAddress = ({
                 </P>
             )}
             <QrCode value={address} addressPath={addressPath} />
-            <Address tabIndex={0} data-test="@address-modal/address-field">
-                {address}
-            </Address>
+            <Address data-test="@address-modal/address-field">{address}</Address>
             {device.connected && <CheckOnTrezor device={device} />}
             {!device.connected && <DeviceDisconnected label={device.label} />}
             <Row ref={htmlElement}>
