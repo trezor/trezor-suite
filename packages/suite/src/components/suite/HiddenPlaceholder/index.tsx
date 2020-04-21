@@ -5,7 +5,6 @@ import styled, { css } from 'styled-components';
 interface WrapperProps {
     intensity: number;
     discreetMode: boolean;
-    className?: string;
 }
 
 const Wrapper = styled.span<WrapperProps>`
