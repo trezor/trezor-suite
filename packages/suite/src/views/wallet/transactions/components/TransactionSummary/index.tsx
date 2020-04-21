@@ -40,10 +40,14 @@ const GraphWrapper = styled.div`
 
 const InfoCardsWrapper = styled.div`
     display: flex;
-    min-height: 240px;
+    height: 240px;
     flex-direction: column;
     flex: 1 1 auto;
     border-left: 1px solid ${colors.BLACK92};
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
+        border-left: none;
+    }
 `;
 
 const Actions = styled.div`
@@ -73,7 +77,7 @@ const TransactionSummary = (props: Props) => {
     const intervalGraphData = graphData.find(d => d.interval === selectedRange.label);
     const data = intervalGraphData?.data ?? null;
     const error = intervalGraphData?.error ?? false;
-    const isLoading = intervalGraphData?.isLoading ?? false;
+    const isLoading = false;
 
     const numOfTransactions = data?.reduce((acc, d) => (acc += d.txs), 0);
     const totalSentAmount = data?.reduce((acc, d) => acc.plus(d.sent), new BigNumber(0));
