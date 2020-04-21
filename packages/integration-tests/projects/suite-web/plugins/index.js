@@ -44,9 +44,9 @@ module.exports = on => {
     });
 
     on('task', {
-        startBridge: async () => {
+        startBridge: async (version) => {
             await controller.connect();
-            const response = await controller.send({ type: 'bridge-start' });
+            const response = await controller.send({ type: 'bridge-start', version });
             await controller.disconnect();
             return null;
         },

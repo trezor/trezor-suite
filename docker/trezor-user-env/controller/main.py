@@ -81,7 +81,8 @@ def message_received(client, server, message):
             emulator.set_passphrase_source(cmd['passphrase_source'])
             response = {"success": True}
         elif cmdType == "bridge-start":
-            bridge.start()
+            version = cmd.get("version") or "2.0.29" 
+            bridge.start(version)
             response = {"success": True}
         elif cmdType == "bridge-stop":
             bridge.stop()

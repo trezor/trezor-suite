@@ -37,7 +37,7 @@ def loader():
     print("waited for {:.3f}s".format(end - start))
 
 
-def start():
+def start(version):
     global proc
     if proc is None:
         # findProcess()
@@ -48,7 +48,7 @@ def start():
         # normalize path to be relative to this folder, not pwd
         path = os.path.join(os.path.dirname(__file__), './bin')
 
-        command = path + "/trezord-go -ed 21324:21325 -u=false"
+        command = path + "/trezord-go-v" + version + " -ed 21324:21325 -u=false"
 
         proc = Popen(
             command,
