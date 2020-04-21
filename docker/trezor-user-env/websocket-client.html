@@ -122,7 +122,7 @@
 
         function getBridgeStatus() {
             return new Promise((resolve, reject) => {
-                fetch('http://127.0.0.1:21325/status/', { mode: 'no-cors'}).then(response => {
+                fetch('http://0.0.0.0:21325/status/', { mode: 'no-cors'}).then(response => {
                     bridge = true;
                     resolve();
                 }, (error) => {
@@ -155,7 +155,7 @@
     <div>
         <h3>Bridge status</h3>
         <div>Status: <span id="bridge-status">unknown</span></div>
-        <div>You may also check bridge status page on http://127.0.0.1:21325/status/</div>
+        <div>You may also check bridge status page on http://0.0.0.0:21325/status/</div>
     </div>
 
     <div>

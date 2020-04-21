@@ -37,3 +37,5 @@ To build:
 `cd ./docker`
 
 `docker build -f ./trezor-user-env/Dockerfile . --tag mroz22/trezor-user-env`
+
+`docker push mroz22/trezor-user-env:latest`

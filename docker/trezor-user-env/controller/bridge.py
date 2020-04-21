@@ -18,7 +18,7 @@ proc = None
 
 
 def loader():
-    TREZORD_HOST = "http://127.0.0.1:21325"
+    TREZORD_HOST = "http://0.0.0.0:21325"
     CONNECTION = requests.Session()
     CONNECTION.headers.update({"Origin": "https://python.trezor.io"})
 
@@ -26,7 +26,7 @@ def loader():
     waiting = True
     while waiting:
         try:
-            r = CONNECTION.post("http://127.0.0.1:21325/enumerate", data=None)
+            r = CONNECTION.post("http://0.0.0.0:21325/enumerate", data=None)
             if r.status_code != 200:
                 raise Exception("not connected yet")
             waiting = False
