@@ -196,7 +196,7 @@ const Modal = (props: Props) => {
     const useBackground = typeof props.background === 'boolean' ? props.background : true;
     if (useBackground) {
         return (
-            <FocusLock>
+            <FocusLock autoFocus={false}>
                 <ModalComponent
                     // if modal has onCancel action set cancelable to true and pass the onCancel action
                     cancelable={modalComponent.props.onCancel}

@@ -72,7 +72,7 @@ const Log = (props: Props) => {
             <StyledParagraph size="small">
                 <Translation id="TR_ATTENTION_COLON_THE_LOG_CONTAINS" />
             </StyledParagraph>
-            <LogWrapper tabIndex={0}>{getFormattedLog()}</LogWrapper>
+            <LogWrapper>{getFormattedLog()}</LogWrapper>
             <ButtonCopy onClick={() => copy()} data-test="@log/copy-button">
                 <Translation id="TR_COPY_TO_CLIPBOARD" />
             </ButtonCopy>

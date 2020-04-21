@@ -65,7 +65,7 @@ const SwitchDeviceModal = (props: Props) => {
                 <H2>
                     <Translation id="TR_CHOOSE_WALLET" />
                 </H2>
-                <Description tabIndex={0}>
+                <Description>
                     <Translation id="TR_THIS_IS_PLACE_TO_SEE_ALL" />
                 </Description>
                 {showWebUsb && (
