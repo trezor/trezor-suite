@@ -13,6 +13,7 @@ export type StateProps = ReturnType<typeof mapStateToProps>;
 interface ExtendedProps extends StateProps {
     children: ReactNode;
     intensity?: number;
+    className?: string;
 }
 export type Props = StateProps & ExtendedProps;
 

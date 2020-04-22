@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { colors, variables, Button } from '@trezor/components';
-import { Card, TransactionsGraph, Translation } from '@suite-components';
+import { Card, TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
 import messages from '@suite/support/messages';
 import InfoCard from './components/InfoCard';
 import BigNumber from 'bignumber.js';
@@ -26,7 +26,7 @@ const ContentWrapper = styled(Card)`
     }
 `;
 
-const GraphWrapper = styled.div`
+const GraphWrapper = styled(HiddenPlaceholder)`
     display: flex;
     flex: 5 1 auto;
     padding: ${CARD_PADDING_SIZE};
@@ -109,7 +109,7 @@ const TransactionSummary = (props: Props) => {
                     {error && <ErrorMessage>Could not load data</ErrorMessage>}
                     {!error && (
                         <>
-                            <GraphWrapper>
+                            <GraphWrapper intensity={5}>
                                 <TransactionsGraph
                                     variant="one-asset"
                                     xTicks={xTicks}
@@ -148,10 +148,12 @@ const TransactionSummary = (props: Props) => {
                                         }
                                         isLoading={isLoading}
                                         value={
-                                            <Translation
-                                                {...messages.TR_N_TRANSACTIONS}
-                                                values={{ value: numOfTransactions }}
-                                            />
+                                            <HiddenPlaceholder>
+                                                <Translation
+                                                    {...messages.TR_N_TRANSACTIONS}
+                                                    values={{ value: numOfTransactions }}
+                                                />
+                                            </HiddenPlaceholder>
                                         }
                                     />
                                 </>

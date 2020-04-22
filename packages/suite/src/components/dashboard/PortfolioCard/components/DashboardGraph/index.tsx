@@ -1,6 +1,6 @@
 import React from 'react';
 import { GraphRange } from '@wallet-types/fiatRates';
-import { TransactionsGraph, Translation } from '@suite-components';
+import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
 import { Props } from './Container';
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
@@ -15,7 +15,7 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const GraphWrapper = styled.div`
+const GraphWrapper = styled(HiddenPlaceholder)`
     display: flex;
     flex: 1 1 auto;
     padding: ${CARD_PADDING_SIZE} 0px;

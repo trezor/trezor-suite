@@ -20,8 +20,8 @@ const Wrapper = styled.span<WrapperProps>`
         `}
 `;
 
-export default ({ children, discreetMode, intensity = 4 }: Props) => (
-    <Wrapper discreetMode={discreetMode} intensity={intensity}>
+export default ({ children, discreetMode, intensity = 4, className }: Props) => (
+    <Wrapper discreetMode={discreetMode} intensity={intensity} className={className}>
         {children}
     </Wrapper>
 );

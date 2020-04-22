@@ -160,15 +160,19 @@ const TokenTransfer = (transfer: ArrayElement<Props['transaction']['tokens']>) =
                 <Col>
                     <Label>
                         from:&nbsp;
-                        <TokenAddress>
-                            <AddressLabeling address={transfer.from} />
-                        </TokenAddress>
+                        <HiddenPlaceholder>
+                            <TokenAddress>
+                                <AddressLabeling address={transfer.from} />
+                            </TokenAddress>
+                        </HiddenPlaceholder>
                     </Label>
                     <Label>
                         to:&nbsp;
-                        <TokenAddress>
-                            <AddressLabeling address={transfer.to} />
-                        </TokenAddress>
+                        <HiddenPlaceholder>
+                            <TokenAddress>
+                                <AddressLabeling address={transfer.to} />
+                            </TokenAddress>
+                        </HiddenPlaceholder>
                     </Label>
                 </Col>
             </Row>
@@ -188,9 +192,11 @@ const TransactionItem = (props: Props) => {
         <Target key={i}>
             {target.addresses &&
                 target.addresses.map(addr => (
-                    <Addr key={addr}>
-                        <AddressLabeling address={addr} />
-                    </Addr>
+                    <HiddenPlaceholder>
+                        <Addr key={addr}>
+                            <AddressLabeling address={addr} />
+                        </Addr>
+                    </HiddenPlaceholder>
                 ))}
         </Target>
     ));
@@ -334,14 +340,16 @@ const TransactionItem = (props: Props) => {
                                 <Timestamp />
                                 <ExpandedWrapper>
                                     <Targets>
-                                        <Target>
-                                            {target.addresses &&
-                                                target.addresses.map(addr => (
-                                                    <Addr key={addr}>
-                                                        <AddressLabeling address={addr} />
-                                                    </Addr>
-                                                ))}
-                                        </Target>
+                                        <HiddenPlaceholder>
+                                            <Target>
+                                                {target.addresses &&
+                                                    target.addresses.map(addr => (
+                                                        <Addr key={addr}>
+                                                            <AddressLabeling address={addr} />
+                                                        </Addr>
+                                                    ))}
+                                            </Target>
+                                        </HiddenPlaceholder>
                                     </Targets>
                                     <Balance partial>
                                         <Amount>

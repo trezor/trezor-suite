@@ -1,11 +1,10 @@
-import React from 'react';
-import styled from 'styled-components';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-
-import * as backupActions from '@suite/actions/backup/backupActions';
 import { CheckItem } from '@suite-components';
-import { Dispatch, AppState } from '@suite-types';
+import { AppState, Dispatch } from '@suite-types';
+import * as backupActions from '@suite/actions/backup/backupActions';
+import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import styled from 'styled-components';
 
 const CheckboxWrapper = styled.div`
     display: flex;

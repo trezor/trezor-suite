@@ -11,6 +11,7 @@ const Wrapper = styled.div`
     width: 100%;
     min-height: 80px;
     min-width: 250px;
+
     & + & {
         border-top: 1px solid ${colors.BLACK92};
     }

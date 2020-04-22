@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import styled, { css } from 'styled-components';
 import { Account } from '@wallet-types';
-import { Card, FiatValue, Badge } from '@suite-components';
+import { Card, FiatValue, Badge, HiddenPlaceholder } from '@suite-components';
 // @ts-ignore no types for this lib
 import ScaleText from 'react-scale-text';
 import { variables, colors, Icon, Link } from '@trezor/components';
@@ -105,15 +105,21 @@ const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
                             <TokenName>{t.name}</TokenName>
                         </Col>
                         <Col justify="right">
-                            <TokenValue>{`${t.balance} ${t.symbol?.toUpperCase()}`}</TokenValue>
+                            <HiddenPlaceholder>
+                                <TokenValue>{`${t.balance} ${t.symbol?.toUpperCase()}`}</TokenValue>
+                            </HiddenPlaceholder>
                         </Col>
                         {!isTestnet && (
                             <Col isTestnet={isTestnet} justify="right">
                                 <FiatWrapper>
                                     {t.balance && t.symbol && (
-                                        <FiatValue amount={t.balance} symbol={t.symbol}>
-                                            {({ value }) => (value ? <Badge>{value}</Badge> : null)}
-                                        </FiatValue>
+                                        <HiddenPlaceholder>
+                                            <FiatValue amount={t.balance} symbol={t.symbol}>
+                                                {({ value }) =>
+                                                    value ? <Badge>{value}</Badge> : null
+                                                }
+                                            </FiatValue>
+                                        </HiddenPlaceholder>
                                     )}
                                 </FiatWrapper>
                             </Col>

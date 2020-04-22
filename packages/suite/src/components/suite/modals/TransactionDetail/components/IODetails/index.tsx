@@ -125,7 +125,9 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                             return (
                                 <IOBox key={input.hex}>
                                     <IOBoxAddress>
-                                        {input.addresses.map((addr: string) => addr)}
+                                        <HiddenPlaceholder>
+                                            {input.addresses.map((addr: string) => addr)}
+                                        </HiddenPlaceholder>
                                     </IOBoxAddress>
                                     {/* <IOBoxPath>placeholder</IOBoxPath> */}
                                     <IOBoxAmountWrapper>
@@ -175,7 +177,9 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                             return (
                                 <IOBox key={output.hex}>
                                     <IOBoxAddress>
-                                        {output.addresses.map((addr: string) => addr)}
+                                        <HiddenPlaceholder>
+                                            {output.addresses.map((addr: string) => addr)}
+                                        </HiddenPlaceholder>
                                     </IOBoxAddress>
                                     {/* <IOBoxPath>todo: bip44 path</IOBoxPath> */}
                                     <IOBoxAmountWrapper>
