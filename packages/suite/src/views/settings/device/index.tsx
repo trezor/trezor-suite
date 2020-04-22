@@ -17,7 +17,7 @@ import {
 } from '@suite-constants/urls';
 import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import * as homescreen from '@suite-utils/homescreen';
-import { useDeviceActionLocks } from '@suite-utils/hooks';
+import { useDeviceActionLocks } from '@suite-hooks';
 import { variables, Link, P, Switch } from '@trezor/components';
 import React, { createRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
