@@ -77,7 +77,7 @@ const TransactionSummary = (props: Props) => {
     const intervalGraphData = graphData.find(d => d.interval === selectedRange.label);
     const data = intervalGraphData?.data ?? null;
     const error = intervalGraphData?.error ?? false;
-    const isLoading = false;
+    const isLoading = intervalGraphData?.isLoading ?? false;
 
     const numOfTransactions = data?.reduce((acc, d) => (acc += d.txs), 0);
     const totalSentAmount = data?.reduce((acc, d) => acc.plus(d.sent), new BigNumber(0));
