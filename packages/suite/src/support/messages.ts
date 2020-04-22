@@ -251,6 +251,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Passphrase mismatch!',
         id: 'TR_AUTH_CONFIRM_FAILED_TITLE',
     },
+    TR_AUTH_CONFIRM_FAILED_DESC: {
+        defaultMessage: 'Invalid password confirmation. Wallet will stay in watch-only mode.',
+        id: 'TR_AUTH_CONFIRM_FAILED_DESC',
+    },
     TR_AUTHENTICATING_DEVICE: {
         defaultMessage: 'Authenticating device...',
         id: 'TR_AUTHENTICATING_DEVICE',
@@ -808,9 +812,13 @@ const definedMessages = defineMessages({
         description: 'Label in Send form',
         id: 'TR_FEE',
     },
-    TR_FIAT_RATES_ARE_NOT_CURRENTLY: {
+    TR_FIAT_RATES_NOT_AVAILABLE: {
+        defaultMessage: 'No data available',
+        id: 'TR_FIAT_RATES_NOT_AVAILABLE',
+    },
+    TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP: {
         defaultMessage: 'Fiat rates are not currently available.',
-        id: 'TR_FIAT_RATES_ARE_NOT_CURRENTLY',
+        id: 'TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP',
     },
     TR_FINAL_HEADING: {
         defaultMessage: 'Good job! All done',
@@ -1047,6 +1055,10 @@ const definedMessages = defineMessages({
     TR_LEGACY_ACCOUNTS: {
         defaultMessage: 'Legacy accounts',
         id: 'TR_LEGACY_ACCOUNTS',
+    },
+    TR_LOADING_WALLET: {
+        defaultMessage: 'Loading wallet...',
+        id: 'TR_LOADING_WALLET',
     },
     TR_LOADING_ACCOUNT: {
         defaultMessage: 'Loading account',
@@ -2681,6 +2693,27 @@ const definedMessages = defineMessages({
     TR_DASHBOARD_NEWS_ERROR: {
         defaultMessage: 'Error while fetching the news',
         id: 'TR_DASHBOARD_NEWS_ERROR',
+    },
+    TR_DASHBOARD_ASSET_FAILED: {
+        defaultMessage: 'Asset not loaded',
+        description: 'Display error message in single asset (discovery partially failed)',
+        id: 'TR_DASHBOARD_ASSET_FAILED',
+    },
+    TR_DASHBOARD_ASSETS_ERROR: {
+        defaultMessage: 'Assets were not loaded properly',
+        id: 'TR_DASHBOARD_ASSETS_ERROR',
+    },
+    TR_DASHBOARD_DISCOVERY_ERROR: {
+        defaultMessage: 'Discovery error',
+        id: 'TR_DASHBOARD_DISCOVERY_ERROR',
+    },
+    TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC: {
+        defaultMessage: 'Accounts were not loaded properly {details}',
+        id: 'TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC',
+    },
+    TR_DASHBOARD_DISCOVERY_ERROR_DESC: {
+        defaultMessage: 'Discovery error desc 1',
+        id: 'TR_DASHBOARD_DISCOVERY_ERROR_DESC',
     },
     TR_RECOVERY_SEED_IS_OFFLINE: {
         id: 'TR_RECOVERY_SEED_IS_OFFLINE',
