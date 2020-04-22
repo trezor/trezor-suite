@@ -26,6 +26,7 @@ def loader():
     waiting = True
     while waiting:
         try:
+            print("waiting for trezord...")
             r = CONNECTION.post("http://0.0.0.0:21325/enumerate", data=None)
             if r.status_code != 200:
                 raise Exception("not connected yet")

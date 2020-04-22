@@ -58,8 +58,21 @@ def start(version):
             preexec_fn=os.setsid
         )
         print("the commandline is {}".format(proc.args))
+        wait_for_bridge_device()
 
-        time.sleep(3)  # replace this with "wait_for_emulator" process
+
+def wait_for_bridge_device():
+    start = time.monotonic()
+    waiting = True
+    while waiting:
+        try:
+            print("waiting for bridge device")
+            get_bridge_device()
+            waiting = False
+        except Exception as e:
+            time.sleep(1)
+    end = time.monotonic()
+    print("waited for {:.3f}s".format(end - start))
 
 
 def stop():
@@ -71,7 +84,6 @@ def stop():
 
 def get_bridge_device():
     devices = BridgeTransport.enumerate()
-    print(devices)
     for d in devices:
         debugBridge = d.find_debug()
 
@@ -193,5 +205,3 @@ def set_passphrase_source(passphrase_source):
     time.sleep(0.6)
     device.apply_settings(client, passphrase_source=passphrase_source)
     client.close()
-
-
