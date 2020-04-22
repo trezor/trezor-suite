@@ -17,7 +17,7 @@ const TransactionIdWrapper = styled.div`
     width: 100%; /* makes text overflow elipsis work */
 `;
 
-const TransactionId = styled.div`
+const TransactionId = styled(props => <HiddenPlaceholder {...props} />)`
     text-overflow: ellipsis;
     overflow: hidden;
     font-family: ${variables.FONT_FAMILY.MONOSPACE};
@@ -161,16 +161,16 @@ const BasicDetails = ({
 
                 <BoxRow title={<Translation id="TR_TRANSACTION_ID" />}>
                     {explorerUrl ? (
-                        <ExplorerLink variant="nostyle" href={explorerUrl}>
-                            <TransactionIdWrapper>
+                        <TransactionIdWrapper>
+                            <ExplorerLink variant="nostyle" href={explorerUrl}>
                                 <TransactionId>{tx.txid}</TransactionId>
                                 <LinkIcon
                                     icon="EXTERNAL_LINK"
                                     size={14}
                                     color={COLOR_TEXT_PRIMARY}
                                 />
-                            </TransactionIdWrapper>
-                        </ExplorerLink>
+                            </ExplorerLink>
+                        </TransactionIdWrapper>
                     ) : (
                         <TransactionIdWrapper>
                             <TransactionId>{tx.txid}</TransactionId>
