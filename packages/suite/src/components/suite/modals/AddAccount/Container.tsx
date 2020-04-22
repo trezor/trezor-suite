@@ -7,6 +7,7 @@ import { AppState, Dispatch, TrezorDevice } from '@suite-types';
 import Index from './index';
 
 const mapStateToProps = (state: AppState) => ({
+    app: state.router.app,
     accounts: state.wallet.accounts,
     enabledNetworks: state.wallet.settings.enabledNetworks,
     selectedAccount: state.wallet.selectedAccount,
