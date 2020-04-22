@@ -90,44 +90,42 @@ interface Props {
 }
 
 const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
+    if (!tokens) return null;
     return (
         <Wrapper isTestnet={isTestnet} noPadding>
-            {tokens &&
-                tokens.map(t => {
-                    return (
-                        <Fragment key={t.address}>
-                            <Col>
-                                <TokenImage>
-                                    <ScaleText widthOnly>{t.symbol}</ScaleText>
-                                </TokenImage>
+            {tokens.map(t => {
+                return (
+                    <Fragment key={t.address}>
+                        <Col>
+                            <TokenImage>
+                                <ScaleText widthOnly>{t.symbol}</ScaleText>
+                            </TokenImage>
+                        </Col>
+                        <Col>
+                            <TokenName>{t.name}</TokenName>
+                        </Col>
+                        <Col justify="right">
+                            <TokenValue>{`${t.balance} ${t.symbol?.toUpperCase()}`}</TokenValue>
+                        </Col>
+                        {!isTestnet && (
+                            <Col isTestnet={isTestnet} justify="right">
+                                <FiatWrapper>
+                                    {t.balance && t.symbol && (
+                                        <FiatValue amount={t.balance} symbol={t.symbol}>
+                                            {({ value }) => (value ? <Badge>{value}</Badge> : null)}
+                                        </FiatValue>
+                                    )}
+                                </FiatWrapper>
                             </Col>
-                            <Col>
-                                <TokenName>{t.name}</TokenName>
-                            </Col>
-                            <Col justify="right">
-                                <TokenValue>{`${t.balance} ${t.symbol?.toUpperCase()}`}</TokenValue>
-                            </Col>
-                            {!isTestnet && (
-                                <Col isTestnet={isTestnet} justify="right">
-                                    <FiatWrapper>
-                                        {t.balance && t.symbol && (
-                                            <FiatValue amount={t.balance} symbol={t.symbol}>
-                                                {({ value }) =>
-                                                    value ? <Badge>{value}</Badge> : null
-                                                }
-                                            </FiatValue>
-                                        )}
-                                    </FiatWrapper>
-                                </Col>
-                            )}
-                            <Col justify="right">
-                                <Link href={`${explorerUrl}${t.address}`}>
-                                    <Icon icon="EXTERNAL_LINK" size={16} color={colors.BLACK25} />
-                                </Link>
-                            </Col>
-                        </Fragment>
-                    );
-                })}
+                        )}
+                        <Col justify="right">
+                            <Link href={`${explorerUrl}${t.address}`}>
+                                <Icon icon="EXTERNAL_LINK" size={16} color={colors.BLACK25} />
+                            </Link>
+                        </Col>
+                    </Fragment>
+                );
+            })}
         </Wrapper>
     );
 };
