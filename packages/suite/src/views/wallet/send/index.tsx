@@ -26,7 +26,6 @@ const Row = styled.div`
 
 const StyledCard = styled(Card)`
     display: flex;
-    padding: 20px;
     flex-direction: column;
     margin-bottom: 40px;
 `;

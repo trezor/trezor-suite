@@ -1651,6 +1651,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Start',
         id: 'TR_START',
     },
+    TR_FIRMWARE_BOOTLOADER_TITLE: {
+        defaultMessage: 'Start',
+        id: 'TR_FIRMWARE_BOOTLOADER_TITLE',
+    },
     TR_STATUS: {
         defaultMessage: 'Status',
         id: 'TR_STATUS',

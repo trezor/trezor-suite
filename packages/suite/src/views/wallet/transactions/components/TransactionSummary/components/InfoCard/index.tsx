@@ -4,6 +4,7 @@ import { colors, variables, Loader } from '@trezor/components';
 import { HiddenPlaceholder, Badge, NoRatesTooltip, FiatValue } from '@suite-components';
 import { Account } from '@wallet-types';
 import BigNumber from 'bignumber.js';
+import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
 const Wrapper = styled.div`
     display: flex;
@@ -19,7 +20,7 @@ const Wrapper = styled.div`
 const InfoCardContent = styled.div`
     display: flex;
     width: 100%;
-    padding: 20px 16px 20px 20px;
+    padding: ${CARD_PADDING_SIZE};
     flex-direction: column;
 `;
 

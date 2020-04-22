@@ -5,7 +5,7 @@ const Content = styled.div`
     display: flex;
     flex: 1;
     justify-content: space-between;
-    padding: 16px 24px;
+    padding: 16px 0px;
 `;
 
 const Wrapper = styled.div`
@@ -13,12 +13,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     flex: 1;
     & + & {
-        &::before {
-            content: '';
-            margin: 0 auto;
-            width: 94%;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-        }
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
     }
 `;
 

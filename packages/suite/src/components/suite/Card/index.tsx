@@ -1,15 +1,31 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
+import { CARD_PADDING_SIZE, CARD_PADDING_SIZE_LARGE } from '@suite-constants/layout';
+
+const getPaddingSize = (
+    largePadding?: boolean,
+    noPadding?: boolean,
+    noVerticalPadding?: boolean,
+) => {
+    if (noPadding) return '0px';
+    if (noVerticalPadding) {
+        if (largePadding) return `0px ${CARD_PADDING_SIZE_LARGE}`;
+        return `0px ${CARD_PADDING_SIZE}`;
+    }
+    if (largePadding) return CARD_PADDING_SIZE_LARGE;
+    return CARD_PADDING_SIZE;
+};
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
 `;
 
-const Content = styled.div`
+const Content = styled.div<{ paddingSize: string }>`
     display: flex;
     border-radius: 6px;
+    padding: ${props => props.paddingSize};
     background: ${colors.WHITE};
     box-shadow: 0 6px 14px 0 rgba(0, 0, 0, 0.05);
 `;
@@ -34,9 +50,20 @@ export interface Props {
     children?: React.ReactNode;
     title?: string | React.ReactNode;
     description?: string | React.ReactNode;
+    largePadding?: boolean;
+    noPadding?: boolean;
+    noVerticalPadding?: boolean;
 }
 
-const Card = ({ children, title, description, ...rest }: Props) => (
+const Card = ({
+    children,
+    title,
+    description,
+    largePadding,
+    noPadding,
+    noVerticalPadding,
+    ...rest
+}: Props) => (
     <Wrapper>
         {title && (
             <Header>
@@ -44,7 +71,9 @@ const Card = ({ children, title, description, ...rest }: Props) => (
                 {description && <Description>{description}</Description>}
             </Header>
         )}
-        <Content {...rest}>{children}</Content>
+        <Content paddingSize={getPaddingSize(largePadding, noPadding, noVerticalPadding)} {...rest}>
+            {children}
+        </Content>
     </Wrapper>
 );
 export default Card;

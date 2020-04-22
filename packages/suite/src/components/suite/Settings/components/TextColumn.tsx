@@ -21,6 +21,10 @@ const Description = styled.div`
     color: ${colors.BLACK50};
     margin: 12px 0;
     font-size: ${variables.FONT_SIZE.TINY};
+
+    &:last-child {
+        margin-bottom: 0px;
+    }
 `;
 
 const Title = styled.div`

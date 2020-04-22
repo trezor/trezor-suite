@@ -154,7 +154,7 @@ const Preloader = (props: Props) => {
         return (
             <>
                 <ModalComponent cancelable={cancelable} onCancel={props.closeModalApp}>
-                    <FocusLock>
+                    <FocusLock autoFocus={false}>
                         <ApplicationModal
                             cancelable={cancelable}
                             closeModalApp={props.closeModalApp}

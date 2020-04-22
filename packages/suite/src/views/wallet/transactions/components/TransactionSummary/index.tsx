@@ -10,6 +10,7 @@ import { calcTicks, calcTicksFromData } from '@suite/utils/suite/date';
 import { GraphRange } from '@suite/types/wallet/fiatRates';
 import { Props } from './Container';
 import { accountGraphDataFilterFn } from '@wallet-utils/graphUtils';
+import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
 const Wrapper = styled.div`
     display: flex;
@@ -28,7 +29,7 @@ const ContentWrapper = styled(Card)`
 const GraphWrapper = styled(HiddenPlaceholder)`
     display: flex;
     flex: 5 1 auto;
-    padding: 20px;
+    padding: ${CARD_PADDING_SIZE};
     height: 240px;
     max-width: 600px; /* workaround to prevent recharts filling all space */
 
@@ -39,10 +40,14 @@ const GraphWrapper = styled(HiddenPlaceholder)`
 
 const InfoCardsWrapper = styled.div`
     display: flex;
-    min-height: 240px;
+    height: 240px;
     flex-direction: column;
     flex: 1 1 auto;
     border-left: 1px solid ${colors.BLACK92};
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
+        border-left: none;
+    }
 `;
 
 const Actions = styled.div`
@@ -99,7 +104,7 @@ const TransactionSummary = (props: Props) => {
                 {/* TODO: export transactions to a file */}
             </Actions>
             {!isGraphHidden && (
-                <ContentWrapper>
+                <ContentWrapper noPadding>
                     {/* TODO: what should be shown on error? */}
                     {error && <ErrorMessage>Could not load data</ErrorMessage>}
                     {!error && (

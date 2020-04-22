@@ -434,7 +434,7 @@ const Firmware = ({
                     {device && device.mode === 'bootloader' && (
                         <>
                             <StyledH2>
-                                <Translation id="TR_START" />
+                                <Translation id="TR_FIRMWARE_BOOTLOADER_TITLE" />
                             </StyledH2>
                             <InitImg model={model} />
 

@@ -22,7 +22,6 @@ const Wrapper = styled(Card)`
     min-height: 95px;
     border-radius: 6px;
     margin-bottom: 26px;
-    padding: 20px;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;

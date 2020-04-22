@@ -11,6 +11,7 @@ import { Props } from './Container';
 import ColHeader from './components/ColHeader';
 import DeviceImage from '@suite-components/images/DeviceImage';
 import AddWalletButton from './components/AddWalletButton';
+import { isSelectedDevice } from '@suite-utils/device';
 
 const DeviceWrapper = styled.div`
     display: flex;
@@ -158,6 +159,14 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
         }
     };
 
+    const onDeviceSettingsClick = async () => {
+        // await needed otherwise it just selects first account (???)
+        await props.goto('settings-device');
+        if (!isSelectedDevice(selectedDevice, device)) {
+            await selectDeviceInstance(device);
+        }
+    };
+
     return (
         <DeviceWrapper>
             <Device>
@@ -204,14 +213,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                             </Button>
                         </Row>
                     ) : (
-                        <Button
-                            variant="tertiary"
-                            icon="SETTINGS"
-                            onClick={() => {
-                                props.goto('settings-device');
-                                selectDeviceInstance(device);
-                            }}
-                        >
+                        <Button variant="tertiary" icon="SETTINGS" onClick={onDeviceSettingsClick}>
                             <Translation id="TR_DEVICE_SETTINGS" />
                         </Button>
                     )}

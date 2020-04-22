@@ -15,6 +15,7 @@ import {
     WIKI_P2SH_URL,
     WIKI_P2PHK_URL,
 } from '@suite-constants/urls';
+import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
 const AccountTypeLabel = styled.div`
     display: flex;
@@ -28,8 +29,9 @@ const AccountTypeLabel = styled.div`
 `;
 
 const StyledCard = styled(Card)`
-    padding: 20px;
     flex-direction: column;
+    padding-top: ${CARD_PADDING_SIZE};
+    padding-bottom: ${CARD_PADDING_SIZE};
 `;
 
 const StyledRow = styled(Row)`
@@ -63,7 +65,7 @@ export default ({ selectedAccount, locks, device, openModal }: Props) => {
 
     return (
         <WalletLayout title="Account details" account={selectedAccount}>
-            <StyledCard title={<Translation id="TR_ACCOUNT_DETAILS_HEADER" />}>
+            <StyledCard title={<Translation id="TR_ACCOUNT_DETAILS_HEADER" />} largePadding>
                 <StyledRow>
                     <TextColumn
                         title={<Translation id="TR_ACCOUNT_DETAILS_TYPE_HEADER" />}

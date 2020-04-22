@@ -23,7 +23,7 @@
     "scripts": {
         "test:unit": "jest",
         "test:watch": "jest --watch",
-        "test:e2e": "ts-node ./start-e2e.ts",
+        "test:integration": "ts-node ./start-integration.ts",
         "lint": "eslint . --ext .ts",
         "type-check": "tsc --project tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",

@@ -18,9 +18,7 @@ const Wrapper = styled.div`
 `;
 
 const StyledCard = styled(Card)`
-    margin-top: 16px;
     display: flex;
-    padding: 20px;
     flex-direction: column;
 `;
 
@@ -35,8 +33,11 @@ const EmptyWrapper = styled.div`
 
 const Item = styled.div`
     display: flex;
-    border-bottom: 1px solid ${colors.BLACK96};
     padding: 16px 0px;
+
+    & + & {
+        border-top: 1px solid ${colors.BLACK96};
+    }
 `;
 
 const Text = styled.div`

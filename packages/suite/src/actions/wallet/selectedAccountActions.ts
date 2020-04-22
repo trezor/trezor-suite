@@ -109,10 +109,9 @@ const getAccountState = () => (dispatch: Dispatch, getState: GetState): State =>
         state.router.app === 'wallet' && state.router.params
             ? state.router.params
             : {
-                  paramsType: 'wallet' as const,
                   accountIndex: 0,
                   accountType: 'normal' as const,
-                  symbol: discovery.networks[0] || 'btc',
+                  symbol: discovery.networks[0],
               };
 
     const network = NETWORKS.find(c => c.symbol === params.symbol)!;
@@ -124,6 +123,7 @@ const getAccountState = () => (dispatch: Dispatch, getState: GetState): State =>
             loader: 'account-not-enabled',
             network,
             discovery,
+            params,
             mode,
         };
     }
@@ -136,6 +136,7 @@ const getAccountState = () => (dispatch: Dispatch, getState: GetState): State =>
             loader: 'account-not-loaded',
             network,
             discovery,
+            params,
             mode,
         };
     }
@@ -151,6 +152,7 @@ const getAccountState = () => (dispatch: Dispatch, getState: GetState): State =>
             account,
             network,
             discovery,
+            params,
             mode: undefined,
         } as const;
         const loadedMode = dispatch(getAccountStateWithMode(loadedState));
@@ -174,6 +176,7 @@ const getAccountState = () => (dispatch: Dispatch, getState: GetState): State =>
         loader: 'account-not-exists',
         network,
         discovery,
+        params,
         mode,
     };
 };

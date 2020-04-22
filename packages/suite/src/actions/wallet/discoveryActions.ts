@@ -396,7 +396,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
                 }
                 const failed: Discovery['failed'] = coins.map(c => ({
                     index: 0,
-                    symbol: c.coin,
+                    symbol: bundle[c.index].coin,
                     accountType: bundle[c.index].accountType,
                     error: c.exception,
                     fwException: c.exception,
