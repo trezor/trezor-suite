@@ -27,8 +27,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 export type Props = ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps> &
-    WrappedComponentProps & {
-        isDisabled: boolean;
-    };
+    WrappedComponentProps;
 
 export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(SecurityFeatures));

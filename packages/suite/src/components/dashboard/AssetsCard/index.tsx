@@ -4,10 +4,11 @@ import BigNumber from 'bignumber.js';
 import { NETWORKS } from '@wallet-config';
 import Asset from './components/Asset';
 import { Account } from '@wallet-types';
-import { AppState } from '@suite-types';
-import { colors, Loader } from '@trezor/components';
+import { colors, variables, Loader, Icon } from '@trezor/components';
 import { Card, Translation } from '@suite-components';
 import { CARD_PADDING_SIZE } from '@suite/constants/suite/layout';
+import { useDiscovery } from '@suite-hooks';
+import { useAccounts } from '@wallet-hooks';
 
 const Header = styled.div`
     display: flex;
@@ -17,19 +18,13 @@ const Header = styled.div`
 
 const HeaderTitle = styled.div`
     flex: 1;
-    font-size: 12px;
-    font-weight: 600;
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     color: ${colors.BLACK50};
     text-transform: uppercase;
     display: grid;
     grid-gap: 10px;
     grid-template-columns: minmax(180px, 2fr) repeat(auto-fit, minmax(80px, 1fr));
-`;
-
-const StyledAsset = styled(Asset)`
-    & + & {
-        border-top: 2px solid ${colors.BLACK96};
-    }
 `;
 
 const StyledCard = styled(Card)`
@@ -39,20 +34,31 @@ const StyledCard = styled(Card)`
 
 // padding for loader need to math with first row height
 const InfoMessage = styled.div`
-    padding: 14px 20px;
-    padding-bottom: 15px;
+    padding: 14px 0px;
     display: flex;
+    color: ${colors.RED};
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
-export interface Props extends React.HTMLAttributes<HTMLDivElement> {
-    assets: { [key: string]: Account[] };
-    localCurrency: string;
-    rates: AppState['wallet']['fiat'];
-    isLoading?: boolean;
-}
+const AssetsCard = () => {
+    const { discovery, getDiscoveryStatus } = useDiscovery();
+    const { accounts } = useAccounts(discovery);
 
-const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props) => {
+    const assets: { [key: string]: Account[] } = {};
+    accounts.forEach(a => {
+        if (!assets[a.symbol]) {
+            assets[a.symbol] = [];
+        }
+        assets[a.symbol].push(a);
+    });
     const networks = Object.keys(assets);
+
+    const discoveryStatus = getDiscoveryStatus();
+    const isLoading =
+        discoveryStatus && discoveryStatus.status === 'loading' && networks.length < 1;
+    const isError = discoveryStatus && discoveryStatus.status === 'exception' && !networks.length;
+
     return (
         <>
             <Header>
@@ -71,7 +77,7 @@ const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props)
                     <div />
                 </HeaderTitle>
             </Header>
-            <StyledCard {...rest}>
+            <StyledCard>
                 {networks.map(symbol => {
                     const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
                     if (!network) {
@@ -83,20 +89,32 @@ const AssetsCard = ({ assets, localCurrency, rates, isLoading, ...rest }: Props)
                         new BigNumber(0),
                     );
 
+                    const assetFailed = accounts.find(f => f.symbol === network.symbol && f.failed);
+
                     return (
-                        <StyledAsset
+                        <Asset
                             data-test="@dashboard/asset-card"
                             key={symbol}
-                            name={network.name}
-                            symbol={network.symbol}
+                            network={network}
+                            failed={!!assetFailed}
                             cryptoValue={assetBalance.toFixed()}
-                            localCurrency={localCurrency}
                         />
                     );
                 })}
-                {isLoading && networks.length < 1 && (
+                {isLoading && (
                     <InfoMessage>
                         <Loader size={20} />
+                    </InfoMessage>
+                )}
+                {isError && (
+                    <InfoMessage>
+                        <Icon
+                            style={{ paddingRight: '4px', paddingBottom: '2px' }}
+                            icon="WARNING"
+                            color={colors.RED}
+                            size={14}
+                        />
+                        <Translation id="TR_DASHBOARD_ASSETS_ERROR" />
                     </InfoMessage>
                 )}
             </StyledCard>
