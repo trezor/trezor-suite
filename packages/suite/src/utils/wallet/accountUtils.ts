@@ -205,8 +205,10 @@ export const findAccountsByAddress = (address: string, accounts: Account[]) =>
 export const findAccountDevice = (account: Account, devices: AppState['devices']) =>
     devices.find(d => d.state === account.deviceState);
 
-export const getAllAccounts = (deviceState: string | typeof undefined, accounts: Account[]) =>
-    accounts.filter(a => a.deviceState === deviceState && a.visible);
+export const getAllAccounts = (deviceState: string | typeof undefined, accounts: Account[]) => {
+    if (!deviceState) return [];
+    return accounts.filter(a => a.deviceState === deviceState && a.visible);
+};
 
 export const getSelectedAccount = (
     deviceState: string | typeof undefined,
@@ -398,6 +400,7 @@ export const getFailedAccounts = (discovery: Discovery): Account[] => {
     return discovery.failed.map(f => {
         const descriptor = `failed:${f.index}:${f.symbol}:${f.accountType}`;
         return {
+            failed: true,
             deviceState: discovery.deviceState,
             index: f.index,
             path: descriptor,
