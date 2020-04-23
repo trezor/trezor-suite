@@ -125,6 +125,7 @@ const StyledLink = styled(Link)`
 
 const Heading = styled(H2)`
     text-align: center;
+
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         /* make sure heading doesn't overflow over close button */
         padding-right: 20px;
