@@ -43,6 +43,9 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         'rippleGetAddress',
         'applySettings',
         'changePin',
+        'pushTransaction',
+        'signTransaction',
+        'composeTransaction',
         'backupDevice',
     ] as const;
     wrappedMethods.forEach(key => {
