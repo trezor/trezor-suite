@@ -1,9 +1,10 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useKeyPress, useOnClickOutside } from '../../utils/hooks';
 
 import { Link } from '../typography/Link';
 import { Icon } from '../Icon';
+import { H2 } from '../typography/Heading';
 import { colors, variables } from '../../config';
 import { useRef } from 'react';
 
@@ -33,6 +34,48 @@ const ModalWindow = styled.div<Props>`
     text-align: center;
     padding: ${props => props.padding};
     overflow-x: hidden; /* retains border-radius when using background in child component */
+    max-height: 90vh;
+    max-width: 90vh;
+
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: ${props => props.paddingSmall};
+    }
+
+    ${props =>
+        props.useFixedWidth &&
+        props.fixedWidth &&
+        css`
+            @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+                max-width: ${(props: Props) => props.fixedWidth![0]};
+            }
+            @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+                max-width: ${(props: Props) => props.fixedWidth![1]};
+            }
+            @media only screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+                max-width: ${(props: Props) => props.fixedWidth![2]};
+            }
+            @media only screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
+                max-width: ${(props: Props) => props.fixedWidth![3]};
+            }
+        `}
+
+    ${props =>
+        props.useFixedHeight &&
+        props.fixedHeight &&
+        css`
+            @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+                max-height: ${(props: Props) => props.fixedHeight![0]};
+            }
+            @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+                max-height: ${(props: Props) => props.fixedHeight![1]};
+            }
+            @media only screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+                max-height: ${(props: Props) => props.fixedHeight![2]};
+            }
+            @media only screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
+                max-height: ${(props: Props) => props.fixedHeight![3]};
+            }
+        `}
 `;
 
 const StyledLink = styled(Link)`
@@ -41,7 +84,6 @@ const StyledLink = styled(Link)`
     position: absolute;
     right: 0;
     top: 0;
-    margin: 10px;
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${colors.BLACK25};
@@ -52,24 +94,49 @@ const StyledLink = styled(Link)`
     }
 `;
 
+const Heading = styled(H2)``;
+
+const Description = styled.div`
+    color: ${colors.BLACK50};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    margin-bottom: 10px;
+`;
+
+const Content = styled.div`
+    display: flex;
+    overflow-y: auto;
+`;
+
 const StyledIcon = styled(Icon)`
     padding: 20px 14px;
 `;
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
     children: React.ReactNode;
+    heading?: React.ReactNode;
+    description?: React.ReactNode;
     cancelable?: boolean;
-    cancelText?: string;
+    useFixedWidth?: boolean;
+    fixedWidth?: [string, string, string, string]; // [SM, MD, LG, XL]
+    useFixedHeight?: boolean;
+    fixedHeight?: [string, string, string, string]; // [SM, MD, LG, XL]
     padding?: string;
+    paddingSmall?: string;
     onCancel?: () => void;
 }
 
 const Modal = ({
     children,
+    heading,
+    description,
     cancelable,
-    cancelText,
     onCancel,
-    padding = '10px',
+    padding = '35px 40px',
+    paddingSmall = '16px 8px',
+    useFixedWidth = false,
+    fixedWidth = ['90vw', '90vw', '720px', '720px'], // [SM, MD, LG, XL]
+    useFixedHeight = false,
+    fixedHeight = ['90vh', '90vh', '720px', '720px'], // [SM, MD, LG, XL]
     ...rest
 }: Props) => {
     const escPressed = useKeyPress('Escape');
@@ -86,15 +153,25 @@ const Modal = ({
     });
 
     return (
-        <ModalContainer {...rest}>
-            <ModalWindow ref={ref} padding={padding}>
+        <ModalContainer>
+            <ModalWindow
+                ref={ref}
+                padding={padding}
+                paddingSmall={paddingSmall}
+                useFixedWidth={useFixedWidth}
+                fixedWidth={fixedWidth}
+                useFixedHeight={useFixedHeight}
+                fixedHeight={fixedHeight}
+                {...rest}
+            >
+                {heading && <Heading>{heading}</Heading>}
+                {description && <Description>{description}</Description>}
                 {cancelable && (
                     <StyledLink onClick={onCancel}>
-                        {cancelText || ''}
-                        <StyledIcon size={16} color={colors.BLACK25} icon="CROSS" />
+                        <StyledIcon size={24} color={colors.BLACK0} icon="CROSS" />
                     </StyledLink>
                 )}
-                {children}
+                <Content>{children}</Content>
             </ModalWindow>
         </ModalContainer>
     );
