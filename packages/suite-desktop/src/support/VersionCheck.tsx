@@ -4,7 +4,7 @@ import { Loading, ModalWrapper, Translation } from '@suite-components';
 import { Modal as ModalComponent, Button, H2, P, Link, colors } from '@trezor/components';
 
 interface Props {
-    children: React.ReactNode;
+    children: JSX.Element;
 }
 
 interface State {
