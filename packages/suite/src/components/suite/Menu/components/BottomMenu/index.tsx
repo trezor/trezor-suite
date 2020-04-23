@@ -118,7 +118,7 @@ const BottomMenu = (props: Props) => (
                 );
 
             return (
-                <>
+                <React.Fragment key={route}>
                     <RoundedCorner top isActive={isActive} />
                     <In
                         key={translationId}
@@ -134,7 +134,7 @@ const BottomMenu = (props: Props) => (
                         </MenuItemWrapper>
                     </In>
                     <RoundedCorner bottom isActive={isActive} />
-                </>
+                </React.Fragment>
             );
         })}
         <StyledDivider className="divider" />

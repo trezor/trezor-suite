@@ -4,7 +4,7 @@ import { Button, colors, H2, variables } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { fromWei, toWei } from 'web3-utils';
 
