@@ -46,13 +46,26 @@ class ErrorBoundary extends React.Component<{}, StateProps> {
                 <Wrapper>
                     <H1>Error occurred</H1>
                     <P>It appears something is broken. You might let us know by sending report</P>
+                    <P>{this.state.error.message}</P>
 
                     <Buttons>
                         <StyledButton onClick={() => Sentry.showReportDialog()}>
                             Send report
                         </StyledButton>
 
-                        <StyledButton icon="REFRESH" onClick={() => window.location.reload()}>
+                        <StyledButton
+                            icon="REFRESH"
+                            onClick={() => {
+                                // @ts-ignore global.ipcRenderer is declared in @desktop/preloader.js
+                                const { ipcRenderer } = global;
+                                if (ipcRenderer) {
+                                    // relaunch desktop app
+                                    ipcRenderer.send('restart-app');
+                                } else {
+                                    window.location.reload();
+                                }
+                            }}
+                        >
                             Reload window
                         </StyledButton>
                     </Buttons>
