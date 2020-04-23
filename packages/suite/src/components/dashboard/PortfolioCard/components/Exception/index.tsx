@@ -130,7 +130,7 @@ export default ({ exception, discovery }: Props) => {
                     description="TR_AUTH_CONFIRM_FAILED_DESC"
                     cta={{
                         action: () => dispatch(suiteActions.authConfirm()),
-                        dataId: '@passphrase-mismatch/retry-button',
+                        testId: '@passphrase-mismatch/retry-button',
                     }}
                 />
             );
