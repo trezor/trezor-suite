@@ -3103,6 +3103,23 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Backup seed is the ultimate key to your Wallet and funds. Once you lose it, it’s gone forever and there is no way to restore lost seed.',
     },
+    DESKTOP_OUTDATED_TITLE: {
+        id: 'DESKTOP_OUTDATED_TITLE',
+        defaultMessage: 'Outdated version',
+    },
+    DESKTOP_OUTDATED_MESSAGE: {
+        id: 'DESKTOP_OUTDATED_MESSAGE',
+        defaultMessage:
+            'Your version {currentVersion} does not match latest version from github {newVersion}',
+    },
+    DESKTOP_OUTDATED_BUTTON_DOWNLOAD: {
+        id: 'DESKTOP_OUTDATED_BUTTON_DOWNLOAD',
+        defaultMessage: 'Take me to download page',
+    },
+    DESKTOP_OUTDATED_BUTTON_CANCEL: {
+        id: 'DESKTOP_OUTDATED_BUTTON_CANCEL',
+        defaultMessage: 'Let me in anyway',
+    },
 } as const);
 
 export default definedMessages;
