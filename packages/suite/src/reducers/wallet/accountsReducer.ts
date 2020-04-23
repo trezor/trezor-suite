@@ -35,6 +35,7 @@ export type Account = {
     empty: boolean;
     visible: boolean;
     imported?: boolean;
+    failed?: boolean;
     balance: string;
     availableBalance: string;
     formattedBalance: string;

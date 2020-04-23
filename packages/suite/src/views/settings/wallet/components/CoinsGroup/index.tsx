@@ -6,7 +6,7 @@ import { NETWORKS } from '@wallet-config';
 import { UnavailableCapability } from 'trezor-connect';
 import { Network } from '@wallet-types';
 import { Section, ActionColumn, Row } from '@suite-components/Settings';
-import { useDeviceActionLocks } from '@suite-utils/hooks';
+import { useDeviceActionLocks } from '@suite-hooks';
 import Coin from '../Coin';
 
 const Wrapper = styled.div`

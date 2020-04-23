@@ -1,3 +1,3 @@
-import Index from '@dashboard-views/Container';
+import Index from '@dashboard-views';
 
 export default Index;

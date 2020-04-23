@@ -4,8 +4,8 @@ import { colors, Button } from '@trezor/components';
 import { Translation } from '@suite-components';
 import SecurityCard, { Props as CardProps } from './components/SecurityCard';
 import { Props } from './Container';
-import { AcquiredDevice } from '@suite/types/suite';
-import { useDeviceActionLocks } from '@suite-utils/hooks';
+import { AcquiredDevice } from '@suite-types';
+import { useDeviceActionLocks, useDiscovery } from '@suite-hooks';
 
 const Section = styled.div`
     display: flex;
@@ -41,7 +41,6 @@ const SectionAction = styled.div`
 
 const SecurityFeatures = ({
     device,
-    isDisabled,
     flags,
     discreetMode,
     setDiscreetMode,
@@ -53,6 +52,9 @@ const SecurityFeatures = ({
 }: Props) => {
     const [isHidden, setIsHidden] = useState(false);
     const [isTrezorActionEnabled] = useDeviceActionLocks();
+    const { getDiscoveryStatus } = useDiscovery();
+    const discoveryStatus = getDiscoveryStatus();
+    const isDisabled = discoveryStatus && discoveryStatus.status === 'loading';
 
     const { discreetModeCompleted } = flags;
     let needsBackup;

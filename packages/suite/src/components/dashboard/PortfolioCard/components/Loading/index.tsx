@@ -1,53 +1,29 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components';
-import { Image } from '@suite-components';
+import { colors, variables, Loader } from '@trezor/components';
+import { Translation } from '@suite-components';
 
 const Wrapper = styled.div`
     display: flex;
-    padding: 54px 42px;
+    padding: 20px 0px;
     align-items: center;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        flex-direction: column;
-    }
-`;
-
-const Content = styled.div`
-    display: flex;
-    flex-direction: column;
 `;
 
 const Title = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.H2};
+    font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${colors.BLACK0};
-    margin-bottom: 30px;
-    text-align: center;
-`;
-
-const StyledImage = styled(props => <Image {...props} />)`
-    display: flex;
-    width: 220px;
-    height: 180px;
-    margin-right: 52px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        margin-bottom: 20px;
-    }
+    margin-left: 12px;
 `;
 
 type Props = React.HTMLAttributes<HTMLDivElement>;
 
-const LoadingWallet = (props: Props) => {
+export default (props: Props) => {
     return (
         <Wrapper {...props} data-test="@dashboard/loading">
-            <StyledImage image="EMPTY_DASHBOARD" />
-            <Content>
-                <Title>Loading wallet...</Title>
-            </Content>
+            <Loader size={20} />
+            <Title>
+                <Translation id="TR_LOADING_WALLET" />
+            </Title>
         </Wrapper>
     );
 };
-
-export default LoadingWallet;
