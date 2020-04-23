@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import FocusLock from 'react-focus-lock';
 
 import { UI } from 'trezor-connect';
-import { Modal as ModalComponent } from '@trezor/components';
 
 import * as modalActions from '@suite-actions/modalActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -195,18 +194,7 @@ const Modal = (props: Props) => {
 
     const useBackground = typeof props.background === 'boolean' ? props.background : true;
     if (useBackground) {
-        return (
-            <FocusLock autoFocus={false}>
-                <ModalComponent
-                    // if modal has onCancel action set cancelable to true and pass the onCancel action
-                    cancelable={modalComponent.props.onCancel}
-                    onCancel={modalComponent.props.onCancel}
-                    padding="0px"
-                >
-                    {modalComponent}
-                </ModalComponent>
-            </FocusLock>
-        );
+        return <FocusLock autoFocus={false}>{modalComponent}</FocusLock>;
     }
 
     return modalComponent;

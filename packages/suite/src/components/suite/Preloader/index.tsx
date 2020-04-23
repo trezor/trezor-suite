@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import FocusLock from 'react-focus-lock';
 import { SUITE } from '@suite-actions/constants';
-import { Modal as ModalComponent } from '@trezor/components';
 import Loading from '@suite-components/Loading';
 import { SuiteLayout } from '@suite-components';
 import DiscoveryLoader from '@suite-components/DiscoveryLoader';
@@ -11,7 +10,6 @@ import Modals from '@suite-components/modals';
 import * as routerActions from '@suite-actions/routerActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { AppState, Dispatch } from '@suite-types';
-import ModalWrapper from '@suite-components/ModalWrapper';
 
 import Firmware from '@firmware-views';
 import Onboarding from '@onboarding-views';
@@ -153,16 +151,15 @@ const Preloader = (props: Props) => {
             : false;
         return (
             <>
-                <ModalComponent cancelable={cancelable} onCancel={props.closeModalApp}>
-                    <FocusLock autoFocus={false}>
-                        <ApplicationModal
-                            cancelable={cancelable}
-                            closeModalApp={props.closeModalApp}
-                            getBackgroundRoute={props.getBackgroundRoute}
-                            modal={hasActionModal ? <Modals background={false} /> : null}
-                        />
-                    </FocusLock>
-                </ModalComponent>
+                <FocusLock autoFocus={false}>
+                    <ApplicationModal
+                        cancelable={cancelable}
+                        onCancel={props.closeModalApp}
+                        closeModalApp={props.closeModalApp}
+                        getBackgroundRoute={props.getBackgroundRoute}
+                        modal={hasActionModal ? <Modals background={false} /> : null}
+                    />
+                </FocusLock>
                 <SuiteLayout>{props.children}</SuiteLayout>
             </>
         );
@@ -183,13 +180,9 @@ const Preloader = (props: Props) => {
             <>
                 {hasActionModal && <Modals />}
                 {!hasActionModal && (
-                    <ModalComponent>
-                        <ModalWrapper>
-                            <FocusLock>
-                                <ApplicationStateModal />
-                            </FocusLock>
-                        </ModalWrapper>
-                    </ModalComponent>
+                    <FocusLock>
+                        <ApplicationStateModal />
+                    </FocusLock>
                 )}
                 <SuiteLayout>{props.children}</SuiteLayout>
             </>

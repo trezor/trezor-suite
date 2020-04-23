@@ -83,6 +83,7 @@ export type Lock = ObjectValues<typeof SUITE.LOCK_TYPE>;
 export type InjectedModalApplicationProps = {
     modal: JSX.Element | null;
     cancelable: boolean;
+    onCancel: () => void;
     closeModalApp: (preserveParams?: boolean) => void;
     getBackgroundRoute: () => Route$ | typeof undefined;
 };
