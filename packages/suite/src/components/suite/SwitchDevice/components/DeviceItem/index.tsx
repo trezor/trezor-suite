@@ -205,7 +205,6 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                             </Attention>
                             <Button
                                 variant="secondary"
-                                size="small"
                                 // icon="REFRESH"
                                 onClick={() => onSolveIssueClick()}
                             >
