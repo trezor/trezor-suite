@@ -48,6 +48,7 @@ interface CTA {
     variant?: React.ComponentProps<typeof Button>['variant'];
     action: () => void;
     icon?: IconProps['icon'];
+    testId?: string;
 }
 
 interface ContainerProps {
@@ -77,6 +78,7 @@ const Container = ({ title, description, cta }: ContainerProps) => {
                         icon={a.icon || 'PLUS'}
                         isLoading={!isEnabled}
                         onClick={a.action}
+                        data-test={a.testId}
                     >
                         <Translation id={a.label || 'TR_RETRY'} />
                     </Button>
@@ -126,7 +128,10 @@ export default ({ exception, discovery }: Props) => {
                 <Container
                     title="TR_AUTH_CONFIRM_FAILED_TITLE"
                     description="TR_AUTH_CONFIRM_FAILED_DESC"
-                    cta={{ action: () => dispatch(suiteActions.authConfirm()) }}
+                    cta={{
+                        action: () => dispatch(suiteActions.authConfirm()),
+                        testId: '@passphrase-mismatch/retry-button',
+                    }}
                 />
             );
         case 'discovery-empty':
