@@ -119,7 +119,7 @@ const init = async () => {
     mainWindow.loadURL(src);
 };
 
-app.setName(APP_NAME); // overrides @trezor/suite-desktop app name in menu
+app.name = APP_NAME; // overrides @trezor/suite-desktop app name in menu
 app.on('ready', init);
 
 // Quit when all windows are closed.

@@ -10,12 +10,12 @@ import { ToastContainer } from 'react-toastify';
 import Router from '@suite-support/Router';
 import OnlineStatus from '@suite-support/OnlineStatus';
 import BridgeStatus from '@desktop/support/BridgeStatus';
+import VersionCheck from '@desktop/support/VersionCheck';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import { SENTRY } from '@suite-config';
 import Resize from '@suite-support/Resize/Container';
-
-Sentry.init({ dsn: SENTRY });
+import { isDev } from '@suite-utils/build';
 
 interface Props {
     store: Store;
@@ -26,6 +26,10 @@ class TrezorSuiteApp extends App<Props> {
         return {
             pageProps: Component.getInitialProps ? await Component.getInitialProps(ctx) : {},
         };
+    }
+
+    componentDidMount() {
+        if (!isDev()) Sentry.init({ dsn: SENTRY });
     }
 
     render() {
@@ -40,9 +44,11 @@ class TrezorSuiteApp extends App<Props> {
                         <Router />
                         <BridgeStatus />
                         <ToastContainer />
-                        <Preloader>
-                            <Component {...pageProps} />
-                        </Preloader>
+                        <VersionCheck>
+                            <Preloader>
+                                <Component {...pageProps} />
+                            </Preloader>
+                        </VersionCheck>
                     </IntlProvider>
                 </ReduxProvider>
             </ErrorBoundary>
