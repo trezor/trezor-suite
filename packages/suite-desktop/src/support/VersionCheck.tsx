@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Loading, ModalWrapper, Translation } from '@suite-components';
 import { Modal as ModalComponent, Button, H2, P, Link, colors } from '@trezor/components';
+import { isDev } from '@suite-utils/build';
 
 interface Props {
     children: JSX.Element;
@@ -78,7 +79,11 @@ export default ({ children }: Props) => {
             }
         };
 
-        fetchCommits();
+        if (!isDev()) {
+            fetchCommits();
+        } else {
+            setState({ outdated: false });
+        }
 
         return () => {
             abortController.abort();

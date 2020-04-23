@@ -34,6 +34,13 @@ const registerShortcuts = (window: BrowserWindow) => {
     electronLocalshortcut.register(window, 'CommandOrControl+Alt+I', () => {
         window.webContents.openDevTools();
     });
+
+    // handle ctrl+r error in production build
+    // ctrl+r used in route different than "/" will render an empty white page because of next.js routing
+    // (file://wallet/ does not exists in the file system)
+    mainWindow.webContents.on('did-fail-load', () => {
+        mainWindow.loadURL(src);
+    });
 };
 
 const init = async () => {
