@@ -8,6 +8,9 @@ import { H2 } from '../typography/Heading';
 import { colors, variables } from '../../config';
 import { useRef } from 'react';
 
+const DEFAULT_PADDING = '35px 40px';
+const DEFAULT_PADDING_SMALL = '16px 8px'; // used on SM screens
+
 const ModalContainer = styled.div`
     position: fixed;
     z-index: 10000;
@@ -32,14 +35,24 @@ const ModalWindow = styled.div<Props>`
     background-color: ${colors.WHITE};
     box-shadow: 0 10px 60px 0 ${colors.BLACK25};
     text-align: center;
-    padding: ${props => props.padding};
+    padding: ${props => props.padding || DEFAULT_PADDING};
     overflow-x: hidden; /* retains border-radius when using background in child component */
     max-height: 90vh;
     max-width: 90vh;
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: ${props => props.paddingSmall};
+        padding: ${props => props.paddingSmall || DEFAULT_PADDING_SMALL} ;
     }
+
+    ${props =>
+        props.bottomBar &&
+        css`
+            /* if bottomBar is active we need to disable bottom padding */
+            padding-bottom: 0px;
+            @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+                padding-bottom: 0px;
+            }
+        `}
 
     ${props =>
         props.useFixedWidth &&
@@ -84,6 +97,7 @@ const StyledLink = styled(Link)`
     position: absolute;
     right: 0;
     top: 0;
+    padding: 10px;
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${colors.BLACK25};
@@ -94,12 +108,20 @@ const StyledLink = styled(Link)`
     }
 `;
 
-const Heading = styled(H2)``;
+const Heading = styled(H2)`
+    text-align: center;
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        /* make sure heading doesn't overflow over close button */
+        padding-right: 20px;
+        padding-left: 20px;
+    }
+`;
 
 const Description = styled.div`
     color: ${colors.BLACK50};
     font-size: ${variables.FONT_SIZE.SMALL};
     margin-bottom: 10px;
+    text-align: center;
 `;
 
 const Content = styled.div`
@@ -107,14 +129,17 @@ const Content = styled.div`
     overflow-y: auto;
 `;
 
-const StyledIcon = styled(Icon)`
-    padding: 20px 14px;
+const BottomBar = styled.div`
+    display: flex;
+    padding-top: 16px;
+    padding-bottom: 16px;
 `;
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
     children: React.ReactNode;
     heading?: React.ReactNode;
     description?: React.ReactNode;
+    bottomBar?: React.ReactNode;
     cancelable?: boolean;
     useFixedWidth?: boolean;
     fixedWidth?: [string, string, string, string]; // [SM, MD, LG, XL]
@@ -129,10 +154,11 @@ const Modal = ({
     children,
     heading,
     description,
+    bottomBar,
     cancelable,
     onCancel,
-    padding = '35px 40px',
-    paddingSmall = '16px 8px',
+    padding,
+    paddingSmall,
     useFixedWidth = false,
     fixedWidth = ['90vw', '90vw', '720px', '720px'], // [SM, MD, LG, XL]
     useFixedHeight = false,
@@ -162,16 +188,18 @@ const Modal = ({
                 fixedWidth={fixedWidth}
                 useFixedHeight={useFixedHeight}
                 fixedHeight={fixedHeight}
+                bottomBar={bottomBar}
                 {...rest}
             >
                 {heading && <Heading>{heading}</Heading>}
                 {description && <Description>{description}</Description>}
                 {cancelable && (
                     <StyledLink onClick={onCancel}>
-                        <StyledIcon size={24} color={colors.BLACK0} icon="CROSS" />
+                        <Icon size={24} color={colors.BLACK0} icon="CROSS" />
                     </StyledLink>
                 )}
                 <Content>{children}</Content>
+                {bottomBar && <BottomBar>{bottomBar}</BottomBar>}
             </ModalWindow>
         </ModalContainer>
     );
