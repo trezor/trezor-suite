@@ -93,7 +93,6 @@ const AssetsCard = () => {
 
                     return (
                         <Asset
-                            data-test="@dashboard/asset-card"
                             key={symbol}
                             network={network}
                             failed={!!assetFailed}
