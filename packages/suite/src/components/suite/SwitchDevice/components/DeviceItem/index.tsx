@@ -235,7 +235,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                             </HideWallet>
                         </WalletsTooltips>
                     )}
-                    <InstancesWrapper>
+                    <InstancesWrapper noPadding>
                         {props.instances.map(instance => (
                             <StyledWalletInstance
                                 key={`${instance.label}-${instance.instance}-${instance.state}`}
