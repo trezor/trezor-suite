@@ -15,8 +15,7 @@ import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import { SENTRY } from '@suite-config';
 import Resize from '@suite-support/Resize/Container';
-
-Sentry.init({ dsn: SENTRY });
+import { isDev } from '@suite-utils/build';
 
 interface Props {
     store: Store;
@@ -27,6 +26,10 @@ class TrezorSuiteApp extends App<Props> {
         return {
             pageProps: Component.getInitialProps ? await Component.getInitialProps(ctx) : {},
         };
+    }
+
+    componentDidMount() {
+        if (!isDev()) Sentry.init({ dsn: SENTRY });
     }
 
     render() {
