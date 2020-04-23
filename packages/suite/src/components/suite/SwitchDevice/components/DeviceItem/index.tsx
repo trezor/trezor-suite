@@ -199,7 +199,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                             <Attention>
                                 <AttentionIconWrapper>
                                     {/* TODO: warning icon */}
-                                    <Icon icon="INFO" size={14} color={colors.RED_ERROR} />
+                                    <Icon icon="INFO" size={16} color={colors.RED_ERROR} />
                                 </AttentionIconWrapper>
                                 <Translation id="TR_DEVICE_NEEDS_ATTENTION" />
                             </Attention>
