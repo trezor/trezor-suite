@@ -28,7 +28,6 @@ const ModalContainer = styled.div`
 const ModalWindow = styled.div<Props>`
     display: flex;
     flex-direction: column;
-    justify-content: center;
     margin: auto;
     position: relative;
     border-radius: 6px;
@@ -37,38 +36,52 @@ const ModalWindow = styled.div<Props>`
     text-align: center;
     padding: ${props => props.padding || DEFAULT_PADDING};
     overflow-x: hidden; /* retains border-radius when using background in child component */
-    max-height: 90vh;
-    max-width: 90vh;
-
+    
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         padding: ${props => props.paddingSmall || DEFAULT_PADDING_SMALL} ;
     }
 
+    /* if bottomBar is active we need to disable bottom padding */
     ${props =>
         props.bottomBar &&
         css`
-            /* if bottomBar is active we need to disable bottom padding */
             padding-bottom: 0px;
             @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
                 padding-bottom: 0px;
             }
         `}
+        
+    /* dynamic width mode */
+    ${props =>
+        !props.useFixedWidth &&
+        css`
+            max-width: 100vw;
+        `}
 
+    ${props =>
+        !props.useFixedHeight &&
+        css`
+            max-height: 90vh;
+        `}
+
+    /* Fixed width mode */
     ${props =>
         props.useFixedWidth &&
         props.fixedWidth &&
         css`
+            /* default width is the size as for XL screens */
+            width: ${(props: Props) => props.fixedWidth![3]};
+            /* for smaller screens width is set based on fixedWidth prop */
             @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-                max-width: ${(props: Props) => props.fixedWidth![0]};
+                width: ${(props: Props) => props.fixedWidth![0]};
             }
-            @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-                max-width: ${(props: Props) => props.fixedWidth![1]};
+            @media only screen and (min-width: ${variables.SCREEN_SIZE
+                    .SM}) and (max-width: ${variables.SCREEN_SIZE.MD}) {
+                width: ${(props: Props) => props.fixedWidth![1]};
             }
-            @media only screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-                max-width: ${(props: Props) => props.fixedWidth![2]};
-            }
-            @media only screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
-                max-width: ${(props: Props) => props.fixedWidth![3]};
+            @media only screen and (min-width: ${variables.SCREEN_SIZE
+                    .MD}) and (max-width: ${variables.SCREEN_SIZE.LG}) {
+                width: ${(props: Props) => props.fixedWidth![2]};
             }
         `}
 
@@ -76,17 +89,19 @@ const ModalWindow = styled.div<Props>`
         props.useFixedHeight &&
         props.fixedHeight &&
         css`
+            /* default height is the size as for XL screens */
+            height: ${(props: Props) => props.fixedHeight![3]};
+            /* for smaller screens height is set based on fixedHeight prop */
             @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-                max-height: ${(props: Props) => props.fixedHeight![0]};
+                height: ${(props: Props) => props.fixedHeight![0]};
             }
-            @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-                max-height: ${(props: Props) => props.fixedHeight![1]};
+            @media only screen and (min-width: ${variables.SCREEN_SIZE
+                    .SM}) and (max-width: ${variables.SCREEN_SIZE.MD}) {
+                height: ${(props: Props) => props.fixedHeight![1]};
             }
-            @media only screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-                max-height: ${(props: Props) => props.fixedHeight![2]};
-            }
-            @media only screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
-                max-height: ${(props: Props) => props.fixedHeight![3]};
+            @media only screen and (min-width: ${variables.SCREEN_SIZE
+                    .MD}) and (max-width: ${variables.SCREEN_SIZE.LG}) {
+                height: ${(props: Props) => props.fixedHeight![2]};
             }
         `}
 `;
@@ -160,7 +175,7 @@ const Modal = ({
     padding,
     paddingSmall,
     useFixedWidth = false,
-    fixedWidth = ['90vw', '90vw', '720px', '720px'], // [SM, MD, LG, XL]
+    fixedWidth = ['100vw', '90vw', '720px', '720px'], // [SM, MD, LG, XL]
     useFixedHeight = false,
     fixedHeight = ['90vh', '90vh', '720px', '720px'], // [SM, MD, LG, XL]
     ...rest
