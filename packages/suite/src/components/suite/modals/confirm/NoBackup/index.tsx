@@ -1,12 +1,7 @@
 import { Translation, Image } from '@suite-components';
-import { Button, H2, P } from '@trezor/components';
+import { Button, Modal } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
-
-const Wrapper = styled.div`
-    max-width: 600px;
-    padding: 40px;
-`;
 
 const ImageWrapper = styled.div`
     padding: 60px 0px;
@@ -24,13 +19,11 @@ interface Props {
 }
 
 const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup }: Props) => (
-    <Wrapper>
-        <H2>
-            <Translation id="TR_YOUR_TREZOR_IS_NOT_BACKED_UP" />
-        </H2>
-        <P size="small">
-            <Translation id="TR_IF_YOUR_DEVICE_IS_EVER_LOST" />
-        </P>
+    <Modal
+        isSmall
+        heading={<Translation id="TR_YOUR_TREZOR_IS_NOT_BACKED_UP" />}
+        description={<Translation id="TR_IF_YOUR_DEVICE_IS_EVER_LOST" />}
+    >
         <ImageWrapper>
             <Image image="UNI_ERROR" />
         </ImageWrapper>
@@ -51,7 +44,7 @@ const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup }: Props) => (
                 <Translation id="TR_CREATE_BACKUP" />
             </Button>
         </Actions>
-    </Wrapper>
+    </Modal>
 );
 
 export default ConfirmNoBackup;
