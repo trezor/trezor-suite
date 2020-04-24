@@ -13,7 +13,6 @@ import NoRatesTooltip from './NoRatesTooltip';
 import WordInput from './WordInput';
 import WordInputAdvanced from './WordInputAdvanced';
 import ProgressBar from './ProgressBar';
-import ModalWrapper from './ModalWrapper';
 import Loading from './Loading';
 import FiatValue from './FiatValue/Container';
 import Badge from './Badge';
@@ -45,7 +44,6 @@ export {
     WordInput,
     WordInputAdvanced,
     ProgressBar,
-    ModalWrapper,
     Loading,
     WebusbButton,
     HiddenPlaceholder,
