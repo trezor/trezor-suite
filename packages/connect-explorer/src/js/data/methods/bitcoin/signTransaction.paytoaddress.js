@@ -5,6 +5,23 @@ import { select } from './common';
 const name = 'signTransaction';
 const docs = 'methods/signTransaction.md';
 
+const btc = {
+    inputs: `[
+    {
+        address_n: [44 | 0x80000000, 0 | 0x80000000, 0 | 0x80000000, 0, 5],
+        prev_hash: '50f6f1209ca92d7359564be803cb2c932cde7d370f7cee50fd1fad6790f6206d',
+        prev_index: 1,
+    },
+]`,
+    outputs: `[
+        {
+            address: 'bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3',
+            amount: '10000',
+            script_type: 'PAYTOADDRESS',
+        },
+]`
+};
+
 const bch = {
     inputs: `[
     {
@@ -188,6 +205,7 @@ const doge = {
 }
 
 const examples = {
+    btc,
     bch,
     test,
     dash,
