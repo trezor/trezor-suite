@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables, H2, Button, Link } from '@trezor/components';
+import { colors, H2, Button, Link } from '@trezor/components';
 import { Translation, Image } from '@suite-components';
 import { Account } from '@wallet-types';
 import { getNetwork } from '@wallet-utils/accountUtils';
