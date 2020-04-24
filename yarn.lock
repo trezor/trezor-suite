@@ -7379,13 +7379,13 @@ batch@0.6.1:
   resolved "https://registry.yarnpkg.com/batch/-/batch-0.6.1.tgz#dc34314f4e679318093fc760272525f94bf25c16"
   integrity sha1-3DQxT05nkxgJP8dgJyUl+UvyXBY=
 
-bchaddrjs@0.4.7:
-  version "0.4.7"
-  resolved "https://registry.yarnpkg.com/bchaddrjs/-/bchaddrjs-0.4.7.tgz#9d33e25816091e43a0cb4ce474d6210d6f006a37"
-  integrity sha512-+KAWllIzFDZUhaQqkzKEr2Nroh2v+63mdAtib2y7G+J0zoynFhFAV4tFr/HPEwWZPEAtK46LjenvN/o8P+JIiw==
+bchaddrjs@0.4.8:
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/bchaddrjs/-/bchaddrjs-0.4.8.tgz#08dd465dab9fc5425546c980ea769923f1240de8"
+  integrity sha512-2U2BVogvxIwvTgjNAgM5Znabkyf8opORLq+gPPYekgZoAWk/FenLSoa2p1oB3pUMdFQJm9/TMmMx8Q9o8Q6EAw==
   dependencies:
     bs58check "^2.1.2"
-    cashaddrjs "^0.3.10"
+    cashaddrjs "^0.3.11"
 
 bchaddrjs@^0.3.2:
   version "0.3.2"
@@ -8238,7 +8238,14 @@ caseless@~0.12.0:
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
   integrity sha1-G2gcIf+EAzyCZUMJBolCDRhxUdw=
 
-cashaddrjs@^0.3.10, cashaddrjs@^0.3.3:
+cashaddrjs@^0.3.11:
+  version "0.3.11"
+  resolved "https://registry.yarnpkg.com/cashaddrjs/-/cashaddrjs-0.3.11.tgz#9c38565ccd628942c279a105cfc3122b6f4e6f57"
+  integrity sha512-TXbSJVCPa5ER9jRId0S1ZgxvAqLYowciCpgzDC66hYarQKeDRZ5wvjAa8xKPZwLEDI8t5fBL3f8PyPzz7PoMnA==
+  dependencies:
+    big-integer "1.6.36"
+
+cashaddrjs@^0.3.3:
   version "0.3.10"
   resolved "https://registry.yarnpkg.com/cashaddrjs/-/cashaddrjs-0.3.10.tgz#8eb281573184e343cc9186c28fb95e65d5695ebc"
   integrity sha512-x+r0TxRzLR7Z9wy9JBHCCe1d6Yong5BH//vjWB/uldNT/IEb8cMGo8HNY5/QZmCr3KYcsLIToM8u6whXfKFbRw==
@@ -23874,16 +23881,16 @@ tree-kill@^1.1.0, tree-kill@^1.2.1, tree-kill@^1.2.2:
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
   integrity sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==
 
-trezor-connect@8.1.1-extended:
-  version "8.1.1-extended"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.1-extended.tgz#e7697f37cfde87787c34fa8ae55e147caee95043"
-  integrity sha512-aJyIltExXMKXZfS2pfq3cQHYdVm0TROzd2TEfSGeYWfqa0rNHAa26Q8/4yp1nJz03tUodvyckbjo+yhTn6sTaA==
+trezor-connect@8.1.2-extended:
+  version "8.1.2-extended"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.2-extended.tgz#ac08fd98f0167a0367d015373f295523dcfeacb3"
+  integrity sha512-y8tVnpLKJUlenWTZ+wPeYl4OHa8tv6iSlwqJqCbtd0yJadI+X6QWuoZ6jGzHMO/Nf3fOx5p314AgHsD2tm2Zjg==
   dependencies:
-    "@babel/runtime" "^7.8.7"
+    "@babel/runtime" "^7.9.2"
     "@trezor/blockchain-link" "^1.0.10"
     "@trezor/rollout" "^1.0.4"
     "@trezor/utxo-lib" "^0.1.0"
-    bchaddrjs "0.4.7"
+    bchaddrjs "0.4.8"
     bignumber.js "^9.0.0"
     bowser "^2.9.0"
     events "^3.1.0"
