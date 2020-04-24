@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { Translation, AccountLabeling } from '@suite-components';
-
-import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
-import { H2, Button, colors, variables } from '@trezor/components';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { AccountLabeling, Translation } from '@suite-components';
+import { useDeviceActionLocks } from '@suite-hooks';
+import { Button, colors, H2, variables } from '@trezor/components';
 import { Account } from '@wallet-types';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
+import React from 'react';
+import styled from 'styled-components';
 import { fromWei, toWei } from 'web3-utils';
+
 import { Props } from './Container';
 
 const Wrapper = styled.div`
@@ -77,11 +78,11 @@ export default ({
 }: Props) => {
     if (!account || !send) return null;
     const { outputs } = send;
-    const [disabled, setDisabled] = useState(false);
     const { networkType } = account;
     const transactionInfo = getTransactionInfo(account.networkType, send);
     if (!transactionInfo || transactionInfo.type === 'error') return null;
     const upperCaseSymbol = account.symbol.toUpperCase();
+    const [isEnabled] = useDeviceActionLocks();
 
     return (
         <Wrapper>
@@ -135,10 +136,8 @@ export default ({
                     <Translation id="TR_EDIT" />
                 </Button>
                 <Button
-                    isDisabled={disabled}
+                    isDisabled={!isEnabled}
                     onClick={() => {
-                        // disable just for second to prevent double click
-                        setDisabled(true);
                         switch (networkType) {
                             case 'bitcoin':
                                 sendFormActionsBitcoin.send();
@@ -151,10 +150,6 @@ export default ({
                                 break;
                             // no default
                         }
-                        // return disabled value
-                        setTimeout(() => {
-                            setDisabled(false);
-                        }, 1000);
                     }}
                 >
                     <Translation id="TR_MODAL_CONFIRM_TX_BUTTON" />

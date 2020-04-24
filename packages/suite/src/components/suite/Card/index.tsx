@@ -48,6 +48,7 @@ const Description = styled.div``;
 
 export interface Props {
     children?: React.ReactNode;
+    customHeader?: React.ReactNode;
     title?: string | React.ReactNode;
     description?: string | React.ReactNode;
     largePadding?: boolean;
@@ -62,6 +63,7 @@ const Card = ({
     largePadding,
     noPadding,
     noVerticalPadding,
+    customHeader,
     ...rest
 }: Props) => (
     <Wrapper>
@@ -71,6 +73,7 @@ const Card = ({
                 {description && <Description>{description}</Description>}
             </Header>
         )}
+        {customHeader}
         <Content paddingSize={getPaddingSize(largePadding, noPadding, noVerticalPadding)} {...rest}>
             {children}
         </Content>
