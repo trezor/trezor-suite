@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Translation, AccountLabeling } from '@suite-components';
-
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
-import { H2, Button, colors, variables } from '@trezor/components';
+import { Modal, Button, colors, variables } from '@trezor/components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
 import { fromWei, toWei } from 'web3-utils';
 import { Props } from './Container';
-
-const Wrapper = styled.div`
-    padding: 40px;
-`;
 
 const Box = styled.div`
     height: 46px;
@@ -50,6 +45,7 @@ const OutputWrapper = styled.div`
 
 const Buttons = styled.div`
     display: flex;
+    width: 100%;
     margin-top: 24px;
     justify-content: space-between;
 `;
@@ -84,10 +80,48 @@ export default ({
     const upperCaseSymbol = account.symbol.toUpperCase();
 
     return (
-        <Wrapper>
-            <H2>
-                <Translation id="TR_MODAL_CONFIRM_TX_TITLE" />
-            </H2>
+        <Modal
+            size="small"
+            cancelable
+            onCancel={modalActions.onCancel}
+            heading={<Translation id="TR_MODAL_CONFIRM_TX_TITLE" />}
+            bottomBar={
+                <Buttons>
+                    <Button
+                        icon="ARROW_LEFT"
+                        variant="secondary"
+                        onClick={() => modalActions.onCancel()}
+                    >
+                        <Translation id="TR_EDIT" />
+                    </Button>
+                    <Button
+                        isDisabled={disabled}
+                        onClick={() => {
+                            // disable just for second to prevent double click
+                            setDisabled(true);
+                            switch (networkType) {
+                                case 'bitcoin':
+                                    sendFormActionsBitcoin.send();
+                                    break;
+                                case 'ethereum':
+                                    sendFormActionsEthereum.send();
+                                    break;
+                                case 'ripple':
+                                    sendFormActionsRipple.send();
+                                    break;
+                                // no default
+                            }
+                            // return disabled value
+                            setTimeout(() => {
+                                setDisabled(false);
+                            }, 1000);
+                        }}
+                    >
+                        <Translation id="TR_MODAL_CONFIRM_TX_BUTTON" />
+                    </Button>
+                </Buttons>
+            }
+        >
             <Content>
                 <Box>
                     <Label>
@@ -126,40 +160,6 @@ export default ({
                     <Value>{getFeeValue(transactionInfo, networkType, account.symbol)}</Value>
                 </Box>
             </Content>
-            <Buttons>
-                <Button
-                    icon="ARROW_LEFT"
-                    variant="secondary"
-                    onClick={() => modalActions.onCancel()}
-                >
-                    <Translation id="TR_EDIT" />
-                </Button>
-                <Button
-                    isDisabled={disabled}
-                    onClick={() => {
-                        // disable just for second to prevent double click
-                        setDisabled(true);
-                        switch (networkType) {
-                            case 'bitcoin':
-                                sendFormActionsBitcoin.send();
-                                break;
-                            case 'ethereum':
-                                sendFormActionsEthereum.send();
-                                break;
-                            case 'ripple':
-                                sendFormActionsRipple.send();
-                                break;
-                            // no default
-                        }
-                        // return disabled value
-                        setTimeout(() => {
-                            setDisabled(false);
-                        }, 1000);
-                    }}
-                >
-                    <Translation id="TR_MODAL_CONFIRM_TX_BUTTON" />
-                </Button>
-            </Buttons>
-        </Wrapper>
+        </Modal>
     );
 };
