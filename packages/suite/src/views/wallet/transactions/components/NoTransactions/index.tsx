@@ -17,14 +17,6 @@ const Title = styled(H2)`
     color: ${colors.BLACK0};
 `;
 
-const Description = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.TINY};
-    text-align: center;
-    color: ${colors.BLACK50};
-    margin-bottom: 10px;
-`;
-
 const StyledImage = styled(props => <Image {...props} />)`
     width: 340px;
     height: 280px;
