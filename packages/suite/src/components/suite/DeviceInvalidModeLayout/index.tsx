@@ -2,8 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-
-import { Button, variables } from '@trezor/components';
+import { Button, variables, Modal } from '@trezor/components';
 import { Image as Img, Translation } from '@suite-components';
 import * as routerActions from '@suite-actions/routerActions';
 import { AppState, Dispatch } from '@suite-types';
@@ -19,13 +18,6 @@ const Wrapper = styled.div`
         max-width: 40vw;
     }
 `;
-
-const Title = styled.div`
-    font-size: ${variables.FONT_SIZE.H2};
-    margin-bottom: 4px;
-`;
-
-const Text = styled.div``;
 
 const Image = styled(Img)`
     flex: 1;
@@ -76,9 +68,7 @@ const DeviceInvalidModeLayout = (props: Props) => {
         goto,
     } = props;
     return (
-        <Wrapper>
-            <Title>{title}</Title>
-            {text && <Text>{text}</Text>}
+        <Modal size="small" heading={title} description={text}>
             <Image image={image} />
             <Buttons>
                 {resolveButton && resolveButton}
@@ -88,7 +78,7 @@ const DeviceInvalidModeLayout = (props: Props) => {
                     </Button>
                 )}
             </Buttons>
-        </Wrapper>
+        </Modal>
     );
 };
 
