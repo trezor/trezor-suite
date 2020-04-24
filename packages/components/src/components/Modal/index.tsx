@@ -14,7 +14,7 @@ const DEFAULT_PADDING_SMALL = '16px 8px'; // used on SM screens
 const FIXED_WIDTH: [string, string, string, string] = ['100vw', '90vw', '720px', '720px'];
 const FIXED_WIDTH_SMALL: [string, string, string, string] = ['100vw', '90vw', '600px', '600px'];
 const FIXED_WIDTH_TINY: [string, string, string, string] = ['360px', '360px', '360px', '360px'];
-const FIXED_HEIGHT: [string, string, string, string] = ['90vh', '90vh', '720px', '720px'];
+const FIXED_HEIGHT: [string, string, string, string] = ['90vh', '90vh', '620px', '620px'];
 
 const ModalContainer = styled.div`
     position: fixed;
