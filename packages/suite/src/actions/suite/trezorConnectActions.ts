@@ -48,7 +48,6 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         'blockchainEstimateFee',
         'signTransaction',
         'rippleSignTransaction',
-        'ethereumSignTransaction',
         'composeTransaction',
         'backupDevice',
     ] as const;
