@@ -46,6 +46,7 @@ type Props = {
     addressPath?: string;
     networkType: string;
     symbol: string;
+    cancelable?: boolean;
     onCancel?: () => void;
 } & ReturnType<typeof mapDispatchToProps>;
 
@@ -56,6 +57,8 @@ const ConfirmAddress = ({
     networkType,
     symbol,
     addNotification,
+    cancelable,
+    onCancel,
 }: Props) => {
     // TODO: no-backup, backup failed
     // const needsBackup = device.features && device.features.needs_backup;
@@ -77,6 +80,8 @@ const ConfirmAddress = ({
                     values={{ networkName: symbol.toUpperCase() }}
                 />
             }
+            cancelable={cancelable}
+            onCancel={onCancel}
         >
             <Wrapper>
                 {networkType === 'bitcoin' && (
