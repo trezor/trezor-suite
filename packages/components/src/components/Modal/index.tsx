@@ -13,6 +13,7 @@ const DEFAULT_PADDING_SMALL = '16px 8px'; // used on SM screens
 
 const FIXED_WIDTH: [string, string, string, string] = ['100vw', '90vw', '720px', '720px'];
 const FIXED_WIDTH_SMALL: [string, string, string, string] = ['100vw', '90vw', '600px', '600px'];
+const FIXED_WIDTH_TINY: [string, string, string, string] = ['360px', '360px', '360px', '360px'];
 const FIXED_HEIGHT: [string, string, string, string] = ['90vh', '90vh', '720px', '720px'];
 
 const ModalContainer = styled.div`
@@ -77,7 +78,7 @@ const ModalWindow = styled.div<Props>`
             }
         `}
         
-    /* dynamic width mode */
+    /* content-based width mode */
     ${props =>
         !props.useFixedWidth &&
         css`
@@ -180,13 +181,27 @@ const BottomBar = styled.div`
     padding-bottom: 16px;
 `;
 
+type SIZE = 'large' | 'small' | 'tiny';
+
+const getFixedWidth = (size: SIZE) => {
+    switch (size) {
+        case 'large':
+            return FIXED_WIDTH;
+        case 'small':
+            return FIXED_WIDTH_SMALL;
+        case 'tiny':
+            return FIXED_WIDTH_TINY;
+        // no default
+    }
+};
+
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
     children: React.ReactNode;
     heading?: React.ReactNode;
     description?: React.ReactNode;
     bottomBar?: React.ReactNode;
     cancelable?: boolean;
-    isSmall?: boolean;
+    size?: SIZE;
     useFixedWidth?: boolean;
     fixedWidth?: [string, string, string, string]; // [SM, MD, LG, XL]
     useFixedHeight?: boolean;
@@ -203,7 +218,7 @@ const Modal = ({
     bottomBar,
     cancelable,
     onCancel,
-    isSmall,
+    size = 'large',
     padding,
     paddingSmall,
     useFixedWidth = true,
@@ -229,11 +244,11 @@ const Modal = ({
         <ModalContainer>
             <ModalWindow
                 ref={ref}
-                isSmall={isSmall}
+                size={size}
                 padding={padding}
                 paddingSmall={paddingSmall}
                 useFixedWidth={useFixedWidth}
-                fixedWidth={fixedWidth || isSmall ? FIXED_WIDTH_SMALL : FIXED_WIDTH}
+                fixedWidth={fixedWidth || getFixedWidth(size)}
                 useFixedHeight={useFixedHeight}
                 fixedHeight={fixedHeight || FIXED_HEIGHT}
                 bottomBar={bottomBar}

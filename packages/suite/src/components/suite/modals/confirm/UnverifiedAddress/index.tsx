@@ -82,7 +82,7 @@ const ConfirmUnverifiedAddress = ({
         <Modal
             heading={<Translation id={deviceStatus} values={{ deviceLabel: device.label }} />}
             cancelable
-            isSmall
+            size="small"
             onCancel={onCancel}
             description={
                 <Translation

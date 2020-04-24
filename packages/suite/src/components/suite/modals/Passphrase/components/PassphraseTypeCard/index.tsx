@@ -19,7 +19,7 @@ const Col = styled.div<Pick<Props, 'colorVariant' | 'singleColModal'>>`
     display: flex;
     flex: 1;
     flex-direction: column;
-    padding: 32px 24px;
+    padding: 0px;
     align-items: center;
     border: solid 2px ${colors.BLACK96};
     border-radius: 6px;
@@ -29,7 +29,9 @@ const Col = styled.div<Pick<Props, 'colorVariant' | 'singleColModal'>>`
     ${props =>
         !props.singleColModal &&
         css`
-            width: 320px;
+            width: 310px;
+            /* padding needed only in big choose wallet type modal */
+            padding: 32px 24px;
         `};
 
     ${props =>
@@ -90,8 +92,8 @@ const Padding = styled.div<{ singleColModal?: boolean }>`
 `;
 
 type Props = {
-    title: React.ReactNode;
-    description: React.ReactNode;
+    title?: React.ReactNode;
+    description?: React.ReactNode;
     submitLabel: React.ReactNode;
     colorVariant: 'primary' | 'secondary';
     showPassphraseInput?: boolean;
@@ -170,8 +172,8 @@ const PassphraseTypeCard = (props: Props) => {
 
     return (
         <Col colorVariant={props.colorVariant} singleColModal={props.singleColModal}>
-            <WalletTitle>{props.title}</WalletTitle>
-            <Content>{props.description}</Content>
+            {props.title && <WalletTitle>{props.title}</WalletTitle>}
+            {props.description && <Content>{props.description}</Content>}
             <Padding singleColModal={props.singleColModal}>
                 {authConfirmation && (
                     <Content>

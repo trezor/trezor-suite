@@ -82,7 +82,7 @@ const ConfirmAddress = ({
             }
             cancelable={cancelable}
             onCancel={onCancel}
-            isSmall
+            size="small"
         >
             <QrCode value={address} addressPath={addressPath} />
             <Address data-test="@address-modal/address-field">{address}</Address>

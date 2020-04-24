@@ -54,7 +54,7 @@ const BackgroundGallery = ({ device, applySettings, onCancel }: Props) => {
 
     return (
         <Modal
-            isSmall
+            size="small"
             cancelable
             onCancel={onCancel}
             heading={<Translation id="TR_BACKGROUND_GALLERY" />}

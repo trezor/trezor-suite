@@ -41,7 +41,7 @@ export default ({ xpub, accountPath, accountIndex, symbol, addNotification, onCa
 
     return (
         <Modal
-            isSmall
+            size="small"
             cancelable
             onCancel={onCancel}
             heading={

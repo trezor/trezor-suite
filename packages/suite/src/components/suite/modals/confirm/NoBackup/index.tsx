@@ -20,7 +20,7 @@ interface Props {
 
 const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup }: Props) => (
     <Modal
-        isSmall
+        size="small"
         heading={<Translation id="TR_YOUR_TREZOR_IS_NOT_BACKED_UP" />}
         description={<Translation id="TR_IF_YOUR_DEVICE_IS_EVER_LOST" />}
     >
