@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { H2, P, Button } from '@trezor/components';
+import { Modal, Button } from '@trezor/components';
 import { Translation, Loading, Image } from '@suite-components';
-import ModalWrapper from '@suite-components/ModalWrapper';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { Dispatch } from '@suite-types';
 
@@ -20,14 +19,6 @@ const StyledImage = styled(Image)`
     flex: 1;
 `;
 
-const Wrapper = styled(ModalWrapper)`
-    display: flex;
-    flex-direction: column;
-    min-width: 50vw;
-    min-height: 50vh;
-    align-items: center;
-`;
-
 const PinMismatch = ({ changePin }: Props) => {
     const [submitted, setSubmitted] = useState(false);
 
@@ -41,18 +32,16 @@ const PinMismatch = ({ changePin }: Props) => {
     }
 
     return (
-        <Wrapper>
-            <H2>
-                <Translation id="TR_PIN_MISMATCH_HEADING" />
-            </H2>
-            <P size="small">
-                <Translation id="TR_PIN_MISMATCH_TEXT" />
-            </P>
+        <Modal
+            size="tiny"
+            heading={<Translation id="TR_PIN_MISMATCH_HEADING" />}
+            description={<Translation id="TR_PIN_MISMATCH_TEXT" />}
+        >
             <StyledImage image="UNI_ERROR" />
             <Button onClick={onTryAgain}>
                 <Translation id="TR_TRY_AGAIN" />
             </Button>
-        </Wrapper>
+        </Modal>
     );
 };
 
