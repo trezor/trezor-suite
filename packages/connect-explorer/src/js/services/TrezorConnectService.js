@@ -48,14 +48,12 @@ const TrezorConnectService = store => next => action => {
             // This needs to be explicity set to make address validation work
         });
 
-        // TrezorConnect.manifest({
-        //     email: 'info@trezor.io',
-        //     appUrl: window.location.host
-        // });
+        TrezorConnect.manifest({
+            email: 'info@trezor.io',
+            appUrl: window.location.host
+        });
 
         TrezorConnect.init({
-            // connectSrc: 'https://connect.trezor.io/8/',
-            // connectSrc: 'https://localhost:8088/',
             // connectSrc: 'http://localhost:8000/',
             webusb: true,
             // transportReconnect: false,
