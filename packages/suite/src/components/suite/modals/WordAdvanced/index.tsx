@@ -1,17 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import TrezorConnect, { UI } from 'trezor-connect';
-import { H2, P, Link } from '@trezor/components';
+import { Modal, P, Link } from '@trezor/components';
 import { Translation, WordInputAdvanced } from '@suite-components';
-import ModalWrapper from '@suite-components/ModalWrapper';
 
 import { URLS } from '@suite-constants';
-
-const Wrapper = styled(ModalWrapper)`
-    padding: 30px 45px;
-    display: flex;
-    flex-direction: column;
-`;
 
 const BottomText = styled.div`
     margin-top: 20px;
@@ -23,13 +16,11 @@ interface Props {
 
 const Word = ({ count }: Props) => {
     return (
-        <Wrapper>
-            <H2>
-                <Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />
-            </H2>
-            <P size="tiny">
-                <Translation id="TR_ADVANCED_RECOVERY_TEXT" />
-            </P>
+        <Modal
+            size="small"
+            heading={<Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />}
+            description={<Translation id="TR_ADVANCED_RECOVERY_TEXT" />}
+        >
             <WordInputAdvanced
                 count={count}
                 onSubmit={value =>
@@ -44,7 +35,7 @@ const Word = ({ count }: Props) => {
                     </Link>
                 </P>
             </BottomText>
-        </Wrapper>
+        </Modal>
     );
 };
 
