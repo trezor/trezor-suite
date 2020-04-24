@@ -1,30 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H2, Button, colors, variables } from '@trezor/components';
+import { Button, colors, variables, Modal } from '@trezor/components';
 import { Translation } from '@suite-components';
-import ModalWrapper from '@suite-components/ModalWrapper';
 import messages from '@suite/support/messages';
 import { Network, ExternalNetwork } from '@wallet-types';
 import NetworkSelect from './NetworkSelect';
 import AccountTypeSelect from './AccountTypeSelect';
 
-const Wrapper = styled(ModalWrapper)`
-    flex-direction: column;
-    width: 100%;
-    max-width: 600px;
-    min-height: 530px;
+const StyledModal = styled(Modal)`
+    min-height: 540px;
 `;
 
 const Actions = styled.div`
     display: flex;
     justify-content: space-between;
-`;
-
-const Description = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${colors.BLACK50};
-    margin-bottom: 32px;
 `;
 
 const Row = styled.div`
@@ -63,14 +52,12 @@ type Props = {
 };
 
 export default (props: Props) => (
-    <Wrapper>
-        <H2>
-            <Translation {...messages.MODAL_ADD_ACCOUNT_TITLE} />
-        </H2>
-        <Description>
-            <Translation {...messages.MODAL_ADD_ACCOUNT_DESC} />
-        </Description>
-
+    <StyledModal
+        cancelable
+        onCancel={props.onCancel}
+        heading={<Translation {...messages.MODAL_ADD_ACCOUNT_TITLE} />}
+        description={<Translation {...messages.MODAL_ADD_ACCOUNT_DESC} />}
+    >
         <Row>
             <RowTitle>
                 <Translation {...messages.TR_CRYPTOCURRENCY} />
@@ -105,5 +92,5 @@ export default (props: Props) => (
             </Button>
             {props.actionButton}
         </Actions>
-    </Wrapper>
+    </StyledModal>
 );
