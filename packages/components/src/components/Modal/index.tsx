@@ -13,6 +13,7 @@ const DEFAULT_PADDING_SMALL = '16px 8px'; // used on SM screens
 
 const FIXED_WIDTH: [string, string, string, string] = ['100vw', '90vw', '720px', '720px'];
 const FIXED_WIDTH_SMALL: [string, string, string, string] = ['100vw', '90vw', '600px', '600px'];
+const FIXED_HEIGHT: [string, string, string, string] = ['90vh', '90vh', '720px', '720px'];
 
 const ModalContainer = styled.div`
     position: fixed;
@@ -208,7 +209,7 @@ const Modal = ({
     useFixedWidth = true,
     fixedWidth,
     useFixedHeight = false,
-    fixedHeight = ['90vh', '90vh', '720px', '720px'], // [SM, MD, LG, XL]
+    fixedHeight,
     ...rest
 }: Props) => {
     const escPressed = useKeyPress('Escape');
@@ -234,7 +235,7 @@ const Modal = ({
                 useFixedWidth={useFixedWidth}
                 fixedWidth={fixedWidth || isSmall ? FIXED_WIDTH_SMALL : FIXED_WIDTH}
                 useFixedHeight={useFixedHeight}
-                fixedHeight={fixedHeight}
+                fixedHeight={fixedHeight || FIXED_HEIGHT}
                 bottomBar={bottomBar}
                 {...rest}
             >
