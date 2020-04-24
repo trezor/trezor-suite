@@ -6,6 +6,7 @@ import { colors, Loader } from '@trezor/components';
 import { WalletLayout } from '@wallet-components';
 import { getAccountTransactions, isTestnet } from '@wallet-utils/accountUtils';
 import NoTransactions from './components/NoTransactions';
+import AccountEmpty from './components/AccountEmpty';
 import PricePanel from './components/PricePanel/Container';
 import TokenList from './components/TokenList';
 import TransactionList from './components/TransactionList';
@@ -22,6 +23,18 @@ const LoaderText = styled.div`
     color: ${colors.BLACK0};
     text-align: center;
 `;
+
+interface ContentProps {
+    selectedAccount: Props['selectedAccount'];
+    children: React.ReactNode;
+}
+
+const Content = ({ selectedAccount, children }: ContentProps) => (
+    <WalletLayout title="Transactions" account={selectedAccount}>
+        <PricePanel />
+        {children}
+    </WalletLayout>
+);
 
 export default (props: Props) => {
     const { selectedAccount, transactions } = props;
@@ -48,44 +61,57 @@ export default (props: Props) => {
         props.fetchTransactions(account, page, size);
     };
 
-    return (
-        <WalletLayout title="Transactions" account={props.selectedAccount}>
-            <PricePanel />
-            {transactions.isLoading && (
+    if (transactions.isLoading) {
+        return (
+            <Content selectedAccount={selectedAccount}>
                 <LoaderWrapper>
                     <Loader size={40} />
                     <LoaderText>
                         <Translation id="TR_LOADING_TRANSACTIONS" />
                     </LoaderText>
                 </LoaderWrapper>
-            )}
-            {accountTransactions.length === 0 && !transactions.isLoading && (
-                <NoTransactions
+            </Content>
+        );
+    }
+
+    if (accountTransactions.length > 0) {
+        return (
+            <Content selectedAccount={selectedAccount}>
+                {account.networkType !== 'ripple' && <TransactionSummary account={account} />}
+                {account.networkType === 'ethereum' && (
+                    <TokenList
+                        isTestnet={isTestnet(account.symbol)}
+                        explorerUrl={network.explorer.account}
+                        tokens={account.tokens}
+                    />
+                )}
+                <TransactionList
+                    explorerUrl={network.explorer.tx}
+                    transactions={accountTransactions}
+                    currentPage={selectedPage}
+                    totalPages={total}
+                    onPageSelected={onPageSelected}
+                    perPage={SETTINGS.TXS_PER_PAGE}
+                    symbol={account.symbol}
+                />
+            </Content>
+        );
+    }
+
+    if (account.empty) {
+        return (
+            <Content selectedAccount={selectedAccount}>
+                <AccountEmpty
                     receive={() => props.goto('wallet-receive', undefined, true)}
                     buy={() => {}}
                 />
-            )}
-            {accountTransactions.length > 0 && (
-                <>
-                    {account.networkType !== 'ripple' && <TransactionSummary account={account} />}
-                    {account.networkType === 'ethereum' && (
-                        <TokenList
-                            isTestnet={isTestnet(account.symbol)}
-                            explorerUrl={network.explorer.account}
-                            tokens={account.tokens}
-                        />
-                    )}
-                    <TransactionList
-                        explorerUrl={network.explorer.tx}
-                        transactions={accountTransactions}
-                        currentPage={selectedPage}
-                        totalPages={total}
-                        onPageSelected={onPageSelected}
-                        perPage={SETTINGS.TXS_PER_PAGE}
-                        symbol={account.symbol}
-                    />
-                </>
-            )}
-        </WalletLayout>
+            </Content>
+        );
+    }
+
+    return (
+        <Content selectedAccount={selectedAccount}>
+            <NoTransactions account={account} />
+        </Content>
     );
 };

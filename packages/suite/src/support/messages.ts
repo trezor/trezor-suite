@@ -2296,6 +2296,10 @@ const definedMessages = defineMessages({
         id: 'TR_TRANSACTIONS',
         defaultMessage: 'Transactions',
     },
+    TR_TRANSACTIONS_NOT_AVAILABLE: {
+        id: 'TR_TRANSACTIONS_NOT_AVAILABLE',
+        defaultMessage: 'Transaction history not available',
+    },
     TR_NUMBER_OF_TRANSACTIONS: {
         id: 'TR_NUMBER_OF_TRANSACTIONS',
         defaultMessage: 'Number of transactions',
