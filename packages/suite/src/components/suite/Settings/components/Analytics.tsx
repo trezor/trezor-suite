@@ -1,29 +1,12 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { Switch } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
-
-import { SUITE } from '@suite-actions/constants';
 import { SectionItem, ActionColumn, TextColumn } from '@suite-components/Settings';
-import { AppState, Dispatch } from '@suite-types';
-import * as analyticsActions from '@suite-actions/analyticsActions';
+import { useAnalytics, useDeviceActionLocks } from '@suite-hooks';
 
-const mapStateToProps = (state: AppState) => ({
-    locks: state.suite.locks,
-    enabled: state.analytics.enabled,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    init: bindActionCreators(analyticsActions.init, dispatch),
-    dispose: bindActionCreators(analyticsActions.dispose, dispatch),
-});
-
-export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-
-const Analytics = ({ locks, enabled, init, dispose }: Props) => {
-    const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
-
+const Analytics = () => {
+    const [isEnabled] = useDeviceActionLocks();
+    const { init, dispose, enabled } = useAnalytics();
     return (
         <SectionItem>
             <TextColumn
@@ -41,11 +24,11 @@ const Analytics = ({ locks, enabled, init, dispose }: Props) => {
                         }
                         init();
                     }}
-                    isDisabled={uiLocked}
+                    isDisabled={!isEnabled}
                 />
             </ActionColumn>
         </SectionItem>
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Analytics);
+export default Analytics;
