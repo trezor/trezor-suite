@@ -36,7 +36,7 @@
         "@storybook/react": "^5.3.17",
         "@types/randomcolor": "0.5.3",
         "awesome-typescript-loader": "^5.2.1",
-        "babel-jest": "^25.1.0",
+        "babel-jest": "^25.4.0",
         "babel-loader": "^8.1.0",
         "babel-plugin-styled-components": "^1.10.7",
         "fs-extra": "^9.0.0",
@@ -54,7 +54,7 @@
         "stylelint-custom-processor-loader": "^0.6.0",
         "stylelint-processor-styled-components": "^1.10.0",
         "typescript-styled-plugin": "^0.15.0",
-        "webpack": "^4.42.1"
+        "webpack": "^4.43.0"
     },
     "peerDependencies": {
         "react": "16.9.0",
