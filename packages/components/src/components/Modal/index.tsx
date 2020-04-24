@@ -44,6 +44,28 @@ const ModalWindow = styled.div<Props>`
         padding: ${props => props.paddingSmall || DEFAULT_PADDING_SMALL} ;
     }
 
+    ::-webkit-scrollbar {
+        background-color: #fff;
+        width: 10px;
+    }
+
+    /* background of the scrollbar except button or resizer */
+    ::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+
+    /* scrollbar itself */
+    ::-webkit-scrollbar-thumb {
+        /* 7F7F7F for mac-like color */
+        background-color: #babac0;
+        border-radius: 10px;
+        border: 2px solid #fff;
+    }
+    /* set button(top and bottom of the scrollbar) */
+    ::-webkit-scrollbar-button {
+        display: none;
+    }
+
     /* if bottomBar is active we need to disable bottom padding */
     ${props =>
         props.bottomBar &&
@@ -107,28 +129,6 @@ const ModalWindow = styled.div<Props>`
                 height: ${(props: Props) => props.fixedHeight![2]};
             }
         `}
-
-    ::-webkit-scrollbar {
-        background-color: #fff;
-        width: 10px;
-    }
-
-    /* background of the scrollbar except button or resizer */
-    ::-webkit-scrollbar-track {
-        background-color: transparent;
-    }
-
-    /* scrollbar itself */
-    ::-webkit-scrollbar-thumb {
-        /* 7F7F7F for mac-like color */
-        background-color: #babac0;
-        border-radius: 10px;
-        border: 2px solid #fff;
-    }
-    /* set button(top and bottom of the scrollbar) */
-    ::-webkit-scrollbar-button {
-        display: none;
-    }
 `;
 
 const StyledLink = styled(Link)`
