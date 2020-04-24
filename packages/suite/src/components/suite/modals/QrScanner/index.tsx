@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import { Translation, ExternalLink } from '@suite-components';
 import { parseUri } from '@suite-utils/parseUri';
-import { Modal, P, Icon, colors, variables, Link, Button } from '@trezor/components';
+import { Modal, P, Icon, colors, variables, Link } from '@trezor/components';
 import * as sendFormActions from '@wallet-actions/send/sendFormActions';
 
 import * as URLS from '@suite-constants/urls';
@@ -56,17 +56,6 @@ const ErrorMessage = styled.span`
 
 const IconWrapper = styled.div`
     margin-bottom: 40px;
-`;
-
-const StyledLink = styled(Link)`
-    font-size: ${variables.FONT_SIZE.TINY};
-
-    &,
-    &:active,
-    &:hover,
-    &:focus {
-        font-weight: 500;
-    }
 `;
 
 const Actions = styled.div`
