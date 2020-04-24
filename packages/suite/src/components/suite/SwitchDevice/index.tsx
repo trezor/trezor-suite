@@ -51,7 +51,6 @@ const SwitchDeviceModal = (props: Props) => {
             heading={<Translation id="TR_CHOOSE_WALLET" />}
             cancelable={props.cancelable}
             onCancel={props.onCancel}
-            useFixedWidth
             description={
                 <>
                     <Translation id="TR_THIS_IS_PLACE_TO_SEE_ALL" />

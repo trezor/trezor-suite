@@ -9,10 +9,6 @@ import { Translation, Image } from '@suite-components';
 import { Button, Modal } from '@trezor/components';
 import { TrezorDevice, AppState, Dispatch, ExtendedMessageDescriptor } from '@suite-types';
 
-const StyledModal = styled(Modal)`
-    max-width: 600px;
-`;
-
 const ImageWrapper = styled.div`
     padding: 60px 0px;
 `;
@@ -83,9 +79,10 @@ const ConfirmUnverifiedAddress = ({
     }
 
     return (
-        <StyledModal
+        <Modal
             heading={<Translation id={deviceStatus} values={{ deviceLabel: device.label }} />}
             cancelable
+            isSmall
             onCancel={onCancel}
             description={
                 <Translation
@@ -109,7 +106,7 @@ const ConfirmUnverifiedAddress = ({
                     <Translation id={actionLabel} />
                 </Button>
             </Actions>
-        </StyledModal>
+        </Modal>
     );
 };
 

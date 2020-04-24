@@ -82,6 +82,7 @@ const ConfirmAddress = ({
             }
             cancelable={cancelable}
             onCancel={onCancel}
+            isSmall
         >
             <Wrapper>
                 {networkType === 'bitcoin' && (

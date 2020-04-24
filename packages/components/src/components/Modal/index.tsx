@@ -11,6 +11,9 @@ import { useRef } from 'react';
 const DEFAULT_PADDING = '35px 40px';
 const DEFAULT_PADDING_SMALL = '16px 8px'; // used on SM screens
 
+const FIXED_WIDTH: [string, string, string, string] = ['100vw', '90vw', '720px', '720px'];
+const FIXED_WIDTH_SMALL: [string, string, string, string] = ['100vw', '90vw', '600px', '600px'];
+
 const ModalContainer = styled.div`
     position: fixed;
     z-index: 10000;
@@ -104,6 +107,28 @@ const ModalWindow = styled.div<Props>`
                 height: ${(props: Props) => props.fixedHeight![2]};
             }
         `}
+
+    ::-webkit-scrollbar {
+        background-color: #fff;
+        width: 10px;
+    }
+
+    /* background of the scrollbar except button or resizer */
+    ::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+
+    /* scrollbar itself */
+    ::-webkit-scrollbar-thumb {
+        /* 7F7F7F for mac-like color */
+        background-color: #babac0;
+        border-radius: 10px;
+        border: 2px solid #fff;
+    }
+    /* set button(top and bottom of the scrollbar) */
+    ::-webkit-scrollbar-button {
+        display: none;
+    }
 `;
 
 const StyledLink = styled(Link)`
@@ -159,6 +184,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     description?: React.ReactNode;
     bottomBar?: React.ReactNode;
     cancelable?: boolean;
+    isSmall?: boolean;
     useFixedWidth?: boolean;
     fixedWidth?: [string, string, string, string]; // [SM, MD, LG, XL]
     useFixedHeight?: boolean;
@@ -175,10 +201,11 @@ const Modal = ({
     bottomBar,
     cancelable,
     onCancel,
+    isSmall,
     padding,
     paddingSmall,
-    useFixedWidth = false,
-    fixedWidth = ['100vw', '90vw', '720px', '720px'], // [SM, MD, LG, XL]
+    useFixedWidth = true,
+    fixedWidth,
     useFixedHeight = false,
     fixedHeight = ['90vh', '90vh', '720px', '720px'], // [SM, MD, LG, XL]
     ...rest
@@ -200,10 +227,11 @@ const Modal = ({
         <ModalContainer>
             <ModalWindow
                 ref={ref}
+                isSmall={isSmall}
                 padding={padding}
                 paddingSmall={paddingSmall}
                 useFixedWidth={useFixedWidth}
-                fixedWidth={fixedWidth}
+                fixedWidth={fixedWidth || isSmall ? FIXED_WIDTH_SMALL : FIXED_WIDTH}
                 useFixedHeight={useFixedHeight}
                 fixedHeight={fixedHeight}
                 bottomBar={bottomBar}
