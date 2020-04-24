@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import dynamic from 'next/dynamic';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Translation';
+import { Translation, ExternalLink } from '@suite-components';
 import { parseUri } from '@suite-utils/parseUri';
-import { H2, P, Icon, colors, variables, Link, Button } from '@trezor/components';
+import { Modal, P, Icon, colors, variables, Link, Button } from '@trezor/components';
 import * as sendFormActions from '@wallet-actions/send/sendFormActions';
 
 import * as URLS from '@suite-constants/urls';
@@ -13,17 +13,10 @@ import { Dispatch } from '@suite-types';
 
 const QrReader = dynamic(() => import('react-qr-reader'), { ssr: false });
 
-const Wrapper = styled.div`
-    width: 90vw;
-    max-width: 450px;
-    padding: 30px 0px;
-`;
-
-const Padding = styled.div`
+const Description = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0 20px;
 `;
 
 const CameraPlaceholderWrapper = styled.div<{ show: boolean }>`
@@ -59,12 +52,6 @@ const ErrorTitle = styled(P)`
 const ErrorMessage = styled.span`
     text-align: center;
     color: ${colors.BLACK25};
-`;
-
-const Info = styled.div`
-    color: ${colors.BLACK50};
-    font-size: ${variables.FONT_SIZE.TINY};
-    margin-bottom: 10px;
 `;
 
 const IconWrapper = styled.div`
@@ -140,57 +127,57 @@ const QrScanner = ({ onScan, onCancel, outputId }: Props) => {
     };
 
     return (
-        <Wrapper>
-            <Padding>
-                <H2>
-                    <Translation id="TR_SCAN_QR_CODE" />
-                </H2>
-                <Info>
+        <Modal
+            cancelable
+            onCancel={onCancel}
+            heading={<Translation id="TR_SCAN_QR_CODE" />}
+            description={
+                <Description>
                     <Translation id="TR_FOR_EASIER_AND_SAFER_INPUT" />
-                </Info>
-                <StyledLink variant="nostyle" href={URLS.WIKI_QR_CODE}>
-                    <Button size="small" variant="tertiary">
+                    <ExternalLink size="small" href={URLS.WIKI_QR_CODE}>
                         <Translation id="TR_LEARN_MORE" />
-                    </Button>
-                </StyledLink>
-                {!readerLoaded && !error && (
-                    <CameraPlaceholderWrapper show>
-                        <CameraPlaceholder>
-                            <IconWrapper>
-                                <Icon icon="QR" size={100} />
-                            </IconWrapper>
-                            <Translation id="TR_PLEASE_ALLOW_YOUR_CAMERA" />
-                        </CameraPlaceholder>
-                    </CameraPlaceholderWrapper>
-                )}
-                {error && (
-                    <CameraPlaceholderWrapper show>
-                        <CameraPlaceholder>
-                            <Error>
-                                <ErrorTitle>
-                                    <Translation id="TR_OOPS_SOMETHING_WENT_WRONG" />
-                                </ErrorTitle>
-                                <ErrorMessage>{error}</ErrorMessage>
-                            </Error>
-                        </CameraPlaceholder>
-                    </CameraPlaceholderWrapper>
-                )}
+                    </ExternalLink>
+                </Description>
+            }
+        >
+            {!readerLoaded && !error && (
+                <CameraPlaceholderWrapper show>
+                    <CameraPlaceholder>
+                        <IconWrapper>
+                            <Icon icon="QR" size={100} />
+                        </IconWrapper>
+                        <Translation id="TR_PLEASE_ALLOW_YOUR_CAMERA" />
+                    </CameraPlaceholder>
+                </CameraPlaceholderWrapper>
+            )}
+            {error && (
+                <CameraPlaceholderWrapper show>
+                    <CameraPlaceholder>
+                        <Error>
+                            <ErrorTitle>
+                                <Translation id="TR_OOPS_SOMETHING_WENT_WRONG" />
+                            </ErrorTitle>
+                            <ErrorMessage>{error}</ErrorMessage>
+                        </Error>
+                    </CameraPlaceholder>
+                </CameraPlaceholderWrapper>
+            )}
 
-                {!error && (
-                    <CameraPlaceholderWrapper show={readerLoaded}>
-                        <QrReader
-                            delay={500}
-                            onError={handleError}
-                            onScan={handleScan}
-                            onLoad={onLoad}
-                            style={{ width: '100%', borderRadius: '3px' }}
-                            showViewFinder={false}
-                        />
-                    </CameraPlaceholderWrapper>
-                )}
+            {!error && (
+                <CameraPlaceholderWrapper show={readerLoaded}>
+                    <QrReader
+                        delay={500}
+                        onError={handleError}
+                        onScan={handleScan}
+                        onLoad={onLoad}
+                        style={{ width: '100%', borderRadius: '3px' }}
+                        showViewFinder={false}
+                    />
+                </CameraPlaceholderWrapper>
+            )}
 
-                <Actions>
-                    {/* <Button
+            <Actions>
+                {/* <Button
                         variant="secondary"
                         onClick={() => {
                             // TODO: enable legacyMode and call openImageDialog? https://github.com/JodusNodus/react-qr-reader#readme
@@ -198,9 +185,8 @@ const QrScanner = ({ onScan, onCancel, outputId }: Props) => {
                     >
                         <Translation id="TR_UPLOAD_IMAGE" />
                     </Button> */}
-                </Actions>
-            </Padding>
-        </Wrapper>
+            </Actions>
+        </Modal>
     );
 };
 
