@@ -6,7 +6,7 @@ import RoundedCorner from '../RoundedCorner';
 import { Translation } from '@suite-components';
 import { MAIN_MENU_ITEMS } from '@suite-constants/menu';
 import { Props as ContainerProps } from '../../Container';
-import { useAnalytics } from '@suite-hooks/useAnalytics';
+import { useAnalytics } from '@suite-hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -85,43 +85,52 @@ interface Props {
     openSecondaryMenu?: () => void;
 }
 
-const Menu = (props: Props) => (
-    <Wrapper>
-        {MAIN_MENU_ITEMS.map(item => {
-            const { route, icon, translationId, isDisabled } = item;
-            const routeObj = findRouteByName(route);
-            const isActive = routeObj ? routeObj.app === props.app : false;
-            const callback = (isActive && props.openSecondaryMenu) || props.goto;
-            return (
-                <MenuItemWrapper key={route}>
-                    <RoundedCorner top isActive={isActive} />
-                    <In
-                        data-test={`@suite/menu/${route}`}
-                        onClick={() => !isDisabled && callback(routeObj!.name)}
-                        isActive={isActive}
-                        isDisabled={isDisabled}
-                    >
-                        <IconWrapper isActive={isActive}>
-                            <Icon
-                                size={20}
-                                color={isActive ? colors.BLACK0 : colors.WHITE}
-                                icon={icon}
-                            />
-                        </IconWrapper>
-                        <Text isActive={isActive}>
-                            <Translation id={translationId} />
-                        </Text>
-                        {isDisabled && (
-                            <ComingSoon>
-                                <Translation id="TR_COMING_SOON" />
-                            </ComingSoon>
-                        )}
-                    </In>
-                    <RoundedCorner bottom isActive={isActive} />
-                </MenuItemWrapper>
-            );
-        })}
-    </Wrapper>
-);
+const Menu = (props: Props) => {
+    const analytics = useAnalytics();
+
+    const gotoWithReport = (routeName: Parameters<typeof props.goto>[0]) => {
+        analytics.report({ type: 'ui', payload: `menu/goto${routeName}` });
+        props.goto(routeName);
+    };
+
+    return (
+        <Wrapper>
+            {MAIN_MENU_ITEMS.map(item => {
+                const { route, icon, translationId, isDisabled } = item;
+                const routeObj = findRouteByName(route);
+                const isActive = routeObj ? routeObj.app === props.app : false;
+                const callback = (isActive && props.openSecondaryMenu) || gotoWithReport;
+                return (
+                    <MenuItemWrapper key={route}>
+                        <RoundedCorner top isActive={isActive} />
+                        <In
+                            data-test={`@suite/menu/${route}`}
+                            onClick={() => !isDisabled && callback(routeObj!.name)}
+                            isActive={isActive}
+                            isDisabled={isDisabled}
+                        >
+                            <IconWrapper isActive={isActive}>
+                                <Icon
+                                    size={20}
+                                    color={isActive ? colors.BLACK0 : colors.WHITE}
+                                    icon={icon}
+                                />
+                            </IconWrapper>
+                            <Text isActive={isActive}>
+                                <Translation id={translationId} />
+                            </Text>
+                            {isDisabled && (
+                                <ComingSoon>
+                                    <Translation id="TR_COMING_SOON" />
+                                </ComingSoon>
+                            )}
+                        </In>
+                        <RoundedCorner bottom isActive={isActive} />
+                    </MenuItemWrapper>
+                );
+            })}
+        </Wrapper>
+    );
+};
 
 export default Menu;

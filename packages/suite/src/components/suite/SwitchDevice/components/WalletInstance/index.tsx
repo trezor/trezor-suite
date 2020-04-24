@@ -4,7 +4,7 @@ import { Button, Switch, colors, variables } from '@trezor/components';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { Props } from './Container';
 import { FormattedNumber, WalletLabeling, Translation } from '@suite-components';
-import { useAnalytics } from '@suite-hooks/useAnalytics';
+import { useAnalytics } from '@suite-hooks';
 
 const Wrapper = styled.div<{ selected: boolean }>`
     display: flex;

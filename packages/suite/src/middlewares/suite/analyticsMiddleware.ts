@@ -19,11 +19,10 @@ import * as analyticsActions from '@suite-actions/analyticsActions';
 const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
 ): Action => {
-    let state = api.getState();
-
     // pass action
     next(action);
-    state = api.getState();
+
+    const state = api.getState();
 
     switch (action.type) {
         case STORAGE.LOADED:

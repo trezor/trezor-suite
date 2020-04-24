@@ -17,11 +17,10 @@ import {
 } from '@suite-constants/urls';
 import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import * as homescreen from '@suite-utils/homescreen';
-import { useDeviceActionLocks } from '@suite-hooks';
+import { useDeviceActionLocks, useAnalytics } from '@suite-hooks';
 import { variables, Link, P, Switch } from '@trezor/components';
 import React, { createRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useAnalytics } from '@suite-hooks/useAnalytics';
 
 import { Props } from './Container';
 

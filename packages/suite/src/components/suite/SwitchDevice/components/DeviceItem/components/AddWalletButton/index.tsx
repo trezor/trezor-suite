@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import { Button, Tooltip } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
-import { useDeviceActionLocks } from '@suite-hooks';
-import { useAnalytics } from '@suite-hooks/useAnalytics';
+import { useDeviceActionLocks, useAnalytics } from '@suite-hooks';
 
 const AddWallet = styled.div`
     display: flex;

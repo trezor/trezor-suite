@@ -7,7 +7,7 @@ import { Props as ContainerProps } from '../../Container';
 import { SHAKE } from '@suite-support/styles/animations';
 import { Translation } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
-import { useAnalytics } from '@suite-hooks/useAnalytics';
+import { useAnalytics } from '@suite-hooks';
 
 const Wrapper = styled.div`
     padding-left: 6px;

@@ -1,6 +1,6 @@
 import { ANALYTICS } from '@suite-actions/constants';
 import { isDev } from '@suite-utils/build';
-import { Dispatch, GetState } from '@suite-types';
+import { Dispatch, GetState, AppState } from '@suite-types';
 import { getRandomId } from '@suite-utils/random';
 import { Account } from '@wallet-types';
 
@@ -12,10 +12,10 @@ export type Payload =
     | {
           type: 'suite-ready';
           payload: {
-              language: ReturnType<GetState>['suite']['settings']['language'];
-              enabledNetworks: ReturnType<GetState>['wallet']['settings']['enabledNetworks'];
-              localCurrency: ReturnType<GetState>['wallet']['settings']['localCurrency'];
-              discreetMode: ReturnType<GetState>['wallet']['settings']['discreetMode'];
+              language: AppState['suite']['settings']['language'];
+              enabledNetworks: AppState['wallet']['settings']['enabledNetworks'];
+              localCurrency: AppState['wallet']['settings']['localCurrency'];
+              discreetMode: AppState['wallet']['settings']['discreetMode'];
           };
       }
     | { type: 'transport-type'; payload: { type: string; version: string } }
