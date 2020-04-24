@@ -2,22 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Button, variables, Modal } from '@trezor/components';
+import { Button, Modal } from '@trezor/components';
 import { Image as Img, Translation } from '@suite-components';
 import * as routerActions from '@suite-actions/routerActions';
 import { AppState, Dispatch } from '@suite-types';
-
-const { SCREEN_SIZE } = variables;
-const Wrapper = styled.div`
-    text-align: center;
-    max-width: 80vw;
-    @media (min-width: ${SCREEN_SIZE.SM}) {
-        max-width: 60vw;
-    }
-    @media (min-width: ${SCREEN_SIZE.LG}) {
-        max-width: 40vw;
-    }
-`;
 
 const Image = styled(Img)`
     flex: 1;
