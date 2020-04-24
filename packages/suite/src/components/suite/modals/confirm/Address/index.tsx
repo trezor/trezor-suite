@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { Button, P, H2, colors } from '@trezor/components';
+import { Button, P, Modal, colors } from '@trezor/components';
 import { copyToClipboard } from '@suite-utils/dom';
 import { TrezorDevice, Dispatch } from '@suite-types';
 import { Translation, QrCode } from '@suite-components';
@@ -11,9 +11,9 @@ import { Translation, QrCode } from '@suite-components';
 import CheckOnTrezor from './components/CheckOnTrezor';
 import DeviceDisconnected from './components/DeviceDisconnected';
 
-const StyledWrapper = styled.div`
-    max-width: 620px;
-    padding: 40px;
+const Wrapper = styled.div`
+    /* max-width: 620px;
+    padding: 40px; */
 `;
 
 const Address = styled.div`
@@ -70,28 +70,31 @@ const ConfirmAddress = ({
     };
 
     return (
-        <StyledWrapper>
-            <H2>
+        <Modal
+            heading={
                 <Translation
                     id="TR_ADDRESS_MODAL_TITLE"
                     values={{ networkName: symbol.toUpperCase() }}
                 />
-            </H2>
-            {networkType === 'bitcoin' && (
-                <P size="tiny">
-                    <Translation id="TR_ADDRESS_MODAL_BTC_DESCRIPTION" />
-                </P>
-            )}
-            <QrCode value={address} addressPath={addressPath} />
-            <Address data-test="@address-modal/address-field">{address}</Address>
-            {device.connected && <CheckOnTrezor device={device} />}
-            {!device.connected && <DeviceDisconnected label={device.label} />}
-            <Row ref={htmlElement}>
-                <Button variant="primary" onClick={copyAddress}>
-                    <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
-                </Button>
-            </Row>
-        </StyledWrapper>
+            }
+        >
+            <Wrapper>
+                {networkType === 'bitcoin' && (
+                    <P size="tiny">
+                        <Translation id="TR_ADDRESS_MODAL_BTC_DESCRIPTION" />
+                    </P>
+                )}
+                <QrCode value={address} addressPath={addressPath} />
+                <Address data-test="@address-modal/address-field">{address}</Address>
+                {device.connected && <CheckOnTrezor device={device} />}
+                {!device.connected && <DeviceDisconnected label={device.label} />}
+                <Row ref={htmlElement}>
+                    <Button variant="primary" onClick={copyAddress}>
+                        <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
+                    </Button>
+                </Row>
+            </Wrapper>
+        </Modal>
     );
 };
 
