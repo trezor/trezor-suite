@@ -80,16 +80,16 @@ const ConfirmAddress = ({
                     values={{ networkName: symbol.toUpperCase() }}
                 />
             }
+            description={
+                networkType === 'bitcoin' ? (
+                    <Translation id="TR_ADDRESS_MODAL_BTC_DESCRIPTION" />
+                ) : undefined
+            }
             cancelable={cancelable}
             onCancel={onCancel}
             isSmall
         >
             <Wrapper>
-                {networkType === 'bitcoin' && (
-                    <P size="tiny">
-                        <Translation id="TR_ADDRESS_MODAL_BTC_DESCRIPTION" />
-                    </P>
-                )}
                 <QrCode value={address} addressPath={addressPath} />
                 <Address data-test="@address-modal/address-field">{address}</Address>
                 {device.connected && <CheckOnTrezor device={device} />}
