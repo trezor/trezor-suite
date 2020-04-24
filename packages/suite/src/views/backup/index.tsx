@@ -2,26 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
-
-import { H2, P, Button, ButtonProps, variables, colors } from '@trezor/components';
+import { H2, P, Button, ButtonProps, colors, Modal } from '@trezor/components';
 import * as backupActions from '@backup-actions/backupActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { Dispatch, AppState, InjectedModalApplicationProps } from '@suite-types';
 import { ProgressBar, Loading, Image, Translation } from '@suite-components';
-import ModalWrapper from '@suite-components/ModalWrapper';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
 import { canStart, canContinue } from '@backup-utils';
-
-const Wrapper = styled(ModalWrapper)`
-    width: 88vw;
-    min-height: 560px;
-    flex-direction: column;
-
-    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
-        max-width: 680px;
-        min-width: 580px;
-    }
-`;
 
 const Row = styled.div`
     display: flex;
@@ -80,24 +67,25 @@ const Backup = (props: Props) => {
     const backupStatuses = ['initial', 'in-progress', 'finished'] as const;
 
     if (modal) {
-        return <Wrapper>{modal}</Wrapper>;
+        return modal;
     }
 
     if (!device || !device.features) {
         return (
-            <Wrapper data-test="@backup/no-device">
-                <H2>
-                    <Translation id="TR_RECONNECT_HEADER" />
-                </H2>
+            <Modal
+                size="tiny"
+                heading={<Translation id="TR_RECONNECT_HEADER" />}
+                data-test="@backup/no-device"
+            >
                 <StyledImage image="CONNECT_DEVICE" />
                 <Buttons>
                     <CloseButton onClick={onClose} />
                 </Buttons>
-            </Wrapper>
+            </Modal>
         );
     }
     return (
-        <Wrapper data-test="@backup">
+        <Modal useFixedHeight data-test="@backup">
             <ProgressBar
                 showHelp
                 total={backupStatuses.length}
@@ -188,7 +176,7 @@ const Backup = (props: Props) => {
                     </Buttons>
                 </>
             )}
-        </Wrapper>
+        </Modal>
     );
 };
 
