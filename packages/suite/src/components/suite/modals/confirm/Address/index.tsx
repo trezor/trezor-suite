@@ -3,18 +3,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { Button, P, Modal, colors } from '@trezor/components';
+import { Button, Modal, colors } from '@trezor/components';
 import { copyToClipboard } from '@suite-utils/dom';
 import { TrezorDevice, Dispatch } from '@suite-types';
 import { Translation, QrCode } from '@suite-components';
 
 import CheckOnTrezor from './components/CheckOnTrezor';
 import DeviceDisconnected from './components/DeviceDisconnected';
-
-const Wrapper = styled.div`
-    /* max-width: 620px;
-    padding: 40px; */
-`;
 
 const Address = styled.div`
     width: 100%;
@@ -89,17 +84,15 @@ const ConfirmAddress = ({
             onCancel={onCancel}
             isSmall
         >
-            <Wrapper>
-                <QrCode value={address} addressPath={addressPath} />
-                <Address data-test="@address-modal/address-field">{address}</Address>
-                {device.connected && <CheckOnTrezor device={device} />}
-                {!device.connected && <DeviceDisconnected label={device.label} />}
-                <Row ref={htmlElement}>
-                    <Button variant="primary" onClick={copyAddress}>
-                        <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
-                    </Button>
-                </Row>
-            </Wrapper>
+            <QrCode value={address} addressPath={addressPath} />
+            <Address data-test="@address-modal/address-field">{address}</Address>
+            {device.connected && <CheckOnTrezor device={device} />}
+            {!device.connected && <DeviceDisconnected label={device.label} />}
+            <Row ref={htmlElement}>
+                <Button variant="primary" onClick={copyAddress}>
+                    <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
+                </Button>
+            </Row>
         </Modal>
     );
 };

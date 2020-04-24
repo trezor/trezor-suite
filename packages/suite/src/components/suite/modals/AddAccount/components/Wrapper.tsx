@@ -46,7 +46,7 @@ type Props = {
     accountTypes?: Network[];
     onSelectNetwork: (network: Network | ExternalNetwork) => void;
     onSelectAccountType: (network: Network) => void;
-    onCancel: (_event: any) => void;
+    onCancel: () => void;
     children?: JSX.Element;
     actionButton?: JSX.Element;
 };
