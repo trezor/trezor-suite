@@ -107,6 +107,14 @@ const PairDeviceStep = (props: Props) => {
                                         </Wrapper.Controls>
                                     </>
                                 )}
+                                {getConnectedDeviceStatus() === 'in-bootloader' && (
+                                    <>
+                                        <Text>
+                                            <Translation id="TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER" />
+                                        </Text>
+                                        <StyledImage image="UNI_WARNING" />
+                                    </>
+                                )}
                                 {getConnectedDeviceStatus() === 'seedless' && (
                                     <Text>
                                         <Translation id="TR_YOUR_DEVICE_IS_SEEDLESS" />

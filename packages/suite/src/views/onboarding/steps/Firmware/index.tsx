@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import { Tooltip } from '@trezor/components';
+import { Tooltip, Button } from '@trezor/components';
 
 import { Loaders, OnboardingButton, OnboardingIcon, Text, Wrapper } from '@onboarding-components';
-import { Translation, Image } from '@suite-components';
+import { Translation, Image, WebusbButton } from '@suite-components';
 import messages from '@suite/support/messages';
 import { InitImg, SuccessImg } from '@firmware-components';
 import ContinueButton from './components/ContinueButton';
 import InstallButton from './components/InstallButton';
+import { isWebUSB } from '@suite-utils/transport';
 
 import { Props } from './Container';
 
@@ -17,8 +18,13 @@ const InlineLink = styled.span`
     cursor: pointer;
 `;
 
+const StyledImage = styled(Image)`
+    display: flex;
+`;
+
 const FirmwareStep = ({
     device,
+    transport,
     firmware,
     goToNextStep,
     goToPreviousStep,
@@ -29,6 +35,8 @@ const FirmwareStep = ({
     const { status, error, btcOnly } = firmware;
     const isConnected = !!device;
     const isInBootloader = Boolean(device && device.features && device.mode === 'bootloader');
+
+    const [imageLoaded, setImageLoaded] = useState(false);
 
     const getVersionStr = () => {
         if (device && device.features) {
@@ -74,7 +82,23 @@ const FirmwareStep = ({
             <Wrapper.StepBody>
                 {status === 'initial' && (
                     <>
-                        {!device && <Translation id="TR_CONNECT_YOUR_DEVICE" />}
+                        {!device && (
+                            <>
+                                <Translation id="TR_CONNECT_YOUR_DEVICE" />
+                                <StyledImage
+                                    onLoad={() => setImageLoaded(true)}
+                                    onError={() => setImageLoaded(true)}
+                                    image="CONNECT_DEVICE"
+                                />
+                                {isWebUSB(transport) && (
+                                    <WebusbButton ready>
+                                        <Button icon="SEARCH">
+                                            <Translation id="TR_CHECK_FOR_DEVICES" />
+                                        </Button>
+                                    </WebusbButton>
+                                )}
+                            </>
+                        )}
 
                         {getFirmwareStatus() === 'none' && (
                             <>

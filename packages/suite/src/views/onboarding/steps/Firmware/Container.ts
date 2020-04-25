@@ -9,6 +9,7 @@ import Step from './index';
 
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
+    transport: state.suite.transport,
     firmware: state.firmware,
 });
 
