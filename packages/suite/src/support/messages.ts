@@ -3157,6 +3157,11 @@ const definedMessages = defineMessages({
         id: 'DESKTOP_OUTDATED_BUTTON_CANCEL',
         defaultMessage: 'Let me in anyway',
     },
+    TR_FIRMWARE_IS_POTENTIALLY_RISKY: {
+        id: 'TR_FIRMWARE_IS_POTENTIALLY_RISKY',
+        defaultMessage:
+            'Updating firmware is potentially risky operation. If anything goes wrong (broken cable etc.) device might end up in wiped state which effectively means losing all your coins.',
+    },
 } as const);
 
 export default definedMessages;
