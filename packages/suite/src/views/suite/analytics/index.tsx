@@ -22,10 +22,11 @@ const Wrapper = styled(ModalWrapper)`
 
 const Body = styled.div`
     display: flex;
+    flex: 1;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: 28px;
 `;
 
 const BottomP = styled(P)`
@@ -39,7 +40,7 @@ const Bold = styled.span`
 `;
 
 const StyledImg = styled(props => <Image {...props} />)`
-    margin-top: 23px;
+    flex: 1;
 `;
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
