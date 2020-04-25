@@ -2,10 +2,9 @@ import React from 'react';
 import { Switch } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { SectionItem, ActionColumn, TextColumn } from '@suite-components/Settings';
-import { useAnalytics, useDeviceActionLocks } from '@suite-hooks';
+import { useAnalytics } from '@suite-hooks';
 
 const Analytics = () => {
-    const [isEnabled] = useDeviceActionLocks();
     const { init, dispose, enabled } = useAnalytics();
     return (
         <SectionItem>
@@ -24,7 +23,6 @@ const Analytics = () => {
                         }
                         init();
                     }}
-                    isDisabled={!isEnabled}
                 />
             </ActionColumn>
         </SectionItem>
