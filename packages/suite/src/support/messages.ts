@@ -3157,6 +3157,31 @@ const definedMessages = defineMessages({
         id: 'DESKTOP_OUTDATED_BUTTON_CANCEL',
         defaultMessage: 'Let me in anyway',
     },
+    TR_FIRMWARE_IS_POTENTIALLY_RISKY: {
+        id: 'TR_FIRMWARE_IS_POTENTIALLY_RISKY',
+        defaultMessage:
+            'Updating firmware is potentially risky operation. If anything goes wrong (broken cable etc.) device might end up in wiped state which effectively means losing all your coins.',
+    },
+    ONBOARDING_PAIR_ALREADY_INITIALIZED: {
+        id: 'ONBOARDING_PAIR_ALREADY_INITIALIZED',
+        defaultMessage:
+            'This device is already initialized. You should always be sure that you did device setup yourself. Otherwise you may become victim of phishing. Having initialized device also means that you can not proceed with setup.',
+    },
+    TR_USE_IT_ANYWAY: {
+        id: 'TR_USE_IT_ANYWAY',
+        defaultMessage: 'Use it anyway',
+        description: 'Use the device even though it is not in state it was supposed to be.',
+    },
+    TR_GO_TO_SUITE: {
+        id: 'TR_GO_TO_SUITE',
+        defaultMessage: 'Go to Suite',
+    },
+    TR_PAIR_YOUR_TREZOR: {
+        id: 'TR_PAIR_YOUR_TREZOR',
+        defaultMessage: 'Pair your Trezor again with your computer',
+        description:
+            'After firmware update is done, user must renew connection with Trezor device. We also call this "pairing" device',
+    },
 } as const);
 
 export default definedMessages;

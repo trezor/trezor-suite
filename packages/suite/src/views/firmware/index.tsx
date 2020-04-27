@@ -8,12 +8,13 @@ import * as firmwareActions from '@firmware-actions/firmwareActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { InjectedModalApplicationProps, Dispatch, AppState } from '@suite-types';
 import { getFwVersion } from '@suite-utils/device';
-import { ProgressBar, Translation } from '@suite-components';
+import { ProgressBar, Translation, WebusbButton } from '@suite-components';
 import Image from '@suite-components/images/Image';
 import ModalWrapper from '@suite-components/ModalWrapper';
 import { InitImg, SuccessImg } from '@firmware-components';
 import { Loaders } from '@onboarding-components';
 import { CHANGELOG_URL } from '@suite-constants/urls';
+import { isWebUSB } from '@suite-utils/transport';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;
 
@@ -134,6 +135,7 @@ const CloseButton = (props: ButtonProps) => (
 const mapStateToProps = (state: AppState) => ({
     firmware: state.firmware,
     device: state.suite.device,
+    transport: state.suite.transport,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -156,6 +158,7 @@ const Firmware = ({
     device,
     setStatus,
     toggleBtcOnly,
+    transport,
 }: Props) => {
     const onClose = () => {
         closeModalApp();
@@ -249,6 +252,14 @@ const Firmware = ({
                 )}
                 <Buttons>
                     <Col>
+                        {isWebUSB(transport) && (
+                            <WebusbButton ready>
+                                <Button icon="PLUS">
+                                    <Translation id="TR_CHECK_FOR_DEVICES" />
+                                </Button>
+                            </WebusbButton>
+                        )}
+
                         <CloseButton onClick={onClose} />
                     </Col>
                 </Buttons>
@@ -393,13 +404,32 @@ const Firmware = ({
 
             {firmware.status === 'check-seed' && (
                 <>
-                    <StyledH2>
-                        <Translation id="TR_SECURITY_CHECKPOINT_GOT_SEED" />
-                    </StyledH2>
-                    <StyledP>
-                        <Translation id="TR_BEFORE_ANY_FURTHER_ACTIONS" />
-                    </StyledP>
-                    <SeedImg image="RECOVER_FROM_SEED" />
+                    {!device.features.needs_backup && (
+                        <>
+                            <StyledH2>
+                                <Translation id="TR_SECURITY_CHECKPOINT_GOT_SEED" />
+                            </StyledH2>
+                            <StyledP>
+                                <Translation id="TR_BEFORE_ANY_FURTHER_ACTIONS" />
+                            </StyledP>
+                            <SeedImg image="RECOVER_FROM_SEED" />
+                        </>
+                    )}
+                    {device.features.needs_backup && (
+                        <>
+                            <StyledH2>
+                                <Translation
+                                    id="TR_DEVICE_LABEL_IS_NOT_BACKED_UP"
+                                    values={{ deviceLabel: device.label }}
+                                />
+                            </StyledH2>
+                            <StyledP>
+                                <Translation id="TR_FIRMWARE_IS_POTENTIALLY_RISKY" />
+                            </StyledP>
+                            <StyledImage image="UNI_WARNING" />
+                        </>
+                    )}
+
                     <Buttons>
                         <Col>
                             <StyledButton

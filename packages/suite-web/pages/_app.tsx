@@ -61,7 +61,7 @@ class TrezorSuiteApp extends App<Props> {
                     <IntlProvider>
                         <>
                             {/*
-                                just beucase we need make trezor-connect render the iframe
+                                just because we need make trezor-connect render the iframe
                             */}
                             <div
                                 className="trezor-webusb-button"
