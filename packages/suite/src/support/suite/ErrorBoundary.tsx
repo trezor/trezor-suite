@@ -47,6 +47,7 @@ class ErrorBoundary extends React.Component<{}, StateProps> {
                     <H1>Error occurred</H1>
                     <P>It appears something is broken. You might let us know by sending report</P>
                     <P>{this.state.error.message}</P>
+                    <P>{this.state.error.stack}</P>
 
                     <Buttons>
                         <StyledButton onClick={() => Sentry.showReportDialog()}>

@@ -19,7 +19,7 @@ const InlineLink = styled.span`
 `;
 
 const StyledImage = styled(Image)`
-    display: flex;
+    flex: 1;
 `;
 
 const FirmwareStep = ({
