@@ -160,7 +160,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                     </SectionItem>
                 )}
             </Section>
-            <Section title="Security">
+            <Section title={<Translation id="TR_DEVICE_SECURITY" />}>
                 <SectionItem>
                     <TextColumn
                         title={<Translation id="TR_FIRMWARE_VERSION" />}
@@ -204,8 +204,8 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                 {features.pin_protection && (
                     <SectionItem>
                         <TextColumn
-                            title="Change PIN"
-                            description="In case your PIN has been exposed or you simply want to change it, here you go. There is no limit of how many times you can change your PIN."
+                            title={<Translation id="TR_DEVICE_SETTINGS_CHANGE_PIN_TITLE" />}
+                            description={<Translation id="TR_DEVICE_SETTINGS_CHANGE_PIN_DESC" />}
                         />
                         <ActionColumn>
                             <ActionButton

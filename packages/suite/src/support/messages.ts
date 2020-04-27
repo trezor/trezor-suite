@@ -642,6 +642,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Device settings',
         id: 'TR_DEVICE_SETTINGS',
     },
+    TR_DEVICE_SECURITY: {
+        defaultMessage: 'Security',
+        id: 'TR_DEVICE_SECURITY',
+    },
     TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE: {
         defaultMessage: 'Wipe device',
         id: 'TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE',
@@ -696,6 +700,15 @@ const definedMessages = defineMessages({
     TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE: {
         defaultMessage: 'PIN protection',
         id: 'TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE',
+    },
+    TR_DEVICE_SETTINGS_CHANGE_PIN_DESC: {
+        defaultMessage:
+            'In case your PIN has been exposed or you simply want to change it, here you go. There is no limit of how many times you can change your PIN.',
+        id: 'TR_DEVICE_SETTINGS_CHANGE_PIN_DESC',
+    },
+    TR_DEVICE_SETTINGS_CHANGE_PIN_TITLE: {
+        defaultMessage: 'Change PIN',
+        id: 'TR_DEVICE_SETTINGS_CHANGE_PIN_TITLE',
     },
     TR_DEVICE_YOU_RECONNECTED_IS_DIFFERENT: {
         defaultMessage:
