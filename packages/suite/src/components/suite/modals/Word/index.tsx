@@ -1,9 +1,9 @@
 import React from 'react';
 import TrezorConnect, { UI } from 'trezor-connect';
-import { Modal } from '@trezor/components';
+import { Modal, ModalProps } from '@trezor/components';
 import { Translation, WordInput } from '@suite-components';
 
-const Word = () => {
+const Word = (props: ModalProps) => {
     return (
         <Modal
             size="small"
@@ -14,6 +14,7 @@ const Word = () => {
                     <Translation id="TR_RANDOM_SEED_WORDS_DISCLAIMER" />
                 </>
             }
+            {...props}
         >
             <WordInput
                 onSubmit={value =>

@@ -24,7 +24,7 @@ const StyledImage = styled(Image)`
 
 const Index = ({ recovery, device, rerun, goToStep, addPath }: Props) => (
     <Wrapper>
-        {recovery.status === 'in-progress' && <Loading />}
+        {recovery.status === 'in-progress' && <Loading noBackground />}
         {recovery.status !== 'in-progress' && (
             <>
                 <H2>

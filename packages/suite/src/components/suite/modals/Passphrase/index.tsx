@@ -105,6 +105,7 @@ const Passphrase = (props: Props) => {
                         <Translation id="TR_THIS_HIDDEN_WALLET_IS_EMPTY" />
                     )
                 }
+                size="tiny"
             >
                 <PassphraseTypeCard
                     authConfirmation={authConfirmation}
@@ -127,6 +128,7 @@ const Passphrase = (props: Props) => {
                 useFixedWidth={false}
                 heading={<Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />}
                 description={<Translation id="TR_ENTER_EXISTING_PASSPHRASE" />}
+                size="tiny"
             >
                 <PassphraseTypeCard
                     // title={<Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />}

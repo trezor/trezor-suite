@@ -126,7 +126,7 @@ const Backup = (props: Props) => {
                 </>
             )}
 
-            {backup.status === 'in-progress' && <Loading />}
+            {backup.status === 'in-progress' && <Loading noBackground />}
 
             {backup.status === 'finished' && !backup.error && (
                 <>

@@ -277,7 +277,7 @@ const Recovery = ({
 
                 {recovery.status === 'in-progress' && (
                     <>
-                        {!modal && <Loading />}
+                        {!modal && <Loading noBackground />}
                         {modal && (
                             <>
                                 {model === 2 && (

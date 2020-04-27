@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import TrezorConnect, { UI } from 'trezor-connect';
-import { Modal, P, Link } from '@trezor/components';
+import { Modal, P, Link, ModalProps } from '@trezor/components';
 import { Translation, WordInputAdvanced } from '@suite-components';
 
 import { URLS } from '@suite-constants';
@@ -10,16 +10,17 @@ const BottomText = styled.div`
     margin-top: 20px;
 `;
 
-interface Props {
+interface Props extends ModalProps {
     count: 6 | 9;
 }
 
-const Word = ({ count }: Props) => {
+const Word = ({ count, ...rest }: Props) => {
     return (
         <Modal
             size="small"
             heading={<Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />}
             description={<Translation id="TR_ADVANCED_RECOVERY_TEXT" />}
+            {...rest}
         >
             <WordInputAdvanced
                 count={count}

@@ -8,8 +8,19 @@ import { H2 } from '../typography/Heading';
 import { colors, variables } from '../../config';
 import { useRef } from 'react';
 
-const DEFAULT_PADDING = '35px 40px';
-const DEFAULT_PADDING_SMALL = '16px 8px'; // used on SM screens
+// each item in array corresponds to a screen size  [SM, MD, LG, XL]
+const PADDING: [string, string, string, string] = [
+    '16px 8px',
+    '35px 40px',
+    '35px 40px',
+    '35px 40px',
+];
+const PADDING_TINY: [string, string, string, string] = [
+    '16px 8px',
+    '35px 24px',
+    '35px 24px',
+    '35px 24px',
+];
 
 const FIXED_WIDTH: [string, string, string, string] = ['100vw', '90vw', '720px', '720px'];
 const FIXED_WIDTH_SMALL: [string, string, string, string] = ['100vw', '90vw', '600px', '600px'];
@@ -36,15 +47,23 @@ const ModalWindow = styled.div<Props>`
     margin: auto;
     position: relative;
     border-radius: 6px;
-    background-color: ${colors.WHITE};
-    box-shadow: 0 10px 60px 0 ${colors.BLACK25};
     text-align: center;
-    padding: ${props => props.padding || DEFAULT_PADDING};
     overflow-x: hidden; /* retains border-radius when using background in child component */
-    
+    padding: ${(props: Props) => props.padding![3]};
+
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: ${props => props.paddingSmall || DEFAULT_PADDING_SMALL} ;
-    }
+                padding: ${(props: Props) => props.padding![0]};
+            }
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) and (max-width: ${
+    variables.SCREEN_SIZE.MD
+}) {
+                padding: ${(props: Props) => props.padding![1]};
+            }
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) and (max-width: ${
+    variables.SCREEN_SIZE.LG
+}) {
+                padding: ${(props: Props) => props.padding![2]};
+            }
 
     ::-webkit-scrollbar {
         background-color: #fff;
@@ -67,6 +86,12 @@ const ModalWindow = styled.div<Props>`
     ::-webkit-scrollbar-button {
         display: none;
     }
+    ${props =>
+        !props.noBackground &&
+        css`
+            background: ${colors.WHITE};
+            box-shadow: 0 10px 60px 0 ${colors.BLACK25};
+        `}
 
     /* if bottomBar is active we need to disable bottom padding */
     ${props =>
@@ -195,8 +220,20 @@ const getFixedWidth = (size: SIZE) => {
     }
 };
 
+const getPadding = (size: SIZE) => {
+    switch (size) {
+        case 'large':
+            return PADDING;
+        case 'small':
+            return PADDING;
+        case 'tiny':
+            return PADDING_TINY;
+        // no default
+    }
+};
+
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
-    children: React.ReactNode;
+    children?: React.ReactNode;
     heading?: React.ReactNode;
     description?: React.ReactNode;
     bottomBar?: React.ReactNode;
@@ -206,8 +243,8 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     fixedWidth?: [string, string, string, string]; // [SM, MD, LG, XL]
     useFixedHeight?: boolean;
     fixedHeight?: [string, string, string, string]; // [SM, MD, LG, XL]
-    padding?: string;
-    paddingSmall?: string;
+    padding?: [string, string, string, string]; // [SM, MD, LG, XL]
+    noBackground?: boolean;
     onCancel?: () => void;
 }
 
@@ -220,7 +257,7 @@ const Modal = ({
     onCancel,
     size = 'large',
     padding,
-    paddingSmall,
+    noBackground = false,
     useFixedWidth = true,
     fixedWidth,
     useFixedHeight = false,
@@ -240,18 +277,17 @@ const Modal = ({
         }
     });
 
-    return (
-        // <ModalOverlay>
+    const modalWindow = (
         <ModalWindow
             ref={ref}
             size={size}
-            padding={padding}
-            paddingSmall={paddingSmall}
+            padding={padding || getPadding(size)}
             useFixedWidth={useFixedWidth}
             fixedWidth={fixedWidth || getFixedWidth(size)}
             useFixedHeight={useFixedHeight}
             fixedHeight={fixedHeight || FIXED_HEIGHT}
             bottomBar={bottomBar}
+            noBackground={noBackground}
             {...rest}
         >
             {heading && <Heading>{heading}</Heading>}
@@ -264,8 +300,13 @@ const Modal = ({
             <Content>{children}</Content>
             {bottomBar && <BottomBar>{bottomBar}</BottomBar>}
         </ModalWindow>
-        // </ModalOverlay>
     );
+
+    if (noBackground) {
+        return modalWindow;
+    }
+
+    return <ModalOverlay>{modalWindow}</ModalOverlay>;
 };
 
-export { Modal, ModalOverlay, Props as ModalProps };
+export { Modal, Props as ModalProps };

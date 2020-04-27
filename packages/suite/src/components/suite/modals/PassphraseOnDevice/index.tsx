@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Modal } from '@trezor/components';
+import { Modal, ModalProps } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { Dispatch, TrezorDevice } from '@suite-types';
@@ -12,15 +12,17 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
         dispatch(discoveryActions.getDiscoveryAuthConfirmationStatus()),
 });
 
-type Props = {
+interface OwnProps extends ModalProps {
     device: TrezorDevice;
-} & ReturnType<typeof mapDispatchToProps>;
+}
+
+type Props = OwnProps & ReturnType<typeof mapDispatchToProps>;
 
 /**
  * Modal used with model T with legacy firmware as result of 'ButtonRequest_PassphraseType' where passphrase source is requested on device
  * @param {Props}
  */
-const PassphraseOnDevice = ({ device, getDiscoveryAuthConfirmationStatus }: Props) => {
+const PassphraseOnDevice = ({ device, getDiscoveryAuthConfirmationStatus, ...rest }: Props) => {
     const authConfirmation = getDiscoveryAuthConfirmationStatus() || device.authConfirm;
 
     if (authConfirmation) {
@@ -34,6 +36,7 @@ const PassphraseOnDevice = ({ device, getDiscoveryAuthConfirmationStatus }: Prop
                     />
                 }
                 description={<Translation id="TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE" />}
+                {...rest}
             >
                 <DeviceConfirmImage device={device} />
                 {/* TODO: similar text is in Passphrase modal */}
@@ -51,6 +54,7 @@ const PassphraseOnDevice = ({ device, getDiscoveryAuthConfirmationStatus }: Prop
                 />
             }
             description={<Translation id="TR_PASSPHRASE_CASE_SENSITIVE" />}
+            {...rest}
         >
             <DeviceConfirmImage device={device} />
         </Modal>

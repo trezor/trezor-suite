@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled, { css } from 'styled-components';
-import { H2, Link, variables, colors, Modal } from '@trezor/components';
+import { H2, Link, variables, colors, Modal, ModalProps } from '@trezor/components';
 import { PinInput, Loading, Translation, Image } from '@suite-components';
 import { Dispatch, TrezorDevice } from '@suite-types';
 
@@ -76,12 +76,14 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     onPinSubmit: bindActionCreators(modalActions.onPinSubmit, dispatch),
 });
 
-type Props = {
+interface OwnProps extends ModalProps {
     device: TrezorDevice;
     onCancel: () => void;
-} & ReturnType<typeof mapDispatchToProps>;
+}
 
-const Pin = ({ device, onPinSubmit }: Props) => {
+type Props = OwnProps & ReturnType<typeof mapDispatchToProps>;
+
+const Pin = ({ device, onPinSubmit, ...rest }: Props) => {
     const [submitted, setSubmitted] = useState(false);
 
     const counter =
@@ -115,7 +117,7 @@ const Pin = ({ device, onPinSubmit }: Props) => {
 
     // TODO: figure out responsive design
     return (
-        <Modal padding="0px" paddingSmall="0px" useFixedWidth={false}>
+        <Modal padding={['0px', '0px', '0px', '0px']} useFixedWidth={false} {...rest}>
             <Wrapper>
                 {isSettingNewPin && (
                     <ExplanationCol

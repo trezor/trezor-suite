@@ -1,14 +1,14 @@
 import React from 'react';
-import { Modal } from '@trezor/components';
+import { Modal, ModalProps } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import { TrezorDevice } from '@suite-types';
 
-interface Props {
+interface Props extends ModalProps {
     device: TrezorDevice;
 }
 
-const ConfirmAction = ({ device }: Props) => {
+const ConfirmAction = ({ device, ...rest }: Props) => {
     return (
         <Modal
             size="tiny"
@@ -19,6 +19,7 @@ const ConfirmAction = ({ device }: Props) => {
                 />
             }
             data-test="@suite/modal/confirm-action-on-device"
+            {...rest}
         >
             <DeviceConfirmImage device={device} />
         </Modal>

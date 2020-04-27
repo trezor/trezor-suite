@@ -94,7 +94,7 @@ const RecoveryStep = (props: Props) => {
                     </>
                 )}
 
-                {recovery.status === 'in-progress' && <Loading />}
+                {recovery.status === 'in-progress' && <Loading noBackground />}
 
                 {recovery.status === 'finished' && !recovery.error && (
                     <>

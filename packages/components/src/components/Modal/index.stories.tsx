@@ -8,7 +8,6 @@ storiesOf('Modals', module).add(
     () => {
         const heading = text('heading', 'Ahoj kamaráde!');
         const description = text('description', 'Description');
-        const padding = text('padding', '');
         const children = text(
             'children',
             'Sláva Otci i Synu i Duchu svatému, jako byla na počátku, i nyní, i vždycky a na věky věků.'
@@ -32,7 +31,6 @@ storiesOf('Modals', module).add(
                 heading={heading === '' ? undefined : heading}
                 description={description === '' ? undefined : description}
                 cancelable={cancelable}
-                padding={padding === '' ? undefined : padding}
                 useFixedWidth={useFixedWidth}
                 useFixedHeight={useFixedHeight}
             >

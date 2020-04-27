@@ -1,9 +1,9 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { Modal, ModalProps } from '@trezor/components';
 import { Image } from '@suite-components';
 
-interface Props extends Omit<ModalProps, 'children'> {
+interface Props extends ModalProps {
     noBackground?: boolean;
     imageProps?: React.ImgHTMLAttributes<HTMLImageElement>;
 }
@@ -18,25 +18,12 @@ const LoaderWrapper = styled.div`
     height: 360px; */
 `;
 
-const StyledModal = styled(({ noBackground, ...rest }) => <Modal {...rest} />)<
-    Pick<Props, 'noBackground'>
->`
-    ${props =>
-        props.noBackground &&
-        css`
-            && {
-                box-shadow: none;
-                background-color: transparent;
-            }
-        `}
-`;
-
-const Loading = ({ imageProps, noBackground, ...props }: Props) => (
-    <StyledModal useFixedWidth={false} noBackground={noBackground} {...props}>
+const Loading = ({ imageProps, ...props }: Props) => (
+    <Modal useFixedWidth={false} {...props}>
         <LoaderWrapper data-test="@suite/loading">
             <Image width={80} height={80} image="SPINNER" {...imageProps} />
         </LoaderWrapper>
-    </StyledModal>
+    </Modal>
 );
 
 export default Loading;

@@ -1,5 +1,5 @@
 import { Translation, Image } from '@suite-components';
-import { Button, Modal } from '@trezor/components';
+import { Button, Modal, ModalProps } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -13,16 +13,17 @@ const Actions = styled.div`
     justify-content: space-between;
 `;
 
-interface Props {
+interface Props extends ModalProps {
     onReceiveConfirmation: (confirmed: boolean) => void;
     onCreateBackup: () => void;
 }
 
-const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup }: Props) => (
+const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup, ...rest }: Props) => (
     <Modal
         size="small"
         heading={<Translation id="TR_YOUR_TREZOR_IS_NOT_BACKED_UP" />}
         description={<Translation id="TR_IF_YOUR_DEVICE_IS_EVER_LOST" />}
+        {...rest}
     >
         <ImageWrapper>
             <Image image="UNI_ERROR" />

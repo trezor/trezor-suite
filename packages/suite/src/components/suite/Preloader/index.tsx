@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import FocusLock from 'react-focus-lock';
 import { SUITE } from '@suite-actions/constants';
-import { ModalOverlay } from '@trezor/components';
 import Loading from '@suite-components/Loading';
 import { SuiteLayout } from '@suite-components';
 import DiscoveryLoader from '@suite-components/DiscoveryLoader';
@@ -153,15 +152,13 @@ const Preloader = (props: Props) => {
         return (
             <>
                 <FocusLock autoFocus={false}>
-                    <ModalOverlay>
-                        <ApplicationModal
-                            cancelable={cancelable}
-                            onCancel={props.closeModalApp}
-                            closeModalApp={props.closeModalApp}
-                            getBackgroundRoute={props.getBackgroundRoute}
-                            modal={hasActionModal ? <Modals background={false} /> : null}
-                        />
-                    </ModalOverlay>
+                    <ApplicationModal
+                        cancelable={cancelable}
+                        onCancel={props.closeModalApp}
+                        closeModalApp={props.closeModalApp}
+                        getBackgroundRoute={props.getBackgroundRoute}
+                        modal={hasActionModal ? <Modals background={false} /> : null}
+                    />
                 </FocusLock>
                 <SuiteLayout>{props.children}</SuiteLayout>
             </>
@@ -184,9 +181,7 @@ const Preloader = (props: Props) => {
                 {hasActionModal && <Modals />}
                 {!hasActionModal && (
                     <FocusLock>
-                        <ModalOverlay>
-                            <ApplicationStateModal />
-                        </ModalOverlay>
+                        <ApplicationStateModal />
                     </FocusLock>
                 )}
                 <SuiteLayout>{props.children}</SuiteLayout>
