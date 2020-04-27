@@ -267,7 +267,7 @@ const TransactionItem = (props: Props) => {
                                     e.stopPropagation();
                                 }}
                             >
-                                {targets.length} addressess
+                                {targets.length} <Translation id="TR_ADDRESSES" />
                             </ExpandButton>
                         </>
                     )}
