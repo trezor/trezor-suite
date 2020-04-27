@@ -14,6 +14,7 @@ type Props = ReturnType<typeof mapDispatchToProps>;
 
 const Index = (props: Props) => (
     <DeviceInvalidModeLayout
+        data-test="@device-invalid-mode/unreadable"
         title={<Translation id="TR_UNREADABLE" />}
         text={<Translation id="TR_UNREADABLE_EXPLAINED" />}
         resolveButton={

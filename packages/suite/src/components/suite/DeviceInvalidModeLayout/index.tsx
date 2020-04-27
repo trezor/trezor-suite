@@ -42,6 +42,7 @@ type Props = {
     image?: React.ComponentProps<typeof Img>['image'];
     allowSwitchDevice?: boolean;
     resolveButton?: React.ReactNode;
+    ['data-test']?: string;
 } & ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps>;
 
@@ -56,7 +57,7 @@ const DeviceInvalidModeLayout = (props: Props) => {
         goto,
     } = props;
     return (
-        <Modal size="small" heading={title} description={text}>
+        <Modal size="small" heading={title} description={text} data-test={props['data-test']}>
             <Image image={image} />
             <Buttons>
                 {resolveButton && resolveButton}

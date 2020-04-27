@@ -2,7 +2,17 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { Button, ButtonProps, H2, Modal, P, Link, colors, variables } from '@trezor/components';
+import {
+    Button,
+    ButtonProps,
+    H2,
+    Modal,
+    ModalProps,
+    P,
+    Link,
+    colors,
+    variables,
+} from '@trezor/components';
 
 import * as firmwareActions from '@firmware-actions/firmwareActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -124,6 +134,14 @@ const CloseButton = (props: ButtonProps) => (
     </StyledButton>
 );
 
+const FirmwareModal = (props: ModalProps) => {
+    return (
+        <Modal useFixedHeight data-test="@firmware/index" {...props}>
+            {props.children}
+        </Modal>
+    );
+};
+
 const mapStateToProps = (state: AppState) => ({
     firmware: state.firmware,
     device: state.suite.device,
@@ -197,7 +215,7 @@ const Firmware = ({
     // first of all, handle if there is error
     if (firmware.status === 'error') {
         return (
-            <Modal useFixedHeight>
+            <FirmwareModal>
                 <Wrapper>
                     <StyledH2>
                         <Translation id="TR_FIRMWARE_INSTALL_FAILED_HEADER" />
@@ -210,13 +228,13 @@ const Firmware = ({
                         </Col>
                     </Buttons>
                 </Wrapper>
-            </Modal>
+            </FirmwareModal>
         );
     }
 
     if (!device || !device.features || !device?.connected) {
         return (
-            <Modal useFixedHeight>
+            <FirmwareModal>
                 <Wrapper>
                     {firmware.status === 'waiting-for-bootloader' && (
                         <>
@@ -249,7 +267,7 @@ const Firmware = ({
                         </Col>
                     </Buttons>
                 </Wrapper>
-            </Modal>
+            </FirmwareModal>
         );
     }
 
@@ -257,7 +275,7 @@ const Firmware = ({
 
     if (!device.firmwareRelease) {
         return (
-            <Modal>
+            <FirmwareModal>
                 <StyledH2>
                     <Translation id="TR_FIRMWARE_IS_UP_TO_DATE" />
                 </StyledH2>
@@ -280,14 +298,14 @@ const Firmware = ({
                         <CloseButton onClick={onClose} />
                     </Col>
                 </Buttons>
-            </Modal>
+            </FirmwareModal>
         );
     }
 
     const { firmwareRelease } = device;
 
     return (
-        <Modal useFixedHeight>
+        <FirmwareModal>
             <Wrapper>
                 <ProgressBar
                     total={statesInProgressBar.length}
@@ -508,7 +526,7 @@ const Firmware = ({
                     </>
                 )}
             </Wrapper>
-        </Modal>
+        </FirmwareModal>
     );
 };
 
