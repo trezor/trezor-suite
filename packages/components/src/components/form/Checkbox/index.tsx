@@ -78,7 +78,7 @@ const Checkbox = ({ isChecked, children, onClick, ...rest }: Props) => (
         {...rest}
     >
         <IconWrapper isChecked={isChecked}>
-            {isChecked && <Icon size={10} color={colors.WHITE} icon="CHECK" />}
+            {isChecked && <Icon size={16} color={colors.WHITE} icon="CHECK" />}
         </IconWrapper>
         <Label isChecked={isChecked}>{children}</Label>
     </Wrapper>
