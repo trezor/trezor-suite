@@ -54,6 +54,7 @@ const ModalWindow = styled.div<Props>`
     padding: ${(props: Props) => props.padding![3]};
 
     /* prettier fails to format it properly */
+    
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
                 padding: ${(props: Props) => props.padding![0]};
             }
