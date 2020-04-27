@@ -16,7 +16,7 @@ const FIXED_WIDTH_SMALL: [string, string, string, string] = ['100vw', '90vw', '6
 const FIXED_WIDTH_TINY: [string, string, string, string] = ['360px', '360px', '360px', '360px'];
 const FIXED_HEIGHT: [string, string, string, string] = ['90vh', '90vh', '620px', '620px'];
 
-const ModalContainer = styled.div`
+const ModalOverlay = styled.div`
     position: fixed;
     z-index: 10000;
     width: 100%;
@@ -241,31 +241,31 @@ const Modal = ({
     });
 
     return (
-        <ModalContainer>
-            <ModalWindow
-                ref={ref}
-                size={size}
-                padding={padding}
-                paddingSmall={paddingSmall}
-                useFixedWidth={useFixedWidth}
-                fixedWidth={fixedWidth || getFixedWidth(size)}
-                useFixedHeight={useFixedHeight}
-                fixedHeight={fixedHeight || FIXED_HEIGHT}
-                bottomBar={bottomBar}
-                {...rest}
-            >
-                {heading && <Heading>{heading}</Heading>}
-                {description && <Description>{description}</Description>}
-                {cancelable && (
-                    <StyledLink onClick={onCancel}>
-                        <Icon size={24} color={colors.BLACK0} icon="CROSS" />
-                    </StyledLink>
-                )}
-                <Content>{children}</Content>
-                {bottomBar && <BottomBar>{bottomBar}</BottomBar>}
-            </ModalWindow>
-        </ModalContainer>
+        // <ModalOverlay>
+        <ModalWindow
+            ref={ref}
+            size={size}
+            padding={padding}
+            paddingSmall={paddingSmall}
+            useFixedWidth={useFixedWidth}
+            fixedWidth={fixedWidth || getFixedWidth(size)}
+            useFixedHeight={useFixedHeight}
+            fixedHeight={fixedHeight || FIXED_HEIGHT}
+            bottomBar={bottomBar}
+            {...rest}
+        >
+            {heading && <Heading>{heading}</Heading>}
+            {description && <Description>{description}</Description>}
+            {cancelable && (
+                <StyledLink onClick={onCancel}>
+                    <Icon size={24} color={colors.BLACK0} icon="CROSS" />
+                </StyledLink>
+            )}
+            <Content>{children}</Content>
+            {bottomBar && <BottomBar>{bottomBar}</BottomBar>}
+        </ModalWindow>
+        // </ModalOverlay>
     );
 };
 
-export { Modal, Props as ModalProps };
+export { Modal, ModalOverlay, Props as ModalProps };

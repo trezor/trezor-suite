@@ -13,7 +13,7 @@ import { H1, H2 } from './components/typography/Heading';
 import { P, PProps } from './components/typography/Paragraph';
 import { Prompt, PromptProps } from './components/Prompt';
 import { Link, LinkProps } from './components/typography/Link';
-import { Modal, ModalProps } from './components/Modal';
+import { Modal, ModalOverlay, ModalProps } from './components/Modal';
 import { CoinLogo, CoinLogoProps } from './components/logos/CoinLogo';
 import { TrezorLogo, TrezorLogoProps } from './components/logos/TrezorLogo';
 import { Loader, LoaderProps } from './components/loaders/Loader';
@@ -48,6 +48,7 @@ export {
     PromptProps,
     LinkProps,
     Modal,
+    ModalOverlay,
     ModalProps,
     CoinLogo,
     CoinLogoProps,
