@@ -53,6 +53,9 @@ const FirmwareStep = ({
     };
 
     const getMessageForStatus = () => {
+        if (['wait-for-reboot', 'unplug'].includes(status) && !device && isWebUSB(transport)) {
+            return intl.formatMessage(messages.TR_PAIR_YOUR_TREZOR);
+        }
         if (status === 'unplug' && !device) {
             return intl.formatMessage(messages.TR_CONNECT_YOUR_DEVICE_AGAIN);
         }
@@ -68,6 +71,7 @@ const FirmwareStep = ({
         if (status === 'done' || status === 'error') {
             return null;
         }
+
         return intl.formatMessage(messages.TR_DO_NOT_DISCONNECT);
     };
 
@@ -84,14 +88,16 @@ const FirmwareStep = ({
                     <>
                         {!device && (
                             <>
-                                <Translation id="TR_CONNECT_YOUR_DEVICE" />
+                                <Text>
+                                    <Translation id="TR_CONNECT_YOUR_DEVICE" />
+                                </Text>
                                 <StyledImage
                                     onLoad={() => setImageLoaded(true)}
                                     onError={() => setImageLoaded(true)}
                                     image="CONNECT_DEVICE"
                                 />
                                 {isWebUSB(transport) && (
-                                    <WebusbButton ready>
+                                    <WebusbButton ready={imageLoaded}>
                                         <Button icon="SEARCH">
                                             <Translation id="TR_CHECK_FOR_DEVICES" />
                                         </Button>
@@ -204,7 +210,7 @@ const FirmwareStep = ({
                             Ups. Something went wrong with this fw update. Ended up with error:{' '}
                             {error}
                         </Text>
-                        <Image image="UNI_ERROR" />
+                        <StyledImage image="UNI_ERROR" />
                     </>
                 )}
 
@@ -218,22 +224,31 @@ const FirmwareStep = ({
                 ].includes(status) && (
                     <>
                         <InitImg model={model} />
-
-                        <Text>
-                            {getMessageForStatus() && (
-                                <>
+                        {getMessageForStatus() && (
+                            <>
+                                <Text>
                                     {getMessageForStatus()}
                                     <Loaders.Dots />
-                                </>
-                            )}
-                        </Text>
-                        {status === 'unplug' && isConnected && (
-                            <OnboardingIcon.ConnectDevice model={1} />
+                                </Text>
+                            </>
                         )}
                     </>
                 )}
                 {/* buttons section */}
                 <Wrapper.Controls>
+                    {/* 
+                    special case, when doing firmware update with webusb transport, device must be 
+                    paired again after firmware update is done 
+                    */}
+                    {['unplug', 'wait-for-reboot'].includes(status) &&
+                        !device &&
+                        isWebUSB(transport) && (
+                            <WebusbButton ready>
+                                <Button icon="SEARCH">
+                                    <Translation id="TR_CHECK_FOR_DEVICES" />
+                                </Button>
+                            </WebusbButton>
+                        )}
                     {['initial', 'done', 'partially-done'].includes(status) && (
                         <>
                             {['none', 'unknown', 'required', 'outdated'].includes(

@@ -3176,6 +3176,12 @@ const definedMessages = defineMessages({
         id: 'TR_GO_TO_SUITE',
         defaultMessage: 'Go to Suite',
     },
+    TR_PAIR_YOUR_TREZOR: {
+        id: 'TR_PAIR_YOUR_TREZOR',
+        defaultMessage: 'Pair your Trezor again with your computer',
+        description:
+            'After firmware update is done, user must renew connection with Trezor device. We also call this "pairing" device',
+    },
 } as const);
 
 export default definedMessages;
