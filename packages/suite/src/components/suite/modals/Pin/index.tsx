@@ -15,6 +15,7 @@ const Wrapper = styled.div`
     /* padding: 40px 40px 20px 40px; */
     display: flex;
     flex-direction: row;
+    height: 100%;
 
     @media only screen and (max-width: ${SCREEN_SIZE.MD}) {
         flex-direction: column;
@@ -117,7 +118,12 @@ const Pin = ({ device, onPinSubmit, ...rest }: Props) => {
 
     // TODO: figure out responsive design
     return (
-        <Modal padding={['0px', '0px', '0px', '0px']} useFixedWidth={false} {...rest}>
+        <Modal
+            padding={['0px', '0px', '0px', '0px']}
+            useFixedWidth={false}
+            useFixedHeight
+            {...rest}
+        >
             <Wrapper>
                 {isSettingNewPin && (
                     <ExplanationCol

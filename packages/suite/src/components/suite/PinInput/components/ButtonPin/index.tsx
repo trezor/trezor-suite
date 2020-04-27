@@ -4,9 +4,11 @@ import { colors } from '@trezor/components';
 
 const Button = styled.button`
     display: flex;
-    /* flex: 1 1 auto; */
-    width: 100px;
-    height: 100px;
+    flex: 1 1 auto;
+    max-width: 100px;
+    max-height: 100px;
+    min-height: 50px;
+    height: 100%;
     transition: all 0.3s;
     position: relative;
     cursor: pointer;
