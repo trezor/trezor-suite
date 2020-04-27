@@ -28,7 +28,7 @@ suite-web deploy dev:
 
 suite-web test integration google-chrome:
     stage: integration testing
-    allow_failure: true
+    #allow_failure: true
     script:
         - npx cypress install
         # add DEBUG=cypress:* env variable to debug cypress in ci
@@ -42,13 +42,13 @@ suite-web test integration google-chrome:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
     dependencies: []
-    retry:
-        max: 2
+    #retry:
+    #    max: 2
 
 suite-web test integration google-chrome-beta:
     only:
       - schedules
-    allow_failure: true
+    #allow_failure: true
     stage: integration testing
     script:
         - npx cypress install
@@ -62,8 +62,8 @@ suite-web test integration google-chrome-beta:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
     dependencies: []
-    retry:
-        max: 2
+    #retry:
+    #   max: 2
 
 suite-web test security:
     stage: deploy artifacts, others
