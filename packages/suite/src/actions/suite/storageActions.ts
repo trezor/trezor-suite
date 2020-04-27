@@ -145,6 +145,18 @@ export const saveSuiteSettings = () => (_dispatch: Dispatch, getState: GetState)
     );
 };
 
+export const saveAnalytics = () => (_dispatch: Dispatch, getState: GetState) => {
+    const { analytics } = getState();
+    db.addItem(
+        'analytics',
+        {
+            enabled: analytics.enabled,
+            instanceId: analytics.instanceId,
+        },
+        'suite',
+    );
+};
+
 export const clearStores = () => async (dispatch: Dispatch, _getState: GetState) => {
     await db.clearStores();
     dispatch(
@@ -174,9 +186,8 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
         const discovery = await db.getItemsExtended('discovery');
         const walletSettings = await db.getItemByPK('walletSettings', 'wallet');
         const fiatRates = await db.getItemsExtended('fiatRates');
-
+        const analytics = await db.getItemByPK('analytics', 'suite');
         const txs = await db.getItemsExtended('txs', 'order');
-
         const mappedTxs: AppState['wallet']['transactions']['transactions'] = {};
         txs.forEach(item => {
             const k = getAccountKey(item.tx.descriptor, item.tx.symbol, item.tx.deviceState);
@@ -218,6 +229,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                     },
                     fiat: fiatRates || [],
                 },
+                analytics: analytics ? { ...analytics } : initialState.analytics,
             },
         });
     }

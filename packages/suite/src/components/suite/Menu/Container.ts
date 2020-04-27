@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as routerActions from '@suite-actions/routerActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-
 import { AppState, Dispatch } from '@suite-types';
 import Menu from './index';
 

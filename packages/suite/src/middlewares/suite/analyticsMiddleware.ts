@@ -2,7 +2,8 @@
 
 import { MiddlewareAPI } from 'redux';
 import { TRANSPORT, DEVICE } from 'trezor-connect';
-import { SUITE } from '@suite-actions/constants';
+import { SUITE, STORAGE } from '@suite-actions/constants';
+import { ACCOUNT } from '@wallet-actions/constants';
 
 import { AppState, Action, Dispatch } from '@suite-types';
 import * as analyticsActions from '@suite-actions/analyticsActions';
@@ -20,9 +21,23 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
 ): Action => {
     // pass action
     next(action);
+
     const state = api.getState();
 
     switch (action.type) {
+        case STORAGE.LOADED:
+            api.dispatch(
+                analyticsActions.report({
+                    type: 'suite-ready',
+                    payload: {
+                        language: state.suite.settings.language,
+                        enabledNetworks: state.wallet.settings.enabledNetworks,
+                        localCurrency: state.wallet.settings.localCurrency,
+                        discreetMode: state.wallet.settings.discreetMode,
+                    },
+                }),
+            );
+            break;
         case TRANSPORT.START:
             api.dispatch(
                 analyticsActions.report({
@@ -42,7 +57,6 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                     analyticsActions.report({
                         type: 'device-connect',
                         payload: {
-                            device_id: action.payload.id,
                             firmware: `${features.major_version}.${features.minor_version}.${features.patch_version}`,
                             // @ts-ignore todo add to features types, missing
                             backup_type: features.backup_type || 'Bip39',
@@ -86,6 +100,18 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                     );
                 }
             }
+            break;
+        case ACCOUNT.CREATE:
+            api.dispatch(
+                analyticsActions.report({
+                    type: 'account-create',
+                    payload: {
+                        type: action.payload.accountType,
+                        symbol: action.payload.symbol,
+                        path: action.payload.path,
+                    },
+                }),
+            );
             break;
         default:
             break;

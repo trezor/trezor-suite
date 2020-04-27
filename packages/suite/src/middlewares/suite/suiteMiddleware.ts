@@ -5,6 +5,7 @@ import { BLOCKCHAIN } from '@wallet-actions/constants';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
+import * as analyticsActions from '@suite-actions/analyticsActions';
 import { loadStorage } from '@suite-actions/storageActions';
 import { fetchLocale } from '@settings-actions/languageActions';
 import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
@@ -48,6 +49,9 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             // 3. init connect;
             api.dispatch(trezorConnectActions.init());
 
+            // 4. init analytics - calling init here means opt-out from analytics. If not called here
+            // it would become opt-in
+            api.dispatch(analyticsActions.init());
             break;
         }
         case SUITE.CONNECT_INITIALIZED:

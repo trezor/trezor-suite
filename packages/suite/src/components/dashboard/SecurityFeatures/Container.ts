@@ -5,6 +5,7 @@ import * as walletSettingsActions from '@settings-actions/walletSettingsActions'
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import * as routerActions from '@suite-actions/routerActions';
+
 import { Dispatch, AppState } from '@suite-types';
 import SecurityFeatures from './index';
 

@@ -6,6 +6,7 @@ import log from './logReducer';
 import notifications from './notificationReducer';
 import resize from './resizeReducer';
 import labeling from './labelingReducer';
+import analytics from './analyticsReducer';
 
 export default {
     suite,
@@ -16,4 +17,5 @@ export default {
     notifications,
     resize,
     labeling,
+    analytics,
 };

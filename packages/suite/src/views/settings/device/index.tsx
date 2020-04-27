@@ -17,7 +17,7 @@ import {
 } from '@suite-constants/urls';
 import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import * as homescreen from '@suite-utils/homescreen';
-import { useDeviceActionLocks } from '@suite-hooks';
+import { useDeviceActionLocks, useAnalytics } from '@suite-hooks';
 import { variables, Link, P, Switch } from '@trezor/components';
 import React, { createRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -52,7 +52,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
     const [customHomescreen, setCustomHomescreen] = useState('');
     const fileInputElement = createRef<HTMLInputElement>();
     const [actionEnabled] = useDeviceActionLocks();
-
+    const analytics = useAnalytics();
     const MAX_LABEL_LENGTH = 16;
 
     useEffect(() => {
@@ -109,7 +109,13 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                     <ActionColumn>
                         <ActionButton
                             data-test="@settings/device/create-backup-button"
-                            onClick={() => goto('backup-index', { cancelable: true })}
+                            onClick={() => {
+                                goto('backup-index', { cancelable: true });
+                                analytics.report({
+                                    type: 'ui',
+                                    payload: 'settings/device/goto/backup',
+                                });
+                            }}
                             isDisabled={
                                 !actionEnabled ||
                                 !features.needs_backup ||
@@ -146,7 +152,13 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         <ActionColumn>
                             <ActionButton
                                 data-test="@settings/device/check-seed-button"
-                                onClick={() => goto('recovery-index', { cancelable: true })}
+                                onClick={() => {
+                                    goto('recovery-index', { cancelable: true });
+                                    analytics.report({
+                                        type: 'ui',
+                                        payload: 'settings/device/goto/recovery',
+                                    });
+                                }}
                                 isDisabled={
                                     !actionEnabled ||
                                     features.needs_backup ||
@@ -177,7 +189,13 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                     <ActionColumn>
                         <ActionButton
                             variant="secondary"
-                            onClick={() => goto('firmware-index', { cancelable: true })}
+                            onClick={() => {
+                                goto('firmware-index', { cancelable: true });
+                                analytics.report({
+                                    type: 'ui',
+                                    payload: 'settings/device/goto/firmware',
+                                });
+                            }}
                             data-test="@settings/device/update-button"
                             isDisabled={!actionEnabled}
                         >
@@ -196,7 +214,13 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                     <ActionColumn>
                         <Switch
                             checked={!!features.pin_protection}
-                            onChange={() => changePin({ remove: features.pin_protection })}
+                            onChange={() => {
+                                changePin({ remove: features.pin_protection });
+                                analytics.report({
+                                    type: 'ui',
+                                    payload: 'settings/device/change-pin',
+                                });
+                            }}
                             isDisabled={!actionEnabled}
                         />
                     </ActionColumn>
@@ -268,7 +292,13 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             readOnly={!actionEnabled}
                         />
                         <ActionButton
-                            onClick={() => applySettings({ label })}
+                            onClick={() => {
+                                applySettings({ label });
+                                analytics.report({
+                                    type: 'ui',
+                                    payload: 'settings/device/change-label',
+                                });
+                            }}
                             isDisabled={!actionEnabled || label.length > MAX_LABEL_LENGTH}
                             data-test="@settings/device/label-submit"
                         >
@@ -314,12 +344,16 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         )}
 
                         <ActionButton
-                            onClick={() =>
+                            onClick={() => {
                                 openModal({
                                     type: 'device-background-gallery',
                                     device,
-                                })
-                            }
+                                });
+                                analytics.report({
+                                    type: 'ui',
+                                    payload: 'settings/device/goto/background',
+                                });
+                            }}
                             isDisabled={!actionEnabled}
                             data-test="@settings/device/select-from-gallery"
                             variant="secondary"
@@ -363,11 +397,15 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                 <RotationButton
                                     key={variant.value}
                                     variant="secondary"
-                                    onClick={() =>
+                                    onClick={() => {
                                         applySettings({
                                             display_rotation: variant.value,
-                                        })
-                                    }
+                                        });
+                                        analytics.report({
+                                            type: 'ui',
+                                            payload: `settings/device/change-orientation/${variant.value}`,
+                                        });
+                                    }}
                                     data-test={`@settings/device/rotation-button/${variant.value}`}
                                     isDisabled={!actionEnabled}
                                 >
@@ -386,11 +424,15 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                     />
                     <ActionColumn>
                         <ActionButton
-                            onClick={() =>
+                            onClick={() => {
                                 openModal({
                                     type: 'wipe-device',
-                                })
-                            }
+                                });
+                                analytics.report({
+                                    type: 'ui',
+                                    payload: 'settings/device/goto/wipe',
+                                });
+                            }}
                             variant="danger"
                             isDisabled={!actionEnabled}
                             data-test="@settings/device/open-wipe-modal-button"

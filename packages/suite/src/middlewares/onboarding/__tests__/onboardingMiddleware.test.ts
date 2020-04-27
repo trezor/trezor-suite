@@ -118,8 +118,8 @@ describe('onboardingMiddleware', () => {
             const result = store.getActions();
             expect(result).toEqual([
                 { type: SUITE.APP_CHANGED, payload: 'wallet' },
-                { type: '@onboarding/reset-onboarding' },
                 { type: '@suite/set-flag', key: 'initialRun', value: false },
+                { type: '@onboarding/reset-onboarding' },
             ]);
         });
     });
