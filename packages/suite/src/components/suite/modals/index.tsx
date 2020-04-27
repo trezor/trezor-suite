@@ -2,7 +2,7 @@ import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import FocusLock from 'react-focus-lock';
-
+import { ModalOverlay } from '@trezor/components';
 import { UI } from 'trezor-connect';
 
 import * as modalActions from '@suite-actions/modalActions';
@@ -194,7 +194,11 @@ const Modal = (props: Props) => {
 
     const useBackground = typeof props.background === 'boolean' ? props.background : true;
     if (useBackground) {
-        return <FocusLock autoFocus={false}>{modalComponent}</FocusLock>;
+        return (
+            <FocusLock autoFocus={false}>
+                <ModalOverlay>{modalComponent}</ModalOverlay>
+            </FocusLock>
+        );
     }
 
     return modalComponent;

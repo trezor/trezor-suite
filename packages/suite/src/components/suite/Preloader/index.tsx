@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import FocusLock from 'react-focus-lock';
 import { SUITE } from '@suite-actions/constants';
+import { ModalOverlay } from '@trezor/components';
 import Loading from '@suite-components/Loading';
 import { SuiteLayout } from '@suite-components';
 import DiscoveryLoader from '@suite-components/DiscoveryLoader';
@@ -152,13 +153,15 @@ const Preloader = (props: Props) => {
         return (
             <>
                 <FocusLock autoFocus={false}>
-                    <ApplicationModal
-                        cancelable={cancelable}
-                        onCancel={props.closeModalApp}
-                        closeModalApp={props.closeModalApp}
-                        getBackgroundRoute={props.getBackgroundRoute}
-                        modal={hasActionModal ? <Modals background={false} /> : null}
-                    />
+                    <ModalOverlay>
+                        <ApplicationModal
+                            cancelable={cancelable}
+                            onCancel={props.closeModalApp}
+                            closeModalApp={props.closeModalApp}
+                            getBackgroundRoute={props.getBackgroundRoute}
+                            modal={hasActionModal ? <Modals background={false} /> : null}
+                        />
+                    </ModalOverlay>
                 </FocusLock>
                 <SuiteLayout>{props.children}</SuiteLayout>
             </>
@@ -170,7 +173,7 @@ const Preloader = (props: Props) => {
     // display Loader wrapped in modal above requested route to keep "modal" flow continuity (see ApplicationStateModal)
     // otherwise display Loader as full page view
     if (router.app === 'unknown' && (!loaded || !transport)) {
-        return <Loading />;
+        return <Loading noBackground />;
     }
 
     // check route state and display it as not cancelable modal above requested route view
@@ -181,7 +184,9 @@ const Preloader = (props: Props) => {
                 {hasActionModal && <Modals />}
                 {!hasActionModal && (
                     <FocusLock>
-                        <ApplicationStateModal />
+                        <ModalOverlay>
+                            <ApplicationStateModal />
+                        </ModalOverlay>
                     </FocusLock>
                 )}
                 <SuiteLayout>{props.children}</SuiteLayout>
