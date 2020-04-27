@@ -79,6 +79,11 @@ const Wrapper = styled.button<WrapperProps>`
                 background: ${colors.BUTTON_SECONDARY_ACTIVE};
             }
         `}
+    ${props =>
+        props.variant === 'tertiary' &&
+        css`
+            padding: 0px;
+        `}
 
     ${props =>
         props.variant === 'tertiary' &&
@@ -87,11 +92,11 @@ const Wrapper = styled.button<WrapperProps>`
             &:hover,
             &:focus {
                 color: ${colors.BLACK25};
-                background: ${colors.BUTTON_TERTIARY_HOVER};
+                text-decoration: underline;
             }
             &:active {
                 color: ${colors.BLACK25};
-                background: ${colors.BUTTON_TERTIARY_ACTIVE};
+                text-decoration: underline;
             }
         `};
 
