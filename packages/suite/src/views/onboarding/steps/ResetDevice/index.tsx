@@ -31,7 +31,11 @@ const ResetDeviceStep = (props: Props) => {
                             You are one step from creating your wallet. By clicking the button below
                             you agree with <Link href={TOS_URL}>TOS</Link>
                         </Text>
-                        <Image image="FIRMWARE_SUCCESS_1" />
+                        {device.features.major_version === 2 ? (
+                            <Image image="FIRMWARE_SUCCESS_2" />
+                        ) : (
+                            <Image image="FIRMWARE_SUCCESS_1" />
+                        )}
                     </>
                 )}
 
