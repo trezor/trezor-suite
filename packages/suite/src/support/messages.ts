@@ -1039,10 +1039,6 @@ const definedMessages = defineMessages({
             'Just a message that we show after user selects that he wants to setup device as a new one but we detect that it apparently is not',
         id: 'TR_IS_NOT_NEW_DEVICE',
     },
-    TR_LOADING_WALLET: {
-        defaultMessage: 'Loading wallet...',
-        id: 'TR_LOADING_WALLET',
-    },
     TR_LABELING: {
         defaultMessage: 'Labeling',
         id: 'TR_LABELING',

@@ -223,7 +223,6 @@
 	"TR_IS_NOT_NEW_DEVICE_HEADING": "Device does not appear to be that new",
 	"TR_IS_NOT_NEW_DEVICE": "This was supposed to be a new, neve-used-before device. However, we were able to detect it has firmware already installed on it.",
 	"TR_LABELING": "Labeling",
-	"TR_LOADING_WALLET": "Loading wallet...",
 	"TR_LANGUAGE": "Language",
 	"TR_LEARN_MORE": "Learn more",
 	"TR_LEARN_MORE_LINK": "Learn more",
