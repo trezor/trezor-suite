@@ -85,7 +85,7 @@ const PortfolioCard = ({
 }: Props) => {
     let body = null;
     if (mode) {
-        body = mode.status === 'exception' ? <Exception /> : <Loading noBackground />;
+        body = mode.status === 'exception' ? <Exception /> : <Loading />;
     } else {
         body = isDeviceEmpty ? (
             <EmptyWallet />
