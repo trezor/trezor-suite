@@ -192,8 +192,8 @@ const TransactionItem = (props: Props) => {
         <Target key={i}>
             {target.addresses &&
                 target.addresses.map(addr => (
-                    <HiddenPlaceholder>
-                        <Addr key={addr}>
+                    <HiddenPlaceholder key={addr}>
+                        <Addr>
                             <AddressLabeling address={addr} />
                         </Addr>
                     </HiddenPlaceholder>
