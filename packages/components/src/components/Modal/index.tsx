@@ -1,3 +1,5 @@
+/* stylelint-disable indentation */
+
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { useKeyPress, useOnClickOutside } from '../../utils/hooks';
@@ -51,14 +53,17 @@ const ModalWindow = styled.div<Props>`
     overflow-x: hidden; /* retains border-radius when using background in child component */
     padding: ${(props: Props) => props.padding![3]};
 
+    /* prettier fails to format it properly */
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
                 padding: ${(props: Props) => props.padding![0]};
             }
+
     @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) and (max-width: ${
     variables.SCREEN_SIZE.MD
 }) {
                 padding: ${(props: Props) => props.padding![1]};
             }
+
     @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) and (max-width: ${
     variables.SCREEN_SIZE.LG
 }) {
