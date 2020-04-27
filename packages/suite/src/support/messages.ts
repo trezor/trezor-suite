@@ -2777,12 +2777,12 @@ const definedMessages = defineMessages({
         defaultMessage: 'Discreet mode',
     },
     TR_HIDE_BUTTON: {
-        id: "TR_HIDE_BUTTON",
-        defaultMessage: "Hide"
+        id: 'TR_HIDE_BUTTON',
+        defaultMessage: 'Hide',
     },
     TR_SHOW_BUTTON: {
-        id: "TR_SHOW_BUTTON",
-        defaultMessage: "Show"
+        id: 'TR_SHOW_BUTTON',
+        defaultMessage: 'Show',
     },
     TR_TRY_TO_TEMPORARILY_HIDE: {
         id: 'TR_TRY_TO_TEMPORARILY_HIDE',
