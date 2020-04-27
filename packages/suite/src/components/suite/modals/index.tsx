@@ -51,7 +51,7 @@ type Props = ReturnType<typeof mapStateToProps> &
 const getDeviceContextModal = (props: Props) => {
     const { modal, device } = props;
     if (modal.context !== MODAL.CONTEXT_DEVICE || !device) return null;
-    return <Pin device={device} onCancel={modalActions.onPinCancel} />;
+
     switch (modal.windowType) {
         // T1 firmware
         case UI.REQUEST_PIN:
