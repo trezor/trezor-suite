@@ -646,6 +646,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Device settings',
         id: 'TR_DEVICE_SETTINGS',
     },
+    TR_DEVICE_SECURITY: {
+        defaultMessage: 'Security',
+        id: 'TR_DEVICE_SECURITY',
+    },
     TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE: {
         defaultMessage: 'Wipe device',
         id: 'TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE',
@@ -700,6 +704,15 @@ const definedMessages = defineMessages({
     TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE: {
         defaultMessage: 'PIN protection',
         id: 'TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE',
+    },
+    TR_DEVICE_SETTINGS_CHANGE_PIN_DESC: {
+        defaultMessage:
+            'In case your PIN has been exposed or you simply want to change it, here you go. There is no limit of how many times you can change your PIN.',
+        id: 'TR_DEVICE_SETTINGS_CHANGE_PIN_DESC',
+    },
+    TR_DEVICE_SETTINGS_CHANGE_PIN_TITLE: {
+        defaultMessage: 'Change PIN',
+        id: 'TR_DEVICE_SETTINGS_CHANGE_PIN_TITLE',
     },
     TR_DEVICE_YOU_RECONNECTED_IS_DIFFERENT: {
         defaultMessage:
@@ -806,6 +819,10 @@ const definedMessages = defineMessages({
     TR_FAILED_BACKUP: {
         defaultMessage: 'Backup failed. This is serious.',
         id: 'TR_FAILED_BACKUP',
+    },
+    TR_BACKUP_SUCCESSFUL: {
+        defaultMessage: 'Backup successful',
+        id: 'TR_BACKUP_SUCCESSFUL',
     },
     TR_FEE: {
         defaultMessage: 'Fee',
@@ -2288,6 +2305,14 @@ const definedMessages = defineMessages({
         id: 'TR_LAST_UPDATE',
         defaultMessage: 'Last update: {value}',
     },
+    TR_UPDATE_AVAILABLE: {
+        id: 'TR_UPDATE_AVAILABLE',
+        defaultMessage: 'Update available',
+    },
+    TR_UP_TO_DATE: {
+        defaultMessage: 'Up to date',
+        id: 'TR_UP_TO_DATE',
+    },
     TR_LIVE: {
         id: 'TR_LIVE',
         defaultMessage: 'Live',
@@ -2787,6 +2812,14 @@ const definedMessages = defineMessages({
     TR_DISCREET_MODE: {
         id: 'TR_DISCREET_MODE',
         defaultMessage: 'Discreet mode',
+    },
+    TR_HIDE_BUTTON: {
+        id: 'TR_HIDE_BUTTON',
+        defaultMessage: 'Hide',
+    },
+    TR_SHOW_BUTTON: {
+        id: 'TR_SHOW_BUTTON',
+        defaultMessage: 'Show',
     },
     TR_TRY_TO_TEMPORARILY_HIDE: {
         id: 'TR_TRY_TO_TEMPORARILY_HIDE',

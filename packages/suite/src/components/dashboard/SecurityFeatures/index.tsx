@@ -243,7 +243,11 @@ const SecurityFeatures = ({
                             setIsHidden(!isHidden);
                         }}
                     >
-                        {isHidden ? 'Show' : 'Hide'}
+                        {isHidden ? (
+                            <Translation id="TR_SHOW_BUTTON" />
+                        ) : (
+                            <Translation id="TR_HIDE_BUTTON" />
+                        )}
                     </Button>
                 </SectionAction>
             </Header>

@@ -123,10 +123,10 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             }
                         >
                             {features.needs_backup && <Translation id="TR_CREATE_BACKUP" />}
-                            {!features.needs_backup &&
-                                !features.unfinished_backup &&
-                                'Backup successful'}
-                            {features.unfinished_backup && 'Backup failed'}
+                            {!features.needs_backup && !features.unfinished_backup && (
+                                <Translation id="TR_BACKUP_SUCCESSFUL" />
+                            )}
+                            {features.unfinished_backup && <Translation id="TOAST_BACKUP_FAILED" />}
                         </ActionButton>
                     </ActionColumn>
                 </SectionItem>
@@ -172,7 +172,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                     </SectionItem>
                 )}
             </Section>
-            <Section title="Security">
+            <Section title={<Translation id="TR_DEVICE_SECURITY" />}>
                 <SectionItem>
                     <TextColumn
                         title={<Translation id="TR_FIRMWARE_VERSION" />}
@@ -199,10 +199,12 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             data-test="@settings/device/update-button"
                             isDisabled={!actionEnabled}
                         >
-                            {device &&
-                                ['required', 'outdated'].includes(device.firmware) &&
-                                'Update available'}
-                            {device && device.firmware === 'valid' && 'Up to date'}
+                            {device && ['required', 'outdated'].includes(device.firmware) && (
+                                <Translation id="TR_UPDATE_AVAILABLE" />
+                            )}
+                            {device && device.firmware === 'valid' && (
+                                <Translation id="TR_UP_TO_DATE" />
+                            )}
                         </ActionButton>
                     </ActionColumn>
                 </SectionItem>
@@ -228,8 +230,8 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                 {features.pin_protection && (
                     <SectionItem>
                         <TextColumn
-                            title="Change PIN"
-                            description="In case your PIN has been exposed or you simply want to change it, here you go. There is no limit of how many times you can change your PIN."
+                            title={<Translation id="TR_DEVICE_SETTINGS_CHANGE_PIN_TITLE" />}
+                            description={<Translation id="TR_DEVICE_SETTINGS_CHANGE_PIN_DESC" />}
                         />
                         <ActionColumn>
                             <ActionButton
