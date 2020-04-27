@@ -45,7 +45,6 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         'changePin',
         'pushTransaction',
         'ethereumSignTransaction',
-        'blockchainEstimateFee',
         'signTransaction',
         'rippleSignTransaction',
         'composeTransaction',
