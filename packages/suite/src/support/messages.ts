@@ -816,6 +816,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Backup failed. This is serious.',
         id: 'TR_FAILED_BACKUP',
     },
+    TR_BACKUP_SUCCESSFUL: {
+        defaultMessage: 'Backup successful',
+        id: 'TR_BACKUP_SUCCESSFUL',
+    },
     TR_FEE: {
         defaultMessage: 'Fee',
         description: 'Label in Send form',
@@ -1034,6 +1038,10 @@ const definedMessages = defineMessages({
         description:
             'Just a message that we show after user selects that he wants to setup device as a new one but we detect that it apparently is not',
         id: 'TR_IS_NOT_NEW_DEVICE',
+    },
+    TR_LOADING_WALLET: {
+        defaultMessage: 'Loading wallet...',
+        id: 'TR_LOADING_WALLET',
     },
     TR_LABELING: {
         defaultMessage: 'Labeling',
@@ -2289,6 +2297,14 @@ const definedMessages = defineMessages({
         id: 'TR_LAST_UPDATE',
         defaultMessage: 'Last update: {value}',
     },
+    TR_UPDATE_AVAILABLE: {
+        id: 'TR_UPDATE_AVAILABLE',
+        defaultMessage: 'Update available',
+    },
+    TR_UP_TO_DATE: {
+        defaultMessage: 'Up to date',
+        id: 'TR_UP_TO_DATE',
+    },
     TR_LIVE: {
         id: 'TR_LIVE',
         defaultMessage: 'Live',
@@ -2763,6 +2779,14 @@ const definedMessages = defineMessages({
     TR_DISCREET_MODE: {
         id: 'TR_DISCREET_MODE',
         defaultMessage: 'Discreet mode',
+    },
+    TR_HIDE_BUTTON: {
+        id: "TR_HIDE_BUTTON",
+        defaultMessage: "Hide"
+    },
+    TR_SHOW_BUTTON: {
+        id: "TR_SHOW_BUTTON",
+        defaultMessage: "Show"
     },
     TR_TRY_TO_TEMPORARILY_HIDE: {
         id: 'TR_TRY_TO_TEMPORARILY_HIDE',

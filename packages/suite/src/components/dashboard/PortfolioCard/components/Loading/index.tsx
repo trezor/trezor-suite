@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
-import { Image } from '@suite-components';
+import { Image, Translation } from '@suite-components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -44,7 +44,9 @@ const LoadingWallet = (props: Props) => {
         <Wrapper {...props} data-test="@dashboard/loading">
             <StyledImage image="EMPTY_DASHBOARD" />
             <Content>
-                <Title>Loading wallet...</Title>
+                <Title>
+                    <Translation id="TR_LOADING_WALLET" />
+                </Title>
             </Content>
         </Wrapper>
     );
