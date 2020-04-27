@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Tooltip, Button } from '@trezor/components';
 
-import { Loaders, OnboardingButton, OnboardingIcon, Text, Wrapper } from '@onboarding-components';
+import { Loaders, OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import { Translation, Image, WebusbButton } from '@suite-components';
 import messages from '@suite/support/messages';
 import { InitImg, SuccessImg } from '@firmware-components';
@@ -71,7 +71,6 @@ const FirmwareStep = ({
         if (status === 'done' || status === 'error') {
             return null;
         }
-
         return intl.formatMessage(messages.TR_DO_NOT_DISCONNECT);
     };
 
