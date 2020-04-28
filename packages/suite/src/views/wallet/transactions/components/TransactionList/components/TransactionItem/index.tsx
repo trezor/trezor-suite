@@ -267,10 +267,7 @@ const TransactionItem = (props: Props) => {
                                     e.stopPropagation();
                                 }}
                             >
-                                <Translation
-                                    id="TR_N_ADDRESSES"
-                                    values={{ count: targets.length }}
-                                />
+                                {targets.length} <Translation id="TR_ADDRESSES" />
                             </ExpandButton>
                         </>
                     )}
