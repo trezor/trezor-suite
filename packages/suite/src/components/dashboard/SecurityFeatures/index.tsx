@@ -72,9 +72,9 @@ const SecurityFeatures = ({
 
     const featuresCompleted =
         Number(!needsBackup) +
-        Number(pinEnabled) +
-        Number(discreetModeCompleted) +
-        Number(hiddenWalletCreated);
+        Number(!!pinEnabled) +
+        Number(!!discreetModeCompleted) +
+        Number(!!hiddenWalletCreated);
 
     const backupData: CardProps = needsBackup
         ? {

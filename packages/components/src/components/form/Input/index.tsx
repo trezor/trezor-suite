@@ -50,7 +50,7 @@ const StyledInput = styled.input<Props>`
             background: ${colors.BLACK96};
             box-shadow: none;
             color: ${colors.BLACK50};
-            cursor: not-allowed;
+            cursor: default;
         `}
 
     ${props =>
