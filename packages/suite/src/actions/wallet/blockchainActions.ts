@@ -99,8 +99,8 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
             request: {
                 blocks: [2],
                 specific: {
-                    from: '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B',
-                    to: '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B',
+                    from: '0x0000000000000000000000000000000000000000',
+                    to: '0x0000000000000000000000000000000000000000',
                 },
             },
         };
