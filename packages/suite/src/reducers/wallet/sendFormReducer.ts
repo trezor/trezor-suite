@@ -4,6 +4,7 @@ import { FIRST_OUTPUT_ID, U_INT_32, VALIDATION_ERRORS } from '@wallet-constants/
 import { WalletAction } from '@wallet-types';
 import { InitialState, Output, State } from '@wallet-types/sendForm';
 import { getOutput, hasDecimals } from '@wallet-utils/sendFormUtils';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { isAddressValid } from '@wallet-utils/validation';
 import Bignumber from 'bignumber.js';
 import produce from 'immer';
@@ -99,9 +100,12 @@ export default (state: State | null = null, action: WalletAction): State | null 
                     availableBalance,
                     isDestinationAccountEmpty,
                     reserve,
+                    symbol,
                 } = action;
+
                 const output = getOutput(draft.outputs, outputId);
                 const amountBig = new Bignumber(amount);
+                const formattedAvailableBalance = formatNetworkAmount(availableBalance, symbol);
 
                 output.amount.error = null;
                 output.amount.value = amount;
@@ -111,7 +115,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                     return draft;
                 }
 
-                if (amountBig.isGreaterThan(availableBalance)) {
+                if (amountBig.isGreaterThan(formattedAvailableBalance)) {
                     output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH;
                     return draft;
                 }
