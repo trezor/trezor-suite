@@ -2,9 +2,7 @@ import React, { Fragment } from 'react';
 import styled, { css } from 'styled-components';
 import { Account } from '@wallet-types';
 import { Card, FiatValue, Badge, HiddenPlaceholder } from '@suite-components';
-// @ts-ignore no types for this lib
-import ScaleText from 'react-scale-text';
-import { variables, colors, Icon, Link } from '@trezor/components';
+import { variables, colors, Icon, Link, CoinLogo } from '@trezor/components';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
 const Wrapper = styled(Card)`
@@ -53,18 +51,12 @@ const Col = styled.div<ColProps>`
 
 const TokenImage = styled.div`
     display: flex;
-    margin-right: 12px;
-    background: #8a92b2;
-    color: #fefefe;
+    border: 1px solid #8a92b2;
     width: 24px;
     height: 24px;
     border-radius: 50%;
     align-items: center;
-    /* line-height: 30px; */
-    text-transform: uppercase;
-    user-select: none;
-    text-align: center;
-    padding: 3px;
+    justify-content: center;
 `;
 
 const TokenName = styled.div`
@@ -98,7 +90,7 @@ const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
                     <Fragment key={t.address}>
                         <Col>
                             <TokenImage>
-                                <ScaleText widthOnly>{t.symbol}</ScaleText>
+                                <CoinLogo size={18} symbol="eth" color={colors.WHITE} />
                             </TokenImage>
                         </Col>
                         <Col>
