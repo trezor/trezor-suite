@@ -43,7 +43,9 @@ const ModalOverlay = styled.div`
     overflow: auto;
 `;
 
-const ModalWindow = styled.div<Props>`
+type ModalWindowProps = Omit<Props, 'padding' | 'fixedWidth' | 'fixedHeight'> &
+    Required<Pick<Props, 'padding' | 'fixedWidth' | 'fixedHeight'>>; // make some props mandatory
+const ModalWindow = styled.div<ModalWindowProps>`
     display: flex;
     flex-direction: column;
     margin: auto;
@@ -51,24 +53,24 @@ const ModalWindow = styled.div<Props>`
     border-radius: 6px;
     text-align: center;
     overflow-x: hidden; /* retains border-radius when using background in child component */
-    padding: ${(props: Props) => props.padding![3]};
+    padding: ${(props: ModalWindowProps) => props.padding[3]};
 
     /* prettier fails to format it properly */
     
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-                padding: ${(props: Props) => props.padding![0]};
+                padding: ${(props: ModalWindowProps) => props.padding[0]};
             }
 
     @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) and (max-width: ${
     variables.SCREEN_SIZE.MD
 }) {
-                padding: ${(props: Props) => props.padding![1]};
+                padding: ${(props: ModalWindowProps) => props.padding[1]};
             }
 
     @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) and (max-width: ${
     variables.SCREEN_SIZE.LG
 }) {
-                padding: ${(props: Props) => props.padding![2]};
+                padding: ${(props: ModalWindowProps) => props.padding[2]};
             }
 
     ::-webkit-scrollbar {
@@ -128,18 +130,18 @@ const ModalWindow = styled.div<Props>`
         props.fixedWidth &&
         css`
             /* default width is the size as for XL screens */
-            width: ${(props: Props) => props.fixedWidth![3]};
+            width: ${(props: ModalWindowProps) => props.fixedWidth[3]};
             /* for smaller screens width is set based on fixedWidth prop */
             @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-                width: ${(props: Props) => props.fixedWidth![0]};
+                width: ${(props: ModalWindowProps) => props.fixedWidth[0]};
             }
             @media only screen and (min-width: ${variables.SCREEN_SIZE
                     .SM}) and (max-width: ${variables.SCREEN_SIZE.MD}) {
-                width: ${(props: Props) => props.fixedWidth![1]};
+                width: ${(props: ModalWindowProps) => props.fixedWidth[1]};
             }
             @media only screen and (min-width: ${variables.SCREEN_SIZE
                     .MD}) and (max-width: ${variables.SCREEN_SIZE.LG}) {
-                width: ${(props: Props) => props.fixedWidth![2]};
+                width: ${(props: ModalWindowProps) => props.fixedWidth[2]};
             }
         `}
 
@@ -148,18 +150,18 @@ const ModalWindow = styled.div<Props>`
         props.fixedHeight &&
         css`
             /* default height is the size as for XL screens */
-            height: ${(props: Props) => props.fixedHeight![3]};
+            height: ${(props: ModalWindowProps) => props.fixedHeight[3]};
             /* for smaller screens height is set based on fixedHeight prop */
             @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-                height: ${(props: Props) => props.fixedHeight![0]};
+                height: ${(props: ModalWindowProps) => props.fixedHeight[0]};
             }
             @media only screen and (min-width: ${variables.SCREEN_SIZE
                     .SM}) and (max-width: ${variables.SCREEN_SIZE.MD}) {
-                height: ${(props: Props) => props.fixedHeight![1]};
+                height: ${(props: ModalWindowProps) => props.fixedHeight[1]};
             }
             @media only screen and (min-width: ${variables.SCREEN_SIZE
                     .MD}) and (max-width: ${variables.SCREEN_SIZE.LG}) {
-                height: ${(props: Props) => props.fixedHeight![2]};
+                height: ${(props: ModalWindowProps) => props.fixedHeight[2]};
             }
         `}
 `;

@@ -10,7 +10,7 @@ storiesOf('Modals', module).add(
         const description = text('description', 'Description');
         const children = text(
             'children',
-            'Sláva Otci i Synu i Duchu svatému, jako byla na počátku, i nyní, i vždycky a na věky věků.'
+            'Ave Maria, gratia plena, Dominus tecum. Benedicta tu in mulieribus, et benedictus fructus ventris tui, Iesus.'
         );
         const cancelable = boolean('cancelable', true);
         const useFixedWidth = boolean('useFixedWidth', false);
