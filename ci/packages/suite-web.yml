@@ -72,3 +72,19 @@ suite-web test security:
     script: 
         yarn is-website-vulnerable ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} | node ./ci/scripts/check-vulnerabilities.js
     dependencies: []
+
+suite-web deploy staging:
+    stage: deploy to staging
+    environment:
+        name: ${CI_BUILD_REF_NAME}-staging
+        url: ${STAGING_SERVER_URL}
+    before_script: []
+    when:
+        manual
+    script:
+        - cd ${PACKAGE_PATH_SUITE_WEB}
+        - echo "Deploy to staging servers"
+        - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/suite-web build
+        - ./scripts/s3sync.sh stage beta
+    tags:
+        - deploy

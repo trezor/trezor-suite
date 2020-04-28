@@ -18,6 +18,7 @@ cache:
         - packages/suite-storage/node_modules/
         - packages/translations-manager/node_modules/
         - packages/integration-tests/node_modules/
+        - packages/news-api/node_modules/
         # libs
         - packages/components/lib
         - packages/blockchain-link/lib
@@ -27,6 +28,7 @@ cache:
 
 variables:
     DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
+    STAGING_SERVER_URL: 'http://staging-wallet.trezor.io/suite'
     PACKAGE_PATH_SUITE_DESKTOP: packages/suite-desktop
     PACKAGE_PATH_SUITE_NATIVE: packages/suite-native
     PACKAGE_PATH_SUITE_WEB: packages/suite-web
@@ -39,6 +41,7 @@ stages:
     - integration testing
     - build artifacts
     - deploy artifacts, others
+    - deploy to staging
 
 lint:
     stage: lint, types, unit tests
