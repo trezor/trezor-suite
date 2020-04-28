@@ -13,7 +13,7 @@ interface Props {
 export default ({ device }: Props) => {
     if (!device?.features?.unfinished_backup) return null;
     return (
-        <Wrapper variant="info">
+        <Wrapper variant="warning">
             <Translation id="TR_FAILED_BACKUP" />
             <Link variant="nostyle" href={URLS.FAILED_BACKUP_URL}>
                 <Translation id="TR_WHAT_TO_DO_NOW" />
