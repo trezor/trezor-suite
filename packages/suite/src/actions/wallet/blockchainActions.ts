@@ -72,17 +72,35 @@ export const preloadFeeInfo = () => async (dispatch: Dispatch) => {
 export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getState: GetState) => {
     const network = getNetwork(symbol.toLowerCase());
     if (!network) return;
-
+    let payload;
     const blockchainInfo = getState().wallet.blockchain[network.symbol];
     const feeInfo = getState().wallet.fees[network.symbol];
+
     if (feeInfo.blockHeight > 0 && blockchainInfo.blockHeight - feeInfo.blockHeight < 10) return;
 
-    const result = await TrezorConnect.blockchainEstimateFee({
-        coin: network.symbol,
-        request: {
-            feeLevels: 'smart',
-        },
-    });
+    if (network.networkType === 'ethereum') {
+        payload = {
+            coin: network.symbol,
+            request: {
+                blocks: [2],
+                specific: {
+                    from: '0x73d0385F4d8E00C5e6504C6030F47BF6212736A8',
+                    to: '0x73d0385F4d8E00C5e6504C6030F47BF6212736A8',
+                },
+            },
+        };
+    } else {
+        payload = {
+            coin: network.symbol,
+            request: {
+                feeLevels: 'smart',
+            },
+        };
+    }
+
+    const result = await TrezorConnect.blockchainEstimateFee(payload);
+
+    console.log('result', result);
 
     if (result.success) {
         const { payload } = result;
@@ -90,7 +108,11 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
         partial[network.symbol] = {
             blockHeight: blockchainInfo.blockHeight,
             ...payload,
-            levels: payload.levels.map(level => ({ ...level, value: level.feePerUnit })),
+            levels: payload.levels.map(l => ({
+                ...l,
+                label: l.label,
+                value: l.feePerUnit,
+            })),
         };
 
         dispatch({
