@@ -2001,6 +2001,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Destination tag',
         id: 'TR_XRP_DESTINATION_TAG',
     },
+    TR_N_ADDRESSES: {
+        defaultMessage: '{count} {count, plural, one {address} other {addresses}}',
+        id: 'TR_N_ADDRESSES',
+    },
     TR_XRP_RESERVE_INFO: {
         defaultMessage:
             'Ripple addresses require a minimum balance of {minBalance} XRP to activate and maintain the account. {TR_LEARN_MORE}',
