@@ -34,7 +34,7 @@ const ColHeader = ({ children, tooltipContent, ...rest }: Props) => {
                     icon="INFO"
                     hoverColor={colors.BLACK0}
                     color={colors.BLACK50}
-                    size={12}
+                    size={16}
                 />
             </Tooltip>
         </Wrapper>

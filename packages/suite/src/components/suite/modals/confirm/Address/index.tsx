@@ -3,18 +3,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { Button, P, H2, colors } from '@trezor/components';
+import { Button, Modal, colors } from '@trezor/components';
 import { copyToClipboard } from '@suite-utils/dom';
 import { TrezorDevice, Dispatch } from '@suite-types';
 import { Translation, QrCode } from '@suite-components';
 
 import CheckOnTrezor from './components/CheckOnTrezor';
 import DeviceDisconnected from './components/DeviceDisconnected';
-
-const StyledWrapper = styled.div`
-    max-width: 620px;
-    padding: 40px;
-`;
 
 const Address = styled.div`
     width: 100%;
@@ -46,6 +41,7 @@ type Props = {
     addressPath?: string;
     networkType: string;
     symbol: string;
+    cancelable?: boolean;
     onCancel?: () => void;
 } & ReturnType<typeof mapDispatchToProps>;
 
@@ -56,6 +52,8 @@ const ConfirmAddress = ({
     networkType,
     symbol,
     addNotification,
+    cancelable,
+    onCancel,
 }: Props) => {
     // TODO: no-backup, backup failed
     // const needsBackup = device.features && device.features.needs_backup;
@@ -70,18 +68,22 @@ const ConfirmAddress = ({
     };
 
     return (
-        <StyledWrapper>
-            <H2>
+        <Modal
+            heading={
                 <Translation
                     id="TR_ADDRESS_MODAL_TITLE"
                     values={{ networkName: symbol.toUpperCase() }}
                 />
-            </H2>
-            {networkType === 'bitcoin' && (
-                <P size="tiny">
+            }
+            description={
+                networkType === 'bitcoin' ? (
                     <Translation id="TR_ADDRESS_MODAL_BTC_DESCRIPTION" />
-                </P>
-            )}
+                ) : undefined
+            }
+            cancelable={cancelable}
+            onCancel={onCancel}
+            size="small"
+        >
             <QrCode value={address} addressPath={addressPath} />
             <Address data-test="@address-modal/address-field">{address}</Address>
             {device.connected && <CheckOnTrezor device={device} />}
@@ -91,7 +93,7 @@ const ConfirmAddress = ({
                     <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
                 </Button>
             </Row>
-        </StyledWrapper>
+        </Modal>
     );
 };
 

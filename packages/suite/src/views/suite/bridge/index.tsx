@@ -4,20 +4,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Translation, Image } from '@suite-components';
-import { Button, P, Link, H2, Select, colors, variables, Loader } from '@trezor/components';
+import { Button, Modal, P, Link, Select, colors, variables, Loader } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { URLS } from '@suite-constants';
 import { AppState, Dispatch } from '@suite-types';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 780px;
-    justify-content: center;
-    padding: 50px 0px 30px 0px;
-    flex: 1;
-`;
 
 const Content = styled.div`
     display: flex;
@@ -33,10 +23,6 @@ const Content = styled.div`
     }
 `;
 
-const Description = styled(P)`
-    color: ${colors.BLACK50};
-`;
-
 const Footer = styled.div`
     margin-top: 72px;
     display: flex;
@@ -47,13 +33,6 @@ const Footer = styled.div`
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         padding: 0px 12px;
     }
-`;
-
-const TitleHeader = styled(H2)`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
 `;
 
 const SelectWrapper = styled(Select)`
@@ -90,6 +69,13 @@ const Version = styled.div<{ show: boolean }>`
     visibility: ${props => (props.show ? 'visible' : 'hidden')};
     margin-top: 10px;
     font-size: ${variables.FONT_SIZE.SMALL};
+`;
+
+const StyledImage = styled(Image)`
+    @media screen and (max-height: ${variables.SCREEN_SIZE.MD}) {
+        /* workaround for low height screens => hide image */
+        display: none;
+    }
 `;
 
 const Col = styled.div<{ justify?: string }>`
@@ -142,24 +128,21 @@ const InstallBridge = (props: Props) => {
     const isLoading = !props.transport || process.env.SUITE_TYPE === 'desktop';
 
     return (
-        <Wrapper>
+        <Modal
+            heading={<Translation id="TR_TREZOR_BRIDGE_DOWNLOAD" />}
+            description={<Translation id="TR_NEW_COMMUNICATION_TOOL" />}
+        >
             <Head>
                 <title>Download Bridge | Trezor Suite</title>
             </Head>
             <Content>
-                <TitleHeader>
-                    <Translation id="TR_TREZOR_BRIDGE_DOWNLOAD" />
-                </TitleHeader>
-                <Description size="small">
-                    <Translation id="TR_NEW_COMMUNICATION_TOOL" />
-                </Description>
                 <Version show={!!data.currentVersion}>
                     <Translation
                         id="TR_CURRENTLY_INSTALLED_TREZOR"
                         values={{ version: data.currentVersion }}
                     />
                 </Version>
-                <Image image="T_BRIDGE_CHECK" />
+                <StyledImage image="T_BRIDGE_CHECK" />
                 {isLoading ? (
                     <LoaderWrapper>
                         <CenteredLoader size={50} strokeWidth={2} />
@@ -232,7 +215,7 @@ const InstallBridge = (props: Props) => {
                     </>
                 )}
             </Footer>
-        </Wrapper>
+        </Modal>
     );
 };
 

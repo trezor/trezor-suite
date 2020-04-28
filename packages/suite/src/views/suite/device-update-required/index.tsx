@@ -14,6 +14,7 @@ type Props = ReturnType<typeof mapDispatchToProps>;
 
 const Index = (props: Props) => (
     <DeviceInvalidModeLayout
+        data-test="@device-invalid-mode/update-required"
         title={<Translation id="FW_CAPABILITY_UPDATE_REQUIRED" />}
         text={<Translation id="TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED" />}
         allowSwitchDevice

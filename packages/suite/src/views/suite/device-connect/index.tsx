@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { variables, Link, P, H2, Button } from '@trezor/components';
+import { Link, P, H2, Button, Modal } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { Translation, WebusbButton, Image } from '@suite-components';
-import ModalWrapper from '@suite-components/ModalWrapper';
 import HelpBuyIcons from '@suite-components/ProgressBar/components/HelpBuyIcons';
 
 import { Dispatch, AppState } from '@suite-types';
@@ -13,25 +12,13 @@ import { isWebUSB } from '@suite-utils/transport';
 
 const Title = styled.div`
     margin-top: 60px;
-    max-width: 800px;
     text-align: center;
-`;
-
-const Wrapper = styled(ModalWrapper)`
-    display: flex;
-    min-width: 60vw;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        align-content: center;
-        flex-direction: column;
-    }
 `;
 
 const ButtonWrapper = styled.div`
     display: flex;
+    width: 100%;
+    justify-content: center;
     margin-bottom: 20px;
 `;
 
@@ -61,7 +48,7 @@ const Index = (props: Props) => {
     const [imageLoaded, setImageLoaded] = useState(false);
 
     return (
-        <Wrapper data-test="@modal/connect-device">
+        <Modal data-test="@modal/connect-device">
             <HelpBuyIcons showBuy showHelp />
             <Title>
                 <H2>
@@ -104,7 +91,7 @@ const Index = (props: Props) => {
                     </P>
                 )}
             </BridgeWrapper>
-        </Wrapper>
+        </Modal>
     );
 };
 

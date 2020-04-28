@@ -2,30 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-
-import { Button, variables } from '@trezor/components';
+import { Button, Modal } from '@trezor/components';
 import { Image as Img, Translation } from '@suite-components';
 import * as routerActions from '@suite-actions/routerActions';
 import { AppState, Dispatch } from '@suite-types';
-
-const { SCREEN_SIZE } = variables;
-const Wrapper = styled.div`
-    text-align: center;
-    max-width: 80vw;
-    @media (min-width: ${SCREEN_SIZE.SM}) {
-        max-width: 60vw;
-    }
-    @media (min-width: ${SCREEN_SIZE.LG}) {
-        max-width: 40vw;
-    }
-`;
-
-const Title = styled.div`
-    font-size: ${variables.FONT_SIZE.H2};
-    margin-bottom: 4px;
-`;
-
-const Text = styled.div``;
 
 const Image = styled(Img)`
     flex: 1;
@@ -62,6 +42,7 @@ type Props = {
     image?: React.ComponentProps<typeof Img>['image'];
     allowSwitchDevice?: boolean;
     resolveButton?: React.ReactNode;
+    ['data-test']?: string;
 } & ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps>;
 
@@ -76,9 +57,7 @@ const DeviceInvalidModeLayout = (props: Props) => {
         goto,
     } = props;
     return (
-        <Wrapper>
-            <Title>{title}</Title>
-            {text && <Text>{text}</Text>}
+        <Modal size="small" heading={title} description={text} data-test={props['data-test']}>
             <Image image={image} />
             <Buttons>
                 {resolveButton && resolveButton}
@@ -88,7 +67,7 @@ const DeviceInvalidModeLayout = (props: Props) => {
                     </Button>
                 )}
             </Buttons>
-        </Wrapper>
+        </Modal>
     );
 };
 

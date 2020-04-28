@@ -199,13 +199,12 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                             <Attention>
                                 <AttentionIconWrapper>
                                     {/* TODO: warning icon */}
-                                    <Icon icon="INFO" size={14} color={colors.RED_ERROR} />
+                                    <Icon icon="INFO" size={16} color={colors.RED_ERROR} />
                                 </AttentionIconWrapper>
                                 <Translation id="TR_DEVICE_NEEDS_ATTENTION" />
                             </Attention>
                             <Button
                                 variant="secondary"
-                                size="small"
                                 // icon="REFRESH"
                                 onClick={() => onSolveIssueClick()}
                             >
@@ -235,7 +234,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                             </HideWallet>
                         </WalletsTooltips>
                     )}
-                    <InstancesWrapper>
+                    <InstancesWrapper noPadding>
                         {props.instances.map(instance => (
                             <StyledWalletInstance
                                 key={`${instance.label}-${instance.instance}-${instance.state}`}

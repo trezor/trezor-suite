@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Button, Link, H2, colors, variables } from '@trezor/components';
+import { Modal, variables, colors } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
@@ -11,15 +11,17 @@ import * as deviceUtils from '@suite-utils/device';
 import Loading from '@suite-components/Loading';
 
 import { AppState, Dispatch, TrezorDevice } from '@suite-types';
-import ModalWrapper from '@suite-components/ModalWrapper';
 import { PASSPHRASE_URL } from '@suite-constants/urls';
 import PassphraseTypeCard from './components/PassphraseTypeCard';
+import ExternalLink from '../../ExternalLink';
+
+const CARD_SIZE = '310px';
 
 const Wrapper = styled.div<{ authConfirmation?: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: ${props => (props.authConfirmation ? 'auto' : '660px')};
+    /* width: ${props => (props.authConfirmation ? 'auto' : '660px')}; */
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         width: 100%;
@@ -30,15 +32,13 @@ const WalletsWrapper = styled.div`
     display: grid;
     width: 100%;
     grid-gap: 20px;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    margin-top: 42px;
+    grid-template-columns: repeat(auto-fit, minmax(${CARD_SIZE}, 1fr));
+    margin-top: 24px;
 `;
 
-const Description = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    text-align: center;
-    color: ${colors.BLACK50};
-    margin-bottom: 4px;
+const GrayModal = styled(Modal)`
+    background: ${colors.BLACK96};
+    max-width: 360px;
 `;
 
 const mapStateToProps = (state: AppState) => ({
@@ -89,10 +89,9 @@ const Passphrase = (props: Props) => {
     if (authConfirmation || stateConfirmation) {
         // show borderless one-column modal for confirming passphrase and state confirmation
         return (
-            <PassphraseTypeCard
-                authConfirmation={authConfirmation}
-                recreateWallet={authConfirmation ? onRecreate : undefined}
-                title={
+            <GrayModal
+                useFixedWidth={false}
+                heading={
                     !authConfirmation ? (
                         <Translation id="TR_ENTER_PASSPHRASE" />
                     ) : (
@@ -106,54 +105,59 @@ const Passphrase = (props: Props) => {
                         <Translation id="TR_THIS_HIDDEN_WALLET_IS_EMPTY" />
                     )
                 }
-                submitLabel={<Translation id="TR_CONFIRM_PASSPHRASE" />}
-                colorVariant="secondary"
-                offerPassphraseOnDevice={onDeviceOffer}
-                onSubmit={onSubmit}
-                singleColModal
-                showPassphraseInput
-            />
+                size="tiny"
+            >
+                <PassphraseTypeCard
+                    authConfirmation={authConfirmation}
+                    recreateWallet={authConfirmation ? onRecreate : undefined}
+                    submitLabel={<Translation id="TR_CONFIRM_PASSPHRASE" />}
+                    colorVariant="secondary"
+                    offerPassphraseOnDevice={onDeviceOffer}
+                    onSubmit={onSubmit}
+                    singleColModal
+                    showPassphraseInput
+                />
+            </GrayModal>
         );
     }
 
     // creating a hidden wallet
     if (!noPassphraseOffer) {
         return (
-            <PassphraseTypeCard
-                title={<Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />}
+            <GrayModal
+                useFixedWidth={false}
+                heading={<Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />}
                 description={<Translation id="TR_ENTER_EXISTING_PASSPHRASE" />}
-                submitLabel={<Translation id="TR_ACCESS_HIDDEN_WALLET" />}
-                colorVariant="secondary"
-                offerPassphraseOnDevice={onDeviceOffer}
-                showPassphraseInput
-                singleColModal
-                onSubmit={onSubmit}
-            />
+                size="tiny"
+            >
+                <PassphraseTypeCard
+                    // title={<Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />}
+                    // description={<Translation id="TR_ENTER_EXISTING_PASSPHRASE" />}
+                    submitLabel={<Translation id="TR_ACCESS_HIDDEN_WALLET" />}
+                    colorVariant="secondary"
+                    offerPassphraseOnDevice={onDeviceOffer}
+                    showPassphraseInput
+                    singleColModal
+                    onSubmit={onSubmit}
+                />
+            </GrayModal>
         );
     }
 
     // show 2-column modal for selecting between standard and hidden wallets
     return (
-        <ModalWrapper>
-            <Wrapper>
-                <H2>
-                    <Translation id="TR_SELECT_WALLET_TO_ACCESS" />
-                </H2>
-                <Description>
+        <Modal
+            heading={<Translation id="TR_SELECT_WALLET_TO_ACCESS" />}
+            description={
+                <>
                     <Translation id="TR_CHOOSE_BETWEEN_NO_PASSPHRASE" />
-                </Description>
-                <Link variant="nostyle" href={PASSPHRASE_URL}>
-                    <Button
-                        variant="tertiary"
-                        size="small"
-                        icon="EXTERNAL_LINK"
-                        alignIcon="right"
-                        color={colors.BLACK25}
-                        onClick={() => {}}
-                    >
+                    <ExternalLink size="small" href={PASSPHRASE_URL}>
                         <Translation id="TR_WHAT_IS_PASSPHRASE" />
-                    </Button>
-                </Link>
+                    </ExternalLink>
+                </>
+            }
+        >
+            <Wrapper>
                 <WalletsWrapper>
                     <PassphraseTypeCard
                         title={<Translation id="TR_NO_PASSPHRASE_WALLET" />}
@@ -176,7 +180,7 @@ const Passphrase = (props: Props) => {
                     />
                 </WalletsWrapper>
             </Wrapper>
-        </ModalWrapper>
+        </Modal>
     );
 };
 

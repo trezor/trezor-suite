@@ -1,17 +1,24 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Network } from '@suite/types/wallet';
 import { CoinLogo } from '@trezor/components';
 
 const COLOR_BORDER = '#ccc';
 
-const StyledBox = styled.div`
+const StyledBox = styled.div<{ coinLogo?: Props['coinLogo'] }>`
     border-radius: 4px;
     border: solid 1px ${COLOR_BORDER};
 
     & + & {
         margin-top: 20px;
     }
+
+    ${props =>
+        props.coinLogo &&
+        css`
+            /* offset logo */
+            margin-top: 24px;
+        `}
 `;
 
 const LogoWrapper = styled.div`
@@ -38,7 +45,7 @@ interface Props {
 
 const Box = (props: Props) => {
     return (
-        <StyledBox>
+        <StyledBox coinLogo={props.coinLogo}>
             {props.coinLogo && (
                 <LogoWrapper>
                     <WhiteCircle>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled, { css } from 'styled-components';
-import { H2, Link, variables, colors } from '@trezor/components';
+import { H2, Link, variables, colors, Modal, ModalProps } from '@trezor/components';
 import { PinInput, Loading, Translation, Image } from '@suite-components';
 import { Dispatch, TrezorDevice } from '@suite-types';
 
@@ -15,18 +15,11 @@ const Wrapper = styled.div`
     /* padding: 40px 40px 20px 40px; */
     display: flex;
     flex-direction: row;
+    height: 100%;
 
     @media only screen and (max-width: ${SCREEN_SIZE.MD}) {
         flex-direction: column;
     }
-`;
-
-// Hackish hiding of close icon (x in top-left corner). I have no control
-// over its rendering here as it renders automatically if cancelable prop
-// is provided in modals/index
-const HideCloseIconWrapper = styled.div`
-    z-index: 1;
-    background-color: white;
 `;
 
 const Col = styled.div<{ gray?: boolean }>`
@@ -34,6 +27,7 @@ const Col = styled.div<{ gray?: boolean }>`
     flex-direction: column;
     align-items: center;
     width: 405px;
+    height: 100%;
     padding: 40px 40px 20px 40px;
 
     @media only screen and (max-width: ${SCREEN_SIZE.MD}) {
@@ -84,12 +78,14 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     onPinSubmit: bindActionCreators(modalActions.onPinSubmit, dispatch),
 });
 
-type Props = {
+interface OwnProps extends ModalProps {
     device: TrezorDevice;
     onCancel: () => void;
-} & ReturnType<typeof mapDispatchToProps>;
+}
 
-const Pin = ({ device, onPinSubmit }: Props) => {
+type Props = OwnProps & ReturnType<typeof mapDispatchToProps>;
+
+const Pin = ({ device, onPinSubmit, ...rest }: Props) => {
     const [submitted, setSubmitted] = useState(false);
 
     const counter =
@@ -112,11 +108,7 @@ const Pin = ({ device, onPinSubmit }: Props) => {
     };
 
     if (submitted) {
-        return (
-            <HideCloseIconWrapper>
-                <Loading />
-            </HideCloseIconWrapper>
-        );
+        return <Loading />;
     }
 
     // 3 cases when we want to show left column
@@ -127,76 +119,83 @@ const Pin = ({ device, onPinSubmit }: Props) => {
 
     // TODO: figure out responsive design
     return (
-        <Wrapper>
-            {isSettingNewPin && (
-                <ExplanationCol
-                    heading={
-                        <>
-                            {counter === 1 && <Translation id="TR_SET_UP_NEW_PIN" />}
-                            {counter === 2 && <Translation id="TR_CONFIRM_PIN" />}
-                        </>
-                    }
-                    description={
-                        <>
-                            <Text>
-                                <Translation id="TR_SET_UP_STRONG_PIN_TO_PROTECT" />
-                            </Text>
-                            <Text>
-                                <Translation id="TR_MAXIMUM_LENGTH_IS_9_DIGITS" />
-                            </Text>
-                        </>
-                    }
-                />
-            )}
-            {isChangingPin && (
-                <ExplanationCol
-                    heading={
-                        <>
-                            {counter === 1 && <Translation id="TR_ENTER_CURRENT_PIN" />}
-                            {counter === 2 && <Translation id="TR_SET_UP_NEW_PIN" />}
-                            {counter === 3 && <Translation id="TR_CONFIRM_NEW_PIN" />}
-                        </>
-                    }
-                    description={
-                        <>
-                            <Text>
-                                <Translation id="TR_SET_UP_STRONG_PIN_TO_PROTECT" />
-                            </Text>
-                            <Text>
-                                <Translation id="TR_MAXIMUM_LENGTH_IS_9_DIGITS" />
-                            </Text>
-                        </>
-                    }
-                />
-            )}
-            {enteredWrongPin && (
-                <ExplanationCol
-                    heading={<Translation id="TR_WRONG_PIN_ENTERED" />}
-                    description={
-                        <>
-                            <Text>
-                                <Translation id="TR_WRONG_PIN_ENTERED_DESCRIPTION" />
-                            </Text>
-                        </>
-                    }
-                />
-            )}
-
-            <Col>
-                <H2>
-                    <Translation
-                        id="TR_ENTER_PIN"
-                        values={{
-                            deviceLabel: device.label,
-                        }}
+        <Modal
+            padding={['0px', '0px', '0px', '0px']}
+            useFixedWidth={false}
+            useFixedHeight
+            {...rest}
+        >
+            <Wrapper>
+                {isSettingNewPin && (
+                    <ExplanationCol
+                        heading={
+                            <>
+                                {counter === 1 && <Translation id="TR_SET_UP_NEW_PIN" />}
+                                {counter === 2 && <Translation id="TR_CONFIRM_PIN" />}
+                            </>
+                        }
+                        description={
+                            <>
+                                <Text>
+                                    <Translation id="TR_SET_UP_STRONG_PIN_TO_PROTECT" />
+                                </Text>
+                                <Text>
+                                    <Translation id="TR_MAXIMUM_LENGTH_IS_9_DIGITS" />
+                                </Text>
+                            </>
+                        }
                     />
-                </H2>
-                <How>
-                    <Translation id="TR_THE_PIN_LAYOUT_IS_DISPLAYED" />
-                </How>
-                <PinInput onPinSubmit={submit} />
-            </Col>
-        </Wrapper>
+                )}
+                {isChangingPin && (
+                    <ExplanationCol
+                        heading={
+                            <>
+                                {counter === 1 && <Translation id="TR_ENTER_CURRENT_PIN" />}
+                                {counter === 2 && <Translation id="TR_SET_UP_NEW_PIN" />}
+                                {counter === 3 && <Translation id="TR_CONFIRM_NEW_PIN" />}
+                            </>
+                        }
+                        description={
+                            <>
+                                <Text>
+                                    <Translation id="TR_SET_UP_STRONG_PIN_TO_PROTECT" />
+                                </Text>
+                                <Text>
+                                    <Translation id="TR_MAXIMUM_LENGTH_IS_9_DIGITS" />
+                                </Text>
+                            </>
+                        }
+                    />
+                )}
+                {enteredWrongPin && (
+                    <ExplanationCol
+                        heading={<Translation id="TR_WRONG_PIN_ENTERED" />}
+                        description={
+                            <>
+                                <Text>
+                                    <Translation id="TR_WRONG_PIN_ENTERED_DESCRIPTION" />
+                                </Text>
+                            </>
+                        }
+                    />
+                )}
+
+                <Col>
+                    <H2>
+                        <Translation
+                            id="TR_ENTER_PIN"
+                            values={{
+                                deviceLabel: device.label,
+                            }}
+                        />
+                    </H2>
+                    <How>
+                        <Translation id="TR_THE_PIN_LAYOUT_IS_DISPLAYED" />
+                    </How>
+                    <PinInput onPinSubmit={submit} />
+                </Col>
+            </Wrapper>
+        </Modal>
     );
 };
 

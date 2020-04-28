@@ -6,13 +6,8 @@ import { SUITE } from '@suite-actions/constants';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { Translation, Image } from '@suite-components';
-import { Button, P, H2 } from '@trezor/components';
+import { Button, Modal } from '@trezor/components';
 import { TrezorDevice, AppState, Dispatch, ExtendedMessageDescriptor } from '@suite-types';
-
-const Wrapper = styled.div`
-    max-width: 600px;
-    padding: 40px;
-`;
 
 const ImageWrapper = styled.div`
     padding: 60px 0px;
@@ -84,16 +79,18 @@ const ConfirmUnverifiedAddress = ({
     }
 
     return (
-        <Wrapper>
-            <H2>
-                <Translation id={deviceStatus} values={{ deviceLabel: device.label }} />
-            </H2>
-            <P size="small">
+        <Modal
+            heading={<Translation id={deviceStatus} values={{ deviceLabel: device.label }} />}
+            cancelable
+            size="small"
+            onCancel={onCancel}
+            description={
                 <Translation
                     id="TR_TO_PREVENT_PHISHING_ATTACKS_COMMA"
                     values={{ claim: <Translation id={claim} /> }}
                 />
-            </P>
+            }
+        >
             <ImageWrapper>
                 <Image image="UNI_ERROR" />
             </ImageWrapper>
@@ -109,7 +106,7 @@ const ConfirmUnverifiedAddress = ({
                     <Translation id={actionLabel} />
                 </Button>
             </Actions>
-        </Wrapper>
+        </Modal>
     );
 };
 

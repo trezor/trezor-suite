@@ -10,6 +10,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     align-items: center;
     width: 325px;
+    flex: 1;
 `;
 
 const InputWrapper = styled.div`
@@ -18,10 +19,16 @@ const InputWrapper = styled.div`
     width: 100%;
 `;
 
+const Expander = styled.div`
+    flex: 1;
+`;
+
 const PinRow = styled.div`
     display: flex;
     width: 100%;
+    max-height: 100px;
     justify-content: space-between;
+    flex: 2;
 
     & + & {
         margin-top: 10px;
@@ -145,6 +152,7 @@ const PinInput = (props: Props) => {
                 <ButtonPin type="button" data-value="3" onClick={() => onPinAdd('3')} />
             </PinRow>
 
+            <Expander />
             <PinFooter>
                 <Button variant="primary" fullWidth onClick={submit}>
                     <Translation id="TR_ENTER_PIN" />

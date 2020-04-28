@@ -1,36 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import Loading from '@suite-components/Loading';
-import ModalWrapper from '@suite-components/ModalWrapper';
-import { Translation } from '@suite-components/Translation';
-
-import { variables, colors } from '@trezor/components';
-
-const Wrapper = styled(ModalWrapper)`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 360px;
-`;
-
-const Title = styled.div`
-    max-width: 80%;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    text-align: center;
-    color: ${colors.BLACK0};
-    margin-bottom: 10px;
-`;
-
-const Description = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    text-align: center;
-    color: ${colors.BLACK50};
-    margin-bottom: 4px;
-`;
+import { Translation, Image } from '@suite-components';
+import { Modal } from '@trezor/components';
 
 const Expand = styled.div`
     display: flex;
-    /* flex: 1; */
+    width: 100%;
+    justify-content: center;
     margin: 40px 0px;
 `;
 
@@ -39,17 +15,17 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
 const DiscoveryLoader = (props: Props) => {
     return (
-        <Wrapper {...props} data-test="@discovery/loader">
-            <Title>
-                <Translation id="TR_COIN_DISCOVERY_IN_PROGRESS" />
-            </Title>
-            <Description>
-                <Translation id="TR_TO_FIND_YOUR_ACCOUNTS_AND" />
-            </Description>
+        <Modal
+            size="tiny"
+            heading={<Translation id="TR_COIN_DISCOVERY_IN_PROGRESS" />}
+            description={<Translation id="TR_TO_FIND_YOUR_ACCOUNTS_AND" />}
+            {...props}
+            data-test="@discovery/loader"
+        >
             <Expand>
-                <Loading padding="0px" />
+                <Image width={80} height={80} image="SPINNER" />
             </Expand>
-        </Wrapper>
+        </Modal>
     );
 };
 

@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, H2, Button, variables } from '@trezor/components';
+import { Button, Modal } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
-import ModalWrapper from '@suite-components/ModalWrapper';
 import * as deviceUtils from '@suite-utils/device';
 import { isWebUSB } from '@suite-utils/transport';
 import DeviceItem from './components/DeviceItem/Container';
@@ -10,35 +9,22 @@ import DeviceItem from './components/DeviceItem/Container';
 import { Props } from './Container';
 import WebusbButton from '../WebusbButton';
 
-const Wrapper = styled(ModalWrapper)`
+const StyledModal = styled(Modal)`
     flex-direction: column;
     text-align: center;
-    width: 720px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        min-width: 320px;
-        width: 100%;
-    }
-`;
-
-const Description = styled.div`
-    line-height: 1.43;
-    width: 90%;
-    margin-bottom: 10px;
-    color: ${colors.BLACK50};
 `;
 
 const CheckForDevicesWrapper = styled.div`
     display: flex;
-    margin-bottom: 30px;
+    justify-content: center;
+    margin-top: 10px;
 `;
 
-const In = styled.div`
+const DeviceItemsWrapper = styled.div`
     display: flex;
-    justify-content: center;
     flex-direction: column;
     align-items: center;
-    min-width: 400px;
+    flex: 1;
 `;
 
 const SwitchDeviceModal = (props: Props) => {
@@ -60,23 +46,26 @@ const SwitchDeviceModal = (props: Props) => {
     const backgroundRoute = props.getBackgroundRoute();
 
     return (
-        <Wrapper>
-            <In>
-                <H2>
-                    <Translation id="TR_CHOOSE_WALLET" />
-                </H2>
-                <Description>
+        <StyledModal
+            heading={<Translation id="TR_CHOOSE_WALLET" />}
+            cancelable={props.cancelable}
+            onCancel={props.onCancel}
+            description={
+                <>
                     <Translation id="TR_THIS_IS_PLACE_TO_SEE_ALL" />
-                </Description>
-                {showWebUsb && (
-                    <CheckForDevicesWrapper>
-                        <WebusbButton ready>
-                            <Button icon="SEARCH" variant="tertiary">
-                                <Translation id="TR_CHECK_FOR_DEVICES" />
-                            </Button>
-                        </WebusbButton>
-                    </CheckForDevicesWrapper>
-                )}
+                    {showWebUsb && (
+                        <CheckForDevicesWrapper>
+                            <WebusbButton ready>
+                                <Button icon="SEARCH" variant="tertiary">
+                                    <Translation id="TR_CHECK_FOR_DEVICES" />
+                                </Button>
+                            </WebusbButton>
+                        </CheckForDevicesWrapper>
+                    )}
+                </>
+            }
+        >
+            <DeviceItemsWrapper>
                 {sortedDevices.map(device => (
                     <DeviceItem
                         key={device.path}
@@ -86,8 +75,8 @@ const SwitchDeviceModal = (props: Props) => {
                         closeModalApp={props.closeModalApp}
                     />
                 ))}
-            </In>
-        </Wrapper>
+            </DeviceItemsWrapper>
+        </StyledModal>
     );
 };
 

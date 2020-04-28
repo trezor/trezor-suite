@@ -3,22 +3,14 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
-import { Button, P, H2, Link, variables, colors } from '@trezor/components';
+import { Button, P, H2, Modal, Link, variables, colors } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { Dispatch, InjectedModalApplicationProps } from '@suite-types';
 import { Analytics } from '@suite-components/Settings';
-import ModalWrapper from '@suite-components/ModalWrapper';
 import { URLS } from '@suite-constants';
 import { Translation, Image } from '@suite-components';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;
-
-const Wrapper = styled(ModalWrapper)`
-    display: flex;
-    flex-direction: column;
-    min-height: 80vh;
-    min-width: 60vw;
-`;
 
 const Body = styled.div`
     display: flex;
@@ -51,7 +43,7 @@ type Props = ReturnType<typeof mapDispatchToProps> & InjectedModalApplicationPro
 
 const Index = (props: Props) => {
     return (
-        <Wrapper>
+        <Modal useFixedHeight>
             <H2>
                 <Translation id="TR_HELP_TREZOR_SUITE" />
             </H2>
@@ -96,7 +88,7 @@ const Index = (props: Props) => {
                     }}
                 />
             </BottomP>
-        </Wrapper>
+        </Modal>
     );
 };
 

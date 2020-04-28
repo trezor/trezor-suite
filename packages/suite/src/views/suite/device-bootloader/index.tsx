@@ -17,6 +17,7 @@ type Props = ReturnType<typeof mapDispatchToProps>;
 
 const Index = (props: Props) => (
     <DeviceInvalidModeLayout
+        data-test="@device-invalid-mode/bootloader"
         title={<Translation id="TR_DEVICE_IN_BOOTLOADER" />}
         text={<Translation id="TR_DEVICE_IN_BOOTLOADER_EXPLAINED" />}
         allowSwitchDevice

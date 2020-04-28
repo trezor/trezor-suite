@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 
-import ModalWrapper from '@suite-components/ModalWrapper';
-import { H2, Link, Button } from '@trezor/components';
+import { Link, Button, Modal } from '@trezor/components';
 import { AppState } from '@suite-types';
 import { WalletAccountTransaction } from '@wallet-types';
 import TrezorConnect from 'trezor-connect';
@@ -15,14 +14,9 @@ import IODetails from './components/IODetails';
 import BigNumber from 'bignumber.js';
 import { formatNetworkAmount, isTestnet, getNetwork } from '@wallet-utils/accountUtils';
 
-const Wrapper = styled(ModalWrapper)`
+const Wrapper = styled.div`
     width: 100%;
-    max-width: 720px;
     flex-direction: column;
-`;
-
-const Title = styled(H2)`
-    margin-bottom: 20px;
 `;
 
 const Divider = styled.div`
@@ -33,9 +27,8 @@ const Divider = styled.div`
 
 const Buttons = styled.div`
     display: flex;
+    flex: 1;
     justify-content: space-between;
-    flex-wrap: wrap;
-    margin-top: 40px;
 `;
 
 const mapStateToProps = (state: AppState) => ({
@@ -63,8 +56,6 @@ const TransactionDetail = (props: Props) => {
         new BigNumber('0'),
     );
 
-    console.log('totalInput', totalInput?.toFixed());
-
     // sum of all outputs
     const totalOutput: BigNumber | undefined = txDetails?.vout?.reduce(
         (acc: BigNumber, output: any) => acc.plus(output.value ?? 0),
@@ -80,8 +71,6 @@ const TransactionDetail = (props: Props) => {
         totalOutput && !totalOutput.isNaN()
             ? formatNetworkAmount(totalOutput.toFixed(), tx.symbol)
             : undefined;
-
-    console.log('formattedTotalInput', formattedTotalInput);
 
     useEffect(() => {
         // fetch tx details and store them inside the local state 'txDetails'
@@ -102,43 +91,46 @@ const TransactionDetail = (props: Props) => {
     }, [tx]);
 
     return (
-        <Wrapper>
-            <Title>
-                <Translation id="TR_TRANSACTION_DETAILS" />
-            </Title>
+        <Modal
+            cancelable
+            onCancel={props.onCancel}
+            heading={<Translation id="TR_TRANSACTION_DETAILS" />}
+            bottomBar={
+                <Buttons>
+                    <Button variant="secondary" onClick={() => props.onCancel()}>
+                        <Translation id="TR_CLOSE" />
+                    </Button>
+                    <Button alignIcon="right" icon="EXTERNAL_LINK" variant="secondary">
+                        <Link variant="nostyle" href={explorerUrl}>
+                            <Translation id="TR_SHOW_DETAILS_IN_BLOCK_EXPLORER" />
+                        </Link>
+                    </Button>
+                </Buttons>
+            }
+        >
+            <Wrapper>
+                <BasicDetails
+                    tx={tx}
+                    txDetails={txDetails}
+                    isFetching={isFetching}
+                    explorerUrl={explorerUrl}
+                    totalInput={formattedTotalInput}
+                    totalOutput={formattedTotalOutput}
+                />
+                <Divider />
 
-            <BasicDetails
-                tx={tx}
-                txDetails={txDetails}
-                isFetching={isFetching}
-                explorerUrl={explorerUrl}
-                totalInput={formattedTotalInput}
-                totalOutput={formattedTotalOutput}
-            />
-            <Divider />
+                {!isTestnet(tx.symbol) && (
+                    <>
+                        <FiatDetails tx={tx} totalOutput={formattedTotalOutput} />
+                        <Divider />
+                    </>
+                )}
 
-            {!isTestnet(tx.symbol) && (
-                <>
-                    <FiatDetails tx={tx} totalOutput={formattedTotalOutput} />
-                    <Divider />
-                </>
-            )}
-
-            {network?.networkType !== 'ripple' && (
-                <IODetails tx={tx} txDetails={txDetails} isFetching={isFetching} />
-            )}
-
-            <Buttons>
-                <Button variant="secondary" onClick={() => props.onCancel()}>
-                    <Translation id="TR_CLOSE" />
-                </Button>
-                <Button alignIcon="right" icon="EXTERNAL_LINK" variant="secondary">
-                    <Link variant="nostyle" href={explorerUrl}>
-                        <Translation id="TR_SHOW_DETAILS_IN_BLOCK_EXPLORER" />
-                    </Link>
-                </Button>
-            </Buttons>
-        </Wrapper>
+                {network?.networkType !== 'ripple' && (
+                    <IODetails tx={tx} txDetails={txDetails} isFetching={isFetching} />
+                )}
+            </Wrapper>
+        </Modal>
     );
 };
 

@@ -2,30 +2,18 @@ import React, { createRef } from 'react';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
-import { Button, H2, P, colors } from '@trezor/components';
+import { Button, Modal, colors } from '@trezor/components';
 import { Translation } from '@suite-components';
-import ModalWrapper from '@suite-components/ModalWrapper';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { AppState, Dispatch } from '@suite-types';
 
 import { copyToClipboard } from '@suite-utils/dom';
 
-const Wrapper = styled(ModalWrapper)`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-`;
-
-const StyledParagraph = styled(P)`
-    margin: 10px 0;
-`;
-
 const LogWrapper = styled.pre`
     background: white;
     padding: 25px;
     height: 400px;
-    max-width: 80vw;
+    width: 100%;
     overflow: auto;
     background-color: ${colors.BLACK96};
     color: ${colors.BLACK0};
@@ -33,8 +21,10 @@ const LogWrapper = styled.pre`
     word-break: break-all;
 `;
 
-const ButtonCopy = styled(Button)`
-    margin-top: 10px;
+const ButtonWrapper = styled.div`
+    display: flex;
+    width: 100%;
+    justify-content: center;
 `;
 
 const mapStateToProps = (state: AppState) => ({
@@ -51,7 +41,7 @@ type Props = ReturnType<typeof mapStateToProps> &
     };
 
 const Log = (props: Props) => {
-    const htmlElement = createRef<HTMLDivElement>();
+    const htmlElement = createRef<HTMLPreElement>();
 
     const getFormattedLog = () => {
         return JSON.stringify(props.log.entries, null, 2);
@@ -65,18 +55,21 @@ const Log = (props: Props) => {
     };
 
     return (
-        <Wrapper ref={htmlElement}>
-            <H2>
-                <Translation id="TR_LOG" />
-            </H2>
-            <StyledParagraph size="small">
-                <Translation id="TR_ATTENTION_COLON_THE_LOG_CONTAINS" />
-            </StyledParagraph>
-            <LogWrapper>{getFormattedLog()}</LogWrapper>
-            <ButtonCopy onClick={() => copy()} data-test="@log/copy-button">
-                <Translation id="TR_COPY_TO_CLIPBOARD" />
-            </ButtonCopy>
-        </Wrapper>
+        <Modal
+            cancelable
+            onCancel={props.onCancel}
+            heading={<Translation id="TR_LOG" />}
+            description={<Translation id="TR_ATTENTION_COLON_THE_LOG_CONTAINS" />}
+            bottomBar={
+                <ButtonWrapper>
+                    <Button onClick={() => copy()} data-test="@log/copy-button">
+                        <Translation id="TR_COPY_TO_CLIPBOARD" />
+                    </Button>
+                </ButtonWrapper>
+            }
+        >
+            <LogWrapper ref={htmlElement}>{getFormattedLog()}</LogWrapper>
+        </Modal>
     );
 };
 

@@ -1,68 +1,58 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
-import { variables, colors } from '@trezor/components';
+import { Modal, ModalProps } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { Dispatch, TrezorDevice } from '@suite-types';
-import ModalWrapper from '../../ModalWrapper';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     getDiscoveryAuthConfirmationStatus: () =>
         dispatch(discoveryActions.getDiscoveryAuthConfirmationStatus()),
 });
-
-type Props = {
+interface OwnProps extends ModalProps {
     device: TrezorDevice;
-} & ReturnType<typeof mapDispatchToProps>;
+}
 
-const Wrapper = styled(ModalWrapper)`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 360px;
-`;
-
-const Title = styled.div`
-    max-width: 80%;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    text-align: center;
-    color: ${colors.BLACK0};
-    margin-bottom: 20px;
-`;
+type Props = OwnProps & ReturnType<typeof mapDispatchToProps>;
 
 /**
  * Modal used with model T with legacy firmware as result of 'ButtonRequest_PassphraseType' where passphrase source is requested on device
  * @param {Props}
  */
-const PassphraseSource = ({ device, getDiscoveryAuthConfirmationStatus }: Props) => {
+const PassphraseSource = ({ device, getDiscoveryAuthConfirmationStatus, ...rest }: Props) => {
     const authConfirmation = getDiscoveryAuthConfirmationStatus() || device.authConfirm;
 
     if (authConfirmation) {
         return (
-            <Wrapper>
-                <Title>
+            <Modal
+                size="tiny"
+                heading={
                     <Translation
                         id="TR_CONFIRM_PASSPHRASE_SOURCE"
                         values={{ deviceLabel: device.label }}
                     />
-                </Title>
+                }
+                {...rest}
+            >
                 <DeviceConfirmImage device={device} />
-            </Wrapper>
+            </Modal>
         );
     }
 
     return (
-        <Wrapper>
-            <Title>
+        <Modal
+            size="tiny"
+            heading={
                 <Translation
                     id="TR_SELECT_PASSPHRASE_SOURCE"
                     values={{ deviceLabel: device.label }}
                 />
-            </Title>
+            }
+            {...rest}
+        >
             <DeviceConfirmImage device={device} />
-        </Wrapper>
+        </Modal>
     );
 };
 

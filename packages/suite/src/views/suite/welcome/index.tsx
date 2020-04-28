@@ -2,21 +2,17 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-
-import { Button, P, H2 } from '@trezor/components';
+import { Button, Modal, H2, P } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { Dispatch, InjectedModalApplicationProps } from '@suite-types';
 import { Translation, Image } from '@suite-components';
 
-import ModalWrapper from '@suite-components/ModalWrapper';
-
-const Wrapper = styled(ModalWrapper)`
+const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 80vh;
-    min-width: 60vw;
+    height: 100%;
 `;
 
 const StyledImg = styled(props => <Image {...props} />)`
@@ -32,22 +28,24 @@ type Props = ReturnType<typeof mapDispatchToProps> & InjectedModalApplicationPro
 
 const Index = (props: Props) => {
     return (
-        <Wrapper data-test="@welcome">
-            <H2>
-                <Translation id="TR_WELCOME_MODAL_HEADING" />
-            </H2>
-            <P size="tiny">
-                <Translation id="TR_WELCOME_MODAL_TEXT" />
-            </P>
-            <StyledImg image="WELCOME" />
+        <Modal useFixedHeight data-test="@welcome">
+            <Wrapper>
+                <H2>
+                    <Translation id="TR_WELCOME_MODAL_HEADING" />
+                </H2>
+                <P size="small">
+                    <Translation id="TR_WELCOME_MODAL_TEXT" />
+                </P>
+                <StyledImg image="WELCOME" />
 
-            <Button
-                data-test="@welcome/continue-button"
-                onClick={() => props.goto('suite-analytics')}
-            >
-                <Translation id="TR_BEGIN" />
-            </Button>
-        </Wrapper>
+                <Button
+                    data-test="@welcome/continue-button"
+                    onClick={() => props.goto('suite-analytics')}
+                >
+                    <Translation id="TR_BEGIN" />
+                </Button>
+            </Wrapper>
+        </Modal>
     );
 };
 

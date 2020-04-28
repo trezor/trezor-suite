@@ -4,7 +4,7 @@ import Head from 'next/head';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { variables } from '@trezor/components';
+import { Modal } from '@trezor/components';
 import { Step } from '@onboarding-types/steps';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as STEP from '@onboarding-constants/steps';
@@ -27,27 +27,7 @@ import SetPinStep from '@onboarding-views/steps/Pin/Container';
 import FinalStep from '@onboarding-views/steps/Final/Container';
 import UnexpectedState from '@onboarding-views/unexpected-states';
 import { ProgressBar } from '@suite-components';
-import ModalWrapper from '@suite-components/ModalWrapper';
 import { AppState, Dispatch, InjectedModalApplicationProps } from '@suite-types';
-
-const Wrapper = styled(ModalWrapper)`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    overflow-x: hidden;
-
-    height: 95vh;
-    width: 95vw;
-
-    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
-        margin: 0 auto;
-        overflow: hidden;
-        max-height: 85vh;
-        max-width: 800px;
-        min-width: 50vw;
-        min-height: 50vh;
-    }
-`;
 
 // used to position modal to center
 const ActionModalWrapper = styled.div`
@@ -123,7 +103,7 @@ const Onboarding = (props: Props) => {
     const stepsInPath = steps.filter(s => s.progress && isStepInPath(s, path));
 
     return (
-        <Wrapper>
+        <Modal useFixedHeight>
             <Head>
                 <title>Onboarding | Trezor Suite</title>
             </Head>
@@ -143,7 +123,7 @@ const Onboarding = (props: Props) => {
                 )}
                 {!modal && <StepComponent />}
             </UnexpectedState>
-        </Wrapper>
+        </Modal>
     );
 };
 

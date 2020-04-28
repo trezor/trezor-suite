@@ -2,10 +2,12 @@
 const FIRST_DEVICE_PATH = '1';
 const SECOND_DEVICE_PATH = '2';
 
+// todo: appears to be flaky, will debug asap
 describe.skip('Stories of device connecting', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
         cy.visit('/');
+        cy.passThroughInitialRun();
         cy.window()
             .its('TrezorConnect')
             .should('exist')
@@ -32,10 +34,74 @@ describe.skip('Stories of device connecting', () => {
             });
     });
 
-    describe('1+ device is already connected -> user connects another one -> selects it ', () => {
+    describe('No device connected yet -> user connects a new one', () => {
         beforeEach(() => {
-            cy.getTestElement('button-use-wallet').click();
-            cy.get('html').should('contain', 'Connect Trezor to continue');
+            cy.getTestElement('@modal/connect-device');
+        });
+
+        it(`bootloader mode -> show info about bootloader, no wallet`, () => {
+            cy.connectBootloaderDevice(SECOND_DEVICE_PATH).getTestElement('@device-invalid-mode/bootloader');
+        });
+
+        it(`undreadable device -> show info about unreadable`, () => {
+            cy.connectDevice({ path: SECOND_DEVICE_PATH, type: 'unreadable' }).getTestElement('@device-invalid-mode/unreadable')
+        });
+
+        it(`device without seed -> offer onboarding, no wallet`, () => {
+            cy.connectDevice({
+                path: SECOND_DEVICE_PATH,
+                mode: 'initialize',
+            }).onboardingShouldLoad();
+        });
+
+        it(`outdated firmware -> load wallet`, () => {
+            cy.connectDevice(
+                {
+                    path: SECOND_DEVICE_PATH,
+                    mode: 'normal',
+                    firmware: 'outdated',
+                },
+                {
+                    device_id: SECOND_DEVICE_PATH,
+                    initialized: true,
+                },
+            ).getTestElement('@dashboard/index');
+        });
+
+        it(`required firmware -> firmware static page`, () => {
+            cy.connectDevice(
+                {
+                    path: SECOND_DEVICE_PATH,
+                    mode: 'normal',
+                    firmware: 'required',
+                },
+                {
+                    device_id: SECOND_DEVICE_PATH,
+                    initialized: true,
+                },
+            );
+            cy.getTestElement('@firmware/index');
+        });
+
+        it(`seedless device -> show info about seedless`, () => {
+            cy.connectDevice(
+                {
+                    path: SECOND_DEVICE_PATH,
+                    mode: 'seedless',
+                },
+                {
+                    device_id: SECOND_DEVICE_PATH,
+                    no_backup: true,
+                },
+            );
+            cy.getTestElement('@device-invalid-mode/seedless')
+        });
+    });
+    
+    // todo: a little later, I need to touch switch-device modal and menu and it would cause conflicts at the moment
+    describe.skip('1+ device is already connected -> user connects another one -> selects it ', () => {
+        beforeEach(() => {
+            cy.getTestElement('@modal/connect-device');
             cy.connectDevice({ path: FIRST_DEVICE_PATH }, { device_id: FIRST_DEVICE_PATH });
             cy.dashboardShouldLoad();
         });
@@ -79,7 +145,7 @@ describe.skip('Stories of device connecting', () => {
             cy.toggleDeviceMenu()
                 .getTestElement('@suite/device-item-0')
                 .click()
-                .getTestElement('@wallet/layout');
+                .getTestElement('@dashboard/index');
         });
 
         it(`required firmware -> show info, offer go to firmware`, () => {
@@ -117,73 +183,6 @@ describe.skip('Stories of device connecting', () => {
                 .getTestElement('@suite/device-item-0')
                 .click()
                 .getTestElement('seedles-message');
-        });
-    });
-
-    describe('No device connected yet -> user connects a new one', () => {
-        beforeEach(() => {
-            cy.getTestElement('button-use-wallet').click();
-            cy.get('html').should('contain', 'Connect Trezor to continue');
-        });
-
-        it(`bootloader mode -> show info about bootloader, no wallet`, () => {
-            cy.connectBootloaderDevice(SECOND_DEVICE_PATH).getTestElement('bootloader-message');
-        });
-
-        it(`undreadable device -> show info about unreadable`, () => {
-            cy.connectDevice({ path: SECOND_DEVICE_PATH, type: 'unreadable' }).getTestElement(
-                'unreadable-device-message',
-            );
-        });
-
-        it(`device without seed -> offer onboarding, no wallet`, () => {
-            cy.connectDevice({
-                path: SECOND_DEVICE_PATH,
-                mode: 'initialize',
-            }).onboardingShouldLoad();
-        });
-
-        it(`outdated firmware -> load wallet`, () => {
-            cy.connectDevice(
-                {
-                    path: SECOND_DEVICE_PATH,
-                    mode: 'normal',
-                    firmware: 'outdated',
-                },
-                {
-                    device_id: SECOND_DEVICE_PATH,
-                    initialized: true,
-                },
-            ).getTestElement('@wallet/layout');
-        });
-
-        it(`required firmware -> firmware static page`, () => {
-            cy.connectDevice(
-                {
-                    path: SECOND_DEVICE_PATH,
-                    mode: 'normal',
-                    firmware: 'required',
-                },
-                {
-                    device_id: SECOND_DEVICE_PATH,
-                    initialized: true,
-                },
-            );
-            cy.getTestElement('firmware-static-page');
-        });
-
-        it(`seedless device -> show info about seedles`, () => {
-            cy.connectDevice(
-                {
-                    path: SECOND_DEVICE_PATH,
-                    mode: 'seedless',
-                },
-                {
-                    device_id: SECOND_DEVICE_PATH,
-                    no_backup: true,
-                },
-            );
-            cy.getTestElement('seedles-message');
         });
     });
 });

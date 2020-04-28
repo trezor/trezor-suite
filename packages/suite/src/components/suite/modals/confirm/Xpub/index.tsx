@@ -1,15 +1,10 @@
 import React, { createRef } from 'react';
 import styled from 'styled-components';
-import { Button, H2, colors } from '@trezor/components';
+import { Button, Modal, colors } from '@trezor/components';
 import { copyToClipboard } from '@suite-utils/dom';
 import { Translation, QrCode } from '@suite-components';
 
 import { Props } from './Container';
-
-const StyledWrapper = styled.div`
-    max-width: 600px;
-    padding: 40px;
-`;
 
 const Address = styled.div`
     width: 100%;
@@ -31,7 +26,7 @@ const Row = styled.div`
     }
 `;
 
-export default ({ xpub, accountPath, accountIndex, symbol, addNotification }: Props) => {
+export default ({ xpub, accountPath, accountIndex, symbol, addNotification, onCancel }: Props) => {
     // TODO: no-backup, backup failed
     // const needsBackup = device.features && device.features.needs_backup;
 
@@ -45,13 +40,17 @@ export default ({ xpub, accountPath, accountIndex, symbol, addNotification }: Pr
     };
 
     return (
-        <StyledWrapper>
-            <H2>
+        <Modal
+            size="small"
+            cancelable
+            onCancel={onCancel}
+            heading={
                 <Translation
                     id="TR_XPUB_MODAL_TITLE"
                     values={{ networkName: symbol.toUpperCase(), accountIndex: accountIndex + 1 }}
                 />
-            </H2>
+            }
+        >
             <QrCode value={xpub} addressPath={accountPath} />
             <Address data-test="@xpub-modal/xpub-field">{xpub}</Address>
             <Row ref={htmlElement}>
@@ -59,6 +58,6 @@ export default ({ xpub, accountPath, accountIndex, symbol, addNotification }: Pr
                     <Translation id="TR_XPUB_MODAL_CLIPBOARD" />
                 </Button>
             </Row>
-        </StyledWrapper>
+        </Modal>
     );
 };
