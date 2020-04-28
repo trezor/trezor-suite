@@ -225,7 +225,7 @@ export const handleData = (data: string) => async (dispatch: Dispatch, getState:
     });
 
     const newFeeLevels = await TrezorConnect.blockchainEstimateFee({
-        coin: 'eth',
+        coin: account.symbol,
         request: {
             blocks: [2],
             specific: {

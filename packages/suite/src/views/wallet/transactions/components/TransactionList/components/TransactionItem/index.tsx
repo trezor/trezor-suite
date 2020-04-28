@@ -192,8 +192,8 @@ const TransactionItem = (props: Props) => {
         <Target key={i}>
             {target.addresses &&
                 target.addresses.map(addr => (
-                    <HiddenPlaceholder>
-                        <Addr key={addr}>
+                    <HiddenPlaceholder key={addr}>
+                        <Addr>
                             <AddressLabeling address={addr} />
                         </Addr>
                     </HiddenPlaceholder>
@@ -280,7 +280,7 @@ const TransactionItem = (props: Props) => {
                 </Targets>
                 <AmountsWrapper>
                     {tokens.map(t => (
-                        <HiddenPlaceholder>
+                        <HiddenPlaceholder key={t.symbol}>
                             <Balance>
                                 <Amount>
                                     {t.type === 'recv' && '+'}
@@ -307,7 +307,7 @@ const TransactionItem = (props: Props) => {
                 <AmountsWrapper>
                     {!isTestnet(symbol) &&
                         tokens.map(_t => (
-                            <HiddenPlaceholder>
+                            <HiddenPlaceholder key={symbol}>
                                 <FiatBalanceCol>
                                     {/* we dont fetch historical rates for tokens */}
                                     {/* <FiatValue amount={t.amount} symbol={t.symbol}>
