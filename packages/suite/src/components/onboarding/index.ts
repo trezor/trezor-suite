@@ -12,13 +12,7 @@ import ButtonAlt from './Buttons/ButtonAlt';
 import ButtonCta from './Buttons/ButtonCta';
 import ButtonBack from './Buttons/ButtonBack';
 
-import ConnectDevice from './Icons/ConnectDevice';
-
 import Dots from './Loaders/Dots';
-
-const OnboardingIcon = {
-    ConnectDevice,
-};
 
 const OnboardingButton = {
     Alt: ButtonAlt,
@@ -39,4 +33,4 @@ const Wrapper = {
     Step: StepWrapper,
 };
 
-export { OnboardingButton, OnboardingIcon, Loaders, Text, Wrapper, Option };
+export { OnboardingButton, Loaders, Text, Wrapper, Option };

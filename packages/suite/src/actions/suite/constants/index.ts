@@ -5,5 +5,6 @@ import * as LOG from './logConstants';
 import * as NOTIFICATION from './notificationConstants';
 import * as ROUTER from './routerConstants';
 import * as RESIZE from './resizeConstants';
+import * as ANALYTICS from './analyticsConstants';
 
-export { STORAGE, SUITE, LOG, MODAL, NOTIFICATION, ROUTER, RESIZE };
+export { STORAGE, SUITE, LOG, MODAL, NOTIFICATION, ROUTER, RESIZE, ANALYTICS };

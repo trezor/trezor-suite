@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -56,6 +57,7 @@ module.exports = {
             chunks: ['iframe'],
             filename: 'iframe.html',
             template: HTML_SRC,
+            minify: true,
             inject: false,
         }),
         new RemovePlugin({
@@ -63,13 +65,13 @@ module.exports = {
                 test: [
                     {
                         folder: `${DIST}/workers`,
-                        method: (filePath) => {
+                        method: filePath => {
                             return filePath.includes('shared-connection-worker.');
-                        }
-                    } 
-                ]
-            }
-        })
+                        },
+                    },
+                ],
+            },
+        }),
     ],
 
     // @trezor/utxo-lib NOTE:

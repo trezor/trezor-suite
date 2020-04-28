@@ -251,6 +251,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Passphrase mismatch!',
         id: 'TR_AUTH_CONFIRM_FAILED_TITLE',
     },
+    TR_AUTH_CONFIRM_FAILED_DESC: {
+        defaultMessage: 'Invalid password confirmation. Wallet will stay in watch-only mode.',
+        id: 'TR_AUTH_CONFIRM_FAILED_DESC',
+    },
     TR_AUTHENTICATING_DEVICE: {
         defaultMessage: 'Authenticating device...',
         id: 'TR_AUTHENTICATING_DEVICE',
@@ -642,6 +646,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Device settings',
         id: 'TR_DEVICE_SETTINGS',
     },
+    TR_DEVICE_SECURITY: {
+        defaultMessage: 'Security',
+        id: 'TR_DEVICE_SECURITY',
+    },
     TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE: {
         defaultMessage: 'Wipe device',
         id: 'TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE',
@@ -696,6 +704,15 @@ const definedMessages = defineMessages({
     TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE: {
         defaultMessage: 'PIN protection',
         id: 'TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE',
+    },
+    TR_DEVICE_SETTINGS_CHANGE_PIN_DESC: {
+        defaultMessage:
+            'In case your PIN has been exposed or you simply want to change it, here you go. There is no limit of how many times you can change your PIN.',
+        id: 'TR_DEVICE_SETTINGS_CHANGE_PIN_DESC',
+    },
+    TR_DEVICE_SETTINGS_CHANGE_PIN_TITLE: {
+        defaultMessage: 'Change PIN',
+        id: 'TR_DEVICE_SETTINGS_CHANGE_PIN_TITLE',
     },
     TR_DEVICE_YOU_RECONNECTED_IS_DIFFERENT: {
         defaultMessage:
@@ -803,14 +820,22 @@ const definedMessages = defineMessages({
         defaultMessage: 'Backup failed. This is serious.',
         id: 'TR_FAILED_BACKUP',
     },
+    TR_BACKUP_SUCCESSFUL: {
+        defaultMessage: 'Backup successful',
+        id: 'TR_BACKUP_SUCCESSFUL',
+    },
     TR_FEE: {
         defaultMessage: 'Fee',
         description: 'Label in Send form',
         id: 'TR_FEE',
     },
-    TR_FIAT_RATES_ARE_NOT_CURRENTLY: {
+    TR_FIAT_RATES_NOT_AVAILABLE: {
+        defaultMessage: 'No data available',
+        id: 'TR_FIAT_RATES_NOT_AVAILABLE',
+    },
+    TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP: {
         defaultMessage: 'Fiat rates are not currently available.',
-        id: 'TR_FIAT_RATES_ARE_NOT_CURRENTLY',
+        id: 'TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP',
     },
     TR_FINAL_HEADING: {
         defaultMessage: 'Good job! All done',
@@ -1047,6 +1072,10 @@ const definedMessages = defineMessages({
     TR_LEGACY_ACCOUNTS: {
         defaultMessage: 'Legacy accounts',
         id: 'TR_LEGACY_ACCOUNTS',
+    },
+    TR_LOADING_WALLET: {
+        defaultMessage: 'Loading wallet...',
+        id: 'TR_LOADING_WALLET',
     },
     TR_LOADING_ACCOUNT: {
         defaultMessage: 'Loading account',
@@ -1972,6 +2001,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Destination tag',
         id: 'TR_XRP_DESTINATION_TAG',
     },
+    TR_ADDRESSES: {
+        defaultMessage: 'addresses',
+        id: 'TR_ADDRESSES',
+    },
     TR_XRP_RESERVE_INFO: {
         defaultMessage:
             'Ripple addresses require a minimum balance of {minBalance} XRP to activate and maintain the account. {TR_LEARN_MORE}',
@@ -2276,6 +2309,14 @@ const definedMessages = defineMessages({
         id: 'TR_LAST_UPDATE',
         defaultMessage: 'Last update: {value}',
     },
+    TR_UPDATE_AVAILABLE: {
+        id: 'TR_UPDATE_AVAILABLE',
+        defaultMessage: 'Update available',
+    },
+    TR_UP_TO_DATE: {
+        defaultMessage: 'Up to date',
+        id: 'TR_UP_TO_DATE',
+    },
     TR_LIVE: {
         id: 'TR_LIVE',
         defaultMessage: 'Live',
@@ -2283,6 +2324,10 @@ const definedMessages = defineMessages({
     TR_TRANSACTIONS: {
         id: 'TR_TRANSACTIONS',
         defaultMessage: 'Transactions',
+    },
+    TR_TRANSACTIONS_NOT_AVAILABLE: {
+        id: 'TR_TRANSACTIONS_NOT_AVAILABLE',
+        defaultMessage: 'Transaction history not available',
     },
     TR_NUMBER_OF_TRANSACTIONS: {
         id: 'TR_NUMBER_OF_TRANSACTIONS',
@@ -2682,6 +2727,27 @@ const definedMessages = defineMessages({
         defaultMessage: 'Error while fetching the news',
         id: 'TR_DASHBOARD_NEWS_ERROR',
     },
+    TR_DASHBOARD_ASSET_FAILED: {
+        defaultMessage: 'Asset not loaded',
+        description: 'Display error message in single asset (discovery partially failed)',
+        id: 'TR_DASHBOARD_ASSET_FAILED',
+    },
+    TR_DASHBOARD_ASSETS_ERROR: {
+        defaultMessage: 'Assets were not loaded properly',
+        id: 'TR_DASHBOARD_ASSETS_ERROR',
+    },
+    TR_DASHBOARD_DISCOVERY_ERROR: {
+        defaultMessage: 'Discovery error',
+        id: 'TR_DASHBOARD_DISCOVERY_ERROR',
+    },
+    TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC: {
+        defaultMessage: 'Accounts were not loaded properly {details}',
+        id: 'TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC',
+    },
+    TR_DASHBOARD_DISCOVERY_ERROR_DESC: {
+        defaultMessage: 'Discovery error desc 1',
+        id: 'TR_DASHBOARD_DISCOVERY_ERROR_DESC',
+    },
     TR_RECOVERY_SEED_IS_OFFLINE: {
         id: 'TR_RECOVERY_SEED_IS_OFFLINE',
         defaultMessage: 'Recovery seed is an offline backup of your device',
@@ -2750,6 +2816,14 @@ const definedMessages = defineMessages({
     TR_DISCREET_MODE: {
         id: 'TR_DISCREET_MODE',
         defaultMessage: 'Discreet mode',
+    },
+    TR_HIDE_BUTTON: {
+        id: 'TR_HIDE_BUTTON',
+        defaultMessage: 'Hide',
+    },
+    TR_SHOW_BUTTON: {
+        id: 'TR_SHOW_BUTTON',
+        defaultMessage: 'Show',
     },
     TR_TRY_TO_TEMPORARILY_HIDE: {
         id: 'TR_TRY_TO_TEMPORARILY_HIDE',
@@ -3102,6 +3176,48 @@ const definedMessages = defineMessages({
         id: 'TR_BACKUP_SEED_IS_ULTIMATE',
         defaultMessage:
             'Backup seed is the ultimate key to your Wallet and funds. Once you lose it, it’s gone forever and there is no way to restore lost seed.',
+    },
+    DESKTOP_OUTDATED_TITLE: {
+        id: 'DESKTOP_OUTDATED_TITLE',
+        defaultMessage: 'Outdated version',
+    },
+    DESKTOP_OUTDATED_MESSAGE: {
+        id: 'DESKTOP_OUTDATED_MESSAGE',
+        defaultMessage:
+            'Your version {currentVersion} does not match latest version from github {newVersion}',
+    },
+    DESKTOP_OUTDATED_BUTTON_DOWNLOAD: {
+        id: 'DESKTOP_OUTDATED_BUTTON_DOWNLOAD',
+        defaultMessage: 'Take me to download page',
+    },
+    DESKTOP_OUTDATED_BUTTON_CANCEL: {
+        id: 'DESKTOP_OUTDATED_BUTTON_CANCEL',
+        defaultMessage: 'Let me in anyway',
+    },
+    TR_FIRMWARE_IS_POTENTIALLY_RISKY: {
+        id: 'TR_FIRMWARE_IS_POTENTIALLY_RISKY',
+        defaultMessage:
+            'Updating firmware is potentially risky operation. If anything goes wrong (broken cable etc.) device might end up in wiped state which effectively means losing all your coins.',
+    },
+    ONBOARDING_PAIR_ALREADY_INITIALIZED: {
+        id: 'ONBOARDING_PAIR_ALREADY_INITIALIZED',
+        defaultMessage:
+            'This device is already initialized. You should always be sure that you did device setup yourself. Otherwise you may become victim of phishing. Having initialized device also means that you can not proceed with setup.',
+    },
+    TR_USE_IT_ANYWAY: {
+        id: 'TR_USE_IT_ANYWAY',
+        defaultMessage: 'Use it anyway',
+        description: 'Use the device even though it is not in state it was supposed to be.',
+    },
+    TR_GO_TO_SUITE: {
+        id: 'TR_GO_TO_SUITE',
+        defaultMessage: 'Go to Suite',
+    },
+    TR_PAIR_YOUR_TREZOR: {
+        id: 'TR_PAIR_YOUR_TREZOR',
+        defaultMessage: 'Pair your Trezor again with your computer',
+        description:
+            'After firmware update is done, user must renew connection with Trezor device. We also call this "pairing" device',
     },
 } as const);
 

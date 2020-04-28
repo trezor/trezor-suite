@@ -4,8 +4,8 @@ import { colors, Button } from '@trezor/components';
 import { Translation } from '@suite-components';
 import SecurityCard, { Props as CardProps } from './components/SecurityCard';
 import { Props } from './Container';
-import { AcquiredDevice } from '@suite/types/suite';
-import { useDeviceActionLocks } from '@suite-utils/hooks';
+import { AcquiredDevice } from '@suite-types';
+import { useDeviceActionLocks, useDiscovery, useAnalytics } from '@suite-hooks';
 
 const Section = styled.div`
     display: flex;
@@ -41,7 +41,6 @@ const SectionAction = styled.div`
 
 const SecurityFeatures = ({
     device,
-    isDisabled,
     flags,
     discreetMode,
     setDiscreetMode,
@@ -53,6 +52,10 @@ const SecurityFeatures = ({
 }: Props) => {
     const [isHidden, setIsHidden] = useState(false);
     const [isTrezorActionEnabled] = useDeviceActionLocks();
+    const { getDiscoveryStatus } = useDiscovery();
+    const discoveryStatus = getDiscoveryStatus();
+    const isDisabled = discoveryStatus && discoveryStatus.status === 'loading';
+    const analytics = useAnalytics();
 
     const { discreetModeCompleted } = flags;
     let needsBackup;
@@ -84,6 +87,10 @@ const SecurityFeatures = ({
                   dataTest: 'backup',
                   action: () => {
                       goto('backup-index');
+                      analytics.report({
+                          type: 'ui',
+                          payload: 'dashboard/security-card/create-backup',
+                      });
                   },
               },
           }
@@ -96,6 +103,10 @@ const SecurityFeatures = ({
                   dataTest: 'seed-link',
                   action: () => {
                       goto('settings-device');
+                      analytics.report({
+                          type: 'ui',
+                          payload: 'dashboard/security-card/seed-link',
+                      });
                   },
               },
           };
@@ -111,6 +122,7 @@ const SecurityFeatures = ({
                   dataTest: 'pin',
                   action: () => {
                       changePin({});
+                      analytics.report({ type: 'ui', payload: 'dashboard/security-card/set-pin' });
                   },
                   isDisabled: !isTrezorActionEnabled,
               },
@@ -124,6 +136,10 @@ const SecurityFeatures = ({
                   dataTest: 'pin-link',
                   action: () => {
                       goto('settings-device');
+                      analytics.report({
+                          type: 'ui',
+                          payload: 'dashboard/security-card/change-pin',
+                      });
                   },
               },
           };
@@ -136,11 +152,16 @@ const SecurityFeatures = ({
               description: <Translation id="TR_ENABLE_PASSPHRASE_DESCRIPTION" />,
               cta: {
                   label: <Translation id="TR_ENABLE_PASSPHRASE" />,
-                  action: () =>
+                  action: () => {
                       applySettings({
                           // eslint-disable-next-line @typescript-eslint/camelcase
                           use_passphrase: true,
-                      }),
+                      });
+                      analytics.report({
+                          type: 'ui',
+                          payload: 'dashboard/security-card/enable-passphrase',
+                      });
+                  },
                   dataTest: 'hidden-wallet',
                   isDisabled: !isTrezorActionEnabled,
               },
@@ -151,7 +172,13 @@ const SecurityFeatures = ({
               heading: <Translation id="TR_PASSPHRASE_PROTECTION_ENABLED" />,
               cta: {
                   label: <Translation id="TR_CREATE_HIDDEN_WALLET" />,
-                  action: () => createDeviceInstance(device as AcquiredDevice),
+                  action: () => {
+                      createDeviceInstance(device as AcquiredDevice);
+                      analytics.report({
+                          type: 'ui',
+                          payload: 'dashboard/security-card/create-hidden-wallet',
+                      });
+                  },
                   dataTest: 'create-hidden-wallet',
                   isDisabled: !isTrezorActionEnabled,
               },
@@ -165,7 +192,13 @@ const SecurityFeatures = ({
               description: <Translation id="TR_TRY_TO_TEMPORARILY_HIDE" />,
               cta: {
                   label: <Translation id="TR_TRY_DISCREET_MODE" />,
-                  action: () => setDiscreetMode(true),
+                  action: () => {
+                      setDiscreetMode(true);
+                      analytics.report({
+                          type: 'ui',
+                          payload: 'dashboard/security-card/enable-discreet',
+                      });
+                  },
                   dataTest: 'discreet',
               },
           }
@@ -179,7 +212,13 @@ const SecurityFeatures = ({
                   ) : (
                       <Translation id="TR_ENABLE_DISCREET_MODE" />
                   ),
-                  action: () => setDiscreetMode(!discreetMode),
+                  action: () => {
+                      setDiscreetMode(!discreetMode);
+                      analytics.report({
+                          type: 'ui',
+                          payload: 'dashboard/security-card/toggle-discreet',
+                      });
+                  },
                   dataTest: 'toggle-discreet',
               },
           };
@@ -204,7 +243,11 @@ const SecurityFeatures = ({
                             setIsHidden(!isHidden);
                         }}
                     >
-                        {isHidden ? 'Show' : 'Hide'}
+                        {isHidden ? (
+                            <Translation id="TR_SHOW_BUTTON" />
+                        ) : (
+                            <Translation id="TR_HIDE_BUTTON" />
+                        )}
                     </Button>
                 </SectionAction>
             </Header>

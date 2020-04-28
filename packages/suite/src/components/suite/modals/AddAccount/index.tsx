@@ -74,22 +74,24 @@ export default (props: Props) => {
 
     // Display: Network is not enabled in settings
     if (!props.enabledNetworks.includes(network.symbol)) {
+        const onEnableNetwork = () => {
+            props.onCancel();
+            props.changeCoinVisibility(network.symbol, true);
+            if (props.app === 'wallet') {
+                // redirect to account only if added from "wallet" app
+                props.goto('wallet-index', {
+                    symbol: network.symbol,
+                    accountIndex: 0,
+                    accountType: 'normal',
+                });
+            }
+        };
+
         return (
             <Wrapper
                 {...wrapperProps}
                 actionButton={
-                    <Button
-                        variant="primary"
-                        onClick={() => {
-                            props.onCancel();
-                            props.changeCoinVisibility(network.symbol, true);
-                            props.goto('wallet-index', {
-                                symbol: network.symbol,
-                                accountIndex: 0,
-                                accountType: 'normal',
-                            });
-                        }}
-                    >
+                    <Button variant="primary" onClick={onEnableNetwork}>
                         <Translation
                             {...messages.TR_ENABLE_NETWORK_BUTTON}
                             values={{ networkName: network.name }}
@@ -116,6 +118,19 @@ export default (props: Props) => {
             ? NETWORKS.filter(n => n.symbol === network.symbol)
             : undefined;
 
+    const onEnableAccount = (account: Account) => {
+        props.onCancel();
+        props.changeAccountVisibility(account);
+        if (props.app === 'wallet') {
+            // redirect to account only if added from "wallet" app
+            props.goto('wallet-index', {
+                symbol: account.symbol,
+                accountIndex: account.index,
+                accountType: account.accountType,
+            });
+        }
+    };
+
     // Display: default add account window
     return (
         <Wrapper
@@ -126,15 +141,7 @@ export default (props: Props) => {
                 <AddAccountButton
                     network={network}
                     accounts={emptyAccounts}
-                    onEnableAccount={(account: Account) => {
-                        props.onCancel();
-                        props.changeAccountVisibility(account);
-                        props.goto('wallet-index', {
-                            symbol: account.symbol,
-                            accountIndex: account.index,
-                            accountType: account.accountType,
-                        });
-                    }}
+                    onEnableAccount={onEnableAccount}
                 />
             }
         >

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Card, Translation } from '@suite-components';
 import { isToday, format } from 'date-fns';
-import { colors, Button, variables, Icon } from '@trezor/components';
+import { colors, Button, variables } from '@trezor/components';
 import { useFetchNews } from '@dashboard-hooks/news';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
@@ -28,6 +28,10 @@ const BottomAction = styled.div`
 const Post = styled.div`
     display: flex;
 
+    & + & {
+        border-top: 2px solid ${colors.BLACK96};
+    }
+
     &:not(:first-child) {
         padding-top: ${CARD_PADDING_SIZE};
     }
@@ -38,10 +42,6 @@ const Post = styled.div`
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: column;
-    }
-
-    & + & {
-        border-top: 2px solid ${colors.BLACK96};
     }
 `;
 
@@ -90,24 +90,13 @@ const Description = styled.div`
 
 const CTAWrapper = styled.a`
     margin-top: 12px;
-    display: flex;
-    align-items: center;
 `;
 
-const ReadMore = styled(CTAWrapper)`
+const ReadMore = styled.a`
     color: ${colors.BLACK17};
     margin: 10px 0 0 0;
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-
-    &:hover {
-        text-decoration: underline;
-    }
-`;
-
-const ReadMoreIcon = styled(Icon)`
-    color: ${colors.BLACK17};
-    padding-left: 4px;
 `;
 
 const getDate = (date: string) => {
@@ -140,12 +129,14 @@ export default ({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
                             <Timestamp>{getDate(item.pubDate)}</Timestamp>
                             <Description>{item.description}</Description>
                             <ReadMore target="_blank" href={item.link}>
-                                <Translation id="TR_READ_MORE" />
-                                <ReadMoreIcon
-                                    size={12}
+                                <Button
+                                    variant="tertiary"
+                                    size="small"
                                     color={colors.BLACK0}
                                     icon="EXTERNAL_LINK"
-                                />
+                                >
+                                    <Translation id="TR_READ_MORE" />
+                                </Button>
                             </ReadMore>
                         </Right>
                     </Post>

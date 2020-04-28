@@ -4,6 +4,7 @@ import { Card, Translation } from '@suite-components';
 import { Output } from '@wallet-types/sendForm';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { variables, colors } from '@trezor/components';
 import Add from './components/Add/Container';
 import Address from './components/Address/Container';
 import AdditionalForm from './components/AdvancedForm';
@@ -22,6 +23,28 @@ const Row = styled.div`
     &:last-child {
         padding: 0;
     }
+`;
+
+const Header = styled.div`
+    display: flex;
+    padding: 6px 12px;
+`;
+
+const HeaderLeft = styled.div`
+    display: flex;
+    flex: 1;
+    align-items: center;
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    text-transform: uppercase;
+    color: ${colors.BLACK50};
+`;
+
+const HeaderRight = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
 `;
 
 const StyledCard = styled(Card)`
@@ -72,14 +95,20 @@ export default ({
     return (
         <WalletLayout title="Send" account={selectedAccount}>
             <StyledCard
-                title={
-                    <Translation
-                        id="SEND_TITLE"
-                        values={{ symbol: account.symbol.toUpperCase() }}
-                    />
+                customHeader={
+                    <Header>
+                        <HeaderLeft>
+                            <Translation
+                                id="SEND_TITLE"
+                                values={{ symbol: account.symbol.toUpperCase() }}
+                            />
+                        </HeaderLeft>
+                        <HeaderRight>
+                            <Clear />
+                        </HeaderRight>
+                    </Header>
                 }
             >
-                <Clear />
                 {send.outputs.map((output: Output) => (
                     <OutputWrapper key={output.id}>
                         <OutputHeader

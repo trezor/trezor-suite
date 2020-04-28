@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button, Tooltip } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
-import { useDeviceActionLocks } from '@suite-utils/hooks';
+import { useDeviceActionLocks, useAnalytics } from '@suite-hooks';
 
 const AddWallet = styled.div`
     display: flex;
@@ -21,6 +21,7 @@ const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceIns
     const hasAtLeastOneWallet = instances.find(d => d.state);
     const tooltipMsg = <Translation id="TR_TO_ACCESS_OTHER_WALLETS" />;
     const [actionEnabled] = useDeviceActionLocks();
+    const analytics = useAnalytics();
     return (
         <AddWallet>
             <Tooltip enabled={!device.connected} placement="top" content={tooltipMsg}>
@@ -29,10 +30,11 @@ const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceIns
                     variant="tertiary"
                     icon="PLUS"
                     isDisabled={!actionEnabled || !hasAtLeastOneWallet}
-                    onClick={async () =>
+                    onClick={() =>
                         hasAtLeastOneWallet
                             ? addDeviceInstance(device)
-                            : selectDeviceInstance(instances[0])
+                            : selectDeviceInstance(instances[0]) &&
+                              analytics.report({ type: 'ui', payload: 'switch-device/add-wallet' })
                     }
                 >
                     <Translation id="TR_ADD_WALLET" />

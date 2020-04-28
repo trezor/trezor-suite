@@ -4,6 +4,7 @@ import { Button, Switch, colors, variables } from '@trezor/components';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { Props } from './Container';
 import { FormattedNumber, WalletLabeling, Translation } from '@suite-components';
+import { useAnalytics } from '@suite-hooks';
 
 const Wrapper = styled.div<{ selected: boolean }>`
     display: flex;
@@ -87,6 +88,7 @@ const WalletInstance = ({
     const deviceAccounts = accountUtils.getAllAccounts(instance.state, accounts);
     const accountsCount = deviceAccounts.length;
     const instanceBalance = accountUtils.getTotalFiatBalance(deviceAccounts, localCurrency, fiat);
+    const analytics = useAnalytics();
 
     return (
         <Wrapper
@@ -126,12 +128,26 @@ const WalletInstance = ({
                     <SwitchCol>
                         <Switch
                             checked={!!instance.remember}
-                            onChange={() => rememberDevice(instance)}
+                            onChange={() =>
+                                rememberDevice(instance) &&
+                                analytics.report({
+                                    type: 'ui',
+                                    payload: `switch-device/${
+                                        instance.remember ? 'forget' : 'remember'
+                                    }`,
+                                })
+                            }
                             data-test="@suite/settings/device/passphrase-switch"
                         />
                     </SwitchCol>
                     <Col>
-                        <ForgetButton variant="secondary" onClick={() => forgetDevice(instance)}>
+                        <ForgetButton
+                            variant="secondary"
+                            onClick={() =>
+                                forgetDevice(instance) &&
+                                analytics.report({ type: 'ui', payload: 'switch-device/eject' })
+                            }
+                        >
                             <Translation id="TR_EJECT_WALLET" />
                         </ForgetButton>
                     </Col>

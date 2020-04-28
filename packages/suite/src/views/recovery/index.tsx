@@ -17,7 +17,7 @@ import {
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { InjectedModalApplicationProps, AppState, Dispatch } from '@suite-types';
 import { WordCount } from '@recovery-types';
-import { useDeviceActionLocks } from '@suite-utils/hooks';
+import { useDeviceActionLocks } from '@suite-hooks';
 import { URLS } from '@suite-constants';
 
 const Wrapper = styled.div`

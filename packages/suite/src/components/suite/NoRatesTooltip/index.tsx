@@ -1,5 +1,5 @@
 import React from 'react';
-import { Translation } from '@suite-components/Translation';
+import { Translation } from '@suite-components';
 import styled from 'styled-components';
 import { Icon, Tooltip, colors, variables } from '@trezor/components';
 
@@ -18,19 +18,19 @@ const NoRatesMessage = styled.div`
 `;
 
 interface Props extends Partial<typeof Tooltip> {
-    customText?: React.ReactNode;
+    customText?: React.ComponentProps<typeof Translation>['id'];
+    customTooltip?: React.ComponentProps<typeof Translation>['id'];
     iconOnly?: boolean;
     className?: string;
 }
 
-const NoRatesTooltip = ({ customText, iconOnly, className, ...props }: Props) => (
+const NoRatesTooltip = ({ customText, iconOnly, customTooltip, className, ...props }: Props) => (
     <NoRatesMessage className={className}>
-        {!iconOnly && customText && <>{customText}</>}
-        {!iconOnly && !customText && 'No data available'}
+        {!iconOnly && <Translation id={customText || 'TR_FIAT_RATES_NOT_AVAILABLE'} />}
         <Tooltip
             maxWidth={285}
             placement="top"
-            content={<Translation id="TR_FIAT_RATES_ARE_NOT_CURRENTLY" />}
+            content={<Translation id={customTooltip || 'TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP'} />}
             {...props}
         >
             <StyledIcon

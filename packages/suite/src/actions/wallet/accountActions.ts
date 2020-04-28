@@ -35,10 +35,7 @@ export const create = (
             (discoveryItem.accountType === 'normal' && discoveryItem.index === 0),
         balance: accountInfo.balance,
         availableBalance: accountInfo.availableBalance,
-        formattedBalance: accountUtils.formatNetworkAmount(
-            accountInfo.availableBalance,
-            discoveryItem.coin,
-        ),
+        formattedBalance: accountUtils.formatNetworkAmount(accountInfo.balance, discoveryItem.coin),
         tokens: accountInfo.tokens?.map(t => ({
             ...t,
             symbol: t.symbol ? t.symbol.toLowerCase() : t.symbol,
@@ -59,10 +56,7 @@ export const update = (account: Account, accountInfo: AccountInfo): AccountActio
         ...accountInfo,
         path: account.path,
         empty: accountInfo.empty,
-        formattedBalance: accountUtils.formatNetworkAmount(
-            accountInfo.availableBalance,
-            account.symbol,
-        ),
+        formattedBalance: accountUtils.formatNetworkAmount(accountInfo.balance, account.symbol),
         tokens: accountInfo.tokens?.map(t => ({
             ...t,
             symbol: t.symbol ? t.symbol.toLowerCase() : t.symbol,

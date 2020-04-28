@@ -44,7 +44,6 @@ export type SuiteActions =
           value: boolean;
       }
     | { type: typeof SUITE.APP_CHANGED; payload: AppState['router']['app'] }
-    | { type: typeof SUITE.TOGGLE_ANALYTICS }
     | {
           type: typeof SUITE.ADD_BUTTON_REQUEST;
           device: TrezorDevice | undefined;

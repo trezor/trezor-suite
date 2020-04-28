@@ -7,6 +7,7 @@ import { Props as ContainerProps } from '../../Container';
 import { SHAKE } from '@suite-support/styles/animations';
 import { Translation } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
+import { useAnalytics } from '@suite-hooks';
 
 const Wrapper = styled.div`
     padding-left: 6px;
@@ -109,6 +110,7 @@ const TopMenu = (props: Props) => {
     const timerRef = useRef<number | undefined>(undefined);
 
     const walletName = getWalletName(props.selectedDevice);
+    const analytics = useAnalytics();
 
     useEffect(() => {
         // clear timer on unmount
@@ -138,7 +140,11 @@ const TopMenu = (props: Props) => {
         <Wrapper>
             <DeviceStatus
                 data-test="@menu/switch-device"
-                onClick={() => props.goto('suite-switch-device', { cancelable: true })}
+                onClick={() =>
+                    props.goto('suite-switch-device', {
+                        cancelable: true,
+                    }) && analytics.report({ type: 'ui', payload: 'menu/goto/switch-device' })
+                }
             >
                 {!props.selectedDevice && <DeviceRow />}
                 {props.selectedDevice && (

@@ -4,6 +4,7 @@ import { findRouteByName } from '@suite-utils/router';
 import { colors, Icon, Switch, Tooltip, variables } from '@trezor/components';
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { useAnalytics } from '@suite-hooks';
 
 import { Props as ContainerProps } from '../../Container';
 import Divider from '../Divider';
@@ -48,7 +49,6 @@ const Text = styled.div<ComponentProps>`
     display: flex;
     align-items: center;
     flex: 1;
-
     ${props =>
         props.isActive &&
         css`
@@ -65,13 +65,11 @@ const In = styled.div<ComponentProps>`
     flex: 1;
     flex-direction: flex-start;
     align-items: center;
-
     ${props =>
         props.isActive &&
         css`
             background: ${colors.BACKGROUND};
         `}
-
     ${props =>
         !props.isActive &&
         css`
@@ -97,68 +95,80 @@ interface Props {
     setDiscreetMode: (s: boolean) => void;
 }
 
-const BottomMenu = (props: Props) => (
-    <Wrapper>
-        {BOTTOM_MENU_ITEMS.map(item => {
-            const { route, icon, translationId } = item;
-            const dataTestId = `@suite/menu/${route}`;
-            const routeObj = findRouteByName(route);
-            const isActive = routeObj ? routeObj.app === props.app : false;
-            const callback = (isActive && props.openSecondaryMenu) || props.goto;
+const BottomMenu = (props: Props) => {
+    const analytics = useAnalytics();
+    const gotoWithReport = (routeName: Parameters<typeof props.goto>[0]) => {
+        analytics.report({ type: 'ui', payload: `menu/goto${routeName}` });
+        props.goto(routeName);
+    };
 
-            const defaultIcon = (
-                <Icon color={isActive ? colors.BLACK0 : colors.WHITE} size={16} icon={icon} />
-            );
+    return (
+        <Wrapper>
+            {BOTTOM_MENU_ITEMS.map(item => {
+                const { route, icon, translationId } = item;
+                const dataTestId = `@suite/menu/${route}`;
+                const routeObj = findRouteByName(route);
+                const isActive = routeObj ? routeObj.app === props.app : false;
+                const callback = (isActive && props.openSecondaryMenu) || gotoWithReport;
 
-            const iconComponent =
-                !isActive && route === 'notifications-index' ? (
-                    <NotificationsBadge defaultIcon={defaultIcon} />
-                ) : (
-                    defaultIcon
+                const defaultIcon = (
+                    <Icon color={isActive ? colors.BLACK0 : colors.WHITE} size={16} icon={icon} />
                 );
 
-            return (
-                <>
-                    <RoundedCorner top isActive={isActive} />
-                    <In
-                        key={translationId}
-                        data-test={dataTestId}
-                        onClick={() => callback(routeObj!.name)}
-                        isActive={isActive}
-                    >
-                        <MenuItemWrapper>
-                            <IconWrapper>{iconComponent}</IconWrapper>
-                            <Text isActive={isActive}>
-                                <Translation id={translationId} />
-                            </Text>
-                        </MenuItemWrapper>
-                    </In>
-                    <RoundedCorner bottom isActive={isActive} />
-                </>
-            );
-        })}
-        <StyledDivider className="divider" />
-        <SubMenu>
-            <IconWrapper>
-                <Icon color={colors.WHITE} size={16} icon={props.discreetMode ? 'HIDE' : 'SHOW'} />
-            </IconWrapper>
-            <Text>
-                <Translation id="TR_DISCREET" />
-            </Text>
+                const iconComponent =
+                    !isActive && route === 'notifications-index' ? (
+                        <NotificationsBadge defaultIcon={defaultIcon} />
+                    ) : (
+                        defaultIcon
+                    );
 
-            <SwitchWrapper>
-                <Tooltip placement="right" content={<Translation id="TR_DISCREET_TOOLTIP" />}>
-                    <Switch
-                        isSmall
-                        checked={props.discreetMode}
-                        onChange={checked => {
-                            props.setDiscreetMode(checked);
-                        }}
+                return (
+                    <React.Fragment key={route}>
+                        <RoundedCorner top isActive={isActive} />
+                        <In
+                            key={translationId}
+                            data-test={dataTestId}
+                            onClick={() => callback(routeObj!.name)}
+                            isActive={isActive}
+                        >
+                            <MenuItemWrapper>
+                                <IconWrapper>{iconComponent}</IconWrapper>
+                                <Text isActive={isActive}>
+                                    <Translation id={translationId} />
+                                </Text>
+                            </MenuItemWrapper>
+                        </In>
+                        <RoundedCorner bottom isActive={isActive} />
+                    </React.Fragment>
+                );
+            })}
+            <StyledDivider className="divider" />
+            <SubMenu>
+                <IconWrapper>
+                    <Icon
+                        color={colors.WHITE}
+                        size={16}
+                        icon={props.discreetMode ? 'HIDE' : 'SHOW'}
                     />
-                </Tooltip>
-            </SwitchWrapper>
-        </SubMenu>
-    </Wrapper>
-);
+                </IconWrapper>
+                <Text>
+                    <Translation id="TR_DISCREET" />
+                </Text>
+
+                <SwitchWrapper>
+                    <Tooltip placement="right" content={<Translation id="TR_DISCREET_TOOLTIP" />}>
+                        <Switch
+                            isSmall
+                            checked={props.discreetMode}
+                            onChange={checked => {
+                                props.setDiscreetMode(checked);
+                            }}
+                        />
+                    </Tooltip>
+                </SwitchWrapper>
+            </SubMenu>
+        </Wrapper>
+    );
+};
 
 export default BottomMenu;

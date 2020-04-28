@@ -1,12 +1,25 @@
-import { SUITE } from '@suite-actions/constants';
+import { ANALYTICS } from '@suite-actions/constants';
 import { isDev } from '@suite-utils/build';
-import { Dispatch, GetState } from '@suite-types';
+import { Dispatch, GetState, AppState } from '@suite-types';
+import { getRandomId } from '@suite-utils/random';
+import { Account } from '@wallet-types';
 
-type Payload =
-    | // which transport was initiated on suite start
-    { type: 'transport-type'; payload: { type: string; version: string } }
+export type AnalyticsActions =
+    | { type: typeof ANALYTICS.DISPOSE }
+    | { type: typeof ANALYTICS.INIT; payload: { sessionId: string; instanceId: string } };
+
+export type Payload =
+    | {
+          type: 'suite-ready';
+          payload: {
+              language: AppState['suite']['settings']['language'];
+              enabledNetworks: AppState['wallet']['settings']['enabledNetworks'];
+              localCurrency: AppState['wallet']['settings']['localCurrency'];
+              discreetMode: AppState['wallet']['settings']['discreetMode'];
+          };
+      }
+    | { type: 'transport-type'; payload: { type: string; version: string } }
     | { type: 'device-connect'; payload: { device_id: string; firmware: string } }
-    // in case user does not allow analytics, we just log this information and nothing else
     | {
           type: 'initial-run-completed';
           payload: {
@@ -25,10 +38,22 @@ type Payload =
               newDevice: boolean;
               usedDevice: boolean;
           };
+      }
+    | {
+          type: 'account-create';
+          payload: {
+              type: Account['accountType'];
+              path: Account['path'];
+              symbol: Account['symbol'];
+          };
+      }
+    | {
+          type: 'ui';
+          payload: string;
       };
 
-const encodePayload = (data: Payload) => {
-    return JSON.stringify({ ...data, version: process.env.COMMITHASH });
+const encodePayload = (data: Record<string, any>) => {
+    return JSON.stringify(data);
 };
 
 const getUrl = () => {
@@ -57,22 +82,30 @@ const getUrl = () => {
     return `${base}/${process.env.SUITE_TYPE}/${process.env.BUILD}.log`;
 };
 
-// the only case we want to override users 'do not log' choice is when we
-// want to log that user did not give consent to logging.
 export const report = (data: Payload, force = false) => async (
     _dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const { analytics } = getState().suite.settings;
-    if (!analytics && !force) {
+    const { enabled, sessionId, instanceId } = getState().analytics;
+
+    // the only case we want to override users 'do not log' choice is when we
+    // want to log that user did not give consent to logging.
+    if (!enabled && !force) {
         return;
     }
+
     if (isDev()) {
         // on dev, do nothing
         return;
     }
     const url = getUrl();
-    const payload = encodePayload(data);
+    const payload = encodePayload({
+        ...data,
+        version: process.env.COMMITHASH,
+        sessionId,
+        instanceId,
+        ts: Date.now(),
+    });
 
     try {
         fetch(url, {
@@ -87,6 +120,32 @@ export const report = (data: Payload, force = false) => async (
     }
 };
 
-export const toggleAnalytics = () => ({
-    type: SUITE.TOGGLE_ANALYTICS,
+/**
+ * Analytics life cycle
+ *
+ * 1. start app
+ * 2. load analytics storage into reducer
+ * 3a] if empty (first start) generate instanceId and save it back to storage. instanceId exists in storage
+ *     regardless of whether user enabled analytics or not.
+ * 3b] if analytics enabled, only generate sessionId which is unique for each analytics session
+ * 3c] if analytics is disabled, do nothing
+ *
+ * User may disable analytics, see dispose() fn. This flushes data from reducer and clears
+ * sessionId from storage (instanceId is kept)
+ */
+export const init = () => async (dispatch: Dispatch, getState: GetState) => {
+    const { analytics } = getState();
+    dispatch({
+        type: ANALYTICS.INIT,
+        payload: {
+            // if no instanceId exists it means that it was not loaded from storage, so create a new one
+            instanceId: analytics.instanceId ? analytics.instanceId : getRandomId(10),
+            // sessionId is always ephemeral
+            sessionId: getRandomId(10),
+        },
+    });
+};
+
+export const dispose = () => ({
+    type: ANALYTICS.DISPOSE,
 });

@@ -112,10 +112,6 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
                 setFlag(draft, action.key, action.value);
                 break;
 
-            case SUITE.TOGGLE_ANALYTICS:
-                draft.settings.analytics = !state.settings.analytics;
-                break;
-
             case TRANSPORT.START:
                 draft.transport = action.payload;
                 break;

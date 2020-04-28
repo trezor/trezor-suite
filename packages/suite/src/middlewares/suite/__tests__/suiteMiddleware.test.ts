@@ -5,6 +5,7 @@ import { SUITE, ROUTER, STORAGE } from '@suite-actions/constants';
 import routerReducer from '@suite-reducers/routerReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import modalReducer from '@suite-reducers/modalReducer';
+import analyticsReducer from '@suite-reducers/analyticsReducer';
 import * as routerActions from '@suite-actions/routerActions';
 import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
 
@@ -33,6 +34,7 @@ export const getInitialState = (router?: RouterState, suite?: Partial<SuiteState
             ...suite,
         },
         modal: modalReducer(undefined, { type: 'foo' } as any),
+        analytics: analyticsReducer(undefined, { type: 'foo' } as any),
     };
 };
 

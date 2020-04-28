@@ -24,6 +24,7 @@ export interface Discovery {
     }[];
     networks: Network['symbol'][];
     running?: Deferred<void>;
+    error?: string;
 }
 
 export type PartialDiscovery = { deviceState: string } & Partial<Discovery>;
@@ -59,6 +60,10 @@ const update = (draft: State, payload: PartialDiscovery, resolve?: boolean) => {
         };
         if (resolve && dfd) {
             dfd.resolve();
+            delete draft[index].running;
+        }
+        if (!payload.error) {
+            delete draft[index].error;
         }
     }
 };

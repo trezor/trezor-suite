@@ -424,10 +424,12 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
             }
         }
 
-        dispatch(update({ deviceState, status: DISCOVERY.STATUS.STOPPED }, DISCOVERY.STOP));
+        const error =
+            result.payload.error !== 'discovery_interrupted' ? result.payload.error : undefined;
+        dispatch(update({ deviceState, status: DISCOVERY.STATUS.STOPPED, error }, DISCOVERY.STOP));
 
-        if (result.payload.error !== 'discovery_interrupted') {
-            dispatch(addToast({ type: 'discovery-error', error: result.payload.error }));
+        if (error) {
+            dispatch(addToast({ type: 'discovery-error', error }));
         }
     }
 };

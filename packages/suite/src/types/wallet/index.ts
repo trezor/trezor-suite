@@ -37,6 +37,15 @@ export type Send = SendState;
 export type Icon = Icon$;
 export type CoinFiatRates = CoinFiatRates$;
 export type Discovery = Discovery$;
+export type DiscoveryStatus =
+    | {
+          status: 'loading';
+          type: 'waiting-for-device' | 'auth' | 'discovery';
+      }
+    | {
+          status: 'exception';
+          type: 'auth-failed' | 'auth-confirm-failed' | 'discovery-empty' | 'discovery-failed';
+      };
 export type WalletParams = WalletParams$;
 export type WalletAccountTransaction = WalletAccountTransaction$;
 export type FiatTicker = FiatTicker$;

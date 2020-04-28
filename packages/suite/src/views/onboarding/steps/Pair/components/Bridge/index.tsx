@@ -46,6 +46,8 @@ interface Props {
     };
 }
 
+// todo: I am not refactoring it now, so issue created https://github.com/trezor/trezor-suite/issues/1634
+
 class InstallBridge extends PureComponent<Props & WrappedComponentProps, BridgeState> {
     constructor(props: Props & WrappedComponentProps) {
         super(props);
@@ -64,7 +66,7 @@ class InstallBridge extends PureComponent<Props & WrappedComponentProps, BridgeS
     }
 
     getStatus() {
-        if (this.props.transport!.type === 'bridge') {
+        if (this.props.transport?.type === 'bridge') {
             return 'installed';
         }
         return this.props.activeSubStep;
@@ -87,9 +89,10 @@ class InstallBridge extends PureComponent<Props & WrappedComponentProps, BridgeS
     }
 
     render() {
+        if (!this.props.transport) return null;
+
         const { target, uri, installers } = this.state;
         const status = this.getStatus();
-
         return (
             // this wrapper is just to be able to have data-test attribute
             <PageWrapper data-test="@onboarding/bridge">

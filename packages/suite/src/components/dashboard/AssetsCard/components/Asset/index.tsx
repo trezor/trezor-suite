@@ -1,18 +1,27 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Account } from '@wallet-types';
-import { AppState } from '@suite-types';
-import { connect } from 'react-redux';
-import { CoinLogo, variables, colors } from '@trezor/components';
-import { NoRatesTooltip, HiddenPlaceholder, Badge, FiatValue } from '@suite-components';
+import { Network } from '@wallet-types';
+import { CoinLogo, Icon, variables, colors } from '@trezor/components';
+import {
+    NoRatesTooltip,
+    HiddenPlaceholder,
+    Badge,
+    FiatValue,
+    Translation,
+} from '@suite-components';
 import LastWeekGraph from '../LastWeekGraph';
 import { CoinBalance } from '@wallet-components';
+import { useFiatValue } from '@wallet-hooks';
 
 const Wrapper = styled.div`
     padding: 12px 0px;
     display: grid;
     grid-gap: 10px;
     grid-template-columns: minmax(180px, 2fr) repeat(auto-fit, minmax(80px, 1fr));
+    border-top: 2px solid ${colors.BLACK96};
+    &:first-of-type {
+        border: 0px;
+    }
 `;
 
 const LogoWrapper = styled.div`
@@ -39,6 +48,14 @@ const Col = styled.div`
     align-items: center;
 `;
 
+const FailedCol = styled(Col)`
+    grid-column: 3 / 5;
+    justify-content: flex-end;
+    color: ${colors.RED};
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.REGULAR};
+`;
+
 const GraphWrapper = styled(Col)`
     min-height: 24px;
     flex: 1;
@@ -57,24 +74,31 @@ const CryptoValueWrapper = styled(Col)`
 
 const FiatValueWrapper = styled(Col)``;
 
-interface OwnProps extends React.HTMLAttributes<HTMLDivElement> {
-    name: string;
-    symbol: Account['symbol'];
+const FiatRateWrapper = styled(Col)`
+    justify-content: flex-end;
+`;
+
+interface Props {
+    network: Network;
+    failed: boolean;
     cryptoValue: string;
-    localCurrency: string;
 }
 
-const mapStateToProps = (state: AppState) => ({
-    fiat: state.wallet.fiat,
-});
+const Asset = React.memo(({ network, failed, cryptoValue }: Props) => {
+    const { symbol, name, testnet } = network;
+    const { fiat, localCurrency } = useFiatValue();
 
-export type Props = ReturnType<typeof mapStateToProps> & OwnProps;
+    // get graph data only for mainnet and not failed accounts
+    const lastWeekData =
+        !testnet && !failed ? fiat.find(r => r.symbol === symbol)?.lastWeek?.tickers : [];
 
-const Asset = React.memo(({ name, symbol, cryptoValue, localCurrency, ...props }: Props) => {
-    const lastWeekData = props.fiat.find(r => r.symbol === symbol)?.lastWeek?.tickers;
+    // display one of view:
+    // - failed
+    // - testnet
+    // - mainnet
 
     return (
-        <Wrapper {...props}>
+        <Wrapper>
             <Col>
                 <LogoWrapper>
                     <CoinLogo symbol={symbol} size={16} />
@@ -82,44 +106,53 @@ const Asset = React.memo(({ name, symbol, cryptoValue, localCurrency, ...props }
                 <Coin>{name}</Coin>
                 <Symbol>{symbol.toUpperCase()}</Symbol>
             </Col>
-            <Col>
-                <CryptoValueWrapper>
-                    <CoinBalance value={cryptoValue} symbol={symbol} />
-                </CryptoValueWrapper>
-            </Col>
-            <Col>
-                <FiatValueWrapper>
-                    <HiddenPlaceholder>
-                        <FiatValue amount={cryptoValue} symbol={symbol}>
-                            {({ value }) => (value ? <Badge isSmall>{value}</Badge> : null)}
-                        </FiatValue>
-                    </HiddenPlaceholder>
-                </FiatValueWrapper>
-            </Col>
-            <Col>
-                <GraphWrapper>
-                    <LastWeekGraph
-                        lastWeekData={lastWeekData}
-                        symbol={symbol}
-                        localCurrency={localCurrency}
+            {failed && (
+                <FailedCol>
+                    <Translation id="TR_DASHBOARD_ASSET_FAILED" />
+                    <Icon
+                        style={{ paddingLeft: '4px', paddingBottom: '2px' }}
+                        icon="WARNING"
+                        color={colors.RED}
+                        size={14}
                     />
-                </GraphWrapper>
-            </Col>
-            <Col>
-                <FiatValue amount={cryptoValue} symbol={symbol}>
-                    {({ rate }) =>
-                        rate ? (
-                            <Badge isSmall isGray>
-                                1 {symbol.toUpperCase()} = {rate}
-                            </Badge>
-                        ) : (
-                            <NoRatesTooltip />
-                        )
-                    }
-                </FiatValue>
-            </Col>
+                </FailedCol>
+            )}
+            {!failed && (
+                <>
+                    <CryptoValueWrapper>
+                        <CoinBalance value={cryptoValue} symbol={symbol} />
+                    </CryptoValueWrapper>
+                    <FiatValueWrapper>
+                        <HiddenPlaceholder>
+                            <FiatValue amount={cryptoValue} symbol={symbol}>
+                                {({ value }) => (value ? <Badge isSmall>{value}</Badge> : null)}
+                            </FiatValue>
+                        </HiddenPlaceholder>
+                    </FiatValueWrapper>
+                    <GraphWrapper>
+                        <LastWeekGraph
+                            lastWeekData={lastWeekData}
+                            symbol={symbol}
+                            localCurrency={localCurrency}
+                        />
+                    </GraphWrapper>
+                    <FiatRateWrapper>
+                        <FiatValue amount={cryptoValue} symbol={symbol}>
+                            {({ rate }) =>
+                                rate ? (
+                                    <Badge isSmall isGray>
+                                        1 {symbol.toUpperCase()} = {rate}
+                                    </Badge>
+                                ) : (
+                                    <NoRatesTooltip />
+                                )
+                            }
+                        </FiatValue>
+                    </FiatRateWrapper>
+                </>
+            )}
         </Wrapper>
     );
 });
 
-export default connect(mapStateToProps)(Asset);
+export default Asset;

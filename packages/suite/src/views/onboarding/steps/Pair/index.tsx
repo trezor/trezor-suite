@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 import { Button } from '@trezor/components';
 import { OnboardingButton, Text, Wrapper, Loaders } from '@onboarding-components';
@@ -7,6 +8,10 @@ import { isWebUSB } from '@suite-utils/transport';
 
 import Bridge from './components/Bridge/Container';
 import { Props } from './Container';
+
+const StyledImage = styled(Image)`
+    flex: 1;
+`;
 
 const PairDeviceStep = (props: Props) => {
     const { device, transport } = props;
@@ -28,7 +33,7 @@ const PairDeviceStep = (props: Props) => {
         return device && device.type === 'unreadable';
     };
 
-    const hasNoTransport = () => transport && !transport.type;
+    const hasTransport = () => transport && transport.type;
 
     const isDetectingDevice = () => {
         return Boolean((device && device.features && device.connected) || isDeviceUnreadable());
@@ -49,27 +54,38 @@ const PairDeviceStep = (props: Props) => {
                 {!isDetectingDevice() && <Loaders.Dots />}
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
-                <WebusbButton ready={imageLoaded} />
-                {!hasNoTransport() && (
+                {!hasTransport() && <Bridge />}
+
+                {hasTransport() && (
                     <>
-                        <Image
-                            image="CONNECT_DEVICE"
-                            onLoad={() => setImageLoaded(true)}
-                            onError={() => setImageLoaded(true)}
-                        />
                         {isDetectingDevice() && (
                             <>
+                                {getConnectedDeviceStatus() === 'initialized' && (
+                                    <>
+                                        <Text>
+                                            <Translation id="ONBOARDING_PAIR_ALREADY_INITIALIZED" />
+                                        </Text>
+                                        <StyledImage image="UNI_WARNING" />
+                                        <Wrapper.Controls>
+                                            <OnboardingButton.Cta
+                                                data-test="@onboarding/button-continue"
+                                                onClick={() => props.goto('suite-index')}
+                                            >
+                                                <Translation id="TR_GO_TO_SUITE" />
+                                            </OnboardingButton.Cta>
+                                        </Wrapper.Controls>
+                                    </>
+                                )}
                                 {getConnectedDeviceStatus() === 'ok' && (
                                     <>
                                         <Text>
                                             <Translation id="TR_FOUND_OK_DEVICE" />
                                         </Text>
+                                        <StyledImage image="UNI_SUCCESS" />
                                         <Wrapper.Controls>
                                             <OnboardingButton.Cta
                                                 data-test="@onboarding/button-continue"
-                                                onClick={() =>
-                                                    props.onboardingActions.goToNextStep()
-                                                }
+                                                onClick={() => props.goToNextStep()}
                                             >
                                                 <Translation id="TR_CONTINUE" />
                                             </OnboardingButton.Cta>
@@ -81,6 +97,7 @@ const PairDeviceStep = (props: Props) => {
                                         <Text>
                                             <Translation id="TR_YOUR_DEVICE_IS_CONNECTED_BUT_UNREADABLE" />
                                         </Text>
+                                        <StyledImage image="UNI_WARNING" />
                                         <Wrapper.Controls>
                                             <OnboardingButton.Cta
                                                 onClick={() => TrezorConnect.disableWebUSB()}
@@ -88,6 +105,14 @@ const PairDeviceStep = (props: Props) => {
                                                 <Translation id="TR_TRY_BRIDGE" />
                                             </OnboardingButton.Cta>
                                         </Wrapper.Controls>
+                                    </>
+                                )}
+                                {getConnectedDeviceStatus() === 'in-bootloader' && (
+                                    <>
+                                        <Text>
+                                            <Translation id="TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER" />
+                                        </Text>
+                                        <StyledImage image="UNI_WARNING" />
                                     </>
                                 )}
                                 {getConnectedDeviceStatus() === 'seedless' && (
@@ -100,6 +125,11 @@ const PairDeviceStep = (props: Props) => {
 
                         {!isDetectingDevice() && (
                             <>
+                                <StyledImage
+                                    image="CONNECT_DEVICE"
+                                    onLoad={() => setImageLoaded(true)}
+                                    onError={() => setImageLoaded(true)}
+                                />
                                 {isWebUSB(transport) && (
                                     <>
                                         {!isDeviceUnreadable() && (
@@ -123,13 +153,10 @@ const PairDeviceStep = (props: Props) => {
                         )}
                     </>
                 )}
-                {hasNoTransport() && <Bridge />}
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
                 <Wrapper.Controls>
-                    <OnboardingButton.Back
-                        onClick={() => props.onboardingActions.goToPreviousStep()}
-                    >
+                    <OnboardingButton.Back onClick={() => props.goToPreviousStep()}>
                         <Translation id="TR_BACK" />
                     </OnboardingButton.Back>
                 </Wrapper.Controls>

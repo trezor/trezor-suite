@@ -83,14 +83,16 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
             feeLevels: 'smart',
         },
     });
+
     if (result.success) {
         const { payload } = result;
         const partial: Partial<FeeState> = {};
         partial[network.symbol] = {
             blockHeight: blockchainInfo.blockHeight,
             ...payload,
-            levels: payload.levels.map(l => ({ ...l, value: l.feePerUnit })),
+            levels: payload.levels.map(level => ({ ...level, value: level.feePerUnit })),
         };
+
         dispatch({
             type: BLOCKCHAIN.UPDATE_FEE,
             payload: partial,

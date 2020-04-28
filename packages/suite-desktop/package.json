@@ -8,8 +8,6 @@
     "main": "dist/electron.js",
     "scripts": {
         "dev": "yarn workspace @trezor/suite-data copy-static-files && yarn build:lib && electron .",
-        "preelectron-pack": "yarn build",
-        "pack": "electron-builder --dir",
         "clean": "rimraf ./build-electron && rimraf ./build && rimraf ./dist",
         "build:lib": "tsc --project src-electron/tsconfig.json",
         "build:desktop": "rimraf ./build && next build && next export -o build && yarn build:lib",
@@ -102,7 +100,7 @@
         "@types/react-redux": "^7.1.7",
         "electron": "^8.2.0",
         "electron-builder": "^22.4.1",
-        "git-revision-webpack-plugin": "^3.0.4",
+        "git-revision-webpack-plugin": "^3.0.6",
         "next-plugin-custom-babel-config": "^1.0.2",
         "next-redux-wrapper": "^5.0.0",
         "next-transpile-modules": "^2.3.1"

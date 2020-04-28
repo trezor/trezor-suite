@@ -68,18 +68,16 @@ const FreshAddress = ({
               },
           ];
     const unrevealed = unused.filter(a => !addresses.find(r => r.path === a.path));
-    const limitExceeded = isBitcoin ? unrevealed.length < 1 : false; // xrp, eth address can be reused
     const addressLabel = isBitcoin ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS';
-    const firstFreshAddress = account.addresses ? unrevealed[0] : unused[0];
+    // NOTE: unrevealed[0] can be undefined (limit exceeded)
+    const firstFreshAddress = isBitcoin ? unrevealed[0] : unused[0];
 
-    const getAddressValue = (address: AccountAddress) => {
-        const truncatedAddress = `${address.address.substring(0, 15)}…`;
-        if (isBitcoin) {
-            return limitExceeded
-                ? intl.formatMessage(messages.RECEIVE_ADDRESS_LIMIT_EXCEEDED)
-                : truncatedAddress;
+    const getAddressValue = (address?: AccountAddress) => {
+        if (!address) {
+            return intl.formatMessage(messages.RECEIVE_ADDRESS_LIMIT_EXCEEDED);
         }
 
+        const truncatedAddress = `${address.address.substring(0, 15)}…`;
         // eth, ripple: already revealed address will show in its full form
         const isRevealed = addresses ? addresses.find(f => f.address === address.address) : false;
         return isRevealed ? address.address : truncatedAddress;
@@ -87,7 +85,7 @@ const FreshAddress = ({
 
     const addressValue = getAddressValue(firstFreshAddress);
     const addressPath =
-        isBitcoin && !limitExceeded
+        isBitcoin && firstFreshAddress
             ? `/${parseBIP44Path(firstFreshAddress.path)!.addrIndex}`
             : undefined;
 
@@ -103,7 +101,7 @@ const FreshAddress = ({
             <StyledButton
                 data-test="@wallet/receive/reveal-address-button"
                 onClick={() => showAddress(firstFreshAddress.path, firstFreshAddress.address)}
-                isDisabled={disabled || locked || limitExceeded}
+                isDisabled={disabled || locked || !firstFreshAddress}
                 isLoading={!disabled && locked}
             >
                 <Translation id="RECEIVE_ADDRESS_REVEAL" />

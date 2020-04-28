@@ -1,8 +1,9 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link, H2 } from '@trezor/components';
+import styled from 'styled-components';
 
+import { Link, H2 } from '@trezor/components';
 import { Translation, Image } from '@suite-components';
 import { SUPPORT_URL } from '@suite-constants/urls';
 import * as STEP from '@onboarding-constants/steps';
@@ -11,6 +12,10 @@ import * as routerActions from '@suite-actions/routerActions';
 import { Text, Wrapper, OnboardingButton } from '@onboarding-components';
 
 import { AppState, Dispatch } from '@suite-types';
+
+const StyledImage = styled(Image)`
+    flex: 1;
+`;
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     actionAlt: bindActionCreators(onboardingActions.removePath, dispatch),
@@ -28,39 +33,41 @@ const IsNotNewDevice = ({ actionAlt, closeModalApp, device }: Props) => {
     if (!device || !device.features) return null;
 
     return (
-        <>
-            <H2>
-                <Translation id="TR_IS_NOT_NEW_DEVICE_HEADING" />
-            </H2>
-            <Text>
-                <Translation id="TR_IS_NOT_NEW_DEVICE" />
-            </Text>
-            <Image image="UNI_WARNING" />
-            <Wrapper.Controls>
-                <Link href={SUPPORT_URL}>
-                    <OnboardingButton.Cta style={{ width: '100%' }}>
-                        <Translation id="TR_CONTACT_SUPPORT" />
-                    </OnboardingButton.Cta>
-                </Link>
+        <Wrapper.Step>
+            <Wrapper.StepBody>
+                <H2>
+                    <Translation id="TR_IS_NOT_NEW_DEVICE_HEADING" />
+                </H2>
+                <Text>
+                    <Translation id="TR_IS_NOT_NEW_DEVICE" />
+                </Text>
+                <StyledImage image="UNI_WARNING" />
+                <Wrapper.Controls>
+                    <Link href={SUPPORT_URL}>
+                        <OnboardingButton.Cta style={{ width: '100%' }}>
+                            <Translation id="TR_CONTACT_SUPPORT" />
+                        </OnboardingButton.Cta>
+                    </Link>
 
-                {device.mode !== 'initialize' && (
-                    <OnboardingButton.Alt
-                        onClick={() => closeModalApp()}
-                        data-test="@onboarding/unexpected-state/go-to-suite-button"
-                    >
-                        Go to Suite
-                    </OnboardingButton.Alt>
-                )}
-                {device.mode === 'initialize' && device.firmware !== 'none' && (
-                    <OnboardingButton.Alt
-                        onClick={() => actionAlt([STEP.PATH_NEW])}
-                        data-test="@onboarding/unexpected-state/use-it-anyway-button"
-                    >
-                        Use it anyway
-                    </OnboardingButton.Alt>
-                )}
-            </Wrapper.Controls>
-        </>
+                    {device.mode !== 'initialize' && (
+                        <OnboardingButton.Alt
+                            onClick={() => closeModalApp()}
+                            data-test="@onboarding/unexpected-state/go-to-suite-button"
+                        >
+                            <Translation id="TR_GO_TO_SUITE" />
+                        </OnboardingButton.Alt>
+                    )}
+                    {device.mode === 'initialize' && device.firmware !== 'none' && (
+                        <OnboardingButton.Alt
+                            onClick={() => actionAlt([STEP.PATH_NEW])}
+                            data-test="@onboarding/unexpected-state/use-it-anyway-button"
+                        >
+                            <Translation id="TR_USE_IT_ANYWAY" />
+                        </OnboardingButton.Alt>
+                    )}
+                </Wrapper.Controls>
+            </Wrapper.StepBody>
+        </Wrapper.Step>
     );
 };
 

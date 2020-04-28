@@ -1,19 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables, H2, Button } from '@trezor/components';
+import { colors, H2, Button, Link } from '@trezor/components';
 import { Translation, Image } from '@suite-components';
+import { Account } from '@wallet-types';
+import { getNetwork } from '@wallet-utils/accountUtils';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-`;
-
-const Content = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 520px;
 `;
 
 const Title = styled(H2)`
@@ -22,57 +17,30 @@ const Title = styled(H2)`
     color: ${colors.BLACK0};
 `;
 
-const Description = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.TINY};
-    text-align: center;
-    color: ${colors.BLACK50};
-    margin-bottom: 10px;
-`;
-
 const StyledImage = styled(props => <Image {...props} />)`
     width: 340px;
     height: 280px;
     margin-bottom: 40px;
 `;
 
-const Actions = styled.div`
-    display: flex;
-    justify-content: center;
-    width: 100%;
-`;
-
-const ActionButton = styled(Button)`
-    min-width: 160px;
-`;
-
 interface Props {
-    receive: () => any;
-    buy: () => any;
+    account: Account;
 }
 
-const NoTransactions = ({ receive }: Props) => {
+export default ({ account }: Props) => {
+    const network = getNetwork(account.symbol)!;
+    const explorerUrl = `${network.explorer.account}${account.descriptor}`;
     return (
         <Wrapper>
-            <Content>
-                <Title>
-                    <Translation id="TR_ACCOUNT_IS_EMPTY" />
-                </Title>
-                <Description>
-                    <Translation id="TR_ONCE_YOU_SEND_OR_RECEIVE" />
-                </Description>
-                <StyledImage image="EMPTY_WALLET" />
-                <Actions>
-                    <ActionButton variant="primary" onClick={receive}>
-                        <Translation id="TR_RECEIVE" />
-                    </ActionButton>
-                    {/* <ActionButton variant="primary" onClick={buy}>
-                        <Translation id="TR_BUY" />
-                    </ActionButton> */}
-                </Actions>
-            </Content>
+            <Title>
+                <Translation id="TR_TRANSACTIONS_NOT_AVAILABLE" />
+            </Title>
+            <StyledImage image="EMPTY_WALLET" />
+            <Button variant="primary" icon="EXTERNAL_LINK" alignIcon="right">
+                <Link variant="nostyle" href={explorerUrl}>
+                    <Translation id="TR_SHOW_DETAILS_IN_BLOCK_EXPLORER" />
+                </Link>
+            </Button>
         </Wrapper>
     );
 };
-
-export default NoTransactions;

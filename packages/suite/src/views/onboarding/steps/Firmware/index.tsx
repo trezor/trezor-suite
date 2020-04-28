@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import { Tooltip } from '@trezor/components';
+import { Tooltip, Button } from '@trezor/components';
 
-import { Loaders, OnboardingButton, OnboardingIcon, Text, Wrapper } from '@onboarding-components';
-import { Translation, Image } from '@suite-components';
+import { Loaders, OnboardingButton, Text, Wrapper } from '@onboarding-components';
+import { Translation, Image, WebusbButton } from '@suite-components';
 import messages from '@suite/support/messages';
 import { InitImg, SuccessImg } from '@firmware-components';
 import ContinueButton from './components/ContinueButton';
 import InstallButton from './components/InstallButton';
+import { isWebUSB } from '@suite-utils/transport';
 
 import { Props } from './Container';
 
@@ -17,8 +18,13 @@ const InlineLink = styled.span`
     cursor: pointer;
 `;
 
+const StyledImage = styled(Image)`
+    flex: 1;
+`;
+
 const FirmwareStep = ({
     device,
+    transport,
     firmware,
     goToNextStep,
     goToPreviousStep,
@@ -29,6 +35,8 @@ const FirmwareStep = ({
     const { status, error, btcOnly } = firmware;
     const isConnected = !!device;
     const isInBootloader = Boolean(device && device.features && device.mode === 'bootloader');
+
+    const [imageLoaded, setImageLoaded] = useState(false);
 
     const getVersionStr = () => {
         if (device && device.features) {
@@ -45,6 +53,9 @@ const FirmwareStep = ({
     };
 
     const getMessageForStatus = () => {
+        if (['wait-for-reboot', 'unplug'].includes(status) && !device && isWebUSB(transport)) {
+            return intl.formatMessage(messages.TR_PAIR_YOUR_TREZOR);
+        }
         if (status === 'unplug' && !device) {
             return intl.formatMessage(messages.TR_CONNECT_YOUR_DEVICE_AGAIN);
         }
@@ -74,7 +85,25 @@ const FirmwareStep = ({
             <Wrapper.StepBody>
                 {status === 'initial' && (
                     <>
-                        {!device && <Translation id="TR_CONNECT_YOUR_DEVICE" />}
+                        {!device && (
+                            <>
+                                <Text>
+                                    <Translation id="TR_CONNECT_YOUR_DEVICE" />
+                                </Text>
+                                <StyledImage
+                                    onLoad={() => setImageLoaded(true)}
+                                    onError={() => setImageLoaded(true)}
+                                    image="CONNECT_DEVICE"
+                                />
+                                {isWebUSB(transport) && (
+                                    <WebusbButton ready={imageLoaded}>
+                                        <Button icon="SEARCH">
+                                            <Translation id="TR_CHECK_FOR_DEVICES" />
+                                        </Button>
+                                    </WebusbButton>
+                                )}
+                            </>
+                        )}
 
                         {getFirmwareStatus() === 'none' && (
                             <>
@@ -180,7 +209,7 @@ const FirmwareStep = ({
                             Ups. Something went wrong with this fw update. Ended up with error:{' '}
                             {error}
                         </Text>
-                        <Image image="UNI_ERROR" />
+                        <StyledImage image="UNI_ERROR" />
                     </>
                 )}
 
@@ -194,22 +223,31 @@ const FirmwareStep = ({
                 ].includes(status) && (
                     <>
                         <InitImg model={model} />
-
-                        <Text>
-                            {getMessageForStatus() && (
-                                <>
+                        {getMessageForStatus() && (
+                            <>
+                                <Text>
                                     {getMessageForStatus()}
                                     <Loaders.Dots />
-                                </>
-                            )}
-                        </Text>
-                        {status === 'unplug' && isConnected && (
-                            <OnboardingIcon.ConnectDevice model={1} />
+                                </Text>
+                            </>
                         )}
                     </>
                 )}
                 {/* buttons section */}
                 <Wrapper.Controls>
+                    {/* 
+                    special case, when doing firmware update with webusb transport, device must be 
+                    paired again after firmware update is done 
+                    */}
+                    {['unplug', 'wait-for-reboot'].includes(status) &&
+                        !device &&
+                        isWebUSB(transport) && (
+                            <WebusbButton ready>
+                                <Button icon="SEARCH">
+                                    <Translation id="TR_CHECK_FOR_DEVICES" />
+                                </Button>
+                            </WebusbButton>
+                        )}
                     {['initial', 'done', 'partially-done'].includes(status) && (
                         <>
                             {['none', 'unknown', 'required', 'outdated'].includes(

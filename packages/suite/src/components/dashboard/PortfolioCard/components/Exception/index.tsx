@@ -1,53 +1,177 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components';
-import { Image } from '@suite-components';
+import { colors, variables, Button, IconProps } from '@trezor/components';
+import { Image, Translation } from '@suite-components';
+import { useDeviceActionLocks, useDevice } from '@suite-hooks';
+import { useDispatch } from 'react-redux';
+import * as discoveryActions from '@wallet-actions/discoveryActions';
+import * as suiteActions from '@suite-actions/suiteActions';
+import * as modalActions from '@suite-actions/modalActions';
+import * as routerActions from '@suite-actions/routerActions';
+import * as accountUtils from '@wallet-utils/accountUtils';
+import { Discovery, DiscoveryStatus } from '@wallet-types';
 
 const Wrapper = styled.div`
     display: flex;
-    padding: 54px 42px;
+    justify-content: center;
     align-items: center;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        flex-direction: column;
-    }
-`;
-
-const Content = styled.div`
-    display: flex;
     flex-direction: column;
+    padding: 20px;
+    width: 100%;
 `;
 
 const Title = styled.div`
-    display: flex;
     font-size: ${variables.FONT_SIZE.H2};
     color: ${colors.BLACK0};
-    margin-bottom: 30px;
+`;
+
+const Description = styled.div`
+    font-size: ${variables.FONT_SIZE.SMALL};
+    color: ${colors.BLACK50};
     text-align: center;
 `;
 
 const StyledImage = styled(props => <Image {...props} />)`
-    display: flex;
-    width: 220px;
-    height: 180px;
-    margin-right: 52px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        margin-bottom: 20px;
-    }
+    width: 80px;
+    height: 80px;
+    margin: 20px 0px;
 `;
 
-type Props = React.HTMLAttributes<HTMLDivElement>;
+const Actions = styled.div`
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+`;
 
-const Exception = (props: Props) => {
+interface CTA {
+    label?: React.ComponentProps<typeof Translation>['id'];
+    variant?: React.ComponentProps<typeof Button>['variant'];
+    action: () => void;
+    icon?: IconProps['icon'];
+    testId?: string;
+}
+
+interface ContainerProps {
+    title: React.ComponentProps<typeof Translation>['id'];
+    description: React.ComponentProps<typeof Translation>['id'] | JSX.Element;
+    cta: CTA | CTA[];
+}
+
+// Common wrapper for all views
+const Container = ({ title, description, cta }: ContainerProps) => {
+    const [isEnabled] = useDeviceActionLocks();
+    const actions = Array.isArray(cta) ? cta : [cta];
     return (
-        <Wrapper {...props}>
-            <StyledImage image="EMPTY_DASHBOARD" />
-            <Content>
-                <Title>Exception page</Title>
-            </Content>
+        <Wrapper>
+            <Title>
+                <Translation id={title} />
+            </Title>
+            <Description>
+                {typeof description === 'string' ? <Translation id={description} /> : description}
+            </Description>
+            <StyledImage image="UNI_ERROR" />
+            <Actions>
+                {actions.map(a => (
+                    <Button
+                        key={a.label}
+                        variant={a.variant || 'primary'}
+                        icon={a.icon || 'PLUS'}
+                        isLoading={!isEnabled}
+                        onClick={a.action}
+                        data-test={a.testId}
+                    >
+                        <Translation id={a.label || 'TR_RETRY'} />
+                    </Button>
+                ))}
+            </Actions>
         </Wrapper>
     );
 };
 
-export default Exception;
+interface Props {
+    exception: Extract<DiscoveryStatus, { status: 'exception' }>;
+    discovery?: Discovery;
+}
+
+const discoveryFailedMessage = (discovery?: Discovery) => {
+    if (!discovery) return '';
+    if (discovery.error) return <div>{discovery.error}</div>;
+    // group all failed networks into array of errors
+    const networkError: string[] = [];
+    const details = discovery.failed.reduce((value, account) => {
+        const n = accountUtils.getNetwork(account.symbol)!;
+        if (networkError.includes(account.symbol)) return value;
+        networkError.push(account.symbol);
+        return value.concat(
+            <div key={account.symbol}>
+                {n.name}: {account.error}
+            </div>,
+        );
+    }, [] as JSX.Element[]);
+    return <>{details}</>;
+};
+
+export default ({ exception, discovery }: Props) => {
+    const dispatch = useDispatch();
+    const { device } = useDevice();
+    switch (exception.type) {
+        case 'auth-failed':
+            return (
+                <Container
+                    title="TR_ACCOUNT_EXCEPTION_AUTH_ERROR"
+                    description="TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC"
+                    cta={{ action: () => dispatch(suiteActions.authorizeDevice()) }}
+                />
+            );
+        case 'auth-confirm-failed':
+            return (
+                <Container
+                    title="TR_AUTH_CONFIRM_FAILED_TITLE"
+                    description="TR_AUTH_CONFIRM_FAILED_DESC"
+                    cta={{
+                        action: () => dispatch(suiteActions.authConfirm()),
+                        testId: '@passphrase-mismatch/retry-button',
+                    }}
+                />
+            );
+        case 'discovery-empty':
+            return (
+                <Container
+                    title="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY"
+                    description="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC"
+                    cta={[
+                        {
+                            action: () => dispatch(routerActions.goto('settings-wallet')),
+                            variant: 'secondary',
+                            label: 'TR_COIN_SETTINGS',
+                        },
+                        {
+                            action: () =>
+                                dispatch(
+                                    modalActions.openModal({
+                                        type: 'add-account',
+                                        device: device!,
+                                    }),
+                                ),
+                            label: 'TR_ADD_ACCOUNT',
+                        },
+                    ]}
+                />
+            );
+        case 'discovery-failed':
+            return (
+                <Container
+                    title="TR_DASHBOARD_DISCOVERY_ERROR"
+                    description={
+                        <Translation
+                            id="TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC"
+                            values={{ details: discoveryFailedMessage(discovery) }}
+                        />
+                    }
+                    cta={{ action: () => dispatch(discoveryActions.restart()) }}
+                />
+            );
+        default:
+            return null;
+    }
+};
