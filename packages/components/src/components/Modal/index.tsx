@@ -264,12 +264,12 @@ const Modal = ({
     cancelable,
     onCancel,
     size = 'large',
-    padding,
+    padding = getPadding(size),
     noBackground = false,
     useFixedWidth = true,
-    fixedWidth,
+    fixedWidth = getFixedWidth(size),
     useFixedHeight = false,
-    fixedHeight,
+    fixedHeight = FIXED_HEIGHT,
     ...rest
 }: Props) => {
     const escPressed = useKeyPress('Escape');
@@ -289,11 +289,11 @@ const Modal = ({
         <ModalWindow
             ref={ref}
             size={size}
-            padding={padding || getPadding(size)}
+            padding={padding}
             useFixedWidth={useFixedWidth}
-            fixedWidth={fixedWidth || getFixedWidth(size)}
+            fixedWidth={fixedWidth}
             useFixedHeight={useFixedHeight}
-            fixedHeight={fixedHeight || FIXED_HEIGHT}
+            fixedHeight={fixedHeight}
             bottomBar={bottomBar}
             noBackground={noBackground}
             {...rest}
