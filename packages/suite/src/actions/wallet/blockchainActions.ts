@@ -58,7 +58,11 @@ export const preloadFeeInfo = () => async (dispatch: Dispatch) => {
             partial[network.symbol] = {
                 blockHeight: 0,
                 ...payload,
-                levels: payload.levels.map(l => ({ ...l, value: l.feePerUnit })),
+                levels: payload.levels.map(l => ({
+                    ...l,
+                    value: l.feePerUnit,
+                    label: l.label || 'normal',
+                })),
             };
         }
     });
@@ -72,11 +76,12 @@ export const preloadFeeInfo = () => async (dispatch: Dispatch) => {
 export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getState: GetState) => {
     const network = getNetwork(symbol.toLowerCase());
     if (!network) return;
-    let payload;
     const blockchainInfo = getState().wallet.blockchain[network.symbol];
     const feeInfo = getState().wallet.fees[network.symbol];
 
     if (feeInfo.blockHeight > 0 && blockchainInfo.blockHeight - feeInfo.blockHeight < 10) return;
+
+    let payload;
 
     if (network.networkType === 'ethereum') {
         payload = {
@@ -84,8 +89,8 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
             request: {
                 blocks: [2],
                 specific: {
-                    from: '0x73d0385F4d8E00C5e6504C6030F47BF6212736A8',
-                    to: '0x73d0385F4d8E00C5e6504C6030F47BF6212736A8',
+                    from: '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B',
+                    to: '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B',
                 },
             },
         };
@@ -110,7 +115,7 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
             ...payload,
             levels: payload.levels.map(l => ({
                 ...l,
-                label: l.label,
+                label: l.label || 'normal',
                 value: l.feePerUnit,
             })),
         };
