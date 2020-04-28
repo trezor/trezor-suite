@@ -27,6 +27,7 @@ const Col = styled.div<{ gray?: boolean }>`
     flex-direction: column;
     align-items: center;
     width: 405px;
+    height: 100%;
     padding: 40px 40px 20px 40px;
 
     @media only screen and (max-width: ${SCREEN_SIZE.MD}) {
