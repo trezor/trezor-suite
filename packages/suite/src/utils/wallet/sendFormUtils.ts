@@ -53,9 +53,9 @@ export const calculateTotal = (amount: string, fee: string): string => {
     }
 };
 
-export const calculateMax = (balance: string, fee: string): string => {
+export const calculateMax = (availableBalance: string, fee: string): string => {
     try {
-        const balanceBig = new BigNumber(balance);
+        const balanceBig = new BigNumber(availableBalance);
         const max = balanceBig.minus(fee);
         if (max.isLessThan(0)) return '0';
         return max.toFixed();
