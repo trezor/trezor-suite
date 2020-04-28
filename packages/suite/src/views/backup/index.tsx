@@ -67,7 +67,8 @@ const Backup = (props: Props) => {
     const backupStatuses = ['initial', 'in-progress', 'finished'] as const;
 
     if (modal) {
-        return modal;
+        // modal is shown as standalone not inner modal as expected
+        return <Modal useFixedHeight>{modal}</Modal>;
     }
 
     if (!device || !device.features) {
