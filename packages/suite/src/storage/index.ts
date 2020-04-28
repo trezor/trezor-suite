@@ -8,7 +8,7 @@ import { AcquiredDevice } from '@suite-types';
 import { Account, Discovery, CoinFiatRates, WalletAccountTransaction } from '@wallet-types';
 import { migrate } from './migrations';
 
-const VERSION = 12;
+const VERSION = 13;
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
