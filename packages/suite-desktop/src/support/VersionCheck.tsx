@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Loading, Translation } from '@suite-components';
-import { Modal, Button, P, Link, colors } from '@trezor/components';
+import { Modal, Button, Link, colors } from '@trezor/components';
 import { isDev } from '@suite-utils/build';
 
 interface Props {
