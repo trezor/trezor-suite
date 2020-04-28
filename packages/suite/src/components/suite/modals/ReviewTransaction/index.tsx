@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Translation, AccountLabeling } from '@suite-components';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
