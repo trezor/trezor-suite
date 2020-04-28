@@ -43,9 +43,10 @@ export const ITEMS = [
         route: 'suite-index',
         title: <Translation id="TR_BUY" />,
         icon: 'PLUS',
-        isHidden: (account: Account) => {
-            const network = NETWORKS.find(n => n.symbol === account.symbol);
-            return !(network && network.testnet);
+        isHidden: (_account: Account) => {
+            // const network = NETWORKS.find(n => n.symbol === account.symbol);
+            // return network && network.testnet;
+            return true;
         },
     },
 ] as const;
