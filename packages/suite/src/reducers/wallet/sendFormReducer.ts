@@ -147,14 +147,6 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 return draft;
             }
 
-            // change loading state in "Address"
-            case SEND.ADDRESS_LOADING: {
-                const { isLoading, outputId } = action;
-                const output = getOutput(draft.outputs, outputId);
-                output.address.isLoading = isLoading;
-                return draft;
-            }
-
             // change select "Currency"
             case SEND.HANDLE_SELECT_CURRENCY_CHANGE: {
                 const { outputId, localCurrency } = action;
