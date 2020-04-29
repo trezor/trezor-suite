@@ -50,12 +50,10 @@ const Content = styled.div`
     flex: 1;
     flex-direction: column;
     color: ${colors.BLACK50};
-    margin-bottom: 32px;
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 const InputWrapper = styled(Content)`
-    margin-bottom: 32px;
     width: 100%;
 `;
 
@@ -69,7 +67,7 @@ const Actions = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* margin-top: 20px; */
+    margin-top: 32px;
 `;
 
 const ActionButton = styled(Button)`
@@ -175,17 +173,6 @@ const PassphraseTypeCard = (props: Props) => {
             {props.title && <WalletTitle>{props.title}</WalletTitle>}
             {props.description && <Content>{props.description}</Content>}
             <Padding singleColModal={props.singleColModal}>
-                {authConfirmation && (
-                    <Content>
-                        <Checkbox
-                            data-test="@passphrase/confirm-checkbox"
-                            onClick={() => setEnabled(!enabled)}
-                            isChecked={enabled}
-                        >
-                            <Translation id="TR_I_UNDERSTAND_PASSPHRASE" />
-                        </Checkbox>
-                    </Content>
-                )}
                 {props.showPassphraseInput && (
                     <InputWrapper>
                         <PassphraseInput
@@ -209,6 +196,17 @@ const PassphraseTypeCard = (props: Props) => {
                         />
                         {!isTooLong && <PasswordStrengthIndicator password={value} />}
                     </InputWrapper>
+                )}
+                {authConfirmation && (
+                    <Content>
+                        <Checkbox
+                            data-test="@passphrase/confirm-checkbox"
+                            onClick={() => setEnabled(!enabled)}
+                            isChecked={enabled}
+                        >
+                            <Translation id="TR_I_UNDERSTAND_PASSPHRASE" />
+                        </Checkbox>
+                    </Content>
                 )}
                 <Actions>
                     <ActionButton
