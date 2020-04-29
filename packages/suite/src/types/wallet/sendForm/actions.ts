@@ -21,7 +21,8 @@ export type SendFormActions =
           amount: string;
           error?: typeof VALIDATION_ERRORS.XRP_CANNOT_SEND_LESS_THAN_RESERVE;
           decimals: number;
-          availableBalance: Account['availableBalance'];
+          symbol: Account['symbol'];
+          availableBalance: Account['formattedBalance'];
           isDestinationAccountEmpty: boolean | null;
           reserve: string | null;
       }

@@ -28,7 +28,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     const feeInSatoshi = send.selectedFee.feePerUnit;
     let tx;
     const totalSpentBig = new Bignumber(calculateTotal(amountInSatoshi, feeInSatoshi));
-    const max = new Bignumber(calculateMax(availableBalance, feeInSatoshi, account));
+    const max = new Bignumber(calculateMax(availableBalance, feeInSatoshi));
     const payloadData = {
         totalSpent: totalSpentBig.toString(),
         fee: feeInSatoshi,

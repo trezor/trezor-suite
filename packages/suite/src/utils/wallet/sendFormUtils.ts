@@ -53,16 +53,10 @@ export const calculateTotal = (amount: string, fee: string): string => {
     }
 };
 
-export const calculateMax = (balance: string, fee: string, account?: Account): string => {
+export const calculateMax = (availableBalance: string, fee: string): string => {
     try {
-        const balanceBig = new BigNumber(balance);
-        let max = balanceBig.minus(fee);
-
-        if (account && account.networkType === 'ripple') {
-            const { misc } = account;
-            max = max.minus(misc.reserve);
-        }
-
+        const balanceBig = new BigNumber(availableBalance);
+        const max = balanceBig.minus(fee);
         if (max.isLessThan(0)) return '0';
         return max.toFixed();
     } catch (error) {

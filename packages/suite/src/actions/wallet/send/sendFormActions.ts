@@ -178,6 +178,8 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     const isValidAmount = hasDecimals(amount, network.decimals);
     const { isDestinationAccountEmpty } = send.networkTypeRipple;
     const reserve = getReserveInXrp(account);
+    const { availableBalance, symbol } = account;
+    const { decimals } = network;
 
     if (fiatNetwork && isValidAmount) {
         const rate = fiatNetwork.current?.rates[output.localCurrency.value.value];
@@ -195,8 +197,9 @@ export const handleAmountChange = (outputId: number, amount: string) => (
         type: SEND.HANDLE_AMOUNT_CHANGE,
         outputId,
         amount,
-        decimals: network.decimals,
-        availableBalance: account.formattedBalance,
+        symbol,
+        decimals,
+        availableBalance,
         isDestinationAccountEmpty,
         reserve,
     });
@@ -214,6 +217,7 @@ export const handleSelectCurrencyChange = (
     const { fiat, send, selectedAccount } = getState().wallet;
     if (!fiat || !send || selectedAccount.status !== 'loaded') return null;
     const { account, network } = selectedAccount;
+    const { availableBalance, symbol } = account;
 
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
@@ -234,12 +238,14 @@ export const handleSelectCurrencyChange = (
                 outputId,
                 fiatValue,
             });
+
             dispatch({
                 type: SEND.HANDLE_AMOUNT_CHANGE,
                 outputId,
+                symbol,
                 amount: amountBigNumber.toString(),
                 decimals: network.decimals,
-                availableBalance: account.formattedBalance,
+                availableBalance,
                 isDestinationAccountEmpty,
                 reserve,
             });
@@ -266,7 +272,7 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
     if (!fiat || !send || selectedAccount.status !== 'loaded') return null;
     const { account, network } = selectedAccount;
     const { isDestinationAccountEmpty } = send.networkTypeRipple;
-
+    const { symbol, availableBalance } = account;
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
     if (!fiatNetwork) return null;
@@ -287,7 +293,8 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
         outputId,
         amount,
         decimals: network.decimals,
-        availableBalance: account.formattedBalance,
+        symbol,
+        availableBalance,
         isDestinationAccountEmpty,
         reserve,
     });
@@ -329,6 +336,7 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
         dispatch({
             type: SEND.HANDLE_AMOUNT_CHANGE,
             outputId,
+            symbol: account.symbol,
             amount: maxBig.isLessThanOrEqualTo(0) ? '0' : maxBig.toFixed(network.decimals), // TODO: why is this here? shoudnt formatNetworkAmount do the job?
             decimals: network.decimals,
             availableBalance: account.availableBalance,
@@ -340,6 +348,7 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
             type: SEND.HANDLE_AMOUNT_CHANGE,
             outputId,
             amount: '0',
+            symbol: account.symbol,
             decimals: network.decimals,
             availableBalance: account.availableBalance,
             isDestinationAccountEmpty,
