@@ -2,6 +2,7 @@ import TrezorConnect, {
     BlockchainBlock,
     BlockchainNotification,
     BlockchainError,
+    BlockchainEstimateFee,
 } from 'trezor-connect';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import * as accountActions from '@wallet-actions/accountActions';
@@ -81,17 +82,7 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
 
     if (feeInfo.blockHeight > 0 && blockchainInfo.blockHeight - feeInfo.blockHeight < 10) return;
 
-    let payload: {
-        coin: Network['symbol'];
-        request: {
-            blocks?: number[];
-            specific?: {
-                from: string;
-                to: string;
-            };
-            feeLevels?: 'preloaded' | 'smart' | undefined;
-        };
-    };
+    let payload: BlockchainEstimateFee;
 
     if (network.networkType === 'ethereum') {
         payload = {
