@@ -36,6 +36,8 @@ module.exports = on => {
         const response = await controller.send({ type: 'bridge-start' });
         await controller.disconnect();
 
+        // console.log('resposne', response)
+
         if (browser.name === 'chrome') {
             launchOptions.args.push('--disable-dev-shm-usage');
             return launchOptions;

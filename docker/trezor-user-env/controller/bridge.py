@@ -16,19 +16,23 @@ proc = None
 #     ps.wait()
 #     return output
 
-
-def loader():
+# todo: checking http response is suboptimal, it would be better to check if there is process running
+def is_running():
     TREZORD_HOST = "http://0.0.0.0:21325"
     CONNECTION = requests.Session()
     CONNECTION.headers.update({"Origin": "https://python.trezor.io"})
+    r = CONNECTION.get("http://0.0.0.0:21325/status/")
+    if r.status_code == 200:
+        return True
+    time.sleep(1)
+    return False
 
+def loader(running=True):
     start = time.monotonic()
     waiting = True
     while waiting:
         try:
-            print("waiting for trezord...")
-            r = CONNECTION.post("http://0.0.0.0:21325/enumerate", data=None)
-            if r.status_code != 200:
+            if is_running() != running:
                 raise Exception("not connected yet")
             waiting = False
         except Exception as e:
@@ -44,7 +48,6 @@ def start(version):
         # findProcess()
         # TODO:
         # - check if trezord process is already running and kill it if so
-        # - check if Popen process starts without error (if 21325 port is listening)
         
         # normalize path to be relative to this folder, not pwd
         path = os.path.join(os.path.dirname(__file__), './bin')
@@ -56,7 +59,8 @@ def start(version):
             shell=True,
             preexec_fn=os.setsid
         )
-        loader()
+        # loader(True)
+        print("started======")
         # TODO: - add else condition and check if trezord is running and if i own this process (trezord pid is the same with proc pid)
 
 
@@ -65,4 +69,5 @@ def stop():
     if proc is not None:
         os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
         proc = None
-        time.sleep(2)
+        # loader(False)
+        print("stopped======")

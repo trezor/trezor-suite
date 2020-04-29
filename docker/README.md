@@ -1,5 +1,5 @@
-Disclaimer: docker stuff is fairly new and there are couple of todos left. Also I have no idea
-if it works on Mac. Chances are it does not, yet.
+Disclaimer: 
+- does not work on mac. only linux is supported at the moment, see here https://medium.com/@nihon_rafy/building-a-dockerized-gui-by-sharing-the-host-screen-with-docker-container-b660835fb722
 
 # Docker
 
@@ -19,8 +19,7 @@ This container shares suite folder with your machine, so if you don't have depen
 
 `./docker/docker-suite-dev.sh`
 
-This will open dev server on http://localhost:3000 and as a bonus a control panel that will allow you to start/stop trezor bridge and work
-with emulators!
+This will open dev server on http://localhost:3000 and as a bonus a control panel that will allow you to start/stop trezor bridge and work with emulators!
 
 ## Suite test
 

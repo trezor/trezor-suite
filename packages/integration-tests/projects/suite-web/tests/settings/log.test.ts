@@ -1,6 +1,5 @@
 describe('Log', () => {
     beforeEach(() => {
-        cy.task('stopBridge');
         cy.task('startBridge');
         cy.task('startEmu');
         cy.task('setupEmu');

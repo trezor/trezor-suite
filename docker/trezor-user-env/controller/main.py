@@ -3,11 +3,13 @@ import os
 import json
 import atexit
 from termcolor import colored
-
+import logging
 from websocket_server import WebsocketServer
 import emulator
 import bridge
 
+logging.info("starting main.py")
+print("print")
 
 def cleanup():
     emulator.stop()
@@ -30,7 +32,6 @@ def client_left(client, server):
     print(colored("Client(%d) disconnected" % client['id'], "blue"))
 
 # Called when a client sends a message
-
 
 def message_received(client, server, message):
     print("Client(%d) request: %s" % (client['id'], message))
