@@ -54,7 +54,7 @@ export default (props: Props) => {
     const isUnknown = device.type !== 'acquired';
     const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
 
-    return <SolveIssueButton {...props} />;
+    if (needsAttention) return <SolveIssueButton {...props} />;
 
     if (!isUnknown) return <DeviceSettingsButton {...props} />;
 
