@@ -1,4 +1,4 @@
-import TrezorConnect, { SignTransaction } from 'trezor-connect';
+import TrezorConnect from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
 import { BTC_RBF_SEQUENCE, ZEC_SIGN_ENHANCEMENT } from '@wallet-constants/sendForm';
