@@ -79,7 +79,8 @@ export default (state: State | null = null, action: WalletAction): State | null 
                     return draft;
                 }
 
-                if (!isAddressValid(action.address, symbol)) {
+                // turn off validation for bitcoin like coins - handled by connect compose transaction
+                if (!isAddressValid(action.address, symbol) && networkType !== 'bitcoin') {
                     output.address.error = VALIDATION_ERRORS.NOT_VALID;
                     return draft;
                 }
@@ -143,6 +144,14 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 const { isLoading, outputId } = action;
                 const output = getOutput(draft.outputs, outputId);
                 output.amount.isLoading = isLoading;
+                return draft;
+            }
+
+            // change loading state in "Address"
+            case SEND.ADDRESS_LOADING: {
+                const { isLoading, outputId } = action;
+                const output = getOutput(draft.outputs, outputId);
+                output.address.isLoading = isLoading;
                 return draft;
             }
 
@@ -270,6 +279,13 @@ export default (state: State | null = null, action: WalletAction): State | null 
                         output => (output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH),
                     );
                 }
+
+                if (action.payload.type === 'error' && action.payload.error.includes('address')) {
+                    draft.outputs.map(
+                        output => (output.address.error = VALIDATION_ERRORS.NOT_VALID),
+                    );
+                }
+
                 return draft;
             }
 

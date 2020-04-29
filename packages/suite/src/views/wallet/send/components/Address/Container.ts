@@ -23,6 +23,7 @@ export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 interface MergedProps extends StateProps {
     output: Output;
 }
+
 export type Props = MergedProps & DispatchProps;
 
 export default connect(mapStateToProps, mapDispatchToProps)(Component);

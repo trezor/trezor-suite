@@ -16,7 +16,11 @@ export const hasDecimals = (value: string, decimals: number) => {
     return DECIMALS_REGEX.test(value);
 };
 
-export const shouldComposeBy = (name: 'address' | 'amount', outputs: Output[]) => {
+export const shouldComposeBy = (
+    name: 'address' | 'amount',
+    outputs: Output[],
+    networkType: Account['networkType'],
+) => {
     let shouldCompose = true;
     const results = [];
 
@@ -31,12 +35,14 @@ export const shouldComposeBy = (name: 'address' | 'amount', outputs: Output[]) =
         shouldCompose = false;
     }
 
-    // one of the inputs is not valid
-    outputs.forEach(output => {
-        if (output[name].error) {
-            shouldCompose = false;
-        }
-    });
+    if (networkType !== 'bitcoin') {
+        // one of the inputs is not valid
+        outputs.forEach(output => {
+            if (output[name].error) {
+                shouldCompose = false;
+            }
+        });
+    }
 
     return shouldCompose;
 };
