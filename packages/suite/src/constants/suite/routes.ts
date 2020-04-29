@@ -50,6 +50,13 @@ const routes = [
         params: modalAppParams,
     },
     {
+        name: 'suite-udev',
+        pattern: '/udev',
+        app: 'udev',
+        isModal: true,
+        params: modalAppParams,
+    },
+    {
         name: 'suite-log',
         pattern: '/log',
         app: 'log',

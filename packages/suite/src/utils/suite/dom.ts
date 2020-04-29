@@ -70,3 +70,10 @@ export const copyToClipboard = (value: string, parent: HTMLDivElement | HTMLPreE
         return error.message;
     }
 };
+
+export const getLinuxPackage = () => {
+    if (typeof navigator === 'undefined' || navigator.appVersion.indexOf('Linux') === -1) return;
+    return navigator.appVersion.match(/CentOS|Fedora|Mandriva|Mageia|Red Hat|Scientific|SUSE/)
+        ? 'rpm'
+        : 'deb';
+};
