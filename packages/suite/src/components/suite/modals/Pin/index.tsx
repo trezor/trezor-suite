@@ -123,6 +123,7 @@ const Pin = ({ device, onPinSubmit, ...rest }: Props) => {
             padding={['0px', '0px', '0px', '0px']}
             useFixedWidth={false}
             useFixedHeight
+            cancelable
             {...rest}
         >
             <Wrapper>
