@@ -8,6 +8,11 @@ describe('Transport webusb/bridge', () => {
             .onboardingShouldLoad();
     });
 
+    after(() => {
+        // default state of tests framework is bridge running.
+        cy.task('startBridge');
+    })
+
     it('Offer webusb as primary choice on web, but allow user to disable it and fallback to bridge', () => {
         cy.getTestElement('@onboarding/begin-button').click();
         cy.getTestElement('@onboarding/path-create-button').click();

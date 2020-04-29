@@ -193,7 +193,7 @@ const Modal = (props: Props) => {
 
     const useBackground = props.background ?? true;
     if (useBackground) {
-       return <FocusLock autoFocus={false}>{modalComponent}</FocusLock>;
+        return <FocusLock autoFocus={false}>{modalComponent}</FocusLock>;
     }
 
     return React.cloneElement(modalComponent, { noBackground: true });

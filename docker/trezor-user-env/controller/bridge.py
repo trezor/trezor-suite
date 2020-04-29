@@ -9,6 +9,9 @@ from trezorlib.transport.bridge import BridgeTransport
 
 proc = None
 
+import http.client
+
+
 # def findProcess():
 #     ps = Popen("ps -ef | grep trezord-go", shell=True, stdout=PIPE)
 #     output = ps.stdout.read()
@@ -18,14 +21,16 @@ proc = None
 
 # todo: checking http response is suboptimal, it would be better to check if there is process running
 def is_running():
-    TREZORD_HOST = "http://0.0.0.0:21325"
-    CONNECTION = requests.Session()
-    CONNECTION.headers.update({"Origin": "https://python.trezor.io"})
-    r = CONNECTION.get("http://0.0.0.0:21325/status/")
-    if r.status_code == 200:
-        return True
-    time.sleep(1)
-    return False
+    try:
+        conn = http.client.HTTPConnection("0.0.0.0", 21325)
+        conn.request("GET", "/status/")
+        r = conn.getresponse()
+        if r.status == 200:
+            return True
+        return False
+    except:
+        return False
+
 
 def loader(running=True):
     start = time.monotonic()
@@ -59,8 +64,6 @@ def start(version):
             shell=True,
             preexec_fn=os.setsid
         )
-        # loader(True)
-        print("started======")
         # TODO: - add else condition and check if trezord is running and if i own this process (trezord pid is the same with proc pid)
 
 
@@ -69,5 +72,3 @@ def stop():
     if proc is not None:
         os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
         proc = None
-        # loader(False)
-        print("stopped======")

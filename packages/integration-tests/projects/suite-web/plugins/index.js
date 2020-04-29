@@ -36,7 +36,6 @@ module.exports = on => {
         const response = await controller.send({ type: 'bridge-start' });
         await controller.disconnect();
 
-        // console.log('resposne', response)
 
         if (browser.name === 'chrome') {
             launchOptions.args.push('--disable-dev-shm-usage');
@@ -69,7 +68,7 @@ module.exports = on => {
                 label: CONSTANTS.DEFAULT_TREZOR_LABEL,
             };
             await controller.connect();
-            const response = await controller.send({
+            await controller.send({
                 type: 'emulator-setup',
                 ...defaults,
                 ...options,
@@ -77,24 +76,30 @@ module.exports = on => {
             await controller.disconnect();
             return null;
         },
-        startEmu: async version => {
+        /**
+         * @version 
+         * version of firmware in emulator, only few are supported
+         * @wipe
+         * shall be emulator wiped before start? defaults to true
+         */
+        startEmu: async (arg) => {
             await controller.connect();
-            const response = await controller.send({
+            await controller.send({
                 type: 'emulator-start',
-                version,
+                ...arg
             });
             await controller.disconnect();
             return null;
         },
         stopEmu: async () => {
             await controller.connect();
-            const response = await controller.send({ type: 'emulator-stop' });
+            await controller.send({ type: 'emulator-stop' });
             await controller.disconnect();
             return null;
         },
         wipeEmu: async () => {
             await controller.connect();
-            const response = await controller.send({ type: 'emulator-wipe' });
+            await controller.send({ type: 'emulator-wipe' });
             await controller.disconnect();
             return null;
         },
@@ -110,33 +115,33 @@ module.exports = on => {
             await controller.disconnect();
             return null;
         },
-        inputEmu: async word => {
+        inputEmu: async value => {
             await controller.connect();
-            await controller.send({ type: 'emulator-input', word });
+            await controller.send({ type: 'emulator-input', value });
             await controller.disconnect();
             return null;
         },
-        readAndConfirmMnemonicEmu: async word => {
+        resetDevice: async options => {
+            await controller.connect();
+            await controller.send({ type: 'emulator-reset-device', ...options });
+            await controller.disconnect();
+            return null;
+        },
+        readAndConfirmMnemonicEmu: async () => {
             await controller.connect();
             await controller.send({ type: 'emulator-read-and-confirm-mnemonic' });
             await controller.disconnect();
             return null;
         },
-        setPassphraseSourceEmu: async passphraseSource => {
+        applySettings: async (options) => {
+            const defaults = {
+                passphrase_always_on_device: false,
+            };
             await controller.connect();
-            let source;
-            if (passphraseSource === 'ask') {
-                source = 0;
-            } else if (passphraseSource === 'device') {
-                source = 1;
-            } else if (passphraseSource === 'host') {
-                source = 2;
-            } else {
-                throw Error('unexpected passphraseSource');
-            }
-            const response = await controller.send({
-                type: 'emulator-set-passphrase-source',
-                passphrase_source: source,
+            await controller.send({
+                type: 'emulator-apply-settings',
+                ...defaults,
+                ...options,
             });
             await controller.disconnect();
             return null;

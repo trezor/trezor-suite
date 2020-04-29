@@ -1,7 +1,6 @@
 describe('Log', () => {
     beforeEach(() => {
-        cy.task('startBridge');
-        cy.task('startEmu');
+        cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         cy.viewport(1024, 768).resetDb();
         cy.visit('/settings');

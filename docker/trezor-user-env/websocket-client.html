@@ -30,7 +30,8 @@
         function onSubmit() {
             var input = document.getElementById("input");
             // You can send message to the Web Socket using ws.send.
-            ws.send(input.value);
+            console.log('input', input.value);
+            _send(JSON.parse(input.value));
             output("send: " + input.value);
             input.value = "";
             input.focus();
@@ -57,6 +58,12 @@
         function emulatorWipe() {
             _send({
                 type: 'emulator-wipe'
+            });
+        }
+
+        function emulatorResetDevice() {
+            _send({
+                type: 'emulator-reset-device'
             });
         }
     
@@ -101,6 +108,7 @@
         }
 
         function _send(json) {
+            console.log(json)
             ws.send(
                 JSON.stringify(Object.assign(json, {
                     id: id
@@ -160,8 +168,7 @@
 
     <div>
         <h3>Emulator start</h3>
-        <button onclick="emulatorStart('2.2.0'); return false;">Start 2.2.0</button>
-        <button onclick="emulatorStart(); return false;">Start 2.1.4</button>
+        <button onclick="emulatorStart('2.3.0'); return false;">Start 2.3.0</button>
         <button onclick="emulatorStart('1.8.3'); return false;">Start 1.8.3</button>
     </div>
     <div>
@@ -170,6 +177,8 @@
         <button onclick="emulatorDecision(); return false;">Decision</button>
         <button onclick="emulatorStop(); return false;">Stop</button>
         <button onclick="emulatorWipe(); return false;">Wipe</button>
+        <button onclick="emulatorResetDevice(); return false;">Reset</button>
+
     </div>
     
     <h3>Server</h3>

@@ -18,53 +18,55 @@ def cleanup():
 
 atexit.register(cleanup)
 
+DEFAULT_TREZORD_VERSION = '2.0.29'
+DEFAULT_TREZOR_VERSION = '2.3.0'
+
 # Called for every client connecting (after handshake)
-
-
 def new_client(client, server):
     welcome = json.dumps({"type": "client", "id": client['id']})
     server.send_message_to_all(welcome)
 
 # Called for every client disconnecting
-
-
 def client_left(client, server):
     print(colored("Client(%d) disconnected" % client['id'], "blue"))
 
 # Called when a client sends a message
-
 def message_received(client, server, message):
     print("Client(%d) request: %s" % (client['id'], message))
     try:
         cmd = json.loads(message)
+        cmdId = cmd["id"]
+        cmdType = cmd["type"]
     except:
         server.send_message(client, json.dumps(
             {"success": False, "error": "Invalid json message"}))
         return
 
-    cmdId = cmd["id"]
-    cmdType = cmd["type"]
-    
     response = None
     try:
         if cmdType == "ping":
             server.send_message(client, "pong")
         elif cmdType == "emulator-start":
-            version = cmd.get("version") or "2.1.4" 
-            emulator.start(version)
+            version = cmd.get("version") or DEFAULT_TREZOR_VERSION 
+            wipe = cmd.get("wipe") or False
+            emulator.start(version, wipe)
             response = {"success": True}
         elif cmdType == "emulator-stop":
             emulator.stop()
             response = {"success": True}
         elif cmdType == "emulator-setup":
             emulator.setup_device(
-                cmd["mnemonic"], cmd["pin"], cmd["passphrase_protection"], cmd["label"])
+                cmd["mnemonic"],
+                cmd["pin"],
+                cmd["passphrase_protection"],
+                cmd["label"]
+            )
             response = {"success": True}
         elif cmdType == "emulator-decision":
             emulator.decision()
             response = {"success": True}
         elif cmdType == "emulator-input":
-            emulator.input(cmd['word'])
+            emulator.input(cmd['value'])
             response = {"success": True}
         elif cmdType == "emulator-read-and-confirm-mnemonic":
             emulator.read_and_confirm_mnemonic()
@@ -78,11 +80,18 @@ def message_received(client, server, message):
         elif cmdType == "emulator-wipe":
             emulator.wipe_device()
             response = {"success": True}
-        elif cmdType == "emulator-set-passphrase-source":
-            emulator.set_passphrase_source(cmd['passphrase_source'])
+        elif cmdType == "emulator-apply-settings":
+            print(cmd)
+            emulator.apply_settings(
+                cmd['passphrase_always_on_device'],
+            ) 
+            response = {"success": True}
+        elif cmdType == "emulator-reset-device":
+            resp = emulator.reset_device()
+            print(resp)
             response = {"success": True}
         elif cmdType == "bridge-start":
-            version = cmd.get("version") or "2.0.29" 
+            version = cmd.get("version") or DEFAULT_TREZORD_VERSION 
             bridge.start(version)
             response = {"success": True}
         elif cmdType == "bridge-stop":
@@ -92,6 +101,10 @@ def message_received(client, server, message):
             emulator.stop()
             bridge.stop()
             os._exit(1)
+        else:
+            server.send_message(client, json.dumps(
+                {"success": False, "error": "unknown command"}))
+            return
         print("Client(%d) response: %s" % (client['id'], str(response)))
         if response is not None:
             server.send_message(client, json.dumps(

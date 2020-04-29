@@ -5,7 +5,7 @@ describe('Firmware', () => {
     });
 
     it('firmware outdated static notification should open firmware update modal', () => {
-        cy.task('startEmu');
+        cy.task('startEmu', { version: '2.1.4', wipe: true });
         cy.task('setupEmu');
         cy.visit('/');
         cy.passThroughInitialRun();
@@ -27,7 +27,7 @@ describe('Firmware', () => {
     // otherwise it goes through bridge and steals session
     it.skip('For latest firmware, update button in device settings should display Up to date but still be clickable', () => {
         cy.task('stopBridge');
-        cy.task('startEmu', '2.2.0');
+        cy.task('startEmu', { version: '2.2.0', wipe: true  });
         cy.task('setupEmu');
         cy.task('startBridge');
         cy.visit('/settings/device');

@@ -4,8 +4,7 @@ describe('Onboarding unexpected states', () => {
     });
 
     it('user selects he is going to use device as a new one and it is already connected, we detect this and notify user about the fact it is not new', () => {
-        cy.task('startEmu');
-        cy.task('wipeEmu');
+        cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         cy.task('stopEmu');
 
@@ -16,7 +15,7 @@ describe('Onboarding unexpected states', () => {
         cy.getTestElement('@onboarding/path-new-button').click();
 
         cy.log('Test that device-is-not-new warning appears on any step up to connect step');
-        cy.task('startEmu');
+        cy.task('startEmu', { wipe: false });
         cy.getTestElement('@onboarding/unexpected-state/go-to-suite-button');
 
         // todo: I would like to test that this error appears on every step between the moment we know
@@ -30,18 +29,14 @@ describe('Onboarding unexpected states', () => {
         // cy.task('startEmu');
         // cy.getTestElement('@onboarding/unexpected-state/go-to-suite-button');
 
-        // todo: cant click it now, it triggers discovery which does not stop fast enough and affects nexts test
+        // todo: cant click it now, it triggers discovery which does not stop fast enough and affects next test
         // causing wrong previous session error on bridge
 
         // .click();
         // cy.dashboardShouldLoad();
     });
 
-    it('in case it is not initialzed, just has some firmware on it, use-it-anyway button should appear', () => {
-        cy.task('startEmu');
-        cy.task('wipeEmu');
-        cy.task('stopEmu');
-
+    it('in case device is not initialized, just has some firmware on it, use-it-anyway button should appear', () => {
         cy.visit('/');
         cy.goToOnboarding();
         cy.getTestElement('@onboarding/begin-button').click();
@@ -49,7 +44,7 @@ describe('Onboarding unexpected states', () => {
         cy.getTestElement('@onboarding/path-new-button').click();
 
         cy.log('Test that device-is-not-new warning appears on any step up to connect step');
-        cy.task('startEmu');
+        cy.task('startEmu', { wipe: true });
         cy.getTestElement('@onboarding/unexpected-state/use-it-anyway-button').click();
         // just check that we got rid of overlay
         cy.getTestElement('@onboarding/option-model-t-path').should('be.visible');

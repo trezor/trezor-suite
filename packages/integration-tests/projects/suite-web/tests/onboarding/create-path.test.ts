@@ -2,9 +2,6 @@
 
 describe('Onboarding happy paths', () => {
     beforeEach(() => {
-        cy.task('startEmu');
-        cy.task('wipeEmu');
-        cy.task('stopEmu');
         cy.viewport(1024, 768).resetDb();
     });
 
@@ -22,7 +19,7 @@ describe('Onboarding happy paths', () => {
             .click()
             .getTestElement('@onboarding/pair-device-step');
 
-        cy.task('startEmu');
+        cy.task('startEmu', { version: '2.1.4', wipe: true });
 
         cy.getTestElement('@onboarding/button-continue')
             .click()
