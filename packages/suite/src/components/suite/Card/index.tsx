@@ -56,7 +56,7 @@ export interface Props {
     noVerticalPadding?: boolean;
 }
 
-const Card = ({
+export default ({
     children,
     title,
     description,
@@ -79,4 +79,3 @@ const Card = ({
         </Content>
     </Wrapper>
 );
-export default Card;

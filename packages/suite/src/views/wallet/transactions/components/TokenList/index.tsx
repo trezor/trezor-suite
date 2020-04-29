@@ -51,10 +51,8 @@ const Col = styled.div<ColProps>`
 
 const TokenImage = styled.div`
     display: flex;
-    border: 1px solid #8a92b2;
     width: 24px;
     height: 24px;
-    border-radius: 50%;
     align-items: center;
     justify-content: center;
 `;

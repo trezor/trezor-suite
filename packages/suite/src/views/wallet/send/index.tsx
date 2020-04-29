@@ -27,7 +27,7 @@ const Row = styled.div`
 
 const Header = styled.div`
     display: flex;
-    padding: 6px 12px;
+    padding: 12px;
 `;
 
 const HeaderLeft = styled.div`
