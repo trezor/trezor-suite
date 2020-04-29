@@ -18,6 +18,7 @@ import Backup from '@backup-views';
 import {
     Analytics,
     Bridge,
+    Udev,
     DeviceAcquire,
     DeviceBootloader,
     DeviceConnect,
@@ -114,6 +115,8 @@ const getModalApplication = (route: Props['router']['route']) => {
             return Onboarding;
         case 'bridge':
             return Bridge;
+        case 'udev':
+            return Udev;
         case 'version':
             return Version;
         case 'switch-device':

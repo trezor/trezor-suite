@@ -638,9 +638,26 @@ const definedMessages = defineMessages({
         defaultMessage: 'Device needs attention',
         id: 'TR_DEVICE_NEEDS_ATTENTION',
     },
-    TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING: {
+    TR_DEVICE_NOT_RECOGNIZED_TRY_BRIDGE: {
         defaultMessage: 'Device not recognized? Try installing the {link}.',
-        id: 'TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING',
+        id: 'TR_DEVICE_NOT_RECOGNIZED_TRY_BRIDGE',
+    },
+    TR_DEVICE_NOT_RECOGNIZED_TRY_UDEV: {
+        defaultMessage: 'Trezor not recognized? Try installing {link}.',
+        id: 'TR_DEVICE_NOT_RECOGNIZED_TRY_UDEV',
+    },
+    TR_UDEV_DOWNLOAD_TITLE: {
+        defaultMessage: 'Download Udev rules',
+        id: 'TR_UDEV_DOWNLOAD_TITLE',
+    },
+    TR_UDEV_DOWNLOAD_DESC: {
+        defaultMessage:
+            'In some cases, Linux users need to install udev rules to access the device. Please, install the following package and reconnect your Trezor.',
+        id: 'TR_UDEV_DOWNLOAD_DESC',
+    },
+    TR_UDEV_DOWNLOAD_MANUAL: {
+        defaultMessage: 'Manual configuration (advanced)',
+        id: 'TR_UDEV_DOWNLOAD_MANUAL',
     },
     TR_DEVICE_SETTINGS: {
         defaultMessage: 'Device settings',
@@ -1412,7 +1429,7 @@ const definedMessages = defineMessages({
         id: 'TR_RECONNECT_TEXT',
     },
     TR_RECONNECT_TROUBLESHOOT_BRIDGE: {
-        defaultMessage: 'Trezor bridge might have stopped working, try restarting',
+        defaultMessage: 'Trezor Bridge might have stopped working, try restarting',
         description: '',
         id: 'TR_RECONNECT_TROUBLESHOOT_BRIDGE',
     },
@@ -3060,7 +3077,7 @@ const definedMessages = defineMessages({
     TR_YOUR_DEVICE_IS_CONNECTED_BUT_UNREADABLE: {
         id: 'TR_YOUR_DEVICE_IS_CONNECTED_BUT_UNREADABLE',
         defaultMessage:
-            'Your device is connected properly, but your internet browser can not communicate with it at the moment. You will need to install Trezor bridge.',
+            'Your device is connected properly, but your internet browser can not communicate with it at the moment. You will need to install Trezor Bridge.',
     },
     TR_RESOLVE: {
         id: 'TR_RESOLVE',
