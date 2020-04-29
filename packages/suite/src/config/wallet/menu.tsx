@@ -1,6 +1,6 @@
 import React from 'react';
 import { Translation } from '@suite-components/Translation';
-import { NETWORKS } from '@wallet-config';
+// import { NETWORKS } from '@wallet-config';
 import { Account } from '@wallet-types';
 
 export const VISIBLE_ITEMS_LIMIT = 3;
@@ -34,9 +34,10 @@ export const ITEMS = [
         route: 'wallet-sign-verify',
         title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
         icon: 'SIGN',
-        isHidden: (account: Account) => {
-            const network = NETWORKS.find(n => n.symbol === account.symbol);
-            return !(network && network.testnet && network.hasSignVerify);
+        isHidden: (_account: Account) => {
+            return true;
+            // const network = NETWORKS.find(n => n.symbol === account.symbol);
+            // return !(network && network.testnet && network.hasSignVerify);
         },
     },
     {
