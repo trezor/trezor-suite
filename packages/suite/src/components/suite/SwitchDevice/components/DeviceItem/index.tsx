@@ -1,7 +1,7 @@
 import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
-import { Button, colors, variables, Icon } from '@trezor/components';
+import { colors, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import Card from '@suite-components/Card';
 import * as deviceUtils from '@suite-utils/device';
@@ -11,7 +11,7 @@ import { Props } from './Container';
 import ColHeader from './components/ColHeader';
 import DeviceImage from '@suite-components/images/DeviceImage';
 import AddWalletButton from './components/AddWalletButton';
-import { isSelectedDevice } from '@suite-utils/device';
+import DeviceHeaderButton from './components/DeviceHeaderButton';
 
 const DeviceWrapper = styled.div`
     display: flex;
@@ -44,22 +44,11 @@ const DeviceStatus = styled.span<{ color: string }>`
     color: ${props => props.color};
 `;
 
-const Row = styled.div<{ grow?: number }>`
-    display: flex;
-    flex-grow: ${props => props.grow || 0};
-    align-items: center;
-`;
-
 const Col = styled.div<{ grow?: number }>`
     display: flex;
     flex-grow: ${props => props.grow || 0};
     align-items: flex-start;
     flex-direction: column;
-`;
-
-const ChooseDevice = styled(Button)`
-    font-size: ${variables.FONT_SIZE.BUTTON};
-    margin-left: 6px;
 `;
 
 const WalletsWrapper = styled.div<{ enabled: boolean }>`
@@ -104,18 +93,6 @@ const DeviceImageWrapper = styled.div`
     height: 60px;
 `;
 
-const Attention = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: 600;
-    color: ${colors.RED_ERROR};
-    margin-right: 20px;
-`;
-
-const AttentionIconWrapper = styled.div`
-    margin-right: 1ch;
-`;
-
 // TODO: this is going to be a problem with different col headers length since they won't be aligned with the columns inside WalletInstance
 const RememberWallet = styled(ColHeader)``;
 const HideWallet = styled(ColHeader)`
@@ -127,31 +104,32 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
     const { device, selectedDevice, backgroundRoute } = props;
     const deviceStatus = deviceUtils.getStatus(device);
     const isUnknown = device.type !== 'acquired';
-    const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
-    const needsAcquire =
-        device.type === 'unacquired' ||
-        deviceStatus === 'used-in-other-window' ||
-        deviceStatus === 'was-used-in-other-window';
-
+    const isSelected = deviceUtils.isSelectedDevice(selectedDevice, device);
     const isWalletContext =
-        !!backgroundRoute &&
-        (backgroundRoute.app === 'wallet' ||
-            backgroundRoute.app === 'dashboard' ||
-            backgroundRoute.app === 'notifications');
-    const hasDeviceSelection =
-        !isWalletContext && !deviceUtils.isSelectedDevice(selectedDevice, device);
+        backgroundRoute &&
+        (backgroundRoute.app === 'wallet' || backgroundRoute.app === 'dashboard');
 
     const selectDeviceInstance = async (instance: Props['device']) => {
         await props.selectDevice(instance);
+        if (!isWalletContext) {
+            await props.goto('suite-index');
+        }
         props.closeModalApp(!isWalletContext);
     };
 
     const addDeviceInstance = async (instance: Props['device']) => {
         await props.createDeviceInstance(instance);
+        if (!isWalletContext) {
+            await props.goto('suite-index');
+        }
         props.closeModalApp(!isWalletContext);
     };
 
     const onSolveIssueClick = () => {
+        const needsAcquire =
+            device.type === 'unacquired' ||
+            deviceStatus === 'used-in-other-window' ||
+            deviceStatus === 'was-used-in-other-window';
         if (needsAcquire) {
             props.acquireDevice(device);
         } else {
@@ -162,8 +140,8 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
     const onDeviceSettingsClick = async () => {
         // await needed otherwise it just selects first account (???)
         await props.goto('settings-device');
-        if (!isSelectedDevice(selectedDevice, device)) {
-            await selectDeviceInstance(device);
+        if (!isSelected) {
+            await props.selectDevice(device);
         }
     };
 
@@ -185,74 +163,46 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                         </DeviceStatus>
                     </Col>
 
-                    {!isUnknown && hasDeviceSelection && (
-                        <ChooseDevice
-                            variant="secondary"
-                            onClick={() => selectDeviceInstance(device)}
-                        >
-                            <Translation id="TR_SELECT_DEVICE" />
-                        </ChooseDevice>
-                    )}
-
-                    {needsAttention ? (
-                        <Row>
-                            <Attention>
-                                <AttentionIconWrapper>
-                                    {/* TODO: warning icon */}
-                                    <Icon icon="INFO" size={16} color={colors.RED_ERROR} />
-                                </AttentionIconWrapper>
-                                <Translation id="TR_DEVICE_NEEDS_ATTENTION" />
-                            </Attention>
-                            <Button
-                                variant="secondary"
-                                // icon="REFRESH"
-                                onClick={() => onSolveIssueClick()}
-                            >
-                                <Translation id="TR_SOLVE_ISSUE" />
-                            </Button>
-                        </Row>
-                    ) : (
-                        <Button variant="tertiary" icon="SETTINGS" onClick={onDeviceSettingsClick}>
-                            <Translation id="TR_DEVICE_SETTINGS" />
-                        </Button>
-                    )}
+                    <DeviceHeaderButton
+                        device={device}
+                        onSolveIssueClick={onSolveIssueClick}
+                        onDeviceSettingsClick={onDeviceSettingsClick}
+                    />
                 </DeviceHeader>
             </Device>
             {!isUnknown && (
-                <WalletsWrapper enabled={isWalletContext}>
-                    {isWalletContext && (
-                        <WalletsTooltips>
-                            <RememberWallet
-                                tooltipContent={<Translation id="TR_REMEMBER_ALLOWS_YOU_TO" />}
-                            >
-                                <Translation id="TR_REMEMBER_HEADING" />
-                            </RememberWallet>
-                            <HideWallet
-                                tooltipContent={<Translation id="TR_EJECT_WALLET_EXPLANATION" />}
-                            >
-                                <Translation id="TR_EJECT_HEADING" />
-                            </HideWallet>
-                        </WalletsTooltips>
-                    )}
+                <WalletsWrapper enabled>
+                    <WalletsTooltips>
+                        <RememberWallet
+                            tooltipContent={<Translation id="TR_REMEMBER_ALLOWS_YOU_TO" />}
+                        >
+                            <Translation id="TR_REMEMBER_HEADING" />
+                        </RememberWallet>
+                        <HideWallet
+                            tooltipContent={<Translation id="TR_EJECT_WALLET_EXPLANATION" />}
+                        >
+                            <Translation id="TR_EJECT_HEADING" />
+                        </HideWallet>
+                    </WalletsTooltips>
+
                     <InstancesWrapper noPadding>
                         {props.instances.map(instance => (
                             <StyledWalletInstance
                                 key={`${instance.label}-${instance.instance}-${instance.state}`}
                                 instance={instance}
-                                enabled={isWalletContext}
+                                enabled
                                 selected={deviceUtils.isSelectedInstance(selectedDevice, instance)}
                                 selectDeviceInstance={selectDeviceInstance}
                             />
                         ))}
                     </InstancesWrapper>
-                    {isWalletContext && (
-                        <AddWalletButton
-                            device={device}
-                            instances={props.instances}
-                            addDeviceInstance={addDeviceInstance}
-                            selectDeviceInstance={selectDeviceInstance}
-                        />
-                    )}
+
+                    <AddWalletButton
+                        device={device}
+                        instances={props.instances}
+                        addDeviceInstance={addDeviceInstance}
+                        selectDeviceInstance={selectDeviceInstance}
+                    />
                 </WalletsWrapper>
             )}
         </DeviceWrapper>
