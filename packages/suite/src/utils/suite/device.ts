@@ -1,4 +1,5 @@
 import { Device } from 'trezor-connect';
+import messages from '@suite/support/messages';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
 
 export const getStatus = (device: TrezorDevice): string => {
@@ -57,6 +58,32 @@ export const deviceNeedsAttention = (deviceStatus: string): boolean => {
             return true;
         default:
             return false;
+    }
+};
+
+export const getDeviceNeedsAttentionMessage = (deviceStatus: string) => {
+    switch (deviceStatus) {
+        // case 'firmware-recommended':
+        case 'bootloader':
+            return messages.TR_NEEDS_ATTENTION_BOOTLOADER;
+        case 'initialize':
+            return messages.TR_NEEDS_ATTENTION_INITIALIZE;
+        case 'seedless':
+            return messages.TR_NEEDS_ATTENTION_SEEDLESS;
+        case 'used-in-other-window':
+            return messages.TR_NEEDS_ATTENTION_USED_IN_OTHER_WINDOW;
+        case 'was-used-in-other-window':
+            return messages.TR_NEEDS_ATTENTION_WAS_USER_IN_OTHER_WINDOW;
+        case 'unacquired':
+            return messages.TR_NEEDS_ATTENTION_UNACQUIRED;
+        case 'firmware-required':
+            return messages.TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED;
+        case 'unavailable':
+            return messages.TR_NEEDS_ATTENTION_UNAVAILABLE;
+        case 'unreadable':
+            return messages.TR_NEEDS_ATTENTION_UNREADABLE;
+        default:
+            return null;
     }
 };
 
