@@ -129,7 +129,7 @@ const ModalWindow = styled.div<ModalWindowProps>`
         props.useFixedWidth &&
         props.fixedWidth &&
         css`
-            /* default width is the size as for XL screens */
+            /* default width is the same as for XL screens */
             width: ${(props: ModalWindowProps) => props.fixedWidth[3]};
             /* for smaller screens width is set based on fixedWidth prop */
             @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -149,7 +149,7 @@ const ModalWindow = styled.div<ModalWindowProps>`
         props.useFixedHeight &&
         props.fixedHeight &&
         css`
-            /* default height is the size as for XL screens */
+            /* default height is the same as for XL screens */
             height: ${(props: ModalWindowProps) => props.fixedHeight[3]};
             /* for smaller screens height is set based on fixedHeight prop */
             @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
