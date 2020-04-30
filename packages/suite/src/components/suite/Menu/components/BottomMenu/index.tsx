@@ -85,6 +85,9 @@ const StyledDivider = styled(Divider)`
 
 const SwitchWrapper = styled.div`
     display: flex;
+    .tippy-popper {
+        padding-left: 8px;
+    }
 `;
 
 interface Props {
