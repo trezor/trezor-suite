@@ -80,7 +80,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 }
 
                 // turn off validation for bitcoin like coins - handled by connect compose transaction
-                if (!isAddressValid(action.address, symbol) && networkType !== 'bitcoin') {
+                if (networkType !== 'bitcoin' && !isAddressValid(action.address, symbol)) {
                     output.address.error = VALIDATION_ERRORS.NOT_VALID;
                     return draft;
                 }
