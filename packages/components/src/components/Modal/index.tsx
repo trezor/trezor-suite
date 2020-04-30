@@ -145,23 +145,6 @@ const ModalWindow = styled.div<ModalWindowProps>`
         `}
 `;
 
-const StyledLink = styled(Link)`
-    display: flex;
-    align-items: center;
-    position: absolute;
-    right: 0;
-    top: 0;
-    padding: 10px;
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.BLACK25};
-
-    :hover {
-        text-decoration: none;
-        color: ${colors.BLACK0};
-    }
-`;
-
 const Heading = styled(H2)`
     text-align: center;
 
@@ -213,6 +196,23 @@ const BottomBar = styled.div`
     display: flex;
     padding-top: 16px;
     padding-bottom: 16px;
+`;
+
+const StyledLink = styled(Link)`
+    display: flex;
+    align-items: center;
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 10px;
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.BLACK25};
+
+    :hover {
+        text-decoration: none;
+        color: ${colors.BLACK0};
+    }
 `;
 
 type SIZE = 'large' | 'small' | 'tiny';
