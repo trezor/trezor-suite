@@ -73,7 +73,7 @@ export const getDeviceNeedsAttentionMessage = (deviceStatus: string) => {
         case 'used-in-other-window':
             return messages.TR_NEEDS_ATTENTION_USED_IN_OTHER_WINDOW;
         case 'was-used-in-other-window':
-            return messages.TR_NEEDS_ATTENTION_WAS_USER_IN_OTHER_WINDOW;
+            return messages.TR_NEEDS_ATTENTION_WAS_USED_IN_OTHER_WINDOW;
         case 'unacquired':
             return messages.TR_NEEDS_ATTENTION_UNACQUIRED;
         case 'firmware-required':

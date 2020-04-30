@@ -654,9 +654,9 @@ const definedMessages = defineMessages({
         defaultMessage: 'Device needs attention',
         id: 'TR_NEEDS_ATTENTION_USED_IN_OTHER_WINDOW',
     },
-    TR_NEEDS_ATTENTION_WAS_USER_IN_OTHER_WINDOW: {
+    TR_NEEDS_ATTENTION_WAS_USED_IN_OTHER_WINDOW: {
         defaultMessage: 'Device needs attention',
-        id: 'TR_NEEDS_ATTENTION_WAS_USER_IN_OTHER_WINDOW',
+        id: 'TR_NEEDS_ATTENTION_WAS_USED_IN_OTHER_WINDOW',
     },
     TR_NEEDS_ATTENTION_UNACQUIRED: {
         defaultMessage: 'Device needs attention',

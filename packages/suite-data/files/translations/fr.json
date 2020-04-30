@@ -143,7 +143,7 @@
 	"TR_NEEDS_ATTENTION_INITIALIZE": "Device needs attention",
 	"TR_NEEDS_ATTENTION_SEEDLESS": "Device needs attention",
 	"TR_NEEDS_ATTENTION_USED_IN_OTHER_WINDOW": "Device needs attention",
-	"TR_NEEDS_ATTENTION_WAS_USER_IN_OTHER_WINDOW": "Device needs attention",
+	"TR_NEEDS_ATTENTION_WAS_USED_IN_OTHER_WINDOW": "Device needs attention",
 	"TR_NEEDS_ATTENTION_UNACQUIRED": "Device needs attention",
 	"TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED": "Device needs attention",
 	"TR_NEEDS_ATTENTION_UNAVAILABLE": "Device needs attention",
