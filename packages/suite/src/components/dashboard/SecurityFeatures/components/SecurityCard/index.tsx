@@ -108,11 +108,10 @@ const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Pro
                         size="small"
                         isDisabled={cta.isDisabled}
                         onClick={cta.action}
+                        icon="ARROW_RIGHT"
+                        alignIcon="right"
                         {...(cta.dataTest
                             ? { 'data-test': `@dashboard/security-card/${cta.dataTest}/button` }
-                            : {})}
-                        {...(variant === 'secondary'
-                            ? { icon: 'ARROW_RIGHT', alignIcon: 'right' }
                             : {})}
                     >
                         {cta.label}

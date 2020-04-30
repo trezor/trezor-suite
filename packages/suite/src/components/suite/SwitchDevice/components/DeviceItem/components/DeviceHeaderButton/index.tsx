@@ -24,17 +24,18 @@ const AttentionIconWrapper = styled.div`
 
 interface Props {
     device: TrezorDevice;
+    deviceStatusMessage?: React.ReactNode;
     onSolveIssueClick: () => void;
     onDeviceSettingsClick: () => void;
 }
 
-const SolveIssueButton = ({ onSolveIssueClick }: Props) => (
+const SolveIssueButton = ({ onSolveIssueClick, deviceStatusMessage }: Props) => (
     <Row>
         <Attention>
             <AttentionIconWrapper>
                 <Icon icon="WARNING" size={16} color={colors.RED_ERROR} />
             </AttentionIconWrapper>
-            <Translation id="TR_DEVICE_NEEDS_ATTENTION" />
+            {deviceStatusMessage && <>{deviceStatusMessage}</>}
         </Attention>
         <Button variant="secondary" onClick={onSolveIssueClick}>
             <Translation id="TR_SOLVE_ISSUE" />
@@ -51,10 +52,19 @@ const DeviceSettingsButton = ({ onDeviceSettingsClick }: Props) => (
 export default (props: Props) => {
     const { device } = props;
     const deviceStatus = deviceUtils.getStatus(device);
+    const deviceStatusMessage = deviceUtils.getDeviceNeedsAttentionMessage(deviceStatus);
     const isUnknown = device.type !== 'acquired';
     const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
 
-    if (needsAttention) return <SolveIssueButton {...props} />;
+    if (needsAttention)
+        return (
+            <SolveIssueButton
+                deviceStatusMessage={
+                    deviceStatusMessage ? <Translation {...deviceStatusMessage} /> : undefined
+                }
+                {...props}
+            />
+        );
 
     if (!isUnknown) return <DeviceSettingsButton {...props} />;
 

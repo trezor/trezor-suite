@@ -7,6 +7,7 @@ const Word = (props: ModalProps) => {
     return (
         <Modal
             size="small"
+            useFixedHeight
             heading={<Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />}
             description={
                 <>

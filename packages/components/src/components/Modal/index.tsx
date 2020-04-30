@@ -73,27 +73,6 @@ const ModalWindow = styled.div<ModalWindowProps>`
                 padding: ${(props: ModalWindowProps) => props.padding[2]};
             }
 
-    ::-webkit-scrollbar {
-        background-color: #fff;
-        width: 10px;
-    }
-
-    /* background of the scrollbar except button or resizer */
-    ::-webkit-scrollbar-track {
-        background-color: transparent;
-    }
-
-    /* scrollbar itself */
-    ::-webkit-scrollbar-thumb {
-        /* 7F7F7F for mac-like color */
-        background-color: #babac0;
-        border-radius: 10px;
-        border: 2px solid #fff;
-    }
-    /* set button(top and bottom of the scrollbar) */
-    ::-webkit-scrollbar-button {
-        display: none;
-    }
     ${props =>
         !props.noBackground &&
         css`
@@ -129,7 +108,7 @@ const ModalWindow = styled.div<ModalWindowProps>`
         props.useFixedWidth &&
         props.fixedWidth &&
         css`
-            /* default width is the size as for XL screens */
+            /* default width is the same as for XL screens */
             width: ${(props: ModalWindowProps) => props.fixedWidth[3]};
             /* for smaller screens width is set based on fixedWidth prop */
             @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -149,7 +128,7 @@ const ModalWindow = styled.div<ModalWindowProps>`
         props.useFixedHeight &&
         props.fixedHeight &&
         css`
-            /* default height is the size as for XL screens */
+            /* default height is the same as for XL screens */
             height: ${(props: ModalWindowProps) => props.fixedHeight[3]};
             /* for smaller screens height is set based on fixedHeight prop */
             @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -164,23 +143,6 @@ const ModalWindow = styled.div<ModalWindowProps>`
                 height: ${(props: ModalWindowProps) => props.fixedHeight[2]};
             }
         `}
-`;
-
-const StyledLink = styled(Link)`
-    display: flex;
-    align-items: center;
-    position: absolute;
-    right: 0;
-    top: 0;
-    padding: 10px;
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.BLACK25};
-
-    :hover {
-        text-decoration: none;
-        color: ${colors.BLACK0};
-    }
 `;
 
 const Heading = styled(H2)`
@@ -206,12 +168,51 @@ const Content = styled.div`
     width: 100%;
     height: 100%;
     overflow-y: auto;
+
+    ::-webkit-scrollbar {
+        background-color: #fff;
+        width: 10px;
+    }
+
+    /* background of the scrollbar except button or resizer */
+    ::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+
+    /* scrollbar itself */
+    ::-webkit-scrollbar-thumb {
+        /* 7F7F7F for mac-like color */
+        background-color: #babac0;
+        border-radius: 10px;
+        border: 2px solid #fff;
+    }
+    /* set button(top and bottom of the scrollbar) */
+    ::-webkit-scrollbar-button {
+        display: none;
+    }
 `;
 
 const BottomBar = styled.div`
     display: flex;
     padding-top: 16px;
     padding-bottom: 16px;
+`;
+
+const StyledLink = styled(Link)`
+    display: flex;
+    align-items: center;
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 10px;
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.BLACK25};
+
+    :hover {
+        text-decoration: none;
+        color: ${colors.BLACK0};
+    }
 `;
 
 type SIZE = 'large' | 'small' | 'tiny';

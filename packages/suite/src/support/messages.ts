@@ -638,6 +638,42 @@ const definedMessages = defineMessages({
         defaultMessage: 'Device needs attention',
         id: 'TR_DEVICE_NEEDS_ATTENTION',
     },
+    TR_NEEDS_ATTENTION_BOOTLOADER: {
+        defaultMessage: 'Device needs attention',
+        id: 'TR_NEEDS_ATTENTION_BOOTLOADER',
+    },
+    TR_NEEDS_ATTENTION_INITIALIZE: {
+        defaultMessage: 'Device needs attention',
+        id: 'TR_NEEDS_ATTENTION_INITIALIZE',
+    },
+    TR_NEEDS_ATTENTION_SEEDLESS: {
+        defaultMessage: 'Device needs attention',
+        id: 'TR_NEEDS_ATTENTION_SEEDLESS',
+    },
+    TR_NEEDS_ATTENTION_USED_IN_OTHER_WINDOW: {
+        defaultMessage: 'Device needs attention',
+        id: 'TR_NEEDS_ATTENTION_USED_IN_OTHER_WINDOW',
+    },
+    TR_NEEDS_ATTENTION_WAS_USED_IN_OTHER_WINDOW: {
+        defaultMessage: 'Device needs attention',
+        id: 'TR_NEEDS_ATTENTION_WAS_USED_IN_OTHER_WINDOW',
+    },
+    TR_NEEDS_ATTENTION_UNACQUIRED: {
+        defaultMessage: 'Device needs attention',
+        id: 'TR_NEEDS_ATTENTION_UNACQUIRED',
+    },
+    TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED: {
+        defaultMessage: 'Device needs attention',
+        id: 'TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED',
+    },
+    TR_NEEDS_ATTENTION_UNAVAILABLE: {
+        defaultMessage: 'Device needs attention',
+        id: 'TR_NEEDS_ATTENTION_UNAVAILABLE',
+    },
+    TR_NEEDS_ATTENTION_UNREADABLE: {
+        defaultMessage: 'Device needs attention',
+        id: 'TR_NEEDS_ATTENTION_UNREADABLE',
+    },
     TR_DEVICE_NOT_RECOGNIZED_TRY_BRIDGE: {
         defaultMessage: 'Device not recognized? Try installing the {link}.',
         id: 'TR_DEVICE_NOT_RECOGNIZED_TRY_BRIDGE',
@@ -1077,11 +1113,6 @@ const definedMessages = defineMessages({
         description: 'Link to Trezor wiki.',
         id: 'TR_LEARN_MORE',
     },
-    TR_LEARN_MORE_LINK: {
-        defaultMessage: 'Learn more.',
-        description: 'Link to Trezor wiki.',
-        id: 'TR_LEARN_MORE_LINK',
-    },
     TR_SEGWIT_ACCOUNTS: {
         defaultMessage: 'Segwit accounts',
         id: 'TR_SEGWIT_ACCOUNTS',
@@ -1471,7 +1502,7 @@ const definedMessages = defineMessages({
     },
     TR_RECOVERY_TYPES_DESCRIPTION: {
         defaultMessage:
-            'Both methods are safe. Basic recovery uses on computer input of words in randomized order. Advanced recovery uses on-screen input to load your recovery seed. {TR_LEARN_MORE_LINK}',
+            'Both methods are safe. Basic recovery uses on computer input of words in randomized order. Advanced recovery uses on-screen input to load your recovery seed. {TR_LEARN_MORE}',
         description: 'There are two methods of recovery for T1. This is a short explanation text.',
         id: 'TR_RECOVERY_TYPES_DESCRIPTION',
     },

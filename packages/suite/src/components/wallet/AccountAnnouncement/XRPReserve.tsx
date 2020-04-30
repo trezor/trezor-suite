@@ -17,7 +17,7 @@ export default ({ reserve }: Props) => (
                 minBalance: formatNetworkAmount(reserve, 'xrp'),
                 TR_LEARN_MORE: (
                     <Link variant="nostyle" href={URLS.XRP_MANUAL_URL}>
-                        <Translation id="TR_LEARN_MORE_LINK" />
+                        <Translation id="TR_LEARN_MORE" />
                     </Link>
                 ),
             }}
