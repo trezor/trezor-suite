@@ -29,9 +29,9 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
             <Translation
                 id="TR_RECOVERY_TYPES_DESCRIPTION"
                 values={{
-                    TR_LEARN_MORE_LINK: (
+                    TR_LEARN_MORE: (
                         <Link size="small" href={URLS.RECOVERY_MODEL_ONE_URL}>
-                            <Translation id="TR_LEARN_MORE_LINK" />
+                            <Translation id="TR_LEARN_MORE" />
                         </Link>
                     ),
                 }}

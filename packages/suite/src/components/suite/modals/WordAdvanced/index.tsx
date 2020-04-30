@@ -32,7 +32,7 @@ const Word = ({ count, ...rest }: Props) => {
                 <P size="tiny">
                     <Translation id="TR_ADVANCED_RECOVERY_NOT_SURE" />{' '}
                     <Link size="tiny" href={URLS.WIKI_ADVANCED_RECOVERY}>
-                        <Translation id="TR_LEARN_MORE_LINK" />
+                        <Translation id="TR_LEARN_MORE" />
                     </Link>
                 </P>
             </BottomText>
