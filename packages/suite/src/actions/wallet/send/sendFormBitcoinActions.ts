@@ -154,12 +154,12 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
 
     if (account.symbol === 'zec') {
         signEnhancement = ZEC_SIGN_ENHANCEMENT;
-    } else {
-        // connect undefined amount hotfix (not for zcash)
-        inputs.forEach(input => {
-            if (!input.amount) delete input.amount;
-        });
     }
+
+    // connect undefined amount hotfix (not for zcash)
+    inputs.forEach(input => {
+        if (!input.amount) delete input.amount;
+    });
 
     const signPayload = {
         device: {
