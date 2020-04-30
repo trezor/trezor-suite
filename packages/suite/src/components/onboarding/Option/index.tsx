@@ -14,7 +14,7 @@ interface WrapperProps {
 const Wrapper = styled.div<WrapperProps>`
     width: ${({ variant }) => (variant === 2 ? '260px' : '160px')};
     height: ${({ variant }) => (variant === 2 ? '340px' : '240px')};
-    padding: 20px 30px 30px 30px;
+    padding: 20px 30px 10px 30px;
     margin: 2%;
     border-radius: 6px;
     display: flex;

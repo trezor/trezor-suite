@@ -6,7 +6,7 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: center;
     flex-direction: column;
-    margin-top: 35px;
+    margin-top: 25px;
 
     @media (min-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: row;
