@@ -7,7 +7,7 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 22px 0px 32px 0px;
+    padding: 32px 0px;
 `;
 
 const PathWrapper = styled.div`

@@ -24,8 +24,11 @@ const Address = styled.div`
 
 const Row = styled.div`
     display: flex;
-    width: 100%;
     justify-content: center;
+
+    button + button {
+        margin-top: 10px;
+    }
 `;
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -80,18 +83,16 @@ const ConfirmAddress = ({
             cancelable={cancelable}
             onCancel={onCancel}
             size="small"
-            bottomBar={
-                <Row ref={htmlElement}>
-                    <Button variant="primary" onClick={copyAddress}>
-                        <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
-                    </Button>
-                </Row>
-            }
         >
             <QrCode value={address} addressPath={addressPath} />
             <Address data-test="@address-modal/address-field">{address}</Address>
             {device.connected && <CheckOnTrezor device={device} />}
             {!device.connected && <DeviceDisconnected label={device.label} />}
+            <Row ref={htmlElement}>
+                <Button variant="primary" onClick={copyAddress}>
+                    <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
+                </Button>
+            </Row>
         </Modal>
     );
 };
