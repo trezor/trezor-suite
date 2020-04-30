@@ -125,7 +125,7 @@ export const composeChange = (composeBy?: 'address' | 'amount') => (
     }
 
     if (composeBy) {
-        if (shouldComposeBy(composeBy, send.outputs)) {
+        if (shouldComposeBy(composeBy, send.outputs, account.networkType)) {
             dispatch(compose());
         }
     }

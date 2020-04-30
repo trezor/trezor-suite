@@ -17,7 +17,9 @@ const Text = styled.div`
     margin-right: 3px;
 `;
 
-const getErrorMessage = (error: Output['address']['error']) => {
+const getErrorMessage = (error: Output['address']['error'], isLoading: boolean) => {
+    if (isLoading && !error) return 'Loading'; // TODO loader or text?
+
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
             return <Translation id="TR_ADDRESS_IS_NOT_SET" />;
@@ -30,14 +32,20 @@ const getErrorMessage = (error: Output['address']['error']) => {
     }
 };
 
-export default ({ output, account, openModal, sendFormActions }: Props) => {
-    if (!account) return null;
+export default ({ output, account, openModal, sendFormActions, send }: Props) => {
+    if (!account || !send) return null;
     const { address, id } = output;
+    const { isComposing } = send;
+    let showLoadingForCompose = false;
     const { value, error } = address;
+
+    if (isComposing && account.networkType === 'bitcoin') {
+        showLoadingForCompose = true;
+    }
 
     return (
         <Input
-            state={getInputState(error, value, false, true)}
+            state={getInputState(error, value, showLoadingForCompose, true)}
             monospace
             topLabel={
                 <Label>
@@ -47,7 +55,9 @@ export default ({ output, account, openModal, sendFormActions }: Props) => {
                     <QuestionTooltip messageId="TR_RECIPIENT_ADDRESS_TOOLTIP" />
                 </Label>
             }
-            bottomText={getErrorMessage(error) || <AddressLabeling address={value} knownOnly />}
+            bottomText={
+                getErrorMessage(error, isComposing) || <AddressLabeling address={value} knownOnly />
+            }
             button={{
                 icon: 'QR',
                 onClick: () =>
