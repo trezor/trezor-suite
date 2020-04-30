@@ -18,6 +18,7 @@ const Word = ({ count, ...rest }: Props) => {
     return (
         <Modal
             size="small"
+            useFixedHeight
             heading={<Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />}
             description={<Translation id="TR_ADVANCED_RECOVERY_TEXT" />}
             {...rest}
