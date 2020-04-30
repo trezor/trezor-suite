@@ -9,8 +9,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     align-items: start;
     padding: 16px;
-    margin: 0px 32px;
-    margin-bottom: 40px;
+    margin: 0px 32px 32px 32px;
     text-align: left;
     background: ${colors.BLACK96};
     position: relative;
