@@ -23,15 +23,16 @@ describe('Firmware', () => {
         cy.getTestElement('@firmware/close-button').click();
     });
 
-    // todo finish this in next PR. I need to figure out how to setupEmu through debug link.
-    // otherwise it goes through bridge and steals session
-    it.skip('For latest firmware, update button in device settings should display Up to date but still be clickable', () => {
+    it('For latest firmware, update button in device settings should display Up to date but still be clickable', () => {
         cy.task('stopBridge');
-        cy.task('startEmu', { version: '2.2.0', wipe: true  });
+        cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         cy.task('startBridge');
         cy.visit('/settings/device');
         cy.passThroughInitialRun();
-        cy.getTestElement('@settings/device/update-button').should('contain.text', 'Up to date');
+        cy.getTestElement('@settings/device/update-button').should('contain.text', 'Up to date').click();
+
     });
+
+    // todo: test switching from bitcoin-only to full-featured
 });
