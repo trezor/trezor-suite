@@ -34,6 +34,8 @@ declare global {
             onboardingShouldLoad: () => Chainable<Subject>;
             dashboardShouldLoad: () => Chainable<Subject>;
             toggleDeviceMenu: () => Chainable<Subject>;
+            passThroughInitialRun: () => Chainable<Subject>;
+            passThroughBackup: () => Chainable<Subject>;
         }
     }
 }
