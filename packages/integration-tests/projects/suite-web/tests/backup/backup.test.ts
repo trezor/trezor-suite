@@ -14,7 +14,7 @@ describe('Backup', () => {
         // access from notification
         cy.getTestElement('@notification/no-backup/button').click();
         
-        cy.getTestElement('@backup').matchImageSnapshot('Backup')
+        cy.getTestElement('@backup').matchImageSnapshot('backup')
         
         cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
         cy.getTestElement('@backup/check-item/has-enough-time').click();
