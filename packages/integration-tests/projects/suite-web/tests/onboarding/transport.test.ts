@@ -1,4 +1,4 @@
-describe('Transport webusb/bridge', () => {
+describe('Onboarding - transport webusb/bridge', () => {
     beforeEach(() => {
         cy.task('stopEmu');
         cy.task('stopBridge');

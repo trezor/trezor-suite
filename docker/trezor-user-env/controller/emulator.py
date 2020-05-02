@@ -20,7 +20,10 @@ import common.buttons
 
 proc = None
 
-SLEEP = 1
+# when communicating with device via bridge/debuglink, this sleep is required otherwise there
+# may appear weird race conditions in communications. when not going through bridge but webusb 
+# there is no need for it, but we can skip bridge only when doing initial setup before test. 
+SLEEP = 0.6
 
 def get_bridge_device():
     devices = BridgeTransport.enumerate()
@@ -81,6 +84,7 @@ def start(version, wipe):
     if proc is not None:
         stop()
 
+    # todo: T1 profile is elsewhere, ask matejcik
     PROFILE = "/var/tmp/trezor.flash"
     if wipe and os.path.exists(PROFILE):
         os.remove(PROFILE)
@@ -168,9 +172,9 @@ def reset_device():
 def decision():
     client = DebugLink(get_device().find_debug())
     client.open()
-    time.sleep(0.6)  # trezord needs time to populate changes
+    time.sleep(SLEEP)
     client.press_yes()
-    time.sleep(0.6)
+    time.sleep(SLEEP)
     client.close()
 
 # enter recovery word or pin
@@ -179,7 +183,7 @@ def decision():
 def input(value):
     client = DebugLink(get_device().find_debug())
     client.open()
-    time.sleep(0.6)  # trezord needs time to populate changes
+    time.sleep(SLEEP)
     client.input(value)
     client.close()
 
@@ -187,7 +191,7 @@ def input(value):
 def swipe(direction): 
     client = DebugLink(get_device().find_debug())
     client.open()
-    time.sleep(0.6)  # trezord needs time to populate changes
+    time.sleep(SLEEP)
     if direction == 'up':
         client.swipe_up()
     elif direction == 'right':
@@ -224,18 +228,14 @@ def read_and_confirm_mnemonic():
     time.sleep(SLEEP)
 
     client.press_yes()
-    time.sleep(SLEEP)
-
     client.press_yes()
-    time.sleep(SLEEP)
-
     client.close()
 
 
 def select_num_of_words(num_of_words=12):
     client = DebugLink(get_device().find_debug())
     client.open()
-    time.sleep(0.6)  # trezord needs time to populate changes
+    time.sleep(SLEEP)
     client.input(str(num_of_words))
     client.close()
 
@@ -243,7 +243,7 @@ def select_num_of_words(num_of_words=12):
 def apply_settings(passphrase_always_on_device=None):
     client = TrezorClientDebugLink(get_device())
     client.open()
-    time.sleep(0.6)
+    time.sleep(SLEEP)
     print(passphrase_always_on_device)
     device.apply_settings(
         client,

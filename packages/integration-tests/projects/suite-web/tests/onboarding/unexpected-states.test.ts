@@ -1,4 +1,4 @@
-describe('Onboarding unexpected states', () => {
+describe('Onboarding - unexpected states', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
     });

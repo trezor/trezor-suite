@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-describe('Steps order - slightly differs under certain circumstances', () => {
+describe('Onboarding - steps order', () => {
     before(() => {
         cy.task('stopEmu');
     });
