@@ -36,6 +36,7 @@ declare global {
             toggleDeviceMenu: () => Chainable<Subject>;
             passThroughInitialRun: () => Chainable<Subject>;
             passThroughBackup: () => Chainable<Subject>;
+            goToOnboarding: () => Chainable<Subject>;
         }
     }
 }

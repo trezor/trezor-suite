@@ -27,7 +27,7 @@ describe('Onboarding happy paths', () => {
             .click()
             .getTestElement('@onboarding/only-backup-option-button')
             .click()
-            .getTestElement('@onboading/confirm-action-on-device')
+            .getTestElement('@onboarding/confirm-action-on-device')
             .should('be.visible');
         cy.task('sendDecision');
 

@@ -58,21 +58,25 @@ module.exports = on => {
             return null;
         },
         setupEmu: async options => {
-            // todo: figure out how to pass more options.
-            // these are probably all options supported by python trezor
-            // https://github.com/trezor/python-trezor/blob/688d1ac03bfed162372bc5ac2dfafa0ee69378c8/trezorlib/debuglink.py
             const defaults = {
                 mnemonic: 'all all all all all all all all all all all all',
                 pin: '',
                 passphrase_protection: false,
                 label: CONSTANTS.DEFAULT_TREZOR_LABEL,
+                // todo: needs_backup
             };
+
             await controller.connect();
+            // before setup, stop bridge and start it again after it. it has no performance hit 
+            // and avoids 'wrong previous session' errors from bridge. actual setup is done
+            // through udp transport if bridge transport is not available
+            await controller.send({ type: 'bridge-stop' });
             await controller.send({
                 type: 'emulator-setup',
                 ...defaults,
                 ...options,
             });
+            await controller.send({ type: 'bridge-start' });
             await controller.disconnect();
             return null;
         },

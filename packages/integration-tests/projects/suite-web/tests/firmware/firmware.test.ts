@@ -31,7 +31,6 @@ describe('Firmware', () => {
         cy.visit('/settings/device');
         cy.passThroughInitialRun();
         cy.getTestElement('@settings/device/update-button').should('contain.text', 'Up to date').click();
-
     });
 
     // todo: test switching from bitcoin-only to full-featured

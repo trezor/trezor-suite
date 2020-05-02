@@ -21,7 +21,7 @@ describe('Recovery path', () => {
         cy.getTestElement('@onboarding/button-continue').click();
         cy.getTestElement('@onboarding/button-continue').click();
         cy.getTestElement('@onboarding/recovery/start-button').click();
-        cy.getTestElement('@onboading/confirm-action-on-device').should('be.visible');
+        cy.getTestElement('@onboarding/confirm-action-on-device').should('be.visible');
         cy.task('sendDecision');
         cy.task('sendDecision');
         cy.task('selectNumOfWordsEmu', 12);
