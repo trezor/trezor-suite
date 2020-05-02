@@ -8,15 +8,19 @@ import AccountMode from '@wallet-components/AccountMode';
 import AccountAnnouncement from '@wallet-components/AccountAnnouncement';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import { AppState } from '@suite-types';
+import { variables } from '@trezor/components';
 
 const Wrapper = styled.div<{ noPadding?: boolean }>`
     display: flex;
     flex: 1;
     flex-direction: column;
-    padding: 0px 32px 32px 32px;
-    padding-top: 10px;
+    padding: 16px 32px 32px 32px;
     max-width: ${MAX_WIDTH};
     height: 100%;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        padding: 16px;
+    }
 `;
 
 type Props = {

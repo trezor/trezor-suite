@@ -1,11 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import { LayoutContext } from '@suite-components';
+import { variables } from '@trezor/components';
 import { AssetsCard, PortfolioCard, SecurityFeatures, NewsFeed } from '@dashboard-components';
 
 const Wrapper = styled.div`
-    padding: 0px 32px 32px 32px;
-    padding-top: 16px;
+    padding: 16px 32px 32px 32px;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        padding: 16px;
+    }
 `;
 
 const Divider = styled.div`
