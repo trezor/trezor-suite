@@ -374,12 +374,13 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
             customFee: send.selectedFee.feePerUnit,
         });
     } else {
-        dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
         dispatch({
             type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
             customFee: null,
         });
     }
+
+    dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
 
     // eth update gas price and gas limit
     if (account.networkType === 'ethereum') {

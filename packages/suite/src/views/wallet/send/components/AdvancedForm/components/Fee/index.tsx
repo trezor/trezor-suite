@@ -171,12 +171,12 @@ export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
                     )}
                 />
             </Row>
-            {networkType !== 'ethereum' && customFee.value && (
+            {networkType !== 'ethereum' && selectedFee.label === 'custom' && (
                 <CustomFeeRow>
                     <CustomFeeWrapper>
                         <CustomFee />
                     </CustomFeeWrapper>
-                    {fiatVal && (
+                    {fiatVal && customFee.value && (
                         <BadgeWrapper>
                             <Badge>
                                 {toFiatCurrency(
