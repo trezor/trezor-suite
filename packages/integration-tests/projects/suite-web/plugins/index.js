@@ -27,6 +27,9 @@ module.exports = on => {
     // add snapshot plugin
     addMatchImageSnapshotPlugin(on);
 
+    // on('after:screenshot', () => {
+    //     console.log('ahoj')
+    // })
     on('before:browser:launch', async (browser = {}, launchOptions) => {
         // not the best solution by far, but seems to work.
         // problem is that bridge response to POST to '/' with 403 sometimes.

@@ -10,10 +10,12 @@ describe('Backup', () => {
         cy.passThroughInitialRun();
     });
 
-    it('Successful backup happy path', () => {
+    it.only('Successful backup happy path', () => {
         // access from notification
         cy.getTestElement('@notification/no-backup/button').click();
-
+        
+        cy.getTestElement('@backup').matchImageSnapshot('Backup')
+        
         cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
         cy.getTestElement('@backup/check-item/has-enough-time').click();
         cy.getTestElement('@backup/check-item/is-in-private').click();

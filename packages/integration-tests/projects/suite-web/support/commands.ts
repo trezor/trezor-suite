@@ -48,10 +48,16 @@ declare global {
     }
 }
 
-command.addMatchImageSnapshotCommand({
-    failureThreshold: 0.01, // threshold for entire image
-    failureThresholdType: 'percent', // percent of image or number of pixels
-});
+if (Cypress.env('SNAPSHOT')) {
+    command.addMatchImageSnapshotCommand({
+        failureThreshold: 0.01, // threshold for entire image
+        failureThresholdType: 'percent', // percent of image or number of pixels
+    });
+} else {
+    Cypress.Commands.add('matchImageSnapshot', () => {
+        return cy.log('skipping image snapshot')
+    })
+}
 
 Cypress.Commands.add('resetDb', { prevSubject: false }, resetDb);
 Cypress.Commands.add('setState', setState);
