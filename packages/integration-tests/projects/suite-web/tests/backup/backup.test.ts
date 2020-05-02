@@ -10,7 +10,7 @@ describe('Backup', () => {
         cy.passThroughInitialRun();
     });
 
-    it.only('Successful backup happy path', () => {
+    it('Successful backup happy path', () => {
         // access from notification
         cy.getTestElement('@notification/no-backup/button').click();
         

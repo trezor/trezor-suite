@@ -4,6 +4,9 @@ const SECOND_DEVICE_PATH = '2';
 
 // todo: appears to be flaky, will debug asap
 describe('Stories of device connecting', () => {
+    before(() => {
+        cy.task('stopEmu');
+    })
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
         // some route that will not trigger discovery, it does not matter in this test 
@@ -96,8 +99,7 @@ describe('Stories of device connecting', () => {
                     no_backup: true,
                 },
             );
-            cy.getTestElement('@device-invalid-mode/seedless')
-            cy.matchImageSnapshot('seedless');
+            cy.getTestElement('@device-invalid-mode/seedless').matchImageSnapshot('seedless');
         });
     });
     
@@ -171,7 +173,7 @@ describe('Stories of device connecting', () => {
                 .should('not.exist');
         });
 
-        it(`seedless device -> show info about seedles`, () => {
+        it(`seedless device -> show info about seedless`, () => {
             cy.connectDevice(
                 {
                     path: SECOND_DEVICE_PATH,
