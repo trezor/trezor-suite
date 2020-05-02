@@ -40,6 +40,7 @@ export type SendFormActions =
           outputId: number;
       }
     | { type: typeof SEND.COMPOSE_PROGRESS; isComposing: boolean }
+    | { type: typeof SEND.CHANGE_SET_MAX_STATE; activated: boolean }
     | {
           type: typeof SEND.HANDLE_FIAT_VALUE_CHANGE;
           outputId: number;

@@ -26,6 +26,7 @@ const initialState = (
         },
     ],
     touched: false,
+    setMaxActivated: false,
     isComposing: false,
     customFee: { value: null, error: null },
     isAdditionalFormVisible: false,
@@ -64,6 +65,12 @@ export default (state: State | null = null, action: WalletAction): State | null 
             // set touched
             case SEND.SET_TOUCHED: {
                 draft.touched = action.touched;
+                break;
+            }
+
+            // change setMax state
+            case SEND.CHANGE_SET_MAX_STATE: {
+                draft.setMaxActivated = action.activated;
                 break;
             }
 

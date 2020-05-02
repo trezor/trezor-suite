@@ -173,6 +173,11 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     if (!send || !fiat || selectedAccount.status !== 'loaded') return null;
     const { account, network } = selectedAccount;
 
+    dispatch({
+        type: SEND.CHANGE_SET_MAX_STATE,
+        activated: false,
+    });
+
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
     const isValidAmount = hasDecimals(amount, network.decimals);
@@ -315,6 +320,11 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
     const { isDestinationAccountEmpty } = send.networkTypeRipple;
     const reserve = getReserveInXrp(account);
+
+    dispatch({
+        type: SEND.CHANGE_SET_MAX_STATE,
+        activated: true,
+    });
 
     if (fiatNetwork && composedTransaction && composedTransaction.type !== 'error') {
         const rate = fiatNetwork.current?.rates[output.localCurrency.value.value];
