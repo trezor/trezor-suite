@@ -28,10 +28,7 @@ module.exports = on => {
     addMatchImageSnapshotPlugin(on);
 
     on('before:browser:launch', async (browser = {}, launchOptions) => {
-        // not the best solution by far, but seems to work.
-        // problem is that bridge response to POST to '/' with 403 sometimes.
-        // this request occurs on bridge start. so I disabled bridge stop/start functionality
-        // in tests until I find another way how to fix this (debug in python scripts most probably)
+        // default state of bridge is ON
         await controller.connect();
         const response = await controller.send({ type: 'bridge-start' });
         await controller.disconnect();
@@ -47,7 +44,7 @@ module.exports = on => {
     on('task', {
         startBridge: async (version) => {
             await controller.connect();
-            const response = await controller.send({ type: 'bridge-start', version });
+            await controller.send({ type: 'bridge-start', version });
             await controller.disconnect();
             return null;
         },

@@ -2,6 +2,7 @@
 
 describe('Onboarding - create wallet', () => {
     beforeEach(() => {
+        cy.task('stopEmu');
         cy.viewport(1024, 768).resetDb();
         cy.visit('/');
         cy.goToOnboarding();
