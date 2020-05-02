@@ -3,10 +3,11 @@ const FIRST_DEVICE_PATH = '1';
 const SECOND_DEVICE_PATH = '2';
 
 // todo: appears to be flaky, will debug asap
-describe.skip('Stories of device connecting', () => {
+describe('Stories of device connecting', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
-        cy.visit('/');
+        // some route that will not trigger discovery, it does not matter in this test 
+        cy.visit('/settings');
         cy.passThroughInitialRun();
         cy.window()
             .its('TrezorConnect')
@@ -54,7 +55,7 @@ describe.skip('Stories of device connecting', () => {
             }).onboardingShouldLoad();
         });
 
-        it(`outdated firmware -> load wallet`, () => {
+        it.skip(`outdated firmware -> load wallet`, () => {
             cy.connectDevice(
                 {
                     path: SECOND_DEVICE_PATH,
@@ -65,7 +66,7 @@ describe.skip('Stories of device connecting', () => {
                     device_id: SECOND_DEVICE_PATH,
                     initialized: true,
                 },
-            ).getTestElement('@dashboard/index');
+            ).getTestElement('@settings/index');
         });
 
         it(`required firmware -> firmware static page`, () => {
@@ -81,6 +82,7 @@ describe.skip('Stories of device connecting', () => {
                 },
             );
             cy.getTestElement('@firmware/index');
+            
         });
 
         it(`seedless device -> show info about seedless`, () => {
@@ -95,6 +97,7 @@ describe.skip('Stories of device connecting', () => {
                 },
             );
             cy.getTestElement('@device-invalid-mode/seedless')
+            cy.matchImageSnapshot('seedless');
         });
     });
     
