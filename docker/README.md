@@ -1,5 +1,6 @@
 Disclaimer: 
-- does not work on mac. only linux is supported at the moment, see here https://medium.com/@nihon_rafy/building-a-dockerized-gui-by-sharing-the-host-screen-with-docker-container-b660835fb722
+- GUI from docker container does not work on mac. Only linux is supported at the moment.
+- Anyone willing to help with mac configuration might start here https://medium.com/@nihon_rafy/building-a-dockerized-gui-by-sharing-the-host-screen-with-docker-container-b660835fb722
 
 # Docker
 
@@ -25,8 +26,13 @@ This will open dev server on http://localhost:3000 and as a bonus a control pane
 
 Suite test opens cypress test runner and prepares everything to run tests.
 
-`./docker/docker-suite-test`
+`./docker/docker-suite-test.sh`
 
+### Image snapshots
+
+It is possible to run tests with image snapshots to test for visual regressions. To enable snapshots, use env variable:
+
+`CYPRESS_SNAPSHOT=1 ./docker/docker-suite-test.sh`
 
 # Maintenance
 
