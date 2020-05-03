@@ -8,8 +8,6 @@ from websocket_server import WebsocketServer
 import emulator
 import bridge
 
-logging.info("starting main.py")
-print("print")
 
 def cleanup():
     emulator.stop()
@@ -18,8 +16,15 @@ def cleanup():
 
 atexit.register(cleanup)
 
+PORT = 9001
 DEFAULT_TREZORD_VERSION = '2.0.29'
 DEFAULT_TREZOR_VERSION = '2.3.0'
+
+# todo: add env variable DEFAULT_TREZOR_VERSION which could be url leading to firmware build that
+# should be downloaded and integration-tested 
+# print(os.environ.get('DEFAULT_TREZOR_VERSION'))
+
+print("starting websocket server on port: " + str(PORT))
 
 # Called for every client connecting (after handshake)
 def new_client(client, server):
@@ -115,8 +120,9 @@ def message_received(client, server, message):
             {"id": cmdId, "success": False, "error": str(e)}))
 
 
-server = WebsocketServer(9001)
+server = WebsocketServer(PORT)
 server.set_fn_new_client(new_client)
 server.set_fn_client_left(client_left)
 server.set_fn_message_received(message_received)
+print('websocket server running ')
 server.run_forever()

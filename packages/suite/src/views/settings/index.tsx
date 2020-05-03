@@ -32,7 +32,7 @@ export default ({
     const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
 
     return (
-        <SettingsLayout>
+        <SettingsLayout data-test="@settings/index">
             <Section title={<Translation id="TR_LOCALIZATION" />}>
                 <SectionItem>
                     <TextColumn title={<Translation id="TR_LANGUAGE" />} />

@@ -14,6 +14,7 @@ type Props = ReturnType<typeof mapDispatchToProps>;
 
 const Index = (props: Props) => (
     <DeviceInvalidModeLayout
+        data-test="@device-invalid-mode/initialize"
         title={<Translation id="TR_DEVICE_NOT_INITIALIZED" />}
         text={<Translation id="TR_DEVICE_NOT_INITIALIZED_TEXT" />}
         resolveButton={
