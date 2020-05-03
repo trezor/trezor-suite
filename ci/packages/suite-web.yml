@@ -1,30 +1,30 @@
-# suite-web build:
-#     stage: build
-#     script:
-#         - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
-#     artifacts:
-#         expire_in: 7 days
-#         paths:
-#             - $PACKAGE_PATH_SUITE_WEB/build
+suite-web build:
+    stage: build
+    script:
+        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
+    artifacts:
+        expire_in: 7 days
+        paths:
+            - $PACKAGE_PATH_SUITE_WEB/build
 
-# suite-web deploy dev:
-#     stage: deploy to dev servers
-#     variables:
-#         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
-#     dependencies:
-#         - suite-web build
-#     environment:
-#         name: ${CI_BUILD_REF_NAME}
-#         url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
-#     before_script: []
-#     script:
-#         - cd ${PACKAGE_PATH_SUITE_WEB}
-#         - echo "Deploy to dev servers"
-#         - mkdir -p ${DEPLOY_BASE_DIR}/suite-web
-#         - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
-#         - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
-#     tags:
-#         - deploy
+suite-web deploy dev:
+    stage: deploy to dev servers
+    variables:
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
+    dependencies:
+        - suite-web build
+    environment:
+        name: ${CI_BUILD_REF_NAME}
+        url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+    before_script: []
+    script:
+        - cd ${PACKAGE_PATH_SUITE_WEB}
+        - echo "Deploy to dev servers"
+        - mkdir -p ${DEPLOY_BASE_DIR}/suite-web
+        - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
+        - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
+    tags:
+        - deploy
 
 suite-web test integration google-chrome:
     stage: integration testing

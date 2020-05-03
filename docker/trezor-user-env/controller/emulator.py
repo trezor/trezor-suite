@@ -22,7 +22,7 @@ proc = None
 # when communicating with device via bridge/debuglink, this sleep is required otherwise there
 # may appear weird race conditions in communications. when not going through bridge but webusb 
 # there is no need for it, but we can skip bridge only when doing initial setup before test. 
-SLEEP = 0.6
+SLEEP = 1
 
 def get_bridge_device():
     devices = BridgeTransport.enumerate()
@@ -166,7 +166,7 @@ def decision():
     client.open()
     time.sleep(SLEEP)
     client.press_yes()
-    time.sleep(SLEEP)
+    # time.sleep(SLEEP)
     client.close()
 
 # enter recovery word or pin
