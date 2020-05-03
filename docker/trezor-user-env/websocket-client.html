@@ -29,8 +29,6 @@
 
         function onSubmit() {
             var input = document.getElementById("input");
-            // You can send message to the Web Socket using ws.send.
-            console.log('input', input.value);
             _send(JSON.parse(input.value));
             output("send: " + input.value);
             input.value = "";
@@ -108,7 +106,6 @@
         }
 
         function _send(json) {
-            console.log(json)
             ws.send(
                 JSON.stringify(Object.assign(json, {
                     id: id

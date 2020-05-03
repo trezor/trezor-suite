@@ -9,8 +9,6 @@ from trezorlib.transport.bridge import BridgeTransport
 
 proc = None
 
-
-
 # def findProcess():
 #     ps = Popen("ps -ef | grep trezord-go", shell=True, stdout=PIPE)
 #     output = ps.stdout.read()

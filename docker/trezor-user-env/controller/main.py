@@ -3,7 +3,6 @@ import os
 import json
 import atexit
 from termcolor import colored
-import logging
 from websocket_server import WebsocketServer
 import emulator
 import bridge
