@@ -50,14 +50,13 @@ def wait_for_bridge_device():
         except:
             elapsed = time.monotonic() - start
             if elapsed >= timeout:
-                print("timed out waiting for bridge device")
                 raise RuntimeError("timed out waiting for bridge device.")
             time.sleep(0.5)
 
 
 def wait_for_udp_device():
     start = time.monotonic()
-    timeout = 5
+    timeout = 8
     while True:
         try:
             device = get_udp_device()
@@ -65,7 +64,6 @@ def wait_for_udp_device():
         except:
             elapsed = time.monotonic() - start
             if elapsed >= timeout:
-                print("timed out udp device")
                 raise RuntimeError("Timed out waiting for udp device.")
             time.sleep(0.05)
 
