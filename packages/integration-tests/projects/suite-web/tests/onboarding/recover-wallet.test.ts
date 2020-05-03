@@ -16,7 +16,7 @@ describe('Onboarding - recover wallet', () => {
     });
 
     // todo: acquire device problem with model T test? Does stopEmu really stop T1 emu?
-    it.skip('Model 1', () => {
+    it('Model 1', () => {
         cy.task('startEmu', { version: '1.8.3', wipe: true });
         cy.getTestElement('@onboarding/button-continue').click();
         cy.getTestElement('@onboarding/button-continue').click();
