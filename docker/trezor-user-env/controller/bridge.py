@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
-import requests
-import sys
 import os
 import time
 import signal
+import http.client
+
 from subprocess import Popen, PIPE
 from trezorlib.transport.bridge import BridgeTransport
 
 proc = None
 
-import http.client
 
 
 # def findProcess():
@@ -30,21 +29,6 @@ def is_running():
         return False
     except:
         return False
-
-
-def loader(running=True):
-    start = time.monotonic()
-    waiting = True
-    while waiting:
-        try:
-            if is_running() != running:
-                raise Exception("not connected yet")
-            waiting = False
-        except Exception as e:
-            print(str(e))
-            time.sleep(0.5)
-    end = time.monotonic()
-    print("waited for {:.3f}s".format(end - start))
 
 
 def start(version):

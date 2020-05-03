@@ -9,14 +9,13 @@ from trezorlib.debuglink import DebugLink, TrezorClientDebugLink
 from trezorlib.client import TrezorClient
 from trezorlib.device import wipe, reset, backup
 
-from trezorlib.transport import enumerate_devices, get_transport
 from trezorlib.transport.udp import UdpTransport
 from trezorlib.transport.bridge import BridgeTransport
 
 import bridge
 
-from trezorlib import messages as proto
-import common.buttons
+# buttons positions on screen, might be useful later
+# import common.buttons
 
 proc = None
 
@@ -84,7 +83,7 @@ def start(version, wipe):
     if proc is not None:
         stop()
 
-    # todo: T1 profile is elsewhere, ask matejcik
+    # todo: T1 profile is elsewhere? ask matejcik
     PROFILE = "/var/tmp/trezor.flash"
     if wipe and os.path.exists(PROFILE):
         os.remove(PROFILE)
@@ -137,11 +136,7 @@ def stop():
 def setup_device(mnemonic, pin, passphrase_protection, label):
     # TODO:
     # - check if device is acquired otherwise throws "wrong previous session" from bridge
-    device = get_device()
-    client = TrezorClientDebugLink(device)
-
-    # client = TrezorClientDebugLink(get_device().find_debug())
-
+    client = TrezorClientDebugLink(get_device())
     client.open()
     debuglink.load_device(
         client,
@@ -154,16 +149,13 @@ def setup_device(mnemonic, pin, passphrase_protection, label):
 
 
 def wipe_device():
-    # client = TrezorClientDebugLink(get_device().find_debug())
-    device = get_device()
-    client = TrezorClientDebugLink(device)
+    client = TrezorClientDebugLink(get_device())
     client.open()
     wipe(client)
     client.close()
 
 def reset_device():
-    device = get_device()
-    client = TrezorClientDebugLink(device)
+    client = TrezorClientDebugLink(get_device())
     client.open()
     reset(client, skip_backup=True, pin_protection=False)
     client.close()
@@ -244,7 +236,6 @@ def apply_settings(passphrase_always_on_device=None):
     client = TrezorClientDebugLink(get_device())
     client.open()
     time.sleep(SLEEP)
-    print(passphrase_always_on_device)
     device.apply_settings(
         client,
         passphrase_always_on_device=bool(passphrase_always_on_device),
