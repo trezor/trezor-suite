@@ -133,7 +133,9 @@ export const initialRedirection = () => async (dispatch: Dispatch, getState: Get
     const { initialRun } = getState().suite.flags;
     if (route && route.isModal) {
         await dispatch(goto(route.name));
-    } else if (initialRun) {
+    } else if (route && initialRun) {
+        // only do initial redirection of route is valid
         await dispatch(goto('suite-welcome'));
     }
+    // otherwise do nothing -> just show 404 page
 };

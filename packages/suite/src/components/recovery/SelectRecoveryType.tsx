@@ -12,7 +12,7 @@ const Wrapper = styled.div`
     justify-content: center;
     flex-direction: column;
     width: 100%;
-    margin-top: 35px;
+    margin-top: 24px;
 
     @media (min-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: row;
@@ -53,6 +53,7 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
                     />
                 }
                 imgSrc="images/svg/recovery-basic.svg"
+                data-test="@recover/select-type/basic"
             />
 
             <Option
@@ -70,6 +71,7 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
                     />
                 }
                 imgSrc="images/svg/recovery-advanced.svg"
+                data-test="@recover/select-type/advanced"
             />
         </Wrapper>
     </>

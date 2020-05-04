@@ -1,13 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link, H2, P } from '@trezor/components';
+import { Link, H2, P, Modal } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
-    flex: 1;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
 `;
 
 const Line = styled.div`
@@ -15,17 +13,21 @@ const Line = styled.div`
 `;
 
 const Version = () => (
-    <Wrapper>
-        <P size="small" weight="bold">
-            APPLICATION VERSION
-        </P>
-        <H2>{process.env.VERSION}</H2>
-        <Line />
-        <P>LAST COMMIT HASH</P>
-        <Link href={`https://github.com/trezor/trezor-suite/commits/${process.env.COMMITHASH}`}>
-            <H2>{process.env.COMMITHASH}</H2>
-        </Link>
-    </Wrapper>
+    <Modal>
+        <Wrapper>
+            <P size="small" weight="bold">
+                APPLICATION VERSION
+            </P>
+            <H2>{process.env.VERSION}</H2>
+            <Line />
+            <P size="small" weight="bold">
+                LAST COMMIT HASH
+            </P>
+            <Link href={`https://github.com/trezor/trezor-suite/commits/${process.env.COMMITHASH}`}>
+                <H2>{process.env.COMMITHASH}</H2>
+            </Link>
+        </Wrapper>
+    </Modal>
 );
 
 export default Version;

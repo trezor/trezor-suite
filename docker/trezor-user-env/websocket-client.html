@@ -29,8 +29,7 @@
 
         function onSubmit() {
             var input = document.getElementById("input");
-            // You can send message to the Web Socket using ws.send.
-            ws.send(input.value);
+            _send(JSON.parse(input.value));
             output("send: " + input.value);
             input.value = "";
             input.focus();
@@ -57,6 +56,12 @@
         function emulatorWipe() {
             _send({
                 type: 'emulator-wipe'
+            });
+        }
+
+        function emulatorResetDevice() {
+            _send({
+                type: 'emulator-reset-device'
             });
         }
     
@@ -122,7 +127,7 @@
 
         function getBridgeStatus() {
             return new Promise((resolve, reject) => {
-                fetch('http://127.0.0.1:21325/status/', { mode: 'no-cors'}).then(response => {
+                fetch('http://0.0.0.0:21325/status/', { mode: 'no-cors'}).then(response => {
                     bridge = true;
                     resolve();
                 }, (error) => {
@@ -140,7 +145,7 @@
                 el.innerHTML = "stopped";
             }
         }
-        watchBridge();
+        // watchBridge();
 
     </script>
 </head>
@@ -155,13 +160,12 @@
     <div>
         <h3>Bridge status</h3>
         <div>Status: <span id="bridge-status">unknown</span></div>
-        <div>You may also check bridge status page on http://127.0.0.1:21325/status/</div>
+        <div>You may also check bridge status page on http://0.0.0.0:21325/status/</div>
     </div>
 
     <div>
         <h3>Emulator start</h3>
-        <button onclick="emulatorStart('2.2.0'); return false;">Start 2.2.0</button>
-        <button onclick="emulatorStart(); return false;">Start 2.1.4</button>
+        <button onclick="emulatorStart('2.3.0'); return false;">Start 2.3.0</button>
         <button onclick="emulatorStart('1.8.3'); return false;">Start 1.8.3</button>
     </div>
     <div>
@@ -170,6 +174,8 @@
         <button onclick="emulatorDecision(); return false;">Decision</button>
         <button onclick="emulatorStop(); return false;">Stop</button>
         <button onclick="emulatorWipe(); return false;">Wipe</button>
+        <button onclick="emulatorResetDevice(); return false;">Reset</button>
+
     </div>
     
     <h3>Server</h3>

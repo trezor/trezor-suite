@@ -3,7 +3,7 @@ import { homescreensT2 } from '@suite-constants';
 
 describe('Device settings', () => {
     beforeEach(() => {
-        cy.task('startEmu');
+        cy.task('startEmu', { wipe: true, version: '2.1.4' });
         cy.task('setupEmu');
         // navigate to device settings page
         cy.viewport(1024, 768).resetDb();

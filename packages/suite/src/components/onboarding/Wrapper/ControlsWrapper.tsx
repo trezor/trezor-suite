@@ -8,7 +8,7 @@ interface Props {
 const ControlsWrapper = styled.div<Props>`
     display: flex;
     flex-direction: ${({ isVertical }) => (isVertical ? 'column' : 'row')};
-    width: ${({ isVertical }) => (isVertical ? '240px' : '100%')};
+    min-width: ${({ isVertical }) => (isVertical ? '240px' : '100%')};
 
     justify-content: ${({ isVertical }) => (isVertical ? 'center' : 'space-around')};
     margin-top: 8px;

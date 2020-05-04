@@ -12,7 +12,7 @@ const Wrapper = styled.div`
     justify-content: center;
     flex-direction: column;
     width: 100%;
-    margin-top: 35px;
+    margin-top: 24px;
 
     @media (min-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: row;
@@ -36,6 +36,7 @@ const SelectWordCount = ({ onSelect }: Props) => (
                 }}
                 button={<Translation id="TR_WORDS" values={{ count: '12' }} />}
                 imgSrc="images/svg/12-words.svg"
+                data-test="@recover/select-count/12"
             />
             <Option
                 variant={3}
@@ -44,6 +45,7 @@ const SelectWordCount = ({ onSelect }: Props) => (
                 }}
                 button={<Translation id="TR_WORDS" values={{ count: '18' }} />}
                 imgSrc="images/svg/18-words.svg"
+                data-test="@recover/select-count/18"
             />
             <Option
                 variant={3}
@@ -52,6 +54,7 @@ const SelectWordCount = ({ onSelect }: Props) => (
                 }}
                 button={<Translation id="TR_WORDS" values={{ count: '24' }} />}
                 imgSrc="images/svg/24-words.svg"
+                data-test="@recover/select-count/24"
             />
         </Wrapper>
     </>

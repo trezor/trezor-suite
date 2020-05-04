@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-describe('Steps order - slightly differs under certain circumstances', () => {
+describe('Onboarding - steps order', () => {
     before(() => {
         cy.task('stopEmu');
     });
@@ -14,18 +14,18 @@ describe('Steps order - slightly differs under certain circumstances', () => {
             .click();
     });
 
-    describe('new device', () => {
+    describe('New device', () => {
         beforeEach(() => {
             cy.getTestElement('@onboarding/path-create-button').click();
         });
 
-        it('no device connected -> offer device selection', () => {
+        it('No device connected -> offer device selection', () => {
             cy.getTestElement('@onboarding/path-new-button')
                 .click()
                 .getTestElement('@onboarding/option-model-one-path');
         });
 
-        it('device is already connected -> skip device selection and go to hologram directly', () => {
+        it('Device is already connected -> skip device selection and go to hologram directly', () => {
             cy.connectDevice({ firmware: 'none' }, { firmware_present: false })
                 .getTestElement('@onboarding/path-new-button')
                 .click()
@@ -33,12 +33,12 @@ describe('Steps order - slightly differs under certain circumstances', () => {
         });
     });
 
-    describe('used device', () => {
+    describe('Used device', () => {
         beforeEach(() => {
             cy.getTestElement('@onboarding/path-create-button').click();
         });
 
-        it('no device connected -> skip device selection, skip hologram and go to pair device step directly', () => {
+        it('No device connected -> skip device selection, skip hologram and go to pair device step directly', () => {
             cy.getTestElement('@onboarding/path-used-button')
                 .click()
                 .getTestElement('@onboarding/pair-device-step');

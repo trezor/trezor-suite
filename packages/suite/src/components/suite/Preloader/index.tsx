@@ -60,7 +60,12 @@ type Props = ReturnType<typeof mapStateToProps> &
     };
 
 const getSuiteApplicationState = (props: Props) => {
-    const { loaded, transport, device, getDiscoveryAuthConfirmationStatus } = props;
+    const { loaded, transport, device, getDiscoveryAuthConfirmationStatus, router } = props;
+
+    // if router app is unknown, it means user either entered wrong link into navigation bar
+    // or clicked a broken internal link somewhere in suite. In that case 404 page
+    // appears and we do not want to show anything above it.
+    if (router.app === 'unknown') return;
 
     // display Loader wrapped in modal above requested route to keep "modal" flow continuity
     if (!loaded || !transport) return Loading;

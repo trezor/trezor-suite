@@ -28,13 +28,11 @@ module.exports = on => {
     addMatchImageSnapshotPlugin(on);
 
     on('before:browser:launch', async (browser = {}, launchOptions) => {
-        // not the best solution by far, but seems to work.
-        // problem is that bridge response to POST to '/' with 403 sometimes.
-        // this request occurs on bridge start. so I disabled bridge stop/start functionality
-        // in tests until I find another way how to fix this (debug in python scripts most probably)
+        // default state of bridge is ON
         await controller.connect();
         const response = await controller.send({ type: 'bridge-start' });
         await controller.disconnect();
+
 
         if (browser.name === 'chrome') {
             launchOptions.args.push('--disable-dev-shm-usage');
@@ -44,9 +42,9 @@ module.exports = on => {
     });
 
     on('task', {
-        startBridge: async () => {
+        startBridge: async (version) => {
             await controller.connect();
-            const response = await controller.send({ type: 'bridge-start' });
+            await controller.send({ type: 'bridge-start', version });
             await controller.disconnect();
             return null;
         },
@@ -57,42 +55,52 @@ module.exports = on => {
             return null;
         },
         setupEmu: async options => {
-            // todo: figure out how to pass more options.
-            // these are probably all options supported by python trezor
-            // https://github.com/trezor/python-trezor/blob/688d1ac03bfed162372bc5ac2dfafa0ee69378c8/trezorlib/debuglink.py
             const defaults = {
                 mnemonic: 'all all all all all all all all all all all all',
                 pin: '',
                 passphrase_protection: false,
                 label: CONSTANTS.DEFAULT_TREZOR_LABEL,
+                // todo: needs_backup
             };
+
             await controller.connect();
-            const response = await controller.send({
+            // before setup, stop bridge and start it again after it. it has no performance hit 
+            // and avoids 'wrong previous session' errors from bridge. actual setup is done
+            // through udp transport if bridge transport is not available
+            await controller.send({ type: 'bridge-stop' });
+            await controller.send({
                 type: 'emulator-setup',
                 ...defaults,
                 ...options,
             });
+            await controller.send({ type: 'bridge-start' });
             await controller.disconnect();
             return null;
         },
-        startEmu: async version => {
+        /**
+         * @version 
+         * version of firmware in emulator, only few are supported
+         * @wipe
+         * shall be emulator wiped before start? defaults to true
+         */
+        startEmu: async (arg) => {
             await controller.connect();
-            const response = await controller.send({
+            await controller.send({
                 type: 'emulator-start',
-                version,
+                ...arg
             });
             await controller.disconnect();
             return null;
         },
         stopEmu: async () => {
             await controller.connect();
-            const response = await controller.send({ type: 'emulator-stop' });
+            await controller.send({ type: 'emulator-stop' });
             await controller.disconnect();
             return null;
         },
         wipeEmu: async () => {
             await controller.connect();
-            const response = await controller.send({ type: 'emulator-wipe' });
+            await controller.send({ type: 'emulator-wipe' });
             await controller.disconnect();
             return null;
         },
@@ -108,33 +116,33 @@ module.exports = on => {
             await controller.disconnect();
             return null;
         },
-        inputEmu: async word => {
+        inputEmu: async value => {
             await controller.connect();
-            await controller.send({ type: 'emulator-input', word });
+            await controller.send({ type: 'emulator-input', value });
             await controller.disconnect();
             return null;
         },
-        readAndConfirmMnemonicEmu: async word => {
+        resetDevice: async options => {
+            await controller.connect();
+            await controller.send({ type: 'emulator-reset-device', ...options });
+            await controller.disconnect();
+            return null;
+        },
+        readAndConfirmMnemonicEmu: async () => {
             await controller.connect();
             await controller.send({ type: 'emulator-read-and-confirm-mnemonic' });
             await controller.disconnect();
             return null;
         },
-        setPassphraseSourceEmu: async passphraseSource => {
+        applySettings: async (options) => {
+            const defaults = {
+                passphrase_always_on_device: false,
+            };
             await controller.connect();
-            let source;
-            if (passphraseSource === 'ask') {
-                source = 0;
-            } else if (passphraseSource === 'device') {
-                source = 1;
-            } else if (passphraseSource === 'host') {
-                source = 2;
-            } else {
-                throw Error('unexpected passphraseSource');
-            }
-            const response = await controller.send({
-                type: 'emulator-set-passphrase-source',
-                passphrase_source: source,
+            await controller.send({
+                type: 'emulator-apply-settings',
+                ...defaults,
+                ...options,
             });
             await controller.disconnect();
             return null;

@@ -1,6 +1,6 @@
 describe('Dashboard', () => {
     beforeEach(() => {
-        cy.task('startEmu');
+        cy.task('startEmu', { version: '2.1.4', wipe: true });
         cy.task('setupEmu');
         cy.viewport(1024, 768).resetDb();
     });

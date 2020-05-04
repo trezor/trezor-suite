@@ -3271,6 +3271,52 @@ const definedMessages = defineMessages({
         description:
             'After firmware update is done, user must renew connection with Trezor device. We also call this "pairing" device',
     },
+    TR_BY_CREATING_WALLET: {
+        id: 'TR_BY_CREATING_WALLET',
+        defaultMessage: 'By creating wallet you agree with {TERMS_AND_CONDITIONS}',
+    },
+    TERMS_AND_CONDTIONS: {
+        id: 'TERMS_AND_CONDTIONS',
+        defaultMessage: 'Terms and conditions',
+        description: 'Legal stuff nobody reads.',
+    },
+    TR_CREATE_WALLET: {
+        id: 'TR_CREATE_WALLET',
+        defaultMessage: 'Create wallet',
+        description:
+            'Used for button triggering seed creation (reset device call) if shamir/non-shamir selection is not available.',
+    },
+    TR_YOU_MAY_CHOSE_EITHER_STANDARD: {
+        id: 'TR_YOU_MAY_CHOSE_EITHER_STANDARD',
+        defaultMessage: 'You might chose either standard backup type or Shamir backup',
+    },
+    SINGLE_SEED: {
+        id: 'SINGLE_SEED',
+        defaultMessage: 'Single seed',
+        description: 'Basic, non-shamir backup. Seed has only one part.',
+    },
+    SINGLE_SEED_DESCRIPTION: {
+        id: 'SINGLE_SEED_DESCRIPTION',
+        defaultMessage: 'Security level: Standard. Distributable: No',
+    },
+    SHAMIR_SEED: {
+        id: 'SHAMIR_SEED',
+        defaultMessage: 'Shamir seed',
+        description: 'Advanced, shamir backup. Seed has multiple parts.',
+    },
+    SHAMIR_SEED_DESCRIPTION: {
+        id: 'SHAMIR_SEED_DESCRIPTION',
+        defaultMessage: 'Security level: Advanced Distributable: Yes',
+    },
+    TR_SELECT_SEED_TYPE: {
+        id: 'TR_SELECT_SEED_TYPE',
+        defaultMessage: 'Select {seedType}',
+        description: 'seedType is either SINGLE_SEED or SHAMIR_SEED',
+    },
+    TR_BACKUP_TYPE: {
+        id: 'TR_BACKUP_TYPE',
+        defaultMessage: 'Backup type',
+    },
 } as const);
 
 export default definedMessages;

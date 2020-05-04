@@ -118,7 +118,7 @@ class WebsocketServer(ThreadingMixIn, TCPServer, API):
     clients = []
     id_counter = 0
 
-    def __init__(self, port, host='127.0.0.1', loglevel=logging.WARNING):
+    def __init__(self, port, host='0.0.0.0', loglevel=logging.WARNING):
         logger.setLevel(loglevel)
         TCPServer.__init__(self, (host, port), WebSocketHandler)
         self.port = self.socket.getsockname()[1]

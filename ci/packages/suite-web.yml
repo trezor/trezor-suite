@@ -31,6 +31,7 @@ suite-web test integration google-chrome:
     #allow_failure: true
     script:
         - npx cypress install
+        - export CYPRESS_SNAPSHOT=1
         # add DEBUG=cypress:* env variable to debug cypress in ci
         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
         - export BROWSER=chrome

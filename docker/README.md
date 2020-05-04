@@ -1,5 +1,6 @@
-Disclaimer: docker stuff is fairly new and there are couple of todos left. Also I have no idea
-if it works on Mac. Chances are it does not, yet.
+Disclaimer: 
+- GUI from docker container does not work on mac. Only linux is supported at the moment.
+- Anyone willing to help with mac configuration might start here https://medium.com/@nihon_rafy/building-a-dockerized-gui-by-sharing-the-host-screen-with-docker-container-b660835fb722
 
 # Docker
 
@@ -19,15 +20,19 @@ This container shares suite folder with your machine, so if you don't have depen
 
 `./docker/docker-suite-dev.sh`
 
-This will open dev server on http://localhost:3000 and as a bonus a control panel that will allow you to start/stop trezor bridge and work
-with emulators!
+This will open dev server on http://localhost:3000 and as a bonus a control panel that will allow you to start/stop trezor bridge and work with emulators!
 
 ## Suite test
 
 Suite test opens cypress test runner and prepares everything to run tests.
 
-`./docker/docker-suite-test`
+`./docker/docker-suite-test.sh`
 
+### Image snapshots
+
+It is possible to run tests with image snapshots to test for visual regressions. To enable snapshots, use env variable:
+
+`CYPRESS_SNAPSHOT=1 ./docker/docker-suite-test.sh`
 
 # Maintenance
 
@@ -37,3 +42,5 @@ To build:
 `cd ./docker`
 
 `docker build -f ./trezor-user-env/Dockerfile . --tag mroz22/trezor-user-env`
+
+`docker push mroz22/trezor-user-env:latest`
