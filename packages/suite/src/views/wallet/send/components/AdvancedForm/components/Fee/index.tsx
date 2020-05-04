@@ -1,7 +1,7 @@
 import { QuestionTooltip, Translation } from '@suite-components';
 import Badge from '@suite-components/Badge';
 import { capitalizeFirstLetter } from '@suite-utils/string';
-import { colors, Icon, P, Select, variables } from '@trezor/components';
+import { colors, Icon, P, Select, variables, Button } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { FeeLevel } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -59,8 +59,10 @@ const Refresh = styled(Column)`
 `;
 
 const RefreshText = styled.div`
-    padding-left: 5px;
+    padding: 0 5px;
     cursor: pointer;
+    white-space: nowrap;
+    color: ${colors.RED};
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
@@ -130,7 +132,7 @@ const getValue = (
 
 export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
     if (!send || !account || !settings || !fiat) return null;
-    const { selectedFee, customFee, feeInfo } = send;
+    const { selectedFee, customFee, feeInfo, feeOutdated } = send;
     const feeLevels = feeInfo.levels;
     const { localCurrency } = settings;
     const { networkType, symbol } = account;
@@ -145,12 +147,19 @@ export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
                         </Text>
                         <QuestionTooltip messageId="TR_SEND_FEE_TOOLTIP" />
                     </Label>
-                    {networkType === 'ethereum' && (
+                    {feeOutdated && (
                         <Refresh>
-                            <StyledIcon icon="REFRESH" color={colors.BLACK50} size={10} />
                             <RefreshText>
-                                <Translation id="REFRESH" />
+                                <Translation id="TR_FEE_NEEDS_UPDATE" />
                             </RefreshText>
+                            <Button
+                                onClick={() => sendFormActions.manuallyUpdateFee()}
+                                icon="REFRESH"
+                                variant="tertiary"
+                                alignIcon="right"
+                            >
+                                <Translation id="REFRESH" />
+                            </Button>
                         </Refresh>
                     )}
                 </Top>

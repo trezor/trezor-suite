@@ -8,6 +8,7 @@ export const AMOUNT_LOADING = '@wallet-send-form/amount-loading';
 export const SET_MAX = '@wallet-send-form/set-max';
 export const CHANGE_SET_MAX_STATE = '@wallet-send-form/change-set-max-state';
 export const UPDATE_FEE = '@wallet-send-form/update-fee';
+export const CHANGE_FEE_STATE = '@wallet-send-form/change-fee-state';
 
 export const HANDLE_SELECT_CURRENCY_CHANGE = '@wallet-send-form/handle-local-currency';
 export const HANDLE_FIAT_VALUE_CHANGE = '@wallet-send-form/handle-fiat-value';

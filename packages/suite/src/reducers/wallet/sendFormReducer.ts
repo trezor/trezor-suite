@@ -26,6 +26,7 @@ const initialState = (
         },
     ],
     touched: false,
+    feeOutdated: false,
     setMaxActivated: false,
     isComposing: false,
     customFee: { value: null, error: null },
@@ -77,6 +78,12 @@ export default (state: State | null = null, action: WalletAction): State | null 
                     draft.networkTypeEthereum.gasPrice.value = action.gasPrice;
                 }
 
+                break;
+            }
+
+            // change fee state
+            case SEND.CHANGE_FEE_STATE: {
+                draft.feeOutdated = action.feeOutdated;
                 break;
             }
 

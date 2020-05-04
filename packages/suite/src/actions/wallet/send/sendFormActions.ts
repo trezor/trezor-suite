@@ -1,25 +1,25 @@
 import { Dispatch, GetState } from '@suite-types';
 import { SEND } from '@wallet-actions/constants';
-import { isAddressValid } from '@wallet-utils/validation';
 import { ETH_DEFAULT_GAS_LIMIT, ETH_DEFAULT_GAS_PRICE } from '@wallet-constants/sendForm';
 import { FeeLevel, Output } from '@wallet-types/sendForm';
 import { formatNetworkAmount, getFiatValue } from '@wallet-utils/accountUtils';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
 import {
+    getFeeLevels,
     getOutput,
+    getReserveInXrp,
     hasDecimals,
     shouldComposeBy,
-    getFeeLevels,
-    getReserveInXrp,
 } from '@wallet-utils/sendFormUtils';
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
+import { isAddressValid } from '@wallet-utils/validation';
 import BigNumber from 'bignumber.js';
-import { fromWei } from 'web3-utils';
+import { isEqual } from 'lodash';
 
 import * as bitcoinActions from './sendFormBitcoinActions';
+import * as commonActions from './sendFormCommonActions';
 import * as ethereumActions from './sendFormEthereumActions';
 import * as rippleActions from './sendFormRippleActions';
-import * as commonActions from './sendFormCommonActions';
 
 /**
  * Initialize current form, load values from session storage
@@ -443,19 +443,59 @@ export const clear = () => (dispatch: Dispatch) => {
     dispatch(commonActions.clear());
 };
 
-export const updateFeeAfterBlockMined = () => (dispatch: Dispatch, getState: GetState) => {
+export const updateFeeOrNotify = () => (dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount, send } = getState().wallet;
     if (selectedAccount.status !== 'loaded' || !send) return null;
     const { account } = selectedAccount;
-    let ethFees = {};
     const updatedFeeInfo = getState().wallet.fees[account.symbol];
-    const levels = getFeeLevels(account, updatedFeeInfo);
+    const updatedLevels = getFeeLevels(account, updatedFeeInfo);
     const { selectedFee, feeInfo } = send;
-    const updatedSelectedFee = levels.find(level => level.label === selectedFee.label);
+    const { levels } = feeInfo;
+    const updatedSelectedFee = updatedLevels.find(level => level.label === selectedFee.label);
+
+    const shouldUpdate = !isEqual(levels, updatedLevels);
+    if (!shouldUpdate) return null;
+
+    if (selectedFee.label === 'custom') {
+        dispatch({
+            type: SEND.CHANGE_FEE_STATE,
+            feeOutdated: true,
+        });
+    } else {
+        if (!updatedSelectedFee) return null;
+
+        let ethFees = {};
+        if (account.networkType === 'ethereum') {
+            ethFees = {
+                gasPrice: updatedSelectedFee.feePerUnit,
+                gasLimit: updatedSelectedFee.feeLimit,
+            };
+        }
+
+        dispatch({
+            type: SEND.UPDATE_FEE,
+            feeInfo: {
+                ...updatedFeeInfo,
+                levels: updatedLevels,
+            },
+            selectedFee: updatedSelectedFee,
+            ...ethFees,
+        });
+    }
+};
+
+export const manuallyUpdateFee = () => (dispatch: Dispatch, getState: GetState) => {
+    const { selectedAccount, send } = getState().wallet;
+    if (selectedAccount.status !== 'loaded' || !send) return null;
+    const { account } = selectedAccount;
+    const updatedFeeInfo = getState().wallet.fees[account.symbol];
+    const updatedLevels = getFeeLevels(account, updatedFeeInfo);
+    const updatedSelectedFee = updatedLevels.find(level => level.label === 'normal');
 
     if (!updatedSelectedFee) return null;
 
-    if (account.networkType === 'ethereum' && updatedSelectedFee) {
+    let ethFees = {};
+    if (account.networkType === 'ethereum') {
         ethFees = {
             gasPrice: updatedSelectedFee.feePerUnit,
             gasLimit: updatedSelectedFee.feeLimit,
@@ -465,10 +505,15 @@ export const updateFeeAfterBlockMined = () => (dispatch: Dispatch, getState: Get
     dispatch({
         type: SEND.UPDATE_FEE,
         feeInfo: {
-            ...feeInfo,
-            levels,
+            ...updatedFeeInfo,
+            levels: updatedLevels,
         },
-        selectedFee: updatedSelectedFee,
+        selectedFee: updatedSelectedFee || updatedLevels[0],
         ...ethFees,
+    });
+
+    dispatch({
+        type: SEND.CHANGE_FEE_STATE,
+        feeOutdated: false,
     });
 };

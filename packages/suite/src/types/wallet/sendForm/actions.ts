@@ -33,6 +33,10 @@ export type SendFormActions =
           outputId: number;
       }
     | {
+          type: typeof SEND.CHANGE_FEE_STATE;
+          feeOutdated: boolean;
+      }
+    | {
           type: typeof SEND.UPDATE_FEE;
           feeInfo: FeeInfo;
           selectedFee: FeeLevel;
