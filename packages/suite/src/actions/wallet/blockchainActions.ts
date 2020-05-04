@@ -5,6 +5,7 @@ import TrezorConnect, {
     BlockchainEstimateFee,
 } from 'trezor-connect';
 import * as accountUtils from '@wallet-utils/accountUtils';
+import { updateFeeAfterBlockMined } from '@wallet-actions/send/sendFormActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as fiatRatesActions from '@wallet-actions/fiatRatesActions';
 import { getNetwork } from '@wallet-utils/accountUtils';
@@ -212,6 +213,9 @@ export const onBlockMined = (block: BlockchainBlock) => async (
     networkAccounts.forEach(async account => {
         dispatch(accountActions.fetchAndUpdateAccount(account));
     });
+
+    await dispatch(updateFeeInfo(symbol));
+    await dispatch(updateFeeAfterBlockMined());
 };
 
 export const onNotification = (payload: BlockchainNotification) => async (

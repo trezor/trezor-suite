@@ -470,3 +470,53 @@ export const onQrScan = (parsedUri: ParsedURI, outputId: number) => (dispatch: D
 export const clear = () => (dispatch: Dispatch) => {
     dispatch(commonActions.clear());
 };
+
+export const updateFeeAfterBlockMined = () => (dispatch: Dispatch, getState: GetState) => {
+    const { selectedAccount, send } = getState().wallet;
+    if (selectedAccount.status !== 'loaded' || !send) return null;
+    const { account } = selectedAccount;
+    const convertedEthLevels: FeeLevel[] = [];
+    let ethFees = {};
+    const feeInfo = getState().wallet.fees[account.symbol];
+
+    const initialLevels: FeeLevel[] =
+        account.networkType === 'ethereum'
+            ? feeInfo.levels
+            : feeInfo.levels.concat({
+                  label: 'custom',
+                  feePerUnit: '0',
+                  blocks: -1,
+              });
+
+    if (account.networkType === 'ethereum') {
+        initialLevels.forEach(level =>
+            convertedEthLevels.push({
+                ...level,
+                feePerUnit: fromWei(level.feePerUnit, 'gwei'),
+            }),
+        );
+    }
+
+    const levels = account.networkType === 'ethereum' ? convertedEthLevels : initialLevels;
+    const { selectedFee } = send;
+    const updatedSelectedFee = levels.find(level => level.label === selectedFee.label);
+
+    if (account.networkType === 'ethereum' && updatedSelectedFee) {
+        ethFees = {
+            gasPrice: updatedSelectedFee.feePerUnit,
+            gasLimit: updatedSelectedFee.feeLimit,
+        };
+    }
+
+    if (updatedSelectedFee) {
+        dispatch({
+            type: SEND.UPDATE_FEE,
+            feeInfo: {
+                ...feeInfo,
+                levels,
+            },
+            selectedFee: updatedSelectedFee,
+            ...ethFees,
+        });
+    }
+};

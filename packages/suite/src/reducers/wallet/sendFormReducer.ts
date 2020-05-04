@@ -68,6 +68,18 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 break;
             }
 
+            // update fee
+            case SEND.UPDATE_FEE: {
+                draft.feeInfo = action.feeInfo;
+                draft.selectedFee = action.selectedFee;
+                if (action.gasLimit && action.gasPrice) {
+                    draft.networkTypeEthereum.gasLimit.value = action.gasLimit;
+                    draft.networkTypeEthereum.gasPrice.value = action.gasPrice;
+                }
+
+                break;
+            }
+
             // change setMax state
             case SEND.CHANGE_SET_MAX_STATE: {
                 draft.setMaxActivated = action.activated;
