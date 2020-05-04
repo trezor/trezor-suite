@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from '@trezor/components';
+import { Link, P } from '@trezor/components';
 import * as STEP from '@onboarding-constants/steps';
 import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components';
 import { Translation, Image } from '@suite-components';
@@ -21,16 +21,12 @@ const ResetDeviceStep = (props: Props) => {
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
-                {!isShamirBackupAvailable() && 'Almost there! Prepare to launch'}
-                {isShamirBackupAvailable() && 'Backup type'}
+                {!isShamirBackupAvailable() && <Translation id="TR_CREATE_WALLET" />}
+                {isShamirBackupAvailable() && <Translation id="TR_BACKUP_TYPE" />}
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {!isShamirBackupAvailable() && (
                     <>
-                        <Text>
-                            You are one step from creating your wallet. By clicking the button below
-                            you agree with <Link href={TOS_URL}>TOS</Link>
-                        </Text>
                         {device.features.major_version === 2 ? (
                             <Image image="FIRMWARE_SUCCESS_2" />
                         ) : (
@@ -40,7 +36,9 @@ const ResetDeviceStep = (props: Props) => {
                 )}
 
                 {isShamirBackupAvailable() && (
-                    <Text>You might chose either standard backup type or shamir backups</Text>
+                    <Text>
+                        <Translation id="TR_YOU_MAY_CHOSE_EITHER_STANDARD" />
+                    </Text>
                 )}
 
                 {isShamirBackupAvailable() && (
@@ -54,9 +52,14 @@ const ResetDeviceStep = (props: Props) => {
                                     STEP.ID_SECURITY_STEP,
                                 );
                             }}
-                            title="Single seed"
-                            text="Security level: Standard. Distributable: No"
-                            button="Select single seed"
+                            title={<Translation id="SINGLE_SEED" />}
+                            text={<Translation id="SINGLE_SEED_DESCRIPTION" />}
+                            button={
+                                <Translation
+                                    id="TR_SELECT_SEED_TYPE"
+                                    values={{ seedType: <Translation id="SINGLE_SEED" /> }}
+                                />
+                            }
                             imgSrc="images/svg/seed-card-single.svg"
                         />
 
@@ -68,9 +71,14 @@ const ResetDeviceStep = (props: Props) => {
                                     STEP.ID_SECURITY_STEP,
                                 );
                             }}
-                            title="Shamir seed"
-                            text="Security level: Advanced Distributable: Yes"
-                            button="Select Shamir seed"
+                            title={<Translation id="SHAMIR_SEED" />}
+                            text={<Translation id="SHAMIR_SEED_DESCRIPTION" />}
+                            button={
+                                <Translation
+                                    id="TR_SELECT_SEED_TYPE"
+                                    values={{ seedType: <Translation id="SHAMIR_SEED" /> }}
+                                />
+                            }
                             imgSrc="images/svg/seed-card-shamir.svg"
                         />
                     </Wrapper.Options>
@@ -86,10 +94,23 @@ const ResetDeviceStep = (props: Props) => {
                                 )
                             }
                         >
-                            Create the wallet
+                            <Translation id="TR_CREATE_WALLET" />
                         </OnboardingButton.Cta>
                     </Wrapper.Controls>
                 )}
+
+                <P size="tiny">
+                    <Translation
+                        id="TR_BY_CREATING_WALLET"
+                        values={{
+                            TERMS_AND_CONDITIONS: (
+                                <Link href={TOS_URL}>
+                                    <Translation id="TERMS_AND_CONDTIONS" />
+                                </Link>
+                            ),
+                        }}
+                    />
+                </P>
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
                 <OnboardingButton.Back onClick={() => props.goToPreviousStep()}>
