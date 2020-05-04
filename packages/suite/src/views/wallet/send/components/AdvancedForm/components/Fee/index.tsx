@@ -23,13 +23,6 @@ const Text = styled.div`
     margin-right: 3px;
 `;
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-    display: flex;
-    padding-left: 5px;
-    height: 100%;
-`;
-
 const Wrapper = styled.div`
     display: flex;
     flex: 1;
@@ -185,7 +178,7 @@ export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
                     <CustomFeeWrapper>
                         <CustomFee />
                     </CustomFeeWrapper>
-                    {fiatVal && customFee.value && (
+                    {networkType === 'bitcoin' && fiatVal && customFee.value && (
                         <BadgeWrapper>
                             <Badge>
                                 {toFiatCurrency(
