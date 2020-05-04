@@ -40,8 +40,7 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             }
             // right after storage is loaded, we might start:
             // 1. fetching locales
-            // 2. redirecting user into onboarding (if needed), there is custom loader for waiting on connect
-            // both might be done in parallel
+            // 2. redirecting user into welcome screen (if needed)
             await Promise.all([
                 api.dispatch(fetchLocale(action.payload.suite.settings.language)),
                 api.dispatch(routerActions.initialRedirection()),

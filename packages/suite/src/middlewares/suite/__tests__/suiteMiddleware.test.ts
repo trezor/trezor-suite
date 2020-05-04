@@ -16,6 +16,7 @@ jest.mock('next/router', () => {
         __esModule: true, // this property makes it work
         default: {
             push: () => {},
+            pathname: '/',
         },
     };
 });
@@ -105,9 +106,11 @@ describe('suite middleware', () => {
         });
     });
 
-    describe('redirects on initial run', () => {
-        it('should redirect to onboarding after STORAGE.LOADED action', () => {
+    describe('redirection on initial run', () => {
+        it('if initialRun is true, should redirect to welcome screen after STORAGE.LOADED action', () => {
             const goto = jest.spyOn(routerActions, 'goto');
+            // eslint-disable-next-line global-require
+            require('next/router').default.pathname = '/wallet';
 
             const store = initStore(getInitialState());
 
@@ -129,8 +132,61 @@ describe('suite middleware', () => {
             goto.mockClear();
         });
 
-        it('should NOT redirect to onboarding after STORAGE.LOADED action', () => {
+        it('if route is modal window, should not redirect and show modal directly', () => {
             const goto = jest.spyOn(routerActions, 'goto');
+            // eslint-disable-next-line global-require
+            require('next/router').default.pathname = '/version';
+
+            const store = initStore(getInitialState());
+
+            store.dispatch({
+                type: STORAGE.LOADED,
+                payload: {
+                    suite: {
+                        settings: {
+                            language: 'cs',
+                        },
+                        flags: {
+                            initialRun: true,
+                        },
+                    },
+                },
+            });
+            expect(goto).toHaveBeenCalledTimes(1);
+            expect(goto).toHaveBeenCalledWith('suite-version');
+
+            goto.mockClear();
+        });
+
+        it('if route is 404, should not redirect and show modal directly', () => {
+            const goto = jest.spyOn(routerActions, 'goto');
+            // eslint-disable-next-line global-require
+            require('next/router').default.pathname = '/foo-bar';
+
+            const store = initStore(getInitialState());
+
+            store.dispatch({
+                type: STORAGE.LOADED,
+                payload: {
+                    suite: {
+                        settings: {
+                            language: 'cs',
+                        },
+                        flags: {
+                            initialRun: true,
+                        },
+                    },
+                },
+            });
+            expect(goto).toHaveBeenCalledTimes(0);
+
+            goto.mockClear();
+        });
+
+        it('if initialRun is false should NOT redirect to onboarding after STORAGE.LOADED action', () => {
+            const goto = jest.spyOn(routerActions, 'goto');
+            // eslint-disable-next-line global-require
+            require('next/router').default.pathname = '/';
 
             const store = initStore(getInitialState());
             store.dispatch({
@@ -147,7 +203,6 @@ describe('suite middleware', () => {
                 },
             });
             expect(goto).toHaveBeenCalledTimes(0);
-
             goto.mockClear();
         });
     });
