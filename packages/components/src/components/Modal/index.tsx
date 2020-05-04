@@ -155,13 +155,6 @@ const Heading = styled(H2)`
     }
 `;
 
-const Description = styled.div`
-    color: ${colors.BLACK50};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    margin-bottom: 10px;
-    text-align: center;
-`;
-
 const Content = styled.div`
     display: flex;
     flex-direction: column;
@@ -190,6 +183,13 @@ const Content = styled.div`
     ::-webkit-scrollbar-button {
         display: none;
     }
+`;
+
+const Description = styled.div`
+    color: ${colors.BLACK50};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    margin-bottom: 10px;
+    text-align: center;
 `;
 
 const BottomBar = styled.div`
