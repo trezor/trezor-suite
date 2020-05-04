@@ -1,16 +1,15 @@
-// import * as storageActions from '@suite-actions/storageActions';
 import { Dispatch, GetState } from '@suite-types';
 import { SEND } from '@wallet-actions/constants';
 import { isAddressValid } from '@wallet-utils/validation';
 import { ETH_DEFAULT_GAS_LIMIT, ETH_DEFAULT_GAS_PRICE } from '@wallet-constants/sendForm';
 import { FeeLevel, Output } from '@wallet-types/sendForm';
 import { formatNetworkAmount, getFiatValue } from '@wallet-utils/accountUtils';
-// import { formatNetworkAmount, getAccountKey, getFiatValue } from '@wallet-utils/accountUtils';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
 import {
     getOutput,
     hasDecimals,
     shouldComposeBy,
+    getFeeLevels,
     getReserveInXrp,
 } from '@wallet-utils/sendFormUtils';
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
@@ -29,36 +28,9 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const { settings, selectedAccount } = getState().wallet;
     if (selectedAccount.status !== 'loaded') return null;
     const { account } = selectedAccount;
-
-    // let cachedState = null;
-    const convertedEthLevels: FeeLevel[] = [];
     const feeInfo = getState().wallet.fees[account.symbol];
-
-    const initialLevels: FeeLevel[] =
-        account.networkType === 'ethereum'
-            ? feeInfo.levels
-            : feeInfo.levels.concat({
-                  label: 'custom',
-                  feePerUnit: '0',
-                  blocks: -1,
-              });
-
-    if (account.networkType === 'ethereum') {
-        initialLevels.forEach(level =>
-            convertedEthLevels.push({
-                ...level,
-                feePerUnit: fromWei(level.feePerUnit, 'gwei'),
-            }),
-        );
-    }
-
-    const levels = account.networkType === 'ethereum' ? convertedEthLevels : initialLevels;
+    const levels = getFeeLevels(account, feeInfo);
     const firstFeeLevel = levels.find(l => l.label === 'normal') || levels[0];
-    // const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
-    // const cachedItem = await storageActions.loadSendForm(accountKey);
-
-    // cachedState = cachedItem;
-
     const localCurrency = getLocalCurrency(settings.localCurrency);
 
     dispatch({
@@ -475,31 +447,13 @@ export const updateFeeAfterBlockMined = () => (dispatch: Dispatch, getState: Get
     const { selectedAccount, send } = getState().wallet;
     if (selectedAccount.status !== 'loaded' || !send) return null;
     const { account } = selectedAccount;
-    const convertedEthLevels: FeeLevel[] = [];
     let ethFees = {};
-    const feeInfo = getState().wallet.fees[account.symbol];
-
-    const initialLevels: FeeLevel[] =
-        account.networkType === 'ethereum'
-            ? feeInfo.levels
-            : feeInfo.levels.concat({
-                  label: 'custom',
-                  feePerUnit: '0',
-                  blocks: -1,
-              });
-
-    if (account.networkType === 'ethereum') {
-        initialLevels.forEach(level =>
-            convertedEthLevels.push({
-                ...level,
-                feePerUnit: fromWei(level.feePerUnit, 'gwei'),
-            }),
-        );
-    }
-
-    const levels = account.networkType === 'ethereum' ? convertedEthLevels : initialLevels;
-    const { selectedFee } = send;
+    const updatedFeeInfo = getState().wallet.fees[account.symbol];
+    const levels = getFeeLevels(account, updatedFeeInfo);
+    const { selectedFee, feeInfo } = send;
     const updatedSelectedFee = levels.find(level => level.label === selectedFee.label);
+
+    if (!updatedSelectedFee) return null;
 
     if (account.networkType === 'ethereum' && updatedSelectedFee) {
         ethFees = {
@@ -508,15 +462,13 @@ export const updateFeeAfterBlockMined = () => (dispatch: Dispatch, getState: Get
         };
     }
 
-    if (updatedSelectedFee) {
-        dispatch({
-            type: SEND.UPDATE_FEE,
-            feeInfo: {
-                ...feeInfo,
-                levels,
-            },
-            selectedFee: updatedSelectedFee,
-            ...ethFees,
-        });
-    }
+    dispatch({
+        type: SEND.UPDATE_FEE,
+        feeInfo: {
+            ...feeInfo,
+            levels,
+        },
+        selectedFee: updatedSelectedFee,
+        ...ethFees,
+    });
 };
