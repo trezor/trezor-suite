@@ -4,16 +4,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Modal, variables, colors } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as deviceUtils from '@suite-utils/device';
-import Loading from '@suite-components/Loading';
-
+import { ExternalLink, Loading, Translation } from '@suite-components';
 import { AppState, Dispatch, TrezorDevice } from '@suite-types';
 import { PASSPHRASE_URL } from '@suite-constants/urls';
 import PassphraseTypeCard from './components/PassphraseTypeCard';
-import ExternalLink from '../../ExternalLink';
 
 const CARD_SIZE = '310px';
 
