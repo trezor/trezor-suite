@@ -1,7 +1,7 @@
 import { QuestionTooltip, Translation } from '@suite-components';
 import Badge from '@suite-components/Badge';
 import { capitalizeFirstLetter } from '@suite-utils/string';
-import { colors, Icon, P, Select, variables, Button } from '@trezor/components';
+import { colors, P, Select, variables, Button } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { FeeLevel } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';

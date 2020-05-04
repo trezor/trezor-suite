@@ -1,11 +1,18 @@
 import { OUTPUTS } from '../__fixtures__/sendFormFixtures';
-import { getOutput, hasDecimals, shouldComposeBy } from '../sendFormUtils';
+import { getOutput, hasDecimals, shouldComposeBy, getInputState } from '../sendFormUtils';
 
 describe('sendForm utils', () => {
     it('get output', () => {
         expect(getOutput(OUTPUTS.BASIC, 1)).toBe(OUTPUTS.BASIC[0]);
         expect(getOutput(OUTPUTS.BASIC, 2)).toBe(OUTPUTS.BASIC[1]);
         expect(getOutput(OUTPUTS.BASIC, 3)).toBe(OUTPUTS.BASIC[2]);
+    });
+
+    it('get input state', () => {
+        expect(getInputState(null, '1')).toBe('success');
+        expect(getInputState('is-empty', '1')).toBe('error');
+        expect(getInputState(null, '1', true)).toBe(undefined);
+        expect(getInputState(null, null, true, true)).toBe(undefined);
     });
 
     it('should compose', () => {

@@ -210,11 +210,10 @@ export const onBlockMined = (block: BlockchainBlock) => async (
 ): Promise<void> => {
     const symbol = block.coin.shortcut.toLowerCase();
     const networkAccounts = getState().wallet.accounts.filter(a => a.symbol === symbol);
-    await dispatch(updateFeeInfo(symbol));
     networkAccounts.forEach(async account => {
         dispatch(accountActions.fetchAndUpdateAccount(account));
     });
-
+    await dispatch(updateFeeInfo(symbol));
     dispatch(sendActions.updateFeeOrNotify());
 };
 
