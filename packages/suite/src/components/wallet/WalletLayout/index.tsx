@@ -18,7 +18,7 @@ const Wrapper = styled.div<{ noPadding?: boolean }>`
     max-width: ${MAX_WIDTH};
     height: 100%;
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         padding: 16px;
     }
 `;
