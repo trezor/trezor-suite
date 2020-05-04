@@ -53,6 +53,7 @@ const AccountName = styled.div`
 const Balance = styled.div`
     padding-left: 8px;
     flex: 1;
+    padding-top: 2px;
     font-size: 14px;
     font-weight: normal;
     color: #404040;
