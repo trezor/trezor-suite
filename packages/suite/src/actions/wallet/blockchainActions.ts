@@ -124,6 +124,8 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
             type: BLOCKCHAIN.UPDATE_FEE,
             payload: partial,
         });
+
+        dispatch(sendActions.updateFeeOrNotify());
     }
 };
 
@@ -213,8 +215,6 @@ export const onBlockMined = (block: BlockchainBlock) => async (
     networkAccounts.forEach(async account => {
         dispatch(accountActions.fetchAndUpdateAccount(account));
     });
-    await dispatch(updateFeeInfo(symbol));
-    dispatch(sendActions.updateFeeOrNotify());
 };
 
 export const onNotification = (payload: BlockchainNotification) => async (
