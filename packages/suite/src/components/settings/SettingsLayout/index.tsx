@@ -18,6 +18,7 @@ const Wrapper = styled.div`
 type Props = {
     title?: string;
     children?: React.ReactNode;
+    ['data-test']?: string;
 };
 
 const SettingsLayout = (props: Props) => {
@@ -26,7 +27,7 @@ const SettingsLayout = (props: Props) => {
         if (setLayout) setLayout(props.title || 'Settings', <Menu />);
     }, [props.title, setLayout]);
 
-    return <Wrapper>{props.children}</Wrapper>;
+    return <Wrapper data-test={props['data-test']}>{props.children}</Wrapper>;
 };
 
 export default SettingsLayout;

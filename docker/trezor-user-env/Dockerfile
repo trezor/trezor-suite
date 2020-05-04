@@ -5,7 +5,8 @@ RUN apt-get update && apt-get install -y \
     # required by core/emulator
     scons \
     libsdl2-dev \
-    libsdl2-image-dev 
+    libsdl2-image-dev \
+    curl
 
 RUN apt-get install -y \
     python3-dev \
@@ -15,7 +16,13 @@ RUN pip3 install --upgrade setuptools
 RUN pip3 install trezor
 RUN pip3 install termcolor
 
-USER root
+# handle file permissions of generated files inside container
+RUN curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.4/gosu-$(dpkg --print-architecture)" \
+    && curl -o /usr/local/bin/gosu.asc -SL "https://github.com/tianon/gosu/releases/download/1.4/gosu-$(dpkg --print-architecture).asc" \
+    && chmod +x /usr/local/bin/gosu
+
+COPY ./suite/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # "fake" dbus address to prevent errors
 # https://github.com/SeleniumHQ/docker-selenium/issues/87
@@ -39,3 +46,5 @@ RUN python3 -m pip --version
 RUN trezorctl version
 
 WORKDIR /controller
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

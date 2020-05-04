@@ -29,7 +29,7 @@ interface Props {
     onDeviceSettingsClick: () => void;
 }
 
-const SolveIssueButton = ({ onSolveIssueClick, deviceStatusMessage }: Props) => (
+const SolveIssueButton = ({ onSolveIssueClick, deviceStatusMessage, device }: Props) => (
     <Row>
         <Attention>
             <AttentionIconWrapper>
@@ -37,7 +37,11 @@ const SolveIssueButton = ({ onSolveIssueClick, deviceStatusMessage }: Props) => 
             </AttentionIconWrapper>
             {deviceStatusMessage && <>{deviceStatusMessage}</>}
         </Attention>
-        <Button variant="secondary" onClick={onSolveIssueClick}>
+        <Button
+            variant="secondary"
+            onClick={onSolveIssueClick}
+            data-test={`@switch-device/${device.path}/solve-issue-button`}
+        >
             <Translation id="TR_SOLVE_ISSUE" />
         </Button>
     </Row>

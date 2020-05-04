@@ -121,7 +121,7 @@ const Onboarding = (props: Props) => {
 
             <UnexpectedState>
                 {modal && (
-                    <ActionModalWrapper data-test="@onboading/confirm-action-on-device">
+                    <ActionModalWrapper data-test="@onboarding/confirm-action-on-device">
                         {modal}
                     </ActionModalWrapper>
                 )}

@@ -2,11 +2,14 @@
 const FIRST_DEVICE_PATH = '1';
 const SECOND_DEVICE_PATH = '2';
 
-// todo: appears to be flaky, will debug asap
-describe.skip('Stories of device connecting', () => {
+describe('Stories of device connecting', () => {
+    before(() => {
+        cy.task('stopEmu');
+    })
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
-        cy.visit('/');
+        // some route that will not trigger discovery, it does not matter in this test 
+        cy.visit('/settings');
         cy.passThroughInitialRun();
         cy.window()
             .its('TrezorConnect')
@@ -40,11 +43,13 @@ describe.skip('Stories of device connecting', () => {
         });
 
         it(`bootloader mode -> show info about bootloader, no wallet`, () => {
-            cy.connectBootloaderDevice(SECOND_DEVICE_PATH).getTestElement('@device-invalid-mode/bootloader');
+            cy.connectBootloaderDevice(SECOND_DEVICE_PATH);
+            cy.getTestElement('@device-invalid-mode/bootloader').matchImageSnapshot('bootloader');
         });
 
         it(`undreadable device -> show info about unreadable`, () => {
-            cy.connectDevice({ path: SECOND_DEVICE_PATH, type: 'unreadable' }).getTestElement('@device-invalid-mode/unreadable')
+            cy.connectDevice({ path: SECOND_DEVICE_PATH, type: 'unreadable' });
+            cy.getTestElement('@device-invalid-mode/unreadable').matchImageSnapshot('unreadable')
         });
 
         it(`device without seed -> offer onboarding, no wallet`, () => {
@@ -54,7 +59,7 @@ describe.skip('Stories of device connecting', () => {
             }).onboardingShouldLoad();
         });
 
-        it(`outdated firmware -> load wallet`, () => {
+        it(`outdated firmware -> load normally`, () => {
             cy.connectDevice(
                 {
                     path: SECOND_DEVICE_PATH,
@@ -65,7 +70,7 @@ describe.skip('Stories of device connecting', () => {
                     device_id: SECOND_DEVICE_PATH,
                     initialized: true,
                 },
-            ).getTestElement('@dashboard/index');
+            ).getTestElement('@settings/index');
         });
 
         it(`required firmware -> firmware static page`, () => {
@@ -81,6 +86,7 @@ describe.skip('Stories of device connecting', () => {
                 },
             );
             cy.getTestElement('@firmware/index');
+            
         });
 
         it(`seedless device -> show info about seedless`, () => {
@@ -94,43 +100,39 @@ describe.skip('Stories of device connecting', () => {
                     no_backup: true,
                 },
             );
-            cy.getTestElement('@device-invalid-mode/seedless')
+            cy.getTestElement('@device-invalid-mode/seedless').matchImageSnapshot('seedless');
         });
     });
     
-    // todo: a little later, I need to touch switch-device modal and menu and it would cause conflicts at the moment
+    // todo: still some troubles here
     describe.skip('1+ device is already connected -> user connects another one -> selects it ', () => {
         beforeEach(() => {
             cy.getTestElement('@modal/connect-device');
             cy.connectDevice({ path: FIRST_DEVICE_PATH }, { device_id: FIRST_DEVICE_PATH });
-            cy.dashboardShouldLoad();
         });
 
-        it(`bootloader mode -> show info about bootloader`, () => {
+        it(`bootloader mode -> show info about bootloader, offer firmware update or switch device`, () => {
             cy.connectBootloaderDevice(SECOND_DEVICE_PATH);
-            cy.toggleDeviceMenu()
-                .getTestElement('@suite/device-item-0')
-                .click()
-                .getTestElement('bootloader-message');
+            cy.toggleDeviceMenu();
+            cy.getTestElement(`@switch-device/${SECOND_DEVICE_PATH}/solve-issue-button`).click();
+            cy.getTestElement('@device-invalid-mode/bootloader');
         });
 
-        it(`undreadable device -> show info about undreadable`, () => {
+        it(`undreadable device -> show info about undreadable device, offer switch device`, () => {
             cy.connectDevice({ path: SECOND_DEVICE_PATH, type: 'unreadable' });
-            cy.toggleDeviceMenu()
-                .getTestElement('@suite/device-item-0')
-                .click()
-                .getTestElement('unreadable-device-message');
+            cy.toggleDeviceMenu();
+            cy.getTestElement(`@switch-device/${SECOND_DEVICE_PATH}/solve-issue-button`).click();
+            cy.getTestElement('@device-invalid-mode/unreadable');
         });
 
-        it(`device without seed -> show info about uninitialize, offer onboarding`, () => {
+        it(`device without seed -> show info about uninitialized device, offer onboarding or switch device`, () => {
             cy.connectDevice({ path: SECOND_DEVICE_PATH, mode: 'initialize' });
-            cy.toggleDeviceMenu()
-                .getTestElement('@suite/device-item-0')
-                .click()
-                .getTestElement('initialize-message');
+            cy.toggleDeviceMenu();
+            cy.getTestElement(`@switch-device/${SECOND_DEVICE_PATH}/solve-issue-button`).click();
+            cy.getTestElement('@device-invalid-mode/initialize');
         });
 
-        it(`outdated firmware -> load wallet normally`, () => {
+        it(`outdated firmware -> load normally`, () => {
             cy.connectDevice(
                 {
                     path: SECOND_DEVICE_PATH,
@@ -142,13 +144,11 @@ describe.skip('Stories of device connecting', () => {
                     initialized: true,
                 },
             );
-            cy.toggleDeviceMenu()
-                .getTestElement('@suite/device-item-0')
-                .click()
-                .getTestElement('@dashboard/index');
+            cy.toggleDeviceMenu();
+            cy.getTestElement(`@switch-device/${SECOND_DEVICE_PATH}/solve-issue-button`).should('not.exist');
         });
 
-        it(`required firmware -> show info, offer go to firmware`, () => {
+        it(`required firmware -> show info, offer go to firmware or switch device`, () => {
             cy.connectDevice(
                 {
                     path: SECOND_DEVICE_PATH,
@@ -160,15 +160,13 @@ describe.skip('Stories of device connecting', () => {
                     initialized: true,
                 },
             );
-            cy.toggleDeviceMenu()
-                .getTestElement('@suite/device-item-0')
-                .click()
-                .getTestElement('firmware-required-message')
-                .getTestElement('@wallet/layout')
-                .should('not.exist');
+            cy.toggleDeviceMenu();
+            cy.getTestElement(`@switch-device/${SECOND_DEVICE_PATH}/solve-issue-button`).click();
+            cy.getTestElement('@device-invalid-mode/update-required');
+
         });
 
-        it(`seedless device -> show info about seedles`, () => {
+        it(`seedless device -> show info about seedless, offer switch device`, () => {
             cy.connectDevice(
                 {
                     path: SECOND_DEVICE_PATH,
@@ -179,10 +177,9 @@ describe.skip('Stories of device connecting', () => {
                     no_backup: true,
                 },
             );
-            cy.toggleDeviceMenu()
-                .getTestElement('@suite/device-item-0')
-                .click()
-                .getTestElement('seedles-message');
+            cy.toggleDeviceMenu();
+            cy.getTestElement(`@switch-device/${SECOND_DEVICE_PATH}/solve-issue-button`).click();
+            cy.getTestElement('@device-invalid-mode/seedless');
         });
     });
 });
