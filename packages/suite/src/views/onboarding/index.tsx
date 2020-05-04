@@ -103,18 +103,22 @@ const Onboarding = (props: Props) => {
     const stepsInPath = steps.filter(s => s.progress && isStepInPath(s, path));
 
     return (
-        <Modal useFixedHeight>
+        <Modal
+            useFixedHeight
+            heading={
+                <ProgressBar
+                    total={stepsInPath.length}
+                    current={stepsInPath.findIndex(step => activeStepId === step.id)}
+                    showBuy={getStep().buy}
+                    showHelp={getStep().help}
+                    hidden={!getStep().progress}
+                />
+            }
+        >
             <Head>
                 <title>Onboarding | Trezor Suite</title>
             </Head>
 
-            <ProgressBar
-                total={stepsInPath.length}
-                current={stepsInPath.findIndex(step => activeStepId === step.id)}
-                showBuy={getStep().buy}
-                showHelp={getStep().help}
-                hidden={!getStep().progress}
-            />
             <UnexpectedState>
                 {modal && (
                     <ActionModalWrapper data-test="@onboading/confirm-action-on-device">
