@@ -436,13 +436,6 @@ export const onQrScan = (parsedUri: ParsedURI, outputId: number) => (dispatch: D
     }
 };
 
-/*
-    Clear to default state
-*/
-export const clear = () => (dispatch: Dispatch) => {
-    dispatch(commonActions.clear());
-};
-
 export const updateFeeOrNotify = () => (dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount, send } = getState().wallet;
     if (selectedAccount.status !== 'loaded' || !send) return null;
@@ -516,4 +509,12 @@ export const manuallyUpdateFee = () => (dispatch: Dispatch, getState: GetState) 
         type: SEND.CHANGE_FEE_STATE,
         feeOutdated: false,
     });
+};
+
+/*
+    Clear to default state
+*/
+export const clear = () => (dispatch: Dispatch) => {
+    dispatch(commonActions.clear());
+    dispatch(manuallyUpdateFee());
 };
