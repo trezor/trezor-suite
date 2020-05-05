@@ -45,6 +45,7 @@ export const getTicksBetweenTimestamps = (
 
     // set hh:mm:ss to 00:00:00
     fromDate = startOfDay(fromDate);
+    ticks.push(fromDate);
 
     while (isBefore(fromDate, toDate)) {
         if (interval === 'quarter') {
