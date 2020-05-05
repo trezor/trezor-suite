@@ -98,9 +98,6 @@ export const calcTicksFromData = (data: { time: number }[]) => {
         return current.time > max ? current.time : max;
     }, data[0].time);
 
-    console.log('startDate', startDate);
-    console.log('endDate', endDate);
-
     return getTicksBetweenTimestamps(fromUnixTime(startDate), fromUnixTime(endDate), 'quarter');
 };
 /**
