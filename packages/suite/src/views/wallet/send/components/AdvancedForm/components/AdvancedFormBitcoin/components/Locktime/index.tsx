@@ -1,7 +1,6 @@
-import { colors, Switch, variables, Input } from '@trezor/components';
-import React from 'react';
 import { Translation } from '@suite-components/Translation';
-
+import { colors, Input, Switch, Tooltip, variables } from '@trezor/components';
+import React from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -53,7 +52,9 @@ export default () => {
                     </Description>
                 </Left>
                 <Right>
-                    <Switch checked={false} onChange={() => console.log('change')} />
+                    <Tooltip placement="top" content={<Translation id="TR_SEND_COMING_SOON" />}>
+                        <Switch checked={false} onChange={() => console.log('change')} />
+                    </Tooltip>
                 </Right>
             </Row>
             <StyledInput value="" variant="small" />

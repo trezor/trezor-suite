@@ -3313,6 +3313,10 @@ const definedMessages = defineMessages({
         id: 'TR_BACKUP_TYPE',
         defaultMessage: 'Backup type',
     },
+    TR_SEND_COMING_SOON: {
+        id: 'TR_SEND_COMING_SOON',
+        defaultMessage: 'coming soon',
+    },
 } as const);
 
 export default definedMessages;
