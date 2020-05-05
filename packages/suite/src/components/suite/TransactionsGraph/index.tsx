@@ -10,7 +10,6 @@ import CustomXAxisTick from './components/CustomXAxisTick';
 import CustomYAxisTick from './components/CustomYAxisTick';
 import CustomBar from './components/CustomBar';
 import { BlockchainAccountBalanceHistory } from 'trezor-connect';
-import { fromUnixTime } from 'date-fns';
 
 const Wrapper = styled.div`
     display: flex;
