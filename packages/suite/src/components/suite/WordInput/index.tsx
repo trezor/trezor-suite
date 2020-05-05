@@ -30,6 +30,7 @@ const SelectWrapper = styled.div`
     animation: ${shake} 1.3s;
     margin: 12px auto;
     width: 380px;
+    min-height: 230px;
     text-align: left;
 `;
 
@@ -60,7 +61,7 @@ const WordInput = (props: Props) => {
                 autoFocus
                 isSearchable
                 isClearable={false}
-                maxMenuHeight={200}
+                maxMenuHeight={180}
                 controlShouldRenderValue={false}
                 noOptionsMessage={({ inputValue }: { inputValue: string }) =>
                     props.intl.formatMessage(messages.TR_WORD_DOES_NOT_EXIST, { word: inputValue })
