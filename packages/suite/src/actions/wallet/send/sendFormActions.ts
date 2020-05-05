@@ -28,7 +28,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const { settings, selectedAccount } = getState().wallet;
     if (selectedAccount.status !== 'loaded') return null;
     const { account, network } = selectedAccount;
-    const feeInfo = getState().wallet.fees[account.symbol];
+    const feeInfo = getState().wallet.fees[network.symbol];
     const levels = getFeeLevels(network.networkType, feeInfo);
     const firstFeeLevel = levels.find(l => l.label === 'normal') || levels[0];
     const localCurrency = getLocalCurrency(settings.localCurrency);
