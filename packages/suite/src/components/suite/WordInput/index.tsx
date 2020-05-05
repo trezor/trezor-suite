@@ -60,6 +60,7 @@ const WordInput = (props: Props) => {
                 autoFocus
                 isSearchable
                 isClearable={false}
+                maxMenuHeight={200}
                 controlShouldRenderValue={false}
                 noOptionsMessage={({ inputValue }: { inputValue: string }) =>
                     props.intl.formatMessage(messages.TR_WORD_DOES_NOT_EXIST, { word: inputValue })
