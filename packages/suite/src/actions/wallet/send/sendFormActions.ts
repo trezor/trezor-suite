@@ -439,7 +439,7 @@ export const onQrScan = (parsedUri: ParsedURI, outputId: number) => (dispatch: D
 export const updateFeeOrNotify = () => (dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount, send } = getState().wallet;
     if (selectedAccount.status !== 'loaded' || !send) return null;
-    const { account } = selectedAccount;
+    const { account, network } = selectedAccount;
     const updatedFeeInfo = getState().wallet.fees[account.symbol];
     const updatedLevels = getFeeLevels(account, updatedFeeInfo);
     const { selectedFee, feeInfo } = send;
@@ -458,7 +458,7 @@ export const updateFeeOrNotify = () => (dispatch: Dispatch, getState: GetState) 
         if (!updatedSelectedFee) return null;
 
         let ethFees = {};
-        if (account.networkType === 'ethereum') {
+        if (network.networkType === 'ethereum') {
             ethFees = {
                 gasPrice: updatedSelectedFee.feePerUnit,
                 gasLimit: updatedSelectedFee.feeLimit,
