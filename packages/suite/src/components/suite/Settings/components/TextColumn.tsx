@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 
 const Description = styled.div`
     color: ${colors.BLACK50};
-    margin: 12px 0;
+    margin-bottom: 12px;
     font-size: ${variables.FONT_SIZE.TINY};
 
     &:last-child {
@@ -29,12 +29,13 @@ const Description = styled.div`
 
 const Title = styled.div`
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
+    margin-bottom: 12px;
 `;
 
 const TextColumn = ({ title, description, learnMore }: TextColumnProps) => {
     return (
         <Wrapper>
-            <Title>{title}</Title>
+            {title && <Title>{title}</Title>}
             {description && <Description>{description}</Description>}
             {learnMore && (
                 <ExternalLink href={learnMore} size="tiny">
