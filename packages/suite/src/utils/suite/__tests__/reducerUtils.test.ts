@@ -1,11 +1,11 @@
-import * as fixtures from '../__fixtures__/reducerUtils';
-import * as reducerUtils from '../reducerUtils';
+import * as fixtures from '../__fixtures__/comparisonUtils';
+import * as comparisonUtils from '../comparisonUtils';
 
 describe('reducer utils', () => {
-    fixtures.observeChanges.forEach(f => {
-        it(`observeChanges${f.testName}`, () => {
+    fixtures.isChanged.forEach(f => {
+        it(`isChanged${f.testName}`, () => {
             // @ts-ignore
-            expect(reducerUtils.observeChanges(f.prev, f.current, f.filter)).toEqual(f.result);
+            expect(comparisonUtils.isChanged(f.prev, f.current, f.filter)).toEqual(f.result);
         });
     });
 });

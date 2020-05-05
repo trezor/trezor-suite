@@ -1,5 +1,6 @@
 import { Dispatch, GetState } from '@suite-types';
 import { SEND } from '@wallet-actions/constants';
+import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import { ETH_DEFAULT_GAS_LIMIT, ETH_DEFAULT_GAS_PRICE } from '@wallet-constants/sendForm';
 import { FeeLevel, Output } from '@wallet-types/sendForm';
 import { formatNetworkAmount, getFiatValue } from '@wallet-utils/accountUtils';
@@ -14,7 +15,6 @@ import {
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import { isAddressValid } from '@wallet-utils/validation';
 import BigNumber from 'bignumber.js';
-import { isEqual } from 'lodash';
 
 import * as bitcoinActions from './sendFormBitcoinActions';
 import * as commonActions from './sendFormCommonActions';
@@ -445,8 +445,8 @@ export const updateFeeOrNotify = () => (dispatch: Dispatch, getState: GetState) 
     const { selectedFee, feeInfo } = send;
     const { levels } = feeInfo;
     const updatedSelectedFee = updatedLevels.find(level => level.label === selectedFee.label);
+    const shouldUpdate = comparisonUtils.isChanged(levels, updatedLevels);
 
-    const shouldUpdate = !isEqual(levels, updatedLevels);
     if (!shouldUpdate) return null;
 
     if (selectedFee.label === 'custom') {

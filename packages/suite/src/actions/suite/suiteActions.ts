@@ -1,5 +1,5 @@
 import TrezorConnect, { Device, DEVICE } from 'trezor-connect';
-import * as reducersUtils from '@suite-utils/reducerUtils';
+import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import * as deviceUtils from '@suite-utils/device';
 import { addToast } from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
@@ -294,7 +294,7 @@ export const observeSelectedDevice = (action: Action) => (
     const deviceFromReducer = deviceUtils.getSelectedDevice(selectedDevice, getState().devices);
     if (!deviceFromReducer) return true;
 
-    const changed = reducersUtils.observeChanges(selectedDevice, deviceFromReducer);
+    const changed = comparisonUtils.isChanged(selectedDevice, deviceFromReducer);
     if (changed) {
         dispatch({
             type: SUITE.UPDATE_SELECTED_DEVICE,
