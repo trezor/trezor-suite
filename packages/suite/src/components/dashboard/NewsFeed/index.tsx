@@ -93,6 +93,8 @@ const CTAWrapper = styled.a`
 `;
 
 const ReadMore = styled.a`
+    display: flex;
+    align-self: flex-start;
     color: ${colors.BLACK17};
     margin: 10px 0 0 0;
     font-size: ${variables.FONT_SIZE.TINY};
@@ -132,6 +134,7 @@ export default ({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
                                 <Button
                                     variant="tertiary"
                                     size="small"
+                                    alignIcon="right"
                                     color={colors.BLACK0}
                                     icon="EXTERNAL_LINK"
                                 >
