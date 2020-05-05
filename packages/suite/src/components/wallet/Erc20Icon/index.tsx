@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled, { css } from 'styled-components';
-import { useTokenList } from '@wallet-hooks/useTokenList';
 import { colors, CoinLogo } from '@trezor/components';
+import { DataProviderContext } from '@suite-components';
 
 const styles = css`
     display: flex;
@@ -17,16 +17,14 @@ const IconImage = styled.img`
 `;
 
 const Fallback = styled.div`
+    width: 24px;
+    height: 24px;
     ${styles}
 `;
 
-interface Props {
-    address: string;
-}
-
-export default ({ address }: Props) => {
-    const tokenList = useTokenList();
-    const isAvailable = tokenList?.includes(address);
+export default ({ address }: { address: string }) => {
+    const data = useContext(DataProviderContext);
+    const isAvailable = data.supportedTokenIcons?.includes(address);
 
     if (!isAvailable)
         return (

@@ -2,6 +2,7 @@ import React, { useState, createContext } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { colors, variables } from '@trezor/components';
+import { useTokenList } from '@wallet-hooks/useTokenList';
 import SuiteNotifications from '@suite-components/Notifications';
 import Head from 'next/head';
 import Menu from '@suite-components/Menu/Container';
@@ -75,6 +76,14 @@ export const LayoutContext = createContext<LayoutContextI>({
     setLayout: undefined,
 });
 
+interface DataProviderContext {
+    supportedTokenIcons: string[] | null;
+}
+
+export const DataProviderContext = React.createContext<DataProviderContext>({
+    supportedTokenIcons: null,
+});
+
 const BodyWide = ({ menu, children }: BodyProps) => (
     <Body>
         <DiscoveryProgress />
@@ -102,6 +111,7 @@ const BodyNarrow = ({ menu, children }: BodyProps) => (
 const SuiteLayout = (props: Props) => {
     // TODO: if (props.layoutSize === 'UNAVAILABLE') return <SmallLayout />;
     const isWide = ['XLARGE', 'LARGE'].includes(props.layoutSize);
+    const tokenList = useTokenList();
     const [title, setTitle] = useState<string | undefined>(undefined);
     const [menu, setMenu] = useState<any>(undefined);
     const setLayout = React.useCallback<NonNullable<LayoutContextI['setLayout']>>(
@@ -118,10 +128,12 @@ const SuiteLayout = (props: Props) => {
                 <title>{title ? `${title} | Trezor Suite` : 'Trezor Suite'}</title>
             </Head>
             {isWide && <Menu />}
-            <LayoutContext.Provider value={{ title, menu, setLayout }}>
-                {isWide && <BodyWide menu={menu}>{props.children}</BodyWide>}
-                {!isWide && <BodyNarrow menu={menu}>{props.children}</BodyNarrow>}
-            </LayoutContext.Provider>
+            <DataProviderContext.Provider value={{ supportedTokenIcons: tokenList }}>
+                <LayoutContext.Provider value={{ title, menu, setLayout }}>
+                    {isWide && <BodyWide menu={menu}>{props.children}</BodyWide>}
+                    {!isWide && <BodyNarrow menu={menu}>{props.children}</BodyNarrow>}
+                </LayoutContext.Provider>
+            </DataProviderContext.Provider>
         </PageWrapper>
     );
 };
