@@ -6,7 +6,7 @@ import {
     FeeInfo,
     FeeLevel,
 } from '@wallet-types/sendForm';
-import { Account } from '@wallet-types';
+import { Account, Network } from '@wallet-types';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import BigNumber from 'bignumber.js';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -173,10 +173,10 @@ export const getReserveInXrp = (account: Account) => {
     return formatNetworkAmount(misc.reserve, account.symbol);
 };
 
-export const getFeeLevels = (account: Account, feeInfo: FeeInfo) => {
+export const getFeeLevels = (networkType: Network['networkType'], feeInfo: FeeInfo) => {
     const convertedEthLevels: FeeLevel[] = [];
     const initialLevels: FeeLevel[] =
-        account.networkType === 'ethereum'
+        networkType === 'ethereum'
             ? feeInfo.levels
             : feeInfo.levels.concat({
                   label: 'custom',
@@ -184,7 +184,7 @@ export const getFeeLevels = (account: Account, feeInfo: FeeInfo) => {
                   blocks: -1,
               });
 
-    if (account.networkType === 'ethereum') {
+    if (networkType === 'ethereum') {
         initialLevels.forEach(level =>
             convertedEthLevels.push({
                 ...level,
@@ -193,5 +193,5 @@ export const getFeeLevels = (account: Account, feeInfo: FeeInfo) => {
         );
     }
 
-    return account.networkType === 'ethereum' ? convertedEthLevels : initialLevels;
+    return networkType === 'ethereum' ? convertedEthLevels : initialLevels;
 };

@@ -27,9 +27,9 @@ import * as rippleActions from './sendFormRippleActions';
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const { settings, selectedAccount } = getState().wallet;
     if (selectedAccount.status !== 'loaded') return null;
-    const { account } = selectedAccount;
+    const { account, network } = selectedAccount;
     const feeInfo = getState().wallet.fees[account.symbol];
-    const levels = getFeeLevels(account, feeInfo);
+    const levels = getFeeLevels(network.networkType, feeInfo);
     const firstFeeLevel = levels.find(l => l.label === 'normal') || levels[0];
     const localCurrency = getLocalCurrency(settings.localCurrency);
 
@@ -54,7 +54,6 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                 data: { value: null, error: null },
             },
             selectedFee: firstFeeLevel,
-            // ...cachedState,
         },
         localCurrency,
     });
@@ -439,9 +438,9 @@ export const onQrScan = (parsedUri: ParsedURI, outputId: number) => (dispatch: D
 export const updateFeeOrNotify = () => (dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount, send } = getState().wallet;
     if (selectedAccount.status !== 'loaded' || !send) return null;
-    const { account, network } = selectedAccount;
-    const updatedFeeInfo = getState().wallet.fees[account.symbol];
-    const updatedLevels = getFeeLevels(account, updatedFeeInfo);
+    const { networkType, symbol } = selectedAccount.network;
+    const updatedFeeInfo = getState().wallet.fees[symbol];
+    const updatedLevels = getFeeLevels(networkType, updatedFeeInfo);
     const { selectedFee, feeInfo } = send;
     const { levels } = feeInfo;
     const updatedSelectedFee = updatedLevels.find(level => level.label === selectedFee.label);
@@ -458,7 +457,7 @@ export const updateFeeOrNotify = () => (dispatch: Dispatch, getState: GetState) 
         if (!updatedSelectedFee) return null;
 
         let ethFees = {};
-        if (network.networkType === 'ethereum') {
+        if (networkType === 'ethereum') {
             ethFees = {
                 gasPrice: updatedSelectedFee.feePerUnit,
                 gasLimit: updatedSelectedFee.feeLimit,
@@ -480,15 +479,15 @@ export const updateFeeOrNotify = () => (dispatch: Dispatch, getState: GetState) 
 export const manuallyUpdateFee = () => (dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount, send } = getState().wallet;
     if (selectedAccount.status !== 'loaded' || !send) return null;
-    const { account } = selectedAccount;
-    const updatedFeeInfo = getState().wallet.fees[account.symbol];
-    const updatedLevels = getFeeLevels(account, updatedFeeInfo);
+    const { networkType, symbol } = selectedAccount.network;
+    const updatedFeeInfo = getState().wallet.fees[symbol];
+    const updatedLevels = getFeeLevels(networkType, updatedFeeInfo);
     const updatedSelectedFee = updatedLevels.find(level => level.label === 'normal');
 
     if (!updatedSelectedFee) return null;
 
     let ethFees = {};
-    if (account.networkType === 'ethereum') {
+    if (networkType === 'ethereum') {
         ethFees = {
             gasPrice: updatedSelectedFee.feePerUnit,
             gasLimit: updatedSelectedFee.feeLimit,
