@@ -10,6 +10,12 @@ describe('Firmware', () => {
         cy.visit('/');
         cy.passThroughInitialRun();
         cy.getTestElement('@notification/update-firmware/button').click();
+
+        cy.log('check if bitcoin only toggle works');
+        cy.getTestElement('@firmware/toggle-bitcoin-only/btc').click();
+        cy.getTestElement('@firmware/btc-only-badge');
+        cy.getTestElement('@firmware/toggle-bitcoin-only/full').click();
+
         cy.getTestElement('@firmware/start-button').click();
         cy.getTestElement('@firmware/confirm-seed-button').click();
         cy.getTestElement('@firmware/disconnect-message');
@@ -23,7 +29,7 @@ describe('Firmware', () => {
         cy.getTestElement('@firmware/close-button').click();
     });
 
-    it('For latest firmware, update button in device settings should display Up to date but still be clickable', () => {
+    it('For latest firmware, update button in device settings should display "Up to date" but still be clickable', () => {
         cy.task('stopBridge');
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
@@ -31,7 +37,7 @@ describe('Firmware', () => {
         cy.visit('/settings/device');
         cy.passThroughInitialRun();
         cy.getTestElement('@settings/device/update-button').should('contain.text', 'Up to date').click();
+        cy.getTestElement('@firmware/close-button').click();
     });
 
-    // todo: test switching from bitcoin-only to full-featured
 });

@@ -10,8 +10,7 @@ import { AppState, Dispatch } from '@suite-types';
 import { copyToClipboard } from '@suite-utils/dom';
 
 const LogWrapper = styled.pre`
-    background: white;
-    padding: 25px;
+    padding: 20px;
     height: 400px;
     width: 100%;
     overflow: auto;

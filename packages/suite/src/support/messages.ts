@@ -576,7 +576,7 @@ const definedMessages = defineMessages({
         id: 'TR_DESTINATION_TAG_IS_NOT_NUMBER',
     },
     TR_DETECTING_BRIDGE: {
-        defaultMessage: 'Detecting Trezor Bridge instalation',
+        defaultMessage: 'Detecting Trezor Bridge installation',
         description: 'Message to show after user clicks download bridge.',
         id: 'TR_DETECTING_BRIDGE',
     },
@@ -592,7 +592,7 @@ const definedMessages = defineMessages({
     },
     TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION: {
         defaultMessage:
-            'You device disconnected during action which resulted in interuption of backup process. For security reasons you need to wipe your device now and start the backup process again.',
+            'You device disconnected during action which resulted in interruption of backup process. For security reasons you need to wipe your device now and start the backup process again.',
         description: 'Error message. Instruction what to do.',
         id: 'TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION',
     },
@@ -1042,7 +1042,7 @@ const definedMessages = defineMessages({
     },
     TR_HOLOGRAM_STEP_ACTION_OK: {
         defaultMessage: 'My hologram is OK',
-        description: 'Button to click in allright case',
+        description: 'Button to click in alright case',
         id: 'TR_HOLOGRAM_STEP_ACTION_OK',
     },
     TR_HOLOGRAM_STEP_HEADING: {
@@ -1410,8 +1410,8 @@ const definedMessages = defineMessages({
         id: 'TR_PIN_HEADING_SUCCESS',
     },
     TR_PIN_SET_SUCCESS: {
-        defaultMessage: 'Purfect! Your device is now secured by pin.',
-        description: 'Longer text indicating PIN was set succesfully.',
+        defaultMessage: 'Perfect! Your device is now secured by pin.',
+        description: 'Longer text indicating PIN was set successfully.',
         id: 'TR_PIN_SET_SUCCESS',
     },
     TR_PIN_SUBHEADING: {
@@ -1697,7 +1697,7 @@ const definedMessages = defineMessages({
     },
     TR_SKIP_ONBOARDING_TEXT: {
         defaultMessage:
-            'If your device is initialiazed and you used Wallet or Suite before, that’s great! Did you initialize Trezor yourself? You should be the one doing it. If not, it might be dangerous.',
+            'If your device is initialized and you used Wallet or Suite before, that’s great! Did you initialize Trezor yourself? You should be the one doing it. If not, it might be dangerous.',
         id: 'TR_SKIP_ONBOARDING_TEXT',
     },
     TR_SKIP_SECURITY: {
@@ -1767,7 +1767,7 @@ const definedMessages = defineMessages({
     },
     TR_TESTNET_COINS_EXPLAINED: {
         defaultMessage:
-            'Testnet coins dont have any value but you still may use them to learn and experiment.',
+            "Testnet coins don't have any value but you still may use them to learn and experiment.",
         id: 'TR_TESTNET_COINS_EXPLAINED',
     },
     TR_THE_PIN_LAYOUT_IS_DISPLAYED: {
@@ -2633,7 +2633,7 @@ const definedMessages = defineMessages({
     TR_SELECT_MODEL: {
         id: 'TR_SELECT_MODEL',
         defaultMessage: 'Select {model}',
-        descrition: '{model} is translation -eiter TR_MODEL_T or TR_MODEL_ONE',
+        description: '{model} is translation - either TR_MODEL_T or TR_MODEL_ONE',
     },
     TR_MODELS_DESC: {
         id: 'TR_MODELS_DESC',
@@ -2981,14 +2981,13 @@ const definedMessages = defineMessages({
         id: 'TR_RECONNECT_IN_BOOTLOADER',
         defaultMessage: 'Reconnect your device in bootloader mode',
     },
+    TR_LEAVE_BOOTLOADER_MODE: {
+        id: 'TR_LEAVE_BOOTLOADER_MODE',
+        defaultMessage: 'Leave bootloader mode',
+    },
     TR_SWIPE_YOUR_FINGERS: {
         id: 'TR_SWIPE_YOUR_FINGERS',
-        defaultMessage: 'Swipe your finger accross the touchscreen while connecting cable.',
-    },
-    TR_FIRMARE_INSTALLED_TEXT: {
-        id: 'TR_FIRMARE_INSTALLED_TEXT',
-        defaultMessage:
-            'Great! Your firmware is up to date and no further action is needed. Check our blog for updates or come here later.',
+        defaultMessage: 'Swipe your finger across the touchscreen while connecting cable.',
     },
     TR_TO_KEEP_YOUR_TREZOR: {
         id: 'TR_TO_KEEP_YOUR_TREZOR',
@@ -3329,6 +3328,16 @@ const definedMessages = defineMessages({
         id: 'TR_PAIR_TREZOR_AGAIN_OR_NEW',
         defaultMessage:
             'Pair Trezor device again with your internet browser or pair another device',
+    },
+    TR_CHECK_FINGERPRINT: {
+        id: 'TR_CHECK_FINGERPRINT',
+        defaultMessage: 'Check fingerprint',
+        description:
+            'This appears when updating some ancient firmwares. Fingerprint is cryptographic signature of the target firmware.',
+    },
+    TR_YOU_MAY_EITHER_UPDATE: {
+        id: 'TR_YOU_MAY_EITHER_UPDATE',
+        defaultMessage: 'You might either update your device now or continue and update it later.',
     },
 } as const);
 
