@@ -125,7 +125,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         </ActionButton>
                     </ActionColumn>
                 </SectionItem>
-                {!features.unfinished_backup && (
+                {features.unfinished_backup && (
                     <SectionItem data-test="@settings/device/failed-backup-row">
                         <TextColumn description={<Translation id="TR_BACKUP_FAILED" />} />
                         <ActionColumn>
