@@ -25,6 +25,12 @@ const Wrapper = styled.div`
     align-items: center;
     flex-direction: column;
     height: 100%;
+    width: 88vw;
+
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
+        max-width: 680px;
+        min-width: 580px;
+    }
 `;
 
 const Row = styled.div`
@@ -131,7 +137,7 @@ const Recovery = ({
             : ['initial', 'in-progress', 'finished'];
 
     return (
-        <Modal useFixedHeight>
+        <Modal useFixedHeight useFixedWidth={false}>
             <Wrapper>
                 <ProgressBar
                     total={statesInProgressBar.length}
