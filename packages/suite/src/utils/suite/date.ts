@@ -35,7 +35,7 @@ export const getTicksBetweenTimestamps = (
     to: Date,
     interval: 'quarter' | 'month' | 'day' | '2-day',
 ) => {
-    const ticks = [];
+    const months = [];
     let fromDate = from;
     const toDate = to;
 
@@ -49,26 +49,26 @@ export const getTicksBetweenTimestamps = (
     while (isBefore(fromDate, toDate)) {
         if (interval === 'quarter') {
             fromDate = startOfMonth(fromDate);
+            months.push(fromDate);
             fromDate = addMonths(fromDate, 3);
-            ticks.push(fromDate);
         }
         if (interval === 'month') {
             // set date to 1 in case of monthly timestamps
             fromDate = startOfMonth(fromDate);
+            months.push(fromDate);
             fromDate = addMonths(fromDate, 1);
-            ticks.push(fromDate);
         }
         if (interval === 'day') {
+            months.push(fromDate);
             fromDate = addDays(fromDate, 1);
-            ticks.push(fromDate);
         }
         if (interval === '2-day') {
+            months.push(fromDate);
             fromDate = addDays(fromDate, 2);
-            ticks.push(fromDate);
         }
     }
     // months.push(toDate);
-    return ticks;
+    return months;
 };
 
 export const calcTicks = (weeks: number, options?: { skipDays?: boolean }) => {
@@ -97,9 +97,6 @@ export const calcTicksFromData = (data: { time: number }[]) => {
     const endDate = data.reduce((max, current) => {
         return current.time > max ? current.time : max;
     }, data[0].time);
-
-    console.log('startDate', startDate);
-    console.log('endDate', endDate);
 
     return getTicksBetweenTimestamps(fromUnixTime(startDate), fromUnixTime(endDate), 'quarter');
 };
