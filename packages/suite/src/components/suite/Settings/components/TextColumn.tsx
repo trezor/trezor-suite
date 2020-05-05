@@ -4,7 +4,7 @@ import { colors, variables } from '@trezor/components';
 import { Translation, ExternalLink } from '@suite-components';
 
 interface TextColumnProps {
-    title: React.ReactNode;
+    title?: React.ReactNode;
     description?: React.ReactNode;
     learnMore?: string;
 }
