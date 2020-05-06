@@ -71,6 +71,7 @@ const RecoveryStep = (props: Props) => {
                         <Text>
                             <Translation id="TR_RECOVER_SUBHEADING_MODEL_T" />
                         </Text>
+                        <StyledImage image="RECOVER_FROM_SEED" width="200px" />
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 data-test="@onboarding/recovery/start-button"
