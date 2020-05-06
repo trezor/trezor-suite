@@ -37,6 +37,14 @@ const Content = ({ selectedAccount, children }: ContentProps) => (
     </WalletLayout>
 );
 
+interface DataProviderContext {
+    supportedTokenIcons: string[] | null;
+}
+
+export const DataProviderContext = React.createContext<DataProviderContext>({
+    supportedTokenIcons: null,
+});
+
 export default (props: Props) => {
     const { selectedAccount, transactions } = props;
     const [selectedPage, setSelectedPage] = useState(1);

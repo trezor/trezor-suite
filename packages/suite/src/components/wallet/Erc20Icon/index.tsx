@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import styled, { css } from 'styled-components';
 import { colors, CoinLogo } from '@trezor/components';
-import { DataProviderContext } from '@suite-components';
+import { DataProviderContext } from '@wallet-views/transactions';
 
 const styles = css`
     display: flex;

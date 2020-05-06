@@ -75,14 +75,6 @@ export const LayoutContext = createContext<LayoutContextI>({
     setLayout: undefined,
 });
 
-interface DataProviderContext {
-    supportedTokenIcons: string[] | null;
-}
-
-export const DataProviderContext = React.createContext<DataProviderContext>({
-    supportedTokenIcons: null,
-});
-
 const BodyWide = ({ menu, children }: BodyProps) => (
     <Body>
         <DiscoveryProgress />
