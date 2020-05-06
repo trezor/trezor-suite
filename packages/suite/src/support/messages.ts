@@ -3327,8 +3327,9 @@ const definedMessages = defineMessages({
     },
     TR_PAIR_TREZOR_AGAIN_OR_NEW: {
         id: 'TR_PAIR_TREZOR_AGAIN_OR_NEW',
-        defaultMessage: 'Pair Trezor device again with your internet browser or pair another device',
-    }
+        defaultMessage:
+            'Pair Trezor device again with your internet browser or pair another device',
+    },
 } as const);
 
 export default definedMessages;

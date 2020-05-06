@@ -8,7 +8,7 @@ interface Props {
 }
 
 const Reconnect = ({ model }: Props) => (
-    <Wrapper.Step>
+    <Wrapper.Step data-test="@onboarding/unexpected-state/reconnect">
         <Wrapper.StepHeading>
             <Translation id="TR_RECONNECT_HEADER" />
         </Wrapper.StepHeading>
