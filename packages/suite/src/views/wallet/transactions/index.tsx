@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
+import { useTokenList } from '@wallet-hooks/useTokenList';
+import { Translation, DataProviderContext } from '@suite-components';
 import { SETTINGS } from '@suite-config';
 import { colors, Loader } from '@trezor/components';
 import { WalletLayout } from '@wallet-components';
@@ -39,6 +40,7 @@ const Content = ({ selectedAccount, children }: ContentProps) => (
 export default (props: Props) => {
     const { selectedAccount, transactions } = props;
     const [selectedPage, setSelectedPage] = useState(1);
+    const tokenList = useTokenList();
 
     const descriptor = selectedAccount.account?.descriptor;
     const symbol = selectedAccount.account?.symbol;
@@ -79,11 +81,13 @@ export default (props: Props) => {
             <Content selectedAccount={selectedAccount}>
                 {account.networkType !== 'ripple' && <TransactionSummary account={account} />}
                 {account.networkType === 'ethereum' && (
-                    <TokenList
-                        isTestnet={isTestnet(account.symbol)}
-                        explorerUrl={network.explorer.account}
-                        tokens={account.tokens}
-                    />
+                    <DataProviderContext.Provider value={{ supportedTokenIcons: tokenList }}>
+                        <TokenList
+                            isTestnet={isTestnet(account.symbol)}
+                            explorerUrl={network.explorer.account}
+                            tokens={account.tokens}
+                        />
+                    </DataProviderContext.Provider>
                 )}
                 <TransactionList
                     explorerUrl={network.explorer.tx}
