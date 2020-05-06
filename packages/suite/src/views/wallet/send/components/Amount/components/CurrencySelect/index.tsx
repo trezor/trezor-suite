@@ -30,13 +30,14 @@ const getValues = (symbol: Account['symbol'], tokens: Account['tokens']) => {
     ];
 
     if (tokens) {
-        //     tokens.forEach(token => {
-        //         const tokenName = token.symbol || 'N/A';
-        //         result.push({
-        //             value: tokenName,
-        //             label: tokenName.toUpperCase(),
-        //         });
+        // remove tokens - planned for Q2
+        // tokens.forEach(token => {
+        //     const tokenName = token.symbol || 'N/A';
+        //     result.push({
+        //         value: tokenName,
+        //         label: tokenName.toUpperCase(),
         //     });
+        // });
     }
 
     return result;

@@ -4,6 +4,7 @@ import { FIRST_OUTPUT_ID, U_INT_32, VALIDATION_ERRORS } from '@wallet-constants/
 import { WalletAction } from '@wallet-types';
 import { InitialState, Output, State } from '@wallet-types/sendForm';
 import { getOutput, hasDecimals } from '@wallet-utils/sendFormUtils';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { isAddressValid } from '@wallet-utils/validation';
 import Bignumber from 'bignumber.js';
 import produce from 'immer';
@@ -25,6 +26,8 @@ const initialState = (
         },
     ],
     touched: false,
+    feeOutdated: false,
+    setMaxActivated: false,
     isComposing: false,
     customFee: { value: null, error: null },
     isAdditionalFormVisible: false,
@@ -66,6 +69,30 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 break;
             }
 
+            // update fee
+            case SEND.UPDATE_FEE: {
+                draft.feeInfo = action.feeInfo;
+                draft.selectedFee = action.selectedFee;
+                if (action.gasLimit && action.gasPrice) {
+                    draft.networkTypeEthereum.gasLimit.value = action.gasLimit;
+                    draft.networkTypeEthereum.gasPrice.value = action.gasPrice;
+                }
+
+                break;
+            }
+
+            // change fee state
+            case SEND.CHANGE_FEE_STATE: {
+                draft.feeOutdated = action.feeOutdated;
+                break;
+            }
+
+            // change setMax state
+            case SEND.CHANGE_SET_MAX_STATE: {
+                draft.setMaxActivated = action.activated;
+                break;
+            }
+
             // change input "Address"
             case SEND.HANDLE_ADDRESS_CHANGE: {
                 const { outputId, address, symbol, currentAccountAddress, networkType } = action;
@@ -78,7 +105,8 @@ export default (state: State | null = null, action: WalletAction): State | null 
                     return draft;
                 }
 
-                if (!isAddressValid(action.address, symbol)) {
+                // turn off validation for bitcoin like coins - handled by connect compose transaction
+                if (networkType !== 'bitcoin' && !isAddressValid(action.address, symbol)) {
                     output.address.error = VALIDATION_ERRORS.NOT_VALID;
                     return draft;
                 }
@@ -99,9 +127,12 @@ export default (state: State | null = null, action: WalletAction): State | null 
                     availableBalance,
                     isDestinationAccountEmpty,
                     reserve,
+                    symbol,
                 } = action;
+
                 const output = getOutput(draft.outputs, outputId);
                 const amountBig = new Bignumber(amount);
+                const formattedAvailableBalance = formatNetworkAmount(availableBalance, symbol);
 
                 output.amount.error = null;
                 output.amount.value = amount;
@@ -111,7 +142,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                     return draft;
                 }
 
-                if (amountBig.isGreaterThan(availableBalance)) {
+                if (amountBig.isGreaterThan(formattedAvailableBalance)) {
                     output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH;
                     return draft;
                 }
@@ -266,6 +297,13 @@ export default (state: State | null = null, action: WalletAction): State | null 
                         output => (output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH),
                     );
                 }
+
+                if (action.payload.type === 'error' && action.payload.error.includes('address')) {
+                    draft.outputs.map(
+                        output => (output.address.error = VALIDATION_ERRORS.NOT_VALID),
+                    );
+                }
+
                 return draft;
             }
 

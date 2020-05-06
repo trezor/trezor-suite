@@ -29,7 +29,7 @@ const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceIns
                     data-test="@switch-device/add-wallet-button"
                     variant="tertiary"
                     icon="PLUS"
-                    isDisabled={!actionEnabled || !hasAtLeastOneWallet}
+                    isDisabled={!actionEnabled}
                     onClick={() =>
                         hasAtLeastOneWallet
                             ? addDeviceInstance(device)

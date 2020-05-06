@@ -69,7 +69,7 @@ const ExplanationCol = (props: { heading: React.ReactNode; description?: React.R
         <How>
             <Translation id="TR_HOW_PIN_WORKS" />{' '}
             <Link href={URLS.PIN_MANUAL_URL}>
-                <Translation id="TR_LEARN_MORE_LINK" />
+                <Translation id="TR_LEARN_MORE" />
             </Link>
         </How>
     </Col>
@@ -123,6 +123,7 @@ const Pin = ({ device, onPinSubmit, ...rest }: Props) => {
             padding={['0px', '0px', '0px', '0px']}
             useFixedWidth={false}
             useFixedHeight
+            cancelable
             {...rest}
         >
             <Wrapper>

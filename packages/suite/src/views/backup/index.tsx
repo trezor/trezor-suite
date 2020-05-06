@@ -68,7 +68,11 @@ const Backup = (props: Props) => {
 
     if (modal) {
         // modal is shown as standalone not inner modal as expected
-        return <Modal useFixedHeight>{modal}</Modal>;
+        return (
+            <Modal cancelable={props.cancelable} onCancel={props.onCancel} useFixedHeight>
+                {modal}
+            </Modal>
+        );
     }
 
     if (!device || !device.features) {
@@ -76,6 +80,8 @@ const Backup = (props: Props) => {
             <Modal
                 size="tiny"
                 heading={<Translation id="TR_RECONNECT_HEADER" />}
+                cancelable={props.cancelable}
+                onCancel={props.onCancel}
                 data-test="@backup/no-device"
             >
                 <StyledImage image="CONNECT_DEVICE" />
@@ -86,7 +92,12 @@ const Backup = (props: Props) => {
         );
     }
     return (
-        <Modal useFixedHeight data-test="@backup">
+        <Modal
+            useFixedHeight
+            cancelable={props.cancelable}
+            onCancel={props.onCancel}
+            data-test="@backup"
+        >
             <ProgressBar
                 showHelp
                 total={backupStatuses.length}

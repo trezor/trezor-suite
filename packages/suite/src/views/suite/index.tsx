@@ -1,18 +1,19 @@
-import Analytics from '@suite-views/analytics';
-import Bridge from '@suite-views/bridge';
-import DeviceAcquire from '@suite-views/device-acquire/Container';
-import DeviceBootloader from '@suite-views/device-bootloader';
-import DeviceConnect from '@suite-views/device-connect';
-import DeviceInitialize from '@suite-views/device-initialize';
-import DeviceNoFirmware from '@suite-views/device-no-firmware';
-import DeviceSeedless from '@suite-views/device-seedless';
-import DeviceUnknown from '@suite-views/device-unknown';
-import DeviceUnreadable from '@suite-views/device-unreadable';
-import DeviceUpdateRequired from '@suite-views/device-update-required';
-import DeviceRecoveryMode from '@suite-views/device-recovery-mode/Container';
-import SwitchDevice from '@suite-views/switch-device';
-import Version from '@suite-views/version';
-import Welcome from '@suite-views/welcome';
+import Analytics from './analytics';
+import Bridge from './bridge';
+import DeviceAcquire from './device-acquire/Container';
+import DeviceBootloader from './device-bootloader';
+import DeviceConnect from './device-connect';
+import DeviceInitialize from './device-initialize';
+import DeviceNoFirmware from './device-no-firmware';
+import DeviceSeedless from './device-seedless';
+import DeviceUnknown from './device-unknown';
+import DeviceUnreadable from './device-unreadable';
+import DeviceUpdateRequired from './device-update-required';
+import DeviceRecoveryMode from './device-recovery-mode/Container';
+import SwitchDevice from './switch-device';
+import Udev from './udev';
+import Version from './version';
+import Welcome from './welcome';
 
 export {
     Analytics,
@@ -28,6 +29,7 @@ export {
     DeviceUpdateRequired,
     DeviceRecoveryMode,
     SwitchDevice,
+    Udev,
     Version,
     Welcome,
 };

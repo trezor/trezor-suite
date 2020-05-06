@@ -7,14 +7,21 @@ import { Translation } from '@suite-components';
 
 const Wrapper = styled.div`
     display: flex;
+    height: 100%;
     flex-direction: column;
 `;
 
 const Row = styled.div`
     display: flex;
     justify-content: center;
-    button {
-        margin: 4px;
+    max-height: 100px;
+    flex: 2;
+    > button {
+        margin: 0px 4px;
+    }
+
+    & + & {
+        margin-top: 8px;
     }
 `;
 

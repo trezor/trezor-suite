@@ -1,5 +1,6 @@
 import { SEND } from '@wallet-actions/constants';
 import { Account } from '@wallet-types';
+import { FeeInfo } from '@wallet-types/sendForm';
 import { FeeLevel, PrecomposedTransaction } from 'trezor-connect';
 import { PrecomposedTransactionXrp, PrecomposedTransactionEth } from './transactions';
 import { Output } from './output';
@@ -21,7 +22,8 @@ export type SendFormActions =
           amount: string;
           error?: typeof VALIDATION_ERRORS.XRP_CANNOT_SEND_LESS_THAN_RESERVE;
           decimals: number;
-          availableBalance: Account['availableBalance'];
+          symbol: Account['symbol'];
+          availableBalance: Account['formattedBalance'];
           isDestinationAccountEmpty: boolean | null;
           reserve: string | null;
       }
@@ -29,6 +31,17 @@ export type SendFormActions =
           type: typeof SEND.AMOUNT_LOADING;
           isLoading: boolean;
           outputId: number;
+      }
+    | {
+          type: typeof SEND.CHANGE_FEE_STATE;
+          feeOutdated: boolean;
+      }
+    | {
+          type: typeof SEND.UPDATE_FEE;
+          feeInfo: FeeInfo;
+          selectedFee: FeeLevel;
+          gasPrice?: string;
+          gasLimit?: string;
       }
     | {
           type: typeof SEND.SET_TOUCHED;
@@ -39,6 +52,7 @@ export type SendFormActions =
           outputId: number;
       }
     | { type: typeof SEND.COMPOSE_PROGRESS; isComposing: boolean }
+    | { type: typeof SEND.CHANGE_SET_MAX_STATE; activated: boolean }
     | {
           type: typeof SEND.HANDLE_FIAT_VALUE_CHANGE;
           outputId: number;

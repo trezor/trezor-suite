@@ -8,7 +8,7 @@ export const PIN_MANUAL_URL = 'https://wiki.trezor.io/User_manual:Entering_PIN';
 export const DRY_RUN_URL = 'https://wiki.trezor.io/User_manual:Dry-run_recovery';
 export const PASSPHRASE_URL = 'https://wiki.trezor.io/Passphrase';
 export const USER_MANUAL_URL = 'https://wiki.trezor.io/User_manual';
-export const TOS_URL = 'https://trezor.io/tos';
+export const TOS_URL = 'https://data.trezor.io/legal/wallet-terms.pdf';
 export const SEED_MANUAL_URL = 'https://wiki.trezor.io/Recovery_seed';
 export const PHISHING_URL =
     'https://blog.trezor.io/phishing-attacks-used-to-steal-your-coins-recommended-reading-a39c0679c55d';
@@ -43,3 +43,4 @@ export const WIKI_BECH32_URL = 'https://wiki.trezor.io/Bech32';
 export const WIKI_P2SH_URL = 'https://wiki.trezor.io/P2SH';
 export const WIKI_P2PHK_URL = 'https://wiki.trezor.io/P2PHK_address';
 export const WIKI_ADVANCED_RECOVERY = 'https://wiki.trezor.io/User_manual:Advanced_recovery';
+export const WIKI_UDEV_RULES = 'https://wiki.trezor.io/Udev_rules';

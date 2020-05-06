@@ -20,16 +20,13 @@ const Col = styled.div`
 
 const CheckItems = styled(Row)`
     justify-content: center;
-    margin-top: 32px;
+    margin-top: 16px;
+    margin-bottom: 16px;
 `;
 
 const Buttons = styled(Row)`
     justify-content: center;
-    margin-top: auto;
-`;
-
-const StyledButton = styled(Button)`
-    margin: 24px;
+    width: 100%;
 `;
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -57,6 +54,20 @@ const WipeDevice = ({ locks, wipeDevice, onCancel }: Props) => {
             onCancel={onCancel}
             heading={<Translation id="TR_WIPE_DEVICE_HEADING" />}
             description={<Translation id="TR_WIPE_DEVICE_TEXT" />}
+            bottomBar={
+                <Buttons>
+                    <Col>
+                        <Button
+                            variant="danger"
+                            onClick={() => wipeDevice()}
+                            isDisabled={uiLocked || !checkbox1 || !checkbox2}
+                            data-test="@wipe/wipe-button"
+                        >
+                            <Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />
+                        </Button>
+                    </Col>
+                </Buttons>
+            }
         >
             <Image image="UNI_ERROR" />
             <CheckItems>
@@ -77,22 +88,6 @@ const WipeDevice = ({ locks, wipeDevice, onCancel }: Props) => {
                     />
                 </Col>
             </CheckItems>
-
-            <Buttons>
-                <Col>
-                    <StyledButton
-                        variant="danger"
-                        onClick={() => wipeDevice()}
-                        isDisabled={uiLocked || !checkbox1 || !checkbox2}
-                        data-test="@wipe/wipe-button"
-                    >
-                        <Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />
-                    </StyledButton>
-                    <StyledButton icon="CROSS" variant="tertiary" onClick={onCancel}>
-                        <Translation id="TR_CANCEL" />
-                    </StyledButton>
-                </Col>
-            </Buttons>
         </Modal>
     );
 };

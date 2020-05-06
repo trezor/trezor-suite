@@ -9,6 +9,7 @@ import HelpBuyIcons from '@suite-components/ProgressBar/components/HelpBuyIcons'
 
 import { Dispatch, AppState } from '@suite-types';
 import { isWebUSB } from '@suite-utils/transport';
+import { getLinuxPackage } from '@suite-utils/dom';
 
 const Title = styled.div`
     margin-top: 60px;
@@ -44,6 +45,7 @@ type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchT
 
 const Index = (props: Props) => {
     const showWebUsb = isWebUSB(props.transport);
+    const showUdev = getLinuxPackage();
     // we need imageLoaded here so that we can position webusb button properly.
     const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -60,7 +62,6 @@ const Index = (props: Props) => {
                 onLoad={() => setImageLoaded(true)}
                 onError={() => setImageLoaded(true)}
             />
-
             {showWebUsb && (
                 <ButtonWrapper>
                     <WebusbButton ready={imageLoaded}>
@@ -70,12 +71,31 @@ const Index = (props: Props) => {
                     </WebusbButton>
                 </ButtonWrapper>
             )}
-
-            <BridgeWrapper>
-                {showWebUsb && (
+            {showUdev && (
+                <BridgeWrapper>
                     <P size="tiny">
                         <Translation
-                            id="TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING"
+                            id="TR_DEVICE_NOT_RECOGNIZED_TRY_UDEV"
+                            values={{
+                                link: (
+                                    <StyledLink
+                                        onClick={() =>
+                                            props.goto('suite-udev', { cancelable: true })
+                                        }
+                                    >
+                                        Udev rules
+                                    </StyledLink>
+                                ),
+                            }}
+                        />
+                    </P>
+                </BridgeWrapper>
+            )}
+            {showWebUsb && (
+                <BridgeWrapper>
+                    <P size="tiny">
+                        <Translation
+                            id="TR_DEVICE_NOT_RECOGNIZED_TRY_BRIDGE"
                             values={{
                                 link: (
                                     <StyledLink
@@ -89,8 +109,8 @@ const Index = (props: Props) => {
                             }}
                         />
                     </P>
-                )}
-            </BridgeWrapper>
+                </BridgeWrapper>
+            )}
         </Modal>
     );
 };

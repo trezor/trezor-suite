@@ -1,5 +1,5 @@
 import { OUTPUTS } from '../__fixtures__/sendFormFixtures';
-import { getOutput, hasDecimals, shouldComposeBy } from '../sendFormUtils';
+import { getOutput, hasDecimals, shouldComposeBy, getInputState } from '../sendFormUtils';
 
 describe('sendForm utils', () => {
     it('get output', () => {
@@ -8,17 +8,37 @@ describe('sendForm utils', () => {
         expect(getOutput(OUTPUTS.BASIC, 3)).toBe(OUTPUTS.BASIC[2]);
     });
 
+    it('get input state', () => {
+        expect(getInputState(null, '1')).toBe('success');
+        expect(getInputState('is-empty', '1')).toBe('error');
+        expect(getInputState(null, '1', true)).toBe(undefined);
+        expect(getInputState(null, null, true, true)).toBe(undefined);
+    });
+
     it('should compose', () => {
         const COMPOSE = true;
         const SHOULD_NOT_COMPOSE = false;
 
-        expect(shouldComposeBy('address', OUTPUTS.NO_ERROR_ADDRESS)).toBe(COMPOSE);
-        expect(shouldComposeBy('address', OUTPUTS.ADDRESS_EMPTY)).toBe(SHOULD_NOT_COMPOSE);
-        expect(shouldComposeBy('address', OUTPUTS.ADDRESS_ERROR)).toBe(SHOULD_NOT_COMPOSE);
+        expect(shouldComposeBy('address', OUTPUTS.NO_ERROR_ADDRESS, 'ethereum')).toBe(COMPOSE);
+        expect(shouldComposeBy('address', OUTPUTS.NO_ERROR_ADDRESS, 'bitcoin')).toBe(COMPOSE);
+        expect(shouldComposeBy('address', OUTPUTS.NO_ERROR_ADDRESS, 'ripple')).toBe(COMPOSE);
+        expect(shouldComposeBy('address', OUTPUTS.ADDRESS_EMPTY, 'ethereum')).toBe(
+            SHOULD_NOT_COMPOSE,
+        );
 
-        expect(shouldComposeBy('amount', OUTPUTS.NO_ERROR_AMOUNT)).toBe(COMPOSE);
-        expect(shouldComposeBy('amount', OUTPUTS.AMOUNT_ERROR)).toBe(SHOULD_NOT_COMPOSE);
-        expect(shouldComposeBy('amount', OUTPUTS.AMOUNT_EMPTY)).toBe(SHOULD_NOT_COMPOSE);
+        expect(shouldComposeBy('address', OUTPUTS.ADDRESS_ERROR, 'ethereum')).toBe(
+            SHOULD_NOT_COMPOSE,
+        );
+
+        expect(shouldComposeBy('amount', OUTPUTS.NO_ERROR_AMOUNT, 'ethereum')).toBe(COMPOSE);
+        expect(shouldComposeBy('amount', OUTPUTS.NO_ERROR_AMOUNT, 'bitcoin')).toBe(COMPOSE);
+        expect(shouldComposeBy('amount', OUTPUTS.NO_ERROR_AMOUNT, 'ripple')).toBe(COMPOSE);
+        expect(shouldComposeBy('amount', OUTPUTS.AMOUNT_ERROR, 'ethereum')).toBe(
+            SHOULD_NOT_COMPOSE,
+        );
+        expect(shouldComposeBy('amount', OUTPUTS.AMOUNT_EMPTY, 'ethereum')).toBe(
+            SHOULD_NOT_COMPOSE,
+        );
     });
 
     it('hasDecimals', () => {

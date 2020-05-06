@@ -16,7 +16,7 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
     command: >
-      bash -c "rm -rf /var/tmp/trezor.flash && python3 ./main.py"
+      bash -c "rm -rf /var/tmp/trezor.flash && trezorctl --version && python3 ./main.py"
 
   suite-dev:
     container_name: suite-dev

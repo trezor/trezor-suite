@@ -10,7 +10,7 @@ export default () => (
             values={{
                 TR_LEARN_MORE: (
                     <Link variant="nostyle" href={URLS.BCH_ADDRESS_TOOL}>
-                        <Translation id="TR_LEARN_MORE_LINK" />
+                        <Translation id="TR_LEARN_MORE" />
                     </Link>
                 ),
             }}

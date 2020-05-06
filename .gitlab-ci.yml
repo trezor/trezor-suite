@@ -1,5 +1,5 @@
 # ! DO NOT set latest here USE custom hash !
-image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:54b807728aa0417641c00dfab1aa6c0ea77bcfdb
+image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:293dd52c3910666bd91620c23b2c61085ec53d18
 
 cache:
     untracked: true
@@ -18,6 +18,7 @@ cache:
         - packages/suite-storage/node_modules/
         - packages/translations-manager/node_modules/
         - packages/integration-tests/node_modules/
+        - packages/news-api/node_modules/
         # libs
         - packages/components/lib
         - packages/blockchain-link/lib
@@ -27,6 +28,7 @@ cache:
 
 variables:
     DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
+    STAGING_SERVER_URL: 'http://staging-wallet.trezor.io/suite'
     PACKAGE_PATH_SUITE_DESKTOP: packages/suite-desktop
     PACKAGE_PATH_SUITE_NATIVE: packages/suite-native
     PACKAGE_PATH_SUITE_WEB: packages/suite-web
@@ -39,6 +41,7 @@ stages:
     - integration testing
     - build artifacts
     - deploy artifacts, others
+    - deploy to staging
 
 lint:
     stage: lint, types, unit tests

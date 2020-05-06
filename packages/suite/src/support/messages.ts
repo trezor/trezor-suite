@@ -134,6 +134,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Add account',
         id: 'TR_ADD_ACCOUNT',
     },
+    TR_FEE_NEEDS_UPDATE: {
+        defaultMessage: 'Fee levels are outdated',
+        id: 'TR_FEE_NEEDS_UPDATE',
+    },
     TR_ADD_WALLET: {
         defaultMessage: 'Add wallet',
         id: 'TR_ADD_WALLET',
@@ -638,9 +642,62 @@ const definedMessages = defineMessages({
         defaultMessage: 'Device needs attention',
         id: 'TR_DEVICE_NEEDS_ATTENTION',
     },
-    TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING: {
+    TR_NEEDS_ATTENTION_BOOTLOADER: {
+        defaultMessage: 'Device needs attention',
+        id: 'TR_NEEDS_ATTENTION_BOOTLOADER',
+    },
+    TR_NEEDS_ATTENTION_INITIALIZE: {
+        defaultMessage: 'Device needs attention',
+        id: 'TR_NEEDS_ATTENTION_INITIALIZE',
+    },
+    TR_NEEDS_ATTENTION_SEEDLESS: {
+        defaultMessage: 'Device needs attention',
+        id: 'TR_NEEDS_ATTENTION_SEEDLESS',
+    },
+    TR_NEEDS_ATTENTION_USED_IN_OTHER_WINDOW: {
+        defaultMessage: 'Device needs attention',
+        id: 'TR_NEEDS_ATTENTION_USED_IN_OTHER_WINDOW',
+    },
+    TR_NEEDS_ATTENTION_WAS_USED_IN_OTHER_WINDOW: {
+        defaultMessage: 'Device needs attention',
+        id: 'TR_NEEDS_ATTENTION_WAS_USED_IN_OTHER_WINDOW',
+    },
+    TR_NEEDS_ATTENTION_UNACQUIRED: {
+        defaultMessage: 'Device needs attention',
+        id: 'TR_NEEDS_ATTENTION_UNACQUIRED',
+    },
+    TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED: {
+        defaultMessage: 'Device needs attention',
+        id: 'TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED',
+    },
+    TR_NEEDS_ATTENTION_UNAVAILABLE: {
+        defaultMessage: 'Device needs attention',
+        id: 'TR_NEEDS_ATTENTION_UNAVAILABLE',
+    },
+    TR_NEEDS_ATTENTION_UNREADABLE: {
+        defaultMessage: 'Device needs attention',
+        id: 'TR_NEEDS_ATTENTION_UNREADABLE',
+    },
+    TR_DEVICE_NOT_RECOGNIZED_TRY_BRIDGE: {
         defaultMessage: 'Device not recognized? Try installing the {link}.',
-        id: 'TR_DEVICE_NOT_RECOGNIZED_TRY_INSTALLING',
+        id: 'TR_DEVICE_NOT_RECOGNIZED_TRY_BRIDGE',
+    },
+    TR_DEVICE_NOT_RECOGNIZED_TRY_UDEV: {
+        defaultMessage: 'Trezor not recognized? Try installing {link}.',
+        id: 'TR_DEVICE_NOT_RECOGNIZED_TRY_UDEV',
+    },
+    TR_UDEV_DOWNLOAD_TITLE: {
+        defaultMessage: 'Download Udev rules',
+        id: 'TR_UDEV_DOWNLOAD_TITLE',
+    },
+    TR_UDEV_DOWNLOAD_DESC: {
+        defaultMessage:
+            'In some cases, Linux users need to install udev rules to access the device. Please, install the following package and reconnect your Trezor.',
+        id: 'TR_UDEV_DOWNLOAD_DESC',
+    },
+    TR_UDEV_DOWNLOAD_MANUAL: {
+        defaultMessage: 'Manual configuration (advanced)',
+        id: 'TR_UDEV_DOWNLOAD_MANUAL',
     },
     TR_DEVICE_SETTINGS: {
         defaultMessage: 'Device settings',
@@ -1060,11 +1117,6 @@ const definedMessages = defineMessages({
         description: 'Link to Trezor wiki.',
         id: 'TR_LEARN_MORE',
     },
-    TR_LEARN_MORE_LINK: {
-        defaultMessage: 'Learn more.',
-        description: 'Link to Trezor wiki.',
-        id: 'TR_LEARN_MORE_LINK',
-    },
     TR_SEGWIT_ACCOUNTS: {
         defaultMessage: 'Segwit accounts',
         id: 'TR_SEGWIT_ACCOUNTS',
@@ -1412,7 +1464,7 @@ const definedMessages = defineMessages({
         id: 'TR_RECONNECT_TEXT',
     },
     TR_RECONNECT_TROUBLESHOOT_BRIDGE: {
-        defaultMessage: 'Trezor bridge might have stopped working, try restarting',
+        defaultMessage: 'Trezor Bridge might have stopped working, try restarting',
         description: '',
         id: 'TR_RECONNECT_TROUBLESHOOT_BRIDGE',
     },
@@ -1454,7 +1506,7 @@ const definedMessages = defineMessages({
     },
     TR_RECOVERY_TYPES_DESCRIPTION: {
         defaultMessage:
-            'Both methods are safe. Basic recovery uses on computer input of words in randomized order. Advanced recovery uses on-screen input to load your recovery seed. {TR_LEARN_MORE_LINK}',
+            'Both methods are safe. Basic recovery uses on computer input of words in randomized order. Advanced recovery uses on-screen input to load your recovery seed. {TR_LEARN_MORE}',
         description: 'There are two methods of recovery for T1. This is a short explanation text.',
         id: 'TR_RECOVERY_TYPES_DESCRIPTION',
     },
@@ -3060,7 +3112,7 @@ const definedMessages = defineMessages({
     TR_YOUR_DEVICE_IS_CONNECTED_BUT_UNREADABLE: {
         id: 'TR_YOUR_DEVICE_IS_CONNECTED_BUT_UNREADABLE',
         defaultMessage:
-            'Your device is connected properly, but your internet browser can not communicate with it at the moment. You will need to install Trezor bridge.',
+            'Your device is connected properly, but your internet browser can not communicate with it at the moment. You will need to install Trezor Bridge.',
     },
     TR_RESOLVE: {
         id: 'TR_RESOLVE',
@@ -3218,6 +3270,56 @@ const definedMessages = defineMessages({
         defaultMessage: 'Pair your Trezor again with your computer',
         description:
             'After firmware update is done, user must renew connection with Trezor device. We also call this "pairing" device',
+    },
+    TR_BY_CREATING_WALLET: {
+        id: 'TR_BY_CREATING_WALLET',
+        defaultMessage: 'By creating wallet you agree with {TERMS_AND_CONDITIONS}',
+    },
+    TERMS_AND_CONDTIONS: {
+        id: 'TERMS_AND_CONDTIONS',
+        defaultMessage: 'Terms and conditions',
+        description: 'Legal stuff nobody reads.',
+    },
+    TR_CREATE_WALLET: {
+        id: 'TR_CREATE_WALLET',
+        defaultMessage: 'Create wallet',
+        description:
+            'Used for button triggering seed creation (reset device call) if shamir/non-shamir selection is not available.',
+    },
+    TR_YOU_MAY_CHOSE_EITHER_STANDARD: {
+        id: 'TR_YOU_MAY_CHOSE_EITHER_STANDARD',
+        defaultMessage: 'You might chose either standard backup type or Shamir backup',
+    },
+    SINGLE_SEED: {
+        id: 'SINGLE_SEED',
+        defaultMessage: 'Single seed',
+        description: 'Basic, non-shamir backup. Seed has only one part.',
+    },
+    SINGLE_SEED_DESCRIPTION: {
+        id: 'SINGLE_SEED_DESCRIPTION',
+        defaultMessage: 'Security level: Standard. Distributable: No',
+    },
+    SHAMIR_SEED: {
+        id: 'SHAMIR_SEED',
+        defaultMessage: 'Shamir seed',
+        description: 'Advanced, shamir backup. Seed has multiple parts.',
+    },
+    SHAMIR_SEED_DESCRIPTION: {
+        id: 'SHAMIR_SEED_DESCRIPTION',
+        defaultMessage: 'Security level: Advanced Distributable: Yes',
+    },
+    TR_SELECT_SEED_TYPE: {
+        id: 'TR_SELECT_SEED_TYPE',
+        defaultMessage: 'Select {seedType}',
+        description: 'seedType is either SINGLE_SEED or SHAMIR_SEED',
+    },
+    TR_BACKUP_TYPE: {
+        id: 'TR_BACKUP_TYPE',
+        defaultMessage: 'Backup type',
+    },
+    TR_SEND_COMING_SOON: {
+        id: 'TR_SEND_COMING_SOON',
+        defaultMessage: 'coming soon',
     },
 } as const);
 

@@ -40,6 +40,7 @@ storiesOf('Buttons', module).add(
                         <Button
                             variant={variant}
                             data-test={`button-${variant}-icon-right`}
+                            alignIcon="right"
                             icon="PLUS"
                         >
                             {variant[0].toUpperCase()}

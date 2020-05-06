@@ -18,6 +18,7 @@ const Word = ({ count, ...rest }: Props) => {
     return (
         <Modal
             size="small"
+            useFixedHeight
             heading={<Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />}
             description={<Translation id="TR_ADVANCED_RECOVERY_TEXT" />}
             {...rest}
@@ -32,7 +33,7 @@ const Word = ({ count, ...rest }: Props) => {
                 <P size="tiny">
                     <Translation id="TR_ADVANCED_RECOVERY_NOT_SURE" />{' '}
                     <Link size="tiny" href={URLS.WIKI_ADVANCED_RECOVERY}>
-                        <Translation id="TR_LEARN_MORE_LINK" />
+                        <Translation id="TR_LEARN_MORE" />
                     </Link>
                 </P>
             </BottomText>

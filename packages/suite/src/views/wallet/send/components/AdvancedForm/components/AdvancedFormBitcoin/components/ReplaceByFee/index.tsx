@@ -1,8 +1,7 @@
+import { Translation } from '@suite-components/Translation';
+import { colors, Switch, Tooltip, variables } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components/Translation';
-
-import { variables, colors, Switch } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -42,7 +41,9 @@ export default () => {
                 </Description>
             </Left>
             <Right>
-                <Switch checked={false} onChange={() => console.log('change')} />
+                <Tooltip placement="top" content={<Translation id="TR_SEND_COMING_SOON" />}>
+                    <Switch checked={false} onChange={() => console.log('change')} />
+                </Tooltip>
             </Right>
         </Wrapper>
     );

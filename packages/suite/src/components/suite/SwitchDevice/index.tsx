@@ -31,7 +31,13 @@ const SwitchDeviceModal = (props: Props) => {
     const { devices, selectedDevice, modal } = props;
     const showWebUsb = isWebUSB(props.transport);
     // return action modal, it could be requested by Trezor while enabling passphrase encryption
-    if (modal) return modal;
+    if (modal)
+        return (
+            // Wrap modal in Modal component because modal passed to ApplicationModal has no background (overlay)
+            <Modal useFixedWidth={false} padding={['0px', '0px', '0px', '0px']}>
+                {modal}
+            </Modal>
+        );
     // exclude selectedDevice from list, because other devices could have a higher priority
     // and we want to have selectedDevice on top
     const sortedDevices = deviceUtils

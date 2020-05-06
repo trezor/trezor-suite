@@ -1,9 +1,16 @@
-import { Output, State, EthTransactionData, EthPreparedTransaction } from '@wallet-types/sendForm';
-import { Account } from '@wallet-types';
+import {
+    Output,
+    State,
+    EthTransactionData,
+    EthPreparedTransaction,
+    FeeInfo,
+    FeeLevel,
+} from '@wallet-types/sendForm';
+import { Account, Network } from '@wallet-types';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import BigNumber from 'bignumber.js';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { toHex, toWei } from 'web3-utils';
+import { toHex, toWei, fromWei } from 'web3-utils';
 import { Transaction } from 'ethereumjs-tx';
 
 export const getOutput = (outputs: Output[], id: number) =>
@@ -16,7 +23,11 @@ export const hasDecimals = (value: string, decimals: number) => {
     return DECIMALS_REGEX.test(value);
 };
 
-export const shouldComposeBy = (name: 'address' | 'amount', outputs: Output[]) => {
+export const shouldComposeBy = (
+    name: 'address' | 'amount',
+    outputs: Output[],
+    networkType: Account['networkType'],
+) => {
     let shouldCompose = true;
     const results = [];
 
@@ -31,12 +42,14 @@ export const shouldComposeBy = (name: 'address' | 'amount', outputs: Output[]) =
         shouldCompose = false;
     }
 
-    // one of the inputs is not valid
-    outputs.forEach(output => {
-        if (output[name].error) {
-            shouldCompose = false;
-        }
-    });
+    if (networkType !== 'bitcoin') {
+        // one of the inputs is not valid
+        outputs.forEach(output => {
+            if (output[name].error) {
+                shouldCompose = false;
+            }
+        });
+    }
 
     return shouldCompose;
 };
@@ -53,16 +66,10 @@ export const calculateTotal = (amount: string, fee: string): string => {
     }
 };
 
-export const calculateMax = (balance: string, fee: string, account?: Account): string => {
+export const calculateMax = (availableBalance: string, fee: string): string => {
     try {
-        const balanceBig = new BigNumber(balance);
-        let max = balanceBig.minus(fee);
-
-        if (account && account.networkType === 'ripple') {
-            const { misc } = account;
-            max = max.minus(misc.reserve);
-        }
-
+        const balanceBig = new BigNumber(availableBalance);
+        const max = balanceBig.minus(fee);
         if (max.isLessThan(0)) return '0';
         return max.toFixed();
     } catch (error) {
@@ -164,4 +171,27 @@ export const getReserveInXrp = (account: Account) => {
     if (account.networkType !== 'ripple') return null;
     const { misc } = account;
     return formatNetworkAmount(misc.reserve, account.symbol);
+};
+
+export const getFeeLevels = (networkType: Network['networkType'], feeInfo: FeeInfo) => {
+    const convertedEthLevels: FeeLevel[] = [];
+    const initialLevels: FeeLevel[] =
+        networkType === 'ethereum'
+            ? feeInfo.levels
+            : feeInfo.levels.concat({
+                  label: 'custom',
+                  feePerUnit: '0',
+                  blocks: -1,
+              });
+
+    if (networkType === 'ethereum') {
+        initialLevels.forEach(level =>
+            convertedEthLevels.push({
+                ...level,
+                feePerUnit: fromWei(level.feePerUnit, 'gwei'),
+            }),
+        );
+    }
+
+    return networkType === 'ethereum' ? convertedEthLevels : initialLevels;
 };

@@ -1,7 +1,7 @@
 import TrezorConnect from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
-import { BTC_RBF_SEQUENCE } from '@wallet-constants/sendForm';
+import { BTC_RBF_SEQUENCE, ZEC_SIGN_ENHANCEMENT } from '@wallet-constants/sendForm';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as commonActions from './sendFormCommonActions';
@@ -150,8 +150,18 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         sequence: BTC_RBF_SEQUENCE,
     }));
 
-    // TODO: add more params to alt coins txs (zcash: version_branch_id & version, etc...)
-    const signedTx = await TrezorConnect.signTransaction({
+    let signEnhancement = {};
+
+    if (account.symbol === 'zec') {
+        signEnhancement = ZEC_SIGN_ENHANCEMENT;
+    }
+
+    // connect undefined amount hotfix (not for zcash)
+    inputs.forEach(input => {
+        if (!input.amount) delete input.amount;
+    });
+
+    const signPayload = {
         device: {
             path: selectedDevice.path,
             instance: selectedDevice.instance,
@@ -161,7 +171,10 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         outputs: transaction.outputs,
         inputs,
         coin: account.symbol,
-    });
+        ...signEnhancement,
+    };
+
+    const signedTx = await TrezorConnect.signTransaction(signPayload);
 
     if (!signedTx.success) {
         dispatch(

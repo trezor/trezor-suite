@@ -1,8 +1,10 @@
 describe('Backup', () => {
     beforeEach(() => {
-        cy.task('startEmu');
-        cy.task('wipeEmu');
+        // note for future 2.1.4, on load_device results in device without backup.
+        // we will want to have newer firmware here later, it will require implementing needs_backup to task('setupEmu')
+        cy.task('startEmu', { version: '2.1.4', wipe: true });
         cy.task('setupEmu');
+
         cy.viewport(1024, 768).resetDb();
         cy.visit('/');
         cy.passThroughInitialRun();
@@ -11,7 +13,9 @@ describe('Backup', () => {
     it('Successful backup happy path', () => {
         // access from notification
         cy.getTestElement('@notification/no-backup/button').click();
-
+        
+        cy.getTestElement('@backup').matchImageSnapshot('backup')
+        
         cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
         cy.getTestElement('@backup/check-item/has-enough-time').click();
         cy.getTestElement('@backup/check-item/is-in-private').click();
@@ -19,6 +23,7 @@ describe('Backup', () => {
         cy.log('Create backup on device');
         cy.getTestElement('@backup/start-button').click();
         cy.getConfirmActionOnDeviceModal();
+        
         cy.task('sendDecision');
         cy.task('swipeEmu', 'up');
         cy.task('swipeEmu', 'up');
@@ -51,8 +56,21 @@ describe('Backup', () => {
         cy.getTestElement('@backup/error-message');
     });
 
-    // todo, check that checkboxes are really disabled, but I cant now. They might be (and are) disabled by device lock from
-    // finishing discovery that was triggered on dashboard.
-    it.skip('Backup should reset if modal is closed', () => {});
-    it.skip('When device disconnects before backup process starts, we just show reconnect your device screen and continue', () => {});
+    it('Backup should reset if modal is closed', () => {
+        cy.getTestElement('@notification/no-backup/button').click();
+        cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
+        cy.getTestElement('@backup/close-button').click();
+        cy.getTestElement('@notification/no-backup/button').click();
+        cy.log('at this moment, after modal was closed and opened again, no checkbox should be checked');
+        cy.getTestElement('@backup/check-item/understands-what-seed-is').should('not.be.checked');
+    });
+
+    it('When device disconnects before backup process starts, we just show reconnect your device screen and continue', () => {
+        cy.getTestElement('@notification/no-backup/button').click();
+        cy.task('stopEmu');
+        cy.getTestElement('@backup/no-device');
+        cy.task('startEmu', { version: '2.1.4', wipe: false })
+        cy.log('after device is reconnected, user returns back where he was before it disconnected');
+        cy.getTestElement('@backup/check-item/has-enough-time');
+    });
 });
