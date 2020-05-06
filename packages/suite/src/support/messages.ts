@@ -134,6 +134,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Add account',
         id: 'TR_ADD_ACCOUNT',
     },
+    TR_FEE_NEEDS_UPDATE: {
+        defaultMessage: 'Fee levels are outdated',
+        id: 'TR_FEE_NEEDS_UPDATE',
+    },
     TR_ADD_WALLET: {
         defaultMessage: 'Add wallet',
         id: 'TR_ADD_WALLET',

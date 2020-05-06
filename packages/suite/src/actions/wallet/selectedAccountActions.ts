@@ -3,7 +3,7 @@ import { ACCOUNT, DISCOVERY, BLOCKCHAIN } from '@wallet-actions/constants';
 import { NETWORKS } from '@wallet-config';
 
 import * as discoveryActions from '@wallet-actions/discoveryActions';
-import * as reducerUtils from '@suite-utils/reducerUtils';
+import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import * as accountUtils from '@wallet-utils/accountUtils';
 
 import { Action, Dispatch, GetState } from '@suite-types';
@@ -210,7 +210,7 @@ export const getStateForAction = (action: Action) => (dispatch: Dispatch, getSta
     if (!newState) return;
 
     // find differences
-    const stateChanged = reducerUtils.observeChanges(state.wallet.selectedAccount, newState, {
+    const stateChanged = comparisonUtils.isChanged(state.wallet.selectedAccount, newState, {
         account: ['descriptor', 'availableBalance', 'nonce', 'marker'],
         discovery: [
             'status',

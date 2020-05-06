@@ -5,6 +5,7 @@ import TrezorConnect, {
     BlockchainEstimateFee,
 } from 'trezor-connect';
 import * as accountUtils from '@wallet-utils/accountUtils';
+import * as sendActions from '@wallet-actions/send/sendFormActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as fiatRatesActions from '@wallet-actions/fiatRatesActions';
 import { getNetwork } from '@wallet-utils/accountUtils';
@@ -123,6 +124,8 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
             type: BLOCKCHAIN.UPDATE_FEE,
             payload: partial,
         });
+
+        dispatch(sendActions.updateFeeOrNotify());
     }
 };
 

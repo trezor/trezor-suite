@@ -1,26 +1,25 @@
-// import * as storageActions from '@suite-actions/storageActions';
 import { Dispatch, GetState } from '@suite-types';
 import { SEND } from '@wallet-actions/constants';
-import { isAddressValid } from '@wallet-utils/validation';
+import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import { ETH_DEFAULT_GAS_LIMIT, ETH_DEFAULT_GAS_PRICE } from '@wallet-constants/sendForm';
 import { FeeLevel, Output } from '@wallet-types/sendForm';
 import { formatNetworkAmount, getFiatValue } from '@wallet-utils/accountUtils';
-// import { formatNetworkAmount, getAccountKey, getFiatValue } from '@wallet-utils/accountUtils';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
 import {
+    getFeeLevels,
     getOutput,
+    getReserveInXrp,
     hasDecimals,
     shouldComposeBy,
-    getReserveInXrp,
 } from '@wallet-utils/sendFormUtils';
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
+import { isAddressValid } from '@wallet-utils/validation';
 import BigNumber from 'bignumber.js';
-import { fromWei } from 'web3-utils';
 
 import * as bitcoinActions from './sendFormBitcoinActions';
+import * as commonActions from './sendFormCommonActions';
 import * as ethereumActions from './sendFormEthereumActions';
 import * as rippleActions from './sendFormRippleActions';
-import * as commonActions from './sendFormCommonActions';
 
 /**
  * Initialize current form, load values from session storage
@@ -28,37 +27,10 @@ import * as commonActions from './sendFormCommonActions';
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const { settings, selectedAccount } = getState().wallet;
     if (selectedAccount.status !== 'loaded') return null;
-    const { account } = selectedAccount;
-
-    // let cachedState = null;
-    const convertedEthLevels: FeeLevel[] = [];
-    const feeInfo = getState().wallet.fees[account.symbol];
-
-    const initialLevels: FeeLevel[] =
-        account.networkType === 'ethereum'
-            ? feeInfo.levels
-            : feeInfo.levels.concat({
-                  label: 'custom',
-                  feePerUnit: '0',
-                  blocks: -1,
-              });
-
-    if (account.networkType === 'ethereum') {
-        initialLevels.forEach(level =>
-            convertedEthLevels.push({
-                ...level,
-                feePerUnit: fromWei(level.feePerUnit, 'gwei'),
-            }),
-        );
-    }
-
-    const levels = account.networkType === 'ethereum' ? convertedEthLevels : initialLevels;
+    const { account, network } = selectedAccount;
+    const feeInfo = getState().wallet.fees[network.symbol];
+    const levels = getFeeLevels(network.networkType, feeInfo);
     const firstFeeLevel = levels.find(l => l.label === 'normal') || levels[0];
-    // const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
-    // const cachedItem = await storageActions.loadSendForm(accountKey);
-
-    // cachedState = cachedItem;
-
     const localCurrency = getLocalCurrency(settings.localCurrency);
 
     dispatch({
@@ -82,7 +54,6 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                 data: { value: null, error: null },
             },
             selectedFee: firstFeeLevel,
-            // ...cachedState,
         },
         localCurrency,
     });
@@ -172,6 +143,11 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     const { send, fiat, selectedAccount } = getState().wallet;
     if (!send || !fiat || selectedAccount.status !== 'loaded') return null;
     const { account, network } = selectedAccount;
+
+    dispatch({
+        type: SEND.CHANGE_SET_MAX_STATE,
+        activated: false,
+    });
 
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
@@ -316,6 +292,11 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
     const { isDestinationAccountEmpty } = send.networkTypeRipple;
     const reserve = getReserveInXrp(account);
 
+    dispatch({
+        type: SEND.CHANGE_SET_MAX_STATE,
+        activated: true,
+    });
+
     if (fiatNetwork && composedTransaction && composedTransaction.type !== 'error') {
         const rate = fiatNetwork.current?.rates[output.localCurrency.value.value];
         if (rate) {
@@ -374,12 +355,13 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
             customFee: send.selectedFee.feePerUnit,
         });
     } else {
-        dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
         dispatch({
             type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
             customFee: null,
         });
     }
+
+    dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
 
     // eth update gas price and gas limit
     if (account.networkType === 'ethereum') {
@@ -453,9 +435,85 @@ export const onQrScan = (parsedUri: ParsedURI, outputId: number) => (dispatch: D
     }
 };
 
+export const updateFeeOrNotify = () => (dispatch: Dispatch, getState: GetState) => {
+    const { selectedAccount, send } = getState().wallet;
+    if (selectedAccount.status !== 'loaded' || !send) return null;
+    const { networkType, symbol } = selectedAccount.network;
+    const updatedFeeInfo = getState().wallet.fees[symbol];
+    const updatedLevels = getFeeLevels(networkType, updatedFeeInfo);
+    const { selectedFee, feeInfo } = send;
+    const { levels } = feeInfo;
+    const updatedSelectedFee = updatedLevels.find(level => level.label === selectedFee.label);
+    const shouldUpdate = comparisonUtils.isChanged(levels, updatedLevels);
+
+    if (!shouldUpdate) return null;
+
+    if (selectedFee.label === 'custom') {
+        dispatch({
+            type: SEND.CHANGE_FEE_STATE,
+            feeOutdated: true,
+        });
+    } else {
+        if (!updatedSelectedFee) return null;
+
+        let ethFees = {};
+        if (networkType === 'ethereum') {
+            ethFees = {
+                gasPrice: updatedSelectedFee.feePerUnit,
+                gasLimit: updatedSelectedFee.feeLimit,
+            };
+        }
+
+        dispatch({
+            type: SEND.UPDATE_FEE,
+            feeInfo: {
+                ...updatedFeeInfo,
+                levels: updatedLevels,
+            },
+            selectedFee: updatedSelectedFee,
+            ...ethFees,
+        });
+    }
+};
+
+export const manuallyUpdateFee = () => (dispatch: Dispatch, getState: GetState) => {
+    const { selectedAccount, send } = getState().wallet;
+    if (selectedAccount.status !== 'loaded' || !send) return null;
+    const { networkType, symbol } = selectedAccount.network;
+    const updatedFeeInfo = getState().wallet.fees[symbol];
+    const updatedLevels = getFeeLevels(networkType, updatedFeeInfo);
+    const updatedSelectedFee = updatedLevels.find(level => level.label === 'normal');
+
+    if (!updatedSelectedFee) return null;
+
+    let ethFees = {};
+    if (networkType === 'ethereum') {
+        ethFees = {
+            gasPrice: updatedSelectedFee.feePerUnit,
+            gasLimit: updatedSelectedFee.feeLimit,
+        };
+    }
+
+    dispatch({
+        type: SEND.UPDATE_FEE,
+        feeInfo: {
+            ...updatedFeeInfo,
+            levels: updatedLevels,
+        },
+        selectedFee: updatedSelectedFee || updatedLevels[0],
+        ...ethFees,
+    });
+
+    dispatch({
+        type: SEND.CHANGE_FEE_STATE,
+        feeOutdated: false,
+    });
+};
+
 /*
     Clear to default state
 */
 export const clear = () => (dispatch: Dispatch) => {
     dispatch(commonActions.clear());
+    dispatch(manuallyUpdateFee());
 };

@@ -26,6 +26,8 @@ const initialState = (
         },
     ],
     touched: false,
+    feeOutdated: false,
+    setMaxActivated: false,
     isComposing: false,
     customFee: { value: null, error: null },
     isAdditionalFormVisible: false,
@@ -64,6 +66,30 @@ export default (state: State | null = null, action: WalletAction): State | null 
             // set touched
             case SEND.SET_TOUCHED: {
                 draft.touched = action.touched;
+                break;
+            }
+
+            // update fee
+            case SEND.UPDATE_FEE: {
+                draft.feeInfo = action.feeInfo;
+                draft.selectedFee = action.selectedFee;
+                if (action.gasLimit && action.gasPrice) {
+                    draft.networkTypeEthereum.gasLimit.value = action.gasLimit;
+                    draft.networkTypeEthereum.gasPrice.value = action.gasPrice;
+                }
+
+                break;
+            }
+
+            // change fee state
+            case SEND.CHANGE_FEE_STATE: {
+                draft.feeOutdated = action.feeOutdated;
+                break;
+            }
+
+            // change setMax state
+            case SEND.CHANGE_SET_MAX_STATE: {
+                draft.setMaxActivated = action.activated;
                 break;
             }
 

@@ -38,7 +38,7 @@ const selectStyle = (
             minHeight: 'initial',
             display: 'flex',
             alignItems: 'center',
-            height: variant === 'small' ? '38px' : '48px',
+            height: variant === 'small' ? '36px' : '48px',
             borderRadius: '3px',
             borderColor: isClean ? 'white' : colors.BLACK80,
             boxShadow: 'none',

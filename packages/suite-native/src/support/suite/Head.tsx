@@ -6,7 +6,7 @@
 
 import { useEffect } from 'react';
 import { withNavigation, NavigationInjectedProps } from 'react-navigation';
-import { observeChanges } from '@suite-utils/reducerUtils';
+import { isChanged } from '@suite-utils/comparisonUtils';
 
 type Props = NavigationInjectedProps & {
     title: string;
@@ -26,7 +26,7 @@ const Head = (props: Props) => {
             header: isEnabled ? undefined : null, // `undefined` will render default header, `null` will render nothing
             tabBarVisible: isEnabled && isTabEnabled,
         };
-        if (observeChanges(getParam('navigationOptions'), navigationOptions)) {
+        if (isChanged(getParam('navigationOptions'), navigationOptions)) {
             setParams({ navigationOptions });
         }
     }, [title, enabled, disableTabs, getParam, setParams]);
