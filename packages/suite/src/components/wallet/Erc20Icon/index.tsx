@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
+import { Props as ContainerProps } from './Container';
 import { colors, CoinLogo } from '@trezor/components';
-import { DataProviderContext } from '@suite-components';
 
 const styles = css`
     display: flex;
@@ -22,9 +22,18 @@ const Fallback = styled.div`
     ${styles}
 `;
 
-export default ({ address }: { address: string }) => {
-    const data = useContext(DataProviderContext);
-    const isAvailable = data.supportedTokenIcons?.includes(address);
+interface Props {
+    address: string;
+    supportedIcons: ContainerProps['supportedIcons'];
+    supportedIconsActions: ContainerProps['supportedIconsActions'];
+}
+
+export default ({ address, supportedIcons, supportedIconsActions }: Props) => {
+    if (!supportedIcons.tokenList) {
+        supportedIconsActions.init();
+    }
+
+    const isAvailable = supportedIcons.tokenList?.includes(address);
 
     if (!isAvailable)
         return (
