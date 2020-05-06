@@ -9,7 +9,6 @@ import * as DISCOVERY from './discoveryConstants';
 import * as WALLET from './walletConstants';
 import * as FIAT_RATES from './fiatRatesConstants';
 import * as GRAPH from './graphConstants';
-import * as SUPPORTED_ICONS from './supportedIconsConstants';
 
 export {
     BLOCKCHAIN,
@@ -23,5 +22,4 @@ export {
     SEND,
     FIAT_RATES,
     GRAPH,
-    SUPPORTED_ICONS,
 };

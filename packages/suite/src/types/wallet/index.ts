@@ -1,32 +1,32 @@
-import { WalletParams as WalletParams$ } from '@suite-utils/router';
-import { AccountActions } from '@wallet-actions/accountActions';
-import { BlockchainActions } from '@wallet-actions/blockchainActions';
-import { DiscoveryActions } from '@wallet-actions/discoveryActions';
-import { FiatRatesActions } from '@wallet-actions/fiatRatesActions';
-import { GraphActions } from '@wallet-actions/graphActions';
 import { ReceiveActions } from '@wallet-actions/receiveActions';
-import { SelectedAccountActions } from '@wallet-actions/selectedAccountActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
-import { SupportedIconsActions } from '@wallet-actions/supportedIconsActions';
-import { TransactionAction } from '@wallet-actions/transactionActions';
-import { EXTERNAL_NETWORKS, NETWORKS } from '@wallet-config';
-import { Account as Account$ } from '@wallet-reducers/accountsReducer';
-import { Discovery as Discovery$ } from '@wallet-reducers/discoveryReducer';
-import { CoinFiatRates as CoinFiatRates$ } from '@wallet-reducers/fiatRatesReducer';
-import { ReceiveInfo as ReceiveInfo$ } from '@wallet-reducers/receiveReducer';
-import { WalletAccountTransaction as WalletAccountTransaction$ } from '@wallet-reducers/transactionReducer';
-import { FiatTicker as FiatTicker$ } from '@wallet-types/fiatRates';
+
 import {
+    State as SendState,
     SendFormActions,
     SendFormBtcActions,
-    SendFormEthActions,
     SendFormXrpActions,
-    State as SendState,
+    SendFormEthActions,
 } from '@wallet-types/sendForm';
+import { FiatTicker as FiatTicker$ } from '@wallet-types/fiatRates';
+import { DiscoveryActions } from '@wallet-actions/discoveryActions';
+import { AccountActions } from '@wallet-actions/accountActions';
+import { Discovery as Discovery$ } from '@wallet-reducers/discoveryReducer';
+import { Account as Account$ } from '@wallet-reducers/accountsReducer';
+import { CoinFiatRates as CoinFiatRates$ } from '@wallet-reducers/fiatRatesReducer';
+import { WalletAccountTransaction as WalletAccountTransaction$ } from '@wallet-reducers/transactionReducer';
+import { ReceiveInfo as ReceiveInfo$ } from '@wallet-reducers/receiveReducer';
 
-import { ArrayElement } from '../utils';
+import { FiatRatesActions } from '@wallet-actions/fiatRatesActions';
+import { GraphActions } from '@wallet-actions/graphActions';
+import { BlockchainActions } from '@wallet-actions/blockchainActions';
+import { TransactionAction } from '@wallet-actions/transactionActions';
+import { SelectedAccountActions } from '@wallet-actions/selectedAccountActions';
+import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { Icon as Icon$ } from './iconTypes';
 import { NetworkToken as NetworkToken$, Token as Token$ } from './tokenTypes';
+import { WalletParams as WalletParams$ } from '@suite-utils/router';
+import { ArrayElement } from '../utils';
 
 export type Network = ArrayElement<typeof NETWORKS>;
 export type ExternalNetwork = ArrayElement<typeof EXTERNAL_NETWORKS>;
@@ -64,5 +64,4 @@ export type WalletAction =
     | GraphActions
     | DiscoveryActions
     | AccountActions
-    | SelectedAccountActions
-    | SupportedIconsActions;
+    | SelectedAccountActions;

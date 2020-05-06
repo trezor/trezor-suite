@@ -5,7 +5,7 @@ import CheckItem from './CheckItem';
 import ExternalLink from './ExternalLink';
 import Preloader from './Preloader';
 import FormattedNumber from './FormattedNumber';
-import SuiteLayout, { LayoutContext } from './SuiteLayout';
+import SuiteLayout, { LayoutContext, DataProviderContext } from './SuiteLayout';
 import Card from './Card';
 import NotificationCard from './NotificationCard';
 import PinInput from './PinInput';
@@ -55,4 +55,5 @@ export {
     Image,
     QuestionTooltip,
     TransactionsGraph,
+    DataProviderContext,
 };
