@@ -15,7 +15,7 @@ import IsNotNewDevice from './components/IsNotNewDevice';
 import DeviceIsUsedHere from './components/DeviceIsUsedHere';
 
 const Wrapper = styled.div`
-    margin: 0px 30px 0px 30px;
+    margin: 0px 28px 0px 28px;
     height: 100%;
     text-align: center;
 `;
