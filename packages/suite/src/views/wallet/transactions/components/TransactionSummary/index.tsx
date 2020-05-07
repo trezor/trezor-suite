@@ -31,11 +31,6 @@ const GraphWrapper = styled(HiddenPlaceholder)`
     flex: 5 1 auto;
     padding: ${CARD_PADDING_SIZE};
     height: 240px;
-    max-width: 600px; /* workaround to prevent recharts filling all space */
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
-        max-width: 100%;
-    }
 `;
 
 const InfoCardsWrapper = styled.div`
