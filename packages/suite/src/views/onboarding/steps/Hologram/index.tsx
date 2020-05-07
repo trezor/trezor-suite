@@ -1,18 +1,24 @@
+
+import React from 'react';
+import styled from 'styled-components';
+
+import { Link, Button, variables } from '@trezor/components';
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import * as STEP from '@onboarding-constants/steps';
 import { SUPPORT_URL, TREZOR_PACKAGING_URL, TREZOR_RESELLERS_URL } from '@suite-constants/urls';
-import { Translation } from '@suite-components/Translation';
-
-import { Link, variables } from '@trezor/components';
-import React from 'react';
-import styled from 'styled-components';
+import { Translation, Image } from '@suite-components';
 
 import Hologram from './components/Hologram';
 import { Props } from './Container';
 
+const StyledImage = styled(Image)`
+    flex: 1
+`;
+
 const HologramWrapper = styled.div`
     max-width: 400px;
-    margin: 10px;
+    flex: 1;
+    padding: 16px;
 
     @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) {
         width: 70%;
@@ -78,6 +84,8 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                 }}
                             />
                         </Text>
+                        <StyledImage image="UNI_WARNING" />
+
                         <Wrapper.Controls>
                             <OnboardingButton.Alt
                                 onClick={() => onboardingActions.goToSubStep(null)}
@@ -85,14 +93,16 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                             >
                                 Show hologram again
                             </OnboardingButton.Alt>
-
-                            <Link href={SUPPORT_URL} target="_self">
-                                <OnboardingButton.Cta
-                                    data-test="button-contact-support"
+                            
+                            <Link variant="nostyle" href={SUPPORT_URL}>
+                                <Button
+                                    icon="EXTERNAL_LINK"
+                                    alignIcon="right"
+                                    data-test="@onboarding/hologram/contact-support-button"
                                     style={{ width: '100%' }}
                                 >
                                     <Translation id="TR_CONTACT_SUPPORT" />
-                                </OnboardingButton.Cta>
+                                </Button>
                             </Link>
                         </Wrapper.Controls>
                     </>
