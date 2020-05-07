@@ -57,7 +57,6 @@ const WordInput = (props: Props) => {
     return (
         <SelectWrapper>
             <Select
-                data-test="@word-input"
                 autoFocus
                 isSearchable
                 isClearable={false}

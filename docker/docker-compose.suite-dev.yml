@@ -13,8 +13,10 @@ services:
     environment: 
       - DISPLAY=$DISPLAY
       - QT_X11_NO_MITSHM=1
+      - LOCAL_USER_ID=$LOCAL_USER_ID
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ./trezor-user-env/controller:/controller
     command: >
       bash -c "rm -rf /var/tmp/trezor.flash && trezorctl --version && python3 ./main.py"
 
