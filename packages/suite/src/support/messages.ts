@@ -3321,6 +3321,10 @@ const definedMessages = defineMessages({
         id: 'TR_SEND_COMING_SOON',
         defaultMessage: 'coming soon',
     },
+    TR_SHOW_HOLOGRAM_AGAIN: {
+        id: 'TR_SHOW_HOLOGRAM_AGAIN',
+        defaultMessage: 'Show hologram again',
+    },
 } as const);
 
 export default definedMessages;
