@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { AppState } from '@suite-types';
 import { Account, Discovery } from '@wallet-types';
@@ -24,4 +24,16 @@ export const useAccounts = (discovery?: Discovery) => {
     return {
         accounts,
     };
+};
+
+export const useFastAccounts = () => {
+    const device = useSelector<AppState, AppState['suite']['device']>(state => state.suite.device);
+    const accounts = useSelector<AppState, AppState['wallet']['accounts']>(
+        state => state.wallet.accounts,
+    );
+    const deviceAccounts = useMemo(
+        () => (device ? accountUtils.getAllAccounts(device.state, accounts) : []),
+        [accounts, device],
+    );
+    return deviceAccounts;
 };
