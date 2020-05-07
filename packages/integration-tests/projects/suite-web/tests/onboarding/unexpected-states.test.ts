@@ -47,9 +47,10 @@ describe('Onboarding - unexpected states', () => {
         cy.task('sendDecision');
         cy.getTestElement('@onboarding/continue-to-security-button').click();
         cy.task('stopEmu');
-        cy.task('stopBridge');
-        cy.task('startEmu', { wipe: true });
-        cy.task('setupEmu');
-        cy.task('startBridge');
+        cy.getTestElement('@onboarding/unexpected-state/reconnect');
+        cy.connectDevice();
+        cy.getTestElement('@onboarding/unexpected-state/is-same/start-over-button').click();
+        cy.getTestElement('@onboarding/begin-button').click();
+        cy.getTestElement('@onboarding/path-create-button');
     })
 });
