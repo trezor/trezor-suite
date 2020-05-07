@@ -53,6 +53,7 @@ const StyledImage = styled(props => <Image {...props} />)`
 
 const ActionButton = styled(Button)`
     min-width: 120px;
+    align-self: center;
 `;
 
 const NotificationView = (props: ViewProps) => {
