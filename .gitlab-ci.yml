@@ -32,7 +32,6 @@ variables:
     PACKAGE_PATH_SUITE_DESKTOP: packages/suite-desktop
     PACKAGE_PATH_SUITE_NATIVE: packages/suite-native
     PACKAGE_PATH_SUITE_WEB: packages/suite-web
-    PACKAGE_PATH_LANDING_PAGE: packages/landing-page
 
 stages:
     - setup environment
