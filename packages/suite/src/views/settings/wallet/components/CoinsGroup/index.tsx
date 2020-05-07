@@ -71,6 +71,12 @@ const SettingsIconWrapper = styled.div`
     margin-right: 0.5ch;
 `;
 
+const StyledButton = styled(Button)`
+    & + & {
+        margin-left: 16px;
+    }
+`;
+
 const CoinRow = styled(Row)`
     &:hover ${AdvancedSettings} {
         visibility: visible;
@@ -132,7 +138,7 @@ export default ({
                         </Left>
                         <Right>
                             <Buttons>
-                                <Button
+                                <StyledButton
                                     isDisabled={
                                         !actionEnabled ||
                                         NETWORKS.filter(filterFn).length === enabledNetworks.length
@@ -144,8 +150,8 @@ export default ({
                                     data-test={`@settings/wallet/coins-group/${props.type}/activate-all`}
                                 >
                                     <Translation id="TR_ACTIVATE_ALL" />
-                                </Button>
-                                <Button
+                                </StyledButton>
+                                <StyledButton
                                     isDisabled={!actionEnabled || enabledNetworks.length === 0}
                                     variant="tertiary"
                                     size="small"
@@ -154,7 +160,7 @@ export default ({
                                     data-test={`@settings/wallet/coins-group/${props.type}/deactivate-all`}
                                 >
                                     <Translation id="TR_DEACTIVATE_ALL" />
-                                </Button>
+                                </StyledButton>
                             </Buttons>
                         </Right>
                     </Header>
