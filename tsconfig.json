@@ -261,10 +261,12 @@
             "@backup-middlewares": ["./packages/suite/src/middlewares/backup/index"],
             "@backup-hooks/*": ["./packages/suite/src/hooks/backup/*"],
             "@backup-hooks": ["./packages/suite/src/hooks/backup/index"],
+            // web workers
+            "*/workers/graph.worker": ["./packages/suite/src/workers/graph.worker"],
             // other
             "@native/*": ["./packages/suite-native/src/*"],
-            "@desktop/*": ["./packages/suite-desktop/src/*"],
-            "*@suite-workers/graph.worker": ["./packages/suite/src/workers/graph.worker"]
+            "@desktop/*": ["./packages/suite-desktop/src/*"]
+            
         },
         "jsx": "react-native",
         "module": "esnext",

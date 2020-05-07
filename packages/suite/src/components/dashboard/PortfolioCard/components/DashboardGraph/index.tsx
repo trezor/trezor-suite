@@ -10,7 +10,7 @@ import { deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 // https://github.com/zeit/next.js/issues/4768
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import GraphWorker from 'worker-loader?name=static/[hash].worker.js!@suite-workers/graph.worker';
+import GraphWorker from 'worker-loader?name=static/[hash].worker.js!../../../../../workers/graph.worker';
 
 const Wrapper = styled.div`
     display: flex;

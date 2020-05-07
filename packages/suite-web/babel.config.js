@@ -30,8 +30,6 @@ module.exports = api => {
                     '^@(.+)-middlewares': '../../packages/suite/src/middlewares/\\1/index',
                     '^@(.+)-hooks/(.+)': '../../packages/suite/src/hooks/\\1/\\2',
                     '^@(.+)-hooks': '../../packages/suite/src/hooks/\\1/index',
-                    '^(.*?)@suite-workers/(.+)':
-                        'worker-loader?name=static/[hash].worker.js!../../../../../workers/\\2',
                 },
             },
         ],
