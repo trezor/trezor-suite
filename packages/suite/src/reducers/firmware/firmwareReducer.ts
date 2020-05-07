@@ -11,6 +11,7 @@ const STARTED = 'started';
 const DOWNLOADING = 'downloading';
 const WAITING_FOR_CONFIRMATION = 'waiting-for-confirmation';
 const INSTALLING = 'installing';
+const CHECK_FINGERPRINT = 'check-fingerprint';
 const PARTIALLY_DONE = 'partially-done';
 const DONE = 'done';
 const WAIT_FOR_REBOOT = 'wait-for-reboot';
@@ -25,6 +26,7 @@ export type AnyStatus =
     | typeof DOWNLOADING
     | typeof WAITING_FOR_CONFIRMATION
     | typeof INSTALLING
+    | typeof CHECK_FINGERPRINT
     | typeof WAIT_FOR_REBOOT
     | typeof UNPLUG
     | typeof ERROR
@@ -70,6 +72,9 @@ const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Actio
             case SUITE.ADD_BUTTON_REQUEST:
                 if (action.payload === 'ButtonRequest_FirmwareUpdate') {
                     draft.status = WAITING_FOR_CONFIRMATION;
+                }
+                if (action.payload === 'ButtonRequest_FirmwareCheck') {
+                    draft.status = CHECK_FINGERPRINT;
                 }
                 break;
             case UI.FIRMWARE_PROGRESS:
