@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Layout from '../components/Layout';
-import { H2, Button, P } from '@trezor/components';
+import { H2, Button, P, Link } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -37,18 +37,24 @@ const Index = () => (
                 the button.
             </P>
             <Item>
-                <ButtonBecomeTester variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
-                    Become a tester
-                </ButtonBecomeTester>
+                <Link href="https://wallet.trezor.io/" target="_blank" variant="nostyle">
+                    <ButtonBecomeTester variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
+                        Become a tester
+                    </ButtonBecomeTester>
+                </Link>
             </Item>
             <Item>
-                <ButtonAccess variant="primary">Access Trezor Suite (beta)</ButtonAccess>
+                <Link href="https://wallet.trezor.io/" target="_blank" variant="nostyle">
+                    <ButtonAccess variant="primary">Access Trezor Suite (beta)</ButtonAccess>
+                </Link>
             </Item>
             <HeadBackP size="tiny">
                 Otherwise head back to stable and super-safe{' '}
-                <ButtonWallet variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
-                    wallet.trezor.io
-                </ButtonWallet>
+                <Link href="https://wallet.trezor.io/" target="_blank" variant="nostyle">
+                    <ButtonWallet variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
+                        wallet.trezor.io
+                    </ButtonWallet>
+                </Link>
             </HeadBackP>
         </Wrapper>
     </Layout>
