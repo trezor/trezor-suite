@@ -60,7 +60,7 @@ const DashboardGraph = React.memo((props: Props) => {
     const onSelectedRange = useCallback(
         (range: GraphRange) => {
             setSelectedRange(range);
-            updateGraphData(accounts);
+            updateGraphData(accounts, { newAccountsOnly: true });
         },
         [setSelectedRange, updateGraphData, accounts],
     );

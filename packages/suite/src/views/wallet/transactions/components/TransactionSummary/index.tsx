@@ -120,7 +120,7 @@ const TransactionSummary = (props: Props) => {
                                     selectedRange={selectedRange}
                                     onSelectedRange={(range: GraphRange) => {
                                         props.setSelectedRange(range);
-                                        props.updateGraphData(props.accounts); // TODO: update just current account (then we need to reset selected range before going back to dashboard)
+                                        props.updateGraphData([props.account]);
                                     }}
                                     receivedValueFn={data => data.received}
                                     sentValueFn={data => data.sent}
