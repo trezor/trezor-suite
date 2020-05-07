@@ -1,4 +1,4 @@
-import { variables, colors } from '@trezor/components';
+import { variables } from '@trezor/components';
 
 export default `
     #__next {
