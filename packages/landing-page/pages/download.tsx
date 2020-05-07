@@ -34,10 +34,11 @@ const Index = () => (
                     variant="small"
                     topLabel="Choose your platform"
                     width={240}
-                    defaultValue={{ label: 'Choose your option', value: null }}
+                    isSearchable={false}
+                    defaultValue={{ label: '– Click to choose –', value: null }}
                     options={[
                         { label: 'Windows', value: 'win' },
-                        { label: 'Mac Os', value: 'macos' },
+                        { label: 'Mac OS', value: 'macos' },
                         { label: 'Linux', value: 'linux' },
                     ]}
                 />

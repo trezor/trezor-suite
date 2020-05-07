@@ -27,11 +27,12 @@ cache:
         - packages/translations-manager/lib
 
 variables:
-    DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
-    STAGING_SERVER_URL: 'http://staging-wallet.trezor.io/suite'
+    DEV_SERVER_URL: "https://suite.corp.sldev.cz"
+    STAGING_SERVER_URL: "http://staging-wallet.trezor.io/suite"
     PACKAGE_PATH_SUITE_DESKTOP: packages/suite-desktop
     PACKAGE_PATH_SUITE_NATIVE: packages/suite-native
     PACKAGE_PATH_SUITE_WEB: packages/suite-web
+    PACKAGE_PATH_LANDING_PAGE: packages/landing-page
 
 stages:
     - setup environment
@@ -67,3 +68,4 @@ include:
     - ci/packages/suite-desktop.yml
     - ci/packages/suite-native.yml
     - ci/packages/rollout.yml
+    - ci/packages/landing-page.yml

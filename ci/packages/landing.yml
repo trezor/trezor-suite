@@ -1,0 +1,27 @@
+landing-page build:
+  stage: build
+  script:
+    - assetPrefix=/landing-page/${CI_BUILD_REF_NAME} yarn workspace @trezor/landing-page build
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - $PACKAGE_PATH_LANDING_PAGE/build
+
+landing-page deploy dev:
+  stage: deploy to dev servers
+  variables:
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/landing-page/${CI_BUILD_REF_NAME}
+  dependencies:
+    - landing-page build
+  environment:
+    name: ${CI_BUILD_REF_NAME}
+    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+  before_script: []
+  script:
+    - cd ${PACKAGE_PATH_SUITE_WEB}
+    - echo "Deploy to dev servers"
+    - mkdir -p ${DEPLOY_BASE_DIR}/landing-page
+    - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
+    - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
+  tags:
+    - deploy
