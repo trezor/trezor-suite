@@ -41,6 +41,11 @@ const InfoMessage = styled.div`
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
+const BalanceHeader = styled.div`
+    display: flex;
+    justify-content: center;
+`;
+
 const AssetsCard = () => {
     const { discovery, getDiscoveryStatus } = useDiscovery();
     const { accounts } = useAccounts(discovery);
@@ -67,9 +72,9 @@ const AssetsCard = () => {
                     <div>
                         <Translation id="TR_ASSETS" />
                     </div>
-                    <div>
+                    <BalanceHeader>
                         <Translation id="TR_VALUES" />
-                    </div>
+                    </BalanceHeader>
                     <div />
                     <div>
                         <Translation id="TR_EXCHANGE_RATE" />
