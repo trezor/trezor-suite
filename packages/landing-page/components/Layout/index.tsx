@@ -26,14 +26,14 @@ const Right = styled.div`
     flex-direction: column;
     justify-content: flex-start;
     flex: 1;
-    padding: 100px 10px 0 120px;
+    padding: 100px 30px 0 120px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        padding: 100px 10px 0 60px;
+        padding: 100px 30px 0 60px;
     }
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        padding: 100px 10px 0 30px;
+        padding: 100px 30px 0 30px;
     }
 `;
 
