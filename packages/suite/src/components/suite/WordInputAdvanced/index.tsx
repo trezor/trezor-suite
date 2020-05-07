@@ -112,7 +112,12 @@ const WordInputAdvanced = (props: Props) => {
                         <ButtonPin type="button" data-value="6" onClick={() => onSubmit('6')} />
                     </Row>
                     <Row>
-                        <ButtonPin type="button" data-value="1" onClick={() => onSubmit('1')} />
+                        <ButtonPin
+                            type="button"
+                            data-value="1"
+                            onClick={() => onSubmit('1')}
+                            data-test="@recovery/word-input-advanced/1"
+                        />
                         <ButtonPin type="button" data-value="2" onClick={() => onSubmit('2')} />
                         <ButtonPin type="button" data-value="3" onClick={() => onSubmit('3')} />
                     </Row>
@@ -130,7 +135,12 @@ const WordInputAdvanced = (props: Props) => {
                         <ButtonPin type="button" data-value="6" onClick={() => onSubmit('6')} />
                     </Row>
                     <Row>
-                        <ButtonPin type="button" data-value="2" onClick={() => onSubmit('1')} />
+                        <ButtonPin
+                            type="button"
+                            data-value="2"
+                            onClick={() => onSubmit('1')}
+                            data-test="@recovery/word-input-advanced/1"
+                        />
                         <ButtonPin type="button" data-value="3" onClick={() => onSubmit('3')} />
                     </Row>
                 </>

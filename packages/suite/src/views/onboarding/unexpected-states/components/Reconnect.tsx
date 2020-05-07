@@ -1,29 +1,32 @@
 import React from 'react';
 import { Translation } from '@suite-components';
-import { P } from '@trezor/components';
 import { ConnectPrompt } from '@suite-components/Prompts';
-import { Wrapper } from '@onboarding-components';
+import { Wrapper, Text } from '@onboarding-components';
 
-const Reconnect = ({ model }: { model: number }) => (
-    <Wrapper.Step>
+interface Props {
+    model: number;
+}
+
+const Reconnect = ({ model }: Props) => (
+    <Wrapper.Step data-test="@onboarding/unexpected-state/reconnect">
         <Wrapper.StepHeading>
             <Translation id="TR_RECONNECT_HEADER" />
         </Wrapper.StepHeading>
         <Wrapper.StepBody>
             <ConnectPrompt model={model} loop />
-            <P>
+            <Text>
                 <Translation id="TR_RECONNECT_TEXT" />
-            </P>
-            <P>---</P>
-            <P>
+            </Text>
+            <Text>---</Text>
+            <Text>
                 <Translation id="TR_RECONNECT_TROUBLESHOOT_CONNECTION" />
-            </P>
-            <P>
-                <Translation id="TR_RECONNECT_TROUBLESHOOT_CABEL" />
-            </P>
-            <P>
+            </Text>
+            <Text>
+                <Translation id="TR_RECONNECT_TROUBLESHOOT_CABLE" />
+            </Text>
+            <Text>
                 <Translation id="TR_RECONNECT_TROUBLESHOOT_BRIDGE" />
-            </P>
+            </Text>
         </Wrapper.StepBody>
     </Wrapper.Step>
 );

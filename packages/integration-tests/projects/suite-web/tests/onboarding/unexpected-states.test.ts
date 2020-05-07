@@ -18,23 +18,6 @@ describe('Onboarding - unexpected states', () => {
         cy.log('Test that device-is-not-new warning appears on any step up to connect step');
         cy.task('startEmu', { wipe: false });
         cy.getTestElement('@onboarding/unexpected-state/go-to-suite-button');
-
-        // todo: I would like to test that this error appears on every step between the moment we know
-        // users intent up to pair device step. But it fails on CI for some reason.
-        // cy.task('stopEmu');
-        // cy.getTestElement('@onboarding/option-model-t-path').click();
-        // cy.task('startEmu');
-        // cy.getTestElement('@onboarding/unexpected-state/go-to-suite-button');
-        // cy.task('stopEmu');
-        // cy.getTestElement('@onboarding/continue-button').click();
-        // cy.task('startEmu');
-        // cy.getTestElement('@onboarding/unexpected-state/go-to-suite-button');
-
-        // todo: cant click it now, it triggers discovery which does not stop fast enough and affects next test
-        // causing wrong previous session error on bridge
-
-        // .click();
-        // cy.dashboardShouldLoad();
     });
 
     it('in case device is not initialized, just has some firmware on it, use-it-anyway button should appear', () => {
@@ -47,7 +30,27 @@ describe('Onboarding - unexpected states', () => {
         cy.log('Test that device-is-not-new warning appears on any step up to connect step');
         cy.task('startEmu', { wipe: true });
         cy.getTestElement('@onboarding/unexpected-state/use-it-anyway-button').click();
-        // just check that we got rid of overlay
+
         cy.getTestElement('@onboarding/option-model-t-path').should('be.visible');
     });
+
+    it.only('is not same device and reset onboarding', () => {
+        cy.visit('/');
+        cy.goToOnboarding();
+        cy.getTestElement('@onboarding/begin-button').click();
+        cy.getTestElement('@onboarding/path-create-button').click();
+        cy.getTestElement('@onboarding/path-used-button').click();
+        cy.task('startEmu', { wipe:  true });
+        cy.getTestElement('@onboarding/button-continue').click();
+        cy.getTestElement('@onboarding/button-continue').click();
+        cy.getTestElement('@onboarding/button-standard-backup').click();
+        cy.task('sendDecision');
+        cy.getTestElement('@onboarding/continue-to-security-button').click();
+        cy.task('stopEmu');
+        cy.getTestElement('@onboarding/unexpected-state/reconnect');
+        cy.connectDevice();
+        cy.getTestElement('@onboarding/unexpected-state/is-same/start-over-button').click();
+        cy.getTestElement('@onboarding/begin-button').click();
+        cy.getTestElement('@onboarding/path-create-button');
+    })
 });
