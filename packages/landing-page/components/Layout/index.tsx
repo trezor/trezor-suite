@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import { TrezorLogo, P, colors } from '@trezor/components';
+import { TrezorLogo, P, colors, variables } from '@trezor/components';
 
 const Layout = styled.div`
     display: flex;
@@ -13,6 +13,10 @@ const Left = styled.div`
     object-fit: cover;
     background: url(${resolveStaticPath('images/landing/left_bg.svg')});
     background-repeat: no-repeat;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        display: none;
+    }
 `;
 
 const Right = styled.div`
@@ -23,6 +27,14 @@ const Right = styled.div`
     justify-content: flex-start;
     flex: 1;
     padding: 100px 10px 0 120px;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        padding: 100px 10px 0 60px;
+    }
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        padding: 100px 10px 0 30px;
+    }
 `;
 
 const Footer = styled(P)`
