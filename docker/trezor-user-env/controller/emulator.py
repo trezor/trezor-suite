@@ -99,9 +99,9 @@ def start(version, wipe):
     
         command = path + "/trezor-emu-core-v" + version + " -O0 -X heapsize=20M -m main"
     else:
-        PROFILE = './emulator.img'
-        # if wipe and os.path.exists(PROFILE):
-        os.remove(PROFILE)
+        PROFILE = os.path.join(os.path.dirname(__file__), 'emulator.img')
+        if wipe and os.path.exists(PROFILE):
+            os.remove(PROFILE)
 
         # todo: currently we have only 1 legacy firmware. to make it work with debuglink,
         # custom build is necessary as described here 
