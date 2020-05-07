@@ -88,7 +88,7 @@ const DashboardGraph = React.memo((props: Props) => {
 
             const worker = new GraphWorker();
             worker.postMessage(rawDeviceGraphData);
-            worker.addEventListener('message', event => {
+            worker.addEventListener('message', (event: MessageEvent) => {
                 const aggregatedData = event.data;
                 const graphTicks =
                     selectedRange.label === 'all'
