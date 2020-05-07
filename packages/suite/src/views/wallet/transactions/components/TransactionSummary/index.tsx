@@ -37,7 +37,7 @@ const InfoCardsWrapper = styled.div`
     display: flex;
     height: 240px;
     flex-direction: column;
-    flex: 1 1 auto;
+    flex: 0 1 auto;
     border-left: 1px solid ${colors.BLACK92};
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
