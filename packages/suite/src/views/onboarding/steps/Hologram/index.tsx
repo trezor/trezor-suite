@@ -1,4 +1,3 @@
-
 import React from 'react';
 import styled from 'styled-components';
 
@@ -12,7 +11,7 @@ import Hologram from './components/Hologram';
 import { Props } from './Container';
 
 const StyledImage = styled(Image)`
-    flex: 1
+    flex: 1;
 `;
 
 const HologramWrapper = styled.div`
@@ -46,13 +45,13 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                         </HologramWrapper>
                         <Wrapper.Controls>
                             <OnboardingButton.Alt
-                                data-test="@onboarding/button-hologram-different"
+                                data-test="@onboarding/hologram/hologram-different-button"
                                 onClick={() => onboardingActions.goToSubStep('hologram-different')}
                             >
                                 <Translation id="TR_HOLOGRAM_STEP_ACTION_NOT_OK" />
                             </OnboardingButton.Alt>
                             <OnboardingButton.Cta
-                                data-test="@onboarding/continue-button"
+                                data-test="@onboarding/hologram/continue-button"
                                 onClick={() => onboardingActions.goToNextStep()}
                             >
                                 <Translation id="TR_HOLOGRAM_STEP_ACTION_OK" />
@@ -89,11 +88,11 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                         <Wrapper.Controls>
                             <OnboardingButton.Alt
                                 onClick={() => onboardingActions.goToSubStep(null)}
-                                data-test="button-back"
+                                data-test="@onboarding/hologram/show-hologram-again-button"
                             >
-                                Show hologram again
+                                <Translation id="TR_SHOW_HOLOGRAM_AGAIN" />
                             </OnboardingButton.Alt>
-                            
+
                             <Link variant="nostyle" href={SUPPORT_URL}>
                                 <Button
                                     icon="EXTERNAL_LINK"
@@ -111,6 +110,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
             <Wrapper.StepFooter>
                 <Wrapper.Controls>
                     <OnboardingButton.Back
+                        data-test="@onboarding/hologram/back-button"
                         onClick={() =>
                             onboardingActions.goToPreviousStep(
                                 actualModel ? STEP.ID_NEW_OR_USED : STEP.ID_SELECT_DEVICE_STEP,

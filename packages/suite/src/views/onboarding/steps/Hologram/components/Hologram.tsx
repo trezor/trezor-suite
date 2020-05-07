@@ -19,7 +19,12 @@ const Hologram = (props: Props) => {
         },
     };
     return (
-        <video width="100%" autoPlay loop={videos[props.model].loop}>
+        <video
+            width="100%"
+            autoPlay
+            loop={videos[props.model].loop}
+            data-test={`@onboarding/hologram/model-${props.model}-video`}
+        >
             <source
                 src={resolveStaticPath(`videos/onboarding/${videos[props.model].src}`)}
                 type="video/mp4"
