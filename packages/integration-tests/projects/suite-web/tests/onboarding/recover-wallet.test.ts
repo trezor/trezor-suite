@@ -2,7 +2,7 @@
 
 describe('Onboarding - recover wallet', () => {
     beforeEach(() => {
-        cy.task('stopEmu')
+        cy.task('stopEmu');
         cy.viewport(1024, 768).resetDb();
         cy.visit('/');
         cy.goToOnboarding();
@@ -12,7 +12,6 @@ describe('Onboarding - recover wallet', () => {
         cy.getTestElement('@onboarding/path-recovery-button').click();
         cy.getTestElement('@onboarding/path-used-button').click();
         cy.getTestElement('@onboarding/pair-device-step').click();
-
     });
 
     it('Model T - success', () => {
@@ -53,13 +52,15 @@ describe('Onboarding - recover wallet', () => {
         cy.task('sendDecision');
         cy.task('stopEmu');
         cy.getTestElement('@onboarding/unexpected-state/reconnect');
-        cy.task('startEmu', { version: '2.1.4', wipe: false })
-        cy.log('If device disconnected during call, error page with retry button should appear. Also note, that unlike with T1, retry button initiates recoveryDevice call immediately');
+        cy.task('startEmu', { version: '2.1.4', wipe: false });
+        cy.log(
+            'If device disconnected during call, error page with retry button should appear. Also note, that unlike with T1, retry button initiates recoveryDevice call immediately',
+        );
         cy.getTestElement('@onboarding/recovery/retry-button');
         // todo: clicking on retry button causes error, "unexpected message", only in tests, don't know why
     });
 
-    it('Model 1', () => {
+    it.skip('Model 1', () => {
         // todo: acquire device problem with model T1 emu, but why? stop and start bridge is sad workaround :(
         cy.task('stopBridge');
         cy.task('startEmu', { version: '1.9.0', wipe: true });
@@ -70,12 +71,14 @@ describe('Onboarding - recover wallet', () => {
         cy.getTestElement('@recover/select-count/24').click();
         cy.getTestElement('@recover/select-type/advanced').click();
         cy.task('sendDecision');
-        
-        cy.log('typical user starts doing the T9 craziness')
+
+        cy.log('typical user starts doing the T9 craziness');
         for (let i = 0; i <= 4; i++) {
             cy.getTestElement('@recovery/word-input-advanced/1').click({ force: true });
         }
-        cy.log('but after a while he finds he has no chance to finish it ever, so he disconnects device as there is no cancel button')
+        cy.log(
+            'but after a while he finds he has no chance to finish it ever, so he disconnects device as there is no cancel button',
+        );
 
         cy.task('stopEmu');
         cy.getTestElement('@onboarding/unexpected-state/reconnect');
@@ -89,5 +92,4 @@ describe('Onboarding - recover wallet', () => {
         cy.getTestElement('@recovery/word');
         // todo: figure out how to work with select in tests
     });
-
 });
