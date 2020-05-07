@@ -20,16 +20,14 @@ describe('Onboarding - steps order', () => {
         });
 
         it('No device connected -> offer device selection', () => {
-            cy.getTestElement('@onboarding/path-new-button')
-                .click()
-                .getTestElement('@onboarding/option-model-one-path');
+            cy.getTestElement('@onboarding/path-new-button').click();
+            cy.getTestElement('@onboarding/option-model-one-path');
         });
 
         it('Device is already connected -> skip device selection and go to hologram directly', () => {
             cy.connectDevice({ firmware: 'none' }, { firmware_present: false })
-                .getTestElement('@onboarding/path-new-button')
-                .click()
-                .getTestElement('@onboarding/button-hologram-different');
+            cy.getTestElement('@onboarding/path-new-button').click();
+            cy.getTestElement('@onboarding/hologram/hologram-different-button');
         });
     });
 
@@ -39,9 +37,8 @@ describe('Onboarding - steps order', () => {
         });
 
         it('No device connected -> skip device selection, skip hologram and go to pair device step directly', () => {
-            cy.getTestElement('@onboarding/path-used-button')
-                .click()
-                .getTestElement('@onboarding/pair-device-step');
+            cy.getTestElement('@onboarding/path-used-button').click();
+            cy.getTestElement('@onboarding/pair-device-step');
         });
     });
 });

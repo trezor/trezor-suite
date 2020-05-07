@@ -26,7 +26,7 @@ describe('Onboarding - transport webusb/bridge', () => {
         cy.getTestElement('@onboarding/path-create-button').click();
         cy.getTestElement('@onboarding/path-new-button').click();
         cy.getTestElement('@onboarding/option-model-one-path').click();
-        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@onboarding/hologram/continue-button').click();
         cy.log('see, no try bridge button, we already know we can not use webusb');
         cy.getTestElement('@onboarding/bridge');
         cy.task('startBridge');
