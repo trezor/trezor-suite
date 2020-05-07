@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import styled, { css } from 'styled-components';
 import { colors, CoinLogo } from '@trezor/components';
-import { DataProviderContext } from '@wallet-views/transactions';
+import { SupportedIconsContext } from '@wallet-views/transactions';
 
 const styles = css`
     display: flex;
@@ -23,7 +23,7 @@ const Fallback = styled.div`
 `;
 
 export default ({ address }: { address: string }) => {
-    const data = useContext(DataProviderContext);
+    const data = useContext(SupportedIconsContext);
     const isAvailable = data.supportedTokenIcons?.includes(address);
 
     if (!isAvailable)
