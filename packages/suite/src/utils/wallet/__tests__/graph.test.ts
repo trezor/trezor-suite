@@ -110,12 +110,14 @@ describe('Graph utils', () => {
             eos: '73.70',
             eur: '234.26',
             gbp: '200.87',
-            aaa: undefined,
+            aaa: '0',
         });
     });
 
     test('sumFiatValueMap', () => {
-        expect(utils.sumFiatValueMap(valueMap1, valueMap2)).toStrictEqual({
+        const valueMap1Copy = { ...valueMap1 };
+        utils.sumFiatValueMap(valueMap1Copy, valueMap2);
+        expect(valueMap1Copy).toStrictEqual({
             czk: '100.0001',
             eur: '0.000000000000001',
             aaa: '0',
@@ -173,7 +175,7 @@ describe('Graph utils', () => {
                     czk: '691.63',
                     eos: '8.48',
                     eur: '26.94',
-                    gbp: '23.1',
+                    gbp: '23.10',
                 },
                 time: 1580511600,
                 txs: 2,

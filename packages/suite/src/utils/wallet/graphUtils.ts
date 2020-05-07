@@ -10,69 +10,85 @@ export const calcFiatValueMap = (
     amount: string,
     rates: FiatRates,
 ): { [k: string]: string | undefined } => {
-    return Object.keys(rates).reduce((acc, fiatSymbol) => {
-        return {
-            ...acc,
-            [fiatSymbol]: toFiatCurrency(amount, fiatSymbol, rates) ?? undefined,
-        };
-    }, {});
+    const fiatValueMap: { [k: string]: string | undefined } = {};
+    Object.keys(rates).forEach(fiatSymbol => {
+        fiatValueMap[fiatSymbol] = toFiatCurrency(amount, fiatSymbol, rates) ?? '0';
+    });
+    return fiatValueMap;
 };
 
+/**
+ * Mutates the first object param and adds values from second object.
+ *
+ * @param {({ [k: string]: string | undefined })} valueMap
+ * @param {({ [k: string]: string | undefined })} obj
+ * @returns
+ */
 export const sumFiatValueMap = (
     valueMap: { [k: string]: string | undefined },
     obj: { [k: string]: string | undefined },
 ) => {
-    const valueMapCopy = { ...valueMap };
     Object.entries(obj).forEach(keyVal => {
         const [key, val] = keyVal;
-        const previousValue = valueMapCopy[key] ?? '0';
-        valueMapCopy[key] = new BigNumber(previousValue).plus(val ?? 0).toFixed();
+        const previousValue = valueMap[key] ?? '0';
+        valueMap[key] = new BigNumber(previousValue).plus(val ?? 0).toFixed();
     });
-    return valueMapCopy;
 };
 
 export const aggregateBalanceHistory = (
     graphData: GraphData[],
 ): AggregatedAccountBalanceHistory[] => {
-    const enhancedHistory = graphData
-        .map(d => d.data)
-        .map((accountHistory, _i) => {
-            if (accountHistory && accountHistory.length > 0) {
-                // const { symbol } = accounts[i];
-                const enhancedResponse = accountHistory.map(h => ({
-                    ...h,
-                    // @ts-ignore incorrect types in connect
-                    receivedFiat: calcFiatValueMap(h.received, h.rates || {}),
-                    // @ts-ignore incorrect types in connect
-                    sentFiat: calcFiatValueMap(h.sent, h.rates || {}),
-                }));
-                return enhancedResponse;
-            }
-            return null;
-        })
-        .filter(t => t !== null);
-
-    const flattedHistory: NonNullable<typeof enhancedHistory[number]> = enhancedHistory.flat();
-
-    const groupedByTimestamp: { [key: string]: typeof flattedHistory } = {};
-    flattedHistory.forEach(dataPoint => {
-        if (!dataPoint) return;
-        if (!groupedByTimestamp[dataPoint.time]) {
-            groupedByTimestamp[dataPoint.time] = [];
-        }
-        groupedByTimestamp[dataPoint.time].push(dataPoint);
-    });
-
-    const aggregatedData = Object.keys(groupedByTimestamp).map(timestamp => {
-        const dataPoints = groupedByTimestamp[timestamp];
-
-        return {
-            time: Number(timestamp),
-            txs: dataPoints.reduce((acc, h) => acc + h.txs, 0),
-            sentFiat: dataPoints.reduce((acc, h) => sumFiatValueMap(acc, h.sentFiat), {}),
-            receivedFiat: dataPoints.reduce((acc, h) => sumFiatValueMap(acc, h.receivedFiat), {}),
-            rates: {},
+    const groupedByTimestamp: {
+        [key: string]: {
+            time: number;
+            txs: number;
+            sentFiat: { [k: string]: string | undefined };
+            receivedFiat: { [k: string]: string | undefined };
+            rates: {};
         };
+    } = {};
+
+    for (let i = 0; i < graphData.length; i++) {
+        const accountHistory = graphData[i].data;
+
+        if (accountHistory && accountHistory.length > 0) {
+            accountHistory.forEach(h => {
+                // calc sent/received amounts in fiat
+                const dataPoint = {
+                    ...h,
+                    receivedFiat: calcFiatValueMap(h.received, h.rates || {}),
+                    sentFiat: calcFiatValueMap(h.sent, h.rates || {}),
+                };
+
+                // calc sum of sentFiat, receivedFiat, txs fields for each timestamp
+                if (!groupedByTimestamp[dataPoint.time]) {
+                    // no entry for a timestamp yet, set first item
+                    groupedByTimestamp[dataPoint.time] = {
+                        time: Number(dataPoint.time),
+                        txs: dataPoint.txs,
+                        sentFiat: dataPoint.sentFiat,
+                        receivedFiat: dataPoint.receivedFiat,
+                        rates: {},
+                    };
+                } else {
+                    // add txs, sentFiat, receivedFiat values to existing entry
+                    groupedByTimestamp[dataPoint.time].txs += dataPoint.txs;
+                    sumFiatValueMap(
+                        groupedByTimestamp[dataPoint.time].sentFiat,
+                        dataPoint.sentFiat,
+                    );
+                    sumFiatValueMap(
+                        groupedByTimestamp[dataPoint.time].receivedFiat,
+                        dataPoint.receivedFiat,
+                    );
+                }
+            });
+        }
+    }
+
+    // convert data from an object indexed by timestamp to an array
+    const aggregatedData = Object.keys(groupedByTimestamp).map(timestamp => {
+        return groupedByTimestamp[timestamp];
     });
 
     return aggregatedData;
