@@ -17,7 +17,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 });
 
 interface OwnProps {
-    discoveryInProgress: boolean;
     accounts: Account[];
 }
 export type Props = ReturnType<typeof mapStateToProps> &
