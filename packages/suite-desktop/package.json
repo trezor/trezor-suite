@@ -25,7 +25,7 @@
         "asarUnpack": [
             "build/static/bridge/**/*"
         ],
-        "electronVersion": "8.1.1",
+        "electronVersion": "8.2.0",
         "directories": {
             "output": "build-electron"
         },
@@ -55,7 +55,7 @@
             "files": [
                 "build/static/bridge/**/trezord-mac"
             ],
-            "icon": "build/static/images/icons/64x64.png",
+            "icon": "build/static/images/icons/512x512.png",
             "artifactName": "${productName}-${version}.${ext}",
             "entitlements": "entitlements.mac.inherit.plist",
             "entitlementsInherit": "entitlements.mac.inherit.plist",
@@ -67,7 +67,7 @@
             "files": [
                 "build/static/bridge/**/trezord-win.exe"
             ],
-            "icon": "build/static/images/icons/64x64.png",
+            "icon": "build/static/images/icons/512x512.png",
             "artifactName": "${productName}-${version}.${ext}",
             "target": "portable"
         },
@@ -76,7 +76,7 @@
                 "build/static/bridge/**/trezord-linux-x32",
                 "build/static/bridge/**/trezord-linux-x64"
             ],
-            "icon": "build/static/images/icons/64x64.png",
+            "icon": "build/static/images/icons/512x512.png",
             "artifactName": "${productName}-${version}.${ext}",
             "target": "AppImage"
         }

@@ -20,8 +20,7 @@ import { InjectedModalApplicationProps, Dispatch, AppState } from '@suite-types'
 import { getFwVersion } from '@suite-utils/device';
 import { ProgressBar, Translation, WebusbButton } from '@suite-components';
 import Image from '@suite-components/images/Image';
-import { InitImg, SuccessImg } from '@firmware-components';
-import { Loaders } from '@onboarding-components';
+import { InitImg, SuccessImg, FirmwareProgress, BitcoinOnlyToggle } from '@firmware-components';
 import { CHANGELOG_URL } from '@suite-constants/urls';
 import { isWebUSB } from '@suite-utils/transport';
 
@@ -109,7 +108,6 @@ const StyledP = styled(P)`
     color: ${colors.BLACK50};
     font-size: ${FONT_SIZE.SMALL};
     margin: 20px 0;
-    max-width: 500px;
 `;
 
 const WhatsNewLink = styled(Link)`
@@ -186,25 +184,6 @@ const Firmware = ({
         ['wait-for-reboot', 'unplug'],
         ['done', 'partially-done', 'error'],
     ];
-
-    const getTextForStatus = () => {
-        switch (firmware.status) {
-            case 'waiting-for-confirmation':
-                return 'TR_WAITING_FOR_CONFIRMATION';
-            case 'installing':
-                return 'TR_INSTALLING';
-            case 'started':
-                return 'TR_STARTED';
-            case 'downloading':
-                return 'TR_DOWNLOADING';
-            case 'wait-for-reboot':
-                return 'TR_WAIT_FOR_REBOOT';
-            case 'unplug':
-                return 'TR_DISCONNECT_YOUR_DEVICE';
-            default:
-                throw new Error('this state does not have human readable variant');
-        }
-    };
 
     const getCurrentStepIndex = () => {
         return statesInProgressBar.findIndex(s => {
@@ -301,6 +280,7 @@ const Firmware = ({
                 <WhatsNewLink href={CHANGELOG_URL}>
                     <Translation id="TR_WHATS_NEW" />
                 </WhatsNewLink>
+
                 <Image image="UNI_SUCCESS" />
                 <Buttons>
                     <Col>
@@ -356,7 +336,7 @@ const Firmware = ({
                                         <Translation id="TR_NEW_LABEL" />
                                     </Badge>
                                     {firmware.btcOnly && (
-                                        <Badge>
+                                        <Badge data-test="@firmware/btc-only-badge">
                                             <Translation id="TR_BTC_ONLY_LABEL" />
                                         </Badge>
                                     )}
@@ -373,34 +353,11 @@ const Firmware = ({
                                     </ChangesSummary>
                                 )}
 
-                                {btcOnlyAvailable && !firmware.btcOnly && (
-                                    <StyledP>
-                                        <Translation
-                                            id="TR_ALTERNATIVELY_YOU_MAY_INSTALL"
-                                            values={{
-                                                TR_FIRMWARE_TYPE: (
-                                                    <WhatsNewLink onClick={toggleBtcOnly}>
-                                                        <Translation id="TR_FIRMWARE_TYPE_BTC_ONLY" />
-                                                    </WhatsNewLink>
-                                                ),
-                                            }}
-                                        />
-                                    </StyledP>
-                                )}
-
-                                {btcOnlyAvailable && firmware.btcOnly && (
-                                    <StyledP>
-                                        <Translation
-                                            id="TR_ALTERNATIVELY_YOU_MAY_INSTALL"
-                                            values={{
-                                                TR_FIRMWARE_TYPE: (
-                                                    <WhatsNewLink onClick={toggleBtcOnly}>
-                                                        <Translation id="TR_FIRMWARE_TYPE_FULL" />
-                                                    </WhatsNewLink>
-                                                ),
-                                            }}
-                                        />
-                                    </StyledP>
+                                {btcOnlyAvailable && (
+                                    <BitcoinOnlyToggle
+                                        onToggle={toggleBtcOnly}
+                                        isToggled={firmware.btcOnly}
+                                    />
                                 )}
 
                                 <Buttons>
@@ -503,15 +460,19 @@ const Firmware = ({
                     'installing',
                     'started',
                     'downloading',
+                    'check-fingerprint',
                     'wait-for-reboot',
                     'unplug',
                 ].includes(firmware.status) && (
                     <>
                         <StyledH2>
-                            <Translation id={getTextForStatus()} />
-                            <Loaders.Dots />
+                            <Translation id="TR_FIRMWARE_HEADING" />
                         </StyledH2>
-                        <InitImg model={model} />
+                        <FirmwareProgress
+                            status={firmware.status}
+                            model={model}
+                            fingerprint={device.firmwareRelease.release.fingerprint}
+                        />
                     </>
                 )}
 

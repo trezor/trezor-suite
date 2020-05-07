@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import { Tooltip, Button } from '@trezor/components';
+import { Button } from '@trezor/components';
 
-import { Loaders, OnboardingButton, Text, Wrapper } from '@onboarding-components';
+import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import { Translation, Image, WebusbButton } from '@suite-components';
-import messages from '@suite/support/messages';
-import { InitImg, SuccessImg } from '@firmware-components';
-import ContinueButton from './components/ContinueButton';
-import InstallButton from './components/InstallButton';
+import {
+    InitImg,
+    SuccessImg,
+    FirmwareProgress,
+    RetryButton,
+    ContinueButton,
+    InstallButton,
+    BitcoinOnlyToggle,
+} from '@firmware-components';
 import { isWebUSB } from '@suite-utils/transport';
+import { getFwVersion } from '@suite-utils/device';
 
 import { Props } from './Container';
-
-const InlineLink = styled.span`
-    text-decoration: underline;
-    cursor: pointer;
-`;
 
 const StyledImage = styled(Image)`
     flex: 1;
@@ -30,50 +31,12 @@ const FirmwareStep = ({
     goToPreviousStep,
     firmwareUpdate,
     toggleBtcOnly,
-    intl,
 }: Props) => {
+    const [imageLoaded, setImageLoaded] = useState(false);
+
     const { status, error, btcOnly } = firmware;
     const isConnected = !!device;
     const isInBootloader = Boolean(device && device.features && device.mode === 'bootloader');
-
-    const [imageLoaded, setImageLoaded] = useState(false);
-
-    const getVersionStr = () => {
-        if (device && device.features) {
-            return `${device.features.major_version}.${device.features.minor_version}.${device.features.patch_version}`;
-        }
-        return '';
-    };
-
-    const getFirmwareStatus = () => {
-        if (!device || !device.features) {
-            return '';
-        }
-        return device && device.features && device.firmware;
-    };
-
-    const getMessageForStatus = () => {
-        if (['wait-for-reboot', 'unplug'].includes(status) && !device && isWebUSB(transport)) {
-            return intl.formatMessage(messages.TR_PAIR_YOUR_TREZOR);
-        }
-        if (status === 'unplug' && !device) {
-            return intl.formatMessage(messages.TR_CONNECT_YOUR_DEVICE_AGAIN);
-        }
-        if (status === 'unplug' && device) {
-            return intl.formatMessage(messages.TR_DISCONNECT_YOUR_DEVICE);
-        }
-        if (status === 'wait-for-reboot' && device) {
-            return intl.formatMessage(messages.TR_WAIT_FOR_REBOOT);
-        }
-        if (status === 'waiting-for-confirmation') {
-            return intl.formatMessage(messages.TR_WAITING_FOR_CONFIRMATION);
-        }
-        if (status === 'done' || status === 'error') {
-            return null;
-        }
-        return intl.formatMessage(messages.TR_DO_NOT_DISCONNECT);
-    };
-
     const model = device?.features?.major_version || 2;
     const btcOnlyAvailable = device?.features && device.firmwareRelease.release.url_bitcoinonly;
 
@@ -105,74 +68,59 @@ const FirmwareStep = ({
                             </>
                         )}
 
-                        {getFirmwareStatus() === 'none' && (
-                            <>
-                                <Text>
-                                    <Translation id="TR_FIRMWARE_SUBHEADING" />
-                                </Text>
-                            </>
+                        {device?.firmware === 'none' && (
+                            <Text>
+                                <Translation id="TR_FIRMWARE_SUBHEADING" />
+                            </Text>
                         )}
 
-                        {getFirmwareStatus() === 'outdated' && !isInBootloader && (
-                            <>
-                                <Text>
-                                    <Translation
-                                        id="TR_FIRMWARE_INSTALLED_TEXT"
-                                        values={{
-                                            version: getVersionStr(),
-                                        }}
-                                    />
-                                </Text>
-                                <Text>
-                                    You might either update your device now or continue and update
-                                    it later.
-                                </Text>
-                            </>
-                        )}
-
-                        {getFirmwareStatus() === 'required' && !isInBootloader && (
+                        {device?.firmware === 'outdated' && !isInBootloader && (
                             <>
                                 <Text>
                                     <Translation
                                         id="TR_FIRMWARE_INSTALLED_TEXT"
                                         values={{
-                                            version: getVersionStr(),
+                                            version: getFwVersion(device),
                                         }}
                                     />
                                 </Text>
                                 <Text>
-                                    This firmware is not longer supported, you will need to update
-                                    it now.
+                                    <Translation id="TR_YOU_MAY_EITHER_UPDATE" />
                                 </Text>
                             </>
                         )}
 
-                        {['outdated', 'required', 'none'].includes(getFirmwareStatus()) && (
+                        {device?.firmware === 'required' && !isInBootloader && (
                             <>
-                                {btcOnlyAvailable && !btcOnly && (
-                                    <Text>
-                                        Alternatively you can{' '}
-                                        <InlineLink onClick={toggleBtcOnly}>
-                                            {' '}
-                                            install Bitcoin-only firmware{' '}
-                                        </InlineLink>{' '}
-                                        (later reverse back to full-featured).
-                                    </Text>
-                                )}
-                                {btcOnlyAvailable && btcOnly && (
-                                    <Text>
-                                        <InlineLink onClick={toggleBtcOnly}>
-                                            Switch back{' '}
-                                        </InlineLink>{' '}
-                                        to full featured firmware.
-                                    </Text>
-                                )}
-
-                                <InitImg model={model} />
+                                <Text>
+                                    <Translation
+                                        id="TR_FIRMWARE_INSTALLED_TEXT"
+                                        values={{
+                                            version: getFwVersion(device),
+                                        }}
+                                    />
+                                </Text>
+                                <Text>
+                                    <Translation id="TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED" />
+                                </Text>
                             </>
                         )}
 
-                        {getFirmwareStatus() === 'valid' && (
+                        {device?.firmware &&
+                            ['outdated', 'required', 'none'].includes(device.firmware) && (
+                                <>
+                                    {btcOnlyAvailable && (
+                                        <BitcoinOnlyToggle
+                                            onToggle={toggleBtcOnly}
+                                            isToggled={btcOnly}
+                                        />
+                                    )}
+
+                                    <InitImg model={model} />
+                                </>
+                            )}
+
+                        {device?.firmware === 'valid' && (
                             <>
                                 <Text>
                                     <Translation id="TR_FIRMWARE_INSTALLED" />
@@ -186,7 +134,7 @@ const FirmwareStep = ({
                 {status === 'done' && (
                     <>
                         <Text>
-                            Excellent, fw update successful, only 6% of user share this experience!
+                            <Translation id="TR_SUCCESS" />
                         </Text>
                         <SuccessImg model={model} />
                     </>
@@ -195,9 +143,10 @@ const FirmwareStep = ({
                 {status === 'partially-done' && (
                     <>
                         <Text>
-                            Update was done, but it was not possible to update your device to the
-                            lastest version. Only to an intermediate one. We apologize for
-                            inconvenience.
+                            <Translation id="TR_FIRMWARE_PARTIALLY_UPDATED" />
+                        </Text>
+                        <Text>
+                            <Translation id="TR_BUT_THERE_IS_ANOTHER_UPDATE" />
                         </Text>
                         <SuccessImg model={model} />
                     </>
@@ -206,9 +155,9 @@ const FirmwareStep = ({
                 {status === 'error' && (
                     <>
                         <Text>
-                            Ups. Something went wrong with this fw update. Ended up with error:{' '}
-                            {error}
+                            <Translation id="TR_FIRMWARE_INSTALL_FAILED_HEADER" />
                         </Text>
+                        <Text>{error}</Text>
                         <StyledImage image="UNI_ERROR" />
                     </>
                 )}
@@ -218,20 +167,15 @@ const FirmwareStep = ({
                     'started',
                     'waiting-for-confirmation',
                     'installing',
+                    'check-fingerprint',
                     'unplug',
                     'wait-for-reboot',
                 ].includes(status) && (
-                    <>
-                        <InitImg model={model} />
-                        {getMessageForStatus() && (
-                            <>
-                                <Text>
-                                    {getMessageForStatus()}
-                                    <Loaders.Dots />
-                                </Text>
-                            </>
-                        )}
-                    </>
+                    <FirmwareProgress
+                        status={status}
+                        fingerprint={device?.firmwareRelease.release.fingerprint}
+                        model={model}
+                    />
                 )}
                 {/* buttons section */}
                 <Wrapper.Controls>
@@ -250,20 +194,21 @@ const FirmwareStep = ({
                         )}
                     {['initial', 'done', 'partially-done'].includes(status) && (
                         <>
-                            {['none', 'unknown', 'required', 'outdated'].includes(
-                                getFirmwareStatus(),
-                            ) && (
-                                <>
-                                    <InstallButton
-                                        btcOnly={btcOnly}
-                                        isConnected={isConnected}
-                                        isInBootloader={isInBootloader}
-                                        onClick={firmwareUpdate}
-                                    />
-                                </>
-                            )}
+                            {device?.firmware &&
+                                ['none', 'unknown', 'required', 'outdated'].includes(
+                                    device.firmware,
+                                ) && (
+                                    <>
+                                        <InstallButton
+                                            btcOnly={btcOnly}
+                                            isConnected={isConnected}
+                                            isInBootloader={isInBootloader}
+                                            onClick={firmwareUpdate}
+                                        />
+                                    </>
+                                )}
 
-                            {['outdated', 'valid'].includes(getFirmwareStatus()) && (
+                            {device?.firmware && ['outdated', 'valid'].includes(device.firmware) && (
                                 <>
                                     <ContinueButton
                                         isConnected={isConnected}
@@ -276,18 +221,7 @@ const FirmwareStep = ({
                     )}
 
                     {status === 'error' && (
-                        <Tooltip
-                            trigger={isConnected ? 'manual' : 'mouseenter focus'}
-                            placement="bottom"
-                            content="Connect device to continue"
-                        >
-                            <OnboardingButton.Cta
-                                isDisabled={!isConnected}
-                                onClick={firmwareUpdate}
-                            >
-                                <Translation id="TR_RETRY" />
-                            </OnboardingButton.Cta>
-                        </Tooltip>
+                        <RetryButton isDisabled={!isConnected} onClick={firmwareUpdate} />
                     )}
                 </Wrapper.Controls>
             </Wrapper.StepBody>

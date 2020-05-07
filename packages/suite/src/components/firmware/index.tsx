@@ -1,18 +1,16 @@
-import React from 'react';
-import { resolveStaticPath } from '@suite-utils/nextjs';
+import Fingerprint from './Fingerprint';
+import FirmwareProgress from './FirmwareProgress';
+import { InitImg, SuccessImg } from './Img';
+import { RetryButton, ContinueButton, InstallButton } from './Button';
+import BitcoinOnlyToggle from './BitcoinOnlyToggle';
 
-interface Props {
-    model: number;
-}
-
-const InitImg = ({ model }: Props) => (
-    <img alt="" src={resolveStaticPath(`images/svg/firmware-init-${model}.svg`)} />
-);
-
-const SuccessImg = ({ model }: Props) => (
-    <img alt="" src={resolveStaticPath(`images/svg/firmware-success-${model}.svg`)} />
-);
-
-// todo: ProgressImg. PRODUCT
-
-export { InitImg, SuccessImg };
+export {
+    InitImg,
+    SuccessImg,
+    Fingerprint,
+    FirmwareProgress,
+    RetryButton,
+    ContinueButton,
+    InstallButton,
+    BitcoinOnlyToggle,
+};

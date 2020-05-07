@@ -10,12 +10,14 @@ const paths = {
     web: join(packagesRoot, 'suite-web', 'public', 'static'),
     desktop: join(packagesRoot, 'suite-desktop', 'public', 'static'),
     native: join(packagesRoot, 'suite-native', 'public', 'static'),
+    landing: join(packagesRoot, 'landing-page', 'public', 'static'),
 };
 
 const copyFiles = (from: string, to: string) => {
     rm.sync(join(packagesRoot, 'suite-web', 'public'));
     rm.sync(join(packagesRoot, 'suite-desktop', 'public'));
     rm.sync(join(packagesRoot, 'suite-native', 'public'));
+    rm.sync(join(packagesRoot, 'landing-page', 'public'));
 
     fs.copy(from, to, err => {
         if (err) return console.error(err);

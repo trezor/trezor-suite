@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { P } from '@trezor/components';
+import { P, Modal } from '@trezor/components';
 import { connect } from 'react-redux';
 
 import { AppState } from '@suite-types';
@@ -111,7 +111,11 @@ const UnexpectedState = ({ onboarding, suite, children }: Props) => {
     const unexpectedState = getUnexpectedStateComponent();
     return (
         <Wrapper>
-            {unexpectedState && unexpectedState}
+            {unexpectedState && (
+                <Modal noBackground size="tiny">
+                    {unexpectedState}
+                </Modal>
+            )}
             {!unexpectedState && children && children}
         </Wrapper>
     );
