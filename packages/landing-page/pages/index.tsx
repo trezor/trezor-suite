@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Layout from '../components/Layout';
-import { H2, Button, P, Link } from '@trezor/components';
+import { H2, Button, P, Link, variables } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;

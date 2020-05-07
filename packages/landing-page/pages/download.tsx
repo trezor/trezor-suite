@@ -1,18 +1,28 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Layout from '../components/Layout';
-import { H2, Button, P, Select, Link } from '@trezor/components';
+import { H2, Button, P, Select, Link, variables } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
 `;
 
-const Item = styled.div``;
+const Item = styled.div`
+    display: flex;
+`;
 
 const Row = styled.div`
     margin: 30px 0 0 0;
     display: flex;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        flex-direction: column;
+    }
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-direction: row;
+    }
 `;
 
 const ButtonContinue = styled(Button)`
@@ -21,6 +31,14 @@ const ButtonContinue = styled(Button)`
 
 const ButtonDownload = styled(Button)`
     margin: 30px 0 0 20px;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        margin: 30px 0 0 0;
+    }
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin: 30px 0 0 20px;
+    }
 `;
 
 export default () => {
