@@ -5966,6 +5966,11 @@
   resolved "https://registry.yarnpkg.com/@yarnpkg/lockfile/-/lockfile-1.1.0.tgz#e77a97fbd345b76d83245edcd17d393b1b41fb31"
   integrity sha512-GpSwvyXOcOOlV70vbnzjj4fW5xW/FdUF6nQEt1ENy7m4ZCczi1+/buVUPAqmGfqznsORNFzUMjctTIp8a9tuCQ==
 
+"@zeit/next-workers@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@zeit/next-workers/-/next-workers-1.0.0.tgz#b2162884c9d4ec4308f2d1fa571a256b6d1a1ce1"
+  integrity sha512-klykVhp38AHAKV4oZAIv8ZoMju8Duhy22r82YUMkQzDXsrkhkJiM7KT7/ZlayhZQDpv+q1yLrZ0kotyGS/HZgg==
+
 "@zkochan/cmd-shim@^3.1.0":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@zkochan/cmd-shim/-/cmd-shim-3.1.0.tgz#2ab8ed81f5bb5452a85f25758eb9b8681982fd2e"
