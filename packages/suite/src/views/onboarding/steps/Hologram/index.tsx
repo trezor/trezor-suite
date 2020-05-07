@@ -1,18 +1,23 @@
+import React from 'react';
+import styled from 'styled-components';
+
+import { Link, Button, variables } from '@trezor/components';
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import * as STEP from '@onboarding-constants/steps';
 import { SUPPORT_URL, TREZOR_PACKAGING_URL, TREZOR_RESELLERS_URL } from '@suite-constants/urls';
-import { Translation } from '@suite-components/Translation';
-
-import { Link, variables } from '@trezor/components';
-import React from 'react';
-import styled from 'styled-components';
+import { Translation, Image } from '@suite-components';
 
 import Hologram from './components/Hologram';
 import { Props } from './Container';
 
+const StyledImage = styled(Image)`
+    flex: 1;
+`;
+
 const HologramWrapper = styled.div`
     max-width: 400px;
-    margin: 10px;
+    flex: 1;
+    padding: 16px;
 
     @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) {
         width: 70%;
@@ -40,13 +45,13 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                         </HologramWrapper>
                         <Wrapper.Controls>
                             <OnboardingButton.Alt
-                                data-test="@onboarding/button-hologram-different"
+                                data-test="@onboarding/hologram/hologram-different-button"
                                 onClick={() => onboardingActions.goToSubStep('hologram-different')}
                             >
                                 <Translation id="TR_HOLOGRAM_STEP_ACTION_NOT_OK" />
                             </OnboardingButton.Alt>
                             <OnboardingButton.Cta
-                                data-test="@onboarding/continue-button"
+                                data-test="@onboarding/hologram/continue-button"
                                 onClick={() => onboardingActions.goToNextStep()}
                             >
                                 <Translation id="TR_HOLOGRAM_STEP_ACTION_OK" />
@@ -78,21 +83,25 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                 }}
                             />
                         </Text>
+                        <StyledImage image="UNI_WARNING" />
+
                         <Wrapper.Controls>
                             <OnboardingButton.Alt
                                 onClick={() => onboardingActions.goToSubStep(null)}
-                                data-test="button-back"
+                                data-test="@onboarding/hologram/show-hologram-again-button"
                             >
-                                Show hologram again
+                                <Translation id="TR_SHOW_HOLOGRAM_AGAIN" />
                             </OnboardingButton.Alt>
 
-                            <Link href={SUPPORT_URL} target="_self">
-                                <OnboardingButton.Cta
-                                    data-test="button-contact-support"
+                            <Link variant="nostyle" href={SUPPORT_URL}>
+                                <Button
+                                    icon="EXTERNAL_LINK"
+                                    alignIcon="right"
+                                    data-test="@onboarding/hologram/contact-support-button"
                                     style={{ width: '100%' }}
                                 >
                                     <Translation id="TR_CONTACT_SUPPORT" />
-                                </OnboardingButton.Cta>
+                                </Button>
                             </Link>
                         </Wrapper.Controls>
                     </>
@@ -101,6 +110,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
             <Wrapper.StepFooter>
                 <Wrapper.Controls>
                     <OnboardingButton.Back
+                        data-test="@onboarding/hologram/back-button"
                         onClick={() =>
                             onboardingActions.goToPreviousStep(
                                 actualModel ? STEP.ID_NEW_OR_USED : STEP.ID_SELECT_DEVICE_STEP,

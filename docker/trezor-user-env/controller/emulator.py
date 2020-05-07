@@ -81,11 +81,6 @@ def start(version, wipe):
     if proc is not None:
         stop()
 
-    # todo: T1 profile is elsewhere? ask matejcik
-    PROFILE = "/var/tmp/trezor.flash"
-    if wipe and os.path.exists(PROFILE):
-        os.remove(PROFILE)
-    
     # These are min firmware versions supported by current version of trezorlib 
     # https://github.com/trezor/trezor-firmware/blob/master/python/src/trezorlib/__init__.py
     # MINIMUM_FIRMWARE_VERSION = {
@@ -94,19 +89,26 @@ def start(version, wipe):
     # }
 
     # normalize path to be relative to this folder, not pwd
-    path = os.path.join(os.path.dirname(__file__), './bin')
+    path = os.path.join(os.path.dirname(__file__), 'bin')
 
     command=""
     if version[0] == "2":
+        PROFILE = "/var/tmp/trezor.flash"
+        if wipe and os.path.exists(PROFILE):
+            os.remove(PROFILE)
+    
         command = path + "/trezor-emu-core-v" + version + " -O0 -X heapsize=20M -m main"
     else:
-        # todo: currently we have only 1 legacy firmare. to make it work with debuglink,
+        PROFILE = os.path.join(os.path.dirname(__file__), 'emulator.img')
+        if wipe and os.path.exists(PROFILE):
+            os.remove(PROFILE)
+
+        # todo: currently we have only 1 legacy firmware. to make it work with debuglink,
         # custom build is necessary as described here 
         # https://github.com/trezor/trezor-firmware/blob/master/docs/legacy/index.md
-        command = path + "/trezor.elf -O0"
+        command = path + "/trezor-emu-legacy-v" + version + " -O0"
 
-        # todo: add more versions maybe
-        # command = path + "trezor-emu-legacy-v" + version + " -O0"
+        # todo: add more versions
 
     if proc is None:
         # TODO:

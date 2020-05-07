@@ -319,7 +319,7 @@
 	"TR_RECONNECT_HEADER": "Reconnect your device",
 	"TR_RECONNECT_TEXT": "We lost connection with your device. This might mean:",
 	"TR_RECONNECT_TROUBLESHOOT_BRIDGE": "Trezor Bridge might have stopped working, try restarting",
-	"TR_RECONNECT_TROUBLESHOOT_CABEL": "Cable is broken, try another one",
+	"TR_RECONNECT_TROUBLESHOOT_CABLE": "Cable is broken, try another one",
 	"TR_RECONNECT_TROUBLESHOOT_CONNECTION": "Device is not well connected to the cable",
 	"TR_RECOVER_SUBHEADING": "It is possible to re-create device from bip39 backup. First of all, chose number of words of your backup.",
 	"TR_RECOVER_SUBHEADING_MODEL_T": "On model T the entire recovery process is doable on device.",
@@ -725,5 +725,15 @@
 	"ONBOARDING_PAIR_ALREADY_INITIALIZED": "This device is already initialized. You should always be sure that you did device setup yourself. Otherwise you may become victim of phishing. Having initialized device also means that you can not proceed with setup.",
 	"TR_USE_IT_ANYWAY": "Use it anyway",
 	"TR_GO_TO_SUITE": "Go to Suite",
-	"TR_PAIR_YOUR_TREZOR": "Pair your Trezor again with your computer"
+	"TR_PAIR_YOUR_TREZOR": "Pair your Trezor again with your computer",
+	"TR_BY_CREATING_WALLET": "By creating wallet you agree with {TERMS_AND_CONDITIONS}",
+	"TERMS_AND_CONDTIONS": "Terms and conditions",
+	"TR_CREATE_WALLET": "Create wallet",
+	"TR_YOU_MAY_CHOSE_EITHER_STANDARD": "You might chose either standard backup type or Shamir backup",
+	"SINGLE_SEED": "Single seed",
+	"SINGLE_SEED_DESCRIPTION": "Security level: Standard. Distributable: No",
+	"SHAMIR_SEED": "Shamir seed",
+	"SHAMIR_SEED_DESCRIPTION": "Security level: Advanced Distributable: Yes",
+	"TR_SELECT_SEED_TYPE": "Select {seedType}",
+	"TR_BACKUP_TYPE": "Backup type"
 }

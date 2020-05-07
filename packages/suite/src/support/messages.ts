@@ -134,6 +134,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Add account',
         id: 'TR_ADD_ACCOUNT',
     },
+    TR_FEE_NEEDS_UPDATE: {
+        defaultMessage: 'Fee levels are outdated',
+        id: 'TR_FEE_NEEDS_UPDATE',
+    },
     TR_ADD_WALLET: {
         defaultMessage: 'Add wallet',
         id: 'TR_ADD_WALLET',
@@ -1464,10 +1468,10 @@ const definedMessages = defineMessages({
         description: '',
         id: 'TR_RECONNECT_TROUBLESHOOT_BRIDGE',
     },
-    TR_RECONNECT_TROUBLESHOOT_CABEL: {
+    TR_RECONNECT_TROUBLESHOOT_CABLE: {
         defaultMessage: 'Cable is broken, try another one',
         description: '',
-        id: 'TR_RECONNECT_TROUBLESHOOT_CABEL',
+        id: 'TR_RECONNECT_TROUBLESHOOT_CABLE',
     },
     TR_RECONNECT_TROUBLESHOOT_CONNECTION: {
         defaultMessage: 'Device is not well connected to the cable',
@@ -3312,6 +3316,19 @@ const definedMessages = defineMessages({
     TR_BACKUP_TYPE: {
         id: 'TR_BACKUP_TYPE',
         defaultMessage: 'Backup type',
+    },
+    TR_SEND_COMING_SOON: {
+        id: 'TR_SEND_COMING_SOON',
+        defaultMessage: 'coming soon',
+    },
+    TR_SHOW_HOLOGRAM_AGAIN: {
+        id: 'TR_SHOW_HOLOGRAM_AGAIN',
+        defaultMessage: 'Show hologram again',
+    },
+    TR_PAIR_TREZOR_AGAIN_OR_NEW: {
+        id: 'TR_PAIR_TREZOR_AGAIN_OR_NEW',
+        defaultMessage:
+            'Pair Trezor device again with your internet browser or pair another device',
     },
 } as const);
 

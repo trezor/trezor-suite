@@ -18,6 +18,7 @@ const RecoveryStep = (props: Props) => {
         setAdvancedRecovery,
         setStatus,
         recoverDevice,
+        resetReducer,
         recovery,
         device,
     } = props;
@@ -71,6 +72,7 @@ const RecoveryStep = (props: Props) => {
                         <Text>
                             <Translation id="TR_RECOVER_SUBHEADING_MODEL_T" />
                         </Text>
+                        <StyledImage image="RECOVER_FROM_SEED" width="200px" />
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 data-test="@onboarding/recovery/start-button"
@@ -114,9 +116,8 @@ const RecoveryStep = (props: Props) => {
                         <Error error={recovery.error} />
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
-                                onClick={() => {
-                                    recoverDevice();
-                                }}
+                                data-test="@onboarding/recovery/retry-button"
+                                onClick={model === 1 ? resetReducer : recoverDevice}
                             >
                                 <Translation id="TR_RETRY" />
                             </OnboardingButton.Cta>
@@ -127,7 +128,10 @@ const RecoveryStep = (props: Props) => {
 
             <Wrapper.StepFooter>
                 {isBackButtonVisible() && (
-                    <OnboardingButton.Back onClick={() => handleBack()}>
+                    <OnboardingButton.Back
+                        onClick={() => handleBack()}
+                        data-test="@onboarding/recovery/back-button"
+                    >
                         <Translation id="TR_BACK" />
                     </OnboardingButton.Back>
                 )}

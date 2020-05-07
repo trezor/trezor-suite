@@ -1,5 +1,6 @@
 import { SEND } from '@wallet-actions/constants';
 import { Account } from '@wallet-types';
+import { FeeInfo } from '@wallet-types/sendForm';
 import { FeeLevel, PrecomposedTransaction } from 'trezor-connect';
 import { PrecomposedTransactionXrp, PrecomposedTransactionEth } from './transactions';
 import { Output } from './output';
@@ -32,6 +33,17 @@ export type SendFormActions =
           outputId: number;
       }
     | {
+          type: typeof SEND.CHANGE_FEE_STATE;
+          feeOutdated: boolean;
+      }
+    | {
+          type: typeof SEND.UPDATE_FEE;
+          feeInfo: FeeInfo;
+          selectedFee: FeeLevel;
+          gasPrice?: string;
+          gasLimit?: string;
+      }
+    | {
           type: typeof SEND.SET_TOUCHED;
           touched: boolean;
       }
@@ -40,6 +52,7 @@ export type SendFormActions =
           outputId: number;
       }
     | { type: typeof SEND.COMPOSE_PROGRESS; isComposing: boolean }
+    | { type: typeof SEND.CHANGE_SET_MAX_STATE; activated: boolean }
     | {
           type: typeof SEND.HANDLE_FIAT_VALUE_CHANGE;
           outputId: number;

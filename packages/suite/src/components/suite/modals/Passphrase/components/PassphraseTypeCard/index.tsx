@@ -55,6 +55,7 @@ const Content = styled.div`
 
 const InputWrapper = styled(Content)`
     width: 100%;
+    margin-top: 32px;
 `;
 
 const PassphraseInput = styled(Input)`

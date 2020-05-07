@@ -19,7 +19,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     setAdvancedRecovery: bindActionCreators(recoveryActions.setAdvancedRecovery, dispatch),
     recoverDevice: bindActionCreators(recoveryActions.recoverDevice, dispatch),
     setStatus: bindActionCreators(recoveryActions.setStatus, dispatch),
-    rerun: bindActionCreators(recoveryActions.rerun, dispatch),
+    resetReducer: bindActionCreators(recoveryActions.resetReducer, dispatch),
 });
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;

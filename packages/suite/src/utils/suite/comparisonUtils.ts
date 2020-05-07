@@ -1,4 +1,4 @@
-export const observeChanges = (prev?: any, current?: any, filter?: { [k: string]: string[] }) => {
+export const isChanged = (prev?: any, current?: any, filter?: { [k: string]: string[] }) => {
     // 1. both objects are the same (solves simple types like string, boolean and number)
     if (prev === current) return false;
     // 2. one of the objects is null/undefined
@@ -14,7 +14,7 @@ export const observeChanges = (prev?: any, current?: any, filter?: { [k: string]
         if (prev.length !== current.length) return true;
         // observe array recursive
         for (let i = 0; i < current.length; i++) {
-            if (observeChanges(prev[i], current[i], filter)) return true;
+            if (isChanged(prev[i], current[i], filter)) return true;
         }
     } else if (currentType === '[object Object]') {
         const prevKeys = Object.keys(prev);
@@ -40,8 +40,8 @@ export const observeChanges = (prev?: any, current?: any, filter?: { [k: string]
                     // @ts-ignore
                     currentFiltered[field] = current[key][field];
                 }
-                if (observeChanges(prevFiltered, currentFiltered)) return true;
-            } else if (observeChanges(prev[key], current[key])) {
+                if (isChanged(prevFiltered, currentFiltered)) return true;
+            } else if (isChanged(prev[key], current[key])) {
                 return true;
             }
         }

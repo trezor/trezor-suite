@@ -18,7 +18,7 @@ import {
 import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import * as homescreen from '@suite-utils/homescreen';
 import { useDeviceActionLocks, useAnalytics } from '@suite-hooks';
-import { variables, Link, P, Switch } from '@trezor/components';
+import { variables, Switch, Link } from '@trezor/components';
 import React, { createRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
@@ -32,11 +32,6 @@ const RotationButton = styled(ActionButton)`
     @media screen and (min-width: ${variables.SCREEN_SIZE.MD}) {
         flex-basis: auto;
     }
-`;
-
-const BackupFailedLink = styled(Link)`
-    min-width: 120px;
-    margin-left: 40px;
 `;
 
 const HiddenInput = styled.input`
@@ -132,13 +127,18 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                 </SectionItem>
                 {features.unfinished_backup && (
                     <SectionItem data-test="@settings/device/failed-backup-row">
-                        <P size="tiny">
-                            <Translation id="TR_BACKUP_FAILED" />
-                        </P>
+                        <TextColumn description={<Translation id="TR_BACKUP_FAILED" />} />
                         <ActionColumn>
-                            <BackupFailedLink href={FAILED_BACKUP_URL}>
-                                <Translation id="TR_WHAT_TO_DO_NOW" />
-                            </BackupFailedLink>
+                            <Link variant="nostyle" href={FAILED_BACKUP_URL}>
+                                <ActionButton
+                                    onClick={() => {}}
+                                    variant="secondary"
+                                    icon="EXTERNAL_LINK"
+                                    alignIcon="right"
+                                >
+                                    <Translation id="TR_WHAT_TO_DO_NOW" />
+                                </ActionButton>
+                            </Link>
                         </ActionColumn>
                     </SectionItem>
                 )}
