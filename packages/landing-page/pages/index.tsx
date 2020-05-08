@@ -37,20 +37,24 @@ const Index = () => (
                 the button.
             </P>
             <Item>
-                <Link href="https://wallet.trezor.io/" target="_blank" variant="nostyle">
+                <Link
+                    href="https://blog.trezor.io/join-the-trezor-beta-testers-community-b19761f4960a"
+                    target="_blank"
+                    variant="nostyle"
+                >
                     <ButtonBecomeTester variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
                         Become a tester
                     </ButtonBecomeTester>
                 </Link>
             </Item>
             <Item>
-                <Link href="https://wallet.trezor.io/" target="_blank" variant="nostyle">
+                <Link href="https://wallet.trezor.io" target="_blank" variant="nostyle">
                     <ButtonAccess variant="primary">Access Trezor Suite (beta)</ButtonAccess>
                 </Link>
             </Item>
             <HeadBackP size="tiny">
                 Otherwise head back to stable and super-safe{' '}
-                <Link href="https://wallet.trezor.io/" target="_blank" variant="nostyle">
+                <Link href="https://wallet.trezor.io" target="_blank" variant="nostyle">
                     <ButtonWallet variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
                         wallet.trezor.io
                     </ButtonWallet>

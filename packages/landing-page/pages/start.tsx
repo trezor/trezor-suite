@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { join } from 'path';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 import Layout from '../components/Layout';
 import { H2, Button, P, Select, Link, variables } from '@trezor/components';
 
@@ -41,8 +43,23 @@ const ButtonDownload = styled(Button)`
     }
 `;
 
+type App = 'win' | 'macos' | 'linux';
+
+const getAppUrl = (appName: App) => {
+    const appsRoot = resolveStaticPath('/apps');
+    switch (appName) {
+        case 'win':
+            return join(appsRoot, 'Trezor-Beta-Wallet.exe');
+        case 'macos':
+            return join(appsRoot, 'Trezor-Beta-Wallet.zip');
+        case 'linux':
+            return join(appsRoot, 'Trezor-Beta-Wallet.AppImage');
+        // no default
+    }
+};
+
 export default () => {
-    const [app, setApp] = useState<string | null>(null);
+    const [app, setApp] = useState<App | null>(null);
 
     return (
         <Layout>
@@ -63,20 +80,14 @@ export default () => {
                             { label: 'Mac OS', value: 'macos' },
                             { label: 'Linux', value: 'linux' },
                         ]}
-                        onChange={(option: { value: string | null; label: string | null }) =>
+                        onChange={(option: { value: App | null; label: string | null }) =>
                             setApp(option.value)
                         }
                     />
                     <Item>
                         {app && (
-                            <Link
-                                href={`https://wallet.trezor.io/${app}`}
-                                target="_blank"
-                                variant="nostyle"
-                            >
-                                <ButtonDownload isDisabled={app === null} variant="primary">
-                                    Download
-                                </ButtonDownload>
+                            <Link href={getAppUrl(app)} variant="nostyle">
+                                <ButtonDownload variant="primary">Download</ButtonDownload>
                             </Link>
                         )}
                         {!app && (
