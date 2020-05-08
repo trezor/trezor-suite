@@ -14,11 +14,13 @@ const { FONT_SIZE, FONT_WEIGHT } = variables;
 
 const Body = styled.div`
     display: flex;
-    flex: 1;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    margin-bottom: 28px;
+`;
+
+const StyledP = styled(P)`
+    font-size: ${FONT_SIZE.SMALL};
+    color: ${colors.BLACK50};
 `;
 
 const BottomP = styled(P)`
@@ -26,13 +28,17 @@ const BottomP = styled(P)`
 `;
 
 const Bold = styled.span`
-    font-size: ${FONT_SIZE.TINY};
+    font-size: ${FONT_SIZE.SMALL};
     font-weight: ${FONT_WEIGHT.DEMI_BOLD};
     color: ${colors.BLACK50};
 `;
 
 const StyledImg = styled(props => <Image {...props} />)`
-    flex: 1;
+    margin: 24px;
+`;
+
+const StyledButton = styled(Button)`
+    margin-top: 16px;
 `;
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -43,37 +49,44 @@ type Props = ReturnType<typeof mapDispatchToProps> & InjectedModalApplicationPro
 
 const Index = (props: Props) => {
     return (
-        <Modal useFixedHeight>
-            <H2>
-                <Translation id="TR_HELP_TREZOR_SUITE" />
-            </H2>
+        <Modal
+            useFixedHeight
+            heading={
+                <H2>
+                    <Translation id="TR_HELP_TREZOR_SUITE" />
+                </H2>
+            }
+            description={
+                <>
+                    <StyledP>
+                        <Translation
+                            id="TR_HELP_TREZOR_SUITE_TEXT_1"
+                            values={{
+                                TR_HELP_TREZOR_SUITE_TEXT_1_FAT: (
+                                    <Bold>
+                                        <Translation id="TR_HELP_TREZOR_SUITE_TEXT_1_FAT" />
+                                    </Bold>
+                                ),
+                            }}
+                        />
+                    </StyledP>
+                    <Bold>
+                        <Translation id="TR_HELP_TREZOR_SUITE_TEXT_2" />
+                    </Bold>
+                </>
+            }
+        >
             <Body>
-                <P size="tiny">
-                    <Translation
-                        id="TR_HELP_TREZOR_SUITE_TEXT_1"
-                        values={{
-                            TR_HELP_TREZOR_SUITE_TEXT_1_FAT: (
-                                <Bold>
-                                    <Translation id="TR_HELP_TREZOR_SUITE_TEXT_1_FAT" />
-                                </Bold>
-                            ),
-                        }}
-                    />
-                </P>
-                <Bold>
-                    <Translation id="TR_HELP_TREZOR_SUITE_TEXT_2" />
-                </Bold>
-
                 <StyledImg image="ANALYTICS" />
 
                 <Analytics />
 
-                <Button
+                <StyledButton
                     onClick={() => props.goto('onboarding-index')}
                     data-test="@analytics/go-to-onboarding-button"
                 >
                     <Translation id="TR_CONTINUE" />
-                </Button>
+                </StyledButton>
             </Body>
 
             <BottomP size="tiny">
