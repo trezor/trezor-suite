@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
-import { Button, P, H2, Modal, Link, variables, colors } from '@trezor/components';
+import { Button, P, Modal, Link, variables, colors } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { Dispatch, InjectedModalApplicationProps } from '@suite-types';
 import { Analytics } from '@suite-components/Settings';
@@ -23,6 +23,10 @@ const StyledP = styled(P)`
     color: ${colors.BLACK50};
 `;
 
+const FakePadding50 = styled.div`
+    height: 50px;
+`;
+
 const BottomP = styled(P)`
     margin-top: auto;
 `;
@@ -31,10 +35,6 @@ const Bold = styled.span`
     font-size: ${FONT_SIZE.SMALL};
     font-weight: ${FONT_WEIGHT.DEMI_BOLD};
     color: ${colors.BLACK50};
-`;
-
-const StyledImg = styled(props => <Image {...props} />)`
-    margin: 24px;
 `;
 
 const StyledButton = styled(Button)`
@@ -52,9 +52,14 @@ const Index = (props: Props) => {
         <Modal
             useFixedHeight
             heading={
-                <H2>
+                <>
+                    {/* fake padding is not very nice, I know, but... this modal precedes onboarding modals which all have progress bar
+                above headings. We want to have keep same padding from the top to make it look consistent with onboarding screens, 
+                otherwise title "jumps"
+                 */}
+                    <FakePadding50 />
                     <Translation id="TR_HELP_TREZOR_SUITE" />
-                </H2>
+                </>
             }
             description={
                 <>
@@ -77,7 +82,7 @@ const Index = (props: Props) => {
             }
         >
             <Body>
-                <StyledImg image="ANALYTICS" />
+                <Image image="ANALYTICS" />
 
                 <Analytics />
 
