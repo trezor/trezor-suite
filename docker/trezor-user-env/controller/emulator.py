@@ -133,7 +133,7 @@ def stop():
         proc = None
 
 
-def setup_device(mnemonic, pin, passphrase_protection, label):
+def setup_device(mnemonic, pin, passphrase_protection, label, needs_backup=None):
     # TODO:
     # - check if device is acquired otherwise throws "wrong previous session" from bridge
     client = TrezorClientDebugLink(get_device())
@@ -143,7 +143,8 @@ def setup_device(mnemonic, pin, passphrase_protection, label):
         mnemonic,
         pin,
         passphrase_protection,
-        label,    
+        label,
+        needs_backup=bool(needs_backup)
     )
     client.close()
 

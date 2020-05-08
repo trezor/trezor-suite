@@ -38,7 +38,9 @@ export const changePin = (params: ChangePin = {}) => async (
     getState: GetState,
 ) => {
     const { device } = getState().suite;
+
     if (!device) return;
+
     const result = await TrezorConnect.changePin({
         device: {
             path: device.path,

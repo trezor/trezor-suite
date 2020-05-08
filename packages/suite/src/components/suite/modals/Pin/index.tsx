@@ -59,6 +59,55 @@ const StyledImg = styled(props => <Image {...props} />)`
     padding: 35px;
 `;
 
+interface TextComponentProps {
+    pinRequestType: string;
+    invalid: boolean;
+}
+
+const PinHeading = ({ pinRequestType, invalid }: TextComponentProps) => {
+    if (invalid) {
+        return <Translation id="TR_WRONG_PIN_ENTERED" />;
+    }
+    switch (pinRequestType) {
+        case 'PinMatrixRequestType_Current':
+            return <Translation id="TR_ENTER_CURRENT_PIN" />;
+        case 'PinMatrixRequestType_NewFirst':
+            return <Translation id="TR_SET_UP_NEW_PIN" />;
+        case 'PinMatrixRequestType_NewSecond':
+            return <Translation id="TR_CONFIRM_PIN" />;
+        default:
+            return null;
+    }
+};
+
+const PinDescription = ({ pinRequestType, invalid }: TextComponentProps) => {
+    if (invalid) {
+        return (
+            <Text>
+                <Translation id="TR_WRONG_PIN_ENTERED_DESCRIPTION" />
+            </Text>
+        );
+    }
+    switch (pinRequestType) {
+        case 'PinMatrixRequestType_Current':
+            return <Translation id="TR_ENTER_CURRENT_PIN" />;
+        case 'PinMatrixRequestType_NewFirst':
+        case 'PinMatrixRequestType_NewSecond':
+            return (
+                <>
+                    <Text>
+                        <Translation id="TR_SET_UP_STRONG_PIN_TO_PROTECT" />
+                    </Text>
+                    <Text>
+                        <Translation id="TR_MAXIMUM_LENGTH_IS_9_DIGITS" />
+                    </Text>
+                </>
+            );
+        default:
+            return null;
+    }
+};
+
 const ExplanationCol = (props: { heading: React.ReactNode; description?: React.ReactNode }) => (
     <Col gray>
         <H2>{props.heading}</H2>
@@ -88,19 +137,24 @@ type Props = OwnProps & ReturnType<typeof mapDispatchToProps>;
 const Pin = ({ device, onPinSubmit, ...rest }: Props) => {
     const [submitted, setSubmitted] = useState(false);
 
-    const counter =
-        (device.features && device.buttonRequests.filter(b => b === 'ui-request_pin').length) || 0;
-
-    const invalidCounter =
-        (device.features && device.buttonRequests.filter(b => b === 'ui-invalid_pin').length) || 0;
+    const pinRequestType = device.buttonRequests[device.buttonRequests.length - 1];
+    const invalidCounter = device.buttonRequests.filter(r => r === 'ui-invalid_pin').length || 0;
 
     useEffect(() => {
-        setSubmitted(false);
-    }, [counter]);
+        if (
+            [
+                'PinMatrixRequestType_NewFirst',
+                'PinMatrixRequestType_NewSecond',
+                'PinMatrixRequestType_Current',
+            ].includes(pinRequestType)
+        ) {
+            setSubmitted(false);
+        }
+    }, [pinRequestType]);
 
     if (!device.features) return null;
 
-    const { features } = device;
+    // const { features } = device;
 
     const submit = (pin: string) => {
         onPinSubmit(pin);
@@ -112,10 +166,10 @@ const Pin = ({ device, onPinSubmit, ...rest }: Props) => {
     }
 
     // 3 cases when we want to show left column
-    const isChangingPin = features?.pin_protection && features?.pin_cached;
-    const isSettingNewPin = !features?.pin_protection;
-    const enteredWrongPin =
-        features?.pin_protection && !features?.pin_cached && invalidCounter >= 1;
+    const isExtended =
+        ['PinMatrixRequestType_NewFirst', 'PinMatrixRequestType_NewSecond'].includes(
+            pinRequestType,
+        ) || invalidCounter > 0;
 
     // TODO: figure out responsive design
     return (
@@ -127,60 +181,22 @@ const Pin = ({ device, onPinSubmit, ...rest }: Props) => {
             {...rest}
         >
             <Wrapper>
-                {isSettingNewPin && (
+                {isExtended && (
                     <ExplanationCol
                         heading={
-                            <>
-                                {counter === 1 && <Translation id="TR_SET_UP_NEW_PIN" />}
-                                {counter === 2 && <Translation id="TR_CONFIRM_PIN" />}
-                            </>
+                            <PinHeading
+                                pinRequestType={pinRequestType}
+                                invalid={invalidCounter > 0}
+                            />
                         }
                         description={
-                            <>
-                                <Text>
-                                    <Translation id="TR_SET_UP_STRONG_PIN_TO_PROTECT" />
-                                </Text>
-                                <Text>
-                                    <Translation id="TR_MAXIMUM_LENGTH_IS_9_DIGITS" />
-                                </Text>
-                            </>
+                            <PinDescription
+                                pinRequestType={pinRequestType}
+                                invalid={invalidCounter > 0}
+                            />
                         }
                     />
                 )}
-                {isChangingPin && (
-                    <ExplanationCol
-                        heading={
-                            <>
-                                {counter === 1 && <Translation id="TR_ENTER_CURRENT_PIN" />}
-                                {counter === 2 && <Translation id="TR_SET_UP_NEW_PIN" />}
-                                {counter === 3 && <Translation id="TR_CONFIRM_NEW_PIN" />}
-                            </>
-                        }
-                        description={
-                            <>
-                                <Text>
-                                    <Translation id="TR_SET_UP_STRONG_PIN_TO_PROTECT" />
-                                </Text>
-                                <Text>
-                                    <Translation id="TR_MAXIMUM_LENGTH_IS_9_DIGITS" />
-                                </Text>
-                            </>
-                        }
-                    />
-                )}
-                {enteredWrongPin && (
-                    <ExplanationCol
-                        heading={<Translation id="TR_WRONG_PIN_ENTERED" />}
-                        description={
-                            <>
-                                <Text>
-                                    <Translation id="TR_WRONG_PIN_ENTERED_DESCRIPTION" />
-                                </Text>
-                            </>
-                        }
-                    />
-                )}
-
                 <Col>
                     <H2>
                         <Translation
