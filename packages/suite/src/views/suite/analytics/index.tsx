@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
-import { Button, P, H2, Modal, Link, variables, colors } from '@trezor/components';
+import { Button, P, Modal, Link, variables, colors } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { Dispatch, InjectedModalApplicationProps } from '@suite-types';
 import { Analytics } from '@suite-components/Settings';
@@ -14,11 +14,17 @@ const { FONT_SIZE, FONT_WEIGHT } = variables;
 
 const Body = styled.div`
     display: flex;
-    flex: 1;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    margin-bottom: 28px;
+`;
+
+const StyledP = styled(P)`
+    font-size: ${FONT_SIZE.SMALL};
+    color: ${colors.BLACK50};
+`;
+
+const FakePadding50 = styled.div`
+    height: 50px;
 `;
 
 const BottomP = styled(P)`
@@ -26,13 +32,13 @@ const BottomP = styled(P)`
 `;
 
 const Bold = styled.span`
-    font-size: ${FONT_SIZE.TINY};
+    font-size: ${FONT_SIZE.SMALL};
     font-weight: ${FONT_WEIGHT.DEMI_BOLD};
     color: ${colors.BLACK50};
 `;
 
-const StyledImg = styled(props => <Image {...props} />)`
-    flex: 1;
+const StyledButton = styled(Button)`
+    margin-top: 16px;
 `;
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -43,37 +49,49 @@ type Props = ReturnType<typeof mapDispatchToProps> & InjectedModalApplicationPro
 
 const Index = (props: Props) => {
     return (
-        <Modal useFixedHeight>
-            <H2>
-                <Translation id="TR_HELP_TREZOR_SUITE" />
-            </H2>
+        <Modal
+            useFixedHeight
+            heading={
+                <>
+                    {/* fake padding is not very nice, I know, but... this modal precedes onboarding modals which all have progress bar
+                above headings. We want to have keep same padding from the top to make it look consistent with onboarding screens, 
+                otherwise title "jumps"
+                 */}
+                    <FakePadding50 />
+                    <Translation id="TR_HELP_TREZOR_SUITE" />
+                </>
+            }
+            description={
+                <>
+                    <StyledP>
+                        <Translation
+                            id="TR_HELP_TREZOR_SUITE_TEXT_1"
+                            values={{
+                                TR_HELP_TREZOR_SUITE_TEXT_1_FAT: (
+                                    <Bold>
+                                        <Translation id="TR_HELP_TREZOR_SUITE_TEXT_1_FAT" />
+                                    </Bold>
+                                ),
+                            }}
+                        />
+                    </StyledP>
+                    <Bold>
+                        <Translation id="TR_HELP_TREZOR_SUITE_TEXT_2" />
+                    </Bold>
+                </>
+            }
+        >
             <Body>
-                <P size="tiny">
-                    <Translation
-                        id="TR_HELP_TREZOR_SUITE_TEXT_1"
-                        values={{
-                            TR_HELP_TREZOR_SUITE_TEXT_1_FAT: (
-                                <Bold>
-                                    <Translation id="TR_HELP_TREZOR_SUITE_TEXT_1_FAT" />
-                                </Bold>
-                            ),
-                        }}
-                    />
-                </P>
-                <Bold>
-                    <Translation id="TR_HELP_TREZOR_SUITE_TEXT_2" />
-                </Bold>
-
-                <StyledImg image="ANALYTICS" />
+                <Image image="ANALYTICS" />
 
                 <Analytics />
 
-                <Button
+                <StyledButton
                     onClick={() => props.goto('onboarding-index')}
                     data-test="@analytics/go-to-onboarding-button"
                 >
                     <Translation id="TR_CONTINUE" />
-                </Button>
+                </StyledButton>
             </Body>
 
             <BottomP size="tiny">
