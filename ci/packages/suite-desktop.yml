@@ -6,9 +6,9 @@ suite-desktop build mac:
         - yarn workspace @trezor/suite-desktop build:mac
         - mv $PACKAGE_PATH_SUITE_DESKTOP/build-electron/TrezorSuite-*.zip .
     artifacts:
-        expire_in: 1 day
+        expire_in: 1 week
         paths:
-            - TrezorSuite-*.zip
+            - Trezor-Beta-Wallet.zip
 
 suite-desktop build linux:
     stage: build
@@ -20,7 +20,7 @@ suite-desktop build linux:
     artifacts:
         expire_in: 1 day
         paths:
-            - TrezorSuite-*.AppImage
+            - Trezor-Beta-Wallet.AppImage
 
 suite-desktop build windows:
     image: electronuserland/builder:wine
@@ -33,7 +33,7 @@ suite-desktop build windows:
     artifacts:
         expire_in: 1 day
         paths:
-            - TrezorSuite-*.exe
+            - Trezor-Beta-Wallet.exe
 
 suite-desktop deploy:
     stage: deploy artifacts, others
