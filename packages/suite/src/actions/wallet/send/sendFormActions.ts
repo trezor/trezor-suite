@@ -281,14 +281,14 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
 /*
     Click on "set max"
  */
-export const setMax = (outputIdIn = 0) => async (dispatch: Dispatch, getState: GetState) => {
+export const setMax = (outputIdIn?: number) => async (dispatch: Dispatch, getState: GetState) => {
     const { fiat, send, selectedAccount } = getState().wallet;
 
     if (!fiat || !send || selectedAccount.status !== 'loaded') return null;
     const { account, network } = selectedAccount;
     const composedTransaction = await dispatch(compose(true));
     const outputId: number = outputIdIn || 0;
-    const output = getOutput(send.outputs, outputId || 0);
+    const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
     const { isDestinationAccountEmpty } = send.networkTypeRipple;
     const reserve = getReserveInXrp(account);
