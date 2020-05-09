@@ -18,7 +18,7 @@
 
 /packages/suite @szymonlesisz @mroz22 @vladimirvolek @slowbackspace
 
-/packages/suite-data @mroz22
+/packages/suite-data @vladimirvolek
 
 /packages/suite-desktop @vladimirvolek @szymonlesisz
 
@@ -30,4 +30,4 @@
 
 /packages/suite-web @vladimirvolek @slowbackspace @mroz22
 
-/packages/translations-manager @vladimirvolek @mroz22
+/packages/translations-manager @slowbackspace
