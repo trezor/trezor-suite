@@ -1,4 +1,4 @@
-import { variables, colors } from '@trezor/components';
+import { variables } from '@trezor/components';
 
 export default `
     #__next {
@@ -12,7 +12,7 @@ export default `
     }
 
     body, html {
-      background: ${colors.BACKGROUND};
+      background: #EFEFEF;
       font-size: ${variables.FONT_SIZE.NORMAL};
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;

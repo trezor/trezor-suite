@@ -1,5 +1,6 @@
 import Document, { DocumentContext, Head, Main, NextScript } from 'next/document';
 import React from 'react';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 import { ServerStyleSheet } from 'styled-components';
 import globalStyles from '../support/styles';
 
@@ -40,7 +41,11 @@ export default class MyDocument extends Document {
                 <Head>
                     <meta charSet="utf-8" />
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
-                    <link media="all" rel="stylesheet" href="/fonts/fonts.css" />
+                    <link
+                        media="all"
+                        rel="stylesheet"
+                        href={resolveStaticPath('fonts/fonts.css')}
+                    />
                 </Head>
                 <body style={{ height: '100%' }}>
                     <Main />
