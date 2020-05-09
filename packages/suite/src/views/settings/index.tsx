@@ -1,6 +1,8 @@
 import { SettingsLayout } from '@settings-components';
 import { SUITE } from '@suite-actions/constants';
+import styled from 'styled-components';
 import { Translation } from '@suite-components';
+import { Button } from '@trezor/components';
 import {
     ActionButton,
     ActionColumn,
@@ -19,6 +21,17 @@ const buildCurrencyOption = (currency: string) => ({
     value: currency,
     label: currency.toUpperCase(),
 });
+
+const Version = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+const VersionButton = styled(Button)`
+    padding-left: 1ch;
+`;
+
+const VersionLink = styled.a``;
 
 export default ({
     locks,
@@ -117,17 +130,25 @@ export default ({
                         </ActionButton>
                     </ActionColumn>
                 </SectionItem>
-
                 <SectionItem>
                     <TextColumn
                         title={<Translation id="TR_SUITE_VERSION" />}
                         description={
-                            <Translation
-                                id="TR_YOUR_CURRENT_VERSION"
-                                values={{
-                                    version: 'internal alfa release',
-                                }}
-                            />
+                            <Version>
+                                <Translation id="TR_YOUR_CURRENT_VERSION" />
+                                <VersionLink
+                                    target="_blank"
+                                    href={`https://github.com/trezor/trezor-suite/commit/${process.env.COMMITHASH}`}
+                                >
+                                    <VersionButton
+                                        variant="tertiary"
+                                        icon="EXTERNAL_LINK"
+                                        alignIcon="right"
+                                    >
+                                        {process.env.VERSION}
+                                    </VersionButton>
+                                </VersionLink>
+                            </Version>
                         }
                     />
                     <ActionColumn>

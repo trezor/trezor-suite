@@ -1,6 +1,6 @@
 {
     "name": "@trezor/suite-web",
-    "version": "1.0.0",
+    "version": "05.13.2020.BETA",
     "private": true,
     "scripts": {
         "type-check": "tsc --project tsconfig.json",

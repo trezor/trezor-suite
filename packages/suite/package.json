@@ -1,6 +1,6 @@
 {
     "name": "@trezor/suite",
-    "version": "1.0.0",
+    "version": "05.13.2020.BETA",
     "private": true,
     "scripts": {
         "lint": "yarn lint:styles && yarn lint:js",
