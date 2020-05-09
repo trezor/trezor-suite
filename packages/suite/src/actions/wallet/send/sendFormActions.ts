@@ -136,7 +136,7 @@ export const handleAddressChange = (outputId: number, address: string) => (
 /*
     Change value in input "Amount"
  */
-export const handleAmountChange = (outputId: number, amount: string) => (
+export const handleAmountChange = (outputId: number, amount: string, shouldCompose = false) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -180,7 +180,9 @@ export const handleAmountChange = (outputId: number, amount: string) => (
         reserve,
     });
 
-    dispatch(composeChange('amount'));
+    if (shouldCompose) {
+        dispatch(composeChange('amount'));
+    }
 };
 
 /*
@@ -281,13 +283,14 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
 /*
     Click on "set max"
  */
-export const setMax = (outputId: number) => async (dispatch: Dispatch, getState: GetState) => {
+export const setMax = (outputIdIn = 0) => async (dispatch: Dispatch, getState: GetState) => {
     const { fiat, send, selectedAccount } = getState().wallet;
 
     if (!fiat || !send || selectedAccount.status !== 'loaded') return null;
     const { account, network } = selectedAccount;
     const composedTransaction = await dispatch(compose(true));
-    const output = getOutput(send.outputs, outputId);
+    const outputId: number = outputIdIn || 0;
+    const output = getOutput(send.outputs, outputId || 0);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
     const { isDestinationAccountEmpty } = send.networkTypeRipple;
     const reserve = getReserveInXrp(account);
@@ -304,6 +307,7 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
                 formatNetworkAmount(composedTransaction.max, account.symbol),
                 rate.toString(),
             );
+
             dispatch({
                 type: SEND.HANDLE_FIAT_VALUE_CHANGE,
                 outputId,
@@ -359,6 +363,10 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
             type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
             customFee: null,
         });
+
+        if (send.setMaxActivated) {
+            dispatch(setMax());
+        }
     }
 
     dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
@@ -382,7 +390,7 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
 /*
     Change value in additional form - select "Fee"
  */
-export const handleCustomFeeValueChange = (customFee: string) => (
+export const handleCustomFeeValueChange = (customFee: string) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -405,6 +413,10 @@ export const handleCustomFeeValueChange = (customFee: string) => (
     });
 
     dispatch(composeChange());
+
+    if (send.setMaxActivated) {
+        dispatch(setMax());
+    }
 };
 
 /*
