@@ -61,6 +61,9 @@ export type UserContextPayload =
       }
     | {
           type: 'wipe-device';
+      }
+    | {
+          type: 'disconnect-device';
       };
 
 export type ModalActions =

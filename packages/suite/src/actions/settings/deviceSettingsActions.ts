@@ -2,6 +2,7 @@
 import TrezorConnect, { ApplySettings, ChangePin, ResetDevice } from 'trezor-connect';
 import { addToast } from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
+import { isWebUSB } from '@suite-utils/transport';
 
 import { Dispatch, GetState } from '@suite-types';
 
@@ -55,7 +56,7 @@ export const changePin = (params: ChangePin = {}) => async (
 };
 
 export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { device } = getState().suite;
+    const { device, transport } = getState().suite;
     if (!device) return;
     const result = await TrezorConnect.wipeDevice({
         device: {
@@ -65,17 +66,16 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
 
     if (result.success) {
         dispatch(addToast({ type: 'device-wiped' }));
+        // special case with webusb. device after wipe changes device_id. with webusb transport, device_id is used as path
+        // and thus as descriptor for webusb. So, after device is wiped, in the transport layer, device is still paired
+        // through old descriptor but suite already works with a new one. it kinda works but only until we try a new call,
+        // typically resetDevice when in onboarding - we get device disconnected error;
+        if (isWebUSB(transport)) {
+            dispatch(modalActions.openModal({ type: 'disconnect-device' }));
+        }
     } else {
         dispatch(addToast({ type: 'error', error: result.payload.error }));
     }
-
-    // todo: evaluate in future, see https://github.com/trezor/trezor-suite/issues/1064
-    // if (result.success && device && device.features) {
-    //     dispatch({
-    //         type: SUITE.REQUEST_DISCONNECT_DEVICE,
-    //         payload: device,
-    //     });
-    // }
 };
 
 export const resetDevice = (params: ResetDevice = {}) => async (
@@ -108,9 +108,7 @@ export const resetDevice = (params: ResetDevice = {}) => async (
         ...defaults,
         ...params,
     });
-    if (result.success) {
-        dispatch(addToast({ type: 'settings-applied' }));
-    } else {
+    if (!result.success) {
         dispatch(addToast({ type: 'error', error: result.payload.error }));
     }
     return result;
