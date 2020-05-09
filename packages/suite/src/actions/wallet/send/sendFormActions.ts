@@ -136,7 +136,7 @@ export const handleAddressChange = (outputId: number, address: string) => (
 /*
     Change value in input "Amount"
  */
-export const handleAmountChange = (outputId: number, amount: string, shouldCompose = false) => (
+export const handleAmountChange = (outputId: number, amount: string) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -180,9 +180,7 @@ export const handleAmountChange = (outputId: number, amount: string, shouldCompo
         reserve,
     });
 
-    if (shouldCompose) {
-        dispatch(composeChange('amount'));
-    }
+    dispatch(composeChange('amount'));
 };
 
 /*
