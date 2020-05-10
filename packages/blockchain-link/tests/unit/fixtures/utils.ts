@@ -283,7 +283,7 @@ export default {
                 amount: '40',
                 targets: [
                     {
-                        addresses: ['B'],
+                        addresses: ['A'],
                     },
                 ],
             },
@@ -320,7 +320,7 @@ export default {
                 amount: '40',
                 targets: [
                     {
-                        addresses: ['B'],
+                        addresses: ['A'],
                     },
                 ],
             },
@@ -357,7 +357,234 @@ export default {
                 amount: '40',
                 targets: [
                     {
+                        addresses: ['A'],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'BTC: recv from 2 inputs to multiple addresses',
+            descriptor: 'xpub',
+            addresses: {
+                used: ['A', 'B'],
+                unused: ['C', 'D'],
+                change: [],
+            },
+            tx: {
+                vin: [
+                    {
+                        addresses: ['utxo1', 'utxo2'],
+                        value: '50',
+                    },
+                    {
+                        addresses: ['utxo3'],
+                        value: '50',
+                    },
+                ],
+                vout: [
+                    {
+                        addresses: ['A'],
+                        value: '20',
+                    },
+                    {
+                        addresses: ['C'],
+                        value: '20',
+                    },
+                    {
+                        addresses: ['B', 'D'],
+                        value: '20',
+                    },
+                    {
+                        addresses: ['utxo1-change'],
+                        value: '15',
+                    },
+                    {
+                        addresses: ['utxo3-change'],
+                        value: '15',
+                    },
+                ],
+                ...FEES,
+            },
+            parsed: {
+                type: 'recv',
+                amount: '60',
+                targets: [
+                    {
+                        addresses: ['A'],
+                    },
+                    {
+                        addresses: ['C'],
+                    },
+                    {
+                        addresses: ['B', 'D'],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'recv coinbase',
+            descriptor: 'A',
+            tx: {
+                vin: [
+                    {
+                        coinbase: 'ABCD',
+                    },
+                ],
+                vout: [
+                    {
+                        addresses: ['A'],
+                    },
+                ],
+            },
+            parsed: {
+                type: 'recv',
+                targets: [
+                    {
+                        addresses: ['A'],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'recv coinbase with multiple addresses',
+            descriptor: 'xpub',
+            addresses: {
+                used: ['utxo'],
+                unused: ['A', 'D', 'E'],
+                change: ['change'],
+            },
+            tx: {
+                vin: [
+                    {
+                        coinbase: 'ABCD',
+                    },
+                ],
+                vout: [
+                    {
+                        addresses: ['A'],
+                    },
+                    {
                         addresses: ['B'],
+                    },
+                    {
+                        addresses: ['C'],
+                    },
+                    {
+                        addresses: ['D', 'E'],
+                    },
+                ],
+            },
+            parsed: {
+                type: 'recv',
+                targets: [
+                    {
+                        addresses: ['A'],
+                    },
+                    {
+                        addresses: ['D', 'E'],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'recv without address',
+            descriptor: 'A',
+            tx: {
+                vin: [
+                    {
+                        addresses: [],
+                    },
+                ],
+                vout: [
+                    {
+                        addresses: ['A'],
+                    },
+                ],
+            },
+            parsed: {
+                type: 'recv',
+                targets: [
+                    {
+                        addresses: ['A'],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'recv with no input (vin is undefined)',
+            descriptor: 'A',
+            tx: {
+                vout: [
+                    {
+                        addresses: ['A'],
+                    },
+                ],
+            },
+            parsed: {
+                type: 'recv',
+                targets: [
+                    {
+                        addresses: ['A'],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'recv with no input (vin is empty)',
+            descriptor: 'A',
+            tx: {
+                vin: [],
+                vout: [
+                    {
+                        addresses: ['A'],
+                    },
+                ],
+            },
+            parsed: {
+                type: 'recv',
+                targets: [
+                    {
+                        addresses: ['A'],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'recv with no input (vin is invalid type)',
+            descriptor: 'A',
+            tx: {
+                vin: 1,
+                vout: [
+                    {
+                        addresses: ['A'],
+                    },
+                ],
+            },
+            parsed: {
+                type: 'recv',
+                targets: [
+                    {
+                        addresses: ['A'],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'recv with no input (vin item is invalid type)',
+            descriptor: 'A',
+            tx: {
+                vin: [1],
+                vout: [
+                    {
+                        addresses: ['A'],
+                    },
+                ],
+            },
+            parsed: {
+                type: 'recv',
+                targets: [
+                    {
+                        addresses: ['A'],
                     },
                 ],
             },
@@ -435,6 +662,9 @@ export default {
                 amount: '30', // B.value + fee
                 targets: [
                     {
+                        addresses: ['A2'],
+                    },
+                    {
                         addresses: ['B'],
                     },
                 ],
@@ -467,54 +697,7 @@ export default {
                 targets: [],
             },
         },
-        {
-            description: 'BTC: recv from 2 inputs',
-            descriptor: 'xpub',
-            addresses: {
-                used: [],
-                unused: ['A'],
-                change: [],
-            },
-            tx: {
-                vin: [
-                    {
-                        addresses: ['utxo1', 'utxo2'],
-                        value: '50',
-                    },
-                    {
-                        addresses: ['utxo3'],
-                        value: '50',
-                    },
-                ],
-                vout: [
-                    {
-                        addresses: ['A'],
-                        value: '60',
-                    },
-                    {
-                        addresses: ['utxo1-change'],
-                        value: '15',
-                    },
-                    {
-                        addresses: ['utxo3-change'],
-                        value: '15',
-                    },
-                ],
-                ...FEES,
-            },
-            parsed: {
-                type: 'recv',
-                amount: '60',
-                targets: [
-                    {
-                        addresses: ['utxo1', 'utxo2'],
-                    },
-                    {
-                        addresses: ['utxo3'],
-                    },
-                ],
-            },
-        },
+
         {
             description: 'ETH: sent',
             descriptor: 'A',
@@ -598,117 +781,6 @@ export default {
             },
             parsed: {
                 type: 'sent',
-                targets: [],
-            },
-        },
-        {
-            description: 'recv coinbase',
-            descriptor: 'A',
-            tx: {
-                vin: [
-                    {
-                        coinbase: 'ABCD',
-                    },
-                ],
-                vout: [
-                    {
-                        addresses: ['A'],
-                    },
-                ],
-            },
-            parsed: {
-                type: 'recv',
-                targets: [
-                    {
-                        coinbase: 'ABCD',
-                    },
-                ],
-            },
-        },
-        {
-            description: 'recv without address',
-            descriptor: 'A',
-            tx: {
-                vin: [
-                    {
-                        addresses: [],
-                    },
-                ],
-                vout: [
-                    {
-                        addresses: ['A'],
-                    },
-                ],
-            },
-            parsed: {
-                type: 'recv',
-                targets: [
-                    {
-                        addresses: [],
-                    },
-                ],
-            },
-        },
-        {
-            description: 'recv with no input (vin is undefined)',
-            descriptor: 'A',
-            tx: {
-                vout: [
-                    {
-                        addresses: ['A'],
-                    },
-                ],
-            },
-            parsed: {
-                type: 'recv',
-                targets: [],
-            },
-        },
-        {
-            description: 'recv with no input (vin is empty)',
-            descriptor: 'A',
-            tx: {
-                vin: [],
-                vout: [
-                    {
-                        addresses: ['A'],
-                    },
-                ],
-            },
-            parsed: {
-                type: 'recv',
-                targets: [],
-            },
-        },
-        {
-            description: 'recv with no input (vin is invalid type)',
-            descriptor: 'A',
-            tx: {
-                vin: 1,
-                vout: [
-                    {
-                        addresses: ['A'],
-                    },
-                ],
-            },
-            parsed: {
-                type: 'recv',
-                targets: [],
-            },
-        },
-        {
-            description: 'recv with no input (vin item is invalid type)',
-            descriptor: 'A',
-            tx: {
-                vin: [1],
-                vout: [
-                    {
-                        addresses: ['A'],
-                    },
-                ],
-            },
-            parsed: {
-                type: 'recv',
                 targets: [],
             },
         },
