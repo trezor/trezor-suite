@@ -91,6 +91,51 @@ const Backup = (props: Props) => {
             </Modal>
         );
     }
+
+    if (device.features.needs_backup === false) {
+        return (
+            <Modal useFixedHeight cancelable onCancel={props.onCancel}>
+                <ProgressBar
+                total={1}
+                current={1}
+                />
+                <StyledP data-test="@backup/success-message">
+                    <Translation id="TR_BACKUP_FINISHED_TEXT" />
+                </StyledP>
+                <AfterBackupCheckboxes />
+                <Buttons>
+                    <Col>
+                        {!device.features?.pin_protection && (
+                            <>
+                                <StyledButton
+                                    data-test="@backup/continue-to-pin-button"
+                                    isDisabled={!canContinue(backup.userConfirmed)}
+                                    onClick={() => {
+                                        onClose();
+                                        changePin({});
+                                    }}
+                                >
+                                    <Translation id="TR_CONTINUE_TO_PIN" />
+                                </StyledButton>
+                                <CloseButton onClick={onClose}>
+                                    <Translation id="TR_SKIP_PIN" />
+                                </CloseButton>
+                            </>
+                        )}
+                        {device?.features?.pin_protection && (
+                            <StyledButton
+                                isDisabled={!canContinue(backup.userConfirmed)}
+                                onClick={onClose}
+                            >
+                                <Translation id="TR_CLOSE" />
+                            </StyledButton>
+                        )}
+                    </Col>
+                </Buttons>
+            </Modal>
+        )
+    }
+
     return (
         <Modal
             useFixedHeight
@@ -140,7 +185,7 @@ const Backup = (props: Props) => {
 
             {backup.status === 'in-progress' && <Loading noBackground />}
 
-            {backup.status === 'finished' && !backup.error && (
+            {/* {backup.status === 'finished' && !backup.error && (
                 <>
                     <StyledP data-test="@backup/success-message">
                         <Translation id="TR_BACKUP_FINISHED_TEXT" />
@@ -176,7 +221,7 @@ const Backup = (props: Props) => {
                         </Col>
                     </Buttons>
                 </>
-            )}
+            )} */}
             {backup.status === 'finished' && backup.error && (
                 <>
                     <StyledP data-test="@backup/error-message">{backup.error}</StyledP>
