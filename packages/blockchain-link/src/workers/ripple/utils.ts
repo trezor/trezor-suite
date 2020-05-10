@@ -54,7 +54,7 @@ export const transformTransaction = (descriptor: string, tx: any): Transaction =
         };
     }
     const type = tx.Account === descriptor ? 'sent' : 'recv';
-    const addresses = type === 'sent' ? [tx.Destination] : [tx.Account];
+    const addresses = [tx.Destination];
     const amount = tx.Amount;
     const fee = tx.Fee;
     // const total = new BigNumber(amount).plus(fee).toString();
