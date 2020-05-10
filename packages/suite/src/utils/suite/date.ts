@@ -26,7 +26,7 @@ export const getDateWithTimeZone = (date: number, timeZone?: string) => {
         return utcToZonedTime(unixDate, tz);
     } catch (err) {
         console.error(err);
-        return null;
+        return undefined;
     }
 };
 
