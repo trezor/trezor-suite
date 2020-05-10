@@ -122,6 +122,7 @@ export default (props: Props) => {
         (!isTokenTransaction && !targets.find(t => t.addresses)) || type === 'unknown';
     const operation =
         (type === 'sent' || type === 'self' ? '-' : null) || (type === 'recv' ? '+' : null);
+    let key = 0;
 
     const buildTargetRow = (
         target: ArrayElement<Props['transaction']['targets']>,
@@ -132,8 +133,8 @@ export default (props: Props) => {
         const addr = isLocalTarget ? (
             <Translation id="TR_SENT_TO_SELF" />
         ) : (
-            target.addresses?.map(a =>
-                type === 'sent' ? <AddressLabeling key={a} address={a} /> : a,
+            target.addresses?.map((a, i) =>
+                type === 'sent' ? <AddressLabeling key={`${key}${i}`} address={a} /> : a,
             )
         );
 
@@ -143,9 +144,10 @@ export default (props: Props) => {
             (hasAmount ? target.amount : null) ||
             (target === targets[0] ? transaction.amount : null);
         const animation = useAnimation ? ANIMATION : {};
+        key++;
 
         return (
-            <React.Fragment key={target.amount}>
+            <React.Fragment key={key}>
                 <Addr {...animation}>
                     <StyledHiddenPlaceholder>{addr}</StyledHiddenPlaceholder>
                 </Addr>
@@ -181,8 +183,9 @@ export default (props: Props) => {
     ) => {
         const addr = type === 'self' ? <Translation id="TR_SENT_TO_SELF" /> : transfer.to;
         const animation = useAnimation ? ANIMATION : {};
+        key++;
         return (
-            <React.Fragment key={transfer.amount}>
+            <React.Fragment key={key}>
                 <Addr {...animation}>
                     <StyledHiddenPlaceholder>{addr}</StyledHiddenPlaceholder>
                 </Addr>
