@@ -2,7 +2,7 @@ import React, { createRef } from 'react';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button, Modal, colors } from '@trezor/components';
+import { Button, Modal, colors, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { AppState, Dispatch } from '@suite-types';
@@ -16,6 +16,7 @@ const LogWrapper = styled.pre`
     overflow: auto;
     background-color: ${colors.BLACK96};
     color: ${colors.BLACK0};
+    font-size: ${variables.FONT_SIZE.TINY};
     text-align: left;
     word-break: break-all;
 `;
