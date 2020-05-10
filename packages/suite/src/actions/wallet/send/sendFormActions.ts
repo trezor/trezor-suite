@@ -388,7 +388,7 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
 /*
     Change value in additional form - select "Fee"
  */
-export const handleCustomFeeValueChange = (customFee: string) => async (
+export const handleCustomFeeValueChange = (customFee: string) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
