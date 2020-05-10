@@ -9,7 +9,7 @@ import {
     Badge,
     AddressLabeling,
 } from '@suite-components';
-import { variables, colors, Button } from '@trezor/components';
+import { variables, colors, Button, Link } from '@trezor/components';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import { ArrayElement } from '@suite/types/utils';
 
@@ -25,10 +25,11 @@ const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
     text-overflow: ellipsis;
 `;
 
-const ColDate = styled.div`
+const ColDate = styled(Link)`
     grid-column: date;
     color: ${colors.BLACK50};
     font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
 const ColType = styled.div`
@@ -191,16 +192,11 @@ export default (props: Props) => {
                         {transfer.amount} {transfer.symbol}
                     </StyledHiddenPlaceholder>
                 </Balance>
-                {/* TODO: token fiat rates? */}
+                {/* TODO: token fiat rates missing? */}
                 {/* {useFiatValues && (
                     <ColFiat {...animation}>
                         <StyledHiddenPlaceholder>
-                            <FiatValue
-                                amount={transfer.amount}
-                                symbol={transfer.symbol}
-                                source={transaction.rates}
-                                useCustomSource
-                            >
+                            <FiatValue amount={transfer.amount} symbol={transfer.symbol}>
                                 {({ value }) => value && <Badge isSmall>{value}</Badge>}
                             </FiatValue>
                         </StyledHiddenPlaceholder>
@@ -222,7 +218,7 @@ export default (props: Props) => {
             >
                 {blockHeight !== 0 && blockTime && blockTime > 0 && (
                     <FormattedDate
-                        value={getDateWithTimeZone(blockTime * 1000) ?? undefined}
+                        value={getDateWithTimeZone(blockTime * 1000)}
                         hour="numeric"
                         minute="numeric"
                     />
