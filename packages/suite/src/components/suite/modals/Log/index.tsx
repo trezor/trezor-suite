@@ -84,8 +84,6 @@ const Log = (props: Props) => {
         document.body.removeChild(element);
     };
 
-    // Start file download.
-
     return (
         <Modal
             cancelable
