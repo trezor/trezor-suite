@@ -242,11 +242,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Assets',
         id: 'TR_ASSETS',
     },
-    TR_ATTENTION_COLON_THE_LOG_CONTAINS: {
-        defaultMessage:
-            'Attention: The log contains your XPUBs. Anyone with your XPUBs can see your account history.',
-        id: 'TR_ATTENTION_COLON_THE_LOG_CONTAINS',
-    },
     TR_AUTH_CONFIRM_FAILED_RETRY: {
         defaultMessage: 'Retry',
         id: 'TR_AUTH_CONFIRM_FAILED_RETRY',
@@ -3338,6 +3333,24 @@ const definedMessages = defineMessages({
     TR_YOU_MAY_EITHER_UPDATE: {
         id: 'TR_YOU_MAY_EITHER_UPDATE',
         defaultMessage: 'You might either update your device now or continue and update it later.',
+    },
+    TR_EXPORT_TO_FILE: {
+        id: 'TR_EXPORT_TO_FILE',
+        defaultMessage: 'Export to file',
+    },
+    LOG_INCLUDE_BALANCE_TITLE: {
+        id: 'LOG_INCLUDE_BALANCE_TITLE',
+        defaultMessage: 'Include balance related',
+    },
+    LOG_INCLUDE_BALANCE_DESCRIPTION: {
+        id: 'LOG_INCLUDE_BALANCE_DESCRIPTION',
+        defaultMessage:
+            "In case your issue does not relates to your balance or transactions, you may turn this off. Your account descriptors (XPubs) won't be included in copied log.",
+    },
+    LOG_DESCRIPTION: {
+        id: 'LOG_DESCRIPTION',
+        defaultMessage:
+            'In case of a communication with our support team, there is a log with a lot of technical info',
     },
 } as const);
 
