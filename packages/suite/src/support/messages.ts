@@ -2053,9 +2053,9 @@ const definedMessages = defineMessages({
         defaultMessage: 'Destination tag',
         id: 'TR_XRP_DESTINATION_TAG',
     },
-    TR_N_ADDRESSES: {
-        defaultMessage: '{count} {count, plural, one {address} other {addresses}}',
-        id: 'TR_N_ADDRESSES',
+    TR_SHOW_MORE_ADDRESSES: {
+        defaultMessage: 'Show more ({count})',
+        id: 'TR_SHOW_MORE_ADDRESSES',
     },
     TR_XRP_RESERVE_INFO: {
         defaultMessage:
