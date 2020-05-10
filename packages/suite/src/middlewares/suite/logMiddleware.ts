@@ -3,7 +3,7 @@ import { MiddlewareAPI } from 'redux';
 import { AppState, Action, Dispatch } from '@suite-types';
 import * as logActions from '@suite-actions/logActions';
 import { TRANSPORT, DEVICE } from 'trezor-connect';
-import { SUITE, LOG } from '@suite-actions/constants';
+import { SUITE } from '@suite-actions/constants';
 import { ACCOUNT } from '@wallet-actions/constants';
 import { getUserAgent } from '@suite-utils/env';
 
@@ -14,7 +14,8 @@ const log = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     next(action);
 
     // avoid endless loops, see default in switch
-    if (action.type === LOG.ADD) return action;
+    // also do not log any log related actions
+    if (action.type.startsWith('@log')) return action;
 
     // log actions we are interested in
     switch (action.type) {

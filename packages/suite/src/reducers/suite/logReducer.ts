@@ -10,10 +10,12 @@ export interface LogEntry {
 }
 
 export interface State {
+    excludeBalanceRelated: boolean;
     entries: LogEntry[];
 }
 
 export const initialState: State = {
+    excludeBalanceRelated: false,
     entries: [],
 };
 
@@ -31,6 +33,9 @@ export default (state: State = initialState, action: Action): State => {
         switch (action.type) {
             case LOG.ADD:
                 addToStack(draft.entries, action.payload);
+                break;
+            case LOG.TOGGLE_EXCLUDE_BALANCE_RELATED:
+                draft.excludeBalanceRelated = !draft.excludeBalanceRelated;
                 break;
             // no default
         }
