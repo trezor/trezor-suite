@@ -61,7 +61,6 @@ type Props = ReturnType<typeof mapDispatchToProps> &
 
 const Backup = (props: Props) => {
     const { backup, closeModalApp, modal, backupDevice, locks, device, changePin } = props;
-
     const onClose = () => closeModalApp();
 
     const backupStatuses = ['initial', 'in-progress', 'finished'] as const;
@@ -92,48 +91,44 @@ const Backup = (props: Props) => {
         );
     }
 
-    if (device.features.needs_backup === false) {
+    /*
+        Edge case, user disconnected device he was doing backup initially with and connected another device 
+        with backup finished or failed. Either way, there is no way.
+    */
+    if (backup.status !== 'finished' && !backup.error && device.features.needs_backup === false) {
         return (
             <Modal useFixedHeight cancelable onCancel={props.onCancel}>
-                <ProgressBar
-                total={1}
-                current={1}
-                />
-                <StyledP data-test="@backup/success-message">
-                    <Translation id="TR_BACKUP_FINISHED_TEXT" />
-                </StyledP>
-                <AfterBackupCheckboxes />
+                {!device.features.unfinished_backup && (
+                    <>
+                        <StyledP data-test="@backup/already-finished-message">
+                            This device has backup already finished
+                        </StyledP>
+                        <StyledImage image="UNI_SUCCESS" />
+                    </>
+                )}
+                {device.features.unfinished_backup && (
+                    <>
+                        <StyledP data-test="@backup/already-failed-message">
+                            This device is in failed backup state
+                        </StyledP>
+                        <StyledImage image="UNI_ERROR" />
+                    </>
+                )}
+
                 <Buttons>
                     <Col>
-                        {!device.features?.pin_protection && (
-                            <>
-                                <StyledButton
-                                    data-test="@backup/continue-to-pin-button"
-                                    isDisabled={!canContinue(backup.userConfirmed)}
-                                    onClick={() => {
-                                        onClose();
-                                        changePin({});
-                                    }}
-                                >
-                                    <Translation id="TR_CONTINUE_TO_PIN" />
-                                </StyledButton>
-                                <CloseButton onClick={onClose}>
-                                    <Translation id="TR_SKIP_PIN" />
-                                </CloseButton>
-                            </>
-                        )}
-                        {device?.features?.pin_protection && (
-                            <StyledButton
-                                isDisabled={!canContinue(backup.userConfirmed)}
-                                onClick={onClose}
-                            >
-                                <Translation id="TR_CLOSE" />
-                            </StyledButton>
-                        )}
+                        <StyledButton
+                            data-test="@backup/close-button"
+                            onClick={() => {
+                                onClose();
+                            }}
+                        >
+                            <Translation id="TR_CLOSE" />
+                        </StyledButton>
                     </Col>
                 </Buttons>
             </Modal>
-        )
+        );
     }
 
     return (
@@ -185,7 +180,7 @@ const Backup = (props: Props) => {
 
             {backup.status === 'in-progress' && <Loading noBackground />}
 
-            {/* {backup.status === 'finished' && !backup.error && (
+            {backup.status === 'finished' && !backup.error && (
                 <>
                     <StyledP data-test="@backup/success-message">
                         <Translation id="TR_BACKUP_FINISHED_TEXT" />
@@ -221,7 +216,7 @@ const Backup = (props: Props) => {
                         </Col>
                     </Buttons>
                 </>
-            )} */}
+            )}
             {backup.status === 'finished' && backup.error && (
                 <>
                     <StyledP data-test="@backup/error-message">{backup.error}</StyledP>
