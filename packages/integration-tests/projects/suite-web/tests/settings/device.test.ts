@@ -75,7 +75,7 @@ describe('Device settings', () => {
         cy.task('sendDecision');
     });
 
-    it('t1 - pin mismatch', () => {
+    it.skip('t1 - pin mismatch', () => {
         // todo: acquire device problem with model T1 emu, but why? stop and start bridge is sad workaround :(
         cy.task('stopEmu');
         cy.task('stopBridge');
