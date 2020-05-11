@@ -61,7 +61,6 @@ type Props = ReturnType<typeof mapDispatchToProps> &
 
 const Backup = (props: Props) => {
     const { backup, closeModalApp, modal, backupDevice, locks, device, changePin } = props;
-
     const onClose = () => closeModalApp();
 
     const backupStatuses = ['initial', 'in-progress', 'finished'] as const;
@@ -91,6 +90,47 @@ const Backup = (props: Props) => {
             </Modal>
         );
     }
+
+    /*
+        Edge case, user disconnected device he was doing backup initially with and connected another device 
+        with backup finished or failed. Either way, there is no way.
+    */
+    if (backup.status !== 'finished' && !backup.error && device.features.needs_backup === false) {
+        return (
+            <Modal useFixedHeight cancelable onCancel={props.onCancel}>
+                {!device.features.unfinished_backup && (
+                    <>
+                        <StyledP data-test="@backup/already-finished-message">
+                            This device has backup already finished
+                        </StyledP>
+                        <StyledImage image="UNI_SUCCESS" />
+                    </>
+                )}
+                {device.features.unfinished_backup && (
+                    <>
+                        <StyledP data-test="@backup/already-failed-message">
+                            This device is in failed backup state
+                        </StyledP>
+                        <StyledImage image="UNI_ERROR" />
+                    </>
+                )}
+
+                <Buttons>
+                    <Col>
+                        <StyledButton
+                            data-test="@backup/close-button"
+                            onClick={() => {
+                                onClose();
+                            }}
+                        >
+                            <Translation id="TR_CLOSE" />
+                        </StyledButton>
+                    </Col>
+                </Buttons>
+            </Modal>
+        );
+    }
+
     return (
         <Modal
             useFixedHeight
