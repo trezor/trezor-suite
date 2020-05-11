@@ -224,6 +224,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                 });
                             }}
                             isDisabled={!actionEnabled}
+                            data-test="@settings/device/pin-switch"
                         />
                     </ActionColumn>
                 </SectionItem>
