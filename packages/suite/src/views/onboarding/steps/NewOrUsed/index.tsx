@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { Translation } from '@suite-components';
 import * as STEP from '@onboarding-constants/steps';
 import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components';
 import { Props } from './Container';
@@ -16,10 +17,11 @@ const NewOrUsedStep = (props: Props) => {
 
     return (
         <Wrapper.Step>
-            <Wrapper.StepHeading>Select device status</Wrapper.StepHeading>
+            <Wrapper.StepHeading>
+                <Translation id="TR_SELECT_DEVICE_STATUS" />
+            </Wrapper.StepHeading>
             <Text>
-                You can select either a brand new Trezor or any Trezor device that has been used
-                before and already initialized.
+                <Translation id="TR_YOU_CAN_SELECT_EITHER" />
             </Text>
             <Wrapper.StepBody>
                 <Wrapper.Options>
@@ -28,9 +30,9 @@ const NewOrUsedStep = (props: Props) => {
                         action={() => {
                             handleNewDeviceOnClick();
                         }}
-                        title="I have a new device"
-                        text="Sealed package that you just bought or received"
-                        button="New device"
+                        title={<Translation id="TR_I_HAVE_A_NEW_DEVICE" />}
+                        text={<Translation id="TR_SEALED_PACKAGE_THAT" />}
+                        button={<Translation id="TR_NEW_DEVICE" />}
                         imgSrc="images/svg/new-device.svg"
                     />
 
@@ -40,9 +42,9 @@ const NewOrUsedStep = (props: Props) => {
                             props.onboardingActions.addPath(STEP.PATH_USED);
                             props.onboardingActions.goToNextStep();
                         }}
-                        title="I have a used device"
-                        text="Unpacked device that has been already used before"
-                        button="Used device"
+                        title={<Translation id="TR_I_HAVE_A_USED_DEVICE" />}
+                        text={<Translation id="TR_UNPACKED_DEVICE_THAT" />}
+                        button={<Translation id="TR_USED_DEVICE" />}
                         imgSrc="images/svg/used-device.svg"
                     />
                 </Wrapper.Options>
@@ -54,7 +56,7 @@ const NewOrUsedStep = (props: Props) => {
                             props.onboardingActions.goToPreviousStep();
                         }}
                     >
-                        Back
+                        <Translation id="TR_BACK" />
                     </OnboardingButton.Back>
                 </Wrapper.Controls>
             </Wrapper.StepFooter>

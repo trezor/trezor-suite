@@ -3352,6 +3352,57 @@ const definedMessages = defineMessages({
         defaultMessage:
             'In case of a communication with our support team, there is a log with a lot of technical info',
     },
+    TR_IF_YOU_NEVER_HAD_WALLET: {
+        id: 'TR_IF_YOU_NEVER_HAD_WALLET',
+        defaultMessage: 'If you never had any Wallet or want to create fresh one',
+    },
+    TR_RESTORE_EXISTING_WALLET: {
+        id: 'TR_RESTORE_EXISTING_WALLET',
+        defaultMessage: 'Restore existing wallet',
+    },
+    TR_USING_EITHER_YOUR_SINGLE_BACKUP: {
+        id: 'TR_USING_EITHER_YOUR_SINGLE_BACKUP',
+        defaultMessage: 'Using either your single backup seed or Shamir backup seed',
+    },
+    TR_SELECT_DEVICE_STATUS: {
+        id: 'TR_SELECT_DEVICE_STATUS',
+        defaultMessage: 'Select device status',
+        description:
+            'In onboarding, where user is choosing whether device is brand new or already used',
+    },
+    TR_YOU_CAN_SELECT_EITHER: {
+        id: 'TR_YOU_CAN_SELECT_EITHER',
+        defaultMessage:
+            'You can select either a brand new Trezor or any Trezor device that has been used before and already initialized.',
+    },
+    TR_I_HAVE_A_NEW_DEVICE: {
+        id: 'TR_I_HAVE_A_NEW_DEVICE',
+        defaultMessage: 'I have a new device',
+    },
+    TR_SEALED_PACKAGE_THAT: {
+        id: 'TR_SEALED_PACKAGE_THAT',
+        defaultMessage: 'Sealed package that you just bought or received',
+    },
+    TR_NEW_DEVICE: {
+        id: 'TR_NEW_DEVICE',
+        defaultMessage: 'New device',
+    },
+    TR_I_HAVE_A_USED_DEVICE: {
+        id: 'TR_I_HAVE_A_USED_DEVICE',
+        defaultMessage: 'I have a used device',
+    },
+    TR_UNPACKED_DEVICE_THAT: {
+        id: 'TR_UNPACKED_DEVICE_THAT',
+        defaultMessage: 'Unpacked device that has been already used before',
+    },
+    TR_USED_DEVICE: {
+        id: 'TR_USED_DEVICE',
+        defaultMessage: 'Used device',
+    },
+    TR_ONLY_2_MORE_STEPS: {
+        id: 'TR_ONLY_2_MORE_STEPS',
+        defaultMessage: 'Only 2 more steps that take only few more minutes.',
+    },
 } as const);
 
 export default definedMessages;
