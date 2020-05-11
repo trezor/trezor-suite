@@ -37,9 +37,9 @@ const StyledImage = styled(props => <Image {...props} />)`
     }
 `;
 
-const InlineButton = styled(Button)`
-    display: inline-flex;
-`;
+// const InlineButton = styled(Button)`
+//     display: inline-flex;
+// `;
 
 const SecurityItem = styled.div`
     color: ${colors.BLACK50};
