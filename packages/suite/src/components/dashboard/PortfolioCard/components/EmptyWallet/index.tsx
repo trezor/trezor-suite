@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, Button, variables } from '@trezor/components';
+import { colors, variables } from '@trezor/components';
 import { Translation, Image } from '@suite-components';
 
 const Wrapper = styled.div`
@@ -37,9 +37,9 @@ const StyledImage = styled(props => <Image {...props} />)`
     }
 `;
 
-const InlineButton = styled(Button)`
-    display: inline-flex;
-`;
+// const InlineButton = styled(Button)`
+//     display: inline-flex;
+// `;
 
 const SecurityItem = styled.div`
     color: ${colors.BLACK50};
@@ -62,7 +62,7 @@ const EmptyWallet = (props: Props) => {
                 </Title>
                 <SecurityItem>
                     <Translation id="TR_ADDITIONAL_SECURITY_FEATURES" />
-                    <InlineButton
+                    {/* <InlineButton
                         variant="tertiary"
                         size="small"
                         icon="ARROW_RIGHT"
@@ -72,7 +72,7 @@ const EmptyWallet = (props: Props) => {
                         }}
                     >
                         <Translation id="TR_FINISH_ADVANCED_SECURITY" />
-                    </InlineButton>
+                    </InlineButton> */}
                 </SecurityItem>
                 {/* <SecurityItem>
                     <Translation id="TR_LOOKING_FOR_QUICK_EASY" />
