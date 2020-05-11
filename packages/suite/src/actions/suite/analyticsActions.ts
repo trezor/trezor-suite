@@ -88,7 +88,7 @@ const getUrl = () => {
     }
 
     // Intentionally pretty much verbose to be sure what is being sent where
-    if (process.env.SUITE_TYPE === 'web') {
+    if (process.env.SUITE_TYPE === 'web' && window) {
         if (window.location.hostname === 'staging-wallet.trezor.io') {
             return `${base}/web/stage.log`;
         }

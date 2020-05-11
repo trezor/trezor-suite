@@ -48,11 +48,18 @@ describe('Analytics Actions', () => {
     });
 
     it('analyticsActions.report() - should report if enabled', () => {
+        const env = process.env.SUITE_TYPE;
+        process.env.SUITE_TYPE = 'desktop';
         const state = getInitialState({ analytics: { enabled: true } });
         const store = initStore(state);
         store.dispatch(analyticsActions.report({ type: 'ui', payload: 'wrrr' }));
         // @ts-ignore
-        expect(global.fetch).toHaveBeenCalledTimes(1);
+        expect(global.fetch).toHaveBeenNthCalledWith(
+            1,
+            'https://data.trezor.io/suite/log/desktop/beta.log',
+            jasmine.any(Object),
+        );
+        process.env.SUITE_TYPE = env;
     });
 
     it('analyticsActions.report() - should not report if not enabled', () => {
@@ -61,5 +68,16 @@ describe('Analytics Actions', () => {
         store.dispatch(analyticsActions.report({ type: 'ui', payload: 'wrrr' }));
         // @ts-ignore
         expect(global.fetch).toHaveBeenCalledTimes(0);
+    });
+
+    it('analyticsActions.report() - should not report in dev', () => {
+        const env = process.env.NODE_ENV;
+        process.env.NODE_ENV = 'development';
+        const state = getInitialState({ analytics: { enabled: true } });
+        const store = initStore(state);
+        store.dispatch(analyticsActions.report({ type: 'ui', payload: 'wrrr' }));
+        // @ts-ignore
+        expect(global.fetch).toHaveBeenCalledTimes(0);
+        process.env.NODE_ENV = env;
     });
 });
