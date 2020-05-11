@@ -9,7 +9,7 @@
 
     },
     "include": [
-        "**/*.ts"
+        "**/*.ts", "tests/backup/backup.test.js"
     ],
     "exclude": []
 }

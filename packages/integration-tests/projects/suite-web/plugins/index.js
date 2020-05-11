@@ -27,6 +27,9 @@ module.exports = on => {
     // add snapshot plugin
     addMatchImageSnapshotPlugin(on);
 
+    // add retry plugin
+    require('cypress-plugin-retries/lib/plugin')(on)
+
     on('before:browser:launch', async (browser = {}, launchOptions) => {
         // default state of bridge is ON
         await controller.connect();

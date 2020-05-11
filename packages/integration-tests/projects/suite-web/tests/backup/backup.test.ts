@@ -1,12 +1,12 @@
 // backup tests are first in order and also fail in most cases, try to skip them for a while 
 // and see if tests that are second will display the same behavior. I need to find out if I am 
 // doing something wrong here or not.
-describe.skip('Backup', () => {
+describe('Backup', () => {
     beforeEach(() => {
-        // note for future 2.1.4, on load_device results in device without backup.
-        // we will want to have newer firmware here later, it will require implementing needs_backup to task('setupEmu')
-        cy.task('startEmu', { version: '2.1.4', wipe: true });
-        cy.task('setupEmu');
+        // Cypress.currentTest.retries(3)
+        cy.task('stopEmu');
+        cy.task('startEmu', { wipe: true });
+        cy.task('setupEmu', { needs_backup: true });
 
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');
@@ -16,7 +16,7 @@ describe.skip('Backup', () => {
     it('Successful backup happy path', () => {
         // access from notification
         cy.getTestElement('@notification/no-backup/button').click();
-        
+
         cy.getTestElement('@backup').matchImageSnapshot('backup')
         
         cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
@@ -59,8 +59,9 @@ describe.skip('Backup', () => {
         cy.getTestElement('@backup/error-message');
     });
 
-    it('Backup should reset if modal is closed', () => {
+    it.only('Backup should reset if modal is closed', () => {
         cy.getTestElement('@notification/no-backup/button').click();
+        cy.getTestElement('fooo', { timeout: 1});
         cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
         cy.getTestElement('@backup/close-button').click();
         cy.getTestElement('@notification/no-backup/button').click();

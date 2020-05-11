@@ -10,7 +10,7 @@ services:
       service: suite-dev
   test-open:
     # the Docker image to use from https://github.com/cypress-io/cypress-docker-images
-    image: cypress/included:4.3.0
+    image: cypress/included:4.7.0
     container_name: test-runner
     ipc: host
     depends_on:
@@ -24,7 +24,8 @@ services:
       - DISPLAY=$DISPLAY
       - QT_X11_NO_MITSHM=1
     working_dir: /e2e
-    entrypoint: bash -c "yarn && cypress open --project /e2e/packages/integration-tests/projects/suite-web"
+    # entrypoint: bash -c "yarn && cypress open --project /e2e/packages/integration-tests/projects/suite-web"
+    entrypoint: bash -c "ls -la ./packages/integration-tests/projects/suite-web && node ./packages/integration-tests/projects/suite-web/run_tests.js"
     volumes:
       - ../:/e2e
       - /tmp/.X11-unix:/tmp/.X11-unix:rw

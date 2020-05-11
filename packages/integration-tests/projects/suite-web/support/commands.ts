@@ -10,6 +10,7 @@ import { getTestElement, getConfirmActionOnDeviceModal } from './utils/selectors
 import { resetDb, setState } from './utils/test-env';
 import { toggleDeviceMenu, goToOnboarding, passThroughInitialRun, passThroughBackup } from './utils/shortcuts';
 
+require('cypress-plugin-retries')
 const command = require('cypress-image-snapshot/command');
 
 const prefixedVisit = (route: string) => {
