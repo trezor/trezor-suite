@@ -25,7 +25,9 @@ const SecurityStep = (props: Props) => (
                     <Translation id="TR_GO_TO_SECURITY" />
                 </OnboardingButton.Cta>
             </Wrapper.Controls>
-            <Text>Only 2 more steps that take only few more minutes.</Text>
+            <Text>
+                <Translation id="TR_ONLY_2_MORE_STEPS" />
+            </Text>
         </Wrapper.StepBody>
         <Wrapper.StepFooter>
             <OnboardingButton.Back
