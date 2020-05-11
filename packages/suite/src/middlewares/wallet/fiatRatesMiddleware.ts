@@ -20,15 +20,16 @@ const fiatRatesMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
             api.dispatch(fiatRatesActions.updateTxsRates(action.account, action.transactions));
             break;
         case ACCOUNT.UPDATE: {
-            // new tokens added on account update
+            // fetch rates for new tokens added on account update
             const account = action.payload;
             const prevAccount = prevState.wallet.accounts.find(
                 a => a.descriptor === account.descriptor && a.symbol === account.symbol,
             );
+
             if (account.tokens) {
                 const difference = account.tokens.filter(
                     t => !prevAccount?.tokens?.find(prevT => prevT.symbol === t.symbol),
-                ); // array of added tokens
+                );
 
                 difference.forEach(t => {
                     if (t.symbol) {
