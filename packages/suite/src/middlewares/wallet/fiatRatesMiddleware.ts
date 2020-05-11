@@ -7,6 +7,7 @@ import { AppState, Action, Dispatch } from '@suite-types';
 const fiatRatesMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
 ): Action => {
+    const prevState = api.getState();
     // pass action
     next(action);
 
@@ -18,9 +19,32 @@ const fiatRatesMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
             // fetch historical rates for each added transaction
             api.dispatch(fiatRatesActions.updateTxsRates(action.account, action.transactions));
             break;
+        case ACCOUNT.UPDATE: {
+            // new tokens added on account update
+            const account = action.payload;
+            const prevAccount = prevState.wallet.accounts.find(
+                a => a.descriptor === account.descriptor && a.symbol === account.symbol,
+            );
+            if (account.tokens) {
+                const difference = account.tokens.filter(
+                    t => !prevAccount?.tokens?.find(prevT => prevT.symbol === t.symbol),
+                ); // array of added tokens
+
+                difference.forEach(t => {
+                    if (t.symbol) {
+                        api.dispatch(
+                            fiatRatesActions.updateCurrentRates({
+                                symbol: t.symbol,
+                                mainNetworkSymbol: account.symbol,
+                            }),
+                        );
+                    }
+                });
+            }
+            break;
+        }
         case ACCOUNT.CREATE: {
             // fetch current rates for account's tokens
-            // TODO: new tokens could appear also on account.UPDATE
             const account = action.payload;
             if (account.tokens) {
                 account.tokens.forEach(t => {
