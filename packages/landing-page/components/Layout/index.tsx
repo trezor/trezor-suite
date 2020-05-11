@@ -47,6 +47,10 @@ const Content = styled.div`
     max-width: 640px;
 `;
 
+const StyledTrezorLogo = styled(TrezorLogo)`
+    min-height: 46px;
+`;
+
 interface Props {
     children: ReactNode;
 }
@@ -55,7 +59,7 @@ const Index = ({ children }: Props) => (
     <Layout>
         <Left />
         <Right>
-            <TrezorLogo type="horizontal" width={160} />
+            <StyledTrezorLogo type="horizontal" width={160} />
             <Content>{children}</Content>
             <Footer size="tiny">We use cookies for functionality and analytics purposes.</Footer>
         </Right>
