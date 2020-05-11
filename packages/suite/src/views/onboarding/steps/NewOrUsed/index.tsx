@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { Translation } from '@suite-components';
 import * as STEP from '@onboarding-constants/steps';
 import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components';
 import { Props } from './Container';
@@ -54,7 +55,7 @@ const NewOrUsedStep = (props: Props) => {
                             props.onboardingActions.goToPreviousStep();
                         }}
                     >
-                        Back
+                        <Translation id="TR_BACK" />
                     </OnboardingButton.Back>
                 </Wrapper.Controls>
             </Wrapper.StepFooter>
