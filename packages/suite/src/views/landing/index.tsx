@@ -97,7 +97,7 @@ export default () => {
                 </Row>
                 <Item>
                     <ButtonContinue variant="tertiary" icon="ARROW_RIGHT" alignIcon="right">
-                        <Link href="../" target="_blank" variant="nostyle">
+                        <Link href="../" variant="nostyle">
                             Continue in browser
                         </Link>
                     </ButtonContinue>
