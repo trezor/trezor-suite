@@ -48,7 +48,7 @@ const Index = () => (
                 </Link>
             </Item>
             <Item>
-                <Link href="https://wallet.trezor.io" target="_blank" variant="nostyle">
+                <Link href="/wallet" target="_blank" variant="nostyle">
                     <ButtonAccess variant="primary">Access Trezor Suite (beta)</ButtonAccess>
                 </Link>
             </Item>
