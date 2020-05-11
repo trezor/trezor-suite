@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import FocusLock from 'react-focus-lock';
 import { SUITE } from '@suite-actions/constants';
 import Loading from '@suite-components/Loading';
+import Landing from '@landing-views/index';
 import { SuiteLayout } from '@suite-components';
 import DiscoveryLoader from '@suite-components/DiscoveryLoader';
 import Modals from '@suite-components/modals';
@@ -137,6 +138,7 @@ const getModalApplication = (route: Props['router']['route']) => {
 
 const Preloader = (props: Props) => {
     const { loading, loaded, error, dispatch, router, transport, actionModalContext } = props;
+
     useEffect(() => {
         if (!loading && !loaded && !error) {
             dispatch({ type: SUITE.INIT });
@@ -148,6 +150,8 @@ const Preloader = (props: Props) => {
         // throw error to <ErrorBoundary /> in _app.tsx
         throw new Error(error);
     }
+
+    if (router.app === 'start') return <Landing />;
 
     const hasActionModal = actionModalContext !== '@modal/context-none';
     // check if current route is a "modal application" and display it above requested physical route (route in url)
