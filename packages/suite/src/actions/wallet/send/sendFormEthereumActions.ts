@@ -4,7 +4,7 @@ import { SEND } from '@wallet-actions/constants';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as commonActions from './sendFormCommonActions';
-import { composeChange } from './sendFormActions';
+import * as sendFormActions from './sendFormActions';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { toWei, fromWei } from 'web3-utils';
 import {
@@ -74,6 +74,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     }
 
     dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: false });
+
     return tx;
 };
 
@@ -180,7 +181,11 @@ export const handleGasPrice = (gasPrice: string) => (dispatch: Dispatch, getStat
         },
     });
 
-    dispatch(composeChange());
+    dispatch(sendFormActions.composeChange());
+
+    if (send.setMaxActivated) {
+        dispatch(sendFormActions.setMax());
+    }
 };
 
 /*
@@ -208,7 +213,11 @@ export const handleGasLimit = (gasLimit: string) => (dispatch: Dispatch, getStat
         },
     });
 
-    dispatch(composeChange());
+    dispatch(sendFormActions.composeChange());
+
+    if (send.setMaxActivated) {
+        dispatch(sendFormActions.setMax());
+    }
 };
 
 /*
@@ -264,4 +273,8 @@ export const handleData = (data: string) => async (dispatch: Dispatch, getState:
         type: SEND.ETH_HANDLE_GAS_PRICE,
         gasPrice,
     });
+
+    if (send.setMaxActivated) {
+        dispatch(sendFormActions.setMax());
+    }
 };
