@@ -25,9 +25,9 @@ const CreateOrRecoverStep = (props: Props) => {
                             props.addPath(STEP.PATH_CREATE);
                             props.goToNextStep();
                         }}
-                        title="Create new Wallet"
-                        text="If you never had any Wallet or want to create fresh one"
-                        button="Create a new Wallet"
+                        title={<Translation id="TR_CREATE_WALLET" />}
+                        text={<Translation id="TR_IF_YOU_NEVER_HAD_WALLET" />}
+                        button={<Translation id="TR_CREATE_WALLET" />}
                         imgSrc="images/svg/create-new.svg"
                     />
                     <Option
@@ -36,9 +36,9 @@ const CreateOrRecoverStep = (props: Props) => {
                             props.addPath(STEP.PATH_RECOVERY);
                             props.goToNextStep();
                         }}
-                        title="Restore existing wallet"
-                        text="Using either your single backup seed or Shamir backup seed"
-                        button="Restore existing wallet"
+                        title={<Translation id="TR_RESTORE_EXISTING_WALLET" />}
+                        text={<Translation id="TR_USING_EITHER_YOUR_SINGLE_BACKUP" />}
+                        button={<Translation id="TR_RESTORE_EXISTING_WALLET" />}
                         imgSrc="images/svg/recover-from-seed.svg"
                     />
                 </Wrapper.Options>
@@ -49,7 +49,7 @@ const CreateOrRecoverStep = (props: Props) => {
                         props.goToPreviousStep();
                     }}
                 >
-                    Back
+                    <Translation id="TR_BACK" />
                 </OnboardingButton.Back>
             </Wrapper.StepFooter>
         </Wrapper.Step>

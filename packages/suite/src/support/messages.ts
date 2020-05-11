@@ -3352,6 +3352,19 @@ const definedMessages = defineMessages({
         defaultMessage:
             'In case of a communication with our support team, there is a log with a lot of technical info',
     },
+    TR_IF_YOU_NEVER_HAD_WALLET: { 
+        id: 'TR_IF_YOU_NEVER_HAD_WALLET',
+        defaultMessage: 'If you never had any Wallet or want to create fresh one',
+    },
+    TR_RESTORE_EXISTING_WALLET: {
+        id: 'TR_RESTORE_EXISTING_WALLET',
+        defaultMessage: 'Restore existing wallet',
+    },
+    TR_USING_EITHER_YOUR_SINGLE_BACKUP: {
+        id: 'TR_USING_EITHER_YOUR_SINGLE_BACKUP',
+        defaultMessage: 'Using either your single backup seed or Shamir backup seed',
+    }
+
 } as const);
 
 export default definedMessages;
