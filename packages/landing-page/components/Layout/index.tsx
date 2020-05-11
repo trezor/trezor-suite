@@ -11,7 +11,7 @@ const Layout = styled.div`
 const Left = styled.div`
     min-width: 330px;
     object-fit: cover;
-    background: url(${resolveStaticPath('images/landing/left_bg.svg')});
+    background: url(${resolveStaticPath('images/landing/hero.svg')});
     background-repeat: no-repeat;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
