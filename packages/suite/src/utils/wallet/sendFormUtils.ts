@@ -179,7 +179,7 @@ export const serializeEthereumTx = (tx: any) => {
               )
             : undefined;
 
-    const ethTx = new Transaction(tx, { common, chain: tx.chainId });
+    const ethTx = new Transaction(tx, { common, chain: !common ? tx.chainId : undefined });
     return `0x${ethTx.serialize().toString('hex')}`;
 };
 
