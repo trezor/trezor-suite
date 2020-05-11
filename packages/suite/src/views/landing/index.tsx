@@ -99,7 +99,7 @@ export default () => {
                 </Row>
                 <Item>
                     <ButtonContinue variant="tertiary" icon="ARROW_RIGHT" alignIcon="right">
-                        <Link href="https://wallet.trezor.io/" target="_blank" variant="nostyle">
+                        <Link href="../" target="_blank" variant="nostyle">
                             Continue in browser
                         </Link>
                     </ButtonContinue>
