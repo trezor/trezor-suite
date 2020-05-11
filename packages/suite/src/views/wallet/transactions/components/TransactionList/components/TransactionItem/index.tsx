@@ -18,7 +18,7 @@ import TransactionTypeIcon from './components/TransactionTypeIcon';
 import { Props } from './Container';
 
 const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
-    padding: 8px 0px;
+    padding: 8px 0px; /* row padding */
     display: block;
     overflow: hidden;
     white-space: nowrap;
@@ -45,7 +45,6 @@ const Addr = styled(motion.div)`
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    /* border: 1px solid red; */
     @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
         grid-column: target / fiat;
     }
@@ -55,13 +54,11 @@ const Balance = styled(motion.div)<{ partial?: boolean; secondary?: boolean }>`
     grid-column: amount;
     font-size: ${props => (props.secondary ? variables.FONT_SIZE.TINY : variables.FONT_SIZE.SMALL)};
     color: ${props => (props.partial || props.secondary ? colors.BLACK50 : colors.BLACK0)};
-    /* border: 1px solid blue; */
     white-space: nowrap;
     text-overflow: ellipsis;
     text-transform: uppercase;
     text-align: right;
     @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        /* grid-column: target; */
         text-align: left;
     }
 `;

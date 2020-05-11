@@ -20,9 +20,7 @@ const Table = styled.div`
     grid-template-areas: 'date type target amount fiat';
     grid-template-columns: auto auto 1fr auto auto;
     align-items: center;
-    /* grid-row-gap: 8px; */
     @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        /* grid-row-gap: 4px; */
         grid-template-areas:
             'date type target target'
             'date type amount fiat';
