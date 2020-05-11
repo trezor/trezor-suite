@@ -154,8 +154,6 @@ const Pin = ({ device, onPinSubmit, ...rest }: Props) => {
 
     if (!device.features) return null;
 
-    // const { features } = device;
-
     const submit = (pin: string) => {
         onPinSubmit(pin);
         setSubmitted(true);
