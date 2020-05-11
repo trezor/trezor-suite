@@ -85,6 +85,7 @@ const StyledP = styled(P)`
 const StyledImage = styled(Image)`
     flex: 1;
 `;
+
 const mapStateToProps = (state: AppState) => ({
     recovery: state.recovery,
     locks: state.suite.locks,
@@ -209,6 +210,7 @@ const Recovery = ({
                 {recovery.status === 'initial' && (
                     <>
                         <CheckItem
+                            data-test="@recovery/user-understands-checkbox"
                             title={<Translation id="TR_DRY_RUN_CHECK_ITEM_TITLE" />}
                             description={<Translation id="TR_DRY_RUN_CHECK_ITEM_DESCRIPTION" />}
                             isChecked={understood}
@@ -226,6 +228,7 @@ const Recovery = ({
                                     model === 1 ? setStatus('select-word-count') : checkSeed()
                                 }
                                 isDisabled={!understood || !actionEnabled}
+                                data-test="@recovery/start-button"
                             >
                                 <Translation id="TR_START" />
                             </StyledButton>
@@ -314,7 +317,10 @@ const Recovery = ({
                         </H2>
                         <Error error={recovery.error} />
                         <Buttons>
-                            <StyledButton onClick={() => closeModalApp()}>
+                            <StyledButton
+                                onClick={() => closeModalApp()}
+                                data-test="@recovery/close-button"
+                            >
                                 <Translation id="TR_CLOSE" />
                             </StyledButton>
                         </Buttons>
