@@ -1,3 +1,9 @@
+# 1.0.11
+
+#### changes
+
+-   Fixed `recv` transaction targets
+
 # 1.0.10
 
 #### changes

@@ -2,8 +2,6 @@ import React, { Fragment } from 'react';
 import styled, { css } from 'styled-components';
 import { Account } from '@wallet-types';
 import { Card, FiatValue, Badge, HiddenPlaceholder } from '@suite-components';
-// @ts-ignore no types for this lib
-import ScaleText from 'react-scale-text';
 import { variables, colors, Icon, Link } from '@trezor/components';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
@@ -11,7 +9,7 @@ const Wrapper = styled(Card)`
     display: grid;
     grid-column-gap: 12px;
     grid-template-columns: ${(props: { isTestnet?: boolean }) =>
-        props.isTestnet ? '36px 4fr 1fr 44px' : '36px 4fr 1fr 1fr 44px'};
+        props.isTestnet ? '4fr 1fr 44px' : '4fr 1fr 1fr 44px'};
     margin-bottom: 20px;
     padding: 12px ${CARD_PADDING_SIZE};
 `;
@@ -21,6 +19,11 @@ interface ColProps {
     paddingHorizontal?: boolean;
     isTestnet?: boolean;
 }
+
+const TokenSymbol = styled.div`
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    padding-right: 2px;
+`;
 
 const Col = styled.div<ColProps>`
     display: flex;
@@ -49,22 +52,6 @@ const Col = styled.div<ColProps>`
             padding-left: 14px;
             padding-right: 14px;
         `}
-`;
-
-const TokenImage = styled.div`
-    display: flex;
-    margin-right: 12px;
-    background: #8a92b2;
-    color: #fefefe;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    align-items: center;
-    /* line-height: 30px; */
-    text-transform: uppercase;
-    user-select: none;
-    text-align: center;
-    padding: 3px;
 `;
 
 const TokenName = styled.div`
@@ -97,12 +84,12 @@ const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
                 return (
                     <Fragment key={t.address}>
                         <Col>
-                            <TokenImage>
-                                <ScaleText widthOnly>{t.symbol}</ScaleText>
-                            </TokenImage>
-                        </Col>
-                        <Col>
-                            <TokenName>{t.name}</TokenName>
+                            <TokenName>
+                                <TokenSymbol>
+                                    {t.symbol ? t.symbol.toUpperCase() : 'unknown'}
+                                </TokenSymbol>
+                                - {t.name}
+                            </TokenName>
                         </Col>
                         <Col justify="right">
                             <HiddenPlaceholder>

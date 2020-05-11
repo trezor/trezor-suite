@@ -208,7 +208,9 @@ export default [
                         rbf: true,
                         targets: [
                             {
-                                addresses: ['19SW698tGLusJZVBmGDYmHvSwn79WqJP65'],
+                                addresses: ['1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d'],
+                                amount: '1',
+                                isAccountTarget: true,
                             },
                         ],
                         tokens: [],

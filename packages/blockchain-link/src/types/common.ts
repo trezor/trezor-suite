@@ -28,6 +28,7 @@ export interface Target {
     isAddress: boolean;
     amount?: string;
     coinbase?: string;
+    isAccountTarget?: boolean;
 }
 
 export interface Transaction {
