@@ -68,7 +68,6 @@ export default (props: Props) => {
         return (
             <Content selectedAccount={selectedAccount} showSummary>
                 <TransactionList
-                    explorerUrl={network.explorer.tx}
                     transactions={accountTransactions}
                     currentPage={selectedPage}
                     totalPages={total}

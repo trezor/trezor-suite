@@ -1,23 +1,31 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { colors, variables, Loader } from '@trezor/components';
-import { groupTransactionsByDate, parseKey, sumTransactions } from '@wallet-utils/transactionUtils';
+import { groupTransactionsByDate, sumTransactions } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
-import { Account, WalletAccountTransaction } from '@wallet-types';
+import { WalletAccountTransaction } from '@wallet-types';
 import TransactionItem from './components/TransactionItem/Container';
 import Pagination from './components/Pagination';
 import { Card, Translation } from '@suite-components';
-import TransactionHeaderItem from './components/TransactionHeaderItem';
-
-const Wrapper = styled.div``;
+import DayHeader from './components/DayHeader';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
     margin-bottom: 20px;
+    padding-bottom: 20px;
 `;
 
-const Transactions = styled.div`
-    flex-direction: column;
+const Table = styled.div`
+    display: grid;
+    grid-template-areas: 'date type target amount fiat';
+    grid-template-columns: auto auto 1fr auto auto;
+    align-items: center;
+    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        grid-template-areas:
+            'date type target target'
+            'date type amount fiat';
+        grid-template-columns: auto auto 1fr auto;
+    }
 `;
 
 const PaginationWrapper = styled.div`
@@ -40,18 +48,16 @@ const LoaderText = styled.div`
 `;
 
 interface Props {
-    explorerUrl?: string;
     transactions: WalletAccountTransaction[];
     currentPage: number;
     totalPages?: number;
     perPage: number;
-    symbol: Account['symbol'];
+    symbol: WalletAccountTransaction['symbol'];
     isLoading?: boolean;
     onPageSelected: (page: number) => void;
 }
 
 const TransactionList = ({
-    explorerUrl,
     transactions,
     currentPage,
     totalPages,
@@ -81,50 +87,44 @@ const TransactionList = ({
     const showPagination = totalPages ? totalPages > 1 : shouldShowRipplePagination;
 
     return (
-        <Wrapper>
-            <StyledCard>
-                <Transactions>
-                    {isLoading ? (
-                        <LoaderWrapper>
-                            <Loader size={28} />
-                            <LoaderText>
-                                <Translation id="TR_LOADING_TRANSACTIONS" />
-                            </LoaderText>
-                        </LoaderWrapper>
-                    ) : (
-                        Object.keys(transactionsByDate).map(dateKey => {
-                            const parsedDate = parseKey(dateKey);
-                            const totalAmountPerDay = sumTransactions(transactionsByDate[dateKey]);
-                            return (
-                                <React.Fragment key={dateKey}>
-                                    <TransactionHeaderItem
-                                        dateKey={dateKey}
-                                        parsedDate={parsedDate}
-                                        totalAmountPerDay={totalAmountPerDay}
-                                        symbol={props.symbol}
-                                    />
-                                    {transactionsByDate[dateKey].map(
-                                        (tx: WalletAccountTransaction) => (
-                                            <TransactionItem key={tx.txid} transaction={tx} />
-                                        ),
-                                    )}
-                                </React.Fragment>
-                            );
-                        })
-                    )}
-                </Transactions>
-                {showPagination && (
-                    <PaginationWrapper>
-                        <Pagination
-                            currentPage={currentPage}
-                            totalPages={totalPages}
-                            isOnLastPage={isOnLastPage}
-                            onPageSelected={onPageSelected}
-                        />
-                    </PaginationWrapper>
-                )}
-            </StyledCard>
-        </Wrapper>
+        <StyledCard noVerticalPadding>
+            {isLoading ? (
+                <LoaderWrapper>
+                    <Loader size={28} />
+                    <LoaderText>
+                        <Translation id="TR_LOADING_TRANSACTIONS" />
+                    </LoaderText>
+                </LoaderWrapper>
+            ) : (
+                <Table>
+                    {Object.keys(transactionsByDate).map(dateKey => {
+                        const totalAmountPerDay = sumTransactions(transactionsByDate[dateKey]);
+                        return (
+                            <React.Fragment key={dateKey}>
+                                <DayHeader
+                                    dateKey={dateKey}
+                                    symbol={props.symbol}
+                                    totalAmount={totalAmountPerDay}
+                                />
+                                {transactionsByDate[dateKey].map((tx: WalletAccountTransaction) => (
+                                    <TransactionItem key={tx.txid} transaction={tx} />
+                                ))}
+                            </React.Fragment>
+                        );
+                    })}
+                </Table>
+            )}
+            {showPagination && (
+                <PaginationWrapper>
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        isOnLastPage={isOnLastPage}
+                        onPageSelected={onPageSelected}
+                    />
+                </PaginationWrapper>
+            )}
+        </StyledCard>
     );
 };
 
