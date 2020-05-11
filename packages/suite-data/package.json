@@ -1,6 +1,6 @@
 {
     "name": "@trezor/suite-data",
-    "version": "05.13.2020-beta",
+    "version": "2020.05.13-beta",
     "author": "Trezor <info@trezor.io>",
     "keywords": [
         "Trezor",

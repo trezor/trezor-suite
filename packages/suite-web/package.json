@@ -1,6 +1,6 @@
 {
     "name": "@trezor/suite-web",
-    "version": "05.13.2020-beta",
+    "version": "2020.05.13-beta",
     "private": true,
     "scripts": {
         "type-check": "tsc --project tsconfig.json",
@@ -15,7 +15,7 @@
     },
     "dependencies": {
         "@sentry/browser": "^5.15.0",
-        "@trezor/suite": "05.13.2020-beta",
+        "@trezor/suite": "2020.05.13-beta",
         "next": "^9.3.3",
         "next-redux-wrapper": "^5.0.0",
         "worker-loader": "^2.0.0"
