@@ -5,8 +5,8 @@ import { bindActionCreators } from 'redux';
 import { Modal, Button } from '@trezor/components';
 import { Translation, CheckItem, Image } from '@suite-components';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { Dispatch, AppState } from '@suite-types';
-import { SUITE } from '@suite-actions/constants';
+import { Dispatch } from '@suite-types';
+import { useDeviceActionLocks } from '@suite-hooks';
 
 const Row = styled.div`
     display: flex;
@@ -33,19 +33,15 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     wipeDevice: bindActionCreators(deviceSettingsActions.wipeDevice, dispatch),
 });
 
-const mapStateToProps = (state: AppState) => ({
-    locks: state.suite.locks,
-});
+type Props = ReturnType<typeof mapDispatchToProps> & {
+    onCancel: () => void;
+};
 
-type Props = ReturnType<typeof mapDispatchToProps> &
-    ReturnType<typeof mapStateToProps> & {
-        onCancel: () => void;
-    };
-
-const WipeDevice = ({ locks, wipeDevice, onCancel }: Props) => {
+const WipeDevice = ({ wipeDevice, onCancel }: Props) => {
     const [checkbox1, setCheckbox1] = useState(false);
     const [checkbox2, setCheckbox2] = useState(false);
-    const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
+
+    const [actionEnabled] = useDeviceActionLocks();
 
     return (
         <Modal
@@ -60,7 +56,7 @@ const WipeDevice = ({ locks, wipeDevice, onCancel }: Props) => {
                         <Button
                             variant="danger"
                             onClick={() => wipeDevice()}
-                            isDisabled={uiLocked || !checkbox1 || !checkbox2}
+                            isDisabled={!actionEnabled || !checkbox1 || !checkbox2}
                             data-test="@wipe/wipe-button"
                         >
                             <Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />
@@ -92,4 +88,4 @@ const WipeDevice = ({ locks, wipeDevice, onCancel }: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(WipeDevice);
+export default connect(null, mapDispatchToProps)(WipeDevice);
