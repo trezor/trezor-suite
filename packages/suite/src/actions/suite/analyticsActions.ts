@@ -88,13 +88,17 @@ const getUrl = () => {
     }
 
     // Intentionally pretty much verbose to be sure what is being sent where
-    if (process.env.SUITE_TYPE === 'web' && window) {
+    if (process.env.SUITE_TYPE === 'web') {
+        // ts-ignores are "safe", we are in web env and I don't want to create custom file for native
+        // @ts-ignore
         if (window.location.hostname === 'staging-wallet.trezor.io') {
             return `${base}/web/stage.log`;
         }
+        // @ts-ignore
         if (window.location.hostname === 'beta-wallet.trezor.io') {
             return `${base}/web/beta.log`;
         }
+        // @ts-ignore
         if (window.location.hostname === 'wallet.trezor.io') {
             return `${base}/web/stable.log`;
         }
