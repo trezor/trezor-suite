@@ -62,7 +62,7 @@ const EmptyWallet = (props: Props) => {
                 </Title>
                 <SecurityItem>
                     <Translation id="TR_ADDITIONAL_SECURITY_FEATURES" />
-                    <InlineButton
+                    {/* <InlineButton
                         variant="tertiary"
                         size="small"
                         icon="ARROW_RIGHT"
@@ -72,7 +72,7 @@ const EmptyWallet = (props: Props) => {
                         }}
                     >
                         <Translation id="TR_FINISH_ADVANCED_SECURITY" />
-                    </InlineButton>
+                    </InlineButton> */}
                 </SecurityItem>
                 {/* <SecurityItem>
                     <Translation id="TR_LOOKING_FOR_QUICK_EASY" />
