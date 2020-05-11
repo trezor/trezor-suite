@@ -58,3 +58,13 @@ ifconfig | grep "inet "
 - Open debugger:
 chrome://inspect/#devices
 
+# How to release - staging
+
+`yarn`
+
+## Landing page release
+
+1. `yarn workspace @trezor/landing-page build`
+2. `cd  packages/landing-page`
+3. `./scripts/s3sync.sh  stage beta`
+
