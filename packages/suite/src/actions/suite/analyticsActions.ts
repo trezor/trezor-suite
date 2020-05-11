@@ -57,29 +57,48 @@ const encodePayload = (data: Record<string, any>) => {
 };
 
 const getUrl = () => {
-    if (isDev()) {
-        // I may run server on localhost to see if data flow as expected
-        // return 'http://localhost:3001/';
-    }
+    // Playground endpoint
+    // --------------
+    // const base = 'https://track-suite.herokuapp.com/';
 
-    // Temporarily, there is a server collecting and showing logged data. It helps
-    // with development, data modeling and debugging.
-    const base = 'https://track-suite.herokuapp.com/';
-
-    // todo: later switch to real endpoint
     // Real endpoints
     // --------------
+    // https://data.trezor.io/suite/log/desktop/stage.log
     // https://data.trezor.io/suite/log/desktop/beta.log
     // https://data.trezor.io/suite/log/desktop/develop.log
     // https://data.trezor.io/suite/log/desktop/stable.log
+
+    // https://data.trezor.io/suite/log/web/stage.log
     // https://data.trezor.io/suite/log/web/beta.log
     // https://data.trezor.io/suite/log/web/develop.log
     // https://data.trezor.io/suite/log/web/stable.log
 
-    // todo: env variables that we are going to use
+    const base = 'https://data.trezor.io/suite/log';
+
+    // todo: env variables that we might going to use ?
     // process.env.SUITE_TYPE   stands for web | desktop
     // process.env.BUILD        stands for development | beta | production ?
-    return `${base}/${process.env.SUITE_TYPE}/${process.env.BUILD}.log`;
+    // - currently, we do not have special beta or prod builds that would contain different features,
+    // - so only hosting environment is important now
+
+    if (process.env.SUITE_TYPE === 'desktop') {
+        // currently released desktop version is in beta.
+        return `${base}/desktop/beta.log`;
+        // there is no staging for desktop version
+    }
+
+    // Intentionally pretty much verbose to be sure what is being sent where
+    if (process.env.SUITE_TYPE === 'web') {
+        if (window.location.hostname === 'staging-wallet.trezor.io') {
+            return `${base}/web/stage.log`;
+        }
+        if (window.location.hostname === 'beta-wallet.trezor.io') {
+            return `${base}/web/beta.log`;
+        }
+        if (window.location.hostname === 'wallet.trezor.io') {
+            return `${base}/web/stable.log`;
+        }
+    }
 };
 
 export const report = (data: Payload, force = false) => async (
@@ -99,6 +118,12 @@ export const report = (data: Payload, force = false) => async (
         return;
     }
     const url = getUrl();
+
+    if (!url) {
+        console.warn('no endpoint for analytics found for this build and env');
+        return;
+    }
+
     const payload = encodePayload({
         ...data,
         version: process.env.COMMITHASH,
