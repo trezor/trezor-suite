@@ -110,7 +110,7 @@ const getDate = (date: string) => {
     return format(dateObj, 'MMM d');
 };
 
-export default ({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
+const NewsFeed = ({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
     const [visibleCount, incrementVisibleCount] = useState(3);
     const { posts, isError, fetchCount, incrementFetchCount } = useFetchNews();
 
@@ -163,3 +163,5 @@ export default ({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
         </Section>
     );
 };
+
+export default NewsFeed;

@@ -60,6 +60,7 @@ describe('Onboarding - recover wallet', () => {
         // todo: clicking on retry button causes error, "unexpected message", only in tests, don't know why
     });
 
+    // todo: test flaky: device disconnected during action error
     it.skip('Model 1', () => {
         // todo: acquire device problem with model T1 emu, but why? stop and start bridge is sad workaround :(
         cy.task('stopBridge');

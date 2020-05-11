@@ -199,7 +199,7 @@ export default [
                         // total: '25724124',
                         targets: [
                             {
-                                addresses: ['r4eEbLKZGbVSBHnSUBZW8i5XaMjGLdqT4a'],
+                                addresses: ['rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj'],
                                 isAddress: true,
                                 amount: '25718124',
                             },
