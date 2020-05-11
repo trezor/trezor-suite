@@ -54,7 +54,7 @@ export default (props: Props) => {
         return <WalletLayout title="Transactions" account={props.selectedAccount} />;
     }
 
-    const { account, network } = selectedAccount;
+    const { account } = selectedAccount;
 
     const accountTransactions = getAccountTransactions(transactions.transactions, account);
     const { size = undefined, total = undefined } = account.page || {};
