@@ -7,7 +7,7 @@ interface Props extends Omit<IconProps, 'icon'> {
 }
 
 const TransactionTypeIcon = ({ type, ...rest }: Props) => {
-    if (type === 'sent') {
+    if (type === 'sent' || type === 'self') {
         return <Icon icon="SEND" color={colors.RED} size={12} {...rest} />;
     }
     if (type === 'recv') {

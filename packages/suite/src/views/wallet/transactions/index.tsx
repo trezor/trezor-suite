@@ -86,7 +86,6 @@ export default (props: Props) => {
                     />
                 )}
                 <TransactionList
-                    explorerUrl={network.explorer.tx}
                     transactions={accountTransactions}
                     currentPage={selectedPage}
                     totalPages={total}

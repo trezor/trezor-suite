@@ -57,7 +57,7 @@ module.exports = {
             chunks: ['iframe'],
             filename: 'iframe.html',
             template: HTML_SRC,
-            minify: true,
+            minify: false,
             inject: false,
         }),
         new RemovePlugin({

@@ -1,45 +1,30 @@
-/* eslint-disable radix */
 import React, { useMemo } from 'react';
-import { FormattedDate } from 'react-intl';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components';
-import { groupTransactionsByDate, parseKey, sumTransactions } from '@wallet-utils/transactionUtils';
+import { variables } from '@trezor/components';
+import { groupTransactionsByDate, sumTransactions } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
-import { Account, WalletAccountTransaction } from '@wallet-types';
+import { WalletAccountTransaction } from '@wallet-types';
 import TransactionItem from './components/TransactionItem/Container';
 import Pagination from './components/Pagination';
-import { Card, FiatValue, HiddenPlaceholder, Translation } from '@suite-components';
-
-const Wrapper = styled.div``;
+import DayHeader from './components/DayHeader';
+import { Card } from '@suite-components';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
     margin-bottom: 20px;
+    padding-bottom: 20px;
 `;
 
-const Transactions = styled.div`
-    flex-direction: column;
-`;
-
-const DayHeading = styled.div`
-    position: sticky;
-    top: 0;
-    display: flex;
-    font-size: ${variables.FONT_SIZE.TINY};
-    min-height: 35px; /* same as height of badge with fiat value plus padding */
-    color: ${colors.BLACK50};
-    border-bottom: 2px solid ${colors.BLACK96};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    padding: 5px;
-    text-transform: uppercase;
-    background: ${colors.WHITE};
-    justify-content: space-between;
+const Table = styled.div`
+    display: grid;
+    grid-template-areas: 'date type target amount fiat';
+    grid-template-columns: auto auto 1fr auto auto;
     align-items: center;
-
-    &:first-child {
-        padding-top: 0px;
-        border-top-left-radius: 6px;
-        border-top-right-radius: 6px;
+    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        grid-template-areas:
+            'date type target target'
+            'date type amount fiat';
+        grid-template-columns: auto auto 1fr auto;
     }
 `;
 
@@ -47,42 +32,16 @@ const PaginationWrapper = styled.div`
     margin: 10px 0px;
 `;
 
-const DayAmountWrapper = styled.div`
-    display: flex;
-    align-items: center;
-`;
-
-const DayAmount = styled.div`
-    display: flex;
-
-    & + & {
-        margin-left: 14px;
-    }
-`;
-
-const FiatDayAmount = styled(DayAmount)`
-    min-width: 100px;
-    justify-content: flex-end;
-    text-align: right;
-    margin-left: 16px;
-`;
-
-const DateWrapper = styled.div`
-    display: flex;
-`;
-
 interface Props {
-    explorerUrl?: string;
     transactions: WalletAccountTransaction[];
     currentPage: number;
     totalPages?: number;
     perPage: number;
-    symbol: Account['symbol'];
+    symbol: WalletAccountTransaction['symbol'];
     onPageSelected: (page: number) => void;
 }
 
 const TransactionList = ({
-    explorerUrl,
     transactions,
     currentPage,
     totalPages,
@@ -110,75 +69,35 @@ const TransactionList = ({
     const shouldShowRipplePagination = !(currentPage === 1 && isOnLastPage);
     const showPagination = totalPages ? totalPages > 1 : shouldShowRipplePagination;
     return (
-        <Wrapper>
-            <StyledCard>
-                <Transactions>
-                    {Object.keys(transactionsByDate).map(dateKey => {
-                        const parsedDate = parseKey(dateKey);
-                        const totalAmountPerDay = sumTransactions(transactionsByDate[dateKey]);
-                        return (
-                            <React.Fragment key={dateKey}>
-                                <DayHeading>
-                                    {dateKey === 'pending' ? (
-                                        <DateWrapper>
-                                            <Translation id="TR_PENDING" />
-                                        </DateWrapper>
-                                    ) : (
-                                        <>
-                                            <DateWrapper>
-                                                <FormattedDate
-                                                    value={parsedDate ?? undefined}
-                                                    day="numeric"
-                                                    month="long"
-                                                    year="numeric"
-                                                />
-                                            </DateWrapper>
-                                            <DayAmountWrapper>
-                                                <HiddenPlaceholder>
-                                                    <DayAmount>
-                                                        {totalAmountPerDay.gte(0) && '+'}
-                                                        {totalAmountPerDay.toFixed()}{' '}
-                                                        {props.symbol.toUpperCase()}
-                                                    </DayAmount>
-                                                </HiddenPlaceholder>
-                                                {/* TODO: daily deltas are multiplied by current rate instead of the rate for given day. if someone notices. calc average rate of all txs in a day and use that? */}
-                                                <HiddenPlaceholder>
-                                                    <FiatValue
-                                                        amount={totalAmountPerDay.toFixed()}
-                                                        symbol={props.symbol}
-                                                    >
-                                                        {({ value }) =>
-                                                            value && (
-                                                                <FiatDayAmount>
-                                                                    {value}
-                                                                </FiatDayAmount>
-                                                            )
-                                                        }
-                                                    </FiatValue>
-                                                </HiddenPlaceholder>
-                                            </DayAmountWrapper>
-                                        </>
-                                    )}
-                                </DayHeading>
-                                {transactionsByDate[dateKey].map((tx: WalletAccountTransaction) => (
-                                    <TransactionItem key={tx.txid} transaction={tx} />
-                                ))}
-                            </React.Fragment>
-                        );
-                    })}
-                </Transactions>
-                {showPagination && (
-                    <PaginationWrapper>
-                        <Pagination
-                            currentPage={currentPage}
-                            totalPages={totalPages}
-                            isOnLastPage={isOnLastPage}
-                            onPageSelected={onPageSelected}
-                        />
-                    </PaginationWrapper>
-                )}
-            </StyledCard>
-        </Wrapper>
+        <StyledCard noVerticalPadding>
+            <Table>
+                {Object.keys(transactionsByDate).map(dateKey => {
+                    const totalAmountPerDay = sumTransactions(transactionsByDate[dateKey]);
+                    return (
+                        <React.Fragment key={dateKey}>
+                            <DayHeader
+                                dateKey={dateKey}
+                                symbol={props.symbol}
+                                totalAmount={totalAmountPerDay}
+                            />
+                            {transactionsByDate[dateKey].map((tx: WalletAccountTransaction) => (
+                                <TransactionItem key={tx.txid} transaction={tx} />
+                            ))}
+                        </React.Fragment>
+                    );
+                })}
+            </Table>
+            {showPagination && (
+                <PaginationWrapper>
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        isOnLastPage={isOnLastPage}
+                        onPageSelected={onPageSelected}
+                    />
+                </PaginationWrapper>
+            )}
+        </StyledCard>
     );
 };
 
