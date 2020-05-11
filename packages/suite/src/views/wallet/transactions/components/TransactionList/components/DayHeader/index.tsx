@@ -30,6 +30,10 @@ const ColDate = styled(Col)`
     }
 `;
 
+const ColPending = styled(Col)`
+    grid-column: date / fiat;
+`;
+
 const ColAmount = styled(Col)`
     grid-column: amount;
     text-align: right;
@@ -63,9 +67,9 @@ export default ({ dateKey, symbol, totalAmount }: Props) => {
     return (
         <>
             {dateKey === 'pending' ? (
-                <ColDate>
+                <ColPending>
                     <Translation id="TR_PENDING" />
-                </ColDate>
+                </ColPending>
             ) : (
                 <>
                     <ColDate>
