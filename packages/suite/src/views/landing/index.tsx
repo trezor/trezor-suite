@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { join } from 'path';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import Layout from '../components/Layout';
+import Layout from '@landing-components/Layout';
 import { H2, Button, P, Select, Link, variables } from '@trezor/components';
 
 const Wrapper = styled.div`

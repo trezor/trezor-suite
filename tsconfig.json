@@ -261,6 +261,9 @@
             "@backup-middlewares": ["./packages/suite/src/middlewares/backup/index"],
             "@backup-hooks/*": ["./packages/suite/src/hooks/backup/*"],
             "@backup-hooks": ["./packages/suite/src/hooks/backup/index"],
+            // landing
+            "@landing-components/*": ["./packages/suite/src/components/landing/*"],
+            "@landing-views/*": ["./packages/suite/src/views/landing/*"],
             // other
             "@native/*": ["./packages/suite-native/src/*"],
             "@desktop/*": ["./packages/suite-desktop/src/*"]
