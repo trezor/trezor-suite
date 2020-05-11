@@ -12,6 +12,7 @@ import BigNumber from 'bignumber.js';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { toHex, toWei, fromWei } from 'web3-utils';
 import { Transaction } from 'ethereumjs-tx';
+import Common from 'ethereumjs-common'; // this is a dependency of `ethereumjs-tx` therefore it doesn't have to be in package.json
 
 export const getOutput = (outputs: Output[], id: number) =>
     outputs.find(outputItem => outputItem.id === id) as Output;
@@ -146,7 +147,6 @@ export const prepareEthereumTransaction = (txInfo: EthTransactionData) => {
         to: txInfo.to,
         value: toHex(toWei(txInfo.amount, 'ether')),
         chainId: txInfo.chainId,
-        token: null,
         nonce: toHex(txInfo.nonce),
         gasLimit: toHex(txInfo.gasLimit),
         gasPrice: toHex(toWei(txInfo.gasPrice, 'gwei')),
@@ -163,7 +163,23 @@ export const prepareEthereumTransaction = (txInfo: EthTransactionData) => {
 };
 
 export const serializeEthereumTx = (tx: any) => {
-    const ethTx = new Transaction(tx, { chain: tx.chainId });
+    // ethereumjs-tx doesn't support ETC by default
+    // and it needs to be declared as custom chain
+    // see: https://github.com/ethereumjs/ethereumjs-tx/blob/master/examples/custom-chain-tx.ts
+    const common =
+        tx.chainId === 61
+            ? Common.forCustomChain(
+                  'mainnet',
+                  {
+                      name: 'ethereum-classic',
+                      networkId: 1,
+                      chainId: 61,
+                  },
+                  'petersburg',
+              )
+            : undefined;
+
+    const ethTx = new Transaction(tx, { common, chain: tx.chainId });
     return `0x${ethTx.serialize().toString('hex')}`;
 };
 
