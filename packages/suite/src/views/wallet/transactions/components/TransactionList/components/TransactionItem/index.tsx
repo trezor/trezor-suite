@@ -128,7 +128,6 @@ export default (props: Props) => {
         target: ArrayElement<Props['transaction']['targets']>,
         useAnimation = false,
     ) => {
-        // @ts-ignore: wait for connect@8.1.3
         const isLocalTarget = (type === 'sent' || type === 'self') && target.isAccountTarget;
         const addr = isLocalTarget ? (
             <Translation id="TR_SENT_TO_SELF" />
