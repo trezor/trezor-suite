@@ -66,7 +66,7 @@ elif [ "x$2" == "xstable" ]; then
     DISTRIBUTION_ID="EZM01GFTITGVD"
 fi
 
-echo "sync "$SOURCE" with "$BUCKET"/suite"
+echo "sync "$SOURCE" with "$BUCKET"/wallet"
 
 if [ "x$1" == "xbeta" ] || [ "x$1" == "xstable" ]; then
     confirm
@@ -76,11 +76,11 @@ set -e
 cd `dirname $0`
 
 if [ "x$3" == "x-clear" ]; then
-    aws s3 sync --delete --cache-control 'public, max-age=3600' $SOURCE s3://$BUCKET/suite
+    aws s3 sync --delete --cache-control 'public, max-age=3600' $SOURCE s3://$BUCKET/wallet
 else
-    aws s3 sync --cache-control 'public, max-age=3600' $SOURCE s3://$BUCKET/suite
+    aws s3 sync --cache-control 'public, max-age=3600' $SOURCE s3://$BUCKET/wallet
 fi
 
-aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths '/suite/*'
+aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths '/wallet/*'
 
 echo "DONE"

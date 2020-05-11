@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { join } from 'path';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import Layout from '@landing-components/Layout';
 import { H2, Button, P, Select, Link, variables } from '@trezor/components';
@@ -46,14 +45,13 @@ const ButtonDownload = styled(Button)`
 type App = 'win' | 'macos' | 'linux';
 
 const getAppUrl = (appName: App) => {
-    const appsRoot = resolveStaticPath('/apps');
     switch (appName) {
         case 'win':
-            return join(appsRoot, 'Trezor-Beta-Wallet.exe');
+            return resolveStaticPath('desktop/Trezor-Beta-Wallet.exe');
         case 'macos':
-            return join(appsRoot, 'Trezor-Beta-Wallet.zip');
+            return resolveStaticPath('desktop/Trezor-Beta-Wallet.zip');
         case 'linux':
-            return join(appsRoot, 'Trezor-Beta-Wallet.AppImage');
+            return resolveStaticPath('desktop/Trezor-Beta-Wallet.AppImage');
         // no default
     }
 };
