@@ -10,10 +10,14 @@ const Wrapper = styled.div`
     display: flex;
     width: 100%;
     min-height: 80px;
-    min-width: 280px;
+    width: 320px;
 
     & + & {
         border-top: 1px solid ${colors.BLACK92};
+    }
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
+        width: 100%;
     }
 `;
 

@@ -112,7 +112,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                 {isLoading && <Loader size={24} />}
                 {!isLoading && data && data.length === 0 && <>No transactions to show</>}
                 {!isLoading && data && data.length > 0 && (
-                    <ResponsiveContainer height="100%" width="100%">
+                    <ResponsiveContainer height="100%" width="99%">
                         <BarChart
                             data={data}
                             stackOffset="sign"
