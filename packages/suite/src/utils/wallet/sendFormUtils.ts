@@ -163,23 +163,27 @@ export const prepareEthereumTransaction = (txInfo: EthTransactionData) => {
 };
 
 export const serializeEthereumTx = (tx: any) => {
-    // ethereumjs-tx doesn't support ETC by default
+    // ethereumjs-tx doesn't support ETC (chain 61) by default
     // and it needs to be declared as custom chain
     // see: https://github.com/ethereumjs/ethereumjs-tx/blob/master/examples/custom-chain-tx.ts
-    const common =
+    const options =
         tx.chainId === 61
-            ? Common.forCustomChain(
-                  'mainnet',
-                  {
-                      name: 'ethereum-classic',
-                      networkId: 1,
-                      chainId: 61,
-                  },
-                  'petersburg',
-              )
-            : undefined;
+            ? {
+                  common: Common.forCustomChain(
+                      'mainnet',
+                      {
+                          name: 'ethereum-classic',
+                          networkId: 1,
+                          chainId: 61,
+                      },
+                      'petersburg',
+                  ),
+              }
+            : {
+                  chain: tx.chainId,
+              };
 
-    const ethTx = new Transaction(tx, { common, chain: !common ? tx.chainId : undefined });
+    const ethTx = new Transaction(tx, options);
     return `0x${ethTx.serialize().toString('hex')}`;
 };
 
