@@ -2071,7 +2071,7 @@ const definedMessages = defineMessages({
         id: 'TR_YOUR_CURRENT_FIRMWARE',
     },
     TR_YOUR_CURRENT_VERSION: {
-        defaultMessage: 'Your current Suite version is "{version}"',
+        defaultMessage: 'Your current Suite version is',
         id: 'TR_YOUR_CURRENT_VERSION',
     },
     TR_YOUR_TREZOR_IS_NOT_BACKED_UP: {
