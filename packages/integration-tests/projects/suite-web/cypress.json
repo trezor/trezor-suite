@@ -5,7 +5,8 @@
     "supportFile": "./support/index.ts",
     "defaultCommandTimeout": 10000,
     "screenshotsFolder": "./screenshots",
-    "video": false,
+    "videosFolder": "./videos",
+    "video": true,
     "trashAssetsBeforeRuns": true,
     "chromeWebSecurity": false
 }

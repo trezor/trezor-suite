@@ -90,9 +90,16 @@ const WalletInstance = ({
     const instanceBalance = accountUtils.getTotalFiatBalance(deviceAccounts, localCurrency, fiat);
     const analytics = useAnalytics();
 
+    const getDataTestBase = () => {
+        if (instance.instance) {
+            return `@switch-device/wallet-instance/${instance.instance}`;
+        }
+        return '@switch-device/wallet-instance';
+    };
     return (
         <Wrapper
-            data-test={`@switch-device/wallet-instance/${instance.instance}`}
+            data-test={getDataTestBase()}
+            // data-test={`@switch-device/wallet-instance/${instance.instance ? }`}
             key={`${instance.label}${instance.instance}${instance.state}`}
             selected={enabled && selected && !!discoveryProcess}
             {...rest}
@@ -137,11 +144,12 @@ const WalletInstance = ({
                                     }`,
                                 })
                             }
-                            data-test="@suite/settings/device/passphrase-switch"
+                            data-test={`${getDataTestBase()}/toggle-remember-switch`}
                         />
                     </SwitchCol>
                     <Col>
                         <ForgetButton
+                            data-test={`${getDataTestBase()}/eject-button`}
                             variant="secondary"
                             onClick={() =>
                                 forgetDevice(instance) &&
