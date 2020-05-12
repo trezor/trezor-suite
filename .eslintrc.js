@@ -85,5 +85,7 @@ module.exports = {
         '@typescript-eslint/ban-ts-ignore': 'off',
         // We need empty functions for mocking modules for react-native
         '@typescript-eslint/no-empty-function': 'off',
+        'no-useless-constructor': 'off',
+        '@typescript-eslint/no-useless-constructor': 'error',
     },
 };

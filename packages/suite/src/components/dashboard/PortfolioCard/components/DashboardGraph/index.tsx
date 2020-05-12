@@ -1,13 +1,16 @@
-import React from 'react';
-import { GraphRange } from '@wallet-types/fiatRates';
+import React, { useState, useEffect, useCallback } from 'react';
+import { GraphRange, AggregatedAccountBalanceHistory } from '@wallet-types/fiatRates';
 import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
 import { Props } from './Container';
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
-import { calcTicks, calcTicksFromData } from '@suite/utils/suite/date';
+import { calcTicks, calcTicksFromData } from '@suite-utils/date';
 import { colors, variables, Button } from '@trezor/components';
-import { aggregateBalanceHistory, deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
+import { deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
+// https://github.com/zeit/next.js/issues/4768
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import GraphWorker from 'worker-loader?name=static/[hash].worker.js!../../../../../workers/graph.worker';
 
 const Wrapper = styled.div`
     display: flex;
@@ -39,25 +42,65 @@ const SmallErrorMessage = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
-const DashboardGraph = (props: Props) => {
-    const { accounts, selectedDevice } = props;
+const DashboardGraph = React.memo((props: Props) => {
+    const [data, setData] = useState<AggregatedAccountBalanceHistory[]>([]);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [xTicks, setXticks] = useState<number[]>([]);
+    const { accounts, selectedDevice, updateGraphData, setSelectedRange, localCurrency } = props;
     const { selectedRange } = props.graph;
+    const rawData = props.graph.data;
+    const selectedDeviceState = selectedDevice?.state;
     const isLoading = props.graph.isLoading[selectedRange.label];
     const failedAccounts = props.graph.error[selectedRange.label];
 
-    const deviceGraphData = selectedDevice
-        ? props.graph.data.filter(
-              d =>
-                  deviceGraphDataFilterFn(d, selectedDevice.state) &&
-                  d.interval === selectedRange.label,
-          )
-        : [];
+    const onRefresh = useCallback(() => {
+        updateGraphData(accounts);
+    }, [updateGraphData, accounts]);
 
-    const data = aggregateBalanceHistory(deviceGraphData);
-    const xTicks =
-        selectedRange.label === 'all'
-            ? calcTicksFromData(data).map(getUnixTime)
-            : calcTicks(selectedRange.weeks).map(getUnixTime);
+    const onSelectedRange = useCallback(
+        (range: GraphRange) => {
+            setSelectedRange(range);
+            updateGraphData(accounts, { newAccountsOnly: true });
+        },
+        [setSelectedRange, updateGraphData, accounts],
+    );
+
+    const receivedValueFn = useCallback(
+        (sourceData: AggregatedAccountBalanceHistory) => sourceData.receivedFiat[localCurrency],
+        [localCurrency],
+    );
+
+    const sentValueFn = useCallback(
+        (sourceData: AggregatedAccountBalanceHistory) => sourceData.sentFiat[localCurrency],
+        [localCurrency],
+    );
+
+    useEffect(() => {
+        if (!isLoading && rawData && rawData.length > 0) {
+            setIsProcessing(true);
+            const rawDeviceGraphData = selectedDeviceState
+                ? rawData.filter(
+                      d =>
+                          deviceGraphDataFilterFn(d, selectedDeviceState) &&
+                          d.interval === selectedRange.label,
+                  )
+                : [];
+
+            const worker = new GraphWorker();
+            worker.postMessage(rawDeviceGraphData);
+            worker.addEventListener('message', (event: MessageEvent) => {
+                const aggregatedData = event.data;
+                const graphTicks =
+                    selectedRange.label === 'all'
+                        ? calcTicksFromData(aggregatedData).map(getUnixTime)
+                        : calcTicks(selectedRange.weeks).map(getUnixTime);
+
+                setData(aggregatedData);
+                setXticks(graphTicks);
+                setIsProcessing(false);
+            });
+        }
+    }, [isLoading, rawData, selectedDeviceState, selectedRange]);
 
     return (
         <Wrapper data-test="@dashboard/graph">
@@ -65,34 +108,22 @@ const DashboardGraph = (props: Props) => {
                 {failedAccounts && failedAccounts.length === accounts.length ? (
                     <ErrorMessage>
                         <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />{' '}
-                        <Button
-                            onClick={() => {
-                                props.updateGraphData(accounts);
-                            }}
-                            icon="REFRESH"
-                            variant="tertiary"
-                            size="small"
-                        >
+                        <Button onClick={onRefresh} icon="REFRESH" variant="tertiary" size="small">
                             <Translation id="TR_RETRY" />
                         </Button>
                     </ErrorMessage>
                 ) : (
                     <TransactionsGraph
                         variant="all-assets"
-                        onRefresh={() => {
-                            props.updateGraphData(accounts);
-                        }}
-                        isLoading={isLoading}
+                        onRefresh={onRefresh}
+                        isLoading={isLoading || isProcessing}
                         localCurrency={props.localCurrency}
                         xTicks={xTicks}
                         data={data}
                         selectedRange={selectedRange}
-                        onSelectedRange={(range: GraphRange) => {
-                            props.setSelectedRange(range);
-                            props.updateGraphData(accounts);
-                        }}
-                        receivedValueFn={data => data.receivedFiat[props.localCurrency]}
-                        sentValueFn={data => data.sentFiat[props.localCurrency]}
+                        onSelectedRange={onSelectedRange}
+                        receivedValueFn={receivedValueFn}
+                        sentValueFn={sentValueFn}
                     />
                 )}
             </GraphWrapper>
@@ -106,6 +137,7 @@ const DashboardGraph = (props: Props) => {
             )}
         </Wrapper>
     );
-};
+});
 
+// DashboardGraph.whyDidYouRender = true;
 export default DashboardGraph;

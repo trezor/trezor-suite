@@ -31,18 +31,13 @@ const GraphWrapper = styled(HiddenPlaceholder)`
     flex: 5 1 auto;
     padding: ${CARD_PADDING_SIZE};
     height: 240px;
-    max-width: 600px; /* workaround to prevent recharts filling all space */
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
-        max-width: 100%;
-    }
 `;
 
 const InfoCardsWrapper = styled.div`
     display: flex;
     height: 240px;
     flex-direction: column;
-    flex: 1 1 auto;
+    flex: 0 1 auto;
     border-left: 1px solid ${colors.BLACK92};
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
@@ -120,7 +115,7 @@ const TransactionSummary = (props: Props) => {
                                     selectedRange={selectedRange}
                                     onSelectedRange={(range: GraphRange) => {
                                         props.setSelectedRange(range);
-                                        props.updateGraphData(props.accounts); // TODO: update just current account (then we need to reset selected range before going back to dashboard)
+                                        props.updateGraphData([props.account]);
                                     }}
                                     receivedValueFn={data => data.received}
                                     sentValueFn={data => data.sent}

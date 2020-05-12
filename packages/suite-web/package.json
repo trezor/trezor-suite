@@ -16,6 +16,7 @@
     "dependencies": {
         "@sentry/browser": "^5.15.0",
         "@trezor/suite": "^1.0.0",
+        "@zeit/next-workers": "^1.0.0",
         "next": "^9.3.3",
         "next-redux-wrapper": "^5.0.0",
         "worker-loader": "^2.0.0"

@@ -1,13 +1,13 @@
 import {
     formatDistance,
     isBefore,
-    addMonths,
     subWeeks,
-    addDays,
     fromUnixTime,
     getUnixTime,
     startOfDay,
     startOfMonth,
+    subDays,
+    subMonths,
 } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { GraphTicksInterval } from '@wallet-types/fiatRates';
@@ -33,42 +33,36 @@ export const getDateWithTimeZone = (date: number, timeZone?: string) => {
 export const getTicksBetweenTimestamps = (
     from: Date,
     to: Date,
-    interval: 'quarter' | 'month' | 'day' | '2-day',
+    interval: '3-months' | 'month' | 'day' | '2-day',
 ) => {
-    const months = [];
-    let fromDate = from;
-    const toDate = to;
+    const ticks = [];
+    const fromDate = from;
+    let toDate = to;
 
     if (isBefore(toDate, fromDate)) {
         return [];
     }
 
-    // set hh:mm:ss to 00:00:00
-    fromDate = startOfDay(fromDate);
-
+    toDate = startOfDay(toDate);
     while (isBefore(fromDate, toDate)) {
-        if (interval === 'quarter') {
-            fromDate = startOfMonth(fromDate);
-            months.push(fromDate);
-            fromDate = addMonths(fromDate, 3);
+        ticks.push(toDate);
+        if (interval === '3-months') {
+            toDate = startOfMonth(toDate);
+            toDate = subMonths(toDate, 3);
         }
         if (interval === 'month') {
             // set date to 1 in case of monthly timestamps
-            fromDate = startOfMonth(fromDate);
-            months.push(fromDate);
-            fromDate = addMonths(fromDate, 1);
+            toDate = startOfMonth(toDate);
+            toDate = subMonths(toDate, 1);
         }
         if (interval === 'day') {
-            months.push(fromDate);
-            fromDate = addDays(fromDate, 1);
+            toDate = subDays(toDate, 1);
         }
         if (interval === '2-day') {
-            months.push(fromDate);
-            fromDate = addDays(fromDate, 2);
+            toDate = subDays(toDate, 2);
         }
     }
-    // months.push(toDate);
-    return months;
+    return ticks.reverse();
 };
 
 export const calcTicks = (weeks: number, options?: { skipDays?: boolean }) => {
@@ -98,7 +92,7 @@ export const calcTicksFromData = (data: { time: number }[]) => {
         return current.time > max ? current.time : max;
     }, data[0].time);
 
-    return getTicksBetweenTimestamps(fromUnixTime(startDate), fromUnixTime(endDate), 'quarter');
+    return getTicksBetweenTimestamps(fromUnixTime(startDate), fromUnixTime(endDate), '3-months');
 };
 /**
  * Returns array of timestamps between `from` and `to` split by `interval`

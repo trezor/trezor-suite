@@ -19,9 +19,9 @@ export interface AggregatedAccountBalanceHistory {
     time: number;
     txs: number;
     sentFiat: {
-        [key: string]: string;
+        [key: string]: string | undefined;
     };
     receivedFiat: {
-        [key: string]: string;
+        [key: string]: string | undefined;
     };
 }
