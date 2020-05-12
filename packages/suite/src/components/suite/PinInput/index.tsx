@@ -147,14 +147,19 @@ const PinInput = (props: Props) => {
                 <ButtonPin type="button" data-value="6" onClick={() => onPinAdd('6')} />
             </PinRow>
             <PinRow>
-                <ButtonPin type="button" data-value="1" onClick={() => onPinAdd('1')} />
+                <ButtonPin
+                    type="button"
+                    data-value="1"
+                    onClick={() => onPinAdd('1')}
+                    data-test="@pin-input/1"
+                />
                 <ButtonPin type="button" data-value="2" onClick={() => onPinAdd('2')} />
                 <ButtonPin type="button" data-value="3" onClick={() => onPinAdd('3')} />
             </PinRow>
 
             <Expander />
             <PinFooter>
-                <Button variant="primary" fullWidth onClick={submit}>
+                <Button variant="primary" fullWidth onClick={submit} data-test="@pin/submit-button">
                     <Translation id="TR_ENTER_PIN" />
                 </Button>
             </PinFooter>

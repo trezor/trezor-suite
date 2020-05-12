@@ -63,7 +63,8 @@ def message_received(client, server, message):
                 cmd["mnemonic"],
                 cmd["pin"],
                 cmd["passphrase_protection"],
-                cmd["label"]
+                cmd["label"],
+                cmd["needs_backup"]
             )
             response = {"success": True}
         elif cmdType == "emulator-decision":
@@ -85,7 +86,6 @@ def message_received(client, server, message):
             emulator.wipe_device()
             response = {"success": True}
         elif cmdType == "emulator-apply-settings":
-            print(cmd)
             emulator.apply_settings(
                 cmd['passphrase_always_on_device'],
             ) 

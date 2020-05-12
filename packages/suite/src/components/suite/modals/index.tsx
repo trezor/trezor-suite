@@ -30,6 +30,7 @@ import BackgroundGallery from './BackgroundGallery';
 import TransactionDetail from './TransactionDetail';
 import Log from './Log';
 import WipeDevice from './WipeDevice';
+import DisconnectDevice from './DisconnectDevice';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -162,6 +163,8 @@ const getUserContextModal = (props: Props) => {
             return <ReviewTransaction />;
         case 'pin-mismatch':
             return <PinMismatch onCancel={modalActions.onCancel} />;
+        case 'disconnect-device':
+            return <DisconnectDevice />;
         case 'log':
             return <Log onCancel={modalActions.onCancel} />;
         default:

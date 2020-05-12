@@ -72,7 +72,7 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                 <Item heading alignContent="right">
                     {tx.blockTime && (
                         <FormattedDate
-                            value={getDateWithTimeZone(tx.blockTime * 1000) ?? undefined}
+                            value={getDateWithTimeZone(tx.blockTime * 1000)}
                             year="numeric"
                             month="2-digit"
                             day="2-digit"

@@ -60,7 +60,7 @@ module.exports = on => {
                 pin: '',
                 passphrase_protection: false,
                 label: CONSTANTS.DEFAULT_TREZOR_LABEL,
-                // todo: needs_backup
+                needs_backup: false,
             };
 
             await controller.connect();

@@ -2,7 +2,6 @@ import { MiddlewareAPI } from 'redux';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Action, Dispatch } from '@suite-types';
 import TrezorConnect, { UI } from 'trezor-connect';
-// import
 
 const buttonRequest = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
@@ -39,7 +38,7 @@ const buttonRequest = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatc
             api.dispatch({
                 type: SUITE.ADD_BUTTON_REQUEST,
                 device: api.getState().suite.device,
-                payload: action.type,
+                payload: action.payload.type ? action.payload.type : action.type,
             });
             break;
         case UI.REQUEST_BUTTON:

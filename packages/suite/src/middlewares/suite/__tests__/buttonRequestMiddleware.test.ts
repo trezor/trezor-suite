@@ -37,7 +37,6 @@ jest.mock('trezor-connect', () => {
                 callbacks[event] = cb;
             },
             changePin: () => {
-                // emit({ type: 'ui-request_pin'})
                 return {
                     success: true,
                     payload: {
@@ -99,20 +98,23 @@ describe('buttonRequest middleware', () => {
         // fake few ui events, just like when user is changing PIN
         const { emit } = require('trezor-connect');
         emit(UI_EVENT, { type: UI.REQUEST_BUTTON, payload: { code: 'ButtonRequest_ProtectCall' } });
-        emit(UI_EVENT, { type: UI.REQUEST_PIN });
+        emit(UI_EVENT, {
+            type: UI.REQUEST_PIN,
+            payload: { type: 'PinMatrixRequestType_NewFirst', device },
+        });
 
         await call;
 
-        // not interrested in the last action (its from changePin mock);
+        // not interested in the last action (its from changePin mock);
         store.getActions().pop();
         expect(store.getActions()).toMatchObject([
             { type: SUITE.CONNECT_INITIALIZED },
-            { type: 'mocked' }, // we dont care about this one, it is from middleware flow
+            { type: 'mocked' }, // we don't care about this one, it is from middleware flow
             { type: SUITE.LOCK_DEVICE, payload: true },
             { type: UI.REQUEST_BUTTON, payload: { code: 'ButtonRequest_ProtectCall' } },
             { type: SUITE.ADD_BUTTON_REQUEST, payload: 'ButtonRequest_ProtectCall', device },
-            { type: UI.REQUEST_PIN },
-            { type: SUITE.ADD_BUTTON_REQUEST, payload: UI.REQUEST_PIN, device },
+            { type: UI.REQUEST_PIN, payload: { type: 'PinMatrixRequestType_NewFirst', device } },
+            { type: SUITE.ADD_BUTTON_REQUEST, payload: 'PinMatrixRequestType_NewFirst', device },
             { type: SUITE.LOCK_DEVICE, payload: false },
             { type: SUITE.ADD_BUTTON_REQUEST, device },
         ]);
