@@ -10,7 +10,6 @@ import { ToastContainer } from 'react-toastify';
 import Router from '@suite-support/Router';
 import OnlineStatus from '@suite-support/OnlineStatus';
 import BridgeStatus from '@desktop/support/BridgeStatus';
-import VersionCheck from '@desktop/support/VersionCheck';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import { SENTRY } from '@suite-config';
@@ -44,11 +43,9 @@ class TrezorSuiteApp extends App<Props> {
                         <Router />
                         <BridgeStatus />
                         <ToastContainer />
-                        <VersionCheck>
-                            <Preloader>
-                                <Component {...pageProps} />
-                            </Preloader>
-                        </VersionCheck>
+                        <Preloader>
+                            <Component {...pageProps} />
+                        </Preloader>
                     </IntlProvider>
                 </ReduxProvider>
             </ErrorBoundary>

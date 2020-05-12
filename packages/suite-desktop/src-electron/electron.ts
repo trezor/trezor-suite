@@ -1,6 +1,7 @@
 import { app, session, BrowserWindow, ipcMain, shell, Menu } from 'electron';
 import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
+import { autoUpdater } from 'electron-updater';
 import * as path from 'path';
 import * as url from 'url';
 import * as electronLocalshortcut from 'electron-localshortcut';
@@ -55,6 +56,8 @@ const init = async () => {
     if (isDev) {
         await prepareNext(path.resolve(__dirname, '../'));
     }
+
+    autoUpdater.checkForUpdatesAndNotify();
 
     const winBounds = store.getWinBounds();
     mainWindow = new BrowserWindow({
