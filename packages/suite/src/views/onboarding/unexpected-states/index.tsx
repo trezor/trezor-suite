@@ -112,7 +112,7 @@ const UnexpectedState = ({ onboarding, suite, children }: Props) => {
     return (
         <Wrapper>
             {unexpectedState && (
-                <Modal noBackground size="tiny">
+                <Modal noBackground size="small">
                     {unexpectedState}
                 </Modal>
             )}

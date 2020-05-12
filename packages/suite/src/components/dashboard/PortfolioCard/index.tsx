@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { Card } from '@suite-components';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { useDiscovery } from '@suite-hooks';
-import { useAccounts, useFiatValue } from '@wallet-hooks';
+import { useFastAccounts, useFiatValue } from '@wallet-hooks';
 import { goto } from '@suite-actions/routerActions';
 
 import Header from './components/Header';
@@ -23,34 +23,31 @@ const Body = styled.div`
     align-items: center;
 `;
 
-const PortfolioCard = () => {
+const PortfolioCard = React.memo(() => {
     const dispatch = useDispatch();
     const { fiat, localCurrency } = useFiatValue();
     const { discovery, getDiscoveryStatus } = useDiscovery();
-    const { accounts } = useAccounts(discovery);
+    const accounts = useFastAccounts();
 
-    const isDeviceEmpty = accounts.every(a => a.empty);
+    const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
     const portfolioValue = accountUtils
         .getTotalFiatBalance(accounts, localCurrency, fiat)
         .toString();
 
     const discoveryStatus = getDiscoveryStatus();
 
-    const getBody = () => {
-        if (!discoveryStatus) return;
-        if (discoveryStatus.status === 'loading') {
-            return <Loading />;
-        }
-        return <Exception exception={discoveryStatus} discovery={discovery} />;
-    };
+    // TODO: DashboardGraph will get mounted twice (thus triggering data proccessing twice)
+    // 1. DashboardGraph gets mounted
+    // 2. Discovery starts, DashboardGraph is unmounted, Loading mounts
+    // 3. Discovery stops (no accounts added), Loading unmounted, new instance of DashboardGraph gets mounted
 
-    let body = getBody();
-    if (!body) {
-        body = isDeviceEmpty ? (
-            <EmptyWallet />
-        ) : (
-            <DashboardGraph discoveryInProgress={!!discoveryStatus} accounts={accounts} />
-        );
+    let body = null;
+    if (discoveryStatus && discoveryStatus.status === 'exception') {
+        body = <Exception exception={discoveryStatus} discovery={discovery} />;
+    } else if (discoveryStatus && discoveryStatus.status === 'loading') {
+        body = <Loading />;
+    } else {
+        body = isDeviceEmpty ? <EmptyWallet /> : <DashboardGraph accounts={accounts} />;
     }
 
     const isActionEnabled = !discoveryStatus && isDeviceEmpty;
@@ -66,6 +63,6 @@ const PortfolioCard = () => {
             <Body>{body}</Body>
         </StyledCard>
     );
-};
+});
 
 export default PortfolioCard;

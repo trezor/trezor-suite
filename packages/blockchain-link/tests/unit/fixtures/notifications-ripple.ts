@@ -139,7 +139,7 @@ const notifyAddresses = [
             tx: {
                 ...tx,
                 type: 'recv',
-                targets: [{ addresses: ['B'], isAddress: true }],
+                targets: [{ addresses: ['A'], isAddress: true }],
             },
         },
     },
@@ -215,7 +215,7 @@ const notifyAddresses = [
                 type: 'recv',
                 targets: [
                     {
-                        addresses: ['B'],
+                        addresses: ['C'],
                         isAddress: true,
                     },
                 ],

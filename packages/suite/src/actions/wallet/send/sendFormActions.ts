@@ -281,12 +281,13 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
 /*
     Click on "set max"
  */
-export const setMax = (outputId: number) => async (dispatch: Dispatch, getState: GetState) => {
+export const setMax = (outputIdIn?: number) => async (dispatch: Dispatch, getState: GetState) => {
     const { fiat, send, selectedAccount } = getState().wallet;
 
     if (!fiat || !send || selectedAccount.status !== 'loaded') return null;
     const { account, network } = selectedAccount;
     const composedTransaction = await dispatch(compose(true));
+    const outputId: number = outputIdIn || 0;
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
     const { isDestinationAccountEmpty } = send.networkTypeRipple;
@@ -304,6 +305,7 @@ export const setMax = (outputId: number) => async (dispatch: Dispatch, getState:
                 formatNetworkAmount(composedTransaction.max, account.symbol),
                 rate.toString(),
             );
+
             dispatch({
                 type: SEND.HANDLE_FIAT_VALUE_CHANGE,
                 outputId,
@@ -359,6 +361,10 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
             type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
             customFee: null,
         });
+
+        if (send.setMaxActivated) {
+            dispatch(setMax());
+        }
     }
 
     dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
@@ -405,6 +411,10 @@ export const handleCustomFeeValueChange = (customFee: string) => (
     });
 
     dispatch(composeChange());
+
+    if (send.setMaxActivated) {
+        dispatch(setMax());
+    }
 };
 
 /*

@@ -26,7 +26,7 @@ const FinalStep = ({ closeModalApp }: Props) => (
                 data-test="@onboarding/exit-app-button"
                 onClick={() => closeModalApp()}
             >
-                Go to Suite
+                <Translation id="TR_GO_TO_SUITE" />
             </OnboardingButton.Cta>
         </Wrapper.Controls>
     </Wrapper.Step>

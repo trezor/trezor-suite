@@ -83,6 +83,7 @@ const HeaderItem = styled(GridItem)`
     position: sticky;
     top: 0;
     padding-top: ${CARD_PADDING_SIZE};
+    background: ${colors.WHITE};
 `;
 
 const IconButton = styled(Button)`

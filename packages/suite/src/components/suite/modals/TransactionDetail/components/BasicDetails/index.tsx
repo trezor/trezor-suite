@@ -89,7 +89,9 @@ const BasicDetails = ({
     totalInput,
     totalOutput,
 }: Props) => {
-    const isConfirmed = tx.blockHeight !== 0 && tx.blockTime && tx.blockTime > 0;
+    const isConfirmed =
+        txDetails?.confirmations > 0 ??
+        ((tx.blockHeight || 0) > 0 && tx.blockTime && tx.blockTime > 0);
     const assetSymbol = tx.symbol.toUpperCase();
     return (
         <>
@@ -145,7 +147,7 @@ const BasicDetails = ({
                 >
                     {tx.blockTime ? (
                         <FormattedDate
-                            value={getDateWithTimeZone(tx.blockTime * 1000) ?? undefined}
+                            value={getDateWithTimeZone(tx.blockTime * 1000)}
                             // value={tx.blockTime * 1000}
                             year="numeric"
                             month="2-digit"

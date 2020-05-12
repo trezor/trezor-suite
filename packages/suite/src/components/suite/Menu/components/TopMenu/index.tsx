@@ -20,6 +20,7 @@ const DeviceStatus = styled.div`
     display: flex;
     flex-direction: column;
     margin-top: 16px;
+    margin-bottom: 11px;
     padding: 12px 6px;
     border-top-left-radius: 3px;
     border-bottom-left-radius: 3px;

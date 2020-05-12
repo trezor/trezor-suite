@@ -105,12 +105,13 @@ export const filterTokenTransfers = (
         });
 };
 
-const transformTarget = (target: VinVout) => {
+const transformTarget = (target: VinVout, incoming: VinVout[]) => {
     return {
         addresses: target.addresses,
         isAddress: target.isAddress,
         amount: target.value,
         coinbase: target.coinbase,
+        isAccountTarget: incoming.includes(target) ? true : undefined,
     };
 };
 
@@ -145,6 +146,7 @@ export const transformTransaction = (
     ) {
         // all inputs and outputs are mine
         type = 'self';
+        targets = tx.vout.filter(o => internal.indexOf(o) < 0);
         // recalculate amount, amount spent is just a fee
         amount = tx.fees;
     } else if (outgoing.length === 0 && (incoming.length > 0 || tokens.length > 0)) {
@@ -152,9 +154,7 @@ export const transformTransaction = (
         type = 'recv';
         amount = '0';
         if (incoming.length > 0) {
-            if (Array.isArray(tx.vin)) {
-                targets = tx.vin;
-            }
+            targets = incoming;
             // recalculate amount, sum all incoming vout
             amount = incoming.reduce((prev, vout) => {
                 if (typeof vout.value !== 'string') return prev;
@@ -166,8 +166,8 @@ export const transformTransaction = (
         type = 'sent';
         // regular targets
         if (tokens.length === 0 && Array.isArray(tx.vout)) {
-            // filter account receive and change addresses from output
-            targets = tx.vout.filter(o => incoming.indexOf(o) < 0 && internal.indexOf(o) < 0);
+            // filter account change addresses from output
+            targets = tx.vout.filter(o => internal.indexOf(o) < 0);
         }
         // ethereum specific transaction
         if (tx.ethereumSpecific) {
@@ -209,7 +209,7 @@ export const transformTransaction = (
         amount,
         fee: tx.fees,
 
-        targets: targets.filter(t => typeof t === 'object').map(t => transformTarget(t)),
+        targets: targets.filter(t => typeof t === 'object').map(t => transformTarget(t, incoming)),
         tokens,
         rbf,
         ethereumSpecific: tx.ethereumSpecific,

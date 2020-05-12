@@ -1,0 +1,31 @@
+/ci @vladimirvolek
+
+/docker @vladimirvolek
+
+/packages/blockchain-link @szymonlesisz
+
+/packages/components @vladimirvolek @slowbackspace
+/packages/components-storybook @vladimirvolek @slowbackspace
+/packages/components-storybook-native @vladimirvolek @slowbackspace
+
+/packages/integration-tests @mroz22
+
+/packages/landing-page @vladimirvolek
+
+/packages/news-api @vladimirvolek
+
+/packages/rollout @mroz22
+
+/packages/suite @szymonlesisz @mroz22 @vladimirvolek @slowbackspace
+
+/packages/suite-data @vladimirvolek
+
+/packages/suite-desktop @vladimirvolek @szymonlesisz
+
+/packages/suite-native @slowbackspace @szymonlesisz
+
+/packages/suite-storage @slowbackspace
+
+/packages/suite-web @vladimirvolek @slowbackspace @mroz22
+
+/packages/translations-manager @slowbackspace

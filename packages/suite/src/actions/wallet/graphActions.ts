@@ -13,6 +13,7 @@ import {
 } from './constants/graphConstants';
 import { Account } from '@wallet-types';
 import { GraphRange } from '@wallet-types/fiatRates';
+import { accountGraphDataFilterFn } from '@suite/utils/wallet/graphUtils';
 
 export type GraphActions =
     | {
@@ -137,11 +138,29 @@ export const fetchAccountGraphData = (
     return null;
 };
 
-export const updateGraphData = (accounts: Account[]) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const { selectedRange } = getState().wallet.graph;
+export const updateGraphData = (
+    accounts: Account[],
+    options?: {
+        newAccountsOnly?: boolean;
+    },
+) => async (dispatch: Dispatch, getState: GetState) => {
+    const { graph } = getState().wallet;
+    const { selectedRange } = graph;
+
+    // TODO: default behaviour should be fetch only new data (since last timestamp)
+    let filteredAccounts: Account[] = accounts;
+    if (options?.newAccountsOnly) {
+        // add only accounts for which we don't have any data for given interval
+        filteredAccounts = accounts.filter(
+            account =>
+                !graph.data.find(
+                    d => accountGraphDataFilterFn(d, account) && d.interval === selectedRange.label,
+                ),
+        );
+        if (filteredAccounts.length === 0) {
+            return;
+        }
+    }
 
     const startDate =
         selectedRange.label === 'all' ? null : subWeeks(new Date(), selectedRange.weeks!);
@@ -151,7 +170,7 @@ export const updateGraphData = (accounts: Account[]) => async (
         type: AGGREGATED_GRAPH_START,
         payload: { interval },
     });
-    const promises = accounts.map(a =>
+    const promises = filteredAccounts.map(a =>
         dispatch(fetchAccountGraphData(a, startDate, endDate, selectedRange)),
     );
     await Promise.all(promises);

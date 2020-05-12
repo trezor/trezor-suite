@@ -34,7 +34,7 @@ const In = styled.div<ComponentProps>`
     display: flex;
     flex: 1;
     margin-left: 6px;
-    padding: 20px 10px 20px 0;
+    padding: 20px 0 20px 0;
     flex-direction: column;
     justify-content: center;
     align-items: center;
