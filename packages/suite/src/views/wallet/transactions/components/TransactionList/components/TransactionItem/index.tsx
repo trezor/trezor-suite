@@ -101,7 +101,7 @@ const ANIMATION = {
     transition: { duration: 0.24, ease: [0.04, 0.62, 0.23, 0.98] },
 };
 
-export default (props: Props) => {
+export default React.memo((props: Props) => {
     const { transaction } = props;
     const { symbol, type, blockTime, blockHeight, targets, tokens } = transaction;
     const [limit, setLimit] = useState(0);
@@ -138,7 +138,11 @@ export default (props: Props) => {
             !isLocalTarget && typeof target.amount === 'string' && target.amount !== '0';
         const targetAmount =
             (hasAmount ? target.amount : null) ||
-            (target === targets[0] ? transaction.amount : null);
+            (target === targets[0] &&
+            typeof transaction.amount === 'string' &&
+            transaction.amount !== '0'
+                ? transaction.amount
+                : null);
         const animation = useAnimation ? ANIMATION : {};
         key++;
 
@@ -304,4 +308,4 @@ export default (props: Props) => {
             )}
         </>
     );
-};
+});
