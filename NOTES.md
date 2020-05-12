@@ -61,6 +61,7 @@ chrome://inspect/#devices
 # How to release - staging
 
 `yarn`
+
 `yarn build:libs`
 
 ## Landing page release
