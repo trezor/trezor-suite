@@ -81,23 +81,20 @@ const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
     return (
         <Wrapper isTestnet={isTestnet} noPadding>
             {tokens.map(t => {
+                const isUnknown = !t.symbol || !t.balance || !t.name;
+                if (isUnknown) return null;
                 return (
                     <Fragment key={t.address}>
                         <Col>
                             <TokenName>
-                                {t.symbol && <TokenSymbol>{t.symbol.toUpperCase()}</TokenSymbol>}
-                                {t.name && t.symbol ? ` - ${t.name}` : ''}
-                                {t.name && !t.symbol ? t.name : ''}
+                                <TokenSymbol>{t.symbol?.toUpperCase()}</TokenSymbol>
+                                {` - ${t.name}`}
                             </TokenName>
                         </Col>
                         <Col justify="right">
-                            {t.balance && t.symbol && (
-                                <HiddenPlaceholder>
-                                    <TokenValue>{`${
-                                        t.balance
-                                    } ${t.symbol.toUpperCase()}`}</TokenValue>
-                                </HiddenPlaceholder>
-                            )}
+                            <HiddenPlaceholder>
+                                <TokenValue>{`${t.balance} ${t.symbol?.toUpperCase()}`}</TokenValue>
+                            </HiddenPlaceholder>
                         </Col>
                         {!isTestnet && (
                             <Col isTestnet={isTestnet} justify="right">
