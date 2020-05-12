@@ -85,16 +85,19 @@ const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
                     <Fragment key={t.address}>
                         <Col>
                             <TokenName>
-                                <TokenSymbol>
-                                    {t.symbol ? t.symbol.toUpperCase() : 'unknown'}
-                                </TokenSymbol>
-                                - {t.name}
+                                {t.symbol && <TokenSymbol>{t.symbol.toUpperCase()}</TokenSymbol>}
+                                {t.name && t.symbol ? ` - ${t.name}` : ''}
+                                {t.name && !t.symbol ? t.name : ''}
                             </TokenName>
                         </Col>
                         <Col justify="right">
-                            <HiddenPlaceholder>
-                                <TokenValue>{`${t.balance} ${t.symbol?.toUpperCase()}`}</TokenValue>
-                            </HiddenPlaceholder>
+                            {t.balance && t.symbol && (
+                                <HiddenPlaceholder>
+                                    <TokenValue>{`${
+                                        t.balance
+                                    } ${t.symbol.toUpperCase()}`}</TokenValue>
+                                </HiddenPlaceholder>
+                            )}
                         </Col>
                         {!isTestnet && (
                             <Col isTestnet={isTestnet} justify="right">
