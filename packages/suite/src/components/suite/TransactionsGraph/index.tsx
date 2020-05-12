@@ -86,7 +86,12 @@ const TransactionsGraph = React.memo((props: Props) => {
     //         : null;
 
     const xAxisPadding =
-        selectedRange.label === 'year' || selectedRange.label === 'all' ? 3600 * 24 * 7 : 3600 * 12; // 7 days or 12 hours
+        selectedRange.label === 'year' || selectedRange.label === 'all'
+            ? 3600 * 24 * 14
+            : 3600 * 12; // 7 days or 12 hours
+    // console.log('xtics', xTicks.sort().map(fromUnixTime));
+    // console.log('data', data);
+
     return (
         <Wrapper>
             <Toolbar>

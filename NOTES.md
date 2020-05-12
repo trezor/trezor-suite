@@ -62,6 +62,8 @@ chrome://inspect/#devices
 
 `yarn`
 
+`yarn build:libs`
+
 ## Landing page release
 
 1. `yarn workspace @trezor/landing-page build`
