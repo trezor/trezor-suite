@@ -104,12 +104,7 @@ export const rememberDevice = (device: TrezorDevice, remember: boolean) => async
             ...txsPromises,
         ] as Promise<void | string | undefined>[]);
     } catch (error) {
-        if (error) {
-            console.error('errorName', error.name);
-            console.error('errorMessage', error.message);
-        } else {
-            console.error('error', error);
-        }
+        console.error('Remember device:', error);
     }
 };
 
