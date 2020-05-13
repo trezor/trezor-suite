@@ -282,8 +282,8 @@ export const onUpdateRate = (res: BlockchainFiatRatesUpdate) => async (dispatch:
     });
 };
 
-let staleRatesTimeout = 0;
-let lastWeekTimeout = 0;
+let staleRatesTimeout: any = 0; // suite-native type-check fails on number
+let lastWeekTimeout: any = 0;
 /**
  * Called from blockchainActions.onConnect
  *
@@ -293,8 +293,8 @@ export const initRates = () => (dispatch: Dispatch) => {
     dispatch(updateLastWeekRates());
 
     if (staleRatesTimeout > 0 && lastWeekTimeout > 0) {
-        clearTimeout(staleRatesTimeout);
-        clearTimeout(lastWeekTimeout);
+        clearInterval(staleRatesTimeout);
+        clearInterval(lastWeekTimeout);
     }
 
     staleRatesTimeout = setInterval(() => {
