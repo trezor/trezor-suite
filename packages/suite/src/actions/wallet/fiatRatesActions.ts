@@ -292,7 +292,7 @@ export const initRates = () => (dispatch: Dispatch) => {
     dispatch(updateStaleRates());
     dispatch(updateLastWeekRates());
 
-    if (staleRatesTimeout > 0 && lastWeekTimeout > 0) {
+    if (staleRatesTimeout && lastWeekTimeout) {
         clearInterval(staleRatesTimeout);
         clearInterval(lastWeekTimeout);
     }
