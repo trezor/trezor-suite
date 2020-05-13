@@ -281,9 +281,6 @@ export const onUpdateRate = (res: BlockchainFiatRatesUpdate) => async (dispatch:
         },
     });
 };
-
-let staleRatesTimeout = 0;
-let lastWeekTimeout = 0;
 /**
  * Called from blockchainActions.onConnect
  *
@@ -291,16 +288,11 @@ let lastWeekTimeout = 0;
 export const initRates = () => (dispatch: Dispatch) => {
     dispatch(updateStaleRates());
     dispatch(updateLastWeekRates());
-
-    if (staleRatesTimeout > 0 && lastWeekTimeout > 0) {
-        clearTimeout(staleRatesTimeout);
-        clearTimeout(lastWeekTimeout);
-    }
-
-    staleRatesTimeout = setInterval(() => {
+    // todo: might be nice to implement canceling interval but later...
+    setInterval(() => {
         dispatch(updateStaleRates());
     }, INTERVAL);
-    lastWeekTimeout = setInterval(() => {
+    setInterval(() => {
         dispatch(updateLastWeekRates());
     }, INTERVAL_LAST_WEEK);
 };
