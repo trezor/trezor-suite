@@ -30,11 +30,10 @@ const HeadBackP = styled(P)`
 const Index = () => (
     <Layout>
         <Wrapper>
-            <H2>Access Trezor Suite (beta)</H2>
+            <H2>Access Trezor Beta Wallet</H2>
             <P size="tiny">
-                Do you want to test the newest Wallet features? Sign up below and become a beta
-                tester. In case you wish to go back to a stable Wallet, please proceed by clicking
-                the button.
+                Beta Wallet is now behind a login wall. To access Beta Wallet with experimental
+                features please sign up to our Beta Testers Community.
             </P>
             <Item>
                 <Link
@@ -48,12 +47,12 @@ const Index = () => (
                 </Link>
             </Item>
             <Item>
-                <Link href="https://wallet.trezor.io" target="_blank" variant="nostyle">
-                    <ButtonAccess variant="primary">Access Trezor Suite (beta)</ButtonAccess>
+                <Link href="/wallet" target="_blank" variant="nostyle">
+                    <ButtonAccess variant="primary">Access Beta Wallet</ButtonAccess>
                 </Link>
             </Item>
             <HeadBackP size="tiny">
-                Otherwise head back to stable and super-safe{' '}
+                Otherwise, please head back to our stable and safe Wallet{' '}
                 <Link href="https://wallet.trezor.io" target="_blank" variant="nostyle">
                     <ButtonWallet variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
                         wallet.trezor.io

@@ -24,7 +24,6 @@ function confirm {
     fi
 }
 
-
 # Validate params
 if [ "x$1" == "x" ] || [ "x$2" == "x" ]; then
     echo "Invalid params"
@@ -66,7 +65,7 @@ elif [ "x$2" == "xstable" ]; then
     DISTRIBUTION_ID="EZM01GFTITGVD"
 fi
 
-echo "sync "$SOURCE" with "$BUCKET"/wallet"
+echo "sync "$SOURCE" with "$BUCKET"/"
 
 if [ "x$1" == "xbeta" ] || [ "x$1" == "xstable" ]; then
     confirm
@@ -76,11 +75,11 @@ set -e
 cd `dirname $0`
 
 if [ "x$3" == "x-clear" ]; then
-    aws s3 sync --delete --cache-control 'public, max-age=3600' $SOURCE s3://$BUCKET/wallet
+    aws s3 sync --delete --cache-control 'public, max-age=3600' $SOURCE s3://$BUCKET/
 else
-    aws s3 sync --cache-control 'public, max-age=3600' $SOURCE s3://$BUCKET/wallet
+    aws s3 sync --cache-control 'public, max-age=3600' $SOURCE s3://$BUCKET/
 fi
 
-aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths '/wallet/*'
+aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths '/*'
 
 echo "DONE"

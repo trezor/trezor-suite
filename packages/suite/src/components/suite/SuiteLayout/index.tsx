@@ -52,6 +52,7 @@ const MaxWidthWrapper = styled.div<{ withMenu: boolean }>`
 
 const mapStateToProps = (state: AppState) => ({
     layoutSize: state.resize.size,
+    router: state.router,
 });
 
 type Props = ReturnType<typeof mapStateToProps> & {
