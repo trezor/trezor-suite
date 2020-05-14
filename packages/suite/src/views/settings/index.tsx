@@ -108,7 +108,7 @@ export default ({
                     />
                     <ActionColumn>
                         <ActionButton
-                            onClick={() => {
+                            onClick={async () => {
                                 clearStores();
                                 // @ts-ignore global.ipcRenderer is declared in @desktop/preloader.js
                                 const { ipcRenderer } = global;
@@ -117,11 +117,8 @@ export default ({
                                     ipcRenderer.send('restart-app');
                                 } else {
                                     // redirect to / and reload the web
-                                    goto('suite-index');
-                                    setTimeout(() => {
-                                        // hacky way to wait until the user is redirected
-                                        window.location.reload();
-                                    }, 2000);
+                                    await goto('suite-index');
+                                    window.location.reload();
                                 }
                             }}
                             variant="secondary"

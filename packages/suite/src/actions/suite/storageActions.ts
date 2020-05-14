@@ -6,6 +6,7 @@ import { Account, Send } from '@wallet-types';
 import { getAccountKey } from '@wallet-utils/accountUtils';
 import { Discovery } from '@wallet-reducers/discoveryReducer';
 import * as notificationActions from '@suite-actions/notificationActions';
+import * as suiteActions from '@suite-actions/suiteActions';
 import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
 
 export type StorageActions =
@@ -152,7 +153,12 @@ export const saveAnalytics = () => (_dispatch: Dispatch, getState: GetState) => 
     );
 };
 
-export const clearStores = () => async (dispatch: Dispatch, _getState: GetState) => {
+export const clearStores = () => async (dispatch: Dispatch, getState: GetState) => {
+    const rememberedDevices = getState().devices.filter(d => d.remember);
+    // forget all remembered devices
+    rememberedDevices.forEach(d => {
+        suiteActions.rememberDevice(d);
+    });
     await db.clearStores();
     dispatch(
         notificationActions.addToast({
