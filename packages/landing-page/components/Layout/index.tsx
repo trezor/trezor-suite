@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import { TrezorLogo, P, colors, variables } from '@trezor/components';
+import { TrezorLogo, colors, variables } from '@trezor/components';
 
 const Layout = styled.div`
     display: flex;
