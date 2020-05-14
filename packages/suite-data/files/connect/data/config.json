@@ -91,6 +91,11 @@
             "download": "https://www.chromium.org/",
             "update": "https://www.chromium.org/"
         },
+        "electron": {
+            "version": 0,
+            "download": "https://www.electronjs.org/",
+            "update": "https://www.electronjs.org/"
+        },
         "firefox": {
             "version": 54,
             "download": "https://www.mozilla.org/en-US/firefox/new/",

@@ -108,10 +108,10 @@ const CustomTooltip = ({ active, payload, coordinate, ...props }: Props) => {
                 <DateWrapper>
                     {date && showMMYYFormat && (
                         //
-                        <FormattedDate value={date} year="numeric" month="2-digit" />
+                        <FormattedDate value={date} year="numeric" month="long" />
                     )}
                     {date && !showMMYYFormat && (
-                        <FormattedDate value={date} year="numeric" month="2-digit" day="2-digit" />
+                        <FormattedDate value={date} year="numeric" month="long" day="2-digit" />
                     )}
                 </DateWrapper>
                 <Row>

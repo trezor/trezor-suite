@@ -36,9 +36,10 @@ const PinMismatch = ({ changePin }: Props) => {
             size="tiny"
             heading={<Translation id="TR_PIN_MISMATCH_HEADING" />}
             description={<Translation id="TR_PIN_MISMATCH_TEXT" />}
+            data-test="@pin-mismatch"
         >
             <StyledImage image="UNI_ERROR" />
-            <Button onClick={onTryAgain}>
+            <Button onClick={onTryAgain} data-test="@pin-mismatch/try-again-button">
                 <Translation id="TR_TRY_AGAIN" />
             </Button>
         </Modal>

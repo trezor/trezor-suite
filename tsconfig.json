@@ -264,6 +264,8 @@
             // landing
             "@landing-components/*": ["./packages/suite/src/components/landing/*"],
             "@landing-views/*": ["./packages/suite/src/views/landing/*"],
+            // web workers
+            "*/workers/graph.worker": ["./packages/suite/src/workers/graph.worker"],
             // other
             "@native/*": ["./packages/suite-native/src/*"],
             "@desktop/*": ["./packages/suite-desktop/src/*"]

@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { Translation } from '@suite-components';
 import { SETTINGS } from '@suite-config';
-import { colors, Loader } from '@trezor/components';
 import { WalletLayout } from '@wallet-components';
 import { getAccountTransactions, isTestnet } from '@wallet-utils/accountUtils';
 import NoTransactions from './components/NoTransactions';
@@ -13,28 +10,34 @@ import TransactionList from './components/TransactionList';
 import TransactionSummary from './components/TransactionSummary/Container';
 import { Props } from './Container';
 
-const LoaderWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-items: center;
-    align-items: center;
-`;
-const LoaderText = styled.div`
-    color: ${colors.BLACK0};
-    text-align: center;
-`;
-
 interface ContentProps {
     selectedAccount: Props['selectedAccount'];
-    children: React.ReactNode;
+    children?: React.ReactNode;
+    showSummary?: boolean;
+    showTokens?: boolean;
 }
 
-const Content = ({ selectedAccount, children }: ContentProps) => (
-    <WalletLayout title="Transactions" account={selectedAccount}>
-        <PricePanel />
-        {children}
-    </WalletLayout>
-);
+const Content = ({ selectedAccount, showSummary, children }: ContentProps) => {
+    if (selectedAccount.status !== 'loaded') return null;
+    const { account, network } = selectedAccount;
+
+    return (
+        <WalletLayout title="Transactions" account={selectedAccount}>
+            <PricePanel />
+            {showSummary && account.networkType !== 'ripple' && (
+                <TransactionSummary account={account} />
+            )}
+            {account.networkType === 'ethereum' && (
+                <TokenList
+                    isTestnet={isTestnet(account.symbol)}
+                    explorerUrl={network.explorer.account}
+                    tokens={account.tokens}
+                />
+            )}
+            {children}
+        </WalletLayout>
+    );
+};
 
 export default (props: Props) => {
     const { selectedAccount, transactions } = props;
@@ -51,7 +54,7 @@ export default (props: Props) => {
         return <WalletLayout title="Transactions" account={props.selectedAccount} />;
     }
 
-    const { account, network } = selectedAccount;
+    const { account } = selectedAccount;
 
     const accountTransactions = getAccountTransactions(transactions.transactions, account);
     const { size = undefined, total = undefined } = account.page || {};
@@ -61,38 +64,17 @@ export default (props: Props) => {
         props.fetchTransactions(account, page, size);
     };
 
-    if (transactions.isLoading) {
+    if (accountTransactions.length > 0 || transactions.isLoading) {
         return (
-            <Content selectedAccount={selectedAccount}>
-                <LoaderWrapper>
-                    <Loader size={40} />
-                    <LoaderText>
-                        <Translation id="TR_LOADING_TRANSACTIONS" />
-                    </LoaderText>
-                </LoaderWrapper>
-            </Content>
-        );
-    }
-
-    if (accountTransactions.length > 0) {
-        return (
-            <Content selectedAccount={selectedAccount}>
-                {account.networkType !== 'ripple' && <TransactionSummary account={account} />}
-                {account.networkType === 'ethereum' && (
-                    <TokenList
-                        isTestnet={isTestnet(account.symbol)}
-                        explorerUrl={network.explorer.account}
-                        tokens={account.tokens}
-                    />
-                )}
+            <Content selectedAccount={selectedAccount} showSummary>
                 <TransactionList
-                    explorerUrl={network.explorer.tx}
                     transactions={accountTransactions}
                     currentPage={selectedPage}
                     totalPages={total}
                     onPageSelected={onPageSelected}
                     perPage={SETTINGS.TXS_PER_PAGE}
                     symbol={account.symbol}
+                    isLoading={transactions.isLoading}
                 />
             </Content>
         );

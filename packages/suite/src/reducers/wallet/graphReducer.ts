@@ -130,9 +130,6 @@ export default (state: State = initialState, action: WalletAction | SuiteAction)
             case GRAPH.SET_SELECTED_RANGE:
                 draft.selectedRange = action.payload;
                 break;
-            // case ACCOUNT.UPDATE:
-            //     update(draft, action.payload);
-            //     break;
             case ACCOUNT.REMOVE:
                 return remove(draft, action.payload);
             // no default

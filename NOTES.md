@@ -58,3 +58,23 @@ ifconfig | grep "inet "
 - Open debugger:
 chrome://inspect/#devices
 
+# How to release - staging
+
+`yarn`
+
+`yarn build:libs`
+
+## Landing page release
+
+1. `yarn workspace @trezor/landing-page build`
+2. `cd packages/landing-page`
+3. `./scripts/s3sync.sh  stage beta`
+
+## Suite web release
+
+1. `assetPrefix=/wallet yarn workspace @trezor/suite-web build`
+2. `cd packages/suite-web`
+3. `cd build/static`
+4. `mkdir desktop`
+5. copy desktop apps into the folder (Trezor-Beta-Wallet.(zip, AppImage, exe)).
+6. `./scripts/s3sync.sh stage beta` (from the `packages/suite-web` folder )

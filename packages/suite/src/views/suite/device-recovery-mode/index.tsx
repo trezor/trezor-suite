@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H2, Button } from '@trezor/components';
+import { H2, Button, Modal } from '@trezor/components';
 import { Loading, Translation, Image } from '@suite-components';
 
 import { Props } from './Container';
@@ -23,35 +23,40 @@ const StyledImage = styled(Image)`
 `;
 
 const Index = ({ recovery, device, rerun, goToStep, addPath }: Props) => (
-    <Wrapper>
-        {recovery.status === 'in-progress' && <Loading noBackground />}
-        {recovery.status !== 'in-progress' && (
-            <>
-                <H2>
-                    <Translation id="TR_DEVICE_IN_RECOVERY_MODE" />
-                </H2>
-                <StyledImage image="FIRMWARE_INIT_2" />
-                <Buttons>
-                    {!device?.features?.initialized && (
-                        <Button
-                            onClick={() => {
-                                rerun();
-                                goToStep('recovery');
-                                addPath('recovery');
-                            }}
-                        >
-                            <Translation id="TR_CONTINUE" />
-                        </Button>
-                    )}
-                    {device?.features?.initialized && (
-                        <Button onClick={() => rerun()}>
-                            <Translation id="TR_CONTINUE" />
-                        </Button>
-                    )}
-                </Buttons>
-            </>
-        )}
-    </Wrapper>
+    <Modal>
+        <Wrapper>
+            {recovery.status === 'in-progress' && <Loading noBackground />}
+            {recovery.status !== 'in-progress' && (
+                <>
+                    <H2>
+                        <Translation id="TR_DEVICE_IN_RECOVERY_MODE" />
+                    </H2>
+                    <StyledImage image="FIRMWARE_INIT_2" />
+                    <Buttons>
+                        {!device?.features?.initialized && (
+                            <Button
+                                onClick={() => {
+                                    rerun();
+                                    goToStep('recovery');
+                                    addPath('recovery');
+                                }}
+                            >
+                                <Translation id="TR_CONTINUE" />
+                            </Button>
+                        )}
+                        {device?.features?.initialized && (
+                            <Button
+                                onClick={() => rerun()}
+                                data-test="@device-invalid-mode/recovery/rerun-button"
+                            >
+                                <Translation id="TR_CONTINUE" />
+                            </Button>
+                        )}
+                    </Buttons>
+                </>
+            )}
+        </Wrapper>
+    </Modal>
 );
 
 export default Index;

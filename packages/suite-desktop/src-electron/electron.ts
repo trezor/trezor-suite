@@ -9,7 +9,7 @@ import { runBridgeProcess } from './bridge';
 import { buildMainMenu } from './menu';
 
 let mainWindow: BrowserWindow;
-const APP_NAME = 'Trezor Suite';
+const APP_NAME = 'Trezor Beta Wallet';
 const PROTOCOL = 'file';
 const src = isDev
     ? 'http://localhost:8000/'
