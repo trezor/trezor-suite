@@ -60,7 +60,7 @@ if [ "x$1" == "xstage" ]; then
 elif [ "x$1" == "xbeta" ]; then
     BUCKET=beta.mytrezor.com
     DISTRIBUTION_ID="E1PONNHWUNCQ9M"
-elif [ "x$2" == "xstable" ]; then
+elif [ "x$1" == "xstable" ]; then
     BUCKET=wallet.mytrezor.com
     DISTRIBUTION_ID="EZM01GFTITGVD"
 fi
