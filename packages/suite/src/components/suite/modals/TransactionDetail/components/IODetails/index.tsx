@@ -15,7 +15,6 @@ const Wrapper = styled.div`
 
 const IOWrapper = styled.div`
     display: flex;
-    align-items: center;
     justify-content: center;
     width: 100%;
 
@@ -38,6 +37,7 @@ const Col = styled.div<{ direction: 'column' | 'row' }>`
 const IconWrapper = styled.div`
     display: flex;
     padding: 8px;
+    margin-top: 18px;
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         width: 100%;
