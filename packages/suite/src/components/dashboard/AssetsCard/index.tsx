@@ -24,7 +24,12 @@ const HeaderTitle = styled.div`
     text-transform: uppercase;
     display: grid;
     grid-gap: 10px;
-    grid-template-columns: minmax(180px, 2fr) repeat(auto-fit, minmax(80px, 1fr));
+
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
 `;
 
 const StyledCard = styled(Card)`
@@ -44,6 +49,16 @@ const InfoMessage = styled.div`
 const BalanceHeader = styled.div`
     display: flex;
     justify-content: center;
+`;
+
+const Grid = styled.div`
+    display: grid;
+    overflow: hidden;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
 `;
 
 const AssetsCard = () => {
@@ -83,28 +98,33 @@ const AssetsCard = () => {
                 </HeaderTitle>
             </Header>
             <StyledCard>
-                {networks.map(symbol => {
-                    const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
-                    if (!network) {
-                        return 'unknown network';
-                    }
+                <Grid>
+                    {networks.map((symbol, i) => {
+                        const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
+                        if (!network) {
+                            return 'unknown network';
+                        }
 
-                    const assetBalance = assets[symbol].reduce(
-                        (prev, a) => prev.plus(a.formattedBalance),
-                        new BigNumber(0),
-                    );
+                        const assetBalance = assets[symbol].reduce(
+                            (prev, a) => prev.plus(a.formattedBalance),
+                            new BigNumber(0),
+                        );
 
-                    const assetFailed = accounts.find(f => f.symbol === network.symbol && f.failed);
+                        const assetFailed = accounts.find(
+                            f => f.symbol === network.symbol && f.failed,
+                        );
 
-                    return (
-                        <Asset
-                            key={symbol}
-                            network={network}
-                            failed={!!assetFailed}
-                            cryptoValue={assetBalance.toFixed()}
-                        />
-                    );
-                })}
+                        return (
+                            <Asset
+                                key={symbol}
+                                network={network}
+                                failed={!!assetFailed}
+                                cryptoValue={assetBalance.toFixed()}
+                                isFirstRow={i === 0}
+                            />
+                        );
+                    })}
+                </Grid>
                 {isLoading && (
                     <InfoMessage>
                         <Loader size={20} />
