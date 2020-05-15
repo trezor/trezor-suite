@@ -52,7 +52,7 @@ const updateError = (draft: State, interval?: GraphRange['label']) => {
     const intervals = interval ? [interval] : (['week', 'month', 'year', 'all'] as const);
 
     intervals.forEach(interval => {
-        const failedGraphData = draft.data.filter(d => !!d.error && d.interval === interval);
+        const failedGraphData = draft.data.filter(d => d.error && d.interval === interval);
         if (failedGraphData.length > 0) {
             draft.error[interval] = failedGraphData.map(a => a.account);
         } else {

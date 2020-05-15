@@ -27,12 +27,14 @@ const GraphWrapper = styled(HiddenPlaceholder)`
 
 const ErrorMessage = styled.div`
     display: flex;
+    flex-direction: column;
     width: 100%;
     padding: 20px;
     align-items: center;
     justify-content: center;
     color: ${colors.BLACK50};
     font-size: ${variables.FONT_SIZE.SMALL};
+    text-align: center;
 `;
 
 const SmallErrorMessage = styled.div`
@@ -51,7 +53,10 @@ const DashboardGraph = React.memo((props: Props) => {
     const rawData = props.graph.data;
     const selectedDeviceState = selectedDevice?.state;
     const isLoading = props.graph.isLoading[selectedRange.label];
-    const failedAccounts = props.graph.error[selectedRange.label];
+    const failedAccounts = props.graph.error[selectedRange.label]?.filter(
+        a => a.deviceState === selectedDeviceState,
+    );
+    const allFailed = failedAccounts && failedAccounts.length === accounts.length;
 
     const onRefresh = useCallback(() => {
         updateGraphData(accounts);
@@ -105,9 +110,9 @@ const DashboardGraph = React.memo((props: Props) => {
     return (
         <Wrapper data-test="@dashboard/graph">
             <GraphWrapper>
-                {failedAccounts && failedAccounts.length === accounts.length ? (
+                {allFailed ? (
                     <ErrorMessage>
-                        <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />{' '}
+                        <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
                         <Button onClick={onRefresh} icon="REFRESH" variant="tertiary" size="small">
                             <Translation id="TR_RETRY" />
                         </Button>
