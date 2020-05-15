@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Translation } from '@suite-components';
 import { colors, variables, Loader, Icon } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { GraphRange, AggregatedAccountBalanceHistory } from '@wallet-types/fiatRates';
@@ -29,8 +30,22 @@ const Description = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
     color: ${colors.BLACK50};
     flex: 1;
+`;
+
+const NoTransactionsMessageWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+`;
+const DescriptionHeading = styled.div`
+    text-align: center;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    margin-bottom: 8px;
 `;
 
 const RefreshIcon = styled(Icon)`
@@ -110,7 +125,17 @@ const TransactionsGraph = React.memo((props: Props) => {
             </Toolbar>
             <Description>
                 {isLoading && <Loader size={24} />}
-                {!isLoading && data && data.length === 0 && <>No transactions to show</>}
+                {!isLoading && data && data.length === 0 && (
+                    <NoTransactionsMessageWrapper>
+                        <DescriptionHeading>
+                            <Translation id="TR_NO_TRANSACTIONS_TO_SHOW" />
+                        </DescriptionHeading>
+                        <Translation
+                            id="TR_NO_TRANSACTIONS_TO_SHOW_SUB"
+                            values={{ newLine: <br /> }}
+                        />
+                    </NoTransactionsMessageWrapper>
+                )}
                 {!isLoading && data && data.length > 0 && (
                     <ResponsiveContainer height="100%" width="99%">
                         <BarChart
