@@ -54,10 +54,6 @@ export type Payload =
       };
 
 const getUrl = () => {
-    // Playground endpoint
-    // --------------
-    // const base = 'https://track-suite.herokuapp.com/';
-
     // Real endpoints
     // --------------
     // https://data.trezor.io/suite/log/desktop/stage.log
