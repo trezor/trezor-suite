@@ -39,7 +39,6 @@ const ErrorMessage = styled.div`
 
 const SmallErrorMessage = styled.div`
     display: flex;
-    margin-top: 16px;
     color: ${colors.BLACK50};
     font-size: ${variables.FONT_SIZE.TINY};
 `;

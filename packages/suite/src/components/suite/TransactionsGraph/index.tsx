@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { colors, variables, Loader, Icon } from '@trezor/components';
@@ -84,6 +84,12 @@ export type Props = CryptoGraphProps | FiatGraphProps;
 const TransactionsGraph = React.memo((props: Props) => {
     const { data, isLoading, selectedRange, xTicks } = props;
 
+    const [maxYTickWidth, setMaxYTickWidth] = useState(20);
+
+    const setWidth = (n: number) => {
+        setMaxYTickWidth(prevValue => (prevValue > n ? prevValue : n));
+    };
+
     // Will be useful if we'll wanna use custom ticks values
     // const minY =
     //     data && data.length > 0
@@ -104,8 +110,8 @@ const TransactionsGraph = React.memo((props: Props) => {
         selectedRange.label === 'year' || selectedRange.label === 'all'
             ? 3600 * 24 * 14
             : 3600 * 12; // 7 days or 12 hours
-    // console.log('xtics', xTicks.sort().map(fromUnixTime));
-    // console.log('data', data);
+
+    const rightMargin = maxYTickWidth / devicePixelRatio;
 
     return (
         <Wrapper>
@@ -144,8 +150,8 @@ const TransactionsGraph = React.memo((props: Props) => {
                             margin={{
                                 top: 10,
                                 bottom: 30,
-                                right: 10,
-                                left: 20,
+                                right: rightMargin,
+                                left: 10,
                             }}
                         >
                             <XAxis
@@ -168,9 +174,15 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 stroke={colors.BLACK80}
                                 tick={
                                     props.variant === 'one-asset' ? (
-                                        <CustomYAxisTick symbol={props.account.symbol} />
+                                        <CustomYAxisTick
+                                            symbol={props.account.symbol}
+                                            setWidth={setWidth}
+                                        />
                                     ) : (
-                                        <CustomYAxisTick localCurrency={props.localCurrency} />
+                                        <CustomYAxisTick
+                                            localCurrency={props.localCurrency}
+                                            setWidth={setWidth}
+                                        />
                                     )
                                 }
                             />
