@@ -70,7 +70,7 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
         case SUITE.SET_FLAG:
             // here we are reporting some information of user after he finishes initialRun
             if (action.key === 'initialRun' && action.value === false) {
-                if (state.suite.settings.analytics) {
+                if (state.analytics.enabled) {
                     api.dispatch(
                         analyticsActions.report(
                             {
