@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import * as Sentry from '@sentry/browser';
 import { H1, P, Button } from '@trezor/components';
+import { db } from '@suite/storage';
 
 const Wrapper = styled.div`
     display: flex;
@@ -13,10 +14,13 @@ const Wrapper = styled.div`
 
 const Buttons = styled.div`
     display: flex;
+    margin: 12px 0px;
+
+    flex-direction: column;
 `;
 
 const StyledButton = styled(Button)`
-    margin: 12px;
+    margin: 6px 12px;
 `;
 
 // Cant use hook https://reactjs.org/docs/hooks-faq.html#do-hooks-cover-all-use-cases-for-classes
@@ -24,6 +28,17 @@ const StyledButton = styled(Button)`
 interface StateProps {
     error: Error | null | undefined;
 }
+
+const refresh = () => {
+    // @ts-ignore global.ipcRenderer is declared in @desktop/preloader.js
+    const { ipcRenderer } = global;
+    if (ipcRenderer) {
+        // relaunch desktop app
+        ipcRenderer.send('restart-app');
+    } else {
+        window.location.reload();
+    }
+};
 
 class ErrorBoundary extends React.Component<{}, StateProps> {
     constructor(props: {}) {
@@ -45,29 +60,33 @@ class ErrorBoundary extends React.Component<{}, StateProps> {
             return (
                 <Wrapper>
                     <H1>Error occurred</H1>
-                    <P>It appears something is broken. You might let us know by sending report</P>
+                    <P textAlign="center">
+                        It appears something is broken. You might let us know by sending report
+                    </P>
                     <P>{this.state.error.message}</P>
                     {/* <P>{this.state.error.stack}</P> */}
 
                     <Buttons>
-                        <StyledButton onClick={() => Sentry.showReportDialog()}>
-                            Send report
-                        </StyledButton>
-
                         <StyledButton
                             icon="REFRESH"
                             onClick={() => {
-                                // @ts-ignore global.ipcRenderer is declared in @desktop/preloader.js
-                                const { ipcRenderer } = global;
-                                if (ipcRenderer) {
-                                    // relaunch desktop app
-                                    ipcRenderer.send('restart-app');
-                                } else {
-                                    window.location.reload();
-                                }
+                                refresh();
                             }}
                         >
                             Reload window
+                        </StyledButton>
+                        <StyledButton variant="secondary" onClick={() => Sentry.showReportDialog()}>
+                            Send report
+                        </StyledButton>
+                        <StyledButton
+                            icon="REFRESH"
+                            variant="tertiary"
+                            onClick={async () => {
+                                await db.clearStores();
+                                refresh();
+                            }}
+                        >
+                            Clear storage and reload window
                         </StyledButton>
                     </Buttons>
                 </Wrapper>
