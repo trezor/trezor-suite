@@ -21,6 +21,7 @@ const StyledCard = styled(Card)`
 const Body = styled.div`
     display: flex;
     align-items: center;
+    flex: 1;
 `;
 
 const PortfolioCard = React.memo(() => {

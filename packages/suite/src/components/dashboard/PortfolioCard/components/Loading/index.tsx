@@ -7,11 +7,14 @@ const Wrapper = styled.div`
     display: flex;
     padding: 20px 0px;
     align-items: center;
+    justify-content: center;
+    width: 100%;
 `;
 
 const Title = styled.div`
+    text-align: center;
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${colors.BLACK0};
+    color: ${colors.BLACK50};
     margin-left: 12px;
 `;
 
