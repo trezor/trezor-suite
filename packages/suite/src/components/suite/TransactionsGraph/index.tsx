@@ -109,9 +109,9 @@ const TransactionsGraph = React.memo((props: Props) => {
     const xAxisPadding =
         selectedRange.label === 'year' || selectedRange.label === 'all'
             ? 3600 * 24 * 14
-            : 3600 * 12; // 7 days or 12 hours
+            : 3600 * 12; // 14 days for year/all range, 12 hours otherwise
 
-    const rightMargin = maxYTickWidth / devicePixelRatio;
+    const rightMargin = Math.max(0, maxYTickWidth - 50) + 10; // 50 is the default spacing
 
     return (
         <Wrapper>
