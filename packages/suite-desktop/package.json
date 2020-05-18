@@ -60,7 +60,7 @@
             "entitlements": "entitlements.mac.inherit.plist",
             "entitlementsInherit": "entitlements.mac.inherit.plist",
             "target": [
-                "dmg"
+                "zip"
             ]
         },
         "win": {
