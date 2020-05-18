@@ -145,7 +145,8 @@ export const report = (data: Payload, force = false) => async (
             body: payload,
         });
     } catch (err) {
-        // do nothing
+        // do nothing, just log error for sentry
+        console.error('failed to log analytics', err)
     }
 };
 
