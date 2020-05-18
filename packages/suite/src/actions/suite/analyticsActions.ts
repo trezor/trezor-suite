@@ -117,9 +117,9 @@ export const report = (data: Payload, force = false) => async (
         instanceId,
     });
 
-    let eventSpecifEncoded;
+    let eventSpecificEncoded;
     if (typeof data.payload !== 'string') {
-        eventSpecifEncoded = qs.stringify(
+        eventSpecificEncoded = qs.stringify(
             {
                 type: data.type,
                 ...data.payload,
@@ -129,7 +129,7 @@ export const report = (data: Payload, force = false) => async (
             },
         );
     } else {
-        eventSpecifEncoded = qs.stringify({
+        eventSpecificEncoded = qs.stringify({
             type: data.type,
             payload: data.payload,
         });
@@ -147,7 +147,7 @@ export const report = (data: Payload, force = false) => async (
     }
 
     try {
-        fetch(`${url}?${commonEncoded}&${eventSpecifEncoded}`, {
+        fetch(`${url}?${commonEncoded}&${eventSpecificEncoded}`, {
             method: 'GET',
         });
     } catch (err) {
