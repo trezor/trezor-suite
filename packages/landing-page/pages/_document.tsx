@@ -46,6 +46,7 @@ export default class MyDocument extends Document {
                         rel="stylesheet"
                         href={resolveStaticPath('fonts/fonts.css')}
                     />
+                    <title>Trezor Beta Wallet</title>
                 </Head>
                 <body style={{ height: '100%' }}>
                     <Main />
