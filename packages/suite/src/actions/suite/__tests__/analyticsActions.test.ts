@@ -62,6 +62,31 @@ describe('Analytics Actions', () => {
         process.env.SUITE_TYPE = env;
     });
 
+    it('analyticsActions.report() - event with complex payload including array', () => {
+        const env = process.env.SUITE_TYPE;
+        process.env.SUITE_TYPE = 'desktop';
+        const state = getInitialState({ analytics: { enabled: true, instanceId: '1' } });
+        const store = initStore(state);
+        store.dispatch(
+            analyticsActions.report({
+                type: 'suite-ready',
+                payload: {
+                    enabledNetworks: ['btc', 'bch'],
+                    language: 'en',
+                    localCurrency: 'usd',
+                    discreetMode: false,
+                },
+            }),
+        );
+        // @ts-ignore
+        expect(global.fetch).toHaveBeenNthCalledWith(
+            1,
+            'https://data.trezor.io/suite/log/desktop/beta.log?instanceId=1&type=suite-ready&enabledNetworks=btc%2Cbch&language=en&localCurrency=usd&discreetMode=false',
+            { method: 'GET' },
+        );
+        process.env.SUITE_TYPE = env;
+    });
+
     it('analyticsActions.report() - should not report if not enabled', () => {
         const state = getInitialState({ analytics: { enabled: false } });
         const store = initStore(state);
