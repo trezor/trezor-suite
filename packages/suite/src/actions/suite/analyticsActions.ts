@@ -119,7 +119,6 @@ export const report = (data: Payload, force = false) => async (
         version: process.env.COMMITHASH,
         sessionId,
         instanceId,
-        ts: Date.now(),
     });
 
     let eventSpecifEncoded;
