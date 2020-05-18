@@ -23,7 +23,6 @@ export interface GraphData {
 }
 
 interface State {
-    // put interval fields in data;
     data: GraphData[];
     error: { [k in GraphData['interval']]: null | AccountIdentifier[] };
     isLoading: { [k in GraphData['interval']]: boolean };
@@ -76,11 +75,7 @@ const update = (draft: State, payload: GraphData) => {
         draft.data[dataIndex].isLoading = isLoading;
     } else {
         draft.data.push({
-            account: {
-                deviceState: account.deviceState,
-                descriptor: account.descriptor,
-                symbol: account.symbol,
-            },
+            account,
             isLoading,
             interval,
             error,
@@ -89,6 +84,11 @@ const update = (draft: State, payload: GraphData) => {
     }
 
     updateError(draft, interval);
+};
+
+const loadFromStorage = (draft: State, payload: GraphData[]) => {
+    draft.data = payload;
+    updateError(draft);
 };
 
 const remove = (draft: State, accounts: Account[]) => {
@@ -111,15 +111,16 @@ export default (state: State = initialState, action: WalletAction | SuiteAction)
     return produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOADED:
-                return action.payload.wallet.graph;
+                loadFromStorage(draft, action.payload.wallet.graph.data);
+                break;
             case GRAPH.ACCOUNT_GRAPH_START:
-                update(draft, { ...action.payload, data: null, isLoading: true, error: false });
+                update(draft, action.payload);
                 break;
             case GRAPH.ACCOUNT_GRAPH_SUCCESS:
-                update(draft, { ...action.payload, isLoading: false, error: false });
+                update(draft, action.payload);
                 break;
             case GRAPH.ACCOUNT_GRAPH_FAIL:
-                update(draft, { ...action.payload, data: null, isLoading: false, error: true });
+                update(draft, action.payload);
                 break;
             case GRAPH.AGGREGATED_GRAPH_START:
                 draft.isLoading[action.payload.interval] = true;
