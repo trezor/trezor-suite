@@ -1,7 +1,7 @@
 import { OnUpgradeFunc } from '@trezor/suite-storage';
 
 export const migrate = async <TDBType>(
-    _db: Parameters<OnUpgradeFunc<TDBType>>['0'],
+    db: any,
     oldVersion: Parameters<OnUpgradeFunc<TDBType>>['1'],
     newVersion: Parameters<OnUpgradeFunc<TDBType>>['2'],
     _transaction: Parameters<OnUpgradeFunc<TDBType>>['3'],
@@ -45,4 +45,16 @@ export const migrate = async <TDBType>(
     //         transaction.store.createIndex('timestamp', 'timestamp', { unique: false });
     //     }
     // }
+    if (oldVersion < 14) {
+        // added graph object store
+        const graphStore = db.createObjectStore('graph', {
+            keyPath: ['account.descriptor', 'account.symbol', 'account.deviceState', 'interval'],
+        });
+        graphStore.createIndex('accountKey', [
+            'account.descriptor',
+            'account.symbol',
+            'account.deviceState',
+        ]);
+        graphStore.createIndex('deviceState', 'account.deviceState');
+    }
 };

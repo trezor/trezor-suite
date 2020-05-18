@@ -1,4 +1,4 @@
-import TrezorConnect, { BlockchainAccountBalanceHistory } from 'trezor-connect';
+import TrezorConnect from 'trezor-connect';
 import { getUnixTime, subWeeks } from 'date-fns';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { resetTime } from '@suite-utils/date';
@@ -14,29 +14,20 @@ import {
 import { Account } from '@wallet-types';
 import { GraphRange } from '@wallet-types/fiatRates';
 import { accountGraphDataFilterFn } from '@suite/utils/wallet/graphUtils';
+import { GraphData } from '@wallet-reducers/graphReducer';
 
 export type GraphActions =
     | {
           type: typeof ACCOUNT_GRAPH_SUCCESS;
-          payload: {
-              account: Account;
-              data: BlockchainAccountBalanceHistory[];
-              interval: GraphRange['label'];
-          };
+          payload: GraphData;
       }
     | {
           type: typeof ACCOUNT_GRAPH_START;
-          payload: {
-              account: Account;
-              interval: GraphRange['label'];
-          };
+          payload: GraphData;
       }
     | {
           type: typeof ACCOUNT_GRAPH_FAIL;
-          payload: {
-              account: Account;
-              interval: GraphRange['label'];
-          };
+          payload: GraphData;
       }
     | {
           type: typeof AGGREGATED_GRAPH_START;
@@ -81,8 +72,15 @@ export const fetchAccountGraphData = (
     dispatch({
         type: ACCOUNT_GRAPH_START,
         payload: {
-            account,
+            account: {
+                deviceState: account.deviceState,
+                descriptor: account.descriptor,
+                symbol: account.symbol,
+            },
             interval,
+            data: null,
+            isLoading: true,
+            error: false,
         },
     });
 
@@ -121,9 +119,15 @@ export const fetchAccountGraphData = (
         dispatch({
             type: ACCOUNT_GRAPH_SUCCESS,
             payload: {
-                account,
+                account: {
+                    deviceState: account.deviceState,
+                    descriptor: account.descriptor,
+                    symbol: account.symbol,
+                },
                 interval,
                 data: enhancedResponse,
+                isLoading: false,
+                error: false,
             },
         });
         return enhancedResponse;
@@ -131,8 +135,15 @@ export const fetchAccountGraphData = (
     dispatch({
         type: ACCOUNT_GRAPH_FAIL,
         payload: {
-            account,
+            account: {
+                deviceState: account.deviceState,
+                descriptor: account.descriptor,
+                symbol: account.symbol,
+            },
             interval,
+            data: null,
+            isLoading: false,
+            error: true,
         },
     });
     return null;
