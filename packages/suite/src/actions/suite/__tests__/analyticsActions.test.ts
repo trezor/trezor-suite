@@ -57,7 +57,7 @@ describe('Analytics Actions', () => {
         expect(global.fetch).toHaveBeenNthCalledWith(
             1,
             'https://data.trezor.io/suite/log/desktop/beta.log?instanceId=1&type=ui&payload=test-bla-bla',
-            { method: "GET" },
+            { method: 'GET' },
         );
         process.env.SUITE_TYPE = env;
     });
