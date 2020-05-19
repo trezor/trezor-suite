@@ -56,12 +56,12 @@ export type Payload =
 const getUrl = () => {
     // Real endpoints
     // --------------
-    // https://data.trezor.io/suite/log/desktop/stage.log
+    // https://data.trezor.io/suite/log/desktop/staging.log
     // https://data.trezor.io/suite/log/desktop/beta.log
     // https://data.trezor.io/suite/log/desktop/develop.log
     // https://data.trezor.io/suite/log/desktop/stable.log
 
-    // https://data.trezor.io/suite/log/web/stage.log
+    // https://data.trezor.io/suite/log/web/staging.log
     // https://data.trezor.io/suite/log/web/beta.log
     // https://data.trezor.io/suite/log/web/develop.log
     // https://data.trezor.io/suite/log/web/stable.log
@@ -85,7 +85,7 @@ const getUrl = () => {
         // ts-ignores are "safe", we are in web env and I don't want to create custom file for native
         // @ts-ignore
         if (window.location.hostname === 'staging-wallet.trezor.io') {
-            return `${base}/web/stage.log`;
+            return `${base}/web/staging.log`;
         }
         // @ts-ignore
         if (window.location.hostname === 'beta-wallet.trezor.io') {
@@ -96,12 +96,19 @@ const getUrl = () => {
             return `${base}/web/stable.log`;
         }
     }
+
+    return `${base}/web/development.log`;
 };
 
 export const report = (data: Payload, force = false) => async (
     _dispatch: Dispatch,
     getState: GetState,
 ) => {
+    if (isDev()) {
+        // on dev, do nothing
+        return;
+    }
+
     const { enabled, sessionId, instanceId } = getState().analytics;
 
     // the only case we want to override users 'do not log' choice is when we
@@ -135,10 +142,6 @@ export const report = (data: Payload, force = false) => async (
         });
     }
 
-    if (isDev()) {
-        // on dev, do nothing
-        return;
-    }
     const url = getUrl();
 
     if (!url) {
@@ -174,6 +177,8 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch({
         type: ANALYTICS.INIT,
         payload: {
+            // respect what might have been loaded from storage
+            enabled: analytics.enabled,
             // if no instanceId exists it means that it was not loaded from storage, so create a new one
             instanceId: analytics.instanceId ? analytics.instanceId : getRandomId(10),
             // sessionId is always ephemeral
