@@ -89,9 +89,11 @@ const BasicDetails = ({
     totalInput,
     totalOutput,
 }: Props) => {
-    const isConfirmed =
-        txDetails?.confirmations > 0 ??
-        ((tx.blockHeight || 0) > 0 && tx.blockTime && tx.blockTime > 0);
+    // if txDetails?.confirmations exists use that, otherwise derive the status from blockHeight
+    const isConfirmed = txDetails?.confirmations
+        ? txDetails.confirmations > 0
+        : (tx.blockHeight || 0) > 0 && tx.blockTime && tx.blockTime > 0;
+
     const assetSymbol = tx.symbol.toUpperCase();
     return (
         <>
