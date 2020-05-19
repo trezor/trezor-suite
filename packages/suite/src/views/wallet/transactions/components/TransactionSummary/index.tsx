@@ -55,12 +55,15 @@ const Actions = styled.div`
 
 const ErrorMessage = styled.div`
     display: flex;
+    flex-direction: column;
     width: 100%;
-    padding: 32px;
+    height: 240px;
+    padding: 20px;
     align-items: center;
     justify-content: center;
     color: ${colors.BLACK50};
     font-size: ${variables.FONT_SIZE.SMALL};
+    text-align: center;
 `;
 
 const TransactionSummary = (props: Props) => {
@@ -100,8 +103,19 @@ const TransactionSummary = (props: Props) => {
             </Actions>
             {!isGraphHidden && (
                 <ContentWrapper noPadding>
-                    {/* TODO: what should be shown on error? */}
-                    {error && <ErrorMessage>Could not load data</ErrorMessage>}
+                    {error && (
+                        <ErrorMessage>
+                            <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
+                            <Button
+                                onClick={() => props.updateGraphData([props.account])}
+                                icon="REFRESH"
+                                variant="tertiary"
+                                size="small"
+                            >
+                                <Translation id="TR_RETRY" />
+                            </Button>
+                        </ErrorMessage>
+                    )}
                     {!error && (
                         <>
                             <GraphWrapper intensity={5}>
