@@ -32,6 +32,7 @@ variables:
     PACKAGE_PATH_SUITE_DESKTOP: packages/suite-desktop
     PACKAGE_PATH_SUITE_NATIVE: packages/suite-native
     PACKAGE_PATH_SUITE_WEB: packages/suite-web
+    DESKTOP_APP_NAME: 'Trezor Beta Wallet'
 
 stages:
     - setup environment
