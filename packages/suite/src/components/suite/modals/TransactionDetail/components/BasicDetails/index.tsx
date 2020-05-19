@@ -58,9 +58,9 @@ const LoaderIconWrapper = styled.div`
 `;
 
 interface Props {
-    txDetails: any;
     tx: WalletAccountTransaction;
     isFetching: boolean;
+    confirmations: number;
     totalInput?: string;
     totalOutput?: string;
     explorerUrl?: string;
@@ -83,16 +83,13 @@ const getHumanReadableTxType = (tx: WalletAccountTransaction) => {
 
 const BasicDetails = ({
     tx,
-    txDetails,
+    confirmations,
     isFetching,
     explorerUrl,
     totalInput,
     totalOutput,
 }: Props) => {
-    // if txDetails?.confirmations exists use that, otherwise derive the status from blockHeight
-    const isConfirmed = txDetails?.confirmations
-        ? txDetails.confirmations > 0
-        : (tx.blockHeight || 0) > 0 && tx.blockTime && tx.blockTime > 0;
+    const isConfirmed = confirmations > 0;
 
     const assetSymbol = tx.symbol.toUpperCase();
     return (
@@ -110,11 +107,11 @@ const BasicDetails = ({
                                     <Loader size={16} />
                                 </LoaderIconWrapper>
                             )}
-                            {txDetails?.confirmations && (
+                            {confirmations && (
                                 <Confirmations>
                                     <Translation
                                         id="TR_TX_CONFIRMATIONS"
-                                        values={{ confirmationsCount: txDetails.confirmations }}
+                                        values={{ confirmationsCount: confirmations }}
                                     />
                                     <ConfirmationsIconWrapper>
                                         <Tooltip
