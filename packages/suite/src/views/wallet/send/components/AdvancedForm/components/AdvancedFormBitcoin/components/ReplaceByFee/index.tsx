@@ -42,7 +42,7 @@ export default () => {
             </Left>
             <Right>
                 <Tooltip placement="top" content={<Translation id="TR_SEND_COMING_SOON" />}>
-                    <Switch checked={false} onChange={() => console.log('change')} />
+                    <Switch checked={false} onChange={() => {}} />
                 </Tooltip>
             </Right>
         </Wrapper>
