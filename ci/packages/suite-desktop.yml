@@ -4,7 +4,7 @@ suite-desktop build mac:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
         - yarn workspace @trezor/suite-desktop build:mac
-        - mv "$PACKAGE_PATH_SUITE_DESKTOP/build-electron/${DESKTOP_APP_NAME}-*.zip" .
+        - mv ${PACKAGE_PATH_SUITE_DESKTOP}/build-electron/"${DESKTOP_APP_NAME}"-*.zip" .
     artifacts:
         expire_in: 1 week
         paths:
@@ -16,7 +16,7 @@ suite-desktop build linux:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
         - yarn workspace @trezor/suite-desktop build:linux
-        - mv "$PACKAGE_PATH_SUITE_DESKTOP/build-electron/${DESKTOP_APP_NAME}-*.AppImage" .
+        - mv $PACKAGE_PATH_SUITE_DESKTOP/build-electron/"${DESKTOP_APP_NAME}"-*.AppImage" .
     artifacts:
         expire_in: 1 day
         paths:
@@ -29,7 +29,7 @@ suite-desktop build windows:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
         - yarn workspace @trezor/suite-desktop build:win
-        - mv "$PACKAGE_PATH_SUITE_DESKTOP/build-electron/Trezor\ Beta\ Wallet-*.exe" .
+        - mv "$PACKAGE_PATH_SUITE_DESKTOP/build-electron/"${DESKTOP_APP_NAME}"-*.exe" .
     artifacts:
         expire_in: 1 day
         paths:
