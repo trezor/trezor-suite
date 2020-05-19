@@ -3412,6 +3412,42 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Try a different date range.{newLine}Still nothing? Go ahead and send a transaction.',
     },
+    TR_LANDING_TITLE: {
+        id: 'TR_LANDING_TITLE',
+        defaultMessage: 'Download Trezor Suite (beta) desktop app',
+    },
+    TR_LANDING_DESC: {
+        id: 'TR_LANDING_DESC',
+        defaultMessage: 'For testing purpouses only. Please keep in mind this is a beta version.',
+    },
+    TR_LANDING_CHOOSE_LABEL: {
+        id: 'TR_LANDING_CHOOSE_LABEL',
+        defaultMessage: 'Choose your platform',
+    },
+    TR_LANDING_CHOOSE_VALUE: {
+        id: 'TR_LANDING_CHOOSE_VALUE',
+        defaultMessage: '– Click to choose –',
+    },
+    TR_LANDING_WINDOWS: {
+        id: 'TR_LANDING_WINDOWS',
+        defaultMessage: 'Windows',
+    },
+    TR_LANDING_LINUX: {
+        id: 'TR_LANDING_LINUX',
+        defaultMessage: 'Linux',
+    },
+    TR_LANDING_MACOS: {
+        id: 'TR_LANDING_MACOS',
+        defaultMessage: 'Mac OS',
+    },
+    TR_LANDING_DOWNLOAD: {
+        id: 'TR_LANDING_DOWNLOAD',
+        defaultMessage: 'Download',
+    },
+    TR_LANDING_CONTINUE: {
+        id: 'TR_LANDING_CONTINUE',
+        defaultMessage: 'Continue in browser',
+    },
 } as const);
 
 export default definedMessages;
