@@ -19,6 +19,7 @@ cache:
         - packages/translations-manager/node_modules/
         - packages/integration-tests/node_modules/
         - packages/news-api/node_modules/
+
         # libs
         - packages/components/lib
         - packages/blockchain-link/lib
@@ -29,9 +30,6 @@ cache:
 variables:
     DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
     STAGING_SERVER_URL: 'http://staging-wallet.trezor.io/suite'
-    PACKAGE_PATH_SUITE_DESKTOP: packages/suite-desktop
-    PACKAGE_PATH_SUITE_NATIVE: packages/suite-native
-    PACKAGE_PATH_SUITE_WEB: packages/suite-web
     DESKTOP_APP_NAME: 'Trezor Beta Wallet'
 
 stages:
@@ -66,6 +64,6 @@ include:
     - ci/packages/suite.yml
     - ci/packages/suite-web.yml
     - ci/packages/suite-desktop.yml
-    # - ci/packages/suite-native.yml
+    - ci/packages/suite-native.yml
     - ci/packages/rollout.yml
     - ci/packages/landing-page.yml

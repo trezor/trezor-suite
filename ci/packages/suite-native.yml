@@ -6,7 +6,7 @@ suite-native build android:
         - yarn build:libs
         - yarn workspace @trezor/suite-data copy-static-files
         - yarn workspace @trezor/suite-native build:android
-        - mv $PACKAGE_PATH_SUITE_NATIVE/android/app/build/outputs/apk/release/app-release.apk .
+        - mv packages/suite-native/android/app/build/outputs/apk/release/app-release.apk .
     artifacts:
         expire_in: 1 day
         paths:
