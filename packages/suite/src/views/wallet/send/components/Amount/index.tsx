@@ -111,7 +111,7 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
                         icon: getMaxIcon(setMaxActivated),
                         iconSize: 15,
                         onClick: () => sendFormActions.setMax(id),
-                        text: 'Send max',
+                        text: <Translation id="TR_SEND_SEND_MAX" />,
                     }}
                     align="right"
                     value={value || ''}
