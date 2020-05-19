@@ -47,7 +47,7 @@ const AdvancedFormRipple = ({ send, sendFormActionsRipple }: Props) => {
                     <Text>
                         <Translation id="TR_XRP_DESTINATION_TAG" />
                     </Text>
-                    <QuestionTooltip messageId="TR_XRP_DESTINATION_TAG_TOOLTIP" />
+                    <QuestionTooltip messageId="TR_XRP_DESTINATION_TAG_EXPLAINED" />
                 </Label>
             }
             bottomText={getErrorMessage(error, value)}

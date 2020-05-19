@@ -2048,6 +2048,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Destination tag',
         id: 'TR_XRP_DESTINATION_TAG',
     },
+    TR_XRP_DESTINATION_TAG_EXPLAINED: {
+        defaultMessage:
+            'Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.',
+        id: 'TR_XRP_DESTINATION_TAG_EXPLAINED',
+    },
     TR_SHOW_MORE_ADDRESSES: {
         defaultMessage: 'Show more ({count})',
         id: 'TR_SHOW_MORE_ADDRESSES',
@@ -2057,11 +2062,7 @@ const definedMessages = defineMessages({
             'Ripple addresses require a minimum balance of {minBalance} XRP to activate and maintain the account. {TR_LEARN_MORE}',
         id: 'TR_XRP_RESERVE_INFO',
     },
-    // TR_XRP_DESTINATION_TAG_EXPLAINED: {
-    //         defaultMessage:
-    //                 'Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.',
-    //         id: 'TR_XRP_DESTINATION_TAG_EXPLAINED',
-    // },
+
     TR_YOU_WERE_DISCONNECTED_DOT: {
         defaultMessage: 'You were disconnected.',
         id: 'TR_YOU_WERE_DISCONNECTED_DOT',
