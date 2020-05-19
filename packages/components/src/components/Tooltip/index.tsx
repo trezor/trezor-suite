@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import Tippy, { TippyProps } from '@tippy.js/react';
 import { tippy } from './tippy.style';
 import colors from '../../config/colors';
@@ -60,7 +60,7 @@ const ReadMoreLink = styled(Link)`
 
 type Props = TippyProps & {
     children: JSX.Element | JSX.Element[] | string;
-    readMore?: { link: string; text: string } | null;
+    readMore?: { link: string; text: ReactNode } | null;
 };
 
 const Tooltip = ({
