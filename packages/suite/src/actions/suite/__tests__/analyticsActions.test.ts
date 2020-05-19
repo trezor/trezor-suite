@@ -50,14 +50,39 @@ describe('Analytics Actions', () => {
     it('analyticsActions.report() - should report if enabled', () => {
         const env = process.env.SUITE_TYPE;
         process.env.SUITE_TYPE = 'desktop';
-        const state = getInitialState({ analytics: { enabled: true } });
+        const state = getInitialState({ analytics: { enabled: true, instanceId: '1' } });
         const store = initStore(state);
-        store.dispatch(analyticsActions.report({ type: 'ui', payload: 'wrrr' }));
+        store.dispatch(analyticsActions.report({ type: 'ui', payload: 'test-bla-bla' }));
         // @ts-ignore
         expect(global.fetch).toHaveBeenNthCalledWith(
             1,
-            'https://data.trezor.io/suite/log/desktop/beta.log',
-            jasmine.any(Object),
+            'https://data.trezor.io/suite/log/desktop/beta.log?instanceId=1&type=ui&payload=test-bla-bla',
+            { method: 'GET' },
+        );
+        process.env.SUITE_TYPE = env;
+    });
+
+    it('analyticsActions.report() - event with complex payload including array', () => {
+        const env = process.env.SUITE_TYPE;
+        process.env.SUITE_TYPE = 'desktop';
+        const state = getInitialState({ analytics: { enabled: true, instanceId: '1' } });
+        const store = initStore(state);
+        store.dispatch(
+            analyticsActions.report({
+                type: 'suite-ready',
+                payload: {
+                    enabledNetworks: ['btc', 'bch'],
+                    language: 'en',
+                    localCurrency: 'usd',
+                    discreetMode: false,
+                },
+            }),
+        );
+        // @ts-ignore
+        expect(global.fetch).toHaveBeenNthCalledWith(
+            1,
+            'https://data.trezor.io/suite/log/desktop/beta.log?instanceId=1&type=suite-ready&enabledNetworks=btc%2Cbch&language=en&localCurrency=usd&discreetMode=false',
+            { method: 'GET' },
         );
         process.env.SUITE_TYPE = env;
     });

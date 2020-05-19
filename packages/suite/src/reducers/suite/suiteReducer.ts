@@ -18,7 +18,6 @@ interface Flags {
 }
 
 interface SuiteSettings {
-    analytics: boolean;
     language: typeof LANGUAGES[number]['code'];
     debug: DebugModeOptions;
 }
@@ -51,7 +50,6 @@ const initialState: SuiteState = {
     },
     settings: {
         language: 'en',
-        analytics: true,
         debug: {
             translationMode: false,
         },

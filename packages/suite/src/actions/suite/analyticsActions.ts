@@ -3,6 +3,7 @@ import { isDev } from '@suite-utils/build';
 import { Dispatch, GetState, AppState } from '@suite-types';
 import { getRandomId } from '@suite-utils/random';
 import { Account } from '@wallet-types';
+import qs from 'qs';
 
 export type AnalyticsActions =
     | { type: typeof ANALYTICS.DISPOSE }
@@ -52,15 +53,7 @@ export type Payload =
           payload: string;
       };
 
-const encodePayload = (data: Record<string, any>) => {
-    return JSON.stringify(data);
-};
-
 const getUrl = () => {
-    // Playground endpoint
-    // --------------
-    // const base = 'https://track-suite.herokuapp.com/';
-
     // Real endpoints
     // --------------
     // https://data.trezor.io/suite/log/desktop/stage.log
@@ -117,6 +110,31 @@ export const report = (data: Payload, force = false) => async (
         return;
     }
 
+    // watched data is sent in query string
+    const commonEncoded = qs.stringify({
+        version: process.env.COMMITHASH,
+        sessionId,
+        instanceId,
+    });
+
+    let eventSpecificEncoded;
+    if (typeof data.payload !== 'string') {
+        eventSpecificEncoded = qs.stringify(
+            {
+                type: data.type,
+                ...data.payload,
+            },
+            {
+                arrayFormat: 'comma',
+            },
+        );
+    } else {
+        eventSpecificEncoded = qs.stringify({
+            type: data.type,
+            payload: data.payload,
+        });
+    }
+
     if (isDev()) {
         // on dev, do nothing
         return;
@@ -128,24 +146,13 @@ export const report = (data: Payload, force = false) => async (
         return;
     }
 
-    const payload = encodePayload({
-        ...data,
-        version: process.env.COMMITHASH,
-        sessionId,
-        instanceId,
-        ts: Date.now(),
-    });
-
     try {
-        fetch(url, {
-            method: 'POST',
-            headers: new Headers({
-                'content-type': 'application/json',
-            }),
-            body: payload,
+        fetch(`${url}?${commonEncoded}&${eventSpecificEncoded}`, {
+            method: 'GET',
         });
     } catch (err) {
-        // do nothing
+        // do nothing, just log error for sentry
+        console.error('failed to log analytics', err);
     }
 };
 
