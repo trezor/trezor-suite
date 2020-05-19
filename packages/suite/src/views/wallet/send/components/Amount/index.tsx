@@ -78,11 +78,16 @@ const getMessage = (
     }
 };
 
-export default ({ sendFormActions, output, selectedAccount }: Props) => {
-    if (selectedAccount.status !== 'loaded') return null;
+const getMaxIcon = (setMaxActivated: boolean) => {
+    return setMaxActivated ? 'CHECK' : 'SEND';
+};
+
+export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
+    if (selectedAccount.status !== 'loaded' || !send) return null;
 
     const { account, network } = selectedAccount;
     const { symbol } = account;
+    const { setMaxActivated } = send;
     const { decimals } = network;
     const { id, amount, fiatValue, localCurrency } = output;
     const { value, error, isLoading } = amount;
@@ -103,9 +108,10 @@ export default ({ sendFormActions, output, selectedAccount }: Props) => {
                         </Label>
                     }
                     button={{
-                        icon: 'SEND',
+                        icon: getMaxIcon(setMaxActivated),
+                        iconSize: 15,
                         onClick: () => sendFormActions.setMax(id),
-                        text: 'Send max',
+                        text: <Translation id="TR_SEND_SEND_MAX" />,
                     }}
                     align="right"
                     value={value || ''}

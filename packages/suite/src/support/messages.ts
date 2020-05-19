@@ -3448,6 +3448,10 @@ const definedMessages = defineMessages({
         id: 'TR_LANDING_CONTINUE',
         defaultMessage: 'Continue in browser',
     },
+    TR_SEND_SEND_MAX: {
+        id: 'TR_SEND_SEND_MAX',
+        defaultMessage: 'Send max',
+    },
 } as const);
 
 export default definedMessages;
