@@ -13,7 +13,6 @@
 ### Bridge in electron
 
 -   package.json > "build": { "asar": false } required
--   Include bridge library in desktop only for a specific environment to reduce the size of a bundle.
 -   How to get bridge version?
 -   Test windows
 
