@@ -35,7 +35,7 @@ const WalletsWrapper = styled.div`
 
 const GrayModal = styled(Modal)`
     background: ${colors.BLACK96};
-    max-width: 360px;
+    width: 360px;
 `;
 
 const mapStateToProps = (state: AppState) => ({
