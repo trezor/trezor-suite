@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import Layout from '@landing-components/Layout';
+import { Translation } from '@suite-components';
 import { H2, Button, P, Select, Link, variables } from '@trezor/components';
 
 const Wrapper = styled.div`
@@ -62,21 +63,26 @@ export default () => {
     return (
         <Layout>
             <Wrapper>
-                <H2>Download Trezor Suite (beta) desktop app</H2>
+                <H2>
+                    <Translation id="TR_LANDING_TITLE" />
+                </H2>
                 <P size="tiny">
-                    For testing purpouses only. Please keep in mind this is a beta version.
+                    <Translation id="TR_LANDING_DESC" />
                 </P>
                 <Row>
                     <Select
                         variant="small"
-                        topLabel="Choose your platform"
+                        topLabel={<Translation id="TR_LANDING_CHOOSE_LABEL" />}
                         width={240}
                         isSearchable={false}
-                        defaultValue={{ label: '– Click to choose –', value: null }}
+                        defaultValue={{
+                            label: <Translation id="TR_LANDING_CHOOSE_VALUE" />,
+                            value: null,
+                        }}
                         options={[
-                            { label: 'Windows', value: 'win' },
-                            { label: 'Mac OS', value: 'macos' },
-                            { label: 'Linux', value: 'linux' },
+                            { label: <Translation id="TR_LANDING_WINDOWS" />, value: 'win' },
+                            { label: <Translation id="TR_LANDING_MACOS" />, value: 'macos' },
+                            { label: <Translation id="TR_LANDING_LINUX" />, value: 'linux' },
                         ]}
                         onChange={(option: { value: App | null; label: string | null }) =>
                             setApp(option.value)
@@ -85,12 +91,14 @@ export default () => {
                     <Item>
                         {app && (
                             <Link href={getAppUrl(app)} variant="nostyle">
-                                <ButtonDownload variant="primary">Download</ButtonDownload>
+                                <ButtonDownload variant="primary">
+                                    <Translation id="TR_LANDING_DOWNLOAD" />
+                                </ButtonDownload>
                             </Link>
                         )}
                         {!app && (
                             <ButtonDownload isDisabled variant="primary">
-                                Download
+                                <Translation id="TR_LANDING_DOWNLOAD" />
                             </ButtonDownload>
                         )}
                     </Item>
@@ -98,7 +106,7 @@ export default () => {
                 <Item>
                     <ButtonContinue variant="tertiary" icon="ARROW_RIGHT" alignIcon="right">
                         <Link href="../" variant="nostyle">
-                            Continue in browser
+                            <Translation id="TR_LANDING_CONTINUE" />
                         </Link>
                     </ButtonContinue>
                 </Item>
