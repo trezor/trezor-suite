@@ -29,7 +29,7 @@ suite-desktop build windows:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
         - yarn workspace @trezor/suite-desktop build:win
-        - mv "$PACKAGE_PATH_SUITE_DESKTOP/build-electron/"${DESKTOP_APP_NAME}"-*.exe .
+        - mv $PACKAGE_PATH_SUITE_DESKTOP/build-electron/"${DESKTOP_APP_NAME}"-*.exe .
     artifacts:
         expire_in: 1 day
         paths:
