@@ -123,9 +123,11 @@ const getValue = (
     return `${formatNetworkAmount(feePerUnit, symbol)} ${symbol.toUpperCase()}`;
 };
 
-export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
-    if (!send || !account || !settings || !fiat) return null;
+export default ({ sendFormActions, send, selectedAccount, settings, fiat }: Props) => {
+    if (!send || !settings || !fiat || selectedAccount.status !== 'loaded') return null;
     const { selectedFee, customFee, feeInfo, feeOutdated } = send;
+    const { account, network } = selectedAccount;
+    const { decimals } = network;
     const feeLevels = feeInfo.levels;
     const { localCurrency } = settings;
     const { networkType, symbol } = account;
@@ -185,7 +187,8 @@ export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
                                     formatNetworkAmount(customFee.value, symbol),
                                     localCurrency,
                                     fiatVal.current?.rates,
-                                )}
+                                    decimals,
+                                )}{' '}
                                 {localCurrency}
                             </Badge>
                         </BadgeWrapper>
