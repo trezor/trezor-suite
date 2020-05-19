@@ -443,6 +443,7 @@
 	"TR_WIPING_YOUR_DEVICE": "Wiping the device removes all its information. Only wipe your device if you have your device if you have your recovery seed at hand or there are no funds stored on this device.",
 	"TR_WORDS": "{count} words",
 	"TR_XRP_DESTINATION_TAG": "Destination tag",
+	"TR_XRP_DESTINATION_TAG_EXPLAINED": "Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.",
 	"TR_SHOW_MORE_ADDRESSES": "Show more ({count})",
 	"TR_XRP_RESERVE_INFO": "Ripple addresses require a minimum balance of {minBalance} XRP to activate and maintain the account. {TR_LEARN_MORE}",
 	"TR_YOU_WERE_DISCONNECTED_DOT": "You were disconnected.",
@@ -458,10 +459,9 @@
 	"TR_SEND_REVIEW_TRANSACTION": "Review Transaction",
 	"TR_TO": "To",
 	"TR_RECIPIENT_ADDRESS_TOOLTIP": "TR_RECIPIENT_ADDRESS_TOOLTIP",
-	"TR_SEND_DATA_TOOLTIP": "TR_SEND_DATA_TOOLTIP",
-	"TR_SEND_GAS_LIMIT_TOOLTIP": "TR_SEND_GAS_LIMIT_TOOLTIP",
-	"TR_SEND_GAS_PRICE_TOOLTIP": "TR_SEND_GAS_PRICE_TOOLTIP",
-	"TR_XRP_DESTINATION_TAG_TOOLTIP": "TR_XRP_DESTINATION_TAG_TOOLTIP",
+	"TR_SEND_DATA_TOOLTIP": "Data is usually used when you send transactions to contracts.",
+	"TR_SEND_GAS_LIMIT_TOOLTIP": "Gas limit refers to the maximum amount of gas user is willing to spendon a particular transaction. Transaction fee = gas limit * gas price. Increasing the gas limit will not get the transaction confirmed sooner.",
+	"TR_SEND_GAS_PRICE_TOOLTIP": "Gas price refers to the amount of ether you are willing to pay for every unit of gas, and is usually measured in “Gwei”. Transaction fee = gas limit * gas price. Increasing the gas price will get the transaction confirmed sooner but makes it more expensive.",
 	"TR_SEND_FEE_TOOLTIP": "TR_SEND_FEE_TOOLTIP",
 	"TR_SEND_AMOUNT_TOOLTIP": "TR_SEND_AMOUNT_TOOLTIP",
 	"TR_PIN_MISMATCH_HEADING": "Pin mismatch",
@@ -767,5 +767,6 @@
 	"TR_LANDING_LINUX": "Linux",
 	"TR_LANDING_MACOS": "Mac OS",
 	"TR_LANDING_DOWNLOAD": "Download",
-	"TR_LANDING_CONTINUE": "Continue in browser"
+	"TR_LANDING_CONTINUE": "Continue in browser",
+	"TR_SEND_SEND_MAX": "Send max"
 }
