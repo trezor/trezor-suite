@@ -176,7 +176,7 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, index }: ItemProps) => 
     );
 };
 
-const UsedAddresses = ({ account, addresses, showAddress, addToast }: Props) => {
+const UsedAddresses = ({ account, addresses, showAddress, addToast, locked }: Props) => {
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
     if (account.networkType !== 'bitcoin' || !account.addresses) return null;
     const { used, unused } = account.addresses;
@@ -223,7 +223,7 @@ const UsedAddresses = ({ account, addresses, showAddress, addToast }: Props) => 
                         addr={addr}
                         symbol={account.symbol}
                         revealed={addresses.find(f => f.address === addr.address)}
-                        onClick={() => showAddress(addr.path, addr.address)}
+                        onClick={() => (!locked ? showAddress(addr.path, addr.address) : undefined)}
                         onCopy={() => copyAddress(addr.address)}
                     />
                 ))}
