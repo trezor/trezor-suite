@@ -5,7 +5,6 @@ import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Translation, QuestionTooltip } from '@suite-components';
 import { Send } from '@wallet-types';
-
 import { Props } from './Container';
 
 const Label = styled.div`
