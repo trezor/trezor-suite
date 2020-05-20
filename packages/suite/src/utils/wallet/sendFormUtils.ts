@@ -3,7 +3,7 @@ import Common from 'ethereumjs-common'; // this is a dependency of `ethereumjs-t
 import { toHex, toWei, fromWei, padLeft } from 'web3-utils';
 import BigNumber from 'bignumber.js';
 import { Output, State, EthTransactionData, FeeInfo, FeeLevel } from '@wallet-types/sendForm';
-import { VALIDATION_ERRORS, ERC20_TRANSFER } from '@wallet-constants/sendForm';
+import { VALIDATION_ERRORS, ERC20_TRANSFER, ERC20_GAS_LIMIT } from '@wallet-constants/sendForm';
 import { formatNetworkAmount, amountToSatoshi } from '@wallet-utils/accountUtils';
 import { Account, Network } from '@wallet-types';
 import { EthereumTransaction } from 'trezor-connect';
@@ -199,7 +199,11 @@ export const getReserveInXrp = (account: Account) => {
     return formatNetworkAmount(misc.reserve, account.symbol);
 };
 
-export const getFeeLevels = (networkType: Network['networkType'], feeInfo: FeeInfo) => {
+export const getFeeLevels = (
+    networkType: Network['networkType'],
+    feeInfo: FeeInfo,
+    token = false,
+) => {
     const convertedEthLevels: FeeLevel[] = [];
     const initialLevels: FeeLevel[] =
         networkType === 'ethereum'
@@ -215,6 +219,10 @@ export const getFeeLevels = (networkType: Network['networkType'], feeInfo: FeeIn
             convertedEthLevels.push({
                 ...level,
                 feePerUnit: fromWei(level.feePerUnit, 'gwei'),
+                feeLimit: token ? ERC20_GAS_LIMIT : level.feeLimit,
+                feePerTx: token
+                    ? new BigNumber(ERC20_GAS_LIMIT).times(level.feePerUnit).toString()
+                    : level.feePerTx,
             }),
         );
     }

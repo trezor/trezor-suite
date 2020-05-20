@@ -319,24 +319,6 @@ export const setMax = (outputIdIn?: number) => async (dispatch: Dispatch, getSta
     dispatch(composeChange('amount'));
 };
 
-export const handleTokenSelectChange = (token?: TokenInfo) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const { send } = getState().wallet;
-    if (!send) return;
-
-    // do eth specific stuff
-    dispatch(ethereumActions.handleTokenSelectChange(token));
-
-    // trigger amount validation in reducer
-    if (send.setMaxActivated) {
-        dispatch(setMax());
-    } else {
-        dispatch(amountChange());
-    }
-};
-
 /*
     Change value in select "Fee"
  */
@@ -445,7 +427,11 @@ export const updateFeeOrNotify = () => (dispatch: Dispatch, getState: GetState) 
     if (selectedAccount.status !== 'loaded' || !send) return null;
     const { networkType, symbol } = selectedAccount.network;
     const updatedFeeInfo = getState().wallet.fees[symbol];
-    const updatedLevels = getFeeLevels(networkType, updatedFeeInfo);
+    const updatedLevels = getFeeLevels(
+        networkType,
+        updatedFeeInfo,
+        !!send.networkTypeEthereum.token,
+    );
     const { selectedFee, feeInfo } = send;
     const { levels } = feeInfo;
     const updatedSelectedFee = updatedLevels.find(level => level.label === selectedFee.label);
@@ -486,7 +472,11 @@ export const manuallyUpdateFee = () => (dispatch: Dispatch, getState: GetState) 
     if (selectedAccount.status !== 'loaded' || !send) return null;
     const { networkType, symbol } = selectedAccount.network;
     const updatedFeeInfo = getState().wallet.fees[symbol];
-    const updatedLevels = getFeeLevels(networkType, updatedFeeInfo);
+    const updatedLevels = getFeeLevels(
+        networkType,
+        updatedFeeInfo,
+        !!send.networkTypeEthereum.token,
+    );
     const updatedSelectedFee = updatedLevels.find(level => level.label === 'normal');
 
     if (!updatedSelectedFee) return null;
@@ -513,6 +503,29 @@ export const manuallyUpdateFee = () => (dispatch: Dispatch, getState: GetState) 
         type: SEND.CHANGE_FEE_STATE,
         feeOutdated: false,
     });
+};
+
+export const handleTokenSelectChange = (token?: TokenInfo) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { send } = getState().wallet;
+    if (!send) return;
+
+    dispatch({
+        type: SEND.ETH_HANDLE_TOKEN,
+        token,
+    });
+
+    // update fee levels
+    dispatch(manuallyUpdateFee());
+
+    // trigger amount validation in reducer
+    if (send.setMaxActivated) {
+        dispatch(setMax());
+    } else {
+        dispatch(amountChange());
+    }
 };
 
 /*

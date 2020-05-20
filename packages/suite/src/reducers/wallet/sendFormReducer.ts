@@ -6,7 +6,7 @@ import { InitialState, Output, State } from '@wallet-types/sendForm';
 import { getOutput, hasDecimals } from '@wallet-utils/sendFormUtils';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { isAddressValid } from '@wallet-utils/validation';
-import Bignumber from 'bignumber.js';
+import BigNumber from 'bignumber.js';
 import produce from 'immer';
 import validator from 'validator';
 
@@ -132,7 +132,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 const { token } = draft.networkTypeEthereum;
                 const decimals = token ? token.decimals : action.decimals;
                 const output = getOutput(draft.outputs, outputId);
-                const amountBig = new Bignumber(amount);
+                const amountBig = new BigNumber(amount);
                 const formattedAvailableBalance = token
                     ? token.balance || '0'
                     : formatNetworkAmount(availableBalance, symbol);
@@ -198,9 +198,9 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
                 if (customFee === null) return draft;
 
-                const customFeeBig = new Bignumber(customFee);
-                const maxFeeBig = new Bignumber(draft.feeInfo.maxFee);
-                const minFeeBig = new Bignumber(draft.feeInfo.minFee);
+                const customFeeBig = new BigNumber(customFee);
+                const maxFeeBig = new BigNumber(draft.feeInfo.maxFee);
+                const minFeeBig = new BigNumber(draft.feeInfo.minFee);
 
                 if (validator.isEmpty(customFee)) {
                     draft.customFee.error = VALIDATION_ERRORS.IS_EMPTY;
@@ -380,7 +380,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
             // change input "Gas limit"
             case SEND.ETH_HANDLE_GAS_LIMIT: {
                 const { gasLimit } = action;
-                const gasLimitBig = new Bignumber(gasLimit);
+                const gasLimitBig = new BigNumber(gasLimit);
 
                 draft.networkTypeEthereum.gasLimit.error = null;
                 draft.networkTypeEthereum.gasLimit.value = gasLimit;
@@ -396,7 +396,7 @@ export default (state: State | null = null, action: WalletAction): State | null 
             // change input "Gas price"
             case SEND.ETH_HANDLE_GAS_PRICE: {
                 const { gasPrice } = action;
-                const gasPriceBig = new Bignumber(gasPrice);
+                const gasPriceBig = new BigNumber(gasPrice);
                 draft.networkTypeEthereum.gasPrice.error = null;
                 draft.networkTypeEthereum.gasPrice.value = gasPrice;
 
@@ -425,6 +425,9 @@ export default (state: State | null = null, action: WalletAction): State | null 
             // change token
             case SEND.ETH_HANDLE_TOKEN:
                 draft.networkTypeEthereum.token = action.token;
+                // reset data
+                draft.networkTypeEthereum.data.error = null;
+                draft.networkTypeEthereum.data.value = null;
                 return draft;
 
             // no default

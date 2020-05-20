@@ -1,7 +1,6 @@
 import TrezorConnect, { TokenInfo } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
-import { ERC20_GAS_LIMIT } from '@wallet-constants/sendForm';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as commonActions from './sendFormCommonActions';
@@ -82,18 +81,6 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: false });
 
     return tx;
-};
-
-export const handleTokenSelectChange = (token?: TokenInfo) => (dispatch: Dispatch) => {
-    dispatch({
-        type: SEND.ETH_HANDLE_TOKEN,
-        token,
-    });
-    // TODO: erc20 fees
-    dispatch({
-        type: SEND.ETH_HANDLE_GAS_LIMIT,
-        gasLimit: token ? ERC20_GAS_LIMIT : '21000',
-    });
 };
 
 /*
