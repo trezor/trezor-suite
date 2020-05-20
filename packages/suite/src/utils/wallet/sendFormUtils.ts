@@ -155,13 +155,12 @@ export const prepareEthereumTransaction = (txInfo: EthTransactionData) => {
         const erc20recipient = padLeft(txInfo.to, 64).substring(2);
         // convert amount to satoshi
         const tokenAmount = amountToSatoshi(txInfo.amount, txInfo.token.decimals);
-        console.warn('FOORM');
         // 32 bytes amount paramter, remove '0x' prefix
         const erc20amount = padLeft(toHex(tokenAmount), 64).substring(2);
         // join data
         result.data = `0x${ERC20_TRANSFER}${erc20recipient}${erc20amount}`;
         // replace tx recipient to smart contract address
-        result.to = txInfo.token.address; // '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93';
+        result.to = txInfo.token.address;
         // replace tx value
         result.value = '0x00';
     }

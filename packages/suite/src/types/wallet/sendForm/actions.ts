@@ -22,7 +22,7 @@ export type SendFormActions =
           amount: string;
           error?: typeof VALIDATION_ERRORS.XRP_CANNOT_SEND_LESS_THAN_RESERVE;
           decimals: number;
-          symbol: Account['symbol']; // exceptionally this has to be a string because of token.symbol
+          symbol: Account['symbol'];
           availableBalance: string;
           isDestinationAccountEmpty: boolean | null;
           reserve: string | null;

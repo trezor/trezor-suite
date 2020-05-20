@@ -135,7 +135,7 @@ export const handleAddressChange = (outputId: number, address: string) => (
 };
 
 // common method called from multiple places:
-// handleAmountChange,
+// handleAmountChange, handleSelectCurrencyChange, handleFiatInputChange, setMax, handleTokenChange
 const amountChange = (amount: string, outputIdIn?: number) => (
     dispatch: Dispatch,
     getState: GetState,
