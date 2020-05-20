@@ -194,12 +194,15 @@ export const serializeEthereumTx = [
         // https://eth1.trezor.io/tx/0xf6652a681b4474132b8b96512eb0bd5311f5ed8414af59e715c9738a3b3673f3
         description: 'ETH regular',
         tx: {
+            // data sent to TrezorConnect.ethereumSignTransaction
             to: '0x4dC573D5DB497C0bF0674599E81c7dB91151D4e6',
             value: '0x3905f13a8f0e',
             chainId: 1,
             nonce: '0x12',
             gasLimit: '0x5208',
             gasPrice: '0x104c533c00',
+            data: '0x',
+            // data received from TrezorConnect.ethereumSignTransaction
             v: '0x1c',
             r: '0x4256ec5ddf73f12f781e9f646f56fd8843296cf3eb7e2fb8f0b67ea317be3e7c',
             s: '0x7be26525b6d6d39ef8745801bbb463c35ede09746708316a011e6eee7a2d83cf',
@@ -234,6 +237,7 @@ export const serializeEthereumTx = [
             nonce: '0x0',
             gasLimit: '0x5208',
             gasPrice: '0x5409c6a7b',
+            data: '0x',
             v: '0x9e',
             r: '0x9d4599beedc587e0dc3d88578d79573c0138f9389810ffb036c37423ccd86375',
             s: '0x4a0eb870fbae9a11a02e3e0068830d141ee952bb4ab4d1e1b7542d75f7a24dc1',
