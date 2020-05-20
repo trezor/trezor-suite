@@ -362,14 +362,17 @@ export default (state: State | null = null, action: WalletAction): State | null 
             // compose eth transaction after form change
             case SEND.ETH_PRECOMPOSED_TX: {
                 draft.networkTypeEthereum.transactionInfo = action.payload;
-
                 if (
                     action.payload.type === 'error' &&
-                    action.payload.error === 'NOT-ENOUGH-FUNDS'
+                    (action.payload.error === 'NOT-ENOUGH-FUNDS' ||
+                        action.payload.error === 'NOT-ENOUGH-CURRENCY-FEE')
                 ) {
-                    draft.outputs.map(
-                        output => (output.amount.error = VALIDATION_ERRORS.NOT_ENOUGH),
-                    );
+                    // TODO: action.payload.error should use VALIDATION_ERRORS or TRANSLATION_ID
+                    const error =
+                        action.payload.error === 'NOT-ENOUGH-FUNDS'
+                            ? VALIDATION_ERRORS.NOT_ENOUGH
+                            : VALIDATION_ERRORS.NOT_ENOUGH_CURRENCY_FEE;
+                    draft.outputs.map(output => (output.amount.error = error));
                 }
                 return draft;
             }

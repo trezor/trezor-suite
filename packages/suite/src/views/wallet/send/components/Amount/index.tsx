@@ -65,6 +65,7 @@ const getMessage = (
     decimals: number,
     reserve: string | null,
     isLoading: Output['amount']['isLoading'],
+    symbol: string,
 ) => {
     if (isLoading && !error) return 'Loading'; // TODO loader or text?
 
@@ -79,6 +80,13 @@ const getMessage = (
             return <Translation id="TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE" values={{ reserve }} />;
         case VALIDATION_ERRORS.NOT_IN_RANGE_DECIMALS:
             return <Translation id="TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS" values={{ decimals }} />;
+        case VALIDATION_ERRORS.NOT_ENOUGH_CURRENCY_FEE:
+            return (
+                <Translation
+                    id="NOT_ENOUGH_CURRENCY_FEE"
+                    values={{ symbol: symbol.toUpperCase() }}
+                />
+            );
         default:
             return null;
     }
@@ -124,7 +132,7 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
                     align="right"
                     value={value || ''}
                     onChange={e => sendFormActions.handleAmountChange(id, e.target.value)}
-                    bottomText={getMessage(error, decimals, reserve, isLoading)}
+                    bottomText={getMessage(error, decimals, reserve, isLoading, symbol)}
                 />
                 {tokenBalance && (
                     <TokenBalance>

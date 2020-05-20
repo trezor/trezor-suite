@@ -50,7 +50,16 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
         max: max.isLessThan('0') ? '0' : max.toString(),
     };
 
-    if (!output.address.value) {
+    // TODO: i'm not sure why this validation is duplicated here and in sendFormReducer, investigate more...
+    // TODO: action.payload.error should use VALIDATION_ERRORS or TRANSLATION_ID
+    if (totalSpentBig.isGreaterThan(availableBalance)) {
+        const error = token ? 'NOT-ENOUGH-CURRENCY-FEE' : 'NOT-ENOUGH-FUNDS';
+        tx = { type: 'error', error } as const;
+        dispatch({
+            type: SEND.ETH_PRECOMPOSED_TX,
+            payload: tx,
+        });
+    } else if (!output.address.value) {
         dispatch({
             type: SEND.ETH_PRECOMPOSED_TX,
             payload: {
@@ -59,15 +68,6 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
             },
         });
         tx = { type: 'nonfinal', ...payloadData } as const;
-    } else if (totalSpentBig.isGreaterThan(availableBalance)) {
-        dispatch({
-            type: SEND.ETH_PRECOMPOSED_TX,
-            payload: {
-                type: 'error',
-                error: 'NOT-ENOUGH-FUNDS',
-            },
-        });
-        tx = { type: 'error', error: 'NOT-ENOUGH-FUNDS' } as const;
     } else {
         dispatch({
             type: SEND.ETH_PRECOMPOSED_TX,

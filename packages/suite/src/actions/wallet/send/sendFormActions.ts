@@ -149,7 +149,6 @@ const amountChange = (amount: string, outputIdIn?: number) => (
     const { token } = send.networkTypeEthereum;
     const availableBalance = token ? token.balance || '0' : account.availableBalance;
     const decimals = token ? token.decimals : network.decimals;
-    // const symbol = token ? token.symbol! : network.symbol;
 
     dispatch({
         type: SEND.HANDLE_AMOUNT_CHANGE,

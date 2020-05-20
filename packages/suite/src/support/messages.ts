@@ -226,6 +226,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Not enough funds',
         id: 'TR_AMOUNT_IS_NOT_ENOUGH',
     },
+    NOT_ENOUGH_CURRENCY_FEE: {
+        defaultMessage: 'Not enough {symbol} to cover transaction fee',
+        id: 'NOT_ENOUGH_CURRENCY_FEE',
+    },
     TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS: {
         defaultMessage: 'Maximum {decimals} decimals allowed',
         id: 'TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS',

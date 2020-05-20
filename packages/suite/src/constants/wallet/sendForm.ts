@@ -8,6 +8,7 @@ export const VALIDATION_ERRORS = {
     NOT_IN_RANGE_DECIMALS: 'not-in-range-decimals',
     XRP_CANNOT_SEND_TO_MYSELF: 'xrp-cannot-send-to-myself',
     XRP_CANNOT_SEND_LESS_THAN_RESERVE: 'xrp-cannot-send-less-than-reserve',
+    NOT_ENOUGH_CURRENCY_FEE: 'not-enough-currency-fee',
 } as const;
 
 export const CUSTOM_FEE = 'custom' as const;
