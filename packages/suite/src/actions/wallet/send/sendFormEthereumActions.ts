@@ -1,6 +1,7 @@
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect, { TokenInfo } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
+import { ERC20_GAS_LIMIT } from '@wallet-constants/sendForm';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as commonActions from './sendFormCommonActions';
@@ -25,6 +26,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     if (selectedAccount.status !== 'loaded' || !send) return null;
     const { account } = selectedAccount;
     const { selectedFee } = send;
+    const { token } = send.networkTypeEthereum;
     const isFeeValid = !new BigNumber(selectedFee.feePerUnit).isNaN();
 
     let tx;
@@ -35,8 +37,12 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
         toWei(isFeeValid ? selectedFee.feePerUnit : '0', 'gwei'),
         selectedFee.feeLimit || '0',
     );
-    const totalSpentBig = new BigNumber(calculateTotal(amountInSatoshi, feeInSatoshi));
-    const max = new BigNumber(calculateMax(availableBalance, feeInSatoshi));
+    const totalSpentBig = new BigNumber(
+        calculateTotal(token ? '0' : amountInSatoshi, feeInSatoshi),
+    );
+    const max = token
+        ? new BigNumber(token.balance || '0')
+        : new BigNumber(calculateMax(availableBalance, feeInSatoshi));
     const payloadData = {
         totalSpent: totalSpentBig.toString(),
         fee: feeInSatoshi,
@@ -78,6 +84,19 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     return tx;
 };
 
+export const handleTokenChange = (token?: TokenInfo) => (dispatch: Dispatch) => {
+    dispatch({
+        type: SEND.ETH_HANDLE_TOKEN,
+        token,
+    });
+    // TODO: calc amount change
+    // TODO: erc20 fees
+    dispatch({
+        type: SEND.ETH_HANDLE_GAS_LIMIT,
+        gasLimit: token ? ERC20_GAS_LIMIT : '21000',
+    });
+};
+
 /*
     Sign transaction
  */
@@ -89,9 +108,10 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     const amount = send.outputs[0].amount.value;
     const address = send.outputs[0].address.value;
     if (account.networkType !== 'ethereum' || !network.chainId || !amount || !address) return null;
-    const { data, gasPrice, gasLimit } = send.networkTypeEthereum;
+    const { token, data, gasPrice, gasLimit } = send.networkTypeEthereum;
 
     const transaction = prepareEthereumTransaction({
+        token,
         network: network.symbol,
         chainId: network.chainId,
         from: account.descriptor,
@@ -102,9 +122,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         gasPrice: gasPrice.value,
         nonce: account.misc.nonce,
     });
-    // TODO: @Vladimir
-    // use import { EthereumTransaction } from 'trezor-connect'; instead of EthPreparedTransaction
-    // @ts-ignore
+
     const signedTx = await TrezorConnect.ethereumSignTransaction({
         device: {
             path: selectedDevice.path,
@@ -123,11 +141,10 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         return;
     }
 
-    transaction.r = signedTx.payload.r;
-    transaction.s = signedTx.payload.s;
-    transaction.v = signedTx.payload.v;
-
-    const serializedTx = serializeEthereumTx(transaction);
+    const serializedTx = serializeEthereumTx({
+        ...transaction,
+        ...signedTx.payload,
+    });
 
     // TODO: add possibility to show serialized tx without pushing (locktime)
     const sentTx = await TrezorConnect.pushTransaction({
@@ -137,10 +154,11 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
 
     if (sentTx.success) {
         dispatch(commonActions.clear());
+        const symbol = token ? token.symbol?.toUpperCase() : account.symbol.toUpperCase();
         dispatch(
             notificationActions.addToast({
                 type: 'tx-sent',
-                formattedAmount: `${amount} ${account.symbol.toUpperCase()}`, // TODO: erc20 symbol
+                formattedAmount: `${amount} ${symbol}`,
                 device: selectedDevice,
                 descriptor: account.descriptor,
                 txid: sentTx.payload.txid,
@@ -238,7 +256,7 @@ export const handleData = (data: string) => async (dispatch: Dispatch, getState:
         request: {
             blocks: [2],
             specific: {
-                from: send.outputs[0].address.value || account.descriptor,
+                from: account.descriptor,
                 to: send.outputs[0].address.value || account.descriptor,
                 data,
             },
