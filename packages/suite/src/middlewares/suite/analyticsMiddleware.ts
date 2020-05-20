@@ -49,24 +49,33 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                 }),
             );
             break;
-        case DEVICE.CONNECT:
-            // logging only if not in bootloader
-            if (action.payload.id) {
-                const { features } = action.payload;
+        case DEVICE.CONNECT: {
+            const { features, mode } = action.payload;
+            if (features && mode !== 'bootloader') {
                 api.dispatch(
                     analyticsActions.report({
                         type: 'device-connect',
                         payload: {
+                            mode,
                             firmware: `${features.major_version}.${features.minor_version}.${features.patch_version}`,
-                            // @ts-ignore todo add to features types, missing
-                            backup_type: features.backup_type || 'Bip39',
+                            // backup_type: features.backup_type || 'Bip39', // @ts-ignore todo add to features types, missing
                             pin_protection: features.pin_protection,
                             passphrase_protection: features.passphrase_protection,
                         },
                     }),
                 );
+            } else {
+                api.dispatch(
+                    analyticsActions.report({
+                        type: 'device-connect',
+                        payload: {
+                            mode: 'bootloader',
+                        },
+                    }),
+                );
             }
             break;
+        }
         case SUITE.SET_FLAG:
             // here we are reporting some information of user after he finishes initialRun
             if (action.key === 'initialRun' && action.value === false) {

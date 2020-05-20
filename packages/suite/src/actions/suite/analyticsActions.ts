@@ -1,6 +1,6 @@
 import { ANALYTICS } from '@suite-actions/constants';
 import { isDev } from '@suite-utils/build';
-import { Dispatch, GetState, AppState } from '@suite-types';
+import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { getRandomId } from '@suite-utils/random';
 import { Account } from '@wallet-types';
 import qs from 'qs';
@@ -10,6 +10,11 @@ export type AnalyticsActions =
     | { type: typeof ANALYTICS.INIT; payload: { sessionId: string; instanceId: string } };
 
 export type Payload =
+    /*
+    suite-ready
+    Triggers on application start. Logs part of suite setup that might have been loaded from storage
+    but it might also be suite default setup that is loaded when suite starts for the first time.
+    */
     | {
           type: 'suite-ready';
           payload: {
@@ -20,7 +25,23 @@ export type Payload =
           };
       }
     | { type: 'transport-type'; payload: { type: string; version: string } }
-    | { type: 'device-connect'; payload: { device_id: string; firmware: string } }
+    // device-connect
+    // is logged when user connects device
+    // - if device is not in bootloader, some of its features are logged
+    | {
+          type: 'device-connect';
+          payload: {
+              mode: TrezorDevice['mode'];
+              firmware: string;
+              pin_protection: boolean;
+              passphrase_protection: boolean;
+          };
+      }
+    // - if device is in bootloader, only this event is logged
+    | { type: 'device-connect'; payload: { mode: 'bootloader' } }
+    // initial-run-completed
+    // when new installation of trezor suite starts it is in initial-run mode which means that some additional screens appear (welcome, analytics, onboarding)
+    // it is completed either by going trough onboarding or skipping it. once completed event is registered, we log some data connected up to this point
     | {
           type: 'initial-run-completed';
           payload: {
@@ -97,7 +118,7 @@ const getUrl = () => {
         }
     }
 
-    // return `${base}/${process.env.SUITE_TYPE}/development.log`;
+    return `${base}/${process.env.SUITE_TYPE}/development.log`;
 };
 
 export const report = (data: Payload, force = false) => async (
@@ -106,7 +127,7 @@ export const report = (data: Payload, force = false) => async (
 ) => {
     if (isDev()) {
         // on dev, do nothing
-        return;
+        // return;
     }
 
     const { enabled, sessionId, instanceId } = getState().analytics;
@@ -164,10 +185,8 @@ export const report = (data: Payload, force = false) => async (
  *
  * 1. start app
  * 2. load analytics storage into reducer
- * 3a] if empty (first start) generate instanceId and save it back to storage. instanceId exists in storage
+ * 3. if empty (first start) generate instanceId and save it back to storage. instanceId exists in storage
  *     regardless of whether user enabled analytics or not.
- * 3b] if analytics enabled, only generate sessionId which is unique for each analytics session
- * 3c] if analytics is disabled, do nothing
  *
  * User may disable analytics, see dispose() fn. This flushes data from reducer and clears
  * sessionId from storage (instanceId is kept)

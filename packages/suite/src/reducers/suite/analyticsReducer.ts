@@ -1,5 +1,6 @@
 import produce from 'immer';
 import { ANALYTICS, STORAGE } from '@suite-actions/constants';
+import { getRandomId } from '@suite-utils/random';
 
 import { Action } from '@suite-types';
 
@@ -10,7 +11,7 @@ export interface State {
 }
 
 export const initialState: State = {
-    sessionId: undefined,
+    sessionId: getRandomId(10),
     instanceId: undefined,
     enabled: false,
 };
@@ -20,7 +21,6 @@ export default (state: State = initialState, action: Action): State => {
         switch (action.type) {
             case ANALYTICS.INIT:
                 draft.enabled = true;
-                draft.sessionId = action.payload.sessionId;
                 draft.instanceId = action.payload.instanceId;
                 break;
             case ANALYTICS.DISPOSE:
