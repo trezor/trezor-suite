@@ -1,4 +1,4 @@
-import { Account, Network } from '@wallet-types';
+import { Network } from '@wallet-types';
 import {
     SendFormActions as SendFormActions$,
     SendFormBtcActions as SendFormBtcActions$,
@@ -28,10 +28,8 @@ export type PrecomposedTransactionXrp = PrecomposedTransactionXrp$;
 export type PrecomposedTransactionEth = PrecomposedTransactionEth$;
 
 export type EthTransactionData = {
-    network: Account['symbol'];
     token?: TokenInfo;
     chainId: Network['chainId'];
-    from: Output['address']['value'];
     to: NonNullable<Output['address']['value']>;
     amount: NonNullable<Output['amount']['value']>;
     data?: State['networkTypeEthereum']['data']['value'];

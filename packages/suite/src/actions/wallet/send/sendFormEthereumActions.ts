@@ -98,9 +98,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
 
     const transaction = prepareEthereumTransaction({
         token,
-        network: network.symbol,
         chainId: network.chainId,
-        from: account.descriptor,
         to: address,
         amount,
         data: data.value,
