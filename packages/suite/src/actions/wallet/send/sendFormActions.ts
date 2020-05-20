@@ -73,7 +73,7 @@ export const compose = (setMax = false) => async (dispatch: Dispatch, getState: 
             return dispatch(rippleActions.compose());
         }
         case 'ethereum': {
-            return dispatch(ethereumActions.compose());
+            return dispatch(ethereumActions.compose(setMax));
         }
         // no default
     }
@@ -520,10 +520,11 @@ export const handleTokenSelectChange = (token?: TokenInfo) => (
     // update fee levels
     dispatch(manuallyUpdateFee());
 
-    // trigger amount validation in reducer
     if (send.setMaxActivated) {
+        // trigger amount validation in compose
         dispatch(setMax());
     } else {
+        // trigger amount validation in reducer
         dispatch(amountChange());
     }
 };

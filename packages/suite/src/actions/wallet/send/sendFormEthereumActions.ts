@@ -20,7 +20,7 @@ import { Dispatch, GetState } from '@suite-types';
 /*
     Compose eth transaction
  */
-export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
+export const compose = (setMax = false) => async (dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount, send } = getState().wallet;
     if (selectedAccount.status !== 'loaded' || !send) return null;
     const { account } = selectedAccount;
@@ -30,18 +30,23 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
 
     let tx;
     const output = getOutput(send.outputs, 0);
-    const amountInSatoshi = networkAmountToSatoshi(output.amount.value, account.symbol).toString();
     const { availableBalance } = account;
     const feeInSatoshi = calculateEthFee(
         toWei(isFeeValid ? selectedFee.feePerUnit : '0', 'gwei'),
         selectedFee.feeLimit || '0',
     );
-    const totalSpentBig = new BigNumber(
-        calculateTotal(token ? '0' : amountInSatoshi, feeInSatoshi),
-    );
     const max = token
         ? new BigNumber(token.balance || '0')
         : new BigNumber(calculateMax(availableBalance, feeInSatoshi));
+    // use max possible value or input.value
+    // race condition when switching between tokens with set-max enabled
+    // input still holds previous value (previous token max)
+    const amountInSatoshi = setMax
+        ? max.toString()
+        : networkAmountToSatoshi(output.amount.value, account.symbol).toString();
+    const totalSpentBig = new BigNumber(
+        calculateTotal(token ? '0' : amountInSatoshi, feeInSatoshi),
+    );
     const payloadData = {
         totalSpent: totalSpentBig.toString(),
         fee: feeInSatoshi,
