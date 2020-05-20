@@ -30,6 +30,7 @@ export const ETH_PRECOMPOSED_TX = '@wallet-send-form/eth-precomposed-tx';
 export const ETH_HANDLE_GAS_PRICE = '@wallet-send-form/eth-handle-gas-price';
 export const ETH_HANDLE_GAS_LIMIT = '@wallet-send-form/eth-handle-gas-limit';
 export const ETH_HANDLE_DATA = '@wallet-send-form/eth-handle-data';
+export const ETH_HANDLE_TOKEN = '@wallet-send-form/eth-handle-token';
 
 // xrp
 export const XRP_HANDLE_DESTINATION_TAG_CHANGE = '@wallet-send-form/xrp-handle-destination-tag';

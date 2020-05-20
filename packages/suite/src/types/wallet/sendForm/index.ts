@@ -7,7 +7,7 @@ import {
 } from './actions';
 
 import { Output as Output$ } from './output';
-import { FeeLevel as FeeLevel$ } from 'trezor-connect';
+import { FeeLevel as FeeLevel$, TokenInfo } from 'trezor-connect';
 import {
     PrecomposedTransactionXrp as PrecomposedTransactionXrp$,
     PrecomposedTransactionEth as PrecomposedTransactionEth$,
@@ -29,27 +29,13 @@ export type PrecomposedTransactionEth = PrecomposedTransactionEth$;
 
 export type EthTransactionData = {
     network: Account['symbol'];
-    token?: string | boolean;
+    token?: TokenInfo;
     chainId: Network['chainId'];
     from: Output['address']['value'];
-    to: Output['address']['value'];
-    amount: Output['amount']['value'];
+    to: NonNullable<Output['address']['value']>;
+    amount: NonNullable<Output['amount']['value']>;
     data?: State['networkTypeEthereum']['data']['value'];
     gasLimit: State['networkTypeEthereum']['data']['value'];
     gasPrice: State['networkTypeEthereum']['data']['value'];
     nonce: string;
-};
-
-export type EthPreparedTransaction = {
-    chainId: Network['chainId'];
-    token?: string | null | boolean;
-    value: Output['amount']['value'];
-    to: Output['address']['value'];
-    data?: State['networkTypeEthereum']['data']['value'];
-    gasLimit: State['networkTypeEthereum']['data']['value'];
-    gasPrice: State['networkTypeEthereum']['data']['value'];
-    nonce: string;
-    r: string;
-    s: string;
-    v: string;
 };

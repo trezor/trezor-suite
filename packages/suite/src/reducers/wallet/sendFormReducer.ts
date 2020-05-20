@@ -123,16 +123,19 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 const {
                     outputId,
                     amount,
-                    decimals,
                     availableBalance,
                     isDestinationAccountEmpty,
                     reserve,
                     symbol,
                 } = action;
 
+                const { token } = draft.networkTypeEthereum;
+                const decimals = token ? token.decimals : action.decimals;
                 const output = getOutput(draft.outputs, outputId);
                 const amountBig = new Bignumber(amount);
-                const formattedAvailableBalance = formatNetworkAmount(availableBalance, symbol);
+                const formattedAvailableBalance = token
+                    ? token.balance || '0'
+                    : formatNetworkAmount(availableBalance, symbol);
 
                 output.amount.error = null;
                 output.amount.value = amount;
@@ -415,6 +418,11 @@ export default (state: State | null = null, action: WalletAction): State | null 
 
                 return draft;
             }
+
+            // change token
+            case SEND.ETH_HANDLE_TOKEN:
+                draft.networkTypeEthereum.token = action.token;
+                return draft;
 
             // no default
         }

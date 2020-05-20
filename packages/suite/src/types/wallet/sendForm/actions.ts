@@ -1,7 +1,7 @@
 import { SEND } from '@wallet-actions/constants';
 import { Account } from '@wallet-types';
 import { FeeInfo } from '@wallet-types/sendForm';
-import { FeeLevel, PrecomposedTransaction } from 'trezor-connect';
+import { FeeLevel, PrecomposedTransaction, TokenInfo } from 'trezor-connect';
 import { PrecomposedTransactionXrp, PrecomposedTransactionEth } from './transactions';
 import { Output } from './output';
 import { InitialState } from './state';
@@ -22,8 +22,8 @@ export type SendFormActions =
           amount: string;
           error?: typeof VALIDATION_ERRORS.XRP_CANNOT_SEND_LESS_THAN_RESERVE;
           decimals: number;
-          symbol: Account['symbol'];
-          availableBalance: Account['formattedBalance'];
+          symbol: Account['symbol']; // exceptionally this has to be a string because of token.symbol
+          availableBalance: string;
           isDestinationAccountEmpty: boolean | null;
           reserve: string | null;
       }
@@ -97,4 +97,5 @@ export type SendFormEthActions =
     | { type: typeof SEND.ETH_HANDLE_GAS_LIMIT; gasLimit: string }
     | { type: typeof SEND.ETH_HANDLE_GAS_PRICE; gasPrice: string }
     | { type: typeof SEND.ETH_HANDLE_DATA; data: string }
+    | { type: typeof SEND.ETH_HANDLE_TOKEN; token?: TokenInfo }
     | { type: typeof SEND.ETH_PRECOMPOSED_TX; payload: PrecomposedTransactionEth };
