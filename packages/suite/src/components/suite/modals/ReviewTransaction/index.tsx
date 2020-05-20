@@ -93,6 +93,7 @@ export default ({
                     <Button
                         icon="ARROW_LEFT"
                         variant="secondary"
+                        isDisabled={!isEnabled}
                         onClick={() => modalActions.onCancel()}
                     >
                         <Translation id="TR_EDIT" />
