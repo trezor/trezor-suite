@@ -89,7 +89,6 @@ export const handleTokenSelectChange = (token?: TokenInfo) => (dispatch: Dispatc
         type: SEND.ETH_HANDLE_TOKEN,
         token,
     });
-    // TODO: calc amount change
     // TODO: erc20 fees
     dispatch({
         type: SEND.ETH_HANDLE_GAS_LIMIT,

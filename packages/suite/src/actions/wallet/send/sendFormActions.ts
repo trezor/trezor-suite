@@ -136,7 +136,7 @@ export const handleAddressChange = (outputId: number, address: string) => (
 
 // common method called from multiple places:
 // handleAmountChange, handleFiatSelectChange, handleFiatInputChange, setMax, handleTokenSelectChange
-const amountChange = (amount: string, outputIdIn?: number) => (
+const amountChange = (amountIn?: string, outputIdIn?: number) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -144,6 +144,8 @@ const amountChange = (amount: string, outputIdIn?: number) => (
     if (!send || selectedAccount.status !== 'loaded') return null;
     const { account, network } = selectedAccount;
     const outputId = outputIdIn || 0;
+    const amount = amountIn || send.outputs[outputId].amount.value;
+    if (!amount) return; // do not trigger validation inside reducer if until amount is not set
     const { isDestinationAccountEmpty } = send.networkTypeRipple;
     const reserve = getReserveInXrp(account);
     const { token } = send.networkTypeEthereum;
@@ -318,7 +320,10 @@ export const setMax = (outputIdIn?: number) => async (dispatch: Dispatch, getSta
 };
 
 export const handleTokenSelectChange = (token?: TokenInfo) => (dispatch: Dispatch) => {
+    // do eth specific stuff
     dispatch(ethereumActions.handleTokenSelectChange(token));
+    // trigger amount validation in reducer
+    dispatch(amountChange());
 };
 
 /*
