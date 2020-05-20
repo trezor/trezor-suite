@@ -41,6 +41,18 @@ const ResetDeviceStep = (props: Props) => {
                     </Text>
                 )}
 
+                <P size="tiny">
+                    <Translation
+                        id="TR_BY_CREATING_WALLET"
+                        values={{
+                            TERMS_AND_CONDITIONS: (
+                                <Link href={TOS_URL}>
+                                    <Translation id="TERMS_AND_CONDTIONS" />
+                                </Link>
+                            ),
+                        }}
+                    />
+                </P>
                 {isShamirBackupAvailable() && (
                     <Wrapper.Options>
                         <Option
@@ -98,19 +110,6 @@ const ResetDeviceStep = (props: Props) => {
                         </OnboardingButton.Cta>
                     </Wrapper.Controls>
                 )}
-
-                <P size="tiny">
-                    <Translation
-                        id="TR_BY_CREATING_WALLET"
-                        values={{
-                            TERMS_AND_CONDITIONS: (
-                                <Link href={TOS_URL}>
-                                    <Translation id="TERMS_AND_CONDTIONS" />
-                                </Link>
-                            ),
-                        }}
-                    />
-                </P>
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
                 <OnboardingButton.Back onClick={() => props.goToPreviousStep()}>

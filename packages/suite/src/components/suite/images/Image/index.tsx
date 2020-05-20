@@ -53,6 +53,8 @@ const IMAGES = {
     DEVICE_ANOTHER_SESSION: 'device-another-session.svg',
     CONNECT_DEVICE: 'connect-device.svg',
     '404': '404.svg',
+    HOW_TO_ENTER_BOOTLOADER_MODEL_1: 'how-to-enter-bootloader-model-1.svg',
+    HOW_TO_ENTER_BOOTLOADER_MODEL_2: 'how-to-enter-bootloader-model-2.svg',
 } as const;
 
 type Image = keyof typeof IMAGES;

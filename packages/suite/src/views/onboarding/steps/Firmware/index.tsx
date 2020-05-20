@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '@trezor/components';
@@ -32,12 +32,18 @@ const FirmwareStep = ({
     firmwareUpdate,
     toggleBtcOnly,
 }: Props) => {
+    // when user disconnects, we still want to keep information about device to show proper images
+    const [savedModel, setSavedModel] = useState(2);
     const [imageLoaded, setImageLoaded] = useState(false);
 
-    const { status, error, btcOnly } = firmware;
+    useEffect(() => {
+        if (!device?.features?.major_version) return;
+        setSavedModel(device?.features?.major_version);
+    }, [device]);
+
+    const { status, btcOnly } = firmware;
     const isConnected = !!device;
     const isInBootloader = Boolean(device && device.features && device.mode === 'bootloader');
-    const model = device?.features?.major_version || 2;
     const btcOnlyAvailable = device?.features && device.firmwareRelease.release.url_bitcoinonly;
 
     return (
@@ -107,7 +113,9 @@ const FirmwareStep = ({
                         )}
 
                         {device?.firmware &&
-                            ['outdated', 'required', 'none'].includes(device.firmware) && (
+                            ['outdated', 'required', 'none', 'unknown'].includes(
+                                device.firmware,
+                            ) && (
                                 <>
                                     {btcOnlyAvailable && (
                                         <BitcoinOnlyToggle
@@ -116,7 +124,7 @@ const FirmwareStep = ({
                                         />
                                     )}
 
-                                    <InitImg model={model} />
+                                    <InitImg model={savedModel} height="230px" />
                                 </>
                             )}
 
@@ -125,7 +133,7 @@ const FirmwareStep = ({
                                 <Text>
                                     <Translation id="TR_FIRMWARE_INSTALLED" />
                                 </Text>
-                                <SuccessImg model={model} />
+                                <SuccessImg model={savedModel} />
                             </>
                         )}
                     </>
@@ -136,7 +144,7 @@ const FirmwareStep = ({
                         <Text>
                             <Translation id="TR_SUCCESS" />
                         </Text>
-                        <SuccessImg model={model} />
+                        <SuccessImg model={savedModel} />
                     </>
                 )}
 
@@ -148,7 +156,7 @@ const FirmwareStep = ({
                         <Text>
                             <Translation id="TR_BUT_THERE_IS_ANOTHER_UPDATE" />
                         </Text>
-                        <SuccessImg model={model} />
+                        <SuccessImg model={savedModel} />
                     </>
                 )}
 
@@ -157,7 +165,8 @@ const FirmwareStep = ({
                         <Text>
                             <Translation id="TR_FIRMWARE_INSTALL_FAILED_HEADER" />
                         </Text>
-                        <Text>{error}</Text>
+                        {/* todo: "null problem" */}
+                        {/* <Text>{error}</Text> */}
                         <StyledImage image="UNI_ERROR" />
                     </>
                 )}
@@ -174,7 +183,7 @@ const FirmwareStep = ({
                     <FirmwareProgress
                         status={status}
                         fingerprint={device?.firmwareRelease.release.fingerprint}
-                        model={model}
+                        model={savedModel}
                     />
                 )}
                 {/* buttons section */}

@@ -1689,13 +1689,13 @@ const definedMessages = defineMessages({
         description: 'Button.',
         id: 'TR_START_RECOVERY',
     },
+    TR_START_FIRMWARE_UPDATE: {
+        defaultMessage: 'Device is ready to start firmware update',
+        id: 'TR_START_FIRMWARE_UPDATE',
+    },
     TR_START: {
         defaultMessage: 'Start',
         id: 'TR_START',
-    },
-    TR_FIRMWARE_BOOTLOADER_TITLE: {
-        defaultMessage: 'Start',
-        id: 'TR_FIRMWARE_BOOTLOADER_TITLE',
     },
     TR_STATUS: {
         defaultMessage: 'Status',
@@ -2994,11 +2994,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Downloading',
         description: 'Indicating that app is downloading data from external source',
     },
-    TR_NEW_LABEL: {
-        id: 'TR_NEW_LABEL',
-        defaultMessage: 'NEW',
+    TR_FULL_LABEL: {
+        id: 'TR_FULL_LABEL',
+        defaultMessage: 'Full-featured',
         description:
-            'Meant as a label. Used for example in firmware update when indicating which firmware version is the new one.',
+            'Meant as a label. Used for example in firmware update when indicating which type of firmware version is the new one.',
     },
     TR_ALTERNATIVELY_YOU_MAY_INSTALL: {
         id: 'TR_ALTERNATIVELY_YOU_MAY_INSTALL',
@@ -3425,6 +3425,10 @@ const definedMessages = defineMessages({
     TR_SEND_SEND_MAX: {
         id: 'TR_SEND_SEND_MAX',
         defaultMessage: 'Send max',
+    },
+    TR_HOLD_LEFT_BUTTON: {
+        id: 'TR_HOLD_LEFT_BUTTON',
+        defaultMessage: 'Hold left or both buttons while connecting device',
     },
 } as const);
 
