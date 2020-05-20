@@ -9,6 +9,14 @@ interface InitialState {
     analytics?: Partial<AnalyticsState>;
 }
 
+jest.mock('@suite-utils/random', () => {
+    return {
+        __esModule: true, // this property makes it work
+        // default: {},
+        getRandomId: () => 'very-random',
+    };
+});
+
 export const getInitialState = (state: InitialState | undefined) => {
     const analytics = state ? state.analytics : undefined;
     return {
@@ -35,6 +43,10 @@ const initStore = (state: State) => {
 };
 
 describe('Analytics Actions', () => {
+    beforeAll(() => {
+        // eslint-disable-next-line global-require
+        require('@suite-utils/random');
+    });
     beforeEach(() => {
         const mockSuccessResponse = {};
         const mockJsonPromise = Promise.resolve(mockSuccessResponse);
@@ -56,7 +68,7 @@ describe('Analytics Actions', () => {
         // @ts-ignore
         expect(global.fetch).toHaveBeenNthCalledWith(
             1,
-            'https://data.trezor.io/suite/log/desktop/beta.log?instanceId=1&type=ui&payload=test-bla-bla',
+            'https://data.trezor.io/suite/log/desktop/beta.log?sessionId=very-random&instanceId=1&type=ui&payload=test-bla-bla',
             { method: 'GET' },
         );
         process.env.SUITE_TYPE = env;
@@ -81,7 +93,7 @@ describe('Analytics Actions', () => {
         // @ts-ignore
         expect(global.fetch).toHaveBeenNthCalledWith(
             1,
-            'https://data.trezor.io/suite/log/desktop/beta.log?instanceId=1&type=suite-ready&enabledNetworks=btc%2Cbch&language=en&localCurrency=usd&discreetMode=false',
+            'https://data.trezor.io/suite/log/desktop/beta.log?sessionId=very-random&instanceId=1&type=suite-ready&enabledNetworks=btc%2Cbch&language=en&localCurrency=usd&discreetMode=false',
             { method: 'GET' },
         );
         process.env.SUITE_TYPE = env;

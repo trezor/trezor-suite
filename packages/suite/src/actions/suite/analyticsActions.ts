@@ -127,7 +127,7 @@ export const report = (data: Payload, force = false) => async (
 ) => {
     if (isDev()) {
         // on dev, do nothing
-        // return;
+        return;
     }
 
     const { enabled, sessionId, instanceId } = getState().analytics;
