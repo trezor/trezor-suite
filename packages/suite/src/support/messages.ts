@@ -3438,6 +3438,13 @@ const definedMessages = defineMessages({
     TR_HOLD_LEFT_BUTTON: {
         id: 'TR_HOLD_LEFT_BUTTON',
         defaultMessage: 'Hold left or both buttons while connecting device',
+    TR_RECEIVED_AMOUNT: {
+        id: 'TR_RECEIVED_AMOUNT',
+        defaultMessage: 'Received {amount}',
+    },
+    TR_SENT_AMOUNT: {
+        id: 'TR_SENT_AMOUNT',
+        defaultMessage: 'Sent {amount}',
     },
 } as const);
 

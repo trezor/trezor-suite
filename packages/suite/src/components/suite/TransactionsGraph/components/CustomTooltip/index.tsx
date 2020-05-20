@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { colors } from '@trezor/components';
-import { FormattedNumber } from '@suite-components';
+import { FormattedNumber, Translation } from '@suite-components';
 import { Account } from '@wallet-types';
 import { TooltipProps } from 'recharts';
 import { getDateWithTimeZone } from '@suite/utils/suite/date';
@@ -116,11 +116,12 @@ const CustomTooltip = ({ active, payload, coordinate, ...props }: Props) => {
                     )}
                 </DateWrapper>
                 <Row>
-                    <Rect color={colors.GREEN} />
-                    {receivedAmount}
+                    <Rect color={colors.GREEN} />{' '}
+                    <Translation id="TR_RECEIVED_AMOUNT" values={{ amount: receivedAmount }} />
                 </Row>
                 <Row>
-                    <Rect color={colors.RED_ERROR} /> Sent {sentAmount}
+                    <Rect color={colors.RED_ERROR} />{' '}
+                    <Translation id="TR_SENT_AMOUNT" values={{ amount: sentAmount }} />
                 </Row>
             </CustomTooltipWrapper>
         );
