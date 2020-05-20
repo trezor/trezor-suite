@@ -147,25 +147,28 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
                     onChange={sendFormActions.handleTokenChange}
                 />
             </Left>
-            <FiatValue amount="1" fiatCurrency={localCurrency.value.value} symbol={symbol}>
-                {({ rate }) =>
-                    rate && (
-                        <>
-                            <EqualsSign>=</EqualsSign>
-                            <Right>
-                                <FiatComponent
-                                    outputId={id}
-                                    key="fiat-input"
-                                    state={error ? 'error' : undefined}
-                                    sendFormActions={sendFormActions}
-                                    value={fiatValue.value}
-                                    localCurrency={localCurrency.value}
-                                />
-                            </Right>
-                        </>
-                    )
-                }
-            </FiatValue>
+            {/* TODO: token FIAT rates calculation */}
+            {!token && (
+                <FiatValue amount="1" fiatCurrency={localCurrency.value.value} symbol={symbol}>
+                    {({ rate }) =>
+                        rate && (
+                            <>
+                                <EqualsSign>=</EqualsSign>
+                                <Right>
+                                    <FiatComponent
+                                        outputId={id}
+                                        key="fiat-input"
+                                        state={error ? 'error' : undefined}
+                                        sendFormActions={sendFormActions}
+                                        value={fiatValue.value}
+                                        localCurrency={localCurrency.value}
+                                    />
+                                </Right>
+                            </>
+                        )
+                    }
+                </FiatValue>
+            )}
         </Wrapper>
     );
 };
