@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { CoinFiatRates, Account } from '@wallet-types';
-import { AggregatedAccountBalanceHistory } from '@wallet-types/fiatRates';
+import { startOfMonth, getUnixTime, fromUnixTime } from 'date-fns';
 import { GraphData } from '@wallet-reducers/graphReducer';
 import { toFiatCurrency } from './fiatConverterUtils';
+import { CoinFiatRates, Account } from '@wallet-types';
+import { AggregatedDashboardHistory, AggregatedAccountHistory } from '@wallet-types/fiatRates';
 
 type FiatRates = NonNullable<CoinFiatRates['current']>['rates'];
 
@@ -35,19 +36,32 @@ export const sumFiatValueMap = (
     });
 };
 
+export const isAccountAggregatedHistory = (
+    history: AggregatedAccountHistory | AggregatedDashboardHistory,
+    type: 'account' | 'dashboard',
+): history is AggregatedAccountHistory => {
+    return (history as AggregatedAccountHistory).sent !== undefined && type === 'account';
+};
+
+// interface AgregateBalanceHistoryFunc {
+//     (graphData: GraphData[],
+//         groupBy: 'day' | 'month',
+//         type: 'account'): AggregatedAccountHistory[];
+//     ( graphData: GraphData[],
+//         groupBy: 'day' | 'month',
+//         type: 'dashboard'): AggregatedDashboardHistory[];
+// }
+
+// TODO: Fix ts return type. should be AggregatedAccountHistory[] or AggregatedDashboardHistory[] based on `type` param
 export const aggregateBalanceHistory = (
     graphData: GraphData[],
-): AggregatedAccountBalanceHistory[] => {
-    const groupedByTimestamp: {
-        [key: string]: {
-            time: number;
-            txs: number;
-            sentFiat: { [k: string]: string | undefined };
-            receivedFiat: { [k: string]: string | undefined };
-            rates: {};
-        };
-    } = {};
-
+    groupBy: 'day' | 'month',
+    type: 'account' | 'dashboard',
+) => {
+    const groupedByTimestamp =
+        type === 'account'
+            ? ({} as { [key: string]: AggregatedAccountHistory })
+            : ({} as { [key: string]: AggregatedDashboardHistory });
     for (let i = 0; i < graphData.length; i++) {
         const accountHistory = graphData[i].data;
 
@@ -60,27 +74,45 @@ export const aggregateBalanceHistory = (
                     sentFiat: calcFiatValueMap(h.sent, h.rates || {}),
                 };
 
+                const d = fromUnixTime(dataPoint.time);
+                const key =
+                    groupBy === 'day'
+                        ? `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
+                        : `${d.getFullYear()}-${d.getMonth() + 1}`;
+                const bin = groupedByTimestamp[key];
+
                 // calc sum of sentFiat, receivedFiat, txs fields for each timestamp
-                if (!groupedByTimestamp[dataPoint.time]) {
+                if (!bin) {
                     // no entry for a timestamp yet, set first item
-                    groupedByTimestamp[dataPoint.time] = {
-                        time: Number(dataPoint.time),
+                    const baseProps: AggregatedDashboardHistory = {
+                        time:
+                            groupBy === 'day'
+                                ? dataPoint.time
+                                : getUnixTime(startOfMonth(fromUnixTime(dataPoint.time))), // set timestamp to first day of the month
                         txs: dataPoint.txs,
                         sentFiat: dataPoint.sentFiat,
                         receivedFiat: dataPoint.receivedFiat,
-                        rates: {},
                     };
+
+                    const accountProps: AggregatedAccountHistory = {
+                        ...baseProps,
+                        sent: dataPoint.sent,
+                        received: dataPoint.received,
+                    };
+
+                    groupedByTimestamp[key] = type === 'account' ? accountProps : baseProps;
                 } else {
                     // add txs, sentFiat, receivedFiat values to existing entry
-                    groupedByTimestamp[dataPoint.time].txs += dataPoint.txs;
-                    sumFiatValueMap(
-                        groupedByTimestamp[dataPoint.time].sentFiat,
-                        dataPoint.sentFiat,
-                    );
-                    sumFiatValueMap(
-                        groupedByTimestamp[dataPoint.time].receivedFiat,
-                        dataPoint.receivedFiat,
-                    );
+                    bin.txs += dataPoint.txs;
+                    sumFiatValueMap(bin.sentFiat, dataPoint.sentFiat);
+                    sumFiatValueMap(bin.receivedFiat, dataPoint.receivedFiat);
+                    if (isAccountAggregatedHistory(bin, type)) {
+                        // adding sent/received values
+                        bin.sent = new BigNumber(bin.sent).plus(dataPoint.sent).toFixed();
+                        bin.received = new BigNumber(bin.received)
+                            .plus(dataPoint.received)
+                            .toFixed();
+                    }
                 }
             });
         }
@@ -91,7 +123,10 @@ export const aggregateBalanceHistory = (
         return groupedByTimestamp[timestamp];
     });
 
-    return aggregatedData;
+    console.log('aggregatedData', aggregatedData);
+    return type === 'account'
+        ? (aggregatedData as AggregatedAccountHistory[])
+        : (aggregatedData as AggregatedDashboardHistory[]);
 };
 
 export const accountGraphDataFilterFn = (d: GraphData, account: Account) => {

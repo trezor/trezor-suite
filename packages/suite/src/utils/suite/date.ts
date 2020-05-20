@@ -139,7 +139,7 @@ export const getBlockbookSafeTime = () => {
  * Returns unix timestamp
  *
  * @param {number} ts
- * @param {number} weeks
+ * @param {boolean} resetDay
  * @returns
  */
 export const resetTime = (ts: number, resetDay?: boolean) => {

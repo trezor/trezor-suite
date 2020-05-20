@@ -85,36 +85,28 @@ export const fetchAccountGraphData = (
     });
 
     let intervalParams = {};
-    const secondsInDay = 3600 * 24;
-    const secondsInMonth = secondsInDay * 30;
-    let groupBy = secondsInMonth;
     if (range.weeks) {
-        groupBy = range.weeks >= 52 ? secondsInMonth : secondsInDay; // group by month or day
         intervalParams = {
             from: getUnixTime(startDate!),
             to: getUnixTime(endDate!),
-            groupBy,
-        };
-    } else {
-        groupBy = secondsInMonth;
-        intervalParams = {
-            groupBy,
         };
     }
 
-    const setDayToFirstOfMonth = groupBy >= secondsInMonth;
+    // const setDayToFirstOfMonth = groupBy >= secondsInMonth;
     const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
         coin: account.symbol,
         descriptor: account.descriptor,
+        groupBy: 3600 * 24, // day
         ...intervalParams,
     });
 
     if (response?.success) {
+        console.log('response.payload', response.payload);
         const enhancedResponse = response.payload.map(h => ({
             ...h,
             received: formatNetworkAmount(h.received, account.symbol),
             sent: formatNetworkAmount(h.sent, account.symbol),
-            time: resetTime(h.time, setDayToFirstOfMonth), // adapts to local timezone
+            time: resetTime(h.time), // blockbook returns timestamps set to 12am (noon), we use 00am for ticks
         }));
         dispatch({
             type: ACCOUNT_GRAPH_SUCCESS,

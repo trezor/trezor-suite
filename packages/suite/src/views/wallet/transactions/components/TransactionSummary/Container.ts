@@ -9,6 +9,7 @@ const mapStateToProps = (state: AppState) => ({
     selectedAccount: state.wallet.selectedAccount,
     graph: state.wallet.graph,
     accounts: state.wallet.accounts,
+    localCurrency: state.wallet.settings.localCurrency,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

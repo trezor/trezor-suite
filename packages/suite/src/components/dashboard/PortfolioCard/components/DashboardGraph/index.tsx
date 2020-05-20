@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { GraphRange, AggregatedAccountBalanceHistory } from '@wallet-types/fiatRates';
+import { GraphRange, AggregatedDashboardHistory } from '@wallet-types/fiatRates';
 import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
 import { Props } from './Container';
 import { getUnixTime } from 'date-fns';
@@ -44,7 +44,7 @@ const SmallErrorMessage = styled.div`
 `;
 
 const DashboardGraph = React.memo((props: Props) => {
-    const [data, setData] = useState<AggregatedAccountBalanceHistory[]>([]);
+    const [data, setData] = useState<AggregatedDashboardHistory[]>([]);
     const [isProcessing, setIsProcessing] = useState(false);
     const [xTicks, setXticks] = useState<number[]>([]);
     const { accounts, selectedDevice, updateGraphData, setSelectedRange, localCurrency } = props;
@@ -70,12 +70,12 @@ const DashboardGraph = React.memo((props: Props) => {
     );
 
     const receivedValueFn = useCallback(
-        (sourceData: AggregatedAccountBalanceHistory) => sourceData.receivedFiat[localCurrency],
+        (sourceData: AggregatedDashboardHistory) => sourceData.receivedFiat[localCurrency],
         [localCurrency],
     );
 
     const sentValueFn = useCallback(
-        (sourceData: AggregatedAccountBalanceHistory) => sourceData.sentFiat[localCurrency],
+        (sourceData: AggregatedDashboardHistory) => sourceData.sentFiat[localCurrency],
         [localCurrency],
     );
 
@@ -91,7 +91,13 @@ const DashboardGraph = React.memo((props: Props) => {
                 : [];
 
             const worker = new GraphWorker();
-            worker.postMessage(rawDeviceGraphData);
+
+            worker.postMessage({
+                history: rawDeviceGraphData,
+                groupBy: selectedRange.groupBy,
+                type: 'dashboard',
+            });
+
             worker.addEventListener('message', (event: MessageEvent) => {
                 const aggregatedData = event.data;
                 const graphTicks =
