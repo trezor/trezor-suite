@@ -1,18 +1,12 @@
-import {
-    Output,
-    State,
-    EthTransactionData,
-    EthPreparedTransaction,
-    FeeInfo,
-    FeeLevel,
-} from '@wallet-types/sendForm';
-import { Account, Network } from '@wallet-types';
-import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import BigNumber from 'bignumber.js';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { toHex, toWei, fromWei } from 'web3-utils';
-import { Transaction } from 'ethereumjs-tx';
+import { Transaction, TxData } from 'ethereumjs-tx';
 import Common from 'ethereumjs-common'; // this is a dependency of `ethereumjs-tx` therefore it doesn't have to be in package.json
+import { toHex, toWei, fromWei, padLeft } from 'web3-utils';
+import BigNumber from 'bignumber.js';
+import { Output, State, EthTransactionData, FeeInfo, FeeLevel } from '@wallet-types/sendForm';
+import { VALIDATION_ERRORS, ERC20_TRANSFER } from '@wallet-constants/sendForm';
+import { formatNetworkAmount, amountToSatoshi } from '@wallet-utils/accountUtils';
+import { Account, Network } from '@wallet-types';
+import { EthereumTransaction } from 'trezor-connect';
 
 export const getOutput = (outputs: Output[], id: number) =>
     outputs.find(outputItem => outputItem.id === id) as Output;
@@ -142,27 +136,40 @@ export const calculateEthFee = (gasPrice: string | null, gasLimit: string | null
 };
 
 export const prepareEthereumTransaction = (txInfo: EthTransactionData) => {
-    // todo ERC20 support
-    const result: EthPreparedTransaction = {
+    const result: EthereumTransaction = {
         to: txInfo.to,
         value: toHex(toWei(txInfo.amount, 'ether')),
         chainId: txInfo.chainId,
         nonce: toHex(txInfo.nonce),
         gasLimit: toHex(txInfo.gasLimit),
         gasPrice: toHex(toWei(txInfo.gasPrice, 'gwei')),
-        r: '',
-        s: '',
-        v: '',
     };
 
-    if (txInfo.data) {
+    if (!txInfo.token && txInfo.data) {
         result.data = sanitizeHex(txInfo.data);
+    }
+
+    // Build erc20 'transfer' method
+    if (txInfo.token) {
+        // 32 bytes address parameter, remove '0x' prefix
+        const erc20recipient = padLeft(txInfo.to, 64).substring(2);
+        // convert amount to satoshi
+        const tokenAmount = amountToSatoshi(txInfo.amount, txInfo.token.decimals);
+        console.warn('FOORM');
+        // 32 bytes amount paramter, remove '0x' prefix
+        const erc20amount = padLeft(toHex(tokenAmount), 64).substring(2);
+        // join data
+        result.data = `0x${ERC20_TRANSFER}${erc20recipient}${erc20amount}`;
+        // replace tx recipient to smart contract address
+        result.to = txInfo.token.address; // '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93';
+        // replace tx value
+        result.value = '0x00';
     }
 
     return result;
 };
 
-export const serializeEthereumTx = (tx: any) => {
+export const serializeEthereumTx = (tx: TxData & EthereumTransaction) => {
     // ethereumjs-tx doesn't support ETC (chain 61) by default
     // and it needs to be declared as custom chain
     // see: https://github.com/ethereumjs/ethereumjs-tx/blob/master/examples/custom-chain-tx.ts
