@@ -44,8 +44,8 @@ suite-web test integration google-chrome:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
     dependencies: []
-    #retry:
-    #    max: 2
+    retry:
+       max: 2
 
 suite-web test integration google-chrome-beta:
     only:
@@ -64,8 +64,8 @@ suite-web test integration google-chrome-beta:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
     dependencies: []
-    #retry:
-    #   max: 2
+    retry:
+      max: 2
 
 suite-web test security:
     stage: deploy artifacts, others
