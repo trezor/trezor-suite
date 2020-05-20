@@ -97,7 +97,7 @@ const getUrl = () => {
         }
     }
 
-    return `${base}/web/development.log`;
+    // return `${base}/${process.env.SUITE_TYPE}/development.log`;
 };
 
 export const report = (data: Payload, force = false) => async (
@@ -177,10 +177,8 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch({
         type: ANALYTICS.INIT,
         payload: {
-            // respect what might have been loaded from storage
-            enabled: analytics.enabled,
             // if no instanceId exists it means that it was not loaded from storage, so create a new one
-            instanceId: analytics.instanceId ? analytics.instanceId : getRandomId(10),
+            instanceId: !analytics.instanceId ? getRandomId(10) : analytics.instanceId,
             // sessionId is always ephemeral
             sessionId: getRandomId(10),
         },
