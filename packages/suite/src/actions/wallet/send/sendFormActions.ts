@@ -319,11 +319,22 @@ export const setMax = (outputIdIn?: number) => async (dispatch: Dispatch, getSta
     dispatch(composeChange('amount'));
 };
 
-export const handleTokenSelectChange = (token?: TokenInfo) => (dispatch: Dispatch) => {
+export const handleTokenSelectChange = (token?: TokenInfo) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { send } = getState().wallet;
+    if (!send) return;
+
     // do eth specific stuff
     dispatch(ethereumActions.handleTokenSelectChange(token));
+
     // trigger amount validation in reducer
-    dispatch(amountChange());
+    if (send.setMaxActivated) {
+        dispatch(setMax());
+    } else {
+        dispatch(amountChange());
+    }
 };
 
 /*
