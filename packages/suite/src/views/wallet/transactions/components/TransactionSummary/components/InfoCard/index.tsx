@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, variables, Loader } from '@trezor/components';
-import { HiddenPlaceholder, Badge, NoRatesTooltip, FiatValue } from '@suite-components';
+import { HiddenPlaceholder, Badge } from '@suite-components';
 import { Account } from '@wallet-types';
 import BigNumber from 'bignumber.js';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
@@ -64,6 +64,7 @@ type Props =
     | {
           title: React.ReactNode;
           value?: JSX.Element | string;
+          fiatValue?: React.ReactNode;
           symbol: Account['symbol'];
           isNumeric: boolean;
           isLoading?: boolean;
@@ -106,21 +107,10 @@ const InfoCard = (props: Props) => {
                                 )}
                                 {!bigValue && props.value}
                             </Value>
-                            {props.isNumeric && bigValue && (
+                            {props.isNumeric && props.fiatValue && (
                                 <HiddenPlaceholder>
                                     <FiatAmountWrapper>
-                                        <FiatValue
-                                            amount={bigValue.toFixed()}
-                                            symbol={props.symbol}
-                                        >
-                                            {({ value }) =>
-                                                value ? (
-                                                    <Badge>{value}</Badge>
-                                                ) : (
-                                                    <NoRatesTooltip iconOnly />
-                                                )
-                                            }
-                                        </FiatValue>
+                                        <Badge>{props.fiatValue}</Badge>
                                     </FiatAmountWrapper>
                                 </HiddenPlaceholder>
                             )}

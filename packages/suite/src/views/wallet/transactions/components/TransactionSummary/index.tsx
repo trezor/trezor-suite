@@ -1,13 +1,23 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { colors, variables, Button } from '@trezor/components';
-import { Card, TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
+import {
+    Card,
+    TransactionsGraph,
+    Translation,
+    HiddenPlaceholder,
+    FormattedNumber,
+} from '@suite-components';
 import messages from '@suite/support/messages';
 import InfoCard from './components/InfoCard';
 import BigNumber from 'bignumber.js';
 import { getUnixTime } from 'date-fns';
 import { calcTicks, calcTicksFromData } from '@suite-utils/date';
-import { accountGraphDataFilterFn, aggregateBalanceHistory } from '@wallet-utils/graphUtils';
+import {
+    accountGraphDataFilterFn,
+    aggregateBalanceHistory,
+    sumFiatValueMap,
+} from '@wallet-utils/graphUtils';
 import { GraphRange, AggregatedAccountHistory } from '@wallet-types/fiatRates';
 import { Props } from './Container';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
@@ -74,24 +84,34 @@ const TransactionSummary = (props: Props) => {
 
     const intervalGraphData = graphData.find(d => d.interval === selectedRange.label);
 
-    const data = intervalGraphData?.data
+    const data: AggregatedAccountHistory[] = intervalGraphData?.data
         ? (aggregateBalanceHistory(
               [intervalGraphData],
               selectedRange.groupBy,
               'account',
           ) as AggregatedAccountHistory[])
-        : null;
+        : [];
 
     const error = intervalGraphData?.error ?? false;
     const isLoading = intervalGraphData?.isLoading ?? false;
 
-    const numOfTransactions = data?.reduce((acc, d) => (acc += d.txs), 0);
-    const totalSentAmount = data?.reduce((acc, d) => acc.plus(d.sent), new BigNumber(0));
-    const totalReceivedAmount = data?.reduce((acc, d) => acc.plus(d.received), new BigNumber(0));
+    // aggregate values from shown graph data
+    const numOfTransactions = data.reduce((acc, d) => (acc += d.txs), 0);
+    const totalSentAmount = data.reduce((acc, d) => acc.plus(d.sent), new BigNumber(0));
+    const totalReceivedAmount = data.reduce((acc, d) => acc.plus(d.received), new BigNumber(0));
+
+    const totalSentFiatMap: { [k: string]: string } = data.reduce(
+        (acc, d) => sumFiatValueMap(acc, d.sentFiat),
+        {},
+    );
+    const totalReceivedFiatMap: { [k: string]: string } = data.reduce(
+        (acc, d) => sumFiatValueMap(acc, d.receivedFiat),
+        {},
+    );
 
     const xTicks =
         selectedRange.label === 'all'
-            ? calcTicksFromData(data || []).map(getUnixTime)
+            ? calcTicksFromData(data).map(getUnixTime)
             : calcTicks(selectedRange.weeks).map(getUnixTime);
 
     return (
@@ -149,6 +169,12 @@ const TransactionSummary = (props: Props) => {
                                     <InfoCard
                                         title={<Translation {...messages.TR_INCOMING} />}
                                         value={totalReceivedAmount?.toFixed()}
+                                        fiatValue={
+                                            <FormattedNumber
+                                                value={totalReceivedFiatMap[props.localCurrency]}
+                                                currency={props.localCurrency}
+                                            />
+                                        }
                                         symbol={props.account.symbol}
                                         isLoading={isLoading}
                                         isNumeric
@@ -156,6 +182,16 @@ const TransactionSummary = (props: Props) => {
                                     <InfoCard
                                         title={<Translation {...messages.TR_OUTGOING} />}
                                         value={totalSentAmount?.negated().toFixed()}
+                                        fiatValue={
+                                            <FormattedNumber
+                                                value={new BigNumber(
+                                                    totalSentFiatMap[props.localCurrency] || 0,
+                                                )
+                                                    .negated()
+                                                    .toFixed()}
+                                                currency={props.localCurrency}
+                                            />
+                                        }
                                         symbol={props.account.symbol}
                                         isLoading={isLoading}
                                         isNumeric
