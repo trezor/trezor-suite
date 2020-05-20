@@ -1,4 +1,4 @@
-import TrezorConnect, { TokenInfo } from 'trezor-connect';
+import TrezorConnect from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
 import * as notificationActions from '@suite-actions/notificationActions';
