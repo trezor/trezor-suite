@@ -27,6 +27,8 @@ components storybook deploy dev:
     - rsync --delete -va .build-storybook/ "${DEPLOY_DIRECTORY}/"
   tags:
     - deploy
+
+
 # components-storybook test snapshots:
 #   stage: integration testing
 #   script:
