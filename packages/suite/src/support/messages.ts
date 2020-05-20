@@ -942,6 +942,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Gas limit',
         id: 'TR_GAS_LIMIT',
     },
+    TR_TOKEN_BALANCE: {
+        defaultMessage: 'You have {balance}',
+        description: 'Additional label in send form above amount input',
+        id: 'TR_TOKEN_BALANCE',
+    },
     TR_GATHERING_INFO: {
         defaultMessage: 'Gathering information, please wait...',
         id: 'TR_GATHERING_INFO',

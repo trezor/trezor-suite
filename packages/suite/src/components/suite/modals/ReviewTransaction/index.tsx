@@ -76,10 +76,12 @@ export default ({
 }: Props) => {
     if (!account || !send) return null;
     const { outputs } = send;
+    const { token } = send.networkTypeEthereum;
     const { networkType } = account;
     const transactionInfo = getTransactionInfo(account.networkType, send);
     if (!transactionInfo || transactionInfo.type === 'error') return null;
     const upperCaseSymbol = account.symbol.toUpperCase();
+    const outputSymbol = token ? token.symbol?.toUpperCase() : account.symbol.toUpperCase();
     const [isEnabled] = useDeviceActionLocks();
 
     return (
@@ -141,7 +143,7 @@ export default ({
                                 <Translation id="TR_AMOUNT" />
                             </Label>
                             <Value>
-                                {output.amount.value} {upperCaseSymbol}
+                                {output.amount.value} {outputSymbol}
                             </Value>
                         </Box>
                     </OutputWrapper>

@@ -1,7 +1,6 @@
 import { FiatValue, QuestionTooltip, Translation } from '@suite-components';
 import { Input, variables } from '@trezor/components';
 import { LABEL_HEIGHT, VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { Network } from '@wallet-types';
 import { Output } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getInputState } from '@wallet-utils/sendFormUtils';
@@ -32,8 +31,15 @@ const Label = styled.div`
 `;
 
 const Left = styled.div`
+    position: relative; /* for TokenBalance positioning */
     display: flex;
     flex: 1;
+`;
+
+const TokenBalance = styled.div`
+    position: absolute;
+    top: 0;
+    right: 0;
 `;
 
 const Right = styled.div`
@@ -56,7 +62,7 @@ const EqualsSign = styled.div`
 
 const getMessage = (
     error: Output['amount']['error'],
-    decimals: Network['decimals'],
+    decimals: number,
     reserve: string | null,
     isLoading: Output['amount']['isLoading'],
 ) => {
@@ -86,13 +92,15 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
     if (selectedAccount.status !== 'loaded' || !send) return null;
 
     const { account, network } = selectedAccount;
+    const { token } = send.networkTypeEthereum;
     const { symbol } = account;
     const { setMaxActivated } = send;
-    const { decimals } = network;
     const { id, amount, fiatValue, localCurrency } = output;
     const { value, error, isLoading } = amount;
     const reserve =
         account.networkType === 'ripple' ? formatNetworkAmount(account.misc.reserve, symbol) : null;
+    const tokenBalance = token ? `${token.balance} ${token.symbol?.toUpperCase()}` : undefined;
+    const decimals = token ? token.decimals : network.decimals;
 
     return (
         <Wrapper>
@@ -118,7 +126,18 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
                     onChange={e => sendFormActions.handleAmountChange(id, e.target.value)}
                     bottomText={getMessage(error, decimals, reserve, isLoading)}
                 />
-                <CurrencySelect key="currency-select" symbol={symbol} tokens={account.tokens} />
+                {tokenBalance && (
+                    <TokenBalance>
+                        <Translation id="TR_TOKEN_BALANCE" values={{ balance: tokenBalance }} />
+                    </TokenBalance>
+                )}
+                <CurrencySelect
+                    key="currency-select"
+                    symbol={symbol}
+                    tokens={account.tokens}
+                    selectedToken={send?.networkTypeEthereum.token}
+                    onChange={sendFormActions.handleTokenChange}
+                />
             </Left>
             <FiatValue amount="1" fiatCurrency={localCurrency.value.value} symbol={symbol}>
                 {({ rate }) =>
