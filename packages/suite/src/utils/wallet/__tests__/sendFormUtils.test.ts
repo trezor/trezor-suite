@@ -1,5 +1,13 @@
-import { OUTPUTS } from '../__fixtures__/sendFormFixtures';
-import { getOutput, hasDecimals, shouldComposeBy, getInputState } from '../sendFormUtils';
+import * as fixtures from '../__fixtures__/sendFormFixtures';
+import {
+    getOutput,
+    hasDecimals,
+    shouldComposeBy,
+    getInputState,
+    prepareEthereumTransaction,
+} from '../sendFormUtils';
+
+const { OUTPUTS } = fixtures;
 
 describe('sendForm utils', () => {
     it('get output', () => {
@@ -75,5 +83,11 @@ describe('sendForm utils', () => {
         expect(hasDecimals('a.100', 18)).toBe(false);
         expect(hasDecimals('abc', 18)).toBe(false);
         expect(hasDecimals('1abc0', 18)).toBe(false);
+    });
+
+    fixtures.prepareEthereumTransaction.forEach(f => {
+        it(`prepareEthereumTransaction: ${f.description}`, () => {
+            expect(prepareEthereumTransaction(f.txInfo)).toEqual(f.result);
+        });
     });
 });

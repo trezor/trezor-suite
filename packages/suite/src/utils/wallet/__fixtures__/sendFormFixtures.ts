@@ -135,3 +135,27 @@ export const OUTPUTS = {
         },
     ],
 };
+
+export const prepareEthereumTransaction = [
+    {
+        description: 'regular',
+        txInfo: {
+            to: '0xA',
+            amount: '1',
+            chainId: 1,
+            nonce: '2',
+            gasLimit: '21000',
+            gasPrice: '1',
+            data: 'deadbeef',
+        },
+        result: {
+            to: '0xA',
+            value: '0xde0b6b3a7640000',
+            chainId: 1,
+            nonce: '0x2',
+            gasLimit: '0x5208',
+            gasPrice: '0x3b9aca00',
+            data: '0xdeadbeef',
+        },
+    },
+];
