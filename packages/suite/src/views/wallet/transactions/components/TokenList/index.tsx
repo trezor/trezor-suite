@@ -80,8 +80,6 @@ const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
     return (
         <Wrapper isTestnet={isTestnet} noPadding>
             {tokens.map(t => {
-                const isUnknown = !t.symbol || !t.balance || !t.name;
-                if (isUnknown) return null;
                 return (
                     <Fragment key={t.address}>
                         <Col isTestnet={isTestnet}>

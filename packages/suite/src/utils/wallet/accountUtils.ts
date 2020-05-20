@@ -310,6 +310,23 @@ export const enhanceTransaction = (
     };
 };
 
+/**
+ * Clear invalid tokens and formats amounts
+ *
+ * @param {Account['tokens']} tokens
+ * @returns {Account['tokens']}
+ */
+export const enhanceTokens = (tokens: Account['tokens']) => {
+    if (!tokens) return [];
+    return tokens
+        .filter(t => t.symbol && t.balance && t.name)
+        .map(t => ({
+            ...t,
+            symbol: t.symbol!.toLowerCase(),
+            balance: formatAmount(t.balance!, t.decimals),
+        }));
+};
+
 export const getAccountFiatBalance = (
     account: Account,
     localCurrency: string,
