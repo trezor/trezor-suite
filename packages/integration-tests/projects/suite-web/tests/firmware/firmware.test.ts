@@ -4,7 +4,7 @@ describe('Firmware', () => {
         cy.viewport(1024, 768).resetDb();
     });
 
-    it('Firmware outdated static notification should open firmware update modal', () => {
+    it.only('Firmware outdated static notification should open firmware update modal', () => {
         cy.task('startEmu', { version: '2.1.4', wipe: true });
         cy.task('setupEmu');
         cy.visit('/');
@@ -20,8 +20,6 @@ describe('Firmware', () => {
         cy.getTestElement('@firmware/confirm-seed-button').click();
         cy.getTestElement('@firmware/disconnect-message');
         cy.task('stopEmu');
-        // disconnecting might take a little longer in CI
-        cy.getTestElement('@firmware/disconnect-message', { timeout: 20000 }).should('not.exist');
         cy.getTestElement('@firmware/connect-message');
         cy.log(
             'And this is the end my friends. Emulator does not support bootloader, so we can not proceed with actual fw install',

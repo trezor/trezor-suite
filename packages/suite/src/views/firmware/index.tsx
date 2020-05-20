@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
@@ -169,6 +169,13 @@ const Firmware = ({
     toggleBtcOnly,
     transport,
 }: Props) => {
+    const [prevModel, setPrevModel] = useState<number>();
+
+    useEffect(() => {
+        if (!device) return;
+        setPrevModel(device.features?.major_version);
+    }, [device]);
+
     const onClose = () => {
         closeModalApp();
         resetReducer();
@@ -202,7 +209,14 @@ const Firmware = ({
                     <StyledH2>
                         <Translation id="TR_FIRMWARE_INSTALL_FAILED_HEADER" />
                     </StyledH2>
-                    <StyledP>{firmware.error}</StyledP>
+                    {/*
+                    todo: when user cancels firmware update call, connect returns error 'null', discover why
+                    todo: also we maybe want to force user to disconnect device after failed fw update, consider showing disconnect-device modal
+                    */}
+                    {/* <StyledP>{firmware.error}</StyledP> */}
+                    <StyledP>
+                        <Translation id="TR_DISCONNECT_YOUR_DEVICE" />
+                    </StyledP>
                     <StyledImage image="UNI_ERROR" />
                     <Buttons>
                         <Col>
@@ -227,9 +241,19 @@ const Firmware = ({
                             <Translation id="TR_RECONNECT_IN_BOOTLOADER" />
                         </StyledH2>
                         <StyledP data-test="@firmware/connect-message">
-                            <Translation id="TR_SWIPE_YOUR_FINGERS" />
+                            {prevModel === 1 ? (
+                                <Translation id="TR_HOLD_LEFT_BUTTON" />
+                            ) : (
+                                <Translation id="TR_SWIPE_YOUR_FINGERS" />
+                            )}
                         </StyledP>
-                        <InitImg model={2} />
+                        <Image
+                            image={
+                                prevModel === 1
+                                    ? `HOW_TO_ENTER_BOOTLOADER_MODEL_1`
+                                    : 'HOW_TO_ENTER_BOOTLOADER_MODEL_2'
+                            }
+                        />
                     </>
                 )}
                 {firmware.status !== 'waiting-for-bootloader' && (
@@ -342,6 +366,11 @@ const Firmware = ({
                                     )}
                                 </FromVersionToVersion>
 
+                                {/* if no changelog, show image to fill space in UI */}
+                                {device.firmwareRelease.changelog?.length === 0 && (
+                                    <InitImg model={device.features.major_version} height="260px" />
+                                )}
+
                                 {device.firmwareRelease.changelog?.length > 0 && (
                                     <ChangesSummary>
                                         {device.firmwareRelease.changelog.map((c: any) => (
@@ -438,7 +467,7 @@ const Firmware = ({
                         {device && device.mode === 'bootloader' && (
                             <>
                                 <StyledH2>
-                                    <Translation id="TR_FIRMWARE_BOOTLOADER_TITLE" />
+                                    <Translation id="TR_START_FIRMWARE_UPDATE" />
                                 </StyledH2>
                                 <InitImg model={model} />
 
