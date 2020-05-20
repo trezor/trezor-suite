@@ -135,7 +135,7 @@ export const handleAddressChange = (outputId: number, address: string) => (
 };
 
 // common method called from multiple places:
-// handleAmountChange, handleSelectCurrencyChange, handleFiatInputChange, setMax, handleTokenChange
+// handleAmountChange, handleFiatSelectChange, handleFiatInputChange, setMax, handleTokenSelectChange
 const amountChange = (amount: string, outputIdIn?: number) => (
     dispatch: Dispatch,
     getState: GetState,
@@ -202,7 +202,7 @@ export const handleAmountChange = (outputId: number, amount: string) => (
 /*
     Change value in select "LocalCurrency"
  */
-export const handleSelectCurrencyChange = (
+export const handleFiatSelectChange = (
     localCurrency: Output['localCurrency']['value'],
     outputId: number,
 ) => (dispatch: Dispatch, getState: GetState) => {
@@ -317,8 +317,8 @@ export const setMax = (outputIdIn?: number) => async (dispatch: Dispatch, getSta
     dispatch(composeChange('amount'));
 };
 
-export const handleTokenChange = (token?: TokenInfo) => (dispatch: Dispatch) => {
-    dispatch(ethereumActions.handleTokenChange(token));
+export const handleTokenSelectChange = (token?: TokenInfo) => (dispatch: Dispatch) => {
+    dispatch(ethereumActions.handleTokenSelectChange(token));
 };
 
 /*

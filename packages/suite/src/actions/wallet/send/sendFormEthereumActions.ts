@@ -84,7 +84,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     return tx;
 };
 
-export const handleTokenChange = (token?: TokenInfo) => (dispatch: Dispatch) => {
+export const handleTokenSelectChange = (token?: TokenInfo) => (dispatch: Dispatch) => {
     dispatch({
         type: SEND.ETH_HANDLE_TOKEN,
         token,

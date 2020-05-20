@@ -144,7 +144,7 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
                     symbol={symbol}
                     tokens={account.tokens}
                     selectedToken={send?.networkTypeEthereum.token}
-                    onChange={sendFormActions.handleTokenChange}
+                    onChange={sendFormActions.handleTokenSelectChange}
                 />
             </Left>
             {/* TODO: token FIAT rates calculation */}
