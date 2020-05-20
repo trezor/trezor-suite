@@ -6,10 +6,10 @@ import messages from '@suite/support/messages';
 import InfoCard from './components/InfoCard';
 import BigNumber from 'bignumber.js';
 import { getUnixTime } from 'date-fns';
-import { calcTicks, calcTicksFromData } from '@suite/utils/suite/date';
-import { GraphRange } from '@suite/types/wallet/fiatRates';
+import { calcTicks, calcTicksFromData } from '@suite-utils/date';
+import { accountGraphDataFilterFn, aggregateBalanceHistory } from '@wallet-utils/graphUtils';
+import { GraphRange, AggregatedAccountHistory } from '@wallet-types/fiatRates';
 import { Props } from './Container';
-import { accountGraphDataFilterFn } from '@wallet-utils/graphUtils';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
 const Wrapper = styled.div`
@@ -73,7 +73,15 @@ const TransactionSummary = (props: Props) => {
     const [isGraphHidden, setIsGraphHidden] = useState(false);
 
     const intervalGraphData = graphData.find(d => d.interval === selectedRange.label);
-    const data = intervalGraphData?.data ?? null;
+
+    const data = intervalGraphData?.data
+        ? (aggregateBalanceHistory(
+              [intervalGraphData],
+              selectedRange.groupBy,
+              'account',
+          ) as AggregatedAccountHistory[])
+        : null;
+
     const error = intervalGraphData?.error ?? false;
     const isLoading = intervalGraphData?.isLoading ?? false;
 
@@ -125,6 +133,7 @@ const TransactionSummary = (props: Props) => {
                                     account={props.account}
                                     isLoading={isLoading}
                                     data={data}
+                                    localCurrency={props.localCurrency}
                                     onRefresh={() => props.updateGraphData([props.account])}
                                     selectedRange={selectedRange}
                                     onSelectedRange={(range: GraphRange) => {

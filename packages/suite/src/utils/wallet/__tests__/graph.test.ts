@@ -138,53 +138,60 @@ describe('Graph utils', () => {
         expect(utils.deviceGraphDataFilterFn(graphData1, account2Dev1.deviceState)).toBe(true);
     });
 
-    test('aggregateBalanceHistory', () => {
-        expect(utils.aggregateBalanceHistory([graphData1, graphData1])).toEqual([]);
+    test('aggregateBalanceHistory group by month', () => {
+        expect(utils.aggregateBalanceHistory([graphData1, graphData1], 'month', 'account')).toEqual(
+            [],
+        );
         // @ts-ignore
-        expect(utils.aggregateBalanceHistory([graphData1, graphData2])).toEqual([
-            {
-                rates: {},
-                receivedFiat: {
-                    aaa: '0',
-                    czk: '300.71',
-                    eos: '3.69',
-                    eur: '11.71',
-                    gbp: '10.04',
+        expect(utils.aggregateBalanceHistory([graphData1, graphData2], 'month', 'account')).toEqual(
+            [
+                {
+                    received: '0.1',
+                    receivedFiat: {
+                        aaa: '0',
+                        czk: '300.71',
+                        eos: '3.69',
+                        eur: '11.71',
+                        gbp: '10.04',
+                    },
+                    sent: '0.1',
+                    sentFiat: {
+                        aaa: '0',
+                        czk: '300.71',
+                        eos: '3.69',
+                        eur: '11.71',
+                        gbp: '10.04',
+                    },
+                    time: 1559347200,
+                    txs: 14,
                 },
-                sentFiat: {
-                    aaa: '0',
-                    czk: '300.71',
-                    eos: '3.69',
-                    eur: '11.71',
-                    gbp: '10.04',
+                {
+                    received: '0.2',
+                    sent: '0.23',
+                    receivedFiat: {
+                        aaa: '0',
+                        czk: '601.42',
+                        eos: '7.37',
+                        eur: '23.43',
+                        gbp: '20.09',
+                    },
+                    sentFiat: {
+                        aaa: '0',
+                        czk: '691.63',
+                        eos: '8.48',
+                        eur: '26.94',
+                        gbp: '23.10',
+                    },
+                    time: 1577836800,
+                    txs: 2,
                 },
-                time: 1561932000,
-                txs: 14,
-            },
-            {
-                rates: {},
-                receivedFiat: {
-                    aaa: '0',
-                    czk: '601.42',
-                    eos: '7.37',
-                    eur: '23.43',
-                    gbp: '20.09',
-                },
-                sentFiat: {
-                    aaa: '0',
-                    czk: '691.63',
-                    eos: '8.48',
-                    eur: '26.94',
-                    gbp: '23.10',
-                },
-                time: 1580511600,
-                txs: 2,
-            },
-        ]);
+            ],
+        );
         // @ts-ignore
-        expect(utils.aggregateBalanceHistory([graphData2, graphData3])).toEqual([
+        expect(utils.aggregateBalanceHistory([graphData2, graphData3], 'day', 'account')).toEqual([
             {
-                rates: {},
+                received: '1.1',
+                sent: '1.1',
                 receivedFiat: {
                     aaa: '0',
                     czk: '3307.82',
@@ -203,7 +210,8 @@ describe('Graph utils', () => {
                 txs: 28,
             },
             {
-                rates: {},
+                received: '1.4',
+                sent: '1.43',
                 receivedFiat: {
                     aaa: '0',
                     czk: '4209.95',
