@@ -2994,11 +2994,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Downloading',
         description: 'Indicating that app is downloading data from external source',
     },
-    TR_NEW_LABEL: {
-        id: 'TR_NEW_LABEL',
-        defaultMessage: 'NEW',
+    TR_FULL_LABEL: {
+        id: 'TR_FULL_LABEL',
+        defaultMessage: 'Full-featured',
         description:
-            'Meant as a label. Used for example in firmware update when indicating which firmware version is the new one.',
+            'Meant as a label. Used for example in firmware update when indicating which type of firmware version is the new one.',
     },
     TR_ALTERNATIVELY_YOU_MAY_INSTALL: {
         id: 'TR_ALTERNATIVELY_YOU_MAY_INSTALL',

@@ -4,7 +4,7 @@ describe('Firmware', () => {
         cy.viewport(1024, 768).resetDb();
     });
 
-    it.only('Firmware outdated static notification should open firmware update modal', () => {
+    it('Firmware outdated static notification should open firmware update modal', () => {
         cy.task('startEmu', { version: '2.1.4', wipe: true });
         cy.task('setupEmu');
         cy.visit('/');
@@ -13,7 +13,7 @@ describe('Firmware', () => {
 
         cy.log('check if bitcoin only toggle works');
         cy.getTestElement('@firmware/toggle-bitcoin-only/btc').click();
-        cy.getTestElement('@firmware/btc-only-badge');
+        cy.getTestElement('@firmware/new/btc-only-badge');
         cy.getTestElement('@firmware/toggle-bitcoin-only/full').click();
 
         cy.getTestElement('@firmware/start-button').click();

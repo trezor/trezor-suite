@@ -17,7 +17,7 @@ import {
 import * as firmwareActions from '@firmware-actions/firmwareActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { InjectedModalApplicationProps, Dispatch, AppState } from '@suite-types';
-import { getFwVersion } from '@suite-utils/device';
+import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import { ProgressBar, Translation, WebusbButton } from '@suite-components';
 import Image from '@suite-components/images/Image';
 import { InitImg, SuccessImg, FirmwareProgress, BitcoinOnlyToggle } from '@firmware-components';
@@ -169,11 +169,11 @@ const Firmware = ({
     toggleBtcOnly,
     transport,
 }: Props) => {
-    const [prevModel, setPrevModel] = useState<number>();
+    const [savedModel, setSavedModel] = useState<number>();
 
     useEffect(() => {
         if (!device) return;
-        setPrevModel(device.features?.major_version);
+        setSavedModel(device.features?.major_version);
     }, [device]);
 
     const onClose = () => {
@@ -241,7 +241,7 @@ const Firmware = ({
                             <Translation id="TR_RECONNECT_IN_BOOTLOADER" />
                         </StyledH2>
                         <StyledP data-test="@firmware/connect-message">
-                            {prevModel === 1 ? (
+                            {savedModel === 1 ? (
                                 <Translation id="TR_HOLD_LEFT_BUTTON" />
                             ) : (
                                 <Translation id="TR_SWIPE_YOUR_FINGERS" />
@@ -249,7 +249,7 @@ const Firmware = ({
                         </StyledP>
                         <Image
                             image={
-                                prevModel === 1
+                                savedModel === 1
                                     ? `HOW_TO_ENTER_BOOTLOADER_MODEL_1`
                                     : 'HOW_TO_ENTER_BOOTLOADER_MODEL_2'
                             }
@@ -270,9 +270,9 @@ const Firmware = ({
                     <Col>
                         {isWebUSB(transport) && (
                             <WebusbButton ready>
-                                <Button icon="PLUS">
+                                <StyledButton icon="PLUS">
                                     <Translation id="TR_CHECK_FOR_DEVICES" />
-                                </Button>
+                                </StyledButton>
                             </WebusbButton>
                         )}
 
@@ -351,22 +351,34 @@ const Firmware = ({
                                     <FromVersion>
                                         <Translation id="TR_VERSION" /> {getFwVersion(device)}
                                     </FromVersion>
+                                    {!isBitcoinOnly(device) && (
+                                        <Badge data-test="@firmware/current/btc-only-badge">
+                                            <Translation id="TR_FULL_LABEL" />
+                                        </Badge>
+                                    )}
+                                    {isBitcoinOnly(device) && (
+                                        <Badge data-test="@firmware/current/full-badge">
+                                            <Translation id="TR_BTC_ONLY_LABEL" />
+                                        </Badge>
+                                    )}
                                     <BetweenVersionArrow>→</BetweenVersionArrow>
                                     <ToVersion>
                                         <Translation id="TR_VERSION" />{' '}
                                         {firmwareRelease.release.version.join('.')}
                                     </ToVersion>
-                                    <Badge>
-                                        <Translation id="TR_NEW_LABEL" />
-                                    </Badge>
+                                    {!firmware.btcOnly && (
+                                        <Badge data-test="@firmware/new/full-badge">
+                                            <Translation id="TR_FULL_LABEL" />
+                                        </Badge>
+                                    )}
                                     {firmware.btcOnly && (
-                                        <Badge data-test="@firmware/btc-only-badge">
+                                        <Badge data-test="@firmware/new/btc-only-badge">
                                             <Translation id="TR_BTC_ONLY_LABEL" />
                                         </Badge>
                                     )}
                                 </FromVersionToVersion>
 
-                                {/* if no changelog, show image to fill space in UI */}
+                                {/* if no changelog, show image to fill emptiness in UI */}
                                 {device.firmwareRelease.changelog?.length === 0 && (
                                     <InitImg model={device.features.major_version} height="260px" />
                                 )}
