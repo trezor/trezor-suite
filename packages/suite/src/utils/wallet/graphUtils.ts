@@ -25,7 +25,7 @@ export const calcFiatValueMap = (
  * @param {({ [k: string]: string | undefined })} obj
  * @returns
  */
-export const sumFiatValueMap = (
+export const sumFiatValueMapInPlace = (
     valueMap: { [k: string]: string | undefined },
     obj: { [k: string]: string | undefined },
 ) => {
@@ -34,6 +34,15 @@ export const sumFiatValueMap = (
         const previousValue = valueMap[key] ?? '0';
         valueMap[key] = new BigNumber(previousValue).plus(val ?? 0).toFixed();
     });
+};
+
+export const sumFiatValueMap = (
+    valueMap: { [k: string]: string | undefined },
+    obj: { [k: string]: string | undefined },
+) => {
+    const newMap = { ...valueMap };
+    sumFiatValueMapInPlace(newMap, obj);
+    return newMap;
 };
 
 export const isAccountAggregatedHistory = (
@@ -104,8 +113,8 @@ export const aggregateBalanceHistory = (
                 } else {
                     // add txs, sentFiat, receivedFiat values to existing entry
                     bin.txs += dataPoint.txs;
-                    sumFiatValueMap(bin.sentFiat, dataPoint.sentFiat);
-                    sumFiatValueMap(bin.receivedFiat, dataPoint.receivedFiat);
+                    sumFiatValueMapInPlace(bin.sentFiat, dataPoint.sentFiat);
+                    sumFiatValueMapInPlace(bin.receivedFiat, dataPoint.receivedFiat);
                     if (isAccountAggregatedHistory(bin, type)) {
                         // adding sent/received values
                         bin.sent = new BigNumber(bin.sent).plus(dataPoint.sent).toFixed();

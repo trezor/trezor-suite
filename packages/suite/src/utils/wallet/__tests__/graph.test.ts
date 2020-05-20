@@ -116,7 +116,7 @@ describe('Graph utils', () => {
 
     test('sumFiatValueMap', () => {
         const valueMap1Copy = { ...valueMap1 };
-        utils.sumFiatValueMap(valueMap1Copy, valueMap2);
+        utils.sumFiatValueMapInPlace(valueMap1Copy, valueMap2);
         expect(valueMap1Copy).toStrictEqual({
             czk: '100.0001',
             eur: '0.000000000000001',
