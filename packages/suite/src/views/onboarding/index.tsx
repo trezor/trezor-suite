@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 import Head from 'next/head';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -29,13 +28,6 @@ import UnexpectedState from '@onboarding-views/unexpected-states';
 import { ProgressBar } from '@suite-components';
 import { AppState, Dispatch, InjectedModalApplicationProps } from '@suite-types';
 
-// used to position modal to center
-const ActionModalWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
-
 const mapStateToProps = (state: AppState) => {
     return {
         // onboarding reducer
@@ -57,9 +49,9 @@ const Onboarding = (props: Props) => {
 
     const getStep = () => {
         const lookup = steps.find((step: Step) => step.id === activeStepId);
-        // todo: is there a better way how to solve lookup completeness with typescript?
+        // todo: maybe get rid of this with stricter typescript
         if (!lookup) {
-            throw new TypeError('step not found by step id. unexepected.');
+            throw new TypeError('step not found by step id. unexpected.');
         }
         return lookup;
     };
@@ -104,6 +96,9 @@ const Onboarding = (props: Props) => {
 
     return (
         <Modal
+            // padding={['0px', '0px', '0px', '0px']}
+            // useFixedWidth={false}
+
             useFixedHeight
             heading={
                 <ProgressBar
@@ -120,11 +115,9 @@ const Onboarding = (props: Props) => {
             </Head>
 
             <UnexpectedState>
-                {modal && (
-                    <ActionModalWrapper data-test="@onboarding/confirm-action-on-device">
-                        {modal}
-                    </ActionModalWrapper>
-                )}
+                {/* todo: maros maros, changing props here does not work :( */}
+                {modal && React.cloneElement(modal, { cancellable: false, useFixedHeight: false })}
+                {/* { modal && modal } */}
                 {!modal && <StepComponent />}
             </UnexpectedState>
         </Modal>

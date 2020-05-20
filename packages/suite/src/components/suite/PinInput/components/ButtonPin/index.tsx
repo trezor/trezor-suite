@@ -3,15 +3,21 @@ import styled from 'styled-components';
 import { colors } from '@trezor/components';
 
 const Button = styled.button`
-    display: flex;
-    flex: 1 1 auto;
+    // display: flex;
+    // flex: 1 1 auto;
     max-width: 100px;
     max-height: 100px;
-    min-height: 50px;
-    height: 100%;
+    
+    // min-height: 50px;
+    // height: 100%;
+
     transition: all 0.3s;
     position: relative;
     cursor: pointer;
+    margin: 4px;
+
+    padding-top: 30%;
+    width: 100%;
 
     border-radius: 3px;
     border: 1px solid ${colors.BLACK70};
@@ -20,10 +26,14 @@ const Button = styled.button`
     &:first-child {
         margin-left: 0px;
     }
-
-    &:hover {
-        background: ${colors.WHITE};
+    &:last-child {
+        // border: 2px solid red;
+        margin-right: 0px;
     }
+
+    // &:hover {
+    //     background: ${colors.WHITE};
+    // }
 
     &:before {
         width: 6px;

@@ -12,10 +12,9 @@ import * as modalActions from '@suite-actions/modalActions';
 const { FONT_SIZE, SCREEN_SIZE } = variables;
 
 const Wrapper = styled.div`
-    /* padding: 40px 40px 20px 40px; */
     display: flex;
     flex-direction: row;
-    height: 100%;
+    flex: 1;
 
     @media only screen and (max-width: ${SCREEN_SIZE.MD}) {
         flex-direction: column;

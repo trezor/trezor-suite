@@ -19,7 +19,7 @@ const SkipStep = ({ closeModalApp, goToNextStep }: Props) => (
             <Text>
                 <Translation id="TR_SKIP_ONBOARDING_TEXT" />
             </Text>
-            <StyledImg image="SKIP_WARNING" />
+            <StyledImg image="UNI_WARNING" />
         </Wrapper.StepBody>
         <Wrapper.Controls>
             <OnboardingButton.Cta
