@@ -116,8 +116,8 @@ const Onboarding = (props: Props) => {
 
             <UnexpectedState>
                 {/* todo: maros maros, changing props here does not work :( */}
-                {modal && React.cloneElement(modal, { cancellable: false, useFixedHeight: false })}
-                {/* { modal && modal } */}
+                {/* {modal && React.cloneElement(modal, { cancellable: false, useFixedHeight: false })} */}
+                {modal && modal}
                 {!modal && <StepComponent />}
             </UnexpectedState>
         </Modal>

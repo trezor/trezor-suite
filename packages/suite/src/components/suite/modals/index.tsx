@@ -199,7 +199,7 @@ const Modal = (props: Props) => {
         return <FocusLock autoFocus={false}>{modalComponent}</FocusLock>;
     }
 
-    return React.cloneElement(modalComponent, { noBackground: true, useFixedHeight: false });
+    return React.cloneElement(modalComponent, { noBackground: true });
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Modal);

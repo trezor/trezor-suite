@@ -7,22 +7,16 @@ import { Translation } from '@suite-components';
 
 const Wrapper = styled.div`
     display: flex;
-    height: 100%;
     flex-direction: column;
+    align-items: center;
+    width: 270px;
+    height: 100%;
 `;
 
 const Row = styled.div`
     display: flex;
-    justify-content: center;
-    max-height: 100px;
-    flex: 2;
-    > button {
-        margin: 0px 4px;
-    }
-
-    & + & {
-        margin-top: 8px;
-    }
+    width: 100%;
+    justify-content: space-evenly;
 `;
 
 const Backspace = styled(Button)`
@@ -56,10 +50,6 @@ const WordInputAdvanced = (props: Props) => {
                 case 50:
                 case 98:
                     onSubmit('2');
-                    break;
-                case 51:
-                case 99:
-                    onSubmit('3');
                     break;
                 case 52:
                 case 100:

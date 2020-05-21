@@ -6,6 +6,12 @@ import { Translation, WordInputAdvanced } from '@suite-components';
 
 import { URLS } from '@suite-constants';
 
+const ContentWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`;
 const BottomText = styled.div`
     margin-top: 20px;
 `;
@@ -14,31 +20,33 @@ interface Props extends ModalProps {
     count: 6 | 9;
 }
 
-const Word = ({ count, ...rest }: Props) => {
+const WordAdvanced = ({ count, ...rest }: Props) => {
     return (
         <Modal
             size="small"
-            useFixedHeight
+            // useFixedHeight
             heading={<Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />}
             description={<Translation id="TR_ADVANCED_RECOVERY_TEXT" />}
             {...rest}
         >
-            <WordInputAdvanced
-                count={count}
-                onSubmit={value =>
-                    TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: value })
-                }
-            />
-            <BottomText>
-                <P size="tiny">
-                    <Translation id="TR_ADVANCED_RECOVERY_NOT_SURE" />{' '}
-                    <Link size="tiny" href={URLS.WIKI_ADVANCED_RECOVERY}>
-                        <Translation id="TR_LEARN_MORE" />
-                    </Link>
-                </P>
-            </BottomText>
+            <ContentWrapper>
+                <WordInputAdvanced
+                    count={count}
+                    onSubmit={value =>
+                        TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: value })
+                    }
+                />
+                <BottomText>
+                    <P size="tiny">
+                        <Translation id="TR_ADVANCED_RECOVERY_NOT_SURE" />{' '}
+                        <Link size="tiny" href={URLS.WIKI_ADVANCED_RECOVERY}>
+                            <Translation id="TR_LEARN_MORE" />
+                        </Link>
+                    </P>
+                </BottomText>
+            </ContentWrapper>
         </Modal>
     );
 };
 
-export default Word;
+export default WordAdvanced;

@@ -8,7 +8,7 @@ const Word = (props: ModalProps) => {
         <Modal
             data-test="@recovery/word"
             size="small"
-            useFixedHeight
+            // useFixedHeight
             heading={<Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />}
             description={
                 <>

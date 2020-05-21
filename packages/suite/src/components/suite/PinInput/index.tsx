@@ -24,12 +24,7 @@ const Expander = styled.div`
 const PinRow = styled.div`
     display: flex;
     width: 100%;
-    // max-height: 100px;
     justify-content: space-between;
-
-    // & + & {
-    //     margin-top: 10px;
-    // }
 `;
 
 const PinFooter = styled.div`
