@@ -333,18 +333,23 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
             type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
             customFee: send.selectedFee.feePerUnit,
         });
+
+        dispatch({
+            type: SEND.HANDLE_FEE_VALUE_CHANGE,
+            fee: { label: 'custom', feePerUnit: send.selectedFee.feePerUnit, blocks: 0 },
+        });
     } else {
         dispatch({
             type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
             customFee: null,
         });
 
+        dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
+
         if (send.setMaxActivated) {
             dispatch(setMax());
         }
     }
-
-    dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
 
     // eth update gas price and gas limit
     if (account.networkType === 'ethereum') {
