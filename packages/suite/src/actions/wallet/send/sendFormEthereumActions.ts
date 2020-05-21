@@ -258,11 +258,11 @@ export const handleData = (data: string) => async (dispatch: Dispatch, getState:
     const gasLimit = level.feeLimit || '0'; // TODO: default
     const gasPrice = fromWei(level.feePerUnit, 'gwei');
 
-    // update custom fee
+    // update fee
     dispatch({
         type: SEND.HANDLE_FEE_VALUE_CHANGE,
         fee: {
-            label: 'custom',
+            label: 'normal',
             feePerUnit: gasPrice,
             feeLimit: gasLimit,
             blocks: -1,
