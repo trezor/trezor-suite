@@ -102,8 +102,6 @@ export const fetchAccountGraphData = (
     });
 
     if (response?.success) {
-        console.log('response.payload', response.payload);
-
         const enhancedResponse = response.payload.map(h => {
             // @ts-ignore TODO: remove ignore when types are updated in connect
             const normalizedReceived = h.sentToSelf

@@ -132,7 +132,6 @@ export const aggregateBalanceHistory = (
         return groupedByTimestamp[timestamp];
     });
 
-    console.log('aggregatedData', aggregatedData);
     return type === 'account'
         ? (aggregatedData as AggregatedAccountHistory[])
         : (aggregatedData as AggregatedDashboardHistory[]);
