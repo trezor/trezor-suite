@@ -98,7 +98,7 @@ const ANIMATION = {
     initial: 'initial',
     animate: 'visible',
     exit: 'initial',
-    transition: { duration: 0.24, ease: [0.04, 0.62, 0.23, 0.98] },
+    transition: { duration: 0.24, ease: 'easeInOut' },
 };
 
 export default React.memo((props: Props) => {
