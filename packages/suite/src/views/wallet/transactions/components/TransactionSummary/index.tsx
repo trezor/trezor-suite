@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { colors, variables, Button } from '@trezor/components';
-import {
-    Card,
-    TransactionsGraph,
-    Translation,
-    HiddenPlaceholder,
-    FormattedNumber,
-} from '@suite-components';
+import { Card, TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
 import messages from '@suite/support/messages';
 import InfoCard from './components/InfoCard';
 import BigNumber from 'bignumber.js';
@@ -77,13 +71,21 @@ const ErrorMessage = styled.div`
 `;
 
 const TransactionSummary = (props: Props) => {
-    const { selectedRange } = props.graph;
-    const graphData = props.graph.data.filter(d => accountGraphDataFilterFn(d, props.account));
+    const { account, graph, updateGraphData, setSelectedRange } = props;
+    const { selectedRange } = graph;
 
+    const onRefresh = () => {
+        updateGraphData([account]);
+    };
+
+    const onSelectedRange = (range: GraphRange) => {
+        setSelectedRange(range);
+        updateGraphData([account], { newAccountsOnly: true });
+    };
+
+    const graphData = graph.data.filter(d => accountGraphDataFilterFn(d, account));
     const [isGraphHidden, setIsGraphHidden] = useState(false);
-
     const intervalGraphData = graphData.find(d => d.interval === selectedRange.label);
-
     const data: AggregatedAccountHistory[] = intervalGraphData?.data
         ? (aggregateBalanceHistory(
               [intervalGraphData],
@@ -99,16 +101,14 @@ const TransactionSummary = (props: Props) => {
     const numOfTransactions = data.reduce((acc, d) => (acc += d.txs), 0);
     const totalSentAmount = data.reduce((acc, d) => acc.plus(d.sent), new BigNumber(0));
     const totalReceivedAmount = data.reduce((acc, d) => acc.plus(d.received), new BigNumber(0));
-
-    const totalSentFiatMap: { [k: string]: string } = data.reduce(
+    const totalSentFiatMap: { [k: string]: string | undefined } = data.reduce(
         (acc, d) => sumFiatValueMap(acc, d.sentFiat),
         {},
     );
-    const totalReceivedFiatMap: { [k: string]: string } = data.reduce(
+    const totalReceivedFiatMap: { [k: string]: string | undefined } = data.reduce(
         (acc, d) => sumFiatValueMap(acc, d.receivedFiat),
         {},
     );
-
     const xTicks =
         selectedRange.label === 'all'
             ? calcTicksFromData(data).map(getUnixTime)
@@ -135,7 +135,7 @@ const TransactionSummary = (props: Props) => {
                         <ErrorMessage>
                             <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
                             <Button
-                                onClick={() => props.updateGraphData([props.account])}
+                                onClick={onRefresh}
                                 icon="REFRESH"
                                 variant="tertiary"
                                 size="small"
@@ -150,16 +150,13 @@ const TransactionSummary = (props: Props) => {
                                 <TransactionsGraph
                                     variant="one-asset"
                                     xTicks={xTicks}
-                                    account={props.account}
+                                    account={account}
                                     isLoading={isLoading}
                                     data={data}
                                     localCurrency={props.localCurrency}
-                                    onRefresh={() => props.updateGraphData([props.account])}
+                                    onRefresh={onRefresh}
                                     selectedRange={selectedRange}
-                                    onSelectedRange={(range: GraphRange) => {
-                                        props.setSelectedRange(range);
-                                        props.updateGraphData([props.account]);
-                                    }}
+                                    onSelectedRange={onSelectedRange}
                                     receivedValueFn={data => data.received}
                                     sentValueFn={data => data.sent}
                                 />
@@ -169,30 +166,18 @@ const TransactionSummary = (props: Props) => {
                                     <InfoCard
                                         title={<Translation {...messages.TR_INCOMING} />}
                                         value={totalReceivedAmount?.toFixed()}
-                                        fiatValue={
-                                            <FormattedNumber
-                                                value={totalReceivedFiatMap[props.localCurrency]}
-                                                currency={props.localCurrency}
-                                            />
-                                        }
-                                        symbol={props.account.symbol}
+                                        fiatValue={totalReceivedFiatMap[props.localCurrency]}
+                                        localCurrency={props.localCurrency}
+                                        symbol={account.symbol}
                                         isLoading={isLoading}
                                         isNumeric
                                     />
                                     <InfoCard
                                         title={<Translation {...messages.TR_OUTGOING} />}
                                         value={totalSentAmount?.negated().toFixed()}
-                                        fiatValue={
-                                            <FormattedNumber
-                                                value={new BigNumber(
-                                                    totalSentFiatMap[props.localCurrency] || 0,
-                                                )
-                                                    .negated()
-                                                    .toFixed()}
-                                                currency={props.localCurrency}
-                                            />
-                                        }
-                                        symbol={props.account.symbol}
+                                        fiatValue={totalSentFiatMap[props.localCurrency]}
+                                        localCurrency={props.localCurrency}
+                                        symbol={account.symbol}
                                         isLoading={isLoading}
                                         isNumeric
                                     />
