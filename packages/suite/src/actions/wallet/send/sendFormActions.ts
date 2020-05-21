@@ -377,22 +377,20 @@ export const handleCustomFeeValueChange = (customFee: string) => (
     const { send } = getState().wallet;
     const { account } = getState().wallet.selectedAccount;
     if (!account || !send) return null;
-    const fee = send.feeInfo.levels[send.feeInfo.levels.length - 1];
+
+    dispatch({
+        type: SEND.HANDLE_FEE_VALUE_CHANGE,
+        fee: {
+            label: 'custom',
+            feePerUnit: customFee,
+            blocks: 0,
+        },
+    });
 
     dispatch({
         type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
         customFee,
     });
-
-    dispatch({
-        type: SEND.HANDLE_FEE_VALUE_CHANGE,
-        fee: {
-            ...fee,
-            feePerUnit: customFee,
-        },
-    });
-
-    dispatch(composeChange());
 
     if (send.setMaxActivated) {
         dispatch(setMax());
