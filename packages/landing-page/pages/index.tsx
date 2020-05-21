@@ -24,7 +24,16 @@ const ButtonWallet = styled(Button)`
 
 const HeadBackP = styled(P)`
     display: flex;
+    flex-direction: column;
+`;
+
+const Row = styled.div`
+    display: flex;
     align-items: center;
+`;
+
+const FirstRow = styled(Row)`
+    margin-bottom: 10px;
 `;
 
 const Index = () => (
@@ -52,12 +61,26 @@ const Index = () => (
                 </Link>
             </Item>
             <HeadBackP size="tiny">
-                Otherwise, please head back to our stable and safe Wallet{' '}
-                <Link href="https://wallet.trezor.io" target="_blank" variant="nostyle">
-                    <ButtonWallet variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
-                        wallet.trezor.io
-                    </ButtonWallet>
-                </Link>
+                <FirstRow>
+                    Otherwise, please head back to our stable and safe Wallet{' '}
+                    <Link href="https://wallet.trezor.io" target="_blank" variant="nostyle">
+                        <ButtonWallet variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
+                            wallet.trezor.io
+                        </ButtonWallet>
+                    </Link>
+                </FirstRow>
+                <Row>
+                    For ETH, XRP, and ETC please visit
+                    <Link
+                        href="https://beta-wallet.trezor.io/next"
+                        target="_blank"
+                        variant="nostyle"
+                    >
+                        <ButtonWallet variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
+                            beta-wallet.trezor.io/next
+                        </ButtonWallet>
+                    </Link>
+                </Row>
             </HeadBackP>
         </Wrapper>
     </Layout>

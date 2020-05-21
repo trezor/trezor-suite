@@ -26,8 +26,7 @@ const Row = styled.div`
 
 export default ({ send }: Props) => {
     if (!send) return null;
-    const { customFee, networkTypeBitcoin } = send;
-    const { transactionInfo } = networkTypeBitcoin;
+    const { customFee } = send;
 
     return (
         <Wrapper>
@@ -37,7 +36,7 @@ export default ({ send }: Props) => {
                         <Row>
                             <Fee />
                         </Row>
-                        {transactionInfo?.type === 'final' && !customFee.value && (
+                        {!customFee.value && (
                             <Row>
                                 <EstimatedMiningTime
                                     seconds={send.feeInfo.blockTime * send.selectedFee.blocks * 60}

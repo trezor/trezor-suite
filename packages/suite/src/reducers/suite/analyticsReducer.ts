@@ -26,7 +26,8 @@ export default (state: State = initialState, action: Action): State => {
             case ANALYTICS.DISPOSE:
                 draft.enabled = false;
                 draft.sessionId = undefined;
-                draft.instanceId = undefined;
+                // instanceId is persistent and will not be removed on dispose. once user re-enables
+                // analytics, it will continue using previously generated instanceId
                 break;
             case STORAGE.LOADED:
                 return action.payload.analytics;

@@ -7,7 +7,6 @@ import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
 const Wrapper = styled(Card)`
     display: grid;
-    grid-column-gap: 12px;
     grid-template-columns: ${(props: { isTestnet?: boolean }) =>
         props.isTestnet ? '4fr 1fr 44px' : '4fr 1fr 1fr 44px'};
     margin-bottom: 20px;
@@ -28,12 +27,12 @@ const TokenSymbol = styled.div`
 const Col = styled.div<ColProps>`
     display: flex;
     align-items: center;
-    padding: 10px 0px;
+    padding: 10px 12px 10px 0px;
     color: ${colors.BLACK0};
     font-size: ${variables.FONT_SIZE.SMALL};
     border-top: 1px solid ${colors.BLACK96};
 
-    &:nth-child(${props => (props.isTestnet ? '-n + 4' : '-n + 5')}) {
+    &:nth-child(${props => (props.isTestnet ? '-n + 3' : '-n + 4')}) {
         /* first row */
         border-top: none;
     }
@@ -85,13 +84,13 @@ const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
                 if (isUnknown) return null;
                 return (
                     <Fragment key={t.address}>
-                        <Col>
+                        <Col isTestnet={isTestnet}>
                             <TokenName>
                                 <TokenSymbol>{t.symbol?.toUpperCase()}</TokenSymbol>
                                 {` - ${t.name}`}
                             </TokenName>
                         </Col>
-                        <Col justify="right">
+                        <Col isTestnet={isTestnet} justify="right">
                             <HiddenPlaceholder>
                                 <TokenValue>{`${t.balance} ${t.symbol?.toUpperCase()}`}</TokenValue>
                             </HiddenPlaceholder>
@@ -111,7 +110,7 @@ const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
                                 </FiatWrapper>
                             </Col>
                         )}
-                        <Col justify="right">
+                        <Col isTestnet={isTestnet} justify="right">
                             <Link href={`${explorerUrl}${t.address}`}>
                                 <Icon icon="EXTERNAL_LINK" size={16} color={colors.BLACK25} />
                             </Link>

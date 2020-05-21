@@ -3,6 +3,7 @@ import { isDev } from '@suite-utils/build';
 import { Dispatch, GetState, AppState } from '@suite-types';
 import { getRandomId } from '@suite-utils/random';
 import { Account } from '@wallet-types';
+import qs from 'qs';
 
 export type AnalyticsActions =
     | { type: typeof ANALYTICS.DISPOSE }
@@ -52,23 +53,15 @@ export type Payload =
           payload: string;
       };
 
-const encodePayload = (data: Record<string, any>) => {
-    return JSON.stringify(data);
-};
-
 const getUrl = () => {
-    // Playground endpoint
-    // --------------
-    // const base = 'https://track-suite.herokuapp.com/';
-
     // Real endpoints
     // --------------
-    // https://data.trezor.io/suite/log/desktop/stage.log
+    // https://data.trezor.io/suite/log/desktop/staging.log
     // https://data.trezor.io/suite/log/desktop/beta.log
     // https://data.trezor.io/suite/log/desktop/develop.log
     // https://data.trezor.io/suite/log/desktop/stable.log
 
-    // https://data.trezor.io/suite/log/web/stage.log
+    // https://data.trezor.io/suite/log/web/staging.log
     // https://data.trezor.io/suite/log/web/beta.log
     // https://data.trezor.io/suite/log/web/develop.log
     // https://data.trezor.io/suite/log/web/stable.log
@@ -92,7 +85,7 @@ const getUrl = () => {
         // ts-ignores are "safe", we are in web env and I don't want to create custom file for native
         // @ts-ignore
         if (window.location.hostname === 'staging-wallet.trezor.io') {
-            return `${base}/web/stage.log`;
+            return `${base}/web/staging.log`;
         }
         // @ts-ignore
         if (window.location.hostname === 'beta-wallet.trezor.io') {
@@ -103,12 +96,19 @@ const getUrl = () => {
             return `${base}/web/stable.log`;
         }
     }
+
+    // return `${base}/${process.env.SUITE_TYPE}/development.log`;
 };
 
 export const report = (data: Payload, force = false) => async (
     _dispatch: Dispatch,
     getState: GetState,
 ) => {
+    if (isDev()) {
+        // on dev, do nothing
+        return;
+    }
+
     const { enabled, sessionId, instanceId } = getState().analytics;
 
     // the only case we want to override users 'do not log' choice is when we
@@ -117,10 +117,31 @@ export const report = (data: Payload, force = false) => async (
         return;
     }
 
-    if (isDev()) {
-        // on dev, do nothing
-        return;
+    // watched data is sent in query string
+    const commonEncoded = qs.stringify({
+        version: process.env.COMMITHASH,
+        sessionId,
+        instanceId,
+    });
+
+    let eventSpecificEncoded;
+    if (typeof data.payload !== 'string') {
+        eventSpecificEncoded = qs.stringify(
+            {
+                type: data.type,
+                ...data.payload,
+            },
+            {
+                arrayFormat: 'comma',
+            },
+        );
+    } else {
+        eventSpecificEncoded = qs.stringify({
+            type: data.type,
+            payload: data.payload,
+        });
     }
+
     const url = getUrl();
 
     if (!url) {
@@ -128,24 +149,13 @@ export const report = (data: Payload, force = false) => async (
         return;
     }
 
-    const payload = encodePayload({
-        ...data,
-        version: process.env.COMMITHASH,
-        sessionId,
-        instanceId,
-        ts: Date.now(),
-    });
-
     try {
-        fetch(url, {
-            method: 'POST',
-            headers: new Headers({
-                'content-type': 'application/json',
-            }),
-            body: payload,
+        fetch(`${url}?${commonEncoded}&${eventSpecificEncoded}`, {
+            method: 'GET',
         });
     } catch (err) {
-        // do nothing
+        // do nothing, just log error for sentry
+        console.error('failed to log analytics', err);
     }
 };
 
@@ -168,7 +178,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         type: ANALYTICS.INIT,
         payload: {
             // if no instanceId exists it means that it was not loaded from storage, so create a new one
-            instanceId: analytics.instanceId ? analytics.instanceId : getRandomId(10),
+            instanceId: !analytics.instanceId ? getRandomId(10) : analytics.instanceId,
             // sessionId is always ephemeral
             sessionId: getRandomId(10),
         },

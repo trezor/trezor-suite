@@ -4,10 +4,11 @@ import { resolveStaticPath } from '@suite-utils/nextjs';
 
 interface Props {
     model: number;
+    height?: string;
 }
 
-export const InitImg = ({ model }: Props) => (
-    <img alt="" src={resolveStaticPath(`images/svg/firmware-init-${model}.svg`)} />
+export const InitImg = ({ model, ...props }: Props) => (
+    <img alt="" src={resolveStaticPath(`images/svg/firmware-init-${model}.svg`)} {...props} />
 );
 
 export const SuccessImg = ({ model }: Props) => (
