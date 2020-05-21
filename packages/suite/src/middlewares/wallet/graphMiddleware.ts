@@ -16,8 +16,12 @@ const graphMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispa
             break;
 
         case TRANSACTION.ADD: {
-            // don't run during discovery and on unconfirmed txs
+            if (action.page) {
+                // don't run while fetching txs pages in transactions tab
+                break;
+            }
 
+            // don't run during discovery and on unconfirmed txs
             const discovery = api.dispatch(getDiscoveryForDevice());
             if (
                 discovery?.status === DISCOVERY.STATUS.COMPLETED &&
