@@ -76,7 +76,7 @@ interface Props {
 }
 
 const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
-    if (!tokens) return null;
+    if (!tokens || tokens.length === 0) return null;
     return (
         <Wrapper isTestnet={isTestnet} noPadding>
             {tokens.map(t => {
