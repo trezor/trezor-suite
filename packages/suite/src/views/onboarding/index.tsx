@@ -98,7 +98,6 @@ const Onboarding = (props: Props) => {
         <Modal
             // padding={['0px', '0px', '0px', '0px']}
             // useFixedWidth={false}
-
             useFixedHeight
             heading={
                 <ProgressBar
@@ -115,8 +114,6 @@ const Onboarding = (props: Props) => {
             </Head>
 
             <UnexpectedState>
-                {/* todo: maros maros, changing props here does not work :( */}
-                {/* {modal && React.cloneElement(modal, { cancellable: false, useFixedHeight: false })} */}
                 {modal && modal}
                 {!modal && <StepComponent />}
             </UnexpectedState>

@@ -172,13 +172,7 @@ const Pin = ({ device, onPinSubmit, ...rest }: Props) => {
 
     // TODO: figure out responsive design
     return (
-        <Modal
-            padding={['0px', '0px', '0px', '0px']}
-            useFixedWidth={false}
-            // useFixedHeight
-            cancelable
-            {...rest}
-        >
+        <Modal padding={['0px', '0px', '0px', '0px']} useFixedWidth={false} cancelable {...rest}>
             <Wrapper>
                 {isExtended && (
                     <ExplanationCol

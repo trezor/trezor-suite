@@ -6,9 +6,8 @@ import { Translation, WordInput } from '@suite-components';
 const Word = (props: ModalProps) => {
     return (
         <Modal
+            fixedWidth={['100%', '100%', '100%', '100%']}
             data-test="@recovery/word"
-            size="small"
-            // useFixedHeight
             heading={<Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />}
             description={
                 <>

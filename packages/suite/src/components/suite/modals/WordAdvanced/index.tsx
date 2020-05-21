@@ -23,8 +23,7 @@ interface Props extends ModalProps {
 const WordAdvanced = ({ count, ...rest }: Props) => {
     return (
         <Modal
-            size="small"
-            // useFixedHeight
+            fixedWidth={['100%', '100%', '100%', '100%']}
             heading={<Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />}
             description={<Translation id="TR_ADVANCED_RECOVERY_TEXT" />}
             {...rest}

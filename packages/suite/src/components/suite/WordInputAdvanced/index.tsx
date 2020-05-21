@@ -51,6 +51,10 @@ const WordInputAdvanced = (props: Props) => {
                 case 98:
                     onSubmit('2');
                     break;
+                case 51:
+                case 99:
+                    onSubmit('3');
+                    break;
                 case 52:
                 case 100:
                     onSubmit('4');
