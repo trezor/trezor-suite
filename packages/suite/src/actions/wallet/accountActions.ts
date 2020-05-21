@@ -106,7 +106,6 @@ export const fetchAndUpdateAccount = (account: Account) => async (
 
         const analyze = analyzeTransactions(payload.history.transactions || [], accountTxs);
         if (analyze.remove.length > 0) {
-            // TODO: remove notif in middleware
             dispatch(transactionActions.remove(account, analyze.remove));
         }
         if (analyze.add.length > 0) {
@@ -125,6 +124,7 @@ export const fetchAndUpdateAccount = (account: Account) => async (
                     ),
                     device: accountDevice,
                     descriptor: account.descriptor,
+                    symbol: account.symbol,
                     txid: tx.txid,
                 }),
             );

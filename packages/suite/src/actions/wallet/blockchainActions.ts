@@ -239,6 +239,7 @@ export const onNotification = (payload: BlockchainNotification) => async (
                 formattedAmount,
                 device: accountDevice,
                 descriptor: account.descriptor,
+                symbol: account.symbol,
                 txid: tx.txid,
             }),
         );
