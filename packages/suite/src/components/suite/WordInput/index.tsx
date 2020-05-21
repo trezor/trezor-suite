@@ -3,7 +3,7 @@ import { createFilter } from 'react-select';
 import styled, { keyframes } from 'styled-components';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import messages from '@suite/support/messages';
-import { Select } from '@trezor/components';
+import { Select, variables } from '@trezor/components';
 import { BIP_39 } from '@suite-constants';
 
 const options = BIP_39.map(item => ({ label: item, value: item }));
@@ -29,9 +29,14 @@ const shake = keyframes`
 const SelectWrapper = styled.div`
     animation: ${shake} 1.3s;
     margin: 12px auto;
-    width: 380px;
     min-height: 230px;
     text-align: left;
+
+    width: 380px;
+
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        width: 280px;
+    }
 `;
 
 interface Props extends WrappedComponentProps {
