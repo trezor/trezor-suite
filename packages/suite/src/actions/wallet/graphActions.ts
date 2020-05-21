@@ -15,6 +15,7 @@ import { Account } from '@wallet-types';
 import { GraphRange } from '@wallet-types/fiatRates';
 import { accountGraphDataFilterFn } from '@suite/utils/wallet/graphUtils';
 import { GraphData } from '@wallet-reducers/graphReducer';
+import BigNumber from 'bignumber.js';
 
 export type GraphActions =
     | {
@@ -102,12 +103,28 @@ export const fetchAccountGraphData = (
 
     if (response?.success) {
         console.log('response.payload', response.payload);
-        const enhancedResponse = response.payload.map(h => ({
-            ...h,
-            received: formatNetworkAmount(h.received, account.symbol),
-            sent: formatNetworkAmount(h.sent, account.symbol),
-            time: resetTime(h.time), // blockbook returns timestamps set to 12am (noon), we use 00am for ticks
-        }));
+
+        const enhancedResponse = response.payload.map(h => {
+            // @ts-ignore TODO: remove ignore when types are updated in connect
+            const normalizedReceived = h.sentToSelf
+                ? // prettier-ignore
+                  // @ts-ignore
+                  new BigNumber(h.received).minus(h.sentToSelf || 0).toFixed()
+                : h.received;
+            // @ts-ignore
+            const normalizedSent = h.sentToSelf
+                ? // prettier-ignore
+                  // @ts-ignore
+                  new BigNumber(h.sent).minus(h.sentToSelf || 0).toFixed()
+                : h.sent;
+
+            return {
+                ...h,
+                received: formatNetworkAmount(normalizedReceived, account.symbol),
+                sent: formatNetworkAmount(normalizedSent, account.symbol),
+                time: resetTime(h.time),
+            };
+        });
         dispatch({
             type: ACCOUNT_GRAPH_SUCCESS,
             payload: {
