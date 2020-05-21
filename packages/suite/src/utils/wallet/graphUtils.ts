@@ -52,25 +52,18 @@ export const isAccountAggregatedHistory = (
     return (history as AggregatedAccountHistory).sent !== undefined && type === 'account';
 };
 
-// interface AgregateBalanceHistoryFunc {
-//     (graphData: GraphData[],
-//         groupBy: 'day' | 'month',
-//         type: 'account'): AggregatedAccountHistory[];
-//     ( graphData: GraphData[],
-//         groupBy: 'day' | 'month',
-//         type: 'dashboard'): AggregatedDashboardHistory[];
-// }
-
-// TODO: Fix ts return type. should be AggregatedAccountHistory[] or AggregatedDashboardHistory[] based on `type` param
-export const aggregateBalanceHistory = (
+type TypeName = 'account' | 'dashboard';
+type ObjectType<T> = T extends 'account'
+    ? AggregatedAccountHistory
+    : T extends 'dashboard'
+    ? AggregatedDashboardHistory
+    : never;
+export const aggregateBalanceHistory = <TType extends TypeName>(
     graphData: GraphData[],
     groupBy: 'day' | 'month',
-    type: 'account' | 'dashboard',
-) => {
-    const groupedByTimestamp =
-        type === 'account'
-            ? ({} as { [key: string]: AggregatedAccountHistory })
-            : ({} as { [key: string]: AggregatedDashboardHistory });
+    type: TType,
+): ObjectType<TType>[] => {
+    const groupedByTimestamp: { [key: string]: ObjectType<TType> } = {};
     for (let i = 0; i < graphData.length; i++) {
         const accountHistory = graphData[i].data;
 
@@ -93,7 +86,7 @@ export const aggregateBalanceHistory = (
                 // calc sum of sentFiat, receivedFiat, txs fields for each timestamp
                 if (!bin) {
                     // no entry for a timestamp yet, set first item
-                    const baseProps: AggregatedDashboardHistory = {
+                    const baseProps = {
                         time:
                             groupBy === 'day'
                                 ? dataPoint.time
@@ -103,13 +96,15 @@ export const aggregateBalanceHistory = (
                         receivedFiat: dataPoint.receivedFiat,
                     };
 
-                    const accountProps: AggregatedAccountHistory = {
+                    const accountProps = {
                         ...baseProps,
                         sent: dataPoint.sent,
                         received: dataPoint.received,
                     };
 
-                    groupedByTimestamp[key] = type === 'account' ? accountProps : baseProps;
+                    groupedByTimestamp[key] = (type === 'account'
+                        ? accountProps
+                        : baseProps) as ObjectType<TType>;
                 } else {
                     // add txs, sentFiat, receivedFiat values to existing entry
                     bin.txs += dataPoint.txs;
@@ -132,9 +127,7 @@ export const aggregateBalanceHistory = (
         return groupedByTimestamp[timestamp];
     });
 
-    return type === 'account'
-        ? (aggregatedData as AggregatedAccountHistory[])
-        : (aggregatedData as AggregatedDashboardHistory[]);
+    return aggregatedData;
 };
 
 export const accountGraphDataFilterFn = (d: GraphData, account: Account) => {

@@ -12,7 +12,7 @@ import {
     aggregateBalanceHistory,
     sumFiatValueMap,
 } from '@wallet-utils/graphUtils';
-import { GraphRange, AggregatedAccountHistory } from '@wallet-types/fiatRates';
+import { GraphRange } from '@wallet-types/fiatRates';
 import { Props } from './Container';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
@@ -86,12 +86,8 @@ const TransactionSummary = (props: Props) => {
     const graphData = graph.data.filter(d => accountGraphDataFilterFn(d, account));
     const [isGraphHidden, setIsGraphHidden] = useState(false);
     const intervalGraphData = graphData.find(d => d.interval === selectedRange.label);
-    const data: AggregatedAccountHistory[] = intervalGraphData?.data
-        ? (aggregateBalanceHistory(
-              [intervalGraphData],
-              selectedRange.groupBy,
-              'account',
-          ) as AggregatedAccountHistory[])
+    const data = intervalGraphData?.data
+        ? aggregateBalanceHistory([intervalGraphData], selectedRange.groupBy, 'account')
         : [];
 
     const error = intervalGraphData?.error ?? false;
