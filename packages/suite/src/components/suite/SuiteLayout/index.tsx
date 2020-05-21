@@ -60,7 +60,7 @@ type Props = ReturnType<typeof mapStateToProps> & {
 };
 
 interface BodyProps {
-    // url is mandatory to force re-render AppWrapper on url change, otherwise it will cache scrollbar position fix:
+    // url is mandatory to force re-render AppWrapper on url change, otherwise it will cache scrollbar position fix: issue #1658
     url: string;
     menu?: React.ReactNode;
     children?: React.ReactNode;
