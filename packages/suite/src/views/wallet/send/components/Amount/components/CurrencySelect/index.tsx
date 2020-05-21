@@ -6,7 +6,7 @@ import { TokenInfo } from 'trezor-connect';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 
 const Wrapper = styled.div`
-    width: 100px;
+    min-width: 100px;
     margin-left: 10px;
 `;
 
@@ -35,7 +35,6 @@ const getValues = (symbol: Account['symbol'], tokens: Account['tokens']) => {
     ];
 
     if (tokens) {
-        // remove tokens - planned for Q2
         tokens.forEach(token => {
             const tokenName = token.symbol || 'N/A';
             result.push({
