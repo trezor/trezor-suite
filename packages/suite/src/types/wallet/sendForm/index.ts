@@ -13,7 +13,12 @@ import {
     PrecomposedTransactionEth as PrecomposedTransactionEth$,
 } from './transactions';
 
-import { State as State$, InitialState as InitialState$, FeeInfo as FeeInfo$ } from './state';
+import {
+    State as State$,
+    InitialState as InitialState$,
+    FeeInfo as FeeInfo$,
+    CustomFee as CustomFee$,
+} from './state';
 
 export type SendFormActions = SendFormActions$;
 export type SendFormBtcActions = SendFormBtcActions$;
@@ -21,6 +26,7 @@ export type SendFormXrpActions = SendFormXrpActions$;
 export type SendFormEthActions = SendFormEthActions$;
 export type Output = Output$;
 export type FeeInfo = FeeInfo$;
+export type CustomFee = CustomFee$;
 export type FeeLevel = FeeLevel$;
 export type InitialState = InitialState$;
 export type State = State$;
