@@ -1,6 +1,10 @@
 import { Output } from './output';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { FeeLevel, PrecomposedTransaction as PrecomposedBitcoinTransaction } from 'trezor-connect';
+import {
+    FeeLevel,
+    PrecomposedTransaction as PrecomposedBitcoinTransaction,
+    TokenInfo,
+} from 'trezor-connect';
 import { PrecomposedTransactionXrp } from './transactions';
 
 export type InitialState = {
@@ -36,6 +40,7 @@ interface NetworkTypeRipple {
 }
 
 interface NetworkTypeEthereum {
+    token?: TokenInfo;
     transactionInfo: any | null;
     gasLimit: {
         value: null | string;

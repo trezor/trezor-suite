@@ -20,23 +20,33 @@ import { Dispatch, GetState } from '@suite-types';
 /*
     Compose eth transaction
  */
-export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
+export const compose = (setMax = false) => async (dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount, send } = getState().wallet;
     if (selectedAccount.status !== 'loaded' || !send) return null;
     const { account } = selectedAccount;
     const { selectedFee } = send;
+    const { token } = send.networkTypeEthereum;
     const isFeeValid = !new BigNumber(selectedFee.feePerUnit).isNaN();
 
     let tx;
     const output = getOutput(send.outputs, 0);
-    const amountInSatoshi = networkAmountToSatoshi(output.amount.value, account.symbol).toString();
     const { availableBalance } = account;
     const feeInSatoshi = calculateEthFee(
         toWei(isFeeValid ? selectedFee.feePerUnit : '0', 'gwei'),
         selectedFee.feeLimit || '0',
     );
-    const totalSpentBig = new BigNumber(calculateTotal(amountInSatoshi, feeInSatoshi));
-    const max = new BigNumber(calculateMax(availableBalance, feeInSatoshi));
+    const max = token
+        ? new BigNumber(token.balance!)
+        : new BigNumber(calculateMax(availableBalance, feeInSatoshi));
+    // use max possible value or input.value
+    // race condition when switching between tokens with set-max enabled
+    // input still holds previous value (previous token max)
+    const amountInSatoshi = setMax
+        ? max.toString()
+        : networkAmountToSatoshi(output.amount.value, account.symbol).toString();
+    const totalSpentBig = new BigNumber(
+        calculateTotal(token ? '0' : amountInSatoshi, feeInSatoshi),
+    );
     const payloadData = {
         totalSpent: totalSpentBig.toString(),
         fee: feeInSatoshi,
@@ -44,7 +54,16 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
         max: max.isLessThan('0') ? '0' : max.toString(),
     };
 
-    if (!output.address.value) {
+    // TODO: i'm not sure why this validation is duplicated here and in sendFormReducer, investigate more...
+    // TODO: action.payload.error should use VALIDATION_ERRORS or TRANSLATION_ID
+    if (totalSpentBig.isGreaterThan(availableBalance)) {
+        const error = token ? 'NOT-ENOUGH-CURRENCY-FEE' : 'NOT-ENOUGH-FUNDS';
+        tx = { type: 'error', error } as const;
+        dispatch({
+            type: SEND.ETH_PRECOMPOSED_TX,
+            payload: tx,
+        });
+    } else if (!output.address.value) {
         dispatch({
             type: SEND.ETH_PRECOMPOSED_TX,
             payload: {
@@ -53,15 +72,6 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
             },
         });
         tx = { type: 'nonfinal', ...payloadData } as const;
-    } else if (totalSpentBig.isGreaterThan(availableBalance)) {
-        dispatch({
-            type: SEND.ETH_PRECOMPOSED_TX,
-            payload: {
-                type: 'error',
-                error: 'NOT-ENOUGH-FUNDS',
-            },
-        });
-        tx = { type: 'error', error: 'NOT-ENOUGH-FUNDS' } as const;
     } else {
         dispatch({
             type: SEND.ETH_PRECOMPOSED_TX,
@@ -89,12 +99,11 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     const amount = send.outputs[0].amount.value;
     const address = send.outputs[0].address.value;
     if (account.networkType !== 'ethereum' || !network.chainId || !amount || !address) return null;
-    const { data, gasPrice, gasLimit } = send.networkTypeEthereum;
+    const { token, data, gasPrice, gasLimit } = send.networkTypeEthereum;
 
     const transaction = prepareEthereumTransaction({
-        network: network.symbol,
+        token,
         chainId: network.chainId,
-        from: account.descriptor,
         to: address,
         amount,
         data: data.value,
@@ -102,9 +111,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         gasPrice: gasPrice.value,
         nonce: account.misc.nonce,
     });
-    // TODO: @Vladimir
-    // use import { EthereumTransaction } from 'trezor-connect'; instead of EthPreparedTransaction
-    // @ts-ignore
+
     const signedTx = await TrezorConnect.ethereumSignTransaction({
         device: {
             path: selectedDevice.path,
@@ -123,11 +130,10 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         return;
     }
 
-    transaction.r = signedTx.payload.r;
-    transaction.s = signedTx.payload.s;
-    transaction.v = signedTx.payload.v;
-
-    const serializedTx = serializeEthereumTx(transaction);
+    const serializedTx = serializeEthereumTx({
+        ...transaction,
+        ...signedTx.payload,
+    });
 
     // TODO: add possibility to show serialized tx without pushing (locktime)
     const sentTx = await TrezorConnect.pushTransaction({
@@ -137,10 +143,11 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
 
     if (sentTx.success) {
         dispatch(commonActions.clear());
+        const symbol = token ? token.symbol!.toUpperCase() : account.symbol.toUpperCase();
         dispatch(
             notificationActions.addToast({
                 type: 'tx-sent',
-                formattedAmount: `${amount} ${account.symbol.toUpperCase()}`, // TODO: erc20 symbol
+                formattedAmount: `${amount} ${symbol}`,
                 device: selectedDevice,
                 descriptor: account.descriptor,
                 txid: sentTx.payload.txid,
@@ -238,7 +245,7 @@ export const handleData = (data: string) => async (dispatch: Dispatch, getState:
         request: {
             blocks: [2],
             specific: {
-                from: send.outputs[0].address.value || account.descriptor,
+                from: account.descriptor,
                 to: send.outputs[0].address.value || account.descriptor,
                 data,
             },
