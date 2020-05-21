@@ -16,7 +16,6 @@ interface AccountIdentifier {
 
 export interface GraphData {
     account: AccountIdentifier;
-    interval: GraphRange['label'];
     error: boolean;
     isLoading: boolean;
     data: BlockchainAccountBalanceHistory[] | null;
@@ -24,50 +23,35 @@ export interface GraphData {
 
 interface State {
     data: GraphData[];
-    error: { [k in GraphData['interval']]: null | AccountIdentifier[] };
-    isLoading: { [k in GraphData['interval']]: boolean };
+    error: null | AccountIdentifier[];
+    isLoading: boolean;
     selectedRange: GraphRange;
 }
 
 const initialState: State = {
     data: [],
     selectedRange: SETTINGS.DEFAULT_GRAPH_RANGE,
-    error: {
-        all: null,
-        year: null,
-        month: null,
-        week: null,
-    },
-    isLoading: {
-        all: false,
-        year: false,
-        month: false,
-        week: false,
-    },
+    error: null,
+    isLoading: false,
     // selectedRange: SETTINGS.DEFAULT_GRAPH_RANGE,
 };
 
-const updateError = (draft: State, interval?: GraphRange['label']) => {
-    const intervals = interval ? [interval] : (['week', 'month', 'year', 'all'] as const);
-
-    intervals.forEach(interval => {
-        const failedGraphData = draft.data.filter(d => d.error && d.interval === interval);
-        if (failedGraphData.length > 0) {
-            draft.error[interval] = failedGraphData.map(a => a.account);
-        } else {
-            draft.error[interval] = null;
-        }
-    });
+const updateError = (draft: State) => {
+    const failedGraphData = draft.data.filter(d => d.error);
+    if (failedGraphData.length > 0) {
+        draft.error = failedGraphData.map(a => a.account);
+    } else {
+        draft.error = null;
+    }
 };
 
 const update = (draft: State, payload: GraphData) => {
-    const { account, data, error, interval, isLoading } = payload;
+    const { account, data, error, isLoading } = payload;
     const dataIndex = draft.data.findIndex(
         d =>
             d.account.deviceState === account.deviceState &&
             d.account.descriptor === account.descriptor &&
-            d.account.symbol === account.symbol &&
-            d.interval === interval,
+            d.account.symbol === account.symbol,
     );
     if (dataIndex !== -1) {
         draft.data[dataIndex].data = data;
@@ -77,13 +61,12 @@ const update = (draft: State, payload: GraphData) => {
         draft.data.push({
             account,
             isLoading,
-            interval,
             error,
             data,
         });
     }
 
-    updateError(draft, interval);
+    updateError(draft);
 };
 
 const loadFromStorage = (draft: State, payload: GraphData[]) => {
@@ -123,10 +106,10 @@ export default (state: State = initialState, action: WalletAction | SuiteAction)
                 update(draft, action.payload);
                 break;
             case GRAPH.AGGREGATED_GRAPH_START:
-                draft.isLoading[action.payload.interval] = true;
+                draft.isLoading = true;
                 break;
             case GRAPH.AGGREGATED_GRAPH_SUCCESS:
-                draft.isLoading[action.payload.interval] = false;
+                draft.isLoading = false;
                 break;
             case GRAPH.SET_SELECTED_RANGE:
                 draft.selectedRange = action.payload;

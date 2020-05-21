@@ -7,14 +7,11 @@ import InfoCard from './components/InfoCard';
 import BigNumber from 'bignumber.js';
 import { getUnixTime } from 'date-fns';
 import { calcTicks, calcTicksFromData } from '@suite-utils/date';
-import {
-    accountGraphDataFilterFn,
-    aggregateBalanceHistory,
-    sumFiatValueMap,
-} from '@wallet-utils/graphUtils';
+import { aggregateBalanceHistory, sumFiatValueMap } from '@wallet-utils/graphUtils';
 import { GraphRange } from '@wallet-types/fiatRates';
 import { Props } from './Container';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
+import { GraphData } from '@suite/reducers/wallet/graphReducer';
 
 const Wrapper = styled.div`
     display: flex;
@@ -71,7 +68,7 @@ const ErrorMessage = styled.div`
 `;
 
 const TransactionSummary = (props: Props) => {
-    const { account, graph, updateGraphData, setSelectedRange } = props;
+    const { account, graph, getGraphDataForInterval, updateGraphData, setSelectedRange } = props;
     const { selectedRange } = graph;
 
     const onRefresh = () => {
@@ -83,15 +80,14 @@ const TransactionSummary = (props: Props) => {
         updateGraphData([account], { newAccountsOnly: true });
     };
 
-    const graphData = graph.data.filter(d => accountGraphDataFilterFn(d, account));
+    const intervalGraphData = (getGraphDataForInterval({ account }) as unknown) as GraphData[];
     const [isGraphHidden, setIsGraphHidden] = useState(false);
-    const intervalGraphData = graphData.find(d => d.interval === selectedRange.label);
-    const data = intervalGraphData?.data
-        ? aggregateBalanceHistory([intervalGraphData], selectedRange.groupBy, 'account')
+    const data = intervalGraphData[0]?.data
+        ? aggregateBalanceHistory(intervalGraphData, selectedRange.groupBy, 'account')
         : [];
 
-    const error = intervalGraphData?.error ?? false;
-    const isLoading = intervalGraphData?.isLoading ?? false;
+    const error = intervalGraphData[0]?.error ?? false;
+    const isLoading = intervalGraphData[0]?.isLoading ?? false;
 
     // aggregate values from shown graph data
     const numOfTransactions = data.reduce((acc, d) => (acc += d.txs), 0);

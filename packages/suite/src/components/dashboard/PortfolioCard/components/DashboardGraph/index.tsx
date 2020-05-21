@@ -6,7 +6,6 @@ import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 import { calcTicks, calcTicksFromData } from '@suite-utils/date';
 import { colors, variables, Button } from '@trezor/components';
-import { deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 // https://github.com/zeit/next.js/issues/4768
 // eslint-disable-next-line import/no-webpack-loader-syntax
@@ -44,17 +43,23 @@ const SmallErrorMessage = styled.div`
 `;
 
 const DashboardGraph = React.memo((props: Props) => {
+    const {
+        accounts,
+        selectedDevice,
+        updateGraphData,
+        setSelectedRange,
+        getGraphDataForInterval,
+        localCurrency,
+    } = props;
+    const { selectedRange } = props.graph;
+
     const [data, setData] = useState<AggregatedDashboardHistory[]>([]);
     const [isProcessing, setIsProcessing] = useState(false);
     const [xTicks, setXticks] = useState<number[]>([]);
-    const { accounts, selectedDevice, updateGraphData, setSelectedRange, localCurrency } = props;
-    const { selectedRange } = props.graph;
-    const rawData = props.graph.data;
+
     const selectedDeviceState = selectedDevice?.state;
-    const isLoading = props.graph.isLoading[selectedRange.label];
-    const failedAccounts = props.graph.error[selectedRange.label]?.filter(
-        a => a.deviceState === selectedDeviceState,
-    );
+    const { isLoading } = props.graph;
+    const failedAccounts = props.graph.error?.filter(a => a.deviceState === selectedDeviceState);
     const allFailed = failedAccounts && failedAccounts.length === accounts.length;
 
     const onRefresh = useCallback(() => {
@@ -80,20 +85,21 @@ const DashboardGraph = React.memo((props: Props) => {
     );
 
     useEffect(() => {
-        if (!isLoading && rawData && rawData.length > 0) {
+        if (!isLoading) {
             setIsProcessing(true);
-            const rawDeviceGraphData = selectedDeviceState
-                ? rawData.filter(
-                      d =>
-                          deviceGraphDataFilterFn(d, selectedDeviceState) &&
-                          d.interval === selectedRange.label,
-                  )
-                : [];
+            const rawData = getGraphDataForInterval({ deviceState: selectedDeviceState });
+            // const rawDeviceGraphData = selectedDeviceState
+            //     ? rawData.filter(
+            //           d =>
+            //               deviceGraphDataFilterFn(d, selectedDeviceState) &&
+            //               d.interval === selectedRange.label,
+            //       )
+            //     : [];
 
             const worker = new GraphWorker();
 
             worker.postMessage({
-                history: rawDeviceGraphData,
+                history: rawData,
                 groupBy: selectedRange.groupBy,
                 type: 'dashboard',
             });
@@ -110,7 +116,7 @@ const DashboardGraph = React.memo((props: Props) => {
                 setIsProcessing(false);
             });
         }
-    }, [isLoading, rawData, selectedDeviceState, selectedRange]);
+    }, [isLoading, getGraphDataForInterval, selectedDeviceState, selectedRange]);
 
     return (
         <Wrapper data-test="@dashboard/graph">

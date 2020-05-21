@@ -1,5 +1,5 @@
 import TrezorConnect from 'trezor-connect';
-import { getUnixTime, subWeeks } from 'date-fns';
+import { getUnixTime, subWeeks, isWithinInterval, fromUnixTime } from 'date-fns';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { resetTime } from '@suite-utils/date';
 import { Dispatch, GetState } from '@suite-types';
@@ -13,7 +13,7 @@ import {
 } from './constants/graphConstants';
 import { Account } from '@wallet-types';
 import { GraphRange } from '@wallet-types/fiatRates';
-import { accountGraphDataFilterFn } from '@suite/utils/wallet/graphUtils';
+import { accountGraphDataFilterFn, deviceGraphDataFilterFn } from '@suite/utils/wallet/graphUtils';
 import { GraphData } from '@wallet-reducers/graphReducer';
 import BigNumber from 'bignumber.js';
 
@@ -32,15 +32,9 @@ export type GraphActions =
       }
     | {
           type: typeof AGGREGATED_GRAPH_START;
-          payload: {
-              interval: GraphRange['label'];
-          };
       }
     | {
           type: typeof AGGREGATED_GRAPH_SUCCESS;
-          payload: {
-              interval: GraphRange['label'];
-          };
       }
     | {
           type: typeof SET_SELECTED_RANGE;
@@ -69,7 +63,6 @@ export const fetchAccountGraphData = (
     endDate: Date | null,
     range: GraphRange,
 ) => async (dispatch: Dispatch, _getState: GetState) => {
-    const interval = range.label;
     dispatch({
         type: ACCOUNT_GRAPH_START,
         payload: {
@@ -78,7 +71,6 @@ export const fetchAccountGraphData = (
                 descriptor: account.descriptor,
                 symbol: account.symbol,
             },
-            interval,
             data: null,
             isLoading: true,
             error: false,
@@ -131,7 +123,6 @@ export const fetchAccountGraphData = (
                     descriptor: account.descriptor,
                     symbol: account.symbol,
                 },
-                interval,
                 data: enhancedResponse,
                 isLoading: false,
                 error: false,
@@ -147,7 +138,6 @@ export const fetchAccountGraphData = (
                 descriptor: account.descriptor,
                 symbol: account.symbol,
             },
-            interval,
             data: null,
             isLoading: false,
             error: true,
@@ -170,31 +160,67 @@ export const updateGraphData = (
     if (options?.newAccountsOnly) {
         // add only accounts for which we don't have any data for given interval
         filteredAccounts = accounts.filter(
-            account =>
-                !graph.data.find(
-                    d => accountGraphDataFilterFn(d, account) && d.interval === selectedRange.label,
-                ),
+            account => !graph.data.find(d => accountGraphDataFilterFn(d, account)),
         );
         if (filteredAccounts.length === 0) {
             return;
         }
     }
 
-    const startDate =
-        selectedRange.label === 'all' ? null : subWeeks(new Date(), selectedRange.weeks!);
-    const endDate = selectedRange.label === 'all' ? null : new Date();
-    const interval = selectedRange.label;
+    // const startDate =
+    //     selectedRange.label === 'all' ? null : subWeeks(new Date(), selectedRange.weeks!);
+    // const endDate = selectedRange.label === 'all' ? null : new Date();
     dispatch({
         type: AGGREGATED_GRAPH_START,
-        payload: { interval },
     });
-    const promises = filteredAccounts.map(a =>
-        dispatch(fetchAccountGraphData(a, startDate, endDate, selectedRange)),
+    const promises = filteredAccounts.map(
+        a =>
+            // dispatch(fetchAccountGraphData(a, startDate, endDate, selectedRange)),
+            dispatch(fetchAccountGraphData(a, null, null, selectedRange)), // fetch for all range
     );
     await Promise.all(promises);
 
     dispatch({
         type: AGGREGATED_GRAPH_SUCCESS,
-        payload: { interval },
     });
+};
+
+export const getGraphDataForInterval = (options: { account?: Account; deviceState?: string }) => (
+    _dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { graph } = getState().wallet;
+    const { selectedRange } = graph;
+
+    const startDate =
+        selectedRange.label === 'all' ? null : subWeeks(new Date(), selectedRange.weeks!);
+    const endDate = selectedRange.label === 'all' ? null : new Date();
+
+    const data: GraphData[] = [];
+    graph.data.forEach(accountGraph => {
+        const accountFilter = options.account
+            ? accountGraphDataFilterFn(accountGraph, options.account)
+            : true;
+        const deviceFilter = options.deviceState
+            ? deviceGraphDataFilterFn(accountGraph, options.deviceState)
+            : true;
+
+        if (accountFilter && deviceFilter) {
+            if (startDate && endDate) {
+                data.push({
+                    ...accountGraph,
+                    data:
+                        accountGraph.data?.filter(d =>
+                            isWithinInterval(fromUnixTime(d.time), {
+                                start: startDate,
+                                end: endDate,
+                            }),
+                        ) ?? [],
+                });
+            } else {
+                data.push(accountGraph);
+            }
+        }
+    });
+    return data;
 };
