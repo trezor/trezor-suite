@@ -1,13 +1,13 @@
 import { ANALYTICS } from '@suite-actions/constants';
 import { isDev } from '@suite-utils/build';
 import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
-import { getRandomId } from '@suite-utils/random';
+import { getAnalyticsRandomId } from '@suite-utils/random';
 import { Account } from '@wallet-types';
 import qs from 'qs';
 
 export type AnalyticsActions =
     | { type: typeof ANALYTICS.DISPOSE }
-    | { type: typeof ANALYTICS.INIT; payload: { sessionId: string; instanceId: string } };
+    | { type: typeof ANALYTICS.INIT; payload: { instanceId: string } };
 
 export type Payload =
     /*
@@ -140,7 +140,7 @@ export const report = (data: Payload, force = false) => async (
 
     // watched data is sent in query string
     const commonEncoded = qs.stringify({
-        version: process.env.COMMITHASH,
+        commit: process.env.COMMITHASH,
         sessionId,
         instanceId,
     });
@@ -197,9 +197,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         type: ANALYTICS.INIT,
         payload: {
             // if no instanceId exists it means that it was not loaded from storage, so create a new one
-            instanceId: !analytics.instanceId ? getRandomId(10) : analytics.instanceId,
-            // sessionId is always ephemeral
-            sessionId: getRandomId(10),
+            instanceId: !analytics.instanceId ? getAnalyticsRandomId() : analytics.instanceId,
         },
     });
 };

@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { ANALYTICS, STORAGE } from '@suite-actions/constants';
-import { getRandomId } from '@suite-utils/random';
+import { getAnalyticsRandomId } from '@suite-utils/random';
 
 import { Action } from '@suite-types';
 
@@ -11,7 +11,8 @@ export interface State {
 }
 
 export const initialState: State = {
-    sessionId: getRandomId(10),
+    // sessionId is generated only on app start, either added to storage-loaded action or taken from initial state
+    sessionId: getAnalyticsRandomId(),
     instanceId: undefined,
     enabled: false,
 };
@@ -25,9 +26,9 @@ export default (state: State = initialState, action: Action): State => {
                 break;
             case ANALYTICS.DISPOSE:
                 draft.enabled = false;
-                draft.sessionId = undefined;
-                // instanceId is persistent and will not be removed on dispose. once user re-enables
+                // - instanceId is persistent and will not be removed on dispose. once user re-enables
                 // analytics, it will continue using previously generated instanceId
+                // - sessionId is semi-persistent, lives in memory
                 break;
             case STORAGE.LOADED:
                 return action.payload.analytics;

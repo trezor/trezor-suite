@@ -6,3 +6,7 @@ export const getRandomId = (length: number) => {
     }
     return id;
 };
+
+export const getAnalyticsRandomId = () => {
+    return getRandomId(10);
+};

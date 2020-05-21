@@ -12,8 +12,7 @@ interface InitialState {
 jest.mock('@suite-utils/random', () => {
     return {
         __esModule: true, // this property makes it work
-        // default: {},
-        getRandomId: () => 'very-random',
+        getAnalyticsRandomId: () => 'very-random',
     };
 });
 
