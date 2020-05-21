@@ -86,7 +86,7 @@ export const aggregateBalanceHistory = <TType extends TypeName>(
                 // calc sum of sentFiat, receivedFiat, txs fields for each timestamp
                 if (!bin) {
                     // no entry for a timestamp yet, set first item
-                    const baseProps = {
+                    const baseProps: AggregatedDashboardHistory = {
                         time:
                             groupBy === 'day'
                                 ? dataPoint.time
@@ -96,7 +96,7 @@ export const aggregateBalanceHistory = <TType extends TypeName>(
                         receivedFiat: dataPoint.receivedFiat,
                     };
 
-                    const accountProps = {
+                    const accountProps: AggregatedAccountHistory = {
                         ...baseProps,
                         sent: dataPoint.sent,
                         received: dataPoint.received,
