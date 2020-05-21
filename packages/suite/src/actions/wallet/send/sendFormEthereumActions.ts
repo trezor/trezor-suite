@@ -36,7 +36,7 @@ export const compose = (setMax = false) => async (dispatch: Dispatch, getState: 
         selectedFee.feeLimit || '0',
     );
     const max = token
-        ? new BigNumber(token.balance || '0')
+        ? new BigNumber(token.balance!)
         : new BigNumber(calculateMax(availableBalance, feeInSatoshi));
     // use max possible value or input.value
     // race condition when switching between tokens with set-max enabled
@@ -143,7 +143,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
 
     if (sentTx.success) {
         dispatch(commonActions.clear());
-        const symbol = token ? token.symbol?.toUpperCase() : account.symbol.toUpperCase();
+        const symbol = token ? token.symbol!.toUpperCase() : account.symbol.toUpperCase();
         dispatch(
             notificationActions.addToast({
                 type: 'tx-sent',

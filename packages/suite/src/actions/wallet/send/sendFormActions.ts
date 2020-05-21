@@ -149,7 +149,7 @@ const amountChange = (amountIn?: string, outputIdIn?: number) => (
     const { isDestinationAccountEmpty } = send.networkTypeRipple;
     const reserve = getReserveInXrp(account);
     const { token } = send.networkTypeEthereum;
-    const availableBalance = token ? token.balance || '0' : account.availableBalance;
+    const availableBalance = token ? token.balance! : account.availableBalance;
     const decimals = token ? token.decimals : network.decimals;
 
     dispatch({
@@ -308,7 +308,7 @@ export const setMax = (outputIdIn?: number) => async (dispatch: Dispatch, getSta
         }
     }
 
-    let amount = token ? token.balance || '0' : '0';
+    let amount = token ? token.balance! : '0';
     if (formattedAmount) {
         const maxBig = new BigNumber(formattedAmount);
         amount = maxBig.isLessThanOrEqualTo(0) ? '0' : formattedAmount;

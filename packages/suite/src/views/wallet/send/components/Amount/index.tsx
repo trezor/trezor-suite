@@ -107,7 +107,7 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
     const { value, error, isLoading } = amount;
     const reserve =
         account.networkType === 'ripple' ? formatNetworkAmount(account.misc.reserve, symbol) : null;
-    const tokenBalance = token ? `${token.balance} ${token.symbol?.toUpperCase()}` : undefined;
+    const tokenBalance = token ? `${token.balance} ${token.symbol!.toUpperCase()}` : undefined;
     const decimals = token ? token.decimals : network.decimals;
 
     return (
