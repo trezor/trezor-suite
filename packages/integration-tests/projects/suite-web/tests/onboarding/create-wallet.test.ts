@@ -30,7 +30,7 @@ describe('Onboarding - create wallet', () => {
         
         cy.log('Note that this firmware does not have Shamir capability so we show only single backup option button');
         cy.getTestElement('@onboarding/only-backup-option-button').click()
-        cy.getTestElement('@onboarding/confirm-action-on-device').should('be.visible');
+        cy.getTestElement('@suite/modal/confirm-action-on-device').should('be.visible');
         cy.task('sendDecision');
 
         cy.getTestElement('@onboarding/continue-to-security-button').click();

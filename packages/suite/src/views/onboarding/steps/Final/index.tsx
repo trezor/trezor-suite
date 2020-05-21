@@ -10,7 +10,7 @@ const StyledImage = styled(Image)`
     flex: 1;
 `;
 
-const FinalStep = ({ closeModalApp }: Props) => (
+const FinalStep = ({ closeModalApp, device }: Props) => (
     <Wrapper.Step data-test="@onboarding/final">
         <Wrapper.StepHeading>
             <Translation id="TR_FINAL_HEADING" />
@@ -19,7 +19,9 @@ const FinalStep = ({ closeModalApp }: Props) => (
             <Text>
                 <Translation id="TR_FINAL_SUBHEADING" />
             </Text>
-            <StyledImage image="ALL_DONE" />
+            <StyledImage
+                image={device?.features?.major_version === 1 ? 'ALL_DONE_1' : 'ALL_DONE_2'}
+            />
         </Wrapper.StepBody>
         <Wrapper.Controls>
             <OnboardingButton.Cta

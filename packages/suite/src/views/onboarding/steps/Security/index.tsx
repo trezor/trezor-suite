@@ -14,7 +14,13 @@ const SecurityStep = (props: Props) => (
             <Text>
                 <Translation id="TR_SECURITY_SUBHEADING" />
             </Text>
-            <Image image="T_DEVICE_INITIALIZED" />
+            <Image
+                image={
+                    props.device?.features?.major_version === 1
+                        ? 'DEVICE_INITIALIZED_1'
+                        : 'DEVICE_INITIALIZED_2'
+                }
+            />
             <Wrapper.Controls>
                 <OnboardingButton.Cta
                     data-test="@onboarding/continue-to-security-button"

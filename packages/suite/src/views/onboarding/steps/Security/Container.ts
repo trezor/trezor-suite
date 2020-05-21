@@ -4,15 +4,19 @@ import { connect } from 'react-redux';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as routerActions from '@suite-actions/routerActions';
 
-import { Dispatch } from '@suite-types';
+import { Dispatch, AppState } from '@suite-types';
 
 import Step from './index';
+
+const mapStateToProps = (state: AppState) => ({
+    device: state.suite.device,
+});
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
     closeModalApp: bindActionCreators(routerActions.closeModalApp, dispatch),
 });
 
-export type Props = ReturnType<typeof mapDispatchToProps>;
+export type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 
-export default connect(null, mapDispatchToProps)(Step);
+export default connect(mapStateToProps, mapDispatchToProps)(Step);

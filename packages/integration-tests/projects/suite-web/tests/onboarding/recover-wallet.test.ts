@@ -22,7 +22,7 @@ describe('Onboarding - recover wallet', () => {
         cy.getTestElement('@onboarding/button-continue').click();
         cy.getTestElement('@onboarding/button-continue').click();
         cy.getTestElement('@onboarding/recovery/start-button').click();
-        cy.getTestElement('@onboarding/confirm-action-on-device').should('be.visible');
+        cy.getTestElement('@suite/modal/confirm-action-on-device').should('be.visible');
         cy.task('sendDecision');
         cy.task('sendDecision');
         cy.task('selectNumOfWordsEmu', 12);
@@ -48,7 +48,7 @@ describe('Onboarding - recover wallet', () => {
         cy.getTestElement('@onboarding/button-continue').click();
         cy.getTestElement('@onboarding/button-continue').click();
         cy.getTestElement('@onboarding/recovery/start-button').click();
-        cy.getTestElement('@onboarding/confirm-action-on-device');
+        cy.getTestElement('@suite/modal/confirm-action-on-device');
         cy.task('sendDecision');
         cy.task('stopEmu');
         cy.getTestElement('@onboarding/unexpected-state/reconnect');
