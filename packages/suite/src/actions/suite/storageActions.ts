@@ -8,6 +8,7 @@ import { Discovery } from '@wallet-reducers/discoveryReducer';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
+import { getAnalyticsRandomId } from '@suite-utils/random';
 
 export type StorageActions =
     | { type: typeof STORAGE.LOAD }
@@ -230,7 +231,9 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                     },
                     fiat: fiatRates || [],
                 },
-                analytics: analytics ? { ...analytics } : initialState.analytics,
+                analytics: analytics?.instanceId
+                    ? { ...analytics, sessionId: getAnalyticsRandomId() }
+                    : initialState.analytics,
             },
         });
     }
