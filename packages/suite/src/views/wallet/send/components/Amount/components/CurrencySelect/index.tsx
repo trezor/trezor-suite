@@ -6,8 +6,7 @@ import { TokenInfo } from 'trezor-connect';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 
 const Wrapper = styled.div`
-    min-width: 100px;
-    margin-left: 10px;
+    min-width: 110px;
 `;
 
 const CurrencySelect = styled(Select)`
@@ -49,6 +48,7 @@ const getValues = (symbol: Account['symbol'], tokens: Account['tokens']) => {
 
 export default ({ symbol, tokens, selectedToken, onChange }: Props) => {
     const values = getValues(symbol, tokens);
+
     return (
         <Wrapper>
             <CurrencySelect
@@ -59,6 +59,7 @@ export default ({ symbol, tokens, selectedToken, onChange }: Props) => {
                 value={values.find(v => v.value === selectedToken)}
                 isDisabled={values.length === 1}
                 options={values}
+                display
             />
         </Wrapper>
     );
