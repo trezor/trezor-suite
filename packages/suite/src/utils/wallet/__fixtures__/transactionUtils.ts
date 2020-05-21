@@ -54,8 +54,8 @@ export const analyzeTransactions = [
         known: [{ blockHeight: undefined, blockHash: '1', txid: '1' }],
         result: {
             newTransactions: [],
-            add: [{ blockHeight: undefined, blockHash: '1', txid: '1' }],
-            remove: [{ blockHeight: undefined, blockHash: '1', txid: '1' }],
+            add: [],
+            remove: [],
         },
     },
     {
@@ -69,7 +69,7 @@ export const analyzeTransactions = [
         },
     },
     {
-        description: 'pendings are gone, 1 confirmed remains',
+        description: 'pending txs are gone, 1 confirmed remains',
         fresh: [{ blockHeight: 1, blockHash: '1', txid: '1' }],
         known: [
             { blockHeight: undefined, blockHash: '2b', txid: '2b' },
@@ -156,11 +156,8 @@ export const analyzeTransactions = [
         ],
         result: {
             newTransactions: [{ blockHeight: 2, blockHash: '2', txid: '2' }],
-            add: [
-                { blockHeight: 3, blockHash: '3', txid: '3' },
-                { blockHeight: 2, blockHash: '2', txid: '2' },
-            ],
-            remove: [{ blockHeight: 3, blockHash: '3', txid: '3' }],
+            add: [{ blockHeight: 2, blockHash: '2', txid: '2' }],
+            remove: [],
         },
     },
     {
@@ -188,16 +185,11 @@ export const analyzeTransactions = [
             ],
             add: [
                 { blockHeight: 4, blockHash: '4', txid: '4' },
-                { blockHeight: 3, blockHash: '3b', txid: '3b' },
-                { blockHeight: 3, blockHash: '3a', txid: '3a' },
                 { blockHeight: 2, blockHash: '2c', txid: '2c' },
                 { blockHeight: 2, blockHash: '2b', txid: '2b' },
                 { blockHeight: 2, blockHash: '2a', txid: '2a' },
             ],
-            remove: [
-                { blockHeight: 3, blockHash: '3b', txid: '3b' },
-                { blockHeight: 3, blockHash: '3a', txid: '3a' },
-            ],
+            remove: [],
         },
     },
     {
