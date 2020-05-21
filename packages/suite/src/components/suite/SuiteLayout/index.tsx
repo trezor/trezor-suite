@@ -60,6 +60,8 @@ type Props = ReturnType<typeof mapStateToProps> & {
 };
 
 interface BodyProps {
+    // url is mandatory to force re-render AppWrapper on url change, otherwise it will cache scrollbar position fix: issue #1658
+    url: string;
     menu?: React.ReactNode;
     children?: React.ReactNode;
 }
@@ -76,26 +78,26 @@ export const LayoutContext = createContext<LayoutContextI>({
     setLayout: undefined,
 });
 
-const BodyWide = ({ menu, children }: BodyProps) => (
+const BodyWide = ({ url, menu, children }: BodyProps) => (
     <Body>
         <DiscoveryProgress />
         <SuiteNotifications />
         <Columns>
             {menu && <MenuSecondary>{menu}</MenuSecondary>}
-            <AppWrapper>
+            <AppWrapper key={url}>
                 <MaxWidthWrapper withMenu={!!menu}>{children}</MaxWidthWrapper>
             </AppWrapper>
         </Columns>
     </Body>
 );
 
-const BodyNarrow = ({ menu, children }: BodyProps) => (
+const BodyNarrow = ({ url, menu, children }: BodyProps) => (
     <Body>
         <MenuDrawer>{menu}</MenuDrawer>
         <DiscoveryProgress />
         <SuiteNotifications />
         <Columns>
-            <AppWrapper>{children}</AppWrapper>
+            <AppWrapper key={url}>{children}</AppWrapper>
         </Columns>
     </Body>
 );
@@ -120,8 +122,16 @@ const SuiteLayout = (props: Props) => {
             </Head>
             {isWide && <Menu />}
             <LayoutContext.Provider value={{ title, menu, setLayout }}>
-                {isWide && <BodyWide menu={menu}>{props.children}</BodyWide>}
-                {!isWide && <BodyNarrow menu={menu}>{props.children}</BodyNarrow>}
+                {isWide && (
+                    <BodyWide menu={menu} url={props.router.url}>
+                        {props.children}
+                    </BodyWide>
+                )}
+                {!isWide && (
+                    <BodyNarrow menu={menu} url={props.router.url}>
+                        {props.children}
+                    </BodyNarrow>
+                )}
             </LayoutContext.Provider>
         </PageWrapper>
     );

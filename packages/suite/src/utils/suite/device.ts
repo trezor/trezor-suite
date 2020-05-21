@@ -46,6 +46,7 @@ export const getStatus = (device: TrezorDevice): string => {
 export const deviceNeedsAttention = (deviceStatus: string): boolean => {
     switch (deviceStatus) {
         // case 'firmware-recommended':
+        // case 'unavailable': // this case is already solved in Account view @wallet-components/AccountMode/DeviceUnavailable
         case 'bootloader':
         case 'initialize':
         case 'seedless':
@@ -53,7 +54,6 @@ export const deviceNeedsAttention = (deviceStatus: string): boolean => {
         case 'was-used-in-other-window':
         case 'unacquired':
         case 'firmware-required':
-        case 'unavailable':
         case 'unreadable':
             return true;
         default:
