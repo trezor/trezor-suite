@@ -232,13 +232,22 @@ export const onNotification = (payload: BlockchainNotification) => async (
     // dispatch only recv notifications
     if (tx.type === 'recv' && !tx.blockHeight) {
         const accountDevice = accountUtils.findAccountDevice(account, getState().devices);
-        const formattedAmount = accountUtils.formatNetworkAmount(tx.amount, account.symbol, true);
+        const token = tx.tokens && tx.tokens.length ? tx.tokens[0] : undefined;
+        const formattedAmount = token
+            ? `${accountUtils.formatAmount(
+                  token.amount,
+                  token.decimals,
+              )} ${token.symbol.toUpperCase()}`
+            : accountUtils.formatNetworkAmount(tx.amount, account.symbol, true);
+
+        console.warn('RECV', tx, token, formattedAmount);
         dispatch(
             notificationActions.addEvent({
                 type: 'tx-received',
                 formattedAmount,
                 device: accountDevice,
                 descriptor: account.descriptor,
+                symbol: account.symbol,
                 txid: tx.txid,
             }),
         );

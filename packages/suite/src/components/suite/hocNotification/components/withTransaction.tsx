@@ -35,7 +35,11 @@ export default (View: React.ComponentType<ViewProps>, props: StrictViewProps) =>
     const WrappedView = connect(mapStateToProps)((state: StateProps) => {
         const { notification } = props;
         const { accounts, transactions, devices, blockchain, dispatch } = state;
-        const found = accountUtils.findAccountsByDescriptor(notification.descriptor, accounts);
+        const networkAccounts = accounts.filter(a => a.symbol === notification.symbol);
+        const found = accountUtils.findAccountsByDescriptor(
+            notification.descriptor,
+            networkAccounts,
+        );
         // fallback: account not found, it should never happen tho
         if (!found.length) return <View {...props} />;
 

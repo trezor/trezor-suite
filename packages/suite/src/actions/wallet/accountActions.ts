@@ -106,7 +106,6 @@ export const fetchAndUpdateAccount = (account: Account) => async (
 
         const analyze = analyzeTransactions(payload.history.transactions || [], accountTxs);
         if (analyze.remove.length > 0) {
-            // TODO: remove notif in middleware
             dispatch(transactionActions.remove(account, analyze.remove));
         }
         if (analyze.add.length > 0) {
@@ -115,16 +114,20 @@ export const fetchAndUpdateAccount = (account: Account) => async (
 
         const accountDevice = accountUtils.findAccountDevice(account, getState().devices);
         analyze.newTransactions.forEach(tx => {
+            const token = tx.tokens && tx.tokens.length ? tx.tokens[0] : undefined;
+            const formattedAmount = token
+                ? `${accountUtils.formatAmount(
+                      token.amount,
+                      token.decimals,
+                  )} ${token.symbol.toUpperCase()}`
+                : accountUtils.formatNetworkAmount(tx.amount, account.symbol, true);
             dispatch(
                 notificationActions.addEvent({
                     type: 'tx-confirmed',
-                    formattedAmount: accountUtils.formatNetworkAmount(
-                        tx.amount,
-                        account.symbol,
-                        true,
-                    ),
+                    formattedAmount,
                     device: accountDevice,
                     descriptor: account.descriptor,
+                    symbol: account.symbol,
                     txid: tx.txid,
                 }),
             );

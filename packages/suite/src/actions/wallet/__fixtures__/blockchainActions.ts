@@ -42,7 +42,7 @@ const analyzeTransactionsExtended = [
         },
     },
     {
-        result: [TRANSACTION.REMOVE, TRANSACTION.ADD, ACCOUNT.UPDATE],
+        result: [],
         resultTxs: {
             'xpub-btc-deviceState': [{ blockHeight: undefined, blockHash: '1', txid: '1' }],
         },
@@ -89,25 +89,25 @@ const analyzeTransactionsExtended = [
         },
     },
     {
-        result: [TRANSACTION.REMOVE, TRANSACTION.ADD, ACCOUNT.UPDATE],
+        result: [TRANSACTION.ADD, ACCOUNT.UPDATE],
         resultTxs: {
             'xpub-btc-deviceState': [
-                { blockHeight: 3, blockHash: '3', txid: '3' },
                 { blockHeight: 2, blockHash: '2', txid: '2' },
+                { blockHeight: 3, blockHash: '3', txid: '3' },
                 { blockHeight: 1, blockHash: '1', txid: '1' },
             ],
         },
     },
     {
-        result: [TRANSACTION.REMOVE, TRANSACTION.ADD, ACCOUNT.UPDATE],
+        result: [TRANSACTION.ADD, ACCOUNT.UPDATE],
         resultTxs: {
             'xpub-btc-deviceState': [
                 { blockHeight: 4, blockHash: '4', txid: '4' },
-                { blockHeight: 3, blockHash: '3b', txid: '3b' },
-                { blockHeight: 3, blockHash: '3a', txid: '3a' },
                 { blockHeight: 2, blockHash: '2c', txid: '2c' },
                 { blockHeight: 2, blockHash: '2b', txid: '2b' },
                 { blockHeight: 2, blockHash: '2a', txid: '2a' },
+                { blockHeight: 3, blockHash: '3b', txid: '3b' },
+                { blockHeight: 3, blockHash: '3a', txid: '3a' },
                 { blockHeight: 1, blockHash: '1', txid: '1' },
             ],
         },
