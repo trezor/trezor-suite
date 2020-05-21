@@ -178,14 +178,15 @@ export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
                     <CustomFeeWrapper>
                         <CustomFee />
                     </CustomFeeWrapper>
-                    {networkType === 'bitcoin' && fiatVal && customFee.value && (
+                    {fiatVal && customFee.value && (
                         <BadgeWrapper>
-                            <Badge>
+                            <Badge isGray>
                                 {toFiatCurrency(
                                     formatNetworkAmount(customFee.value, symbol),
                                     localCurrency,
                                     fiatVal.current?.rates,
-                                )}
+                                    true,
+                                )}{' '}
                                 {localCurrency}
                             </Badge>
                         </BadgeWrapper>
