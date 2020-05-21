@@ -119,7 +119,8 @@ const Menu = ({ device, accounts, selectedAccount, openModal }: Props) => {
             <AccountGroup
                 key={type}
                 type={type}
-                opened={!!groupHasBalance || isOpened(type)}
+                hasBalance={!!groupHasBalance}
+                keepOpened={isOpened(type)}
                 onUpdate={updateDimensions}
             >
                 {accounts.map(account => {
