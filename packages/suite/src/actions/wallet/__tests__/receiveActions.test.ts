@@ -38,7 +38,7 @@ jest.mock('trezor-connect', () => {
     return {
         __esModule: true, // this property makes it work
         default: {
-            blockchainSetCustomBackend: (_params: any): any => {},
+            blockchainSetCustomBackend: () => {},
             init: () => null,
             on: (event: string, cb: Function) => {
                 if (event === 'ui-button') buttonRequest = cb;

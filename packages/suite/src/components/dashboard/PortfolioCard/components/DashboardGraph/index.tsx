@@ -110,8 +110,7 @@ const DashboardGraph = React.memo((props: Props) => {
 
             worker.addEventListener('message', handleMessage);
             return () => {
-                // @ts-ignore TODO: WHYs
-                worker.removeEventListener('error', handleMessage);
+                worker.removeEventListener('message', handleMessage);
             };
         }
     }, [isLoading, getGraphDataForInterval, selectedDeviceState, selectedRange]);
