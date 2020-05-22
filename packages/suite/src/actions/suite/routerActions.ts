@@ -113,7 +113,7 @@ export const closeModalApp = (preserveParams = true) => async (dispatch: Dispatc
     // if user enters route of modal app manually, back would redirect him again to the same route and he would remain stuck
     // so we need a fallback to suite-index
     if (route && route.isModal) {
-        return dispatch(goto('suite-index'));
+        return dispatch(goto('suite-dashboard'));
     }
 
     if (!preserveParams && window.location.hash.length > 0) {

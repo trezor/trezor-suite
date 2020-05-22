@@ -69,7 +69,7 @@ const BackupStep = (props: Props) => {
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 onClick={() => {
-                                    props.goto('suite-index');
+                                    props.goto('suite-dashboard');
                                 }}
                             >
                                 <Translation id="TR_CONTINUE" />

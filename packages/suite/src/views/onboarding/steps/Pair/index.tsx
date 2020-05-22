@@ -69,7 +69,7 @@ const PairDeviceStep = (props: Props) => {
                                         <Wrapper.Controls>
                                             <OnboardingButton.Cta
                                                 data-test="@onboarding/button-continue"
-                                                onClick={() => props.goto('suite-index')}
+                                                onClick={() => props.goto('suite-dashboard')}
                                             >
                                                 <Translation id="TR_GO_TO_SUITE" />
                                             </OnboardingButton.Cta>
