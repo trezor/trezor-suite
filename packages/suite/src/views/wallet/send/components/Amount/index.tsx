@@ -1,7 +1,7 @@
 import { FiatValue, QuestionTooltip, Translation } from '@suite-components';
 import { Input, variables } from '@trezor/components';
 import { LABEL_HEIGHT, VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { Output } from '@wallet-types/sendForm';
+import { Output, CustomFee } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
@@ -22,7 +22,10 @@ const Text = styled.div`
 `;
 
 const StyledInput = styled(Input)`
-    min-width: 150px;
+    min-width: 100px;
+    display: flex;
+    flex: 1;
+    margin-right: 10px;
 `;
 
 const Label = styled.div`
@@ -66,8 +69,13 @@ const getMessage = (
     reserve: string | null,
     isLoading: Output['amount']['isLoading'],
     symbol: string,
+    customFeeError: CustomFee['error'],
 ) => {
     if (isLoading && !error) return 'Loading'; // TODO loader or text?
+
+    if (customFeeError) {
+        return <Translation id="TR_CUSTOM_FEE_IS_NOT_VALID" />;
+    }
 
     switch (error) {
         case VALIDATION_ERRORS.IS_EMPTY:
@@ -102,7 +110,7 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
     const { account, network } = selectedAccount;
     const { token } = send.networkTypeEthereum;
     const { symbol } = account;
-    const { setMaxActivated } = send;
+    const { setMaxActivated, customFee } = send;
     const { id, amount, fiatValue, localCurrency } = output;
     const { value, error, isLoading } = amount;
     const reserve =
@@ -132,7 +140,14 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
                     align="right"
                     value={value || ''}
                     onChange={e => sendFormActions.handleAmountChange(id, e.target.value)}
-                    bottomText={getMessage(error, decimals, reserve, isLoading, symbol)}
+                    bottomText={getMessage(
+                        error,
+                        decimals,
+                        reserve,
+                        isLoading,
+                        symbol,
+                        customFee.error,
+                    )}
                 />
                 {tokenBalance && (
                     <TokenBalance>

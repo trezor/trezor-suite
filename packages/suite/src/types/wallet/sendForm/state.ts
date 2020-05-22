@@ -21,7 +21,7 @@ export interface FeeInfo {
     levels: FeeLevel[]; // fee levels are predefined in trezor-connect > trezor-firmware/common
 }
 
-interface CustomFee {
+export interface CustomFee {
     value: null | string;
     error:
         | null
