@@ -13,6 +13,7 @@ jest.mock('trezor-connect', () => {
     return {
         __esModule: true, // this property makes it work
         default: {
+            blockchainSetCustomBackend: () => {},
             applySettings: () => Promise.resolve(fixture),
             wipeDevice: () => Promise.resolve(fixture),
             changePin: () => Promise.resolve(fixture),

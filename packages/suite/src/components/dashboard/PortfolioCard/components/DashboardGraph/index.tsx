@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { GraphRange, AggregatedAccountBalanceHistory } from '@wallet-types/fiatRates';
+import { GraphRange, AggregatedDashboardHistory } from '@wallet-types/fiatRates';
 import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
 import { Props } from './Container';
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 import { calcTicks, calcTicksFromData } from '@suite-utils/date';
 import { colors, variables, Button } from '@trezor/components';
-import { deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 // https://github.com/zeit/next.js/issues/4768
 // eslint-disable-next-line import/no-webpack-loader-syntax
@@ -44,17 +43,23 @@ const SmallErrorMessage = styled.div`
 `;
 
 const DashboardGraph = React.memo((props: Props) => {
-    const [data, setData] = useState<AggregatedAccountBalanceHistory[]>([]);
+    const {
+        accounts,
+        selectedDevice,
+        updateGraphData,
+        setSelectedRange,
+        getGraphDataForInterval,
+        localCurrency,
+    } = props;
+    const { selectedRange } = props.graph;
+
+    const [data, setData] = useState<AggregatedDashboardHistory[]>([]);
     const [isProcessing, setIsProcessing] = useState(false);
     const [xTicks, setXticks] = useState<number[]>([]);
-    const { accounts, selectedDevice, updateGraphData, setSelectedRange, localCurrency } = props;
-    const { selectedRange } = props.graph;
-    const rawData = props.graph.data;
+
     const selectedDeviceState = selectedDevice?.state;
-    const isLoading = props.graph.isLoading[selectedRange.label];
-    const failedAccounts = props.graph.error[selectedRange.label]?.filter(
-        a => a.deviceState === selectedDeviceState,
-    );
+    const { isLoading } = props.graph;
+    const failedAccounts = props.graph.error?.filter(a => a.deviceState === selectedDeviceState);
     const allFailed = failedAccounts && failedAccounts.length === accounts.length;
 
     const onRefresh = useCallback(() => {
@@ -70,29 +75,28 @@ const DashboardGraph = React.memo((props: Props) => {
     );
 
     const receivedValueFn = useCallback(
-        (sourceData: AggregatedAccountBalanceHistory) => sourceData.receivedFiat[localCurrency],
+        (sourceData: AggregatedDashboardHistory) => sourceData.receivedFiat[localCurrency],
         [localCurrency],
     );
 
     const sentValueFn = useCallback(
-        (sourceData: AggregatedAccountBalanceHistory) => sourceData.sentFiat[localCurrency],
+        (sourceData: AggregatedDashboardHistory) => sourceData.sentFiat[localCurrency],
         [localCurrency],
     );
 
     useEffect(() => {
-        if (!isLoading && rawData && rawData.length > 0) {
-            setIsProcessing(true);
-            const rawDeviceGraphData = selectedDeviceState
-                ? rawData.filter(
-                      d =>
-                          deviceGraphDataFilterFn(d, selectedDeviceState) &&
-                          d.interval === selectedRange.label,
-                  )
-                : [];
-
+        if (!isLoading) {
             const worker = new GraphWorker();
-            worker.postMessage(rawDeviceGraphData);
-            worker.addEventListener('message', (event: MessageEvent) => {
+            setIsProcessing(true);
+            const rawData = getGraphDataForInterval({ deviceState: selectedDeviceState });
+
+            worker.postMessage({
+                history: rawData,
+                groupBy: selectedRange.groupBy,
+                type: 'dashboard',
+            });
+
+            const handleMessage = (event: MessageEvent) => {
                 const aggregatedData = event.data;
                 const graphTicks =
                     selectedRange.label === 'all'
@@ -102,9 +106,14 @@ const DashboardGraph = React.memo((props: Props) => {
                 setData(aggregatedData);
                 setXticks(graphTicks);
                 setIsProcessing(false);
-            });
+            };
+
+            worker.addEventListener('message', handleMessage);
+            return () => {
+                worker.removeEventListener('message', handleMessage);
+            };
         }
-    }, [isLoading, rawData, selectedDeviceState, selectedRange]);
+    }, [isLoading, getGraphDataForInterval, selectedDeviceState, selectedRange]);
 
     return (
         <Wrapper data-test="@dashboard/graph">
