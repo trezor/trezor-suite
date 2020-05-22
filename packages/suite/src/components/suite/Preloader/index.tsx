@@ -145,14 +145,14 @@ const Preloader = (props: Props) => {
         }
     }, [dispatch, loaded, loading, error]);
 
+    if (process.env.SUITE_TYPE === 'web' && router.app === 'root') {
+        return <Landing />;
+    }
+
     if (error) {
         // trezor-connect initialization failed
         // throw error to <ErrorBoundary /> in _app.tsx
         throw new Error(error);
-    }
-
-    if (process.env.SUITE_TYPE === 'web' && router.app === 'root') {
-        return <Landing />;
     }
 
     const hasActionModal = actionModalContext !== '@modal/context-none';
