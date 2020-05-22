@@ -8,6 +8,7 @@ import {
     startOfMonth,
     subDays,
     subMonths,
+    differenceInCalendarMonths,
 } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { GraphTicksInterval } from '@wallet-types/fiatRates';
@@ -92,7 +93,12 @@ export const calcTicksFromData = (data: { time: number }[]) => {
         return current.time > max ? current.time : max;
     }, data[0].time);
 
-    return getTicksBetweenTimestamps(fromUnixTime(startDate), fromUnixTime(endDate), '3-months');
+    const startUnix = fromUnixTime(startDate);
+    const endUnix = fromUnixTime(endDate);
+
+    // less than 6 months between first and last timestamps => we can fit monthly ticks just fine
+    const interval = differenceInCalendarMonths(endUnix, startUnix) <= 6 ? 'month' : '3-months';
+    return getTicksBetweenTimestamps(startUnix, endUnix, interval);
 };
 /**
  * Returns array of timestamps between `from` and `to` split by `interval`
