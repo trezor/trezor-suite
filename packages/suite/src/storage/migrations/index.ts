@@ -48,7 +48,7 @@ export const migrate = async <TDBType>(
     if (oldVersion < 14) {
         // added graph object store
         const graphStore = db.createObjectStore('graph', {
-            keyPath: ['account.descriptor', 'account.symbol', 'account.deviceState', 'interval'],
+            keyPath: ['account.descriptor', 'account.symbol', 'account.deviceState'],
         });
         graphStore.createIndex('accountKey', [
             'account.descriptor',
