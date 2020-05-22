@@ -36,9 +36,14 @@ const routes = [
         isModal: true,
     },
     {
+        name: 'suite-dashboard',
+        pattern: '/dashboard',
+        app: 'dashboard',
+    },
+    {
         name: 'suite-index',
         pattern: '/',
-        app: 'dashboard',
+        app: 'root',
     },
     {
         name: 'suite-version',

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import Layout from '@landing-components/Layout';
 import { Translation } from '@suite-components';
+import { Props } from './Container';
 import { H2, Button, P, Select, Link, variables } from '@trezor/components';
 
 const Wrapper = styled.div`
@@ -57,7 +58,7 @@ const getAppUrl = (appName: App) => {
     }
 };
 
-export default () => {
+export default ({ goto }: Props) => {
     const [app, setApp] = useState<App | null>(null);
 
     return (
@@ -104,10 +105,13 @@ export default () => {
                     </Item>
                 </Row>
                 <Item>
-                    <ButtonContinue variant="tertiary" icon="ARROW_RIGHT" alignIcon="right">
-                        <Link href="../" variant="nostyle">
-                            <Translation id="TR_LANDING_CONTINUE" />
-                        </Link>
+                    <ButtonContinue
+                        onClick={() => goto('suite-dashboard')}
+                        variant="tertiary"
+                        icon="ARROW_RIGHT"
+                        alignIcon="right"
+                    >
+                        <Translation id="TR_LANDING_CONTINUE" />
                     </ButtonContinue>
                 </Item>
             </Wrapper>
