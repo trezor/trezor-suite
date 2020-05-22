@@ -86,16 +86,32 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             coin: 'btc',
             blockchainLink: {
                 type: 'blockbook',
-                url: ['https://blockbook-dev.corp.sldev.cz:9130'],
+                url: ['https://beta-btc.trezor.io/'],
             },
         });
         TrezorConnect.blockchainSetCustomBackend({
             coin: 'eth',
             blockchainLink: {
                 type: 'blockbook',
-                url: ['https://blockbook-dev.corp.sldev.cz:9136'],
+                url: ['https://beta-eth.trezor.io/'],
             },
         });
+        TrezorConnect.blockchainSetCustomBackend({
+            coin: 'bch',
+            blockchainLink: {
+                type: 'blockbook',
+                url: ['https://beta-bch.trezor.io/'],
+            },
+        });
+        TrezorConnect.blockchainSetCustomBackend({
+            coin: 'ltc',
+            blockchainLink: {
+                type: 'blockbook',
+                url: ['https://beta-ltc.trezor.io/'],
+            },
+        });
+
+        // TODO: remove sldev blockbooks before beta release!
         TrezorConnect.blockchainSetCustomBackend({
             coin: 'trop',
             blockchainLink: {
