@@ -161,7 +161,7 @@ describe('router', () => {
 
         it('other params validation', () => {
             expect(getAppWithParams('/')).toEqual({
-                app: 'dashboard',
+                app: 'root',
                 params: undefined,
                 route: findRouteByName('suite-index'),
             });

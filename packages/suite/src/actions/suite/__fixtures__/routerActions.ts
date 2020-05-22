@@ -4,7 +4,7 @@ export const init = [
     {
         description: `success`,
         result: {
-            app: 'dashboard',
+            app: 'root',
             hash: undefined,
             params: undefined,
             pathname: '/',

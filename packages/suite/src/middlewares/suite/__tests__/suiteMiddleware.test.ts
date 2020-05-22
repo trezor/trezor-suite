@@ -74,7 +74,7 @@ describe('suite middleware', () => {
                 url: '/',
             });
             expect(store.getActions()).toEqual([
-                { type: SUITE.APP_CHANGED, payload: 'dashboard' },
+                { type: SUITE.APP_CHANGED, payload: 'root' },
                 { type: ROUTER.LOCATION_CHANGE, url: '/' },
             ]);
         });
