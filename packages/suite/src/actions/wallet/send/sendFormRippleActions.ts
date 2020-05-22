@@ -188,6 +188,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
                 formattedAmount: `${amount} ${account.symbol.toUpperCase()}`,
                 device: selectedDevice,
                 descriptor: account.descriptor,
+                symbol: account.symbol,
                 txid: sentTx.payload.txid,
             }),
         );

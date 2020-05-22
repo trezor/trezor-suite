@@ -2,6 +2,7 @@ import produce from 'immer';
 import { DEVICE } from 'trezor-connect';
 import { NOTIFICATION, SUITE } from '@suite-actions/constants';
 import { Action, TrezorDevice } from '@suite-types';
+import { Network } from '@wallet-types';
 
 interface Options {
     seen?: boolean;
@@ -32,6 +33,7 @@ export type ToastPayload = (
           formattedAmount: string;
           device?: TrezorDevice;
           descriptor: string;
+          symbol: Network['symbol'];
           txid: string;
       }
     | {
@@ -69,6 +71,7 @@ export type EventPayload = (
           formattedAmount: string;
           device?: TrezorDevice;
           descriptor: string;
+          symbol: Network['symbol'];
           txid: string;
       }
     | {

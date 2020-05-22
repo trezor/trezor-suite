@@ -1,4 +1,4 @@
-import { Account, Network } from '@wallet-types';
+import { Network } from '@wallet-types';
 import {
     SendFormActions as SendFormActions$,
     SendFormBtcActions as SendFormBtcActions$,
@@ -7,13 +7,18 @@ import {
 } from './actions';
 
 import { Output as Output$ } from './output';
-import { FeeLevel as FeeLevel$ } from 'trezor-connect';
+import { FeeLevel as FeeLevel$, TokenInfo } from 'trezor-connect';
 import {
     PrecomposedTransactionXrp as PrecomposedTransactionXrp$,
     PrecomposedTransactionEth as PrecomposedTransactionEth$,
 } from './transactions';
 
-import { State as State$, InitialState as InitialState$, FeeInfo as FeeInfo$ } from './state';
+import {
+    State as State$,
+    InitialState as InitialState$,
+    FeeInfo as FeeInfo$,
+    CustomFee as CustomFee$,
+} from './state';
 
 export type SendFormActions = SendFormActions$;
 export type SendFormBtcActions = SendFormBtcActions$;
@@ -21,6 +26,7 @@ export type SendFormXrpActions = SendFormXrpActions$;
 export type SendFormEthActions = SendFormEthActions$;
 export type Output = Output$;
 export type FeeInfo = FeeInfo$;
+export type CustomFee = CustomFee$;
 export type FeeLevel = FeeLevel$;
 export type InitialState = InitialState$;
 export type State = State$;
@@ -28,28 +34,12 @@ export type PrecomposedTransactionXrp = PrecomposedTransactionXrp$;
 export type PrecomposedTransactionEth = PrecomposedTransactionEth$;
 
 export type EthTransactionData = {
-    network: Account['symbol'];
-    token?: string | boolean;
+    token?: TokenInfo;
     chainId: Network['chainId'];
-    from: Output['address']['value'];
-    to: Output['address']['value'];
-    amount: Output['amount']['value'];
+    to: NonNullable<Output['address']['value']>;
+    amount: NonNullable<Output['amount']['value']>;
     data?: State['networkTypeEthereum']['data']['value'];
     gasLimit: State['networkTypeEthereum']['data']['value'];
     gasPrice: State['networkTypeEthereum']['data']['value'];
     nonce: string;
-};
-
-export type EthPreparedTransaction = {
-    chainId: Network['chainId'];
-    token?: string | null | boolean;
-    value: Output['amount']['value'];
-    to: Output['address']['value'];
-    data?: State['networkTypeEthereum']['data']['value'];
-    gasLimit: State['networkTypeEthereum']['data']['value'];
-    gasPrice: State['networkTypeEthereum']['data']['value'];
-    nonce: string;
-    r: string;
-    s: string;
-    v: string;
 };

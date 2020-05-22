@@ -47,7 +47,7 @@ export default (props: Props) => (
                 isSearchable
                 isClearable={false}
                 onChange={(option: Output['localCurrency']['value']) =>
-                    props.sendFormActions.handleSelectCurrencyChange(option, props.outputId)
+                    props.sendFormActions.handleFiatSelectChange(option, props.outputId)
                 }
                 value={props.localCurrency}
                 options={FIAT.currencies.map((currency: string) => getCurrencyOptions(currency))}

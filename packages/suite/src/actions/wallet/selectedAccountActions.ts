@@ -211,7 +211,7 @@ export const getStateForAction = (action: Action) => (dispatch: Dispatch, getSta
 
     // find differences
     const stateChanged = comparisonUtils.isChanged(state.wallet.selectedAccount, newState, {
-        account: ['descriptor', 'availableBalance', 'nonce', 'marker'],
+        account: ['descriptor', 'availableBalance', 'nonce', 'marker', 'tokens'],
         discovery: [
             'status',
             'index',

@@ -36,11 +36,7 @@ export const create = (
         balance: accountInfo.balance,
         availableBalance: accountInfo.availableBalance,
         formattedBalance: accountUtils.formatNetworkAmount(accountInfo.balance, discoveryItem.coin),
-        tokens: accountInfo.tokens?.map(t => ({
-            ...t,
-            symbol: t.symbol ? t.symbol.toLowerCase() : t.symbol,
-            balance: t.balance ? accountUtils.formatAmount(t.balance, t.decimals) : t.balance,
-        })),
+        tokens: accountUtils.enhanceTokens(accountInfo.tokens),
         addresses: accountInfo.addresses,
         utxo: accountInfo.utxo,
         history: accountInfo.history,
@@ -57,11 +53,7 @@ export const update = (account: Account, accountInfo: AccountInfo): AccountActio
         path: account.path,
         empty: accountInfo.empty,
         formattedBalance: accountUtils.formatNetworkAmount(accountInfo.balance, account.symbol),
-        tokens: accountInfo.tokens?.map(t => ({
-            ...t,
-            symbol: t.symbol ? t.symbol.toLowerCase() : t.symbol,
-            balance: t.balance ? accountUtils.formatAmount(t.balance, t.decimals) : t.balance,
-        })),
+        tokens: accountUtils.enhanceTokens(accountInfo.tokens),
         ...accountUtils.getAccountSpecific(accountInfo, account.networkType),
     },
 });
@@ -114,7 +106,6 @@ export const fetchAndUpdateAccount = (account: Account) => async (
 
         const analyze = analyzeTransactions(payload.history.transactions || [], accountTxs);
         if (analyze.remove.length > 0) {
-            // TODO: remove notif in middleware
             dispatch(transactionActions.remove(account, analyze.remove));
         }
         if (analyze.add.length > 0) {
@@ -123,16 +114,20 @@ export const fetchAndUpdateAccount = (account: Account) => async (
 
         const accountDevice = accountUtils.findAccountDevice(account, getState().devices);
         analyze.newTransactions.forEach(tx => {
+            const token = tx.tokens && tx.tokens.length ? tx.tokens[0] : undefined;
+            const formattedAmount = token
+                ? `${accountUtils.formatAmount(
+                      token.amount,
+                      token.decimals,
+                  )} ${token.symbol.toUpperCase()}`
+                : accountUtils.formatNetworkAmount(tx.amount, account.symbol, true);
             dispatch(
                 notificationActions.addEvent({
                     type: 'tx-confirmed',
-                    formattedAmount: accountUtils.formatNetworkAmount(
-                        tx.amount,
-                        account.symbol,
-                        true,
-                    ),
+                    formattedAmount,
                     device: accountDevice,
                     descriptor: account.descriptor,
+                    symbol: account.symbol,
                     txid: tx.txid,
                 }),
             );

@@ -226,6 +226,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Not enough funds',
         id: 'TR_AMOUNT_IS_NOT_ENOUGH',
     },
+    NOT_ENOUGH_CURRENCY_FEE: {
+        defaultMessage: 'Not enough {symbol} to cover transaction fee',
+        id: 'NOT_ENOUGH_CURRENCY_FEE',
+    },
     TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS: {
         defaultMessage: 'Maximum {decimals} decimals allowed',
         id: 'TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS',
@@ -941,6 +945,11 @@ const definedMessages = defineMessages({
     TR_GAS_LIMIT: {
         defaultMessage: 'Gas limit',
         id: 'TR_GAS_LIMIT',
+    },
+    TR_TOKEN_BALANCE: {
+        defaultMessage: 'You have {balance}',
+        description: 'Additional label in send form above amount input',
+        id: 'TR_TOKEN_BALANCE',
     },
     TR_GATHERING_INFO: {
         defaultMessage: 'Gathering information, please wait...',
@@ -2087,12 +2096,12 @@ const definedMessages = defineMessages({
     // TR_SEND_GAS_LIMIT_TOOLTIP: {
     //     id: 'TR_SEND_GAS_LIMIT_TOOLTIP',
     //     defaultMessage:
-    //         'Gas limit refers to the maximum amount of gas user is willing to spendon a particular transaction. Transaction fee = gas limit * gas price. Increasing the gas limit will not get the transaction confirmed sooner. Default value for sending ETH is {defaultGasLimit}',
+    //         'Gas limit refers to the maximum amount of gas user is willing to spend on a particular transaction. Transaction fee = gas limit * gas price. Increasing the gas limit will not get the transaction confirmed sooner. Default value for sending ETH is {defaultGasLimit}',
     // },
     TR_SEND_GAS_LIMIT_TOOLTIP: {
         id: 'TR_SEND_GAS_LIMIT_TOOLTIP',
         defaultMessage:
-            'Gas limit refers to the maximum amount of gas user is willing to spendon a particular transaction. Transaction fee = gas limit * gas price. Increasing the gas limit will not get the transaction confirmed sooner.',
+            'Gas limit refers to the maximum amount of gas user is willing to spend on a particular transaction. Transaction fee = gas limit * gas price. Increasing the gas limit will not get the transaction confirmed sooner.',
     },
     // TR_SEND_GAS_PRICE_TOOLTIP: {
     //     id: 'TR_SEND_GAS_PRICE_TOOLTIP',

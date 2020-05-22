@@ -201,6 +201,7 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
                 formattedAmount: formatNetworkAmount(spentWithoutFee, account.symbol, true),
                 device: selectedDevice,
                 descriptor: account.descriptor,
+                symbol: account.symbol,
                 txid: sentTx.payload.txid,
             }),
         );
