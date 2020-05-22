@@ -7,7 +7,7 @@ describe('Firmware', () => {
     it('Firmware outdated static notification should open firmware update modal', () => {
         cy.task('startEmu', { version: '2.1.4', wipe: true });
         cy.task('setupEmu');
-        cy.visit('/');
+        cy.visit('/dashboard');
         cy.passThroughInitialRun();
         cy.getTestElement('@notification/update-firmware/button').click();
 
@@ -34,8 +34,9 @@ describe('Firmware', () => {
         cy.task('startBridge');
         cy.visit('/settings/device');
         cy.passThroughInitialRun();
-        cy.getTestElement('@settings/device/update-button').should('contain.text', 'Up to date').click();
+        cy.getTestElement('@settings/device/update-button')
+            .should('contain.text', 'Up to date')
+            .click();
         cy.getTestElement('@firmware/close-button').click();
     });
-
 });
