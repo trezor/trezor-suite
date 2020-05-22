@@ -5,10 +5,10 @@ const SECOND_DEVICE_PATH = '2';
 describe('Stories of device connecting', () => {
     before(() => {
         cy.task('stopEmu');
-    })
+    });
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
-        // some route that will not trigger discovery, it does not matter in this test 
+        // some route that will not trigger discovery, it does not matter in this test
         cy.visit('/settings');
         cy.passThroughInitialRun();
         cy.window()
@@ -47,9 +47,9 @@ describe('Stories of device connecting', () => {
             cy.getTestElement('@device-invalid-mode/bootloader').matchImageSnapshot('bootloader');
         });
 
-        it(`undreadable device -> show info about unreadable`, () => {
+        it(`unreadable device -> show info about unreadable`, () => {
             cy.connectDevice({ path: SECOND_DEVICE_PATH, type: 'unreadable' });
-            cy.getTestElement('@device-invalid-mode/unreadable').matchImageSnapshot('unreadable')
+            cy.getTestElement('@device-invalid-mode/unreadable').matchImageSnapshot('unreadable');
         });
 
         it(`device without seed -> offer onboarding, no wallet`, () => {
@@ -86,7 +86,6 @@ describe('Stories of device connecting', () => {
                 },
             );
             cy.getTestElement('@firmware/index');
-            
         });
 
         it(`seedless device -> show info about seedless`, () => {
@@ -103,7 +102,7 @@ describe('Stories of device connecting', () => {
             cy.getTestElement('@device-invalid-mode/seedless').matchImageSnapshot('seedless');
         });
     });
-    
+
     // todo: still some troubles here
     describe.skip('1+ device is already connected -> user connects another one -> selects it ', () => {
         beforeEach(() => {
@@ -145,7 +144,9 @@ describe('Stories of device connecting', () => {
                 },
             );
             cy.toggleDeviceMenu();
-            cy.getTestElement(`@switch-device/${SECOND_DEVICE_PATH}/solve-issue-button`).should('not.exist');
+            cy.getTestElement(`@switch-device/${SECOND_DEVICE_PATH}/solve-issue-button`).should(
+                'not.exist',
+            );
         });
 
         it(`required firmware -> show info, offer go to firmware or switch device`, () => {
@@ -163,7 +164,6 @@ describe('Stories of device connecting', () => {
             cy.toggleDeviceMenu();
             cy.getTestElement(`@switch-device/${SECOND_DEVICE_PATH}/solve-issue-button`).click();
             cy.getTestElement('@device-invalid-mode/update-required');
-
         });
 
         it(`seedless device -> show info about seedless, offer switch device`, () => {

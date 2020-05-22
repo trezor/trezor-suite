@@ -5,14 +5,14 @@ describe('Suite initial run: when user opens suite for the first time, welcome a
     });
 
     it('Still reloads to welcome screen before initialRun flags is set to false', () => {
-        cy.visit('/');
+        cy.visit('/dashboard');
         cy.getTestElement('@welcome');
         cy.reload();
         cy.getTestElement('@welcome', { timeout: 20000 });
     });
 
     it('Skips initial run and shows connect-device modal', () => {
-        cy.visit('/');
+        cy.visit('/dashboard');
         cy.passThroughInitialRun();
         cy.getTestElement('@modal/connect-device');
         cy.reload();

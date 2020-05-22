@@ -3,14 +3,15 @@ const defAddr = 'bc1qek0hazgrelpuce8anp72ur4kpgel74ype3pw52';
 
 describe('Passphrase', () => {
     beforeEach(() => {
-        // note that versions before 2.3.0 don't have passphrase caching, this means that returning 
+        // note that versions before 2.3.0 don't have passphrase caching, this means that returning
         // back to passphrase that was used before in the session would require to type the passphrase again
-        cy.task('startEmu', { wipe: true, version: '2.3.0'});
+        cy.task('startEmu', { wipe: true, version: '2.3.0' });
         cy.task('setupEmu');
 
+        // eslint-disable-next-line @typescript-eslint/camelcase
         cy.task('applySettings', { passphrase_always_on_device: false });
         cy.viewport(1024, 768).resetDb();
-        cy.visit('/');
+        cy.visit('/dashboard');
         cy.passThroughInitialRun();
     });
 
