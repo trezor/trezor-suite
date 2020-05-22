@@ -95,17 +95,11 @@ export const fetchAccountGraphData = (
 
     if (response?.success) {
         const enhancedResponse = response.payload.map(h => {
-            // @ts-ignore TODO: remove ignore when types are updated in connect
             const normalizedReceived = h.sentToSelf
-                ? // prettier-ignore
-                  // @ts-ignore
-                  new BigNumber(h.received).minus(h.sentToSelf || 0).toFixed()
+                ? new BigNumber(h.received).minus(h.sentToSelf || 0).toFixed()
                 : h.received;
-            // @ts-ignore
             const normalizedSent = h.sentToSelf
-                ? // prettier-ignore
-                  // @ts-ignore
-                  new BigNumber(h.sent).minus(h.sentToSelf || 0).toFixed()
+                ? new BigNumber(h.sent).minus(h.sentToSelf || 0).toFixed()
                 : h.sent;
 
             return {
