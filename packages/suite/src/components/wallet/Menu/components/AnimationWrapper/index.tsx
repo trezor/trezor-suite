@@ -24,7 +24,7 @@ export default ({ opened, children, onAnimationStart, onUpdate, onAnimationCompl
                     onAnimationStart={onAnimationStart}
                     onUpdate={onUpdate}
                     onAnimationComplete={onAnimationComplete}
-                    transition={{ duration: 0.24, ease: [0.04, 0.62, 0.23, 0.98] }}
+                    transition={{ duration: 0.24, ease: 'easeInOut' }}
                 >
                     {children}
                 </motion.div>
