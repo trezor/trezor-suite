@@ -131,7 +131,7 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
 
         // graph
         const graphStore = db.createObjectStore('graph', {
-            keyPath: ['account.descriptor', 'account.symbol', 'account.deviceState', 'interval'],
+            keyPath: ['account.descriptor', 'account.symbol', 'account.deviceState'],
         });
         graphStore.createIndex('accountKey', [
             'account.descriptor',
