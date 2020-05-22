@@ -22,6 +22,7 @@ export interface InputButton {
     iconColorHover?: string;
     isDisabled?: boolean;
     onClick: () => void;
+    'data-test'?: string;
 }
 
 export type IconType = keyof typeof ICONS;

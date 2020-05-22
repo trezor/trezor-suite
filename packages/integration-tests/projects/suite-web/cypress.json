@@ -7,6 +7,7 @@
     "screenshotsFolder": "./screenshots",
     "videosFolder": "./videos",
     "video": true,
+    "videoCompression": 8,
     "trashAssetsBeforeRuns": true,
     "chromeWebSecurity": false
 }

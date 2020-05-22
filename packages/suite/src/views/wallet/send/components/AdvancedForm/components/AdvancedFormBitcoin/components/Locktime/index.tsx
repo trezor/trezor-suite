@@ -57,7 +57,12 @@ export default () => {
                     </Tooltip>
                 </Right>
             </Row>
-            <StyledInput value="" variant="small" onChange={() => console.log('change')} />
+            <StyledInput
+                isDisabled
+                value=""
+                variant="small"
+                onChange={() => console.log('change')}
+            />
         </Wrapper>
     );
 };

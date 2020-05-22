@@ -103,6 +103,7 @@ export default ({ send, suite, account, device, modalActions }: Props) => {
                 <ButtonReview
                     isDisabled={isComposing || isDisabled(send, suite, device, networkType)}
                     onClick={() => modalActions.openModal({ type: 'review-transaction' })}
+                    data-test="@send/review-button"
                 >
                     <Translation id="TR_SEND_REVIEW_TRANSACTION" />
                 </ButtonReview>

@@ -79,6 +79,7 @@ Cypress.Commands.add('changeDevice', changeDevice);
 // assertion helpers
 Cypress.Commands.add('onboardingShouldLoad', onboardingShouldLoad);
 Cypress.Commands.add('dashboardShouldLoad', dashboardShouldLoad);
+
 // selector helpers
 Cypress.Commands.add('getTestElement', getTestElement);
 Cypress.Commands.add('getConfirmActionOnDeviceModal', getConfirmActionOnDeviceModal);

@@ -30,6 +30,7 @@ export default (props: ComponentProps) => (
                 }
             }}
             options={options}
+            data-test="@send/add-select"
         />
     </Wrapper>
 );

@@ -25,7 +25,10 @@ interface Props {
 }
 
 export default ({ sendFormActionsBitcoin, outputId }: Props) => (
-    <Wrapper onClick={() => sendFormActionsBitcoin.removeRecipient(outputId)}>
+    <Wrapper
+        onClick={() => sendFormActionsBitcoin.removeRecipient(outputId)}
+        data-test={`@send/output-${outputId}/clear-button`}
+    >
         <StyledIcon size={12} color={colors.BLACK50} icon="CLEAR" />
         <Translation id="TR_REMOVE" />
     </Wrapper>

@@ -60,8 +60,8 @@ unit tests:
 include:
     - ci/environment.yml
     - ci/install-and-build.yml
-    - ci/packages/components.yml
-    - ci/packages/suite.yml
+    # - ci/packages/components.yml
+    # - ci/packages/suite.yml
     - ci/packages/suite-web.yml
     - ci/packages/suite-desktop.yml
     - ci/packages/suite-native.yml

@@ -23,7 +23,13 @@ export default ({ sendFormActions, send }: Props) => {
     return (
         <Wrapper>
             <In onClick={() => sendFormActions.clear()}>
-                <Button variant="tertiary" isDisabled={!touched} icon="CLEAR" alignIcon="left">
+                <Button
+                    variant="tertiary"
+                    isDisabled={!touched}
+                    icon="CLEAR"
+                    alignIcon="left"
+                    data-test="@send/clear-all-button"
+                >
                     <Translation id="TR_CLEAR_ALL" />
                 </Button>
             </In>

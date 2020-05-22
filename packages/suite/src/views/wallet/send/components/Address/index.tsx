@@ -69,6 +69,7 @@ export default ({ output, account, openModal, sendFormActions, send }: Props) =>
             }}
             value={value || ''}
             onChange={e => sendFormActions.handleAddressChange(id, e.target.value)}
+            data-test={`@send/output-${id}/address-input`}
         />
     );
 };

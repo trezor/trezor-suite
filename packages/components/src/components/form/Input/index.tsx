@@ -222,6 +222,7 @@ const Input = ({
                             onMouseEnter={handleButtonEnter}
                             onMouseLeave={handleButtonLeave}
                             disabled={button.isDisabled}
+                            {...button}
                         >
                             {button.icon && (
                                 <StyledIcon

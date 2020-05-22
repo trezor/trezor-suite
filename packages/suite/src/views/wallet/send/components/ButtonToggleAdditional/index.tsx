@@ -32,7 +32,10 @@ interface Props {
 
 export default (props: Props) => (
     <Wrapper>
-        <Text onClick={() => props.sendFormActions.toggleAdditionalFormVisibility()}>
+        <Text
+            onClick={() => props.sendFormActions.toggleAdditionalFormVisibility()}
+            data-test="@send/advanced-toggle"
+        >
             {props.isActive ? (
                 <Translation id="TR_HIDE_ADVANCED_OPTIONS" />
             ) : (

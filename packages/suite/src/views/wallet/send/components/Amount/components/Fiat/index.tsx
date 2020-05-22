@@ -40,6 +40,7 @@ export default (props: Props) => (
             onChange={e =>
                 props.sendFormActions.handleFiatInputChange(props.outputId, e.target.value)
             }
+            data-test={`@send/output-${props.outputId}/fiat-input`}
         />
         <SelectWrapper>
             <Select
@@ -51,6 +52,7 @@ export default (props: Props) => (
                 }
                 value={props.localCurrency}
                 options={FIAT.currencies.map((currency: string) => getCurrencyOptions(currency))}
+                data-test="@send/fiat-select"
             />
         </SelectWrapper>
     </Wrapper>
