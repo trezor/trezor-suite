@@ -212,7 +212,7 @@ export const onBlockMined = (block: BlockchainBlock) => async (
 ): Promise<void> => {
     const symbol = block.coin.shortcut.toLowerCase();
     const networkAccounts = getState().wallet.accounts.filter(a => a.symbol === symbol);
-    networkAccounts.forEach(async account => {
+    networkAccounts.forEach(account => {
         dispatch(accountActions.fetchAndUpdateAccount(account));
     });
 };
@@ -255,9 +255,17 @@ export const onNotification = (payload: BlockchainNotification) => async (
 
     // it's pointless to fetch ripple accounts
     // TODO: investigate more how to keep ripple pending tx until they are confirmed/rejected
-    // ripple-lib doesnt send "pending" txs in history
+    // ripple-lib doesn't send "pending" txs in history
     if (account.networkType !== 'ripple') {
         dispatch(accountActions.fetchAndUpdateAccount(account));
+        // tmp workaround for BB not sending multiple notifications, fix in progress
+        if (account.networkType === 'bitcoin') {
+            networkAccounts.forEach(account => {
+                dispatch(accountActions.fetchAndUpdateAccount(account));
+            });
+        } else {
+            dispatch(accountActions.fetchAndUpdateAccount(account));
+        }
     }
 };
 
