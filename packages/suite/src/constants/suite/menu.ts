@@ -2,7 +2,7 @@ export const MAIN_MENU_ITEMS = [
     {
         translationId: 'TR_DASHBOARD',
         icon: 'DASHBOARD',
-        route: 'suite-index',
+        route: 'suite-dashboard',
         isDisabled: false,
     },
     {
