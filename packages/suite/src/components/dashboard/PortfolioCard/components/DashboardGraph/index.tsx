@@ -86,17 +86,9 @@ const DashboardGraph = React.memo((props: Props) => {
 
     useEffect(() => {
         if (!isLoading) {
+            const worker = new GraphWorker();
             setIsProcessing(true);
             const rawData = getGraphDataForInterval({ deviceState: selectedDeviceState });
-            // const rawDeviceGraphData = selectedDeviceState
-            //     ? rawData.filter(
-            //           d =>
-            //               deviceGraphDataFilterFn(d, selectedDeviceState) &&
-            //               d.interval === selectedRange.label,
-            //       )
-            //     : [];
-
-            const worker = new GraphWorker();
 
             worker.postMessage({
                 history: rawData,
@@ -104,7 +96,7 @@ const DashboardGraph = React.memo((props: Props) => {
                 type: 'dashboard',
             });
 
-            worker.addEventListener('message', (event: MessageEvent) => {
+            const handleMessage = (event: MessageEvent) => {
                 const aggregatedData = event.data;
                 const graphTicks =
                     selectedRange.label === 'all'
@@ -114,7 +106,13 @@ const DashboardGraph = React.memo((props: Props) => {
                 setData(aggregatedData);
                 setXticks(graphTicks);
                 setIsProcessing(false);
-            });
+            };
+
+            worker.addEventListener('message', handleMessage);
+            return () => {
+                // @ts-ignore TODO: WHYs
+                worker.removeEventListener('error', handleMessage);
+            };
         }
     }, [isLoading, getGraphDataForInterval, selectedDeviceState, selectedRange]);
 
