@@ -1,6 +1,6 @@
 import React, { useRef, useLayoutEffect } from 'react';
-import BigNumber from 'bignumber.js';
 import { FormattedNumber } from '@suite-components';
+import { formatCoinBalance } from '@suite/utils/wallet/balanceUtils';
 
 interface CommonProps {
     setWidth: (n: number) => void;
@@ -33,7 +33,7 @@ const CustomYAxisTick = (props: CustomProps) => {
                         maximumFractionDigits={0}
                     />
                 )}
-                {props.symbol && new BigNumber(payload.value).toFixed(2)}
+                {props.symbol && formatCoinBalance(String(payload.value))}
             </text>
         </g>
     );
