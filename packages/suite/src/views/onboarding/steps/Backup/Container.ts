@@ -16,10 +16,10 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goToSubStep: bindActionCreators(onboardingActions.goToSubStep, dispatch),
     goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
     backupDevice: bindActionCreators(backupActions.backupDevice, dispatch),
     goto: bindActionCreators(routerActions.goto, dispatch),
+    closeModalApp: bindActionCreators(routerActions.closeModalApp, dispatch),
 });
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;

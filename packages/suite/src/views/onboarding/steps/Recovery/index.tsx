@@ -40,7 +40,7 @@ const RecoveryStep = (props: Props) => {
     };
 
     const isBackButtonVisible = () => {
-        if (recovery.status === 'finished' && recovery.error && model === 1) {
+        if (recovery.status === 'finished' && recovery.error) {
             return true;
         }
         if (recovery.status !== 'finished' && recovery.status !== 'in-progress') {
