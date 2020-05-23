@@ -152,7 +152,7 @@ export const report = (data: Payload, force = false) => async (
 ) => {
     if (isDev()) {
         // on dev, do nothing
-        return;
+        // return;
     }
 
     const { enabled, sessionId, instanceId } = getState().analytics;
@@ -213,7 +213,7 @@ export const report = (data: Payload, force = false) => async (
  * 3. if empty (first start) generate instanceId and save it back to storage. instanceId exists in storage
  *     regardless of whether user enabled analytics or not.
  *
- * User may disable analytics, see dispose() fn. 
+ * User may disable analytics, see dispose() fn.
  */
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const { analytics } = getState();

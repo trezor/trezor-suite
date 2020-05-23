@@ -3,7 +3,6 @@ import { FIRMWARE } from '@firmware-actions/constants';
 import { AnyStatus } from '@firmware-reducers/firmwareReducer';
 import { Dispatch, GetState, Action, AcquiredDevice } from '@suite-types';
 import * as analyticsActions from '@suite-actions/analyticsActions';
-import { getFwVersion } from '@suite-utils/device';
 
 export type FirmwareActions =
     | { type: typeof FIRMWARE.SET_UPDATE_STATUS; payload: AnyStatus }
@@ -59,7 +58,11 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
 
     // for update (in firmware modal) target release is set. otherwise use device.firmwareRelease
     const toFwVersion = targetRelease?.release?.version || device.firmwareRelease.release.version;
-    const fromBlVersion = getFwVersion(device);
+    const fromBlVersion = [
+        device.features.major_version,
+        device.features.minor_version,
+        device.features.patch_version,
+    ].join();
 
     dispatch(setStatus('downloading'));
 
@@ -77,15 +80,31 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
     dispatch(setStatus('started'));
 
     const updateResponse = await TrezorConnect.firmwareUpdate(payload);
-    analyticsActions.report({
-        type: 'device-update-firmware',
-        payload: {
-            fromBlVersion,
-            toFwVersion,
-            toBtcOnly: btcOnly,
-            error: !updateResponse.success ? updateResponse.payload.error : '',
-        },
-    });
+
+    // some basic firmware update reporting, not great, not terrible but definitely not complete
+    // we would like to know from which version to which version user updates. the trouble is, that
+    // this is not possible to do with 100% accuracy, why:
+    // - user may connect device A in bootloader, get target firmware for device A, reconnect in normal mode device B and install fw.
+    // - connect device directly into bootloader (actually suite does not allow this, but onboarding does as new devices without fw are in bootloader,
+    // todo: I could rework it into middleware, log multiple actions as user goes through fw update process
+    // -- are we okay that results will not be 100% accurate [product]
+    // -- are we okay that data will need to do some more work with data connecting?
+    // -- (ofc I may store logging data in our data model and send it at once, hmm maybe?)
+    console.warn('updateResponse', updateResponse);
+    dispatch(
+        analyticsActions.report({
+            type: 'device-update-firmware',
+            payload: {
+                // todo: fromFwVersion
+                // todo: fromBtcOnly,
+                fromBlVersion,
+                toFwVersion,
+                toBtcOnly: btcOnly,
+                error: !updateResponse.success ? updateResponse.payload.error : '',
+            },
+        }),
+    );
+
     if (!updateResponse.success) {
         return dispatch({ type: FIRMWARE.SET_ERROR, payload: updateResponse.payload.error });
     }
