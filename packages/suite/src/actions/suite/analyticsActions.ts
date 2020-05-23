@@ -37,6 +37,21 @@ export type Payload =
               passphrase_protection: boolean;
           };
       }
+    // device-update-firmware
+    // is log after firmware update call to device is finished.
+    | {
+          type: 'device-update-firmware';
+          payload: {
+              // version of bootloader before update started. unluckily fw version before update is not logged
+              fromBlVersion: string;
+              // version of the new firmware e.g 1.2.3
+              toFwVersion: string;
+              // is new firmware bitcoin only variant?
+              toBtcOnly: boolean;
+              // if finished with error, field error contains error string, otherwise is empty
+              error: string;
+          };
+      }
     // - if device is in bootloader, only this event is logged
     | { type: 'device-connect'; payload: { mode: 'bootloader' } }
     // initial-run-completed
@@ -61,14 +76,24 @@ export type Payload =
               usedDevice: boolean;
           };
       }
+    // account-create
+    // logged either automatically upon each suite start as default switched on accounts are loaded
+    // or when user adds account manually
     | {
           type: 'account-create';
           payload: {
+              // normal, segwit, legacy
               type: Account['accountType'];
+              // index of account
               path: Account['path'];
+              // network (btc, eth, etc.)
               symbol: Account['symbol'];
           };
       }
+    // ui
+    // this is general category of click into ui.
+    // every logged event has payload which describes where user clicked, for example payload: "menu/settings"
+    // todo: make this also strongly typed?
     | {
           type: 'ui';
           payload: string;
@@ -118,7 +143,7 @@ const getUrl = () => {
         }
     }
 
-    return `${base}/${process.env.SUITE_TYPE}/development.log`;
+    return `${base}/${process.env.SUITE_TYPE}/develop.log`;
 };
 
 export const report = (data: Payload, force = false) => async (
@@ -188,8 +213,7 @@ export const report = (data: Payload, force = false) => async (
  * 3. if empty (first start) generate instanceId and save it back to storage. instanceId exists in storage
  *     regardless of whether user enabled analytics or not.
  *
- * User may disable analytics, see dispose() fn. This flushes data from reducer and clears
- * sessionId from storage (instanceId is kept)
+ * User may disable analytics, see dispose() fn. 
  */
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const { analytics } = getState();

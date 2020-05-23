@@ -2,6 +2,8 @@ import TrezorConnect from 'trezor-connect';
 import { FIRMWARE } from '@firmware-actions/constants';
 import { AnyStatus } from '@firmware-reducers/firmwareReducer';
 import { Dispatch, GetState, Action, AcquiredDevice } from '@suite-types';
+import * as analyticsActions from '@suite-actions/analyticsActions';
+import { getFwVersion } from '@suite-utils/device';
 
 export type FirmwareActions =
     | { type: typeof FIRMWARE.SET_UPDATE_STATUS; payload: AnyStatus }
@@ -55,6 +57,10 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
 
     const model = device.features.major_version;
 
+    // for update (in firmware modal) target release is set. otherwise use device.firmwareRelease
+    const toFwVersion = targetRelease?.release?.version || device.firmwareRelease.release.version;
+    const fromBlVersion = getFwVersion(device);
+
     dispatch(setStatus('downloading'));
 
     const payload = {
@@ -64,14 +70,22 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
             path: device.path,
         },
         btcOnly,
-        // for update (in firmware modal) target release is set. otherwise use device.firmwareRelease
-        version: targetRelease?.release?.version || device.firmwareRelease.release.version,
+        version: toFwVersion,
         baseUrl: 'https://wallet.trezor.io',
     };
 
     dispatch(setStatus('started'));
 
     const updateResponse = await TrezorConnect.firmwareUpdate(payload);
+    analyticsActions.report({
+        type: 'device-update-firmware',
+        payload: {
+            fromBlVersion,
+            toFwVersion,
+            toBtcOnly: btcOnly,
+            error: !updateResponse.success ? updateResponse.payload.error : '',
+        },
+    });
     if (!updateResponse.success) {
         return dispatch({ type: FIRMWARE.SET_ERROR, payload: updateResponse.payload.error });
     }
