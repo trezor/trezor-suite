@@ -90,7 +90,6 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
     // -- are we okay that results will not be 100% accurate [product]
     // -- are we okay that data will need to do some more work with data connecting?
     // -- (ofc I may store logging data in our data model and send it at once, hmm maybe?)
-    console.warn('updateResponse', updateResponse);
     dispatch(
         analyticsActions.report({
             type: 'device-update-firmware',
