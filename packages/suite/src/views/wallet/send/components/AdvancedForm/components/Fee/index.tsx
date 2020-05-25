@@ -84,8 +84,6 @@ const OptionLabel = styled(P)`
     word-break: break-all;
 `;
 
-const StyledSelect = styled(Select)``;
-
 const CustomFeeRow = styled(Row)`
     flex-direction: row;
     margin-top: 10px;
@@ -123,9 +121,14 @@ const getValue = (
     return `${formatNetworkAmount(feePerUnit, symbol)} ${symbol.toUpperCase()}`;
 };
 
+const isDisabled = (networkType: Account['networkType'], data: string | null) => {
+    console.log('aaa', networkType, data);
+    return networkType === 'ethereum' && data !== null;
+};
+
 export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
     if (!send || !account || !settings || !fiat) return null;
-    const { selectedFee, customFee, feeInfo, feeOutdated } = send;
+    const { selectedFee, customFee, feeInfo, feeOutdated, networkTypeEthereum } = send;
     const feeLevels = feeInfo.levels;
     const { localCurrency } = settings;
     const { networkType, symbol } = account;
@@ -156,13 +159,14 @@ export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
                         </Refresh>
                     )}
                 </Top>
-                <StyledSelect
+                <Select
                     variant="small"
                     isSearchable={false}
                     // hack for react select, it needs the "value"
                     value={{ ...selectedFee, value: selectedFee.feePerUnit }}
                     onChange={sendFormActions.handleFeeValueChange}
                     options={feeLevels}
+                    isDisabled={isDisabled(networkType, networkTypeEthereum.data.value)}
                     formatOptionLabel={(option: FeeLevel) => (
                         <OptionWrapper>
                             <OptionLabel>{capitalizeFirstLetter(option.label)} </OptionLabel>
@@ -178,14 +182,15 @@ export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
                     <CustomFeeWrapper>
                         <CustomFee />
                     </CustomFeeWrapper>
-                    {networkType === 'bitcoin' && fiatVal && customFee.value && (
+                    {fiatVal && customFee.value && (
                         <BadgeWrapper>
-                            <Badge>
+                            <Badge isGray>
                                 {toFiatCurrency(
                                     formatNetworkAmount(customFee.value, symbol),
                                     localCurrency,
                                     fiatVal.current?.rates,
-                                )}
+                                    true,
+                                )}{' '}
                                 {localCurrency}
                             </Badge>
                         </BadgeWrapper>

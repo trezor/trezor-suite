@@ -18,10 +18,10 @@ const HeaderWrapper = styled.div`
     background: ${colors.WHITE};
 `;
 
-const Header = styled.header`
+const Header = styled.header<{ onClick?: () => void }>`
     display: flex;
     padding: 10px 0px;
-    cursor: pointer;
+    cursor: ${props => (props.onClick ? 'pointer' : 'default')};
     justify-content: space-between;
     align-items: center;
 
@@ -35,7 +35,8 @@ const Header = styled.header`
 interface Props {
     type: Account['accountType'];
     animate?: boolean;
-    opened?: boolean;
+    keepOpened: boolean;
+    hasBalance: boolean;
     children?: React.ReactNode;
     onAnimationStart?: () => void;
     onUpdate?: () => void;
@@ -45,17 +46,23 @@ interface Props {
 export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
     const hasHeader = props.type !== 'normal';
     const wrapperRef = useRef<HTMLDivElement>(null);
-    const [expanded, setExpanded] = useState(!!props.opened || !hasHeader);
-    const isOpened = expanded || props.opened || !hasHeader;
+    const [expanded, setExpanded] = useState(props.hasBalance || props.keepOpened || !hasHeader);
+    const isOpened = expanded || props.keepOpened || !hasHeader;
     const [animatedIcon, setAnimatedIcon] = useState(false); // TODO: move animation to framer
     // React.useEffect(() => {
     //     console.log('====>FIRST TIME, MOVE ME UP');
     // }, [animatedIcon]);
 
+    React.useEffect(() => {
+        // follow props change (example: add new coin/account which has balance but group is closed)
+        if (props.keepOpened || props.hasBalance) {
+            setExpanded(true);
+        }
+    }, [props.keepOpened, props.hasBalance]);
+
     if (!props.children || React.Children.count(props.children) === 0) return null;
 
     const onClick = () => {
-        if (props.opened) return;
         setExpanded(!expanded);
         setAnimatedIcon(true);
     };
@@ -85,7 +92,7 @@ export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
         <Wrapper ref={wrapperRef}>
             {hasHeader && (
                 <HeaderWrapper>
-                    <Header onClick={onClick}>
+                    <Header onClick={!props.keepOpened ? onClick : undefined}>
                         <Translation
                             id={
                                 props.type === 'legacy'
@@ -93,13 +100,15 @@ export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
                                     : 'TR_SEGWIT_ACCOUNTS'
                             }
                         />
-                        <Icon
-                            canAnimate={animatedIcon}
-                            isActive={isOpened}
-                            size={12}
-                            color={colors.BLACK50}
-                            icon="ARROW_DOWN"
-                        />
+                        {!props.keepOpened && (
+                            <Icon
+                                canAnimate={animatedIcon}
+                                isActive={isOpened}
+                                size={12}
+                                color={colors.BLACK50}
+                                icon="ARROW_DOWN"
+                            />
+                        )}
                     </Header>
                 </HeaderWrapper>
             )}

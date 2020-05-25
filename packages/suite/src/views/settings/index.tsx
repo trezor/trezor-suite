@@ -2,7 +2,7 @@ import { SettingsLayout } from '@settings-components';
 import { SUITE } from '@suite-actions/constants';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
-import { Button } from '@trezor/components';
+import { Button, Tooltip } from '@trezor/components';
 import {
     ActionButton,
     ActionColumn,
@@ -133,18 +133,20 @@ export default ({
                         description={
                             <Version>
                                 <Translation id="TR_YOUR_CURRENT_VERSION" />
-                                <VersionLink
-                                    target="_blank"
-                                    href={`https://github.com/trezor/trezor-suite/commit/${process.env.COMMITHASH}`}
-                                >
-                                    <VersionButton
-                                        variant="tertiary"
-                                        icon="EXTERNAL_LINK"
-                                        alignIcon="right"
+                                <Tooltip content={process.env.COMMITHASH || ''}>
+                                    <VersionLink
+                                        target="_blank"
+                                        href={`https://github.com/trezor/trezor-suite/commit/${process.env.COMMITHASH}`}
                                     >
-                                        {process.env.VERSION}
-                                    </VersionButton>
-                                </VersionLink>
+                                        <VersionButton
+                                            variant="tertiary"
+                                            icon="EXTERNAL_LINK"
+                                            alignIcon="right"
+                                        >
+                                            {process.env.VERSION}
+                                        </VersionButton>
+                                    </VersionLink>
+                                </Tooltip>
                             </Version>
                         }
                     />

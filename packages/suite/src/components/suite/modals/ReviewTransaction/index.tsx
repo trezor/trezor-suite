@@ -1,6 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation, AccountLabeling } from '@suite-components';
+import {
+    Translation,
+    AccountLabeling,
+    HiddenPlaceholder,
+    FiatValue,
+    Badge,
+} from '@suite-components';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 import { Modal, Button, colors, variables } from '@trezor/components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -53,6 +59,10 @@ const Buttons = styled.div`
     justify-content: space-between;
 `;
 
+const BadgeWrapper = styled.div`
+    margin-left: 10px;
+`;
+
 const getFeeValue = (
     transactionInfo: any,
     networkType: Account['networkType'],
@@ -69,6 +79,7 @@ const getFeeValue = (
 export default ({
     send,
     account,
+    settings,
     modalActions,
     sendFormActionsBitcoin,
     sendFormActionsRipple,
@@ -78,6 +89,7 @@ export default ({
     const { outputs } = send;
     const { token } = send.networkTypeEthereum;
     const { networkType } = account;
+    const { localCurrency } = settings;
     const transactionInfo = getTransactionInfo(account.networkType, send);
     if (!transactionInfo || transactionInfo.type === 'error') return null;
     const upperCaseSymbol = account.symbol.toUpperCase();
@@ -145,6 +157,17 @@ export default ({
                             </Label>
                             <Value>
                                 {output.amount.value} {outputSymbol}
+                                <BadgeWrapper>
+                                    <HiddenPlaceholder>
+                                        <FiatValue
+                                            amount={output.amount.value || '0'}
+                                            fiatCurrency={localCurrency}
+                                            symbol={outputSymbol}
+                                        >
+                                            {({ value }) => <Badge isGray>{value}</Badge> ?? null}
+                                        </FiatValue>
+                                    </HiddenPlaceholder>
+                                </BadgeWrapper>
                             </Value>
                         </Box>
                     </OutputWrapper>
