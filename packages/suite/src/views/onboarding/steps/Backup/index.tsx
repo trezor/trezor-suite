@@ -67,11 +67,7 @@ const BackupStep = (props: Props) => {
                         </Text>
                         <StyledImage image="UNI_ERROR" />
                         <Wrapper.Controls>
-                            <OnboardingButton.Cta
-                                onClick={() => {
-                                    props.goto('suite-dashboard');
-                                }}
-                            >
+                            <OnboardingButton.Cta onClick={() => props.closeModalApp()}>
                                 <Translation id="TR_CONTINUE" />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
@@ -98,6 +94,17 @@ const BackupStep = (props: Props) => {
                     </>
                 )}
             </Wrapper.StepBody>
+            <Wrapper.StepFooter>
+                {status !== 'in-progress' && (
+                    <OnboardingButton.Back
+                        icon="CROSS"
+                        data-test="@onboarding/exit-app-button"
+                        onClick={() => props.closeModalApp()}
+                    >
+                        <Translation id="TR_SKIP_SECURITY" />
+                    </OnboardingButton.Back>
+                )}
+            </Wrapper.StepFooter>
         </Wrapper.Step>
     );
 };

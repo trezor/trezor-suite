@@ -42,11 +42,14 @@ const mapStateToProps = (state: AppState) => ({
     devices: state.devices,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    getDiscoveryAuthConfirmationStatus: () =>
-        dispatch(discoveryActions.getDiscoveryAuthConfirmationStatus()),
-    onPassphraseSubmit: bindActionCreators(modalActions.onPassphraseSubmit, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            getDiscoveryAuthConfirmationStatus: discoveryActions.getDiscoveryAuthConfirmationStatus,
+            onPassphraseSubmit: modalActions.onPassphraseSubmit,
+        },
+        dispatch,
+    );
 
 type Props = {
     device: TrezorDevice;
