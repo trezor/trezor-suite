@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-// import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 
