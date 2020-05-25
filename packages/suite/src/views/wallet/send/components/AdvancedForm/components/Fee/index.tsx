@@ -3,10 +3,10 @@ import Badge from '@suite-components/Badge';
 import { capitalizeFirstLetter } from '@suite-utils/string';
 import { colors, P, Select, variables, Button } from '@trezor/components';
 import { Account } from '@wallet-types';
+import { getTransactionInfo, calculateEthFee } from '@wallet-utils/sendFormUtils';
 import { FeeLevel } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
-import { calculateEthFee } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import styled from 'styled-components';
 import { fromWei, toWei } from 'web3-utils';
@@ -128,14 +128,8 @@ const isDisabled = (networkType: Account['networkType'], data: string | null) =>
 
 export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
     if (!send || !account || !settings || !fiat) return null;
-    const {
-        selectedFee,
-        customFee,
-        feeInfo,
-        feeOutdated,
-        networkTypeEthereum,
-        transactionInfo,
-    } = send;
+    const { selectedFee, customFee, feeInfo, feeOutdated, networkTypeEthereum } = send;
+    const transactionInfo = getTransactionInfo(account.networkType, send);
     const feeLevels = feeInfo.levels;
     const { localCurrency } = settings;
     const { networkType, symbol } = account;
