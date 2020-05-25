@@ -72,6 +72,9 @@ export const getInitialState = (override?: InitialState): any => {
         },
         firmware: firmwareReducer(undefined, { type: 'foo' } as any),
         devices,
+        analytics: {
+            enabled: false,
+        },
     };
 };
 
