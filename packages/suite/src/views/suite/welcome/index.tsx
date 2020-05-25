@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Button, Modal, H2, P } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
-import { Dispatch, AppState } from '@suite-types';
+import { Dispatch } from '@suite-types';
 import { Translation, Image } from '@suite-components';
 
 const Wrapper = styled.div`
@@ -24,11 +24,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
-const mapStateToProps = (state: AppState) => ({
-    router: state.router,
-});
-
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type Props = ReturnType<typeof mapDispatchToProps>;
 
 const Index = (props: Props) => (
     <Modal useFixedHeight data-test="@welcome">
@@ -51,4 +47,4 @@ const Index = (props: Props) => (
     </Modal>
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default connect(null, mapDispatchToProps)(Index);
