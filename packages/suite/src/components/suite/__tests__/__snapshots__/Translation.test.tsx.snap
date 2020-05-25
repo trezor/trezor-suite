@@ -19,9 +19,7 @@ exports[`Translation component with message that holds another in values (passed
 exports[`Translation component with message that holds another message object in values (passed via props) 1`] = `
 <span>
   Hello 
-  <span>
-    Name: John
-  </span>
+  Name: John
   , 100
 </span>
 `;

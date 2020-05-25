@@ -4,7 +4,8 @@ import { ExtendedMessageDescriptor } from '@suite-types';
 import HelperTooltip from './components/HelperTooltip';
 import messages from '@suite/support/messages';
 
-type MsgType = ExtendedMessageDescriptor;
+type FormattedMessageProps = { tagName?: React.ElementType<any> };
+type MsgType = FormattedMessageProps & ExtendedMessageDescriptor;
 
 export const isMsgType = (props: MsgType | React.ReactNode): props is MsgType => {
     return typeof props === 'object' && props !== null && (props as MsgType).id !== undefined;
@@ -19,7 +20,11 @@ const Translation = (props: MsgType) => {
         // Iterates through all values. The entry may also contain a MessageDescriptor.
         // If so, Renders MessageDescriptor by passing it to `Translation` component
         const maybeMsg = props.values![key];
-        values[key] = isMsgType(maybeMsg) ? <Translation {...maybeMsg} /> : maybeMsg;
+        values[key] = isMsgType(maybeMsg) ? (
+            <Translation {...maybeMsg} tagName={undefined} />
+        ) : (
+            maybeMsg
+        );
     });
 
     // pass undefined to a 'values' prop in case of an empty values object
