@@ -94,7 +94,7 @@ export const goto = [
 export const initialRedirection = [
     {
         description: `success`,
-        app: 'welcome',
+        app: 'unknown',
     },
     {
         description: `already initialized`,
@@ -117,6 +117,6 @@ export const initialRedirection = [
                 locks: [1],
             },
         },
-        app: 'welcome',
+        app: 'unknown',
     },
 ];
