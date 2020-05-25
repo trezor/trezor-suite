@@ -71,7 +71,7 @@ const getFeeValue = (
 ) => {
     if (networkType === 'ethereum') {
         const gasPriceInWei = toWei(transactionInfo.feePerUnit, 'gwei');
-        return fromWei(gasPriceInWei, 'ether');
+        return `${fromWei(gasPriceInWei, 'ether')} ${symbol.toUpperCase()}`;
     }
 
     return formatNetworkAmount(transactionInfo.fee, symbol);
