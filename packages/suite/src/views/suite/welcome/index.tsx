@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Button, Modal, H2, P } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
-import { Dispatch, InjectedModalApplicationProps } from '@suite-types';
+import { Dispatch, AppState } from '@suite-types';
 import { Translation, Image } from '@suite-components';
 
 const Wrapper = styled.div`
@@ -24,29 +24,31 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
-type Props = ReturnType<typeof mapDispatchToProps> & InjectedModalApplicationProps;
+const mapStateToProps = (state: AppState) => ({
+    router: state.router,
+});
 
-const Index = (props: Props) => {
-    return (
-        <Modal useFixedHeight data-test="@welcome">
-            <Wrapper>
-                <H2>
-                    <Translation id="TR_WELCOME_MODAL_HEADING" />
-                </H2>
-                <P size="small">
-                    <Translation id="TR_WELCOME_MODAL_TEXT" />
-                </P>
-                <StyledImg image="WELCOME" />
+type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-                <Button
-                    data-test="@welcome/continue-button"
-                    onClick={() => props.goto('suite-analytics')}
-                >
-                    <Translation id="TR_BEGIN" />
-                </Button>
-            </Wrapper>
-        </Modal>
-    );
-};
+const Index = (props: Props) => (
+    <Modal useFixedHeight data-test="@welcome">
+        <Wrapper>
+            <H2>
+                <Translation id="TR_WELCOME_MODAL_HEADING" />
+            </H2>
+            <P size="small">
+                <Translation id="TR_WELCOME_MODAL_TEXT" />
+            </P>
+            <StyledImg image="WELCOME" />
 
-export default connect(null, mapDispatchToProps)(Index);
+            <Button
+                data-test="@welcome/continue-button"
+                onClick={() => props.goto('suite-analytics')}
+            >
+                <Translation id="TR_BEGIN" />
+            </Button>
+        </Wrapper>
+    </Modal>
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Index);
