@@ -139,10 +139,7 @@ export const initialRedirection = (force = false) => async (
     getState: GetState,
 ) => {
     const route = findRoute(Router.pathname + window.location.hash);
-
-    if (force) {
-        await dispatch(goto('suite-welcome'));
-    }
+    if (route && route.app === 'root' && !force) return null;
 
     const { initialRun } = getState().suite.flags;
     if (route && route.isModal) {
