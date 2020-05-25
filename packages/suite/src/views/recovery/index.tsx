@@ -98,12 +98,16 @@ const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    checkSeed: bindActionCreators(recoveryActions.checkSeed, dispatch),
-    setStatus: bindActionCreators(recoveryActions.setStatus, dispatch),
-    setWordsCount: bindActionCreators(recoveryActions.setWordsCount, dispatch),
-    setAdvancedRecovery: bindActionCreators(recoveryActions.setAdvancedRecovery, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            checkSeed: recoveryActions.checkSeed,
+            setStatus: recoveryActions.setStatus,
+            setWordsCount: recoveryActions.setWordsCount,
+            setAdvancedRecovery: recoveryActions.setAdvancedRecovery,
+        },
+        dispatch,
+    );
 
 export type Props = InjectedModalApplicationProps &
     ReturnType<typeof mapStateToProps> &

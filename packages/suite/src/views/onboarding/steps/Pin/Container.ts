@@ -12,10 +12,14 @@ const mapStateToProps = (state: AppState) => ({
     activeSubStep: state.onboarding.activeSubStep,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goToNextStep: bindActionCreators(goToNextStep, dispatch),
-    changePin: bindActionCreators(changePin, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            goToNextStep,
+            changePin,
+        },
+        dispatch,
+    );
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 

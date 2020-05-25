@@ -14,13 +14,17 @@ const mapStateToProps = (state: AppState) => ({
     localCurrency: state.wallet.settings.localCurrency,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
-    rememberDevice: bindActionCreators(suiteActions.rememberDevice, dispatch),
-    forgetDevice: bindActionCreators(suiteActions.forgetDevice, dispatch),
-    getDiscovery: bindActionCreators(discoveryActions.getDiscovery, dispatch),
-    selectDevice: bindActionCreators(suiteActions.selectDevice, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            goto: routerActions.goto,
+            rememberDevice: suiteActions.rememberDevice,
+            forgetDevice: suiteActions.forgetDevice,
+            getDiscovery: discoveryActions.getDiscovery,
+            selectDevice: suiteActions.selectDevice,
+        },
+        dispatch,
+    );
 
 interface OwnProps extends WrappedComponentProps {
     instance: AcquiredDevice;

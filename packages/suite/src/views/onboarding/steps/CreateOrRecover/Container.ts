@@ -6,12 +6,16 @@ import * as onboardingActions from '@onboarding-actions/onboardingActions';
 
 import Step from './index';
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
-    goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
-    addPath: bindActionCreators(onboardingActions.addPath, dispatch),
-    closeModalApp: bindActionCreators(routerActions.closeModalApp, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            goToNextStep: onboardingActions.goToNextStep,
+            goToPreviousStep: onboardingActions.goToPreviousStep,
+            addPath: onboardingActions.addPath,
+            closeModalApp: routerActions.closeModalApp,
+        },
+        dispatch,
+    );
 
 export type Props = ReturnType<typeof mapDispatchToProps>;
 

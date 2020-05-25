@@ -13,11 +13,15 @@ const mapStateToProps = (state: AppState) => ({
     model: state.onboarding.selectedModel,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
-    goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
-    goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            goto: routerActions.goto,
+            goToNextStep: onboardingActions.goToNextStep,
+            goToPreviousStep: onboardingActions.goToPreviousStep,
+        },
+        dispatch,
+    );
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 

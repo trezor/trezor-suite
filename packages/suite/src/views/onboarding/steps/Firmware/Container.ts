@@ -13,12 +13,16 @@ const mapStateToProps = (state: AppState) => ({
     firmware: state.firmware,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
-    goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
-    firmwareUpdate: bindActionCreators(firmwareUpdateActions.firmwareUpdate, dispatch),
-    toggleBtcOnly: bindActionCreators(firmwareUpdateActions.toggleBtcOnly, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            goToNextStep: onboardingActions.goToNextStep,
+            goToPreviousStep: onboardingActions.goToPreviousStep,
+            firmwareUpdate: firmwareUpdateActions.firmwareUpdate,
+            toggleBtcOnly: firmwareUpdateActions.toggleBtcOnly,
+        },
+        dispatch,
+    );
 
 export type Props = ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps> &

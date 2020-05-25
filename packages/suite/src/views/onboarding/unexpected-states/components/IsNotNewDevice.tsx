@@ -17,10 +17,14 @@ const StyledImage = styled(Image)`
     flex: 1;
 `;
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    actionAlt: bindActionCreators(onboardingActions.removePath, dispatch),
-    closeModalApp: bindActionCreators(routerActions.closeModalApp, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            actionAlt: onboardingActions.removePath,
+            closeModalApp: routerActions.closeModalApp,
+        },
+        dispatch,
+    );
 
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,

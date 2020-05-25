@@ -33,13 +33,14 @@ const mapStateToProps = (state: AppState) => ({
     log: state.log,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    addNotification: bindActionCreators(notificationActions.addToast, dispatch),
-    toggleExcludeBalanceRelated: bindActionCreators(
-        logActions.toggleExcludeBalanceRelated,
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            addNotification: notificationActions.addToast,
+            toggleExcludeBalanceRelated: logActions.toggleExcludeBalanceRelated,
+        },
         dispatch,
-    ),
-});
+    );
 
 type Props = ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps> & {

@@ -12,11 +12,15 @@ const mapStateToProps = (state: AppState) => ({
     localCurrency: state.wallet.settings.localCurrency,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    updateGraphData: bindActionCreators(graphActions.updateGraphData, dispatch),
-    setSelectedRange: bindActionCreators(graphActions.setSelectedRange, dispatch),
-    getGraphDataForInterval: bindActionCreators(graphActions.getGraphDataForInterval, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            updateGraphData: graphActions.updateGraphData,
+            setSelectedRange: graphActions.setSelectedRange,
+            getGraphDataForInterval: graphActions.getGraphDataForInterval,
+        },
+        dispatch,
+    );
 
 type OwnProps = {
     account: Account;

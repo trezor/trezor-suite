@@ -1,7 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { Modal } from '@trezor/components';
 import { Translation } from '@suite-components';
 
@@ -9,7 +7,8 @@ import { homescreensT1, homescreensT2 } from '@suite-constants';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { elementToHomescreen } from '@suite-utils/homescreen';
-import { Dispatch, AcquiredDevice } from '@suite-types';
+import { AcquiredDevice } from '@suite-types';
+import { useActions } from '@suite-hooks';
 
 type AnyImageName = typeof homescreensT1[number] | typeof homescreensT2[number];
 
@@ -34,16 +33,14 @@ const BackgroundImageT1 = styled.img`
     height: 32px;
 `;
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    applySettings: bindActionCreators(deviceSettingsActions.applySettings, dispatch),
-});
-
-type Props = ReturnType<typeof mapDispatchToProps> & {
+type Props = {
     device: AcquiredDevice;
     onCancel: () => void;
 };
 
-const BackgroundGallery = ({ device, applySettings, onCancel }: Props) => {
+const BackgroundGallery = ({ device, onCancel }: Props) => {
+    const { applySettings } = useActions({ applySettings: deviceSettingsActions.applySettings });
+
     const setHomescreen = (image: AnyImageName) => {
         const element = document.getElementById(image);
         if (element instanceof HTMLImageElement) {
@@ -88,4 +85,4 @@ const BackgroundGallery = ({ device, applySettings, onCancel }: Props) => {
     );
 };
 
-export default connect(null, mapDispatchToProps)(BackgroundGallery);
+export default BackgroundGallery;

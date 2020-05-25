@@ -11,11 +11,15 @@ const mapStateToProps = (state: AppState) => ({
     recovery: state.recovery,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    addPath: bindActionCreators(onboardingActions.addPath, dispatch),
-    goToStep: bindActionCreators(onboardingActions.goToStep, dispatch),
-    rerun: bindActionCreators(recoveryActions.rerun, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            addPath: onboardingActions.addPath,
+            goToStep: onboardingActions.goToStep,
+            rerun: recoveryActions.rerun,
+        },
+        dispatch,
+    );
 
 export type Props = ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps> &

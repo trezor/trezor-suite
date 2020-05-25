@@ -19,10 +19,14 @@ const mapStateToProps = (state: AppState) => ({
     backup: state.backup,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    toggleCheckboxByKey: bindActionCreators(backupActions.toggleCheckboxByKey, dispatch),
-    backupDevice: bindActionCreators(backupActions.backupDevice, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            toggleCheckboxByKey: backupActions.toggleCheckboxByKey,
+            backupDevice: backupActions.backupDevice,
+        },
+        dispatch,
+    );
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 

@@ -12,10 +12,14 @@ const mapStateToProps = (state: AppState) => ({
     discreetMode: state.wallet.settings.discreetMode,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
-    setDiscreetMode: bindActionCreators(walletSettingsActions.setDiscreetMode, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            goto: routerActions.goto,
+            setDiscreetMode: walletSettingsActions.setDiscreetMode,
+        },
+        dispatch,
+    );
 
 export type StateProps = ReturnType<typeof mapStateToProps>;
 export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
