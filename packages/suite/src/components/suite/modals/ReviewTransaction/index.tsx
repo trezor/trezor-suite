@@ -12,7 +12,6 @@ import { Modal, Button, colors, variables } from '@trezor/components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { useDeviceActionLocks } from '@suite-hooks';
 import { Account } from '@wallet-types';
-
 import { fromWei, toWei } from 'web3-utils';
 
 import { Props } from './Container';
