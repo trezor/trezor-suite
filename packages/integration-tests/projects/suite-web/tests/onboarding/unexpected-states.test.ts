@@ -9,7 +9,7 @@ describe('Onboarding - unexpected states', () => {
         cy.task('setupEmu');
         cy.task('stopEmu');
 
-        cy.visit('/');
+        cy.visit('/dashboard');
         cy.goToOnboarding();
         cy.getTestElement('@onboarding/begin-button').click();
         cy.getTestElement('@onboarding/path-create-button').click();
@@ -21,7 +21,7 @@ describe('Onboarding - unexpected states', () => {
     });
 
     it('in case device is not initialized, just has some firmware on it, use-it-anyway button should appear', () => {
-        cy.visit('/');
+        cy.visit('/dashboard');
         cy.goToOnboarding();
         cy.getTestElement('@onboarding/begin-button').click();
         cy.getTestElement('@onboarding/path-create-button').click();
@@ -35,7 +35,7 @@ describe('Onboarding - unexpected states', () => {
     });
 
     it.only('is not same device and reset onboarding', () => {
-        cy.visit('/');
+        cy.visit('/dashboard');
         cy.goToOnboarding();
         cy.getTestElement('@onboarding/begin-button').click();
         cy.getTestElement('@onboarding/path-create-button').click();
