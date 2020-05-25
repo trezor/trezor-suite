@@ -58,14 +58,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
     }, [device]);
 
     if (!device?.features) {
-        return (
-            <SettingsLayout>
-                <Translation
-                    id="TR_DEVICE_LABEL_IS_DISCONNECTED"
-                    values={{ deviceLabel: device?.label || '' }}
-                />
-            </SettingsLayout>
-        );
+        return null;
     }
 
     const DISPLAY_ROTATIONS = [
