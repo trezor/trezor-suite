@@ -6,7 +6,6 @@ import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import styled from 'styled-components';
-
 import CurrencySelect from './components/CurrencySelect';
 import FiatComponent from './components/Fiat';
 import { Props } from './Container';

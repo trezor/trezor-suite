@@ -122,7 +122,6 @@ const getValue = (
 };
 
 const isDisabled = (networkType: Account['networkType'], data: string | null) => {
-    console.log('aaa', networkType, data);
     return networkType === 'ethereum' && data !== null;
 };
 

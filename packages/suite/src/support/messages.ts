@@ -3439,6 +3439,14 @@ const definedMessages = defineMessages({
         id: 'TR_HOLD_LEFT_BUTTON',
         defaultMessage: 'Hold left or both buttons while connecting device',
     },
+    TR_TOTAL_AMOUNT: {
+        id: 'TR_TOTAL_AMOUNT',
+        defaultMessage: 'Total amount',
+    },
+    TR_INCLUDING_FEE: {
+        id: 'TR_INCLUDING_FEE',
+        defaultMessage: 'Including fee',
+    },
 } as const);
 
 export default definedMessages;
