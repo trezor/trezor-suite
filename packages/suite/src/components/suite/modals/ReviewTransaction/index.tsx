@@ -100,7 +100,7 @@ export default ({
         <Modal
             size="large"
             cancelable
-            onCancel={modalActions.onCancel}
+            onCancel={isEnabled ? modalActions.onCancel : () => {}}
             heading={<Translation id="TR_MODAL_CONFIRM_TX_TITLE" />}
             bottomBar={
                 <Buttons>
