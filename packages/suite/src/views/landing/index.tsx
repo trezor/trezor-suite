@@ -58,7 +58,7 @@ const getAppUrl = (appName: App) => {
     }
 };
 
-export default ({ initialRedirection, flags, goto }: Props) => {
+export default ({ flags, goto }: Props) => {
     const [app, setApp] = useState<App | null>(null);
 
     return (
@@ -108,7 +108,7 @@ export default ({ initialRedirection, flags, goto }: Props) => {
                     <ButtonContinue
                         onClick={() => {
                             if (flags.initialRun) {
-                                initialRedirection(true);
+                                goto('suite-welcome');
                             } else {
                                 goto('suite-dashboard');
                             }

@@ -14,7 +14,6 @@ describe('Suite initial run', () => {
         cy.visit('/');
         cy.getTestElement('@landing/continue-in-browser-button').click();
         cy.getTestElement('@modal/connect-device');
-
     });
 
     it('When user opens suite for the first time at any route, welcome and analytics modals appear. Still reloads to welcome screen before initialRun flags is set to false', () => {

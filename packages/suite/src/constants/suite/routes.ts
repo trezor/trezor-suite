@@ -44,6 +44,9 @@ const routes = [
         name: 'suite-index',
         pattern: '/',
         app: 'root',
+        // not really modal app, special case of static page that does not need to wait
+        // for anything
+        isModal: true,
     },
     {
         name: 'suite-version',
