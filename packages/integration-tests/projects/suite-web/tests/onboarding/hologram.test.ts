@@ -2,7 +2,7 @@ describe('Onboarding - hologram', () => {
     beforeEach(() => {
         cy.task('stopEmu')
         cy.viewport(1024, 768).resetDb();
-        cy.visit('/');
+        cy.visit('/dashboard');
         cy.goToOnboarding();
         cy.onboardingShouldLoad();
         // common steps - navigation through onboarding

@@ -116,6 +116,7 @@ export default ({ initialRedirection, flags, goto }: Props) => {
                         variant="tertiary"
                         icon="ARROW_RIGHT"
                         alignIcon="right"
+                        data-test="@landing/continue-in-browser-button"
                     >
                         <Translation id="TR_LANDING_CONTINUE" />
                     </ButtonContinue>
