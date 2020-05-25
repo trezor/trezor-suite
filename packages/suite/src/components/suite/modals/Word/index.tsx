@@ -18,9 +18,9 @@ const Word = (props: ModalProps) => {
             {...props}
         >
             <WordInput
-                onSubmit={value =>
-                    TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: value })
-                }
+                onSubmit={value => {
+                    TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: value });
+                }}
             />
         </Modal>
     );
