@@ -71,7 +71,7 @@ const getFeeValue = (
 ) => {
     if (networkType === 'ethereum') {
         const gasPriceInWei = toWei(transactionInfo.feePerUnit, 'gwei');
-        return `${fromWei(gasPriceInWei, 'ether')} ${symbol.toUpperCase()}`;
+        return fromWei(gasPriceInWei, 'ether');
     }
 
     return formatNetworkAmount(transactionInfo.fee, symbol);
@@ -84,6 +84,7 @@ export default ({
     sendFormActionsBitcoin,
     sendFormActionsRipple,
     sendFormActionsEthereum,
+    fiat,
 }: Props) => {
     if (!account || !send) return null;
     const { outputs } = send;
