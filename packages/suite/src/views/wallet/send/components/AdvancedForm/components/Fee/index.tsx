@@ -183,7 +183,7 @@ export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
                     <CustomFeeWrapper>
                         <CustomFee />
                     </CustomFeeWrapper>
-                    {fiatVal && customFee.value && transactionInfo.type === 'final' && (
+                    {fiatVal && customFee.value && transactionInfo?.type === 'final' && (
                         <BadgeWrapper>
                             <Badge isGray>
                                 {toFiatCurrency(
