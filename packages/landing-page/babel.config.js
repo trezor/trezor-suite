@@ -1,13 +1,13 @@
 module.exports = api => {
     // The cache only affects in-memory configuration. If you've restarted the process, it'll always call the function at least once.
-    api.cache(true);
+    api.cache(false);
     const plugins = [
         [
             'module-resolver',
             {
                 alias: {
-                    '^@(.+)-components/(.+)': '../../packages/landing-page/components/\\1/\\2',
-                    '^@(.+)-components': '../../packages/landing-page/components/\\1/index',
+                    '^@landing-components/(.+)': '../../packages/landing-page/components/\\1/\\2',
+                    '^@landing-components': '../../packages/landing-page/components/\\1/index',
                     '^@(.+)-config/(.+)': '../../packages/suite/src/config/\\1/\\2',
                     '^@(.+)-config': '../../packages/suite/src/config/\\1/index',
                     '^@(.+)-constants/(.+)': '../../packages/suite/src/constants/\\1/\\2',
