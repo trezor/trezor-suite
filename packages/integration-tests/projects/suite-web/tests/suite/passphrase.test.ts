@@ -11,7 +11,7 @@ describe('Passphrase', () => {
         // eslint-disable-next-line @typescript-eslint/camelcase
         cy.task('applySettings', { passphrase_always_on_device: false });
         cy.viewport(1024, 768).resetDb();
-        cy.visit('/dashboard');
+        cy.visit('/');
         cy.passThroughInitialRun();
     });
 

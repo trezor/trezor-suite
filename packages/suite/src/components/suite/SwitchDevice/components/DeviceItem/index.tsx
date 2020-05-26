@@ -112,7 +112,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
     const selectDeviceInstance = async (instance: Props['device']) => {
         await props.selectDevice(instance);
         if (!isWalletContext) {
-            await props.goto('suite-dashboard');
+            await props.goto('suite-index');
         }
         props.closeModalApp(!isWalletContext);
     };
@@ -120,7 +120,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
     const addDeviceInstance = async (instance: Props['device']) => {
         await props.createDeviceInstance(instance);
         if (!isWalletContext) {
-            await props.goto('suite-dashboard');
+            await props.goto('suite-index');
         }
         props.closeModalApp(!isWalletContext);
     };

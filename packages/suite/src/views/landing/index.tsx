@@ -62,7 +62,7 @@ const getAppUrl = (appName: App) => {
     }
 };
 
-export default ({ flags, goto }: Props) => {
+export default ({ setFlag }: Props) => {
     const [app, setApp] = useState<App | null>(null);
 
     return (
@@ -110,13 +110,7 @@ export default ({ flags, goto }: Props) => {
                 </Row>
                 <Item>
                     <ButtonContinue
-                        onClick={() => {
-                            if (flags.initialRun) {
-                                goto('suite-welcome');
-                            } else {
-                                goto('suite-dashboard');
-                            }
-                        }}
+                        onClick={() => setFlag('initialWebRun', false)}
                         variant="tertiary"
                         icon="ARROW_RIGHT"
                         alignIcon="right"

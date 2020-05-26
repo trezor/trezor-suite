@@ -4,7 +4,7 @@ export const init = [
     {
         description: `success`,
         result: {
-            app: 'root',
+            app: 'dashboard',
             hash: undefined,
             params: undefined,
             pathname: '/',
@@ -94,7 +94,7 @@ export const goto = [
 export const initialRedirection = [
     {
         description: `success`,
-        app: 'unknown',
+        app: 'welcome',
     },
     {
         description: `already initialized`,
@@ -117,6 +117,6 @@ export const initialRedirection = [
                 locks: [1],
             },
         },
-        app: 'unknown',
+        app: 'welcome',
     },
 ];

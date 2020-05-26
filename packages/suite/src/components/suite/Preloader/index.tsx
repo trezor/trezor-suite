@@ -44,6 +44,7 @@ const mapStateToProps = (state: AppState) => ({
     router: state.router,
     discovery: state.wallet.discovery,
     actionModalContext: state.modal.context,
+    flags: state.suite.flags,
 });
 
 const init = () =>
@@ -145,7 +146,7 @@ const getModalApplication = (route: Props['router']['route']) => {
 };
 
 const Preloader = (props: Props) => {
-    const { loading, loaded, error, init, router, transport, actionModalContext } = props;
+    const { loading, loaded, error, init, router, transport, actionModalContext, flags } = props;
 
     useEffect(() => {
         if (!loading && !loaded && !error) {
@@ -153,14 +154,14 @@ const Preloader = (props: Props) => {
         }
     }, [init, loaded, loading, error]);
 
-    if (process.env.SUITE_TYPE === 'web' && router.app === 'root') {
-        return <Landing />;
-    }
-
     if (error) {
         // trezor-connect initialization failed
         // throw error to <ErrorBoundary /> in _app.tsx
         throw new Error(error);
+    }
+
+    if (flags.initialWebRun) {
+        return <Landing />;
     }
 
     const hasActionModal = actionModalContext !== '@modal/context-none';

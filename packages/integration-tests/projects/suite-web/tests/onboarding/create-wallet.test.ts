@@ -4,7 +4,7 @@ describe('Onboarding - create wallet', () => {
     beforeEach(() => {
         cy.task('stopEmu');
         cy.viewport(1024, 768).resetDb();
-        cy.visit('/dashboard');
+        cy.visit('/');
         cy.goToOnboarding();
         cy.onboardingShouldLoad();
         cy.getTestElement('@onboarding/begin-button').click();
