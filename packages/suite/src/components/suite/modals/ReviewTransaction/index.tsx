@@ -147,7 +147,7 @@ export default ({
                 {outputs.map(output => {
                     const totalAmount = new BigNumber(output.amount.value || '0')
                         .plus(fee)
-                        .toString();
+                        .toFixed();
 
                     return (
                         <OutputWrapper key={output.id}>
