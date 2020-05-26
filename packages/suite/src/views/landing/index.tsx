@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
 import Layout from '@landing-components/Layout';
 import { Translation } from '@suite-components';
 import { H2, Button, P, Select, Link, variables } from '@trezor/components';
