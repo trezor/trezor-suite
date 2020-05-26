@@ -30,15 +30,6 @@ const initialState: State = {
     error: null,
 };
 
-// const sortByBlockHeight = (a: WalletAccountTransaction, b: WalletAccountTransaction) => {
-//     // if both are missing the blockHeight don't change their order
-//     if (!a.blockHeight && !b.blockHeight) return 0;
-//     // tx with no blockHeight comes first
-//     if (!a.blockHeight) return -1;
-//     if (!b.blockHeight) return 1;
-//     return b.blockHeight - a.blockHeight;
-// };
-
 const initializeAccount = (draft: State, accountHash: string) => {
     // initialize an empty array at 'accountHash' index if not yet initialized
     if (!draft.transactions[accountHash]) {
