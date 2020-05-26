@@ -79,7 +79,7 @@ export const compose = (setMax = false) => async (dispatch: Dispatch, getState: 
     }
 };
 
-export const composeChange = (composeBy?: 'address' | 'amount') => (
+export const composeChange = (composeBy?: 'address' | 'amount', setMax = false) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -93,12 +93,12 @@ export const composeChange = (composeBy?: 'address' | 'amount') => (
     });
 
     if (!composeBy) {
-        dispatch(compose());
+        dispatch(compose(setMax));
     }
 
     if (composeBy) {
         if (shouldComposeBy(composeBy, send.outputs, account.networkType)) {
-            dispatch(compose());
+            dispatch(compose(setMax));
         }
     }
 
@@ -131,7 +131,7 @@ export const handleAddressChange = (outputId: number, address: string) => (
         dispatch(rippleActions.checkAccountReserve(output.id, address));
     }
 
-    dispatch(composeChange('address'));
+    dispatch(composeChange('address', send.setMaxActivated));
 };
 
 // common method called from multiple places:
@@ -198,7 +198,7 @@ export const handleAmountChange = (outputId: number, amount: string) => (
 
     dispatch(amountChange(amount, outputId));
 
-    dispatch(composeChange('amount'));
+    dispatch(composeChange('amount', send.setMaxActivated));
 };
 
 /*
@@ -240,7 +240,7 @@ export const handleFiatSelectChange = (
         localCurrency,
     });
 
-    dispatch(composeChange('amount'));
+    dispatch(composeChange('amount', send.setMaxActivated));
 };
 
 /*
@@ -269,7 +269,7 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
 
     dispatch(amountChange(amount, outputId));
 
-    dispatch(composeChange('amount'));
+    dispatch(composeChange('amount', send.setMaxActivated));
 };
 
 /*
@@ -315,8 +315,7 @@ export const setMax = (outputIdIn?: number) => async (dispatch: Dispatch, getSta
     }
 
     dispatch(amountChange(amount, outputId));
-
-    dispatch(composeChange('amount'));
+    dispatch(composeChange('amount', send.setMaxActivated));
 };
 
 /*
@@ -364,7 +363,7 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
         });
     }
 
-    dispatch(composeChange());
+    dispatch(composeChange(undefined, send.setMaxActivated));
 };
 
 /*
