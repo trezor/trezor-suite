@@ -26,28 +26,27 @@ suite-web deploy dev:
     tags:
         - deploy
 
-suite-web test integration google-chrome:
-    stage: integration testing
-    allow_failure: true
-    script:
-        - npx cypress install
-        - export CYPRESS_SNAPSHOT=1
-        # add DEBUG=cypress:* env variable to debug cypress in ci
-        - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
-        - export BROWSER=chrome
-        - yarn concurrently --success first --kill-others "cd ./docker/trezor-user-env/controller && python3 ./main.py" "cypress run --browser $BROWSER --project ./packages/integration-tests/projects/suite-web --spec ./packages/integration-tests/projects/suite-web/tests/wallet/send.test.ts"
-    artifacts:
-        expire_in: 7 days
-        when: always
-        paths:
-            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
-            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
-            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
-    dependencies: []
-    # retry:
-    #    max: 2
-
-suite-web test integration google-chrome-beta:
+# suite-web test integration google-chrome:
+#     stage: integration testing
+#     allow_failure: true
+#     script:
+#         - npx cypress install
+#         - export CYPRESS_SNAPSHOT=1
+#         # add DEBUG=cypress:* env variable to debug cypress in ci
+#         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
+#         - export BROWSER=chrome
+#         - yarn concurrently --success first --kill-others "cd ./docker/trezor-user-env/controller && python3 ./main.py" "cypress run --browser $BROWSER --project ./packages/integration-tests/projects/suite-web --spec ./packages/integration-tests/projects/suite-web/tests/wallet/send.test.ts"
+#     artifacts:
+#         expire_in: 7 days
+#         when: always
+#         paths:
+#             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
+#             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
+#             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
+#     dependencies: []
+#     # retry:
+#     #    max: 2mv packages/suite-desktop/build-electron/"${DESKTOP_APP_NAME}"-*.AppImage ./build/static
+rome-beta:
     only:
       - schedules
     #allow_failure: true
@@ -84,11 +83,8 @@ suite-web deploy staging:
     when:
         manual
     script:
-        - cd packages/suite-web
         - assetPrefix=/${STAGING_SERVER_URL}/wallet yarn workspace @trezor/suite-web build
-        - cd ../landing-page
         - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/landing-page build
-        - cd ..
         - mkdir combined
         - rsync --delete -v ./landing-page/build/ ./combined"
         - rsync -va ./suite-web/build/ ./combined"
