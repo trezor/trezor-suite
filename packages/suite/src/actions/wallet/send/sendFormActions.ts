@@ -1,10 +1,11 @@
 import { Dispatch, GetState } from '@suite-types';
+import * as storageActions from '@suite-actions/storageActions';
 import { TokenInfo } from 'trezor-connect';
 import { SEND } from '@wallet-actions/constants';
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import { ETH_DEFAULT_GAS_LIMIT, ETH_DEFAULT_GAS_PRICE } from '@wallet-constants/sendForm';
 import { FeeLevel, Output } from '@wallet-types/sendForm';
-import { formatNetworkAmount, getFiatValue } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount, getFiatValue, getAccountKey } from '@wallet-utils/accountUtils';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
 import {
     getFeeLevels,
@@ -33,6 +34,8 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const levels = getFeeLevels(network.networkType, feeInfo);
     const firstFeeLevel = levels.find(l => l.label === 'normal') || levels[0];
     const localCurrency = getLocalCurrency(settings.localCurrency);
+    const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
+    const cachedItem = await storageActions.loadSendForm(accountKey);
 
     dispatch({
         type: SEND.INIT,
@@ -55,6 +58,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                 data: { value: null, error: null },
             },
             selectedFee: firstFeeLevel,
+            ...cachedItem,
         },
         localCurrency,
     });
