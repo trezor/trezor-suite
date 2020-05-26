@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const withCustomBabelConfig = require('next-plugin-custom-babel-config');
 const withTranspileModules = require('next-transpile-modules');
 const withImages = require('next-images');
