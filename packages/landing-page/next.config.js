@@ -2,6 +2,7 @@ const path = require('path');
 const withCustomBabelConfig = require('next-plugin-custom-babel-config');
 const withTranspileModules = require('next-transpile-modules');
 const withImages = require('next-images');
+const packageJson = require('./package.json');
 
 module.exports = withCustomBabelConfig(
     withTranspileModules(
@@ -19,6 +20,15 @@ module.exports = withCustomBabelConfig(
             ],
             exportTrailingSlash: true,
             assetPrefix: process.env.assetPrefix || '',
+            webpack: (config, options) => {
+                config.plugins.push(
+                    new webpack.DefinePlugin({
+                        'process.env.VERSION': JSON.stringify(packageJson.version),
+                    }),
+                );
+
+                return config;
+            },
         }),
     ),
 );

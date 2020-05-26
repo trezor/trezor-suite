@@ -45,14 +45,23 @@ const ButtonDownload = styled(Button)`
 
 type App = 'win' | 'macos' | 'linux';
 
+const normalizeVersion = (version: string) => {
+    const normalizedVersion = version.toUpperCase();
+    // remove any zeros that are not preceded by Latin letters, decimal digits, underscores
+    return normalizedVersion.replace(/\b0+/g, '');
+};
+
 const getAppUrl = (appName: App) => {
+    const ghRepo = 'https://github.com/trezor/trezor-suite';
+    const version = process.env.VERSION ? normalizeVersion(process.env.VERSION) : '5.17.2020-BETA';
+    const url = `${ghRepo}/releases/download/v${version}`;
     switch (appName) {
         case 'win':
-            return resolveStaticPath('desktop/Trezor-Beta-Wallet.exe');
+            return `${url}/Trezor-Beta-Wallet-${version}.exe`;
         case 'macos':
-            return resolveStaticPath('desktop/Trezor-Beta-Wallet.zip');
+            return `${url}/Trezor-Beta-Wallet-${version}.dmg`;
         case 'linux':
-            return resolveStaticPath('desktop/Trezor-Beta-Wallet.AppImage');
+            return `${url}/Trezor-Beta-Wallet-${version}.AppImage`;
         // no default
     }
 };
