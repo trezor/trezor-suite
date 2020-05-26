@@ -7,6 +7,8 @@ export const toggleDeviceMenu = () => {
 
 export const goToOnboarding = () => {
     return cy
+        .getTestElement('@landing/continue-in-browser-button')
+        .click()
         .getTestElement('@welcome/continue-button')
         .click()
         .getTestElement('@analytics/go-to-onboarding-button')
