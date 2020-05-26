@@ -1,4 +1,4 @@
-import { isDev, isBeta } from '../build';
+import { isDev, isBeta, normalizeVersion } from '../build';
 
 const OLD_ENV = { ...process.env };
 
@@ -75,6 +75,24 @@ describe('build', () => {
 
         it('isDev', () => {
             expect(isDev()).toEqual(false);
+        });
+    });
+
+    describe('normalizeVersion', () => {
+        beforeEach(() => {
+            jest.resetModules();
+            process.env.BUILD = 'development';
+        });
+
+        afterEach(() => {
+            process.env = OLD_ENV;
+        });
+
+        it('normalizeVersion', () => {
+            expect(normalizeVersion('2020.05.13-beta')).toEqual('2020.5.13-BETA');
+            expect(normalizeVersion('2022.12.01-beta')).toEqual('2022.12.1-BETA');
+            expect(normalizeVersion('3000.04.04-beta')).toEqual('3000.4.4-BETA');
+            expect(normalizeVersion('3000.04.04')).toEqual('3000.4.4');
         });
     });
 });

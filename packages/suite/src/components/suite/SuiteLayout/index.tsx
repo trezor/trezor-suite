@@ -60,7 +60,6 @@ type Props = ReturnType<typeof mapStateToProps> & {
 };
 
 interface BodyProps {
-    // url is mandatory to force re-render AppWrapper on url change, otherwise it will cache scrollbar position fix: issue #1658
     url: string;
     menu?: React.ReactNode;
     children?: React.ReactNode;
@@ -78,15 +77,26 @@ export const LayoutContext = createContext<LayoutContextI>({
     setLayout: undefined,
 });
 
+// ScrollAppWrapper is mandatory to reset AppWrapper scroll position on url change, fix: issue #1658
+const ScrollAppWrapper = ({ url, children }: BodyProps) => {
+    const ref = React.useRef<HTMLDivElement>(null);
+    React.useEffect(() => {
+        const { current } = ref;
+        if (!current) return;
+        current.scrollTop = 0; // reset scroll position on url change
+    }, [ref, url]);
+    return <AppWrapper ref={ref}>{children}</AppWrapper>;
+};
+
 const BodyWide = ({ url, menu, children }: BodyProps) => (
     <Body>
         <DiscoveryProgress />
         <SuiteNotifications />
         <Columns>
             {menu && <MenuSecondary>{menu}</MenuSecondary>}
-            <AppWrapper key={url}>
+            <ScrollAppWrapper url={url}>
                 <MaxWidthWrapper withMenu={!!menu}>{children}</MaxWidthWrapper>
-            </AppWrapper>
+            </ScrollAppWrapper>
         </Columns>
     </Body>
 );
@@ -97,7 +107,7 @@ const BodyNarrow = ({ url, menu, children }: BodyProps) => (
         <DiscoveryProgress />
         <SuiteNotifications />
         <Columns>
-            <AppWrapper key={url}>{children}</AppWrapper>
+            <ScrollAppWrapper url={url}>{children}</ScrollAppWrapper>
         </Columns>
     </Body>
 );
