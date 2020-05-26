@@ -117,7 +117,7 @@ export default ({
                                     ipcRenderer.send('restart-app');
                                 } else {
                                     // redirect to / and reload the web
-                                    await goto('suite-dashboard');
+                                    await goto('suite-index');
                                     window.location.reload();
                                 }
                             }}

@@ -5,7 +5,7 @@ describe('Stories of device remembering', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         cy.viewport(1024, 768).resetDb();
-        cy.visit('/dashboard');
+        cy.visit('/');
         cy.passThroughInitialRun();
     });
 

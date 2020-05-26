@@ -41,7 +41,7 @@ export const ITEMS = [
         },
     },
     {
-        route: 'suite-dashboard',
+        route: 'suite-index',
         title: <Translation id="TR_BUY" />,
         icon: 'PLUS',
         isHidden: (_account: Account) => {

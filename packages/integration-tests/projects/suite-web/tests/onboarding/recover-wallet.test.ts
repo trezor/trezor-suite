@@ -4,7 +4,7 @@ describe('Onboarding - recover wallet', () => {
     beforeEach(() => {
         cy.task('stopEmu');
         cy.viewport(1024, 768).resetDb();
-        cy.visit('/dashboard');
+        cy.visit('/');
         cy.goToOnboarding();
         cy.onboardingShouldLoad();
         // common steps - navigation through onboarding

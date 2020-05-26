@@ -44,6 +44,7 @@ const mapStateToProps = (state: AppState) => ({
     router: state.router,
     discovery: state.wallet.discovery,
     actionModalContext: state.modal.context,
+    flags: state.suite.flags,
 });
 
 const init = () =>
@@ -145,17 +146,13 @@ const getModalApplication = (route: Props['router']['route']) => {
 };
 
 const Preloader = (props: Props) => {
-    const { loading, loaded, error, init, router, transport, actionModalContext } = props;
+    const { loading, loaded, error, init, router, transport, actionModalContext, flags } = props;
 
     useEffect(() => {
         if (!loading && !loaded && !error) {
             init();
         }
     }, [init, loaded, loading, error]);
-
-    if (process.env.SUITE_TYPE === 'web' && router.app === 'root') {
-        return <Landing />;
-    }
 
     if (error) {
         // trezor-connect initialization failed
@@ -194,6 +191,10 @@ const Preloader = (props: Props) => {
 
     if (router.app === 'unknown' && (!loaded || !transport)) {
         return <Loading noBackground />;
+    }
+
+    if (flags.initialWebRun) {
+        return <Landing />;
     }
 
     // check route state and display it as not cancelable modal above requested route view

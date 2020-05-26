@@ -74,7 +74,7 @@ describe('suite middleware', () => {
                 url: '/',
             });
             expect(store.getActions()).toEqual([
-                { type: SUITE.APP_CHANGED, payload: 'root' },
+                { type: SUITE.APP_CHANGED, payload: 'dashboard' },
                 { type: ROUTER.LOCATION_CHANGE, url: '/' },
             ]);
         });
@@ -186,7 +186,7 @@ describe('suite middleware', () => {
         it('if initialRun is false should NOT redirect to onboarding after STORAGE.LOADED action', () => {
             const goto = jest.spyOn(routerActions, 'goto');
             // eslint-disable-next-line global-require
-            require('next/router').default.pathname = '/';
+            require('next/router').default.pathname = '/wallet';
 
             const store = initStore(getInitialState());
             store.dispatch({

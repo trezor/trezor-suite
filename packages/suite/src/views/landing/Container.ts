@@ -1,15 +1,17 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as routerActions from '@suite-actions/routerActions';
 import { Dispatch, AppState } from '@suite-types';
+import * as suiteActions from '@suite-actions/suiteActions';
+
 import Component from './index';
 
+// todo: probably not needed
 const mapStateToProps = (state: AppState) => ({
     flags: state.suite.flags,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
+    setFlag: bindActionCreators(suiteActions.setFlag, dispatch),
 });
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;

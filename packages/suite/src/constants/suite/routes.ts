@@ -36,17 +36,9 @@ const routes = [
         isModal: true,
     },
     {
-        name: 'suite-dashboard',
-        pattern: '/dashboard',
-        app: 'dashboard',
-    },
-    {
         name: 'suite-index',
         pattern: '/',
-        app: 'root',
-        // not really modal app, special case of static page that does not need to wait
-        // for anything
-        isModal: true,
+        app: 'dashboard',
     },
     {
         name: 'suite-version',
