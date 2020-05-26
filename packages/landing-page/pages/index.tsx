@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Layout from '../components/Layout';
 import { H2, Button, P, Link } from '@trezor/components';
+import { normalizeVersion, isDev } from '@suite-utils/build';
 
 const Wrapper = styled.div`
     display: flex;
@@ -56,7 +57,11 @@ const Index = () => (
                 </Link>
             </Item>
             <Item>
-                <Link href="/wallet" target="_blank" variant="nostyle">
+                <Link
+                    href={process.env.assetPrefix ? `${process.env.assetPrefix}wallet` : '/wallet'}
+                    target="_blank"
+                    variant="nostyle"
+                >
                     <ButtonAccess variant="primary">Access Beta Wallet</ButtonAccess>
                 </Link>
             </Item>
