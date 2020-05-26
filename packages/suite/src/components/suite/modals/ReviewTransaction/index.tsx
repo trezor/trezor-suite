@@ -1,13 +1,13 @@
-import React from 'react';
-import styled from 'styled-components';
+import { AccountLabeling, Badge, Translation } from '@suite-components';
+import { useDeviceActionLocks } from '@suite-hooks';
+import { Button, colors, Modal, variables } from '@trezor/components';
+import { Account } from '@wallet-types';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
-import { Translation, AccountLabeling, Badge } from '@suite-components';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
-import { Modal, Button, colors, variables } from '@trezor/components';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { useDeviceActionLocks } from '@suite-hooks';
-import { Account } from '@wallet-types';
+import React from 'react';
+import styled from 'styled-components';
 import { fromWei, toWei } from 'web3-utils';
 
 import { Props } from './Container';
