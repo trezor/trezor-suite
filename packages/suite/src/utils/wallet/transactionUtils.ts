@@ -12,7 +12,7 @@ import BigNumber from 'bignumber.js';
 export const groupTransactionsByDate = (
     transactions: WalletAccountTransaction[],
 ): { [key: string]: WalletAccountTransaction[] } => {
-    const r: { [key: string]: WalletAccountTransaction[] } = {};
+    const unordered: { [key: string]: WalletAccountTransaction[] } = {};
     transactions.forEach(item => {
         let key = 'pending';
         if (item.blockHeight && item.blockHeight > 0 && item.blockTime && item.blockTime > 0) {
@@ -27,12 +27,19 @@ export const groupTransactionsByDate = (
                 );
             }
         }
-        if (!r[key]) {
-            r[key] = [];
+        if (!unordered[key]) {
+            unordered[key] = [];
         }
-        r[key].push(item);
+        unordered[key].push(item);
     });
-    return r;
+
+    const ordered: { [key: string]: WalletAccountTransaction[] } = {};
+    Object.keys(unordered)
+        .sort((a, _b) => (a === 'pending' ? -1 : 0))
+        .forEach(key => {
+            ordered[key] = unordered[key];
+        });
+    return ordered;
 };
 
 /**
