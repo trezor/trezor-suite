@@ -83,12 +83,13 @@ suite-web deploy staging:
     when:
         manual
     script:
-        - yarn workspace @trezor/landing-page build
         - cd packages/landing-page
+        - yarn workspace @trezor/landing-page build
         - ./scripts/s3sync.sh stage beta
+        - cd ../../
 
+        - cd packages/suite-web
         - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/suite-web build
-        - cd ../../packages/suite-web
         - ./scripts/s3sync.sh stage beta
     tags:
         - deploy
