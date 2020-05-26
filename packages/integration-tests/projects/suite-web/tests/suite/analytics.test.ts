@@ -8,6 +8,7 @@ describe('Analytics', () => {
 
     it('Analytics should be enabled on initial run, then user may disable it and this option should be respected on subsequent reloads', () => {
         cy.visit('/');
+        cy.getTestElement('@landing/continue-in-browser-button').click();
         cy.getTestElement('@welcome/continue-button').click();
         cy.getTestElement('@analytics/toggle-switch').should('be.checked');
         cy.getTestElement('@analytics/toggle-switch').click({ force: true });
