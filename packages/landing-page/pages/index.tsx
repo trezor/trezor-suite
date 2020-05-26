@@ -62,7 +62,7 @@ const Index = () => (
                             ? `${process.env.assetPrefix}/wallet/start`
                             : '/wallet/start'
                     }
-                    target="_blank"
+                    target="_self"
                     variant="nostyle"
                 >
                     <ButtonAccess variant="primary">Access Beta Wallet</ButtonAccess>
