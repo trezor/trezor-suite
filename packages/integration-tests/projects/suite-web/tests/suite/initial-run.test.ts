@@ -4,11 +4,8 @@ describe('Suite initial run', () => {
         cy.task('stopEmu');
     });
 
-    it('there is landing screen is before initial run (only for web)', () => {
+    it('There is always landing screen is before initial run (only for web). It is not saved into db atm', () => {
         cy.visit('/');
-        cy.getTestElement('@landing');
-        cy.getTestElement('@landing/continue-in-browser-button').click();
-        cy.getTestElement('@welcome');
         cy.passThroughInitialRun();
         cy.getTestElement('@modal/connect-device');
         cy.visit('/');
@@ -16,18 +13,26 @@ describe('Suite initial run', () => {
         cy.getTestElement('@modal/connect-device');
     });
 
-    it('When user opens suite for the first time at any route, welcome and analytics modals appear. Still reloads to welcome screen before initialRun flags is set to false', () => {
+    it('Until user passed through initial run, it will be there after reload', () => {
         cy.visit('/');
-        cy.getTestElement('@welcome');
+        cy.getTestElement('@landing/continue-in-browser-button').click()
+        cy.getTestElement('@welcome/continue-button').click()
         cy.reload();
-        cy.getTestElement('@welcome', { timeout: 20000 });
+        cy.getTestElement('@landing/continue-in-browser-button').click()
+        cy.getTestElement('@welcome/continue-button').click()
     });
 
     it('Once user passed trough, skips initial run and shows connect-device modal', () => {
         cy.visit('/');
-        cy.passThroughInitialRun();
-        cy.getTestElement('@modal/connect-device');
+        cy.getTestElement('@landing/continue-in-browser-button').click()
+        cy.getTestElement('@welcome/continue-button').click()
+        cy.getTestElement('@analytics/go-to-onboarding-button').click()
+        cy.getTestElement('@onboarding/skip-button').click()
+        cy.getTestElement('@onboarding/skip-button').click()
+        cy.getTestElement('@suite/loading').should('not.exist');
         cy.reload();
-        cy.getTestElement('@modal/connect-device', { timeout: 20000 });
+        cy.getTestElement('@landing/continue-in-browser-button').click()
+        cy.getTestElement('@modal/connect-device');
+
     });
 });
