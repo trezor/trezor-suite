@@ -4,11 +4,12 @@ import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
 import { SuiteState } from '@suite-reducers/suiteReducer';
 import { State as SendFormState } from '@wallet-types/sendForm';
 import { State as AnalyticsState } from '@suite-reducers/analyticsReducer';
+import { GraphData } from '@wallet-reducers/graphReducer';
 import { AcquiredDevice } from '@suite-types';
 import { Account, Discovery, CoinFiatRates, WalletAccountTransaction } from '@wallet-types';
 import { migrate } from './migrations';
 
-const VERSION = 13;
+const VERSION = 14;
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
@@ -68,6 +69,14 @@ export interface SuiteDBSchema extends DBSchema {
         key: string;
         value: AnalyticsState;
     };
+    graph: {
+        key: string[]; // descriptor, symbol, deviceState, interval
+        value: GraphData;
+        indexes: {
+            accountKey: string[]; // descriptor, symbol, deviceState
+            deviceState: string;
+        };
+    };
 }
 
 export type SuiteStorageUpdateMessage = StorageUpdateMessage<SuiteDBSchema>;
@@ -122,6 +131,17 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
 
         db.createObjectStore('fiatRates', { keyPath: 'symbol' });
         db.createObjectStore('analytics');
+
+        // graph
+        const graphStore = db.createObjectStore('graph', {
+            keyPath: ['account.descriptor', 'account.symbol', 'account.deviceState'],
+        });
+        graphStore.createIndex('accountKey', [
+            'account.descriptor',
+            'account.symbol',
+            'account.deviceState',
+        ]);
+        graphStore.createIndex('deviceState', 'account.deviceState');
     } else {
         // migrate functions
         migrate(db, oldVersion, newVersion, transaction);

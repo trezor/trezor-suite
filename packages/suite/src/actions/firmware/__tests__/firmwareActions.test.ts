@@ -38,6 +38,7 @@ jest.mock('trezor-connect', () => {
         default: {
             getFeatures: () => {},
             firmwareUpdate,
+            blockchainSetCustomBackend: () => {},
         },
         DEVICE: {
             DISCONNECT: 'device-disconnect',

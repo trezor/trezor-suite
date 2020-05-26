@@ -7,7 +7,7 @@ import * as accountUtils from '@wallet-utils/accountUtils';
 import { SUITE, ANALYTICS } from '@suite-actions/constants';
 import { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import { WalletAction } from '@wallet-types';
-import { ACCOUNT, DISCOVERY, TRANSACTION, FIAT_RATES } from '@wallet-actions/constants';
+import { ACCOUNT, DISCOVERY, TRANSACTION, FIAT_RATES, GRAPH } from '@wallet-actions/constants';
 import { getDiscoveryForDevice } from '@wallet-actions/discoveryActions';
 import { isDeviceRemembered } from '@suite-utils/device';
 import { serializeDiscovery } from '@suite-utils/storage';
@@ -41,6 +41,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             action.payload.forEach(account => {
                 storageActions.removeAccount(account);
                 storageActions.removeAccountTransactions(account);
+                storageActions.removeAccountGraph(account);
             });
             break;
         }
@@ -110,6 +111,17 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         case ANALYTICS.DISPOSE:
             api.dispatch(storageActions.saveAnalytics());
             break;
+
+        case GRAPH.ACCOUNT_GRAPH_SUCCESS:
+        case GRAPH.ACCOUNT_GRAPH_FAIL: {
+            const device = api
+                .getState()
+                .devices.find(d => d.state === action.payload.account.deviceState);
+            if (isDeviceRemembered(device)) {
+                storageActions.saveGraph([action.payload]);
+            }
+            break;
+        }
         default:
             break;
     }

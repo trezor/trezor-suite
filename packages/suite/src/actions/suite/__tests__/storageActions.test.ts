@@ -14,6 +14,7 @@ import suiteReducer from '@suite-reducers/suiteReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
 import discoveryReducer from '@wallet-reducers/discoveryReducer';
 import sendFormReducer from '@wallet-reducers/sendFormReducer';
+import graphReducer from '@wallet-reducers/graphReducer';
 import transactionsReducer from '@wallet-reducers/transactionReducer';
 import storageMiddleware from '@wallet-middlewares/storageMiddleware';
 import { getAccountTransactions } from '@wallet-utils/accountUtils';
@@ -82,7 +83,10 @@ const tx2 = getWalletTransaction({
 
 type PartialState = Pick<AppState, 'suite' | 'devices'> & {
     wallet: Partial<
-        Pick<AppState['wallet'], 'accounts' | 'settings' | 'discovery' | 'send' | 'transactions'>
+        Pick<
+            AppState['wallet'],
+            'accounts' | 'settings' | 'discovery' | 'send' | 'transactions' | 'graph'
+        >
     >;
 };
 
@@ -114,6 +118,10 @@ export const getInitialState = (prevState?: Partial<PartialState>, action?: any)
         ),
         transactions: transactionsReducer(
             prevState && prevState.wallet ? prevState.wallet.transactions : undefined,
+            action || ({ type: 'foo' } as any),
+        ),
+        graph: graphReducer(
+            prevState && prevState.wallet ? prevState.wallet.graph : undefined,
             action || ({ type: 'foo' } as any),
         ),
     },

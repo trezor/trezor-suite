@@ -28,6 +28,7 @@ jest.mock('trezor-connect', () => {
             },
             getFeatures: () => {},
             backupDevice,
+            blockchainSetCustomBackend: () => {},
         },
         DEVICE: {},
         TRANSPORT: {},

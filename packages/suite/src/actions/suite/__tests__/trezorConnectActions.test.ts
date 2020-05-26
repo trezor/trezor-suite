@@ -13,6 +13,7 @@ jest.mock('trezor-connect', () => {
     return {
         __esModule: true, // this property makes it work
         default: {
+            blockchainSetCustomBackend: () => {},
             init: () => {
                 if (fixture instanceof Error) throw fixture;
                 return true;
