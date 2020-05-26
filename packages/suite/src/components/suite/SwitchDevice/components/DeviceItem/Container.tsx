@@ -16,13 +16,17 @@ const mapStateToProps = (state: AppState) => ({
     selectedDevice: state.suite.device,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
-    getBackgroundRoute: () => dispatch(routerActions.getBackgroundRoute()),
-    selectDevice: bindActionCreators(suiteActions.selectDevice, dispatch),
-    acquireDevice: bindActionCreators(suiteActions.acquireDevice, dispatch),
-    createDeviceInstance: bindActionCreators(suiteActions.createDeviceInstance, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            goto: routerActions.goto,
+            getBackgroundRoute: routerActions.getBackgroundRoute,
+            selectDevice: suiteActions.selectDevice,
+            acquireDevice: suiteActions.acquireDevice,
+            createDeviceInstance: suiteActions.createDeviceInstance,
+        },
+        dispatch,
+    );
 
 export type Props = ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps> & {

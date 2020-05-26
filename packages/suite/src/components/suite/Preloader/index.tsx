@@ -46,14 +46,22 @@ const mapStateToProps = (state: AppState) => ({
     actionModalContext: state.modal.context,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    dispatch,
-    getDiscoveryAuthConfirmationStatus: () =>
-        dispatch(discoveryActions.getDiscoveryAuthConfirmationStatus()),
-    goto: bindActionCreators(routerActions.goto, dispatch),
-    closeModalApp: bindActionCreators(routerActions.closeModalApp, dispatch),
-    getBackgroundRoute: () => dispatch(routerActions.getBackgroundRoute()),
-});
+const init = () =>
+    ({
+        type: SUITE.INIT,
+    } as const);
+
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            init,
+            getDiscoveryAuthConfirmationStatus: discoveryActions.getDiscoveryAuthConfirmationStatus,
+            goto: routerActions.goto,
+            closeModalApp: routerActions.closeModalApp,
+            getBackgroundRoute: routerActions.getBackgroundRoute,
+        },
+        dispatch,
+    );
 
 type Props = ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps> & {
@@ -137,13 +145,13 @@ const getModalApplication = (route: Props['router']['route']) => {
 };
 
 const Preloader = (props: Props) => {
-    const { loading, loaded, error, dispatch, router, transport, actionModalContext } = props;
+    const { loading, loaded, error, init, router, transport, actionModalContext } = props;
 
     useEffect(() => {
         if (!loading && !loaded && !error) {
-            dispatch({ type: SUITE.INIT });
+            init();
         }
-    }, [dispatch, loaded, loading, error]);
+    }, [init, loaded, loading, error]);
 
     if (error) {
         // trezor-connect initialization failed
