@@ -1,7 +1,7 @@
 suite-web build:
     stage: build
     script:
-        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
+        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}wallet/ yarn workspace @trezor/suite-web build
     artifacts:
         expire_in: 7 days
         paths:
@@ -22,7 +22,7 @@ suite-web deploy dev:
         - echo "Deploy to dev servers"
         - mkdir -p ${DEPLOY_BASE_DIR}/suite-web
         - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
-        - rsync -va build/ "${DEPLOY_DIRECTORY}/"
+        - rsync -va build/ "${DEPLOY_DIRECTORY}/wallet/"
     tags:
         - deploy
 
