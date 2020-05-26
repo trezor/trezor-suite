@@ -146,6 +146,7 @@ const onDowngrade = () => {
         // relaunch desktop app
         ipcRenderer.send('restart-app');
     } else {
+        // @ts-ignore TODO: suite-native:  Cannot find name 'window'
         window.location.reload();
     }
 };
