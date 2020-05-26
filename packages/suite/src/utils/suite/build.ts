@@ -5,3 +5,9 @@ export const isDev = (): boolean =>
     process.env.BUILD === 'development' || process.env.NODE_ENV === 'development';
 
 export const isBeta = (): boolean => process.env.BUILD === 'beta';
+
+export const normalizeVersion = (version: string) => {
+    const normalizedVersion = version.toUpperCase();
+    // remove any zeros that are not preceded by Latin letters, decimal digits, underscores
+    return normalizedVersion.replace(/\b0+/g, '');
+};
