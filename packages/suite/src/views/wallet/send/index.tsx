@@ -82,6 +82,10 @@ export default ({
     sendFormActions,
     sendFormActionsBitcoin,
 }: Props) => {
+    useEffect(() => {
+        sendFormActions.init();
+    }, [selectedAccount]);
+
     if (!device || !send || !fees || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Send" account={selectedAccount} />;
     }
