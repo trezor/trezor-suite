@@ -41,8 +41,8 @@ const Index = () => (
         <Wrapper>
             <H2>Access Trezor Beta Wallet</H2>
             <P size="tiny">
-                Beta Wallet is now behind a login wall. To access Beta Wallet with experimental
-                features please sign up to our Beta Testers Community.
+                Beta Wallet is now specially designated for experimental testing and the access is
+                limited exclusively to our Beta Testers Community.
             </P>
             <Item>
                 <Link
@@ -62,7 +62,7 @@ const Index = () => (
             </Item>
             <HeadBackP size="tiny">
                 <FirstRow>
-                    Otherwise, please head back to our stable and safe Wallet{' '}
+                    To access your coins without login please head back to our stable and safe
                     <Link href="https://wallet.trezor.io" target="_blank" variant="nostyle">
                         <ButtonWallet variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
                             wallet.trezor.io
@@ -70,7 +70,7 @@ const Index = () => (
                     </Link>
                 </FirstRow>
                 <Row>
-                    For ETH, XRP, and ETC please visit
+                    For ETH, XRP, and ETC specifically please visit
                     <Link
                         href="https://beta-wallet.trezor.io/next"
                         target="_blank"
