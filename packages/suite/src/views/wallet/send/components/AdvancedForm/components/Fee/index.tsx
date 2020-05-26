@@ -3,6 +3,7 @@ import Badge from '@suite-components/Badge';
 import { capitalizeFirstLetter } from '@suite-utils/string';
 import { colors, P, Select, variables, Button } from '@trezor/components';
 import { Account } from '@wallet-types';
+import { getInputState } from '@wallet-utils/sendFormUtils';
 import { getTransactionInfo, calculateEthFee } from '@wallet-utils/sendFormUtils';
 import { FeeLevel } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -121,8 +122,11 @@ const getValue = (
     return `${formatNetworkAmount(feePerUnit, symbol)} ${symbol.toUpperCase()}`;
 };
 
-const isDisabled = (networkType: Account['networkType'], data: string | null) => {
-    return networkType === 'ethereum' && data !== null;
+const isDisabled = (
+    networkType: Account['networkType'],
+    dataState: 'error' | 'success' | undefined,
+) => {
+    return networkType === 'ethereum' && dataState;
 };
 
 export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
@@ -166,7 +170,15 @@ export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
                     value={{ ...selectedFee, value: selectedFee.feePerUnit }}
                     onChange={sendFormActions.handleFeeValueChange}
                     options={feeLevels}
-                    isDisabled={isDisabled(networkType, networkTypeEthereum.data.value)}
+                    isDisabled={isDisabled(
+                        networkType,
+                        getInputState(
+                            networkTypeEthereum.data.error,
+                            networkTypeEthereum.data.value,
+                            false,
+                            false,
+                        ),
+                    )}
                     formatOptionLabel={(option: FeeLevel) => (
                         <OptionWrapper>
                             <OptionLabel>{capitalizeFirstLetter(option.label)} </OptionLabel>

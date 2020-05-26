@@ -197,7 +197,6 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     }
 
     dispatch(amountChange(amount, outputId));
-
     dispatch(composeChange('amount', send.setMaxActivated));
 };
 
