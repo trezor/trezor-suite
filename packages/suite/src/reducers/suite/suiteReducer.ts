@@ -11,6 +11,8 @@ export interface DebugModeOptions {
 
 interface Flags {
     initialRun: boolean;
+    // is not saved to storage at the moment, so for simplicity of types set to be optional now
+    initialWebRun?: boolean;
     // recoveryCompleted: boolean;
     // pinCompleted: boolean;
     // passphraseCompleted: boolean;
@@ -43,6 +45,8 @@ const initialState: SuiteState = {
     locks: [],
     flags: {
         initialRun: true,
+        // on web, there is another preceding initialWebRun, that shows 'download' desktop
+        initialWebRun: process.env.SUITE_TYPE === 'web',
         // recoveryCompleted: false;
         // pinCompleted: false;
         // passphraseCompleted: false;

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Layout from '@landing-components/Layout';
 import { Translation } from '@suite-components';
+import { Props } from './Container';
 import { normalizeVersion, isDev } from '@suite-utils/build';
 import { H2, Button, P, Select, Link, variables } from '@trezor/components';
 
@@ -61,7 +62,7 @@ const getAppUrl = (appName: App) => {
     }
 };
 
-export default () => {
+export default ({ setFlag }: Props) => {
     const [app, setApp] = useState<App | null>(null);
 
     return (
@@ -108,10 +109,14 @@ export default () => {
                     </Item>
                 </Row>
                 <Item>
-                    <ButtonContinue variant="tertiary" icon="ARROW_RIGHT" alignIcon="right">
-                        <Link href="../" variant="nostyle">
-                            <Translation id="TR_LANDING_CONTINUE" />
-                        </Link>
+                    <ButtonContinue
+                        onClick={() => setFlag('initialWebRun', false)}
+                        variant="tertiary"
+                        icon="ARROW_RIGHT"
+                        alignIcon="right"
+                        data-test="@landing/continue-in-browser-button"
+                    >
+                        <Translation id="TR_LANDING_CONTINUE" />
                     </ButtonContinue>
                 </Item>
             </Wrapper>

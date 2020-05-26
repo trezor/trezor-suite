@@ -34,8 +34,9 @@ describe('Firmware', () => {
         cy.task('startBridge');
         cy.visit('/settings/device');
         cy.passThroughInitialRun();
-        cy.getTestElement('@settings/device/update-button').should('contain.text', 'Up to date').click();
+        cy.getTestElement('@settings/device/update-button')
+            .should('contain.text', 'Up to date')
+            .click();
         cy.getTestElement('@firmware/close-button').click();
     });
-
 });

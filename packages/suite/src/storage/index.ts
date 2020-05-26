@@ -36,7 +36,10 @@ export interface SuiteDBSchema extends DBSchema {
     };
     suiteSettings: {
         key: string;
-        value: { settings: SuiteState['settings']; flags: SuiteState['flags'] };
+        value: {
+            settings: SuiteState['settings'];
+            flags: SuiteState['flags'];
+        };
     };
     walletSettings: {
         key: string;
