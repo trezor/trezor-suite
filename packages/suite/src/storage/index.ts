@@ -86,17 +86,8 @@ export type SuiteStorageUpdateMessage = StorageUpdateMessage<SuiteDBSchema>;
  *  Otherwise runs a migration function that transform the data to new scheme version if necessary
  */
 const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersion, transaction) => {
-    // instead of doing proper migration just delete all object stores and recreate them
-    // TODO: uncomment before RELEASE,
-    // const shouldInitDB = oldVersion === 0;
-    // if (shouldInitDB) {
-    if (oldVersion < VERSION) {
-        try {
-            await SuiteDB.removeStores<SuiteDBSchema>(db);
-        } catch (err) {
-            console.error('error during removing all stores', err);
-        }
-
+    const shouldInitDB = oldVersion === 0;
+    if (shouldInitDB) {
         // init db
         // object store for wallet transactions
         const txsStore = db.createObjectStore('txs', {
@@ -148,4 +139,15 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
     }
 };
 
-export const db = new SuiteDB<SuiteDBSchema>('trezor-suite', VERSION, onUpgrade);
+const onDowngrade = () => {
+    // @ts-ignore
+    const { ipcRenderer } = global;
+    if (ipcRenderer) {
+        // relaunch desktop app
+        ipcRenderer.send('restart-app');
+    } else {
+        window.location.reload();
+    }
+};
+
+export const db = new SuiteDB<SuiteDBSchema>('trezor-suite', VERSION, onUpgrade, onDowngrade);

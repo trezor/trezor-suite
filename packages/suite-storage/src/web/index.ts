@@ -28,8 +28,14 @@ class CommonDB<TDBStructure> {
     db!: IDBPDatabase<TDBStructure> | null;
     broadcastChannel!: BroadcastChannel;
     onUpgrade!: OnUpgradeFunc<TDBStructure>;
+    onDowngrade!: () => any;
 
-    constructor(dbName: string, version: number, onUpgrade: OnUpgradeFunc<TDBStructure>) {
+    constructor(
+        dbName: string,
+        version: number,
+        onUpgrade: OnUpgradeFunc<TDBStructure>,
+        onDowngrade: () => any
+    ) {
         if (CommonDB.instance) {
             return CommonDB.instance;
         }
@@ -37,6 +43,7 @@ class CommonDB<TDBStructure> {
         this.dbName = dbName;
         this.version = version;
         this.onUpgrade = onUpgrade.bind(this);
+        this.onDowngrade = onDowngrade.bind(this);
         this.db = null;
         // create global instance of broadcast channel
         this.broadcastChannel = new BroadcastChannel('storageChangeEvent');
@@ -105,8 +112,9 @@ class CommonDB<TDBStructure> {
                 if (error && error.name === 'VersionError') {
                     indexedDB.deleteDatabase(this.dbName);
                     console.log(
-                        'SHOULD NOT HAPPEN IN PRODUCTION: IDB was deleted because your version is higher than it should be!'
+                        'IndexedDB was deleted because your version is higher than it should be (downgrade)'
                     );
+                    this.onDowngrade();
                     throw error;
                 } else {
                     throw error;
