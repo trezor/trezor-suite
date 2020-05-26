@@ -59,7 +59,7 @@ const getAppUrl = (appName: App) => {
 
 export default () => {
     const [app, setApp] = useState<App | null>(null);
-    const walletUrl = process.env.assetPrefix ? `${process.env.assetPrefix}wallet` : '/wallet';
+    const walletUrl = process.env.assetPrefix ? `${process.env.assetPrefix}/wallet` : '/wallet';
 
     return (
         <Layout>
