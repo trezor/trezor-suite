@@ -285,7 +285,7 @@ const networks = [
         name: 'Ethereum Ropsten',
         networkType: 'ethereum',
         symbol: 'trop',
-        bip44: "m/44'/60'/0'/0/i",
+        bip44: "m/44'/1'/0'/0/i",
         hasSignVerify: true,
         chainId: 3,
         decimals: 18,
