@@ -47,10 +47,10 @@ fi
 
 # Set source directory
 if [ "x$2" == "xbeta" ]; then
-    SOURCE=../build/
+    SOURCE=../../combined/
 
 elif [ "x$2" == "xstable" ]; then
-    SOURCE=../build/
+    SOURCE=../../build/
 fi
 
 # Set destination
