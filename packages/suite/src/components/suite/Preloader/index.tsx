@@ -44,6 +44,7 @@ const mapStateToProps = (state: AppState) => ({
     router: state.router,
     discovery: state.wallet.discovery,
     actionModalContext: state.modal.context,
+    flags: state.suite.flags,
 });
 
 const init = () =>
@@ -145,7 +146,7 @@ const getModalApplication = (route: Props['router']['route']) => {
 };
 
 const Preloader = (props: Props) => {
-    const { loading, loaded, error, init, router, transport, actionModalContext } = props;
+    const { loading, loaded, error, init, router, transport, actionModalContext, flags } = props;
 
     useEffect(() => {
         if (!loading && !loaded && !error) {

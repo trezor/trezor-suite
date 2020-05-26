@@ -57,7 +57,7 @@ const getAppUrl = (appName: App) => {
     }
 };
 
-export default () => {
+export default ({ setFlag }: Props) => {
     const [app, setApp] = useState<App | null>(null);
     const walletUrl = process.env.assetPrefix ? `${process.env.assetPrefix}/wallet` : '/wallet';
 
