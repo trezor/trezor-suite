@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import Layout from '../components/Layout';
 import { H2, Button, P, Link } from '@trezor/components';
-import { normalizeVersion, isDev } from '@suite-utils/build';
 
 const Wrapper = styled.div`
     display: flex;
