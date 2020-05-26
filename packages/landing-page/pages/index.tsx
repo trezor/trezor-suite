@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Layout from '../components/Layout';
+import Layout from '@landing-components/Layout';
 import { H2, Button, P, Link } from '@trezor/components';
 
 const Wrapper = styled.div`
