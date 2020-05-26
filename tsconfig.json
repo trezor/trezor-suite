@@ -262,8 +262,7 @@
             "@backup-hooks/*": ["./packages/suite/src/hooks/backup/*"],
             "@backup-hooks": ["./packages/suite/src/hooks/backup/index"],
             // landing
-            "@landing-components/*": ["./packages/suite/src/components/landing/*"],
-            "@landing-views/*": ["./packages/suite/src/views/landing/*"],
+            "@landing-components/*": ["./packages/landing-page/components/*"],
             // web workers
             "*/workers/graph.worker": ["./packages/suite/src/workers/graph.worker"],
             // other
