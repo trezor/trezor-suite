@@ -57,7 +57,11 @@ const Index = () => (
             </Item>
             <Item>
                 <Link
-                    href={process.env.assetPrefix ? `${process.env.assetPrefix}/wallet` : '/wallet'}
+                    href={
+                        process.env.assetPrefix
+                            ? `${process.env.assetPrefix}/wallet/start`
+                            : '/wallet/start'
+                    }
                     target="_blank"
                     variant="nostyle"
                 >
