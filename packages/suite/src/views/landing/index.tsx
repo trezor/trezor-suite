@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Layout from '@landing-components/Layout';
 import { Translation } from '@suite-components';
+import { normalizeVersion } from '@suite-utils/build';
 import { H2, Button, P, Select, Link, variables } from '@trezor/components';
 
 const Wrapper = styled.div`
@@ -43,12 +44,6 @@ const ButtonDownload = styled(Button)`
 `;
 
 type App = 'win' | 'macos' | 'linux';
-
-const normalizeVersion = (version: string) => {
-    const normalizedVersion = version.toUpperCase();
-    // remove any zeros that are not preceded by Latin letters, decimal digits, underscores
-    return normalizedVersion.replace(/\b0+/g, '');
-};
 
 const getAppUrl = (appName: App) => {
     const ghRepo = 'https://github.com/trezor/trezor-suite';
