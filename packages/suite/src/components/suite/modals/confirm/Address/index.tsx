@@ -1,15 +1,14 @@
 import React, { createRef } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { Button, Modal, colors } from '@trezor/components';
 import { copyToClipboard } from '@suite-utils/dom';
-import { TrezorDevice, Dispatch } from '@suite-types';
+import { TrezorDevice } from '@suite-types';
 import { Translation, QrCode } from '@suite-components';
 
 import CheckOnTrezor from './components/CheckOnTrezor';
 import DeviceDisconnected from './components/DeviceDisconnected';
+import { useActions } from '@suite-hooks';
 
 const Address = styled.div`
     width: 100%;
@@ -28,10 +27,6 @@ const Row = styled.div`
     justify-content: center;
 `;
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    addNotification: bindActionCreators(notificationActions.addToast, dispatch),
-});
-
 type Props = {
     device: TrezorDevice;
     address: string;
@@ -40,7 +35,7 @@ type Props = {
     symbol: string;
     cancelable?: boolean;
     onCancel?: () => void;
-} & ReturnType<typeof mapDispatchToProps>;
+};
 
 const ConfirmAddress = ({
     device,
@@ -48,13 +43,13 @@ const ConfirmAddress = ({
     addressPath,
     networkType,
     symbol,
-    addNotification,
     cancelable,
     onCancel,
 }: Props) => {
     // TODO: no-backup, backup failed
     // const needsBackup = device.features && device.features.needs_backup;
 
+    const { addNotification } = useActions({ addNotification: notificationActions.addToast });
     const htmlElement = createRef<HTMLDivElement>();
 
     const copyAddress = () => {
@@ -96,4 +91,4 @@ const ConfirmAddress = ({
     );
 };
 
-export default connect(null, mapDispatchToProps)(ConfirmAddress);
+export default ConfirmAddress;
