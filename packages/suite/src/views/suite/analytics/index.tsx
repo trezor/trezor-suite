@@ -1,14 +1,12 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
 import { Button, P, Modal, Link, variables, colors } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
-import { Dispatch, InjectedModalApplicationProps } from '@suite-types';
 import { Analytics } from '@suite-components/Settings';
 import { URLS } from '@suite-constants';
 import { Translation, Image } from '@suite-components';
+import { useActions } from '@suite-hooks';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;
 
@@ -41,13 +39,8 @@ const StyledButton = styled(Button)`
     margin-top: 16px;
 `;
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
-
-type Props = ReturnType<typeof mapDispatchToProps> & InjectedModalApplicationProps;
-
-const Index = (props: Props) => {
+export default () => {
+    const { goto } = useActions({ goto: routerActions.goto });
     return (
         <Modal
             useFixedHeight
@@ -87,7 +80,7 @@ const Index = (props: Props) => {
                 <Analytics />
 
                 <StyledButton
-                    onClick={() => props.goto('onboarding-index')}
+                    onClick={() => goto('onboarding-index')}
                     data-test="@analytics/go-to-onboarding-button"
                 >
                     <Translation id="TR_CONTINUE" />
@@ -109,5 +102,3 @@ const Index = (props: Props) => {
         </Modal>
     );
 };
-
-export default connect(null, mapDispatchToProps)(Index);

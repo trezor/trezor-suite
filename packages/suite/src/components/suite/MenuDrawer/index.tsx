@@ -51,7 +51,7 @@ interface WrapperProps {
 }
 
 const hidden = { position: 'absolute', x: '-100%' } as const;
-const transition = { duration: 0.33 };
+const transition = { duration: 0.24, ease: 'easeInOut' };
 
 const AnimatedWrapper = ({ children, wide }: WrapperProps) => {
     const visible = { x: 0, transitionEnd: { position: 'relative' } } as const;

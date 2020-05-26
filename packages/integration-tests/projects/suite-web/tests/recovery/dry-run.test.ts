@@ -21,6 +21,10 @@ describe('Recovery - dry run', () => {
         cy.getTestElement('@modal/connect-device');
         cy.task('startEmu', { wipe: false });
         cy.reload();
+
+        // temporary
+        cy.getTestElement('@landing/continue-in-browser-button').click();
+
         cy.getTestElement('@device-invalid-mode/recovery/rerun-button').click();
         cy.getTestElement('@suite/modal/confirm-action-on-device');
         cy.task('sendDecision');

@@ -6,6 +6,7 @@ export { useDeviceActionLocks } from './useDeviceActionLocks';
 export { useDiscovery } from './useDiscovery';
 export { useScrollRef } from './useScrollRef';
 export { useAnalytics } from './useAnalytics';
+export { useActions } from './useActions';
 
 /**
  * Properly typed useSelector hook, use this one instead of directly importing it from react-redux.

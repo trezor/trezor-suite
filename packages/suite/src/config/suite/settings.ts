@@ -5,5 +5,6 @@ export default {
     DEFAULT_GRAPH_RANGE: {
         label: 'all',
         weeks: null,
+        groupBy: 'month',
     },
 } as const;

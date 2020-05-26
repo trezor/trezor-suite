@@ -52,7 +52,7 @@ interface Props {
 }
 
 const Index = ({ children }: Props) => (
-    <Layout>
+    <Layout data-test="@landing">
         <Left />
         <Right>
             <StyledTrezorLogo type="horizontal" width={160} />

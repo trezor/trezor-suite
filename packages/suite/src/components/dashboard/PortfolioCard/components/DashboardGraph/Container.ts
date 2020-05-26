@@ -14,6 +14,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     updateGraphData: bindActionCreators(graphActions.updateGraphData, dispatch),
     setSelectedRange: bindActionCreators(graphActions.setSelectedRange, dispatch),
+    getGraphDataForInterval: bindActionCreators(graphActions.getGraphDataForInterval, dispatch),
 });
 
 interface OwnProps {
