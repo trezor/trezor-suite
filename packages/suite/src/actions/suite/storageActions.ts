@@ -11,7 +11,6 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
 import { deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
 import { getAnalyticsRandomId } from '@suite-utils/random';
-import { deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
 
 export type StorageActions =
     | { type: typeof STORAGE.LOAD }
