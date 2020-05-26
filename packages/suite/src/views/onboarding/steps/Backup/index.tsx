@@ -67,8 +67,12 @@ const BackupStep = (props: Props) => {
                         </Text>
                         <StyledImage image="UNI_ERROR" />
                         <Wrapper.Controls>
-                            <OnboardingButton.Cta onClick={() => props.closeModalApp()}>
-                                <Translation id="TR_CONTINUE" />
+                            <OnboardingButton.Cta
+                                onClick={() => {
+                                    props.goto('settings-index');
+                                }}
+                            >
+                                <Translation id="TR_GO_TO_SETTINGS" />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
