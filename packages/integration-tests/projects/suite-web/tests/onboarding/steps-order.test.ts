@@ -7,11 +7,10 @@ describe('Onboarding - steps order', () => {
 
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
-        cy.visit('')
-            .goToOnboarding()
-            .onboardingShouldLoad()
-            .getTestElement('@onboarding/begin-button')
-            .click();
+        cy.visit('/')
+        cy.goToOnboarding()
+        cy.onboardingShouldLoad()
+        cy.getTestElement('@onboarding/begin-button').click();
     });
 
     describe('New device', () => {

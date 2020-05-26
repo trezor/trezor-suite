@@ -110,6 +110,7 @@ export const closeModalApp = (preserveParams = true) => async (dispatch: Dispatc
     dispatch(suiteActions.lockRouter(false));
     // const route = findRoute(Router.pathname + window.location.hash);
     const route = dispatch(getBackgroundRoute());
+
     // if user enters route of modal app manually, back would redirect him again to the same route and he would remain stuck
     // so we need a fallback to suite-index
     if (route && route.isModal) {
@@ -131,6 +132,7 @@ export const closeModalApp = (preserveParams = true) => async (dispatch: Dispatc
 export const initialRedirection = () => async (dispatch: Dispatch, getState: GetState) => {
     const route = findRoute(Router.pathname + window.location.hash);
     const { initialRun } = getState().suite.flags;
+
     if (route && route.isModal) {
         await dispatch(goto(route.name));
     } else if (route && initialRun) {

@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import FocusLock from 'react-focus-lock';
 import { SUITE } from '@suite-actions/constants';
 import Loading from '@suite-components/Loading';
-import Landing from '@landing-views/index';
+import Landing from '@landing-views/Container';
 import { SuiteLayout } from '@suite-components';
 import DiscoveryLoader from '@suite-components/DiscoveryLoader';
 import Modals from '@suite-components/modals';
@@ -44,6 +44,7 @@ const mapStateToProps = (state: AppState) => ({
     router: state.router,
     discovery: state.wallet.discovery,
     actionModalContext: state.modal.context,
+    flags: state.suite.flags,
 });
 
 const init = () =>
@@ -145,7 +146,7 @@ const getModalApplication = (route: Props['router']['route']) => {
 };
 
 const Preloader = (props: Props) => {
-    const { loading, loaded, error, init, router, transport, actionModalContext } = props;
+    const { loading, loaded, error, init, router, transport, actionModalContext, flags } = props;
 
     useEffect(() => {
         if (!loading && !loaded && !error) {
@@ -159,7 +160,9 @@ const Preloader = (props: Props) => {
         throw new Error(error);
     }
 
-    if (router.app === 'start') return <Landing />;
+    if (flags.initialWebRun) {
+        return <Landing />;
+    }
 
     const hasActionModal = actionModalContext !== '@modal/context-none';
     // check if current route is a "modal application" and display it above requested physical route (route in url)
@@ -189,6 +192,7 @@ const Preloader = (props: Props) => {
     // if "router.app" is already set
     // display Loader wrapped in modal above requested route to keep "modal" flow continuity (see ApplicationStateModal)
     // otherwise display Loader as full page view
+
     if (router.app === 'unknown' && (!loaded || !transport)) {
         return <Loading noBackground />;
     }

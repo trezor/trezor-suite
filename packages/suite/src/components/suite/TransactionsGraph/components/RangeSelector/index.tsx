@@ -24,18 +24,22 @@ const RANGES = [
     {
         label: 'week',
         weeks: 1,
+        groupBy: 'day',
     },
     {
         label: 'month',
         weeks: 4,
+        groupBy: 'day',
     },
     {
         label: 'year',
         weeks: 52,
+        groupBy: 'month',
     },
     {
         label: 'all',
         weeks: null,
+        groupBy: 'month',
     },
 ] as const;
 

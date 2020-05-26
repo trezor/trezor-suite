@@ -82,11 +82,12 @@ const routes = [
         isModal: true,
         params: modalAppParams,
     },
-    {
-        name: 'tips-index',
-        pattern: '/tips',
-        app: 'tips',
-    },
+    // todo: does not exist yet
+    // {
+    //     name: 'tips-index',
+    //     pattern: '/tips',
+    //     app: 'tips',
+    // },
     {
         name: 'settings-index',
         pattern: '/settings',
@@ -109,14 +110,14 @@ const routes = [
     },
     {
         name: 'recovery-index',
-        pattern: 'recovery',
+        pattern: '/recovery',
         app: 'recovery',
         isModal: true,
         params: modalAppParams,
     },
     {
         name: 'backup-index',
-        pattern: 'backup',
+        pattern: '/backup',
         app: 'backup',
         isModal: true,
         params: modalAppParams,

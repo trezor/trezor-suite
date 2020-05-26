@@ -5,9 +5,11 @@ import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { Account, Send } from '@wallet-types';
 import { getAccountKey } from '@wallet-utils/accountUtils';
 import { Discovery } from '@wallet-reducers/discoveryReducer';
+import { GraphData } from '@wallet-reducers/graphReducer';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
+import { deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
 import { getAnalyticsRandomId } from '@suite-utils/random';
 
 export type StorageActions =
@@ -52,6 +54,7 @@ export const forgetDevice = (device: TrezorDevice) => async () => {
         db.removeItemByPK('discovery', device.state),
         db.removeItemByIndex('txs', 'deviceState', device.state),
         db.removeItemByIndex('sendForm', 'deviceState', device.state),
+        db.removeItemByIndex('graph', 'deviceState', device.state),
     ]);
     return promises;
 };
@@ -62,6 +65,10 @@ export const saveAccounts = async (accounts: Account[]) => {
 
 export const saveDiscovery = async (discoveries: Discovery[]) => {
     return db.addItems('discovery', discoveries, true);
+};
+
+export const saveGraph = async (graphData: GraphData[]) => {
+    return db.addItems('graph', graphData, true);
 };
 
 export const saveAccountTransactions = (account: Account) => async (
@@ -82,6 +89,14 @@ export const saveAccountTransactions = (account: Account) => async (
     return db.addItems('txs', orderedTxs, true);
 };
 
+export const removeAccountGraph = (account: Account) => () => {
+    return db.removeItemByIndex('graph', 'accountKey', [
+        account.descriptor,
+        account.symbol,
+        account.deviceState,
+    ]);
+};
+
 export const rememberDevice = (device: TrezorDevice, remember: boolean) => async (
     dispatch: Dispatch,
     getState: GetState,
@@ -93,6 +108,7 @@ export const rememberDevice = (device: TrezorDevice, remember: boolean) => async
 
     const { wallet } = getState();
     const accounts = wallet.accounts.filter(a => a.deviceState === device.state);
+    const graphData = wallet.graph.data.filter(d => deviceGraphDataFilterFn(d, device.state));
     const discovery = wallet.discovery
         .filter(d => d.deviceState === device.state)
         .map(serializeDiscovery);
@@ -104,6 +120,7 @@ export const rememberDevice = (device: TrezorDevice, remember: boolean) => async
         await Promise.all([
             saveDevice(device),
             saveAccounts(accounts),
+            saveGraph(graphData),
             saveDiscovery(discovery),
             ...txsPromises,
         ] as Promise<void | string | undefined>[]);
@@ -138,7 +155,12 @@ export const saveSuiteSettings = () => (_dispatch: Dispatch, getState: GetState)
         'suiteSettings',
         {
             settings: suite.settings,
-            flags: suite.flags,
+            flags: {
+                initialRun: suite.flags.initialRun,
+                // is not saved at the moment, but probably will be in future. now we always
+                // initialWebRun: suite.flag.initialWebRun,
+                discreetModeCompleted: suite.flags.discreetModeCompleted,
+            },
         },
         'suite',
     );
@@ -190,6 +212,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
         const discovery = await db.getItemsExtended('discovery');
         const walletSettings = await db.getItemByPK('walletSettings', 'wallet');
         const fiatRates = await db.getItemsExtended('fiatRates');
+        const walletGraphData = await db.getItemsExtended('graph');
         const analytics = await db.getItemByPK('analytics', 'suite');
         const txs = await db.getItemsExtended('txs', 'order');
         const mappedTxs: AppState['wallet']['transactions']['transactions'] = {};
@@ -232,6 +255,10 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                         transactions: mappedTxs,
                     },
                     fiat: fiatRates || [],
+                    graph: {
+                        ...initialState.wallet.graph,
+                        data: walletGraphData || [],
+                    },
                 },
                 analytics: analytics?.instanceId
                     ? { ...analytics, sessionId: getAnalyticsRandomId() }

@@ -3,14 +3,17 @@ import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { colors, variables, Loader, Icon } from '@trezor/components';
 import { Account } from '@wallet-types';
-import { GraphRange, AggregatedAccountBalanceHistory } from '@wallet-types/fiatRates';
+import {
+    GraphRange,
+    AggregatedAccountHistory,
+    AggregatedDashboardHistory,
+} from '@wallet-types/fiatRates';
 import { BarChart, Tooltip, Bar, ReferenceLine, ResponsiveContainer, YAxis, XAxis } from 'recharts';
 import RangeSelector from './components/RangeSelector';
 import CustomTooltip from './components/CustomTooltip';
 import CustomXAxisTick from './components/CustomXAxisTick';
 import CustomYAxisTick from './components/CustomYAxisTick';
 import CustomBar from './components/CustomBar';
-import { BlockchainAccountBalanceHistory } from 'trezor-connect';
 
 const Wrapper = styled.div`
     display: flex;
@@ -52,30 +55,27 @@ const RefreshIcon = styled(Icon)`
     cursor: pointer;
 `;
 
-type AccountHistory = BlockchainAccountBalanceHistory[];
-
 interface CommonProps {
     isLoading?: boolean;
     selectedRange: GraphRange;
     xTicks: number[];
+    localCurrency: string;
     onSelectedRange: (range: GraphRange) => void;
     onRefresh?: () => void;
 }
 export interface CryptoGraphProps extends CommonProps {
     variant: 'one-asset';
     account: Account;
-    data: AccountHistory | null;
-    receivedValueFn: (data: AccountHistory[number]) => string;
-    sentValueFn: (data: AccountHistory[number]) => string;
-    localCurrency?: never;
+    data: AggregatedAccountHistory[] | null;
+    receivedValueFn: (data: AggregatedAccountHistory) => string;
+    sentValueFn: (data: AggregatedAccountHistory) => string;
 }
 
 export interface FiatGraphProps extends CommonProps {
     variant: 'all-assets';
-    localCurrency: string;
-    data: AggregatedAccountBalanceHistory[] | null;
-    receivedValueFn: (data: AggregatedAccountBalanceHistory) => string | undefined;
-    sentValueFn: (data: AggregatedAccountBalanceHistory) => string | undefined;
+    data: AggregatedDashboardHistory[] | null;
+    receivedValueFn: (data: AggregatedDashboardHistory) => string | undefined;
+    sentValueFn: (data: AggregatedDashboardHistory) => string | undefined;
     account?: never;
 }
 
@@ -193,6 +193,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                             variant={props.variant}
                                             selectedRange={selectedRange}
                                             symbol={props.account.symbol}
+                                            localCurrency={props.localCurrency}
                                             sentValueFn={props.sentValueFn}
                                             receivedValueFn={props.receivedValueFn}
                                         />
