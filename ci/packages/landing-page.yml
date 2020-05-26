@@ -10,7 +10,7 @@ landing-page build:
 landing-page deploy dev:
   stage: deploy to dev servers
   variables:
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/landing-page/${CI_BUILD_REF_NAME}
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
   dependencies:
     - landing-page build
   environment:
