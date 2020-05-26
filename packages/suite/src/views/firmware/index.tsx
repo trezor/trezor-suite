@@ -147,13 +147,17 @@ const mapStateToProps = (state: AppState) => ({
     transport: state.suite.transport,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    closeModalApp: bindActionCreators(routerActions.closeModalApp, dispatch),
-    firmwareUpdate: bindActionCreators(firmwareActions.firmwareUpdate, dispatch),
-    resetReducer: bindActionCreators(firmwareActions.resetReducer, dispatch),
-    setStatus: bindActionCreators(firmwareActions.setStatus, dispatch),
-    toggleBtcOnly: bindActionCreators(firmwareActions.toggleBtcOnly, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            closeModalApp: routerActions.closeModalApp,
+            firmwareUpdate: firmwareActions.firmwareUpdate,
+            resetReducer: firmwareActions.resetReducer,
+            setStatus: firmwareActions.setStatus,
+            toggleBtcOnly: firmwareActions.toggleBtcOnly,
+        },
+        dispatch,
+    );
 
 type Props = ReturnType<typeof mapDispatchToProps> &
     ReturnType<typeof mapStateToProps> &

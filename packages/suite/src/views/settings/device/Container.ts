@@ -13,12 +13,16 @@ const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    applySettings: bindActionCreators(applySettings, dispatch),
-    changePin: bindActionCreators(changePin, dispatch),
-    goto: bindActionCreators(routerActions.goto, dispatch),
-    openModal: bindActionCreators(modalActions.openModal, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            applySettings,
+            changePin,
+            goto: routerActions.goto,
+            openModal: modalActions.openModal,
+        },
+        dispatch,
+    );
 
 export type Props = WrappedComponentProps &
     ReturnType<typeof mapStateToProps> &

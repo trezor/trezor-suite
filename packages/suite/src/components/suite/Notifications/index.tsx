@@ -14,9 +14,13 @@ const mapStateToProps = (state: AppState) => ({
     router: state.router,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            goto: routerActions.goto,
+        },
+        dispatch,
+    );
 
 export type Props = {
     children?: React.ReactNode;

@@ -14,9 +14,13 @@ const mapStateToProps = (state: AppState) => ({
     locks: state.suite.locks,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    applySettings: bindActionCreators(deviceSettingsActions.applySettings, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            applySettings: deviceSettingsActions.applySettings,
+        },
+        dispatch,
+    );
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 

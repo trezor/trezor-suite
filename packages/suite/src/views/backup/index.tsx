@@ -50,10 +50,14 @@ const mapStateToProps = (state: AppState) => ({
     locks: state.suite.locks,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    backupDevice: bindActionCreators(backupActions.backupDevice, dispatch),
-    changePin: bindActionCreators(deviceSettingsActions.changePin, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            backupDevice: backupActions.backupDevice,
+            changePin: deviceSettingsActions.changePin,
+        },
+        dispatch,
+    );
 
 type Props = ReturnType<typeof mapDispatchToProps> &
     ReturnType<typeof mapStateToProps> &

@@ -18,13 +18,17 @@ const mapStateToProps = (state: AppState) => ({
     flags: state.suite.flags,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    setDiscreetMode: bindActionCreators(walletSettingsActions.setDiscreetMode, dispatch),
-    createDeviceInstance: bindActionCreators(suiteActions.createDeviceInstance, dispatch),
-    changePin: bindActionCreators(deviceSettingsActions.changePin, dispatch),
-    applySettings: bindActionCreators(deviceSettingsActions.applySettings, dispatch),
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            setDiscreetMode: walletSettingsActions.setDiscreetMode,
+            createDeviceInstance: suiteActions.createDeviceInstance,
+            changePin: deviceSettingsActions.changePin,
+            applySettings: deviceSettingsActions.applySettings,
+            goto: routerActions.goto,
+        },
+        dispatch,
+    );
 
 export type Props = ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps> &

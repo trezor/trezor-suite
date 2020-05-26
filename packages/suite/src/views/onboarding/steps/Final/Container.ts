@@ -10,9 +10,13 @@ const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    closeModalApp: bindActionCreators(routerActions.closeModalApp, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            closeModalApp: routerActions.closeModalApp,
+        },
+        dispatch,
+    );
 
 export type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 

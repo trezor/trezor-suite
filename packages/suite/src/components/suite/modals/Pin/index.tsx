@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { H2, Link, variables, colors, Modal, ModalProps } from '@trezor/components';
 import { PinInput, Loading, Translation, Image } from '@suite-components';
-import { Dispatch, TrezorDevice } from '@suite-types';
+import { TrezorDevice } from '@suite-types';
 
 import { URLS } from '@suite-constants';
 import * as modalActions from '@suite-actions/modalActions';
+import { useActions } from '@suite-hooks';
 
 const { FONT_SIZE, SCREEN_SIZE } = variables;
 
@@ -124,19 +123,16 @@ const ExplanationCol = (props: { heading: React.ReactNode; description?: React.R
     </GreyCol>
 );
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    onPinSubmit: bindActionCreators(modalActions.onPinSubmit, dispatch),
-});
-
 interface OwnProps extends ModalProps {
     device: TrezorDevice;
     onCancel: () => void;
 }
 
-type Props = OwnProps & ReturnType<typeof mapDispatchToProps>;
+type Props = OwnProps;
 
-const Pin = ({ device, onPinSubmit, ...rest }: Props) => {
+const Pin = ({ device, ...rest }: Props) => {
     const [submitted, setSubmitted] = useState(false);
+    const { onPinSubmit } = useActions({ onPinSubmit: modalActions.onPinSubmit });
 
     const pinRequestType = device.buttonRequests[device.buttonRequests.length - 1];
     const invalidCounter = device.buttonRequests.filter(r => r === 'ui-invalid_pin').length || 0;
@@ -209,4 +205,4 @@ const Pin = ({ device, onPinSubmit, ...rest }: Props) => {
     );
 };
 
-export default connect(null, mapDispatchToProps)(Pin);
+export default Pin;

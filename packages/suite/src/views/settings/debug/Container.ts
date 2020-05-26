@@ -10,9 +10,13 @@ const mapStateToProps = (state: AppState) => ({
     debug: state.suite.settings.debug,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    setDebugMode: bindActionCreators(setDebugMode, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            setDebugMode,
+        },
+        dispatch,
+    );
 
 export type Props = WrappedComponentProps &
     ReturnType<typeof mapStateToProps> &

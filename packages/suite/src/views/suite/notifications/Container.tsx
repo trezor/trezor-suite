@@ -10,10 +10,14 @@ const mapStateToProps = (state: AppState) => ({
     notifications: state.notifications,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    dispatch,
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            dispatch,
+            goto: routerActions.goto,
+        },
+        dispatch,
+    );
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 

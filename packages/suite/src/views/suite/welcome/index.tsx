@@ -1,11 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Button, Modal, H2, P } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
-import { Dispatch } from '@suite-types';
 import { Translation, Image } from '@suite-components';
+import { useActions } from '@suite-hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -20,31 +18,28 @@ const StyledImg = styled(props => <Image {...props} />)`
     margin-bottom: 15px;
 `;
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
+const Index = () => {
+    const { goto } = useActions({ goto: routerActions.goto });
+    return (
+        <Modal useFixedHeight data-test="@welcome">
+            <Wrapper>
+                <H2>
+                    <Translation id="TR_WELCOME_MODAL_HEADING" />
+                </H2>
+                <P size="small">
+                    <Translation id="TR_WELCOME_MODAL_TEXT" />
+                </P>
+                <StyledImg image="WELCOME" />
 
-type Props = ReturnType<typeof mapDispatchToProps>;
+                <Button
+                    data-test="@welcome/continue-button"
+                    onClick={() => goto('suite-analytics')}
+                >
+                    <Translation id="TR_BEGIN" />
+                </Button>
+            </Wrapper>
+        </Modal>
+    );
+};
 
-const Index = (props: Props) => (
-    <Modal useFixedHeight data-test="@welcome">
-        <Wrapper>
-            <H2>
-                <Translation id="TR_WELCOME_MODAL_HEADING" />
-            </H2>
-            <P size="small">
-                <Translation id="TR_WELCOME_MODAL_TEXT" />
-            </P>
-            <StyledImg image="WELCOME" />
-
-            <Button
-                data-test="@welcome/continue-button"
-                onClick={() => props.goto('suite-analytics')}
-            >
-                <Translation id="TR_BEGIN" />
-            </Button>
-        </Wrapper>
-    </Modal>
-);
-
-export default connect(null, mapDispatchToProps)(Index);
+export default Index;

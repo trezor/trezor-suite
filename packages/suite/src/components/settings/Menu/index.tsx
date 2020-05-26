@@ -16,10 +16,14 @@ const mapStateToProps = (state: AppState) => ({
     router: state.router,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
-    openModal: bindActionCreators(modalActions.openModal, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            goto: routerActions.goto,
+            openModal: modalActions.openModal,
+        },
+        dispatch,
+    );
 
 type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 
