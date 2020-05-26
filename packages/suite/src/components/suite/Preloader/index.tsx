@@ -160,6 +160,10 @@ const Preloader = (props: Props) => {
         throw new Error(error);
     }
 
+    if (flags.initialWebRun) {
+        return <Landing />;
+    }
+
     const hasActionModal = actionModalContext !== '@modal/context-none';
     // check if current route is a "modal application" and display it above requested physical route (route in url)
     // pass params to "modal application" and set "cancelable" conditionally
@@ -191,10 +195,6 @@ const Preloader = (props: Props) => {
 
     if (router.app === 'unknown' && (!loaded || !transport)) {
         return <Loading noBackground />;
-    }
-
-    if (flags.initialWebRun) {
-        return <Landing />;
     }
 
     // check route state and display it as not cancelable modal above requested route view

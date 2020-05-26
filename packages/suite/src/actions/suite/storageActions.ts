@@ -139,7 +139,7 @@ export const saveSuiteSettings = () => (_dispatch: Dispatch, getState: GetState)
             flags: {
                 initialRun: suite.flags.initialRun,
                 // is not saved at the moment, but probably will be in future. now we always
-                // initialWebRun: suite.flag.initialWebRun, 
+                // initialWebRun: suite.flag.initialWebRun,
                 discreetModeCompleted: suite.flags.discreetModeCompleted,
             },
         },

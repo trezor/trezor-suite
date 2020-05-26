@@ -186,7 +186,7 @@ describe('suite middleware', () => {
         it('if initialRun is false should NOT redirect to onboarding after STORAGE.LOADED action', () => {
             const goto = jest.spyOn(routerActions, 'goto');
             // eslint-disable-next-line global-require
-            require('next/router').default.pathname = '/wallet';
+            require('next/router').default.pathname = '/';
 
             const store = initStore(getInitialState());
             store.dispatch({
