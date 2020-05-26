@@ -34,7 +34,7 @@ describe('Onboarding - unexpected states', () => {
         cy.getTestElement('@onboarding/option-model-t-path').should('be.visible');
     });
 
-    it.only('is not same device and reset onboarding', () => {
+    it('is not same device and reset onboarding', () => {
         cy.visit('/');
         cy.goToOnboarding();
         cy.getTestElement('@onboarding/begin-button').click();

@@ -234,6 +234,7 @@ const initialRun = [
         state: {
             flags: {
                 initialRun: false,
+                initialWebRun: false,
                 discreetModeCompleted: false,
             },
         },

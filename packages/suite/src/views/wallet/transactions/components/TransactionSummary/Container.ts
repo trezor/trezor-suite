@@ -9,11 +9,13 @@ const mapStateToProps = (state: AppState) => ({
     selectedAccount: state.wallet.selectedAccount,
     graph: state.wallet.graph,
     accounts: state.wallet.accounts,
+    localCurrency: state.wallet.settings.localCurrency,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     updateGraphData: bindActionCreators(graphActions.updateGraphData, dispatch),
     setSelectedRange: bindActionCreators(graphActions.setSelectedRange, dispatch),
+    getGraphDataForInterval: bindActionCreators(graphActions.getGraphDataForInterval, dispatch),
 });
 
 type OwnProps = {

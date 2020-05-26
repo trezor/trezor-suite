@@ -129,6 +129,7 @@ jest.mock('trezor-connect', () => {
     return {
         __esModule: true, // this property makes it work
         default: {
+            blockchainSetCustomBackend: () => {},
             getFeatures: () => {},
             off: () => {
                 progressCallback = () => {};

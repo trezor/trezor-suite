@@ -1,8 +1,8 @@
 import { MiddlewareAPI } from 'redux';
 import { DISCOVERY, ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
 import * as graphActions from '@wallet-actions/graphActions';
+import { getDiscoveryForDevice } from '@wallet-actions/discoveryActions';
 import { AppState, Action, Dispatch } from '@suite-types';
-import { getDiscoveryForDevice } from '@suite/actions/wallet/discoveryActions';
 
 const graphMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
@@ -16,8 +16,12 @@ const graphMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispa
             break;
 
         case TRANSACTION.ADD: {
-            // don't run during discovery and on unconfirmed txs
+            if (action.page) {
+                // don't run while fetching txs pages in transactions tab
+                break;
+            }
 
+            // don't run during discovery and on unconfirmed txs
             const discovery = api.dispatch(getDiscoveryForDevice());
             if (
                 discovery?.status === DISCOVERY.STATUS.COMPLETED &&

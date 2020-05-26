@@ -35,7 +35,13 @@ export const create = (
             (discoveryItem.accountType === 'normal' && discoveryItem.index === 0),
         balance: accountInfo.balance,
         availableBalance: accountInfo.availableBalance,
-        formattedBalance: accountUtils.formatNetworkAmount(accountInfo.balance, discoveryItem.coin),
+        formattedBalance: accountUtils.formatNetworkAmount(
+            // xrp `availableBalance` is reduced by reserve, use regular balance
+            discoveryItem.networkType === 'ripple'
+                ? accountInfo.balance
+                : accountInfo.availableBalance,
+            discoveryItem.coin,
+        ),
         tokens: accountUtils.enhanceTokens(accountInfo.tokens),
         addresses: accountInfo.addresses,
         utxo: accountInfo.utxo,
@@ -44,7 +50,7 @@ export const create = (
     },
 });
 
-// TODO: imo we could extract payload object to seperate function and use it in create, update methods
+// TODO: imo we could extract payload object to separate function and use it in create, update methods
 export const update = (account: Account, accountInfo: AccountInfo): AccountActions => ({
     type: ACCOUNT.UPDATE,
     payload: {
@@ -52,7 +58,11 @@ export const update = (account: Account, accountInfo: AccountInfo): AccountActio
         ...accountInfo,
         path: account.path,
         empty: accountInfo.empty,
-        formattedBalance: accountUtils.formatNetworkAmount(accountInfo.balance, account.symbol),
+        formattedBalance: accountUtils.formatNetworkAmount(
+            // xrp `availableBalance` is reduced by reserve, use regular balance
+            account.networkType === 'ripple' ? accountInfo.balance : accountInfo.availableBalance,
+            account.symbol,
+        ),
         tokens: accountUtils.enhanceTokens(accountInfo.tokens),
         ...accountUtils.getAccountSpecific(accountInfo, account.networkType),
     },

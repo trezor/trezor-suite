@@ -13,11 +13,12 @@ describe('Stories of device remembering', () => {
         cy.getTestElement('@dashboard/index');
         cy.getTestElement('@dashboard/loading').should('not.be.visible');
         cy.toggleDeviceMenu();
-        cy.getTestElement('@switch-device/wallet-instance/toggle-remember-switch').click({ force: true });
+        cy.getTestElement('@switch-device/wallet-instance/toggle-remember-switch').click({
+            force: true,
+        });
         cy.getTestElement('@switch-device/wallet-instance/eject-button').click();
         cy.task('stopEmu');
         cy.getTestElement('@switch-device/wallet-instance').click({ force: true });
         cy.getTestElement('@modal/connect-device');
     });
-
 });

@@ -3395,6 +3395,14 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Try a different date range.{newLine}Still nothing? Go ahead and send a transaction.',
     },
+    TR_RECEIVED_AMOUNT: {
+        id: 'TR_RECEIVED_AMOUNT',
+        defaultMessage: 'Received {amount}',
+    },
+    TR_SENT_AMOUNT: {
+        id: 'TR_SENT_AMOUNT',
+        defaultMessage: 'Sent {amount}',
+    },
     TR_LANDING_TITLE: {
         id: 'TR_LANDING_TITLE',
         defaultMessage: 'Download Trezor Suite (beta) desktop app',

@@ -38,6 +38,7 @@ jest.mock('trezor-connect', () => {
         default: {
             getFeatures: () => {},
             firmwareUpdate,
+            blockchainSetCustomBackend: () => {},
         },
         DEVICE: {
             DISCONNECT: 'device-disconnect',
@@ -72,6 +73,9 @@ export const getInitialState = (override?: InitialState): any => {
         },
         firmware: firmwareReducer(undefined, { type: 'foo' } as any),
         devices,
+        analytics: {
+            enabled: false,
+        },
     };
 };
 
