@@ -163,19 +163,22 @@ export default ({
                                 </Label>
                                 <Value>
                                     {totalAmount} {outputSymbol}
-                                    {output.amount.value && fiatVal && networkType !== 'ethereum' && (
-                                        <BadgeWrapper>
-                                            <Badge isGray>
-                                                {toFiatCurrency(
-                                                    totalAmount,
-                                                    localCurrency,
-                                                    fiatVal.current?.rates,
-                                                    true,
-                                                )}{' '}
-                                                {localCurrency.toUpperCase()}
-                                            </Badge>
-                                        </BadgeWrapper>
-                                    )}
+                                    {output.amount.value &&
+                                        fiatVal &&
+                                        fiatVal.current &&
+                                        networkType !== 'ethereum' && (
+                                            <BadgeWrapper>
+                                                <Badge isGray>
+                                                    {toFiatCurrency(
+                                                        totalAmount,
+                                                        localCurrency,
+                                                        fiatVal.current.rates,
+                                                        true,
+                                                    )}{' '}
+                                                    {localCurrency.toUpperCase()}
+                                                </Badge>
+                                            </BadgeWrapper>
+                                        )}
                                 </Value>
                             </Box>
                         </OutputWrapper>
