@@ -1,7 +1,7 @@
 suite-web build:
     stage: build
     script:
-        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/wallet/ yarn workspace @trezor/suite-web build
+        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
     artifacts:
         expire_in: 7 days
         paths:
@@ -22,20 +22,20 @@ suite-web deploy dev:
         - echo "Deploy to dev servers"
         - mkdir -p ${DEPLOY_BASE_DIR}/suite-web
         - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
-        - rsync -va build/ "${DEPLOY_DIRECTORY}/wallet/"
+        - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
     tags:
         - deploy
 
 suite-web test integration google-chrome:
     stage: integration testing
-    #allow_failure: true
+    allow_failure: true
     script:
         - npx cypress install
         - export CYPRESS_SNAPSHOT=1
         # add DEBUG=cypress:* env variable to debug cypress in ci
         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
         - export BROWSER=chrome
-        - yarn concurrently --success first --kill-others "cd ./docker/trezor-user-env/controller && python3 ./main.py" "cypress run --browser $BROWSER --project ./packages/integration-tests/projects/suite-web"
+        - yarn concurrently --success first --kill-others "cd ./docker/trezor-user-env/controller && python3 ./main.py" "cypress run --browser $BROWSER --project ./packages/integration-tests/projects/suite-web --spec ./packages/integration-tests/projects/suite-web/tests/wallet/send.test.ts"
     artifacts:
         expire_in: 7 days
         when: always
@@ -44,8 +44,8 @@ suite-web test integration google-chrome:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
     dependencies: []
-    retry:
-       max: 2
+    # retry:
+    #    max: 2
 
 suite-web test integration google-chrome-beta:
     only:
@@ -85,8 +85,13 @@ suite-web deploy staging:
         manual
     script:
         - cd packages/suite-web
-        - echo "Deploy to staging servers"
-        - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/suite-web build
+        - assetPrefix=/${STAGING_SERVER_URL}/wallet yarn workspace @trezor/suite-web build
+        - cd ../landing-page
+        - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/landing-page build
+        - cd ..
+        - mkdir combined
+        - rsync --delete -v ./landing-page/build/ ./combined"
+        - rsync -va ./suite-web/build/ ./combined"
         - ./scripts/s3sync.sh stage beta
     tags:
         - deploy
