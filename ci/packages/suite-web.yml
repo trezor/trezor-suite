@@ -24,7 +24,7 @@ suite-web deploy dev:
         - mkdir -p ${DEPLOY_BASE_DIR}/suite-web
         - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
         - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
-        - cd packages/landing-page
+        - cd ../landing-page
         - rsync -abviuzP -va build/ "${DEPLOY_DIRECTORY}/"
     tags:
         - deploy
