@@ -29,26 +29,48 @@ suite-web deploy dev:
     tags:
         - deploy
 
-# suite-web test integration google-chrome:
+# suite-web test staging google-chrome:
 #     stage: integration testing
 #     allow_failure: true
+#     # when: manual
+#     # only:
+#     #   refs:
+#     #       - releases
 #     script:
+#         - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/wallet yarn workspace @trezor/suite-web build
 #         - npx cypress install
+#         - export CYPRESS_FOO=fooo
 #         - export CYPRESS_SNAPSHOT=1
-#         # add DEBUG=cypress:* env variable to debug cypress in ci
-#         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
+#         - export CYPRESS_ASSET_PREFIX=/wallet
+#         - export CYPRESS_baseUrl=https://staging-wallet.trezor.io
+#         - echo "env"
+#         - echo $BASIC_AUTH_USER
+#         - echo $BASIC_AUTH_PASSWORD
+#         - export CYPRES_BASIC_AUTH_PASSWORD=fooo
+#         - export CYPRES_BASIC_AUTH_USER=aaaa
 #         - export BROWSER=chrome
-#         - yarn concurrently --success first --kill-others "cd ./docker/trezor-user-env/controller && python3 ./main.py" "cypress run --browser $BROWSER --project ./packages/integration-tests/projects/suite-web --spec ./packages/integration-tests/projects/suite-web/tests/wallet/send.test.ts"
-#     artifacts:
-#         expire_in: 7 days
-#         when: always
-#         paths:
-#             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
-#             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
-#             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
-#     dependencies: []
-#     # retry:
-#     #    max: 2mv packages/suite-desktop/build-electron/"${DESKTOP_APP_NAME}"-*.AppImage ./build/static
+#         - yarn concurrently --success first --kill-others "cd ./docker/trezor-user-env/controller && python3 ./main.py" "cypress run --browser $BROWSER --project ./packages/integration-tests/projects/suite-web --spec ./packages/integration-tests/projects/suite-web/tests/dashboard/dashboard.test.ts"
+
+suite-web test integration google-chrome:
+    stage: integration testing
+    # allow_failure: true
+    script:
+        - npx cypress install
+        - export CYPRESS_SNAPSHOT=1
+        - export CYPRESS_ASSET_PREFIX=/wallet
+        # add DEBUG=cypress:* env variable to debug cypress in ci
+        - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
+        - export BROWSER=chrome
+        - yarn concurrently --success first --kill-others "cd ./docker/trezor-user-env/controller && python3 ./main.py" "cypress run --browser $BROWSER --project ./packages/integration-tests/projects/suite-web --spec ./packages/integration-tests/projects/suite-web/tests/dashboard/dashboard.test.ts"
+    artifacts:
+        expire_in: 7 days
+        when: always
+        paths:
+            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
+    dependencies: []
+
 
 chrome-beta:
     only:

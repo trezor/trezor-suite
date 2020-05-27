@@ -6,7 +6,7 @@ describe('Dashboard', () => {
     });
 
     it('Go to dashboard and check that loading status turns off after discovery is finished', () => {
-        cy.visit('/');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.getTestElement('@suite/loading').should('not.be.visible');
         cy.getTestElement('@dashboard/loading').should('be.visible');
@@ -14,7 +14,7 @@ describe('Dashboard', () => {
     });
 
     it('Security cards. Backup button should open backup modal', () => {
-        cy.visit('/');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.getTestElement('@dashboard/security-card/backup/button').click();
         cy.getTestElement('@backup');
