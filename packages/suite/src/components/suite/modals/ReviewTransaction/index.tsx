@@ -1,18 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import {
-    Translation,
-    AccountLabeling,
-    HiddenPlaceholder,
-    FiatValue,
-    Badge,
-} from '@suite-components';
+import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
+import { Translation, AccountLabeling, Badge } from '@suite-components';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
+import BigNumber from 'bignumber.js';
 import { Modal, Button, colors, variables } from '@trezor/components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { useDeviceActionLocks } from '@suite-hooks';
 import { Account } from '@wallet-types';
-
 import { fromWei, toWei } from 'web3-utils';
 
 import { Props } from './Container';
@@ -61,6 +56,9 @@ const Buttons = styled.div`
 
 const BadgeWrapper = styled.div`
     margin-left: 10px;
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
 `;
 
 const getFeeValue = (
@@ -73,7 +71,7 @@ const getFeeValue = (
         return fromWei(gasPriceInWei, 'ether');
     }
 
-    return `${formatNetworkAmount(transactionInfo.fee, symbol, true)}`;
+    return formatNetworkAmount(transactionInfo.fee, symbol);
 };
 
 export default ({
@@ -84,6 +82,7 @@ export default ({
     sendFormActionsBitcoin,
     sendFormActionsRipple,
     sendFormActionsEthereum,
+    fiat,
 }: Props) => {
     if (!account || !send) return null;
     const { outputs } = send;
@@ -93,14 +92,16 @@ export default ({
     const transactionInfo = getTransactionInfo(account.networkType, send);
     if (!transactionInfo || transactionInfo.type === 'error') return null;
     const upperCaseSymbol = account.symbol.toUpperCase();
+    const fiatVal = fiat.find(fiatItem => fiatItem.symbol === account.symbol);
     const outputSymbol = token ? token.symbol!.toUpperCase() : account.symbol.toUpperCase();
     const [isEnabled] = useDeviceActionLocks();
+    const fee = getFeeValue(transactionInfo, networkType, account.symbol);
 
     return (
         <Modal
             size="large"
             cancelable
-            onCancel={modalActions.onCancel}
+            onCancel={isEnabled ? modalActions.onCancel : () => {}}
             heading={<Translation id="TR_MODAL_CONFIRM_TX_TITLE" />}
             bottomBar={
                 <Buttons>
@@ -143,44 +144,70 @@ export default ({
                         {upperCaseSymbol} <AccountLabeling account={account} />
                     </Value>
                 </Box>
-                {outputs.map(output => (
-                    <OutputWrapper key={output.id}>
-                        <Box>
-                            <Label>
-                                <Translation id="TR_TO" />
-                            </Label>
-                            <Value>{output.address.value}</Value>
-                        </Box>
-                        <Box>
-                            <Label>
-                                <Translation id="TR_AMOUNT" />
-                            </Label>
-                            <Value>
-                                {output.amount.value} {outputSymbol}
-                                <BadgeWrapper>
-                                    <HiddenPlaceholder>
-                                        <FiatValue
-                                            amount={output.amount.value || '0'}
-                                            fiatCurrency={localCurrency}
-                                            symbol={outputSymbol}
-                                        >
-                                            {({ value }) => <Badge isGray>{value}</Badge> ?? null}
-                                        </FiatValue>
-                                    </HiddenPlaceholder>
-                                </BadgeWrapper>
-                            </Value>
-                        </Box>
-                    </OutputWrapper>
-                ))}
+                {outputs.map(output => {
+                    const totalAmount = new BigNumber(output.amount.value || '0')
+                        .plus(fee)
+                        .toFixed();
+
+                    return (
+                        <OutputWrapper key={output.id}>
+                            <Box>
+                                <Label>
+                                    <Translation id="TR_TO" />
+                                </Label>
+                                <Value>{output.address.value}</Value>
+                            </Box>
+                            <Box>
+                                <Label>
+                                    <Translation id="TR_TOTAL_AMOUNT" />
+                                </Label>
+                                <Value>
+                                    {totalAmount} {outputSymbol}
+                                    {output.amount.value &&
+                                        fiatVal &&
+                                        fiatVal.current &&
+                                        networkType !== 'ethereum' && (
+                                            <BadgeWrapper>
+                                                <Badge isGray>
+                                                    {toFiatCurrency(
+                                                        totalAmount,
+                                                        localCurrency,
+                                                        fiatVal.current.rates,
+                                                        true,
+                                                    )}{' '}
+                                                    {localCurrency.toUpperCase()}
+                                                </Badge>
+                                            </BadgeWrapper>
+                                        )}
+                                </Value>
+                            </Box>
+                        </OutputWrapper>
+                    );
+                })}
                 <Box>
                     <Label>
                         {networkType === 'ethereum' ? (
                             <Translation id="TR_GAS_PRICE" />
                         ) : (
-                            <Translation id="TR_FEE" />
+                            <Translation id="TR_INCLUDING_FEE" />
                         )}
                     </Label>
-                    <Value>{getFeeValue(transactionInfo, networkType, account.symbol)}</Value>
+                    <Value>
+                        {getFeeValue(transactionInfo, networkType, account.symbol)} {outputSymbol}
+                        {fee && fiatVal && networkType !== 'ethereum' && (
+                            <BadgeWrapper>
+                                <Badge isGray>
+                                    {toFiatCurrency(
+                                        fee,
+                                        localCurrency,
+                                        fiatVal.current?.rates,
+                                        true,
+                                    )}{' '}
+                                    {localCurrency.toUpperCase()}
+                                </Badge>
+                            </BadgeWrapper>
+                        )}
+                    </Value>
                 </Box>
             </Content>
         </Modal>

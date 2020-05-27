@@ -79,11 +79,13 @@ export const saveAccountTransactions = (account: Account) => async (
     const accTxs =
         allTxs[getAccountKey(account.descriptor, account.symbol, account.deviceState)] || [];
 
-    // wrap txs and add its order inside the array
-    const orderedTxs = accTxs.map((accTx, i) => ({
-        tx: accTx,
-        order: i,
-    }));
+    // wrap confirmed txs and add its order inside the array
+    const orderedTxs = accTxs
+        .filter(t => (t.blockHeight || 0) > 0)
+        .map((accTx, i) => ({
+            tx: accTx,
+            order: i,
+        }));
     return db.addItems('txs', orderedTxs, true);
 };
 
