@@ -102,8 +102,11 @@ const InfoCard = (props: Props) => {
                             <Value>
                                 {bigValue && (
                                     <HiddenPlaceholder>
-                                        {isValuePos && '+'}
-                                        {bigValue.toFixed()} {props.symbol?.toUpperCase()}
+                                        <span>
+                                            {isValuePos && <span>+</span>}
+                                            <span>{bigValue.toFixed()}</span>
+                                            <span> {props.symbol?.toUpperCase()}</span>
+                                        </span>
                                     </HiddenPlaceholder>
                                 )}
                                 {!bigValue && props.value}

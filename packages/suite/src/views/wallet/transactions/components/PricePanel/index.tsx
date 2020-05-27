@@ -128,7 +128,9 @@ export default ({ settings, selectedAccount, fiat }: Props) => {
                 <CoinLogo size={24} symbol={symbol} />
                 <HiddenPlaceholder intensity={7}>
                     <Balance>
-                        {formattedBalance} {symbol.toUpperCase()}
+                        <span>
+                            <span>{formattedBalance}</span> <span>{symbol.toUpperCase()}</span>
+                        </span>
                     </Balance>
                 </HiddenPlaceholder>
                 {fiatBalance && (
