@@ -27,7 +27,6 @@ landing-page deploy dev:
     - deploy
 
 landing-page deploy staging:
-  needs: ["suite-web deploy staging"]
   stage: deploy to staging
   environment:
       name: ${CI_BUILD_REF_NAME}-staging
