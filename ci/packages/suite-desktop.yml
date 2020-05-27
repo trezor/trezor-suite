@@ -41,6 +41,7 @@ suite-desktop deploy:
         refs:
             - develop
             - schedules
+            - releases
     variables:
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_BUILD_REF_NAME}
     script:
