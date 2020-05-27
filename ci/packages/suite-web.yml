@@ -1,30 +1,30 @@
-suite-web build:
-    stage: build
-    script:
-        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
-    artifacts:
-        expire_in: 7 days
-        paths:
-            - packages/suite-web/build
+# suite-web build:
+#     stage: build
+#     script:
+#         - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
+#     artifacts:
+#         expire_in: 7 days
+#         paths:
+#             - packages/suite-web/build
 
-suite-web deploy dev:
-    stage: deploy to dev servers
-    variables:
-        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
-    dependencies:
-        - suite-web build
-    environment:
-        name: ${CI_BUILD_REF_NAME}
-        url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
-    before_script: []
-    script:
-        - cd packages/suite-web
-        - echo "Deploy to dev servers"
-        - mkdir -p ${DEPLOY_BASE_DIR}/suite-web
-        - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
-        - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
-    tags:
-        - deploy
+# suite-web deploy dev:
+#     stage: deploy to dev servers
+#     variables:
+#         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
+#     dependencies:
+#         - suite-web build
+#     environment:
+#         name: ${CI_BUILD_REF_NAME}
+#         url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+#     before_script: []
+#     script:
+#         - cd packages/suite-web
+#         - echo "Deploy to dev servers"
+#         - mkdir -p ${DEPLOY_BASE_DIR}/suite-web
+#         - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
+#         - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
+#     tags:
+#         - deploy
 
 # suite-web test integration google-chrome:
 #     stage: integration testing
@@ -98,16 +98,16 @@ suite-web deploy staging:
     stage: deploy to staging
     dependencies: 
         - install and build
-    environment:
-        name: ${CI_BUILD_REF_NAME}-staging
-        url: ${STAGING_SERVER_URL}
+    # environment:
+    #     name: ${CI_BUILD_REF_NAME}-staging
+    #     url: ${STAGING_SERVER_URL}
     before_script: []
-    when:
-        manual
+    # when:
+    #     manual
     script:
         # - cd packages/suite-web
         # - echo "Deploy to staging servers"
         - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/suite-web build
         - ./scripts/s3sync.sh stage beta
-    tags:
-        - deploy
+    # tags:
+    #     - deploy
