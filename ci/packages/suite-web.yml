@@ -101,14 +101,17 @@ suite-web deploy staging:
     # environment:
     #     name: ${CI_BUILD_REF_NAME}-staging
     #     url: ${STAGING_SERVER_URL}
-    before_script: []
+    # before_script: []
     # when:
     #     manual
+    artifacts:
+        expire_in: 7 days
+            paths:
+             - packages/suite-web/build
     script:
-        # - cd packages/suite-web
-        # - echo "Deploy to staging servers"
         - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/suite-web build
         - cd packages/suite-web
-        - ./scripts/s3sync.sh stage beta
+        # missing aws 
+        # - ./scripts/s3sync.sh stage beta
     # tags:
     #     - deploy

@@ -36,10 +36,13 @@ landing-page deploy staging:
   # before_script: []
   # when:
   #     manual
+  artifacts:
+    expire_in: 7 days
+        paths:
+         - packages/landing-page/build
   script:
-      # - echo "Deploy to staging servers"
       - yarn workspace @trezor/landing-page build
       - cd packages/landing-page
-      - ./scripts/s3sync.sh stage beta
+      # - ./scripts/s3sync.sh stage beta
   # tags:
   #     - deploy
