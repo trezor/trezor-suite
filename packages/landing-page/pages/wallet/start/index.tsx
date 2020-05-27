@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Layout from '@landing-components/StartLayout';
+import { resolveStaticPath } from '@suite-utils/nextjs';
+import { normalizeVersion } from '@suite-utils/build';
 import { H2, Button, P, Select, Link, variables } from '@trezor/components';
 
 const Wrapper = styled.div`
@@ -44,15 +46,14 @@ const ButtonDownload = styled(Button)`
 type App = 'win' | 'macos' | 'linux';
 
 const getAppUrl = (appName: App) => {
-    const version = ''; // TODO
-    const baseUrl = 'https://suite.corp.sldev.cz/suite-desktop/develop'; // TODO
+    const version = process.env.VERSION ? normalizeVersion(process.env.VERSION) : '';
     switch (appName) {
         case 'win':
-            return `${baseUrl}/Trezor-Beta-Wallet-${version}.exe`;
+            return resolveStaticPath(`desktop/Trezor-Beta-Wallet-${version}.exe`);
         case 'macos':
-            return `${baseUrl}/Trezor-Beta-Wallet-${version}.dmg`;
+            return resolveStaticPath(`desktop/Trezor-Beta-Wallet-${version}.zip`);
         case 'linux':
-            return `${baseUrl}/Trezor-Beta-Wallet-${version}.AppImage`;
+            return resolveStaticPath(`desktop/Trezor-Beta-Wallet-${version}.AppImage`);
         // no default
     }
 };
