@@ -113,7 +113,7 @@ export default ({ children }: Props) => {
                         <Button icon="EXTERNAL_LINK" alignIcon="right">
                             <Link
                                 variant="nostyle"
-                                href="https://gitlab.com/satoshilabs/trezor/trezor-suite/pipelines"
+                                href="https://beta-wallet.trezor.io/wallet/start"
                             >
                                 <Translation id="DESKTOP_OUTDATED_BUTTON_DOWNLOAD" />
                             </Link>
