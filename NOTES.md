@@ -76,4 +76,7 @@ chrome://inspect/#devices
 3. `cd build/static`
 4. `mkdir desktop`
 5. copy desktop apps into the folder (Trezor-Beta-Wallet.(zip, AppImage, exe)).
-6. `./scripts/s3sync.sh stage beta` (from the `packages/suite-web` folder )
+
+![Image of Yaktocat](https://i.imgur.com/4bQSMKO.png)
+
+7. `./scripts/s3sync.sh stage beta` (from the `packages/suite-web` folder )
