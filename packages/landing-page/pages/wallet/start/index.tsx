@@ -48,11 +48,11 @@ const getAppUrl = (appName: App) => {
     const version = process.env.VERSION ? normalizeVersion(process.env.VERSION) : '';
     switch (appName) {
         case 'win':
-            return `/wallet/static/desktop/Trezor Beta Wallet-${version}.exe`;
+            return encodeURI(`/wallet/static/desktop/Trezor Beta Wallet-${version}.exe`);
         case 'macos':
-            return `/wallet/static/desktop/Trezor Beta Wallet-${version}.zip`;
+            return encodeURI(`/wallet/static/desktop/Trezor Beta Wallet-${version}.zip`);
         case 'linux':
-            return `/wallet/static/desktop/Trezor Beta Wallet-${version}.AppImage`;
+            return encodeURI(`/wallet/static/desktop/Trezor Beta Wallet-${version}.AppImage`);
         // no default
     }
 };
