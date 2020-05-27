@@ -96,6 +96,7 @@ suite-web test security:
 
 suite-web deploy staging:
     stage: deploy to staging
+    dependencies: []
     environment:
         name: ${CI_BUILD_REF_NAME}-staging
         url: ${STAGING_SERVER_URL}

@@ -50,3 +50,20 @@ suite-desktop deploy:
         - rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe "${DEPLOY_DIRECTORY}/"
     tags:
         - deploy
+
+suite-desktop deploy staging:
+  stage: deploy to staging
+  environment:
+      name: ${CI_BUILD_REF_NAME}-staging
+      url: ${STAGING_SERVER_URL}
+  before_script: []
+  when:
+      manual
+  variables:
+      DEPLOY_DIRECTORY: ${STAGING_SERVER_URL}/static
+  script:
+      - rsync --delete -va "${DESKTOP_APP_NAME}"-*.zip "${DEPLOY_DIRECTORY}/"
+      - rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage "${DEPLOY_DIRECTORY}/"
+      - rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe "${DEPLOY_DIRECTORY}/"
+  tags:
+      - deploy
