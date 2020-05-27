@@ -80,8 +80,8 @@ export default () => {
                         }}
                         options={[
                             { label: 'Windows', value: 'win' },
-                            { label: 'Linux', value: 'macos' },
-                            { label: 'Mac OS', value: 'linux' },
+                            { label: 'Linux', value: 'linux' },
+                            { label: 'Mac OS', value: 'macos' },
                         ]}
                         onChange={(option: { value: App | null; label: string | null }) =>
                             setApp(option.value)
