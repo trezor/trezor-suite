@@ -38,8 +38,8 @@ landing-page deploy staging:
   #     manual
   artifacts:
     expire_in: 7 days
-        paths:
-         - packages/landing-page/build
+    paths:
+      - packages/landing-page/build
   script:
       - yarn workspace @trezor/landing-page build
       - cd packages/landing-page

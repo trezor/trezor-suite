@@ -106,8 +106,8 @@ suite-web deploy staging:
     #     manual
     artifacts:
         expire_in: 7 days
-            paths:
-             - packages/suite-web/build
+        paths:
+            - packages/suite-web/build
     script:
         - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/suite-web build
         - cd packages/suite-web
