@@ -86,7 +86,9 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
     const { account, selected } = props;
 
     const fiatBalance = getAccountFiatBalance(account, props.localCurrency, props.fiat);
-    const accountLabel = <span>{props.labeling[`account:${account.descriptor}`]}</span> || (
+    const accountLabel = props.labeling[`account:${account.descriptor}`] ? (
+        <span>{props.labeling[`account:${account.descriptor}`]}</span>
+    ) : (
         <>
             <Translation {...getTitleForNetwork(account.symbol)} />
             <div># {account.index + 1}</div>
