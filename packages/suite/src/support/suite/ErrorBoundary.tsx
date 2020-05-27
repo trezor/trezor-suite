@@ -14,9 +14,17 @@ const Wrapper = styled.div`
 
 const Buttons = styled.div`
     display: flex;
-    margin: 12px 0px;
-
     flex-direction: column;
+`;
+
+const Separator = styled.div`
+    background: #dddddd;
+    height: 1px;
+    margin: 12px 0px;
+    max-width: 80%;
+`;
+const SendReportButton = styled(Button)`
+    margin-top: 12px;
 `;
 
 const StyledButton = styled(Button)`
@@ -66,18 +74,21 @@ class ErrorBoundary extends React.Component<{}, StateProps> {
                     <P>{this.state.error.message}</P>
                     {/* <P>{this.state.error.stack}</P> */}
 
+                    <SendReportButton variant="primary" onClick={() => Sentry.showReportDialog()}>
+                        Send report
+                    </SendReportButton>
+                    <Separator />
                     <Buttons>
                         <StyledButton
                             icon="REFRESH"
+                            variant="tertiary"
                             onClick={() => {
                                 refresh();
                             }}
                         >
                             Reload window
                         </StyledButton>
-                        <StyledButton variant="secondary" onClick={() => Sentry.showReportDialog()}>
-                            Send report
-                        </StyledButton>
+
                         <StyledButton
                             icon="REFRESH"
                             variant="tertiary"
@@ -86,7 +97,7 @@ class ErrorBoundary extends React.Component<{}, StateProps> {
                                 refresh();
                             }}
                         >
-                            Clear storage and reload window
+                            Clear storage and reload
                         </StyledButton>
                     </Buttons>
                 </Wrapper>
