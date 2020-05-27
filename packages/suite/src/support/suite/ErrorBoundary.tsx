@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import * as Sentry from '@sentry/browser';
-import { H1, P, Button } from '@trezor/components';
+import { H1, P, Button, variables } from '@trezor/components';
 import { db } from '@suite/storage';
 
 const Wrapper = styled.div`
@@ -15,17 +15,30 @@ const Wrapper = styled.div`
 
 const Buttons = styled.div`
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    width: 60%;
+    min-width: 320px;
+    max-width: 500px;
+
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        width: 80%;
+    }
 `;
 
 const Separator = styled.div`
     background: #dddddd;
     height: 1px;
-    margin: 12px 0px;
-    max-width: 80%;
+    margin: 30px 0px;
+    width: 80%;
+    min-width: 320px;
+    max-width: 800px;
+
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        width: 90%;
+    }
 `;
 const SendReportButton = styled(Button)`
-    margin-top: 12px;
+    margin-top: 30px;
 `;
 
 const StyledButton = styled(Button)`
