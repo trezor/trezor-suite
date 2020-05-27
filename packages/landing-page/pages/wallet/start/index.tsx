@@ -64,7 +64,7 @@ export default () => {
     return (
         <Layout>
             <Wrapper>
-                <H2>Download Trezor Suite (beta) desktop app</H2>
+                <H2>Download Trezor Beta Wallet desktop app</H2>
                 <P size="tiny">
                     For testing purposes only. Please keep in mind this is a beta version.
                 </P>
