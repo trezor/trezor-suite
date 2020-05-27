@@ -6,7 +6,6 @@ import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import styled from 'styled-components';
-
 import CurrencySelect from './components/CurrencySelect';
 import FiatComponent from './components/Fiat';
 import { Props } from './Container';
@@ -22,7 +21,7 @@ const Text = styled.div`
 `;
 
 const StyledInput = styled(Input)`
-    min-width: 100px;
+    min-width: 250px;
     display: flex;
     flex: 1;
     margin-right: 10px;
@@ -49,7 +48,7 @@ const Right = styled.div`
     display: flex;
     margin-top: ${LABEL_HEIGHT}px;
     flex: 1;
-    min-width: 210px;
+    min-width: 250px;
     align-items: flex-start;
 `;
 
@@ -58,7 +57,7 @@ const EqualsSign = styled.div`
     align-items: flex-start;
     padding: ${LABEL_HEIGHT + 15}px 20px 0;
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         display: none;
     }
 `;
