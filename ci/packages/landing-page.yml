@@ -25,3 +25,20 @@ landing-page deploy dev:
     - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
   tags:
     - deploy
+
+landing-page deploy staging:
+  needs: ["suite-web deploy staging"]
+  stage: deploy to staging
+  environment:
+      name: ${CI_BUILD_REF_NAME}-staging
+      url: ${STAGING_SERVER_URL}
+  before_script: []
+  when:
+      manual
+  script:
+      - cd packages/landing-page
+      - echo "Deploy to staging servers"
+      - yarn workspace @trezor/landing-page build
+      - ./scripts/s3sync.sh stage beta
+  tags:
+      - deploy

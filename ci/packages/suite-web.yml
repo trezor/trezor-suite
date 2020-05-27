@@ -46,7 +46,7 @@ suite-web deploy dev:
 #     dependencies: []
 #     # retry:
 #     #    max: 2mv packages/suite-desktop/build-electron/"${DESKTOP_APP_NAME}"-*.AppImage ./build/static
-rome-beta:
+chrome-beta:
     only:
       - schedules
     #allow_failure: true
@@ -74,6 +74,26 @@ suite-web test security:
         yarn is-website-vulnerable ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} | node ./ci/scripts/check-vulnerabilities.js
     dependencies: []
 
+# suite-web deploy staging:
+#     stage: deploy to staging
+#     environment:
+#         name: ${CI_BUILD_REF_NAME}-staging
+#         url: ${STAGING_SERVER_URL}
+#     before_script: []
+#     when:
+#         manual
+#     script:
+#         - cd packages/landing-page
+#         - yarn workspace @trezor/landing-page build
+#         - ./scripts/s3sync.sh stage beta
+#         - cd ../../
+
+#         - cd packages/suite-web
+#         - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/suite-web build
+#         - ./scripts/s3sync.sh stage beta
+#     tags:
+#         - deploy
+
 suite-web deploy staging:
     stage: deploy to staging
     environment:
@@ -83,12 +103,8 @@ suite-web deploy staging:
     when:
         manual
     script:
-        - cd packages/landing-page
-        - yarn workspace @trezor/landing-page build
-        - ./scripts/s3sync.sh stage beta
-        - cd ../../
-
         - cd packages/suite-web
+        - echo "Deploy to staging servers"
         - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/suite-web build
         - ./scripts/s3sync.sh stage beta
     tags:
