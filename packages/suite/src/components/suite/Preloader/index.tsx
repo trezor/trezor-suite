@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import FocusLock from 'react-focus-lock';
@@ -66,6 +66,29 @@ type Props = ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps> & {
         children: React.ReactNode;
     };
+
+const InitialLoading = () => {
+    const [seconds, setSeconds] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setSeconds(seconds => seconds + 1);
+        }, 1000);
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
+
+    useEffect(() => {
+        console.log('seconds', seconds);
+        if (seconds > 40) {
+            throw Error('Loading takes too long!');
+        }
+    }, [seconds]);
+
+    return <Loading noBackground />;
+};
 
 const getSuiteApplicationState = (props: Props) => {
     const { loaded, transport, device, getDiscoveryAuthConfirmationStatus, router } = props;
@@ -188,7 +211,7 @@ const Preloader = (props: Props) => {
     // otherwise display Loader as full page view
 
     if (router.app === 'unknown' && (!loaded || !transport)) {
-        return <Loading noBackground />;
+        return <InitialLoading />;
     }
 
     // check route state and display it as not cancelable modal above requested route view
