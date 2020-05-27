@@ -59,6 +59,8 @@ chrome://inspect/#devices
 
 # How to release - staging
 
+`git checkout releases`
+
 `yarn`
 
 `yarn build:libs`
