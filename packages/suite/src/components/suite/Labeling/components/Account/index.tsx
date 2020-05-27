@@ -14,7 +14,7 @@ export default (props: Props) => {
     const key = `account:${accounts[0].descriptor}`;
     let accountLabel: JSX.Element;
     if (labeling[key]) {
-        accountLabel = <>{labeling[key]}</>;
+        accountLabel = <span>{labeling[key]}</span>;
     } else if (accounts[0].accountType !== 'normal') {
         accountLabel = (
             <Translation
