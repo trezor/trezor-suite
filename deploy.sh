@@ -4,9 +4,9 @@
 rm -rf combined-build
 mkdir combined-build
 
-# wget "https://gitlab.com/satoshilabs/trezor/trezor-suite/-/jobs/artifacts/develop/download?job=suite-desktop%20build%20linux" -O ./combined-build/desktop-linux.zip
-# unzip ./combined-build/desktop-linux.zip -d ./combined-build
-# rm ./combined-build/desktop-linux.zip
+wget "https://gitlab.com/satoshilabs/trezor/trezor-suite/-/jobs/artifacts/develop/download?job=suite-desktop%20build%20linux" -O ./combined-build/desktop-linux.zip
+unzip ./combined-build/desktop-linux.zip -d ./combined-build/static/desktop
+rm ./combined-build/desktop-linux.zip
 
 wget "https://gitlab.com/satoshilabs/trezor/trezor-suite/-/jobs/artifacts/deploy-experiments/download?job=landing-page%20deploy%20staging" -O ./combined-build/landing-page.zip
 unzip ./combined-build/landing-page.zip -d ./combined-build/

@@ -1,0 +1,1 @@
+self.__BUILD_MANIFEST = (function(a){return {"/":[a],"/index":[a],"/wallet/start":[a]}}("static\u002Fchunks\u002Fa6f30720caf4ec721108b883e978c1284c416dee.26309f2c4680ac2d2e52.js"));self.__BUILD_MANIFEST_CB && self.__BUILD_MANIFEST_CB()

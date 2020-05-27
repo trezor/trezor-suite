@@ -41,7 +41,7 @@ landing-page deploy staging:
     paths:
       - packages/landing-page/build
   script:
-      - assetPrefix=/ yarn workspace @trezor/landing-page build
+      - yarn workspace @trezor/landing-page build
       - cd packages/landing-page
       # - ./scripts/s3sync.sh stage beta
   # tags:
