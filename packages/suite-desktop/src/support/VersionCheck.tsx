@@ -62,7 +62,7 @@ export default ({ children }: Props) => {
         const fetchCommits = async () => {
             try {
                 const response = await fetch(
-                    'https://api.github.com/repos/trezor/trezor-suite/commits?per_page=1',
+                    'https://api.github.com/repos/trezor/trezor-suite/commits?per_page=1&sha=releases',
                     { signal: abortController.signal },
                 );
                 const body = await response.json();
