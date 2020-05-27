@@ -104,8 +104,8 @@ suite-web deploy staging:
     when:
         manual
     script:
-        - cd packages/suite-web
-        - echo "Deploy to staging servers"
+        # - cd packages/suite-web
+        # - echo "Deploy to staging servers"
         - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/suite-web build
         - ./scripts/s3sync.sh stage beta
     tags:

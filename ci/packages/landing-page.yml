@@ -28,6 +28,7 @@ landing-page deploy dev:
 
 landing-page deploy staging:
   stage: deploy to staging
+  dependencies: []
   environment:
       name: ${CI_BUILD_REF_NAME}-staging
       url: ${STAGING_SERVER_URL}
@@ -35,8 +36,8 @@ landing-page deploy staging:
   when:
       manual
   script:
-      - cd packages/landing-page
-      - echo "Deploy to staging servers"
+      # - cd packages/landing-page
+      # - echo "Deploy to staging servers"
       - yarn workspace @trezor/landing-page build
       - ./scripts/s3sync.sh stage beta
   tags:

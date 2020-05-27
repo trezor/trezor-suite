@@ -62,8 +62,6 @@ suite-desktop deploy staging:
   variables:
       DEPLOY_DIRECTORY: ${STAGING_SERVER_URL}/static
   script:
-      - rsync --delete -va "${DESKTOP_APP_NAME}"-*.zip "${DEPLOY_DIRECTORY}/"
-      - rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage "${DEPLOY_DIRECTORY}/"
-      - rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe "${DEPLOY_DIRECTORY}/"
+      - ./scripts/s3sync.sh stage beta
   tags:
       - deploy
