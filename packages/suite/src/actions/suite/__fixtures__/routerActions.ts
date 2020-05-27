@@ -65,20 +65,20 @@ export const goto = [
     {
         description: `goto wallet index`,
         url: 'wallet-index',
-        result: '/wallet',
+        result: '/accounts',
     },
     {
         description: `preserve hash params`,
         url: 'wallet-index',
         hash: '/btc/0',
         preserveHash: true,
-        result: '/wallet#/btc/0',
+        result: '/accounts#/btc/0',
     },
     {
         description: `ignore hash params`,
         url: 'wallet-index',
         hash: '/btc/0',
-        result: '/wallet',
+        result: '/accounts',
     },
     {
         description: `ui locked`,
