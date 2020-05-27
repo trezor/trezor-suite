@@ -53,7 +53,7 @@ const getAppUrl = (appName: App) => {
         case 'win':
             return resolveStaticPath(`desktop/Trezor-Beta-Wallet-${version}.exe`);
         case 'macos':
-            return resolveStaticPath(`desktop/Trezor-Beta-Wallet-${version}.dmg`);
+            return resolveStaticPath(`desktop/Trezor-Beta-Wallet-${version}.zip`);
         case 'linux':
             return resolveStaticPath(`desktop/Trezor-Beta-Wallet-${version}.AppImage`);
         // no default
