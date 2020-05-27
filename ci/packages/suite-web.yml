@@ -48,7 +48,7 @@ suite-web deploy dev:
 #     #    max: 2mv packages/suite-desktop/build-electron/"${DESKTOP_APP_NAME}"-*.AppImage ./build/static
 rome-beta:
     only:
-      - schedules
+        - schedules
     #allow_failure: true
     stage: integration testing
     script:
@@ -64,14 +64,13 @@ rome-beta:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
     dependencies: []
     retry:
-      max: 2
+        max: 2
 
 suite-web test security:
     stage: deploy artifacts, others
-    only: 
+    only:
         - schedules
-    script: 
-        yarn is-website-vulnerable ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} | node ./ci/scripts/check-vulnerabilities.js
+    script: yarn is-website-vulnerable ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} | node ./ci/scripts/check-vulnerabilities.js
     dependencies: []
 
 suite-web deploy staging:
@@ -80,14 +79,8 @@ suite-web deploy staging:
         name: ${CI_BUILD_REF_NAME}-staging
         url: ${STAGING_SERVER_URL}
     before_script: []
-    when:
-        manual
+    when: manual
     script:
-        - cd packages/landing-page
-        - yarn workspace @trezor/landing-page build
-        - ./scripts/s3sync.sh stage beta
-        - cd ../../
-
         - cd packages/suite-web
         - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/suite-web build
         - ./scripts/s3sync.sh stage beta
