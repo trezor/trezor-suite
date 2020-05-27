@@ -108,6 +108,7 @@ suite-web deploy staging:
         # - cd packages/suite-web
         # - echo "Deploy to staging servers"
         - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/suite-web build
+        - cd packages/suite-web
         - ./scripts/s3sync.sh stage beta
     # tags:
     #     - deploy

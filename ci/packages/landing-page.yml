@@ -37,9 +37,9 @@ landing-page deploy staging:
   # when:
   #     manual
   script:
-      # - cd packages/landing-page
       # - echo "Deploy to staging servers"
       - yarn workspace @trezor/landing-page build
+      - cd packages/landing-page
       - ./scripts/s3sync.sh stage beta
   # tags:
   #     - deploy
