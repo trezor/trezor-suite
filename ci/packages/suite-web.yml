@@ -109,7 +109,7 @@ suite-web deploy staging:
         paths:
             - packages/suite-web/build
     script:
-        - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/suite-web build
+        - assetPrefix=/wallet yarn workspace @trezor/suite-web build
         - cd packages/suite-web
         # missing aws 
         # - ./scripts/s3sync.sh stage beta

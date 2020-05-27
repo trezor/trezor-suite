@@ -27,6 +27,7 @@ RUN apt-get install -y \
 RUN pip3 install --upgrade setuptools
 RUN pip3 install trezor
 RUN pip3 install termcolor
+RUN pip3 install awscli
 
 USER root
 
