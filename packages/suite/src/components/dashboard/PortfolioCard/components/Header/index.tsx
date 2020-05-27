@@ -49,7 +49,9 @@ export default ({ portfolioValue, localCurrency, actionsEnabled, receiveClickHan
         <Left>
             <ValueWrapper>
                 <HiddenPlaceholder intensity={7}>
-                    <FormattedNumber value={portfolioValue} currency={localCurrency} />
+                    <span>
+                        <FormattedNumber value={portfolioValue} currency={localCurrency} />
+                    </span>
                 </HiddenPlaceholder>
             </ValueWrapper>
         </Left>

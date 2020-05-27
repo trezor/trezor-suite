@@ -1,4 +1,5 @@
 import { Dispatch, GetState } from '@suite-types';
+import { TokenInfo } from 'trezor-connect';
 import { SEND } from '@wallet-actions/constants';
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import { ETH_DEFAULT_GAS_LIMIT, ETH_DEFAULT_GAS_PRICE } from '@wallet-constants/sendForm';
@@ -72,13 +73,13 @@ export const compose = (setMax = false) => async (dispatch: Dispatch, getState: 
             return dispatch(rippleActions.compose());
         }
         case 'ethereum': {
-            return dispatch(ethereumActions.compose());
+            return dispatch(ethereumActions.compose(setMax));
         }
         // no default
     }
 };
 
-export const composeChange = (composeBy?: 'address' | 'amount') => (
+export const composeChange = (composeBy?: 'address' | 'amount', setMax = false) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -92,12 +93,12 @@ export const composeChange = (composeBy?: 'address' | 'amount') => (
     });
 
     if (!composeBy) {
-        dispatch(compose());
+        dispatch(compose(setMax));
     }
 
     if (composeBy) {
         if (shouldComposeBy(composeBy, send.outputs, account.networkType)) {
-            dispatch(compose());
+            dispatch(compose(setMax));
         }
     }
 
@@ -130,7 +131,37 @@ export const handleAddressChange = (outputId: number, address: string) => (
         dispatch(rippleActions.checkAccountReserve(output.id, address));
     }
 
-    dispatch(composeChange('address'));
+    dispatch(composeChange('address', send.setMaxActivated));
+};
+
+// common method called from multiple places:
+// handleAmountChange, handleFiatSelectChange, handleFiatInputChange, setMax, handleTokenSelectChange
+const amountChange = (amountIn?: string, outputIdIn?: number) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { send, selectedAccount } = getState().wallet;
+    if (!send || selectedAccount.status !== 'loaded') return null;
+    const { account, network } = selectedAccount;
+    const outputId = outputIdIn || 0;
+    const amount = amountIn || send.outputs[outputId].amount.value;
+    if (!amount) return; // do not trigger validation inside reducer if until amount is not set
+    const { isDestinationAccountEmpty } = send.networkTypeRipple;
+    const reserve = getReserveInXrp(account);
+    const { token } = send.networkTypeEthereum;
+    const availableBalance = token ? token.balance! : account.availableBalance;
+    const decimals = token ? token.decimals : network.decimals;
+
+    dispatch({
+        type: SEND.HANDLE_AMOUNT_CHANGE,
+        outputId,
+        symbol: network.symbol,
+        amount,
+        decimals,
+        availableBalance,
+        isDestinationAccountEmpty,
+        reserve,
+    });
 };
 
 /*
@@ -152,10 +183,6 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
     const isValidAmount = hasDecimals(amount, network.decimals);
-    const { isDestinationAccountEmpty } = send.networkTypeRipple;
-    const reserve = getReserveInXrp(account);
-    const { availableBalance, symbol } = account;
-    const { decimals } = network;
 
     if (fiatNetwork && isValidAmount) {
         const rate = fiatNetwork.current?.rates[output.localCurrency.value.value];
@@ -169,36 +196,23 @@ export const handleAmountChange = (outputId: number, amount: string) => (
         }
     }
 
-    dispatch({
-        type: SEND.HANDLE_AMOUNT_CHANGE,
-        outputId,
-        amount,
-        symbol,
-        decimals,
-        availableBalance,
-        isDestinationAccountEmpty,
-        reserve,
-    });
-
-    dispatch(composeChange('amount'));
+    dispatch(amountChange(amount, outputId));
+    dispatch(composeChange('amount', send.setMaxActivated));
 };
 
 /*
     Change value in select "LocalCurrency"
  */
-export const handleSelectCurrencyChange = (
+export const handleFiatSelectChange = (
     localCurrency: Output['localCurrency']['value'],
     outputId: number,
 ) => (dispatch: Dispatch, getState: GetState) => {
     const { fiat, send, selectedAccount } = getState().wallet;
     if (!fiat || !send || selectedAccount.status !== 'loaded') return null;
-    const { account, network } = selectedAccount;
-    const { availableBalance, symbol } = account;
+    const { account } = selectedAccount;
 
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
-    const { isDestinationAccountEmpty } = send.networkTypeRipple;
-    const reserve = getReserveInXrp(account);
 
     if (fiatNetwork && output.amount.value) {
         const rate = fiatNetwork.current?.rates[localCurrency.value];
@@ -215,16 +229,7 @@ export const handleSelectCurrencyChange = (
                 fiatValue,
             });
 
-            dispatch({
-                type: SEND.HANDLE_AMOUNT_CHANGE,
-                outputId,
-                symbol,
-                amount: amountBigNumber.toString(),
-                decimals: network.decimals,
-                availableBalance,
-                isDestinationAccountEmpty,
-                reserve,
-            });
+            dispatch(amountChange(amountBigNumber.toString(), outputId));
         }
     }
 
@@ -234,7 +239,7 @@ export const handleSelectCurrencyChange = (
         localCurrency,
     });
 
-    dispatch(composeChange('amount'));
+    dispatch(composeChange('amount', send.setMaxActivated));
 };
 
 /*
@@ -246,14 +251,11 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
 ) => {
     const { fiat, send, selectedAccount } = getState().wallet;
     if (!fiat || !send || selectedAccount.status !== 'loaded') return null;
-    const { account, network } = selectedAccount;
-    const { isDestinationAccountEmpty } = send.networkTypeRipple;
-    const { symbol, availableBalance } = account;
+    const { network } = selectedAccount;
     const output = getOutput(send.outputs, outputId);
-    const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
+    const fiatNetwork = fiat.find(item => item.symbol === network.symbol);
     if (!fiatNetwork) return null;
     const rate = fiatNetwork.current?.rates[output.localCurrency.value.value];
-    const reserve = getReserveInXrp(account);
     if (!rate) return null;
     const amountBigNumber = new BigNumber(fiatValue || '0').dividedBy(new BigNumber(rate));
     const amount = amountBigNumber.isNaN() ? '' : amountBigNumber.toFixed(network.decimals);
@@ -264,18 +266,9 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
         fiatValue,
     });
 
-    dispatch({
-        type: SEND.HANDLE_AMOUNT_CHANGE,
-        outputId,
-        amount,
-        decimals: network.decimals,
-        symbol,
-        availableBalance,
-        isDestinationAccountEmpty,
-        reserve,
-    });
+    dispatch(amountChange(amount, outputId));
 
-    dispatch(composeChange('amount'));
+    dispatch(composeChange('amount', send.setMaxActivated));
 };
 
 /*
@@ -285,26 +278,26 @@ export const setMax = (outputIdIn?: number) => async (dispatch: Dispatch, getSta
     const { fiat, send, selectedAccount } = getState().wallet;
 
     if (!fiat || !send || selectedAccount.status !== 'loaded') return null;
-    const { account, network } = selectedAccount;
+    const { account } = selectedAccount;
     const composedTransaction = await dispatch(compose(true));
-    const outputId: number = outputIdIn || 0;
+    const outputId = outputIdIn || 0;
     const output = getOutput(send.outputs, outputId);
     const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
-    const { isDestinationAccountEmpty } = send.networkTypeRipple;
-    const reserve = getReserveInXrp(account);
+    const { token } = send.networkTypeEthereum;
+    const formattedAmount =
+        composedTransaction && composedTransaction.type !== 'error' && !token
+            ? formatNetworkAmount(composedTransaction.max, account.symbol)
+            : undefined;
 
     dispatch({
         type: SEND.CHANGE_SET_MAX_STATE,
         activated: true,
     });
 
-    if (fiatNetwork && composedTransaction && composedTransaction.type !== 'error') {
+    if (fiatNetwork && formattedAmount) {
         const rate = fiatNetwork.current?.rates[output.localCurrency.value.value];
         if (rate) {
-            const fiatValue = getFiatValue(
-                formatNetworkAmount(composedTransaction.max, account.symbol),
-                rate.toString(),
-            );
+            const fiatValue = getFiatValue(formattedAmount, rate.toString());
 
             dispatch({
                 type: SEND.HANDLE_FIAT_VALUE_CHANGE,
@@ -314,32 +307,14 @@ export const setMax = (outputIdIn?: number) => async (dispatch: Dispatch, getSta
         }
     }
 
-    if (composedTransaction && composedTransaction.type !== 'error') {
-        const maxBig = new BigNumber(formatNetworkAmount(composedTransaction.max, account.symbol));
-        dispatch({
-            type: SEND.HANDLE_AMOUNT_CHANGE,
-            outputId,
-            symbol: account.symbol,
-            amount: maxBig.isLessThanOrEqualTo(0) ? '0' : maxBig.toFixed(network.decimals), // TODO: why is this here? shoudnt formatNetworkAmount do the job?
-            decimals: network.decimals,
-            availableBalance: account.availableBalance,
-            isDestinationAccountEmpty,
-            reserve,
-        });
-    } else {
-        dispatch({
-            type: SEND.HANDLE_AMOUNT_CHANGE,
-            outputId,
-            amount: '0',
-            symbol: account.symbol,
-            decimals: network.decimals,
-            availableBalance: account.availableBalance,
-            isDestinationAccountEmpty,
-            reserve,
-        });
+    let amount = token ? token.balance! : '0';
+    if (formattedAmount) {
+        const maxBig = new BigNumber(formattedAmount);
+        amount = maxBig.isLessThanOrEqualTo(0) ? '0' : formattedAmount;
     }
 
-    dispatch(composeChange('amount'));
+    dispatch(amountChange(amount, outputId));
+    dispatch(composeChange('amount', send.setMaxActivated));
 };
 
 /*
@@ -356,18 +331,23 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
             type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
             customFee: send.selectedFee.feePerUnit,
         });
+
+        dispatch({
+            type: SEND.HANDLE_FEE_VALUE_CHANGE,
+            fee: { label: 'custom', feePerUnit: send.selectedFee.feePerUnit, blocks: 0 },
+        });
     } else {
         dispatch({
             type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
             customFee: null,
         });
 
+        dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
+
         if (send.setMaxActivated) {
             dispatch(setMax());
         }
     }
-
-    dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
 
     // eth update gas price and gas limit
     if (account.networkType === 'ethereum') {
@@ -382,7 +362,7 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
         });
     }
 
-    dispatch(composeChange());
+    dispatch(composeChange(undefined, send.setMaxActivated));
 };
 
 /*
@@ -395,22 +375,20 @@ export const handleCustomFeeValueChange = (customFee: string) => (
     const { send } = getState().wallet;
     const { account } = getState().wallet.selectedAccount;
     if (!account || !send) return null;
-    const fee = send.feeInfo.levels[send.feeInfo.levels.length - 1];
+
+    dispatch({
+        type: SEND.HANDLE_FEE_VALUE_CHANGE,
+        fee: {
+            label: 'custom',
+            feePerUnit: customFee,
+            blocks: 0,
+        },
+    });
 
     dispatch({
         type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
         customFee,
     });
-
-    dispatch({
-        type: SEND.HANDLE_FEE_VALUE_CHANGE,
-        fee: {
-            ...fee,
-            feePerUnit: customFee,
-        },
-    });
-
-    dispatch(composeChange());
 
     if (send.setMaxActivated) {
         dispatch(setMax());
@@ -450,7 +428,11 @@ export const updateFeeOrNotify = () => (dispatch: Dispatch, getState: GetState) 
     if (selectedAccount.status !== 'loaded' || !send) return null;
     const { networkType, symbol } = selectedAccount.network;
     const updatedFeeInfo = getState().wallet.fees[symbol];
-    const updatedLevels = getFeeLevels(networkType, updatedFeeInfo);
+    const updatedLevels = getFeeLevels(
+        networkType,
+        updatedFeeInfo,
+        !!send.networkTypeEthereum.token,
+    );
     const { selectedFee, feeInfo } = send;
     const { levels } = feeInfo;
     const updatedSelectedFee = updatedLevels.find(level => level.label === selectedFee.label);
@@ -491,7 +473,11 @@ export const manuallyUpdateFee = () => (dispatch: Dispatch, getState: GetState) 
     if (selectedAccount.status !== 'loaded' || !send) return null;
     const { networkType, symbol } = selectedAccount.network;
     const updatedFeeInfo = getState().wallet.fees[symbol];
-    const updatedLevels = getFeeLevels(networkType, updatedFeeInfo);
+    const updatedLevels = getFeeLevels(
+        networkType,
+        updatedFeeInfo,
+        !!send.networkTypeEthereum.token,
+    );
     const updatedSelectedFee = updatedLevels.find(level => level.label === 'normal');
 
     if (!updatedSelectedFee) return null;
@@ -518,6 +504,30 @@ export const manuallyUpdateFee = () => (dispatch: Dispatch, getState: GetState) 
         type: SEND.CHANGE_FEE_STATE,
         feeOutdated: false,
     });
+};
+
+export const handleTokenSelectChange = (token?: TokenInfo) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { send } = getState().wallet;
+    if (!send) return;
+
+    dispatch({
+        type: SEND.ETH_HANDLE_TOKEN,
+        token,
+    });
+
+    // update fee levels
+    dispatch(manuallyUpdateFee());
+
+    if (send.setMaxActivated) {
+        // trigger amount validation in compose
+        dispatch(setMax());
+    } else {
+        // trigger amount validation in reducer
+        dispatch(amountChange());
+    }
 };
 
 /*

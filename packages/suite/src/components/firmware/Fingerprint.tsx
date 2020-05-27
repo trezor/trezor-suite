@@ -7,8 +7,9 @@ const Fingerprint = styled.pre`
     overflow: auto;
     background-color: ${colors.BLACK96};
     color: ${colors.BLACK0};
-    text-align: left;
+    text-align: center;
     word-break: break-all;
+    font-family: monospace;
 `;
 
 export default Fingerprint;

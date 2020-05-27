@@ -9,14 +9,15 @@ const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    resetDevice: bindActionCreators(deviceSettingsActions.resetDevice, dispatch),
-    goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
-    callActionAndGoToNextStep: bindActionCreators(
-        onboardingActions.callActionAndGoToNextStep,
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            resetDevice: deviceSettingsActions.resetDevice,
+            goToPreviousStep: onboardingActions.goToPreviousStep,
+            callActionAndGoToNextStep: onboardingActions.callActionAndGoToNextStep,
+        },
         dispatch,
-    ),
-});
+    );
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 

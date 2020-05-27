@@ -13,15 +13,13 @@ describe('Firmware', () => {
 
         cy.log('check if bitcoin only toggle works');
         cy.getTestElement('@firmware/toggle-bitcoin-only/btc').click();
-        cy.getTestElement('@firmware/btc-only-badge');
+        cy.getTestElement('@firmware/new/btc-only-badge');
         cy.getTestElement('@firmware/toggle-bitcoin-only/full').click();
 
         cy.getTestElement('@firmware/start-button').click();
         cy.getTestElement('@firmware/confirm-seed-button').click();
         cy.getTestElement('@firmware/disconnect-message');
         cy.task('stopEmu');
-        // disconnecting might take a little longer in CI
-        cy.getTestElement('@firmware/disconnect-message', { timeout: 20000 }).should('not.exist');
         cy.getTestElement('@firmware/connect-message');
         cy.log(
             'And this is the end my friends. Emulator does not support bootloader, so we can not proceed with actual fw install',
@@ -36,8 +34,9 @@ describe('Firmware', () => {
         cy.task('startBridge');
         cy.visit('/settings/device');
         cy.passThroughInitialRun();
-        cy.getTestElement('@settings/device/update-button').should('contain.text', 'Up to date').click();
+        cy.getTestElement('@settings/device/update-button')
+            .should('contain.text', 'Up to date')
+            .click();
         cy.getTestElement('@firmware/close-button').click();
     });
-
 });

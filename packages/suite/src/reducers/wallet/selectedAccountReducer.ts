@@ -31,15 +31,12 @@ export interface AccountLoading {
 export type AccountException =
     | {
           status: 'exception';
-          loader:
-              | 'auth-failed'
-              | 'discovery-error' // TODO: Discovery failed on something different than expected "bundle exception"
-              | 'discovery-empty'; // No network enabled in settings
+          loader: 'auth-failed' | 'discovery-error' | 'discovery-empty'; // No network enabled in settings
           mode?: AccountWatchOnlyMode[];
           account?: undefined;
           network?: Network;
           discovery?: Discovery;
-          params?: undefined;
+          params?: WalletParams;
       }
     | {
           status: 'exception';

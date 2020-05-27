@@ -60,6 +60,7 @@ type Props = ReturnType<typeof mapStateToProps> & {
 };
 
 interface BodyProps {
+    url: string;
     menu?: React.ReactNode;
     children?: React.ReactNode;
 }
@@ -76,26 +77,37 @@ export const LayoutContext = createContext<LayoutContextI>({
     setLayout: undefined,
 });
 
-const BodyWide = ({ menu, children }: BodyProps) => (
+// ScrollAppWrapper is mandatory to reset AppWrapper scroll position on url change, fix: issue #1658
+const ScrollAppWrapper = ({ url, children }: BodyProps) => {
+    const ref = React.useRef<HTMLDivElement>(null);
+    React.useEffect(() => {
+        const { current } = ref;
+        if (!current) return;
+        current.scrollTop = 0; // reset scroll position on url change
+    }, [ref, url]);
+    return <AppWrapper ref={ref}>{children}</AppWrapper>;
+};
+
+const BodyWide = ({ url, menu, children }: BodyProps) => (
     <Body>
         <DiscoveryProgress />
         <SuiteNotifications />
         <Columns>
             {menu && <MenuSecondary>{menu}</MenuSecondary>}
-            <AppWrapper>
+            <ScrollAppWrapper url={url}>
                 <MaxWidthWrapper withMenu={!!menu}>{children}</MaxWidthWrapper>
-            </AppWrapper>
+            </ScrollAppWrapper>
         </Columns>
     </Body>
 );
 
-const BodyNarrow = ({ menu, children }: BodyProps) => (
+const BodyNarrow = ({ url, menu, children }: BodyProps) => (
     <Body>
         <MenuDrawer>{menu}</MenuDrawer>
         <DiscoveryProgress />
         <SuiteNotifications />
         <Columns>
-            <AppWrapper>{children}</AppWrapper>
+            <ScrollAppWrapper url={url}>{children}</ScrollAppWrapper>
         </Columns>
     </Body>
 );
@@ -120,8 +132,16 @@ const SuiteLayout = (props: Props) => {
             </Head>
             {isWide && <Menu />}
             <LayoutContext.Provider value={{ title, menu, setLayout }}>
-                {isWide && <BodyWide menu={menu}>{props.children}</BodyWide>}
-                {!isWide && <BodyNarrow menu={menu}>{props.children}</BodyNarrow>}
+                {isWide && (
+                    <BodyWide menu={menu} url={props.router.url}>
+                        {props.children}
+                    </BodyWide>
+                )}
+                {!isWide && (
+                    <BodyNarrow menu={menu} url={props.router.url}>
+                        {props.children}
+                    </BodyNarrow>
+                )}
             </LayoutContext.Provider>
         </PageWrapper>
     );

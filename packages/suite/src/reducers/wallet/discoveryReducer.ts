@@ -25,6 +25,7 @@ export interface Discovery {
     networks: Network['symbol'][];
     running?: Deferred<void>;
     error?: string;
+    errorCode?: string | number;
 }
 
 export type PartialDiscovery = { deviceState: string } & Partial<Discovery>;

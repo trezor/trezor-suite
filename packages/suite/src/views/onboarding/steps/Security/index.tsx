@@ -1,9 +1,14 @@
 import React from 'react';
+import styled from 'styled-components';
 
 import { Translation, Image } from '@suite-components';
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 
 import { Props } from './Container';
+
+const StyledImage = styled(Image)`
+    flex: 1;
+`;
 
 const SecurityStep = (props: Props) => (
     <Wrapper.Step>
@@ -14,7 +19,13 @@ const SecurityStep = (props: Props) => (
             <Text>
                 <Translation id="TR_SECURITY_SUBHEADING" />
             </Text>
-            <Image image="T_DEVICE_INITIALIZED" />
+            <StyledImage
+                image={
+                    props.device?.features?.major_version === 1
+                        ? 'DEVICE_INITIALIZED_1'
+                        : 'DEVICE_INITIALIZED_2'
+                }
+            />
             <Wrapper.Controls>
                 <OnboardingButton.Cta
                     data-test="@onboarding/continue-to-security-button"

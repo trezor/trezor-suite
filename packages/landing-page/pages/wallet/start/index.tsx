@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
-import Layout from '@landing-components/Layout';
+import Layout from '@landing-components/StartLayout';
+import { normalizeVersion } from '@suite-utils/build';
 import { H2, Button, P, Select, Link, variables } from '@trezor/components';
 
 const Wrapper = styled.div`
@@ -45,26 +45,28 @@ const ButtonDownload = styled(Button)`
 type App = 'win' | 'macos' | 'linux';
 
 const getAppUrl = (appName: App) => {
+    const version = process.env.VERSION ? normalizeVersion(process.env.VERSION) : '';
     switch (appName) {
         case 'win':
-            return resolveStaticPath('desktop/Trezor-Beta-Wallet.exe');
+            return encodeURI(`/wallet/static/desktop/Trezor Beta Wallet-${version}.exe`);
         case 'macos':
-            return resolveStaticPath('desktop/Trezor-Beta-Wallet.zip');
+            return encodeURI(`/wallet/static/desktop/Trezor Beta Wallet-${version}.zip`);
         case 'linux':
-            return resolveStaticPath('desktop/Trezor-Beta-Wallet.AppImage');
+            return encodeURI(`/wallet/static/desktop/Trezor Beta Wallet-${version}.AppImage`);
         // no default
     }
 };
 
 export default () => {
     const [app, setApp] = useState<App | null>(null);
+    const walletUrl = process.env.assetPrefix ? `${process.env.assetPrefix}/wallet` : '/wallet';
 
     return (
         <Layout>
             <Wrapper>
                 <H2>Download Trezor Suite (beta) desktop app</H2>
                 <P size="tiny">
-                    For testing purpouses only. Please keep in mind this is a beta version.
+                    For testing purposes only. Please keep in mind this is a beta version.
                 </P>
                 <Row>
                     <Select
@@ -72,11 +74,14 @@ export default () => {
                         topLabel="Choose your platform"
                         width={240}
                         isSearchable={false}
-                        defaultValue={{ label: '– Click to choose –', value: null }}
+                        defaultValue={{
+                            label: '– Click to choose –',
+                            value: null,
+                        }}
                         options={[
                             { label: 'Windows', value: 'win' },
-                            { label: 'Mac OS', value: 'macos' },
                             { label: 'Linux', value: 'linux' },
+                            { label: 'Mac OS', value: 'macos' },
                         ]}
                         onChange={(option: { value: App | null; label: string | null }) =>
                             setApp(option.value)
@@ -96,11 +101,16 @@ export default () => {
                     </Item>
                 </Row>
                 <Item>
-                    <ButtonContinue variant="tertiary" icon="ARROW_RIGHT" alignIcon="right">
-                        <Link href="../" variant="nostyle">
+                    <Link href={walletUrl} variant="nostyle" target="_self">
+                        <ButtonContinue
+                            onClick={() => {}}
+                            variant="tertiary"
+                            icon="ARROW_RIGHT"
+                            alignIcon="right"
+                        >
                             Continue in browser
-                        </Link>
-                    </ButtonContinue>
+                        </ButtonContinue>
+                    </Link>
                 </Item>
             </Wrapper>
         </Layout>

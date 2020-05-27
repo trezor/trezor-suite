@@ -98,7 +98,7 @@ const ANIMATION = {
     initial: 'initial',
     animate: 'visible',
     exit: 'initial',
-    transition: { duration: 0.24, ease: [0.04, 0.62, 0.23, 0.98] },
+    transition: { duration: 0.24, ease: 'easeInOut' },
 };
 
 export default React.memo((props: Props) => {
@@ -130,7 +130,11 @@ export default React.memo((props: Props) => {
             <Translation id="TR_SENT_TO_SELF" />
         ) : (
             target.addresses?.map((a, i) =>
-                type === 'sent' ? <AddressLabeling key={`${key}${i}`} address={a} /> : a,
+                type === 'sent' ? (
+                    <AddressLabeling key={`${key}${i}`} address={a} />
+                ) : (
+                    <span>{a}</span>
+                ),
             )
         );
 
@@ -181,7 +185,9 @@ export default React.memo((props: Props) => {
         transfer: ArrayElement<Props['transaction']['tokens']>,
         useAnimation = false,
     ) => {
-        const addr = type === 'self' ? <Translation id="TR_SENT_TO_SELF" /> : transfer.to;
+        let addr: JSX.Element | string | typeof undefined = transfer.to;
+        if (type === 'self') addr = <Translation id="TR_SENT_TO_SELF" />;
+        if (type === 'sent') addr = <AddressLabeling address={transfer.to} />;
         const animation = useAnimation ? ANIMATION : {};
         key++;
         return (
@@ -280,7 +286,7 @@ export default React.memo((props: Props) => {
                 </ExpandButton>
             )}
 
-            {!isUnknown && isTokenTransaction && type !== 'recv' && (
+            {!isUnknown && isTokenTransaction && type !== 'recv' && transaction.fee !== '0' && (
                 <>
                     <Addr>
                         <Translation id="TR_FEE" />

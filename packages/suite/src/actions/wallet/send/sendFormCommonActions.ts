@@ -9,16 +9,16 @@ import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 */
 
 export const cache = (touch = true) => async (dispatch: Dispatch, getState: GetState) => {
-    if (touch) {
+    const { account } = getState().wallet.selectedAccount;
+    const { send } = getState().wallet;
+    if (!account || !send) return null;
+
+    if (touch && !send.touched) {
         dispatch({
             type: SEND.SET_TOUCHED,
             touched: true,
         });
     }
-
-    const { account } = getState().wallet.selectedAccount;
-    const { send } = getState().wallet;
-    if (!account || !send) return null;
 
     const id = getAccountKey(account.descriptor, account.symbol, account.deviceState);
     const sendFormState = send;

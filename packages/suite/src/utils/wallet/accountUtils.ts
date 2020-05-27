@@ -144,20 +144,24 @@ export const formatAmount = (amount: string, decimals: number) => {
     }
 };
 
-export const networkAmountToSatoshi = (amount: string | null, symbol: Account['symbol']) => {
-    const network = NETWORKS.find(n => n.symbol === symbol);
-    if (!amount) return '0';
-    if (!network) return amount;
+export const amountToSatoshi = (amount: string, decimals: number) => {
     try {
         const bAmount = new BigNumber(amount);
         if (bAmount.isNaN()) {
             throw new Error('Amount is not a number');
         }
-        return bAmount.times(10 ** network.decimals).toString(10);
+        return bAmount.times(10 ** decimals).toString(10);
     } catch (error) {
         // TODO: return null, so we can decide how to handle missing value in caller component
         return '-1';
     }
+};
+
+export const networkAmountToSatoshi = (amount: string | null, symbol: Account['symbol']) => {
+    const network = NETWORKS.find(n => n.symbol === symbol);
+    if (!amount) return '0';
+    if (!network) return amount;
+    return amountToSatoshi(amount, network.decimals);
 };
 
 export const formatNetworkAmount = (
@@ -304,6 +308,23 @@ export const enhanceTransaction = (
             return tr;
         }),
     };
+};
+
+/**
+ * Clear invalid tokens and formats amounts
+ *
+ * @param {Account['tokens']} tokens
+ * @returns {Account['tokens']}
+ */
+export const enhanceTokens = (tokens: Account['tokens']) => {
+    if (!tokens) return [];
+    return tokens
+        .filter(t => t.symbol && t.balance && t.name)
+        .map(t => ({
+            ...t,
+            symbol: t.symbol!.toLowerCase(),
+            balance: formatAmount(t.balance!, t.decimals),
+        }));
 };
 
 export const getAccountFiatBalance = (

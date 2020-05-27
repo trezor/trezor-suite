@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { Select } from '@trezor/components';
 import { Account } from '@wallet-types';
+import { TokenInfo } from 'trezor-connect';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 
 const Wrapper = styled.div`
-    width: 100px;
-    margin-left: 10px;
+    min-width: 110px;
 `;
 
 const CurrencySelect = styled(Select)`
@@ -16,45 +16,50 @@ const CurrencySelect = styled(Select)`
 interface Props {
     symbol: Account['symbol'];
     tokens: Account['tokens'];
+    selectedToken?: TokenInfo;
+    onChange: (token?: TokenInfo) => void;
+}
+
+interface Option {
+    value?: TokenInfo;
+    label: string;
 }
 
 const getValues = (symbol: Account['symbol'], tokens: Account['tokens']) => {
-    const result: {
-        value: string;
-        label: string;
-    }[] = [
+    const result: Option[] = [
         {
-            value: symbol,
+            value: undefined,
             label: symbol.toUpperCase(),
         },
     ];
 
     if (tokens) {
-        // remove tokens - planned for Q2
-        // tokens.forEach(token => {
-        //     const tokenName = token.symbol || 'N/A';
-        //     result.push({
-        //         value: tokenName,
-        //         label: tokenName.toUpperCase(),
-        //     });
-        // });
+        tokens.forEach(token => {
+            const tokenName = token.symbol || 'N/A';
+            result.push({
+                value: token,
+                label: tokenName.toUpperCase(),
+            });
+        });
     }
 
     return result;
 };
 
-export default ({ symbol, tokens }: Props) => {
+export default ({ symbol, tokens, selectedToken, onChange }: Props) => {
     const values = getValues(symbol, tokens);
+
     return (
         <Wrapper>
             <CurrencySelect
-                key="currency"
+                key="token"
                 isSearchable={false}
-                onChange={() => {}}
+                onChange={(t: Option) => onChange(t.value)}
                 isClearable={false}
-                value={values[0]}
+                value={values.find(v => v.value === selectedToken)}
                 isDisabled={values.length === 1}
                 options={values}
+                display
             />
         </Wrapper>
     );

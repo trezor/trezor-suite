@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { colors } from '@trezor/components';
-import { FiatValue, FormattedNumber } from '@suite-components';
+import { FormattedNumber, Translation } from '@suite-components';
 import { Account } from '@wallet-types';
 import { TooltipProps } from 'recharts';
 import { getDateWithTimeZone } from '@suite/utils/suite/date';
@@ -40,6 +40,7 @@ const Rect = styled.div<{ color: string }>`
 
 interface CommonProps extends TooltipProps {
     selectedRange: GraphProps['selectedRange'];
+    localCurrency: string;
 }
 
 interface OneAssetProps extends CommonProps {
@@ -51,7 +52,6 @@ interface OneAssetProps extends CommonProps {
 
 interface AllAssetsProps extends CommonProps {
     variant: 'all-assets';
-    localCurrency: string;
     sentValueFn: FiatGraphProps['sentValueFn'];
     receivedValueFn: FiatGraphProps['receivedValueFn'];
 }
@@ -64,18 +64,20 @@ const CustomTooltip = ({ active, payload, coordinate, ...props }: Props) => {
         const receivedAmountString = props.receivedValueFn(payload[0].payload);
         const sentAmountString = props.sentValueFn(payload[0].payload);
 
+        const receivedFiat = payload[0].payload.receivedFiat[props.localCurrency] ?? null;
+        const sentFiat = payload[0].payload.sentFiat[props.localCurrency] ?? null;
+
         const receivedAmount =
             props.variant === 'one-asset' ? (
                 <>
                     {receivedAmountString} {props.symbol.toUpperCase()}
-                    <FiatValue
-                        amount={receivedAmountString!}
-                        symbol={props.symbol}
-                        source={payload[0].payload.rates}
-                        useCustomSource
-                    >
-                        {({ value }) => (value ? <> ({value})</> : null)}
-                    </FiatValue>
+                    {receivedFiat !== null && (
+                        <>
+                            {' '}
+                            (
+                            <FormattedNumber currency={props.localCurrency} value={receivedFiat} />)
+                        </>
+                    )}
                 </>
             ) : (
                 <FormattedNumber
@@ -88,14 +90,13 @@ const CustomTooltip = ({ active, payload, coordinate, ...props }: Props) => {
             props.variant === 'one-asset' ? (
                 <>
                     {sentAmountString} {props.symbol.toUpperCase()}
-                    <FiatValue
-                        amount={sentAmountString!}
-                        symbol={props.symbol}
-                        source={payload[0].payload.rates}
-                        useCustomSource
-                    >
-                        {({ value }) => (value ? <> ({value})</> : null)}
-                    </FiatValue>
+                    {sentFiat !== null && (
+                        <>
+                            {' '}
+                            (
+                            <FormattedNumber currency={props.localCurrency} value={sentFiat} />)
+                        </>
+                    )}
                 </>
             ) : (
                 <FormattedNumber currency={props.localCurrency} value={sentAmountString ?? '0'} />
@@ -115,10 +116,12 @@ const CustomTooltip = ({ active, payload, coordinate, ...props }: Props) => {
                     )}
                 </DateWrapper>
                 <Row>
-                    <Rect color={colors.GREEN} /> Received {receivedAmount}
+                    <Rect color={colors.GREEN} />{' '}
+                    <Translation id="TR_RECEIVED_AMOUNT" values={{ amount: receivedAmount }} />
                 </Row>
                 <Row>
-                    <Rect color={colors.RED_ERROR} /> Sent {sentAmount}
+                    <Rect color={colors.RED_ERROR} />{' '}
+                    <Translation id="TR_SENT_AMOUNT" values={{ amount: sentAmount }} />
                 </Row>
             </CustomTooltipWrapper>
         );

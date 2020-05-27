@@ -2,14 +2,22 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as routerActions from '@suite-actions/routerActions';
 
-import { Dispatch } from '@suite-types';
+import { Dispatch, AppState } from '@suite-types';
 
 import Step from './index';
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    closeModalApp: bindActionCreators(routerActions.closeModalApp, dispatch),
+const mapStateToProps = (state: AppState) => ({
+    device: state.suite.device,
 });
 
-export type Props = ReturnType<typeof mapDispatchToProps>;
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            closeModalApp: routerActions.closeModalApp,
+        },
+        dispatch,
+    );
 
-export default connect(null, mapDispatchToProps)(Step);
+export type Props = ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
+
+export default connect(mapStateToProps, mapDispatchToProps)(Step);

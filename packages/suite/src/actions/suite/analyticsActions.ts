@@ -1,14 +1,20 @@
 import { ANALYTICS } from '@suite-actions/constants';
 import { isDev } from '@suite-utils/build';
-import { Dispatch, GetState, AppState } from '@suite-types';
-import { getRandomId } from '@suite-utils/random';
+import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
+import { getAnalyticsRandomId } from '@suite-utils/random';
 import { Account } from '@wallet-types';
+import qs from 'qs';
 
 export type AnalyticsActions =
     | { type: typeof ANALYTICS.DISPOSE }
-    | { type: typeof ANALYTICS.INIT; payload: { sessionId: string; instanceId: string } };
+    | { type: typeof ANALYTICS.INIT; payload: { instanceId: string } };
 
 export type Payload =
+    /*
+    suite-ready
+    Triggers on application start. Logs part of suite setup that might have been loaded from storage
+    but it might also be suite default setup that is loaded when suite starts for the first time.
+    */
     | {
           type: 'suite-ready';
           payload: {
@@ -19,7 +25,38 @@ export type Payload =
           };
       }
     | { type: 'transport-type'; payload: { type: string; version: string } }
-    | { type: 'device-connect'; payload: { device_id: string; firmware: string } }
+    // device-connect
+    // is logged when user connects device
+    // - if device is not in bootloader, some of its features are logged
+    | {
+          type: 'device-connect';
+          payload: {
+              mode: TrezorDevice['mode'];
+              firmware: string;
+              pin_protection: boolean;
+              passphrase_protection: boolean;
+          };
+      }
+    // device-update-firmware
+    // is log after firmware update call to device is finished.
+    | {
+          type: 'device-update-firmware';
+          payload: {
+              // version of bootloader before update started. unluckily fw version before update is not logged
+              fromBlVersion: string;
+              // version of the new firmware e.g 1.2.3
+              toFwVersion: string;
+              // is new firmware bitcoin only variant?
+              toBtcOnly: boolean;
+              // if finished with error, field error contains error string, otherwise is empty
+              error: string;
+          };
+      }
+    // - if device is in bootloader, only this event is logged
+    | { type: 'device-connect'; payload: { mode: 'bootloader' } }
+    // initial-run-completed
+    // when new installation of trezor suite starts it is in initial-run mode which means that some additional screens appear (welcome, analytics, onboarding)
+    // it is completed either by going trough onboarding or skipping it. once completed event is registered, we log some data connected up to this point
     | {
           type: 'initial-run-completed';
           payload: {
@@ -39,36 +76,38 @@ export type Payload =
               usedDevice: boolean;
           };
       }
+    // account-create
+    // logged either automatically upon each suite start as default switched on accounts are loaded
+    // or when user adds account manually
     | {
           type: 'account-create';
           payload: {
+              // normal, segwit, legacy
               type: Account['accountType'];
+              // index of account
               path: Account['path'];
+              // network (btc, eth, etc.)
               symbol: Account['symbol'];
           };
       }
+    // ui
+    // this is general category of click into ui.
+    // every logged event has payload which describes where user clicked, for example payload: "menu/settings"
+    // todo: make this also strongly typed?
     | {
           type: 'ui';
           payload: string;
       };
 
-const encodePayload = (data: Record<string, any>) => {
-    return JSON.stringify(data);
-};
-
 const getUrl = () => {
-    // Playground endpoint
-    // --------------
-    // const base = 'https://track-suite.herokuapp.com/';
-
     // Real endpoints
     // --------------
-    // https://data.trezor.io/suite/log/desktop/stage.log
+    // https://data.trezor.io/suite/log/desktop/staging.log
     // https://data.trezor.io/suite/log/desktop/beta.log
     // https://data.trezor.io/suite/log/desktop/develop.log
     // https://data.trezor.io/suite/log/desktop/stable.log
 
-    // https://data.trezor.io/suite/log/web/stage.log
+    // https://data.trezor.io/suite/log/web/staging.log
     // https://data.trezor.io/suite/log/web/beta.log
     // https://data.trezor.io/suite/log/web/develop.log
     // https://data.trezor.io/suite/log/web/stable.log
@@ -92,7 +131,7 @@ const getUrl = () => {
         // ts-ignores are "safe", we are in web env and I don't want to create custom file for native
         // @ts-ignore
         if (window.location.hostname === 'staging-wallet.trezor.io') {
-            return `${base}/web/stage.log`;
+            return `${base}/web/staging.log`;
         }
         // @ts-ignore
         if (window.location.hostname === 'beta-wallet.trezor.io') {
@@ -103,12 +142,19 @@ const getUrl = () => {
             return `${base}/web/stable.log`;
         }
     }
+
+    return `${base}/${process.env.SUITE_TYPE}/develop.log`;
 };
 
 export const report = (data: Payload, force = false) => async (
     _dispatch: Dispatch,
     getState: GetState,
 ) => {
+    if (isDev()) {
+        // on dev, do nothing
+        return;
+    }
+
     const { enabled, sessionId, instanceId } = getState().analytics;
 
     // the only case we want to override users 'do not log' choice is when we
@@ -117,10 +163,31 @@ export const report = (data: Payload, force = false) => async (
         return;
     }
 
-    if (isDev()) {
-        // on dev, do nothing
-        return;
+    // watched data is sent in query string
+    const commonEncoded = qs.stringify({
+        commit: process.env.COMMITHASH,
+        sessionId,
+        instanceId,
+    });
+
+    let eventSpecificEncoded;
+    if (typeof data.payload !== 'string') {
+        eventSpecificEncoded = qs.stringify(
+            {
+                type: data.type,
+                ...data.payload,
+            },
+            {
+                arrayFormat: 'comma',
+            },
+        );
+    } else {
+        eventSpecificEncoded = qs.stringify({
+            type: data.type,
+            payload: data.payload,
+        });
     }
+
     const url = getUrl();
 
     if (!url) {
@@ -128,24 +195,13 @@ export const report = (data: Payload, force = false) => async (
         return;
     }
 
-    const payload = encodePayload({
-        ...data,
-        version: process.env.COMMITHASH,
-        sessionId,
-        instanceId,
-        ts: Date.now(),
-    });
-
     try {
-        fetch(url, {
-            method: 'POST',
-            headers: new Headers({
-                'content-type': 'application/json',
-            }),
-            body: payload,
+        fetch(`${url}?${commonEncoded}&${eventSpecificEncoded}`, {
+            method: 'GET',
         });
     } catch (err) {
-        // do nothing
+        // do nothing, just log error for sentry
+        console.error('failed to log analytics', err);
     }
 };
 
@@ -154,13 +210,10 @@ export const report = (data: Payload, force = false) => async (
  *
  * 1. start app
  * 2. load analytics storage into reducer
- * 3a] if empty (first start) generate instanceId and save it back to storage. instanceId exists in storage
+ * 3. if empty (first start) generate instanceId and save it back to storage. instanceId exists in storage
  *     regardless of whether user enabled analytics or not.
- * 3b] if analytics enabled, only generate sessionId which is unique for each analytics session
- * 3c] if analytics is disabled, do nothing
  *
- * User may disable analytics, see dispose() fn. This flushes data from reducer and clears
- * sessionId from storage (instanceId is kept)
+ * User may disable analytics, see dispose() fn.
  */
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const { analytics } = getState();
@@ -168,9 +221,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         type: ANALYTICS.INIT,
         payload: {
             // if no instanceId exists it means that it was not loaded from storage, so create a new one
-            instanceId: analytics.instanceId ? analytics.instanceId : getRandomId(10),
-            // sessionId is always ephemeral
-            sessionId: getRandomId(10),
+            instanceId: !analytics.instanceId ? getAnalyticsRandomId() : analytics.instanceId,
         },
     });
 };

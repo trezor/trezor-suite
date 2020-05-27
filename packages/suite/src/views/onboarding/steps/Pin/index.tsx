@@ -56,7 +56,9 @@ const SetPinStep = (props: Props) => {
                             <Translation id="TR_PIN_SUBHEADING" />
                         </Text>
 
-                        <Image image="T_PIN_ASK" />
+                        <Image
+                            image={device.features.major_version === 1 ? 'PIN_ASK_1' : 'PIN_ASK_2'}
+                        />
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 data-test="@onboarding/set-pin-button"
@@ -75,7 +77,13 @@ const SetPinStep = (props: Props) => {
                         <Text>
                             <Translation id="TR_PIN_SET_SUCCESS" />
                         </Text>
-                        <Image image="T_PIN_SUCCESS" />
+                        <Image
+                            image={
+                                device.features.major_version === 1
+                                    ? 'PIN_SUCCESS_1'
+                                    : 'PIN_SUCCESS_2'
+                            }
+                        />
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 data-test="@onboarding/pin/continue-button"

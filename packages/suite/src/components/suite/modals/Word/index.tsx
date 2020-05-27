@@ -6,9 +6,8 @@ import { Translation, WordInput } from '@suite-components';
 const Word = (props: ModalProps) => {
     return (
         <Modal
+            fixedWidth={['100%', '100%', '100%', '100%']}
             data-test="@recovery/word"
-            size="small"
-            useFixedHeight
             heading={<Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />}
             description={
                 <>
@@ -19,9 +18,9 @@ const Word = (props: ModalProps) => {
             {...props}
         >
             <WordInput
-                onSubmit={value =>
-                    TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: value })
-                }
+                onSubmit={value => {
+                    TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: value });
+                }}
             />
         </Modal>
     );

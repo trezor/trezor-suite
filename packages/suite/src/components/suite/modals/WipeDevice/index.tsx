@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { Modal, Button } from '@trezor/components';
 import { Translation, CheckItem, Image } from '@suite-components';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { Dispatch } from '@suite-types';
-import { useDeviceActionLocks } from '@suite-hooks';
+import { useDeviceActionLocks, useActions } from '@suite-hooks';
 
 const Row = styled.div`
     display: flex;
@@ -29,17 +26,14 @@ const Buttons = styled(Row)`
     width: 100%;
 `;
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    wipeDevice: bindActionCreators(deviceSettingsActions.wipeDevice, dispatch),
-});
-
-type Props = ReturnType<typeof mapDispatchToProps> & {
+type Props = {
     onCancel: () => void;
 };
 
-const WipeDevice = ({ wipeDevice, onCancel }: Props) => {
+const WipeDevice = ({ onCancel }: Props) => {
     const [checkbox1, setCheckbox1] = useState(false);
     const [checkbox2, setCheckbox2] = useState(false);
+    const { wipeDevice } = useActions({ wipeDevice: deviceSettingsActions.wipeDevice });
 
     const [actionEnabled] = useDeviceActionLocks();
 
@@ -88,4 +82,4 @@ const WipeDevice = ({ wipeDevice, onCancel }: Props) => {
     );
 };
 
-export default connect(null, mapDispatchToProps)(WipeDevice);
+export default WipeDevice;

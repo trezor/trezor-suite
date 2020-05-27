@@ -5,10 +5,12 @@ import { Image, Translation } from '@suite-components';
 import { useDeviceActionLocks, useDevice } from '@suite-hooks';
 import { useDispatch } from 'react-redux';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
+import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as modalActions from '@suite-actions/modalActions';
 import * as routerActions from '@suite-actions/routerActions';
 import * as accountUtils from '@wallet-utils/accountUtils';
+import { Dispatch } from '@suite-types';
 import { Discovery, DiscoveryStatus } from '@wallet-types';
 
 const Wrapper = styled.div`
@@ -112,7 +114,7 @@ const discoveryFailedMessage = (discovery?: Discovery) => {
 };
 
 export default ({ exception, discovery }: Props) => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<Dispatch>();
     const { device } = useDevice();
     switch (exception.type) {
         case 'auth-failed':
@@ -169,6 +171,31 @@ export default ({ exception, discovery }: Props) => {
                         />
                     }
                     cta={{ action: () => dispatch(discoveryActions.restart()) }}
+                />
+            );
+        case 'device-unavailable':
+            return (
+                <Container
+                    title="TR_DASHBOARD_DISCOVERY_ERROR"
+                    description={
+                        <Translation
+                            id="TR_ACCOUNT_PASSPHRASE_DISABLED"
+                            values={{ details: discoveryFailedMessage(discovery) }}
+                        />
+                    }
+                    cta={{
+                        action: async () => {
+                            // enable passphrase
+                            const result = await dispatch(
+                                // eslint-disable-next-line @typescript-eslint/camelcase
+                                deviceSettingsActions.applySettings({ use_passphrase: true }),
+                            );
+                            if (!result || !result.success) return;
+                            // restart discovery
+                            dispatch(discoveryActions.restart());
+                        },
+                        label: 'TR_ACCOUNT_ENABLE_PASSPHRASE',
+                    }}
                 />
             );
         default:

@@ -4,11 +4,12 @@ import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
 import { SuiteState } from '@suite-reducers/suiteReducer';
 import { State as SendFormState } from '@wallet-types/sendForm';
 import { State as AnalyticsState } from '@suite-reducers/analyticsReducer';
+import { GraphData } from '@wallet-reducers/graphReducer';
 import { AcquiredDevice } from '@suite-types';
 import { Account, Discovery, CoinFiatRates, WalletAccountTransaction } from '@wallet-types';
 import { migrate } from './migrations';
 
-const VERSION = 13;
+const VERSION = 14;
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
@@ -36,7 +37,10 @@ export interface SuiteDBSchema extends DBSchema {
     };
     suiteSettings: {
         key: string;
-        value: { settings: SuiteState['settings']; flags: SuiteState['flags'] };
+        value: {
+            settings: SuiteState['settings'];
+            flags: SuiteState['flags'];
+        };
     };
     walletSettings: {
         key: string;
@@ -65,6 +69,14 @@ export interface SuiteDBSchema extends DBSchema {
         key: string;
         value: AnalyticsState;
     };
+    graph: {
+        key: string[]; // descriptor, symbol, deviceState, interval
+        value: GraphData;
+        indexes: {
+            accountKey: string[]; // descriptor, symbol, deviceState
+            deviceState: string;
+        };
+    };
 }
 
 export type SuiteStorageUpdateMessage = StorageUpdateMessage<SuiteDBSchema>;
@@ -74,17 +86,8 @@ export type SuiteStorageUpdateMessage = StorageUpdateMessage<SuiteDBSchema>;
  *  Otherwise runs a migration function that transform the data to new scheme version if necessary
  */
 const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersion, transaction) => {
-    // instead of doing proper migration just delete all object stores and recreate them
-    // TODO: uncomment before RELEASE,
-    // const shouldInitDB = oldVersion === 0;
-    // if (shouldInitDB) {
-    if (oldVersion < VERSION) {
-        try {
-            await SuiteDB.removeStores<SuiteDBSchema>(db);
-        } catch (err) {
-            console.error('error during removing all stores', err);
-        }
-
+    const shouldInitDB = oldVersion === 0;
+    if (shouldInitDB) {
         // init db
         // object store for wallet transactions
         const txsStore = db.createObjectStore('txs', {
@@ -119,10 +122,33 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
 
         db.createObjectStore('fiatRates', { keyPath: 'symbol' });
         db.createObjectStore('analytics');
+
+        // graph
+        const graphStore = db.createObjectStore('graph', {
+            keyPath: ['account.descriptor', 'account.symbol', 'account.deviceState'],
+        });
+        graphStore.createIndex('accountKey', [
+            'account.descriptor',
+            'account.symbol',
+            'account.deviceState',
+        ]);
+        graphStore.createIndex('deviceState', 'account.deviceState');
     } else {
         // migrate functions
         migrate(db, oldVersion, newVersion, transaction);
     }
 };
 
-export const db = new SuiteDB<SuiteDBSchema>('trezor-suite', VERSION, onUpgrade);
+const onDowngrade = () => {
+    // @ts-ignore
+    const { ipcRenderer } = global;
+    if (ipcRenderer) {
+        // relaunch desktop app
+        ipcRenderer.send('restart-app');
+    } else {
+        // @ts-ignore TODO: suite-native:  Cannot find name 'window'
+        window.location.reload();
+    }
+};
+
+export const db = new SuiteDB<SuiteDBSchema>('trezor-suite', VERSION, onUpgrade, onDowngrade);

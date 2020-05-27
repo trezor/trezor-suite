@@ -101,7 +101,7 @@ interface Props {
 const BottomMenu = (props: Props) => {
     const analytics = useAnalytics();
     const gotoWithReport = (routeName: Parameters<typeof props.goto>[0]) => {
-        analytics.report({ type: 'ui', payload: `menu/goto${routeName}` });
+        analytics.report({ type: 'ui', payload: `menu/goto/${routeName}` });
         props.goto(routeName);
     };
 

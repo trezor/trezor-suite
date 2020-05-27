@@ -14,9 +14,13 @@ const mapStateToProps = (state: AppState) => ({
     toast: state.notifications.find(n => n.type === 'auth-failed'),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    authDevice: bindActionCreators(suiteActions.authorizeDevice, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            authDevice: suiteActions.authorizeDevice,
+        },
+        dispatch,
+    );
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 

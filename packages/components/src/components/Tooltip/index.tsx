@@ -1,8 +1,9 @@
 import styled from 'styled-components';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import Tippy, { TippyProps } from '@tippy.js/react';
 import { tippy } from './tippy.style';
 import colors from '../../config/colors';
+import { Link } from '../typography/Link';
 import { FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
 
 const Wrapper = styled.div`
@@ -27,16 +28,19 @@ const Wrapper = styled.div`
                 border-top-color: ${colors.BLACK0};
             }
         }
+
         &[data-placement^='bottom'] {
             .tippy-arrow {
                 border-bottom-color: ${colors.BLACK0};
             }
         }
+
         &[data-placement^='left'] {
             .tippy-arrow {
                 border-left-color: ${colors.BLACK0};
             }
         }
+
         &[data-placement^='right'] {
             .tippy-arrow {
                 border-right-color: ${colors.BLACK0};
@@ -45,6 +49,20 @@ const Wrapper = styled.div`
     }
 `;
 
+const Content = styled.div``;
+
+const ReadMoreLink = styled(Link)`
+    padding: 10px 0;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+`;
+
+type Props = TippyProps & {
+    children: JSX.Element | JSX.Element[] | string;
+    readMore?: { link: string; text: ReactNode } | null;
+};
+
 const Tooltip = ({
     placement = 'top',
     interactive = true,
@@ -52,8 +70,10 @@ const Tooltip = ({
     duration = 150,
     animation = 'scale',
     className,
+    readMore = null,
+    content,
     ...rest
-}: TippyProps & { children: JSX.Element | JSX.Element[] | string }) => (
+}: Props) => (
     <Wrapper className={className}>
         <Tippy
             zIndex={10070}
@@ -62,9 +82,19 @@ const Tooltip = ({
             animation={animation}
             duration={duration}
             interactive={interactive}
+            content={
+                <>
+                    {content}
+                    {readMore && (
+                        <ReadMoreLink variant="nostyle" href={readMore.link} target="_blank">
+                            {readMore.text}
+                        </ReadMoreLink>
+                    )}
+                </>
+            }
             {...rest}
         >
-            <span>{children}</span>
+            <Content>{children}</Content>
         </Tippy>
     </Wrapper>
 );

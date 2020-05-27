@@ -37,7 +37,7 @@ const getAccountStateWithMode = (selectedAccount?: State) => (
     if (selectedAccount && selectedAccount.status === 'loaded') {
         const { account, discovery, network } = selectedAccount;
         // Account does exists and it's visible but shouldn't be active
-        if (account && discovery && discovery.status !== DISCOVERY.STATUS.COMPLETED) {
+        if (account && discovery && discovery.status < DISCOVERY.STATUS.STOPPING) {
             mode.push('account-loading-others');
         }
 
@@ -164,6 +164,17 @@ const getAccountState = () => (dispatch: Dispatch, getState: GetState): State =>
 
     // account doesn't exist (yet?) checking why...
     // discovery is still running
+    if (discovery.error) {
+        return {
+            status: 'exception',
+            loader: 'discovery-error',
+            network,
+            discovery,
+            params,
+            mode,
+        };
+    }
+
     if (discovery.status !== DISCOVERY.STATUS.COMPLETED) {
         return {
             status: 'loading',
@@ -211,7 +222,7 @@ export const getStateForAction = (action: Action) => (dispatch: Dispatch, getSta
 
     // find differences
     const stateChanged = comparisonUtils.isChanged(state.wallet.selectedAccount, newState, {
-        account: ['descriptor', 'availableBalance', 'nonce', 'marker'],
+        account: ['descriptor', 'availableBalance', 'misc', 'tokens'],
         discovery: [
             'status',
             'index',

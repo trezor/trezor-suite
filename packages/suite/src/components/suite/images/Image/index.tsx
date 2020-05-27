@@ -11,7 +11,8 @@ const IMAGES = {
     FIRMWARE_INIT_2: 'firmware-init-2.svg',
     FIRMWARE_SUCCESS_1: 'firmware-success-1.svg',
     FIRMWARE_SUCCESS_2: 'firmware-success-2.svg',
-    ALL_DONE: 'all-done.svg',
+    ALL_DONE_1: 'all-done-1.svg',
+    ALL_DONE_2: 'all-done-2.svg',
     BRIDGE_QUESTION: 'bridge-question.svg', // todo: not used
     BRIDGE_SUCCESS: 'bridge-success.svg', // todo: not used
     CONFRIM_ON_DEVICE_2: 'confirm-on-device-2.svg', // todo: not used
@@ -25,10 +26,12 @@ const IMAGES = {
     RECOVER_FROM_SEED: 'recover-from-seed.svg',
     SEED_CARD_SHAMIR: 'seed-card-shamir.svg',
     SEED_CARD_SINGLE: 'seed-card-single.svg',
-    SKIP_WARNING: 'skip-warning.svg',
-    T_DEVICE_INITIALIZED: 't-device-initialized.svg',
-    T_PIN_ASK: 't-pin-ask.svg',
-    T_PIN_SUCCESS: 't-pin-success.svg',
+    DEVICE_INITIALIZED_1: 'device-initialized-1.svg',
+    DEVICE_INITIALIZED_2: 'device-initialized-2.svg',
+    PIN_ASK_1: 'pin-ask-1.svg',
+    PIN_ASK_2: 'pin-ask-2.svg',
+    PIN_SUCCESS_1: 'pin-success-1.svg',
+    PIN_SUCCESS_2: 'pin-success-2.svg',
     USED_DEVICE: 'used-device.svg',
     WRITING_SEED: 'writing-seed.svg', // todo: not used
     '12_WORDS': '12-words.svg',
@@ -53,6 +56,8 @@ const IMAGES = {
     DEVICE_ANOTHER_SESSION: 'device-another-session.svg',
     CONNECT_DEVICE: 'connect-device.svg',
     '404': '404.svg',
+    HOW_TO_ENTER_BOOTLOADER_MODEL_1: 'how-to-enter-bootloader-model-1.svg',
+    HOW_TO_ENTER_BOOTLOADER_MODEL_2: 'how-to-enter-bootloader-model-2.svg',
 } as const;
 
 type Image = keyof typeof IMAGES;

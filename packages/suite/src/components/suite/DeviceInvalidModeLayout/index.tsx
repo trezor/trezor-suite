@@ -28,9 +28,13 @@ const Buttons = styled.div`
  * like views listed in suite/views
  */
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            goto: routerActions.goto,
+        },
+        dispatch,
+    );
 
 const mapStateToProps = (state: AppState) => ({
     devices: state.devices,

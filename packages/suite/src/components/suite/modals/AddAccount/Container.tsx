@@ -13,11 +13,15 @@ const mapStateToProps = (state: AppState) => ({
     selectedAccount: state.wallet.selectedAccount,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    changeAccountVisibility: bindActionCreators(changeAccountVisibility, dispatch),
-    changeCoinVisibility: bindActionCreators(changeCoinVisibility, dispatch),
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            changeAccountVisibility,
+            changeCoinVisibility,
+            goto: routerActions.goto,
+        },
+        dispatch,
+    );
 
 export type Props = {
     device: TrezorDevice;

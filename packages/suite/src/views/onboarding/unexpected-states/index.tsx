@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { P, Modal } from '@trezor/components';
+import { P } from '@trezor/components';
 import { connect } from 'react-redux';
 
 import { AppState } from '@suite-types';
@@ -15,7 +15,6 @@ import IsNotNewDevice from './components/IsNotNewDevice';
 import DeviceIsUsedHere from './components/DeviceIsUsedHere';
 
 const Wrapper = styled.div`
-    margin: 0px 28px 0px 28px;
     height: 100%;
     text-align: center;
 `;
@@ -109,16 +108,7 @@ const UnexpectedState = ({ onboarding, suite, children }: Props) => {
     };
 
     const unexpectedState = getUnexpectedStateComponent();
-    return (
-        <Wrapper>
-            {unexpectedState && (
-                <Modal noBackground size="small">
-                    {unexpectedState}
-                </Modal>
-            )}
-            {!unexpectedState && children && children}
-        </Wrapper>
-    );
+    return <Wrapper>{unexpectedState || children}</Wrapper>;
 };
 
 export default connect(mapStateToProps, {})(UnexpectedState);

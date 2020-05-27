@@ -11,10 +11,14 @@ const mapStateToProps = (state: AppState) => ({
     transactions: state.wallet.transactions,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    fetchTransactions: bindActionCreators(transactionActions.fetchTransactions, dispatch),
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            fetchTransactions: transactionActions.fetchTransactions,
+            goto: routerActions.goto,
+        },
+        dispatch,
+    );
 
 export type StateProps = ReturnType<typeof mapStateToProps>;
 export type DispatchProps = ReturnType<typeof mapDispatchToProps>;

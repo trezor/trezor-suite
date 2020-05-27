@@ -13,10 +13,14 @@ const mapStateToProps = (state: AppState) => ({
     locks: state.suite.locks,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    switchDuplicatedDevice: bindActionCreators(suiteActions.switchDuplicatedDevice, dispatch),
-    authorizeDevice: bindActionCreators(suiteActions.authorizeDevice, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            switchDuplicatedDevice: suiteActions.switchDuplicatedDevice,
+            authorizeDevice: suiteActions.authorizeDevice,
+        },
+        dispatch,
+    );
 
 type Props = {
     device: TrezorDevice;

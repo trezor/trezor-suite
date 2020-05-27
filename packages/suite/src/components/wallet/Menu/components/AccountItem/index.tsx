@@ -13,9 +13,12 @@ import AccountNavigation from '../AccountNavigation';
 // position: inherit - get position from parent (AccountGroup), it will be set after animation ends
 // sticky top: 34, sticky header
 const Wrapper = styled.div<{ selected: boolean; type: string }>`
-    margin: 0px 0px 2px 0px;
+    padding: 2px 0px 2px 0px;
     display: flex;
     flex-direction: column;
+    &:first-of-type {
+        padding-top: 0;
+    }
     ${props =>
         props.selected &&
         css`
@@ -26,6 +29,7 @@ const Wrapper = styled.div<{ selected: boolean; type: string }>`
             top: ${props.type !== 'normal' ? '34px' : '0px'};
             bottom: 0px;
             z-index: 1;
+            padding: 0px;
         `}
 `;
 
@@ -82,7 +86,9 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
     const { account, selected } = props;
 
     const fiatBalance = getAccountFiatBalance(account, props.localCurrency, props.fiat);
-    const accountLabel = props.labeling[`account:${account.descriptor}`] || (
+    const accountLabel = props.labeling[`account:${account.descriptor}`] ? (
+        <span>{props.labeling[`account:${account.descriptor}`]}</span>
+    ) : (
         <>
             <Translation {...getTitleForNetwork(account.symbol)} />
             <div># {account.index + 1}</div>

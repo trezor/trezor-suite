@@ -9,8 +9,6 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 325px;
-    flex: 1;
 `;
 
 const InputWrapper = styled.div`
@@ -26,13 +24,7 @@ const Expander = styled.div`
 const PinRow = styled.div`
     display: flex;
     width: 100%;
-    max-height: 100px;
     justify-content: space-between;
-    flex: 2;
-
-    & + & {
-        margin-top: 10px;
-    }
 `;
 
 const PinFooter = styled.div`

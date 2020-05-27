@@ -35,18 +35,21 @@ const WalletsWrapper = styled.div`
 
 const GrayModal = styled(Modal)`
     background: ${colors.BLACK96};
-    max-width: 360px;
+    width: 360px;
 `;
 
 const mapStateToProps = (state: AppState) => ({
     devices: state.devices,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    getDiscoveryAuthConfirmationStatus: () =>
-        dispatch(discoveryActions.getDiscoveryAuthConfirmationStatus()),
-    onPassphraseSubmit: bindActionCreators(modalActions.onPassphraseSubmit, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            getDiscoveryAuthConfirmationStatus: discoveryActions.getDiscoveryAuthConfirmationStatus,
+            onPassphraseSubmit: modalActions.onPassphraseSubmit,
+        },
+        dispatch,
+    );
 
 type Props = {
     device: TrezorDevice;

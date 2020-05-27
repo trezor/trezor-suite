@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
 import { DISCOVERY } from '@wallet-actions/constants';
+import { useDiscovery } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
 import { sortByCoin, getFailedAccounts } from '@wallet-utils/accountUtils';
 import { AppState, Dispatch } from '@suite-types';
@@ -66,7 +67,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const Menu = ({ device, accounts, selectedAccount, openModal }: Props) => {
-    const { params, discovery } = selectedAccount;
+    const { discovery } = useDiscovery();
+    const { params } = selectedAccount;
     const { ref, dimensions, updateDimensions } = useScrollRef();
     const selectedItemRef = useCallback((_item: HTMLDivElement | null) => {
         // TODO: scroll to selected item
@@ -117,7 +119,8 @@ const Menu = ({ device, accounts, selectedAccount, openModal }: Props) => {
             <AccountGroup
                 key={type}
                 type={type}
-                opened={!!groupHasBalance || isOpened(type)}
+                hasBalance={!!groupHasBalance}
+                keepOpened={isOpened(type)}
                 onUpdate={updateDimensions}
             >
                 {accounts.map(account => {

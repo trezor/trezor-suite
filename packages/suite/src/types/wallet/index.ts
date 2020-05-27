@@ -44,7 +44,12 @@ export type DiscoveryStatus =
       }
     | {
           status: 'exception';
-          type: 'auth-failed' | 'auth-confirm-failed' | 'discovery-empty' | 'discovery-failed';
+          type:
+              | 'auth-failed'
+              | 'auth-confirm-failed'
+              | 'discovery-empty'
+              | 'discovery-failed'
+              | 'device-unavailable';
       };
 export type WalletParams = WalletParams$;
 export type WalletAccountTransaction = WalletAccountTransaction$;

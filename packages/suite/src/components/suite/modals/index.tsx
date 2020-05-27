@@ -162,7 +162,7 @@ const getUserContextModal = (props: Props) => {
         case 'review-transaction':
             return <ReviewTransaction />;
         case 'pin-mismatch':
-            return <PinMismatch onCancel={modalActions.onCancel} />;
+            return <PinMismatch />;
         case 'disconnect-device':
             return <DisconnectDevice />;
         case 'log':

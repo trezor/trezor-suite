@@ -24,7 +24,6 @@ export const applySettings = (params: ApplySettings) => async (
         },
         ...params,
     });
-
     if (result.success) {
         dispatch(addToast({ type: 'settings-applied' }));
     } else {

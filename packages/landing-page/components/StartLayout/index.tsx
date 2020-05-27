@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import { TrezorLogo, P, colors, variables } from '@trezor/components';
+import { TrezorLogo, colors, variables } from '@trezor/components';
 
 const Layout = styled.div`
     display: flex;
@@ -37,10 +37,6 @@ const Right = styled.div`
     }
 `;
 
-const Footer = styled(P)`
-    margin: 0 0 20px 0;
-`;
-
 const Content = styled.div`
     margin: 80px 0 0 0;
     flex: 1;
@@ -56,12 +52,11 @@ interface Props {
 }
 
 const Index = ({ children }: Props) => (
-    <Layout>
+    <Layout data-test="@landing">
         <Left />
         <Right>
             <StyledTrezorLogo type="horizontal" width={160} />
             <Content>{children}</Content>
-            <Footer size="tiny">We use cookies for functionality and analytics purposes.</Footer>
         </Right>
     </Layout>
 );

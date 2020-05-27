@@ -9,6 +9,13 @@ interface InitialState {
     analytics?: Partial<AnalyticsState>;
 }
 
+jest.mock('@suite-utils/random', () => {
+    return {
+        __esModule: true, // this property makes it work
+        getAnalyticsRandomId: () => 'very-random',
+    };
+});
+
 export const getInitialState = (state: InitialState | undefined) => {
     const analytics = state ? state.analytics : undefined;
     return {
@@ -35,6 +42,10 @@ const initStore = (state: State) => {
 };
 
 describe('Analytics Actions', () => {
+    beforeAll(() => {
+        // eslint-disable-next-line global-require
+        require('@suite-utils/random');
+    });
     beforeEach(() => {
         const mockSuccessResponse = {};
         const mockJsonPromise = Promise.resolve(mockSuccessResponse);
@@ -50,14 +61,39 @@ describe('Analytics Actions', () => {
     it('analyticsActions.report() - should report if enabled', () => {
         const env = process.env.SUITE_TYPE;
         process.env.SUITE_TYPE = 'desktop';
-        const state = getInitialState({ analytics: { enabled: true } });
+        const state = getInitialState({ analytics: { enabled: true, instanceId: '1' } });
         const store = initStore(state);
-        store.dispatch(analyticsActions.report({ type: 'ui', payload: 'wrrr' }));
+        store.dispatch(analyticsActions.report({ type: 'ui', payload: 'test-bla-bla' }));
         // @ts-ignore
         expect(global.fetch).toHaveBeenNthCalledWith(
             1,
-            'https://data.trezor.io/suite/log/desktop/beta.log',
-            jasmine.any(Object),
+            'https://data.trezor.io/suite/log/desktop/beta.log?sessionId=very-random&instanceId=1&type=ui&payload=test-bla-bla',
+            { method: 'GET' },
+        );
+        process.env.SUITE_TYPE = env;
+    });
+
+    it('analyticsActions.report() - event with complex payload including array', () => {
+        const env = process.env.SUITE_TYPE;
+        process.env.SUITE_TYPE = 'desktop';
+        const state = getInitialState({ analytics: { enabled: true, instanceId: '1' } });
+        const store = initStore(state);
+        store.dispatch(
+            analyticsActions.report({
+                type: 'suite-ready',
+                payload: {
+                    enabledNetworks: ['btc', 'bch'],
+                    language: 'en',
+                    localCurrency: 'usd',
+                    discreetMode: false,
+                },
+            }),
+        );
+        // @ts-ignore
+        expect(global.fetch).toHaveBeenNthCalledWith(
+            1,
+            'https://data.trezor.io/suite/log/desktop/beta.log?sessionId=very-random&instanceId=1&type=suite-ready&enabledNetworks=btc%2Cbch&language=en&localCurrency=usd&discreetMode=false',
+            { method: 'GET' },
         );
         process.env.SUITE_TYPE = env;
     });

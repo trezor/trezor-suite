@@ -15,9 +15,13 @@ const mapStateToProps = (state: AppState) => ({
     locks: state.suite.locks,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    changeCoinVisibility: bindActionCreators(walletSettingsActions.changeCoinVisibility, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            changeCoinVisibility: walletSettingsActions.changeCoinVisibility,
+        },
+        dispatch,
+    );
 
 type Props = ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps> & {

@@ -47,6 +47,7 @@ describe('Notifications Actions', () => {
                 type: 'tx-sent',
                 formattedAmount: '0',
                 descriptor: 'xpub',
+                symbol: 'btc',
                 txid: 'abcd',
             }),
         );
@@ -66,6 +67,7 @@ describe('Notifications Actions', () => {
                         type: 'tx-sent',
                         formattedAmount: '0',
                         descriptor: 'xpub',
+                        symbol: 'btc',
                         txid: 'abcd',
                     },
                 ],
@@ -88,6 +90,7 @@ describe('Notifications Actions', () => {
                         type: 'tx-sent',
                         formattedAmount: '0',
                         descriptor: 'xpub',
+                        symbol: 'btc',
                         txid: '1',
                     },
                     {
@@ -96,6 +99,7 @@ describe('Notifications Actions', () => {
                         type: 'tx-confirmed',
                         formattedAmount: '0',
                         descriptor: 'xpub',
+                        symbol: 'btc',
                         txid: '2',
                     },
                     {
@@ -104,6 +108,7 @@ describe('Notifications Actions', () => {
                         type: 'tx-received',
                         formattedAmount: '0',
                         descriptor: 'xpub',
+                        symbol: 'btc',
                         txid: '3',
                     },
                     {
@@ -130,6 +135,7 @@ describe('Notifications Actions', () => {
                         type: 'tx-sent',
                         formattedAmount: '0',
                         descriptor: 'xpub',
+                        symbol: 'btc',
                         txid: '1',
                     },
                     {
@@ -138,6 +144,7 @@ describe('Notifications Actions', () => {
                         type: 'tx-confirmed',
                         formattedAmount: '0',
                         descriptor: 'xpub',
+                        symbol: 'btc',
                         txid: '2',
                     },
                     {
@@ -146,6 +153,7 @@ describe('Notifications Actions', () => {
                         type: 'tx-received',
                         formattedAmount: '0',
                         descriptor: 'xpub',
+                        symbol: 'btc',
                         txid: '3',
                     },
                     {

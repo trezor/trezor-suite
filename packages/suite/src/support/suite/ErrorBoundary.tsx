@@ -10,6 +10,7 @@ const Wrapper = styled.div`
     justify-content: center;
     align-items: center;
     flex: 1;
+    padding: 20px;
 `;
 
 const Buttons = styled.div`

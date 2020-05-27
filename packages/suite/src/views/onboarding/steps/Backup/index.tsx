@@ -69,10 +69,10 @@ const BackupStep = (props: Props) => {
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 onClick={() => {
-                                    props.goto('suite-index');
+                                    props.goto('settings-index');
                                 }}
                             >
-                                <Translation id="TR_CONTINUE" />
+                                <Translation id="TR_GO_TO_SETTINGS" />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
@@ -98,6 +98,17 @@ const BackupStep = (props: Props) => {
                     </>
                 )}
             </Wrapper.StepBody>
+            <Wrapper.StepFooter>
+                {status !== 'in-progress' && (
+                    <OnboardingButton.Back
+                        icon="CROSS"
+                        data-test="@onboarding/exit-app-button"
+                        onClick={() => props.closeModalApp()}
+                    >
+                        <Translation id="TR_SKIP_SECURITY" />
+                    </OnboardingButton.Back>
+                )}
+            </Wrapper.StepFooter>
         </Wrapper.Step>
     );
 };

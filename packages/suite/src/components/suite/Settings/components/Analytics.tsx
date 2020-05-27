@@ -22,6 +22,7 @@ const Analytics = () => {
             <ActionColumn>
                 <PositionedSwitch>
                     <Switch
+                        data-test="@analytics/toggle-switch"
                         checked={enabled}
                         onChange={() => {
                             if (enabled) {

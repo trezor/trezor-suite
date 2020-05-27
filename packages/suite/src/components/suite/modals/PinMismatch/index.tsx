@@ -1,27 +1,17 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { Modal, Button } from '@trezor/components';
 import { Translation, Loading, Image } from '@suite-components';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { Dispatch } from '@suite-types';
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    changePin: bindActionCreators(deviceSettingsActions.changePin, dispatch),
-});
-
-type Props = ReturnType<typeof mapDispatchToProps> & {
-    onCancel: () => void;
-};
+import { useActions } from '@suite-hooks';
 
 const StyledImage = styled(Image)`
     flex: 1;
 `;
 
-const PinMismatch = ({ changePin }: Props) => {
+const PinMismatch = () => {
     const [submitted, setSubmitted] = useState(false);
-
+    const { changePin } = useActions({ changePin: deviceSettingsActions.changePin });
     const onTryAgain = () => {
         setSubmitted(true);
         changePin({});
@@ -46,4 +36,4 @@ const PinMismatch = ({ changePin }: Props) => {
     );
 };
 
-export default connect(null, mapDispatchToProps)(PinMismatch);
+export default PinMismatch;

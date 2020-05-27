@@ -104,6 +104,7 @@ const CryptoValueWrapper = styled(Col)`
 const FiatValueWrapper = styled(Col)`
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         grid-column: 3 / 3;
+        justify-content: flex-end;
     }
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         grid-column: 2 / 4;

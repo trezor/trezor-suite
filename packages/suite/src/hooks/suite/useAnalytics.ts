@@ -1,23 +1,16 @@
-import { useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { bindActionCreators } from 'redux';
-
+import { useSelector } from 'react-redux';
 import * as analyticsActions from '@suite-actions/analyticsActions';
 import { AppState } from '@suite-types';
+import { useActions } from '@suite-hooks';
 
 export const useAnalytics = () => {
-    const dispatch = useDispatch();
-
     const analytics = useSelector<AppState, AppState['analytics']>(state => state.analytics);
 
-    const actions = useMemo(
-        () => ({
-            report: bindActionCreators(analyticsActions.report, dispatch),
-            init: bindActionCreators(analyticsActions.init, dispatch),
-            dispose: bindActionCreators(analyticsActions.dispose, dispatch),
-        }),
-        [dispatch],
-    );
+    const actions = useActions({
+        report: analyticsActions.report,
+        init: analyticsActions.init,
+        dispose: analyticsActions.dispose,
+    });
 
     return {
         ...analytics,

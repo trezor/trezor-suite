@@ -130,7 +130,18 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
 };
 
 // call TrezorConnect.unsubscribe, it doesn't cost anything and should emit BLOCKCHAIN.CONNECT or BLOCKCHAIN.ERROR event
-export const reconnect = (coin: Network['symbol']) => () => {
+export const reconnect = (coin: Network['symbol'], isBetaBackend?: boolean) => async (
+    _dispatch: Dispatch,
+    getState: GetState,
+) => {
+    if (isBetaBackend) {
+        const blockchain = getState().wallet.blockchain[coin];
+        if (blockchain.reconnection?.count === 1) {
+            TrezorConnect.blockchainSetCustomBackend({
+                coin,
+            });
+        }
+    }
     return TrezorConnect.blockchainUnsubscribeFiatRates({ coin });
 };
 
@@ -212,7 +223,7 @@ export const onBlockMined = (block: BlockchainBlock) => async (
 ): Promise<void> => {
     const symbol = block.coin.shortcut.toLowerCase();
     const networkAccounts = getState().wallet.accounts.filter(a => a.symbol === symbol);
-    networkAccounts.forEach(async account => {
+    networkAccounts.forEach(account => {
         dispatch(accountActions.fetchAndUpdateAccount(account));
     });
 };
@@ -232,13 +243,22 @@ export const onNotification = (payload: BlockchainNotification) => async (
     // dispatch only recv notifications
     if (tx.type === 'recv' && !tx.blockHeight) {
         const accountDevice = accountUtils.findAccountDevice(account, getState().devices);
-        const formattedAmount = accountUtils.formatNetworkAmount(tx.amount, account.symbol, true);
+        const token = tx.tokens && tx.tokens.length ? tx.tokens[0] : undefined;
+        const formattedAmount = token
+            ? `${accountUtils.formatAmount(
+                  token.amount,
+                  token.decimals,
+              )} ${token.symbol.toUpperCase()}`
+            : accountUtils.formatNetworkAmount(tx.amount, account.symbol, true);
+
+        console.warn('RECV', tx, token, formattedAmount);
         dispatch(
             notificationActions.addEvent({
                 type: 'tx-received',
                 formattedAmount,
                 device: accountDevice,
                 descriptor: account.descriptor,
+                symbol: account.symbol,
                 txid: tx.txid,
             }),
         );
@@ -246,9 +266,17 @@ export const onNotification = (payload: BlockchainNotification) => async (
 
     // it's pointless to fetch ripple accounts
     // TODO: investigate more how to keep ripple pending tx until they are confirmed/rejected
-    // ripple-lib doesnt send "pending" txs in history
+    // ripple-lib doesn't send "pending" txs in history
     if (account.networkType !== 'ripple') {
         dispatch(accountActions.fetchAndUpdateAccount(account));
+        // tmp workaround for BB not sending multiple notifications, fix in progress
+        if (account.networkType === 'bitcoin') {
+            networkAccounts.forEach(account => {
+                dispatch(accountActions.fetchAndUpdateAccount(account));
+            });
+        } else {
+            dispatch(accountActions.fetchAndUpdateAccount(account));
+        }
     }
 };
 
@@ -258,6 +286,9 @@ export const setReconnectionTimeout = (error: BlockchainError) => async (
 ) => {
     const network = getNetwork(error.coin.shortcut.toLowerCase());
     if (!network) return;
+    const isBetaBackend = error.coin.blockchainLink
+        ? !!error.coin.blockchainLink.url.find(u => u.startsWith('https://beta-'))
+        : false;
 
     const blockchain = getState().wallet.blockchain[network.symbol];
     if (blockchain.reconnection) {
@@ -267,13 +298,21 @@ export const setReconnectionTimeout = (error: BlockchainError) => async (
 
     // there is no need to reconnect since there are no accounts for this network
     const accounts = getState().wallet.accounts.filter(a => a.symbol === network.symbol);
-    if (!accounts.length) return;
+    if (!accounts.length) {
+        if (isBetaBackend) {
+            // error during discovery with beta backend
+            TrezorConnect.blockchainSetCustomBackend({
+                coin: network.symbol,
+            });
+        }
+        return;
+    }
 
     const count = blockchain.reconnection ? blockchain.reconnection.count : 0;
     const timeout = Math.min(2500 * count, 20000);
 
     const id = setTimeout(async () => {
-        await dispatch(reconnect(network.symbol));
+        await dispatch(reconnect(network.symbol, isBetaBackend));
     }, timeout);
 
     dispatch({

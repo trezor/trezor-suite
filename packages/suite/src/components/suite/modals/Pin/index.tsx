@@ -1,44 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { H2, Link, variables, colors, Modal, ModalProps } from '@trezor/components';
 import { PinInput, Loading, Translation, Image } from '@suite-components';
-import { Dispatch, TrezorDevice } from '@suite-types';
+import { TrezorDevice } from '@suite-types';
 
 import { URLS } from '@suite-constants';
 import * as modalActions from '@suite-actions/modalActions';
+import { useActions } from '@suite-hooks';
 
 const { FONT_SIZE, SCREEN_SIZE } = variables;
 
 const Wrapper = styled.div`
-    /* padding: 40px 40px 20px 40px; */
     display: flex;
     flex-direction: row;
-    height: 100%;
+    flex: 1;
 
     @media only screen and (max-width: ${SCREEN_SIZE.MD}) {
         flex-direction: column;
     }
 `;
 
-const Col = styled.div<{ gray?: boolean }>`
+const Col = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 405px;
+    width: 348px;
     height: 100%;
     padding: 40px 40px 20px 40px;
 
     @media only screen and (max-width: ${SCREEN_SIZE.MD}) {
         align-self: center;
     }
+`;
 
-    ${props =>
-        props.gray &&
-        css`
-            background: ${colors.BLACK96};
-        `}
+const GreyCol = styled(Col)`
+    background: ${colors.BLACK96};
+    @media only screen and (max-width: ${SCREEN_SIZE.MD}) {
+        display: none;
+    }
 `;
 
 const Expand = styled.div`
@@ -52,11 +51,11 @@ const How = styled.div`
 `;
 
 const Text = styled(How)`
-    margin-bottom: 15px;
+    margin-bottom: 14px;
 `;
 
 const StyledImg = styled(props => <Image {...props} />)`
-    padding: 35px;
+    padding: 34px;
 `;
 
 interface TextComponentProps {
@@ -109,7 +108,7 @@ const PinDescription = ({ pinRequestType, invalid }: TextComponentProps) => {
 };
 
 const ExplanationCol = (props: { heading: React.ReactNode; description?: React.ReactNode }) => (
-    <Col gray>
+    <GreyCol>
         <H2>{props.heading}</H2>
         {props.description && props.description}
         <Expand>
@@ -121,21 +120,19 @@ const ExplanationCol = (props: { heading: React.ReactNode; description?: React.R
                 <Translation id="TR_LEARN_MORE" />
             </Link>
         </How>
-    </Col>
+    </GreyCol>
 );
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    onPinSubmit: bindActionCreators(modalActions.onPinSubmit, dispatch),
-});
 
 interface OwnProps extends ModalProps {
     device: TrezorDevice;
     onCancel: () => void;
 }
 
-type Props = OwnProps & ReturnType<typeof mapDispatchToProps>;
+type Props = OwnProps;
 
-const Pin = ({ device, onPinSubmit, ...rest }: Props) => {
+const Pin = ({ device, ...rest }: Props) => {
     const [submitted, setSubmitted] = useState(false);
+    const { onPinSubmit } = useActions({ onPinSubmit: modalActions.onPinSubmit });
 
     const pinRequestType = device.buttonRequests[device.buttonRequests.length - 1];
     const invalidCounter = device.buttonRequests.filter(r => r === 'ui-invalid_pin').length || 0;
@@ -171,13 +168,7 @@ const Pin = ({ device, onPinSubmit, ...rest }: Props) => {
 
     // TODO: figure out responsive design
     return (
-        <Modal
-            padding={['0px', '0px', '0px', '0px']}
-            useFixedWidth={false}
-            useFixedHeight
-            cancelable
-            {...rest}
-        >
+        <Modal padding={['0px', '0px', '0px', '0px']} useFixedWidth={false} cancelable {...rest}>
             <Wrapper>
                 {isExtended && (
                     <ExplanationCol
@@ -214,4 +205,4 @@ const Pin = ({ device, onPinSubmit, ...rest }: Props) => {
     );
 };
 
-export default connect(null, mapDispatchToProps)(Pin);
+export default Pin;

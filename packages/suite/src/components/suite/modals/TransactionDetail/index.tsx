@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-// import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 
@@ -13,6 +12,7 @@ import FiatDetails from './components/FiatDetails';
 import IODetails from './components/IODetails';
 import BigNumber from 'bignumber.js';
 import { formatNetworkAmount, isTestnet, getNetwork } from '@wallet-utils/accountUtils';
+import { useSelector } from '@suite-hooks';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -42,6 +42,10 @@ type Props = {
 
 const TransactionDetail = (props: Props) => {
     const { tx } = props;
+    const blockchain = useSelector(state => state.wallet.blockchain[tx.symbol]);
+    const confirmations =
+        tx.blockHeight && tx.blockHeight > 0 ? blockchain.blockHeight - tx.blockHeight + 1 : 0;
+
     const network = getNetwork(tx.symbol);
     const explorerBaseUrl = network?.explorer.tx;
     const explorerUrl = explorerBaseUrl ? `${explorerBaseUrl}${tx.txid}` : undefined;
@@ -111,11 +115,11 @@ const TransactionDetail = (props: Props) => {
             <Wrapper>
                 <BasicDetails
                     tx={tx}
-                    txDetails={txDetails}
                     isFetching={isFetching}
                     explorerUrl={explorerUrl}
                     totalInput={formattedTotalInput}
                     totalOutput={formattedTotalOutput}
+                    confirmations={confirmations}
                 />
                 <Divider />
 

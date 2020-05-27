@@ -8,10 +8,14 @@ import { Button } from '@trezor/components';
 import { DeviceInvalidModeLayout, Translation } from '@suite-components';
 import { Dispatch } from '@suite-types';
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
-    setStatus: bindActionCreators(firmwareActions.setStatus, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            goto: routerActions.goto,
+            setStatus: firmwareActions.setStatus,
+        },
+        dispatch,
+    );
 
 type Props = ReturnType<typeof mapDispatchToProps>;
 

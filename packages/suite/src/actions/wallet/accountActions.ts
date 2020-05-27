@@ -35,12 +35,14 @@ export const create = (
             (discoveryItem.accountType === 'normal' && discoveryItem.index === 0),
         balance: accountInfo.balance,
         availableBalance: accountInfo.availableBalance,
-        formattedBalance: accountUtils.formatNetworkAmount(accountInfo.balance, discoveryItem.coin),
-        tokens: accountInfo.tokens?.map(t => ({
-            ...t,
-            symbol: t.symbol ? t.symbol.toLowerCase() : t.symbol,
-            balance: t.balance ? accountUtils.formatAmount(t.balance, t.decimals) : t.balance,
-        })),
+        formattedBalance: accountUtils.formatNetworkAmount(
+            // xrp `availableBalance` is reduced by reserve, use regular balance
+            discoveryItem.networkType === 'ripple'
+                ? accountInfo.balance
+                : accountInfo.availableBalance,
+            discoveryItem.coin,
+        ),
+        tokens: accountUtils.enhanceTokens(accountInfo.tokens),
         addresses: accountInfo.addresses,
         utxo: accountInfo.utxo,
         history: accountInfo.history,
@@ -48,7 +50,7 @@ export const create = (
     },
 });
 
-// TODO: imo we could extract payload object to seperate function and use it in create, update methods
+// TODO: imo we could extract payload object to separate function and use it in create, update methods
 export const update = (account: Account, accountInfo: AccountInfo): AccountActions => ({
     type: ACCOUNT.UPDATE,
     payload: {
@@ -56,12 +58,12 @@ export const update = (account: Account, accountInfo: AccountInfo): AccountActio
         ...accountInfo,
         path: account.path,
         empty: accountInfo.empty,
-        formattedBalance: accountUtils.formatNetworkAmount(accountInfo.balance, account.symbol),
-        tokens: accountInfo.tokens?.map(t => ({
-            ...t,
-            symbol: t.symbol ? t.symbol.toLowerCase() : t.symbol,
-            balance: t.balance ? accountUtils.formatAmount(t.balance, t.decimals) : t.balance,
-        })),
+        formattedBalance: accountUtils.formatNetworkAmount(
+            // xrp `availableBalance` is reduced by reserve, use regular balance
+            account.networkType === 'ripple' ? accountInfo.balance : accountInfo.availableBalance,
+            account.symbol,
+        ),
+        tokens: accountUtils.enhanceTokens(accountInfo.tokens),
         ...accountUtils.getAccountSpecific(accountInfo, account.networkType),
     },
 });
@@ -114,7 +116,6 @@ export const fetchAndUpdateAccount = (account: Account) => async (
 
         const analyze = analyzeTransactions(payload.history.transactions || [], accountTxs);
         if (analyze.remove.length > 0) {
-            // TODO: remove notif in middleware
             dispatch(transactionActions.remove(account, analyze.remove));
         }
         if (analyze.add.length > 0) {
@@ -123,16 +124,20 @@ export const fetchAndUpdateAccount = (account: Account) => async (
 
         const accountDevice = accountUtils.findAccountDevice(account, getState().devices);
         analyze.newTransactions.forEach(tx => {
+            const token = tx.tokens && tx.tokens.length ? tx.tokens[0] : undefined;
+            const formattedAmount = token
+                ? `${accountUtils.formatAmount(
+                      token.amount,
+                      token.decimals,
+                  )} ${token.symbol.toUpperCase()}`
+                : accountUtils.formatNetworkAmount(tx.amount, account.symbol, true);
             dispatch(
                 notificationActions.addEvent({
                     type: 'tx-confirmed',
-                    formattedAmount: accountUtils.formatNetworkAmount(
-                        tx.amount,
-                        account.symbol,
-                        true,
-                    ),
+                    formattedAmount,
                     device: accountDevice,
                     descriptor: account.descriptor,
+                    symbol: account.symbol,
                     txid: tx.txid,
                 }),
             );

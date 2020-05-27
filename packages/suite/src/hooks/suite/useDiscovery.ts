@@ -58,6 +58,21 @@ export const useDiscovery = () => {
                     type: 'discovery-empty',
                 };
             }
+            // TODO: ugly, ugly, ugly. Error code needed from trezor-connect :(
+            // since trezor-connect@8.1.6 code: 'Failure_PassphraseState'
+            if (discovery.error === 'Passphrase is incorrect' && !device.available) {
+                return {
+                    status: 'exception',
+                    type: 'device-unavailable',
+                };
+            }
+
+            if (discovery.error || discovery.failed.length > 0) {
+                return {
+                    status: 'exception',
+                    type: 'discovery-failed',
+                };
+            }
             if (discovery.error || discovery.failed.length > 0) {
                 return {
                     status: 'exception',

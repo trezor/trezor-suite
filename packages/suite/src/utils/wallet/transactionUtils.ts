@@ -3,6 +3,17 @@ import { WalletAccountTransaction } from '@wallet-types';
 import { getDateWithTimeZone } from '../suite/date';
 import BigNumber from 'bignumber.js';
 
+export const sortByBlockHeight = (a: WalletAccountTransaction, b: WalletAccountTransaction) => {
+    // if both are missing the blockHeight don't change their order
+    const blockA = (a.blockHeight || 0) > 0 ? a.blockHeight : 0;
+    const blockB = (b.blockHeight || 0) > 0 ? b.blockHeight : 0;
+    if (!blockA && !blockB) return 0;
+    // tx with no blockHeight comes first
+    if (!blockA) return -1;
+    if (!blockB) return 1;
+    return blockB - blockA;
+};
+
 /**
  * Returns object with transactions grouped by a date. Key is a string in YYYY-MM-DD format.
  * Pending txs are assigned to key 'pending'.
@@ -13,7 +24,8 @@ export const groupTransactionsByDate = (
     transactions: WalletAccountTransaction[],
 ): { [key: string]: WalletAccountTransaction[] } => {
     const r: { [key: string]: WalletAccountTransaction[] } = {};
-    transactions.forEach(item => {
+    const sortedTxs = transactions.sort((a, b) => sortByBlockHeight(a, b));
+    sortedTxs.sort(sortByBlockHeight).forEach(item => {
         let key = 'pending';
         if (item.blockHeight && item.blockHeight > 0 && item.blockTime && item.blockTime > 0) {
             const t = item.blockTime * 1000;
@@ -69,6 +81,29 @@ export const parseKey = (key: string) => {
 export const findTransaction = (txid: string, transactions: WalletAccountTransaction[]) =>
     transactions.find(t => t && t.txid === txid);
 
+// inner private type, it's pointless to move it outside of this file
+interface Analyze {
+    newTransactions: AccountTransaction[];
+    add: AccountTransaction[];
+    remove: WalletAccountTransaction[];
+}
+
+const filterAnalyzeResult = (result: Analyze) => {
+    // to avoid unnecessary adding/removing the same pending transactions
+    // check if tx which exist in 'remove' has own replacement in 'add' (txid && blockHeight are the same)
+    const preserve = result.remove.filter(tx =>
+        result.add.find(a => a.txid === tx.txid && a.blockHeight === tx.blockHeight),
+    );
+
+    if (!preserve.length) return result;
+
+    return {
+        newTransactions: result.newTransactions,
+        add: result.add.filter(a => !preserve.find(tx => tx.txid === a.txid)),
+        remove: result.remove.filter(a => !preserve.find(tx => tx.txid === a.txid)),
+    };
+};
+
 export const analyzeTransactions = (
     fresh: AccountTransaction[],
     known: WalletAccountTransaction[],
@@ -92,11 +127,11 @@ export const analyzeTransactions = (
     // remove all known and add all fresh
     const gotConfirmedTxs = known.some(tx => tx.blockHeight && tx.blockHeight > 0);
     if (!gotConfirmedTxs) {
-        return {
+        return filterAnalyzeResult({
             newTransactions: fresh.filter(tx => tx.blockHeight && tx.blockHeight > 0),
             add: fresh,
             remove: known,
-        };
+        });
     }
 
     // run thru all fresh txs
@@ -143,9 +178,10 @@ export const analyzeTransactions = (
             }
         }
     });
-    return {
+
+    return filterAnalyzeResult({
         newTransactions: newTxs,
         add: addTxs,
         remove: known.slice(0, sliceIndex),
-    };
+    });
 };

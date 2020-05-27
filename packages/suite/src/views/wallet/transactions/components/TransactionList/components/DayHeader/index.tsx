@@ -81,8 +81,10 @@ export default ({ dateKey, symbol, totalAmount }: Props) => {
                         />
                     </ColDate>
                     <ColAmount>
-                        {totalAmount.gte(0) && '+'}
-                        {totalAmount.toFixed()} {symbol}
+                        {totalAmount.gte(0) && <span>+</span>}
+                        <span>
+                            {totalAmount.toFixed()} {symbol}
+                        </span>
                     </ColAmount>
                     {useFiatValues && (
                         <ColFiat>

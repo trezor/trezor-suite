@@ -23,12 +23,15 @@ const mapStateToProps = (state: AppState) => ({
     locks: state.suite.locks,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    showAddress: bindActionCreators(receiveActions.showAddress, dispatch),
-    showUnverifiedAddress: bindActionCreators(receiveActions.showUnverifiedAddress, dispatch),
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    applySettings: () => dispatch(deviceSettingsActions.applySettings({ use_passphrase: true })),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            showAddress: receiveActions.showAddress,
+            showUnverifiedAddress: receiveActions.showUnverifiedAddress,
+            applySettings: deviceSettingsActions.applySettings,
+        },
+        dispatch,
+    );
 
 type Props = {
     device: TrezorDevice;
@@ -51,7 +54,8 @@ const ConfirmUnverifiedAddress = ({
     const progress = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     const verifyAddress = async () => {
         if (!device.available) {
-            const result = await applySettings();
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            const result = await applySettings({ use_passphrase: true });
             if (!result || !result.success) return;
         }
         onCancel();

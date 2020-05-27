@@ -13,12 +13,16 @@ const mapStateToProps = (state: AppState) => ({
     localCurrency: state.wallet.settings.localCurrency,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    setLocalCurrency: bindActionCreators(walletSettingsActions.setLocalCurrency, dispatch),
-    clearStores: bindActionCreators(storageActions.clearStores, dispatch),
-    fetchLocale: bindActionCreators(languageActions.fetchLocale, dispatch),
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            setLocalCurrency: walletSettingsActions.setLocalCurrency,
+            clearStores: storageActions.clearStores,
+            fetchLocale: languageActions.fetchLocale,
+            goto: routerActions.goto,
+        },
+        dispatch,
+    );
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 

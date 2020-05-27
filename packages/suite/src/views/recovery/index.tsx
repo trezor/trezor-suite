@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { Button, H2, P, colors, Modal, variables } from '@trezor/components';
+import { Button, ButtonProps, H2, P, colors, Modal, variables } from '@trezor/components';
 
 import { SelectWordCount, SelectRecoveryType, Error } from '@recovery-components';
 import {
@@ -86,18 +86,28 @@ const StyledImage = styled(Image)`
     flex: 1;
 `;
 
+const CloseButton = (props: ButtonProps) => (
+    <StyledButton {...props} data-test="@recovery/close-button" variant="tertiary" icon="CROSS">
+        {props.children ? props.children : <Translation id="TR_CLOSE" />}
+    </StyledButton>
+);
+
 const mapStateToProps = (state: AppState) => ({
     recovery: state.recovery,
     locks: state.suite.locks,
     device: state.suite.device,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    checkSeed: bindActionCreators(recoveryActions.checkSeed, dispatch),
-    setStatus: bindActionCreators(recoveryActions.setStatus, dispatch),
-    setWordsCount: bindActionCreators(recoveryActions.setWordsCount, dispatch),
-    setAdvancedRecovery: bindActionCreators(recoveryActions.setAdvancedRecovery, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            checkSeed: recoveryActions.checkSeed,
+            setStatus: recoveryActions.setStatus,
+            setWordsCount: recoveryActions.setWordsCount,
+            setAdvancedRecovery: recoveryActions.setAdvancedRecovery,
+        },
+        dispatch,
+    );
 
 export type Props = InjectedModalApplicationProps &
     ReturnType<typeof mapStateToProps> &
@@ -130,6 +140,23 @@ const Recovery = ({
         model === 1
             ? ['initial', 'select-word-count', 'select-recovery-type', 'in-progress', 'finished']
             : ['initial', 'in-progress', 'finished'];
+
+    if (!device || !device.features) {
+        return (
+            <Modal
+                size="tiny"
+                heading={<Translation id="TR_RECONNECT_HEADER" />}
+                cancelable
+                onCancel={closeModalApp}
+                data-test="@recovery/no-device"
+            >
+                <StyledImage image="CONNECT_DEVICE" />
+                <Buttons>
+                    <CloseButton onClick={() => closeModalApp()} />
+                </Buttons>
+            </Modal>
+        );
+    }
 
     return (
         <Modal useFixedHeight>
@@ -232,13 +259,9 @@ const Recovery = ({
                             >
                                 <Translation id="TR_START" />
                             </StyledButton>
-                            <StyledButton
-                                icon="CROSS"
-                                variant="tertiary"
-                                onClick={() => closeModalApp()}
-                            >
+                            <CloseButton onClick={() => closeModalApp()}>
                                 <Translation id="TR_CANCEL" />
-                            </StyledButton>
+                            </CloseButton>
                         </Buttons>
                     </>
                 )}
@@ -250,13 +273,9 @@ const Recovery = ({
                         </H2>
                         <SelectWordCount onSelect={(count: WordCount) => onSetWordsCount(count)} />
                         <Buttons>
-                            <StyledButton
-                                icon="CROSS"
-                                variant="tertiary"
-                                onClick={() => closeModalApp()}
-                            >
+                            <CloseButton onClick={() => closeModalApp()}>
                                 <Translation id="TR_CANCEL" />
-                            </StyledButton>
+                            </CloseButton>
                         </Buttons>
                     </>
                 )}
@@ -267,13 +286,9 @@ const Recovery = ({
                         </H2>
                         <SelectRecoveryType onSelect={(type: boolean) => onSetRecoveryType(type)} />
                         <Buttons>
-                            <StyledButton
-                                icon="CROSS"
-                                variant="tertiary"
-                                onClick={() => closeModalApp()}
-                            >
+                            <CloseButton onClick={() => closeModalApp()}>
                                 <Translation id="TR_CANCEL" />
-                            </StyledButton>
+                            </CloseButton>
                         </Buttons>
                     </>
                 )}
@@ -303,9 +318,7 @@ const Recovery = ({
                         </StyledP>
                         <StyledImage image="UNI_SUCCESS" />
                         <Buttons>
-                            <StyledButton onClick={() => closeModalApp()}>
-                                <Translation id="TR_CLOSE" />
-                            </StyledButton>
+                            <CloseButton onClick={() => closeModalApp()} />
                         </Buttons>
                     </>
                 )}
@@ -317,12 +330,7 @@ const Recovery = ({
                         </H2>
                         <Error error={recovery.error} />
                         <Buttons>
-                            <StyledButton
-                                onClick={() => closeModalApp()}
-                                data-test="@recovery/close-button"
-                            >
-                                <Translation id="TR_CLOSE" />
-                            </StyledButton>
+                            <CloseButton onClick={() => closeModalApp()} />
                         </Buttons>
                     </>
                 )}

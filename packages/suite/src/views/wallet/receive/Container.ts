@@ -15,10 +15,14 @@ const mapStateToProps = (state: AppState) => ({
     locks: state.suite.locks,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    showAddress: bindActionCreators(receiveActions.showAddress, dispatch),
-    addToast: bindActionCreators(notificationActions.addToast, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            showAddress: receiveActions.showAddress,
+            addToast: notificationActions.addToast,
+        },
+        dispatch,
+    );
 
 export type StateProps = ReturnType<typeof mapStateToProps>;
 export type DispatchProps = ReturnType<typeof mapDispatchToProps>;

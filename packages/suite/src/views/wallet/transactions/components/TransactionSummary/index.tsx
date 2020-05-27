@@ -6,11 +6,12 @@ import messages from '@suite/support/messages';
 import InfoCard from './components/InfoCard';
 import BigNumber from 'bignumber.js';
 import { getUnixTime } from 'date-fns';
-import { calcTicks, calcTicksFromData } from '@suite/utils/suite/date';
-import { GraphRange } from '@suite/types/wallet/fiatRates';
+import { calcTicks, calcTicksFromData } from '@suite-utils/date';
+import { aggregateBalanceHistory, sumFiatValueMap } from '@wallet-utils/graphUtils';
+import { GraphRange } from '@wallet-types/fiatRates';
 import { Props } from './Container';
-import { accountGraphDataFilterFn } from '@wallet-utils/graphUtils';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
+import { GraphData } from '@suite/reducers/wallet/graphReducer';
 
 const Wrapper = styled.div`
     display: flex;
@@ -55,32 +56,54 @@ const Actions = styled.div`
 
 const ErrorMessage = styled.div`
     display: flex;
+    flex-direction: column;
     width: 100%;
-    padding: 32px;
+    height: 240px;
+    padding: 20px;
     align-items: center;
     justify-content: center;
     color: ${colors.BLACK50};
     font-size: ${variables.FONT_SIZE.SMALL};
+    text-align: center;
 `;
 
 const TransactionSummary = (props: Props) => {
-    const { selectedRange } = props.graph;
-    const graphData = props.graph.data.filter(d => accountGraphDataFilterFn(d, props.account));
+    const { account, graph, getGraphDataForInterval, updateGraphData, setSelectedRange } = props;
+    const { selectedRange } = graph;
 
+    const onRefresh = () => {
+        updateGraphData([account]);
+    };
+
+    const onSelectedRange = (range: GraphRange) => {
+        setSelectedRange(range);
+        updateGraphData([account], { newAccountsOnly: true });
+    };
+
+    const intervalGraphData = (getGraphDataForInterval({ account }) as unknown) as GraphData[];
     const [isGraphHidden, setIsGraphHidden] = useState(false);
+    const data = intervalGraphData[0]?.data
+        ? aggregateBalanceHistory(intervalGraphData, selectedRange.groupBy, 'account')
+        : [];
 
-    const intervalGraphData = graphData.find(d => d.interval === selectedRange.label);
-    const data = intervalGraphData?.data ?? null;
-    const error = intervalGraphData?.error ?? false;
-    const isLoading = intervalGraphData?.isLoading ?? false;
+    const error = intervalGraphData[0]?.error ?? false;
+    const isLoading = intervalGraphData[0]?.isLoading ?? false;
 
-    const numOfTransactions = data?.reduce((acc, d) => (acc += d.txs), 0);
-    const totalSentAmount = data?.reduce((acc, d) => acc.plus(d.sent), new BigNumber(0));
-    const totalReceivedAmount = data?.reduce((acc, d) => acc.plus(d.received), new BigNumber(0));
-
+    // aggregate values from shown graph data
+    const numOfTransactions = data.reduce((acc, d) => (acc += d.txs), 0);
+    const totalSentAmount = data.reduce((acc, d) => acc.plus(d.sent), new BigNumber(0));
+    const totalReceivedAmount = data.reduce((acc, d) => acc.plus(d.received), new BigNumber(0));
+    const totalSentFiatMap: { [k: string]: string | undefined } = data.reduce(
+        (acc, d) => sumFiatValueMap(acc, d.sentFiat),
+        {},
+    );
+    const totalReceivedFiatMap: { [k: string]: string | undefined } = data.reduce(
+        (acc, d) => sumFiatValueMap(acc, d.receivedFiat),
+        {},
+    );
     const xTicks =
         selectedRange.label === 'all'
-            ? calcTicksFromData(data || []).map(getUnixTime)
+            ? calcTicksFromData(data).map(getUnixTime)
             : calcTicks(selectedRange.weeks).map(getUnixTime);
 
     return (
@@ -100,23 +123,32 @@ const TransactionSummary = (props: Props) => {
             </Actions>
             {!isGraphHidden && (
                 <ContentWrapper noPadding>
-                    {/* TODO: what should be shown on error? */}
-                    {error && <ErrorMessage>Could not load data</ErrorMessage>}
+                    {error && (
+                        <ErrorMessage>
+                            <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
+                            <Button
+                                onClick={onRefresh}
+                                icon="REFRESH"
+                                variant="tertiary"
+                                size="small"
+                            >
+                                <Translation id="TR_RETRY" />
+                            </Button>
+                        </ErrorMessage>
+                    )}
                     {!error && (
                         <>
                             <GraphWrapper intensity={5}>
                                 <TransactionsGraph
                                     variant="one-asset"
                                     xTicks={xTicks}
-                                    account={props.account}
+                                    account={account}
                                     isLoading={isLoading}
                                     data={data}
-                                    onRefresh={() => props.updateGraphData([props.account])}
+                                    localCurrency={props.localCurrency}
+                                    onRefresh={onRefresh}
                                     selectedRange={selectedRange}
-                                    onSelectedRange={(range: GraphRange) => {
-                                        props.setSelectedRange(range);
-                                        props.updateGraphData([props.account]);
-                                    }}
+                                    onSelectedRange={onSelectedRange}
                                     receivedValueFn={data => data.received}
                                     sentValueFn={data => data.sent}
                                 />
@@ -126,14 +158,18 @@ const TransactionSummary = (props: Props) => {
                                     <InfoCard
                                         title={<Translation {...messages.TR_INCOMING} />}
                                         value={totalReceivedAmount?.toFixed()}
-                                        symbol={props.account.symbol}
+                                        fiatValue={totalReceivedFiatMap[props.localCurrency]}
+                                        localCurrency={props.localCurrency}
+                                        symbol={account.symbol}
                                         isLoading={isLoading}
                                         isNumeric
                                     />
                                     <InfoCard
                                         title={<Translation {...messages.TR_OUTGOING} />}
                                         value={totalSentAmount?.negated().toFixed()}
-                                        symbol={props.account.symbol}
+                                        fiatValue={totalSentFiatMap[props.localCurrency]}
+                                        localCurrency={props.localCurrency}
+                                        symbol={account.symbol}
                                         isLoading={isLoading}
                                         isNumeric
                                     />

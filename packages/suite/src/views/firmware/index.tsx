@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
@@ -17,7 +17,7 @@ import {
 import * as firmwareActions from '@firmware-actions/firmwareActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { InjectedModalApplicationProps, Dispatch, AppState } from '@suite-types';
-import { getFwVersion } from '@suite-utils/device';
+import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import { ProgressBar, Translation, WebusbButton } from '@suite-components';
 import Image from '@suite-components/images/Image';
 import { InitImg, SuccessImg, FirmwareProgress, BitcoinOnlyToggle } from '@firmware-components';
@@ -147,13 +147,17 @@ const mapStateToProps = (state: AppState) => ({
     transport: state.suite.transport,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    closeModalApp: bindActionCreators(routerActions.closeModalApp, dispatch),
-    firmwareUpdate: bindActionCreators(firmwareActions.firmwareUpdate, dispatch),
-    resetReducer: bindActionCreators(firmwareActions.resetReducer, dispatch),
-    setStatus: bindActionCreators(firmwareActions.setStatus, dispatch),
-    toggleBtcOnly: bindActionCreators(firmwareActions.toggleBtcOnly, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            closeModalApp: routerActions.closeModalApp,
+            firmwareUpdate: firmwareActions.firmwareUpdate,
+            resetReducer: firmwareActions.resetReducer,
+            setStatus: firmwareActions.setStatus,
+            toggleBtcOnly: firmwareActions.toggleBtcOnly,
+        },
+        dispatch,
+    );
 
 type Props = ReturnType<typeof mapDispatchToProps> &
     ReturnType<typeof mapStateToProps> &
@@ -169,6 +173,13 @@ const Firmware = ({
     toggleBtcOnly,
     transport,
 }: Props) => {
+    const [savedModel, setSavedModel] = useState<number>();
+
+    useEffect(() => {
+        if (!device) return;
+        setSavedModel(device.features?.major_version);
+    }, [device]);
+
     const onClose = () => {
         closeModalApp();
         resetReducer();
@@ -202,7 +213,14 @@ const Firmware = ({
                     <StyledH2>
                         <Translation id="TR_FIRMWARE_INSTALL_FAILED_HEADER" />
                     </StyledH2>
-                    <StyledP>{firmware.error}</StyledP>
+                    {/*
+                    todo: when user cancels firmware update call, connect returns error 'null', discover why
+                    todo: also we maybe want to force user to disconnect device after failed fw update, consider showing disconnect-device modal
+                    */}
+                    {/* <StyledP>{firmware.error}</StyledP> */}
+                    <StyledP>
+                        <Translation id="TR_DISCONNECT_YOUR_DEVICE" />
+                    </StyledP>
                     <StyledImage image="UNI_ERROR" />
                     <Buttons>
                         <Col>
@@ -227,9 +245,19 @@ const Firmware = ({
                             <Translation id="TR_RECONNECT_IN_BOOTLOADER" />
                         </StyledH2>
                         <StyledP data-test="@firmware/connect-message">
-                            <Translation id="TR_SWIPE_YOUR_FINGERS" />
+                            {savedModel === 1 ? (
+                                <Translation id="TR_HOLD_LEFT_BUTTON" />
+                            ) : (
+                                <Translation id="TR_SWIPE_YOUR_FINGERS" />
+                            )}
                         </StyledP>
-                        <InitImg model={2} />
+                        <Image
+                            image={
+                                savedModel === 1
+                                    ? `HOW_TO_ENTER_BOOTLOADER_MODEL_1`
+                                    : 'HOW_TO_ENTER_BOOTLOADER_MODEL_2'
+                            }
+                        />
                     </>
                 )}
                 {firmware.status !== 'waiting-for-bootloader' && (
@@ -246,9 +274,9 @@ const Firmware = ({
                     <Col>
                         {isWebUSB(transport) && (
                             <WebusbButton ready>
-                                <Button icon="PLUS">
+                                <StyledButton icon="PLUS">
                                     <Translation id="TR_CHECK_FOR_DEVICES" />
-                                </Button>
+                                </StyledButton>
                             </WebusbButton>
                         )}
 
@@ -327,20 +355,37 @@ const Firmware = ({
                                     <FromVersion>
                                         <Translation id="TR_VERSION" /> {getFwVersion(device)}
                                     </FromVersion>
+                                    {!isBitcoinOnly(device) && (
+                                        <Badge data-test="@firmware/current/btc-only-badge">
+                                            <Translation id="TR_FULL_LABEL" />
+                                        </Badge>
+                                    )}
+                                    {isBitcoinOnly(device) && (
+                                        <Badge data-test="@firmware/current/full-badge">
+                                            <Translation id="TR_BTC_ONLY_LABEL" />
+                                        </Badge>
+                                    )}
                                     <BetweenVersionArrow>→</BetweenVersionArrow>
                                     <ToVersion>
                                         <Translation id="TR_VERSION" />{' '}
                                         {firmwareRelease.release.version.join('.')}
                                     </ToVersion>
-                                    <Badge>
-                                        <Translation id="TR_NEW_LABEL" />
-                                    </Badge>
+                                    {!firmware.btcOnly && (
+                                        <Badge data-test="@firmware/new/full-badge">
+                                            <Translation id="TR_FULL_LABEL" />
+                                        </Badge>
+                                    )}
                                     {firmware.btcOnly && (
-                                        <Badge data-test="@firmware/btc-only-badge">
+                                        <Badge data-test="@firmware/new/btc-only-badge">
                                             <Translation id="TR_BTC_ONLY_LABEL" />
                                         </Badge>
                                     )}
                                 </FromVersionToVersion>
+
+                                {/* if no changelog, show image to fill emptiness in UI */}
+                                {device.firmwareRelease.changelog?.length === 0 && (
+                                    <InitImg model={device.features.major_version} height="260px" />
+                                )}
 
                                 {device.firmwareRelease.changelog?.length > 0 && (
                                     <ChangesSummary>
@@ -438,7 +483,7 @@ const Firmware = ({
                         {device && device.mode === 'bootloader' && (
                             <>
                                 <StyledH2>
-                                    <Translation id="TR_FIRMWARE_BOOTLOADER_TITLE" />
+                                    <Translation id="TR_START_FIRMWARE_UPDATE" />
                                 </StyledH2>
                                 <InitImg model={model} />
 

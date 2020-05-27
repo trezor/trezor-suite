@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import { Translation, ExternalLink } from '@suite-components';
@@ -9,7 +7,7 @@ import { Modal, P, Icon, colors } from '@trezor/components';
 import * as sendFormActions from '@wallet-actions/send/sendFormActions';
 
 import * as URLS from '@suite-constants/urls';
-import { Dispatch } from '@suite-types';
+import { useActions } from '@suite-hooks';
 
 const QrReader = dynamic(() => import('react-qr-reader'), { ssr: false });
 
@@ -63,23 +61,20 @@ const Actions = styled.div`
     justify-content: center;
 `;
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    onScan: bindActionCreators(sendFormActions.onQrScan, dispatch),
-});
-
 type Props = {
     outputId: number;
     onCancel: () => void;
-} & ReturnType<typeof mapDispatchToProps>;
+};
 
 interface State {
     readerLoaded: boolean;
     error: JSX.Element | null;
 }
 
-const QrScanner = ({ onScan, onCancel, outputId }: Props) => {
+const QrScanner = ({ onCancel, outputId }: Props) => {
     const [readerLoaded, setReaderLoaded] = useState<State['readerLoaded']>(false);
     const [error, setError] = useState<State['error']>(null);
+    const { onScan } = useActions({ onScan: sendFormActions.onQrScan });
 
     const onLoad = () => {
         setReaderLoaded(true);
@@ -179,4 +174,4 @@ const QrScanner = ({ onScan, onCancel, outputId }: Props) => {
     );
 };
 
-export default connect(null, mapDispatchToProps)(QrScanner);
+export default QrScanner;

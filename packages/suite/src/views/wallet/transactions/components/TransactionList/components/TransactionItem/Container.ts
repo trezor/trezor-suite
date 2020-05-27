@@ -7,9 +7,13 @@ import Component from './index';
 
 const mapStateToProps = (_state: AppState) => ({});
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    openModal: bindActionCreators(modalActions.openModal, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            openModal: modalActions.openModal,
+        },
+        dispatch,
+    );
 
 interface OwnProps extends React.HTMLAttributes<HTMLDivElement> {
     transaction: WalletAccountTransaction;

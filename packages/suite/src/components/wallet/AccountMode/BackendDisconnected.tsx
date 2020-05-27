@@ -12,9 +12,13 @@ const mapStateToProps = (state: AppState) => ({
     selectedAccount: state.wallet.selectedAccount,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    reconnect: bindActionCreators(blockchainActions.reconnect, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            reconnect: blockchainActions.reconnect,
+        },
+        dispatch,
+    );
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 

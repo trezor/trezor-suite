@@ -40,7 +40,7 @@ const StyledImage = styled(Image)`
 
 const CloseButton = (props: ButtonProps) => (
     <StyledButton {...props} data-test="@backup/close-button" variant="tertiary" icon="CROSS">
-        {props.children ? props.children : 'Close'}
+        {props.children ? props.children : <Translation id="TR_CLOSE" />}
     </StyledButton>
 );
 
@@ -50,10 +50,14 @@ const mapStateToProps = (state: AppState) => ({
     locks: state.suite.locks,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    backupDevice: bindActionCreators(backupActions.backupDevice, dispatch),
-    changePin: bindActionCreators(deviceSettingsActions.changePin, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            backupDevice: backupActions.backupDevice,
+            changePin: deviceSettingsActions.changePin,
+        },
+        dispatch,
+    );
 
 type Props = ReturnType<typeof mapDispatchToProps> &
     ReturnType<typeof mapStateToProps> &

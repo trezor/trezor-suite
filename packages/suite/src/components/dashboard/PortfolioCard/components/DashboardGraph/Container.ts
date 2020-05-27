@@ -11,10 +11,15 @@ const mapStateToProps = (state: AppState) => ({
     selectedDevice: state.suite.device,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    updateGraphData: bindActionCreators(graphActions.updateGraphData, dispatch),
-    setSelectedRange: bindActionCreators(graphActions.setSelectedRange, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            updateGraphData: graphActions.updateGraphData,
+            setSelectedRange: graphActions.setSelectedRange,
+            getGraphDataForInterval: graphActions.getGraphDataForInterval,
+        },
+        dispatch,
+    );
 
 interface OwnProps {
     accounts: Account[];

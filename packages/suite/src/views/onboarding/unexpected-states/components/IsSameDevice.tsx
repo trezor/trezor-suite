@@ -12,13 +12,14 @@ const StyledImage = styled(Image)`
     flex: 1;
 `;
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    resetOnboarding: bindActionCreators(onboardingActions.resetOnboarding, dispatch),
-    enableOnboardingReducer: bindActionCreators(
-        onboardingActions.enableOnboardingReducer,
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            resetOnboarding: onboardingActions.resetOnboarding,
+            enableOnboardingReducer: onboardingActions.enableOnboardingReducer,
+        },
         dispatch,
-    ),
-});
+    );
 
 type Props = ReturnType<typeof mapDispatchToProps>;
 

@@ -1,11 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Button, Modal, H2, P } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
-import { Dispatch, InjectedModalApplicationProps } from '@suite-types';
 import { Translation, Image } from '@suite-components';
+import { useActions } from '@suite-hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -20,13 +18,8 @@ const StyledImg = styled(props => <Image {...props} />)`
     margin-bottom: 15px;
 `;
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
-
-type Props = ReturnType<typeof mapDispatchToProps> & InjectedModalApplicationProps;
-
-const Index = (props: Props) => {
+const Index = () => {
+    const { goto } = useActions({ goto: routerActions.goto });
     return (
         <Modal useFixedHeight data-test="@welcome">
             <Wrapper>
@@ -40,7 +33,7 @@ const Index = (props: Props) => {
 
                 <Button
                     data-test="@welcome/continue-button"
-                    onClick={() => props.goto('suite-analytics')}
+                    onClick={() => goto('suite-analytics')}
                 >
                     <Translation id="TR_BEGIN" />
                 </Button>
@@ -49,4 +42,4 @@ const Index = (props: Props) => {
     );
 };
 
-export default connect(null, mapDispatchToProps)(Index);
+export default Index;

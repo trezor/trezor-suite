@@ -1,10 +1,9 @@
-import { Translation, QuestionTooltip } from '@suite-components';
-
-import { Input } from '@trezor/components';
+import { Translation } from '@suite-components';
+import { Input, Tooltip, Icon, colors } from '@trezor/components';
 import styled from 'styled-components';
-import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { Send } from '@wallet-types';
 import { getInputState } from '@wallet-utils/sendFormUtils';
+import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
+import { Send, Account } from '@wallet-types';
 import React from 'react';
 
 import { Props } from './Container';
@@ -18,6 +17,17 @@ const Text = styled.div`
     margin-right: 3px;
 `;
 
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
+`;
+
+const isDisabled = (
+    networkType: Account['networkType'],
+    dataState: 'error' | 'success' | undefined,
+) => {
+    return networkType === 'ethereum' && dataState !== undefined;
+};
+
 const getError = (error: Send['networkTypeEthereum']['gasLimit']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.NOT_NUMBER:
@@ -29,21 +39,31 @@ const getError = (error: Send['networkTypeEthereum']['gasLimit']['error']) => {
 
 export default ({ send, sendFormActionsEthereum, account }: Props) => {
     if (!send || !account) return null;
-    const { selectedFee } = send;
+    const { networkType } = account;
     const { gasLimit, data } = send.networkTypeEthereum;
     const { error, value } = gasLimit;
 
     return (
         <Input
             variant="small"
-            disabled={selectedFee.label === 'custom' && data.value !== null}
+            disabled={isDisabled(networkType, getInputState(data.error, data.value, false, false))}
             state={getInputState(error, value, true, true)}
             topLabel={
                 <Label>
                     <Text>
                         <Translation id="TR_GAS_LIMIT" />
                     </Text>
-                    <QuestionTooltip messageId="TR_SEND_GAS_LIMIT_TOOLTIP" />
+                    <Tooltip
+                        placement="top"
+                        content={
+                            <Translation
+                                id="TR_SEND_GAS_LIMIT_TOOLTIP"
+                                // values={{ defaultGasLimit: account.network.defaultGasLimit }}
+                            />
+                        }
+                    >
+                        <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
+                    </Tooltip>
                 </Label>
             }
             bottomText={getError(error)}

@@ -1,12 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useSelector as useReduxSelector, TypedUseSelectorHook } from 'react-redux';
-import { AppState } from '@suite-types';
-import { SUITE } from '@suite/actions/suite/constants';
-
-/**
- * Properly typed useSelector hook, use this one instead of directly importing it from react-redux.
- */
-export const useSelector: TypedUseSelectorHook<AppState> = useReduxSelector;
+import { SUITE } from '@suite-actions/constants';
+import { useSelector } from '@suite-hooks';
 
 /**
  * React hook that returns array with 2 items.

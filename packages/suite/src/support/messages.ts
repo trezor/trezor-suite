@@ -226,6 +226,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Not enough funds',
         id: 'TR_AMOUNT_IS_NOT_ENOUGH',
     },
+    NOT_ENOUGH_CURRENCY_FEE: {
+        defaultMessage: 'Not enough {symbol} to cover transaction fee',
+        id: 'NOT_ENOUGH_CURRENCY_FEE',
+    },
     TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS: {
         defaultMessage: 'Maximum {decimals} decimals allowed',
         id: 'TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS',
@@ -558,14 +562,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Deactivate all',
         id: 'TR_DEACTIVATE_ALL',
     },
-    // TR_DATA: {
-    //         defaultMessage: 'Data',
-    //         id: 'TR_DATA',
-    // },
-    // TR_DATA_IS_USUALLY_USED: {
-    //         defaultMessage: 'Data is usually used when you send transactions to contracts.',
-    //         id: 'TR_DATA_IS_USUALLY_USED',
-    // },
     TR_DESTINATION_TAG_IS_NOT_NUMBER: {
         defaultMessage: 'Destination tag is not a number',
         id: 'TR_DESTINATION_TAG_IS_NOT_NUMBER',
@@ -950,28 +946,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Gas limit',
         id: 'TR_GAS_LIMIT',
     },
-    // TR_GAS_LIMIT_REFERS_TO: {
-    //         defaultMessage:
-    //                 'Gas limit refers to the maximum amount of gas user is willing to spend on a particular transaction. {TR_GAS_QUOTATION}. Increasing the gas limit will not get the transaction confirmed sooner. Default value for sending {gasLimitTooltipCurrency} is {gasLimitTooltipValue}.',
-    //         id: 'TR_GAS_LIMIT_REFERS_TO',
-    // },
-    // TR_GAS_PRICE: {
-    //         defaultMessage: 'Gas price',
-    //         id: 'TR_GAS_PRICE',
-    // },
-    // TR_GAS_PRICE_QUOTATION: {
-    //         defaultMessage: 'Transaction fee = gas limit * gas price',
-    //         id: 'TR_GAS_PRICE_QUOTATION',
-    // },
-    // TR_GAS_PRICE_REFERS_TO: {
-    //         defaultMessage:
-    //                 'Gas price refers to the amount of ether you are willing to pay for every unit of gas, and is usually measured in “Gwei”. {TR_GAS_PRICE_QUOTATION}. Increasing the gas price will get the transaction confirmed sooner but makes it more expensive. The recommended gas price is {recommendedGasPrice} GWEI.',
-    //         id: 'TR_GAS_PRICE_REFERS_TO',
-    // },
-    // TR_GAS_QUOTATION: {
-    //         defaultMessage: 'Transaction fee = gas limit * gas price',
-    //         id: 'TR_GAS_QUOTATION',
-    // },
+    TR_TOKEN_BALANCE: {
+        defaultMessage: 'You have {balance}',
+        description: 'Additional label in send form above amount input',
+        id: 'TR_TOKEN_BALANCE',
+    },
     TR_GATHERING_INFO: {
         defaultMessage: 'Gathering information, please wait...',
         id: 'TR_GATHERING_INFO',
@@ -1317,10 +1296,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'No-passphrase wallet',
         id: 'TR_NO_PASSPHRASE_WALLET',
     },
-    // TR_CUSTOM_FEE_IS_NOT_NUMBER: {
-    //         defaultMessage: 'Fee is not a number',
-    //         id: 'TR_CUSTOM_FEE_IS_NOT_NUMBER',
-    // },
     TR_NORTH: {
         defaultMessage: 'North',
         id: 'TR_NORTH',
@@ -1723,13 +1698,13 @@ const definedMessages = defineMessages({
         description: 'Button.',
         id: 'TR_START_RECOVERY',
     },
+    TR_START_FIRMWARE_UPDATE: {
+        defaultMessage: 'Device is ready to start firmware update',
+        id: 'TR_START_FIRMWARE_UPDATE',
+    },
     TR_START: {
         defaultMessage: 'Start',
         id: 'TR_START',
-    },
-    TR_FIRMWARE_BOOTLOADER_TITLE: {
-        defaultMessage: 'Start',
-        id: 'TR_FIRMWARE_BOOTLOADER_TITLE',
     },
     TR_STATUS: {
         defaultMessage: 'Status',
@@ -2048,6 +2023,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Destination tag',
         id: 'TR_XRP_DESTINATION_TAG',
     },
+    TR_XRP_DESTINATION_TAG_EXPLAINED: {
+        defaultMessage:
+            'Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.',
+        id: 'TR_XRP_DESTINATION_TAG_EXPLAINED',
+    },
     TR_SHOW_MORE_ADDRESSES: {
         defaultMessage: 'Show more ({count})',
         id: 'TR_SHOW_MORE_ADDRESSES',
@@ -2057,11 +2037,6 @@ const definedMessages = defineMessages({
             'Ripple addresses require a minimum balance of {minBalance} XRP to activate and maintain the account. {TR_LEARN_MORE}',
         id: 'TR_XRP_RESERVE_INFO',
     },
-    // TR_XRP_DESTINATION_TAG_EXPLAINED: {
-    //         defaultMessage:
-    //                 'Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.',
-    //         id: 'TR_XRP_DESTINATION_TAG_EXPLAINED',
-    // },
     TR_YOU_WERE_DISCONNECTED_DOT: {
         defaultMessage: 'You were disconnected.',
         id: 'TR_YOU_WERE_DISCONNECTED_DOT',
@@ -2071,7 +2046,7 @@ const definedMessages = defineMessages({
         id: 'TR_YOUR_CURRENT_FIRMWARE',
     },
     TR_YOUR_CURRENT_VERSION: {
-        defaultMessage: 'Your current Suite version is',
+        defaultMessage: 'You are currently running version',
         id: 'TR_YOUR_CURRENT_VERSION',
     },
     TR_YOUR_TREZOR_IS_NOT_BACKED_UP: {
@@ -2116,19 +2091,27 @@ const definedMessages = defineMessages({
     },
     TR_SEND_DATA_TOOLTIP: {
         id: 'TR_SEND_DATA_TOOLTIP',
-        defaultMessage: 'TR_SEND_DATA_TOOLTIP',
+        defaultMessage: 'Data is usually used when you send transactions to contracts.',
     },
+    // TR_SEND_GAS_LIMIT_TOOLTIP: {
+    //     id: 'TR_SEND_GAS_LIMIT_TOOLTIP',
+    //     defaultMessage:
+    //         'Gas limit refers to the maximum amount of gas user is willing to spend on a particular transaction. Transaction fee = gas limit * gas price. Increasing the gas limit will not get the transaction confirmed sooner. Default value for sending ETH is {defaultGasLimit}',
+    // },
     TR_SEND_GAS_LIMIT_TOOLTIP: {
         id: 'TR_SEND_GAS_LIMIT_TOOLTIP',
-        defaultMessage: 'TR_SEND_GAS_LIMIT_TOOLTIP',
+        defaultMessage:
+            'Gas limit refers to the maximum amount of gas user is willing to spend on a particular transaction. Transaction fee = gas limit * gas price. Increasing the gas limit will not get the transaction confirmed sooner.',
     },
+    // TR_SEND_GAS_PRICE_TOOLTIP: {
+    //     id: 'TR_SEND_GAS_PRICE_TOOLTIP',
+    //     defaultMessage:
+    //         'Gas price refers to the amount of ether you are willing to pay for every unit of gas, and is usually measured in “Gwei”. Transaction fee = gas limit * gas price. Increasing the gas price will get the transaction confirmed sooner but makes it more expensive. The recommended gas price is {defaultGasPrice} GWEI.',
+    // },
     TR_SEND_GAS_PRICE_TOOLTIP: {
         id: 'TR_SEND_GAS_PRICE_TOOLTIP',
-        defaultMessage: 'TR_SEND_GAS_PRICE_TOOLTIP',
-    },
-    TR_XRP_DESTINATION_TAG_TOOLTIP: {
-        id: 'TR_XRP_DESTINATION_TAG_TOOLTIP',
-        defaultMessage: 'TR_XRP_DESTINATION_TAG_TOOLTIP',
+        defaultMessage:
+            'Gas price refers to the amount of ether you are willing to pay for every unit of gas, and is usually measured in “Gwei”. Transaction fee = gas limit * gas price. Increasing the gas price will get the transaction confirmed sooner but makes it more expensive.',
     },
     TR_SEND_FEE_TOOLTIP: {
         id: 'TR_SEND_FEE_TOOLTIP',
@@ -3020,11 +3003,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Downloading',
         description: 'Indicating that app is downloading data from external source',
     },
-    TR_NEW_LABEL: {
-        id: 'TR_NEW_LABEL',
-        defaultMessage: 'NEW',
+    TR_FULL_LABEL: {
+        id: 'TR_FULL_LABEL',
+        defaultMessage: 'Full-featured',
         description:
-            'Meant as a label. Used for example in firmware update when indicating which firmware version is the new one.',
+            'Meant as a label. Used for example in firmware update when indicating which type of firmware version is the new one.',
     },
     TR_ALTERNATIVELY_YOU_MAY_INSTALL: {
         id: 'TR_ALTERNATIVELY_YOU_MAY_INSTALL',
@@ -3130,6 +3113,10 @@ const definedMessages = defineMessages({
     TR_GO_TO_FIRMWARE: {
         id: 'TR_GO_TO_FIRMWARE',
         defaultMessage: 'Go to firmware',
+    },
+    TR_GO_TO_SETTINGS: {
+        id: 'TR_GO_TO_SETTINGS',
+        defaultMessage: 'Go to settings',
     },
     TR_NO_FIRMWARE: {
         id: 'TR_NO_FIRMWARE',
@@ -3411,6 +3398,66 @@ const definedMessages = defineMessages({
         id: 'TR_NO_TRANSACTIONS_TO_SHOW_SUB',
         defaultMessage:
             'Try a different date range.{newLine}Still nothing? Go ahead and send a transaction.',
+    },
+    TR_RECEIVED_AMOUNT: {
+        id: 'TR_RECEIVED_AMOUNT',
+        defaultMessage: 'Received {amount}',
+    },
+    TR_SENT_AMOUNT: {
+        id: 'TR_SENT_AMOUNT',
+        defaultMessage: 'Sent {amount}',
+    },
+    TR_LANDING_TITLE: {
+        id: 'TR_LANDING_TITLE',
+        defaultMessage: 'Download Trezor Suite (beta) desktop app',
+    },
+    TR_LANDING_DESC: {
+        id: 'TR_LANDING_DESC',
+        defaultMessage: 'For testing purpouses only. Please keep in mind this is a beta version.',
+    },
+    TR_LANDING_CHOOSE_LABEL: {
+        id: 'TR_LANDING_CHOOSE_LABEL',
+        defaultMessage: 'Choose your platform',
+    },
+    TR_LANDING_CHOOSE_VALUE: {
+        id: 'TR_LANDING_CHOOSE_VALUE',
+        defaultMessage: '– Click to choose –',
+    },
+    TR_LANDING_WINDOWS: {
+        id: 'TR_LANDING_WINDOWS',
+        defaultMessage: 'Windows',
+    },
+    TR_LANDING_LINUX: {
+        id: 'TR_LANDING_LINUX',
+        defaultMessage: 'Linux',
+    },
+    TR_LANDING_MACOS: {
+        id: 'TR_LANDING_MACOS',
+        defaultMessage: 'Mac OS',
+    },
+    TR_LANDING_DOWNLOAD: {
+        id: 'TR_LANDING_DOWNLOAD',
+        defaultMessage: 'Download',
+    },
+    TR_LANDING_CONTINUE: {
+        id: 'TR_LANDING_CONTINUE',
+        defaultMessage: 'Continue in browser',
+    },
+    TR_SEND_SEND_MAX: {
+        id: 'TR_SEND_SEND_MAX',
+        defaultMessage: 'Send max',
+    },
+    TR_HOLD_LEFT_BUTTON: {
+        id: 'TR_HOLD_LEFT_BUTTON',
+        defaultMessage: 'Hold left or both buttons while connecting device',
+    },
+    TR_TOTAL_AMOUNT: {
+        id: 'TR_TOTAL_AMOUNT',
+        defaultMessage: 'Total amount',
+    },
+    TR_INCLUDING_FEE: {
+        id: 'TR_INCLUDING_FEE',
+        defaultMessage: 'Including fee',
     },
 } as const);
 

@@ -12,15 +12,19 @@ const mapStateToProps = (state: AppState) => ({
     recovery: state.recovery,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
-    goToPreviousStep: bindActionCreators(onboardingActions.goToPreviousStep, dispatch),
-    setWordsCount: bindActionCreators(recoveryActions.setWordsCount, dispatch),
-    setAdvancedRecovery: bindActionCreators(recoveryActions.setAdvancedRecovery, dispatch),
-    recoverDevice: bindActionCreators(recoveryActions.recoverDevice, dispatch),
-    setStatus: bindActionCreators(recoveryActions.setStatus, dispatch),
-    resetReducer: bindActionCreators(recoveryActions.resetReducer, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            goToNextStep: onboardingActions.goToNextStep,
+            goToPreviousStep: onboardingActions.goToPreviousStep,
+            setWordsCount: recoveryActions.setWordsCount,
+            setAdvancedRecovery: recoveryActions.setAdvancedRecovery,
+            recoverDevice: recoveryActions.recoverDevice,
+            setStatus: recoveryActions.setStatus,
+            resetReducer: recoveryActions.resetReducer,
+        },
+        dispatch,
+    );
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 

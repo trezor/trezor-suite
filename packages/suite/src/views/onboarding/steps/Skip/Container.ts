@@ -6,10 +6,14 @@ import { Dispatch } from '@suite-types';
 
 import Step from './index';
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    closeModalApp: bindActionCreators(routerActions.closeModalApp, dispatch),
-    goToNextStep: bindActionCreators(onboardingActions.goToNextStep, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            closeModalApp: routerActions.closeModalApp,
+            goToNextStep: onboardingActions.goToNextStep,
+        },
+        dispatch,
+    );
 
 export type Props = ReturnType<typeof mapDispatchToProps>;
 

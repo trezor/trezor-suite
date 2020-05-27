@@ -424,9 +424,28 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
             }
         }
 
+        if (result.payload.error && device.connected) {
+            // call getFeatures to release device session
+            await TrezorConnect.getFeatures({
+                device,
+                keepSession: false,
+                useEmptyPassphrase: device.useEmptyPassphrase,
+            });
+        }
+
         const error =
             result.payload.error !== 'discovery_interrupted' ? result.payload.error : undefined;
-        dispatch(update({ deviceState, status: DISCOVERY.STATUS.STOPPED, error }, DISCOVERY.STOP));
+        dispatch(
+            update(
+                {
+                    deviceState,
+                    status: DISCOVERY.STATUS.STOPPED,
+                    error,
+                    errorCode: result.payload.code,
+                },
+                DISCOVERY.STOP,
+            ),
+        );
 
         if (error) {
             dispatch(addToast({ type: 'discovery-error', error }));

@@ -1,11 +1,10 @@
-import { Translation, QuestionTooltip } from '@suite-components';
-
-import { Input } from '@trezor/components';
+import { Translation } from '@suite-components';
+import { Input, Tooltip, Icon, colors } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Send } from '@wallet-types';
-import styled from 'styled-components';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
+import styled from 'styled-components';
 
 import { Props } from './Container';
 
@@ -18,6 +17,10 @@ const Text = styled.div`
     margin-right: 3px;
 `;
 
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
+`;
+
 const getError = (error: Send['networkTypeEthereum']['gasPrice']['error']) => {
     switch (error) {
         case VALIDATION_ERRORS.NOT_NUMBER:
@@ -27,8 +30,10 @@ const getError = (error: Send['networkTypeEthereum']['gasPrice']['error']) => {
     }
 };
 
-export default ({ send, sendFormActionsEthereum, account }: Props) => {
-    if (!send || !account) return null;
+export default ({ send, sendFormActionsEthereum, selectedAccount }: Props) => {
+    if (!send || selectedAccount.status !== 'loaded') return null;
+    const { account } = selectedAccount;
+    if (account.networkType !== 'ethereum') return null;
     const { gasPrice } = send.networkTypeEthereum;
     const { value, error } = gasPrice;
 
@@ -41,7 +46,17 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
                     <Text>
                         <Translation id="TR_GAS_PRICE" />
                     </Text>
-                    <QuestionTooltip messageId="TR_SEND_GAS_PRICE_TOOLTIP" />
+                    <Tooltip
+                        placement="top"
+                        content={
+                            <Translation
+                                id="TR_SEND_GAS_PRICE_TOOLTIP"
+                                // values={{ defaultGasPrice: network.defaultGasPrice }}
+                            />
+                        }
+                    >
+                        <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
+                    </Tooltip>
                 </Label>
             }
             bottomText={getError(error)}
