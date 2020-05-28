@@ -97,7 +97,7 @@ export const updateCurrentRates = (ticker: FiatTicker, maxAge = MAX_AGE) => asyn
 
         // don't fetch if rates is fresh enough
         if (existingRates) {
-            if (differenceInSeconds(new Date(), fromUnixTime(existingRates.ts)) < maxAge) {
+            if (differenceInSeconds(new Date(), new Date(existingRates.ts)) < maxAge) {
                 return;
             }
         }
