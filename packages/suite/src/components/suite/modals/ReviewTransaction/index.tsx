@@ -1,13 +1,13 @@
-import React from 'react';
-import styled from 'styled-components';
+import { AccountLabeling, Badge, Translation, FiatValue } from '@suite-components';
+import { useDeviceActionLocks } from '@suite-hooks';
+import { Button, colors, Modal, variables } from '@trezor/components';
+import { Account } from '@wallet-types';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
-import { Translation, AccountLabeling, Badge } from '@suite-components';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
-import { Modal, Button, colors, variables } from '@trezor/components';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { useDeviceActionLocks } from '@suite-hooks';
-import { Account } from '@wallet-types';
+import React from 'react';
+import styled from 'styled-components';
 import { fromWei, toWei } from 'web3-utils';
 
 import { Props } from './Container';
@@ -141,7 +141,7 @@ export default ({
                         <Translation id="TR_ADDRESS_FROM" />
                     </Label>
                     <Value>
-                        {upperCaseSymbol} <AccountLabeling account={account} />
+                        <AccountLabeling account={account} />
                     </Value>
                 </Box>
                 {outputs.map(output => {
@@ -163,22 +163,18 @@ export default ({
                                 </Label>
                                 <Value>
                                     {totalAmount} {outputSymbol}
-                                    {output.amount.value &&
-                                        fiatVal &&
-                                        fiatVal.current &&
-                                        networkType !== 'ethereum' && (
-                                            <BadgeWrapper>
-                                                <Badge isGray>
-                                                    {toFiatCurrency(
-                                                        totalAmount,
-                                                        localCurrency,
-                                                        fiatVal.current.rates,
-                                                        true,
-                                                    )}{' '}
-                                                    {localCurrency.toUpperCase()}
-                                                </Badge>
-                                            </BadgeWrapper>
-                                        )}
+                                    {output.amount.value && fiatVal && fiatVal.current && (
+                                        <BadgeWrapper>
+                                            <Badge isGray>
+                                                {toFiatCurrency(
+                                                    totalAmount,
+                                                    localCurrency,
+                                                    fiatVal.current.rates,
+                                                )}{' '}
+                                                {localCurrency.toUpperCase()}
+                                            </Badge>
+                                        </BadgeWrapper>
+                                    )}
                                 </Value>
                             </Box>
                         </OutputWrapper>
