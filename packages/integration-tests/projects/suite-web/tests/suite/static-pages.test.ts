@@ -16,7 +16,7 @@ describe('Static pages', () => {
 
     fixtures.forEach(f => {
         it(`test ${f.visit} page is online`, () => {
-            cy.visit(f.visit)
+            cy.prefixedVisit(f.visit);
             cy.get('html').should(f.should[0], f.should[1]);
         });
     });
