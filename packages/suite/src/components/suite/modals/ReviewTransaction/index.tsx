@@ -23,7 +23,7 @@ const Box = styled.div`
 `;
 
 const Symbol = styled.div`
-    margin-right: 1ch;
+    margin-right: 4px;
 `;
 
 const Label = styled.div`
@@ -194,7 +194,7 @@ export default ({
                     </Label>
                     <Value>
                         {getFeeValue(transactionInfo, networkType, account.symbol)} {outputSymbol}
-                        {fee && fiatVal && networkType !== 'ethereum' && (
+                        {fee && fiatVal && (
                             <BadgeWrapper>
                                 <Badge isGray>
                                     {toFiatCurrency(fee, localCurrency, fiatVal.current?.rates)}{' '}
