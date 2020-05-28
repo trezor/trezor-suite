@@ -4,7 +4,7 @@ describe('Recovery - dry run', () => {
     beforeEach(() => {
         cy.task('stopEmu');
         cy.viewport(1024, 768).resetDb();
-        cy.visit('/settings/device');
+        cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
     });
 
@@ -21,9 +21,6 @@ describe('Recovery - dry run', () => {
         cy.getTestElement('@modal/connect-device');
         cy.task('startEmu', { wipe: false });
         cy.reload();
-
-        // temporary
-        cy.getTestElement('@landing/continue-in-browser-button').click();
 
         cy.getTestElement('@device-invalid-mode/recovery/rerun-button').click();
         cy.getTestElement('@suite/modal/confirm-action-on-device');

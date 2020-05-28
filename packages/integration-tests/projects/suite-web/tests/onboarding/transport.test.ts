@@ -3,7 +3,7 @@ describe('Onboarding - transport webusb/bridge', () => {
         cy.task('stopEmu');
         cy.task('stopBridge');
         cy.viewport(1024, 768).resetDb();
-        cy.visit('/');
+        cy.prefixedVisit('/');
         cy.goToOnboarding()
         cy.onboardingShouldLoad();
     });

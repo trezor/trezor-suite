@@ -12,10 +12,21 @@ import { toggleDeviceMenu, goToOnboarding, passThroughInitialRun, passThroughBac
 
 const command = require('cypress-image-snapshot/command');
 
+const prefixedVisit = (route: string) => {
+    const assetPrefix = Cypress.env('ASSET_PREFIX') || '';
+    return cy.visit(assetPrefix + route, {
+            auth: {
+              // todo: this does not really works 
+              username: Cypress.env('BASIC_AUTH_USER') || '',
+              password: Cypress.env('BASIC_AUTH_PASSWORD') || '',
+            }
+    });
+}
 declare global {
     namespace Cypress {
         interface Chainable<Subject> {
             getTestElement: typeof getTestElement;
+            prefixedVisit: typeof prefixedVisit;
             getConfirmActionOnDeviceModal: typeof getConfirmActionOnDeviceModal;
             resetDb: typeof resetDb;
             // todo: better types
@@ -59,6 +70,7 @@ if (Cypress.env('SNAPSHOT')) {
     })
 }
 
+Cypress.Commands.add('prefixedVisit', prefixedVisit);
 Cypress.Commands.add('resetDb', { prevSubject: false }, resetDb);
 Cypress.Commands.add('setState', setState);
 Cypress.Commands.add('connectDevice', connectDevice);
