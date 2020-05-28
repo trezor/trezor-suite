@@ -1,5 +1,6 @@
 import React from 'react';
 import { Props } from './Container';
+import { Badge, HiddenPlaceholder } from '@suite-components';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import FormattedNumber from '../FormattedNumber';
 
@@ -15,13 +16,36 @@ import FormattedNumber from '../FormattedNumber';
  * @param {Props} { amount, symbol, fiatCurrency, ...props }
  * @returns
  */
-const FiatValue = ({ amount, symbol, fiatCurrency, source, useCustomSource, ...props }: Props) => {
+const FiatValue = ({
+    amount,
+    symbol,
+    fiatCurrency,
+    source,
+    useCustomSource,
+    badge,
+    ...props
+}: Props) => {
     const targetCurrency = fiatCurrency ?? props.settings.localCurrency;
     const currentFiatRates = props.fiat.find(f => f.symbol === symbol)?.current;
     const ratesSource = useCustomSource ? source : currentFiatRates?.rates;
     const fiat = ratesSource ? toFiatCurrency(amount, targetCurrency, ratesSource) : null;
     if (fiat) {
-        const fiatValueComponent = <FormattedNumber currency={targetCurrency} value={fiat} />;
+        let fiatValueComponent = (
+            <HiddenPlaceholder>
+                <FormattedNumber currency={targetCurrency} value={fiat} />
+            </HiddenPlaceholder>
+        );
+
+        if (badge) {
+            fiatValueComponent = (
+                <HiddenPlaceholder>
+                    <Badge isGray={badge === 'gray'}>
+                        <FormattedNumber currency={targetCurrency} value={fiat} />
+                    </Badge>
+                </HiddenPlaceholder>
+            );
+        }
+
         const fiatRateValue = ratesSource?.[targetCurrency] ?? null;
         const fiatRateComponent = fiatRateValue ? (
             <FormattedNumber currency={targetCurrency} value={fiatRateValue} />

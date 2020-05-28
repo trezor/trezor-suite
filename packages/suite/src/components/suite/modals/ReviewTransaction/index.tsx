@@ -1,9 +1,8 @@
-import { AccountLabeling, Badge, Translation } from '@suite-components';
+import { AccountLabeling, Translation, FiatValue } from '@suite-components';
 import { useDeviceActionLocks } from '@suite-hooks';
 import { Button, colors, Modal, variables } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
 import React from 'react';
@@ -58,7 +57,7 @@ const Buttons = styled.div`
     justify-content: space-between;
 `;
 
-const BadgeWrapper = styled.div`
+const FiatValueWrapper = styled.div`
     margin-left: 10px;
     display: flex;
     flex: 1;
@@ -81,7 +80,6 @@ const getFeeValue = (
 export default ({
     send,
     account,
-    settings,
     modalActions,
     sendFormActionsBitcoin,
     sendFormActionsRipple,
@@ -91,15 +89,14 @@ export default ({
     if (!account || !send) return null;
     const { outputs } = send;
     const { token } = send.networkTypeEthereum;
-    const { networkType } = account;
-    const { localCurrency } = settings;
+    const { networkType, symbol } = account;
     const transactionInfo = getTransactionInfo(account.networkType, send);
     if (!transactionInfo || transactionInfo.type === 'error') return null;
     const upperCaseSymbol = account.symbol.toUpperCase();
-    const fiatVal = fiat.find(fiatItem => fiatItem.symbol === account.symbol);
-    const outputSymbol = token ? token.symbol!.toUpperCase() : account.symbol.toUpperCase();
+    const fiatVal = fiat.find(fiatItem => fiatItem.symbol === symbol);
+    const outputSymbol = token ? token.symbol!.toUpperCase() : symbol.toUpperCase();
     const [isEnabled] = useDeviceActionLocks();
-    const fee = getFeeValue(transactionInfo, networkType, account.symbol);
+    const fee = getFeeValue(transactionInfo, networkType, symbol);
 
     return (
         <Modal
@@ -167,18 +164,13 @@ export default ({
                                 </Label>
                                 <Value>
                                     {totalAmount} {outputSymbol}
-                                    {output.amount.value && fiatVal && fiatVal.current && (
-                                        <BadgeWrapper>
-                                            <Badge isGray>
-                                                {toFiatCurrency(
-                                                    totalAmount,
-                                                    localCurrency,
-                                                    fiatVal.current.rates,
-                                                )}{' '}
-                                                {localCurrency.toUpperCase()}
-                                            </Badge>
-                                        </BadgeWrapper>
-                                    )}
+                                    <FiatValueWrapper>
+                                        <FiatValue
+                                            amount={totalAmount}
+                                            symbol={symbol}
+                                            badge="gray"
+                                        />
+                                    </FiatValueWrapper>
                                 </Value>
                             </Box>
                         </OutputWrapper>
@@ -195,12 +187,9 @@ export default ({
                     <Value>
                         {getFeeValue(transactionInfo, networkType, account.symbol)} {outputSymbol}
                         {fee && fiatVal && (
-                            <BadgeWrapper>
-                                <Badge isGray>
-                                    {toFiatCurrency(fee, localCurrency, fiatVal.current?.rates)}{' '}
-                                    {localCurrency.toUpperCase()}
-                                </Badge>
-                            </BadgeWrapper>
+                            <FiatValueWrapper>
+                                <FiatValue amount={fee} symbol={symbol} badge="gray" />
+                            </FiatValueWrapper>
                         )}
                     </Value>
                 </Box>

@@ -20,6 +20,7 @@ interface CommonOwnProps {
     symbol: Network['symbol'] | string;
     fiatCurrency?: string;
     children?: (props: Params) => React.ReactElement | null;
+    badge?: 'blue' | 'gray';
 }
 
 interface DefaultSourceProps extends CommonOwnProps {
