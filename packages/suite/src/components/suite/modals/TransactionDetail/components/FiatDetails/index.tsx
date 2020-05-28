@@ -110,60 +110,46 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                     </HiddenPlaceholder>
                 </Item>
                 <Item alignContent="right">
-                    <HiddenPlaceholder>
-                        <FiatValue amount={tx.amount} symbol={tx.symbol}>
-                            {({ value }) => <Badge>{value}</Badge> ?? null}
-                        </FiatValue>
-                    </HiddenPlaceholder>
+                    <FiatValue amount={tx.amount} symbol={tx.symbol} badge={{ color: 'blue' }} />
                 </Item>
-
                 <Item allCaps>
                     <Translation id="TR_TOTAL_OUTPUT" />
                 </Item>
                 <Item alignContent="right">
                     {totalOutput && (
-                        <HiddenPlaceholder>
-                            <FiatValue
-                                amount={totalOutput}
-                                symbol={tx.symbol}
-                                source={tx.rates}
-                                useCustomSource
-                            >
-                                {({ value }) => <Badge isGray>{value}</Badge> ?? null}
-                            </FiatValue>
-                        </HiddenPlaceholder>
+                        <FiatValue
+                            amount={totalOutput}
+                            symbol={tx.symbol}
+                            source={tx.rates}
+                            badge={{ color: 'gray' }}
+                            useCustomSource
+                        />
                     )}
                 </Item>
                 <Item alignContent="right">
                     {totalOutput && (
-                        <HiddenPlaceholder>
-                            <FiatValue amount={totalOutput} symbol={tx.symbol}>
-                                {({ value }) => <Badge>{value}</Badge> ?? null}
-                            </FiatValue>
-                        </HiddenPlaceholder>
+                        <FiatValue
+                            amount={totalOutput}
+                            symbol={tx.symbol}
+                            badge={{ color: 'blue' }}
+                        />
                     )}
                 </Item>
-
                 <Item allCaps>
                     <Translation id="TR_TX_FEE" />
                 </Item>
                 <Item alignContent="right">
-                    <HiddenPlaceholder>
-                        <FiatValue
-                            amount={tx.fee}
-                            symbol={tx.symbol}
-                            source={tx.rates}
-                            useCustomSource
-                        >
-                            {({ value }) => <Badge isGray>{value}</Badge> ?? null}
-                        </FiatValue>
-                    </HiddenPlaceholder>
+                    <FiatValue
+                        amount={tx.fee}
+                        symbol={tx.symbol}
+                        source={tx.rates}
+                        badge={{ color: 'gray' }}
+                        useCustomSource
+                    />
                 </Item>
                 <Item alignContent="right">
                     <HiddenPlaceholder>
-                        <FiatValue amount={tx.fee} symbol={tx.symbol}>
-                            {({ value }) => <Badge>{value}</Badge> ?? null}
-                        </FiatValue>
+                        <FiatValue amount={tx.fee} symbol={tx.symbol} badge={{ color: 'blue' }} />
                     </HiddenPlaceholder>
                 </Item>
             </Grid>

@@ -185,9 +185,11 @@ const Asset = React.memo(({ network, failed, cryptoValue, isFirstRow }: Props) =
                     </CryptoValueWrapper>
                     <FiatValueWrapper isFirstRow={isFirstRow}>
                         <HiddenPlaceholder>
-                            <FiatValue amount={cryptoValue} symbol={symbol}>
-                                {({ value }) => (value ? <Badge isSmall>{value}</Badge> : null)}
-                            </FiatValue>
+                            <FiatValue
+                                amount={cryptoValue}
+                                symbol={symbol}
+                                badge={{ color: 'blue', size: 'small' }}
+                            />
                         </HiddenPlaceholder>
                     </FiatValueWrapper>
                     <GraphWrapper isFirstRow={isFirstRow}>

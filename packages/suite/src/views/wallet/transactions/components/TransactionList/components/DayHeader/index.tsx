@@ -88,9 +88,7 @@ export default ({ dateKey, symbol, totalAmount }: Props) => {
                     </ColAmount>
                     {useFiatValues && (
                         <ColFiat>
-                            <FiatValue amount={totalAmount.toFixed()} symbol={symbol}>
-                                {({ value }) => value && <>{value}</>}
-                            </FiatValue>
+                            <FiatValue amount={totalAmount.toFixed()} symbol={symbol} />
                         </ColFiat>
                     )}
                 </>

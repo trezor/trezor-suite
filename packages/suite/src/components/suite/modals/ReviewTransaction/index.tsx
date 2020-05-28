@@ -166,7 +166,7 @@ export default ({
                                         <FiatValue
                                             amount={totalAmount}
                                             symbol={symbol}
-                                            badge="gray"
+                                            badge={{ color: 'gray' }}
                                         />
                                     </FiatValueWrapper>
                                 </Value>
@@ -185,7 +185,7 @@ export default ({
                     <Value>
                         {fee} {outputSymbol}
                         <FiatValueWrapper>
-                            <FiatValue amount={fee} symbol={symbol} badge="gray" />
+                            <FiatValue amount={fee} symbol={symbol} badge={{ color: 'gray' }} />
                         </FiatValueWrapper>
                     </Value>
                 </Box>

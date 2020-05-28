@@ -39,7 +39,7 @@ const FiatValue = ({
         if (badge) {
             fiatValueComponent = (
                 <HiddenPlaceholder>
-                    <Badge isGray={badge === 'gray'}>
+                    <Badge isGray={badge.color === 'gray'} isSmall={badge.size === 'small'}>
                         <FormattedNumber currency={targetCurrency} value={fiat} />
                     </Badge>
                 </HiddenPlaceholder>
