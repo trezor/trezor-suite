@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import styled, { css } from 'styled-components';
 import { Account } from '@wallet-types';
-import { Card, FiatValue, Badge, HiddenPlaceholder } from '@suite-components';
+import { Card, FiatValue, HiddenPlaceholder } from '@suite-components';
 import { variables, colors, Icon, Link } from '@trezor/components';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
