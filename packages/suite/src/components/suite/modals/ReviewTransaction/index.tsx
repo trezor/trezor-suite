@@ -1,4 +1,4 @@
-import { AccountLabeling, Badge, Translation, FiatValue } from '@suite-components';
+import { AccountLabeling, Badge, Translation } from '@suite-components';
 import { useDeviceActionLocks } from '@suite-hooks';
 import { Button, colors, Modal, variables } from '@trezor/components';
 import { Account } from '@wallet-types';
@@ -20,6 +20,10 @@ const Box = styled.div`
     align-items: center;
     padding: 12px;
     margin-bottom: 10px;
+`;
+
+const Symbol = styled.div`
+    margin-right: 1ch;
 `;
 
 const Label = styled.div`
@@ -141,7 +145,7 @@ export default ({
                         <Translation id="TR_ADDRESS_FROM" />
                     </Label>
                     <Value>
-                        <AccountLabeling account={account} />
+                        <Symbol>{upperCaseSymbol}</Symbol> <AccountLabeling account={account} />
                     </Value>
                 </Box>
                 {outputs.map(output => {
@@ -193,12 +197,7 @@ export default ({
                         {fee && fiatVal && networkType !== 'ethereum' && (
                             <BadgeWrapper>
                                 <Badge isGray>
-                                    {toFiatCurrency(
-                                        fee,
-                                        localCurrency,
-                                        fiatVal.current?.rates,
-                                        true,
-                                    )}{' '}
+                                    {toFiatCurrency(fee, localCurrency, fiatVal.current?.rates)}{' '}
                                     {localCurrency.toUpperCase()}
                                 </Badge>
                             </BadgeWrapper>
