@@ -1,5 +1,5 @@
 import TrezorConnect, { AccountTransaction, BlockchainFiatRatesUpdate } from 'trezor-connect';
-import { getUnixTime } from 'date-fns';
+import { getUnixTime, differenceInSeconds, fromUnixTime } from 'date-fns';
 import {
     fetchCurrentFiatRates,
     getFiatRatesForTimestamps,
@@ -86,10 +86,23 @@ export const removeRatesForDisabledNetworks = () => (dispatch: Dispatch, getStat
  *
  * @param {FiatTicker} ticker
  */
-export const updateCurrentRates = (ticker: FiatTicker) => async (
+export const updateCurrentRates = (ticker: FiatTicker, maxAge = MAX_AGE) => async (
     dispatch: Dispatch,
-    _getState: GetState,
+    getState: GetState,
 ) => {
+    if (maxAge > 0) {
+        const existingRates = getState().wallet.fiat.find(
+            t => t.symbol === ticker.symbol && t.mainNetworkSymbol === ticker.mainNetworkSymbol,
+        )?.current;
+
+        // don't fetch if rates is fresh enough
+        if (existingRates) {
+            if (differenceInSeconds(new Date(), fromUnixTime(existingRates.ts)) < maxAge) {
+                return;
+            }
+        }
+    }
+
     const response = await TrezorConnect.blockchainGetCurrentFiatRates({ coin: ticker.symbol });
     try {
         const results = response.success ? response.payload : await fetchCurrentFiatRates(ticker);
@@ -170,7 +183,7 @@ export const updateStaleRates = () => async (dispatch: Dispatch, _getState: GetS
                 true,
             ),
         );
-        const promises = staleTickers.map(t => dispatch(updateCurrentRates(t)));
+        const promises = staleTickers.map(t => dispatch(updateCurrentRates(t, 0)));
         await Promise.all(promises);
     } catch (error) {
         // todo: dispatch some error;
