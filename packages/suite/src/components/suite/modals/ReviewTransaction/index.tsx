@@ -1,4 +1,4 @@
-import { AccountLabeling, Translation, FiatValue } from '@suite-components';
+import { AccountLabeling, FiatValue, Translation } from '@suite-components';
 import { useDeviceActionLocks } from '@suite-hooks';
 import { Button, colors, Modal, variables } from '@trezor/components';
 import { Account } from '@wallet-types';
@@ -84,7 +84,6 @@ export default ({
     sendFormActionsBitcoin,
     sendFormActionsRipple,
     sendFormActionsEthereum,
-    fiat,
 }: Props) => {
     if (!account || !send) return null;
     const { outputs } = send;
@@ -93,7 +92,6 @@ export default ({
     const transactionInfo = getTransactionInfo(account.networkType, send);
     if (!transactionInfo || transactionInfo.type === 'error') return null;
     const upperCaseSymbol = account.symbol.toUpperCase();
-    const fiatVal = fiat.find(fiatItem => fiatItem.symbol === symbol);
     const outputSymbol = token ? token.symbol!.toUpperCase() : symbol.toUpperCase();
     const [isEnabled] = useDeviceActionLocks();
     const fee = getFeeValue(transactionInfo, networkType, symbol);
@@ -185,12 +183,10 @@ export default ({
                         )}
                     </Label>
                     <Value>
-                        {getFeeValue(transactionInfo, networkType, account.symbol)} {outputSymbol}
-                        {fee && fiatVal && (
-                            <FiatValueWrapper>
-                                <FiatValue amount={fee} symbol={symbol} badge="gray" />
-                            </FiatValueWrapper>
-                        )}
+                        {fee} {outputSymbol}
+                        <FiatValueWrapper>
+                            <FiatValue amount={fee} symbol={symbol} badge="gray" />
+                        </FiatValueWrapper>
                     </Value>
                 </Box>
             </Content>
