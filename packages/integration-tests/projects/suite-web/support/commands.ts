@@ -14,11 +14,9 @@ const command = require('cypress-image-snapshot/command');
 
 const prefixedVisit = (route: string) => {
     const assetPrefix = Cypress.env('ASSET_PREFIX') || '';
-    cy.log(`user: ${Cypress.env('BASIC_AUTH_USER')}`);
-    cy.log(`pass: ${Cypress.env('BASIC_AUTH_PASSWORD')}`);
-    cy.log('foo', Cypress.env['FOO']);
     return cy.visit(assetPrefix + route, {
             auth: {
+              // todo: this does not really works 
               username: Cypress.env('BASIC_AUTH_USER') || '',
               password: Cypress.env('BASIC_AUTH_PASSWORD') || '',
             }
