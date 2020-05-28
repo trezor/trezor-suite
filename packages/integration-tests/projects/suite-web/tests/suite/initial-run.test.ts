@@ -9,7 +9,7 @@ describe('Suite initial run', () => {
         cy.passThroughInitialRun();
         cy.getTestElement('@modal/connect-device');
         cy.prefixedVisit('/');
-        cy.getTestElement('@landing/continue-in-browser-button').click();
+        // cy.getTestElement('@landing/continue-in-browser-button').click();
         cy.getTestElement('@modal/connect-device');
     });
 
@@ -18,20 +18,20 @@ describe('Suite initial run', () => {
         cy.getTestElement('@landing/continue-in-browser-button').click()
         cy.getTestElement('@welcome/continue-button').click()
         cy.reload();
-        cy.getTestElement('@landing/continue-in-browser-button').click()
+        // cy.getTestElement('@landing/continue-in-browser-button').click()
         cy.getTestElement('@welcome/continue-button').click()
     });
 
     it('Once user passed trough, skips initial run and shows connect-device modal', () => {
         cy.prefixedVisit('/');
-        cy.getTestElement('@landing/continue-in-browser-button').click()
+        // cy.getTestElement('@landing/continue-in-browser-button').click()
         cy.getTestElement('@welcome/continue-button').click()
         cy.getTestElement('@analytics/go-to-onboarding-button').click()
         cy.getTestElement('@onboarding/skip-button').click()
         cy.getTestElement('@onboarding/skip-button').click()
         cy.getTestElement('@suite/loading').should('not.exist');
         cy.reload();
-        cy.getTestElement('@landing/continue-in-browser-button').click()
+        // cy.getTestElement('@landing/continue-in-browser-button').click()
         cy.getTestElement('@modal/connect-device');
 
     });

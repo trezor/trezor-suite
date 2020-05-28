@@ -8,7 +8,6 @@ describe('Analytics', () => {
 
     it('Analytics should be enabled on initial run, then user may disable it and this option should be respected on subsequent reloads', () => {
         cy.prefixedVisit('/');
-        cy.getTestElement('@landing/continue-in-browser-button').click();
         cy.getTestElement('@welcome/continue-button').click();
         cy.getTestElement('@analytics/toggle-switch').should('be.checked');
         cy.getTestElement('@analytics/toggle-switch').click({ force: true });
@@ -21,7 +20,6 @@ describe('Analytics', () => {
             'now entry /settings route directly and see that analytics is NOT enabled after reload',
         );
         cy.prefixedVisit('/settings');
-        cy.getTestElement('@landing/continue-in-browser-button').click();
 
         cy.getTestElement('@modal/connect-device');
         cy.task('startEmu', { wipe: false });
@@ -31,7 +29,6 @@ describe('Analytics', () => {
         cy.getTestElement('@analytics/toggle-switch').click({ force: true });
         cy.getTestElement('@analytics/toggle-switch').should('be.checked');
         cy.reload();
-        cy.getTestElement('@landing/continue-in-browser-button').click();
 
         cy.getTestElement('@settings/index').should('be.visible');
         cy.getTestElement('@analytics/toggle-switch').should('be.checked');
