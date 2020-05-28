@@ -4,7 +4,7 @@ describe('Recovery - dry run', () => {
     beforeEach(() => {
         cy.task('stopEmu');
         cy.viewport(1024, 768).resetDb();
-        cy.visit('/settings/device');
+        cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
     });
 

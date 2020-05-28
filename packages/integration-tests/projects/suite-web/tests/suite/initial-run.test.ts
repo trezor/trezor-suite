@@ -5,16 +5,16 @@ describe('Suite initial run', () => {
     });
 
     it('There is always landing screen is before initial run (only for web). It is not saved into db atm', () => {
-        cy.visit('/');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.getTestElement('@modal/connect-device');
-        cy.visit('/');
+        cy.prefixedVisit('/');
         cy.getTestElement('@landing/continue-in-browser-button').click();
         cy.getTestElement('@modal/connect-device');
     });
 
     it('Until user passed through initial run, it will be there after reload', () => {
-        cy.visit('/');
+        cy.prefixedVisit('/');
         cy.getTestElement('@landing/continue-in-browser-button').click()
         cy.getTestElement('@welcome/continue-button').click()
         cy.reload();
@@ -23,7 +23,7 @@ describe('Suite initial run', () => {
     });
 
     it('Once user passed trough, skips initial run and shows connect-device modal', () => {
-        cy.visit('/');
+        cy.prefixedVisit('/');
         cy.getTestElement('@landing/continue-in-browser-button').click()
         cy.getTestElement('@welcome/continue-button').click()
         cy.getTestElement('@analytics/go-to-onboarding-button').click()

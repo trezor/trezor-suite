@@ -6,7 +6,7 @@ describe('Device settings', () => {
         cy.task('stopEmu');
         // navigate to device settings page
         cy.viewport(1024, 768).resetDb();
-        cy.visit('/settings/device');
+        cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
     });
 

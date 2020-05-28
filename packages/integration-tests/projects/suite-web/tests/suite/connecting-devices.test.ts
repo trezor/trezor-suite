@@ -9,7 +9,7 @@ describe('Stories of device connecting', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
         // some route that will not trigger discovery, it does not matter in this test
-        cy.visit('/settings');
+        cy.prefixedVisit('/settings');
         cy.passThroughInitialRun();
         cy.window()
             .its('TrezorConnect')
