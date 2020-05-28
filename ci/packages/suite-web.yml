@@ -1,7 +1,7 @@
 suite-web build:
     stage: build
     script:
-        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
+        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/wallet yarn workspace @trezor/suite-web build
     artifacts:
         expire_in: 7 days
         paths:
@@ -10,9 +10,10 @@ suite-web build:
 suite-web deploy dev:
     stage: deploy to dev servers
     variables:
-        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}/wallet
     dependencies:
         - suite-web build
+        - landing-page build
     environment:
         name: ${CI_BUILD_REF_NAME}
         url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
@@ -23,6 +24,8 @@ suite-web deploy dev:
         - mkdir -p ${DEPLOY_BASE_DIR}/suite-web
         - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
         - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
+        - cd ../landing-page
+        - rsync -abviuzP -va build/ "${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}/"
     tags:
         - deploy
 
@@ -46,7 +49,8 @@ suite-web deploy dev:
 #     dependencies: []
 #     # retry:
 #     #    max: 2mv packages/suite-desktop/build-electron/"${DESKTOP_APP_NAME}"-*.AppImage ./build/static
-rome-beta:
+
+chrome-beta:
     only:
         - schedules
     #allow_failure: true
