@@ -200,7 +200,6 @@ export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
                                     formatNetworkAmount(transactionInfo.fee, symbol),
                                     localCurrency,
                                     fiatVal.current?.rates,
-                                    true,
                                 )}{' '}
                                 {localCurrency}
                             </Badge>
