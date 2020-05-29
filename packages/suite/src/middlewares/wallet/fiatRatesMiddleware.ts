@@ -51,7 +51,7 @@ const fiatRatesMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
                 account.tokens.forEach((t, i) => {
                     if (t.symbol) {
                         const s = t.symbol;
-                        // wait 1 sec before firing next fetch
+                        // wait 500ms before firing next fetch
                         setTimeout(() => {
                             api.dispatch(
                                 fiatRatesActions.updateCurrentRates({
@@ -59,7 +59,7 @@ const fiatRatesMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
                                     mainNetworkSymbol: account.symbol,
                                 }),
                             );
-                        }, i * 1000);
+                        }, i * 500);
                     }
                 });
             }

@@ -85,7 +85,7 @@ const StyledBadge = styled(Badge)`
 const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) => {
     const { account, selected } = props;
 
-    const fiatBalance = getAccountFiatBalance(account, props.localCurrency, props.fiat);
+    const fiatBalance = getAccountFiatBalance(account, props.localCurrency, props.fiat.coins);
     const accountLabel = props.labeling[`account:${account.descriptor}`] ? (
         <span>{props.labeling[`account:${account.descriptor}`]}</span>
     ) : (

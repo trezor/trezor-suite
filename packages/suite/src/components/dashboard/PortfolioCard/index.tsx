@@ -32,7 +32,7 @@ const PortfolioCard = React.memo(() => {
 
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
     const portfolioValue = accountUtils
-        .getTotalFiatBalance(accounts, localCurrency, fiat)
+        .getTotalFiatBalance(accounts, localCurrency, fiat.coins)
         .toString();
 
     const discoveryStatus = getDiscoveryStatus();

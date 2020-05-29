@@ -4,34 +4,27 @@ import {
     RATE_UPDATE,
     LAST_WEEK_RATES_UPDATE,
     RATE_REMOVE,
+    FETCH_COIN_LIST_START,
+    FETCH_COIN_LIST_SUCCESS,
+    FETCH_COIN_LIST_FAIL,
 } from '@wallet-actions/constants/fiatRatesConstants';
 import { STORAGE } from '@suite-actions/constants';
+import {
+    CoinListItem,
+    CoinFiatRates,
+    CurrentFiatRates,
+    LastWeekRates,
+} from '@wallet-types/fiatRates';
 
-export interface CurrentFiatRates {
-    symbol: string;
-    rates: { [key: string]: number | undefined };
-    ts: number;
+export interface State {
+    coins: CoinFiatRates[];
+    coinList: CoinListItem[] | null;
 }
 
-export interface TimestampedRates {
-    rates: { [key: string]: number | undefined };
-    ts: number;
-}
-
-export interface LastWeekRates {
-    symbol: string;
-    tickers: TimestampedRates[];
-    ts: number;
-}
-
-export interface CoinFiatRates {
-    current?: CurrentFiatRates;
-    lastWeek?: LastWeekRates;
-    symbol: string;
-    mainNetworkSymbol?: string;
-}
-
-export const initialState: CoinFiatRates[] = [];
+export const initialState: State = {
+    coins: [],
+    coinList: null,
+};
 
 const remove = (state: CoinFiatRates[], symbol: string, mainNetworkSymbol?: string) => {
     const index = state.findIndex(
@@ -76,17 +69,26 @@ const updateLastWeekRates = (state: CoinFiatRates[], payload: LastWeekRates) => 
     }
 };
 
-export default (state: CoinFiatRates[] = initialState, action: Action): CoinFiatRates[] => {
+export default (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
             case RATE_REMOVE:
-                remove(draft, action.symbol, action.mainNetworkSymbol);
+                remove(draft.coins, action.symbol, action.mainNetworkSymbol);
                 break;
             case RATE_UPDATE:
-                updateCurrentRates(draft, action.payload, action.mainNetworkSymbol);
+                updateCurrentRates(draft.coins, action.payload, action.mainNetworkSymbol);
                 break;
             case LAST_WEEK_RATES_UPDATE:
-                updateLastWeekRates(draft, action.payload);
+                updateLastWeekRates(draft.coins, action.payload);
+                break;
+            case FETCH_COIN_LIST_START:
+                draft.coinList = null;
+                break;
+            case FETCH_COIN_LIST_SUCCESS:
+                draft.coinList = action.payload;
+                break;
+            case FETCH_COIN_LIST_FAIL:
+                draft.coinList = null;
                 break;
             case STORAGE.LOADED:
                 return action.payload.wallet.fiat;

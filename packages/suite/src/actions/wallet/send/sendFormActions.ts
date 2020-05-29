@@ -171,7 +171,8 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const { send, fiat, selectedAccount } = getState().wallet;
+    const { send, selectedAccount } = getState().wallet;
+    const fiat = getState().wallet.fiat.coins;
     if (!send || !fiat || selectedAccount.status !== 'loaded') return null;
     const { account, network } = selectedAccount;
 
@@ -207,7 +208,8 @@ export const handleFiatSelectChange = (
     localCurrency: Output['localCurrency']['value'],
     outputId: number,
 ) => (dispatch: Dispatch, getState: GetState) => {
-    const { fiat, send, selectedAccount } = getState().wallet;
+    const { send, selectedAccount } = getState().wallet;
+    const fiat = getState().wallet.fiat.coins;
     if (!fiat || !send || selectedAccount.status !== 'loaded') return null;
     const { account } = selectedAccount;
 
@@ -249,7 +251,8 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const { fiat, send, selectedAccount } = getState().wallet;
+    const { send, selectedAccount } = getState().wallet;
+    const fiat = getState().wallet.fiat.coins;
     if (!fiat || !send || selectedAccount.status !== 'loaded') return null;
     const { network } = selectedAccount;
     const output = getOutput(send.outputs, outputId);
@@ -275,7 +278,8 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
     Click on "set max"
  */
 export const setMax = (outputIdIn?: number) => async (dispatch: Dispatch, getState: GetState) => {
-    const { fiat, send, selectedAccount } = getState().wallet;
+    const { send, selectedAccount } = getState().wallet;
+    const fiat = getState().wallet.fiat.coins;
 
     if (!fiat || !send || selectedAccount.status !== 'loaded') return null;
     const { account } = selectedAccount;
