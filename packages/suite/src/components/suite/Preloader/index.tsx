@@ -5,6 +5,7 @@ import FocusLock from 'react-focus-lock';
 import { SUITE } from '@suite-actions/constants';
 import Loading from '@suite-components/Loading';
 import { SuiteLayout } from '@suite-components';
+import InitialLoading from './components/InitialLoading';
 import DiscoveryLoader from '@suite-components/DiscoveryLoader';
 import Modals from '@suite-components/modals';
 import * as routerActions from '@suite-actions/routerActions';
@@ -66,29 +67,6 @@ type Props = ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps> & {
         children: React.ReactNode;
     };
-
-const InitialLoading = () => {
-    const [seconds, setSeconds] = useState(0);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setSeconds(seconds => seconds + 1);
-        }, 1000);
-
-        return () => {
-            clearInterval(interval);
-        };
-    }, []);
-
-    useEffect(() => {
-        console.log('seconds', seconds);
-        if (seconds > 40) {
-            throw Error('Loading takes too long!');
-        }
-    }, [seconds]);
-
-    return <Loading noBackground />;
-};
 
 const getSuiteApplicationState = (props: Props) => {
     const { loaded, transport, device, getDiscoveryAuthConfirmationStatus, router } = props;
