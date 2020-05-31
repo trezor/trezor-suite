@@ -1,0 +1,22 @@
+{
+  "short_name": "Trezor Wallet",
+  "name": "Trezor Wallet",
+  "description": "A webwallet using Trezor as a private key storage",
+  "icons": [
+    {
+      "src": "/wallet/static/images/icons/192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/wallet/static/images/icons/512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/wallet",
+  "scope": "/wallet",
+  "background_color": "#e3e3e3",
+  "display": "standalone",
+  "theme_color": "#212121"
+}

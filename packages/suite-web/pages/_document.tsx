@@ -47,6 +47,11 @@ export default class MyDocument extends Document {
                         rel="stylesheet"
                         href={resolveStaticPath('fonts/fonts.css')}
                     />
+                    <meta name="viewport" content="width=device-width, initial-scale=1" />
+                    <link
+                        rel="manifest"
+                        href={resolveStaticPath('browser-detection/manifest.json')}
+                    />
                 </Head>
                 <body>
                     <Main />
