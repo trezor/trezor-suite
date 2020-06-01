@@ -1,3 +1,5 @@
+// @stable
+
 describe('Onboarding - unexpected states', () => {
     beforeEach(() => {
         cy.task('stopEmu');

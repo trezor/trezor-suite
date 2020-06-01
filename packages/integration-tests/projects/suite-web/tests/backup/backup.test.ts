@@ -1,5 +1,5 @@
-// @retries=3
-// @stable
+// @retries=2
+// @beta
 
 describe('Backup', () => {
     beforeEach(() => {
@@ -66,7 +66,6 @@ describe('Backup', () => {
         cy.log('at this moment, after modal was closed and opened again, no checkbox should be checked');
         cy.getTestElement('@backup/check-item/understands-what-seed-is').should('not.be.checked');
     });
-
 
     it('User is doing backup with device A -> disconnects device A -> connects device B with backup already finished', () => {
         cy.getTestElement('@notification/no-backup/button').click();

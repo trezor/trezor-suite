@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
+
+// @stable
+
 describe('Stories of device remembering', () => {
     beforeEach(() => {
         cy.task('stopEmu');

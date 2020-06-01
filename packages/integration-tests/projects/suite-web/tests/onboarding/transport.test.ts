@@ -1,3 +1,5 @@
+// @stable
+
 describe('Onboarding - transport webusb/bridge', () => {
     beforeEach(() => {
         cy.task('stopEmu');

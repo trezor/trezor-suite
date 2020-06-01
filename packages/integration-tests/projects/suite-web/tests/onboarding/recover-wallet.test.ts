@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
+// @beta 
+
 describe('Onboarding - recover wallet', () => {
     beforeEach(() => {
         cy.task('stopEmu');
@@ -61,7 +63,7 @@ describe('Onboarding - recover wallet', () => {
     });
 
     // todo: test flaky: device disconnected during action error
-    it.skip('Model 1', () => {
+    it('Model 1', () => {
         // todo: acquire device problem with model T1 emu, but why? stop and start bridge is sad workaround :(
         cy.task('stopBridge');
         cy.task('startEmu', { version: '1.9.0', wipe: true });

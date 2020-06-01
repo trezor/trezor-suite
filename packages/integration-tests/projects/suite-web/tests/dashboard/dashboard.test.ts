@@ -1,3 +1,5 @@
+// @stable
+
 describe('Dashboard', () => {
     beforeEach(() => {
         cy.task('startEmu', { version: '2.1.4', wipe: true });

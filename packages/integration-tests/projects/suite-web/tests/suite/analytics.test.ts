@@ -1,3 +1,5 @@
+// @stable
+
 describe('Analytics', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });

@@ -1,3 +1,5 @@
+// @stable
+
 describe('Onboarding - hologram', () => {
     beforeEach(() => {
         cy.task('stopEmu')

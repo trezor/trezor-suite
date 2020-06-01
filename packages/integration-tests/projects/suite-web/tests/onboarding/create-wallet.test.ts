@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
+// @beta
+
 describe('Onboarding - create wallet', () => {
     beforeEach(() => {
         cy.task('stopEmu');
@@ -12,7 +14,7 @@ describe('Onboarding - create wallet', () => {
     });
 
     // todo: { wipe: true } does not work now with model 1
-    it.skip('Model 1', () => {
+    it('Model 1', () => {
         cy.getTestElement('@onboarding/path-used-button').click()
         cy.getTestElement('@onboarding/pair-device-step');
         cy.task('startEmu', { version: '1.8.3', wipe: true });

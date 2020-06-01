@@ -1,3 +1,5 @@
+// @stable
+
 describe('Firmware', () => {
     beforeEach(() => {
         cy.task('stopEmu');

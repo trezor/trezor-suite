@@ -1,3 +1,5 @@
+// @stable
+
 describe('Suite initial run', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();

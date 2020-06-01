@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
+// @beta
+
 describe('Recovery - dry run', () => {
     beforeEach(() => {
         cy.task('stopEmu');

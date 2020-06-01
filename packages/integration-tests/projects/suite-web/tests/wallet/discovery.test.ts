@@ -1,5 +1,7 @@
 import { NETWORKS } from '@wallet-config';
 
+// @beta
+
 describe('Discovery', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
@@ -12,7 +14,7 @@ describe('Discovery', () => {
     });
 
     // todo: this test is potentially flaky. I maybe want to introduce two category of tests.
-    it.skip('go to wallet settings page, activate all coins and see that there is equal number of records on dashboard', () => {
+    it('go to wallet settings page, activate all coins and see that there is equal number of records on dashboard', () => {
         cy.getTestElement('@settings/wallet/coins-group/mainnet/activate-all').click();
         cy.getTestElement('@settings/wallet/coins-group/testnet/activate-all').click({
             force: true,
@@ -27,7 +29,7 @@ describe('Discovery', () => {
     });
 
     // todo: I ll need to do some fixes to tests, but in next PR
-    it.skip(`
+    it(`
         1. connect model 2
         2. go to settings/coins
         3. disable all networks, enable XRP

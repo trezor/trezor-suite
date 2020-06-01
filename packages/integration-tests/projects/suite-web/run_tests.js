@@ -32,7 +32,7 @@ const grepForValue = (word, path) => {
 function getTestFiles() {
     const {stage} = argv;
     let gc;
-    if (!stage) {
+    if (stage) {
         gc = grepCommand(stage.split(',').join('\\|'))
     } else {
         gc = grepCommand();
@@ -47,15 +47,16 @@ async function runTests() {
     } = process.env;
 
     const finalTestFiles = getTestFiles().sort((a, b) => a.localeCompare(b));
-    let totalRetries = 0;
 
     if (!finalTestFiles.length) {
         console.log('[run_tests.js] nothing to test!');
         return;
     }
 
+    console.log('[run_tests.js] test files after all filters:')
     console.log(finalTestFiles);
 
+    let totalRetries = 0;
     let failedTests = 0;
 
     for (let i = 0; i < finalTestFiles.length; i++) {

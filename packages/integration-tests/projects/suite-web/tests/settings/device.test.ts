@@ -1,6 +1,8 @@
 import CONSTANTS from '../../constants';
 import { homescreensT2 } from '@suite-constants';
 
+// @stable
+
 describe('Device settings', () => {
     beforeEach(() => {
         cy.task('stopEmu');

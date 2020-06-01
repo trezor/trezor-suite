@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
+
+// @stable
+
 const FIRST_DEVICE_PATH = '1';
 const SECOND_DEVICE_PATH = '2';
 
