@@ -23,9 +23,11 @@
         "@types/styled-components": "^5.0.1",
         "react-select": "^3.1.0",
         "react-svg": "^11.0.15",
-        "react-switch": "^5.0.1"
+        "react-switch": "^5.0.1",
+        "react-is": "16.13.1"
     },
     "devDependencies": {
+        "@storybook/core": "5.3.19",
         "@storybook/addon-actions": "^5.3.17",
         "@storybook/addon-centered": "^5.3.17",
         "@storybook/addon-info": "5.3.17",
