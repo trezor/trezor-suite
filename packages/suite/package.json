@@ -44,6 +44,7 @@
         "react-qr-reader": "^2.2.1",
         "react-qr-svg": "^2.2.1",
         "react-redux": "^7.2.0",
+        "react-is": "16.13.1",
         "react-toastify": "^5.5.0",
         "react-transition-group": "^4.2.2",
         "react-window": "^1.8.4",
@@ -90,6 +91,8 @@
         "stylelint": "^10.0.1",
         "stylelint-config-recommended": "^2.2.0",
         "stylelint-config-styled-components": "^0.1.1",
-        "typescript-styled-plugin": "^0.15.0"
+        "typescript-styled-plugin": "^0.15.0",
+        "regenerator-runtime": "0.13.5",
+        "core-js-bundle": "3.6.5"
     }
 }

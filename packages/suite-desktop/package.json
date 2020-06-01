@@ -89,8 +89,10 @@
         "electron-localshortcut": "^3.2.1",
         "electron-next": "^3.1.5",
         "electron-store": "^5.1.1",
-        "next": "^9.3.3",
+        "next": "^9.4.4",
         "os": "^0.1.1",
+        "react": "16.9.0",
+        "react-dom": "16.9.0",
         "ps-list": "6.3.0",
         "worker-loader": "^2.0.0"
     },
