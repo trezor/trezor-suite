@@ -1,9 +1,6 @@
 // @retries=3
 // @stable
 
-// backup tests are first in order and also fail in most cases, try to skip them for a while 
-// and see if tests that are second will display the same behavior. I need to find out if I am 
-// doing something wrong here or not.
 describe('Backup', () => {
     beforeEach(() => {
         cy.task('stopEmu');
@@ -61,9 +58,8 @@ describe('Backup', () => {
         cy.getTestElement('@backup/error-message');
     });
 
-    it.only('Backup should reset if modal is closed', () => {
+    it('Backup should reset if modal is closed', () => {
         cy.getTestElement('@notification/no-backup/button').click();
-        cy.getTestElement('fooo', { timeout: 1});
         cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
         cy.getTestElement('@backup/close-button').click();
         cy.getTestElement('@notification/no-backup/button').click();

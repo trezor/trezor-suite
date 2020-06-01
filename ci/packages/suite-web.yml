@@ -1,11 +1,11 @@
-    suite-web build:
-        stage: build
-        script:
-            - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/wallet yarn workspace @trezor/suite-web build
-        artifacts:
-            expire_in: 7 days
-            paths:
-                - packages/suite-web/build
+    # suite-web build:
+    #     stage: build
+    #     script:
+    #         - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/wallet yarn workspace @trezor/suite-web build
+    #     artifacts:
+    #         expire_in: 7 days
+    #         paths:
+    #             - packages/suite-web/build
 
     # suite-web deploy dev:
     #     stage: deploy to dev servers
