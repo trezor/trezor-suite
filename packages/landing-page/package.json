@@ -13,9 +13,12 @@
     },
     "dependencies": {
         "next": "^9.3.3",
+        "react": "16.9.0",
+        "react-dom": "16.9.0",
         "@trezor/components": "1.0.0"
     },
     "devDependencies": {
+        "webpack": "4.43.0",
         "@types/next": "^9.0.0",
         "@types/react": "^16.7.11",
         "@types/react-dom": "^16.0.11",
