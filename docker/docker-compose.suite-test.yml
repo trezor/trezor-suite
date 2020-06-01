@@ -24,9 +24,9 @@ services:
       - DISPLAY=$DISPLAY
       - QT_X11_NO_MITSHM=1
     working_dir: /e2e
-    entrypoint: bash -c "yarn && cypress open --project /e2e/packages/integration-tests/projects/suite-web"
+    # entrypoint: bash -c "yarn && cypress open --project /e2e/packages/integration-tests/projects/suite-web"
     # todo: keeping this command here, useful for local debugging of run_tests.js
-    # entrypoint: bash -c "node ./packages/integration-tests/projects/suite-web/run_tests.js --stage='@foo'"
+    entrypoint: bash -c "node ./packages/integration-tests/projects/suite-web/run_tests.js"
     volumes:
       - ../:/e2e
       - /tmp/.X11-unix:/tmp/.X11-unix:rw

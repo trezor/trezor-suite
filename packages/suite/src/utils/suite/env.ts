@@ -7,3 +7,8 @@
 export const getUserAgent = () => {
     return navigator.userAgent;
 };
+
+export const isAndroid = () => {
+    if (typeof navigator === 'undefined') return;
+    return navigator.appVersion.includes('Android');
+};

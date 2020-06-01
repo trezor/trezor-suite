@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { Modal, Button, Link, Select } from '@trezor/components';
 import { URLS } from '@suite-constants';
-import { getLinuxPackage } from '@suite-utils/dom';
+import { getLinuxPackage } from '@suite-utils/bridge';
 import { InjectedModalApplicationProps } from '@suite-types';
 
 const Wrapper = styled.div`
