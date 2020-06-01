@@ -2,7 +2,6 @@
     Heavily inspired by Mattermost, https://github.com/mattermost/mattermost-webapp/blob/master/e2e/run_tests.js good job guys.
 */
 
-const chalk = require('chalk');
 const cypress = require('cypress');
 const shell = require('shelljs');
 const argv = require('yargs').argv;
@@ -18,7 +17,7 @@ const grepCommand = (word = '', args = '-rlIw', path=TEST_DIR) => {
 };
 
 const grepFiles = (command) => {
-    return shell.exec(command, {silent: false})
+    return shell.exec(command, {silent: true})
         .stdout
         .split('\n')
         .filter((f) => f.includes('.test.'));
@@ -26,38 +25,32 @@ const grepFiles = (command) => {
 
 const grepForValue = (word, path) => {
     const gc = grepCommand(word, '-rIw', path);
-    const result =  shell.exec(gc, {silent: false}).stdout
+    const result =  shell.exec(gc, {silent: true}).stdout
     return result.replace(`// ${word}=`, '')
 }
 
 function getTestFiles() {
     const {stage} = argv;
-    const gc = grepCommand(stage.split(',').join('\\|'));
+    let gc;
+    if (!stage) {
+        gc = grepCommand(stage.split(',').join('\\|'))
+    } else {
+        gc = grepCommand();
+    }
     return grepFiles(gc);
 }
 
 async function runTests() {
     const {
-        BRANCH,
-        BROWSER,
-        BUILD_ID,
+        BROWSER = 'chrome',
         CYPRESS_baseUrl, // eslint-disable-line camelcase
-        DIAGNOSTIC_WEBHOOK_URL,
-        HEADLESS,
-        TEST_DASHBOARD_URL,
-        TYPE,
-        WEBHOOK_URL,
     } = process.env;
 
-    console.log('CYPRESS_baseUrl', CYPRESS_baseUrl);
-    const browser = BROWSER || 'chrome';
-
-    const initialTestFiles = getTestFiles().sort((a, b) => a.localeCompare(b));
-    
-    finalTestFiles = initialTestFiles;
+    const finalTestFiles = getTestFiles().sort((a, b) => a.localeCompare(b));
+    let totalRetries = 0;
 
     if (!finalTestFiles.length) {
-        console.log(chalk.red('Nothing to test!'));
+        console.log('[run_tests.js] nothing to test!');
         return;
     }
 
@@ -70,22 +63,19 @@ async function runTests() {
 
         const retries = Number(grepForValue('@retries', testFile));
 
-        // Log which files were being tested
-        // console.log(chalk.magenta.bold(`${invert ? 'All Except --> ' : ''}${testStage}${stage && group ? '| ' : ''}${testGroup}`));
-        // console.log(chalk.magenta(`(Testing ${i + 1} of ${finalTestFiles.length})  - `, testFile));
-
         const spec = __dirname + testFile.substr(testFile.lastIndexOf('/tests'));
         let testRunNumber = 0;
 
         const allowedRuns = !isNaN(retries) ? retries + 1 : 1;
         
-        console.log('allowedRuns', allowedRuns);
+        console.log(`[run_tests.js] testing ${testFile}`);
+        console.log(`[run_tests.js] allowed to run ${allowedRuns} times`);
 
         while(testRunNumber < allowedRuns) {
             testRunNumber++;
 
             const {totalFailed, ...result } = await cypress.run({
-                browser,
+                browser: BROWSER,
                 // headless,
                 headed: true,
                 spec,
@@ -113,9 +103,12 @@ async function runTests() {
                 failedTests += totalFailed;
             }
 
+            totalRetries++;
             console.log(`[run_tests.js] failed in run number ${testRunNumber} of ${allowedRuns}`)
         }
     }
+
+    console.log(`[run_tests.js] retry ratio: ${((totalRetries / finalTestFiles.length) * 100).toFixed(2)}% `)
 
     process.exit(failedTests);
 }
