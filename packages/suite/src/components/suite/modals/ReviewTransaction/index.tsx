@@ -1,13 +1,12 @@
-import React from 'react';
-import styled from 'styled-components';
-import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
-import { Translation, AccountLabeling, Badge } from '@suite-components';
+import { AccountLabeling, FiatValue, Translation } from '@suite-components';
+import { useDeviceActionLocks } from '@suite-hooks';
+import { Button, colors, Modal, variables } from '@trezor/components';
+import { Account } from '@wallet-types';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
-import { Modal, Button, colors, variables } from '@trezor/components';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { useDeviceActionLocks } from '@suite-hooks';
-import { Account } from '@wallet-types';
+import React from 'react';
+import styled from 'styled-components';
 import { fromWei, toWei } from 'web3-utils';
 
 import { Props } from './Container';
@@ -20,6 +19,10 @@ const Box = styled.div`
     align-items: center;
     padding: 12px;
     margin-bottom: 10px;
+`;
+
+const Symbol = styled.div`
+    margin-right: 4px;
 `;
 
 const Label = styled.div`
@@ -54,7 +57,7 @@ const Buttons = styled.div`
     justify-content: space-between;
 `;
 
-const BadgeWrapper = styled.div`
+const FiatValueWrapper = styled.div`
     margin-left: 10px;
     display: flex;
     flex: 1;
@@ -77,25 +80,21 @@ const getFeeValue = (
 export default ({
     send,
     account,
-    settings,
     modalActions,
     sendFormActionsBitcoin,
     sendFormActionsRipple,
     sendFormActionsEthereum,
-    fiat,
 }: Props) => {
     if (!account || !send) return null;
     const { outputs } = send;
     const { token } = send.networkTypeEthereum;
-    const { networkType } = account;
-    const { localCurrency } = settings;
+    const { networkType, symbol } = account;
     const transactionInfo = getTransactionInfo(account.networkType, send);
     if (!transactionInfo || transactionInfo.type === 'error') return null;
     const upperCaseSymbol = account.symbol.toUpperCase();
-    const fiatVal = fiat.coins.find(fiatItem => fiatItem.symbol === account.symbol);
-    const outputSymbol = token ? token.symbol!.toUpperCase() : account.symbol.toUpperCase();
+    const outputSymbol = token ? token.symbol!.toUpperCase() : symbol.toUpperCase();
     const [isEnabled] = useDeviceActionLocks();
-    const fee = getFeeValue(transactionInfo, networkType, account.symbol);
+    const fee = getFeeValue(transactionInfo, networkType, symbol);
 
     return (
         <Modal
@@ -141,7 +140,7 @@ export default ({
                         <Translation id="TR_ADDRESS_FROM" />
                     </Label>
                     <Value>
-                        {upperCaseSymbol} <AccountLabeling account={account} />
+                        <Symbol>{upperCaseSymbol}</Symbol> <AccountLabeling account={account} />
                     </Value>
                 </Box>
                 {outputs.map(output => {
@@ -163,22 +162,13 @@ export default ({
                                 </Label>
                                 <Value>
                                     {totalAmount} {outputSymbol}
-                                    {output.amount.value &&
-                                        fiatVal &&
-                                        fiatVal.current &&
-                                        networkType !== 'ethereum' && (
-                                            <BadgeWrapper>
-                                                <Badge isGray>
-                                                    {toFiatCurrency(
-                                                        totalAmount,
-                                                        localCurrency,
-                                                        fiatVal.current.rates,
-                                                        true,
-                                                    )}{' '}
-                                                    {localCurrency.toUpperCase()}
-                                                </Badge>
-                                            </BadgeWrapper>
-                                        )}
+                                    <FiatValueWrapper>
+                                        <FiatValue
+                                            amount={totalAmount}
+                                            symbol={symbol}
+                                            badge={{ color: 'gray' }}
+                                        />
+                                    </FiatValueWrapper>
                                 </Value>
                             </Box>
                         </OutputWrapper>
@@ -193,20 +183,10 @@ export default ({
                         )}
                     </Label>
                     <Value>
-                        {getFeeValue(transactionInfo, networkType, account.symbol)} {outputSymbol}
-                        {fee && fiatVal && networkType !== 'ethereum' && (
-                            <BadgeWrapper>
-                                <Badge isGray>
-                                    {toFiatCurrency(
-                                        fee,
-                                        localCurrency,
-                                        fiatVal.current?.rates,
-                                        true,
-                                    )}{' '}
-                                    {localCurrency.toUpperCase()}
-                                </Badge>
-                            </BadgeWrapper>
-                        )}
+                        {fee} {outputSymbol}
+                        <FiatValueWrapper>
+                            <FiatValue amount={fee} symbol={symbol} badge={{ color: 'gray' }} />
+                        </FiatValueWrapper>
                     </Value>
                 </Box>
             </Content>

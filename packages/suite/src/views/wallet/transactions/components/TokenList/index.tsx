@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import styled, { css } from 'styled-components';
 import { Account } from '@wallet-types';
-import { Card, FiatValue, Badge, HiddenPlaceholder } from '@suite-components';
+import { Card, FiatValue, HiddenPlaceholder } from '@suite-components';
 import { variables, colors, Icon, Link } from '@trezor/components';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
@@ -97,13 +97,11 @@ const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
                             <Col isTestnet={isTestnet} justify="right">
                                 <FiatWrapper>
                                     {t.balance && t.symbol && (
-                                        <HiddenPlaceholder>
-                                            <FiatValue amount={t.balance} symbol={t.symbol}>
-                                                {({ value }) =>
-                                                    value ? <Badge>{value}</Badge> : null
-                                                }
-                                            </FiatValue>
-                                        </HiddenPlaceholder>
+                                        <FiatValue
+                                            amount={t.balance}
+                                            symbol={t.symbol}
+                                            badge={{ color: 'blue' }}
+                                        />
                                     )}
                                 </FiatWrapper>
                             </Col>

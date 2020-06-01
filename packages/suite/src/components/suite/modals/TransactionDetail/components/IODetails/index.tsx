@@ -153,11 +153,11 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                                                 </FiatValue>
                                             </HiddenPlaceholder>
                                             <HiddenPlaceholder>
-                                                <FiatValue amount={inputAmount} symbol={tx.symbol}>
-                                                    {({ value }) =>
-                                                        value ? <Badge>{value}</Badge> : null
-                                                    }
-                                                </FiatValue>
+                                                <FiatValue
+                                                    amount={inputAmount}
+                                                    symbol={tx.symbol}
+                                                    badge={{ color: 'gray' }}
+                                                />
                                             </HiddenPlaceholder>
                                         </BadgesWrapper>
                                     </IOBoxAmountWrapper>
@@ -203,13 +203,11 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                                                     }
                                                 </FiatValue>
                                             </HiddenPlaceholder>
-                                            <HiddenPlaceholder>
-                                                <FiatValue amount={outputAmount} symbol={tx.symbol}>
-                                                    {({ value }) =>
-                                                        value ? <Badge>{value}</Badge> : null
-                                                    }
-                                                </FiatValue>
-                                            </HiddenPlaceholder>
+                                            <FiatValue
+                                                amount={outputAmount}
+                                                symbol={tx.symbol}
+                                                badge={{ color: 'blue' }}
+                                            />
                                         </BadgesWrapper>
                                     </IOBoxAmountWrapper>
                                 </IOBox>

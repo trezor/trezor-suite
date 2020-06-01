@@ -170,10 +170,9 @@ export default React.memo((props: Props) => {
                                 amount={targetAmount}
                                 symbol={symbol}
                                 source={transaction.rates}
+                                badge={{ color: 'blue', size: 'small' }}
                                 useCustomSource
-                            >
-                                {({ value }) => value && <Badge isSmall>{value}</Badge>}
-                            </FiatValue>
+                            />
                         </StyledHiddenPlaceholder>
                     </ColFiat>
                 )}

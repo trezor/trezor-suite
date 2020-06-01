@@ -1,5 +1,4 @@
-import { QuestionTooltip, Translation } from '@suite-components';
-import Badge from '@suite-components/Badge';
+import { QuestionTooltip, Translation, Badge } from '@suite-components';
 import { capitalizeFirstLetter } from '@suite-utils/string';
 import { colors, P, Select, variables, Button } from '@trezor/components';
 import { Account } from '@wallet-types';
@@ -200,7 +199,6 @@ export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
                                     formatNetworkAmount(transactionInfo.fee, symbol),
                                     localCurrency,
                                     fiatVal.current?.rates,
-                                    true,
                                 )}{' '}
                                 {localCurrency}
                             </Badge>
