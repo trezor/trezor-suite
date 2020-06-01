@@ -1,5 +1,4 @@
-import { LastWeekRates } from '@wallet-reducers/fiatRatesReducer';
-import { FiatTicker } from '@wallet-types';
+import { LastWeekRates, FiatTicker } from '@wallet-types/fiatRates';
 
 const COINGECKO_BASE_URL = 'https://api.coingecko.com/';
 
@@ -21,7 +20,7 @@ export const fetchCoinList = async (): Promise<any> => {
 };
 
 /**
- * Build coinUrl from the `ticker.url` if available.
+ * Build coinUrl from the `ticker.coinData` if available.
  * Otherwise fetch coin ID from CoinGecko and use that.
  *
  * @param {FiatTicker} ticker
@@ -29,14 +28,9 @@ export const fetchCoinList = async (): Promise<any> => {
  */
 const buildCoinUrl = async (ticker: FiatTicker) => {
     let coinUrl: string | null = null;
-    const { symbol } = ticker;
-    if (ticker.url) {
-        coinUrl = ticker.url;
-    } else if (symbol) {
+    const { coinData } = ticker;
+    if (coinData) {
         // fetch coin id from coingecko and use it to build URL for fetching rates
-        const coinList = await fetchCoinList();
-        const coinData = coinList.find((t: any) => t.symbol === symbol.toLowerCase());
-        if (!coinData) return null;
         coinUrl = `${COINGECKO_BASE_URL}/api/v3/coins/${coinData.id}`;
     }
     return coinUrl;

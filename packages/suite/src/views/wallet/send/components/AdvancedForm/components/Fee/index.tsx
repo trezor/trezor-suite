@@ -134,7 +134,7 @@ export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
     const feeLevels = feeInfo.levels;
     const { localCurrency } = settings;
     const { networkType, symbol } = account;
-    const fiatVal = fiat.find(fiatItem => fiatItem.symbol === symbol);
+    const fiatVal = fiat.coins.find(fiatItem => fiatItem.symbol === symbol);
     return (
         <Wrapper>
             <Row>

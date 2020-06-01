@@ -2,7 +2,7 @@ import Component from './index';
 import { AppState } from '@suite-types';
 import { Network } from '@wallet-types';
 import { connect } from 'react-redux';
-import { TimestampedRates } from '@wallet-reducers/fiatRatesReducer';
+import { TimestampedRates } from '@wallet-types/fiatRates';
 
 const mapStateToProps = (state: AppState) => ({
     fiat: state.wallet.fiat,

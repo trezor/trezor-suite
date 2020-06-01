@@ -9,7 +9,7 @@ describe.skip('Backup', () => {
         cy.task('setupEmu');
 
         cy.viewport(1024, 768).resetDb();
-        cy.visit('/');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
     });
 
