@@ -118,7 +118,7 @@ export default ({ settings, selectedAccount, fiat }: Props) => {
 
     const { account } = selectedAccount;
     const { symbol, formattedBalance } = account;
-    const fiatBalance = getAccountFiatBalance(account, localCurrency, fiat);
+    const fiatBalance = getAccountFiatBalance(account, localCurrency, fiat.coins);
     const MAX_AGE = 5; // after 5 minutes the ticker will show tooltip with info about last update instead of blinking LIVE text
     const rateAge = (timestamp: number) => differenceInMinutes(new Date(), new Date(timestamp));
 

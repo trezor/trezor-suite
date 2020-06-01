@@ -87,7 +87,11 @@ const WalletInstance = ({
     const discoveryProcess = instance.state ? getDiscovery(instance.state) : null;
     const deviceAccounts = accountUtils.getAllAccounts(instance.state, accounts);
     const accountsCount = deviceAccounts.length;
-    const instanceBalance = accountUtils.getTotalFiatBalance(deviceAccounts, localCurrency, fiat);
+    const instanceBalance = accountUtils.getTotalFiatBalance(
+        deviceAccounts,
+        localCurrency,
+        fiat.coins,
+    );
     const analytics = useAnalytics();
 
     const getDataTestBase = () => {

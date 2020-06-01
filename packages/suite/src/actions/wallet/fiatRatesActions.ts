@@ -1,9 +1,10 @@
 import TrezorConnect, { AccountTransaction, BlockchainFiatRatesUpdate } from 'trezor-connect';
-import { getUnixTime } from 'date-fns';
+import { getUnixTime, differenceInSeconds } from 'date-fns';
 import {
     fetchCurrentFiatRates,
     getFiatRatesForTimestamps,
     fetchLastWeekRates,
+    fetchCoinList,
 } from '@suite/services/coingecko';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import { splitTimestampsByInterval, getBlockbookSafeTime } from '@suite-utils/date';
@@ -14,6 +15,9 @@ import {
     LAST_WEEK_RATES_UPDATE,
     TX_FIAT_RATE_UPDATE,
     RATE_REMOVE,
+    FETCH_COIN_LIST_START,
+    FETCH_COIN_LIST_SUCCESS,
+    FETCH_COIN_LIST_FAIL,
 } from './constants/fiatRatesConstants';
 import {
     Network,
@@ -22,10 +26,21 @@ import {
     WalletAccountTransaction,
     FiatTicker,
 } from '@wallet-types';
+import { CoinListItem } from '@wallet-types/fiatRates';
 
 type FiatRatesPayload = NonNullable<CoinFiatRates['current']>;
 
 export type FiatRatesActions =
+    | {
+          type: typeof FETCH_COIN_LIST_START;
+      }
+    | {
+          type: typeof FETCH_COIN_LIST_SUCCESS;
+          payload: CoinListItem[];
+      }
+    | {
+          type: typeof FETCH_COIN_LIST_FAIL;
+      }
     | {
           type: typeof RATE_UPDATE;
           payload: FiatRatesPayload;
@@ -71,7 +86,7 @@ export const remove = (symbol: string, mainNetworkSymbol?: string) => (dispatch:
 
 export const removeRatesForDisabledNetworks = () => (dispatch: Dispatch, getState: GetState) => {
     const { enabledNetworks } = getState().wallet.settings;
-    const { fiat } = getState().wallet;
+    const fiat = getState().wallet.fiat.coins;
     fiat.forEach(f => {
         const rateNetwork = (f.mainNetworkSymbol ?? f.symbol) as Network['symbol'];
         if (!enabledNetworks.includes(rateNetwork)) {
@@ -80,19 +95,62 @@ export const removeRatesForDisabledNetworks = () => (dispatch: Dispatch, getStat
     });
 };
 
+export const getCoinData = (symbol: string) => async (_dispatch: Dispatch, getState: GetState) => {
+    const { coinList } = getState().wallet.fiat;
+    const coinData = coinList?.find(d => d.symbol === symbol.toLowerCase());
+    return coinData;
+};
+
+export const updateCoinList = () => async (dispatch: Dispatch, getState: GetState) => {
+    if (getState().wallet.fiat.coinList) return;
+    dispatch({
+        type: FETCH_COIN_LIST_START,
+    });
+    try {
+        const list = await fetchCoinList();
+        dispatch({
+            type: FETCH_COIN_LIST_SUCCESS,
+            payload: list,
+        });
+    } catch (error) {
+        console.error(error);
+        dispatch({
+            type: FETCH_COIN_LIST_FAIL,
+        });
+    }
+};
+
 /**
  * Fetch and update current fiat rates for a given ticker
  * Primary source of rates is TrezorConnect, coingecko serves as a fallback
  *
  * @param {FiatTicker} ticker
  */
-export const updateCurrentRates = (ticker: FiatTicker) => async (
+export const updateCurrentRates = (ticker: FiatTicker, maxAge = MAX_AGE) => async (
     dispatch: Dispatch,
-    _getState: GetState,
+    getState: GetState,
 ) => {
+    if (maxAge > 0) {
+        const existingRates = getState().wallet.fiat.coins.find(
+            t => t.symbol === ticker.symbol && t.mainNetworkSymbol === ticker.mainNetworkSymbol,
+        )?.current;
+
+        // don't fetch if rates is fresh enough
+        if (existingRates) {
+            if (differenceInSeconds(new Date(), new Date(existingRates.ts)) < maxAge) {
+                return;
+            }
+        }
+    }
+
     const response = await TrezorConnect.blockchainGetCurrentFiatRates({ coin: ticker.symbol });
     try {
-        const results = response.success ? response.payload : await fetchCurrentFiatRates(ticker);
+        const results = response.success
+            ? response.payload
+            : await fetchCurrentFiatRates({
+                  ...ticker,
+                  coinData: await dispatch(getCoinData(ticker.symbol)),
+              });
 
         if (results && results.rates) {
             // dispatch only if rates are not null/undefined
@@ -131,8 +189,9 @@ const getStaleTickers = (
     interval: number,
     includeTokens?: boolean,
 ) => (_dispatch: Dispatch, getState: GetState): FiatTicker[] => {
-    const { fiat } = getState().wallet;
+    const fiat = getState().wallet.fiat.coins;
     const { enabledNetworks } = getState().wallet.settings;
+    // TODO: FIAT.tickers is useless now
     const watchedCoinTickers = FIAT.tickers.filter(t => enabledNetworks.includes(t.symbol));
     const tokenTickers = fiat.filter(t => !!t.mainNetworkSymbol);
 
@@ -170,7 +229,7 @@ export const updateStaleRates = () => async (dispatch: Dispatch, _getState: GetS
                 true,
             ),
         );
-        const promises = staleTickers.map(t => dispatch(updateCurrentRates(t)));
+        const promises = staleTickers.map(t => dispatch(updateCurrentRates(t, 0)));
         await Promise.all(promises);
     } catch (error) {
         // todo: dispatch some error;
@@ -194,7 +253,7 @@ export const updateLastWeekRates = () => async (dispatch: Dispatch, getState: Ge
 
     const lastWeekStaleFn = (coinRates: CoinFiatRates) => {
         if (coinRates.lastWeek?.tickers[0]?.rates[localCurrency]) {
-            // if there is a rate for localCurrency then decided based on timestamp
+            // if there is a rate for localCurrency then decide based on timestamp
             return coinRates.lastWeek?.ts;
         }
         // no rates for localCurrency
@@ -211,7 +270,10 @@ export const updateLastWeekRates = () => async (dispatch: Dispatch, getState: Ge
         try {
             const results = response.success
                 ? response.payload
-                : await fetchLastWeekRates(ticker, localCurrency);
+                : await fetchLastWeekRates(
+                      { ...ticker, coinData: await dispatch(getCoinData(ticker.symbol)) },
+                      localCurrency,
+                  );
 
             if (results?.tickers) {
                 dispatch({
@@ -250,7 +312,10 @@ export const updateTxsRates = (account: Account, txs: AccountTransaction[]) => a
     try {
         const results = response.success
             ? response.payload
-            : await getFiatRatesForTimestamps({ symbol: account.symbol }, timestamps);
+            : await getFiatRatesForTimestamps(
+                  { symbol: account.symbol, coinData: await dispatch(getCoinData(account.symbol)) },
+                  timestamps,
+              );
 
         if (results?.tickers) {
             txs.forEach((tx, i) => {
@@ -288,7 +353,8 @@ let lastWeekTimeout: ReturnType<typeof setInterval>;
  * Called from blockchainActions.onConnect
  *
  */
-export const initRates = () => (dispatch: Dispatch) => {
+export const initRates = () => async (dispatch: Dispatch) => {
+    await dispatch(updateCoinList());
     dispatch(updateStaleRates());
     dispatch(updateLastWeekRates());
 

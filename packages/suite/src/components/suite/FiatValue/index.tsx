@@ -17,7 +17,7 @@ import FormattedNumber from '../FormattedNumber';
  */
 const FiatValue = ({ amount, symbol, fiatCurrency, source, useCustomSource, ...props }: Props) => {
     const targetCurrency = fiatCurrency ?? props.settings.localCurrency;
-    const currentFiatRates = props.fiat.find(f => f.symbol === symbol)?.current;
+    const currentFiatRates = props.fiat.coins.find(f => f.symbol === symbol)?.current;
     const ratesSource = useCustomSource ? source : currentFiatRates?.rates;
     const fiat = ratesSource ? toFiatCurrency(amount, targetCurrency, ratesSource) : null;
     if (fiat) {
