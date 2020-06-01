@@ -1,9 +1,11 @@
+// @retries=3
+// @stable
+
 // backup tests are first in order and also fail in most cases, try to skip them for a while 
 // and see if tests that are second will display the same behavior. I need to find out if I am 
 // doing something wrong here or not.
 describe('Backup', () => {
     beforeEach(() => {
-        // Cypress.currentTest.retries(3)
         cy.task('stopEmu');
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { needs_backup: true });
