@@ -25,6 +25,7 @@ const mapDispatchToProps = (_dispatch: Dispatch) => ({});
 
 interface OwnProps {
     messageId?: string;
+    isNested?: boolean;
     children: any;
 }
 
@@ -34,7 +35,9 @@ type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof m
  * When translationMode is enabled wraps a message with a Tooltip and adds styling to provide visual hint for translators
  */
 const HelperTooltip = (props: Props) => {
-    return props.translationMode ? (
+    // don't wrap with tooltip for messages that are nested in another message
+    // fixes https://github.com/trezor/trezor-suite/issues/1509
+    return props.translationMode && !props.isNested ? (
         <Tooltip
             placement="bottom"
             content={
