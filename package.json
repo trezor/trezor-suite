@@ -26,7 +26,7 @@
         "suite:dev": "yarn workspace @trezor/suite-web dev",
         "suite:dev:ios": "yarn workspace @trezor/suite-native dev:ios",
         "suite:dev:android": "yarn workspace @trezor/suite-native dev:android",
-        "suite:dev:desktop": "yarn workspace @trezor/suite-desktop dev:desktop",
+        "suite:dev:desktop": "yarn workspace @trezor/suite-desktop dev",
         "suite:build:web": "yarn workspace @trezor/suite-web build",
         "type-check": "yarn lerna run type-check",
         "lint": "yarn lerna run lint"
