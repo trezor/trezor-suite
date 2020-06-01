@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import * as Sentry from '@sentry/browser';
-import { H1, P, Button, variables } from '@trezor/components';
+import { H1, P, Button, variables, colors } from '@trezor/components';
 import { db } from '@suite/storage';
 
 const Wrapper = styled.div`
@@ -26,7 +26,7 @@ const Buttons = styled.div`
 `;
 
 const Separator = styled.div`
-    background: #dddddd;
+    background: ${colors.BLACK80};
     height: 1px;
     margin: 30px 0px;
     width: 80%;
