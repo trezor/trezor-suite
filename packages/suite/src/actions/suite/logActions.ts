@@ -30,7 +30,11 @@ export const reportToSentry = (error: any, attachLog = false) => (
         const { log } = getState();
         scope.setUser({ id: analytics.instanceId });
         if (attachLog) {
-            scope.setExtra('log', { ...log.entries });
+            scope.setExtra('log', [...log.entries]);
+            scope.setExtra(
+                'logtt',
+                log.entries.map(l => ({ ...l, message: { ...l.message } })),
+            );
         }
         Sentry.captureException(error);
     });
