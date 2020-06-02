@@ -87,7 +87,7 @@ const AmountCell = styled(Cell)`
     }
 `;
 
-const CoinBalanceWrapper = styled(CoinBalance)`
+const CoinBalanceWrapper = styled.div`
     font-family: ${variables.FONT_FAMILY.MONOSPACE};
     overflow: hidden;
     white-space: nowrap;
@@ -220,7 +220,9 @@ const Asset = React.memo(({ network, failed, cryptoValue }: Props) => {
             ) : (
                 <>
                     <AmountCell>
-                        <CoinBalanceWrapper value={cryptoValue} symbol={symbol} />
+                        <CoinBalanceWrapper>
+                            <CoinBalance value={cryptoValue} symbol={symbol} />
+                        </CoinBalanceWrapper>
 
                         <FiatValue amount={cryptoValue} symbol={symbol}>
                             {({ value }) =>
