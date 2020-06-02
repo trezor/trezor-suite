@@ -28,6 +28,8 @@ export default () => {
         if (setLayout) setLayout(undefined, undefined);
     }, [setLayout]);
 
+    throw Error('omg');
+
     return (
         <Wrapper data-test="@dashboard/index">
             <PortfolioCard />
