@@ -1,5 +1,5 @@
 // @retries=2
-// @foo
+// @beta
 
 describe('Backup', () => {
     beforeEach(() => {
@@ -58,7 +58,7 @@ describe('Backup', () => {
         cy.getTestElement('@backup/error-message');
     });
 
-    it.only('Backup should reset if modal is closed', () => {
+    it('Backup should reset if modal is closed', () => {
         cy.getTestElement('@notification/no-backup/button').click();
         cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
         cy.getTestElement('@backup/close-button').click();
