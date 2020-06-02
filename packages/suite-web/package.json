@@ -18,6 +18,7 @@
         "@sentry/integrations": "^5.15.5",
         "@trezor/suite": "20.5.1-beta",
         "@zeit/next-workers": "^1.0.0",
+        "@zeit/next-source-maps": "^0.0.3",
         "next": "^9.4.4",
         "next-redux-wrapper": "^5.0.0",
         "worker-loader": "^2.0.0"

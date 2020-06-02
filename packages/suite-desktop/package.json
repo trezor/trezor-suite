@@ -86,6 +86,7 @@
         "@sentry/integrations": "^5.15.5",
         "@zeit/next-workers": "^1.0.0",
         "electron-is-dev": "^1.1.0",
+        "@zeit/next-source-maps": "^0.0.3",
         "electron-localshortcut": "^3.2.1",
         "electron-next": "^3.1.5",
         "electron-store": "^5.1.1",
