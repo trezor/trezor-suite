@@ -63,6 +63,7 @@ const refresh = () => {
 
 interface StateProps {
     error: Error | null | undefined;
+    eventId: string | undefined;
 }
 
 const mapStateToProps = (state: AppState) => ({
@@ -75,12 +76,18 @@ type Props = ReturnType<typeof mapStateToProps>;
 class ErrorBoundary extends React.Component<Props, StateProps> {
     constructor(props: Props) {
         super(props);
-        this.state = { error: null };
+        this.state = { error: null, eventId: undefined };
     }
 
-    componentDidCatch(error: Error | null, _errorInfo: object) {
-        Sentry.configureScope(scope => {
+    componentDidCatch(error: Error | null, errorInfo: object) {
+        Sentry.withScope(scope => {
+            console.log('instance', this.props.analytics.instanceId);
+            console.log('log', JSON.stringify(this.props.log.entries));
+            scope.setExtras(errorInfo);
+            scope.setExtra('log', JSON.stringify(this.props.log.entries));
             scope.setUser({ id: this.props.analytics.instanceId });
+            const eventId = Sentry.captureException(error);
+            this.setState({ eventId });
         });
         this.setState({ error });
         // todo: not in development and in production only if user opts in.
@@ -95,7 +102,7 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
             // render fallback UI
             return (
                 <Wrapper>
-                    <H1>Error occurred</H1>
+                    <H1>Error occurred capturing on didcatch</H1>
                     <P textAlign="center">
                         It appears something is broken. You might let us know by sending report
                     </P>
@@ -113,7 +120,10 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
                     >
                         Attach log
                     </SendReportButton>
-                    <SendReportButton variant="primary" onClick={() => Sentry.showReportDialog()}>
+                    <SendReportButton
+                        variant="primary"
+                        onClick={() => Sentry.showReportDialog({ eventId: this.state.eventId })}
+                    >
                         Send report
                     </SendReportButton>
                     <Separator />
