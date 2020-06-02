@@ -54,7 +54,7 @@
 	"TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS": "Maximum {decimals} decimals allowed",
 	"TR_AMOUNT_IS_NOT_NUMBER": "Amount is not a number",
 	"TR_AMOUNT_IS_NOT_SET": "Amount is not set",
-	"TR_ASSETS": "Assets",
+	"TR_ASSETS": "Your Assets",
 	"TR_AUTH_CONFIRM_FAILED_RETRY": "Retry",
 	"TR_AUTH_CONFIRM_FAILED_TITLE": "Passphrase mismatch!",
 	"TR_AUTH_CONFIRM_FAILED_DESC": "Invalid password confirmation. Wallet will stay in watch-only mode.",
@@ -774,9 +774,5 @@
 	"TR_LANDING_DOWNLOAD": "Download",
 	"TR_LANDING_CONTINUE": "Continue in browser",
 	"TR_SEND_SEND_MAX": "Send max",
-	"TR_HOLD_LEFT_BUTTON": "Hold left or both buttons while connecting device",
-	"TR_NAME": "Name",
-	"TR_CHART_24": "Chart · 24h",
-	"TR_CHANGE_24": "Change · 24h",
-	"TR_PRICE": "Price"
+	"TR_HOLD_LEFT_BUTTON": "Hold left or both buttons while connecting device"
 }

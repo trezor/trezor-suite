@@ -243,8 +243,24 @@ const definedMessages = defineMessages({
         id: 'TR_AMOUNT_IS_NOT_SET',
     },
     TR_ASSETS: {
-        defaultMessage: 'Assets',
+        defaultMessage: 'Your Assets',
         id: 'TR_ASSETS',
+    },
+    TR_NAME: {
+        defaultMessage: 'Name',
+        id: 'TR_NAME',
+    },
+    TR_CHART_24: {
+        defaultMessage: 'Chart · 24h',
+        id: 'TR_CHART_24',
+    },
+    TR_CHANGE_24: {
+        defaultMessage: 'Change · 24h',
+        id: 'TR_CHANGE_24',
+    },
+    TR_PRICE: {
+        defaultMessage: 'Price',
+        id: 'TR_PRICE',
     },
     TR_AUTH_CONFIRM_FAILED_RETRY: {
         defaultMessage: 'Retry',

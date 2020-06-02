@@ -74,11 +74,11 @@ const PriceTitle = styled(HeaderTitle)`
 
 // padding for loader need to math with first row height
 const InfoMessage = styled.div`
-    padding: 14px 0px;
     display: flex;
-    color: ${colors.RED};
+    padding: 15px ${CARD_PADDING_SIZE};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
+    color: ${colors.RED};
 `;
 
 const AssetsCard = () => {
