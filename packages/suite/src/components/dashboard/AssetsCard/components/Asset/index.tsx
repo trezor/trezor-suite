@@ -237,6 +237,7 @@ const Asset = React.memo(({ network, failed, cryptoValue }: Props) => {
 
                     <ChartTitle>
                         <ChartWrapper>
+                            {/* TODO: use data from last 24h */}
                             <LastWeekGraph
                                 lastWeekData={lastWeekData}
                                 symbol={symbol}
@@ -246,6 +247,7 @@ const Asset = React.memo(({ network, failed, cryptoValue }: Props) => {
                     </ChartTitle>
 
                     <ChangeCell>
+                        {/* TODO: Replace mocked value with acctual */}
                         <Delta value={2.4} />
                     </ChangeCell>
 
