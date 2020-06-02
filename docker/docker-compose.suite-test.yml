@@ -25,7 +25,7 @@ services:
       - QT_X11_NO_MITSHM=1
     working_dir: /e2e
     # entrypoint: bash -c "yarn && cypress open --project /e2e/packages/integration-tests/projects/suite-web"
-    entrypoint: bash -c "node ./packages/integration-tests/projects/suite-web/run_tests.js --stage='@stable,@beta'"
+    entrypoint: bash -c "node ./packages/integration-tests/projects/suite-web/run_tests.js --stage='@foo'"
     volumes:
       - ../:/e2e
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
