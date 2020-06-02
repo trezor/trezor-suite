@@ -51,7 +51,7 @@ async function runTests() {
     } = process.env;
     
     let stage = [];
-    if (argv.stage && Array.isArray(argv.stage)) {
+    if (argv.stage) {
         stage = argv.stage.split(',')
     }
 
