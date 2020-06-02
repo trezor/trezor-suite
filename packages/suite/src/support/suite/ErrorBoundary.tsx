@@ -79,10 +79,7 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
     }
 
     componentDidCatch(error: Error | null, _errorInfo: object) {
-        const log = JSON.stringify(this.props.log.entries, null, 2);
-        console.log('log', log);
         Sentry.configureScope(scope => {
-            scope.setExtra('log', log);
             scope.setUser({ id: this.props.analytics.instanceId });
         });
         this.setState({ error });
@@ -93,6 +90,7 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
     }
 
     render() {
+        const log = JSON.stringify(this.props.log.entries, null, 2);
         if (this.state.error) {
             // render fallback UI
             return (
@@ -104,6 +102,17 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
                     <P>{this.state.error.message}</P>
                     {/* <P>{this.state.error.stack}</P> */}
 
+                    <SendReportButton
+                        variant="primary"
+                        onClick={() => {
+                            console.log('log', log);
+                            Sentry.configureScope(scope => {
+                                scope.setExtra('log', log);
+                            });
+                        }}
+                    >
+                        Attach log
+                    </SendReportButton>
                     <SendReportButton variant="primary" onClick={() => Sentry.showReportDialog()}>
                         Send report
                     </SendReportButton>
