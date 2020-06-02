@@ -1,6 +1,4 @@
-// @retries=2
 // @beta
-// @stable
 
 describe('Backup', () => {
     beforeEach(() => {
@@ -78,18 +76,5 @@ describe('Backup', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         cy.getTestElement('@backup/already-finished-message');
-    });
-
-    // failed multiple times 
-    // - https://gitlab.com/satoshilabs/trezor/trezor-suite/-/jobs/545067426#L444
-    // - https://gitlab.com/satoshilabs/trezor/trezor-suite/-/jobs/543418040#L443
-    // todo: find out why
-    it.skip('When device disconnects before backup process starts, we just show reconnect your device screen and continue', () => {
-        cy.getTestElement('@notification/no-backup/button').click();
-        cy.task('stopEmu');
-        cy.getTestElement('@backup/no-device');
-        cy.task('startEmu', { version: '2.1.4', wipe: false })
-        cy.log('after device is reconnected, user returns back where he was before it disconnected');
-        cy.getTestElement('@backup/check-item/has-enough-time');
     });
 });
