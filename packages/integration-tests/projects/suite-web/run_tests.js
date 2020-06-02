@@ -66,8 +66,7 @@ async function runTests() {
         return;
     }
 
-    console.log('[run_tests.js] test files after all filters:')
-    console.log(finalTestFiles);
+    console.log('[run_tests.js] test files after all filters:', finalTestFiles)
 
     let totalRetries = 0;
     let failedTests = 0;
@@ -117,7 +116,7 @@ async function runTests() {
                 configFile: false,
             });
 
-            console.log('result', result);
+            // console.log('result', result);
             // console.log('result.runs[0]', result.runs[0]);
             
             if (totalFailed === 0) {
