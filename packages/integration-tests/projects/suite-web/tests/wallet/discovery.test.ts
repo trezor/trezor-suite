@@ -1,7 +1,5 @@
 import { NETWORKS } from '@wallet-config';
 
-// @beta
-
 describe('Discovery', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();

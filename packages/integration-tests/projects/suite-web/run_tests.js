@@ -46,10 +46,11 @@ async function runTests() {
         BROWSER = 'chrome',
         CYPRESS_baseUrl, // eslint-disable-line camelcase
         TRACK_SUITE_URL,
+        CI_JOB_URL,
     } = process.env;
 
     if (!TRACK_SUITE_URL) {
-        console.log('[run_tests.js] TRACK_SUITE_URL env not specified. Logs will be skipped');
+        console.log('[run_tests.js] TRACK_SUITE_URL env not specified. No logs will be uploaded');
     }
     const finalTestFiles = getTestFiles().sort((a, b) => a.localeCompare(b));
 
@@ -64,7 +65,10 @@ async function runTests() {
     let totalRetries = 0;
     let failedTests = 0;
 
-    let log = {};
+    let log = {
+        jobUrl: CI_JOB_URL,
+        records: {}
+    };
 
     for (let i = 0; i < finalTestFiles.length; i++) {
         const testFile = finalTestFiles[i];
@@ -79,10 +83,6 @@ async function runTests() {
         
         console.log(`[run_tests.js] testing ${testFile}`);
         console.log(`[run_tests.js] allowed to run ${allowedRuns} times`);
-
-        log[testFileName] = {
-            totalRuns: 0,   
-        }
 
         while(testRunNumber < allowedRuns) {
             testRunNumber++;
@@ -113,14 +113,14 @@ async function runTests() {
             
 
             if (totalFailed === 0) {
-                log[testFileName] = testRunNumber === 1 ? 'success': 'retried';
+                log.records[testFileName] = testRunNumber === 1 ? 'success': 'retried';
                 break;
             }
 
             // record failed tests if it is last run
             if (testRunNumber === allowedRuns) {
                 failedTests += totalFailed;
-                log[testFileName] = 'failed';
+                log.records[testFileName] = 'failed';
             }
 
             totalRetries++;
