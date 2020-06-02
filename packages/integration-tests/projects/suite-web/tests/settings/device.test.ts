@@ -1,6 +1,3 @@
-import CONSTANTS from '../../constants';
-import { homescreensT2 } from '@suite-constants';
-
 // @stable
 
 describe('Device settings', () => {
@@ -18,7 +15,7 @@ describe('Device settings', () => {
 
         cy.log('change label');
         cy.getTestElement('@settings/device/label-input')
-            .should('have.value', CONSTANTS.DEFAULT_TREZOR_LABEL)
+            .should('have.value', 'My Trezor')
             .clear()
             .type('My Tenzor');
 
@@ -38,7 +35,7 @@ describe('Device settings', () => {
         cy.log('change background');
         cy.getTestElement('@settings/device/select-from-gallery')
             .click()
-            .getTestElement(`@modal/gallery/t2/${homescreensT2[4]}`)
+            .getTestElement(`@modal/gallery/t2/xmr`)
             .click()
             .getConfirmActionOnDeviceModal();
         cy.task('sendDecision');
