@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import * as Sentry from '@sentry/browser';
-import { H1, P, Button } from '@trezor/components';
 import { connect } from 'react-redux';
 import { AppState } from '@suite/types/suite';
+import { H1, P, Button, variables, colors } from '@trezor/components';
+import { db } from '@suite/storage';
 
 const Wrapper = styled.div`
     display: flex;
@@ -16,11 +17,47 @@ const Wrapper = styled.div`
 
 const Buttons = styled.div`
     display: flex;
+    justify-content: space-between;
+    width: 60%;
+    min-width: 320px;
+    max-width: 500px;
+
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        width: 80%;
+    }
+`;
+
+const Separator = styled.div`
+    background: ${colors.BLACK80};
+    height: 1px;
+    margin: 30px 0px;
+    width: 80%;
+    min-width: 320px;
+    max-width: 800px;
+
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        width: 90%;
+    }
+`;
+
+const SendReportButton = styled(Button)`
+    margin-top: 30px;
 `;
 
 const StyledButton = styled(Button)`
-    margin: 12px;
+    margin: 6px 12px;
 `;
+
+const refresh = () => {
+    // @ts-ignore global.ipcRenderer is declared in @desktop/preloader.js
+    const { ipcRenderer } = global;
+    if (ipcRenderer) {
+        // relaunch desktop app
+        ipcRenderer.send('restart-app');
+    } else {
+        window.location.reload();
+    }
+};
 
 // Cant use hook https://reactjs.org/docs/hooks-faq.html#do-hooks-cover-all-use-cases-for-classes
 
@@ -61,33 +98,36 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
             return (
                 <Wrapper>
                     <H1>Error occurred</H1>
-                    <P>It appears something is broken. You might let us know by sending report</P>
+                    <P textAlign="center">
+                        It appears something is broken. You might let us know by sending report
+                    </P>
                     <P>{this.state.error.message}</P>
                     {/* <P>{this.state.error.stack}</P> */}
 
+                    <SendReportButton variant="primary" onClick={() => Sentry.showReportDialog()}>
+                        Send report
+                    </SendReportButton>
+                    <Separator />
                     <Buttons>
                         <StyledButton
+                            icon="REFRESH"
+                            variant="tertiary"
                             onClick={() => {
-                                Sentry.showReportDialog();
+                                refresh();
                             }}
                         >
-                            Send report
+                            Reload window
                         </StyledButton>
 
                         <StyledButton
                             icon="REFRESH"
-                            onClick={() => {
-                                // @ts-ignore global.ipcRenderer is declared in @desktop/preloader.js
-                                const { ipcRenderer } = global;
-                                if (ipcRenderer) {
-                                    // relaunch desktop app
-                                    ipcRenderer.send('restart-app');
-                                } else {
-                                    window.location.reload();
-                                }
+                            variant="tertiary"
+                            onClick={async () => {
+                                await db.clearStores();
+                                refresh();
                             }}
                         >
-                            Reload window
+                            Clear storage and reload
                         </StyledButton>
                     </Buttons>
                 </Wrapper>
