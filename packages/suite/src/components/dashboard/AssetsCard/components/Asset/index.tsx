@@ -53,7 +53,7 @@ const AssetLabel = styled.div`
     line-height: 1;
 `;
 
-const AssetFiatValueStyled = styled.div`
+const AssetFiatValueStyled = styled.span`
     display: none;
     font-family: ${variables.FONT_FAMILY.TTHOVES};
     font-size: ${variables.FONT_SIZE.TINY};
@@ -61,7 +61,7 @@ const AssetFiatValueStyled = styled.div`
     padding-top: 1px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        display: block;
+        display: inline-block;
     }
 `;
 
@@ -89,10 +89,12 @@ const AmountCell = styled(Cell)`
 
 const CoinBalanceWrapper = styled(CoinBalance)`
     font-family: ${variables.FONT_FAMILY.MONOSPACE};
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 `;
 
-const CryptoValueStyled = styled.div`
-    display: block;
+const CryptoValueStyled = styled.span`
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${colors.BLACK50};
 `;
@@ -146,8 +148,11 @@ const PriceCell = styled(Cell)`
     }
 `;
 
-const FiatValueStyled = styled.div`
+const FiatValueStyled = styled.span`
     font-family: ${variables.FONT_FAMILY.MONOSPACE};
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 `;
 
 // Failed cell
@@ -192,15 +197,11 @@ const Asset = React.memo(({ network, failed, cryptoValue }: Props) => {
                     </AssetLabel>
 
                     {!failed && (
-                        <HiddenPlaceholder>
-                            <FiatValue amount={cryptoValue} symbol={symbol}>
-                                {({ value }) =>
-                                    value ? (
-                                        <AssetFiatValueStyled>{value}</AssetFiatValueStyled>
-                                    ) : null
-                                }
-                            </FiatValue>
-                        </HiddenPlaceholder>
+                        <FiatValue amount={cryptoValue} symbol={symbol}>
+                            {({ value }) =>
+                                value ? <AssetFiatValueStyled>{value}</AssetFiatValueStyled> : null
+                            }
+                        </FiatValue>
                     )}
                 </div>
             </AssetLabelCell>
@@ -219,15 +220,17 @@ const Asset = React.memo(({ network, failed, cryptoValue }: Props) => {
             ) : (
                 <>
                     <AmountCell>
-                        <HiddenPlaceholder>
-                            <CoinBalanceWrapper value={cryptoValue} symbol={symbol} />
+                        <CoinBalanceWrapper value={cryptoValue} symbol={symbol} />
 
-                            <FiatValue amount={cryptoValue} symbol={symbol}>
-                                {({ value }) =>
-                                    value ? <CryptoValueStyled>≈ {value}</CryptoValueStyled> : null
-                                }
-                            </FiatValue>
-                        </HiddenPlaceholder>
+                        <FiatValue amount={cryptoValue} symbol={symbol}>
+                            {({ value }) =>
+                                value ? (
+                                    <HiddenPlaceholder>
+                                        <CryptoValueStyled>≈ {value}</CryptoValueStyled>
+                                    </HiddenPlaceholder>
+                                ) : null
+                            }
+                        </FiatValue>
                     </AmountCell>
 
                     <ChartTitle>
@@ -245,13 +248,11 @@ const Asset = React.memo(({ network, failed, cryptoValue }: Props) => {
                     </ChangeCell>
 
                     <PriceCell>
-                        <HiddenPlaceholder>
-                            <FiatValue amount={cryptoValue} symbol={symbol}>
-                                {({ value }) =>
-                                    value ? <FiatValueStyled>{value}</FiatValueStyled> : null
-                                }
-                            </FiatValue>
-                        </HiddenPlaceholder>
+                        <FiatValue amount={cryptoValue} symbol={symbol}>
+                            {({ value }) =>
+                                value ? <FiatValueStyled>{value}</FiatValueStyled> : null
+                            }
+                        </FiatValue>
                     </PriceCell>
                 </>
             )}
