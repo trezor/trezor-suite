@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import * as Sentry from '@sentry/browser';
 import { H1, P, Button } from '@trezor/components';
+import { AppState } from '@suite/types/suite';
+import { connect } from 'react-redux';
 
 const Wrapper = styled.div`
     display: flex;
@@ -26,8 +28,14 @@ interface StateProps {
     error: Error | null | undefined;
 }
 
-class ErrorBoundary extends React.Component<{}, StateProps> {
-    constructor(props: {}) {
+const mapStateToProps = (state: AppState) => ({
+    log: state.log,
+});
+
+type Props = ReturnType<typeof mapStateToProps>;
+
+class ErrorBoundary extends React.Component<Props, StateProps> {
+    constructor(props: Props) {
         super(props);
         this.state = { error: null };
     }
@@ -41,6 +49,7 @@ class ErrorBoundary extends React.Component<{}, StateProps> {
     }
 
     render() {
+        const log = JSON.stringify(this.props.log.entries, null, 2);
         if (this.state.error) {
             // render fallback UI
             return (
@@ -51,7 +60,15 @@ class ErrorBoundary extends React.Component<{}, StateProps> {
                     {/* <P>{this.state.error.stack}</P> */}
 
                     <Buttons>
-                        <StyledButton onClick={() => Sentry.showReportDialog()}>
+                        <StyledButton
+                            onClick={() => {
+                                Sentry.configureScope(scope => {
+                                    scope.setExtra('log', log);
+                                });
+
+                                Sentry.showReportDialog();
+                            }}
+                        >
                             Send report
                         </StyledButton>
 
@@ -80,7 +97,7 @@ class ErrorBoundary extends React.Component<{}, StateProps> {
     }
 }
 
-export default ErrorBoundary;
+export default connect(mapStateToProps)(ErrorBoundary);
 
 // In case we would like to translate these. Not possible now, ErrorBoundary is not nested in
 // IntlProvider. Not sure if we need so much to have this translated here.

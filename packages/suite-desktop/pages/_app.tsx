@@ -47,8 +47,8 @@ class TrezorSuiteApp extends App<Props> {
         const { Component, pageProps, store } = this.props;
 
         return (
-            <ErrorBoundary>
-                <ReduxProvider store={store}>
+            <ReduxProvider store={store}>
+                <ErrorBoundary>
                     <Resize />
                     <OnlineStatus />
                     <IntlProvider>
@@ -61,8 +61,8 @@ class TrezorSuiteApp extends App<Props> {
                             </Preloader>
                         </VersionCheck>
                     </IntlProvider>
-                </ReduxProvider>
-            </ErrorBoundary>
+                </ErrorBoundary>
+            </ReduxProvider>
         );
     }
 }
