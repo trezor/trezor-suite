@@ -49,7 +49,12 @@ async function runTests() {
         CI_JOB_URL,
         CI_COMMIT_BRANCH,
     } = process.env;
-
+    
+    let stage = [];
+    if (argv.stage && Array.isArray(stage)) {
+        stage = stage.split(',')
+    }
+    
     if (!TRACK_SUITE_URL) {
         console.log('[run_tests.js] TRACK_SUITE_URL env not specified. No logs will be uploaded');
     }
@@ -69,7 +74,7 @@ async function runTests() {
     let log = {
         jobUrl: CI_JOB_URL,
         branch: CI_COMMIT_BRANCH,
-        stage: stage.split(','),
+        stage,
         records: {}
     };
 
