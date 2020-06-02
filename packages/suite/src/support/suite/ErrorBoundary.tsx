@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import { AppState } from '@suite/types/suite';
 import { H1, P, Button, variables, colors } from '@trezor/components';
 import { db } from '@suite/storage';
+import { bindActionCreators, Dispatch } from 'redux';
+import * as logActions from '@suite-actions/logActions';
 
 const Wrapper = styled.div`
     display: flex;
@@ -71,7 +73,15 @@ const mapStateToProps = (state: AppState) => ({
     analytics: state.analytics,
 });
 
-type Props = ReturnType<typeof mapStateToProps>;
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            reportToSentry: logActions.reportToSentry,
+        },
+        dispatch,
+    );
+
+type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 class ErrorBoundary extends React.Component<Props, StateProps> {
     constructor(props: Props) {
@@ -82,15 +92,7 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
     componentDidCatch(error: Error | null, _errorInfo: object) {
         console.log('instance', this.props.analytics.instanceId);
         console.log('log', JSON.stringify(this.props.log.entries));
-        Sentry.withScope(scope => {
-            // scope.setExtras(errorInfo);
-            scope.setExtra('log', this.props.log.entries);
-            scope.setExtra('logtest', JSON.parse(JSON.stringify(this.props.log.entries)));
-            scope.setUser({ id: this.props.analytics.instanceId });
-            // const eventId = Sentry.captureException(error);
-            Sentry.captureException(error);
-            // this.setState({ eventId });
-        });
+        this.props.reportToSentry(error, this.props.analytics.enabled);
         this.setState({ error });
         // todo: not in development and in production only if user opts in.
         // Sentry.withScope(scope => {
@@ -99,29 +101,17 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
     }
 
     render() {
-        const log = JSON.stringify(this.props.log.entries, null, 2);
         if (this.state.error) {
             // render fallback UI
             return (
                 <Wrapper>
-                    <H1>Error occurred capturing on didcatch</H1>
+                    <H1>Error occurred</H1>
                     <P textAlign="center">
                         It appears something is broken. You might let us know by sending report
                     </P>
                     <P>{this.state.error.message}</P>
                     {/* <P>{this.state.error.stack}</P> */}
 
-                    <SendReportButton
-                        variant="primary"
-                        onClick={() => {
-                            console.log('log', log);
-                            Sentry.configureScope(scope => {
-                                scope.setExtra('log', log);
-                            });
-                        }}
-                    >
-                        Attach log
-                    </SendReportButton>
                     <SendReportButton variant="primary" onClick={() => Sentry.showReportDialog()}>
                         Send report
                     </SendReportButton>
