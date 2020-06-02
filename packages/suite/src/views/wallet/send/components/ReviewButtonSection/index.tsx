@@ -1,6 +1,7 @@
 import { SUITE } from '@suite-actions/constants';
 import { AppState, TrezorDevice } from '@suite-types';
 import { Button, colors } from '@trezor/components';
+import { useFormContext } from 'react-hook-form';
 import { Account, Send } from '@wallet-types';
 import { Translation } from '@suite-components/Translation';
 
@@ -96,9 +97,10 @@ export default ({ send, suite, account, device, modalActions }: Props) => {
     if (!send || !account || !device) return null;
     const { isComposing } = send;
     const { networkType } = account;
+    const { handleSubmit } = useFormContext();
 
     return (
-        <Wrapper>
+        <Wrapper onClick={handleSubmit(data => console.log(data))}>
             <Row>
                 <ButtonReview
                     isDisabled={isComposing || isDisabled(send, suite, device, networkType)}

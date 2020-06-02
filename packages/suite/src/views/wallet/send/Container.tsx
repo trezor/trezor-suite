@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import React from 'react';
 import { bindActionCreators } from 'redux';
 import { injectIntl } from 'react-intl';
 import * as modalActions from '@suite-actions/modalActions';
@@ -8,7 +9,7 @@ import * as sendFormActionsEthereum from '@wallet-actions/send/sendFormEthereumA
 import * as sendFormActionsRipple from '@wallet-actions/send/sendFormRippleActions';
 
 import { AppState, Dispatch } from '@suite-types';
-import SendIndex from './index';
+import Component from './index';
 
 const mapStateToProps = (state: AppState) => ({
     selectedAccount: state.wallet.selectedAccount,
@@ -30,4 +31,4 @@ export type StateProps = ReturnType<typeof mapStateToProps>;
 export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 export type Props = StateProps & DispatchProps;
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(SendIndex));
+export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(Component));

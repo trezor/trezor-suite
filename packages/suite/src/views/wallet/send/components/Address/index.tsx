@@ -1,11 +1,12 @@
-import { Translation, AddressLabeling, QuestionTooltip } from '@suite-components';
-import styled from 'styled-components';
+import { AddressLabeling, QuestionTooltip, Translation } from '@suite-components';
 import { Input } from '@trezor/components';
-
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Output } from '@wallet-types/sendForm';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
+import styled from 'styled-components';
+
 import { Props } from './Container';
 
 const Label = styled.div`
@@ -32,20 +33,20 @@ const getErrorMessage = (error: Output['address']['error'], isLoading: boolean) 
     }
 };
 
-export default ({ output, account, openModal, sendFormActions, send }: Props) => {
-    if (!account || !send) return null;
-    const { address, id } = output;
-    const { isComposing } = send;
-    let showLoadingForCompose = false;
-    const { value, error } = address;
+export default ({ output, account, openModal }: Props) => {
+    if (!account) return null;
+    const { register } = useFormContext();
+    // const { address, id } = output;
+    // let showLoadingForCompose = false;
+    // const { value, error } = address;
 
-    if (isComposing && account.networkType === 'bitcoin') {
-        showLoadingForCompose = true;
-    }
+    // if (isComposing && account.networkType === 'bitcoin') {
+    //     showLoadingForCompose = true;
+    // }
 
     return (
         <Input
-            state={getInputState(error, value, showLoadingForCompose, true)}
+            // state={getInputState(error, value, showLoadingForCompose, true)}
             monospace
             topLabel={
                 <Label>
@@ -55,9 +56,13 @@ export default ({ output, account, openModal, sendFormActions, send }: Props) =>
                     <QuestionTooltip messageId="TR_RECIPIENT_ADDRESS_TOOLTIP" />
                 </Label>
             }
-            bottomText={
-                getErrorMessage(error, isComposing) || <AddressLabeling address={value} knownOnly />
-            }
+            // bottomText={
+
+            //         // getErrorMessage(error, isComposing) || <AddressLabeling address={value} knownOnly />
+
+            // }
+            name="address"
+            innerRef={register}
             button={{
                 icon: 'QR',
                 onClick: () =>
@@ -67,8 +72,6 @@ export default ({ output, account, openModal, sendFormActions, send }: Props) =>
                     }),
                 text: <Translation id="TR_SCAN" />,
             }}
-            value={value || ''}
-            onChange={e => sendFormActions.handleAddressChange(id, e.target.value)}
         />
     );
 };

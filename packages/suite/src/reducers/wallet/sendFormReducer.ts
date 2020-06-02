@@ -52,7 +52,6 @@ const initialState = (
 });
 
 export default (state: State | null = null, action: WalletAction): State | null => {
-    if (action.type === SEND.INIT) return initialState(action.payload, action.localCurrency);
     if (!state || action.type === SEND.DISPOSE) return null;
 
     return produce(state, draft => {

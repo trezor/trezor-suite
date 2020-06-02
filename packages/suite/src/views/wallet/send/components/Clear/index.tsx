@@ -2,7 +2,7 @@ import React from 'react';
 import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
 import { colors, Button } from '@trezor/components';
-import { Props } from './Container';
+import { useFormContext } from 'react-hook-form';
 
 const Wrapper = styled.div`
     display: flex;
@@ -17,13 +17,13 @@ const In = styled.div`
     color: ${colors.BLACK50};
 `;
 
-export default ({ sendFormActions, send }: Props) => {
-    if (!send) return null;
-    const { touched } = send;
+export default () => {
+    const { reset } = useFormContext();
+
     return (
         <Wrapper>
-            <In onClick={() => sendFormActions.clear()}>
-                <Button variant="tertiary" isDisabled={!touched} icon="CLEAR" alignIcon="left">
+            <In onClick={() => reset({ address: null, amount: null })}>
+                <Button variant="tertiary" icon="CLEAR" alignIcon="left">
                     <Translation id="TR_CLEAR_ALL" />
                 </Button>
             </In>

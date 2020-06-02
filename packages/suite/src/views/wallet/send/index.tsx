@@ -14,6 +14,7 @@ import Clear from './components/Clear/Container';
 import OutputHeader from './components/OutputHeader';
 import ReviewButtonSection from './components/ReviewButtonSection/Container';
 import { Props } from './Container';
+import { useForm, FormContext } from 'react-hook-form';
 
 const Row = styled.div`
     display: flex;
@@ -74,44 +75,36 @@ const AdditionalFormHeader = styled.div`
     align-items: center;
 `;
 
-export default ({
-    device,
-    send,
-    fees,
-    selectedAccount,
-    sendFormActions,
-    sendFormActionsBitcoin,
-}: Props) => {
+export default ({ device, send, fees, selectedAccount }: Props) => {
     const descriptor = selectedAccount.account ? selectedAccount.account.descriptor : '';
 
-    useEffect(() => {
-        sendFormActions.init();
-    }, [descriptor]);
-
-    if (!device || !send || !fees || selectedAccount.status !== 'loaded') {
+    if (!device || !fees || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Send" account={selectedAccount} />;
     }
-
+    const methods = useForm();
     const { network, account } = selectedAccount;
 
     return (
         <WalletLayout title="Send" account={selectedAccount}>
-            <StyledCard
-                customHeader={
-                    <Header>
-                        <HeaderLeft>
-                            <Translation
-                                id="SEND_TITLE"
-                                values={{ symbol: account.symbol.toUpperCase() }}
-                            />
-                        </HeaderLeft>
-                        <HeaderRight>
-                            <Clear />
-                        </HeaderRight>
-                    </Header>
-                }
-            >
-                {send.outputs.map((output: Output) => (
+            <FormContext {...methods}>
+                <StyledCard
+                    customHeader={
+                        <Header>
+                            <HeaderLeft>
+                                <Translation
+                                    id="SEND_TITLE"
+                                    values={{ symbol: account.symbol.toUpperCase() }}
+                                />
+                            </HeaderLeft>
+                            <HeaderRight>
+                                <Clear />
+                            </HeaderRight>
+                        </Header>
+                    }
+                >
+                    <Address />
+                    <Amount />
+                    {/* {send.outputs.map((output: Output) => (
                     <OutputWrapper key={output.id}>
                         <OutputHeader
                             outputs={send.outputs}
@@ -140,8 +133,9 @@ export default ({
                         )}
                     </Row>
                 </AdditionalInfoWrapper>
-                <ReviewButtonSection />
-            </StyledCard>
+                <ReviewButtonSection /> */}
+                </StyledCard>
+            </FormContext>
         </WalletLayout>
     );
 };
