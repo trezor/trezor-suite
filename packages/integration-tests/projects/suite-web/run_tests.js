@@ -107,11 +107,9 @@ async function runTests() {
                 configFile: false,
             });
 
-            console.log('result', result);
-
-            console.log('result.runs[0]', result.runs[0]);
+            // console.log('result', result);
+            // console.log('result.runs[0]', result.runs[0]);
             
-
             if (totalFailed === 0) {
                 log.records[testFileName] = testRunNumber === 1 ? 'success': 'retried';
                 break;
@@ -130,6 +128,7 @@ async function runTests() {
     }
 
     if (TRACK_SUITE_URL) {
+        console.log(`[run_tests.js] uploading log: ${JSON.stringify(log, null, 2)}`);
         const response = await fetch(`${TRACK_SUITE_URL}/api/test-records`, {
             method: 'POST',
             headers: {
@@ -137,8 +136,7 @@ async function runTests() {
             },
             body: JSON.stringify(log),
         })
-        console.log('========================================')
-        console.log(response);
+        console.log(`[run_tests.js] response.status: ${response.status}`);
     } 
     
     console.log(`[run_tests.js] retry ratio: ${((totalRetries / finalTestFiles.length) * 100).toFixed(2)}% `)
