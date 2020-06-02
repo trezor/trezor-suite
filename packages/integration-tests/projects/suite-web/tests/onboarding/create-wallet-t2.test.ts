@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-// @beta
+// @stable
 
 describe('Onboarding - create wallet', () => {
     beforeEach(() => {
@@ -12,13 +12,6 @@ describe('Onboarding - create wallet', () => {
         cy.getTestElement('@onboarding/begin-button').click();
         cy.getTestElement('@onboarding/path-create-button').click()
     });
-
-    // todo: { wipe: true } does not work now with model 1
-    it('Model 1', () => {
-        cy.getTestElement('@onboarding/path-used-button').click()
-        cy.getTestElement('@onboarding/pair-device-step');
-        cy.task('startEmu', { version: '1.8.3', wipe: true });
-    })
 
     it(`Model T`, () => {
        
