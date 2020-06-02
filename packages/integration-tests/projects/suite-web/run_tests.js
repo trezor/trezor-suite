@@ -115,7 +115,7 @@ async function runTests() {
                 configFile: false,
             });
 
-            // console.log('result', result);
+            console.log('result', result);
             // console.log('result.runs[0]', result.runs[0]);
             
             if (totalFailed === 0) {
