@@ -48,6 +48,7 @@ async function runTests() {
         TRACK_SUITE_URL,
         CI_JOB_URL,
         CI_COMMIT_BRANCH,
+        CI_JOB_ID,
     } = process.env;
     
     let stage = [];
