@@ -62,34 +62,36 @@ class TrezorSuiteApp extends App<Props> {
         const { Component, pageProps, store } = this.props;
 
         return (
-            <ErrorBoundary>
+            <>
                 <ImagesPreloader />
                 <CypressExportStore store={store} />
                 <ReduxProvider store={store}>
-                    <Resize />
-                    <OnlineStatus />
-                    <IntlProvider>
-                        <>
-                            {/*
+                    <ErrorBoundary>
+                        <Resize />
+                        <OnlineStatus />
+                        <IntlProvider>
+                            <>
+                                {/*
                                 just because we need make trezor-connect render the iframe
                             */}
-                            <div
-                                className="trezor-webusb-button"
-                                style={{
-                                    width: '100%',
-                                    position: 'absolute',
-                                    top: '-1000px',
-                                }}
-                            />
-                            <Router />
-                            <ToastContainer />
-                            <Preloader>
-                                <Component {...pageProps} />
-                            </Preloader>
-                        </>
-                    </IntlProvider>
+                                <div
+                                    className="trezor-webusb-button"
+                                    style={{
+                                        width: '100%',
+                                        position: 'absolute',
+                                        top: '-1000px',
+                                    }}
+                                />
+                                <Router />
+                                <ToastContainer />
+                                <Preloader>
+                                    <Component {...pageProps} />
+                                </Preloader>
+                            </>
+                        </IntlProvider>
+                    </ErrorBoundary>
                 </ReduxProvider>
-            </ErrorBoundary>
+            </>
         );
     }
 }
