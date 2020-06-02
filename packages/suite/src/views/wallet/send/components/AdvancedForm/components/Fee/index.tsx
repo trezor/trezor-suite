@@ -1,12 +1,11 @@
-import { QuestionTooltip, Translation } from '@suite-components';
-import Badge from '@suite-components/Badge';
+import { QuestionTooltip, Translation, Badge } from '@suite-components';
 import { capitalizeFirstLetter } from '@suite-utils/string';
 import { colors, P, Select, variables, Button } from '@trezor/components';
 import { Account } from '@wallet-types';
+import { getTransactionInfo, calculateEthFee, getInputState } from '@wallet-utils/sendFormUtils';
 import { FeeLevel } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
-import { calculateEthFee } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import styled from 'styled-components';
 import { fromWei, toWei } from 'web3-utils';
@@ -121,18 +120,21 @@ const getValue = (
     return `${formatNetworkAmount(feePerUnit, symbol)} ${symbol.toUpperCase()}`;
 };
 
-const isDisabled = (networkType: Account['networkType'], data: string | null) => {
-    console.log('aaa', networkType, data);
-    return networkType === 'ethereum' && data !== null;
+const isDisabled = (
+    networkType: Account['networkType'],
+    dataState: 'error' | 'success' | undefined,
+) => {
+    return networkType === 'ethereum' && dataState;
 };
 
 export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
     if (!send || !account || !settings || !fiat) return null;
     const { selectedFee, customFee, feeInfo, feeOutdated, networkTypeEthereum } = send;
+    const transactionInfo = getTransactionInfo(account.networkType, send);
     const feeLevels = feeInfo.levels;
     const { localCurrency } = settings;
     const { networkType, symbol } = account;
-    const fiatVal = fiat.find(fiatItem => fiatItem.symbol === symbol);
+    const fiatVal = fiat.coins.find(fiatItem => fiatItem.symbol === symbol);
     return (
         <Wrapper>
             <Row>
@@ -166,7 +168,15 @@ export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
                     value={{ ...selectedFee, value: selectedFee.feePerUnit }}
                     onChange={sendFormActions.handleFeeValueChange}
                     options={feeLevels}
-                    isDisabled={isDisabled(networkType, networkTypeEthereum.data.value)}
+                    isDisabled={isDisabled(
+                        networkType,
+                        getInputState(
+                            networkTypeEthereum.data.error,
+                            networkTypeEthereum.data.value,
+                            false,
+                            false,
+                        ),
+                    )}
                     formatOptionLabel={(option: FeeLevel) => (
                         <OptionWrapper>
                             <OptionLabel>{capitalizeFirstLetter(option.label)} </OptionLabel>
@@ -182,14 +192,13 @@ export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
                     <CustomFeeWrapper>
                         <CustomFee />
                     </CustomFeeWrapper>
-                    {fiatVal && customFee.value && (
+                    {fiatVal && customFee.value && transactionInfo?.type === 'final' && (
                         <BadgeWrapper>
                             <Badge isGray>
                                 {toFiatCurrency(
-                                    formatNetworkAmount(customFee.value, symbol),
+                                    formatNetworkAmount(transactionInfo.fee, symbol),
                                     localCurrency,
                                     fiatVal.current?.rates,
-                                    true,
                                 )}{' '}
                                 {localCurrency}
                             </Badge>

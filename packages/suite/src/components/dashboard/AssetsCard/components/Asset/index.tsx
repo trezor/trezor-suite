@@ -178,7 +178,7 @@ const Asset = React.memo(({ network, failed, cryptoValue }: Props) => {
 
     // get graph data only for mainnet and not failed accounts
     const lastWeekData =
-        !testnet && !failed ? fiat.find(r => r.symbol === symbol)?.lastWeek?.tickers : [];
+        !testnet && !failed ? fiat.coins.find(r => r.symbol === symbol)?.lastWeek?.tickers : [];
 
     // display one of view:
     // - failed

@@ -123,7 +123,7 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                             let inputAmount = formatNetworkAmount(input.value, tx.symbol);
                             inputAmount = inputAmount === '-1' ? '0' : inputAmount;
                             return (
-                                <IOBox key={input.hex}>
+                                <IOBox key={input.n}>
                                     <IOBoxAddress>
                                         <HiddenPlaceholder>
                                             {input.addresses.map((addr: string) => addr)}
@@ -153,11 +153,11 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                                                 </FiatValue>
                                             </HiddenPlaceholder>
                                             <HiddenPlaceholder>
-                                                <FiatValue amount={inputAmount} symbol={tx.symbol}>
-                                                    {({ value }) =>
-                                                        value ? <Badge>{value}</Badge> : null
-                                                    }
-                                                </FiatValue>
+                                                <FiatValue
+                                                    amount={inputAmount}
+                                                    symbol={tx.symbol}
+                                                    badge={{ color: 'gray' }}
+                                                />
                                             </HiddenPlaceholder>
                                         </BadgesWrapper>
                                     </IOBoxAmountWrapper>
@@ -175,7 +175,7 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                             let outputAmount = formatNetworkAmount(output.value, tx.symbol);
                             outputAmount = outputAmount === '-1' ? '0' : outputAmount;
                             return (
-                                <IOBox key={output.hex}>
+                                <IOBox key={output.n}>
                                     <IOBoxAddress>
                                         <HiddenPlaceholder>
                                             {output.addresses.map((addr: string) => addr)}
@@ -203,13 +203,11 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                                                     }
                                                 </FiatValue>
                                             </HiddenPlaceholder>
-                                            <HiddenPlaceholder>
-                                                <FiatValue amount={outputAmount} symbol={tx.symbol}>
-                                                    {({ value }) =>
-                                                        value ? <Badge>{value}</Badge> : null
-                                                    }
-                                                </FiatValue>
-                                            </HiddenPlaceholder>
+                                            <FiatValue
+                                                amount={outputAmount}
+                                                symbol={tx.symbol}
+                                                badge={{ color: 'blue' }}
+                                            />
                                         </BadgesWrapper>
                                     </IOBoxAmountWrapper>
                                 </IOBox>

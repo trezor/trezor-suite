@@ -7,7 +7,6 @@ export const toFiatCurrency = (
     amount: string,
     fiatCurrency: string,
     networkRates: FiatRates | undefined,
-    doNotFix = false,
 ) => {
     // calculate amount in local currency
 
@@ -22,10 +21,6 @@ export const toFiatCurrency = (
     }
 
     const localAmount = new BigNumber(formattedAmount).times(rate);
-
-    if (doNotFix) {
-        return localAmount.isNaN() ? null : localAmount.toFixed();
-    }
 
     return localAmount.isNaN() ? null : localAmount.toFixed(2);
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Network } from '@wallet-types';
 import { AreaChart, Area, ResponsiveContainer, YAxis } from 'recharts';
-import { LastWeekRates } from '@wallet-reducers/fiatRatesReducer';
+import { LastWeekRates } from '@wallet-types/fiatRates';
 
 const greenArea = '#D6F3CC';
 const greenStroke = '#30c100';

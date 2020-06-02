@@ -6,7 +6,7 @@ describe('Discovery', () => {
         cy.task('stopEmu');
         cy.task('startEmu');
         cy.task('setupEmu');
-        cy.visit('/settings/wallet');
+        cy.prefixedVisit('/settings/wallet');
         cy.passThroughInitialRun();
         cy.getTestElement('@suite/loading').should('not.be.visible');
     });

@@ -1,7 +1,7 @@
 suite-web build:
     stage: build
     script:
-        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web build
+        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/wallet yarn workspace @trezor/suite-web build
     artifacts:
         expire_in: 7 days
         paths:
@@ -10,9 +10,10 @@ suite-web build:
 suite-web deploy dev:
     stage: deploy to dev servers
     variables:
-        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}/wallet
     dependencies:
         - suite-web build
+        - landing-page build
     environment:
         name: ${CI_BUILD_REF_NAME}
         url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
@@ -23,15 +24,20 @@ suite-web deploy dev:
         - mkdir -p ${DEPLOY_BASE_DIR}/suite-web
         - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
         - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
+        - cd ../landing-page
+        - rsync -abviuzP -va build/ "${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}/"
     tags:
         - deploy
 
+# todo: add smoke test job on stage / beta (need basic auth)
+
 suite-web test integration google-chrome:
     stage: integration testing
-    #allow_failure: true
+    # allow_failure: true
     script:
         - npx cypress install
         - export CYPRESS_SNAPSHOT=1
+        - export CYPRESS_ASSET_PREFIX=/wallet
         # add DEBUG=cypress:* env variable to debug cypress in ci
         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
         - export BROWSER=chrome
@@ -44,16 +50,16 @@ suite-web test integration google-chrome:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
     dependencies: []
-    retry:
-       max: 2
 
-suite-web test integration google-chrome-beta:
+
+suite-web test integration chrome-beta:
     only:
-      - schedules
+        - schedules
     #allow_failure: true
     stage: integration testing
     script:
         - npx cypress install
+        - export CYPRESS_ASSET_PREFIX=/wallet
         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
         - export BROWSER=/usr/bin/google-chrome-beta
         - yarn concurrently --success first --kill-others "cd ./docker/trezor-user-env/controller && python3 ./main.py" "cypress run --browser $BROWSER --project ./packages/integration-tests/projects/suite-web"
@@ -65,14 +71,13 @@ suite-web test integration google-chrome-beta:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
     dependencies: []
     retry:
-      max: 2
+        max: 2
 
 suite-web test security:
     stage: deploy artifacts, others
-    only: 
+    only:
         - schedules
-    script: 
-        yarn is-website-vulnerable ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} | node ./ci/scripts/check-vulnerabilities.js
+    script: yarn is-website-vulnerable ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} | node ./ci/scripts/check-vulnerabilities.js
     dependencies: []
 
 suite-web deploy staging:
@@ -81,11 +86,9 @@ suite-web deploy staging:
         name: ${CI_BUILD_REF_NAME}-staging
         url: ${STAGING_SERVER_URL}
     before_script: []
-    when:
-        manual
+    when: manual
     script:
         - cd packages/suite-web
-        - echo "Deploy to staging servers"
         - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/suite-web build
         - ./scripts/s3sync.sh stage beta
     tags:

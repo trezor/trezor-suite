@@ -12,7 +12,6 @@ const mapStateToProps = (state: AppState) => ({
     account: state.wallet.selectedAccount.account,
     send: state.wallet.send,
     suite: state.suite,
-    settings: state.wallet.settings,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

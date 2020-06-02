@@ -7,7 +7,6 @@ import { Link } from '../typography/Link';
 import { FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
 
 const Wrapper = styled.div`
-    display: flex;
     ${tippy};
 
     .tippy-tooltip {

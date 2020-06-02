@@ -79,7 +79,7 @@ export const compose = (setMax = false) => async (dispatch: Dispatch, getState: 
     }
 };
 
-export const composeChange = (composeBy?: 'address' | 'amount') => (
+export const composeChange = (composeBy?: 'address' | 'amount', setMax = false) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -93,12 +93,12 @@ export const composeChange = (composeBy?: 'address' | 'amount') => (
     });
 
     if (!composeBy) {
-        dispatch(compose());
+        dispatch(compose(setMax));
     }
 
     if (composeBy) {
         if (shouldComposeBy(composeBy, send.outputs, account.networkType)) {
-            dispatch(compose());
+            dispatch(compose(setMax));
         }
     }
 
@@ -131,7 +131,7 @@ export const handleAddressChange = (outputId: number, address: string) => (
         dispatch(rippleActions.checkAccountReserve(output.id, address));
     }
 
-    dispatch(composeChange('address'));
+    dispatch(composeChange('address', send.setMaxActivated));
 };
 
 // common method called from multiple places:
@@ -171,7 +171,8 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const { send, fiat, selectedAccount } = getState().wallet;
+    const { send, selectedAccount } = getState().wallet;
+    const fiat = getState().wallet.fiat.coins;
     if (!send || !fiat || selectedAccount.status !== 'loaded') return null;
     const { account, network } = selectedAccount;
 
@@ -197,8 +198,7 @@ export const handleAmountChange = (outputId: number, amount: string) => (
     }
 
     dispatch(amountChange(amount, outputId));
-
-    dispatch(composeChange('amount'));
+    dispatch(composeChange('amount', send.setMaxActivated));
 };
 
 /*
@@ -208,7 +208,8 @@ export const handleFiatSelectChange = (
     localCurrency: Output['localCurrency']['value'],
     outputId: number,
 ) => (dispatch: Dispatch, getState: GetState) => {
-    const { fiat, send, selectedAccount } = getState().wallet;
+    const { send, selectedAccount } = getState().wallet;
+    const fiat = getState().wallet.fiat.coins;
     if (!fiat || !send || selectedAccount.status !== 'loaded') return null;
     const { account } = selectedAccount;
 
@@ -240,7 +241,7 @@ export const handleFiatSelectChange = (
         localCurrency,
     });
 
-    dispatch(composeChange('amount'));
+    dispatch(composeChange('amount', send.setMaxActivated));
 };
 
 /*
@@ -250,7 +251,8 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const { fiat, send, selectedAccount } = getState().wallet;
+    const { send, selectedAccount } = getState().wallet;
+    const fiat = getState().wallet.fiat.coins;
     if (!fiat || !send || selectedAccount.status !== 'loaded') return null;
     const { network } = selectedAccount;
     const output = getOutput(send.outputs, outputId);
@@ -269,14 +271,15 @@ export const handleFiatInputChange = (outputId: number, fiatValue: string) => (
 
     dispatch(amountChange(amount, outputId));
 
-    dispatch(composeChange('amount'));
+    dispatch(composeChange('amount', send.setMaxActivated));
 };
 
 /*
     Click on "set max"
  */
 export const setMax = (outputIdIn?: number) => async (dispatch: Dispatch, getState: GetState) => {
-    const { fiat, send, selectedAccount } = getState().wallet;
+    const { send, selectedAccount } = getState().wallet;
+    const fiat = getState().wallet.fiat.coins;
 
     if (!fiat || !send || selectedAccount.status !== 'loaded') return null;
     const { account } = selectedAccount;
@@ -315,8 +318,7 @@ export const setMax = (outputIdIn?: number) => async (dispatch: Dispatch, getSta
     }
 
     dispatch(amountChange(amount, outputId));
-
-    dispatch(composeChange('amount'));
+    dispatch(composeChange('amount', send.setMaxActivated));
 };
 
 /*
@@ -364,7 +366,7 @@ export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getS
         });
     }
 
-    dispatch(composeChange());
+    dispatch(composeChange(undefined, send.setMaxActivated));
 };
 
 /*

@@ -1,6 +1,6 @@
 {
     "name": "@trezor/landing-page",
-    "version": "2020.05.27-beta",
+    "version": "20.5.1-beta",
     "private": true,
     "scripts": {
         "type-check": "tsc --project tsconfig.json",
@@ -12,10 +12,13 @@
         "build": "run-s copy-files build:app"
     },
     "dependencies": {
-        "next": "^9.3.3",
+        "next": "^9.4.4",
+        "react": "16.9.0",
+        "react-dom": "16.9.0",
         "@trezor/components": "1.0.0"
     },
     "devDependencies": {
+        "webpack": "4.43.0",
         "@types/next": "^9.0.0",
         "@types/react": "^16.7.11",
         "@types/react-dom": "^16.0.11",

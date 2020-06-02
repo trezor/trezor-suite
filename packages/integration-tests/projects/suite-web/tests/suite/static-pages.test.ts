@@ -16,11 +16,7 @@ describe('Static pages', () => {
 
     fixtures.forEach(f => {
         it(`test ${f.visit} page is online`, () => {
-            cy.visit(f.visit)
-        
-            // now there is temporary landing page until we go stable. modals will take precedence then
-            cy.getTestElement('@landing/continue-in-browser-button').click();
-            
+            cy.prefixedVisit(f.visit);
             cy.get('html').should(f.should[0], f.should[1]);
         });
     });

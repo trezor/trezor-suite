@@ -130,7 +130,11 @@ export default React.memo((props: Props) => {
             <Translation id="TR_SENT_TO_SELF" />
         ) : (
             target.addresses?.map((a, i) =>
-                type === 'sent' ? <AddressLabeling key={`${key}${i}`} address={a} /> : a,
+                type === 'sent' ? (
+                    <AddressLabeling key={`${key}${i}`} address={a} />
+                ) : (
+                    <span>{a}</span>
+                ),
             )
         );
 
@@ -166,10 +170,9 @@ export default React.memo((props: Props) => {
                                 amount={targetAmount}
                                 symbol={symbol}
                                 source={transaction.rates}
+                                badge={{ color: 'blue', size: 'small' }}
                                 useCustomSource
-                            >
-                                {({ value }) => value && <Badge isSmall>{value}</Badge>}
-                            </FiatValue>
+                            />
                         </StyledHiddenPlaceholder>
                     </ColFiat>
                 )}

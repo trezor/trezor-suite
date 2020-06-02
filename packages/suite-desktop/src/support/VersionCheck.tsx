@@ -62,7 +62,7 @@ export default ({ children }: Props) => {
         const fetchCommits = async () => {
             try {
                 const response = await fetch(
-                    'https://api.github.com/repos/trezor/trezor-suite/commits?per_page=1',
+                    'https://api.github.com/repos/trezor/trezor-suite/commits?per_page=1&sha=releases',
                     { signal: abortController.signal },
                 );
                 const body = await response.json();
@@ -113,7 +113,7 @@ export default ({ children }: Props) => {
                         <Button icon="EXTERNAL_LINK" alignIcon="right">
                             <Link
                                 variant="nostyle"
-                                href="https://gitlab.com/satoshilabs/trezor/trezor-suite/pipelines"
+                                href="https://beta-wallet.trezor.io/wallet/start"
                             >
                                 <Translation id="DESKTOP_OUTDATED_BUTTON_DOWNLOAD" />
                             </Link>

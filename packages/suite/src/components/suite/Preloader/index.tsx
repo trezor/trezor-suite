@@ -4,8 +4,8 @@ import { bindActionCreators } from 'redux';
 import FocusLock from 'react-focus-lock';
 import { SUITE } from '@suite-actions/constants';
 import Loading from '@suite-components/Loading';
-import Landing from '@landing-views/Container';
 import { SuiteLayout } from '@suite-components';
+import InitialLoading from './components/InitialLoading';
 import DiscoveryLoader from '@suite-components/DiscoveryLoader';
 import Modals from '@suite-components/modals';
 import * as routerActions from '@suite-actions/routerActions';
@@ -44,7 +44,6 @@ const mapStateToProps = (state: AppState) => ({
     router: state.router,
     discovery: state.wallet.discovery,
     actionModalContext: state.modal.context,
-    flags: state.suite.flags,
 });
 
 const init = () =>
@@ -146,7 +145,7 @@ const getModalApplication = (route: Props['router']['route']) => {
 };
 
 const Preloader = (props: Props) => {
-    const { loading, loaded, error, init, router, transport, actionModalContext, flags } = props;
+    const { loading, loaded, error, init, router, transport, actionModalContext } = props;
 
     useEffect(() => {
         if (!loading && !loaded && !error) {
@@ -158,10 +157,6 @@ const Preloader = (props: Props) => {
         // trezor-connect initialization failed
         // throw error to <ErrorBoundary /> in _app.tsx
         throw new Error(error);
-    }
-
-    if (flags.initialWebRun) {
-        return <Landing />;
     }
 
     const hasActionModal = actionModalContext !== '@modal/context-none';
@@ -194,7 +189,7 @@ const Preloader = (props: Props) => {
     // otherwise display Loader as full page view
 
     if (router.app === 'unknown' && (!loaded || !transport)) {
-        return <Loading noBackground />;
+        return <InitialLoading />;
     }
 
     // check route state and display it as not cancelable modal above requested route view

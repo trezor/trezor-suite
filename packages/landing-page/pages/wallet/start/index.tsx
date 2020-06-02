@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Layout from '@landing-components/Layout';
-import { Translation } from '@suite-components';
-import { Props } from './Container';
-import { normalizeVersion, isDev } from '@suite-utils/build';
+import Layout from '@landing-components/StartLayout';
+import { normalizeVersion } from '@suite-utils/build';
 import { H2, Button, P, Select, Link, variables } from '@trezor/components';
 
 const Wrapper = styled.div`
@@ -48,46 +46,42 @@ type App = 'win' | 'macos' | 'linux';
 
 const getAppUrl = (appName: App) => {
     const version = process.env.VERSION ? normalizeVersion(process.env.VERSION) : '';
-    const baseUrl = isDev()
-        ? 'https://suite.corp.sldev.cz/suite-desktop/develop'
-        : `https://github.com/trezor/trezor-suite/releases/download/v${version}`;
     switch (appName) {
         case 'win':
-            return `${baseUrl}/Trezor-Beta-Wallet-${version}.exe`;
+            return encodeURI(`/wallet/static/desktop/Trezor Beta Wallet-${version}.exe`);
         case 'macos':
-            return `${baseUrl}/Trezor-Beta-Wallet-${version}.dmg`;
+            return encodeURI(`/wallet/static/desktop/Trezor Beta Wallet-${version}.zip`);
         case 'linux':
-            return `${baseUrl}/Trezor-Beta-Wallet-${version}.AppImage`;
+            return encodeURI(`/wallet/static/desktop/Trezor Beta Wallet-${version}.AppImage`);
         // no default
     }
 };
 
-export default ({ setFlag }: Props) => {
+export default () => {
     const [app, setApp] = useState<App | null>(null);
+    const walletUrl = process.env.assetPrefix ? `${process.env.assetPrefix}/wallet` : '/wallet';
 
     return (
         <Layout>
             <Wrapper>
-                <H2>
-                    <Translation id="TR_LANDING_TITLE" />
-                </H2>
+                <H2>Download Trezor Beta Wallet desktop app</H2>
                 <P size="tiny">
-                    <Translation id="TR_LANDING_DESC" />
+                    For testing purposes only. Please keep in mind this is a beta version.
                 </P>
                 <Row>
                     <Select
                         variant="small"
-                        topLabel={<Translation id="TR_LANDING_CHOOSE_LABEL" />}
+                        topLabel="Choose your platform"
                         width={240}
                         isSearchable={false}
                         defaultValue={{
-                            label: <Translation id="TR_LANDING_CHOOSE_VALUE" />,
+                            label: '– Click to choose –',
                             value: null,
                         }}
                         options={[
-                            { label: <Translation id="TR_LANDING_WINDOWS" />, value: 'win' },
-                            { label: <Translation id="TR_LANDING_MACOS" />, value: 'macos' },
-                            { label: <Translation id="TR_LANDING_LINUX" />, value: 'linux' },
+                            { label: 'Windows', value: 'win' },
+                            { label: 'Linux', value: 'linux' },
+                            { label: 'Mac OS', value: 'macos' },
                         ]}
                         onChange={(option: { value: App | null; label: string | null }) =>
                             setApp(option.value)
@@ -96,28 +90,27 @@ export default ({ setFlag }: Props) => {
                     <Item>
                         {app && (
                             <Link href={getAppUrl(app)} variant="nostyle">
-                                <ButtonDownload variant="primary">
-                                    <Translation id="TR_LANDING_DOWNLOAD" />
-                                </ButtonDownload>
+                                <ButtonDownload variant="primary">Download</ButtonDownload>
                             </Link>
                         )}
                         {!app && (
                             <ButtonDownload isDisabled variant="primary">
-                                <Translation id="TR_LANDING_DOWNLOAD" />
+                                Download
                             </ButtonDownload>
                         )}
                     </Item>
                 </Row>
                 <Item>
-                    <ButtonContinue
-                        onClick={() => setFlag('initialWebRun', false)}
-                        variant="tertiary"
-                        icon="ARROW_RIGHT"
-                        alignIcon="right"
-                        data-test="@landing/continue-in-browser-button"
-                    >
-                        <Translation id="TR_LANDING_CONTINUE" />
-                    </ButtonContinue>
+                    <Link href={walletUrl} variant="nostyle" target="_self">
+                        <ButtonContinue
+                            onClick={() => {}}
+                            variant="tertiary"
+                            icon="ARROW_RIGHT"
+                            alignIcon="right"
+                        >
+                            Continue in browser
+                        </ButtonContinue>
+                    </Link>
                 </Item>
             </Wrapper>
         </Layout>

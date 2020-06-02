@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Layout from '../components/Layout';
+import Layout from '@landing-components/Layout';
 import { H2, Button, P, Link } from '@trezor/components';
 
 const Wrapper = styled.div`
@@ -56,7 +56,15 @@ const Index = () => (
                 </Link>
             </Item>
             <Item>
-                <Link href="/wallet" target="_blank" variant="nostyle">
+                <Link
+                    href={
+                        process.env.assetPrefix
+                            ? `${process.env.assetPrefix}/wallet/start`
+                            : '/wallet/start'
+                    }
+                    target="_self"
+                    variant="nostyle"
+                >
                     <ButtonAccess variant="primary">Access Beta Wallet</ButtonAccess>
                 </Link>
             </Item>

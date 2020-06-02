@@ -137,10 +137,10 @@ describe('Suite Actions', () => {
         const state = getInitialState({ router: { pathname: '/firmware' } });
         const store = initStore(state);
         // eslint-disable-next-line global-require
-        require('next/router').default.pathname = '/wallet/send';
+        require('next/router').default.pathname = '/accounts/send';
         store.dispatch(routerActions.closeModalApp());
         expect(store.getActions().length).toEqual(2); // unlock + location change
         expect(store.getState().router.app).toEqual('wallet');
-        expect(store.getState().router.pathname).toEqual('/wallet/send');
+        expect(store.getState().router.pathname).toEqual('/accounts/send');
     });
 });

@@ -146,7 +146,7 @@ export const removeFiatRate = (symbol: string) => (_dispatch: Dispatch, _getStat
 };
 
 export const saveFiatRates = () => (_dispatch: Dispatch, getState: GetState) => {
-    return db.addItems('fiatRates', getState().wallet.fiat, true);
+    return db.addItems('fiatRates', getState().wallet.fiat.coins, true);
 };
 
 export const saveSuiteSettings = () => (_dispatch: Dispatch, getState: GetState) => {
@@ -254,7 +254,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                         ...initialState.wallet.transactions,
                         transactions: mappedTxs,
                     },
-                    fiat: fiatRates || [],
+                    fiat: { ...initialState.wallet.fiat, coins: fiatRates || [] },
                     graph: {
                         ...initialState.wallet.graph,
                         data: walletGraphData || [],

@@ -82,9 +82,11 @@ export default ({
     sendFormActions,
     sendFormActionsBitcoin,
 }: Props) => {
+    const descriptor = selectedAccount.account ? selectedAccount.account.descriptor : '';
+
     useEffect(() => {
         sendFormActions.init();
-    }, [selectedAccount]);
+    }, [descriptor]);
 
     if (!device || !send || !fees || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Send" account={selectedAccount} />;

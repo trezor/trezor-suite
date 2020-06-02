@@ -128,7 +128,7 @@ describe('redirectMiddleware', () => {
                         },
                         route: {
                             name: 'wallet-index',
-                            pattern: '/wallet',
+                            pattern: '/accounts',
                             app: 'wallet',
                             params: ['symbol', 'accountIndex', 'accountType'],
                             isModal: undefined,
