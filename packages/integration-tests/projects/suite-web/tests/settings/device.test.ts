@@ -15,7 +15,7 @@ describe('Device settings', () => {
 
         cy.log('change label');
         cy.getTestElement('@settings/device/label-input')
-            .should('have.value', 'My Trezor')
+            .should('have.value', 'My Trevor')
             .clear()
             .type('My Tenzor');
 
