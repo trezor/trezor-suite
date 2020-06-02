@@ -63,7 +63,7 @@ const refresh = () => {
 
 interface StateProps {
     error: Error | null | undefined;
-    eventId: string | undefined;
+    // eventId: string | undefined;
 }
 
 const mapStateToProps = (state: AppState) => ({
@@ -76,18 +76,19 @@ type Props = ReturnType<typeof mapStateToProps>;
 class ErrorBoundary extends React.Component<Props, StateProps> {
     constructor(props: Props) {
         super(props);
-        this.state = { error: null, eventId: undefined };
+        this.state = { error: null };
     }
 
     componentDidCatch(error: Error | null, errorInfo: object) {
+        console.log('instance', this.props.analytics.instanceId);
+        console.log('log', JSON.stringify(this.props.log.entries));
         Sentry.withScope(scope => {
-            console.log('instance', this.props.analytics.instanceId);
-            console.log('log', JSON.stringify(this.props.log.entries));
             scope.setExtras(errorInfo);
             scope.setExtra('log', JSON.stringify(this.props.log.entries));
             scope.setUser({ id: this.props.analytics.instanceId });
-            const eventId = Sentry.captureException(error);
-            this.setState({ eventId });
+            // const eventId = Sentry.captureException(error);
+            Sentry.captureException(error);
+            // this.setState({ eventId });
         });
         this.setState({ error });
         // todo: not in development and in production only if user opts in.
@@ -120,10 +121,7 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
                     >
                         Attach log
                     </SendReportButton>
-                    <SendReportButton
-                        variant="primary"
-                        onClick={() => Sentry.showReportDialog({ eventId: this.state.eventId })}
-                    >
+                    <SendReportButton variant="primary" onClick={() => Sentry.showReportDialog()}>
                         Send report
                     </SendReportButton>
                     <Separator />
