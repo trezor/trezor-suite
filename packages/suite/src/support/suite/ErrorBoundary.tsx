@@ -147,7 +147,7 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
     }
 }
 
-export default connect(mapStateToProps)(ErrorBoundary);
+export default connect(mapStateToProps, mapDispatchToProps)(ErrorBoundary);
 
 // In case we would like to translate these. Not possible now, ErrorBoundary is not nested in
 // IntlProvider. Not sure if we need so much to have this translated here.
