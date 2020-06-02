@@ -69,6 +69,7 @@ async function runTests() {
     let log = {
         jobUrl: CI_JOB_URL,
         branch: CI_COMMIT_BRANCH,
+        stage: stage.split(','),
         records: {}
     };
 
