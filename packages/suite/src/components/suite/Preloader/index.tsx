@@ -5,6 +5,7 @@ import FocusLock from 'react-focus-lock';
 import { SUITE } from '@suite-actions/constants';
 import Loading from '@suite-components/Loading';
 import { SuiteLayout } from '@suite-components';
+import InitialLoading from './components/InitialLoading';
 import DiscoveryLoader from '@suite-components/DiscoveryLoader';
 import Modals from '@suite-components/modals';
 import * as routerActions from '@suite-actions/routerActions';
@@ -188,7 +189,7 @@ const Preloader = (props: Props) => {
     // otherwise display Loader as full page view
 
     if (router.app === 'unknown' && (!loaded || !transport)) {
-        return <Loading noBackground />;
+        return <InitialLoading />;
     }
 
     // check route state and display it as not cancelable modal above requested route view
