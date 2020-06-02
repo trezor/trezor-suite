@@ -1,33 +1,33 @@
-    suite-web build:
-        stage: build
-        script:
-            - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/wallet yarn workspace @trezor/suite-web build
-        artifacts:
-            expire_in: 7 days
-            paths:
-                - packages/suite-web/build
+    # suite-web build:
+    #     stage: build
+    #     script:
+    #         - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/wallet yarn workspace @trezor/suite-web build
+    #     artifacts:
+    #         expire_in: 7 days
+    #         paths:
+    #             - packages/suite-web/build
 
-    suite-web deploy dev:
-        stage: deploy to dev servers
-        variables:
-            DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}/wallet
-        dependencies:
-            - suite-web build
-            - landing-page build
-        environment:
-            name: ${CI_BUILD_REF_NAME}
-            url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
-        before_script: []
-        script:
-            - cd packages/suite-web
-            - echo "Deploy to dev servers"
-            - mkdir -p ${DEPLOY_BASE_DIR}/suite-web
-            - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
-            - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
-            - cd ../landing-page
-            - rsync -abviuzP -va build/ "${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}/"
-        tags:
-            - deploy
+    # suite-web deploy dev:
+    #     stage: deploy to dev servers
+    #     variables:
+    #         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}/wallet
+    #     dependencies:
+    #         - suite-web build
+    #         - landing-page build
+    #     environment:
+    #         name: ${CI_BUILD_REF_NAME}
+    #         url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+    #     before_script: []
+    #     script:
+    #         - cd packages/suite-web
+    #         - echo "Deploy to dev servers"
+    #         - mkdir -p ${DEPLOY_BASE_DIR}/suite-web
+    #         - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
+    #         - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
+    #         - cd ../landing-page
+    #         - rsync -abviuzP -va build/ "${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}/"
+    #     tags:
+    #         - deploy
 
     # todo: add smoke test job on stage / beta (need basic auth)
 

@@ -66,5 +66,5 @@ include:
     # - ci/packages/suite-desktop.yml
     # - ci/packages/suite-native.yml
     # - ci/packages/rollout.yml
-    - ci/packages/landing-page.yml
+    # - ci/packages/landing-page.yml
     
