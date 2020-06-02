@@ -34,7 +34,6 @@ const StyledCard = styled(Card)`
 const CardHeader = styled.div`
     display: flex;
     align-items: center;
-    padding: 15px ${CARD_PADDING_SIZE};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${colors.BLACK50};
@@ -45,30 +44,30 @@ const CardHeader = styled.div`
     }
 `;
 
-const NameTitle = styled.div`
+const HeaderTitle = styled.div`
     flex: auto;
+    padding: 15px ${CARD_PADDING_SIZE};
+`;
+
+const NameTitle = styled(HeaderTitle)`
+    width: 30%;
+`;
+
+const AmountTitle = styled(HeaderTitle)`
     width: 25%;
 `;
 
-const AmountTitle = styled.div`
-    flex: auto;
-    width: 25%;
-`;
-
-const ChartTitle = styled.div`
-    flex: auto;
+const ChartTitle = styled(HeaderTitle)`
     text-align: center;
     width: 15%;
 `;
 
-const ChangeTitle = styled.div`
-    flex: auto;
+const ChangeTitle = styled(HeaderTitle)`
     text-align: center;
     width: 15%;
 `;
 
-const PriceTitle = styled.div`
-    flex: auto;
+const PriceTitle = styled(HeaderTitle)`
     text-align: right;
     width: 15%;
 `;
@@ -80,27 +79,6 @@ const InfoMessage = styled.div`
     color: ${colors.RED};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
-`;
-
-const Grid = styled.div`
-    display: grid;
-    overflow: hidden;
-    grid-template-columns: 40px 3fr 3fr 2fr 2fr 2fr;
-    grid-template-areas: 'logo label value chart change fiat';
-    align-items: center;
-    margin: 0 10px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        grid-template-columns: 32px 1fr 1fr;
-        grid-template-rows: 1fr 1fr;
-        grid-template-areas:
-            'logo label value'
-            'logo fiat value';
-    }
-
-    & + & {
-        border-top: 1px solid ${colors.BLACK96};
-    }
 `;
 
 const AssetsCard = () => {
@@ -162,14 +140,12 @@ const AssetsCard = () => {
                     const assetFailed = accounts.find(f => f.symbol === network.symbol && f.failed);
 
                     return (
-                        <Grid>
-                            <Asset
-                                key={symbol}
-                                network={network}
-                                failed={!!assetFailed}
-                                cryptoValue={assetBalance.toFixed()}
-                            />
-                        </Grid>
+                        <Asset
+                            key={symbol}
+                            network={network}
+                            failed={!!assetFailed}
+                            cryptoValue={assetBalance.toFixed()}
+                        />
                     );
                 })}
 
