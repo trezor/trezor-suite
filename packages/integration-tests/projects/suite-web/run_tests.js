@@ -47,6 +47,7 @@ async function runTests() {
         CYPRESS_baseUrl, // eslint-disable-line camelcase
         TRACK_SUITE_URL,
         CI_JOB_URL,
+        CI_COMMIT_BRANCH,
     } = process.env;
 
     if (!TRACK_SUITE_URL) {
@@ -67,6 +68,7 @@ async function runTests() {
 
     let log = {
         jobUrl: CI_JOB_URL,
+        branch: CI_COMMIT_BRANCH,
         records: {}
     };
 
