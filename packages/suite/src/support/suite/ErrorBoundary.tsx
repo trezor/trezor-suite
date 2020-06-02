@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import * as Sentry from '@sentry/browser';
 import { H1, P, Button } from '@trezor/components';
-import { AppState } from '@suite/types/suite';
 import { connect } from 'react-redux';
+import { AppState } from '@suite/types/suite';
 
 const Wrapper = styled.div`
     display: flex;
