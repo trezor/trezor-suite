@@ -20,7 +20,7 @@ const Row = styled.div`
 `;
 
 export default ({ send, account }: Props) => {
-    if (!send || !account) return null;
+    if (!account) return null;
     // const { transactionInfo } = send.networkTypeEthereum;
 
     return (

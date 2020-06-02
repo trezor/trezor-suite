@@ -2,11 +2,11 @@
 import { WalletLayout } from '@wallet-components';
 import { Card, Translation } from '@suite-components';
 import { Output } from '@wallet-types/sendForm';
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { variables, colors } from '@trezor/components';
 import Add from './components/Add/Container';
-import Address from './components/Address/Container';
+import Address from './components/Address';
 import AdditionalForm from './components/AdvancedForm';
 import Amount from './components/Amount/Container';
 import ButtonToggleAdditional from './components/ButtonToggleAdditional';
@@ -75,13 +75,32 @@ const AdditionalFormHeader = styled.div`
     align-items: center;
 `;
 
-export default ({ device, send, fees, selectedAccount }: Props) => {
-    const descriptor = selectedAccount.account ? selectedAccount.account.descriptor : '';
+const output: Output = {
+    id: 0,
+    address: { value: null, error: null },
+    amount: { value: null, error: null },
+    setMax: false,
+    fiatValue: { value: null },
+    localCurrency: { value: 'usd' },
+};
 
+const defaultValues = {
+    address: '',
+    amount: '',
+    fiat: '',
+    fiatCurrency: '',
+    fee: '1',
+    feeLimit: '1',
+};
+
+export default ({ device, fees, selectedAccount }: Props) => {
     if (!device || !fees || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Send" account={selectedAccount} />;
     }
-    const methods = useForm();
+
+    const methods = useForm({ mode: 'onChange', defaultValues });
+    const [isAdditionalFormVisible, setAdditionFormVisibility] = useState(false);
+    const [outputs, addOutput] = useState([output]);
     const { network, account } = selectedAccount;
 
     return (
@@ -102,38 +121,32 @@ export default ({ device, send, fees, selectedAccount }: Props) => {
                         </Header>
                     }
                 >
-                    <Address />
-                    <Amount />
-                    {/* {send.outputs.map((output: Output) => (
-                    <OutputWrapper key={output.id}>
-                        <OutputHeader
-                            outputs={send.outputs}
-                            output={output}
-                            sendFormActionsBitcoin={sendFormActionsBitcoin}
-                        />
-                        <Row>
-                            <Address output={output} />
+                    {outputs.map((output: any) => (
+                        <OutputWrapper key={output.id}>
+                            <OutputHeader outputs={outputs} output={output} />
+                            <Row>
+                                <Address output={output} />
+                            </Row>
+                            <Row>
+                                <Amount output={output} />
+                            </Row>
+                        </OutputWrapper>
+                    ))}
+                    <AdditionalInfoWrapper>
+                        <Row isColumn={isAdditionalFormVisible}>
+                            <AdditionalFormHeader>
+                                <ButtonToggleAdditional
+                                    isAdditionalFormVisible={isAdditionalFormVisible}
+                                    setAdditionFormVisibility={setAdditionFormVisibility}
+                                />
+                                <Add />
+                            </AdditionalFormHeader>
+                            {isAdditionalFormVisible && (
+                                <AdditionalForm networkType={network.networkType} />
+                            )}
                         </Row>
-                        <Row>
-                            <Amount output={output} />
-                        </Row>
-                    </OutputWrapper>
-                ))}
-                <AdditionalInfoWrapper>
-                    <Row isColumn={send.isAdditionalFormVisible}>
-                        <AdditionalFormHeader>
-                            <ButtonToggleAdditional
-                                isActive={send.isAdditionalFormVisible}
-                                sendFormActions={sendFormActions}
-                            />
-                            <Add />
-                        </AdditionalFormHeader>
-                        {send.isAdditionalFormVisible && (
-                            <AdditionalForm networkType={network.networkType} />
-                        )}
-                    </Row>
-                </AdditionalInfoWrapper>
-                <ReviewButtonSection /> */}
+                    </AdditionalInfoWrapper>
+                    <ReviewButtonSection />
                 </StyledCard>
             </FormContext>
         </WalletLayout>

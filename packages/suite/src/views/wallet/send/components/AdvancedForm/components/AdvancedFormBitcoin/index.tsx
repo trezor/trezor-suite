@@ -25,7 +25,6 @@ const Row = styled.div`
 `;
 
 export default ({ send }: Props) => {
-    if (!send) return null;
     const { customFee } = send;
 
     return (

@@ -3,8 +3,6 @@ import { variables, colors, Icon } from '@trezor/components';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
 
-import { DispatchProps } from '../../Container';
-
 const Wrapper = styled.div`
     display: flex;
     min-height: 41px;
@@ -26,14 +24,22 @@ const Text = styled.div`
 `;
 
 interface Props {
-    isActive: boolean;
-    sendFormActions: DispatchProps['sendFormActions'];
+    isAdditionalFormVisible: boolean;
+    setAdditionFormVisibility: (isVisible: boolean) => boolean;
 }
 
 export default (props: Props) => (
     <Wrapper>
-        <Text onClick={() => props.sendFormActions.toggleAdditionalFormVisibility()}>
-            {props.isActive ? (
+        <Text
+            onClick={() => {
+                if (props.isAdditionalFormVisible) {
+                    props.setAdditionFormVisibility(false);
+                } else {
+                    props.setAdditionFormVisibility(true);
+                }
+            }}
+        >
+            {props.isAdditionalFormVisible ? (
                 <Translation id="TR_HIDE_ADVANCED_OPTIONS" />
             ) : (
                 <Translation id="TR_SHOW_ADVANCED_OPTIONS" />
@@ -43,8 +49,8 @@ export default (props: Props) => (
                 icon="ARROW_DOWN"
                 color={colors.BLACK17}
                 size={12}
-                isActive={props.isActive}
-                canAnimate={props.isActive}
+                isActive={props.isAdditionalFormVisible}
+                canAnimate={props.isAdditionalFormVisible}
             />
         </Text>
     </Wrapper>

@@ -1,6 +1,8 @@
 import { AddressLabeling, QuestionTooltip, Translation } from '@suite-components';
 import { Input } from '@trezor/components';
+import { useActions } from '@suite-hooks';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
+import * as modalActions from '@suite-actions/modalActions';
 import { Output } from '@wallet-types/sendForm';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
@@ -33,9 +35,9 @@ const getErrorMessage = (error: Output['address']['error'], isLoading: boolean) 
     }
 };
 
-export default ({ output, account, openModal }: Props) => {
-    if (!account) return null;
+export default ({ outputId }: Props) => {
     const { register } = useFormContext();
+    const openModal = useActions(modalActions.openModal);
     // const { address, id } = output;
     // let showLoadingForCompose = false;
     // const { value, error } = address;
@@ -61,14 +63,14 @@ export default ({ output, account, openModal }: Props) => {
             //         // getErrorMessage(error, isComposing) || <AddressLabeling address={value} knownOnly />
 
             // }
-            name="address"
+            name={`address-${outputId}`}
             innerRef={register}
             button={{
                 icon: 'QR',
                 onClick: () =>
                     openModal({
                         type: 'qr-reader',
-                        outputId: id,
+                        outputId,
                     }),
                 text: <Translation id="TR_SCAN" />,
             }}

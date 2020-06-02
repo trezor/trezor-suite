@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import React from 'react';
 import { bindActionCreators } from 'redux';
 import { injectIntl } from 'react-intl';
 import * as modalActions from '@suite-actions/modalActions';

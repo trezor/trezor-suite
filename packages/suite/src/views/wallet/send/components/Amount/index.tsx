@@ -5,6 +5,7 @@ import { Output, CustomFee } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import CurrencySelect from './components/CurrencySelect';
 import FiatComponent from './components/Fiat';
@@ -104,18 +105,18 @@ const getMaxIcon = (setMaxActivated: boolean) => {
 };
 
 export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
-    if (selectedAccount.status !== 'loaded' || !send) return null;
-
+    if (selectedAccount.status !== 'loaded') return null;
+    const { register } = useFormContext();
     const { account, network } = selectedAccount;
-    const { token } = send.networkTypeEthereum;
+    // const { token } = send.networkTypeEthereum;
     const { symbol } = account;
-    const { setMaxActivated, customFee } = send;
+    // const { setMaxActivated, customFee } = send;
     const { id, amount, fiatValue, localCurrency } = output;
     const { value, error, isLoading } = amount;
     const reserve =
         account.networkType === 'ripple' ? formatNetworkAmount(account.misc.reserve, symbol) : null;
-    const tokenBalance = token ? `${token.balance} ${token.symbol!.toUpperCase()}` : undefined;
-    const decimals = token ? token.decimals : network.decimals;
+    // const tokenBalance = token ? `${token.balance} ${token.symbol!.toUpperCase()}` : undefined;
+    // const decimals = token ? token.decimals : network.decimals;
 
     return (
         <Wrapper>
@@ -130,29 +131,30 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
                             <QuestionTooltip messageId="TR_SEND_AMOUNT_TOOLTIP" />
                         </Label>
                     }
-                    button={{
-                        icon: getMaxIcon(setMaxActivated),
-                        iconSize: 15,
-                        onClick: () => sendFormActions.setMax(id),
-                        text: <Translation id="TR_SEND_SEND_MAX" />,
-                    }}
+                    // button={{
+                    //     icon: getMaxIcon(setMaxActivated),
+                    //     iconSize: 15,
+                    //     onClick: () => sendFormActions.setMax(id),
+                    //     text: <Translation id="TR_SEND_SEND_MAX" />,
+                    // }}
                     align="right"
-                    value={value || ''}
+                    innerRef={register}
+                    name={`amount-${id}`}
                     onChange={e => sendFormActions.handleAmountChange(id, e.target.value)}
-                    bottomText={getMessage(
-                        error,
-                        decimals,
-                        reserve,
-                        isLoading,
-                        symbol,
-                        customFee.error,
-                    )}
+                    // bottomText={getMessage(
+                    //     error,
+                    //     decimals,
+                    //     reserve,
+                    //     isLoading,
+                    //     symbol,
+                    //     customFee.error,
+                    // )}
                 />
-                {tokenBalance && (
+                {/* {tokenBalance && (
                     <TokenBalance>
                         <Translation id="TR_TOKEN_BALANCE" values={{ balance: tokenBalance }} />
                     </TokenBalance>
-                )}
+                )} */}
                 <CurrencySelect
                     key="currency-select"
                     symbol={symbol}
@@ -162,27 +164,27 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
                 />
             </Left>
             {/* TODO: token FIAT rates calculation */}
-            {!token && (
-                <FiatValue amount="1" fiatCurrency={localCurrency.value.value} symbol={symbol}>
-                    {({ rate }) =>
-                        rate && (
-                            <>
-                                <EqualsSign>=</EqualsSign>
-                                <Right>
-                                    <FiatComponent
-                                        outputId={id}
-                                        key="fiat-input"
-                                        state={error ? 'error' : undefined}
-                                        sendFormActions={sendFormActions}
-                                        value={fiatValue.value}
-                                        localCurrency={localCurrency.value}
-                                    />
-                                </Right>
-                            </>
-                        )
-                    }
-                </FiatValue>
-            )}
+            {/* {!token && ( */}
+            <FiatValue amount="1" fiatCurrency={localCurrency.value.value} symbol={symbol}>
+                {({ rate }) =>
+                    rate && (
+                        <>
+                            <EqualsSign>=</EqualsSign>
+                            <Right>
+                                <FiatComponent
+                                    outputId={id}
+                                    key="fiat-input"
+                                    state={error ? 'error' : undefined}
+                                    sendFormActions={sendFormActions}
+                                    value={fiatValue.value}
+                                    localCurrency={localCurrency.value}
+                                />
+                            </Right>
+                        </>
+                    )
+                }
+            </FiatValue>
+            {/* )} */}
         </Wrapper>
     );
 };
