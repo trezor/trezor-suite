@@ -79,11 +79,11 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
         this.state = { error: null };
     }
 
-    componentDidCatch(error: Error | null, errorInfo: object) {
+    componentDidCatch(error: Error | null, _errorInfo: object) {
         console.log('instance', this.props.analytics.instanceId);
         console.log('log', JSON.stringify(this.props.log.entries));
         Sentry.withScope(scope => {
-            scope.setExtras(errorInfo);
+            // scope.setExtras(errorInfo);
             scope.setExtra('log', this.props.log.entries);
             scope.setExtra('logtest', JSON.parse(JSON.stringify(this.props.log.entries)));
             scope.setUser({ id: this.props.analytics.instanceId });
