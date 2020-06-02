@@ -83,7 +83,7 @@ async function runTests() {
         const retries = Number(grepForValue('@retries', testFile));
 
         const spec = __dirname + testFile.substr(testFile.lastIndexOf('/tests'));
-        const testFileName = testFile.substr(testFile.lastIndexOf('/') + 1).replace('.test.ts', '');
+        const testFileName = testFile.substr(testFile.lastIndexOf('/tests/') + 7).replace('.test.ts', '');
 
         let testRunNumber = 0;
 
