@@ -9,8 +9,9 @@ export default `
         min-height: 100%;
     }
 
-    input, textarea {
+    input, select, textarea {
         outline: none;
+        font-family: "TT Hoves", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
     }
 
     body, html {
@@ -31,7 +32,6 @@ export default `
         margin: 0;
         padding: 0;
         outline: none;
-        font-family: "TT Hoves", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
     }
 
     *,
