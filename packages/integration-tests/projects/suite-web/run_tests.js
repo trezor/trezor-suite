@@ -51,10 +51,10 @@ async function runTests() {
     } = process.env;
     
     let stage = [];
-    if (argv.stage && Array.isArray(stage)) {
-        stage = stage.split(',')
+    if (argv.stage && Array.isArray(argv.stage)) {
+        stage = argv.stage.split(',')
     }
-    
+
     if (!TRACK_SUITE_URL) {
         console.log('[run_tests.js] TRACK_SUITE_URL env not specified. No logs will be uploaded');
     }
