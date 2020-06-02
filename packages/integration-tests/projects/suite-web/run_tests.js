@@ -73,6 +73,7 @@ async function runTests() {
 
     let log = {
         jobUrl: CI_JOB_URL,
+        jobId: CI_JOB_ID,
         branch: CI_COMMIT_BRANCH,
         stage,
         records: {}
