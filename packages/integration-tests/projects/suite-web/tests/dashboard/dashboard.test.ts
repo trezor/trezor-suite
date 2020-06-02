@@ -1,5 +1,4 @@
 // @stable
-// @foo
 
 describe('Dashboard', () => {
     beforeEach(() => {
