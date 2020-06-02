@@ -30,6 +30,7 @@ interface StateProps {
 
 const mapStateToProps = (state: AppState) => ({
     log: state.log,
+    analytics: state.analytics,
 });
 
 type Props = ReturnType<typeof mapStateToProps>;
@@ -41,6 +42,12 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
     }
 
     componentDidCatch(error: Error | null, _errorInfo: object) {
+        const log = JSON.stringify(this.props.log.entries, null, 2);
+        console.log('log', log);
+        Sentry.configureScope(scope => {
+            scope.setExtra('log', log);
+            scope.setUser({ id: this.props.analytics.instanceId });
+        });
         this.setState({ error });
         // todo: not in development and in production only if user opts in.
         // Sentry.withScope(scope => {
@@ -49,7 +56,6 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
     }
 
     render() {
-        const log = JSON.stringify(this.props.log.entries, null, 2);
         if (this.state.error) {
             // render fallback UI
             return (
@@ -62,10 +68,6 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
                     <Buttons>
                         <StyledButton
                             onClick={() => {
-                                Sentry.configureScope(scope => {
-                                    scope.setExtra('log', log);
-                                });
-
                                 Sentry.showReportDialog();
                             }}
                         >
