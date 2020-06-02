@@ -33,7 +33,11 @@ export const reportToSentry = (error: any, attachLog = false) => (
             scope.setExtra('log', [...log.entries]);
             scope.setExtra(
                 'logtt',
-                log.entries.map(l => ({ ...l, message: { ...l.message } })),
+                log.entries.map(l => ({ ...l, message: JSON.stringify(l.message) })),
+            );
+            scope.setExtra(
+                'logttt',
+                log.entries.map(l => ({ ...l, message: 'test' })),
             );
         }
         Sentry.captureException(error);
