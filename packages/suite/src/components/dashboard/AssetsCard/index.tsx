@@ -12,33 +12,65 @@ import { useAccounts } from '@wallet-hooks';
 
 const Header = styled.div`
     display: flex;
-    border-radius: 6px 6px 0px 0px;
-    padding: 10px ${CARD_PADDING_SIZE};
+    padding: 12px;
+    flex-direction: row;
+    font-size: ${variables.FONT_SIZE.TINY};
+    align-items: center;
+`;
+
+const Title = styled.div`
+    flex: 1;
+    margin-bottom: 2px;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    text-transform: uppercase;
+    color: ${colors.BLACK50};
+`;
+
+const StyledCard = styled(Card)`
+    flex-direction: column;
+    padding: 0;
+`;
+
+const CardHeader = styled.div`
+    display: flex;
+    align-items: center;
+    padding: 15px ${CARD_PADDING_SIZE};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.BLACK50};
+    border-bottom: 1px solid ${colors.BLACK96};
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         display: none;
     }
 `;
 
-const HeaderTitle = styled.div`
-    flex: 1;
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${colors.BLACK50};
-    text-transform: uppercase;
-    display: grid;
-    grid-gap: 10px;
-
-    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        grid-template-columns: 1fr 1fr 1fr;
-    }
+const NameTitle = styled.div`
+    flex: auto;
+    width: 25%;
 `;
 
-const StyledCard = styled(Card)`
-    flex-direction: column;
-    padding: 0px ${CARD_PADDING_SIZE};
+const AmountTitle = styled.div`
+    flex: auto;
+    width: 25%;
+`;
+
+const ChartTitle = styled.div`
+    flex: auto;
+    text-align: center;
+    width: 15%;
+`;
+
+const ChangeTitle = styled.div`
+    flex: auto;
+    text-align: center;
+    width: 15%;
+`;
+
+const PriceTitle = styled.div`
+    flex: auto;
+    text-align: right;
+    width: 15%;
 `;
 
 // padding for loader need to math with first row height
@@ -50,18 +82,13 @@ const InfoMessage = styled.div`
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
-const BalanceHeader = styled.div`
-    display: flex;
-    justify-content: flex-end;
-`;
-
 const Grid = styled.div`
     display: grid;
     overflow: hidden;
     grid-template-columns: 40px 3fr 3fr 2fr 2fr 2fr;
     grid-template-areas: 'logo label value chart change fiat';
     align-items: center;
-    margin: 0 -6px;
+    margin: 0 10px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         grid-template-columns: 32px 1fr 1fr;
@@ -97,23 +124,30 @@ const AssetsCard = () => {
     return (
         <>
             <Header>
-                <HeaderTitle>
-                    {/* todo */}
-                    <div>
-                        <Translation id="TR_ASSETS" />
-                    </div>
-                    <BalanceHeader>
-                        <Translation id="TR_VALUES" />
-                    </BalanceHeader>
-                    <div />
-                    <div>
-                        <Translation id="TR_EXCHANGE_RATE" />
-                    </div>
-                    <div />
-                </HeaderTitle>
+                <Title>
+                    <Translation id="TR_ASSETS" />
+                </Title>
             </Header>
 
             <StyledCard>
+                <CardHeader>
+                    <NameTitle>
+                        <Translation id="TR_NAME" />
+                    </NameTitle>
+                    <AmountTitle>
+                        <Translation id="TR_AMOUNT" />
+                    </AmountTitle>
+                    <ChartTitle>
+                        <Translation id="TR_CHART_24" />
+                    </ChartTitle>
+                    <ChangeTitle>
+                        <Translation id="TR_CHANGE_24" />
+                    </ChangeTitle>
+                    <PriceTitle>
+                        <Translation id="TR_PRICE" />
+                    </PriceTitle>
+                </CardHeader>
+
                 {networks.map(symbol => {
                     const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
                     if (!network) {

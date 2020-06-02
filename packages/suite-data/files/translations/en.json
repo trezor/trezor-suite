@@ -774,5 +774,9 @@
 	"TR_LANDING_DOWNLOAD": "Download",
 	"TR_LANDING_CONTINUE": "or continue in browser",
 	"TR_SEND_SEND_MAX": "Send max",
-	"TR_HOLD_LEFT_BUTTON": "Hold left or both buttons while connecting device"
+	"TR_HOLD_LEFT_BUTTON": "Hold left or both buttons while connecting device",
+	"TR_NAME": "Name",
+	"TR_CHART_24": "Chart · 24h",
+	"TR_CHANGE_24": "Change · 24h",
+	"TR_PRICE": "Price"
 }

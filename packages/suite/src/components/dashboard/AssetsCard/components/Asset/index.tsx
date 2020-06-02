@@ -90,9 +90,11 @@ const FailedCol = styled(Cell)`
 
 const CryptoValueCell = styled(Cell)`
     grid-area: value;
-    text-align: right;
-    white-space: nowrap;
     font-size: ${variables.FONT_SIZE.SMALL};
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        text-align: right;
+    }
 `;
 
 const FiatValueCell = styled(Cell)`
@@ -132,6 +134,7 @@ const ChangeCell = styled(Cell)`
     font-family: ${variables.FONT_FAMILY.MONOSPACE};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${colors.GREENER};
+    text-align: center;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         display: none;
