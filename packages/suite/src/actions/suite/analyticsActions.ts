@@ -4,6 +4,7 @@ import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { getAnalyticsRandomId } from '@suite-utils/random';
 import { Account } from '@wallet-types';
 import qs from 'qs';
+import Sentry from '@sentry/browser';
 
 export type AnalyticsActions =
     | { type: typeof ANALYTICS.DISPOSE }
@@ -217,11 +218,15 @@ export const report = (data: Payload, force = false) => async (
  */
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const { analytics } = getState();
+    const instanceId = getAnalyticsRandomId();
+    Sentry.configureScope(scope => {
+        scope.setUser({ id: instanceId });
+    });
     dispatch({
         type: ANALYTICS.INIT,
         payload: {
             // if no instanceId exists it means that it was not loaded from storage, so create a new one
-            instanceId: !analytics.instanceId ? getAnalyticsRandomId() : analytics.instanceId,
+            instanceId: !analytics.instanceId ? instanceId : analytics.instanceId,
         },
     });
 };
