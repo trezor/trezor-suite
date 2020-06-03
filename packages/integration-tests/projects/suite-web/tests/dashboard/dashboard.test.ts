@@ -10,7 +10,7 @@ describe('Dashboard', () => {
     it('Go to dashboard and check that loading status turns off after discovery is finished', () => {
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
-        cy.getTestElement('@suite/loading').should('not.be.visible');
+        cy.getTestElement('@suite/loading', { timeout: 60000 }).should('not.be.visible');
         cy.getTestElement('@dashboard/loading').should('be.visible');
         cy.getTestElement('@dashboard/graph').should('be.visible');
     });

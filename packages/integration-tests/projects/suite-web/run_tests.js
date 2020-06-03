@@ -1,5 +1,6 @@
 /*
-    Heavily inspired by Mattermost, https://github.com/mattermost/mattermost-webapp/blob/master/e2e/run_tests.js good job guys.
+    Heavily inspired by Mattermost,
+    https://github.com/mattermost/mattermost-webapp/blob/master/e2e/run_tests.js good job guys.
 */
 
 const cypress = require('cypress');
@@ -9,7 +10,7 @@ const fetch = require('node-fetch')
 
 const TEST_DIR = './packages/integration-tests/projects/suite-web';
 
-const grepCommand = (word = '', args = '-rlIw', path=TEST_DIR) => {
+const getGrepCommand = (word = '', args = '-rlIw', path=TEST_DIR) => {
     // -r, recursive search on subdirectories
     // -I, ignore binary
     // -l, only names of files to stdout/return
@@ -17,28 +18,30 @@ const grepCommand = (word = '', args = '-rlIw', path=TEST_DIR) => {
     return `grep ${args} '${word}' ${path}`;
 };
 
-const grepFiles = (command) => {
-    return shell.exec(command, {silent: true})
-        .stdout
-        .split('\n')
-        .filter((f) => f.includes('.test.'));
-};
-
+/**
+ * get value of labels, for example there is 
+ * @retry=3 in ./tests/backup.test.ts
+ * grepForValue('@retry', './tests/backup.test.ts');
+ * will return 3
+ */
 const grepForValue = (word, path) => {
-    const gc = grepCommand(word, '-rIw', path);
+    const gc = getGrepCommand(word, '-rIw', path);
     const result =  shell.exec(gc, {silent: true}).stdout
     return result.replace(`// ${word}=`, '')
 }
 
 function getTestFiles() {
     const {stage} = argv;
-    let gc;
+    let command;
     if (stage) {
-        gc = grepCommand(stage.split(',').join('\\|'))
+        command = getGrepCommand(stage.split(',').join('\\|'))
     } else {
-        gc = grepCommand();
+        command = getGrepCommand();
     }
-    return grepFiles(gc);
+    return shell.exec(command, {silent: true})
+        .stdout
+        .split('\n')
+        .filter((f) => f.includes('.test.'));
 }
 
 async function runTests() {
@@ -82,13 +85,13 @@ async function runTests() {
     for (let i = 0; i < finalTestFiles.length; i++) {
         const testFile = finalTestFiles[i];
         const retries = Number(grepForValue('@retries', testFile));
+        const allowedRuns = !isNaN(retries) ? retries + 1 : 1;
 
         const spec = __dirname + testFile.substr(testFile.lastIndexOf('/tests'));
         const testFileName = testFile.substr(testFile.lastIndexOf('/tests/') + 7).replace('.test.ts', '');
 
         let testRunNumber = 0;
 
-        const allowedRuns = !isNaN(retries) ? retries + 1 : 1;
         
         console.log(`[run_tests.js] testing ${testFile}`);
         console.log(`[run_tests.js] allowed to run ${allowedRuns} times`);
