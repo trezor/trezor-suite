@@ -44,6 +44,7 @@ class TrezorSuiteApp extends App<Props> {
             Sentry.init({
                 dsn: SENTRY,
                 debug: true,
+                normalizeDepth: 10,
                 integrations: [
                     new CaptureConsole({
                         levels: ['error'],
