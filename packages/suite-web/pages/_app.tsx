@@ -3,7 +3,7 @@ import App, { AppContext } from 'next/app';
 import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
 import * as Sentry from '@sentry/browser';
-import { CaptureConsole } from '@sentry/integrations';
+// import { CaptureConsole } from '@sentry/integrations';
 import { initStore } from '@suite/reducers/store';
 import Preloader from '@suite-components/Preloader';
 import { ToastContainer } from 'react-toastify';
@@ -43,11 +43,6 @@ class TrezorSuiteApp extends App<Props> {
         if (!window.Cypress && !isDev()) {
             Sentry.init({
                 dsn: SENTRY,
-                integrations: [
-                    new CaptureConsole({
-                        levels: ['error'],
-                    }),
-                ],
                 release: process.env.COMMITHASH,
                 environment: process.env.SUITE_TYPE,
             });
