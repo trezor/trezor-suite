@@ -24,13 +24,26 @@ export const toggleExcludeBalanceRelated = () => ({
 export const reportToSentry = (error: any, attachLog = false) => (
     _dispatch: Dispatch,
     getState: GetState,
-) =>
+) => {
+    const { analytics, log, wallet, suite } = getState();
+    const censoredDevice = {
+        ...suite.device,
+        id: undefined,
+        label: undefined,
+        features: {
+            ...suite.device?.features,
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            device_id: undefined,
+        },
+    };
+
     Sentry.withScope(scope => {
-        const { analytics } = getState();
-        const { log } = getState();
         scope.setUser({ id: analytics.instanceId });
         if (attachLog) {
+            scope.setExtra('device', censoredDevice);
+            scope.setExtra('enabled-coins', wallet.settings.enabledNetworks);
             scope.setExtra('suite-log', log.entries);
         }
         Sentry.captureException(error);
     });
+};
