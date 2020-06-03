@@ -10,9 +10,9 @@ describe('Dashboard', () => {
     it('Go to dashboard and check that loading status turns off after discovery is finished', () => {
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
-        cy.getTestElement('@suite/loading', { timeout: 60000 }).should('not.be.visible');
+        cy.getTestElement('@suite/loading', { timeout: 30000 }).should('not.be.visible');
         cy.getTestElement('@dashboard/loading').should('be.visible');
-        cy.getTestElement('@dashboard/graph').should('be.visible');
+        cy.getTestElement('@dashboard/graph', { timeout: 30000 }).should('be.visible');
     });
 
     it('Security cards. Backup button should open backup modal', () => {
