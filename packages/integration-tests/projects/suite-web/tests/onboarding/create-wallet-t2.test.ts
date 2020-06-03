@@ -13,7 +13,7 @@ describe('Onboarding - create wallet', () => {
         cy.getTestElement('@onboarding/path-create-button').click()
     });
 
-    it(`Model T`, () => {
+    it('Success', () => {
        
         cy.getTestElement('@onboarding/path-used-button').click()
         cy.getTestElement('@onboarding/pair-device-step');
