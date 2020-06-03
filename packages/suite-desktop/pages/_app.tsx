@@ -14,7 +14,7 @@ import BridgeStatus from '@desktop/support/BridgeStatus';
 import VersionCheck from '@desktop/support/VersionCheck';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
-import { SENTRY } from '@suite-config';
+import { SENTRY_CONFIG } from '@suite-config';
 import Resize from '@suite-support/Resize/Container';
 import { isDev } from '@suite-utils/build';
 
@@ -30,17 +30,7 @@ class TrezorSuiteApp extends App<Props> {
     }
 
     componentDidMount() {
-        if (!isDev())
-            Sentry.init({
-                dsn: SENTRY,
-                integrations: [
-                    new CaptureConsole({
-                        levels: ['error'],
-                    }),
-                ],
-                release: process.env.COMMITHASH,
-                environment: process.env.SUITE_TYPE,
-            });
+        if (!isDev()) Sentry.init(SENTRY_CONFIG);
     }
 
     render() {
