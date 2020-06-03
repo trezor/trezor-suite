@@ -4,7 +4,7 @@ import { AppState, Action, Dispatch } from '@suite-types';
 import * as logActions from '@suite-actions/logActions';
 import { TRANSPORT, DEVICE } from 'trezor-connect';
 import { SUITE } from '@suite-actions/constants';
-import { ACCOUNT } from '@wallet-actions/constants';
+import { ACCOUNT, TRANSACTION, DISCOVERY } from '@wallet-actions/constants';
 import { getUserAgent } from '@suite-utils/env';
 
 const log = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
@@ -58,12 +58,21 @@ const log = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
                 }),
             );
             break;
+        case DISCOVERY.COMPLETE:
+            api.dispatch(logActions.add(action.type, action.payload));
+            break;
         case ACCOUNT.CREATE:
+        case ACCOUNT.UPDATE:
+            api.dispatch(logActions.add(action.type, action.payload));
+            break;
+        case ACCOUNT.UPDATE_SELECTED_ACCOUNT:
+            api.dispatch(logActions.add(action.type, action.payload));
+            break;
+        case TRANSACTION.ADD:
             api.dispatch(
                 logActions.add(action.type, {
-                    deviceState: action.payload.deviceState,
-                    descriptor: action.payload.descriptor,
-                    path: action.payload.path,
+                    account: action.account,
+                    transactions: action.transactions,
                 }),
             );
             break;
