@@ -15,6 +15,15 @@ interface ComponentProps {
     addOutput: () => {};
 }
 
+const output = {
+    id: 1,
+    address: '',
+    amount: '',
+    setMax: false,
+    fiatValue: '',
+    localCurrency: { value: 'usd', label: 'USD' },
+};
+
 export default (props: ComponentProps) => (
     <Wrapper>
         <StyledSelect
@@ -24,7 +33,7 @@ export default (props: ComponentProps) => (
             value={{ value: 'Add', label: 'Add...' }}
             onChange={(change: { label: string; value: string }) => {
                 if (change.value === 'RECIPIENT') {
-                    props.addOutput();
+                    props.addOutput(outputs => [...outputs, output]);
                 }
             }}
             options={options}
