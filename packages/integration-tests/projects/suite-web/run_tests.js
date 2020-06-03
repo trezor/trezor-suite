@@ -100,42 +100,48 @@ async function runTests() {
 
         while(testRunNumber < allowedRuns) {
             testRunNumber++;
+            try {
+                const {totalFailed } = await cypress.run({
+                    browser: BROWSER,
+                    // headless,
+                    headed: true,
+                    spec,
+                    config: {
+                        baseUrl: CYPRESS_baseUrl,
+                        supportFile: `${__dirname}/support/index.ts`,
+                        pluginsFile: `${__dirname}/plugins/index.js`,
+                        screenshotsFolder: `${__dirname}/screenshots`,
+                        integrationFolder: `${__dirname}/tests`,
+                        videosFolder: `${__dirname}/videos`,
+                        video: true,
+                        chromeWebSecurity: false,
+                        trashAssetsBeforeRuns: false,
+                    },
+                    configFile: false,
+                });
 
-            const {totalFailed } = await cypress.run({
-                browser: BROWSER,
-                // headless,
-                headed: true,
-                spec,
-                config: {
-                    baseUrl: CYPRESS_baseUrl,
-                    supportFile: `${__dirname}/support/index.ts`,
-                    pluginsFile: `${__dirname}/plugins/index.js`,
-                    screenshotsFolder: `${__dirname}/screenshots`,
-                    integrationFolder: `${__dirname}/tests`,
-                    videosFolder: `${__dirname}/videos`,
-                    video: true,
-                    chromeWebSecurity: false,
-                    trashAssetsBeforeRuns: false,
-                },
-                configFile: false,
-            });
-            
-            if (totalFailed === 0) {
-                // log either success or retried (success after retry)
-                log.records[testFileName] = testRunNumber === 1 ? 'success': 'retried';
-                console.log(`[run_tests.js] test ${testFileName} finished as successful after ${allowedRuns} run(s)`);
-                break;
-            }
+                if (totalFailed === 0) {
+                    // log either success or retried (success after retry)
+                    log.records[testFileName] = testRunNumber === 1 ? 'success': 'retried';
+                    console.log(`[run_tests.js] test ${testFileName} finished as successful after ${allowedRuns} run(s)`);
+                    break;
+                }
+    
+                // record failed tests if it is last run
+                if (testRunNumber === allowedRuns) {
+                    failedTests += totalFailed;
+                    log.records[testFileName] = 'failed';
+                    console.log(`[run_tests.js] test ${testFileName} finished failing after ${allowedRuns} run(s)`);
+                    break;
+                }
+                console.log(`[run_tests.js] failed in run number ${testRunNumber} of ${allowedRuns}`);
+                totalRetries++;
 
-            // record failed tests if it is last run
-            if (testRunNumber === allowedRuns) {
-                failedTests += totalFailed;
-                log.records[testFileName] = 'failed';
-                console.log(`[run_tests.js] test ${testFileName} finished failing after ${allowedRuns} run(s)`);
-                break;
+            } catch (err) {
+                console.log('[run_tests.js] error');
+                console.log(error);
+                process.exit(1);
             }
-            console.log(`[run_tests.js] failed in run number ${testRunNumber} of ${allowedRuns}`);
-            totalRetries++;
         }
     }
 
@@ -159,10 +165,5 @@ async function runTests() {
     process.exit(failedTests);
 }
 
-try {
-    runTests();
-} catch (err) {
-    console.log('[run_tests.js] error');
-    console.log(error);
-    process.exit(1);
-}
+runTests();
+
