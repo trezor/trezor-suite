@@ -22,8 +22,11 @@ As a workaround we have a custom binary compiled from this [trezord branch](http
 ### @beta|@stable
 Each test should be assigned either `@beta` or `@stable` label at the top of test file. If you create a new file 
 or do major changes to already existing one, it should be assigned `@beta`. Beta tests do not cause CI to fail and 
-are ran only to get statistics and discover possible flakiness. Results should be observed in Track Suite app. 
-Once tests appear to be stable you should give them `@stable` label.
+are ran only to get statistics and discover possible flakiness. Also if you find that some tests started to display
+flaky behavior, they shall be degraded into `@beta` again - this way we will keep tests stable and not lose already 
+written tests that might just need some fine tuning at the same time.
+
+Results should be observed in Track Suite app. Once tests appear to be stable you should give them `@stable` label.
 
 ### @retry=<number>
 If there is a test that you for any reason need to retry if it fails you may provide `@retry=2` option. In this 
