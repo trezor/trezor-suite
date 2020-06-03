@@ -33,7 +33,7 @@ suite-web e2e chrome stage=stable:
     stage: integration testing
     allow_failure: false
     script:
-        - npx cypress install
+        # - npx cypress install
         - export CYPRESS_SNAPSHOT=1
         - export CYPRESS_ASSET_PREFIX=/wallet
         - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
@@ -59,7 +59,7 @@ suite-web e2e chrome stage=beta:
     allow_failure: true
     script:
         - apt-get update && apt-get upgrade -y
-        - npx cypress install
+        # - npx cypress install
         - export CYPRESS_SNAPSHOT=1
         - export CYPRESS_ASSET_PREFIX=/wallet
         - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
@@ -81,7 +81,6 @@ suite-web e2e chrome stage=beta:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
     dependencies: []
 
-# todo: rework to smoke test against deployed staging or beta suite
 suite-web e2e chrome-beta stage=stable:
     stage: integration testing
     only:	
@@ -111,6 +110,4 @@ suite-web e2e chrome-beta stage=stable:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
     dependencies: []
 
-
-    
 # todo: add smoke test job on stage / beta (need basic auth)
