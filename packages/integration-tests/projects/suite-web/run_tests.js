@@ -52,6 +52,7 @@ async function runTests() {
         CI_JOB_URL,
         CI_COMMIT_BRANCH,
         CI_JOB_ID,
+        CI_COMMIT_MESSAGE,
     } = process.env;
     
     let stage = [];
@@ -78,6 +79,7 @@ async function runTests() {
         jobUrl: CI_JOB_URL,
         jobId: CI_JOB_ID,
         branch: CI_COMMIT_BRANCH,
+        commitMessage: CI_COMMIT_MESSAGE,
         stage,
         records: {}
     };
