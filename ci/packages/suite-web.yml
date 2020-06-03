@@ -29,8 +29,7 @@ suite-web deploy dev:
     tags:
         - deploy
 
-
-suite-web e2e stage=stable:
+suite-web e2e chrome stage=stable:
     stage: integration testing
     allow_failure: false
     script:
@@ -55,7 +54,7 @@ suite-web e2e stage=stable:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
     dependencies: []
 
-suite-web e2e stage=beta:
+suite-web e2e chrome stage=beta:
     stage: integration testing
     allow_failure: true
     script:
@@ -81,4 +80,35 @@ suite-web e2e stage=beta:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
     dependencies: []
 
+# todo: rework to smoke test against deployed staging or beta suite
+suite-web e2e chrome-beta stage=stable:
+    stage: integration testing
+     only:	
+        - schedules
+    allow_failure: false
+    script:
+        - npx cypress install
+        - export CYPRESS_SNAPSHOT=1
+        - export CYPRESS_ASSET_PREFIX=/wallet
+        - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
+        - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
+        - export BROWSER=/usr/bin/google-chrome-beta
+        - yarn concurrently --success first --kill-others 
+          "cd ./docker/trezor-user-env/controller && python3 ./main.py"
+          "node ./packages/integration-tests/projects/suite-web/run_tests.js
+          --browser $BROWSER 
+          --project ./packages/integration-tests/projects/suite-web
+          --stage='@stable'
+          "
+    artifacts:
+        expire_in: 7 days
+        when: always
+        paths:
+            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
+    dependencies: []
+
+
+    
 # todo: add smoke test job on stage / beta (need basic auth)
