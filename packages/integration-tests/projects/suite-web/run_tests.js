@@ -110,7 +110,6 @@ async function runTests() {
                     baseUrl: CYPRESS_baseUrl,
                     supportFile: `${__dirname}/support/index.ts`,
                     pluginsFile: `${__dirname}/plugins/index.js`,
-                    // defaultCommandTimeout: 10000,
                     screenshotsFolder: `${__dirname}/screenshots`,
                     integrationFolder: `${__dirname}/tests`,
                     videosFolder: `${__dirname}/videos`,
