@@ -159,4 +159,10 @@ async function runTests() {
     process.exit(failedTests);
 }
 
-runTests();
+try {
+    runTests();
+} catch (err) {
+    console.log('[run_tests.js] error');
+    console.log(error);
+    process.exit(1);
+}
