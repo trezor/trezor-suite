@@ -125,7 +125,7 @@ export default ({ device, fees, selectedAccount }: Props) => {
                         <OutputWrapper key={output.id}>
                             <OutputHeader outputs={outputs} output={output} />
                             <Row>
-                                <Address outputId={output.id} networkType={networkType} />
+                                <Address outputId={output.id} account={account} />
                             </Row>
                             <Row>
                                 <Amount output={output} />
