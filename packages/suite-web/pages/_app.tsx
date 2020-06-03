@@ -43,6 +43,7 @@ class TrezorSuiteApp extends App<Props> {
         if (!window.Cypress && !isDev()) {
             Sentry.init({
                 dsn: SENTRY,
+                debug: true,
                 integrations: [
                     new CaptureConsole({
                         levels: ['error'],
