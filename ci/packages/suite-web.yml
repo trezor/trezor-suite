@@ -87,6 +87,8 @@ suite-web e2e chrome-beta stage=stable:
         - schedules
     allow_failure: false
     script:
+        # update chrome-beta channel to the latest
+        - apt-get update && apt-get upgrade -y
         - npx cypress install
         - export CYPRESS_SNAPSHOT=1
         - export CYPRESS_ASSET_PREFIX=/wallet
