@@ -99,7 +99,7 @@ async function runTests() {
         while(testRunNumber < allowedRuns) {
             testRunNumber++;
 
-            const {totalFailed, ...result } = await cypress.run({
+            const {totalFailed } = await cypress.run({
                 browser: BROWSER,
                 // headless,
                 headed: true,
@@ -118,12 +118,11 @@ async function runTests() {
                 },
                 configFile: false,
             });
-
-            // console.log('result', result);
-            // console.log('result.runs[0]', result.runs[0]);
             
             if (totalFailed === 0) {
+                // log either success or retried (success after retry)
                 log.records[testFileName] = testRunNumber === 1 ? 'success': 'retried';
+                console.log(`[run_tests.js] test ${testFileName} finished as successful after ${allowedRuns} run(s)`);
                 break;
             }
 
@@ -131,11 +130,11 @@ async function runTests() {
             if (testRunNumber === allowedRuns) {
                 failedTests += totalFailed;
                 log.records[testFileName] = 'failed';
+                console.log(`[run_tests.js] test ${testFileName} finished as failed after ${allowedRuns} run(s)`);
+                break;
             }
-
-            totalRetries++;
             console.log(`[run_tests.js] failed in run number ${testRunNumber} of ${allowedRuns}`);
-            
+            totalRetries++;
         }
     }
 
@@ -149,6 +148,9 @@ async function runTests() {
             body: JSON.stringify(log),
         })
         console.log(`[run_tests.js] response.status: ${response.status}`);
+        if (response.error) {
+            console.log('[run_tests.js] response.error', response.error);
+        }
     } 
     
     console.log(`[run_tests.js] retry ratio: ${((totalRetries / finalTestFiles.length) * 100).toFixed(2)}% `)
