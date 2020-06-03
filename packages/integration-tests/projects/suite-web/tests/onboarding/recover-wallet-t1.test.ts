@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
 // @beta 
+// @retry=2
 
 describe('Onboarding - recover wallet T1', () => {
     beforeEach(() => {
