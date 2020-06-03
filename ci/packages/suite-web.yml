@@ -83,7 +83,7 @@ suite-web e2e chrome stage=beta:
 # todo: rework to smoke test against deployed staging or beta suite
 suite-web e2e chrome-beta stage=stable:
     stage: integration testing
-     only:	
+    only:	
         - schedules
     allow_failure: false
     script:
