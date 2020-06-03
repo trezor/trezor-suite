@@ -86,7 +86,7 @@ async function runTests() {
 
     for (let i = 0; i < finalTestFiles.length; i++) {
         const testFile = finalTestFiles[i];
-        const retries = Number(grepForValue('@retries', testFile));
+        const retries = Number(grepForValue('@retry', testFile));
         const allowedRuns = !isNaN(retries) ? retries + 1 : 1;
 
         const spec = __dirname + testFile.substr(testFile.lastIndexOf('/tests'));
