@@ -1,11 +1,11 @@
-import { AddressLabeling, QuestionTooltip, Translation } from '@suite-components';
-import { Input } from '@trezor/components';
-import { useActions } from '@suite-hooks';
-import { isAddressValid } from '@wallet-utils/validation';
 import * as modalActions from '@suite-actions/modalActions';
+import { AddressLabeling, QuestionTooltip, Translation } from '@suite-components';
+import { useActions } from '@suite-hooks';
+import { Input } from '@trezor/components';
 import { Account } from '@wallet-types';
+import { isAddressValid } from '@wallet-utils/validation';
 import React from 'react';
-import { useFormContext, FieldError, NestDataObject } from 'react-hook-form';
+import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 
 const Label = styled.div`
@@ -22,24 +22,29 @@ interface Props {
     account: Account;
 }
 
-const getState = (errors: NestDataObject<Record<string, any>, FieldError>, touched: boolean) => {
-    if (!touched && Object.keys(errors).length !== 0) {
+const getState = (error: NestDataObject<Record<string, any>, FieldError>, touched: boolean) => {
+    if (touched && !error) {
+        return 'success';
+    }
+
+    if (error) {
         return 'error';
     }
+
     return undefined;
 };
 
 export default ({ outputId, account }: Props) => {
-    const inputName = `address-${outputId}`;
+    const { register, errors, getValues, formState } = useFormContext();
+    const inputName = `address${outputId}`;
+    const touched = formState.dirtyFields.has(inputName);
     const { descriptor, networkType, symbol } = account;
-    const { register, errors, formState, getValues } = useFormContext();
     const { openModal } = useActions({ openModal: modalActions.openModal });
-    const touched = formState.touched[inputName] && formState.touched[inputName].length === 1;
-    const inputErrors = errors ? errors[inputName] : [];
+    const error = errors[inputName];
 
     return (
         <Input
-            state={getState(errors, touched)}
+            state={getState(error, touched)}
             monospace
             topLabel={
                 <Label>
@@ -50,8 +55,8 @@ export default ({ outputId, account }: Props) => {
                 </Label>
             }
             bottomText={
-                inputErrors ? (
-                    <Translation id={inputErrors.type} />
+                error ? (
+                    <Translation id={error.type} />
                 ) : (
                     <AddressLabeling address={getValues(inputName)} knownOnly />
                 )
@@ -59,14 +64,9 @@ export default ({ outputId, account }: Props) => {
             name={inputName}
             innerRef={register({
                 validate: {
-                    TR_ADDRESS_IS_NOT_SET: (value: string) => !touched && value.length !== 0,
-                    TR_ADDRESS_IS_NOT_VALID: value => {
-                        if (networkType !== 'bitcoin') {
-                            return isAddressValid(value, symbol);
-                        }
-                        return false;
-                    },
-                    TR_XRP_CANNOT_SEND_TO_MYSELF: async (value: string) => {
+                    TR_ADDRESS_IS_NOT_SET: (value: string) => !(touched && value.length === 0),
+                    TR_ADDRESS_IS_NOT_VALID: (value: string) => isAddressValid(value, symbol),
+                    TR_XRP_CANNOT_SEND_TO_MYSELF: (value: string) => {
                         if (networkType === 'ripple') {
                             return value !== descriptor;
                         }

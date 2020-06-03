@@ -1,6 +1,8 @@
 import { SUITE } from '@suite-actions/constants';
 import { AppState, TrezorDevice } from '@suite-types';
 import { Button, colors } from '@trezor/components';
+import { useActions } from '@suite-hooks';
+import * as modalActions from '@suite-actions/modalActions';
 import { useFormContext } from 'react-hook-form';
 import { Account, Send } from '@wallet-types';
 import { Translation } from '@suite-components/Translation';
@@ -93,18 +95,18 @@ const isDisabled = (
     return isDisabled;
 };
 
-export default ({ send, suite, account, device, modalActions }: Props) => {
-    if (!send || !account || !device) return null;
-    const { isComposing } = send;
-    const { networkType } = account;
+export default ({ account, device }: Props) => {
+    if (!account || !device) return null;
+    // const { networkType } = account;
+    const { openModal } = useActions({ openModal: modalActions.openModal });
     const { handleSubmit } = useFormContext();
 
     return (
         <Wrapper onClick={handleSubmit(data => console.log(data))}>
             <Row>
                 <ButtonReview
-                    isDisabled={isComposing || isDisabled(send, suite, device, networkType)}
-                    onClick={() => modalActions.openModal({ type: 'review-transaction' })}
+                    // isDisabled={isComposing || isDisabled(send, suite, device, networkType)}
+                    onClick={() => openModal({ type: 'review-transaction' })}
                 >
                     <Translation id="TR_SEND_REVIEW_TRANSACTION" />
                 </ButtonReview>

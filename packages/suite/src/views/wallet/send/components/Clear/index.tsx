@@ -22,7 +22,7 @@ export default () => {
 
     return (
         <Wrapper>
-            <In onClick={() => reset({ address: null, amount: null })}>
+            <In onClick={() => reset()}>
                 <Button variant="tertiary" icon="CLEAR" alignIcon="left">
                     <Translation id="TR_CLEAR_ALL" />
                 </Button>

@@ -84,9 +84,9 @@ const output = {
 };
 
 const defaultValues = {
-    address: [''],
-    amount: [''],
-    fiat: [''],
+    address0: '',
+    amount0: '',
+    fiat: '',
     fiatCurrency: '',
     fee: '1',
     feeLimit: '1',
@@ -146,7 +146,7 @@ export default ({ device, fees, selectedAccount }: Props) => {
                             )}
                         </Row>
                     </AdditionalInfoWrapper>
-                    <ReviewButtonSection />
+                    <ReviewButtonSection outputs={outputs} account={account} device={device} />
                 </StyledCard>
             </FormContext>
         </WalletLayout>
