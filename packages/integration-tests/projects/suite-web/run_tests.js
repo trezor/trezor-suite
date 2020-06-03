@@ -139,7 +139,7 @@ async function runTests() {
 
             } catch (err) {
                 console.log('[run_tests.js] error');
-                console.log(error);
+                console.log(err);
                 process.exit(1);
             }
         }
