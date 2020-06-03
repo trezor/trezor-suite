@@ -318,18 +318,15 @@ export const updateTxsRates = (account: Account, txs: AccountTransaction[]) => a
               );
 
         if (results?.tickers) {
-           
-                dispatch({
-                    type: TX_FIAT_RATE_UPDATE,
-                    payload:  txs.map((tx, i) => ({
-                        txid: tx.txid,
-                        updateObject: { rates: results.tickers[i]?.rates },
-                        account,
-                        ts: new Date().getTime(),
-                    }
-                    ));
-                });
-            
+            dispatch({
+                type: TX_FIAT_RATE_UPDATE,
+                payload: txs.map((tx, i) => ({
+                    txid: tx.txid,
+                    updateObject: { rates: results.tickers[i]?.rates },
+                    account,
+                    ts: new Date().getTime(),
+                })),
+            });
         }
     } catch (error) {
         console.error(error);
