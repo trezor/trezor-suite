@@ -32,6 +32,8 @@
 suite-web e2e chrome stage=stable:
     stage: integration testing
     allow_failure: false
+    variables: 
+        ErrorActionPreference: stop 
     script:
         # - npx cypress install
         - export CYPRESS_SNAPSHOT=1
