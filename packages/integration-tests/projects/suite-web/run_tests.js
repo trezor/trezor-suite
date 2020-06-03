@@ -59,7 +59,7 @@ async function runTests() {
     if (argv.stage) {
         stage = argv.stage.split(',')
     }
-
+    
     if (!TRACK_SUITE_URL) {
         console.log('[run_tests.js] TRACK_SUITE_URL env not specified. No logs will be uploaded');
     }
@@ -94,8 +94,8 @@ async function runTests() {
 
         let testRunNumber = 0;
 
-        
-        console.log(`[run_tests.js ]======testing next file ${testFile}======`);
+        console.log('');
+        console.log(`[run_tests.js] testing next file ${testFile}`);
         console.log(`[run_tests.js] allowed to run ${allowedRuns} times`);
 
         while(testRunNumber < allowedRuns) {
@@ -146,7 +146,7 @@ async function runTests() {
     }
 
     if (TRACK_SUITE_URL) {
-        console.log(`[run_tests.js] uploading log: ${JSON.stringify(log, null, 2)}`);
+        console.log(`[run_tests.js] uploading logs to ${TRACK_SUITE_URL}. Logs: ${JSON.stringify(log, null, 2)}`);
         const response = await fetch(`${TRACK_SUITE_URL}/api/test-records`, {
             method: 'POST',
             headers: {
