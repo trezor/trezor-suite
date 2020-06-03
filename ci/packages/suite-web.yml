@@ -63,7 +63,8 @@ suite-web e2e chrome stage=beta:
         - export CYPRESS_ASSET_PREFIX=/wallet
         - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
-        - export BROWSER=chrome
+        # - export BROWSER=chrome
+        - export BROWSER=/usr/bin/google-chrome-beta
         - yarn concurrently --success first --kill-others 
           "cd ./docker/trezor-user-env/controller && python3 ./main.py"
           "node ./packages/integration-tests/projects/suite-web/run_tests.js
