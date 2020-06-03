@@ -1,17 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import NetworkTypeBitcoin from './components/NetworkTypeBitcoin';
-import { Props } from './Container';
 
 const Wrapper = styled.div``;
 
-export default (props: Props) => {
-    const networkType = props.selectedAccount.account?.networkType;
+export default props => {
+    const { addOutput, networkType } = props;
     return (
         <Wrapper>
-            {networkType === 'bitcoin' && (
-                <NetworkTypeBitcoin addRecipient={props.sendFormActionsBitcoin.addRecipient} />
-            )}
+            {networkType === 'bitcoin' && <NetworkTypeBitcoin addOutput={addOutput} />}
         </Wrapper>
     );
 };

@@ -40,8 +40,7 @@ export default (props: Props) => {
         <Wrapper>
             <LocalCurrencyInput
                 state={props.state}
-                value={props.value || ''}
-                name="local-currency-input"
+                name={`local-currency-input-${props.outputId}`}
                 innerRef={register}
                 onChange={e =>
                     props.sendFormActions.handleFiatInputChange(props.outputId, e.target.value)
@@ -49,7 +48,8 @@ export default (props: Props) => {
             />
             <SelectWrapper>
                 <Select
-                    key="local-currency"
+                    name={`local-currency-select-${props.outputId}`}
+                    innerRef={register}
                     isSearchable
                     isClearable={false}
                     onChange={(option: Output['localCurrency']['value']) =>

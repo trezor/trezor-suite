@@ -1,16 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { WalletLayout } from '@wallet-components';
 import { Card, Translation } from '@suite-components';
-import { Output } from '@wallet-types/sendForm';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { variables, colors } from '@trezor/components';
-import Add from './components/Add/Container';
+import Add from './components/Add';
 import Address from './components/Address';
 import AdditionalForm from './components/AdvancedForm';
 import Amount from './components/Amount/Container';
 import ButtonToggleAdditional from './components/ButtonToggleAdditional';
-import Clear from './components/Clear/Container';
+import Clear from './components/Clear';
 import OutputHeader from './components/OutputHeader';
 import ReviewButtonSection from './components/ReviewButtonSection/Container';
 import { Props } from './Container';
@@ -75,19 +74,19 @@ const AdditionalFormHeader = styled.div`
     align-items: center;
 `;
 
-const output: Output = {
+const output = {
     id: 0,
-    address: { value: null, error: null },
-    amount: { value: null, error: null },
+    address: '',
+    amount: '',
     setMax: false,
-    fiatValue: { value: null },
-    localCurrency: { value: 'usd' },
+    fiatValue: '',
+    localCurrency: { value: 'usd', label: 'USD' },
 };
 
 const defaultValues = {
-    address: '',
-    amount: '',
-    fiat: '',
+    address: [''],
+    amount: [''],
+    fiat: [''],
     fiatCurrency: '',
     fee: '1',
     feeLimit: '1',
@@ -101,7 +100,8 @@ export default ({ device, fees, selectedAccount }: Props) => {
     const methods = useForm({ mode: 'onChange', defaultValues });
     const [isAdditionalFormVisible, setAdditionFormVisibility] = useState(false);
     const [outputs, addOutput] = useState([output]);
-    const { network, account } = selectedAccount;
+    const { account } = selectedAccount;
+    const { networkType, symbol } = account;
 
     return (
         <WalletLayout title="Send" account={selectedAccount}>
@@ -112,7 +112,7 @@ export default ({ device, fees, selectedAccount }: Props) => {
                             <HeaderLeft>
                                 <Translation
                                     id="SEND_TITLE"
-                                    values={{ symbol: account.symbol.toUpperCase() }}
+                                    values={{ symbol: symbol.toUpperCase() }}
                                 />
                             </HeaderLeft>
                             <HeaderRight>
@@ -125,7 +125,7 @@ export default ({ device, fees, selectedAccount }: Props) => {
                         <OutputWrapper key={output.id}>
                             <OutputHeader outputs={outputs} output={output} />
                             <Row>
-                                <Address output={output} />
+                                <Address outputId={output.id} networkType={networkType} />
                             </Row>
                             <Row>
                                 <Amount output={output} />
@@ -139,10 +139,10 @@ export default ({ device, fees, selectedAccount }: Props) => {
                                     isAdditionalFormVisible={isAdditionalFormVisible}
                                     setAdditionFormVisibility={setAdditionFormVisibility}
                                 />
-                                <Add />
+                                <Add addOutput={addOutput} networkType={networkType} />
                             </AdditionalFormHeader>
                             {isAdditionalFormVisible && (
-                                <AdditionalForm networkType={network.networkType} />
+                                <AdditionalForm networkType={networkType} />
                             )}
                         </Row>
                     </AdditionalInfoWrapper>

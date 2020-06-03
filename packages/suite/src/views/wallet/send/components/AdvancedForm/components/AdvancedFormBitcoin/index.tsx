@@ -24,8 +24,8 @@ const Row = styled.div`
     }
 `;
 
-export default ({ send }: Props) => {
-    const { customFee } = send;
+export default () => {
+    // const { customFee } = send;
 
     return (
         <Wrapper>
@@ -35,13 +35,13 @@ export default ({ send }: Props) => {
                         <Row>
                             <Fee />
                         </Row>
-                        {!customFee.value && (
+                        {/* {!customFee.value && (
                             <Row>
                                 <EstimatedMiningTime
                                     seconds={send.feeInfo.blockTime * send.selectedFee.blocks * 60}
                                 />
                             </Row>
-                        )}
+                        )} */}
                     </>
                 }
                 right={

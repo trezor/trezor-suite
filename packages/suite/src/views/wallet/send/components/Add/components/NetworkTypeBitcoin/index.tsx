@@ -1,9 +1,7 @@
+import { Translation } from '@suite-components';
+import { Select } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
-
-import { Props } from '../../Container';
-import { Select } from '@trezor/components';
 
 const Wrapper = styled.div`
     min-width: 90px;
@@ -14,7 +12,7 @@ const StyledSelect = styled(Select)``;
 const options = [{ value: 'RECIPIENT', label: <Translation id="TR_RECIPIENT" /> }];
 
 interface ComponentProps {
-    addRecipient: Props['sendFormActionsBitcoin']['addRecipient'];
+    addOutput: () => {};
 }
 
 export default (props: ComponentProps) => (
@@ -26,7 +24,7 @@ export default (props: ComponentProps) => (
             value={{ value: 'Add', label: 'Add...' }}
             onChange={(change: { label: string; value: string }) => {
                 if (change.value === 'RECIPIENT') {
-                    props.addRecipient();
+                    props.addOutput();
                 }
             }}
             options={options}

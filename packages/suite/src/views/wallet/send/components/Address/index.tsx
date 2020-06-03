@@ -1,15 +1,11 @@
 import { AddressLabeling, QuestionTooltip, Translation } from '@suite-components';
 import { Input } from '@trezor/components';
 import { useActions } from '@suite-hooks';
-import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import * as modalActions from '@suite-actions/modalActions';
-import { Output } from '@wallet-types/sendForm';
-import { getInputState } from '@wallet-utils/sendFormUtils';
+import { Account } from '@wallet-types';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
-
-import { Props } from './Container';
 
 const Label = styled.div`
     display: flex;
@@ -20,35 +16,28 @@ const Text = styled.div`
     margin-right: 3px;
 `;
 
-const getErrorMessage = (error: Output['address']['error'], isLoading: boolean) => {
-    if (isLoading && !error) return 'Loading'; // TODO loader or text?
+interface Props {
+    outputId: number;
+    networkType: Account['networkType'];
+}
 
-    switch (error) {
-        case VALIDATION_ERRORS.IS_EMPTY:
-            return <Translation id="TR_ADDRESS_IS_NOT_SET" />;
-        case VALIDATION_ERRORS.NOT_VALID:
-            return <Translation id="TR_ADDRESS_IS_NOT_VALID" />;
-        case VALIDATION_ERRORS.XRP_CANNOT_SEND_TO_MYSELF:
-            return <Translation id="TR_XRP_CANNOT_SEND_TO_MYSELF" />;
-        default:
-            return undefined;
+const getState = (errors, touched) => {
+    if (!touched && Object.keys(errors).length !== 0) {
+        return 'error';
     }
+    return undefined;
 };
 
-export default ({ outputId }: Props) => {
-    const { register } = useFormContext();
-    const openModal = useActions(modalActions.openModal);
-    // const { address, id } = output;
-    // let showLoadingForCompose = false;
-    // const { value, error } = address;
-
-    // if (isComposing && account.networkType === 'bitcoin') {
-    //     showLoadingForCompose = true;
-    // }
+export default ({ outputId, networkType }: Props) => {
+    const inputName = `address-${outputId}`;
+    const { register, errors, formState, getValues } = useFormContext();
+    const { openModal } = useActions({ openModal: modalActions.openModal });
+    const touched = formState.touched[inputName];
+    const error = errors && errors[inputName];
 
     return (
         <Input
-            // state={getInputState(error, value, showLoadingForCompose, true)}
+            state={getState(errors, touched)}
             monospace
             topLabel={
                 <Label>
@@ -58,13 +47,21 @@ export default ({ outputId }: Props) => {
                     <QuestionTooltip messageId="TR_RECIPIENT_ADDRESS_TOOLTIP" />
                 </Label>
             }
-            // bottomText={
-
-            //         // getErrorMessage(error, isComposing) || <AddressLabeling address={value} knownOnly />
-
-            // }
-            name={`address-${outputId}`}
-            innerRef={register}
+            bottomText={
+                error ? (
+                    <Translation id={error.type} />
+                ) : (
+                    <AddressLabeling address={getValues(inputName)} knownOnly />
+                )
+            }
+            name={inputName}
+            innerRef={register({
+                validate: {
+                    TR_ADDRESS_IS_NOT_SET: (value: string) => !touched && value.length !== 0,
+                    // TR_ADDRESS_IS_NOT_VALID: () => {},
+                    // TR_XRP_CANNOT_SEND_TO_MYSELF: () => {},
+                },
+            })}
             button={{
                 icon: 'QR',
                 onClick: () =>
