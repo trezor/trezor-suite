@@ -58,7 +58,7 @@ export type FiatRatesActions =
               account: Account;
               updateObject: Partial<WalletAccountTransaction>;
               ts: number;
-          };
+          }[];
       }
     | {
           type: typeof LAST_WEEK_RATES_UPDATE;
@@ -318,17 +318,18 @@ export const updateTxsRates = (account: Account, txs: AccountTransaction[]) => a
               );
 
         if (results?.tickers) {
-            txs.forEach((tx, i) => {
+           
                 dispatch({
                     type: TX_FIAT_RATE_UPDATE,
-                    payload: {
+                    payload:  txs.map((tx, i) => ({
                         txid: tx.txid,
                         updateObject: { rates: results.tickers[i]?.rates },
                         account,
                         ts: new Date().getTime(),
-                    },
+                    }
+                    ));
                 });
-            });
+            
         }
     } catch (error) {
         console.error(error);
