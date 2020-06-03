@@ -33,7 +33,7 @@ suite-web e2e chrome stage=stable:
     stage: integration testing
     allow_failure: false
     script:
-        # - npx cypress install
+        - npx cypress install
         - export CYPRESS_SNAPSHOT=1
         - export CYPRESS_ASSET_PREFIX=/wallet
         - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
@@ -58,13 +58,11 @@ suite-web e2e chrome stage=beta:
     stage: integration testing
     allow_failure: true
     script:
-        - apt-get update && apt-get upgrade -y
-        # - npx cypress install
+        - npx cypress install
         - export CYPRESS_SNAPSHOT=1
         - export CYPRESS_ASSET_PREFIX=/wallet
         - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
-        # - export BROWSER=chrome
         - export BROWSER=/usr/bin/google-chrome-beta
         - yarn concurrently --success first --kill-others 
           "cd ./docker/trezor-user-env/controller && python3 ./main.py"
