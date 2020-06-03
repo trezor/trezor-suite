@@ -4,7 +4,6 @@ import { Store } from 'redux';
 import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
 import * as Sentry from '@sentry/browser';
-import { CaptureConsole } from '@sentry/integrations';
 import { initStore } from '@suite/reducers/store';
 import Preloader from '@suite-components/Preloader';
 import { ToastContainer } from 'react-toastify';
