@@ -95,7 +95,7 @@ async function runTests() {
         let testRunNumber = 0;
 
         
-        console.log(`[run_tests.js] testing ${testFile}`);
+        console.log(`[run_tests.js ]======testing next file ${testFile}======`);
         console.log(`[run_tests.js] allowed to run ${allowedRuns} times`);
 
         while(testRunNumber < allowedRuns) {
@@ -131,7 +131,7 @@ async function runTests() {
             if (testRunNumber === allowedRuns) {
                 failedTests += totalFailed;
                 log.records[testFileName] = 'failed';
-                console.log(`[run_tests.js] test ${testFileName} finished as failed after ${allowedRuns} run(s)`);
+                console.log(`[run_tests.js] test ${testFileName} finished failing after ${allowedRuns} run(s)`);
                 break;
             }
             console.log(`[run_tests.js] failed in run number ${testRunNumber} of ${allowedRuns}`);
