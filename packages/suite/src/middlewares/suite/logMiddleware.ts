@@ -66,8 +66,25 @@ const log = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
         case SUITE.APP_CHANGED:
         case DISCOVERY.UPDATE:
         case DISCOVERY.COMPLETE:
-        case ACCOUNT.UPDATE_SELECTED_ACCOUNT:
             api.dispatch(logActions.addAction(action));
+            break;
+        case ACCOUNT.UPDATE_SELECTED_ACCOUNT:
+            if (action.payload.account) {
+                api.dispatch(
+                    logActions.addCustom(action, {
+                        account: {
+                            ...getAccountIdentifier(action.payload.account),
+                            index: action.payload.account.index,
+                            path: action.payload.account.path,
+                        },
+                        network: undefined,
+                        discovery: undefined,
+                    }),
+                );
+            } else {
+                api.dispatch(logActions.addAction(action));
+            }
+
             break;
         case TRANSACTION.ADD:
             api.dispatch(

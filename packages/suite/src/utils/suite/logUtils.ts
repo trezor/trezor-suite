@@ -99,6 +99,14 @@ export const redactCustom = (action: CustomLogEntry['action']) => {
                 ...action,
                 payload,
             };
+        case ACCOUNT.UPDATE_SELECTED_ACCOUNT:
+            payload = {
+                ...action.payload,
+                account: action.payload?.account
+                    ? redactAccount(action.payload.account)
+                    : undefined,
+            };
+            break;
 
         default:
             return action;
