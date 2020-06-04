@@ -84,7 +84,6 @@ export default ({
     sendFormActionsBitcoin,
     sendFormActionsRipple,
     sendFormActionsEthereum,
-    fiat,
 }: Props) => {
     if (!account || !send) return null;
     const { outputs } = send;
