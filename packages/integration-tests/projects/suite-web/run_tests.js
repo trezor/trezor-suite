@@ -34,7 +34,9 @@ function getTestFiles() {
     const {stage} = argv;
     let command;
     if (stage) {
-        command = getGrepCommand(stage.split(',').join('\\|'))
+        // for arrays
+        // command = getGrepCommand(stage.split(',').join('\\|'))
+        command = getGrepCommand(stage);
     } else {
         command = getGrepCommand();
     }
@@ -55,10 +57,7 @@ async function runTests() {
         CI_COMMIT_MESSAGE,
     } = process.env;
     
-    let stage = [];
-    if (argv.stage) {
-        stage = argv.stage.split(',')
-    }
+    const {stage} = argv;
     
     if (!TRACK_SUITE_URL) {
         console.log('[run_tests.js] TRACK_SUITE_URL env not specified. No logs will be uploaded');
@@ -161,7 +160,12 @@ async function runTests() {
     } 
     
     console.log(`[run_tests.js] retry ratio: ${((totalRetries / finalTestFiles.length) * 100).toFixed(2)}% `)
-
+    
+    // beta is only for collecting statistics, so it exits with non-zero code 
+    // if there is some runtime error.
+    if (stage === '@beta') {
+        process.exit(0);
+    }
     process.exit(failedTests);
 }
 
