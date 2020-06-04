@@ -78,7 +78,8 @@ describe('Find firmware info for: ', () => {
         expect(withBinary).toMatchObject({ release: { version: targetVersion } });
     });
 
-    it('bootloader 2.0.0 -> firmware version 2.3.1 (latest). And beta channel', async () => {
+    // todo: beta-wallet.trezor.io no longer receives updates? migrating to data.trezor.io
+    it.skip('bootloader 2.0.0 -> firmware version 2.3.1 (latest). And beta channel', async () => {
         // currently, this is expected to fail after there is new firmware update, since the last version is hardcoded
         const targetVersion = [2, 3, 1] as VersionArray;
 
