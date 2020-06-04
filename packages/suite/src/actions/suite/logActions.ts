@@ -75,6 +75,7 @@ export const reportToSentry = (error: any, attachLog = false) => (
         scope.setUser({ id: analytics.instanceId });
         if (attachLog) {
             scope.setExtra('device', suite.device ? redactDevice(suite.device) : undefined);
+            scope.setExtra('discovery', wallet.discovery);
             scope.setExtra('enabled-coins', wallet.settings.enabledNetworks);
             scope.setExtra('suite-log', log.entries);
         }
