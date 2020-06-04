@@ -34,6 +34,7 @@ describe('Backup', () => {
         cy.getTestElement('@backup/check-item/understands-what-seed-is').should('not.be.checked');
     });
 
+    // seems to always fail
     it.skip('User is doing backup with device A -> disconnects device A -> connects device B with backup already finished', () => {
         cy.getTestElement('@notification/no-backup/button').click();
         cy.getTestElement('@backup/check-item/has-enough-time').click();

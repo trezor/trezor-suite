@@ -1,33 +1,33 @@
-# suite-web build:
-#     stage: build
-#     script:
-#         - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/wallet yarn workspace @trezor/suite-web build
-#     artifacts:
-#         expire_in: 7 days
-#         paths:
-#             - packages/suite-web/build
+suite-web build:
+    stage: build
+    script:
+        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/wallet yarn workspace @trezor/suite-web build
+    artifacts:
+        expire_in: 7 days
+        paths:
+            - packages/suite-web/build
 
-# suite-web deploy dev:
-#     stage: deploy to dev servers
-#     variables:
-#         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}/wallet
-#     dependencies:
-#         - suite-web build
-#         - landing-page build
-#     environment:
-#         name: ${CI_BUILD_REF_NAME}
-#         url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
-#     before_script: []
-#     script:
-#         - cd packages/suite-web
-#         - echo "Deploy to dev servers"
-#         - mkdir -p ${DEPLOY_BASE_DIR}/suite-web
-#         - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
-#         - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
-#         - cd ../landing-page
-#         - rsync -abviuzP -va build/ "${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}/"
-#     tags:
-#         - deploy
+suite-web deploy dev:
+    stage: deploy to dev servers
+    variables:
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}/wallet
+    dependencies:
+        - suite-web build
+        - landing-page build
+    environment:
+        name: ${CI_BUILD_REF_NAME}
+        url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+    before_script: []
+    script:
+        - cd packages/suite-web
+        - echo "Deploy to dev servers"
+        - mkdir -p ${DEPLOY_BASE_DIR}/suite-web
+        - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
+        - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
+        - cd ../landing-page
+        - rsync -abviuzP -va build/ "${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}/"
+    tags:
+        - deploy
 
 suite-web e2e chrome stage=stable:
     stage: integration testing
@@ -80,34 +80,34 @@ suite-web e2e chrome stage=beta:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
     dependencies: []
 
-# suite-web e2e chrome-beta stage=stable:
-#     stage: integration testing
-#     only:	
-#         - schedules
-#     allow_failure: false
-#     script:
-#         # update chrome-beta channel to the latest
-#         - apt-get update && apt-get upgrade -y
-#         - npx cypress install
-#         - export CYPRESS_SNAPSHOT=1
-#         - export CYPRESS_ASSET_PREFIX=/wallet
-#         - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
-#         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
-#         - export BROWSER=/usr/bin/google-chrome-beta
-#         - yarn concurrently --success first --kill-others 
-#           "cd ./docker/trezor-user-env/controller && python3 ./main.py"
-#           "node ./packages/integration-tests/projects/suite-web/run_tests.js
-#           --project ./packages/integration-tests/projects/suite-web
-#           --stage='@stable'
-#           "
-#     artifacts:
-#         expire_in: 7 days
-#         when: always
-#         paths:
-#             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
-#             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
-#             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
-#     dependencies: []
+suite-web e2e chrome-beta stage=stable:
+    stage: integration testing
+    only:	
+        - schedules
+    allow_failure: false
+    script:
+        # update chrome-beta channel to the latest
+        - apt-get update && apt-get upgrade -y
+        - npx cypress install
+        - export CYPRESS_SNAPSHOT=1
+        - export CYPRESS_ASSET_PREFIX=/wallet
+        - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
+        - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
+        - export BROWSER=/usr/bin/google-chrome-beta
+        - yarn concurrently --success first --kill-others 
+          "cd ./docker/trezor-user-env/controller && python3 ./main.py"
+          "node ./packages/integration-tests/projects/suite-web/run_tests.js
+          --project ./packages/integration-tests/projects/suite-web
+          --stage='@stable'
+          "
+    artifacts:
+        expire_in: 7 days
+        when: always
+        paths:
+            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
+    dependencies: []
 
 # todo: not sure if this is relevant, could be removed and replaced with lighthouse in near (hopefully) future
 suite-web test security:
