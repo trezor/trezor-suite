@@ -127,10 +127,11 @@ const isDisabled = (
     return networkType === 'ethereum' && dataState;
 };
 
-export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
-    if (!send || !account || !settings || !fiat) return null;
+export default ({ account, settings, fiat }: Props) => {
+    if (!account || !settings || !fiat) return null;
+    // const { selectedFee, customFee, feeInfo, feeOutdated, networkTypeEthereum } = send;
     const { selectedFee, customFee, feeInfo, feeOutdated, networkTypeEthereum } = send;
-    const transactionInfo = getTransactionInfo(account.networkType, send);
+    // const transactionInfo = getTransactionInfo(account.networkType, send);
     const feeLevels = feeInfo.levels;
     const { localCurrency } = settings;
     const { networkType, symbol } = account;
@@ -192,7 +193,7 @@ export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
                     <CustomFeeWrapper>
                         <CustomFee />
                     </CustomFeeWrapper>
-                    {fiatVal && customFee.value && transactionInfo?.type === 'final' && (
+                    {/* {fiatVal && customFee.value && transactionInfo?.type === 'final' && (
                         <BadgeWrapper>
                             <Badge isGray>
                                 {toFiatCurrency(
@@ -203,7 +204,7 @@ export default ({ sendFormActions, send, account, settings, fiat }: Props) => {
                                 {localCurrency}
                             </Badge>
                         </BadgeWrapper>
-                    )}
+                    )} */}
                 </CustomFeeRow>
             )}
         </Wrapper>

@@ -11,7 +11,7 @@ import Amount from './components/Amount/Container';
 import ButtonToggleAdditional from './components/ButtonToggleAdditional';
 import Clear from './components/Clear';
 import OutputHeader from './components/OutputHeader';
-import ReviewButtonSection from './components/ReviewButtonSection/Container';
+import ReviewButtonSection from './components/ReviewButtonSection';
 import { Props } from './Container';
 import { useForm, FormContext } from 'react-hook-form';
 
@@ -92,7 +92,7 @@ const defaultValues = {
     feeLimit: '1',
 };
 
-export default ({ device, fees, selectedAccount }: Props) => {
+export default ({ device, fees, selectedAccount, locks, online }: Props) => {
     if (!device || !fees || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Send" account={selectedAccount} />;
     }
@@ -100,6 +100,7 @@ export default ({ device, fees, selectedAccount }: Props) => {
     const methods = useForm({ mode: 'onChange', defaultValues });
     const [isAdditionalFormVisible, setAdditionFormVisibility] = useState(false);
     const [outputs, addOutput] = useState([output]);
+    const [selectedFee, setSelectedFee] = useState({ value: 1, label: 1 });
     const { account } = selectedAccount;
     const { networkType, symbol } = account;
 
@@ -146,7 +147,7 @@ export default ({ device, fees, selectedAccount }: Props) => {
                             )}
                         </Row>
                     </AdditionalInfoWrapper>
-                    <ReviewButtonSection outputs={outputs} account={account} device={device} />
+                    <ReviewButtonSection device={device} locks={locks} online={online} />
                 </StyledCard>
             </FormContext>
         </WalletLayout>

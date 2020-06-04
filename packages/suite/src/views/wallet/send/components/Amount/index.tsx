@@ -160,7 +160,7 @@ export default ({ outputId, account }: Props) => {
                     button={{
                         icon: getMaxIcon(false),
                         iconSize: 15,
-                        onClick: async () => {
+                        onClick: () => {
                             if (networkType === 'ripple') {
                                 const composedTransaction = sendActions.composeXrpTransaction(
                                     amount,

@@ -7,7 +7,6 @@ import Layout from '../Layout';
 import Data from './components/Data/Container';
 import GasLimit from './components/GasLimit/Container';
 import GasPrice from './components/GasPrice/Container';
-import { Props } from './Container';
 
 const Wrapper = styled.div`
     display: flex;

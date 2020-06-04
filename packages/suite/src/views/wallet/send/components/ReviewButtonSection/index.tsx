@@ -3,15 +3,10 @@ import { AppState, TrezorDevice } from '@suite-types';
 import { Button, colors } from '@trezor/components';
 import { useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
-import { useFormContext } from 'react-hook-form';
-import { Account, Send } from '@wallet-types';
+import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
 import { Translation } from '@suite-components/Translation';
-
-import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import styled from 'styled-components';
-
-import { Props } from './Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -38,73 +33,49 @@ const Row = styled.div`
 `;
 
 const isDisabled = (
-    send: Send,
-    suite: AppState['suite'],
+    errors: NestDataObject<Record<string, any>, FieldError>,
+    locks: AppState['suite']['locks'],
     device: TrezorDevice,
-    networkType: Account['networkType'],
+    online: AppState['suite']['online'],
 ) => {
-    let isDisabled = false;
-    const { outputs, customFee } = send;
-    const transactionInfo = getTransactionInfo(networkType, send);
-
-    // compose error or progress
-    if (!transactionInfo || transactionInfo.type !== 'final') {
-        isDisabled = true;
-    }
-
-    // form errors
-    outputs.forEach(output => {
-        if (
-            !output.address.value ||
-            !output.amount.value ||
-            output.address.error ||
-            output.amount.error
-        ) {
-            isDisabled = true;
-        }
-    });
-
-    // error in advanced form
-    if (customFee.error) {
-        isDisabled = true;
-    }
-
-    // error in advanced eth form
-    if (networkType === 'ethereum') {
-        const { gasPrice, gasLimit, data } = send.networkTypeEthereum;
-        if (gasPrice.error || gasLimit.error || data.error) {
-            isDisabled = true;
-        }
+    // any form error
+    if (errors.length > 1) {
+        return true;
     }
 
     // locks
-    if (suite.locks.includes(SUITE.LOCK_TYPE.DEVICE)) {
-        isDisabled = true;
+    if (locks.includes(SUITE.LOCK_TYPE.DEVICE)) {
+        return true;
     }
 
     // device disconnected and not available
     if (!device.connected || !device.available) {
-        isDisabled = true;
+        return true;
     }
 
     // offline
-    if (!suite.online) {
-        isDisabled = true;
+    if (!online) {
+        return true;
     }
 
-    return isDisabled;
+    return false;
 };
 
-export default ({ account, device }: Props) => {
-    if (!account || !device) return null;
-    // const { networkType } = account;
+interface Props {
+    device: TrezorDevice;
+    locks: AppState['suite']['locks'];
+    online: AppState['suite']['online'];
+}
+
+export default ({ device, locks, online }: Props) => {
+    const { errors } = useFormContext();
     const { openModal } = useActions({ openModal: modalActions.openModal });
 
     return (
         <Wrapper>
             <Row>
                 <ButtonReview
-                    // isDisabled={isComposing || isDisabled(send, suite, device, networkType)}
+                    isDisabled={isDisabled(errors, locks, device, online)}
                     onClick={() => openModal({ type: 'review-transaction' })}
                 >
                     <Translation id="TR_SEND_REVIEW_TRANSACTION" />

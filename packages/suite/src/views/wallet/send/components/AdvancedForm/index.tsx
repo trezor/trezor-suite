@@ -2,9 +2,9 @@ import { Network } from '@wallet-types';
 import React from 'react';
 import styled from 'styled-components';
 
-import AdvancedFormBitcoin from './components/AdvancedFormBitcoin/Container';
-import AdvancedFormEthereum from './components/AdvancedFormEthereum/Container';
-import AdvancedFormRipple from './components/AdvancedFormRipple/Container';
+import AdvancedFormBitcoin from './components/AdvancedFormBitcoin';
+import AdvancedFormEthereum from './components/AdvancedFormEthereum';
+import AdvancedFormRipple from './components/AdvancedFormRipple';
 
 const Wrapper = styled.div`
     display: flex;

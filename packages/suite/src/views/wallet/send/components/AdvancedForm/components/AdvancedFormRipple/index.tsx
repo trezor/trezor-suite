@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Fee from '../Fee/Container';
+import Fee from '../Fee';
 import Layout from '../Layout';
 import DestinationTag from './components/DestinationTag';
 

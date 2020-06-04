@@ -7,7 +7,6 @@ import Layout from '../Layout';
 // import TransactionInfo from '../TransactionInfo/Container';
 import Locktime from './components/Locktime';
 import ReplaceByFee from './components/ReplaceByFee';
-import { Props } from './Container';
 
 const Wrapper = styled.div`
     display: flex;

@@ -16,6 +16,8 @@ const mapStateToProps = (state: AppState) => ({
     accounts: state.wallet.accounts,
     fees: state.wallet.fees,
     device: state.suite.device,
+    locks: state.suite.locks,
+    online: state.suite.online,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
