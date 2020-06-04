@@ -3,7 +3,6 @@ import { Translation } from '@suite-components/Translation';
 
 import styled from 'styled-components';
 import { Icon, colors, variables } from '@trezor/components';
-import { DispatchProps } from '../../../../Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -21,11 +20,11 @@ const StyledIcon = styled(Icon)`
 
 interface Props {
     outputId: number;
-    sendFormActionsBitcoin: DispatchProps['sendFormActionsBitcoin'];
+    removeOutput: (id: number) => {};
 }
 
-export default ({ sendFormActionsBitcoin, outputId }: Props) => (
-    <Wrapper onClick={() => sendFormActionsBitcoin.removeRecipient(outputId)}>
+export default ({ removeOutput, outputId }: Props) => (
+    <Wrapper onClick={() => removeOutput(outputId)}>
         <StyledIcon size={12} color={colors.BLACK50} icon="CLEAR" />
         <Translation id="TR_REMOVE" />
     </Wrapper>

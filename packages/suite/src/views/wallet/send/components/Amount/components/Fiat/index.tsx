@@ -23,39 +23,26 @@ const getCurrencyOptions = (currency: string) => {
     return { value: currency, label: currency.toUpperCase() };
 };
 
-const LocalCurrencyInput = styled(Input)``;
-
 interface Props {
     outputId: number;
-    value: Output['fiatValue']['value'];
-    localCurrency: Output['localCurrency']['value'];
-    state: 'error' | undefined;
-    sendFormActions: DispatchProps['sendFormActions'];
 }
 
-export default (props: Props) => {
+export default ({ outputId }: Props) => {
     const { register } = useFormContext();
 
     return (
         <Wrapper>
-            <LocalCurrencyInput
-                state={props.state}
-                name={`local-currency-input-${props.outputId}`}
+            <Input
+                // state={props.state}
+                name={`local-currency-input-${outputId}`}
                 innerRef={register}
-                onChange={e =>
-                    props.sendFormActions.handleFiatInputChange(props.outputId, e.target.value)
-                }
             />
             <SelectWrapper>
                 <Select
-                    name={`local-currency-select-${props.outputId}`}
+                    name={`local-currency-select-${outputId}`}
                     innerRef={register}
                     isSearchable
                     isClearable={false}
-                    onChange={(option: Output['localCurrency']['value']) =>
-                        props.sendFormActions.handleFiatSelectChange(option, props.outputId)
-                    }
-                    value={props.localCurrency}
                     options={FIAT.currencies.map((currency: string) =>
                         getCurrencyOptions(currency),
                     )}

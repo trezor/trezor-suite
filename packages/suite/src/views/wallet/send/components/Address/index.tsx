@@ -36,7 +36,7 @@ const getState = (error: NestDataObject<Record<string, any>, FieldError>, touche
 
 export default ({ outputId, account }: Props) => {
     const { register, errors, getValues, formState } = useFormContext();
-    const inputName = `address${outputId}`;
+    const inputName = `address-${outputId}`;
     const touched = formState.dirtyFields.has(inputName);
     const { descriptor, networkType, symbol } = account;
     const { openModal } = useActions({ openModal: modalActions.openModal });
@@ -68,7 +68,7 @@ export default ({ outputId, account }: Props) => {
                     TR_ADDRESS_IS_NOT_VALID: (value: string) => isAddressValid(value, symbol),
                     TR_XRP_CANNOT_SEND_TO_MYSELF: (value: string) => {
                         if (networkType === 'ripple') {
-                            return value !== descriptor;
+                            return !(value === descriptor);
                         }
                     },
                 },

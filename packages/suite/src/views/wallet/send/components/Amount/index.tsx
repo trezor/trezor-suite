@@ -1,15 +1,17 @@
-import { FiatValue, QuestionTooltip, Translation } from '@suite-components';
+import { QuestionTooltip, Translation } from '@suite-components';
 import { Input, variables } from '@trezor/components';
+import * as sendActions from '@wallet-actions/send/sendFormActionsNew';
 import { LABEL_HEIGHT, VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { Output, CustomFee } from '@wallet-types/sendForm';
+import { Account } from '@wallet-types';
+import { CustomFee, Output } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { getInputState } from '@wallet-utils/sendFormUtils';
+import BigNumber from 'bignumber.js';
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
+import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
+import validator from 'validator';
+
 import CurrencySelect from './components/CurrencySelect';
-import FiatComponent from './components/Fiat';
-import { Props } from './Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -104,17 +106,41 @@ const getMaxIcon = (setMaxActivated: boolean) => {
     return setMaxActivated ? 'CHECK' : 'SEND';
 };
 
-export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
-    if (selectedAccount.status !== 'loaded') return null;
-    const { register } = useFormContext();
-    const { account, network } = selectedAccount;
+interface Props {
+    outputId: number;
+    account: Account;
+}
+
+const getState = (error: NestDataObject<Record<string, any>, FieldError>, touched: boolean) => {
+    if (touched && !error) {
+        return 'success';
+    }
+
+    if (error) {
+        return 'error';
+    }
+
+    return undefined;
+};
+
+export default ({ outputId, account }: Props) => {
+    if (!account) return null;
+    const { register, errors, formState, getValues, setValue } = useFormContext();
+    const inputName = `amount-${outputId}`;
+    const amount = getValues(inputName);
+    const touched = formState.dirtyFields.has(inputName);
     // const { token } = send.networkTypeEthereum;
-    const { symbol } = account;
+    const { symbol, availableBalance, networkType } = account;
+    const token = null;
+    const formattedAvailableBalance = token
+        ? token.balance || '0'
+        : formatNetworkAmount(availableBalance, symbol);
+    const error = errors[inputName];
     // const { setMaxActivated, customFee } = send;
-    const { id, amount, fiatValue, localCurrency } = output;
-    const { value, error, isLoading } = amount;
-    const reserve =
-        account.networkType === 'ripple' ? formatNetworkAmount(account.misc.reserve, symbol) : null;
+    // const { id, amount, fiatValue, localCurrency } = output;
+    // const { value, error, isLoading } = amount;
+    // const reserve =
+    //     account.networkType === 'ripple' ? formatNetworkAmount(account.misc.reserve, symbol) : null;
     // const tokenBalance = token ? `${token.balance} ${token.symbol!.toUpperCase()}` : undefined;
     // const decimals = token ? token.decimals : network.decimals;
 
@@ -122,7 +148,7 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
         <Wrapper>
             <Left>
                 <StyledInput
-                    state={getInputState(error, value, isLoading, true)}
+                    state={getState(error, touched)}
                     topLabel={
                         <Label>
                             <Text>
@@ -131,24 +157,36 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
                             <QuestionTooltip messageId="TR_SEND_AMOUNT_TOOLTIP" />
                         </Label>
                     }
-                    // button={{
-                    //     icon: getMaxIcon(setMaxActivated),
-                    //     iconSize: 15,
-                    //     onClick: () => sendFormActions.setMax(id),
-                    //     text: <Translation id="TR_SEND_SEND_MAX" />,
-                    // }}
+                    button={{
+                        icon: getMaxIcon(false),
+                        iconSize: 15,
+                        onClick: async () => {
+                            if (networkType === 'ripple') {
+                                const composedTransaction = sendActions.composeXrpTransaction(
+                                    amount,
+                                    account,
+                                );
+                                if (composedTransaction.type === 'final') {
+                                    setValue(inputName, composedTransaction.max);
+                                }
+                            }
+                        },
+                        text: <Translation id="TR_SEND_SEND_MAX" />,
+                    }}
                     align="right"
-                    innerRef={register}
-                    name={`amount-${id}`}
-                    onChange={e => sendFormActions.handleAmountChange(id, e.target.value)}
-                    // bottomText={getMessage(
-                    //     error,
-                    //     decimals,
-                    //     reserve,
-                    //     isLoading,
-                    //     symbol,
-                    //     customFee.error,
-                    // )}
+                    innerRef={register({
+                        validate: {
+                            TR_AMOUNT_IS_NOT_SET: (value: string) =>
+                                !(touched && value.length === 0),
+                            TR_AMOUNT_IS_NOT_NUMBER: (value: string) => validator.isNumeric(value),
+                            TR_AMOUNT_IS_NOT_ENOUGH: (value: string) => {
+                                const amountBig = new BigNumber(value);
+                                return !amountBig.isGreaterThan(formattedAvailableBalance);
+                            },
+                        },
+                    })}
+                    name={inputName}
+                    bottomText={error && <Translation id={error.type} />}
                 />
                 {/* {tokenBalance && (
                     <TokenBalance>
@@ -156,34 +194,30 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
                     </TokenBalance>
                 )} */}
                 <CurrencySelect
-                    key="currency-select"
                     symbol={symbol}
-                    tokens={account.tokens}
-                    selectedToken={send?.networkTypeEthereum.token}
-                    onChange={sendFormActions.handleTokenSelectChange}
+                    // tokens={account.tokens}
+                    // selectedToken={send?.networkTypeEthereum.token}
+                    // onChange={sendFormActions.handleTokenSelectChange}
                 />
             </Left>
             {/* TODO: token FIAT rates calculation */}
             {/* {!token && ( */}
-            <FiatValue amount="1" fiatCurrency={localCurrency.value.value} symbol={symbol}>
+            {/* <FiatValue amount="1" fiatCurrency={localCurrency.value.value} symbol={symbol}>
                 {({ rate }) =>
                     rate && (
                         <>
                             <EqualsSign>=</EqualsSign>
                             <Right>
                                 <FiatComponent
-                                    outputId={id}
+                                    outputId={outputId}
                                     key="fiat-input"
-                                    state={error ? 'error' : undefined}
-                                    sendFormActions={sendFormActions}
-                                    value={fiatValue.value}
-                                    localCurrency={localCurrency.value}
+                                    // state={error ? 'error' : undefined}
                                 />
                             </Right>
                         </>
                     )
                 }
-            </FiatValue>
+            </FiatValue> */}
             {/* )} */}
         </Wrapper>
     );

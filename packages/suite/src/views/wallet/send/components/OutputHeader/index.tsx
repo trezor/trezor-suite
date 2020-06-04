@@ -1,10 +1,7 @@
 import React from 'react';
 import { colors, variables } from '@trezor/components';
 import styled from 'styled-components';
-import { Output } from '@wallet-types/sendForm';
 import Remove from './components/Remove';
-
-import { Props as DProps } from '../../Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -30,19 +27,19 @@ const ColumnRight = styled(Column)`
 `;
 
 interface Props {
-    sendFormActionsBitcoin: DProps['sendFormActionsBitcoin'];
-    output: Output;
-    outputs: Output[];
+    removeOutput: (id: number) => {};
+    outputId: number;
+    outputsCount: number;
 }
 
-export default ({ outputs, output, sendFormActionsBitcoin }: Props) => (
+export default ({ outputsCount, outputId, removeOutput }: Props) => (
     <Wrapper>
         <Column />
-        <Column>{outputs.length > 1 && <OutputIndex>#{output.id + 1}</OutputIndex>}</Column>
+        <Column>{outputsCount > 1 && <OutputIndex>#{outputId + 1}</OutputIndex>}</Column>
         <ColumnRight>
-            {output.id !== 0 && (
+            {outputId !== 0 && (
                 <>
-                    <Remove sendFormActionsBitcoin={sendFormActionsBitcoin} outputId={output.id} />
+                    <Remove removeOutput={removeOutput} outputId={outputId} />
                 </>
             )}
         </ColumnRight>

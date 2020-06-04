@@ -46,7 +46,7 @@ const getValues = (symbol: Account['symbol'], tokens: Account['tokens']) => {
     return result;
 };
 
-export default ({ symbol, tokens, selectedToken, onChange }: Props) => {
+export default ({ symbol, tokens, selectedToken, onChange, ...rest }: Props) => {
     const values = getValues(symbol, tokens);
 
     return (
@@ -60,6 +60,7 @@ export default ({ symbol, tokens, selectedToken, onChange }: Props) => {
                 isDisabled={values.length === 1}
                 options={values}
                 display
+                {...rest}
             />
         </Wrapper>
     );

@@ -99,10 +99,9 @@ export default ({ account, device }: Props) => {
     if (!account || !device) return null;
     // const { networkType } = account;
     const { openModal } = useActions({ openModal: modalActions.openModal });
-    const { handleSubmit } = useFormContext();
 
     return (
-        <Wrapper onClick={handleSubmit(data => console.log(data))}>
+        <Wrapper>
             <Row>
                 <ButtonReview
                     // isDisabled={isComposing || isDisabled(send, suite, device, networkType)}

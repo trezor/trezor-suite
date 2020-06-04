@@ -1,11 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import validator from 'validator';
 import { Input } from '@trezor/components';
-import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { getInputState } from '@wallet-utils/sendFormUtils';
+import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
 import { Translation, QuestionTooltip } from '@suite-components';
-import { Send } from '@wallet-types';
-import { Props } from './Container';
 
 const Label = styled.div`
     display: flex;
@@ -17,29 +15,22 @@ const Text = styled.div`
     margin-right: 3px;
 `;
 
-const getErrorMessage = (
-    error: Send['networkTypeRipple']['destinationTag']['error'],
-    value: Send['networkTypeRipple']['destinationTag']['value'],
-) => {
-    if (!value) return null;
-
-    switch (error) {
-        case VALIDATION_ERRORS.NOT_NUMBER:
-            return <Translation id="TR_DESTINATION_TAG_IS_NOT_NUMBER" />;
-        default:
-            return null;
+const getState = (error: NestDataObject<Record<string, any>, FieldError>) => {
+    if (error) {
+        return 'error';
     }
+
+    return undefined;
 };
 
-const AdvancedFormRipple = ({ send, sendFormActionsRipple }: Props) => {
-    if (!send) return null;
-    const { networkTypeRipple } = send;
-    const { destinationTag } = networkTypeRipple;
-    const { error, value } = destinationTag;
+const DestinationTag = () => {
+    const { register, errors } = useFormContext();
+    const inputName = 'xrp-destination-tag';
+    const error = errors[inputName];
 
     return (
         <Input
-            state={getInputState(error, value, undefined, false)}
+            state={getState(error)}
             variant="small"
             topLabel={
                 <Label>
@@ -49,11 +40,19 @@ const AdvancedFormRipple = ({ send, sendFormActionsRipple }: Props) => {
                     <QuestionTooltip messageId="TR_XRP_DESTINATION_TAG_EXPLAINED" />
                 </Label>
             }
-            bottomText={getErrorMessage(error, value)}
-            value={value || ''}
-            onChange={e => sendFormActionsRipple.handleDestinationTagChange(e.target.value)}
+            bottomText={error && <Translation id={error.type} />}
+            name={inputName}
+            innerRef={register({
+                validate: {
+                    TR_DESTINATION_TAG_IS_NOT_NUMBER: (value: string) => {
+                        if (value !== '') {
+                            return validator.isNumeric(value);
+                        }
+                    },
+                },
+            })}
         />
     );
 };
 
-export default AdvancedFormRipple;
+export default DestinationTag;

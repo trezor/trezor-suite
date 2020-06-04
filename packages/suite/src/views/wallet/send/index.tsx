@@ -84,9 +84,9 @@ const output = {
 };
 
 const defaultValues = {
-    address0: '',
-    amount0: '',
-    fiat: '',
+    'address-0': '',
+    'amount-0': '',
+    'fiatValue-0': '',
     fiatCurrency: '',
     fee: '1',
     feeLimit: '1',
@@ -123,12 +123,12 @@ export default ({ device, fees, selectedAccount }: Props) => {
                 >
                     {outputs.map((output: any) => (
                         <OutputWrapper key={output.id}>
-                            <OutputHeader outputs={outputs} output={output} />
+                            <OutputHeader outputsCount={outputs.length} outputId={output.id} />
                             <Row>
                                 <Address outputId={output.id} account={account} />
                             </Row>
                             <Row>
-                                <Amount output={output} />
+                                <Amount outputId={output.id} account={account} />
                             </Row>
                         </OutputWrapper>
                     ))}

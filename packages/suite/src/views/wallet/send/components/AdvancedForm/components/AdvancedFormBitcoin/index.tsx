@@ -54,7 +54,6 @@ export default () => {
                         </Row>
                     </>
                 }
-                // bottom={transactionInfo?.type === 'final' ? <TransactionInfo /> : null}
                 bottom={null}
             />
         </Wrapper>
