@@ -46,9 +46,9 @@ describe('Find firmware info for: ', () => {
         expect(withBinary).toMatchObject({ release: { version: [1, 6, 3] } });
     });
 
-    it('bootloader 1.5.1 -> firmware version 1.9.0', async () => {
+    it('bootloader 1.5.1 -> firmware version 1.9.1', async () => {
         // currently, this is expected to fail after there is new firmware update, since the last version is hardcoded
-        const targetVersion = [1, 9, 0] as VersionArray;
+        const targetVersion = [1, 9, 1] as VersionArray;
         const info = getInfo({
             features: getDeviceFeatures({
                 bootloader_mode: true,
@@ -78,9 +78,9 @@ describe('Find firmware info for: ', () => {
         expect(withBinary).toMatchObject({ release: { version: targetVersion } });
     });
 
-    it('bootloader 2.0.0 -> firmware version 2.3.0 (latest). And beta channel', async () => {
+    it('bootloader 2.0.0 -> firmware version 2.3.1 (latest). And beta channel', async () => {
         // currently, this is expected to fail after there is new firmware update, since the last version is hardcoded
-        const targetVersion = [2, 3, 0] as VersionArray;
+        const targetVersion = [2, 3, 1] as VersionArray;
 
         // just add beta channel to all. lets get some coverage
         const RELEASES_T2_BETA_CHANNEL = RELEASES_T2.map(r => ({ ...r, channel: 'beta' }));
