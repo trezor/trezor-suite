@@ -1,4 +1,4 @@
-// @stable
+// @beta
 
 describe('Firmware', () => {
     beforeEach(() => {
