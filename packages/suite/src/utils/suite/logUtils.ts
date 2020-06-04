@@ -4,7 +4,7 @@ import { ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
 import { SUITE } from '@suite-actions/constants';
 import { DEVICE, AccountTransaction, Device } from 'trezor-connect';
 import { DeepPartial } from '@suite/types/utils';
-import { LogEntry, CustomLogEntry } from '@suite/reducers/suite/logReducer';
+import { CustomLogEntry } from '@suite/reducers/suite/logReducer';
 
 const REDACTED_REPLACEMENT = '[redacted]';
 
