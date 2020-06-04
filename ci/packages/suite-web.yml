@@ -33,7 +33,7 @@ suite-web e2e chrome stage=stable:
     stage: integration testing
     allow_failure: false
     script:
-        # - npx cypress install
+        - npx cypress install
         - export CYPRESS_SNAPSHOT=1
         - export CYPRESS_ASSET_PREFIX=/wallet
         - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
@@ -52,13 +52,13 @@ suite-web e2e chrome stage=stable:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
-    # dependencies: []
+    dependencies: []
 
 suite-web e2e chrome stage=beta:
     stage: integration testing
     allow_failure: true
     script:
-        # - npx cypress install
+        - npx cypress install
         - export CYPRESS_SNAPSHOT=1
         - export CYPRESS_ASSET_PREFIX=/wallet
         - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
@@ -77,7 +77,7 @@ suite-web e2e chrome stage=beta:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
-    # dependencies: []
+    dependencies: []
 
 # suite-web e2e chrome-beta stage=stable:
 #     stage: integration testing

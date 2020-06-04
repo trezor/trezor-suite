@@ -42,20 +42,20 @@ stages:
     - deploy artifacts, others
     - deploy to staging
 
-lint:
-    stage: lint, types, unit tests
-    script:
-        - lerna run lint
+# lint:
+#     stage: lint, types, unit tests
+#     script:
+#         - lerna run lint
 
-typescript:
-    stage: lint, types, unit tests
-    script:
-        - lerna run type-check
+# typescript:
+#     stage: lint, types, unit tests
+#     script:
+#         - lerna run type-check
 
-unit tests:
-    stage: lint, types, unit tests
-    script:
-        - lerna run test:unit -- --passWithNoTests
+# unit tests:
+#     stage: lint, types, unit tests
+#     script:
+#         - lerna run test:unit -- --passWithNoTests
 
 include:
     - ci/environment.yml
