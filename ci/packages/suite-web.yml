@@ -29,19 +29,21 @@ suite-web deploy dev:
     tags:
         - deploy
 
-# todo: add smoke test job on stage / beta (need basic auth)
-
-suite-web test integration google-chrome:
+suite-web e2e chrome stage=stable:
     stage: integration testing
-    # allow_failure: true
     script:
         - npx cypress install
         - export CYPRESS_SNAPSHOT=1
         - export CYPRESS_ASSET_PREFIX=/wallet
-        # add DEBUG=cypress:* env variable to debug cypress in ci
+        - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
         - export BROWSER=chrome
-        - yarn concurrently --success first --kill-others "cd ./docker/trezor-user-env/controller && python3 ./main.py" "cypress run --browser $BROWSER --project ./packages/integration-tests/projects/suite-web"
+        - yarn concurrently --success first --kill-others 
+          "cd ./docker/trezor-user-env/controller && python3 ./main.py"
+          "node ./packages/integration-tests/projects/suite-web/run_tests.js
+          --project ./packages/integration-tests/projects/suite-web
+          --stage='@stable'
+          "
     artifacts:
         expire_in: 7 days
         when: always
@@ -51,28 +53,63 @@ suite-web test integration google-chrome:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
     dependencies: []
 
-
-suite-web test integration chrome-beta:
-    only:
-        - schedules
-    #allow_failure: true
+# this job is intended to collect statistics on tests in beta stage (=tests that are possibly unstable)
+# failing test here does not make job fail, run_tests script with --stage='@beta' exits with non-zero
+# code only when there is some runtime error
+suite-web e2e chrome stage=beta:
     stage: integration testing
     script:
         - npx cypress install
+        - export CYPRESS_SNAPSHOT=1
         - export CYPRESS_ASSET_PREFIX=/wallet
+        - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
         - export BROWSER=/usr/bin/google-chrome-beta
-        - yarn concurrently --success first --kill-others "cd ./docker/trezor-user-env/controller && python3 ./main.py" "cypress run --browser $BROWSER --project ./packages/integration-tests/projects/suite-web"
+        - yarn concurrently --success first --kill-others 
+          "cd ./docker/trezor-user-env/controller && python3 ./main.py"
+          "node ./packages/integration-tests/projects/suite-web/run_tests.js
+          --project ./packages/integration-tests/projects/suite-web
+          --stage='@beta'
+          "
     artifacts:
         expire_in: 7 days
         when: always
         paths:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
     dependencies: []
-    retry:
-        max: 2
 
+suite-web e2e chrome-beta stage=stable:
+    stage: integration testing
+    only:	
+        - schedules
+    allow_failure: false
+    script:
+        # update chrome-beta channel to the latest
+        - apt-get update && apt-get upgrade -y
+        - npx cypress install
+        - export CYPRESS_SNAPSHOT=1
+        - export CYPRESS_ASSET_PREFIX=/wallet
+        - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
+        - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
+        - export BROWSER=/usr/bin/google-chrome-beta
+        - yarn concurrently --success first --kill-others 
+          "cd ./docker/trezor-user-env/controller && python3 ./main.py"
+          "node ./packages/integration-tests/projects/suite-web/run_tests.js
+          --project ./packages/integration-tests/projects/suite-web
+          --stage='@stable'
+          "
+    artifacts:
+        expire_in: 7 days
+        when: always
+        paths:
+            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
+            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
+    dependencies: []
+
+# todo: not sure if this is relevant, could be removed and replaced with lighthouse in near (hopefully) future
 suite-web test security:
     stage: deploy artifacts, others
     only:
@@ -88,8 +125,11 @@ suite-web deploy staging:
     before_script: []
     when: manual
     script:
-        - cd packages/suite-web
-        - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/suite-web build
-        - ./scripts/s3sync.sh stage beta
+        - echo "I don't have aws credentials, fixme"
+        # - cd packages/suite-web
+        # - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/suite-web build
+        # - ./scripts/s3sync.sh stage beta
     tags:
         - deploy
+
+# todo: add smoke test job on stage / beta (need basic auth)
