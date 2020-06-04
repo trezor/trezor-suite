@@ -32,14 +32,6 @@ def get_bridge_device():
     raise RuntimeError("No debuggable bridge device found")
 
 
-def get_udp_device():
-    devices = UdpTransport.enumerate()
-    for d in devices:
-        d.find_debug()
-        return d
-    raise RuntimeError("No debuggable udp device found")
-
-
 def wait_for_bridge_device():
     start = time.monotonic()
     timeout = 15
@@ -55,17 +47,9 @@ def wait_for_bridge_device():
 
 
 def wait_for_udp_device():
-    start = time.monotonic()
-    timeout = 8
-    while True:
-        try:
-            device = get_udp_device()
-            return device
-        except:
-            elapsed = time.monotonic() - start
-            if elapsed >= timeout:
-                raise RuntimeError("Timed out waiting for udp device.")
-            time.sleep(0.05)
+	d = UdpTransport()
+	d.wait_until_ready(timeout=8)
+	return d
 
 
 def get_device():

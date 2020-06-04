@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
+
+// @stable
+
 describe('Stories of device remembering', () => {
     beforeEach(() => {
         cy.task('stopEmu');
@@ -11,7 +14,7 @@ describe('Stories of device remembering', () => {
 
     it(`Remember standard wallet, click eject, disconnect device.`, () => {
         cy.getTestElement('@dashboard/index');
-        cy.getTestElement('@dashboard/loading').should('not.be.visible');
+        cy.getTestElement('@dashboard/loading', { timeout: 60000 }).should('not.be.visible');
         cy.toggleDeviceMenu();
         cy.getTestElement('@switch-device/wallet-instance/toggle-remember-switch').click({
             force: true,

@@ -1,3 +1,5 @@
+// @stable
+
 describe('Onboarding - hologram', () => {
     beforeEach(() => {
         cy.task('stopEmu')
@@ -13,7 +15,6 @@ describe('Onboarding - hologram', () => {
     });
 
     it('Hologram, various cases', () => {
-
         cy.log('first check if correct video is displayed according to users choice of device');
         cy.getTestElement('@onboarding/option-model-one-path').click();
         cy.getTestElement('@onboarding/hologram/model-1-video');
