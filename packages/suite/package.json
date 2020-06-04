@@ -77,7 +77,7 @@
         "@types/recharts": "^1.8.3",
         "@types/redux-logger": "^3.0.7",
         "@types/redux-mock-store": "^1.0.2",
-        "@types/styled-components": "^4.4.1",
+        "@types/styled-components": "^5.1.0",
         "@types/validator": "^12.0.1",
         "babel-plugin-react-intl": "^7.1.0",
         "canvas": "^2.6.1",
