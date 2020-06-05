@@ -41,6 +41,9 @@ class TrezorSuiteApp extends App<Props> {
     componentDidMount() {
         if (!window.Cypress && !isDev()) {
             Sentry.init(SENTRY_CONFIG);
+            Sentry.configureScope(scope => {
+                scope.setTag('version', process.env.VERSION || 'undefined');
+            });
         }
         if (window.Cypress) {
             // exposing ref to TrezorConnect allows us to mock its methods in cypress tests

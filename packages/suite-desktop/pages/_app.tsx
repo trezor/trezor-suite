@@ -29,7 +29,12 @@ class TrezorSuiteApp extends App<Props> {
     }
 
     componentDidMount() {
-        if (!isDev()) Sentry.init(SENTRY_CONFIG);
+        if (!isDev()) {
+            Sentry.init(SENTRY_CONFIG);
+            Sentry.configureScope(scope => {
+                scope.setTag('version', process.env.VERSION || 'undefined');
+            });
+        }
     }
 
     render() {
