@@ -89,10 +89,10 @@ export const reportToSentry = (error: any, attachLog = false) => (
     const { analytics, wallet, suite } = getState();
     Sentry.withScope(scope => {
         scope.setUser({ id: analytics.instanceId });
+        scope.setExtra('device', suite.device ? redactDevice(suite.device) : undefined);
+        scope.setExtra('discovery', wallet.discovery);
+        scope.setExtra('enabled-coins', wallet.settings.enabledNetworks);
         if (attachLog) {
-            scope.setExtra('device', suite.device ? redactDevice(suite.device) : undefined);
-            scope.setExtra('discovery', wallet.discovery);
-            scope.setExtra('enabled-coins', wallet.settings.enabledNetworks);
             scope.setExtra('suite-log', dispatch(getLog(true)));
         }
         Sentry.captureException(error);

@@ -28,9 +28,6 @@ export default () => {
         if (setLayout) setLayout(undefined, undefined);
     }, [setLayout]);
 
-    throw Error('omg');
-
-    // eslint-disable-next-line no-unreachable
     return (
         <Wrapper data-test="@dashboard/index">
             <PortfolioCard />
