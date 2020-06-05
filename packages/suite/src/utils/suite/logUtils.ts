@@ -6,7 +6,7 @@ import { DEVICE, AccountTransaction, Device } from 'trezor-connect';
 import { DeepPartial } from '@suite/types/utils';
 import { CustomLogEntry } from '@suite/reducers/suite/logReducer';
 
-const REDACTED_REPLACEMENT = '[redacted]';
+export const REDACTED_REPLACEMENT = '[redacted]';
 
 export const redactAccount = (account: DeepPartial<Account> | undefined) => {
     if (!account) return undefined;
