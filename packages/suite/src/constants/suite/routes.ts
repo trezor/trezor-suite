@@ -148,6 +148,24 @@ const routes = [
         params: walletParams,
     },
     {
+        name: 'wallet-buy',
+        pattern: '/accounts/buy',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
+        name: 'wallet-sell',
+        pattern: '/accounts/sell',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
+        name: 'wallet-exchange',
+        pattern: '/accounts/exchange',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
         name: 'wallet-sign-verify',
         pattern: '/accounts/sign-verify',
         app: 'wallet',
@@ -167,6 +185,16 @@ const routes = [
     {
         name: 'exchange-index',
         pattern: '/exchange',
+        app: 'exchange',
+    },
+    {
+        name: 'exchange-buy',
+        pattern: '/exchange/buy',
+        app: 'exchange',
+    },
+    {
+        name: 'exchange-sell',
+        pattern: '/exchange/sell',
         app: 'exchange',
     },
     {
