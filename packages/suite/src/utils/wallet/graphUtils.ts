@@ -61,11 +61,6 @@ export const sumFiatValueMap = (
 
 /**
  * Return maximum sent/received crypto or fiat amount from the data
- *
- * @param {AggregatedDashboardHistory[]} data
- * @param {((sourceData: AggregatedDashboardHistory) => string | undefined)} extractSentValue
- * @param {((sourceData: AggregatedDashboardHistory) => string | undefined)} extractReceivedValue
- * @returns
  */
 export const getMaxValueFromData = <TType extends TypeName>(
     data: ObjectType<TType>[],
