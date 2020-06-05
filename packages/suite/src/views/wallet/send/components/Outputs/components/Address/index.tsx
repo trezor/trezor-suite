@@ -2,9 +2,9 @@ import * as modalActions from '@suite-actions/modalActions';
 import { AddressLabeling, QuestionTooltip, Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import { Input } from '@trezor/components';
-import { Account } from '@wallet-types';
 import { isAddressValid } from '@wallet-utils/validation';
 import React from 'react';
+import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 
@@ -16,11 +16,6 @@ const Label = styled.div`
 const Text = styled.div`
     margin-right: 3px;
 `;
-
-interface Props {
-    outputId: number;
-    account: Account;
-}
 
 const getState = (error: NestDataObject<Record<string, any>, FieldError>, touched: boolean) => {
     if (touched && !error) {
@@ -34,7 +29,8 @@ const getState = (error: NestDataObject<Record<string, any>, FieldError>, touche
     return undefined;
 };
 
-export default ({ outputId, account }: Props) => {
+export default ({ outputId }: { outputId: number }) => {
+    const { account } = useSendContext();
     const { register, errors, getValues, formState } = useFormContext();
     const inputName = `address-${outputId}`;
     const touched = formState.dirtyFields.has(inputName);

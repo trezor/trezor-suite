@@ -2,10 +2,10 @@ import { QuestionTooltip, Translation } from '@suite-components';
 import { Input, variables } from '@trezor/components';
 import * as sendActions from '@wallet-actions/send/sendFormActionsNew';
 import { LABEL_HEIGHT, VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { Account } from '@wallet-types';
 import { CustomFee, Output } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import BigNumber from 'bignumber.js';
+import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import React from 'react';
 import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
@@ -106,11 +106,6 @@ const getMaxIcon = (setMaxActivated: boolean) => {
     return setMaxActivated ? 'CHECK' : 'SEND';
 };
 
-interface Props {
-    outputId: number;
-    account: Account;
-}
-
 const getState = (error: NestDataObject<Record<string, any>, FieldError>, touched: boolean) => {
     if (touched && !error) {
         return 'success';
@@ -123,8 +118,8 @@ const getState = (error: NestDataObject<Record<string, any>, FieldError>, touche
     return undefined;
 };
 
-export default ({ outputId, account }: Props) => {
-    if (!account) return null;
+export default ({ outputId }: { outputId: number }) => {
+    const { account } = useSendContext();
     const { register, errors, formState, getValues, setValue } = useFormContext();
     const inputName = `amount-${outputId}`;
     const amount = getValues(inputName);

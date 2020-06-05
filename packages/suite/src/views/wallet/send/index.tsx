@@ -1,16 +1,14 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+import { SendContext } from '@suite/hooks/wallet/useSendContext';
 import { WalletLayout } from '@wallet-components';
 import { Card, Translation } from '@suite-components';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { variables, colors } from '@trezor/components';
 import Add from './components/Add';
-import Address from './components/Address';
-import AdditionalForm from './components/AdvancedForm';
-import Amount from './components/Amount/Container';
-import ButtonToggleAdditional from './components/ButtonToggleAdditional';
+import Outputs from './components/Outputs';
 import Clear from './components/Clear';
-import OutputHeader from './components/OutputHeader';
+import AdditionalForm from './components/AdvancedForm';
+import ButtonToggleAdditional from './components/ButtonToggleAdditional';
 import ReviewButtonSection from './components/ReviewButtonSection';
 import { Props } from './Container';
 import { useForm, FormContext } from 'react-hook-form';
@@ -53,15 +51,6 @@ const StyledCard = styled(Card)`
     margin-bottom: 40px;
 `;
 
-const OutputWrapper = styled.div`
-    padding: 0 12px 12px 12px;
-    margin-bottom: 20px;
-
-    &:last-child {
-        margin-bottom: 0;
-    }
-`;
-
 const AdditionalInfoWrapper = styled.div`
     margin-top: 20px;
 `;
@@ -73,15 +62,6 @@ const AdditionalFormHeader = styled.div`
     width: 100%;
     align-items: center;
 `;
-
-const output = {
-    id: 0,
-    address: '',
-    amount: '',
-    setMax: false,
-    fiatValue: '',
-    localCurrency: { value: 'usd', label: 'USD' },
-};
 
 const defaultValues = {
     'address-0': '',
@@ -99,57 +79,62 @@ export default ({ device, fees, selectedAccount, locks, online }: Props) => {
 
     const methods = useForm({ mode: 'onChange', defaultValues });
     const [isAdditionalFormVisible, setAdditionFormVisibility] = useState(false);
-    const [outputs, addOutput] = useState([output]);
-    const [selectedFee, setSelectedFee] = useState({ value: 1, label: 1 });
     const { account } = selectedAccount;
     const { networkType, symbol } = account;
 
     return (
         <WalletLayout title="Send" account={selectedAccount}>
-            <FormContext {...methods}>
-                <StyledCard
-                    customHeader={
-                        <Header>
-                            <HeaderLeft>
-                                <Translation
-                                    id="SEND_TITLE"
-                                    values={{ symbol: symbol.toUpperCase() }}
-                                />
-                            </HeaderLeft>
-                            <HeaderRight>
-                                <Clear />
-                            </HeaderRight>
-                        </Header>
-                    }
-                >
-                    {outputs.map((output: any) => (
-                        <OutputWrapper key={output.id}>
-                            <OutputHeader outputsCount={outputs.length} outputId={output.id} />
-                            <Row>
-                                <Address outputId={output.id} account={account} />
+            <SendContext.Provider
+                value={{
+                    outputs: [
+                        {
+                            id: 0,
+                            address: '',
+                            amount: '',
+                            setMax: false,
+                            fiatValue: '',
+                            localCurrency: { value: 'usd', label: 'USD' },
+                        },
+                    ],
+                    selectedFee: { label: '1', value: '1' },
+                    account,
+                }}
+            >
+                <FormContext {...methods}>
+                    <StyledCard
+                        customHeader={
+                            <Header>
+                                <HeaderLeft>
+                                    <Translation
+                                        id="SEND_TITLE"
+                                        values={{ symbol: symbol.toUpperCase() }}
+                                    />
+                                </HeaderLeft>
+                                <HeaderRight>
+                                    <Clear />
+                                </HeaderRight>
+                            </Header>
+                        }
+                    >
+                        <Outputs />
+                        <AdditionalInfoWrapper>
+                            <Row isColumn={isAdditionalFormVisible}>
+                                <AdditionalFormHeader>
+                                    <ButtonToggleAdditional
+                                        isAdditionalFormVisible={isAdditionalFormVisible}
+                                        setAdditionFormVisibility={setAdditionFormVisibility}
+                                    />
+                                    {/* <Add addOutput={addOutput} networkType={networkType} /> */}
+                                </AdditionalFormHeader>
+                                {isAdditionalFormVisible && (
+                                    <AdditionalForm networkType={networkType} />
+                                )}
                             </Row>
-                            <Row>
-                                <Amount outputId={output.id} account={account} />
-                            </Row>
-                        </OutputWrapper>
-                    ))}
-                    <AdditionalInfoWrapper>
-                        <Row isColumn={isAdditionalFormVisible}>
-                            <AdditionalFormHeader>
-                                <ButtonToggleAdditional
-                                    isAdditionalFormVisible={isAdditionalFormVisible}
-                                    setAdditionFormVisibility={setAdditionFormVisibility}
-                                />
-                                <Add addOutput={addOutput} networkType={networkType} />
-                            </AdditionalFormHeader>
-                            {isAdditionalFormVisible && (
-                                <AdditionalForm networkType={networkType} />
-                            )}
-                        </Row>
-                    </AdditionalInfoWrapper>
-                    <ReviewButtonSection device={device} locks={locks} online={online} />
-                </StyledCard>
-            </FormContext>
+                        </AdditionalInfoWrapper>
+                        <ReviewButtonSection device={device} locks={locks} online={online} />
+                    </StyledCard>
+                </FormContext>
+            </SendContext.Provider>
         </WalletLayout>
     );
 };
