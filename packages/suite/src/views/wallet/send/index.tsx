@@ -39,7 +39,7 @@ const StyledCard = styled(Card)`
     margin-bottom: 40px;
 `;
 
-export default ({ device, fees, selectedAccount, locks, online }: Props) => {
+export default ({ device, fees, selectedAccount, locks, online, settings, fiat }: Props) => {
     if (!device || !fees || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Send" account={selectedAccount} />;
     }
@@ -47,6 +47,19 @@ export default ({ device, fees, selectedAccount, locks, online }: Props) => {
     const { account } = selectedAccount;
     const { symbol } = account;
     const [advancedForm, showAdvancedForm] = useState(false);
+    const [feeOutdated, setFeeOutdated] = useState(false);
+    const [selectedFee, setSelectedFee] = useState({ label: '1', value: '1' });
+    const [outputs, updateOutputs] = useState([
+        {
+            id: 0,
+            address: '',
+            amount: '',
+            setMax: false,
+            fiatValue: '',
+            localCurrency: { value: 'usd', label: 'USD' },
+        },
+    ]);
+
     const methods = useForm({
         mode: 'onChange',
         defaultValues: {
@@ -63,20 +76,18 @@ export default ({ device, fees, selectedAccount, locks, online }: Props) => {
         <WalletLayout title="Send" account={selectedAccount}>
             <SendContext.Provider
                 value={{
-                    outputs: [
-                        {
-                            id: 0,
-                            address: '',
-                            amount: '',
-                            setMax: false,
-                            fiatValue: '',
-                            localCurrency: { value: 'usd', label: 'USD' },
-                        },
-                    ],
-                    selectedFee: { label: '1', value: '1' },
+                    outputs,
+                    updateOutputs,
+                    selectedFee,
+                    setSelectedFee,
                     advancedForm,
                     showAdvancedForm,
                     account,
+                    settings,
+                    fiat,
+                    fees,
+                    feeOutdated,
+                    setFeeOutdated,
                     device,
                     online,
                     locks,

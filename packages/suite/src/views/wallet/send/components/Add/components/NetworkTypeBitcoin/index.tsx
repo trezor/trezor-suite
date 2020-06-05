@@ -1,4 +1,5 @@
 import { Translation } from '@suite-components';
+import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { Select } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
@@ -8,35 +9,36 @@ const Wrapper = styled.div`
 `;
 
 const StyledSelect = styled(Select)``;
-
 const options = [{ value: 'RECIPIENT', label: <Translation id="TR_RECIPIENT" /> }];
 
-interface ComponentProps {
-    addOutput: () => {};
-}
-
-const output = {
-    id: 1,
+const getNewOutput = (outputId: number) => ({
+    id: outputId + 1,
     address: '',
     amount: '',
     setMax: false,
     fiatValue: '',
     localCurrency: { value: 'usd', label: 'USD' },
-};
+});
 
-export default (props: ComponentProps) => (
-    <Wrapper>
-        <StyledSelect
-            variant="small"
-            isSearchable={false}
-            isClearable={false}
-            value={{ value: 'Add', label: 'Add...' }}
-            onChange={(change: { label: string; value: string }) => {
-                if (change.value === 'RECIPIENT') {
-                    props.addOutput(outputs => [...outputs, output]);
-                }
-            }}
-            options={options}
-        />
-    </Wrapper>
-);
+export default () => {
+    const { updateOutputs, outputs } = useSendContext();
+
+    return (
+        <Wrapper>
+            <StyledSelect
+                variant="small"
+                isSearchable={false}
+                isClearable={false}
+                value={{ value: 'Add', label: 'Add...' }}
+                onChange={(change: { label: string; value: string }) => {
+                    if (change.value === 'RECIPIENT') {
+                        const lastOutput = outputs[outputs.length - 1];
+                        const outputsWithNewItem = [...outputs, getNewOutput(lastOutput.id)];
+                        updateOutputs(outputsWithNewItem);
+                    }
+                }}
+                options={options}
+            />
+        </Wrapper>
+    );
+};

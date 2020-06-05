@@ -2,7 +2,7 @@ import { QuestionTooltip, Translation, Badge } from '@suite-components';
 import { capitalizeFirstLetter } from '@suite-utils/string';
 import { colors, P, Select, variables, Button } from '@trezor/components';
 import { Account } from '@wallet-types';
-import { getTransactionInfo, calculateEthFee, getInputState } from '@wallet-utils/sendFormUtils';
+import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { FeeLevel } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
@@ -11,7 +11,6 @@ import styled from 'styled-components';
 import { fromWei, toWei } from 'web3-utils';
 
 import CustomFee from './components/CustomFee/Container';
-import { Props } from './Container';
 
 const Row = styled.div`
     display: flex;
@@ -127,15 +126,13 @@ const isDisabled = (
     return networkType === 'ethereum' && dataState;
 };
 
-export default ({ account, settings, fiat }: Props) => {
-    if (!account || !settings || !fiat) return null;
-    // const { selectedFee, customFee, feeInfo, feeOutdated, networkTypeEthereum } = send;
-    const { selectedFee, customFee, feeInfo, feeOutdated, networkTypeEthereum } = send;
-    // const transactionInfo = getTransactionInfo(account.networkType, send);
-    const feeLevels = feeInfo.levels;
+export default () => {
+    const { account, settings, fees, fiat, feeOutdated, selectedFee } = useSendContext();
+    const feeLevels = fees.levels;
     const { localCurrency } = settings;
     const { networkType, symbol } = account;
     const fiatVal = fiat.coins.find(fiatItem => fiatItem.symbol === symbol);
+
     return (
         <Wrapper>
             <Row>
@@ -152,7 +149,7 @@ export default ({ account, settings, fiat }: Props) => {
                                 <Translation id="TR_FEE_NEEDS_UPDATE" />
                             </RefreshText>
                             <Button
-                                onClick={() => sendFormActions.manuallyUpdateFee()}
+                                // onClick={() => sendFormActions.manuallyUpdateFee()}
                                 icon="REFRESH"
                                 variant="tertiary"
                                 alignIcon="right"
@@ -167,17 +164,17 @@ export default ({ account, settings, fiat }: Props) => {
                     isSearchable={false}
                     // hack for react select, it needs the "value"
                     value={{ ...selectedFee, value: selectedFee.feePerUnit }}
-                    onChange={sendFormActions.handleFeeValueChange}
+                    // onChange={sendFormActions.handleFeeValueChange}
                     options={feeLevels}
-                    isDisabled={isDisabled(
-                        networkType,
-                        getInputState(
-                            networkTypeEthereum.data.error,
-                            networkTypeEthereum.data.value,
-                            false,
-                            false,
-                        ),
-                    )}
+                    // isDisabled={isDisabled(
+                    //     networkType,
+                    //     getInputState(
+                    //         networkTypeEthereum.data.error,
+                    //         networkTypeEthereum.data.value,
+                    //         false,
+                    //         false,
+                    //     ),
+                    // )}
                     formatOptionLabel={(option: FeeLevel) => (
                         <OptionWrapper>
                             <OptionLabel>{capitalizeFirstLetter(option.label)} </OptionLabel>
@@ -193,7 +190,7 @@ export default ({ account, settings, fiat }: Props) => {
                     <CustomFeeWrapper>
                         <CustomFee />
                     </CustomFeeWrapper>
-                    {/* {fiatVal && customFee.value && transactionInfo?.type === 'final' && (
+                    {fiatVal && customFee.value && transactionInfo?.type === 'final' && (
                         <BadgeWrapper>
                             <Badge isGray>
                                 {toFiatCurrency(
@@ -204,7 +201,7 @@ export default ({ account, settings, fiat }: Props) => {
                                 {localCurrency}
                             </Badge>
                         </BadgeWrapper>
-                    )} */}
+                    )}
                 </CustomFeeRow>
             )}
         </Wrapper>

@@ -1,10 +1,11 @@
 import React from 'react';
+import { useSendContext } from '@suite/hooks/wallet/useSendContext';
+import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 
 import EstimatedMiningTime from '../../../EstimatedMiningTime';
-import Fee from '../Fee/Container';
+import Fee from '../Fee';
 import Layout from '../Layout';
-// import TransactionInfo from '../TransactionInfo/Container';
 import Locktime from './components/Locktime';
 import ReplaceByFee from './components/ReplaceByFee';
 
@@ -24,7 +25,9 @@ const Row = styled.div`
 `;
 
 export default () => {
-    // const { customFee } = send;
+    const { getValues } = useFormContext();
+    const { selectedFee, fees } = useSendContext();
+    const customFee = getValues('customFee');
 
     return (
         <Wrapper>
@@ -34,13 +37,13 @@ export default () => {
                         <Row>
                             <Fee />
                         </Row>
-                        {/* {!customFee.value && (
+                        {!customFee.value && (
                             <Row>
                                 <EstimatedMiningTime
-                                    seconds={send.feeInfo.blockTime * send.selectedFee.blocks * 60}
+                                    seconds={fees.feeInfo.blockTime * selectedFee.blocks * 60}
                                 />
                             </Row>
-                        )} */}
+                        )}
                     </>
                 }
                 right={

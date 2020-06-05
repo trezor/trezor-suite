@@ -1,8 +1,8 @@
-import React from 'react';
 import { Translation } from '@suite-components/Translation';
-
+import { useSendContext } from '@suite/hooks/wallet/useSendContext';
+import { colors, Icon, variables } from '@trezor/components';
+import React from 'react';
 import styled from 'styled-components';
-import { Icon, colors, variables } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -20,12 +20,20 @@ const StyledIcon = styled(Icon)`
 
 interface Props {
     outputId: number;
-    removeOutput: (id: number) => {};
 }
 
-export default ({ removeOutput, outputId }: Props) => (
-    <Wrapper onClick={() => removeOutput(outputId)}>
-        <StyledIcon size={12} color={colors.BLACK50} icon="CLEAR" />
-        <Translation id="TR_REMOVE" />
-    </Wrapper>
-);
+export default ({ outputId }: Props) => {
+    const { updateOutputs, outputs } = useSendContext();
+
+    return (
+        <Wrapper
+            onClick={() => {
+                const filteredOutputs = outputs.filter(output => output.id === outputId);
+                updateOutputs(filteredOutputs);
+            }}
+        >
+            <StyledIcon size={12} color={colors.BLACK50} icon="CLEAR" />
+            <Translation id="TR_REMOVE" />
+        </Wrapper>
+    );
+};

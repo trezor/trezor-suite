@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Fee from '../Fee/Container';
+import Fee from '../Fee';
 import Layout from '../Layout';
-// import TransactionInfo from '../TransactionInfo/Container';
 import Data from './components/Data/Container';
 import GasLimit from './components/GasLimit/Container';
 import GasPrice from './components/GasPrice/Container';
@@ -18,32 +17,26 @@ const Row = styled.div`
     margin-bottom: 25px;
 `;
 
-export default ({ send, account }: Props) => {
-    if (!account) return null;
-    // const { transactionInfo } = send.networkTypeEthereum;
-
-    return (
-        <Wrapper>
-            <Layout
-                left={
+export default () => (
+    <Wrapper>
+        <Layout
+            left={
+                <Row>
+                    <Fee />
+                </Row>
+            }
+            right={
+                <>
                     <Row>
-                        <Fee />
+                        <GasLimit />
                     </Row>
-                }
-                right={
-                    <>
-                        <Row>
-                            <GasLimit />
-                        </Row>
-                        <Row>
-                            <GasPrice />
-                        </Row>
-                    </>
-                }
-                middle={<Data />}
-                bottom={null}
-                // bottom={transactionInfo?.type === 'final' ? <TransactionInfo /> : null}
-            />
-        </Wrapper>
-    );
-};
+                    <Row>
+                        <GasPrice />
+                    </Row>
+                </>
+            }
+            middle={<Data />}
+            bottom={null}
+        />
+    </Wrapper>
+);

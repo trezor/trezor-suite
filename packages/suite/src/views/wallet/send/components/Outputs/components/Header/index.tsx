@@ -38,7 +38,7 @@ export default ({ outputId }: { outputId: number }) => {
             <ColumnRight>
                 {outputId !== 0 && (
                     <>
-                        <Remove removeOutput={removeOutput} outputId={outputId} />
+                        <Remove outputId={outputId} />
                     </>
                 )}
             </ColumnRight>
