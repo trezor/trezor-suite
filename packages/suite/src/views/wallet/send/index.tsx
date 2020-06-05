@@ -1,7 +1,7 @@
 import { SendContext } from '@suite/hooks/wallet/useSendContext';
 import { WalletLayout } from '@wallet-components';
 import { Card, Translation } from '@suite-components';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { variables, colors } from '@trezor/components';
 import Outputs from './components/Outputs';
@@ -46,6 +46,7 @@ export default ({ device, fees, selectedAccount, locks, online }: Props) => {
 
     const { account } = selectedAccount;
     const { symbol } = account;
+    const [advancedForm, showAdvancedForm] = useState(false);
     const methods = useForm({
         mode: 'onChange',
         defaultValues: {
@@ -73,7 +74,8 @@ export default ({ device, fees, selectedAccount, locks, online }: Props) => {
                         },
                     ],
                     selectedFee: { label: '1', value: '1' },
-                    advancedForm: false,
+                    advancedForm,
+                    showAdvancedForm,
                     account,
                     device,
                     online,

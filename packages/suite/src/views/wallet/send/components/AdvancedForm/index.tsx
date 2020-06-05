@@ -37,16 +37,12 @@ export default () => {
         <Wrapper>
             <Row isColumn={advancedForm}>
                 <Header>
-                    <ButtonToggleAdditional
-                        isAdditionalFormVisible={advancedForm}
-                        setAdditionFormVisibility={advancedForm}
-                    />
+                    <ButtonToggleAdditional />
                     {/* <Add addOutput={addOutput} networkType={networkType} /> */}
                 </Header>
                 {advancedForm && networkType === 'bitcoin' && <AdvancedFormBitcoin />}
                 {advancedForm && networkType === 'ethereum' && <AdvancedFormEthereum />}
                 {advancedForm && networkType === 'ripple' && <AdvancedFormRipple />}
-                )}
             </Row>
         </Wrapper>
     );

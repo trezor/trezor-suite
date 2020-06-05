@@ -15,6 +15,7 @@ interface SendContext {
     account: Account;
     selectedFee: { value: string; label: string };
     advancedForm: boolean;
+    showAdvancedForm: (isVisible: boolean) => void;
     outputs: Output[];
     isAdditionalFormVisible: boolean;
     device: TrezorDevice;
