@@ -1,11 +1,12 @@
 import { SUITE } from '@suite-actions/constants';
-import { AppState, TrezorDevice } from '@suite-types';
-import { Button, colors } from '@trezor/components';
-import { useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
-import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
 import { Translation } from '@suite-components/Translation';
+import { useActions } from '@suite-hooks';
+import { AppState, TrezorDevice } from '@suite-types';
+import { useSendContext } from '@suite/hooks/wallet/useSendContext';
+import { Button, colors } from '@trezor/components';
 import React from 'react';
+import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -61,14 +62,9 @@ const isDisabled = (
     return false;
 };
 
-interface Props {
-    device: TrezorDevice;
-    locks: AppState['suite']['locks'];
-    online: AppState['suite']['online'];
-}
-
-export default ({ device, locks, online }: Props) => {
+export default () => {
     const { errors } = useFormContext();
+    const { online, locks, device } = useSendContext();
     const { openModal } = useActions({ openModal: modalActions.openModal });
 
     return (

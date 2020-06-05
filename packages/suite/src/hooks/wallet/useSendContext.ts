@@ -1,5 +1,6 @@
 import { useContext, createContext } from 'react';
 import { Account } from '@wallet-types';
+import { TrezorDevice, AppState } from '@suite-types';
 
 interface Output {
     id: number;
@@ -13,8 +14,12 @@ interface Output {
 interface SendContext {
     account: Account;
     selectedFee: { value: string; label: string };
+    advancedForm: boolean;
     outputs: Output[];
     isAdditionalFormVisible: boolean;
+    device: TrezorDevice;
+    online: boolean;
+    locks: AppState['suite']['locks'];
 }
 
 export const SendContext = createContext<SendContext | null>(null);
