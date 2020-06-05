@@ -54,7 +54,7 @@ const Log = (props: Props) => {
         return JSON.stringify(json, null, 2);
     };
 
-    const log = prettifyLog(props.getLog());
+    const log = prettifyLog(props.getLog(props.log.excludeBalanceRelated));
 
     const copy = () => {
         const result = copyToClipboard(log, htmlElement.current);

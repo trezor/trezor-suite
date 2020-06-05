@@ -53,18 +53,19 @@ export const toggleExcludeBalanceRelated = () => ({
     type: LOG.TOGGLE_EXCLUDE_BALANCE_RELATED,
 });
 
-export const getLog = () => (_dispatch: Dispatch, getState: GetState) => {
+export const getLog = (redactSensitiveData = false) => (
+    _dispatch: Dispatch,
+    getState: GetState,
+) => {
     const { log } = getState();
 
-    if (log.excludeBalanceRelated) {
+    if (redactSensitiveData) {
         return log.entries.map(entry => ({
-            ...entry,
-            custom: undefined,
             type: entry.action.type,
             action: entry.custom ? redactCustom(entry.action) : redactAction(entry.action),
         }));
     }
-    return log.entries.map(entry => ({ ...entry, type: entry.action.type, custom: undefined }));
+    return log.entries.map(entry => ({ type: entry.action.type, action: entry.action }));
 };
 
 export const reportToSentry = (error: any, attachLog = false) => (
@@ -78,7 +79,7 @@ export const reportToSentry = (error: any, attachLog = false) => (
             scope.setExtra('device', suite.device ? redactDevice(suite.device) : undefined);
             scope.setExtra('discovery', wallet.discovery);
             scope.setExtra('enabled-coins', wallet.settings.enabledNetworks);
-            scope.setExtra('suite-log', dispatch(getLog()));
+            scope.setExtra('suite-log', dispatch(getLog(true)));
         }
         Sentry.captureException(error);
     });
