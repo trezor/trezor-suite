@@ -12,6 +12,7 @@ export type ActionLogEntry = {
 export type CustomLogEntry = {
     time: number;
     custom: true;
+    type: Action['type'];
     action: {
         type: Action['type'];
         payload?: Record<any, any> | undefined;

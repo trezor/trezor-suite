@@ -15,6 +15,7 @@ export const addCustom = (action: Action, payload: object | undefined): Action =
         payload: {
             time: new Date().getTime(),
             custom: true,
+            type: action.type,
             action: {
                 type: action.type,
                 payload,
@@ -60,24 +61,25 @@ export const getLog = () => (_dispatch: Dispatch, getState: GetState) => {
         return log.entries.map(entry => ({
             ...entry,
             custom: undefined,
+            type: entry.action.type,
             action: entry.custom ? redactCustom(entry.action) : redactAction(entry.action),
         }));
     }
-    return log.entries.map(e => ({ ...e, custom: undefined }));
+    return log.entries.map(entry => ({ ...entry, type: entry.action.type, custom: undefined }));
 };
 
 export const reportToSentry = (error: any, attachLog = false) => (
-    _dispatch: Dispatch,
+    dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const { analytics, log, wallet, suite } = getState();
+    const { analytics, wallet, suite } = getState();
     Sentry.withScope(scope => {
         scope.setUser({ id: analytics.instanceId });
         if (attachLog) {
             scope.setExtra('device', suite.device ? redactDevice(suite.device) : undefined);
             scope.setExtra('discovery', wallet.discovery);
             scope.setExtra('enabled-coins', wallet.settings.enabledNetworks);
-            scope.setExtra('suite-log', log.entries);
+            scope.setExtra('suite-log', dispatch(getLog()));
         }
         Sentry.captureException(error);
     });
