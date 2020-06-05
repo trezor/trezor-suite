@@ -66,20 +66,20 @@ const Item = ({ label, icon, onClick, isActive, ...props }: ItemProps) => (
 const ITEMS = [
     {
         label: <Translation id="TR_EXCHANGE" />,
-        'data-test': '@exchange/menu/general',
-        icon: 'PLUS',
+        'data-test': '@exchange/menu/exchange',
+        icon: 'EXCHANGE',
         route: 'exchange-index',
     },
     {
         label: <Translation id="TR_BUY" />,
-        'data-test': '@settings/menu/device',
+        'data-test': '@exchange/menu/buy',
         icon: 'PLUS',
         route: 'exchange-buy',
     },
     {
         label: <Translation id="TR_SELL" />,
-        'data-test': '@settings/menu/wallet',
-        icon: 'PLUS',
+        'data-test': '@exchange/menu/sell',
+        icon: 'TODO',
         route: 'exchange-sell',
     },
 ] as const;

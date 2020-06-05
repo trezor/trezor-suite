@@ -27,7 +27,7 @@ export const ITEMS = [
     {
         route: 'wallet-exchange',
         title: <Translation id="TR_EXCHANGE" />,
-        icon: 'PLUS',
+        icon: 'EXCHANGE',
         isHidden: () => false,
     },
     {
@@ -39,7 +39,7 @@ export const ITEMS = [
     {
         route: 'wallet-sell',
         title: <Translation id="TR_SELL" />,
-        icon: 'PLUS',
+        icon: 'TODO',
         isHidden: () => false,
     },
     {
