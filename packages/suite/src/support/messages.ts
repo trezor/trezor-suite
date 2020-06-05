@@ -348,6 +348,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Buy',
         id: 'TR_BUY',
     },
+    TR_SELL: {
+        defaultMessage: 'Sell',
+        id: 'TR_SELL',
+    },
     TR_CAMERA_NOT_RECOGNIZED: {
         defaultMessage: 'The camera was not recognized.',
         id: 'TR_CAMERA_NOT_RECOGNIZED',

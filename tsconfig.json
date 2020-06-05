@@ -128,6 +128,8 @@
             "@exchange-components": ["./packages/suite/src/components/exchange/index"],
             "@exchange-views/*": ["./packages/suite/src/views/exchange/*"],
             "@exchange-views": ["./packages/suite/src/views/exchange/index"],
+            "@buy-views": ["./packages/suite/src/views/buy/index"],
+            "@sell-views": ["./packages/suite/src/views/sell/index"],
             "@exchange-actions/*": ["./packages/suite/src/actions/exchange/*"],
             "@exchange-actions": ["./packages/suite/src/actions/exchange/index"],
             "@exchange-utils/*": ["./packages/suite/src/utils/exchange/*"],

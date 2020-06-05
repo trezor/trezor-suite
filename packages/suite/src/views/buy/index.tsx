@@ -4,7 +4,7 @@ import { useExchange } from '@exchange-hooks';
 import { WalletLayout } from '@wallet-components';
 import { ExchangeLayout } from '@exchange-components';
 
-// Exchange top-level component used in two contexts: `wallet` and standalone `exchange` app
+// Buy top-level component used in two contexts: `wallet` and standalone `exchange` app
 export default () => {
     const { app, selectedAccount } = useExchange();
 
@@ -19,17 +19,15 @@ export default () => {
 
         return (
             <WalletLayout title="Exchange" account={selectedAccount}>
-                <H2>Exchange in account context</H2>
+                <H2>Buy in account context</H2>
                 <P>Account descriptor: {account.descriptor}</P>
                 <P>Balance: {account.balance}</P>
-                {/* <P>
-                    Fresh address:{' '}
+                <P>
+                    Receive address:{' '}
                     {account.networkType === 'bitcoin'
                         ? `${account.addresses?.unused[0].path} : ${account.addresses?.unused[0].address}`
                         : `${account.path} : ${account.descriptor}`}
-                </P> */}
-                <P>Select to:</P>
-                <Select />
+                </P>
             </WalletLayout>
         );
     }
@@ -37,10 +35,8 @@ export default () => {
     // wrap by ExchangeLayout using exchange menu
     return (
         <ExchangeLayout title="Exchange">
-            <H2>Exchange in standalone context</H2>
-            <P>Select from:</P>
-            <Select />
-            <P>Select to:</P>
+            <H2>Buy in standalone context</H2>
+            <P>Select account:</P>
             <Select />
         </ExchangeLayout>
     );
