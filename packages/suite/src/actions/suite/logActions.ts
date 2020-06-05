@@ -15,7 +15,6 @@ export const addCustom = (action: Action, payload: object | undefined): Action =
         payload: {
             time: new Date().getTime(),
             custom: true,
-            type: action.type,
             action: {
                 type: action.type,
                 payload,
