@@ -59,6 +59,7 @@ interface CommonProps {
     isLoading?: boolean;
     selectedRange: GraphRange;
     xTicks: number[];
+    maxValue?: number;
     localCurrency: string;
     onSelectedRange: (range: GraphRange) => void;
     onRefresh?: () => void;
@@ -67,8 +68,8 @@ export interface CryptoGraphProps extends CommonProps {
     variant: 'one-asset';
     account: Account;
     data: AggregatedAccountHistory[] | null;
-    receivedValueFn: (data: AggregatedAccountHistory) => string;
-    sentValueFn: (data: AggregatedAccountHistory) => string;
+    receivedValueFn: (data: AggregatedAccountHistory) => string | undefined;
+    sentValueFn: (data: AggregatedAccountHistory) => string | undefined;
 }
 
 export interface FiatGraphProps extends CommonProps {
@@ -89,22 +90,6 @@ const TransactionsGraph = React.memo((props: Props) => {
     const setWidth = (n: number) => {
         setMaxYTickWidth(prevValue => (prevValue > n ? prevValue : n));
     };
-
-    // Will be useful if we'll wanna use custom ticks values
-    // const minY =
-    //     data && data.length > 0
-    //         ? data.reduce(
-    //               (min, p) => (new BigNumber(p.sent).lt(min) ? new BigNumber(p.sent) : min),
-    //               new BigNumber(data[0].sent),
-    //           )
-    //         : null;
-    // const maxY =
-    //     data && data.length > 0
-    //         ? data.reduce(
-    //               (max, p) => (new BigNumber(p.received).gt(max) ? new BigNumber(p.received) : max),
-    //               new BigNumber(data[0].received),
-    //           )
-    //         : null;
 
     const xAxisPadding =
         selectedRange.label === 'year' || selectedRange.label === 'all'
@@ -170,7 +155,11 @@ const TransactionsGraph = React.memo((props: Props) => {
                             <YAxis
                                 type="number"
                                 orientation="right"
-                                domain={['dataMin', 'dataMax']}
+                                domain={
+                                    props.maxValue
+                                        ? [props.maxValue * -1.1, props.maxValue * 1.1]
+                                        : undefined
+                                }
                                 stroke={colors.BLACK80}
                                 tick={
                                     props.variant === 'one-asset' ? (
