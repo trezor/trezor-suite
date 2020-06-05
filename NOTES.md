@@ -39,23 +39,23 @@ copy block from top level tsconfig.json
 find: `./packages/suite/src/(.*)"`
 replace: `./src/$1", "../../packages/suite/src/$1"`
 
-
 # Debugging suite-web on android
+
 Server needs to be running on https in order to have access to `navigator.usb` functionality
 
-- Generate localhost certificate:
-yarn workspace @trezor/suite-web cert
+-   Generate localhost certificate:
+    yarn workspace @trezor/suite-web cert
 
-- Run https server:
-yarn workspace @trezor/suite-web dev:https
+-   Run https server:
+    yarn workspace @trezor/suite-web dev:https
 
-- Find your ip:
-ifconfig | grep "inet "
+-   Find your ip:
+    ifconfig | grep "inet "
 
-- Connect phone (dev mode) to computer
-- Access suite using IP (it needs to be in the same network as your computer)
-- Open debugger:
-chrome://inspect/#devices
+-   Connect phone (dev mode) to computer
+-   Access suite using IP (it needs to be in the same network as your computer)
+-   Open debugger:
+    chrome://inspect/#devices
 
 # How to release - staging
 
@@ -63,13 +63,11 @@ chrome://inspect/#devices
 
 `yarn`
 
-`yarn build:libs`
-
 ## Landing page release
 
 1. `yarn workspace @trezor/landing-page build`
 2. `cd packages/landing-page`
-3. `./scripts/s3sync.sh  stage beta`
+3. `./scripts/s3sync.sh stage beta`
 
 ## Suite web release
 
