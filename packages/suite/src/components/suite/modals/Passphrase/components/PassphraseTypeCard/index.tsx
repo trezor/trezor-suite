@@ -132,7 +132,9 @@ const PassphraseTypeCard = (props: Props) => {
         // In case of two-col modal (selecting between standard and hidden wallet)
         // only the hidden wallet part handle the enter press.
         if (props.singleColModal || props.showPassphraseInput) {
-            submit(value);
+            if (!isTooLong) {
+                submit(value);
+            }
         }
     }
 

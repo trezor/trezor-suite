@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
+// @stable
+
 describe('Onboarding - steps order', () => {
     before(() => {
         cy.task('stopEmu');

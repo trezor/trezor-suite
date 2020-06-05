@@ -211,7 +211,6 @@ export const getBinary = async ({
 }: GetBinaryProps) => {
     // we get info here again, but only as a sanity check.
     const releaseByFirmware = releases.find(r => versionUtils.isEqual(r.version, version));
-
     const infoByBootloader = await getInfo({ features, releases });
 
     const parsedFeatures = parseFeatures(features);
@@ -224,6 +223,7 @@ export const getBinary = async ({
     if (btcOnly && !releaseByFirmware.url_bitcoinonly) {
         throw new Error(`firmware version ${version} does not exist in btc only variant`);
     }
+
     // it is better to be defensive and not allow user update rather than let him wipe his seed
     // in case of improper update
     if (!versionUtils.isEqual(releaseByFirmware.version, infoByBootloader.release.version)) {

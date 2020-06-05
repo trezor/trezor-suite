@@ -25,7 +25,7 @@
         "asarUnpack": [
             "build/static/bridge/**/*"
         ],
-        "electronVersion": "8.2.0",
+        "electronVersion": "9.0.1",
         "directories": {
             "output": "build-electron"
         },
@@ -82,10 +82,10 @@
         }
     },
     "dependencies": {
-        "@sentry/browser": "^5.15.0",
-        "@sentry/integrations": "^5.15.5",
+        "@sentry/browser": "^5.16.0",
+        "@sentry/integrations": "^5.16.0",
         "@zeit/next-workers": "^1.0.0",
-        "electron-is-dev": "^1.1.0",
+        "electron-is-dev": "^1.2.0",
         "electron-localshortcut": "^3.2.1",
         "electron-next": "^3.1.5",
         "electron-store": "^5.1.1",
@@ -103,10 +103,10 @@
         "@types/react": "^16.7.11",
         "@types/react-dom": "^16.0.11",
         "@types/react-redux": "^7.1.7",
-        "electron": "^8.2.0",
-        "electron-builder": "^22.4.1",
+        "electron": "^9.0.1",
+        "electron-builder": "^22.7.0",
         "git-revision-webpack-plugin": "^3.0.6",
-        "next-plugin-custom-babel-config": "^1.0.2",
+        "next-plugin-custom-babel-config": "^1.0.4",
         "next-redux-wrapper": "^5.0.0",
         "next-transpile-modules": "^2.3.1"
     }

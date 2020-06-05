@@ -1,3 +1,5 @@
+// @stable
+
 const fixtures = [
     {
         visit: '/bridge',

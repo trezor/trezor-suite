@@ -1,7 +1,7 @@
 import TrezorConnect from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
-import { ZEC_SIGN_ENHANCEMENT } from '@wallet-constants/sendForm'; // BTC_RBF_SEQUENCE,
+import { ZEC_SIGN_ENHANCEMENT } from '@wallet-constants/sendForm'; // BTC_RBF_SEQUENCE, BTC_LOCKTIME_SEQUENCE
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as commonActions from './sendFormCommonActions';
@@ -147,7 +147,8 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
 
     const inputs = transaction.inputs.map(input => ({
         ...input,
-        // sequence: BTC_RBF_SEQUENCE,
+        // sequence: BTC_RBF_SEQUENCE, // TODO: rbf is set
+        // sequence: BTC_LOCKTIME_SEQUENCE, // TODO: locktime is set
     }));
 
     let signEnhancement = {};
