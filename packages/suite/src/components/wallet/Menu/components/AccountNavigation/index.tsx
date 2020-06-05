@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Icon, colors, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
-import { ITEMS, VISIBLE_ITEMS_LIMIT } from '@wallet-config/menu';
+import { ITEMS, VISIBLE_ITEMS_LIMIT } from '@wallet-constants/menu';
 import { Route } from '@suite-types';
 import { Account } from '@wallet-types';
 import AnimationWrapper from '../AnimationWrapper';
