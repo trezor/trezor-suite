@@ -12,8 +12,8 @@ export type Output = {
 };
 
 interface SelectedFee {
-    value: string;
-    label: string;
+    feePerUnit: string;
+    blocks: string;
 }
 
 interface SendContext {

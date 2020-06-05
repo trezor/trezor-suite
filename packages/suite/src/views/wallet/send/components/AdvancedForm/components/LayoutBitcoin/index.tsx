@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import EstimatedMiningTime from '../../../EstimatedMiningTime';
 import Fee from '../Fee';
-import Layout from '../Layout';
+import Layout from '../LayoutCommon';
 import Locktime from './components/Locktime';
 import ReplaceByFee from './components/ReplaceByFee';
 
@@ -26,8 +26,8 @@ const Row = styled.div`
 
 export default () => {
     const { getValues } = useFormContext();
-    const { selectedFee, fees } = useSendContext();
-    const customFee = getValues('customFee');
+    // const { selectedFee, fees } = useSendContext();
+    const customFee: string = getValues('customFee');
 
     return (
         <Wrapper>
@@ -37,10 +37,11 @@ export default () => {
                         <Row>
                             <Fee />
                         </Row>
-                        {!customFee.value && (
+                        {!customFee && (
                             <Row>
                                 <EstimatedMiningTime
-                                    seconds={fees.feeInfo.blockTime * selectedFee.blocks * 60}
+                                    // seconds={fees.feeInfo.blockTime * selectedFee.blocks * 60}
+                                    seconds={60}
                                 />
                             </Row>
                         )}

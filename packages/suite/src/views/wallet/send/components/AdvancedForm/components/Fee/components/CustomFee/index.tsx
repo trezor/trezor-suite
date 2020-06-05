@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Account, Send } from '@wallet-types';
+import { useSendContext } from '@suite/hooks/wallet/useSendContext';
+import { useFormContext } from 'react-hook-form';
 import { Translation } from '@suite-components/Translation';
 import { Input, Select } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { getInputState } from '@wallet-utils/sendFormUtils';
-
-import { Props } from './Container';
 
 const Wrapper = styled.div`
     display: flex;
@@ -45,28 +45,26 @@ const getValue = (networkType: Account['networkType']) => {
     }
 };
 
-export default ({ send, sendFormActions, account }: Props) => {
-    if (!send || !account) return null;
-    const { customFee, feeInfo } = send;
-    const { value, error } = customFee;
-    const { maxFee, minFee } = feeInfo;
+export default () => {
+    const { account } = useSendContext();
+    const { register } = useFormContext();
     const { networkType } = account;
+    let maxFee = '1';
+    let minFee = '2000';
 
     return (
         <Wrapper>
             <ItemWrapper>
-                <Input
-                    variant="small"
-                    state={getInputState(error, value, true, false)}
-                    bottomText={getError(error, maxFee, minFee)}
-                    value={value || ''}
-                    onChange={e => {
-                        sendFormActions.handleCustomFeeValueChange(e.target.value);
-                    }}
-                />
+                <Input variant="small" />
             </ItemWrapper>
             <ItemWrapper>
-                <Select variant="small" isDisabled value={getValue(networkType)} />
+                <Select
+                    name="customFee"
+                    innerRef={register()}
+                    variant="small"
+                    isDisabled
+                    value={getValue(networkType)}
+                />
             </ItemWrapper>
         </Wrapper>
     );

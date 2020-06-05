@@ -10,8 +10,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { fromWei, toWei } from 'web3-utils';
 
-import CustomFee from './components/CustomFee/Container';
-
 const Row = styled.div`
     display: flex;
     flex-direction: column;

@@ -2,11 +2,11 @@ import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import React from 'react';
 import styled from 'styled-components';
 
-import AdvancedFormBitcoin from './components/AdvancedFormBitcoin';
 import Add from '../Add';
-import AdvancedFormEthereum from './components/AdvancedFormEthereum';
-import AdvancedFormRipple from './components/AdvancedFormRipple';
-import ButtonToggleAdditional from './components/ButtonToggleAdditional';
+import LayoutBitcoin from './components/LayoutBitcoin';
+import ToggleButton from './components/ToggleButton';
+import LayoutEthereum from './components/LayoutEthereum';
+import LayoutRipple from './components/LayoutRipple';
 
 const Row = styled.div`
     display: flex;
@@ -38,12 +38,12 @@ export default () => {
         <Wrapper>
             <Row isColumn={advancedForm}>
                 <Header>
-                    <ButtonToggleAdditional />
+                    <ToggleButton />
                     {networkType === 'bitcoin' && <Add />}
                 </Header>
-                {advancedForm && networkType === 'bitcoin' && <AdvancedFormBitcoin />}
-                {advancedForm && networkType === 'ethereum' && <AdvancedFormEthereum />}
-                {advancedForm && networkType === 'ripple' && <AdvancedFormRipple />}
+                {advancedForm && networkType === 'bitcoin' && <LayoutBitcoin />}
+                {advancedForm && networkType === 'ethereum' && <LayoutEthereum />}
+                {advancedForm && networkType === 'ripple' && <LayoutRipple />}
             </Row>
         </Wrapper>
     );
