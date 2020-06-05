@@ -3,14 +3,8 @@ import TrezorConnect, { ApplySettings, ChangePin, ResetDevice } from 'trezor-con
 import { addToast } from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { isWebUSB } from '@suite-utils/transport';
-
 import { Dispatch, GetState } from '@suite-types';
-
-const DEFAULT_LABEL = 'My Trezor';
-const DEFAULT_PASSPHRASE_PROTECTION = true;
-const DEFAULT_SKIP_BACKUP = true;
-const DEFAULT_STRENGTH_T1 = 256;
-const DEFAULT_STRENGTH_T2 = 128;
+import { DEVICE } from '@suite-constants';
 
 export const applySettings = (params: ApplySettings) => async (
     dispatch: Dispatch,
@@ -88,17 +82,17 @@ export const resetDevice = (params: ResetDevice = {}) => async (
     let defaults = {};
     if (device.features?.major_version === 1) {
         defaults = {
-            strength: DEFAULT_STRENGTH_T1,
-            label: DEFAULT_LABEL,
-            skip_backup: DEFAULT_SKIP_BACKUP,
-            passphrase_protection: DEFAULT_PASSPHRASE_PROTECTION,
+            strength: DEVICE.DEFAULT_STRENGTH_T1,
+            label: DEVICE.DEFAULT_LABEL,
+            skip_backup: DEVICE.DEFAULT_SKIP_BACKUP,
+            passphrase_protection: DEVICE.DEFAULT_PASSPHRASE_PROTECTION,
         };
     } else {
         defaults = {
-            strength: DEFAULT_STRENGTH_T2,
-            label: DEFAULT_LABEL,
-            skip_backup: DEFAULT_SKIP_BACKUP,
-            passphrase_protection: DEFAULT_PASSPHRASE_PROTECTION,
+            strength: DEVICE.DEFAULT_STRENGTH_T2,
+            label: DEVICE.DEFAULT_LABEL,
+            skip_backup: DEVICE.DEFAULT_SKIP_BACKUP,
+            passphrase_protection: DEVICE.DEFAULT_PASSPHRASE_PROTECTION,
         };
     }
 
