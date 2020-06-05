@@ -12,13 +12,13 @@ export default () => {
     if (app === 'wallet') {
         // account loading or exception
         if (selectedAccount.status !== 'loaded') {
-            return <WalletLayout title="Exchange" account={selectedAccount} />;
+            return <WalletLayout title="Buy" account={selectedAccount} />;
         }
 
         const { account } = selectedAccount;
 
         return (
-            <WalletLayout title="Exchange" account={selectedAccount}>
+            <WalletLayout title="Buy" account={selectedAccount}>
                 <H2>Buy in account context</H2>
                 <P>Account descriptor: {account.descriptor}</P>
                 <P>Balance: {account.balance}</P>
@@ -34,10 +34,9 @@ export default () => {
 
     // wrap by ExchangeLayout using exchange menu
     return (
-        <ExchangeLayout title="Exchange">
+        <ExchangeLayout title="Sell">
             <H2>Buy in standalone context</H2>
-            <P>Select account:</P>
-            <Select />
+            <Select placeholder={<div>Select destination account</div>} />
         </ExchangeLayout>
     );
 };

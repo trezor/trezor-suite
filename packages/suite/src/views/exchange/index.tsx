@@ -22,14 +22,7 @@ export default () => {
                 <H2>Exchange in account context</H2>
                 <P>Account descriptor: {account.descriptor}</P>
                 <P>Balance: {account.balance}</P>
-                {/* <P>
-                    Fresh address:{' '}
-                    {account.networkType === 'bitcoin'
-                        ? `${account.addresses?.unused[0].path} : ${account.addresses?.unused[0].address}`
-                        : `${account.path} : ${account.descriptor}`}
-                </P> */}
-                <P>Select to:</P>
-                <Select />
+                <Select placeholder={<div>Select destination account</div>} />
             </WalletLayout>
         );
     }
@@ -38,10 +31,8 @@ export default () => {
     return (
         <ExchangeLayout title="Exchange">
             <H2>Exchange in standalone context</H2>
-            <P>Select from:</P>
-            <Select />
-            <P>Select to:</P>
-            <Select />
+            <Select placeholder={<div>Select source account</div>} />
+            <Select placeholder={<div>Select destination account</div>} />
         </ExchangeLayout>
     );
 };
