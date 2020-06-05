@@ -21,7 +21,7 @@ export const MAIN_MENU_ITEMS = [
         translationId: 'TR_EXCHANGE',
         icon: 'EXCHANGE',
         route: 'exchange-index',
-        isDisabled: true,
+        isDisabled: false,
     },
     // {
     //     translationId: 'TR_PORTFOLIO',
