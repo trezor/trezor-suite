@@ -59,13 +59,27 @@ export const getLog = (redactSensitiveData = false) => (
 ) => {
     const { log } = getState();
 
-    if (redactSensitiveData) {
-        return log.entries.map(entry => ({
+    return log.entries.map(entry => {
+        const metaData = {
             type: entry.action.type,
-            action: entry.custom ? redactCustom(entry.action) : redactAction(entry.action),
-        }));
-    }
-    return log.entries.map(entry => ({ type: entry.action.type, action: entry.action }));
+            time: entry.time,
+        };
+
+        let redactedAction = entry.action;
+        if (redactSensitiveData) {
+            redactedAction = entry.custom ? redactCustom(entry.action) : redactAction(entry.action);
+        }
+
+        const actionKeys = Object.keys(redactedAction);
+        if (actionKeys.length === 1 && actionKeys[0] === 'type') {
+            // no payload, print only metadata
+            return metaData;
+        }
+        return {
+            ...metaData,
+            action: redactedAction,
+        };
+    });
 };
 
 export const reportToSentry = (error: any, attachLog = false) => (

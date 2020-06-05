@@ -64,7 +64,6 @@ const log = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
             );
             break;
         case SUITE.APP_CHANGED:
-        case DISCOVERY.UPDATE:
         case DISCOVERY.COMPLETE:
             api.dispatch(logActions.addAction(action));
             break;
