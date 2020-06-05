@@ -1,5 +1,5 @@
-import React from 'react';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
+import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 
@@ -26,7 +26,7 @@ const Row = styled.div`
 
 export default () => {
     const { getValues } = useFormContext();
-    // const { selectedFee, fees } = useSendContext();
+    const { feeInfo, selectedFee } = useSendContext();
     const customFee: string = getValues('customFee');
 
     return (
@@ -40,8 +40,7 @@ export default () => {
                         {!customFee && (
                             <Row>
                                 <EstimatedMiningTime
-                                    // seconds={fees.feeInfo.blockTime * selectedFee.blocks * 60}
-                                    seconds={60}
+                                    seconds={feeInfo.blockTime * selectedFee.blocks * 60}
                                 />
                             </Row>
                         )}

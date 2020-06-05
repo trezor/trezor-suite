@@ -1,5 +1,7 @@
 import { useContext, createContext } from 'react';
 import { Account } from '@wallet-types';
+import { FeeLevel } from 'trezor-connect';
+import { FeeInfo } from '@wallet-types/sendForm';
 import { TrezorDevice, AppState } from '@suite-types';
 
 export type Output = {
@@ -11,25 +13,21 @@ export type Output = {
     localCurrency: { value: string; label: string };
 };
 
-interface SelectedFee {
-    feePerUnit: string;
-    blocks: string;
-}
-
 interface SendContext {
-    Output: Output;
     account: Account;
     settings: AppState['suite']['settings'];
     device: TrezorDevice;
     online: boolean;
     fiat: AppState['wallet']['fiat'];
     locks: AppState['suite']['locks'];
-    fees: AppState['wallet']['fees'];
+    feeInfo: FeeInfo;
 
+    isToken: boolean;
+    setIsToken: (isToken: boolean) => void;
     feeOutdated: boolean;
     setFeeOutdated: (isOutdated: boolean) => void;
-    selectedFee: SelectedFee;
-    setSelectedFee: (selectedFee: SelectedFee) => void;
+    selectedFee: FeeLevel;
+    setSelectedFee: (selectedFee: FeeLevel) => void;
     advancedForm: boolean;
     showAdvancedForm: (isVisible: boolean) => void;
     outputs: Output[];

@@ -2,10 +2,12 @@ import { QuestionTooltip, Translation, Badge } from '@suite-components';
 import { capitalizeFirstLetter } from '@suite-utils/string';
 import { colors, P, Select, variables, Button } from '@trezor/components';
 import { Account } from '@wallet-types';
+import CustomFee from './components/CustomFee';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { FeeLevel } from '@wallet-types/sendForm';
+import { calculateEthFee } from '@wallet-utils/sendFormUtils';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
+// import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import React from 'react';
 import styled from 'styled-components';
 import { fromWei, toWei } from 'web3-utils';
@@ -80,18 +82,6 @@ const OptionLabel = styled(P)`
     word-break: break-all;
 `;
 
-const CustomFeeRow = styled(Row)`
-    flex-direction: row;
-    margin-top: 10px;
-    justify-content: space-between;
-    align-items: center;
-`;
-
-const CustomFeeWrapper = styled.div``;
-const BadgeWrapper = styled.div`
-    display: flex;
-`;
-
 const getValue = (
     networkType: Account['networkType'],
     option: FeeLevel,
@@ -125,9 +115,8 @@ const isDisabled = (
 };
 
 export default () => {
-    const { account, settings, fees, fiat, feeOutdated, selectedFee } = useSendContext();
-    const feeLevels = fees.levels;
-    const { localCurrency } = settings;
+    const { account, settings, feeInfo, fiat, feeOutdated, selectedFee } = useSendContext();
+    // const { localCurrency } = settings;
     const { networkType, symbol } = account;
     const fiatVal = fiat.coins.find(fiatItem => fiatItem.symbol === symbol);
 
@@ -163,7 +152,7 @@ export default () => {
                     // hack for react select, it needs the "value"
                     value={{ ...selectedFee, value: selectedFee.feePerUnit }}
                     // onChange={sendFormActions.handleFeeValueChange}
-                    options={feeLevels}
+                    options={feeInfo.levels}
                     // isDisabled={isDisabled(
                     //     networkType,
                     //     getInputState(
@@ -183,25 +172,7 @@ export default () => {
                     )}
                 />
             </Row>
-            {networkType !== 'ethereum' && selectedFee.label === 'custom' && (
-                <CustomFeeRow>
-                    <CustomFeeWrapper>
-                        <CustomFee />
-                    </CustomFeeWrapper>
-                    {fiatVal && customFee.value && transactionInfo?.type === 'final' && (
-                        <BadgeWrapper>
-                            <Badge isGray>
-                                {toFiatCurrency(
-                                    formatNetworkAmount(transactionInfo.fee, symbol),
-                                    localCurrency,
-                                    fiatVal.current?.rates,
-                                )}{' '}
-                                {localCurrency}
-                            </Badge>
-                        </BadgeWrapper>
-                    )}
-                </CustomFeeRow>
-            )}
+            {networkType !== 'ethereum' && selectedFee.label === 'custom' && <CustomFee />}
         </Wrapper>
     );
 };

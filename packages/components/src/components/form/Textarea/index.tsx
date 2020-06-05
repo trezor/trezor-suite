@@ -117,6 +117,7 @@ type BaseTextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 interface Props extends StyledTextareaProps {
     isDisabled?: boolean;
     topLabel?: React.ReactNode;
+    innerRef?: React.Ref<HTMLTextAreaElement>;
     bottomText?: React.ReactNode;
     maxRows?: number;
     wrapperProps?: Record<string, any>;
@@ -127,6 +128,7 @@ const Textarea = ({
     className,
     maxLength,
     isDisabled,
+    innerRef,
     topLabel,
     state,
     bottomText,
@@ -149,6 +151,7 @@ const Textarea = ({
                 width={width}
                 state={state}
                 rows={rows}
+                ref={innerRef}
                 monospace={monospace}
                 {...rest}
             />

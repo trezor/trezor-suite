@@ -1,12 +1,12 @@
 import { Translation } from '@suite-components';
-import { Input, Tooltip, Icon, colors } from '@trezor/components';
-import styled from 'styled-components';
-import { getInputState } from '@wallet-utils/sendFormUtils';
+import { useSendContext } from '@suite/hooks/wallet/useSendContext';
+import { colors, Icon, Input, Tooltip } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { Send, Account } from '@wallet-types';
+import { Account, Send } from '@wallet-types';
+import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
-
-import { Props } from './Container';
+import { useFormContext } from 'react-hook-form';
+import styled from 'styled-components';
 
 const Label = styled.div`
     display: flex;
@@ -37,17 +37,15 @@ const getError = (error: Send['networkTypeEthereum']['gasLimit']['error']) => {
     }
 };
 
-export default ({ send, sendFormActionsEthereum, account }: Props) => {
-    if (!send || !account) return null;
-    const { networkType } = account;
-    const { gasLimit, data } = send.networkTypeEthereum;
-    const { error, value } = gasLimit;
+export default () => {
+    const inputName = 'eth-gas-limit';
 
     return (
         <Input
             variant="small"
-            disabled={isDisabled(networkType, getInputState(data.error, data.value, false, false))}
-            state={getInputState(error, value, true, true)}
+            name={inputName}
+            // disabled={isDisabled(networkType, getInputState(data.error, data.value, false, false))}
+            // state={getInputState(error, value, true, true)}
             topLabel={
                 <Label>
                     <Text>
@@ -66,9 +64,7 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
                     </Tooltip>
                 </Label>
             }
-            bottomText={getError(error)}
-            value={value || ''}
-            onChange={e => sendFormActionsEthereum.handleGasLimit(e.target.value)}
+            // bottomText={getError(error)}
         />
     );
 };

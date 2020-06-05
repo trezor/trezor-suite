@@ -2,11 +2,10 @@ import { QuestionTooltip, Translation } from '@suite-components';
 import { Textarea } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Send } from '@wallet-types';
-import { getInputState } from '@wallet-utils/sendFormUtils';
+import validator from 'validator';
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
-
-import { Props } from './Container';
 
 const Label = styled.div`
     display: flex;
@@ -26,18 +25,25 @@ const getError = (error: Send['networkTypeEthereum']['data']['error']) => {
     }
 };
 
-export default ({ send, sendFormActionsEthereum, account }: Props) => {
-    if (!send || !account) return null;
-    const { data } = send.networkTypeEthereum;
-    const { error, value } = data;
+export default () => {
+    const { register } = useFormContext();
+    const inputName = 'eth-data';
 
     return (
         <Textarea
-            state={getInputState(error, value, false, false)}
-            value={value || ''}
-            bottomText={value && getError(error)}
-            disabled={!!send.networkTypeEthereum.token}
-            onChange={e => sendFormActionsEthereum.handleData(e.target.value)}
+            name={inputName}
+            innerRef={register({
+                validate: {
+                    TR_ETH_DATA_NOT_HEX: (value: string) => {
+                        if (value) {
+                            validator.isHexadecimal(value);
+                        }
+                    },
+                },
+            })}
+            // state={getInputState(error, value, false, false)}
+            // bottomText={value && getError(error)}
+            // disabled={!!send.networkTypeEthereum.token}
             topLabel={
                 <Label>
                     <Text>

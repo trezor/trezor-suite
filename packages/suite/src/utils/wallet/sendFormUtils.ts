@@ -205,14 +205,11 @@ export const getFeeLevels = (
     token = false,
 ) => {
     const convertedEthLevels: FeeLevel[] = [];
-    const initialLevels: FeeLevel[] =
-        networkType === 'ethereum'
-            ? feeInfo.levels
-            : feeInfo.levels.concat({
-                  label: 'custom',
-                  feePerUnit: '0',
-                  blocks: -1,
-              });
+    const initialLevels: FeeLevel[] = feeInfo.levels.concat({
+        label: 'custom',
+        feePerUnit: '0',
+        blocks: -1,
+    });
 
     if (networkType === 'ethereum') {
         initialLevels.forEach(level =>

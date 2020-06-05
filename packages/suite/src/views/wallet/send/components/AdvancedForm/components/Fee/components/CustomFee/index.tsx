@@ -6,9 +6,23 @@ import { useFormContext } from 'react-hook-form';
 import { Translation } from '@suite-components/Translation';
 import { Input, Select } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { getInputState } from '@wallet-utils/sendFormUtils';
 
 const Wrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+    padding: 0 0 30px 0;
+    justify-content: space-between;
+    align-items: center;
+
+    &:last-child {
+        padding: 0;
+    }
+`;
+
+const CustomFeeWrapper = styled.div``;
+
+const BadgeWrapper = styled.div`
     display: flex;
 `;
 
@@ -49,23 +63,38 @@ export default () => {
     const { account } = useSendContext();
     const { register } = useFormContext();
     const { networkType } = account;
-    let maxFee = '1';
-    let minFee = '2000';
+    // let { maxFee, minFee } = feeInfo;
 
     return (
         <Wrapper>
-            <ItemWrapper>
-                <Input variant="small" />
-            </ItemWrapper>
-            <ItemWrapper>
-                <Select
-                    name="customFee"
-                    innerRef={register()}
-                    variant="small"
-                    isDisabled
-                    value={getValue(networkType)}
-                />
-            </ItemWrapper>
+            <CustomFeeWrapper>
+                <Wrapper>
+                    <ItemWrapper>
+                        <Input variant="small" />
+                    </ItemWrapper>
+                    <ItemWrapper>
+                        <Select
+                            name="customFee"
+                            innerRef={register()}
+                            variant="small"
+                            isDisabled
+                            value={getValue(networkType)}
+                        />
+                    </ItemWrapper>
+                </Wrapper>
+            </CustomFeeWrapper>
+            {/* {fiatVal && customFee.value && (
+                <BadgeWrapper>
+                    <Badge isGray>
+                        {toFiatCurrency(
+                            formatNetworkAmount(transactionInfo.fee, symbol),
+                            localCurrency,
+                            fiatVal.current?.rates,
+                        )}{' '}
+                        {localCurrency}
+                    </Badge>
+                </BadgeWrapper>
+            )} */}
         </Wrapper>
     );
 };

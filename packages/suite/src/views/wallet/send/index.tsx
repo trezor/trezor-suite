@@ -2,6 +2,7 @@ import { SendContext } from '@suite/hooks/wallet/useSendContext';
 import { WalletLayout } from '@wallet-components';
 import { Card, Translation } from '@suite-components';
 import React, { useState } from 'react';
+import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import styled from 'styled-components';
 import { variables, colors } from '@trezor/components';
 import Outputs from './components/Outputs';
@@ -45,11 +46,12 @@ export default ({ device, fees, selectedAccount, locks, online, settings, fiat }
     }
 
     const { account } = selectedAccount;
-    const { symbol } = account;
-    const [advancedForm, showAdvancedForm] = useState(false);
-    const [feeOutdated, setFeeOutdated] = useState(false);
-    const [selectedFee, setSelectedFee] = useState({ label: '1', value: '1' });
-    const [outputs, updateOutputs] = useState([
+    const { symbol, networkType } = account;
+    const coinFees = fees[symbol];
+    const levels = getFeeLevels(networkType, coinFees);
+    const feeInfo = { ...coinFees, levels };
+    const initialSelectedFee = levels.find(l => l.label === 'normal') || levels[0];
+    const initialOutputs = [
         {
             id: 0,
             address: '',
@@ -58,7 +60,13 @@ export default ({ device, fees, selectedAccount, locks, online, settings, fiat }
             fiatValue: '',
             localCurrency: { value: 'usd', label: 'USD' },
         },
-    ]);
+    ];
+
+    const [advancedForm, showAdvancedForm] = useState(false);
+    const [isToken, setIsToken] = useState(false);
+    const [feeOutdated, setFeeOutdated] = useState(false);
+    const [selectedFee, setSelectedFee] = useState(initialSelectedFee);
+    const [outputs, updateOutputs] = useState(initialOutputs);
 
     const methods = useForm({
         mode: 'onChange',
@@ -76,8 +84,11 @@ export default ({ device, fees, selectedAccount, locks, online, settings, fiat }
         <WalletLayout title="Send" account={selectedAccount}>
             <SendContext.Provider
                 value={{
+                    feeInfo,
                     outputs,
                     updateOutputs,
+                    isToken,
+                    setIsToken,
                     selectedFee,
                     setSelectedFee,
                     advancedForm,
@@ -85,7 +96,6 @@ export default ({ device, fees, selectedAccount, locks, online, settings, fiat }
                     account,
                     settings,
                     fiat,
-                    fees,
                     feeOutdated,
                     setFeeOutdated,
                     device,

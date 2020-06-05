@@ -1,12 +1,11 @@
 import { Translation } from '@suite-components';
-import { Input, Tooltip, Icon, colors } from '@trezor/components';
+import { useSendContext } from '@suite/hooks/wallet/useSendContext';
+import { colors, Icon, Input, Tooltip } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Send } from '@wallet-types';
-import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
-
-import { Props } from './Container';
 
 const Label = styled.div`
     display: flex;
@@ -30,17 +29,16 @@ const getError = (error: Send['networkTypeEthereum']['gasPrice']['error']) => {
     }
 };
 
-export default ({ send, sendFormActionsEthereum, selectedAccount }: Props) => {
-    if (!send || selectedAccount.status !== 'loaded') return null;
-    const { account } = selectedAccount;
-    if (account.networkType !== 'ethereum') return null;
-    const { gasPrice } = send.networkTypeEthereum;
-    const { value, error } = gasPrice;
+export default () => {
+    const { account } = useSendContext();
+    const { register } = useFormContext();
+    const inputName = 'eth-gas-price';
 
     return (
         <Input
             variant="small"
-            state={getInputState(error, value, true, true)}
+            name={inputName}
+            // state={getInputState(error, value, true, true)}
             topLabel={
                 <Label>
                     <Text>
@@ -59,9 +57,8 @@ export default ({ send, sendFormActionsEthereum, selectedAccount }: Props) => {
                     </Tooltip>
                 </Label>
             }
-            bottomText={getError(error)}
-            value={value || ''}
-            onChange={e => sendFormActionsEthereum.handleGasPrice(e.target.value)}
+            // bottomText={getError(error)}
+            innerRef={register()}
         />
     );
 };
