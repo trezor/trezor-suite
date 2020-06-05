@@ -65,6 +65,7 @@ export default ({ device, fees, selectedAccount, locks, online, settings, fiat }
     const [advancedForm, showAdvancedForm] = useState(false);
     const [isToken, setIsToken] = useState(false);
     const [feeOutdated, setFeeOutdated] = useState(false);
+    const [transactionInfo, setTransactionInfo] = useState(null);
     const [selectedFee, setSelectedFee] = useState(initialSelectedFee);
     const [outputs, updateOutputs] = useState(initialOutputs);
 
@@ -87,6 +88,8 @@ export default ({ device, fees, selectedAccount, locks, online, settings, fiat }
                     feeInfo,
                     outputs,
                     updateOutputs,
+                    transactionInfo,
+                    setTransactionInfo,
                     isToken,
                     setIsToken,
                     selectedFee,

@@ -1,10 +1,10 @@
 import { QuestionTooltip, Translation, Badge } from '@suite-components';
 import { capitalizeFirstLetter } from '@suite-utils/string';
+import { FeeLevel } from 'trezor-connect';
 import { colors, P, Select, variables, Button } from '@trezor/components';
 import { Account } from '@wallet-types';
 import CustomFee from './components/CustomFee';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
-import { FeeLevel } from '@wallet-types/sendForm';
 import { calculateEthFee } from '@wallet-utils/sendFormUtils';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 // import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
@@ -115,7 +115,15 @@ const isDisabled = (
 };
 
 export default () => {
-    const { account, settings, feeInfo, fiat, feeOutdated, selectedFee } = useSendContext();
+    const {
+        account,
+        settings,
+        feeInfo,
+        fiat,
+        feeOutdated,
+        selectedFee,
+        setSelectedFee,
+    } = useSendContext();
     // const { localCurrency } = settings;
     const { networkType, symbol } = account;
     const fiatVal = fiat.coins.find(fiatItem => fiatItem.symbol === symbol);
@@ -136,7 +144,7 @@ export default () => {
                                 <Translation id="TR_FEE_NEEDS_UPDATE" />
                             </RefreshText>
                             <Button
-                                // onClick={() => sendFormActions.manuallyUpdateFee()}
+                                // onClick={() => manuallyUpdateFee()}
                                 icon="REFRESH"
                                 variant="tertiary"
                                 alignIcon="right"
@@ -151,7 +159,7 @@ export default () => {
                     isSearchable={false}
                     // hack for react select, it needs the "value"
                     value={{ ...selectedFee, value: selectedFee.feePerUnit }}
-                    // onChange={sendFormActions.handleFeeValueChange}
+                    onChange={(selectedFeeLevel: FeeLevel) => setSelectedFee(selectedFeeLevel)}
                     options={feeInfo.levels}
                     // isDisabled={isDisabled(
                     //     networkType,

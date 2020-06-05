@@ -119,7 +119,7 @@ const getState = (error: NestDataObject<Record<string, any>, FieldError>, touche
 };
 
 export default ({ outputId }: { outputId: number }) => {
-    const { account } = useSendContext();
+    const { account, setTransactionInfo } = useSendContext();
     const { register, errors, formState, getValues, setValue } = useFormContext();
     const inputName = `amount-${outputId}`;
     const amount = getValues(inputName);
@@ -164,6 +164,7 @@ export default ({ outputId }: { outputId: number }) => {
                                 if (composedTransaction.type === 'final') {
                                     setValue(inputName, composedTransaction.max);
                                 }
+                                setTransactionInfo(composedTransaction);
                             }
                         },
                         text: <Translation id="TR_SEND_SEND_MAX" />,
