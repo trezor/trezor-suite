@@ -28,7 +28,7 @@ export default ({ outputId }: Props) => {
     return (
         <Wrapper
             onClick={() => {
-                const filteredOutputs = outputs.filter(output => output.id === outputId);
+                const filteredOutputs = outputs.filter(output => output.id !== outputId);
                 updateOutputs(filteredOutputs);
             }}
         >

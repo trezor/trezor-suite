@@ -3,6 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import AdvancedFormBitcoin from './components/AdvancedFormBitcoin';
+import Add from '../Add';
 import AdvancedFormEthereum from './components/AdvancedFormEthereum';
 import AdvancedFormRipple from './components/AdvancedFormRipple';
 import ButtonToggleAdditional from './components/ButtonToggleAdditional';
@@ -38,7 +39,7 @@ export default () => {
             <Row isColumn={advancedForm}>
                 <Header>
                     <ButtonToggleAdditional />
-                    {/* <Add addOutput={addOutput} networkType={networkType} /> */}
+                    {networkType === 'bitcoin' && <Add />}
                 </Header>
                 {advancedForm && networkType === 'bitcoin' && <AdvancedFormBitcoin />}
                 {advancedForm && networkType === 'ethereum' && <AdvancedFormEthereum />}

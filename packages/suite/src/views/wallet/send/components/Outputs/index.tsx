@@ -6,6 +6,8 @@ import Address from './components/Address';
 import Amount from './components/Amount';
 import Header from './components/Header';
 
+const Wrapper = styled.div``;
+
 const OutputWrapper = styled.div`
     padding: 0 12px 12px 12px;
     margin-bottom: 20px;
@@ -29,10 +31,10 @@ export default () => {
     const { outputs } = useSendContext();
 
     return (
-        <>
-            {outputs.map((output: any) => (
+        <Wrapper>
+            {outputs.map((output, key: number) => (
                 <OutputWrapper key={output.id}>
-                    <Header outputId={output.id} />
+                    <Header outputIndex={key} outputId={output.id} />
                     <Row>
                         <Address outputId={output.id} />
                     </Row>
@@ -41,6 +43,6 @@ export default () => {
                     </Row>
                 </OutputWrapper>
             ))}
-        </>
+        </Wrapper>
     );
 };

@@ -28,13 +28,13 @@ const ColumnRight = styled(Column)`
     justify-content: flex-end;
 `;
 
-export default ({ outputId }: { outputId: number }) => {
+export default ({ outputId, outputIndex }: { outputId: number; outputIndex: number }) => {
     const { outputs } = useSendContext();
 
     return (
         <Wrapper>
             <Column />
-            <Column>{outputs.length > 1 && <OutputIndex>#{outputId + 1}</OutputIndex>}</Column>
+            <Column>{outputs.length > 1 && <OutputIndex>#{outputIndex + 1}</OutputIndex>}</Column>
             <ColumnRight>
                 {outputId !== 0 && (
                     <>
