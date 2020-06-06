@@ -3,10 +3,10 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Add from '../Add';
-import LayoutBitcoin from './components/LayoutBitcoin';
+import Bitcoin from './components/Bitcoin';
 import ToggleButton from './components/ToggleButton';
-import LayoutEthereum from './components/LayoutEthereum';
-import LayoutRipple from './components/LayoutRipple';
+import Ethereum from './components/Ethereum';
+import Ripple from './components/Ripple';
 
 const Row = styled.div`
     display: flex;
@@ -41,9 +41,9 @@ export default () => {
                     <ToggleButton />
                     {networkType === 'bitcoin' && <Add />}
                 </Header>
-                {advancedForm && networkType === 'bitcoin' && <LayoutBitcoin />}
-                {advancedForm && networkType === 'ethereum' && <LayoutEthereum />}
-                {advancedForm && networkType === 'ripple' && <LayoutRipple />}
+                {advancedForm && networkType === 'bitcoin' && <Bitcoin />}
+                {advancedForm && networkType === 'ethereum' && <Ethereum />}
+                {advancedForm && networkType === 'ripple' && <Ripple />}
             </Row>
         </Wrapper>
     );

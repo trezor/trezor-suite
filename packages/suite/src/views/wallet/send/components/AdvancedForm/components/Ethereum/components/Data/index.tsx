@@ -1,11 +1,10 @@
 import { QuestionTooltip, Translation } from '@suite-components';
 import { Textarea } from '@trezor/components';
-import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { Send } from '@wallet-types';
-import validator from 'validator';
+import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
+import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
+import validator from 'validator';
 
 const Label = styled.div`
     display: flex;
@@ -16,18 +15,19 @@ const Text = styled.div`
     margin-right: 3px;
 `;
 
-const getError = (error: Send['networkTypeEthereum']['data']['error']) => {
-    switch (error) {
-        case VALIDATION_ERRORS.NOT_HEX:
-            return <Translation id="TR_ETH_DATA_NOT_HEX" />;
-        default:
-            return null;
+const getState = (error: NestDataObject<Record<string, any>, FieldError>) => {
+    if (error) {
+        return 'error';
     }
+
+    return undefined;
 };
 
 export default () => {
-    const { register } = useFormContext();
+    const { isToken } = useSendContext();
+    const { register, errors } = useFormContext();
     const inputName = 'eth-data';
+    const error = errors[inputName];
 
     return (
         <Textarea
@@ -41,9 +41,9 @@ export default () => {
                     },
                 },
             })}
-            // state={getInputState(error, value, false, false)}
-            // bottomText={value && getError(error)}
-            // disabled={!!send.networkTypeEthereum.token}
+            state={getState(error)}
+            bottomText={error && <Translation id={error.type} />}
+            disabled={isToken}
             topLabel={
                 <Label>
                     <Text>

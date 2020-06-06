@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import EstimatedMiningTime from '../../../EstimatedMiningTime';
 import Fee from '../Fee';
-import Layout from '../LayoutCommon';
+import Layout from '../Layout';
 import Locktime from './components/Locktime';
 import ReplaceByFee from './components/ReplaceByFee';
 

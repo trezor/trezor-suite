@@ -60,10 +60,11 @@ const getValue = (networkType: Account['networkType']) => {
 };
 
 export default () => {
-    const { account } = useSendContext();
+    const { account, feeInfo, setCustomFee } = useSendContext();
     const { register } = useFormContext();
+    const inputName = 'customFee';
     const { networkType } = account;
-    // let { maxFee, minFee } = feeInfo;
+    let { maxFee, minFee } = feeInfo;
 
     return (
         <Wrapper>
@@ -76,9 +77,9 @@ export default () => {
                         <Select
                             name="customFee"
                             innerRef={register()}
+                            onChange={value => getValue(networkType)}
                             variant="small"
                             isDisabled
-                            value={getValue(networkType)}
                         />
                     </ItemWrapper>
                 </Wrapper>

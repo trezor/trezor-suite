@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Fee from '../Fee';
-import Layout from '../LayoutCommon';
+import Layout from '../Layout';
 import Data from './components/Data';
 import GasLimit from './components/GasLimit';
 import GasPrice from './components/GasPrice';

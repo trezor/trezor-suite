@@ -65,45 +65,8 @@ const EqualsSign = styled.div`
     }
 `;
 
-const getMessage = (
-    error: Output['amount']['error'],
-    decimals: number,
-    reserve: string | null,
-    isLoading: Output['amount']['isLoading'],
-    symbol: string,
-    customFeeError: CustomFee['error'],
-) => {
-    if (isLoading && !error) return 'Loading'; // TODO loader or text?
-
-    if (customFeeError) {
-        return <Translation id="TR_CUSTOM_FEE_IS_NOT_VALID" />;
-    }
-
-    switch (error) {
-        case VALIDATION_ERRORS.IS_EMPTY:
-            return <Translation id="TR_AMOUNT_IS_NOT_SET" />;
-        case VALIDATION_ERRORS.NOT_NUMBER:
-            return <Translation id="TR_AMOUNT_IS_NOT_NUMBER" />;
-        case VALIDATION_ERRORS.NOT_ENOUGH:
-            return <Translation id="TR_AMOUNT_IS_NOT_ENOUGH" />;
-        case VALIDATION_ERRORS.XRP_CANNOT_SEND_LESS_THAN_RESERVE:
-            return <Translation id="TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE" values={{ reserve }} />;
-        case VALIDATION_ERRORS.NOT_IN_RANGE_DECIMALS:
-            return <Translation id="TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS" values={{ decimals }} />;
-        case VALIDATION_ERRORS.NOT_ENOUGH_CURRENCY_FEE:
-            return (
-                <Translation
-                    id="NOT_ENOUGH_CURRENCY_FEE"
-                    values={{ symbol: symbol.toUpperCase() }}
-                />
-            );
-        default:
-            return null;
-    }
-};
-
 const getMaxIcon = (setMaxActivated: boolean) => {
-    return setMaxActivated ? 'CHECK' : 'SEND';
+    return;
 };
 
 const getState = (error: NestDataObject<Record<string, any>, FieldError>, touched: boolean) => {
@@ -120,24 +83,21 @@ const getState = (error: NestDataObject<Record<string, any>, FieldError>, touche
 
 export default ({ outputId }: { outputId: number }) => {
     const { account, setTransactionInfo } = useSendContext();
-    const { register, errors, formState, getValues, setValue } = useFormContext();
+    const { register, errors, formState, getValues, setValue, isToken } = useFormContext();
     const inputName = `amount-${outputId}`;
     const amount = getValues(inputName);
     const touched = formState.dirtyFields.has(inputName);
-    // const { token } = send.networkTypeEthereum;
     const { symbol, availableBalance, networkType } = account;
     const token = null;
-    const formattedAvailableBalance = token
+    const formattedAvailableBalance = isToken
         ? token.balance || '0'
         : formatNetworkAmount(availableBalance, symbol);
     const error = errors[inputName];
-    // const { setMaxActivated, customFee } = send;
-    // const { id, amount, fiatValue, localCurrency } = output;
-    // const { value, error, isLoading } = amount;
-    // const reserve =
-    //     account.networkType === 'ripple' ? formatNetworkAmount(account.misc.reserve, symbol) : null;
-    // const tokenBalance = token ? `${token.balance} ${token.symbol!.toUpperCase()}` : undefined;
-    // const decimals = token ? token.decimals : network.decimals;
+    const reserve =
+        account.networkType === 'ripple' ? formatNetworkAmount(account.misc.reserve, symbol) : null;
+    // const tokenBalance = isToken ? `${token.balance} ${token.symbol!.toUpperCase()}` : undefined;
+    // const decimals = isToken ? token.decimals : network.decimals;
+    const decimals = 1;
 
     return (
         <Wrapper>
@@ -153,7 +113,9 @@ export default ({ outputId }: { outputId: number }) => {
                         </Label>
                     }
                     button={{
-                        icon: getMaxIcon(false),
+                        icon: setMaxActivated => {
+                            return setMaxActivated ? 'CHECK' : 'SEND';
+                        },
                         iconSize: 15,
                         onClick: () => {
                             if (networkType === 'ripple') {
@@ -179,10 +141,46 @@ export default ({ outputId }: { outputId: number }) => {
                                 const amountBig = new BigNumber(value);
                                 return !amountBig.isGreaterThan(formattedAvailableBalance);
                             },
+                            TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE: (value: string) => {
+                                const amountBig = new BigNumber(value);
+                                return (
+                                    isDestinationAccountEmpty &&
+                                    reserve &&
+                                    amountBig.isLessThan(reserve)
+                                );
+                            },
+                            TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS: (value: string) => {},
                         },
                     })}
                     name={inputName}
-                    bottomText={error && <Translation id={error.type} />}
+                    bottomText={() => {
+                        const reserveError = 'TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE';
+                        const currencyError = 'NOT_ENOUGH_CURRENCY_FEE';
+                        const decimalError = 'TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS';
+                        const { type } = error;
+
+                        switch (type) {
+                            case reserveError:
+                                return <Translation id={reserveError} values={{ reserve }} />;
+                            case decimalError:
+                                return (
+                                    <Translation
+                                        id="TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                                        values={{ decimals }}
+                                    />
+                                );
+                            case currencyError:
+                                return (
+                                    <Translation
+                                        id="NOT_ENOUGH_CURRENCY_FEE"
+                                        values={{ symbol: symbol.toUpperCase() }}
+                                    />
+                                );
+
+                            default:
+                                return error && <Translation id={error.type} />;
+                        }
+                    }}
                 />
                 {/* {tokenBalance && (
                     <TokenBalance>
