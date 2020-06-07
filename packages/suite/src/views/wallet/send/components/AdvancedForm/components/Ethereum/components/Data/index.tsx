@@ -1,6 +1,7 @@
 import { QuestionTooltip, Translation } from '@suite-components';
 import { Textarea } from '@trezor/components';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
+import { getState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
@@ -14,14 +15,6 @@ const Label = styled.div`
 const Text = styled.div`
     margin-right: 3px;
 `;
-
-const getState = (error: NestDataObject<Record<string, any>, FieldError>) => {
-    if (error) {
-        return 'error';
-    }
-
-    return undefined;
-};
 
 export default () => {
     const { isToken } = useSendContext();

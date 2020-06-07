@@ -1,16 +1,17 @@
 import { QuestionTooltip, Translation } from '@suite-components';
 import { capitalizeFirstLetter } from '@suite-utils/string';
-import { FeeLevel } from 'trezor-connect';
-import { colors, P, Select, variables, Button } from '@trezor/components';
-import { Account } from '@wallet-types';
-import CustomFee from './components/CustomFee';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
-import { calculateEthFee } from '@wallet-utils/sendFormUtils';
+import { Button, colors, P, Select, variables } from '@trezor/components';
+import { Account } from '@wallet-types';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-// import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
+import { calculateEthFee } from '@wallet-utils/sendFormUtils';
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
+import { FeeLevel } from 'trezor-connect';
 import { fromWei, toWei } from 'web3-utils';
+
+import CustomFee from './components/CustomFee';
 
 const Row = styled.div`
     display: flex;
@@ -107,15 +108,10 @@ const getValue = (
     return `${formatNetworkAmount(feePerUnit, symbol)} ${symbol.toUpperCase()}`;
 };
 
-const isDisabled = (
-    networkType: Account['networkType'],
-    dataState: 'error' | 'success' | undefined,
-) => {
-    return networkType === 'ethereum' && dataState;
-};
-
 export default () => {
     const { account, feeInfo, feeOutdated, selectedFee, setSelectedFee } = useSendContext();
+    const { formState } = useFormContext();
+    const dataIsDirty = formState.dirtyFields.has('ethereum-data');
     const { networkType, symbol } = account;
 
     return (
@@ -153,20 +149,11 @@ export default () => {
                     options={feeInfo.levels}
                     isDisabled={() => {
                         if (networkType === 'ethereum') {
-                            return true;
+                            return dataIsDirty;
                         }
 
                         return false;
                     }}
-                    // isDisabled={(isDisabled(
-                    //     networkType,
-                    //     getInputState(
-                    //         networkTypeEthereum.data.error,
-                    //         networkTypeEthereum.data.value,
-                    //         false,
-                    //         false,
-                    //     ),
-                    // ))}
                     formatOptionLabel={(option: FeeLevel) => (
                         <OptionWrapper>
                             <OptionLabel>{capitalizeFirstLetter(option.label)} </OptionLabel>

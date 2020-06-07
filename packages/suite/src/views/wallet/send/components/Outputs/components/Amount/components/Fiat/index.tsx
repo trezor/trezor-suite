@@ -1,9 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Select, Input } from '@trezor/components';
-import { Output } from '@wallet-types/sendForm';
 import { useFormContext } from 'react-hook-form';
-import { DispatchProps } from '../../../../Container';
 import { FIAT } from '@suite-config';
 
 const Wrapper = styled.div`
@@ -29,12 +27,13 @@ interface Props {
 
 export default ({ outputId }: Props) => {
     const { register } = useFormContext();
+    const inputName = `local-currency-input-${outputId}`;
 
     return (
         <Wrapper>
             <Input
                 // state={props.state}
-                name={`local-currency-input-${outputId}`}
+                name={inputName}
                 innerRef={register}
             />
             <SelectWrapper>
