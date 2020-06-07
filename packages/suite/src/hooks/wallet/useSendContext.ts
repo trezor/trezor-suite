@@ -1,6 +1,6 @@
 import { useContext, createContext } from 'react';
-import { Account } from '@wallet-types';
-import { FeeLevel, PrecomposedTransaction } from 'trezor-connect';
+import { Account, Network } from '@wallet-types';
+import { FeeLevel, PrecomposedTransaction, TokenInfo } from 'trezor-connect';
 import { FeeInfo } from '@wallet-types/sendForm';
 import { TrezorDevice, AppState } from '@suite-types';
 
@@ -15,6 +15,7 @@ export type Output = {
 
 interface SendContext {
     account: Account;
+    network: Network;
     settings: AppState['suite']['settings'];
     device: TrezorDevice;
     online: boolean;
@@ -24,8 +25,8 @@ interface SendContext {
 
     transactionInfo: null | PrecomposedTransaction;
     setTransactionInfo: (transactionInfo: null | PrecomposedTransaction) => void;
-    isToken: boolean;
-    setIsToken: (isToken: boolean) => void;
+    token: null | TokenInfo;
+    setToken: (token: TokenInfo | null) => void;
     feeOutdated: boolean;
     setFeeOutdated: (isOutdated: boolean) => void;
     selectedFee: FeeLevel;

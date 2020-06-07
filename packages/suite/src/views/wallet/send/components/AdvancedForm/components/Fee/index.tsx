@@ -147,13 +147,7 @@ export default () => {
                     value={{ ...selectedFee, value: selectedFee.feePerUnit }}
                     onChange={(selectedFeeLevel: FeeLevel) => setSelectedFee(selectedFeeLevel)}
                     options={feeInfo.levels}
-                    isDisabled={() => {
-                        if (networkType === 'ethereum') {
-                            return dataIsDirty;
-                        }
-
-                        return false;
-                    }}
+                    isDisabled={networkType === 'ethereum' && dataIsDirty}
                     formatOptionLabel={(option: FeeLevel) => (
                         <OptionWrapper>
                             <OptionLabel>{capitalizeFirstLetter(option.label)} </OptionLabel>

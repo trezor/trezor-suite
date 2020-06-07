@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Select, Input } from '@trezor/components';
+import { getState } from '@wallet-utils/sendFormUtils';
 import { useFormContext } from 'react-hook-form';
 import { FIAT } from '@suite-config';
 
@@ -26,16 +27,13 @@ interface Props {
 }
 
 export default ({ outputId }: Props) => {
-    const { register } = useFormContext();
+    const { register, errors } = useFormContext();
     const inputName = `local-currency-input-${outputId}`;
+    const error = errors[inputName];
 
     return (
         <Wrapper>
-            <Input
-                // state={props.state}
-                name={inputName}
-                innerRef={register}
-            />
+            <Input state={getState(error)} name={inputName} innerRef={register} />
             <SelectWrapper>
                 <Select
                     name={`local-currency-select-${outputId}`}

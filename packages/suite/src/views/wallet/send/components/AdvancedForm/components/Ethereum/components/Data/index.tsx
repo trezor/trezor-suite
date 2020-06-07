@@ -3,7 +3,7 @@ import { Textarea } from '@trezor/components';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { getState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
-import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import validator from 'validator';
 
@@ -17,7 +17,7 @@ const Text = styled.div`
 `;
 
 export default () => {
-    const { isToken } = useSendContext();
+    const { token } = useSendContext();
     const { register, errors } = useFormContext();
     const inputName = 'ethereum-data';
     const error = errors[inputName];

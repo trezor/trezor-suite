@@ -4,6 +4,7 @@ import { Select } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { TokenInfo } from 'trezor-connect';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
+import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 
 const Wrapper = styled.div`
     min-width: 110px;
@@ -46,7 +47,9 @@ const getValues = (symbol: Account['symbol'], tokens: Account['tokens']) => {
     return result;
 };
 
-export default ({ symbol, tokens, selectedToken, onChange, ...rest }: Props) => {
+export default () => {
+    const { account, token } = useSendContext();
+    const { symbol, tokens } = account;
     const values = getValues(symbol, tokens);
 
     return (
@@ -54,13 +57,12 @@ export default ({ symbol, tokens, selectedToken, onChange, ...rest }: Props) => 
             <CurrencySelect
                 key="token"
                 isSearchable={false}
-                onChange={(t: Option) => onChange(t.value)}
+                onChange={(t: Option) => setToken(t.value)}
                 isClearable={false}
-                value={values.find(v => v.value === selectedToken)}
+                // value={values.find(v => v.value === selectedToken)}
                 isDisabled={values.length === 1}
                 options={values}
                 display
-                {...rest}
             />
         </Wrapper>
     );

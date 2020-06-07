@@ -22,7 +22,7 @@ export default () => {
 
     return (
         <Wrapper>
-            <In onClick={() => reset()}>
+            <In onClick={() => reset({ dirtyFields: true })}>
                 <Button variant="tertiary" icon="CLEAR" alignIcon="left">
                     <Translation id="TR_CLEAR_ALL" />
                 </Button>

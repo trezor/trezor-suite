@@ -1,8 +1,9 @@
 import { Translation } from '@suite-components';
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
+// import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { colors, Icon, Input, Tooltip } from '@trezor/components';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
+import { getState } from '@wallet-utils/sendFormUtils';
 import styled from 'styled-components';
 import validator from 'validator';
 
@@ -20,17 +21,17 @@ const StyledIcon = styled(Icon)`
 `;
 
 export default () => {
-    const { account } = useSendContext();
+    // const { account } = useSendContext();
     const { register, errors } = useFormContext();
     const inputName = 'ethereum-gas-price';
-    const { network } = account;
+    // const { network } = account;
     const error = errors[inputName];
 
     return (
         <Input
             variant="small"
             name={inputName}
-            // state={getInputState(error, value, true, true)}
+            state={getState(error)}
             topLabel={
                 <Label>
                     <Text>
@@ -41,7 +42,7 @@ export default () => {
                         content={
                             <Translation
                                 id="TR_SEND_GAS_PRICE_TOOLTIP"
-                                values={{ defaultGasPrice: network.defaultGasPrice }}
+                                // values={{ defaultGasPrice: network.defaultGasPrice }}
                             />
                         }
                     >

@@ -45,7 +45,7 @@ export default ({ device, fees, selectedAccount, locks, online, settings, fiat }
         return <WalletLayout title="Send" account={selectedAccount} />;
     }
 
-    const { account } = selectedAccount;
+    const { account, network } = selectedAccount;
     const { symbol, networkType } = account;
     const coinFees = fees[symbol];
     const levels = getFeeLevels(networkType, coinFees);
@@ -63,7 +63,7 @@ export default ({ device, fees, selectedAccount, locks, online, settings, fiat }
     ];
 
     const [advancedForm, showAdvancedForm] = useState(false);
-    const [isToken, setIsToken] = useState(false);
+    const [token, setToken] = useState(false);
     const [feeOutdated, setFeeOutdated] = useState(false);
     const [transactionInfo, setTransactionInfo] = useState(null);
     const [selectedFee, setSelectedFee] = useState(initialSelectedFee);
@@ -87,11 +87,12 @@ export default ({ device, fees, selectedAccount, locks, online, settings, fiat }
                 value={{
                     feeInfo,
                     outputs,
+                    network,
                     updateOutputs,
                     transactionInfo,
                     setTransactionInfo,
-                    isToken,
-                    setIsToken,
+                    token,
+                    setToken,
                     selectedFee,
                     setSelectedFee,
                     advancedForm,

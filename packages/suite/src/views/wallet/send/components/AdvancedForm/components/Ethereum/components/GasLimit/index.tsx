@@ -1,10 +1,8 @@
 import { Translation } from '@suite-components';
 import validator from 'validator';
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { colors, Icon, Input, Tooltip } from '@trezor/components';
-import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { Account, Send } from '@wallet-types';
-import { getInputState } from '@wallet-utils/sendFormUtils';
+import { Account } from '@wallet-types';
+import { getState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
@@ -39,7 +37,7 @@ export default () => {
             variant="small"
             name={inputName}
             // disabled={isDisabled(networkType, getInputState(data.error, data.value, false, false))}
-            // state={getInputState(error, value, true, true)}
+            state={getState(error)}
             innerRef={register({
                 validate: {
                     TR_ETH_GAS_LIMIT_NOT_NUMBER: (value: string) => {

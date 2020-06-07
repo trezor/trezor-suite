@@ -1,17 +1,18 @@
-import { QuestionTooltip, Translation } from '@suite-components';
+import { QuestionTooltip, Translation, FiatValue } from '@suite-components';
+import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { Input, variables } from '@trezor/components';
 import * as sendActions from '@wallet-actions/send/sendFormActionsNew';
-import { LABEL_HEIGHT, VALIDATION_ERRORS } from '@wallet-constants/sendForm';
+import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getState } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import React from 'react';
-import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import validator from 'validator';
 
 import CurrencySelect from './components/CurrencySelect';
+import Fiat from './components/Fiat';
 
 const Wrapper = styled.div`
     display: flex;
@@ -65,27 +66,21 @@ const EqualsSign = styled.div`
     }
 `;
 
-const getMaxIcon = (setMaxActivated: boolean) => {
-    return true;
-};
-
 export default ({ outputId }: { outputId: number }) => {
-    const { account, setTransactionInfo, isToken } = useSendContext();
+    const { account, setTransactionInfo, token, network } = useSendContext();
     const { register, errors, formState, getValues, setValue } = useFormContext();
     const inputName = `amount-${outputId}`;
     const amount = getValues(inputName);
     const touched = formState.dirtyFields.has(inputName);
     const { symbol, availableBalance, networkType } = account;
-    const token = null;
-    const formattedAvailableBalance = isToken
+    const formattedAvailableBalance = token
         ? token.balance || '0'
         : formatNetworkAmount(availableBalance, symbol);
     const error = errors[inputName];
     const reserve =
         account.networkType === 'ripple' ? formatNetworkAmount(account.misc.reserve, symbol) : null;
-    // const tokenBalance = isToken ? `${token.balance} ${token.symbol!.toUpperCase()}` : undefined;
-    // const decimals = isToken ? token.decimals : network.decimals;
-    const decimals = 1;
+    const tokenBalance = token ? `${token.balance} ${token.symbol!.toUpperCase()}` : undefined;
+    const decimals = token ? token.decimals : network.decimals;
 
     return (
         <Wrapper>
@@ -101,9 +96,7 @@ export default ({ outputId }: { outputId: number }) => {
                         </Label>
                     }
                     button={{
-                        icon: setMaxActivated => {
-                            return setMaxActivated ? 'CHECK' : 'SEND';
-                        },
+                        icon: 'SEND', // TODO CHECK
                         iconSize: 15,
                         onClick: () => {
                             if (networkType === 'ripple') {
@@ -170,37 +163,29 @@ export default ({ outputId }: { outputId: number }) => {
                         }
                     }}
                 />
-                {/* {tokenBalance && (
+                {tokenBalance && (
                     <TokenBalance>
                         <Translation id="TR_TOKEN_BALANCE" values={{ balance: tokenBalance }} />
                     </TokenBalance>
-                )} */}
-                <CurrencySelect
-                    symbol={symbol}
-                    // tokens={account.tokens}
-                    // selectedToken={send?.networkTypeEthereum.token}
-                    // onChange={sendFormActions.handleTokenSelectChange}
-                />
+                )}
+                <CurrencySelect />
             </Left>
             {/* TODO: token FIAT rates calculation */}
-            {/* {!token && ( */}
-            {/* <FiatValue amount="1" fiatCurrency={localCurrency.value.value} symbol={symbol}>
-                {({ rate }) =>
-                    rate && (
-                        <>
-                            <EqualsSign>=</EqualsSign>
-                            <Right>
-                                <FiatComponent
-                                    outputId={outputId}
-                                    key="fiat-input"
-                                    // state={error ? 'error' : undefined}
-                                />
-                            </Right>
-                        </>
-                    )
-                }
-            </FiatValue> */}
-            {/* )} */}
+            {!token && (
+                // <FiatValue amount="1" fiatCurrency={localCurrency.value.value} symbol={symbol}>
+                <FiatValue amount="1" symbol={symbol}>
+                    {({ rate }) =>
+                        rate && (
+                            <>
+                                <EqualsSign>=</EqualsSign>
+                                <Right>
+                                    <Fiat outputId={outputId} />
+                                </Right>
+                            </>
+                        )
+                    }
+                </FiatValue>
+            )}
         </Wrapper>
     );
 };
