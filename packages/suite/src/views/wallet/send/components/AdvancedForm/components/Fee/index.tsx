@@ -1,4 +1,4 @@
-import { QuestionTooltip, Translation, Badge } from '@suite-components';
+import { QuestionTooltip, Translation } from '@suite-components';
 import { capitalizeFirstLetter } from '@suite-utils/string';
 import { FeeLevel } from 'trezor-connect';
 import { colors, P, Select, variables, Button } from '@trezor/components';
@@ -115,18 +115,8 @@ const isDisabled = (
 };
 
 export default () => {
-    const {
-        account,
-        settings,
-        feeInfo,
-        fiat,
-        feeOutdated,
-        selectedFee,
-        setSelectedFee,
-    } = useSendContext();
-    // const { localCurrency } = settings;
+    const { account, feeInfo, feeOutdated, selectedFee, setSelectedFee } = useSendContext();
     const { networkType, symbol } = account;
-    const fiatVal = fiat.coins.find(fiatItem => fiatItem.symbol === symbol);
 
     return (
         <Wrapper>
@@ -161,7 +151,14 @@ export default () => {
                     value={{ ...selectedFee, value: selectedFee.feePerUnit }}
                     onChange={(selectedFeeLevel: FeeLevel) => setSelectedFee(selectedFeeLevel)}
                     options={feeInfo.levels}
-                    // isDisabled={isDisabled(
+                    isDisabled={() => {
+                        if (networkType === 'ethereum') {
+                            return true;
+                        }
+
+                        return false;
+                    }}
+                    // isDisabled={(isDisabled(
                     //     networkType,
                     //     getInputState(
                     //         networkTypeEthereum.data.error,
@@ -169,7 +166,7 @@ export default () => {
                     //         false,
                     //         false,
                     //     ),
-                    // )}
+                    // ))}
                     formatOptionLabel={(option: FeeLevel) => (
                         <OptionWrapper>
                             <OptionLabel>{capitalizeFirstLetter(option.label)} </OptionLabel>

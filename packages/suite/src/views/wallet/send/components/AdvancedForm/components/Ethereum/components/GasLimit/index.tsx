@@ -1,4 +1,5 @@
 import { Translation } from '@suite-components';
+import validator from 'validator';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { colors, Icon, Input, Tooltip } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
@@ -28,17 +29,10 @@ const isDisabled = (
     return networkType === 'ethereum' && dataState !== undefined;
 };
 
-const getError = (error: Send['networkTypeEthereum']['gasLimit']['error']) => {
-    switch (error) {
-        case VALIDATION_ERRORS.NOT_NUMBER:
-            return <Translation id="TR_ETH_GAS_LIMIT_NOT_NUMBER" />;
-        default:
-            return null;
-    }
-};
-
 export default () => {
-    const inputName = 'eth-gas-limit';
+    const inputName = 'ethereum-gas-limit';
+    const { register, errors } = useFormContext();
+    const error = errors[inputName];
 
     return (
         <Input
@@ -46,6 +40,16 @@ export default () => {
             name={inputName}
             // disabled={isDisabled(networkType, getInputState(data.error, data.value, false, false))}
             // state={getInputState(error, value, true, true)}
+            innerRef={register({
+                validate: {
+                    TR_ETH_GAS_LIMIT_NOT_NUMBER: (value: string) => {
+                        if (value) {
+                            return validator.isNumeric(value);
+                        }
+                    },
+                },
+            })}
+            bottomText={error && <Translation id={error.type} />}
             topLabel={
                 <Label>
                     <Text>
@@ -64,7 +68,6 @@ export default () => {
                     </Tooltip>
                 </Label>
             }
-            // bottomText={getError(error)}
         />
     );
 };

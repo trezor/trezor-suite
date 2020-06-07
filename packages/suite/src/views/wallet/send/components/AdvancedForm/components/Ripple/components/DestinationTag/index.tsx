@@ -25,7 +25,7 @@ const getState = (error: NestDataObject<Record<string, any>, FieldError>) => {
 
 const DestinationTag = () => {
     const { register, errors } = useFormContext();
-    const inputName = 'xrp-destination-tag';
+    const inputName = 'ripple-destination-tag';
     const error = errors[inputName];
 
     return (

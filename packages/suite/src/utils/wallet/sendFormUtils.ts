@@ -1,4 +1,5 @@
 import { Transaction, TxData } from 'ethereumjs-tx';
+import { FieldError, NestDataObject } from 'react-hook-form';
 import Common from 'ethereumjs-common'; // this is a dependency of `ethereumjs-tx` therefore it doesn't have to be in package.json
 import { toHex, toWei, fromWei, padLeft } from 'web3-utils';
 import BigNumber from 'bignumber.js';
@@ -225,4 +226,19 @@ export const getFeeLevels = (
     }
 
     return networkType === 'ethereum' ? convertedEthLevels : initialLevels;
+};
+
+export const getState = (
+    error: NestDataObject<Record<string, any>, FieldError>,
+    touched?: boolean,
+) => {
+    if (touched && !error) {
+        return 'success';
+    }
+
+    if (error) {
+        return 'error';
+    }
+
+    return undefined;
 };

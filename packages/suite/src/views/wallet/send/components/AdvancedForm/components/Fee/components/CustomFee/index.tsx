@@ -1,11 +1,13 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Account, Send } from '@wallet-types';
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
-import { useFormContext } from 'react-hook-form';
+import { FiatValue } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
+import validator from 'validator';
+import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { Input, Select } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
+import { Account, Send } from '@wallet-types';
+import React from 'react';
+import { useFormContext } from 'react-hook-form';
+import styled from 'styled-components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -22,32 +24,11 @@ const Wrapper = styled.div`
 
 const CustomFeeWrapper = styled.div``;
 
-const BadgeWrapper = styled.div`
-    display: flex;
-`;
-
 const ItemWrapper = styled.div`
     min-width: 80px;
     max-width: 80px;
     padding-right: 10px;
 `;
-
-const getError = (
-    error: Send['customFee']['error'],
-    maxFee: Send['feeInfo']['maxFee'],
-    minFee: Send['feeInfo']['minFee'],
-) => {
-    switch (error) {
-        case VALIDATION_ERRORS.IS_EMPTY:
-            return <Translation id="TR_CUSTOM_FEE_IS_NOT_SET" />;
-        case VALIDATION_ERRORS.NOT_NUMBER:
-            return <Translation id="TR_CUSTOM_FEE_IS_NOT_VALID" />;
-        case VALIDATION_ERRORS.NOT_IN_RANGE:
-            return <Translation id="TR_CUSTOM_FEE_NOT_IN_RANGE" values={{ maxFee, minFee }} />;
-        default:
-            return null;
-    }
-};
 
 const getValue = (networkType: Account['networkType']) => {
     if (networkType === 'bitcoin') {
@@ -60,42 +41,63 @@ const getValue = (networkType: Account['networkType']) => {
 };
 
 export default () => {
-    const { account, feeInfo, setCustomFee } = useSendContext();
-    const { register } = useFormContext();
-    const inputName = 'customFee';
-    const { networkType } = account;
-    let { maxFee, minFee } = feeInfo;
+    const { account, feeInfo } = useSendContext();
+    const { register, getValues, setValue, errors } = useFormContext();
+    const inputName = 'custom-fee';
+    const inputNameUnit = 'custom-fee-unit';
+    const { networkType, symbol } = account;
+    const customFeeValue = getValues(inputName);
+    const error = errors[inputName];
+    const { maxFee, minFee } = feeInfo;
 
     return (
         <Wrapper>
             <CustomFeeWrapper>
                 <Wrapper>
                     <ItemWrapper>
-                        <Input variant="small" />
+                        <Input
+                            variant="small"
+                            name={inputName}
+                            innerRef={register({
+                                validate: {
+                                    TR_ETH_DATA_NOT_HEX: (value: string) => {
+                                        if (value) {
+                                            return validator.isHexadecimal(value);
+                                        }
+                                    },
+                                },
+                            })}
+                            bottomText={() => {
+                                const notInRangeError = 'TR_CUSTOM_FEE_NOT_IN_RANGE';
+                                const { type } = error;
+
+                                switch (type) {
+                                    case notInRangeError:
+                                        return (
+                                            <Translation
+                                                id={notInRangeError}
+                                                values={{ maxFee, minFee }}
+                                            />
+                                        );
+
+                                    default:
+                                        return error && <Translation id={error.type} />;
+                                }
+                            }}
+                        />
                     </ItemWrapper>
                     <ItemWrapper>
                         <Select
-                            name="customFee"
+                            name={inputNameUnit}
                             innerRef={register()}
-                            onChange={value => getValue(networkType)}
+                            onChange={() => setValue(inputName, getValue(networkType))}
                             variant="small"
                             isDisabled
                         />
                     </ItemWrapper>
                 </Wrapper>
             </CustomFeeWrapper>
-            {/* {fiatVal && customFee.value && (
-                <BadgeWrapper>
-                    <Badge isGray>
-                        {toFiatCurrency(
-                            formatNetworkAmount(transactionInfo.fee, symbol),
-                            localCurrency,
-                            fiatVal.current?.rates,
-                        )}{' '}
-                        {localCurrency}
-                    </Badge>
-                </BadgeWrapper>
-            )} */}
+            {customFeeValue && <FiatValue amount={customFeeValue} symbol={symbol} />}
         </Wrapper>
     );
 };

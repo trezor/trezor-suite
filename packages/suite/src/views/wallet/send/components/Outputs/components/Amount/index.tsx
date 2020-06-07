@@ -2,8 +2,8 @@ import { QuestionTooltip, Translation } from '@suite-components';
 import { Input, variables } from '@trezor/components';
 import * as sendActions from '@wallet-actions/send/sendFormActionsNew';
 import { LABEL_HEIGHT, VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { CustomFee, Output } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { getState } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import React from 'react';
@@ -66,24 +66,12 @@ const EqualsSign = styled.div`
 `;
 
 const getMaxIcon = (setMaxActivated: boolean) => {
-    return;
-};
-
-const getState = (error: NestDataObject<Record<string, any>, FieldError>, touched: boolean) => {
-    if (touched && !error) {
-        return 'success';
-    }
-
-    if (error) {
-        return 'error';
-    }
-
-    return undefined;
+    return true;
 };
 
 export default ({ outputId }: { outputId: number }) => {
-    const { account, setTransactionInfo } = useSendContext();
-    const { register, errors, formState, getValues, setValue, isToken } = useFormContext();
+    const { account, setTransactionInfo, isToken } = useSendContext();
+    const { register, errors, formState, getValues, setValue } = useFormContext();
     const inputName = `amount-${outputId}`;
     const amount = getValues(inputName);
     const touched = formState.dirtyFields.has(inputName);
@@ -149,7 +137,7 @@ export default ({ outputId }: { outputId: number }) => {
                                     amountBig.isLessThan(reserve)
                                 );
                             },
-                            TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS: (value: string) => {},
+                            // TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS: (value: string) => {},
                         },
                     })}
                     name={inputName}

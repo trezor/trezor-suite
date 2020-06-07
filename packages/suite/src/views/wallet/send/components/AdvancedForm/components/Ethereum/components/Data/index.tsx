@@ -26,7 +26,7 @@ const getState = (error: NestDataObject<Record<string, any>, FieldError>) => {
 export default () => {
     const { isToken } = useSendContext();
     const { register, errors } = useFormContext();
-    const inputName = 'eth-data';
+    const inputName = 'ethereum-data';
     const error = errors[inputName];
 
     return (
@@ -36,7 +36,7 @@ export default () => {
                 validate: {
                     TR_ETH_DATA_NOT_HEX: (value: string) => {
                         if (value) {
-                            validator.isHexadecimal(value);
+                            return validator.isHexadecimal(value);
                         }
                     },
                 },

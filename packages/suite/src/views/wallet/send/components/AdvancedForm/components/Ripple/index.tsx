@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Fee from '../Fee';
-import Layout from '../LayoutCommon';
+import Layout from '../Layout';
 import DestinationTag from './components/DestinationTag';
 
 const Wrapper = styled.div`

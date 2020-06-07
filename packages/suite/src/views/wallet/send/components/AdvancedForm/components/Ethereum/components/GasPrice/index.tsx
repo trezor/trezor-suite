@@ -1,11 +1,10 @@
 import { Translation } from '@suite-components';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { colors, Icon, Input, Tooltip } from '@trezor/components';
-import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
-import { Send } from '@wallet-types';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
+import validator from 'validator';
 
 const Label = styled.div`
     display: flex;
@@ -20,19 +19,12 @@ const StyledIcon = styled(Icon)`
     cursor: pointer;
 `;
 
-const getError = (error: Send['networkTypeEthereum']['gasPrice']['error']) => {
-    switch (error) {
-        case VALIDATION_ERRORS.NOT_NUMBER:
-            return <Translation id="TR_ETH_GAS_PRICE_NOT_NUMBER" />;
-        default:
-            return null;
-    }
-};
-
 export default () => {
     const { account } = useSendContext();
-    const { register } = useFormContext();
-    const inputName = 'eth-gas-price';
+    const { register, errors } = useFormContext();
+    const inputName = 'ethereum-gas-price';
+    const { network } = account;
+    const error = errors[inputName];
 
     return (
         <Input
@@ -49,7 +41,7 @@ export default () => {
                         content={
                             <Translation
                                 id="TR_SEND_GAS_PRICE_TOOLTIP"
-                                // values={{ defaultGasPrice: network.defaultGasPrice }}
+                                values={{ defaultGasPrice: network.defaultGasPrice }}
                             />
                         }
                     >
@@ -57,8 +49,16 @@ export default () => {
                     </Tooltip>
                 </Label>
             }
-            // bottomText={getError(error)}
-            innerRef={register()}
+            bottomText={error && <Translation id={error.type} />}
+            innerRef={register({
+                validate: {
+                    TR_ETH_GAS_PRICE_NOT_NUMBER: (value: string) => {
+                        if (value) {
+                            return validator.isNumeric(value);
+                        }
+                    },
+                },
+            })}
         />
     );
 };
