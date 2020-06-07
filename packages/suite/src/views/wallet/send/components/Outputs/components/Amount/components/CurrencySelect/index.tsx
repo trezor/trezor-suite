@@ -14,13 +14,6 @@ const CurrencySelect = styled(Select)`
     margin-top: ${LABEL_HEIGHT}px;
 `;
 
-interface Props {
-    symbol: Account['symbol'];
-    tokens: Account['tokens'];
-    selectedToken?: TokenInfo;
-    onChange: (token?: TokenInfo) => void;
-}
-
 interface Option {
     value?: TokenInfo;
     label: string;
@@ -48,7 +41,7 @@ const getValues = (symbol: Account['symbol'], tokens: Account['tokens']) => {
 };
 
 export default () => {
-    const { account, token } = useSendContext();
+    const { account, setToken, token } = useSendContext();
     const { symbol, tokens } = account;
     const values = getValues(symbol, tokens);
 
@@ -57,9 +50,9 @@ export default () => {
             <CurrencySelect
                 key="token"
                 isSearchable={false}
-                onChange={(t: Option) => setToken(t.value)}
+                onChange={(t: Option) => setToken(t.value || null)}
                 isClearable={false}
-                // value={values.find(v => v.value === selectedToken)}
+                value={values.find(v => v.value === token?.symbol)}
                 isDisabled={values.length === 1}
                 options={values}
                 display

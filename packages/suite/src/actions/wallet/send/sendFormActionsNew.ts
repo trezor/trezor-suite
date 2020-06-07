@@ -29,3 +29,6 @@ export const composeXrpTransaction = (
 
     return { type: 'final', ...payloadData } as const;
 };
+
+export const composeEthTransaction = () => {};
+export const composeBtcTransaction = () => {};

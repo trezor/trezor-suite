@@ -1,6 +1,6 @@
 import { QuestionTooltip, Translation } from '@suite-components';
-import { Textarea } from '@trezor/components';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
+import { Textarea } from '@trezor/components';
 import { getState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -36,7 +36,7 @@ export default () => {
             })}
             state={getState(error)}
             bottomText={error && <Translation id={error.type} />}
-            disabled={isToken}
+            disabled={token !== null}
             topLabel={
                 <Label>
                     <Text>

@@ -1,5 +1,7 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Output } from '@wallet-hooks/useSendContext';
+import { TokenInfo, PrecomposedTransaction } from 'trezor-connect';
 import * as modalActions from '@suite-actions/modalActions';
 import * as sendFormActionsBitcoin from '@wallet-actions/send/sendFormBitcoinActions';
 import * as sendFormActionsEthereum from '@wallet-actions/send/sendFormEthereumActions';
@@ -12,6 +14,8 @@ const mapStateToProps = (state: AppState) => ({
     account: state.wallet.selectedAccount.account,
     send: state.wallet.send,
     suite: state.suite,
+    fiat: state.wallet.fiat,
+    settings: state.wallet.settings,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -21,8 +25,14 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     sendFormActionsEthereum: bindActionCreators(sendFormActionsEthereum, dispatch),
 });
 
+interface ComponentProps {
+    transactionInfo: PrecomposedTransaction;
+    outputs: Output[];
+    token: TokenInfo | null;
+}
+
 export type StateProps = ReturnType<typeof mapStateToProps>;
 export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-export type Props = StateProps & DispatchProps;
+export type Props = StateProps & DispatchProps & ComponentProps;
 
 export default connect(mapStateToProps, mapDispatchToProps)(Component);

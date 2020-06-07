@@ -73,21 +73,6 @@ export const calculateMax = (availableBalance: string, fee: string): string => {
     }
 };
 
-export const getTransactionInfo = (networkType: Account['networkType'], send: State) => {
-    switch (networkType) {
-        case 'bitcoin': {
-            return send.networkTypeBitcoin.transactionInfo;
-        }
-        case 'ethereum': {
-            return send.networkTypeEthereum.transactionInfo;
-        }
-        case 'ripple': {
-            return send.networkTypeRipple.transactionInfo;
-        }
-        // no default
-    }
-};
-
 export const getInputState = (
     error: typeof VALIDATION_ERRORS[keyof typeof VALIDATION_ERRORS] | null,
     value: string | null,

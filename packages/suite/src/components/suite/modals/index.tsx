@@ -160,7 +160,13 @@ const getUserContextModal = (props: Props) => {
         case 'passphrase-duplicate':
             return <PassphraseDuplicate device={payload.device} duplicate={payload.duplicate} />;
         case 'review-transaction':
-            return <ReviewTransaction />;
+            return (
+                <ReviewTransaction
+                    outputs={payload.outputs}
+                    token={payload.token}
+                    transactionInfo={payload.transactionInfo}
+                />
+            );
         case 'pin-mismatch':
             return <PinMismatch />;
         case 'disconnect-device':

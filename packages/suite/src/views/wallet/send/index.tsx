@@ -40,7 +40,16 @@ const StyledCard = styled(Card)`
     margin-bottom: 40px;
 `;
 
-export default ({ device, fees, selectedAccount, locks, online, settings, fiat }: Props) => {
+export default ({
+    device,
+    fees,
+    selectedAccount,
+    locks,
+    online,
+    settings,
+    fiat,
+    localCurrency,
+}: Props) => {
     if (!device || !fees || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Send" account={selectedAccount} />;
     }
@@ -54,30 +63,33 @@ export default ({ device, fees, selectedAccount, locks, online, settings, fiat }
     const initialOutputs = [
         {
             id: 0,
-            address: '',
-            amount: '',
-            setMax: false,
-            fiatValue: '',
-            localCurrency: { value: 'usd', label: 'USD' },
+            'address-0': '',
+            'amount-0': '',
+            'settMaxActive-0': false,
+            'fiatValue-0': '',
+            'local-currency-0': { value: 'usd', label: 'USD' },
         },
     ];
 
     const [advancedForm, showAdvancedForm] = useState(false);
-    const [token, setToken] = useState(false);
+    const [token, setToken] = useState(null);
     const [feeOutdated, setFeeOutdated] = useState(false);
     const [transactionInfo, setTransactionInfo] = useState(null);
     const [selectedFee, setSelectedFee] = useState(initialSelectedFee);
     const [outputs, updateOutputs] = useState(initialOutputs);
+    const defaultLocalCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
 
     const methods = useForm({
         mode: 'onChange',
         defaultValues: {
             'address-0': '',
             'amount-0': '',
+            'settMaxActive-0': false,
             'fiatValue-0': '',
-            fiatCurrency: '',
-            fee: '1',
-            feeLimit: '1',
+            'local-currency-0': defaultLocalCurrencyOption,
+            'ethereum-gas-price': initialSelectedFee.feePerUnit,
+            'ethereum-gas-limit': initialSelectedFee.feeLimit,
+            'ethereum-data': '',
         },
     });
 
@@ -88,6 +100,7 @@ export default ({ device, fees, selectedAccount, locks, online, settings, fiat }
                     feeInfo,
                     outputs,
                     network,
+                    defaultLocalCurrencyOption,
                     updateOutputs,
                     transactionInfo,
                     setTransactionInfo,

@@ -3,6 +3,7 @@ import { Translation } from '@suite-components/Translation';
 import validator from 'validator';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { Input, Select } from '@trezor/components';
+import { getState } from '@wallet-utils/sendFormUtils';
 import { Account } from '@wallet-types';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -57,6 +58,7 @@ export default () => {
                         <Input
                             variant="small"
                             name={inputName}
+                            state={getState(error)}
                             innerRef={register({
                                 validate: {
                                     TR_ETH_DATA_NOT_HEX: (value: string) => {
@@ -96,7 +98,9 @@ export default () => {
                     </ItemWrapper>
                 </Wrapper>
             </CustomFeeWrapper>
-            {customFeeValue && <FiatValue amount={customFeeValue} symbol={symbol} />}
+            {customFeeValue && (
+                <FiatValue amount={customFeeValue} symbol={symbol} badge={{ color: 'gray' }} />
+            )}
         </Wrapper>
     );
 };

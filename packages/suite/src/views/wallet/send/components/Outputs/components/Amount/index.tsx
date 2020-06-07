@@ -104,11 +104,36 @@ export default ({ outputId }: { outputId: number }) => {
                                     amount,
                                     account,
                                 );
-                                if (composedTransaction.type === 'final') {
+
+                                if (composedTransaction.type !== 'error') {
                                     setValue(inputName, composedTransaction.max);
+                                    setTransactionInfo(composedTransaction);
                                 }
-                                setTransactionInfo(composedTransaction);
                             }
+
+                            // if (networkType === 'ethereum') {
+                            //     const composedTransaction = sendActions.composeEthTransaction(
+                            //         amount,
+                            //         account,
+                            //     );
+
+                            //     if (composedTransaction.type === 'final') {
+                            //         setValue(inputName, composedTransaction.max);
+                            //         setTransactionInfo(composedTransaction);
+                            //     }
+                            // }
+
+                            // if (networkType === 'bitcoin') {
+                            //     const composedTransaction = sendActions.composeBtcTransaction(
+                            //         amount,
+                            //         account,
+                            //     );
+
+                            //     if (composedTransaction.type === 'final') {
+                            //         setValue(inputName, composedTransaction.max);
+                            //         setTransactionInfo(composedTransaction);
+                            //     }
+                            // }
                         },
                         text: <Translation id="TR_SEND_SEND_MAX" />,
                     }}

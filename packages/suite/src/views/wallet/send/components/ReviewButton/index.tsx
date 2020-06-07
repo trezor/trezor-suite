@@ -63,16 +63,27 @@ const isDisabled = (
 };
 
 export default () => {
-    const { errors } = useFormContext();
-    const { online, locks, device } = useSendContext();
+    const { errors, getValues } = useFormContext();
+    const { online, locks, device, outputs, token, transactionInfo } = useSendContext();
     const { openModal } = useActions({ openModal: modalActions.openModal });
 
+    const values = getValues();
+    console.log('values', values);
     return (
         <Wrapper>
             <Row>
                 <ButtonReview
                     isDisabled={isDisabled(errors, locks, device, online)}
-                    onClick={() => openModal({ type: 'review-transaction' })}
+                    onClick={() => {
+                        if (transactionInfo && transactionInfo.type === 'final') {
+                            openModal({
+                                type: 'review-transaction',
+                                outputs,
+                                transactionInfo,
+                                token,
+                            });
+                        }
+                    }}
                 >
                     <Translation id="TR_SEND_REVIEW_TRANSACTION" />
                 </ButtonReview>

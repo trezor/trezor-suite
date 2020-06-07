@@ -13,7 +13,7 @@ export type Output = {
     localCurrency: { value: string; label: string };
 };
 
-interface SendContext {
+export interface SendContext {
     account: Account;
     network: Network;
     settings: AppState['suite']['settings'];
@@ -22,6 +22,7 @@ interface SendContext {
     fiat: AppState['wallet']['fiat'];
     locks: AppState['suite']['locks'];
     feeInfo: FeeInfo;
+    defaultLocalCurrencyOption: { value: string; label: string };
 
     transactionInfo: null | PrecomposedTransaction;
     setTransactionInfo: (transactionInfo: null | PrecomposedTransaction) => void;

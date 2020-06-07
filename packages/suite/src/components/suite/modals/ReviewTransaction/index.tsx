@@ -3,7 +3,6 @@ import { useDeviceActionLocks } from '@suite-hooks';
 import { Button, colors, Modal, variables } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
 import React from 'react';
 import styled from 'styled-components';
@@ -78,23 +77,23 @@ const getFeeValue = (
 };
 
 export default ({
-    send,
-    account,
     modalActions,
+    account,
+    outputs,
+    token,
+    transactionInfo,
     sendFormActionsBitcoin,
     sendFormActionsRipple,
     sendFormActionsEthereum,
 }: Props) => {
-    if (!account || !send) return null;
-    const { outputs } = send;
-    const { token } = send.networkTypeEthereum;
+    if (!account) return null;
     const { networkType, symbol } = account;
-    const transactionInfo = getTransactionInfo(account.networkType, send);
     if (!transactionInfo || transactionInfo.type === 'error') return null;
     const upperCaseSymbol = account.symbol.toUpperCase();
     const outputSymbol = token ? token.symbol!.toUpperCase() : symbol.toUpperCase();
     const [isEnabled] = useDeviceActionLocks();
     const fee = getFeeValue(transactionInfo, networkType, symbol);
+    const { totalSpent } = transactionInfo;
 
     return (
         <Modal
@@ -143,37 +142,31 @@ export default ({
                         <Symbol>{upperCaseSymbol}</Symbol> <AccountLabeling account={account} />
                     </Value>
                 </Box>
-                {outputs.map(output => {
-                    const totalAmount = new BigNumber(output.amount.value || '0')
-                        .plus(fee)
-                        .toFixed();
-
-                    return (
-                        <OutputWrapper key={output.id}>
-                            <Box>
-                                <Label>
-                                    <Translation id="TR_TO" />
-                                </Label>
-                                <Value>{output.address.value}</Value>
-                            </Box>
-                            <Box>
-                                <Label>
-                                    <Translation id="TR_TOTAL_AMOUNT" />
-                                </Label>
-                                <Value>
-                                    {totalAmount} {outputSymbol}
-                                    <FiatValueWrapper>
-                                        <FiatValue
-                                            amount={totalAmount}
-                                            symbol={symbol}
-                                            badge={{ color: 'gray' }}
-                                        />
-                                    </FiatValueWrapper>
-                                </Value>
-                            </Box>
-                        </OutputWrapper>
-                    );
-                })}
+                {outputs.map(output => (
+                    <OutputWrapper key={output.id}>
+                        <Box>
+                            <Label>
+                                <Translation id="TR_TO" />
+                            </Label>
+                            <Value>{output.address}</Value>
+                        </Box>
+                    </OutputWrapper>
+                ))}
+                <Box>
+                    <Label>
+                        <Translation id="TR_TOTAL_AMOUNT" />
+                    </Label>
+                    <Value>
+                        {transactionInfo.totalSpent} {outputSymbol}
+                        <FiatValueWrapper>
+                            <FiatValue
+                                amount={totalSpent}
+                                symbol={symbol}
+                                badge={{ color: 'gray' }}
+                            />
+                        </FiatValueWrapper>
+                    </Value>
+                </Box>
                 <Box>
                     <Label>
                         {networkType === 'ethereum' ? (

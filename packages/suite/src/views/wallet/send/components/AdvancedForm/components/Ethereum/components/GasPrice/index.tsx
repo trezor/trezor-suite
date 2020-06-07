@@ -1,12 +1,12 @@
 import { Translation } from '@suite-components';
-// import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { colors, Icon, Input, Tooltip } from '@trezor/components';
+import { getState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { getState } from '@wallet-utils/sendFormUtils';
 import styled from 'styled-components';
 import validator from 'validator';
 
+// import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 const Label = styled.div`
     display: flex;
     align-items: center;

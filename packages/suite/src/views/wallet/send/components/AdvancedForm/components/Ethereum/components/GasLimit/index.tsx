@@ -1,11 +1,11 @@
 import { Translation } from '@suite-components';
-import validator from 'validator';
 import { colors, Icon, Input, Tooltip } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { getState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
+import validator from 'validator';
 
 const Label = styled.div`
     display: flex;

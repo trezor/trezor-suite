@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Select, Input } from '@trezor/components';
 import { getState } from '@wallet-utils/sendFormUtils';
 import { useFormContext } from 'react-hook-form';
+import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { FIAT } from '@suite-config';
 
 const Wrapper = styled.div`
@@ -22,24 +23,27 @@ const getCurrencyOptions = (currency: string) => {
     return { value: currency, label: currency.toUpperCase() };
 };
 
-interface Props {
-    outputId: number;
-}
-
-export default ({ outputId }: Props) => {
-    const { register, errors } = useFormContext();
+export default ({ outputId }: { outputId: number }) => {
+    const { register, errors, setValue, getValues } = useFormContext();
+    const { defaultLocalCurrencyOption } = useSendContext();
     const inputName = `local-currency-input-${outputId}`;
+    const inputNameSelect = `local-currency-select-${outputId}`;
+    const selectValue = getValues(inputNameSelect);
     const error = errors[inputName];
-
+    console.log('selectValue', selectValue);
     return (
         <Wrapper>
             <Input state={getState(error)} name={inputName} innerRef={register} />
             <SelectWrapper>
                 <Select
-                    name={`local-currency-select-${outputId}`}
+                    name={inputNameSelect}
                     innerRef={register}
                     isSearchable
                     isClearable={false}
+                    onChange={(value: { value: string; label: string }) =>
+                        setValue(inputNameSelect, value)
+                    }
+                    value={selectValue || defaultLocalCurrencyOption}
                     options={FIAT.currencies.map((currency: string) =>
                         getCurrencyOptions(currency),
                     )}

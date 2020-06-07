@@ -9,6 +9,7 @@ const mapStateToProps = (state: AppState) => ({
     accounts: state.wallet.accounts,
     fiat: state.wallet.fiat,
     settings: state.suite.settings,
+    localCurrency: state.wallet.settings.localCurrency,
     fees: state.wallet.fees,
     device: state.suite.device,
     locks: state.suite.locks,

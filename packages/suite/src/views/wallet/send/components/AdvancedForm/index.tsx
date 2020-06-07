@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 import Add from '../Add';
 import Bitcoin from './components/Bitcoin';
-import ToggleButton from './components/ToggleButton';
 import Ethereum from './components/Ethereum';
 import Ripple from './components/Ripple';
+import ToggleButton from './components/ToggleButton';
 
 const Row = styled.div`
     display: flex;
@@ -23,7 +23,7 @@ const Wrapper = styled.div`
 `;
 
 const Header = styled.div`
-    padding: 5px 12px;
+    padding: 5px 12px 24px 12px;
     display: flex;
     justify-content: space-between;
     width: 100%;
