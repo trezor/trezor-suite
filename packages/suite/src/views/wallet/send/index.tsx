@@ -66,7 +66,7 @@ export default ({
     const [feeOutdated, setFeeOutdated] = useState(false);
     const [transactionInfo, setTransactionInfo] = useState(null);
     const [selectedFee, setSelectedFee] = useState(initialSelectedFee);
-    const defaultLocalCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
+    const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
 
     const initialOutputs = [
         {
@@ -75,7 +75,7 @@ export default ({
             'amount-0': '',
             'setMaxActive-0': false,
             'fiatValue-0': '',
-            'local-currency-0': defaultLocalCurrencyOption,
+            'local-currency-0': localCurrencyOption,
         },
     ];
     const [outputs, updateOutputs] = useState(initialOutputs);
@@ -87,7 +87,7 @@ export default ({
             'amount-0': '',
             'settMaxActive-0': false,
             'fiatValue-0': '',
-            'local-currency-0': defaultLocalCurrencyOption,
+            'local-currency-0': localCurrencyOption,
             'ethereum-gas-price': initialSelectedFee.feePerUnit,
             'ethereum-gas-limit': initialSelectedFee.feeLimit,
             'ethereum-data': '',
@@ -102,7 +102,7 @@ export default ({
                     initialSelectedFee,
                     outputs,
                     network,
-                    defaultLocalCurrencyOption,
+                    localCurrencyOption,
                     updateOutputs,
                     transactionInfo,
                     setTransactionInfo,

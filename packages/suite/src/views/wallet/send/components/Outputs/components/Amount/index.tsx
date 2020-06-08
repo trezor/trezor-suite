@@ -70,7 +70,14 @@ const EqualsSign = styled.div`
 `;
 
 export default ({ outputId }: { outputId: number }) => {
-    const { account, setTransactionInfo, token, network, selectedFee } = useSendContext();
+    const {
+        account,
+        setTransactionInfo,
+        token,
+        network,
+        selectedFee,
+        localCurrencyOption,
+    } = useSendContext();
     const { register, errors, formState, getValues, setValue } = useFormContext();
     const inputName = `amount-${outputId}`;
     const amount = getValues(inputName);
@@ -109,7 +116,7 @@ export default ({ outputId }: { outputId: number }) => {
                                     selectedFee,
                                 );
 
-                                if (composedTransaction.type !== 'error') {
+                                if (composedTransaction && composedTransaction.type !== 'error') {
                                     setValue(inputName, composedTransaction.max);
                                     setTransactionInfo(composedTransaction);
                                 }
@@ -124,7 +131,7 @@ export default ({ outputId }: { outputId: number }) => {
                                     true,
                                 );
 
-                                if (composedTransaction.type !== 'error') {
+                                if (composedTransaction && composedTransaction.type !== 'error') {
                                     setValue(inputName, composedTransaction.max);
                                     setTransactionInfo(composedTransaction);
                                 }
@@ -147,9 +154,12 @@ export default ({ outputId }: { outputId: number }) => {
                     align="right"
                     innerRef={register({
                         validate: {
-                            TR_AMOUNT_IS_NOT_SET: (value: string) =>
-                                !(touched && value.length === 0),
-                            TR_AMOUNT_IS_NOT_NUMBER: (value: string) => validator.isNumeric(value),
+                            TR_AMOUNT_IS_NOT_SET: (value: string) => {
+                                return !(touched && value.length === 0);
+                            },
+                            TR_AMOUNT_IS_NOT_NUMBER: (value: string) => {
+                                return validator.isNumeric(value);
+                            },
                             TR_AMOUNT_IS_NOT_ENOUGH: (value: string) => {
                                 const amountBig = new BigNumber(value);
                                 return !amountBig.isGreaterThan(formattedAvailableBalance);
@@ -204,8 +214,7 @@ export default ({ outputId }: { outputId: number }) => {
             </Left>
             {/* TODO: token FIAT rates calculation */}
             {!token && (
-                // <FiatValue amount="1" fiatCurrency={localCurrency.value.value} symbol={symbol}>
-                <FiatValue amount="1" symbol={symbol}>
+                <FiatValue amount="1" symbol={symbol} fiatCurrency={localCurrencyOption.value}>
                     {({ rate }) =>
                         rate && (
                             <>

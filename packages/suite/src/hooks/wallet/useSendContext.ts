@@ -23,7 +23,7 @@ export interface SendContext {
     locks: AppState['suite']['locks'];
     feeInfo: FeeInfo;
     initialSelectedFee: FeeLevel;
-    defaultLocalCurrencyOption: { value: string; label: string };
+    localCurrencyOption: { value: string; label: string };
 
     transactionInfo: null | PrecomposedTransaction;
     setTransactionInfo: (transactionInfo: null | PrecomposedTransaction) => void;
