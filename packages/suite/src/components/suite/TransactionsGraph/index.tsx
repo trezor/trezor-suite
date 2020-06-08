@@ -11,10 +11,11 @@ import {
 import { BarChart, Tooltip, Bar, ReferenceLine, YAxis, XAxis } from 'recharts';
 import RangeSelector from './components/RangeSelector';
 import CustomResponsiveContainer from './components/CustomResponsiveContainer';
-import CustomTooltip from './components/CustomTooltip';
 import CustomXAxisTick from './components/CustomXAxisTick';
 import CustomYAxisTick from './components/CustomYAxisTick';
 import CustomBar from './components/CustomBar';
+import CustomTooltipDashboard from './components/CustomTooltipDashboard';
+import CustomTooltipAccount from './components/CustomTooltipAccount';
 
 const Wrapper = styled.div`
     display: flex;
@@ -180,8 +181,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                             <Tooltip
                                 content={
                                     props.variant === 'one-asset' ? (
-                                        <CustomTooltip
-                                            variant={props.variant}
+                                        <CustomTooltipAccount
                                             selectedRange={selectedRange}
                                             symbol={props.account.symbol}
                                             localCurrency={props.localCurrency}
@@ -189,8 +189,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                             receivedValueFn={props.receivedValueFn}
                                         />
                                     ) : (
-                                        <CustomTooltip
-                                            variant={props.variant}
+                                        <CustomTooltipDashboard
                                             selectedRange={selectedRange}
                                             localCurrency={props.localCurrency}
                                             sentValueFn={props.sentValueFn}
