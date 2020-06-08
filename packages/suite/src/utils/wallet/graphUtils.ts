@@ -81,7 +81,7 @@ export const getMaxValueFromData = <TType extends TypeName>(
         if (newSentValue.gt(maxSent)) {
             maxSent = newSentValue;
         }
-        if (newReceivedValue.gt(maxSent)) {
+        if (newReceivedValue.gt(maxReceived)) {
             maxReceived = newReceivedValue;
         }
     });
