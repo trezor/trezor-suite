@@ -8,8 +8,9 @@ import {
     AggregatedAccountHistory,
     AggregatedDashboardHistory,
 } from '@wallet-types/fiatRates';
-import { BarChart, Tooltip, Bar, ReferenceLine, ResponsiveContainer, YAxis, XAxis } from 'recharts';
+import { BarChart, Tooltip, Bar, ReferenceLine, YAxis, XAxis } from 'recharts';
 import RangeSelector from './components/RangeSelector';
+import CustomResponsiveContainer from './components/CustomResponsiveContainer';
 import CustomTooltip from './components/CustomTooltip';
 import CustomXAxisTick from './components/CustomXAxisTick';
 import CustomYAxisTick from './components/CustomYAxisTick';
@@ -128,7 +129,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                     </NoTransactionsMessageWrapper>
                 )}
                 {!isLoading && data && data.length > 0 && (
-                    <ResponsiveContainer height="100%" width="99%">
+                    <CustomResponsiveContainer height="100%" width="99%">
                         <BarChart
                             data={data}
                             stackOffset="sign"
@@ -155,9 +156,10 @@ const TransactionsGraph = React.memo((props: Props) => {
                             <YAxis
                                 type="number"
                                 orientation="right"
+                                scale="linear"
                                 domain={
                                     props.maxValue
-                                        ? [props.maxValue * -1.1, props.maxValue * 1.1]
+                                        ? [props.maxValue * -1.2, props.maxValue * 1.2]
                                         : undefined
                                 }
                                 stroke={colors.BLACK80}
@@ -214,7 +216,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 shape={<CustomBar variant="received" />}
                             />
                         </BarChart>
-                    </ResponsiveContainer>
+                    </CustomResponsiveContainer>
                 )}
             </Description>
         </Wrapper>
