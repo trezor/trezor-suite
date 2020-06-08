@@ -91,16 +91,16 @@ const Index = () => (
                 </Row>
             </Item>
             <Line />
-            <H2>Stable Wallet &amp; Ether/Ripple Wallet</H2>
+            <H2>Stable Wallet &amp; ETH / XRP Wallet</H2>
             <HeadBackP size="tiny">
                 <InfoRow>
-                    For ETH, ERC20, XRP, ETC and tokens go to Trezor Ether/Ripple Wallet:
+                    For ETH, XRP, ETC and ERC-20 tokens go to Trezor ETH / XRP Wallet:
                     <Link
                         href="https://beta-wallet.trezor.io/next"
                         target="_blank"
                         variant="nostyle"
                     >
-                        <ButtonWallet variant="secondary">Trezor Ether/Ripple Wallet</ButtonWallet>
+                        <ButtonWallet variant="secondary">Trezor ETH / XRP Wallet</ButtonWallet>
                     </Link>
                 </InfoRow>
                 <InfoRow>
