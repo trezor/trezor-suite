@@ -1,4 +1,4 @@
-import {Platform} from 'react-native';
+import { Platform } from 'react-native';
 
 /**
  * override for suite/utils/env - getUserAgent
