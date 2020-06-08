@@ -120,8 +120,8 @@ export default ({ outputId }: { outputId: number }) => {
                                     selectedFee,
                                 );
 
-                                setTransactionInfo(composedTransaction);
                                 if (composedTransaction && composedTransaction.type !== 'error') {
+                                    setTransactionInfo(composedTransaction);
                                     setValue(inputName, composedTransaction.max);
                                     setValue(inputNameMax, true);
                                 }
@@ -135,22 +135,23 @@ export default ({ outputId }: { outputId: number }) => {
                                     token,
                                     true,
                                 );
-                                setTransactionInfo(composedTransaction);
+
                                 if (composedTransaction && composedTransaction.type !== 'error') {
+                                    setTransactionInfo(composedTransaction);
                                     setValue(inputName, composedTransaction.max);
                                     setValue(inputNameMax, true);
                                 }
                             }
 
-                            if (networkType === 'bitcoin') {
-                                const composedTransaction = composeBtcTransaction(amount, account);
+                            // if (networkType === 'bitcoin') {
+                            //     const composedTransaction = composeBtcTransaction(amount, account);
 
-                                setTransactionInfo(composedTransaction);
-                                if (composedTransaction.type === 'final') {
-                                    setValue(inputName, composedTransaction.max);
-                                    setValue(inputNameMax, true);
-                                }
-                            }
+                            //     if (composedTransaction.type === 'final') {
+                            //         setTransactionInfo(composedTransaction);
+                            //         setValue(inputName, composedTransaction.max);
+                            //         setValue(inputNameMax, true);
+                            //     }
+                            // }
                         },
                         text: <Translation id="TR_SEND_SEND_MAX" />,
                     }}

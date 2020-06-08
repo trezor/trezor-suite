@@ -165,6 +165,7 @@ const getUserContextModal = (props: Props) => {
                     outputs={payload.outputs}
                     token={payload.token}
                     transactionInfo={payload.transactionInfo}
+                    formValues={payload.formValues}
                 />
             );
         case 'pin-mismatch':

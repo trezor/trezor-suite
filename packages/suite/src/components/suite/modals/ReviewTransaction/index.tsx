@@ -79,8 +79,9 @@ const getFeeValue = (
 export default ({
     modalActions,
     account,
-    outputs,
+    formValues,
     token,
+    outputs,
     transactionInfo,
     sendFormActionsBitcoin,
     sendFormActionsRipple,
@@ -142,13 +143,13 @@ export default ({
                         <Symbol>{upperCaseSymbol}</Symbol> <AccountLabeling account={account} />
                     </Value>
                 </Box>
-                {outputs.map(output => (
+                {outputs.map((output, index) => (
                     <OutputWrapper key={output.id}>
                         <Box>
                             <Label>
                                 <Translation id="TR_TO" />
                             </Label>
-                            <Value>{output.address}</Value>
+                            <Value>{formValues[`address-${index}`]}</Value>
                         </Box>
                     </OutputWrapper>
                 ))}

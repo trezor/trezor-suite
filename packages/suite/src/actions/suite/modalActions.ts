@@ -57,6 +57,7 @@ export type UserContextPayload =
           transactionInfo: PrecomposedTransaction | null;
           outputs: Output[];
           token: TokenInfo | null;
+          formValues: any;
       }
     | {
           type: 'log';

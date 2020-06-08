@@ -29,6 +29,7 @@ interface ComponentProps {
     transactionInfo: PrecomposedTransaction;
     outputs: Output[];
     token: TokenInfo | null;
+    formValues: any;
 }
 
 export type StateProps = ReturnType<typeof mapStateToProps>;

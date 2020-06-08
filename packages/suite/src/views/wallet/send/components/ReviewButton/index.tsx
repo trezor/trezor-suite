@@ -77,6 +77,7 @@ export default () => {
     const { networkType } = account;
     const address = getValues('address-0');
     const amount = getValues('amount-0');
+    const formValues = getValues();
 
     return (
         <Wrapper>
@@ -98,6 +99,7 @@ export default () => {
                                 outputs,
                                 transactionInfo,
                                 token,
+                                formValues,
                             });
                         }
                     }}
