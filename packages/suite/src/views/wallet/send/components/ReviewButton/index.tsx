@@ -40,7 +40,7 @@ const isDisabled = (
     online: AppState['suite']['online'],
 ) => {
     // any form error
-    if (errors.length > 1) {
+    if (Object.entries(errors).length > 0) {
         return true;
     }
 
@@ -66,7 +66,7 @@ export default () => {
     const { errors } = useFormContext();
     const { online, locks, device, outputs, token, transactionInfo } = useSendContext();
     const { openModal } = useActions({ openModal: modalActions.openModal });
-
+    console.log('errors', errors);
     return (
         <Wrapper>
             <Row>

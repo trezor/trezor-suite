@@ -4,11 +4,9 @@ import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { Input, Select } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { getState } from '@wallet-utils/sendFormUtils';
-import { FieldError, NestDataObject } from 'react-hook-form';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import BigNumber from 'bignumber.js';
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, FieldError, NestDataObject } from 'react-hook-form';
 import styled from 'styled-components';
 import validator from 'validator';
 

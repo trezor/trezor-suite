@@ -152,6 +152,7 @@ export default () => {
                             setValue('custom-fee', selectedFee.feePerUnit, true);
                         } else {
                             setSelectedFee(selectedFeeLevel);
+                            setValue('custom-fee', '');
                         }
                     }}
                     options={feeInfo.levels}
