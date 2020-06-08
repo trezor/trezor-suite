@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H2, Button, Modal } from '@trezor/components';
+import { H2, Button, Modal, ModalProps } from '@trezor/components';
 import { Loading, Translation, Image } from '@suite-components';
 
 import { Props } from './Container';
@@ -22,8 +22,15 @@ const StyledImage = styled(Image)`
     flex: 1;
 `;
 
-const Index = ({ recovery, device, rerun, goToStep, addPath }: Props) => (
-    <Modal>
+const Index = ({
+    recovery,
+    device,
+    rerun,
+    goToStep,
+    addPath,
+    modalProps,
+}: Props & { modalProps?: ModalProps }) => (
+    <Modal {...modalProps}>
         <Wrapper>
             {recovery.status === 'in-progress' && <Loading noBackground />}
             {recovery.status !== 'in-progress' && (
@@ -35,6 +42,7 @@ const Index = ({ recovery, device, rerun, goToStep, addPath }: Props) => (
                     <Buttons>
                         {!device?.features?.initialized && (
                             <Button
+                                data-test="@device-invalid-mode/recovery/continue-button"
                                 onClick={() => {
                                     rerun();
                                     goToStep('recovery');
