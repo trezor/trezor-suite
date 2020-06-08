@@ -1,12 +1,13 @@
-import { QuestionTooltip, Translation, FiatValue } from '@suite-components';
+import { FiatValue, QuestionTooltip, Translation } from '@suite-components';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { Input, variables } from '@trezor/components';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import {
-    getState,
-    composeXrpTransaction,
     composeEthTransaction,
+    composeXrpTransaction,
+    composeBtcTransaction,
+    getState,
 } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
 import React from 'react';
@@ -69,6 +70,8 @@ const EqualsSign = styled.div`
     }
 `;
 
+const getMaxIcon = (isActive: boolean) => (isActive ? 'CHECK' : 'SEND');
+
 export default ({ outputId }: { outputId: number }) => {
     const {
         account,
@@ -80,6 +83,7 @@ export default ({ outputId }: { outputId: number }) => {
     } = useSendContext();
     const { register, errors, formState, getValues, setValue } = useFormContext();
     const inputName = `amount-${outputId}`;
+    const inputNameMax = `setMaxActive-${outputId}`;
     const amount = getValues(inputName);
     const touched = formState.dirtyFields.has(inputName);
     const { symbol, availableBalance, networkType } = account;
@@ -106,7 +110,7 @@ export default ({ outputId }: { outputId: number }) => {
                         </Label>
                     }
                     button={{
-                        icon: 'SEND', // TODO CHECK
+                        icon: getMaxIcon(getValues(inputNameMax)),
                         iconSize: 15,
                         onClick: () => {
                             if (networkType === 'ripple') {
@@ -116,9 +120,10 @@ export default ({ outputId }: { outputId: number }) => {
                                     selectedFee,
                                 );
 
+                                setTransactionInfo(composedTransaction);
                                 if (composedTransaction && composedTransaction.type !== 'error') {
                                     setValue(inputName, composedTransaction.max);
-                                    setTransactionInfo(composedTransaction);
+                                    setValue(inputNameMax, true);
                                 }
                             }
 
@@ -130,24 +135,22 @@ export default ({ outputId }: { outputId: number }) => {
                                     token,
                                     true,
                                 );
-
+                                setTransactionInfo(composedTransaction);
                                 if (composedTransaction && composedTransaction.type !== 'error') {
                                     setValue(inputName, composedTransaction.max);
-                                    setTransactionInfo(composedTransaction);
+                                    setValue(inputNameMax, true);
                                 }
                             }
 
-                            // if (networkType === 'bitcoin') {
-                            //     const composedTransaction = sendActions.composeBtcTransaction(
-                            //         amount,
-                            //         account,
-                            //     );
+                            if (networkType === 'bitcoin') {
+                                const composedTransaction = composeBtcTransaction(amount, account);
 
-                            //     if (composedTransaction.type === 'final') {
-                            //         setValue(inputName, composedTransaction.max);
-                            //         setTransactionInfo(composedTransaction);
-                            //     }
-                            // }
+                                setTransactionInfo(composedTransaction);
+                                if (composedTransaction.type === 'final') {
+                                    setValue(inputName, composedTransaction.max);
+                                    setValue(inputNameMax, true);
+                                }
+                            }
                         },
                         text: <Translation id="TR_SEND_SEND_MAX" />,
                     }}
@@ -227,6 +230,7 @@ export default ({ outputId }: { outputId: number }) => {
                     }
                 </FiatValue>
             )}
+            <Input type="hidden" name={inputNameMax} innerRef={register()} />
         </Wrapper>
     );
 };

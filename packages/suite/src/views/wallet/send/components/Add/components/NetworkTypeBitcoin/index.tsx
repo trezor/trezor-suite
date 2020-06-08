@@ -1,5 +1,5 @@
 import { Translation } from '@suite-components';
-import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext';
+import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { Select } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
@@ -11,23 +11,8 @@ const Wrapper = styled.div`
 const StyledSelect = styled(Select)``;
 const options = [{ value: 'RECIPIENT', label: <Translation id="TR_RECIPIENT" /> }];
 
-const getNewOutput = (
-    outputId: number,
-    defaultLocalCurrencyOption: SendContext['defaultLocalCurrencyOption'],
-) => {
-    const newId = outputId + 1;
-    return {
-        id: newId,
-        [`address-${newId}`]: '',
-        [`amount-${newId}`]: '',
-        [`settMaxActive-${newId}`]: false,
-        [`fiatValue-${newId}`]: '',
-        [`local-currency-${newId}`]: defaultLocalCurrencyOption,
-    };
-};
-
 export default () => {
-    const { updateOutputs, outputs, defaultLocalCurrencyOption } = useSendContext();
+    const { updateOutputs, outputs } = useSendContext();
 
     return (
         <Wrapper>
@@ -41,7 +26,9 @@ export default () => {
                         const lastOutput = outputs[outputs.length - 1];
                         const outputsWithNewItem = [
                             ...outputs,
-                            getNewOutput(lastOutput.id, defaultLocalCurrencyOption),
+                            {
+                                id: lastOutput.id + 1,
+                            },
                         ];
                         updateOutputs(outputsWithNewItem);
                     }

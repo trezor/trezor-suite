@@ -49,11 +49,6 @@ export default () => {
                     updateOutputs([
                         {
                             id: 0,
-                            'address-0': '',
-                            'amount-0': '',
-                            'setMaxActive-0': false,
-                            'fiatValue-0': '',
-                            'local-currency-0': localCurrencyOption,
                         },
                     ]);
                 }}

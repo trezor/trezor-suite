@@ -23,7 +23,7 @@ const StyledIcon = styled(Icon)`
 export default () => {
     const { initialSelectedFee } = useSendContext();
     const { register, errors } = useFormContext();
-    const inputName = 'ethereum-gas-price';
+    const inputName = 'ethereumGasPrice';
     const error = errors[inputName];
 
     return (

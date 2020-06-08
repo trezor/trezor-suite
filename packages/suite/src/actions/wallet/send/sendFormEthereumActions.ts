@@ -189,8 +189,6 @@ export const handleGasPrice = (gasPrice: string) => (dispatch: Dispatch, getStat
         },
     });
 
-    dispatch(sendFormActions.composeChange());
-
     if (send.setMaxActivated) {
         dispatch(sendFormActions.setMax());
     }
@@ -220,8 +218,6 @@ export const handleGasLimit = (gasLimit: string) => (dispatch: Dispatch, getStat
             blocks: -1,
         },
     });
-
-    dispatch(sendFormActions.composeChange());
 
     if (send.setMaxActivated) {
         dispatch(sendFormActions.setMax());
