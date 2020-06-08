@@ -38,9 +38,14 @@ const isDisabled = (
     locks: AppState['suite']['locks'],
     device: TrezorDevice,
     online: AppState['suite']['online'],
+    firstOutputAmount: string,
 ) => {
     // any form error
     if (Object.entries(errors).length > 0) {
+        return true;
+    }
+
+    if (!firstOutputAmount) {
         return true;
     }
 
@@ -63,15 +68,16 @@ const isDisabled = (
 };
 
 export default () => {
-    const { errors } = useFormContext();
+    const { errors, getValues } = useFormContext();
     const { online, locks, device, outputs, token, transactionInfo } = useSendContext();
     const { openModal } = useActions({ openModal: modalActions.openModal });
-    console.log('errors', errors);
+    const firstOutputAmount = getValues('amount-0');
+
     return (
         <Wrapper>
             <Row>
                 <ButtonReview
-                    isDisabled={isDisabled(errors, locks, device, online)}
+                    isDisabled={isDisabled(errors, locks, device, online, firstOutputAmount)}
                     onClick={() => {
                         if (transactionInfo && transactionInfo.type === 'final') {
                             openModal({

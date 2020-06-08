@@ -22,6 +22,7 @@ export interface SendContext {
     fiat: AppState['wallet']['fiat'];
     locks: AppState['suite']['locks'];
     feeInfo: FeeInfo;
+    initialSelectedFee: FeeLevel;
     defaultLocalCurrencyOption: { value: string; label: string };
 
     transactionInfo: null | PrecomposedTransaction;

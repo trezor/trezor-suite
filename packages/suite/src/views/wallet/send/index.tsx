@@ -98,6 +98,7 @@ export default ({
             <SendContext.Provider
                 value={{
                     feeInfo,
+                    initialSelectedFee,
                     outputs,
                     network,
                     defaultLocalCurrencyOption,
