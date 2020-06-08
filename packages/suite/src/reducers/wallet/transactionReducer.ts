@@ -126,12 +126,9 @@ export default (state: State = initialState, action: Action | WalletAction): Sta
                 ];
                 break;
             case FIAT_RATES.TX_FIAT_RATE_UPDATE:
-                update(
-                    draft,
-                    action.payload.account,
-                    action.payload.txid,
-                    action.payload.updateObject,
-                );
+                action.payload.forEach(u => {
+                    update(draft, u.account, u.txid, u.updateObject);
+                });
                 break;
             case TRANSACTION.UPDATE:
                 // TODO

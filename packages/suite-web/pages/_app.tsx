@@ -3,7 +3,6 @@ import App, { AppContext } from 'next/app';
 import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
 import * as Sentry from '@sentry/browser';
-import { CaptureConsole } from '@sentry/integrations';
 import { initStore } from '@suite/reducers/store';
 import Preloader from '@suite-components/Preloader';
 import { ToastContainer } from 'react-toastify';
@@ -16,7 +15,7 @@ import Router from '@suite-support/Router';
 
 import { isDev } from '@suite-utils/build';
 import TrezorConnect from 'trezor-connect';
-import { SENTRY } from '@suite-config';
+import { SENTRY_CONFIG } from '@suite-config';
 import { Store } from '@suite-types';
 import ImagesPreloader from '../support/ImagesPreloader';
 
@@ -41,15 +40,9 @@ class TrezorSuiteApp extends App<Props> {
 
     componentDidMount() {
         if (!window.Cypress && !isDev()) {
-            Sentry.init({
-                dsn: SENTRY,
-                integrations: [
-                    new CaptureConsole({
-                        levels: ['error'],
-                    }),
-                ],
-                release: process.env.COMMITHASH,
-                environment: process.env.SUITE_TYPE,
+            Sentry.init(SENTRY_CONFIG);
+            Sentry.configureScope(scope => {
+                scope.setTag('version', process.env.VERSION || 'undefined');
             });
         }
         if (window.Cypress) {
@@ -62,34 +55,36 @@ class TrezorSuiteApp extends App<Props> {
         const { Component, pageProps, store } = this.props;
 
         return (
-            <ErrorBoundary>
+            <>
                 <ImagesPreloader />
                 <CypressExportStore store={store} />
                 <ReduxProvider store={store}>
-                    <Resize />
-                    <OnlineStatus />
-                    <IntlProvider>
-                        <>
-                            {/*
+                    <ErrorBoundary>
+                        <Resize />
+                        <OnlineStatus />
+                        <IntlProvider>
+                            <>
+                                {/*
                                 just because we need make trezor-connect render the iframe
                             */}
-                            <div
-                                className="trezor-webusb-button"
-                                style={{
-                                    width: '100%',
-                                    position: 'absolute',
-                                    top: '-1000px',
-                                }}
-                            />
-                            <Router />
-                            <ToastContainer />
-                            <Preloader>
-                                <Component {...pageProps} />
-                            </Preloader>
-                        </>
-                    </IntlProvider>
+                                <div
+                                    className="trezor-webusb-button"
+                                    style={{
+                                        width: '100%',
+                                        position: 'absolute',
+                                        top: '-1000px',
+                                    }}
+                                />
+                                <Router />
+                                <ToastContainer />
+                                <Preloader>
+                                    <Component {...pageProps} />
+                                </Preloader>
+                            </>
+                        </IntlProvider>
+                    </ErrorBoundary>
                 </ReduxProvider>
-            </ErrorBoundary>
+            </>
         );
     }
 }

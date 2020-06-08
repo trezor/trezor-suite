@@ -1,8 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import * as Sentry from '@sentry/browser';
+import { connect } from 'react-redux';
+import { AppState } from '@suite/types/suite';
 import { H1, P, Button, variables, colors } from '@trezor/components';
 import { db } from '@suite/storage';
+import { bindActionCreators, Dispatch } from 'redux';
+import * as logActions from '@suite-actions/logActions';
 
 const Wrapper = styled.div`
     display: flex;
@@ -37,6 +41,7 @@ const Separator = styled.div`
         width: 90%;
     }
 `;
+
 const SendReportButton = styled(Button)`
     margin-top: 30px;
 `;
@@ -44,12 +49,6 @@ const SendReportButton = styled(Button)`
 const StyledButton = styled(Button)`
     margin: 6px 12px;
 `;
-
-// Cant use hook https://reactjs.org/docs/hooks-faq.html#do-hooks-cover-all-use-cases-for-classes
-
-interface StateProps {
-    error: Error | null | undefined;
-}
 
 const refresh = () => {
     // @ts-ignore global.ipcRenderer is declared in @desktop/preloader.js
@@ -62,13 +61,36 @@ const refresh = () => {
     }
 };
 
-class ErrorBoundary extends React.Component<{}, StateProps> {
-    constructor(props: {}) {
+// Cant use hook https://reactjs.org/docs/hooks-faq.html#do-hooks-cover-all-use-cases-for-classes
+
+interface StateProps {
+    error: Error | null | undefined;
+    // eventId: string | undefined;
+}
+
+const mapStateToProps = (state: AppState) => ({
+    log: state.log,
+    analytics: state.analytics,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            reportToSentry: logActions.reportToSentry,
+        },
+        dispatch,
+    );
+
+type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+
+class ErrorBoundary extends React.Component<Props, StateProps> {
+    constructor(props: Props) {
         super(props);
         this.state = { error: null };
     }
 
     componentDidCatch(error: Error | null, _errorInfo: object) {
+        this.props.reportToSentry(error, this.props.analytics.enabled);
         this.setState({ error });
         // todo: not in development and in production only if user opts in.
         // Sentry.withScope(scope => {
@@ -123,7 +145,7 @@ class ErrorBoundary extends React.Component<{}, StateProps> {
     }
 }
 
-export default ErrorBoundary;
+export default connect(mapStateToProps, mapDispatchToProps)(ErrorBoundary);
 
 // In case we would like to translate these. Not possible now, ErrorBoundary is not nested in
 // IntlProvider. Not sure if we need so much to have this translated here.

@@ -3,11 +3,22 @@ import { LOG } from '@suite-actions/constants';
 
 import { Action } from '@suite-types';
 
-export interface LogEntry {
+export type ActionLogEntry = {
     time: number;
-    type: string;
-    message?: any;
-}
+    custom: false;
+    action: Action;
+};
+
+export type CustomLogEntry = {
+    time: number;
+    custom: true;
+    action: {
+        type: Action['type'];
+        payload?: Record<any, any> | undefined;
+    };
+};
+
+export type LogEntry = ActionLogEntry | CustomLogEntry;
 
 export interface State {
     excludeBalanceRelated: boolean;

@@ -82,3 +82,6 @@ chrome://inspect/#devices
 ![Image of Yaktocat](https://i.imgur.com/4bQSMKO.png)
 
 7. `./scripts/s3sync.sh stage beta` (from the `packages/suite-web` folder )
+
+### Upload source maps to Sentry
+1. ` sentry-cli releases -o satoshilabs -p trezor-suite files <COMMIT> upload-sourcemaps ./build`

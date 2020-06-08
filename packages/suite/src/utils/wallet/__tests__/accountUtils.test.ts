@@ -242,4 +242,22 @@ describe('account utils', () => {
         expect(accountUtils.isTestnet('btc')).toEqual(false);
         expect(accountUtils.isTestnet('ltc')).toEqual(false);
     });
+
+    it('getAccountIdentifier', () => {
+        expect(
+            accountUtils.getAccountIdentifier(
+                global.JestMocks.getWalletAccount({
+                    deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+                    descriptor:
+                        'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+                    symbol: 'btc',
+                }),
+            ),
+        ).toEqual({
+            descriptor:
+                'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+            symbol: 'btc',
+            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+        });
+    });
 });
