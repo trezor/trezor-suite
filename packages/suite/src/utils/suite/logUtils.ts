@@ -51,9 +51,6 @@ export const redactTransaction = (transaction: AccountTransaction) => {
 export const redactAction = (action: Action) => {
     let payload;
     switch (action.type) {
-        // [SUITE.AUTH_DEVICE]: {},
-        // [DISCOVERY.UPDATE]: {},
-        // [DISCOVERY.COMPLETE]: {},
         case SUITE.UPDATE_SELECTED_DEVICE:
             payload = redactDevice(action.payload);
             break;
