@@ -1,18 +1,18 @@
-import { Transaction, TxData } from 'ethereumjs-tx';
-import BigNumber from 'bignumber.js';
+import { ERC20_GAS_LIMIT, ERC20_TRANSFER, VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { SendContext } from '@wallet-hooks/useSendContext';
-import { FieldError, NestDataObject } from 'react-hook-form';
-import Common from 'ethereumjs-common'; // this is a dependency of `ethereumjs-tx` therefore it doesn't have to be in package.json
-import { toHex, toWei, fromWei, padLeft } from 'web3-utils';
-import { Output, EthTransactionData, FeeInfo, FeeLevel } from '@wallet-types/sendForm';
-import { VALIDATION_ERRORS, ERC20_TRANSFER, ERC20_GAS_LIMIT } from '@wallet-constants/sendForm';
+import { Account, Network } from '@wallet-types';
+import { EthTransactionData, FeeInfo, FeeLevel, Output } from '@wallet-types/sendForm';
 import {
-    formatNetworkAmount,
     amountToSatoshi,
+    formatNetworkAmount,
     networkAmountToSatoshi,
 } from '@wallet-utils/accountUtils';
-import { Account, Network } from '@wallet-types';
-import { EthereumTransaction } from 'trezor-connect';
+import BigNumber from 'bignumber.js';
+import Common from 'ethereumjs-common';
+import { Transaction, TxData } from 'ethereumjs-tx';
+import { FieldError, NestDataObject } from 'react-hook-form';
+import TrezorConnect, { EthereumTransaction } from 'trezor-connect';
+import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 
 export const getOutput = (outputs: Output[], id: number) =>
     outputs.find(outputItem => outputItem.id === id);
@@ -297,4 +297,61 @@ export const composeEthTransaction = (
     return { type: 'final', ...payloadData } as const;
 };
 
-export const composeBtcTransaction = () => {};
+export const composeBtcTransaction = async (
+    account: Account,
+    formValues: any,
+    outputs: SendContext['outputs'],
+    selectedFee: SendContext['selectedFee'],
+    setMax = false,
+) => {
+    if (!account.addresses || !account.utxo) return;
+
+    const composedOutputs = outputs.map(output => {
+        const amount = networkAmountToSatoshi(formValues[`amount-${output.id}`], account.symbol);
+        const address = formValues[`address-${output.id}`];
+
+        // address is set
+        if (address) {
+            // set max without address
+            if (setMax) {
+                return {
+                    address,
+                    type: 'send-max',
+                } as const;
+            }
+
+            return {
+                address,
+                amount,
+            } as const;
+        }
+
+        // set max with address only
+        if (setMax) {
+            return {
+                type: 'send-max-noaddress',
+            } as const;
+        }
+
+        // set amount without address
+        return {
+            type: 'noaddress',
+            amount,
+        } as const;
+    });
+
+    const resp = await TrezorConnect.composeTransaction({
+        account: {
+            path: account.path,
+            addresses: account.addresses,
+            utxo: account.utxo,
+        },
+        feeLevels: [selectedFee],
+        outputs: composedOutputs,
+        coin: account.symbol,
+    });
+
+    if (resp.success) {
+        return resp.payload[0];
+    }
+};

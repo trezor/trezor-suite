@@ -79,6 +79,7 @@ export default ({ outputId }: { outputId: number }) => {
         token,
         network,
         selectedFee,
+        outputs,
         localCurrencyOption,
     } = useSendContext();
     const { register, errors, formState, getValues, setValue } = useFormContext();
@@ -112,7 +113,8 @@ export default ({ outputId }: { outputId: number }) => {
                     button={{
                         icon: getMaxIcon(getValues(inputNameMax)),
                         iconSize: 15,
-                        onClick: () => {
+                        onClick: async () => {
+                            const formValues = getValues();
                             if (networkType === 'ripple') {
                                 const composedTransaction = composeXrpTransaction(
                                     account,
@@ -143,15 +145,21 @@ export default ({ outputId }: { outputId: number }) => {
                                 }
                             }
 
-                            // if (networkType === 'bitcoin') {
-                            //     const composedTransaction = composeBtcTransaction(amount, account);
+                            if (networkType === 'bitcoin') {
+                                const composedTransaction = await composeBtcTransaction(
+                                    account,
+                                    formValues,
+                                    outputs,
+                                    selectedFee,
+                                    true,
+                                );
 
-                            //     if (composedTransaction.type === 'final') {
-                            //         setTransactionInfo(composedTransaction);
-                            //         setValue(inputName, composedTransaction.max);
-                            //         setValue(inputNameMax, true);
-                            //     }
-                            // }
+                                if (composedTransaction && composedTransaction.type === 'final') {
+                                    setTransactionInfo(composedTransaction);
+                                    setValue(inputName, composedTransaction.max);
+                                    setValue(inputNameMax, true);
+                                }
+                            }
                         },
                         text: <Translation id="TR_SEND_SEND_MAX" />,
                     }}
