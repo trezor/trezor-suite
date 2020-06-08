@@ -76,7 +76,6 @@ const Index = (props: Props) => {
                     </WebusbButton>
                 </ButtonWrapper>
             )}
-            <div>transport: {JSON.stringify(props.transport)}</div>
             {showUdev && (
                 <BridgeWrapper>
                     <P size="tiny">
