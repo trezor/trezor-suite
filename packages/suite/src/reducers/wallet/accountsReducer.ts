@@ -50,7 +50,10 @@ const initialState: Account[] = [];
 const create = (draft: Account[], account: Account) => {
     // TODO: check if account already exist, for example 2 device instances with same passphrase
     // remove "transactions" field, they are stored in "transactionReducer"
-    draft.push({ ...account, history: { ...account.history, transactions: undefined } });
+    if (account.history) {
+        delete account.history.transactions;
+    }
+    draft.push(account);
 };
 
 const changeVisibility = (draft: Account[], account: Account) => {
