@@ -4,14 +4,7 @@ import { FeeLevel, PrecomposedTransaction, TokenInfo } from 'trezor-connect';
 import { FeeInfo } from '@wallet-types/sendForm';
 import { TrezorDevice, AppState } from '@suite-types';
 
-export type Output = {
-    id: number;
-    address: string;
-    amount: string;
-    setMax: boolean;
-    fiatValue: string;
-    localCurrency: { value: string; label: string };
-};
+export type Output = any;
 
 export interface SendContext {
     account: Account;

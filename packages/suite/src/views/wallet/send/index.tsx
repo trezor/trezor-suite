@@ -87,10 +87,11 @@ export default ({
             'amount-0': '',
             'settMaxActive-0': false,
             'fiatValue-0': '',
-            'local-currency-0': localCurrencyOption,
-            'ethereum-gas-price': initialSelectedFee.feePerUnit,
-            'ethereum-gas-limit': initialSelectedFee.feeLimit,
-            'ethereum-data': '',
+            'localCurrency-0': localCurrencyOption,
+            ethereumGasPrice: initialSelectedFee.feePerUnit,
+            ethereumGasLimit: initialSelectedFee.feeLimit,
+            ethereumData: '',
+            rippleDestinationTag: '',
         },
     });
 

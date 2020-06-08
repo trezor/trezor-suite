@@ -25,9 +25,9 @@ const getCurrencyOptions = (currency: string) => {
 
 export default ({ outputId }: { outputId: number }) => {
     const { register, errors, setValue, getValues } = useFormContext();
-    const { defaultLocalCurrencyOption } = useSendContext();
-    const inputName = `local-currency-input-${outputId}`;
-    const inputNameSelect = `local-currency-select-${outputId}`;
+    const { localCurrencyOption } = useSendContext();
+    const inputName = `localCurrencyInput-${outputId}`;
+    const inputNameSelect = `localCurrencySelect-${outputId}`;
     const selectValue = getValues(inputNameSelect);
     const error = errors[inputName];
 
@@ -43,7 +43,7 @@ export default ({ outputId }: { outputId: number }) => {
                     onChange={(value: { value: string; label: string }) =>
                         setValue(inputNameSelect, value)
                     }
-                    value={selectValue || defaultLocalCurrencyOption}
+                    value={selectValue || localCurrencyOption}
                     options={FIAT.currencies.map((currency: string) =>
                         getCurrencyOptions(currency),
                     )}

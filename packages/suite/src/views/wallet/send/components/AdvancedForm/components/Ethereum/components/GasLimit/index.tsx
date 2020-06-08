@@ -24,8 +24,8 @@ export default () => {
     const { register, errors, getValues } = useFormContext();
     const { account, initialSelectedFee } = useSendContext();
     const { networkType } = account;
-    const inputName = 'ethereum-gas-limit';
-    const ethData = getValues('ethereum-data');
+    const inputName = 'ethereumGasLimit';
+    const ethData = getValues('ethereumData');
     const error = errors[inputName];
 
     return (

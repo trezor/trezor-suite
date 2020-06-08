@@ -3,7 +3,7 @@ import * as modalActions from '@suite-actions/modalActions';
 import { Translation } from '@suite-components/Translation';
 import { useActions } from '@suite-hooks';
 import { AppState, TrezorDevice } from '@suite-types';
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
+import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext';
 import { Button, colors } from '@trezor/components';
 import React from 'react';
 import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
@@ -38,14 +38,16 @@ const isDisabled = (
     locks: AppState['suite']['locks'],
     device: TrezorDevice,
     online: AppState['suite']['online'],
-    firstOutputAmount: string,
+    networkType: any,
+    address: string,
+    amount: string,
 ) => {
     // any form error
     if (Object.entries(errors).length > 0) {
         return true;
     }
 
-    if (!firstOutputAmount) {
+    if ((networkType !== 'bitcoin' && !address) || !amount) {
         return true;
     }
 
@@ -69,15 +71,26 @@ const isDisabled = (
 
 export default () => {
     const { errors, getValues } = useFormContext();
-    const { online, locks, device, outputs, token, transactionInfo } = useSendContext();
+    const { online, locks, device, outputs, token, transactionInfo, account } = useSendContext();
     const { openModal } = useActions({ openModal: modalActions.openModal });
-    const firstOutputAmount = getValues('amount-0');
+
+    const { networkType } = account;
+    const address = getValues('address-0');
+    const amount = getValues('amount-0');
 
     return (
         <Wrapper>
             <Row>
                 <ButtonReview
-                    isDisabled={isDisabled(errors, locks, device, online, firstOutputAmount)}
+                    isDisabled={isDisabled(
+                        errors,
+                        locks,
+                        device,
+                        online,
+                        networkType,
+                        address,
+                        amount,
+                    )}
                     onClick={() => {
                         if (transactionInfo && transactionInfo.type === 'final') {
                             openModal({

@@ -111,7 +111,7 @@ const getValue = (
 export default () => {
     const { account, feeInfo, feeOutdated, selectedFee, setSelectedFee } = useSendContext();
     const { formState, setValue, errors } = useFormContext();
-    const dataIsDirty = formState.dirtyFields.has('ethereum-data');
+    const dataIsDirty = formState.dirtyFields.has('ethereumData');
     const { networkType, symbol } = account;
     const customFeeHasError = errors['custom-fee'];
 

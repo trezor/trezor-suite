@@ -19,7 +19,7 @@ const Text = styled.div`
 export default () => {
     const { token } = useSendContext();
     const { register, errors } = useFormContext();
-    const inputName = 'ethereum-data';
+    const inputName = 'ethereumData';
     const error = errors[inputName];
 
     return (

@@ -20,7 +20,12 @@ const In = styled.div`
 
 export default () => {
     const { reset } = useFormContext();
-    const { initialSelectedFee, setSelectedFee } = useSendContext();
+    const {
+        initialSelectedFee,
+        setSelectedFee,
+        localCurrencyOption,
+        updateOutputs,
+    } = useSendContext();
 
     return (
         <Wrapper>
@@ -28,12 +33,29 @@ export default () => {
                 onClick={() => {
                     reset(
                         {
-                            'ethereum-gas-price': initialSelectedFee.feePerUnit,
-                            'ethereum-gas-limit': initialSelectedFee.feeLimit,
+                            'address-0': '',
+                            'amount-0': '',
+                            'settMaxActive-0': false,
+                            'fiatValue-0': '',
+                            'localCurrency-0': localCurrencyOption,
+                            ethereumGasPrice: initialSelectedFee.feePerUnit,
+                            ethereumGasLimit: initialSelectedFee.feeLimit,
+                            ethereumData: '',
+                            rippleDestinationTag: '',
                         },
                         { dirty: true },
                     );
                     setSelectedFee(initialSelectedFee);
+                    updateOutputs([
+                        {
+                            id: 0,
+                            'address-0': '',
+                            'amount-0': '',
+                            'setMaxActive-0': false,
+                            'fiatValue-0': '',
+                            'local-currency-0': localCurrencyOption,
+                        },
+                    ]);
                 }}
             >
                 <Button variant="tertiary" icon="CLEAR" alignIcon="left">
