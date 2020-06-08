@@ -2,7 +2,6 @@
     Heavily inspired by Mattermost,
     https://github.com/mattermost/mattermost-webapp/blob/master/e2e/run_tests.js good job guys.
 */
-
 const cypress = require('cypress');
 const shell = require('shelljs');
 const argv = require('yargs').argv;
@@ -93,9 +92,28 @@ async function runTests() {
 
         let testRunNumber = 0;
 
+        const userAgent = grepForValue('@user-agent', testFile);
+
         console.log('');
         console.log(`[run_tests.js] testing next file ${testFile}`);
         console.log(`[run_tests.js] allowed to run ${allowedRuns} times`);
+
+        const config = {
+            baseUrl: CYPRESS_baseUrl,
+            supportFile: `${__dirname}/support/index.ts`,
+            pluginsFile: `${__dirname}/plugins/index.js`,
+            screenshotsFolder: `${__dirname}/screenshots`,
+            integrationFolder: `${__dirname}/tests`,
+            videosFolder: `${__dirname}/videos`,
+            video: true,
+            chromeWebSecurity: false,
+            trashAssetsBeforeRuns: false,
+        };
+
+        if (userAgent) {
+            console.log('[run_tests.js] using custom user agent', userAgent);
+            Object.assign(config, { userAgent });
+        }
 
         while(testRunNumber < allowedRuns) {
             testRunNumber++;
@@ -105,17 +123,7 @@ async function runTests() {
                     // headless,
                     headed: true,
                     spec,
-                    config: {
-                        baseUrl: CYPRESS_baseUrl,
-                        supportFile: `${__dirname}/support/index.ts`,
-                        pluginsFile: `${__dirname}/plugins/index.js`,
-                        screenshotsFolder: `${__dirname}/screenshots`,
-                        integrationFolder: `${__dirname}/tests`,
-                        videosFolder: `${__dirname}/videos`,
-                        video: true,
-                        chromeWebSecurity: false,
-                        trashAssetsBeforeRuns: false,
-                    },
+                    config,
                     configFile: false,
                 });
 

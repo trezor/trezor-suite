@@ -9,7 +9,8 @@ import HelpBuyIcons from '@suite-components/ProgressBar/components/HelpBuyIcons'
 
 import { Dispatch, AppState } from '@suite-types';
 import { isWebUSB } from '@suite-utils/transport';
-import { getLinuxPackage } from '@suite-utils/dom';
+import { getLinuxPackage } from '@suite-utils/bridge';
+import { isAndroid } from '@suite-utils/env';
 
 const Title = styled.div`
     margin-top: 60px;
@@ -69,7 +70,7 @@ const Index = (props: Props) => {
             {showWebUsb && (
                 <ButtonWrapper>
                     <WebusbButton ready={imageLoaded}>
-                        <Button icon="PLUS">
+                        <Button icon="PLUS" data-test="@modal/connect-device/webusb-button">
                             <Translation id="TR_CHECK_FOR_DEVICES" />
                         </Button>
                     </WebusbButton>
@@ -95,7 +96,7 @@ const Index = (props: Props) => {
                     </P>
                 </BridgeWrapper>
             )}
-            {showWebUsb && (
+            {showWebUsb && !isAndroid() && (
                 <BridgeWrapper>
                     <P size="tiny">
                         <Translation
