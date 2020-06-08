@@ -1,10 +1,13 @@
 import { QuestionTooltip, Translation, FiatValue } from '@suite-components';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { Input, variables } from '@trezor/components';
-import * as sendActions from '@wallet-actions/send/sendFormActionsNew';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { getState } from '@wallet-utils/sendFormUtils';
+import {
+    getState,
+    composeXrpTransaction,
+    composeEthTransaction,
+} from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -67,7 +70,7 @@ const EqualsSign = styled.div`
 `;
 
 export default ({ outputId }: { outputId: number }) => {
-    const { account, setTransactionInfo, token, network } = useSendContext();
+    const { account, setTransactionInfo, token, network, selectedFee } = useSendContext();
     const { register, errors, formState, getValues, setValue } = useFormContext();
     const inputName = `amount-${outputId}`;
     const amount = getValues(inputName);
@@ -100,9 +103,10 @@ export default ({ outputId }: { outputId: number }) => {
                         iconSize: 15,
                         onClick: () => {
                             if (networkType === 'ripple') {
-                                const composedTransaction = sendActions.composeXrpTransaction(
-                                    amount,
+                                const composedTransaction = composeXrpTransaction(
                                     account,
+                                    amount,
+                                    selectedFee,
                                 );
 
                                 if (composedTransaction.type !== 'error') {
@@ -111,17 +115,20 @@ export default ({ outputId }: { outputId: number }) => {
                                 }
                             }
 
-                            // if (networkType === 'ethereum') {
-                            //     const composedTransaction = sendActions.composeEthTransaction(
-                            //         amount,
-                            //         account,
-                            //     );
+                            if (networkType === 'ethereum') {
+                                const composedTransaction = composeEthTransaction(
+                                    account,
+                                    amount,
+                                    selectedFee,
+                                    token,
+                                    true,
+                                );
 
-                            //     if (composedTransaction.type === 'final') {
-                            //         setValue(inputName, composedTransaction.max);
-                            //         setTransactionInfo(composedTransaction);
-                            //     }
-                            // }
+                                if (composedTransaction.type !== 'error') {
+                                    setValue(inputName, composedTransaction.max);
+                                    setTransactionInfo(composedTransaction);
+                                }
+                            }
 
                             // if (networkType === 'bitcoin') {
                             //     const composedTransaction = sendActions.composeBtcTransaction(

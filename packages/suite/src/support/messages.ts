@@ -2093,25 +2093,15 @@ const definedMessages = defineMessages({
         id: 'TR_SEND_DATA_TOOLTIP',
         defaultMessage: 'Data is usually used when you send transactions to contracts.',
     },
-    // TR_SEND_GAS_LIMIT_TOOLTIP: {
-    //     id: 'TR_SEND_GAS_LIMIT_TOOLTIP',
-    //     defaultMessage:
-    //         'Gas limit refers to the maximum amount of gas user is willing to spend on a particular transaction. Transaction fee = gas limit * gas price. Increasing the gas limit will not get the transaction confirmed sooner. Default value for sending ETH is {defaultGasLimit}',
-    // },
     TR_SEND_GAS_LIMIT_TOOLTIP: {
         id: 'TR_SEND_GAS_LIMIT_TOOLTIP',
         defaultMessage:
-            'Gas limit refers to the maximum amount of gas user is willing to spend on a particular transaction. Transaction fee = gas limit * gas price. Increasing the gas limit will not get the transaction confirmed sooner.',
+            'Gas limit refers to the maximum amount of gas user is willing to spend on a particular transaction. Transaction fee = gas limit * gas price. Increasing the gas limit will not get the transaction confirmed sooner. Default value for sending ETH is {defaultGasLimit}',
     },
-    // TR_SEND_GAS_PRICE_TOOLTIP: {
-    //     id: 'TR_SEND_GAS_PRICE_TOOLTIP',
-    //     defaultMessage:
-    //         'Gas price refers to the amount of ether you are willing to pay for every unit of gas, and is usually measured in “Gwei”. Transaction fee = gas limit * gas price. Increasing the gas price will get the transaction confirmed sooner but makes it more expensive. The recommended gas price is {defaultGasPrice} GWEI.',
-    // },
     TR_SEND_GAS_PRICE_TOOLTIP: {
         id: 'TR_SEND_GAS_PRICE_TOOLTIP',
         defaultMessage:
-            'Gas price refers to the amount of ether you are willing to pay for every unit of gas, and is usually measured in “Gwei”. Transaction fee = gas limit * gas price. Increasing the gas price will get the transaction confirmed sooner but makes it more expensive.',
+            'Gas price refers to the amount of ether you are willing to pay for every unit of gas, and is usually measured in “Gwei”. Transaction fee = gas limit * gas price. Increasing the gas price will get the transaction confirmed sooner but makes it more expensive. The recommended gas price is {defaultGasPrice} GWEI.',
     },
     TR_SEND_FEE_TOOLTIP: {
         id: 'TR_SEND_FEE_TOOLTIP',

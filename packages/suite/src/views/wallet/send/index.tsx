@@ -60,24 +60,25 @@ export default ({
     const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
     const initialSelectedFee = levels.find(l => l.label === 'normal') || levels[0];
-    const initialOutputs = [
-        {
-            id: 0,
-            'address-0': '',
-            'amount-0': '',
-            'settMaxActive-0': false,
-            'fiatValue-0': '',
-            'local-currency-0': { value: 'usd', label: 'USD' },
-        },
-    ];
 
     const [advancedForm, showAdvancedForm] = useState(false);
     const [token, setToken] = useState(null);
     const [feeOutdated, setFeeOutdated] = useState(false);
     const [transactionInfo, setTransactionInfo] = useState(null);
     const [selectedFee, setSelectedFee] = useState(initialSelectedFee);
-    const [outputs, updateOutputs] = useState(initialOutputs);
     const defaultLocalCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
+
+    const initialOutputs = [
+        {
+            id: 0,
+            'address-0': '',
+            'amount-0': '',
+            'setMaxActive-0': false,
+            'fiatValue-0': '',
+            'local-currency-0': defaultLocalCurrencyOption,
+        },
+    ];
+    const [outputs, updateOutputs] = useState(initialOutputs);
 
     const methods = useForm({
         mode: 'onChange',

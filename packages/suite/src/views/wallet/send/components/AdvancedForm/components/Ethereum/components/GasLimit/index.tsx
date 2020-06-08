@@ -1,6 +1,6 @@
 import { Translation } from '@suite-components';
 import { colors, Icon, Input, Tooltip } from '@trezor/components';
-import { Account } from '@wallet-types';
+import { useSendContext } from '@wallet-hooks/useSendContext';
 import { getState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -20,23 +20,19 @@ const StyledIcon = styled(Icon)`
     cursor: pointer;
 `;
 
-const isDisabled = (
-    networkType: Account['networkType'],
-    dataState: 'error' | 'success' | undefined,
-) => {
-    return networkType === 'ethereum' && dataState !== undefined;
-};
-
 export default () => {
+    const { register, errors, getValues } = useFormContext();
+    const { account, initialSelectedFee } = useSendContext();
+    const { networkType } = account;
     const inputName = 'ethereum-gas-limit';
-    const { register, errors } = useFormContext();
+    const ethData = getValues('ethereum-data');
     const error = errors[inputName];
 
     return (
         <Input
             variant="small"
             name={inputName}
-            // disabled={isDisabled(networkType, getInputState(data.error, data.value, false, false))}
+            isDisabled={networkType === 'ethereum' && ethData}
             state={getState(error)}
             innerRef={register({
                 validate: {
@@ -58,7 +54,7 @@ export default () => {
                         content={
                             <Translation
                                 id="TR_SEND_GAS_LIMIT_TOOLTIP"
-                                // values={{ defaultGasLimit: account.network.defaultGasLimit }}
+                                values={{ defaultGasLimit: initialSelectedFee.feeLimit }}
                             />
                         }
                     >

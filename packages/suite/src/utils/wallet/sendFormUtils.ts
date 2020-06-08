@@ -1,16 +1,21 @@
 import { Transaction, TxData } from 'ethereumjs-tx';
+import BigNumber from 'bignumber.js';
+import { SendContext } from '@wallet-hooks/useSendContext';
 import { FieldError, NestDataObject } from 'react-hook-form';
 import Common from 'ethereumjs-common'; // this is a dependency of `ethereumjs-tx` therefore it doesn't have to be in package.json
 import { toHex, toWei, fromWei, padLeft } from 'web3-utils';
-import BigNumber from 'bignumber.js';
-import { Output, State, EthTransactionData, FeeInfo, FeeLevel } from '@wallet-types/sendForm';
+import { Output, EthTransactionData, FeeInfo, FeeLevel } from '@wallet-types/sendForm';
 import { VALIDATION_ERRORS, ERC20_TRANSFER, ERC20_GAS_LIMIT } from '@wallet-constants/sendForm';
-import { formatNetworkAmount, amountToSatoshi } from '@wallet-utils/accountUtils';
+import {
+    formatNetworkAmount,
+    amountToSatoshi,
+    networkAmountToSatoshi,
+} from '@wallet-utils/accountUtils';
 import { Account, Network } from '@wallet-types';
 import { EthereumTransaction } from 'trezor-connect';
 
 export const getOutput = (outputs: Output[], id: number) =>
-    outputs.find(outputItem => outputItem.id === id) as Output;
+    outputs.find(outputItem => outputItem.id === id);
 
 export const hasDecimals = (value: string, decimals: number) => {
     const DECIMALS_REGEX = new RegExp(
@@ -227,3 +232,69 @@ export const getState = (
 
     return undefined;
 };
+
+export const composeXrpTransaction = (
+    account: SendContext['account'],
+    amount: string,
+    selectedFee: SendContext['selectedFee'],
+) => {
+    const { symbol, availableBalance } = account;
+    const amountInSatoshi = networkAmountToSatoshi(amount, symbol).toString();
+    const feeInSatoshi = selectedFee.feePerUnit;
+    const totalSpentBig = new BigNumber(calculateTotal(amountInSatoshi, feeInSatoshi));
+    const max = new BigNumber(calculateMax(availableBalance, feeInSatoshi));
+    const payloadData = {
+        totalSpent: totalSpentBig.toString(),
+        fee: feeInSatoshi,
+        max: max.isLessThan('0') ? '' : formatNetworkAmount(max.toFixed(), 'xrp'),
+    };
+
+    if (totalSpentBig.isGreaterThan(availableBalance)) {
+        return { type: 'error', error: 'NOT-ENOUGH-FUNDS' } as const;
+    }
+
+    return { type: 'final', ...payloadData } as const;
+};
+
+export const composeEthTransaction = (
+    account: SendContext['account'],
+    amount: string,
+    selectedFee: SendContext['selectedFee'],
+    token: SendContext['token'],
+    setMax = false,
+) => {
+    const isFeeValid = !new BigNumber(selectedFee.feePerUnit).isNaN();
+
+    const { availableBalance } = account;
+    const feeInSatoshi = calculateEthFee(
+        toWei(isFeeValid ? selectedFee.feePerUnit : '0', 'gwei'),
+        selectedFee.feeLimit || '0',
+    );
+    const max = token
+        ? new BigNumber(token.balance!)
+        : new BigNumber(calculateMax(availableBalance, feeInSatoshi));
+    // use max possible value or input.value
+    // race condition when switching between tokens with set-max enabled
+    // input still holds previous value (previous token max)
+    const amountInSatoshi = setMax
+        ? max.toString()
+        : networkAmountToSatoshi(amount, account.symbol).toString();
+    const totalSpentBig = new BigNumber(
+        calculateTotal(token ? '0' : amountInSatoshi, feeInSatoshi),
+    );
+    const payloadData = {
+        totalSpent: totalSpentBig.toString(),
+        fee: feeInSatoshi,
+        feePerUnit: selectedFee.feePerUnit,
+        max: max.isLessThan('0') ? '' : formatNetworkAmount(max.toFixed(), 'eth'),
+    };
+
+    if (totalSpentBig.isGreaterThan(availableBalance)) {
+        const error = token ? 'NOT-ENOUGH-CURRENCY-FEE' : 'NOT-ENOUGH-FUNDS';
+        return { type: 'error', error } as const;
+    }
+
+    return { type: 'final', ...payloadData } as const;
+};
+
+export const composeBtcTransaction = () => {};
