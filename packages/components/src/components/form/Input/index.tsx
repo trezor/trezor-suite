@@ -19,7 +19,7 @@ const Wrapper = styled.div<WrappedProps>`
 const StyledInput = styled.input<Props>`
     font-family: ${variables.FONT_FAMILY.TTHOVES};
     padding: 0 10px;
-    font-size: ${props => (props.value ? '16px' : '14px')};
+    font-size: ${variables.FONT_SIZE.NORMAL};
     border-radius: 3px;
     box-shadow: inset 0 3px 6px 0 ${colors.BLACK92};
     border: solid 1px ${props => (props.state ? getStateColor(props.state) : colors.BLACK80)};

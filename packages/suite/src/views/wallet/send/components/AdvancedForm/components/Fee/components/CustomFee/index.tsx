@@ -1,33 +1,42 @@
 import { FiatValue } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
-import validator from 'validator';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { Input, Select } from '@trezor/components';
-import { getState } from '@wallet-utils/sendFormUtils';
 import { Account } from '@wallet-types';
+import { getState } from '@wallet-utils/sendFormUtils';
+import { FieldError, NestDataObject } from 'react-hook-form';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import BigNumber from 'bignumber.js';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
+import validator from 'validator';
 
-const Wrapper = styled.div`
-    display: flex;
+interface WrapperProps {
+    isVisible: boolean;
+}
+
+const Wrapper = styled.div<WrapperProps>`
+    display: ${props => (props.isVisible ? 'flex' : 'none')};
     flex-direction: row;
     margin-top: 10px;
-    padding: 0 0 30px 0;
-    justify-content: space-between;
-    align-items: center;
-
-    &:last-child {
-        padding: 0;
-    }
+    justify-content: center;
 `;
 
-const CustomFeeWrapper = styled.div``;
-
-const ItemWrapper = styled.div`
+const CustomFeeWrapper = styled.div`
     min-width: 80px;
     max-width: 80px;
-    padding-right: 10px;
+`;
+
+const CustomFeeUnitWrapper = styled.div`
+    width: 80px;
+    padding-left: 10px;
+`;
+
+const FiatValueWrapper = styled.div`
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
 `;
 
 const getValue = (networkType: Account['networkType']) => {
@@ -40,67 +49,86 @@ const getValue = (networkType: Account['networkType']) => {
     }
 };
 
-export default () => {
-    const { account, feeInfo } = useSendContext();
-    const { register, getValues, setValue, errors } = useFormContext();
-    const inputName = 'custom-fee';
+const getError = (
+    error: NestDataObject<Record<string, any>, FieldError>,
+    minFee: number,
+    maxFee: number,
+) => {
+    const notInRangeError = 'TR_CUSTOM_FEE_NOT_IN_RANGE';
+    const { type } = error;
+
+    switch (type) {
+        case notInRangeError:
+            return <Translation id={notInRangeError} values={{ maxFee, minFee }} />;
+
+        default:
+            return <Translation id={error.type} />;
+    }
+};
+
+export default ({ isVisible }: { isVisible: boolean }) => {
+    const { account, feeInfo, transactionInfo, setSelectedFee } = useSendContext();
+    const { register, errors } = useFormContext();
+    const inputNameValue = 'custom-fee';
     const inputNameUnit = 'custom-fee-unit';
     const { networkType, symbol } = account;
-    const customFeeValue = getValues(inputName);
-    const error = errors[inputName];
+    const error = errors[inputNameValue];
     const { maxFee, minFee } = feeInfo;
 
     return (
-        <Wrapper>
+        <Wrapper isVisible={isVisible}>
             <CustomFeeWrapper>
-                <Wrapper>
-                    <ItemWrapper>
-                        <Input
-                            variant="small"
-                            name={inputName}
-                            state={getState(error)}
-                            innerRef={register({
-                                validate: {
-                                    TR_ETH_DATA_NOT_HEX: (value: string) => {
-                                        if (value) {
-                                            return validator.isHexadecimal(value);
-                                        }
-                                    },
-                                },
-                            })}
-                            bottomText={() => {
-                                const notInRangeError = 'TR_CUSTOM_FEE_NOT_IN_RANGE';
-                                const { type } = error;
-
-                                switch (type) {
-                                    case notInRangeError:
-                                        return (
-                                            <Translation
-                                                id={notInRangeError}
-                                                values={{ maxFee, minFee }}
-                                            />
-                                        );
-
-                                    default:
-                                        return error && <Translation id={error.type} />;
+                <Input
+                    variant="small"
+                    name={inputNameValue}
+                    state={getState(error)}
+                    onChange={event =>
+                        setSelectedFee({
+                            label: 'custom',
+                            feePerUnit: event.target.value,
+                            blocks: -1,
+                        })
+                    }
+                    innerRef={register({
+                        validate: {
+                            TR_CUSTOM_FEE_IS_NOT_SET: (value: string) => {
+                                if (!value) {
+                                    return false;
                                 }
-                            }}
-                        />
-                    </ItemWrapper>
-                    <ItemWrapper>
-                        <Select
-                            name={inputNameUnit}
-                            innerRef={register()}
-                            onChange={() => setValue(inputName, getValue(networkType))}
-                            variant="small"
-                            isDisabled
-                        />
-                    </ItemWrapper>
-                </Wrapper>
+                            },
+                            TR_CUSTOM_FEE_IS_NOT_NUMBER: (value: string) => {
+                                return validator.isNumeric(value);
+                            },
+                            TR_CUSTOM_FEE_NOT_IN_RANGE: (value: string) => {
+                                const customFeeBig = new BigNumber(value);
+                                return !(
+                                    customFeeBig.isGreaterThan(maxFee) ||
+                                    customFeeBig.isLessThan(minFee)
+                                );
+                            },
+                        },
+                    })}
+                    bottomText={error && getError(error, maxFee, minFee)}
+                />
             </CustomFeeWrapper>
-            {customFeeValue && (
-                <FiatValue amount={customFeeValue} symbol={symbol} badge={{ color: 'gray' }} />
-            )}
+            <CustomFeeUnitWrapper>
+                <Select
+                    name={inputNameUnit}
+                    innerRef={register()}
+                    value={getValue(networkType)}
+                    variant="small"
+                    isDisabled
+                />
+            </CustomFeeUnitWrapper>
+            <FiatValueWrapper>
+                {transactionInfo && transactionInfo.type !== 'error' && (
+                    <FiatValue
+                        amount={transactionInfo.fee}
+                        symbol={symbol}
+                        badge={{ color: 'gray' }}
+                    />
+                )}
+            </FiatValueWrapper>
         </Wrapper>
     );
 };

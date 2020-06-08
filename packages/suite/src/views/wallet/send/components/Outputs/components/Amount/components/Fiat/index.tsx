@@ -30,7 +30,7 @@ export default ({ outputId }: { outputId: number }) => {
     const inputNameSelect = `local-currency-select-${outputId}`;
     const selectValue = getValues(inputNameSelect);
     const error = errors[inputName];
-    console.log('selectValue', selectValue);
+
     return (
         <Wrapper>
             <Input state={getState(error)} name={inputName} innerRef={register} />

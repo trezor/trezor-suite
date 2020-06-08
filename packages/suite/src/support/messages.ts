@@ -550,9 +550,9 @@ const definedMessages = defineMessages({
         defaultMessage: 'Fee is not set',
         id: 'TR_CUSTOM_FEE_IS_NOT_SET',
     },
-    TR_CUSTOM_FEE_IS_NOT_VALID: {
-        defaultMessage: 'Fee is not valid',
-        id: 'TR_CUSTOM_FEE_IS_NOT_VALID',
+    TR_CUSTOM_FEE_IS_NOT_NUMBER: {
+        defaultMessage: 'Fee is not a number',
+        id: 'TR_CUSTOM_FEE_IS_NOT_NUMBER',
     },
     TR_CUSTOM_FEE_NOT_IN_RANGE: {
         defaultMessage: 'Allowed fee is between {minFee} and {maxFee}',

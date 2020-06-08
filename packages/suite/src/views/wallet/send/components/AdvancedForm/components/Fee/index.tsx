@@ -110,9 +110,10 @@ const getValue = (
 
 export default () => {
     const { account, feeInfo, feeOutdated, selectedFee, setSelectedFee } = useSendContext();
-    const { formState } = useFormContext();
+    const { formState, setValue, errors } = useFormContext();
     const dataIsDirty = formState.dirtyFields.has('ethereum-data');
     const { networkType, symbol } = account;
+    const customFeeHasError = errors['custom-fee'];
 
     return (
         <Wrapper>
@@ -145,20 +146,28 @@ export default () => {
                     isSearchable={false}
                     // hack for react select, it needs the "value"
                     value={{ ...selectedFee, value: selectedFee.feePerUnit }}
-                    onChange={(selectedFeeLevel: FeeLevel) => setSelectedFee(selectedFeeLevel)}
+                    onChange={(selectedFeeLevel: FeeLevel) => {
+                        if (selectedFeeLevel.label === 'custom') {
+                            setSelectedFee({ ...selectedFee, label: 'custom' });
+                            setValue('custom-fee', selectedFee.feePerUnit, true);
+                        } else {
+                            setSelectedFee(selectedFeeLevel);
+                        }
+                    }}
                     options={feeInfo.levels}
                     isDisabled={networkType === 'ethereum' && dataIsDirty}
                     formatOptionLabel={(option: FeeLevel) => (
                         <OptionWrapper>
                             <OptionLabel>{capitalizeFirstLetter(option.label)} </OptionLabel>
-                            {option.feePerUnit !== '0' && (
+                            {!customFeeHasError && option.feePerUnit !== '0' && (
                                 <OptionValue>{getValue(networkType, option, symbol)}</OptionValue>
                             )}
+                            {customFeeHasError && <OptionValue>(not valid)</OptionValue>}
                         </OptionWrapper>
                     )}
                 />
             </Row>
-            {networkType !== 'ethereum' && selectedFee.label === 'custom' && <CustomFee />}
+            <CustomFee isVisible={networkType !== 'ethereum' && selectedFee.label === 'custom'} />
         </Wrapper>
     );
 };

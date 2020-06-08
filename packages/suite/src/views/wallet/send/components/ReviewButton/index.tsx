@@ -63,12 +63,10 @@ const isDisabled = (
 };
 
 export default () => {
-    const { errors, getValues } = useFormContext();
+    const { errors } = useFormContext();
     const { online, locks, device, outputs, token, transactionInfo } = useSendContext();
     const { openModal } = useActions({ openModal: modalActions.openModal });
 
-    const values = getValues();
-    console.log('values', values);
     return (
         <Wrapper>
             <Row>
