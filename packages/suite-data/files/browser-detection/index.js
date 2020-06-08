@@ -50,7 +50,6 @@ window.onload = function() {
     ];
 
     var parser = new UAParser();
-
     var result = parser.getResult();
     
     var isMobile = result.device.type === 'mobile';
