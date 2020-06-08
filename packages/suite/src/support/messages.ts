@@ -3459,6 +3459,24 @@ const definedMessages = defineMessages({
         id: 'TR_INCLUDING_FEE',
         defaultMessage: 'Including fee',
     },
+    BACKUP_BACKUP_ALREADY_FINISHED_HEADING: {
+        id: 'BACKUP_BACKUP_ALREADY_FINISHED',
+        defaultMessage: 'Backup already finished',
+    },
+    BACKUP_BACKUP_ALREADY_FINISHED_DESCRIPTION: {
+        id: 'BACKUP_BACKUP_ALREADY_FINISHED_DESCRIPTION',
+        defaultMessage:
+            'Connected device as backup already finished. You should have a recovery seed written down and hidden in a safe place.',
+    },
+    BACKUP_BACKUP_ALREADY_FAILED_HEADING: {
+        id: 'BACKUP_BACKUP_ALREADY_FAILED_HEADING',
+        defaultMessage: 'Backup failed',
+    },
+    BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION: {
+        id: 'BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION',
+        defaultMessage:
+            'A previous attempt to backup this device failed. Device backup may be done only once.',
+    },
 } as const);
 
 export default definedMessages;
