@@ -42,7 +42,7 @@ const Right = styled.div`
 // `;
 
 const Content = styled.div`
-    margin: 80px 0 0 0;
+    margin: 70px 0 0 0;
     flex: 1;
     max-width: 640px;
 `;
