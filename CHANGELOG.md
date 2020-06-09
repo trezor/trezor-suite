@@ -1,6 +1,8 @@
 # Changelog
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). [YY.MM.MICRO]
 
-## [Unreleased]
+
+## [20.6.1-beta]
 
 ### Added
 - Error page: option to clear storage
@@ -27,6 +29,6 @@
 - ConnectDevice: remove udev installers on android (mobile)
 
 
-## [2020.05.27-beta]
+## [20.5.1-beta]
 ### Added
 - Initial beta release
