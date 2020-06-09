@@ -35,8 +35,8 @@ suite-desktop build windows:
         paths:
             - ${DESKTOP_APP_NAME}-*.exe
 
-suite-desktop deploy:
-    stage: deploy artifacts, others
+suite-desktop deploy dev:
+    stage: deploy to dev
     only:
         refs:
             - develop
@@ -51,3 +51,12 @@ suite-desktop deploy:
         - rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe "${DEPLOY_DIRECTORY}/"
     tags:
         - deploy
+
+suite-desktop publish prod:
+    stage: deploy to production
+    only:
+        refs:
+            - releases
+    script:
+        - cd packages/suite-desktop
+        - yarn publish
