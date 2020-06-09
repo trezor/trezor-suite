@@ -1,5 +1,5 @@
 {
-    "name": "@trezors/landing-page",
+    "name": "@trezor/landing-page",
     "version": "20.5.1-beta",
     "private": true,
     "scripts": {
