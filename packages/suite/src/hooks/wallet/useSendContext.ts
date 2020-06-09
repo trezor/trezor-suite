@@ -9,7 +9,6 @@ export type Output = { id: number };
 export interface SendContext {
     account: Account;
     network: Network;
-    settings: AppState['suite']['settings'];
     device: TrezorDevice;
     online: boolean;
     fiat: AppState['wallet']['fiat'];

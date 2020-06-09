@@ -355,3 +355,25 @@ export const composeBtcTransaction = async (
         return resp.payload[0];
     }
 };
+
+export const composeTx = async (
+    account: Account,
+    formValues: any,
+    selectedFee: SendContext['selectedFee'],
+    outputs: SendContext['outputs'],
+    token: SendContext['token'],
+) => {
+    if (account.networkType === 'ripple') {
+        const amount = formValues['amount-0'];
+        return composeXrpTransaction(account, amount, selectedFee);
+    }
+
+    if (account.networkType === 'ethereum') {
+        const amount = formValues['amount-0'];
+        return composeEthTransaction(account, amount, selectedFee, token, true);
+    }
+
+    if (account.networkType === 'bitcoin') {
+        await composeBtcTransaction(account, formValues, outputs, selectedFee, true);
+    }
+};

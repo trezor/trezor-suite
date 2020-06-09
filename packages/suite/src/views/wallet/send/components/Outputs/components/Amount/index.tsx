@@ -3,12 +3,7 @@ import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { Input, variables } from '@trezor/components';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import {
-    composeEthTransaction,
-    composeXrpTransaction,
-    composeBtcTransaction,
-    getState,
-} from '@wallet-utils/sendFormUtils';
+import { composeTx, getState } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -85,7 +80,6 @@ export default ({ outputId }: { outputId: number }) => {
     const { register, errors, formState, getValues, setValue } = useFormContext();
     const inputName = `amount-${outputId}`;
     const inputNameMax = `setMaxActive-${outputId}`;
-    const amount = getValues(inputName);
     const touched = formState.dirtyFields.has(inputName);
     const { symbol, availableBalance, networkType } = account;
     const formattedAvailableBalance = token
@@ -115,50 +109,18 @@ export default ({ outputId }: { outputId: number }) => {
                         iconSize: 15,
                         onClick: async () => {
                             const formValues = getValues();
-                            if (networkType === 'ripple') {
-                                const composedTransaction = composeXrpTransaction(
-                                    account,
-                                    amount,
-                                    selectedFee,
-                                );
+                            const composedTransaction = await composeTx(
+                                account,
+                                formValues,
+                                selectedFee,
+                                outputs,
+                                token,
+                            );
 
-                                if (composedTransaction && composedTransaction.type !== 'error') {
-                                    setTransactionInfo(composedTransaction);
-                                    setValue(inputName, composedTransaction.max);
-                                    setValue(inputNameMax, true);
-                                }
-                            }
-
-                            if (networkType === 'ethereum') {
-                                const composedTransaction = composeEthTransaction(
-                                    account,
-                                    amount,
-                                    selectedFee,
-                                    token,
-                                    true,
-                                );
-
-                                if (composedTransaction && composedTransaction.type !== 'error') {
-                                    setTransactionInfo(composedTransaction);
-                                    setValue(inputName, composedTransaction.max);
-                                    setValue(inputNameMax, true);
-                                }
-                            }
-
-                            if (networkType === 'bitcoin') {
-                                const composedTransaction = await composeBtcTransaction(
-                                    account,
-                                    formValues,
-                                    outputs,
-                                    selectedFee,
-                                    true,
-                                );
-
-                                if (composedTransaction && composedTransaction.type === 'final') {
-                                    setTransactionInfo(composedTransaction);
-                                    setValue(inputName, composedTransaction.max);
-                                    setValue(inputNameMax, true);
-                                }
+                            if (composedTransaction && composedTransaction.type !== 'error') {
+                                setTransactionInfo(composedTransaction);
+                                setValue(inputName, composedTransaction.max);
+                                setValue(inputNameMax, true);
                             }
                         },
                         text: <Translation id="TR_SEND_SEND_MAX" />,

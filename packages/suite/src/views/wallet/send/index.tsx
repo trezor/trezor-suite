@@ -1,4 +1,4 @@
-import { SendContext } from '@suite/hooks/wallet/useSendContext';
+import { SendContext } from '@wallet-hooks/useSendContext';
 import { WalletLayout } from '@wallet-components';
 import { Card, Translation } from '@suite-components';
 import React, { useState } from 'react';
@@ -40,16 +40,7 @@ const StyledCard = styled(Card)`
     margin-bottom: 40px;
 `;
 
-export default ({
-    device,
-    fees,
-    selectedAccount,
-    locks,
-    online,
-    settings,
-    fiat,
-    localCurrency,
-}: Props) => {
+export default ({ device, fees, selectedAccount, locks, online, fiat, localCurrency }: Props) => {
     if (!device || !fees || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Send" account={selectedAccount} />;
     }
@@ -60,19 +51,13 @@ export default ({
     const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
     const initialSelectedFee = levels.find(l => l.label === 'normal') || levels[0];
-
     const [advancedForm, showAdvancedForm] = useState(false);
     const [token, setToken] = useState(null);
     const [feeOutdated, setFeeOutdated] = useState(false);
     const [transactionInfo, setTransactionInfo] = useState(null);
     const [selectedFee, setSelectedFee] = useState(initialSelectedFee);
     const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
-
-    const initialOutputs = [
-        {
-            id: 0,
-        },
-    ];
+    const initialOutputs = [{ id: 0 }];
     const [outputs, updateOutputs] = useState(initialOutputs);
 
     const methods = useForm({
@@ -109,7 +94,6 @@ export default ({
                     advancedForm,
                     showAdvancedForm,
                     account,
-                    settings,
                     fiat,
                     feeOutdated,
                     setFeeOutdated,
