@@ -488,7 +488,10 @@ describe('Discovery Actions', () => {
 
     it('First iteration malformed error (not a json)', async () => {
         const f = new Promise(resolve => {
-            setTimeout(() => resolve(paramsError('not-a-json', 'bundle_fw_exception')), 100);
+            setTimeout(
+                () => resolve(paramsError('not-a-json', 'Method_Discovery_BundleException')),
+                100,
+            );
         });
         // set fixtures in trezor-connect
         require('trezor-connect').setTestFixtures(f);
@@ -502,7 +505,7 @@ describe('Discovery Actions', () => {
 
     it('First iteration malformed error (invalid json not an array)', async () => {
         const f = new Promise(resolve => {
-            setTimeout(() => resolve(paramsError('{}', 'bundle_fw_exception')), 100);
+            setTimeout(() => resolve(paramsError('{}', 'Method_Discovery_BundleException')), 100);
         });
         // set fixtures in trezor-connect
         require('trezor-connect').setTestFixtures(f);
@@ -579,7 +582,7 @@ describe('Discovery Actions', () => {
                 });
             }
             // return error
-            return paramsError(JSON.stringify(failedAccounts), 'bundle_fw_exception');
+            return paramsError(JSON.stringify(failedAccounts), 'Method_Discovery_BundleException');
         };
         // run process
         const store = initStore();

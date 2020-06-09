@@ -175,7 +175,10 @@ export default [
         description: 'Show address, trezor-connect permissions not granted',
         initialState: undefined,
         mocks: {
-            getAddress: { success: false, payload: { error: 'Runtime error', code: 403 } },
+            getAddress: {
+                success: false,
+                payload: { error: 'Runtime error', code: 'Method_PermissionsNotGranted' },
+            },
         },
         action: () => receiveActions.showAddress(PATH, ADDRESS),
         result: {
