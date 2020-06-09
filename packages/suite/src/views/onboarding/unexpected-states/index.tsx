@@ -101,7 +101,7 @@ const UnexpectedState = ({ onboarding, suite, children }: Props) => {
             case STEP.DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE:
                 return <IsNotNewDevice />;
             case STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE:
-                return <DeviceRecoveryMode />;
+                return <DeviceRecoveryMode modalProps={{ noBackground: true, size: 'small' }} />;
             default:
                 return null;
         }
