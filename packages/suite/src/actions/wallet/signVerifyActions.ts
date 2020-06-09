@@ -1,8 +1,9 @@
 import TrezorConnect from 'trezor-connect';
-import { validateAddress } from '@wallet-utils/ethUtils';
+import { isAddressValid } from '@wallet-utils/validation';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { SIGN_VERIFY } from './constants';
-import { Dispatch, GetState } from '@suite-types';
+import { GetState, Dispatch, ExtendedMessageDescriptor } from '@suite-types';
+import { Account as Account$ } from '@wallet-reducers/accountsReducer';
 
 export type inputNameType =
     | 'signAddress'
@@ -18,28 +19,53 @@ export type SignVerifyActions =
     | { type: typeof SIGN_VERIFY.CLEAR_VERIFY }
     | { type: typeof SIGN_VERIFY.INPUT_CHANGE; inputName: inputNameType; value: string }
     | { type: typeof SIGN_VERIFY.TOUCH; inputName: inputNameType }
-    | { type: typeof SIGN_VERIFY.ERROR; inputName: inputNameType; message?: string };
+    | {
+          type: typeof SIGN_VERIFY.ERROR;
+          inputName: inputNameType;
+          message: ExtendedMessageDescriptor['id'];
+      };
 
-export const sign = (path: [number], message: string, hex = false) => async (
+export const sign = (message: string, path: string, hex = false) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const selectedDevice = getState().suite.device;
-    if (!selectedDevice) return;
+    const { device } = getState().suite;
+    const { account } = getState().wallet.selectedAccount;
+    if (!device || !account) return;
 
-    const response = await TrezorConnect.ethereumSignMessage({
-        device: {
-            path: selectedDevice.path,
-            instance: selectedDevice.instance,
-            state: selectedDevice.state,
-        },
+    let fn;
+
+    switch (account.networkType) {
+        case 'bitcoin': {
+            fn = TrezorConnect.signMessage;
+            break;
+        }
+        case 'ethereum': {
+            fn = TrezorConnect.ethereumSignMessage;
+            break;
+        }
+        default: {
+            fn = () => ({
+                success: false,
+                payload: {
+                    error: `Unsupported network: ${account.networkType}`,
+                    code: undefined,
+                    signature: '',
+                },
+            });
+            break;
+        }
+    }
+
+    const params = {
         path,
-        hex,
+        coin: account.symbol,
         message,
-        useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
-    });
+        hex,
+    };
 
-    if (response && response.success) {
+    const response = await fn(params);
+    if (response.success) {
         dispatch({
             type: SIGN_VERIFY.SIGN_SUCCESS,
             signSignature: response.payload.signature,
@@ -58,9 +84,40 @@ export const verify = (address: string, message: string, signature: string, hex 
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const selectedDevice = getState().suite.device;
-    if (!selectedDevice) return;
-    const error = validateAddress(address);
+    const { device } = getState().suite;
+    const { account } = getState().wallet.selectedAccount;
+    if (!device || !account) return;
+
+    let fn;
+    const params = {
+        address,
+        message,
+        signature,
+        coin: account.symbol,
+        hex,
+    };
+    const error = isAddressValid(address, params.coin as Account$['symbol'])
+        ? null
+        : 'TR_ADDRESS_IS_NOT_VALID';
+
+    switch (account.networkType) {
+        case 'bitcoin':
+            fn = TrezorConnect.verifyMessage;
+            break;
+        case 'ethereum':
+            fn = TrezorConnect.ethereumVerifyMessage;
+            break;
+        default:
+            fn = () => ({
+                success: false,
+                payload: {
+                    error: `Unsupported network: ${account.networkType}`,
+                    code: undefined,
+                    signature: '',
+                },
+            });
+            break;
+    }
 
     if (error) {
         dispatch({
@@ -68,40 +125,31 @@ export const verify = (address: string, message: string, signature: string, hex 
             inputName: 'verifyAddress',
             message: error,
         });
+        return;
     }
 
-    if (!error) {
-        const response = await TrezorConnect.ethereumVerifyMessage({
-            device: {
-                path: selectedDevice.path,
-                instance: selectedDevice.instance,
-                state: selectedDevice.state,
-            },
-            address,
-            message,
-            signature,
-            hex,
-            useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
-        });
+    const response = await fn(params);
 
-        if (response && response.success) {
-            dispatch(
-                notificationActions.addToast({
-                    type: 'verify-message-success',
-                }),
-            );
-        } else {
-            dispatch(
-                notificationActions.addToast({
-                    type: 'verify-message-error',
-                    error: response.payload.error,
-                }),
-            );
-        }
+    if (response.success) {
+        dispatch(
+            notificationActions.addToast({
+                type: 'verify-message-success',
+            }),
+        );
+    } else {
+        dispatch(
+            notificationActions.addToast({
+                type: 'verify-message-error',
+                error: response.payload.error,
+            }),
+        );
     }
 };
 
-export const inputChange = (inputName: inputNameType, value: string) => (dispatch: Dispatch) => {
+export const inputChange = (inputName: inputNameType, value: string) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     dispatch({
         type: SIGN_VERIFY.INPUT_CHANGE,
         inputName,
@@ -113,7 +161,12 @@ export const inputChange = (inputName: inputNameType, value: string) => (dispatc
     });
 
     if (inputName === 'verifyAddress') {
-        const error = validateAddress(value);
+        const { account } = getState().wallet.selectedAccount;
+        if (!account) return;
+        const error = isAddressValid(value, account.symbol as Account$['symbol'])
+            ? null
+            : 'TR_ADDRESS_IS_NOT_VALID';
+
         if (error) {
             dispatch({
                 type: SIGN_VERIFY.ERROR,

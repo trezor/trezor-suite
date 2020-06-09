@@ -1,10 +1,11 @@
 import produce from 'immer';
 import { SIGN_VERIFY } from '@wallet-actions/constants';
 import { WalletAction } from '@wallet-types';
+import { ExtendedMessageDescriptor } from '@suite-types';
 
 interface Error {
     inputName: string;
-    message?: string;
+    message: ExtendedMessageDescriptor['id'];
 }
 
 interface State {
