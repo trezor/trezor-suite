@@ -1,6 +1,19 @@
 [
 	{
 		"required": false,
+		"version": [1, 9, 1],
+		"bootloader_version": [1, 8, 0],
+		"min_bridge_version": [2, 0, 25],
+		"min_firmware_version": [1, 6, 2],
+		"min_bootloader_version": [1, 5, 0],
+		"url": "data/firmware/1/trezor-1.9.1.bin",
+		"url_bitcoinonly": "data/firmware/1/trezor-1.9.1-bitcoinonly.bin",
+		"fingerprint": "30cde253c46d4fc705f98634a35d06a494cf2a36824622a9c6a573e07f14292d",
+		"fingerprint_bitcoinonly": "ee743e3bd1e424ceb45a1d877a5422e7af449706f636c459cdd8bb0d4796cba5",
+		"changelog": "* Refactor Bitcoin signing"
+	},
+	{
+		"required": false,
 		"version": [1, 9, 0],
 		"bootloader_version": [1, 8, 0],
 		"min_bridge_version": [2, 0, 25],
@@ -10,7 +23,7 @@
 		"url_bitcoinonly": "data/firmware/1/trezor-1.9.0-bitcoinonly.bin",
 		"fingerprint": "1f40d1e68f9d182888b5b60da5209eff047ec68fcc96a5c9b61b0e55dd07d458",
 		"fingerprint_bitcoinonly": "93a670dd20d044bf76cfce6eecd2a85918acdebe616229dbb31250fd03a33870",
-		"changelog": "*Introduce Wipe Code\n* Introduce passphrase cache"
+		"changelog": "* Introduce Wipe Code\n* Introduce passphrase cache"
 	},
 	{
 		"required": false,
