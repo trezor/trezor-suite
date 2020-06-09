@@ -101,7 +101,7 @@ interface Props {
 const BottomMenu = (props: Props) => {
     const analytics = useAnalytics();
     const gotoWithReport = (routeName: Parameters<typeof props.goto>[0]) => {
-        analytics.report({ type: 'ui', payload: `menu/goto/${routeName}` });
+        analytics.report({ eventType: 'ui', payload: `menu/goto/${routeName}` });
         props.goto(routeName);
     };
 
@@ -164,6 +164,10 @@ const BottomMenu = (props: Props) => {
                             isSmall
                             checked={props.discreetMode}
                             onChange={checked => {
+                                analytics.report({
+                                    eventType: 'ui',
+                                    payload: `@suite/menu/discreet-${checked ? 'on' : 'off'}`,
+                                });
                                 props.setDiscreetMode(checked);
                             }}
                         />

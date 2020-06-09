@@ -3,6 +3,7 @@ import { Button, Tooltip } from '@trezor/components';
 import { Account, Network } from '@wallet-types';
 import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
+import { useAnalytics } from '@suite-hooks';
 
 interface Props {
     network: Network;
@@ -26,12 +27,21 @@ export default (props: Props) => {
         tooltip = <Translation {...messages.MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED} />;
     }
 
+    const analytics = useAnalytics();
+
     const addButton = (
         <Button
             icon="PLUS"
             variant="primary"
             isDisabled={!!tooltip}
-            onClick={() => props.onEnableAccount(account)}
+            onClick={() => {
+                props.onEnableAccount(account);
+                // just to log that account was added manually.
+                analytics.report({
+                    eventType: 'ui',
+                    payload: `@wallet/add-account/${account.symbol}/${account.accountType}/${account.index}`,
+                });
+            }}
         >
             <Translation {...messages.TR_ADD_ACCOUNT} />
         </Button>

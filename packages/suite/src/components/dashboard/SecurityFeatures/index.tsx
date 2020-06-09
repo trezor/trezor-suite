@@ -88,7 +88,7 @@ const SecurityFeatures = ({
                   action: () => {
                       goto('backup-index');
                       analytics.report({
-                          type: 'ui',
+                          eventType: 'ui',
                           payload: 'dashboard/security-card/create-backup',
                       });
                   },
@@ -104,7 +104,7 @@ const SecurityFeatures = ({
                   action: () => {
                       goto('settings-device');
                       analytics.report({
-                          type: 'ui',
+                          eventType: 'ui',
                           payload: 'dashboard/security-card/seed-link',
                       });
                   },
@@ -122,7 +122,10 @@ const SecurityFeatures = ({
                   dataTest: 'pin',
                   action: () => {
                       changePin({});
-                      analytics.report({ type: 'ui', payload: 'dashboard/security-card/set-pin' });
+                      analytics.report({
+                          eventType: 'ui',
+                          payload: 'dashboard/security-card/set-pin',
+                      });
                   },
                   isDisabled: !isTrezorActionEnabled,
               },
@@ -137,7 +140,7 @@ const SecurityFeatures = ({
                   action: () => {
                       goto('settings-device');
                       analytics.report({
-                          type: 'ui',
+                          eventType: 'ui',
                           payload: 'dashboard/security-card/change-pin',
                       });
                   },
@@ -158,7 +161,7 @@ const SecurityFeatures = ({
                           use_passphrase: true,
                       });
                       analytics.report({
-                          type: 'ui',
+                          eventType: 'ui',
                           payload: 'dashboard/security-card/enable-passphrase',
                       });
                   },
@@ -175,7 +178,7 @@ const SecurityFeatures = ({
                   action: () => {
                       createDeviceInstance(device as AcquiredDevice);
                       analytics.report({
-                          type: 'ui',
+                          eventType: 'ui',
                           payload: 'dashboard/security-card/create-hidden-wallet',
                       });
                   },
@@ -195,7 +198,7 @@ const SecurityFeatures = ({
                   action: () => {
                       setDiscreetMode(true);
                       analytics.report({
-                          type: 'ui',
+                          eventType: 'ui',
                           payload: 'dashboard/security-card/enable-discreet',
                       });
                   },
@@ -215,7 +218,7 @@ const SecurityFeatures = ({
                   action: () => {
                       setDiscreetMode(!discreetMode);
                       analytics.report({
-                          type: 'ui',
+                          eventType: 'ui',
                           payload: 'dashboard/security-card/toggle-discreet',
                       });
                   },

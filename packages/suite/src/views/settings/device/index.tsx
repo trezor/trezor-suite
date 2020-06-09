@@ -100,7 +100,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             onClick={() => {
                                 goto('backup-index', { cancelable: true });
                                 analytics.report({
-                                    type: 'ui',
+                                    eventType: 'ui',
                                     payload: 'settings/device/goto/backup',
                                 });
                             }}
@@ -148,7 +148,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                 onClick={() => {
                                     goto('recovery-index', { cancelable: true });
                                     analytics.report({
-                                        type: 'ui',
+                                        eventType: 'ui',
                                         payload: 'settings/device/goto/recovery',
                                     });
                                 }}
@@ -185,7 +185,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             onClick={() => {
                                 goto('firmware-index', { cancelable: true });
                                 analytics.report({
-                                    type: 'ui',
+                                    eventType: 'ui',
                                     payload: 'settings/device/goto/firmware',
                                 });
                             }}
@@ -212,7 +212,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             onChange={() => {
                                 changePin({ remove: features.pin_protection });
                                 analytics.report({
-                                    type: 'ui',
+                                    eventType: 'ui',
                                     payload: 'settings/device/change-pin',
                                 });
                             }}
@@ -291,7 +291,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             onClick={() => {
                                 applySettings({ label });
                                 analytics.report({
-                                    type: 'ui',
+                                    eventType: 'ui',
                                     payload: 'settings/device/change-label',
                                 });
                             }}
@@ -346,7 +346,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                     device,
                                 });
                                 analytics.report({
-                                    type: 'ui',
+                                    eventType: 'ui',
                                     payload: 'settings/device/goto/background',
                                 });
                             }}
@@ -398,7 +398,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                             display_rotation: variant.value,
                                         });
                                         analytics.report({
-                                            type: 'ui',
+                                            eventType: 'ui',
                                             payload: `settings/device/change-orientation/${variant.value}`,
                                         });
                                     }}
@@ -425,7 +425,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                     type: 'wipe-device',
                                 });
                                 analytics.report({
-                                    type: 'ui',
+                                    eventType: 'ui',
                                     payload: 'settings/device/goto/wipe',
                                 });
                             }}

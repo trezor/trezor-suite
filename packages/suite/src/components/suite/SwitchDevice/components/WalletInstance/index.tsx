@@ -142,7 +142,7 @@ const WalletInstance = ({
                             onChange={() =>
                                 rememberDevice(instance) &&
                                 analytics.report({
-                                    type: 'ui',
+                                    eventType: 'ui',
                                     payload: `switch-device/${
                                         instance.remember ? 'forget' : 'remember'
                                     }`,
@@ -157,7 +157,10 @@ const WalletInstance = ({
                             variant="secondary"
                             onClick={() =>
                                 forgetDevice(instance) &&
-                                analytics.report({ type: 'ui', payload: 'switch-device/eject' })
+                                analytics.report({
+                                    eventType: 'ui',
+                                    payload: 'switch-device/eject',
+                                })
                             }
                         >
                             <Translation id="TR_EJECT_WALLET" />

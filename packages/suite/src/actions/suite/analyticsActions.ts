@@ -1,10 +1,11 @@
+import * as Sentry from '@sentry/browser';
+
 import { ANALYTICS } from '@suite-actions/constants';
 import { isDev } from '@suite-utils/build';
 import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { getAnalyticsRandomId } from '@suite-utils/random';
+import { encodeDataToQueryString } from '@suite-utils/analytics';
 import { Account } from '@wallet-types';
-import qs from 'qs';
-import * as Sentry from '@sentry/browser';
 
 export type AnalyticsActions =
     | { type: typeof ANALYTICS.DISPOSE }
@@ -17,7 +18,7 @@ export type Payload =
     but it might also be suite default setup that is loaded when suite starts for the first time.
     */
     | {
-          type: 'suite-ready';
+          eventType: 'suite-ready';
           payload: {
               language: AppState['suite']['settings']['language'];
               enabledNetworks: AppState['wallet']['settings']['enabledNetworks'];
@@ -25,12 +26,12 @@ export type Payload =
               discreetMode: AppState['wallet']['settings']['discreetMode'];
           };
       }
-    | { type: 'transport-type'; payload: { type: string; version: string } }
+    | { eventType: 'transport-type'; payload: { type: string; version: string } }
     // device-connect
     // is logged when user connects device
     // - if device is not in bootloader, some of its features are logged
     | {
-          type: 'device-connect';
+          eventType: 'device-connect';
           payload: {
               mode: TrezorDevice['mode'];
               firmware: string;
@@ -41,7 +42,7 @@ export type Payload =
     // device-update-firmware
     // is log after firmware update call to device is finished.
     | {
-          type: 'device-update-firmware';
+          eventType: 'device-update-firmware';
           payload: {
               // version of bootloader before update started. unluckily fw version before update is not logged
               fromBlVersion: string;
@@ -54,18 +55,18 @@ export type Payload =
           };
       }
     // - if device is in bootloader, only this event is logged
-    | { type: 'device-connect'; payload: { mode: 'bootloader' } }
+    | { eventType: 'device-connect'; payload: { mode: 'bootloader' } }
     // initial-run-completed
     // when new installation of trezor suite starts it is in initial-run mode which means that some additional screens appear (welcome, analytics, onboarding)
     // it is completed either by going trough onboarding or skipping it. once completed event is registered, we log some data connected up to this point
     | {
-          type: 'initial-run-completed';
+          eventType: 'initial-run-completed';
           payload: {
               analytics: false;
           };
       }
     | {
-          type: 'initial-run-completed';
+          eventType: 'initial-run-completed';
           payload: {
               analytics: true;
               // how many users chose to create new wallet
@@ -81,7 +82,7 @@ export type Payload =
     // logged either automatically upon each suite start as default switched on accounts are loaded
     // or when user adds account manually
     | {
-          type: 'account-create';
+          eventType: 'account-create';
           payload: {
               // normal, segwit, legacy
               type: Account['accountType'];
@@ -96,7 +97,7 @@ export type Payload =
     // every logged event has payload which describes where user clicked, for example payload: "menu/settings"
     // todo: make this also strongly typed?
     | {
-          type: 'ui';
+          eventType: 'ui';
           payload: string;
       };
 
@@ -164,31 +165,7 @@ export const report = (data: Payload, force = false) => async (
         return;
     }
 
-    // watched data is sent in query string
-    const commonEncoded = qs.stringify({
-        commit: process.env.COMMITHASH,
-        sessionId,
-        instanceId,
-    });
-
-    let eventSpecificEncoded;
-    if (typeof data.payload !== 'string') {
-        eventSpecificEncoded = qs.stringify(
-            {
-                type: data.type,
-                ...data.payload,
-            },
-            {
-                arrayFormat: 'comma',
-            },
-        );
-    } else {
-        eventSpecificEncoded = qs.stringify({
-            type: data.type,
-            payload: data.payload,
-        });
-    }
-
+    const qs = encodeDataToQueryString(data, { sessionId, instanceId });
     const url = getUrl();
 
     if (!url) {
@@ -197,7 +174,7 @@ export const report = (data: Payload, force = false) => async (
     }
 
     try {
-        fetch(`${url}?${commonEncoded}&${eventSpecificEncoded}`, {
+        fetch(`${url}?${qs}`, {
             method: 'GET',
         });
     } catch (err) {
