@@ -10,7 +10,7 @@ export const encodeDataToQueryString = (data: Payload, common: Common) => {
     const commonEncoded = qs.stringify({
         // simple semver for data-analytics part.
         // <breaking-change>.<analytics-extended>
-        version: '1.0',
+        v: '1.0',
         commit: process.env.COMMITHASH,
         ...common,
     });

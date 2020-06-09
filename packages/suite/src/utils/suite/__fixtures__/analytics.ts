@@ -1,3 +1,5 @@
+const version = '1.0';
+
 export default [
     {
         input: {
@@ -8,7 +10,7 @@ export default [
             },
         },
         encoded: {
-            common: 'instanceId=1&sessionId=2',
+            common: `v=${version}&instanceId=1&sessionId=2`,
             specific: 'eventType=transport-type&type=bridge&version=2',
         },
     },
@@ -20,7 +22,7 @@ export default [
             },
         },
         encoded: {
-            common: 'instanceId=1&sessionId=2',
+            common: `v=${version}&instanceId=1&sessionId=2`,
             specific: 'eventType=initial-run-completed&analytics=false',
         },
     },
@@ -35,7 +37,7 @@ export default [
             },
         },
         encoded: {
-            common: 'instanceId=1&sessionId=2',
+            common: `v=${version}&instanceId=1&sessionId=2`,
             specific:
                 'eventType=suite-ready&language=en&enabledNetworks=btc%2Ceth&localCurrency=czk&discreetMode=true',
         },

@@ -12,12 +12,12 @@ export type AnalyticsActions =
     | { type: typeof ANALYTICS.INIT; payload: { instanceId: string } };
 
 export type Payload =
-    /*
-    suite-ready
-    Triggers on application start. Logs part of suite setup that might have been loaded from storage
-    but it might also be suite default setup that is loaded when suite starts for the first time.
-    */
     | {
+          /**
+        suite-ready
+        Triggers on application start. Logs part of suite setup that might have been loaded from storage
+        but it might also be suite default setup that is loaded when suite starts for the first time.
+        */
           eventType: 'suite-ready';
           payload: {
               language: AppState['suite']['settings']['language'];
@@ -27,10 +27,12 @@ export type Payload =
           };
       }
     | { eventType: 'transport-type'; payload: { type: string; version: string } }
-    // device-connect
-    // is logged when user connects device
-    // - if device is not in bootloader, some of its features are logged
     | {
+          /**
+        device-connect
+        is logged when user connects device
+        - if device is not in bootloader, some of its features are logged 
+        */
           eventType: 'device-connect';
           payload: {
               mode: TrezorDevice['mode'];
@@ -39,27 +41,34 @@ export type Payload =
               passphrase_protection: boolean;
           };
       }
-    // device-update-firmware
-    // is log after firmware update call to device is finished.
     | {
+          /** if device is in bootloader, only this event is logged */
+          eventType: 'device-connect';
+          payload: { mode: 'bootloader' };
+      }
+    | {
+          /**
+        device-update-firmware
+        is log after firmware update call to device is finished. 
+        */
           eventType: 'device-update-firmware';
           payload: {
-              // version of bootloader before update started. unluckily fw version before update is not logged
+              /** version of bootloader before update started. unluckily fw version before update is not logged */
               fromBlVersion: string;
-              // version of the new firmware e.g 1.2.3
+              /** version of the new firmware e.g 1.2.3 */
               toFwVersion: string;
-              // is new firmware bitcoin only variant?
+              /** is new firmware bitcoin only variant? */
               toBtcOnly: boolean;
-              // if finished with error, field error contains error string, otherwise is empty
+              /** if finished with error, field error contains error string, otherwise is empty */
               error: string;
           };
       }
-    // - if device is in bootloader, only this event is logged
-    | { eventType: 'device-connect'; payload: { mode: 'bootloader' } }
-    // initial-run-completed
-    // when new installation of trezor suite starts it is in initial-run mode which means that some additional screens appear (welcome, analytics, onboarding)
-    // it is completed either by going trough onboarding or skipping it. once completed event is registered, we log some data connected up to this point
     | {
+          /**
+        initial-run-completed
+        when new installation of trezor suite starts it is in initial-run mode which means that some additional screens appear (welcome, analytics, onboarding)
+        it is completed either by going trough onboarding or skipping it. once completed event is registered, we log some data connected up to this point     
+         */
           eventType: 'initial-run-completed';
           payload: {
               analytics: false;
@@ -69,19 +78,22 @@ export type Payload =
           eventType: 'initial-run-completed';
           payload: {
               analytics: true;
-              // how many users chose to create new wallet
+              /** how many users chose to create new wallet */
               createSeed: boolean;
-              // how many users chose to do recovery
+              /** how many users chose to do recovery */
+
               recoverSeed: boolean;
-              // how many users clicked that they have a new/used device
+              /**  how many users clicked that they have a new/used device */
               newDevice: boolean;
               usedDevice: boolean;
           };
       }
-    // account-create
-    // logged either automatically upon each suite start as default switched on accounts are loaded
-    // or when user adds account manually
     | {
+          /**
+        account-create
+        logged either automatically upon each suite start as default switched on accounts are loaded
+        or when user adds account manually 
+        */
           eventType: 'account-create';
           payload: {
               // normal, segwit, legacy
@@ -92,11 +104,13 @@ export type Payload =
               symbol: Account['symbol'];
           };
       }
-    // ui
-    // this is general category of click into ui.
-    // every logged event has payload which describes where user clicked, for example payload: "menu/settings"
-    // todo: make this also strongly typed?
     | {
+          /**
+        ui
+        this is general category of click into ui.
+        every logged event has payload which describes where user clicked, for example payload: "menu/settings"
+        todo: make this also strongly typed? 
+         */
           eventType: 'ui';
           payload: string;
       };
@@ -164,7 +178,6 @@ export const report = (data: Payload, force = false) => async (
     if (!enabled && !force) {
         return;
     }
-
     const qs = encodeDataToQueryString(data, { sessionId, instanceId });
     const url = getUrl();
 

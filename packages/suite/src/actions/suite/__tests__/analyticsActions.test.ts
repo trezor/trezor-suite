@@ -67,7 +67,7 @@ describe('Analytics Actions', () => {
         // @ts-ignore
         expect(global.fetch).toHaveBeenNthCalledWith(
             1,
-            'https://data.trezor.io/suite/log/desktop/beta.log?sessionId=very-random&instanceId=1&eventType=ui&payload=test-bla-bla',
+            'https://data.trezor.io/suite/log/desktop/beta.log?v=1.0&sessionId=very-random&instanceId=1&eventType=ui&payload=test-bla-bla',
             { method: 'GET' },
         );
         process.env.SUITE_TYPE = env;
