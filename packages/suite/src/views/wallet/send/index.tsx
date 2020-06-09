@@ -52,6 +52,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     const feeInfo = { ...coinFees, levels };
     const initialSelectedFee = levels.find(l => l.label === 'normal') || levels[0];
     const [advancedForm, showAdvancedForm] = useState(false);
+    const [destinationAddressEmpty, setDestinationAddressEmpty] = useState(false);
     const [token, setToken] = useState(null);
     const [feeOutdated, setFeeOutdated] = useState(false);
     const [transactionInfo, setTransactionInfo] = useState(null);
@@ -82,6 +83,8 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
                     feeInfo,
                     initialSelectedFee,
                     outputs,
+                    destinationAddressEmpty,
+                    setDestinationAddressEmpty,
                     network,
                     localCurrencyOption,
                     updateOutputs,

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Select, Input } from '@trezor/components';
 import { getState } from '@wallet-utils/sendFormUtils';
+import { fromFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { useFormContext } from 'react-hook-form';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { FIAT } from '@suite-config';
@@ -33,16 +34,29 @@ export default ({ outputId }: { outputId: number }) => {
 
     return (
         <Wrapper>
-            <Input state={getState(error)} name={inputName} innerRef={register} />
+            <Input
+                state={getState(error)}
+                name={inputName}
+                innerRef={register}
+                onChange={() => {
+                    // const coinValue = fromFiatCurrency(
+                    //     event.target.value,
+                    //     getValues(inputNameSelect),
+                    //     fiat,
+                    //     2
+                    // );
+                    // console.log('coinValue', coinValue)
+                }}
+            />
             <SelectWrapper>
                 <Select
                     name={inputNameSelect}
                     innerRef={register}
                     isSearchable
                     isClearable={false}
-                    onChange={(value: { value: string; label: string }) =>
-                        setValue(inputNameSelect, value)
-                    }
+                    onChange={(value: { value: string; label: string }) => {
+                        setValue(inputNameSelect, value);
+                    }}
                     value={selectValue || localCurrencyOption}
                     options={FIAT.currencies.map((currency: string) =>
                         getCurrencyOptions(currency),

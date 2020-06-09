@@ -1,12 +1,12 @@
 import { FiatValue, QuestionTooltip, Translation } from '@suite-components';
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
+import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext';
 import { Input, variables } from '@trezor/components';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { composeTx, getState } from '@wallet-utils/sendFormUtils';
+import { composeTx, getState, hasDecimals } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
+import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import validator from 'validator';
 
@@ -67,6 +67,35 @@ const EqualsSign = styled.div`
 
 const getMaxIcon = (isActive: boolean) => (isActive ? 'CHECK' : 'SEND');
 
+const getError = (
+    error: NestDataObject<Record<string, any>, FieldError>,
+    decimals: number,
+    symbol: SendContext['account']['symbol'],
+    reserve: string | null,
+) => {
+    const reserveError = 'TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE';
+    const currencyError = 'NOT_ENOUGH_CURRENCY_FEE';
+    const decimalError = 'TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS';
+    const { type } = error;
+
+    switch (type) {
+        case reserveError:
+            return <Translation id={reserveError} values={{ reserve }} />;
+        case decimalError:
+            return <Translation id="TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS" values={{ decimals }} />;
+        case currencyError:
+            return (
+                <Translation
+                    id="NOT_ENOUGH_CURRENCY_FEE"
+                    values={{ symbol: symbol.toUpperCase() }}
+                />
+            );
+
+        default:
+            return <Translation id={error.type} />;
+    }
+};
+
 export default ({ outputId }: { outputId: number }) => {
     const {
         account,
@@ -76,8 +105,9 @@ export default ({ outputId }: { outputId: number }) => {
         selectedFee,
         outputs,
         localCurrencyOption,
+        destinationAddressEmpty,
     } = useSendContext();
-    const { register, errors, formState, getValues, setValue } = useFormContext();
+    const { register, errors, formState, getValues, setValue, setError } = useFormContext();
     const inputName = `amount-${outputId}`;
     const inputNameMax = `setMaxActive-${outputId}`;
     const touched = formState.dirtyFields.has(inputName);
@@ -117,6 +147,10 @@ export default ({ outputId }: { outputId: number }) => {
                                 token,
                             );
 
+                            if (composedTransaction && composedTransaction.type === 'error') {
+                                setError(inputName, composedTransaction.error);
+                            }
+
                             if (composedTransaction && composedTransaction.type !== 'error') {
                                 setTransactionInfo(composedTransaction);
                                 setValue(inputName, composedTransaction.max);
@@ -139,45 +173,23 @@ export default ({ outputId }: { outputId: number }) => {
                                 return !amountBig.isGreaterThan(formattedAvailableBalance);
                             },
                             TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE: (value: string) => {
-                                const amountBig = new BigNumber(value);
-                                return (
-                                    isDestinationAccountEmpty &&
-                                    reserve &&
-                                    amountBig.isLessThan(reserve)
-                                );
+                                if (networkType === 'ethereum' && reserve) {
+                                    const amountBig = new BigNumber(value);
+                                    return (
+                                        destinationAddressEmpty &&
+                                        reserve &&
+                                        amountBig.isLessThan(reserve)
+                                    );
+                                }
+                                return false;
                             },
-                            // TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS: (value: string) => {},
+                            TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS: (value: string) => {
+                                return hasDecimals(value, decimals);
+                            },
                         },
                     })}
                     name={inputName}
-                    bottomText={() => {
-                        const reserveError = 'TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE';
-                        const currencyError = 'NOT_ENOUGH_CURRENCY_FEE';
-                        const decimalError = 'TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS';
-                        const { type } = error;
-
-                        switch (type) {
-                            case reserveError:
-                                return <Translation id={reserveError} values={{ reserve }} />;
-                            case decimalError:
-                                return (
-                                    <Translation
-                                        id="TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                                        values={{ decimals }}
-                                    />
-                                );
-                            case currencyError:
-                                return (
-                                    <Translation
-                                        id="NOT_ENOUGH_CURRENCY_FEE"
-                                        values={{ symbol: symbol.toUpperCase() }}
-                                    />
-                                );
-
-                            default:
-                                return error && <Translation id={error.type} />;
-                        }
-                    }}
+                    bottomText={error && touched && getError(error, decimals, symbol, reserve)}
                 />
                 {tokenBalance && (
                     <TokenBalance>

@@ -16,7 +16,8 @@ export interface SendContext {
     feeInfo: FeeInfo;
     initialSelectedFee: FeeLevel;
     localCurrencyOption: { value: string; label: string };
-
+    destinationAddressEmpty: boolean;
+    setDestinationAddressEmpty: (isEmpty: boolean) => void;
     transactionInfo: null | PrecomposedTransaction;
     setTransactionInfo: (transactionInfo: null | PrecomposedTransaction) => void;
     token: null | TokenInfo;
