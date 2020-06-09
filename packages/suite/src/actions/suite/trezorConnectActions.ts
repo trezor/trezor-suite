@@ -117,7 +117,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     } catch (error) {
         dispatch({
             type: SUITE.ERROR,
-            error: typeof error === 'string' ? error : error.message, // TODO: use with code after trezor-connect@8.1.7
+            error: `${error.code}: ${error.message}`,
         });
     }
 };
