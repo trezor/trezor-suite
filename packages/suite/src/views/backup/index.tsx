@@ -6,9 +6,10 @@ import { H2, P, Button, ButtonProps, colors, Modal } from '@trezor/components';
 import * as backupActions from '@backup-actions/backupActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { Dispatch, AppState, InjectedModalApplicationProps } from '@suite-types';
-import { ProgressBar, Loading, Image, Translation } from '@suite-components';
+import { ProgressBar, Loading, Image, Translation, ExternalLink } from '@suite-components';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
 import { canStart, canContinue } from '@backup-utils';
+import { FAILED_BACKUP_URL } from '@suite-constants/urls';
 
 const Row = styled.div`
     display: flex;
@@ -96,7 +97,7 @@ const Backup = (props: Props) => {
     }
 
     /*
-        Edge case, user disconnected device he was doing backup initially with and connected another device 
+        Edge case, user disconnected the device he was doing backup initially with and connected another device 
         with backup finished or failed. Either way, there is no way.
     */
     if (backup.status !== 'finished' && !backup.error && device.features.needs_backup === false) {
@@ -104,16 +105,25 @@ const Backup = (props: Props) => {
             <Modal useFixedHeight cancelable onCancel={props.onCancel}>
                 {!device.features.unfinished_backup && (
                     <>
+                        <H2>
+                            <Translation id="BACKUP_BACKUP_ALREADY_FINISHED_HEADING" />
+                        </H2>
                         <StyledP data-test="@backup/already-finished-message">
-                            This device has backup already finished
+                            <Translation id="BACKUP_BACKUP_ALREADY_FINISHED_DESCRIPTION" />
                         </StyledP>
                         <StyledImage image="UNI_SUCCESS" />
                     </>
                 )}
                 {device.features.unfinished_backup && (
                     <>
+                        <H2>
+                            <Translation id="BACKUP_BACKUP_ALREADY_FAILED_HEADING" />
+                        </H2>
                         <StyledP data-test="@backup/already-failed-message">
-                            This device is in failed backup state
+                            <Translation id="BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION" />
+                            <ExternalLink href={FAILED_BACKUP_URL}>
+                                <Translation id="TR_LEARN_MORE" />
+                            </ExternalLink>
                         </StyledP>
                         <StyledImage image="UNI_ERROR" />
                     </>

@@ -48,9 +48,11 @@ module.exports = {
             /env\/node\/networkUtils$/,
             '../env/browser/networkUtils',
         ),
-        new CopyWebpackPlugin([
-            { from: DATA_SRC, to: `${DIST}/data` }, // only messages, coins, firmware releases
-        ]),
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: DATA_SRC, to: `${DIST}/data` }, // only messages, coins, firmware releases
+            ],
+        }),
         // ignore Node.js lib from trezor-link
         new webpack.IgnorePlugin(/\/iconv-loader$/),
         new HtmlWebpackPlugin({

@@ -1,6 +1,10 @@
 suite-native build android:
     image: reactnativecommunity/react-native-android
     stage: build
+    only:
+        refs:
+            - develop
+            - schedules
     script:
         - yarn cache clean
         - yarn build:libs
@@ -13,7 +17,7 @@ suite-native build android:
             - app-release.apk
 
 suite-native deploy:
-    stage: deploy artifacts, others
+    stage: deploy to dev
     only:
         refs:
             - develop

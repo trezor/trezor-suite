@@ -4,7 +4,6 @@ import { Store } from 'redux';
 import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
 import * as Sentry from '@sentry/browser';
-import { CaptureConsole } from '@sentry/integrations';
 import { initStore } from '@suite/reducers/store';
 import Preloader from '@suite-components/Preloader';
 import { ToastContainer } from 'react-toastify';
@@ -14,7 +13,7 @@ import BridgeStatus from '@desktop/support/BridgeStatus';
 import VersionCheck from '@desktop/support/VersionCheck';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
-import { SENTRY } from '@suite-config';
+import { SENTRY_CONFIG } from '@suite-config';
 import Resize from '@suite-support/Resize/Container';
 import { isDev } from '@suite-utils/build';
 
@@ -30,25 +29,20 @@ class TrezorSuiteApp extends App<Props> {
     }
 
     componentDidMount() {
-        if (!isDev())
-            Sentry.init({
-                dsn: SENTRY,
-                integrations: [
-                    new CaptureConsole({
-                        levels: ['error'],
-                    }),
-                ],
-                release: process.env.COMMITHASH,
-                environment: process.env.SUITE_TYPE,
+        if (!isDev()) {
+            Sentry.init(SENTRY_CONFIG);
+            Sentry.configureScope(scope => {
+                scope.setTag('version', process.env.VERSION || 'undefined');
             });
+        }
     }
 
     render() {
         const { Component, pageProps, store } = this.props;
 
         return (
-            <ErrorBoundary>
-                <ReduxProvider store={store}>
+            <ReduxProvider store={store}>
+                <ErrorBoundary>
                     <Resize />
                     <OnlineStatus />
                     <IntlProvider>
@@ -61,8 +55,8 @@ class TrezorSuiteApp extends App<Props> {
                             </Preloader>
                         </VersionCheck>
                     </IntlProvider>
-                </ReduxProvider>
-            </ErrorBoundary>
+                </ErrorBoundary>
+            </ReduxProvider>
         );
     }
 }

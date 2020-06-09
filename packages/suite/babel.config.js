@@ -1,6 +1,7 @@
 module.exports = api => {
     // used only for react-intl messages extraction via the babel plugin
-    const plugins = [];
+    const plugins = [
+    ];
 
     if (api.env('translations')) {
         plugins.push([

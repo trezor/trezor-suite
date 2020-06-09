@@ -1036,7 +1036,7 @@ const forget = [
             {
                 ...getSuiteDevice({ connected: true, instance: 3 }),
                 state: undefined,
-                useEmptyPassphrase: false,
+                useEmptyPassphrase: true,
             },
         ],
     },

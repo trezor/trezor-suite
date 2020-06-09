@@ -9,7 +9,6 @@ import * as logActions from '@suite-actions/logActions';
 import { AppState, Dispatch } from '@suite-types';
 import { SectionItem, ActionColumn, TextColumn } from '@suite-components/Settings';
 import { copyToClipboard } from '@suite-utils/dom';
-import { ACCOUNT } from '@wallet-actions/constants';
 
 const LogWrapper = styled.pre`
     padding: 20px;
@@ -37,6 +36,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     bindActionCreators(
         {
             addNotification: notificationActions.addToast,
+            getLog: logActions.getLog,
             toggleExcludeBalanceRelated: logActions.toggleExcludeBalanceRelated,
         },
         dispatch,
@@ -50,20 +50,11 @@ type Props = ReturnType<typeof mapStateToProps> &
 const Log = (props: Props) => {
     const htmlElement = createRef<HTMLPreElement>();
 
-    const filterLog = () => {
-        if (props.log.excludeBalanceRelated) {
-            return props.log.entries.filter(entry => {
-                return entry.type !== ACCOUNT.CREATE;
-            });
-        }
-        return props.log.entries;
-    };
-
-    const getFormattedLog = (json: Record<any, any>) => {
+    const prettifyLog = (json: Record<any, any>) => {
         return JSON.stringify(json, null, 2);
     };
 
-    const log = getFormattedLog(filterLog());
+    const log = prettifyLog(props.getLog(props.log.excludeBalanceRelated));
 
     const copy = () => {
         const result = copyToClipboard(log, htmlElement.current);

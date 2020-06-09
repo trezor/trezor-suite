@@ -38,6 +38,9 @@ module.exports = withBundleAnalyzer(
                         name: 'static/[hash].worker.js',
                         publicPath: '/_next/',
                     },
+                    experimental: {
+                        productionBrowserSourceMaps: true,
+                    },
                     webpack: config => {
                         config.plugins.push(
                             new webpack.DefinePlugin({

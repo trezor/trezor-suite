@@ -15,7 +15,11 @@ export default ({ device }: Props) => {
     return (
         <Wrapper variant="warning">
             <Translation id="TR_FAILED_BACKUP" />
-            <Link variant="nostyle" href={URLS.FAILED_BACKUP_URL}>
+            <Link
+                variant="nostyle"
+                href={URLS.FAILED_BACKUP_URL}
+                data-test="@notification/failed-backup/learn-more-link"
+            >
                 <Translation id="TR_WHAT_TO_DO_NOW" />
             </Link>
         </Wrapper>

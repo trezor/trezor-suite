@@ -443,3 +443,11 @@ export const getFailedAccounts = (discovery: Discovery): Account[] => {
         };
     });
 };
+
+export const getAccountIdentifier = (account: Account) => {
+    return {
+        descriptor: account.descriptor,
+        symbol: account.symbol,
+        deviceState: account.deviceState,
+    };
+};

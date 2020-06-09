@@ -10,7 +10,7 @@ export const formatCoinBalance = (value: string) => {
     if (balanceBig.isGreaterThan(MAX_CRYPTO_VALUE)) return '100m+';
 
     // instead of splitting on input `value`, do it on "normalized" BN string (it strips leading zeros)
-    const parts = balanceBig.toFixed().split('.');
+    const parts = balanceBig.abs().toFixed().split('.');
     const hasDecimals = parts.length > 1;
 
     if (hasDecimals) {

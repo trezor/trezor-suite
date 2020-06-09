@@ -61,6 +61,6 @@
     "peerDependencies": {
         "react": "16.9.0",
         "react-native": "^0.59.4",
-        "styled-components": "^5.0.1"
+        "styled-components": "^5.1.1"
     }
 }

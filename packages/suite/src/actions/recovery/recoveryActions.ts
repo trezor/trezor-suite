@@ -4,6 +4,7 @@ import { RECOVERY } from '@recovery-actions/constants';
 
 import { Dispatch, GetState, Action } from '@suite-types';
 import { WordCount } from '@recovery-types';
+import { DEVICE } from '@suite-constants';
 
 export type SeedInputStatus =
     | 'initial'
@@ -43,7 +44,6 @@ const setStatus = (status: SeedInputStatus): Action => ({
     payload: status,
 });
 
-// todo bip39 type
 const submit = (word: string) => async () => {
     TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: word });
 };
@@ -81,6 +81,7 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     const response = await TrezorConnect.recoveryDevice({
         type: advancedRecovery ? 1 : 0,
         word_count: wordsCount,
+        passphrase_protection: DEVICE.DEFAULT_PASSPHRASE_PROTECTION,
         device: {
             path: device.path,
         },

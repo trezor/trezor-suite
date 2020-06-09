@@ -111,7 +111,7 @@ suite-web e2e chrome-beta stage=stable:
 
 # todo: not sure if this is relevant, could be removed and replaced with lighthouse in near (hopefully) future
 suite-web test security:
-    stage: deploy artifacts, others
+    stage: misc
     only:
         - schedules
     script: yarn is-website-vulnerable ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} | node ./ci/scripts/check-vulnerabilities.js
