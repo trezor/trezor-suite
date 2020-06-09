@@ -74,7 +74,6 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
         },
         btcOnly,
         version: toFwVersion,
-        baseUrl: 'https://wallet.trezor.io',
     };
 
     dispatch(setStatus('started'));
