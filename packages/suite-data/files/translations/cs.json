@@ -682,7 +682,7 @@
 	"TR_SECURITY_CHECKPOINT_GOT_SEED": "Security checkpoint - got a seed?",
 	"TR_BEFORE_ANY_FURTHER_ACTIONS": "Before any further actions, please make sure that you have your recovery seed. Either safely stored or even with you as of now. In any case of improbable emergency.",
 	"TR_FIRMWARE_PARTIALLY_UPDATED": "Firmware partially updated",
-	"TR_BUT_THERE_IS_ANOTHER_UPDATE": "",
+	"TR_BUT_THERE_IS_ANOTHER_UPDATE": "But there is still another update ahead!",
 	"TR_SUCCESS": "Success",
 	"TR_DISCREET": "Discreet",
 	"TR_STANDARD_WALLET": "Standard wallet",
@@ -774,5 +774,7 @@
 	"TR_LANDING_DOWNLOAD": "Download",
 	"TR_LANDING_CONTINUE": "Continue in browser",
 	"TR_SEND_SEND_MAX": "Send max",
-	"TR_HOLD_LEFT_BUTTON": "Hold left or both buttons while connecting device"
+	"TR_HOLD_LEFT_BUTTON": "Hold left or both buttons while connecting device",
+	"TR_TOTAL_AMOUNT": "Total amount",
+	"TR_INCLUDING_FEE": "Including fee"
 }
