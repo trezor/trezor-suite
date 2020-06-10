@@ -115,9 +115,15 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             type: SUITE.CONNECT_INITIALIZED,
         });
     } catch (error) {
+        let formattedError: string;
+        if (typeof error === 'string') {
+            formattedError = error;
+        } else {
+            formattedError = error.code ? `${error.code}: ${error.message}` : error.message;
+        }
         dispatch({
             type: SUITE.ERROR,
-            error: typeof error === 'string' ? error : `${error.code}: ${error.message}`,
+            error: formattedError,
         });
     }
 };
