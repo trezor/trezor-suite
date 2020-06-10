@@ -181,7 +181,6 @@ export default ({ outputId }: { outputId: number }) => {
                                         amountBig.isLessThan(reserve)
                                     );
                                 }
-                                return false;
                             },
                             TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS: (value: string) => {
                                 return hasDecimals(value, decimals);

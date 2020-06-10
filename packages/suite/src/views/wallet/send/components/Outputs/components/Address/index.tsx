@@ -1,6 +1,7 @@
 import * as modalActions from '@suite-actions/modalActions';
 import { AddressLabeling, QuestionTooltip, Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
+import TrezorConnect from 'trezor-connect';
 import { Input } from '@trezor/components';
 import { isAddressValid } from '@wallet-utils/validation';
 import { getState } from '@wallet-utils/sendFormUtils';
@@ -19,7 +20,7 @@ const Text = styled.div`
 `;
 
 export default ({ outputId }: { outputId: number }) => {
-    const { account } = useSendContext();
+    const { account, setDestinationAddressEmpty } = useSendContext();
     const { register, errors, getValues, formState } = useFormContext();
     const inputName = `address-${outputId}`;
     const touched = formState.dirtyFields.has(inputName);
@@ -39,6 +40,19 @@ export default ({ outputId }: { outputId: number }) => {
                     <QuestionTooltip messageId="TR_RECIPIENT_ADDRESS_TOOLTIP" />
                 </Label>
             }
+            onChange={async () => {
+                // check only xrp and valid addresses
+                if (!error && networkType === 'ripple') {
+                    const response = await TrezorConnect.getAccountInfo({
+                        coin: symbol,
+                        descriptor: getValues(inputName),
+                    });
+
+                    if (response.success) {
+                        setDestinationAddressEmpty(response.payload.empty);
+                    }
+                }
+            }}
             bottomText={
                 error ? (
                     <Translation id={error.type} />
