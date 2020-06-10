@@ -1,17 +1,18 @@
 import React from 'react';
 import { WalletLayout } from '@wallet-components';
-import { SUITE } from '@suite-actions/constants';
+import { useDevice } from '@suite-hooks';
 import FreshAddress from './components/FreshAddress';
 import UsedAddresses from './components/UsedAddresses';
 import { Props } from './Container';
 
-export default ({ selectedAccount, receive, locks, device, showAddress, addToast }: Props) => {
+export default ({ selectedAccount, receive, device, showAddress, addToast }: Props) => {
+    const { isLocked } = useDevice();
+    const isDeviceLocked = isLocked();
     if (!device || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Receive" account={selectedAccount} />;
     }
 
     const { account } = selectedAccount;
-    const locked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     const disabled = !!device.authConfirm;
 
     return (
@@ -22,7 +23,7 @@ export default ({ selectedAccount, receive, locks, device, showAddress, addToast
                 showAddress={showAddress}
                 addToast={addToast}
                 disabled={disabled}
-                locked={locked}
+                locked={isDeviceLocked}
             />
             <UsedAddresses
                 account={account}
@@ -30,7 +31,7 @@ export default ({ selectedAccount, receive, locks, device, showAddress, addToast
                 showAddress={showAddress}
                 addToast={addToast}
                 disabled={disabled}
-                locked={locked}
+                locked={isDeviceLocked}
             />
         </WalletLayout>
     );

@@ -17,7 +17,7 @@ import {
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { InjectedModalApplicationProps, AppState, Dispatch } from '@suite-types';
 import { WordCount } from '@recovery-types';
-import { useDeviceActionLocks } from '@suite-hooks';
+import { useDevice } from '@suite-hooks';
 import { URLS } from '@suite-constants';
 
 const Wrapper = styled.div`
@@ -125,7 +125,7 @@ const Recovery = ({
 }: Props) => {
     const model = device?.features?.major_version;
     const [understood, setUnderstood] = useState(false);
-    const [actionEnabled] = useDeviceActionLocks();
+    const { isLocked } = useDevice();
     const onSetWordsCount = (count: WordCount) => {
         setWordsCount(count);
         setStatus('select-recovery-type');
@@ -254,7 +254,7 @@ const Recovery = ({
                                 onClick={() =>
                                     model === 1 ? setStatus('select-word-count') : checkSeed()
                                 }
-                                isDisabled={!understood || !actionEnabled}
+                                isDisabled={!understood || isLocked()}
                                 data-test="@recovery/start-button"
                             >
                                 <Translation id="TR_START" />

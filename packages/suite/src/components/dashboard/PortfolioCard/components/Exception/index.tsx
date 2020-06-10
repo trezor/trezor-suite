@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors, variables, Button, IconProps } from '@trezor/components';
 import { Image, Translation } from '@suite-components';
-import { useDeviceActionLocks, useDevice } from '@suite-hooks';
+import { useDevice } from '@suite-hooks';
 import { useDispatch } from 'react-redux';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
@@ -61,7 +61,7 @@ interface ContainerProps {
 
 // Common wrapper for all views
 const Container = ({ title, description, cta }: ContainerProps) => {
-    const [isEnabled] = useDeviceActionLocks();
+    const { isLocked } = useDevice();
     const actions = Array.isArray(cta) ? cta : [cta];
     return (
         <Wrapper>
@@ -78,7 +78,7 @@ const Container = ({ title, description, cta }: ContainerProps) => {
                         key={a.label}
                         variant={a.variant || 'primary'}
                         icon={a.icon || 'PLUS'}
-                        isLoading={!isEnabled}
+                        isLoading={isLocked()}
                         onClick={a.action}
                         data-test={a.testId}
                     >

@@ -17,7 +17,7 @@ import {
 } from '@suite-constants/urls';
 import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import * as homescreen from '@suite-utils/homescreen';
-import { useDeviceActionLocks, useAnalytics } from '@suite-hooks';
+import { useDevice, useAnalytics } from '@suite-hooks';
 import { variables, Switch, Link } from '@trezor/components';
 import React, { createRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -46,7 +46,8 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
     const [label, setLabel] = useState('');
     const [customHomescreen, setCustomHomescreen] = useState('');
     const fileInputElement = createRef<HTMLInputElement>();
-    const [actionEnabled] = useDeviceActionLocks();
+    const { isLocked } = useDevice();
+    const isDeviceLocked = isLocked();
     const analytics = useAnalytics();
     const MAX_LABEL_LENGTH = 16;
 
@@ -105,7 +106,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                 });
                             }}
                             isDisabled={
-                                !actionEnabled ||
+                                isDeviceLocked ||
                                 !features.needs_backup ||
                                 features.unfinished_backup
                             }
@@ -153,7 +154,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                     });
                                 }}
                                 isDisabled={
-                                    !actionEnabled ||
+                                    isDeviceLocked ||
                                     features.needs_backup ||
                                     features.unfinished_backup
                                 }
@@ -190,7 +191,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                 });
                             }}
                             data-test="@settings/device/update-button"
-                            isDisabled={!actionEnabled}
+                            isDisabled={isDeviceLocked}
                         >
                             {device && ['required', 'outdated'].includes(device.firmware) && (
                                 <Translation id="TR_UPDATE_AVAILABLE" />
@@ -216,7 +217,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                     payload: 'settings/device/change-pin',
                                 });
                             }}
-                            isDisabled={!actionEnabled}
+                            isDisabled={isDeviceLocked}
                             data-test="@settings/device/pin-switch"
                         />
                     </ActionColumn>
@@ -230,7 +231,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         <ActionColumn>
                             <ActionButton
                                 onClick={() => changePin({ remove: false })}
-                                isDisabled={!actionEnabled}
+                                isDisabled={isDeviceLocked}
                                 variant="secondary"
                                 data-test="@settings/device/update-button"
                             >
@@ -260,7 +261,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                 })
                             }
                             data-test="@settings/device/passphrase-switch"
-                            isDisabled={!actionEnabled}
+                            isDisabled={isDeviceLocked}
                         />
                     </ActionColumn>
                 </SectionItem>
@@ -285,7 +286,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                 setLabel(event.currentTarget.value)
                             }
                             data-test="@settings/device/label-input"
-                            readOnly={!actionEnabled}
+                            readOnly={isDeviceLocked}
                         />
                         <ActionButton
                             onClick={() => {
@@ -295,7 +296,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                     payload: 'settings/device/change-label',
                                 });
                             }}
-                            isDisabled={!actionEnabled || label.length > MAX_LABEL_LENGTH}
+                            isDisabled={isDeviceLocked || label.length > MAX_LABEL_LENGTH}
                             data-test="@settings/device/label-submit"
                         >
                             <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />
@@ -332,7 +333,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                         fileInputElement.current.click();
                                     }
                                 }}
-                                isDisabled={!actionEnabled}
+                                isDisabled={isDeviceLocked}
                                 variant="secondary"
                             >
                                 <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
@@ -350,7 +351,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                     payload: 'settings/device/goto/background',
                                 });
                             }}
-                            isDisabled={!actionEnabled}
+                            isDisabled={isDeviceLocked}
                             data-test="@settings/device/select-from-gallery"
                             variant="secondary"
                         >
@@ -376,7 +377,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             <ActionButton
                                 variant="secondary"
                                 onClick={() => setCustomHomescreen('')}
-                                isDisabled={!actionEnabled}
+                                isDisabled={isDeviceLocked}
                             >
                                 Drop image
                             </ActionButton>
@@ -403,7 +404,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                         });
                                     }}
                                     data-test={`@settings/device/rotation-button/${variant.value}`}
-                                    isDisabled={!actionEnabled}
+                                    isDisabled={isDeviceLocked}
                                 >
                                     {variant.label}
                                 </RotationButton>
@@ -430,7 +431,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                 });
                             }}
                             variant="danger"
-                            isDisabled={!actionEnabled}
+                            isDisabled={isDeviceLocked}
                             data-test="@settings/device/open-wipe-modal-button"
                         >
                             <Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />

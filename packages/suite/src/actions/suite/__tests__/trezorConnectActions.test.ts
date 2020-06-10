@@ -15,7 +15,7 @@ jest.mock('trezor-connect', () => {
         default: {
             blockchainSetCustomBackend: () => {},
             init: () => {
-                if (fixture instanceof Error) throw fixture;
+                if (typeof fixture === 'function') throw fixture();
                 return true;
             },
             on: (event: string, cb: Function) => {
@@ -83,7 +83,36 @@ describe('TrezorConnect Actions', () => {
     });
 
     it('Error', async () => {
-        require('trezor-connect').setTestFixtures(new Error('Iframe error'));
+        require('trezor-connect').setTestFixtures(() => new Error('Iframe error'));
+        const state = getInitialState();
+        const store = initStore(state);
+        await store.dispatch(init());
+        require('trezor-connect').setTestFixtures(undefined);
+        const action = store.getActions().pop();
+        expect(action).toEqual({
+            type: SUITE.ERROR,
+            error: 'Iframe error',
+        });
+    });
+
+    it('TypedError', async () => {
+        require('trezor-connect').setTestFixtures(() => ({
+            message: 'Iframe error',
+            code: 'SomeCode',
+        }));
+        const state = getInitialState();
+        const store = initStore(state);
+        await store.dispatch(init());
+        require('trezor-connect').setTestFixtures(undefined);
+        const action = store.getActions().pop();
+        expect(action).toEqual({
+            type: SUITE.ERROR,
+            error: 'SomeCode: Iframe error',
+        });
+    });
+
+    it('Error as string', async () => {
+        require('trezor-connect').setTestFixtures(() => 'Iframe error');
         const state = getInitialState();
         const store = initStore(state);
         await store.dispatch(init());

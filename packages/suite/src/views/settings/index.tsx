@@ -1,5 +1,5 @@
 import { SettingsLayout } from '@settings-components';
-import { SUITE } from '@suite-actions/constants';
+import { useDevice } from '@suite-hooks';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { Button, Tooltip } from '@trezor/components';
@@ -34,7 +34,6 @@ const VersionButton = styled(Button)`
 const VersionLink = styled.a``;
 
 export default ({
-    locks,
     language,
     setLocalCurrency,
     localCurrency,
@@ -42,7 +41,7 @@ export default ({
     clearStores,
     goto,
 }: Props) => {
-    const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
+    const { isLocked } = useDevice();
 
     return (
         <SettingsLayout data-test="@settings/index">
@@ -76,7 +75,7 @@ export default ({
                             }
                             value={buildCurrencyOption(localCurrency)}
                             options={FIAT.currencies.map(c => buildCurrencyOption(c))}
-                            isDisabled={uiLocked}
+                            isDisabled={isLocked()}
                         />
                     </ActionColumn>
                 </SectionItem>

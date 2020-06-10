@@ -1,13 +1,11 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { SUITE } from '@suite-actions/constants';
+import { useDevice, useActions } from '@suite-hooks';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { Translation, Image } from '@suite-components';
 import { Button, Modal } from '@trezor/components';
-import { TrezorDevice, AppState, Dispatch, ExtendedMessageDescriptor } from '@suite-types';
+import { TrezorDevice, ExtendedMessageDescriptor } from '@suite-types';
 
 const ImageWrapper = styled.div`
     padding: 60px 0px;
@@ -19,39 +17,21 @@ const Actions = styled.div`
     justify-content: space-between;
 `;
 
-const mapStateToProps = (state: AppState) => ({
-    locks: state.suite.locks,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) =>
-    bindActionCreators(
-        {
-            showAddress: receiveActions.showAddress,
-            showUnverifiedAddress: receiveActions.showUnverifiedAddress,
-            applySettings: deviceSettingsActions.applySettings,
-        },
-        dispatch,
-    );
-
 type Props = {
     device: TrezorDevice;
     address: string;
     addressPath: string;
     onCancel: () => void;
-} & ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>;
+};
 
-const ConfirmUnverifiedAddress = ({
-    locks,
-    device,
-    address,
-    addressPath,
-    showAddress,
-    showUnverifiedAddress,
-    applySettings,
-    onCancel,
-}: Props) => {
-    const progress = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
+const ConfirmUnverifiedAddress = ({ device, address, addressPath, onCancel }: Props) => {
+    const { isLocked } = useDevice();
+    const isDeviceLocked = isLocked();
+    const { showAddress, showUnverifiedAddress, applySettings } = useActions({
+        showAddress: receiveActions.showAddress,
+        showUnverifiedAddress: receiveActions.showUnverifiedAddress,
+        applySettings: deviceSettingsActions.applySettings,
+    });
     const verifyAddress = async () => {
         if (!device.available) {
             // eslint-disable-next-line @typescript-eslint/camelcase
@@ -102,11 +82,17 @@ const ConfirmUnverifiedAddress = ({
                 <Button
                     variant="secondary"
                     onClick={() => unverifiedAddress()}
-                    isLoading={progress}
+                    isLoading={isDeviceLocked}
+                    isDisabled={isDeviceLocked}
                 >
                     <Translation id="TR_SHOW_UNVERIFIED_ADDRESS" />
                 </Button>
-                <Button variant="primary" onClick={() => verifyAddress()} isLoading={progress}>
+                <Button
+                    variant="primary"
+                    onClick={() => verifyAddress()}
+                    isLoading={isDeviceLocked}
+                    isDisabled={isDeviceLocked}
+                >
                     <Translation id={actionLabel} />
                 </Button>
             </Actions>
@@ -114,4 +100,4 @@ const ConfirmUnverifiedAddress = ({
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConfirmUnverifiedAddress);
+export default ConfirmUnverifiedAddress;

@@ -7,8 +7,6 @@ import DetailsIndex from './index';
 
 const mapStateToProps = (state: AppState) => ({
     selectedAccount: state.wallet.selectedAccount,
-    device: state.suite.device,
-    locks: state.suite.locks,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
