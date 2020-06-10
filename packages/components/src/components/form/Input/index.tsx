@@ -99,7 +99,8 @@ const Label = styled.label`
 `;
 
 const BottomText = styled.div<Props>`
-    padding: 10px;
+    padding: 10px 10px 0 10px;
+    min-height: 27px;
     font-size: 12px;
     color: ${props => getStateColor(props.state)};
 `;
@@ -256,7 +257,7 @@ const Input = ({
                     {...rest}
                 />
             </InputWrapper>
-            {bottomText && <BottomText state={state}>{bottomText}</BottomText>}
+            <BottomText state={state}>{bottomText}</BottomText>
         </Wrapper>
     );
 };
