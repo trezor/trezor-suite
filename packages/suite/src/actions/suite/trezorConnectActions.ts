@@ -117,8 +117,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     } catch (error) {
         dispatch({
             type: SUITE.ERROR,
-            // error: `${error.code}: ${error.message}`,
-            error: typeof error === 'string' ? error : error.message,
+            error: typeof error === 'string' ? error : `${error.code}: ${error.message}`,
         });
     }
 };
