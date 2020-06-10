@@ -38,8 +38,12 @@ export default (props: Props) => {
                 props.onEnableAccount(account);
                 // just to log that account was added manually.
                 analytics.report({
-                    eventType: 'ui',
-                    payload: `@wallet/add-account/${account.symbol}/${account.accountType}/${account.index}`,
+                    eventType: 'wallet/add-account',
+                    payload: {
+                        type: account.accountType,
+                        path: account.path,
+                        symbol: account.symbol,
+                    },
                 });
             }}
         >

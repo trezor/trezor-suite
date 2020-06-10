@@ -35,8 +35,7 @@ const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceIns
                             ? addDeviceInstance(device)
                             : selectDeviceInstance(instances[0]) &&
                               analytics.report({
-                                  eventType: 'ui',
-                                  payload: 'switch-device/add-wallet',
+                                  eventType: 'switch-device/add-wallet',
                               })
                     }
                 >

@@ -142,10 +142,9 @@ const WalletInstance = ({
                             onChange={() =>
                                 rememberDevice(instance) &&
                                 analytics.report({
-                                    eventType: 'ui',
-                                    payload: `switch-device/${
-                                        instance.remember ? 'forget' : 'remember'
-                                    }`,
+                                    eventType: instance.remember
+                                        ? 'switch-device/forget'
+                                        : 'switch-device/remember',
                                 })
                             }
                             data-test={`${getDataTestBase()}/toggle-remember-switch`}
@@ -158,8 +157,7 @@ const WalletInstance = ({
                             onClick={() =>
                                 forgetDevice(instance) &&
                                 analytics.report({
-                                    eventType: 'ui',
-                                    payload: 'switch-device/eject',
+                                    eventType: 'switch-device/eject',
                                 })
                             }
                         >

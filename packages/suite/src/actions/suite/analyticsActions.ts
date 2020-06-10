@@ -11,7 +11,7 @@ export type AnalyticsActions =
     | { type: typeof ANALYTICS.DISPOSE }
     | { type: typeof ANALYTICS.INIT; payload: { instanceId: string } };
 
-export type Payload =
+export type AnalyticsEvent =
     | {
           /**
         suite-ready
@@ -24,6 +24,8 @@ export type Payload =
               enabledNetworks: AppState['wallet']['settings']['enabledNetworks'];
               localCurrency: AppState['wallet']['settings']['localCurrency'];
               discreetMode: AppState['wallet']['settings']['discreetMode'];
+              screenWidth: number;
+              screenHeight: number;
           };
       }
     | { eventType: 'transport-type'; payload: { type: string; version: string } }
@@ -96,23 +98,95 @@ export type Payload =
         */
           eventType: 'account-create';
           payload: {
-              // normal, segwit, legacy
+              /** normal, segwit, legacy */
               type: Account['accountType'];
-              // index of account
+              /** index of account  */
+
               path: Account['path'];
-              // network (btc, eth, etc.)
+              /** network (btc, eth, etc.) */
               symbol: Account['symbol'];
           };
       }
+    | { eventType: 'switch-device/eject' }
+    | { eventType: 'dashboard/security-card/create-backup' }
+    | { eventType: 'dashboard/security-card/seed-link' }
+    | { eventType: 'dashboard/security-card/set-pin' }
+    | { eventType: 'dashboard/security-card/change-pin' }
+    | { eventType: 'dashboard/security-card/enable-passphrase' }
+    | { eventType: 'dashboard/security-card/create-hidden-wallet' }
+    | { eventType: 'dashboard/security-card/enable-discreet' }
     | {
-          /**
-        ui
-        this is general category of click into ui.
-        every logged event has payload which describes where user clicked, for example payload: "menu/settings"
-        todo: make this also strongly typed? 
-         */
-          eventType: 'ui';
-          payload: string;
+          eventType: 'dashboard/security-card/toggle-discreet';
+          payload: {
+              value: boolean;
+          };
+      }
+    | { eventType: 'menu/goto/switch-device' }
+    | { eventType: 'menu/goto/suite-index' }
+    | { eventType: 'menu/goto/exchange-index' }
+    | { eventType: 'menu/goto/wallet-index' }
+    | { eventType: 'menu/goto/notifications-index' }
+    | { eventType: 'menu/goto/settings-index' }
+    | {
+          eventType: 'menu/toggle-discreet';
+          payload: {
+              value: boolean;
+          };
+      }
+    | {
+          eventType: 'wallet/add-account';
+          payload: {
+              /** normal, segwit, legacy */
+              type: Account['accountType'];
+              /** index of account  */
+              path: Account['path'];
+              /** network (btc, eth, etc.) */
+              symbol: Account['symbol'];
+          };
+      }
+    | { eventType: 'switch-device/add-wallet' }
+    // todo: check if forget remember works as expected
+    | { eventType: 'switch-device/forget' }
+    | { eventType: 'switch-device/remember' }
+    | { eventType: 'switch-device/eject' }
+    | { eventType: 'settings/device/goto/backup' }
+    | { eventType: 'settings/device/goto/recovery' }
+    | { eventType: 'settings/device/goto/firmware' }
+    | {
+          eventType: 'settings/device/change-pin-protection';
+          payload: {
+              remove: boolean;
+          };
+      }
+    | {
+          eventType: 'settings/device/change-pin';
+      }
+    | { eventType: 'settings/device/change-label' }
+    | { eventType: 'settings/device/goto/background' }
+    | {
+          eventType: 'settings/device/change-orientation';
+          payload: {
+              value: 0 | 90 | 180 | 270;
+          };
+      }
+    | { eventType: 'settings/device/goto/wipe' }
+    | {
+          eventType: 'settings/device/change-passphrase-protection';
+          payload: {
+              use_passphrase: boolean;
+          };
+      }
+    | {
+          eventType: 'settings/general/change-language';
+          payload: {
+              language: AppState['suite']['settings']['language'];
+          };
+      }
+    | {
+          eventType: 'settings/general/change-fiat';
+          payload: {
+              fiat: string;
+          };
       };
 
 const getUrl = () => {
@@ -162,7 +236,7 @@ const getUrl = () => {
     return `${base}/${process.env.SUITE_TYPE}/develop.log`;
 };
 
-export const report = (data: Payload, force = false) => async (
+export const report = (data: AnalyticsEvent, force = false) => async (
     _dispatch: Dispatch,
     getState: GetState,
 ) => {

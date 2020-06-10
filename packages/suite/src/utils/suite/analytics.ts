@@ -1,37 +1,34 @@
 import qs from 'qs';
 import { AppState } from '@suite-types';
 
-import { Payload } from '@suite-actions/analyticsActions';
+import { AnalyticsEvent } from '@suite-actions/analyticsActions';
 
 type Common = Pick<AppState['analytics'], 'instanceId' | 'sessionId'>;
 
-export const encodeDataToQueryString = (data: Payload, common: Common) => {
+// type EventWithPayload = AnalyticsEvent & { payload: any };
+
+// function isEventWithPayload(event: Fish | Bird): pet is Fish {
+//     return (pet as Fish).swim !== undefined;
+// }
+
+export const encodeDataToQueryString = (event: AnalyticsEvent, common: Common) => {
+    const { eventType } = event;
     // watched data is sent in query string
     const commonEncoded = qs.stringify({
         // simple semver for data-analytics part.
         // <breaking-change>.<analytics-extended>
         v: '1.0',
         commit: process.env.COMMITHASH,
+        eventType,
         ...common,
     });
 
-    let eventSpecificEncoded;
-    if (typeof data.payload !== 'string') {
-        eventSpecificEncoded = qs.stringify(
-            {
-                eventType: data.eventType,
-                ...data.payload,
-            },
-            {
-                arrayFormat: 'comma',
-            },
-        );
-    } else {
-        eventSpecificEncoded = qs.stringify({
-            eventType: data.eventType,
-            payload: data.payload,
+    if ('payload' in event) {
+        const eventSpecificEncoded = qs.stringify(event.payload, {
+            arrayFormat: 'comma',
         });
+        return `${commonEncoded}&${eventSpecificEncoded}`;
     }
 
-    return `${commonEncoded}&${eventSpecificEncoded}`;
+    return commonEncoded;
 };

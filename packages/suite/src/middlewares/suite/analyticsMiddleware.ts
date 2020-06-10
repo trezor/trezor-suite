@@ -7,6 +7,7 @@ import { ACCOUNT } from '@wallet-actions/constants';
 
 import { AppState, Action, Dispatch } from '@suite-types';
 import * as analyticsActions from '@suite-actions/analyticsActions';
+import { getScreenWidth, getScreenHeight } from '@suite-utils/env';
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:
@@ -34,6 +35,8 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                         enabledNetworks: state.wallet.settings.enabledNetworks,
                         localCurrency: state.wallet.settings.localCurrency,
                         discreetMode: state.wallet.settings.discreetMode,
+                        screenWidth: getScreenWidth(),
+                        screenHeight: getScreenHeight(),
                     },
                 }),
             );

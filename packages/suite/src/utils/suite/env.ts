@@ -12,3 +12,11 @@ export const isAndroid = () => {
     if (typeof navigator === 'undefined') return;
     return navigator.appVersion.includes('Android');
 };
+
+export const getScreenWidth = () => {
+    return window.screen.width;
+};
+
+export const getScreenHeight = () => {
+    return window.screen.height;
+};
