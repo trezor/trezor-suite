@@ -1,5 +1,5 @@
 import { AccountLabeling, FiatValue, Translation } from '@suite-components';
-import { useDeviceActionLocks } from '@suite-hooks';
+import { useDevice } from '@suite-hooks';
 import { Button, colors, Modal, variables } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -93,27 +93,28 @@ export default ({
     if (!transactionInfo || transactionInfo.type === 'error') return null;
     const upperCaseSymbol = account.symbol.toUpperCase();
     const outputSymbol = token ? token.symbol!.toUpperCase() : symbol.toUpperCase();
-    const [isEnabled] = useDeviceActionLocks();
+    const { isLocked } = useDevice();
+    const isDeviceLocked = isLocked();
     const fee = getFeeValue(transactionInfo, networkType, symbol);
 
     return (
         <Modal
             size="large"
             cancelable
-            onCancel={isEnabled ? modalActions.onCancel : () => {}}
+            onCancel={!isDeviceLocked ? modalActions.onCancel : () => {}}
             heading={<Translation id="TR_MODAL_CONFIRM_TX_TITLE" />}
             bottomBar={
                 <Buttons>
                     <Button
                         icon="ARROW_LEFT"
                         variant="secondary"
-                        isDisabled={!isEnabled}
+                        isDisabled={isDeviceLocked}
                         onClick={() => modalActions.onCancel()}
                     >
                         <Translation id="TR_EDIT" />
                     </Button>
                     <Button
-                        isDisabled={!isEnabled}
+                        isDisabled={isDeviceLocked}
                         onClick={() => {
                             switch (networkType) {
                                 case 'bitcoin':

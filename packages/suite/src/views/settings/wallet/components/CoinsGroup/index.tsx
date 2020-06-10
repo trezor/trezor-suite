@@ -6,7 +6,7 @@ import { NETWORKS } from '@wallet-config';
 import { UnavailableCapability } from 'trezor-connect';
 import { Network } from '@wallet-types';
 import { Section, ActionColumn, Row } from '@suite-components/Settings';
-import { useDeviceActionLocks } from '@suite-hooks';
+import { useDevice } from '@suite-hooks';
 import Coin from '../Coin';
 
 const Wrapper = styled.div`
@@ -126,7 +126,8 @@ export default ({
     unavailableCapabilities,
     ...props
 }: Props) => {
-    const [actionEnabled] = useDeviceActionLocks();
+    const { isLocked } = useDevice();
+    const isDeviceLocked = isLocked();
     return (
         <Wrapper data-test="@settings/wallet/coins-group">
             <Section
@@ -140,7 +141,7 @@ export default ({
                             <Buttons>
                                 <StyledButton
                                     isDisabled={
-                                        !actionEnabled ||
+                                        isDeviceLocked ||
                                         NETWORKS.filter(filterFn).length === enabledNetworks.length
                                     }
                                     variant="tertiary"
@@ -152,7 +153,7 @@ export default ({
                                     <Translation id="TR_ACTIVATE_ALL" />
                                 </StyledButton>
                                 <StyledButton
-                                    isDisabled={!actionEnabled || enabledNetworks.length === 0}
+                                    isDisabled={isDeviceLocked || enabledNetworks.length === 0}
                                     variant="tertiary"
                                     size="small"
                                     icon="CROSS"
@@ -186,7 +187,7 @@ export default ({
                                         onToggleOneFn(network.symbol, visible);
                                     }}
                                     checked={enabledNetworks.includes(network.symbol)}
-                                    disabled={!actionEnabled}
+                                    isDisabled={isDeviceLocked}
                                 />
                             )}
                             {unavailableCapabilities[network.symbol] && (

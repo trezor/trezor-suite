@@ -5,7 +5,7 @@ import { Translation } from '@suite-components';
 import SecurityCard, { Props as CardProps } from './components/SecurityCard';
 import { Props } from './Container';
 import { AcquiredDevice } from '@suite-types';
-import { useDeviceActionLocks, useDiscovery, useAnalytics } from '@suite-hooks';
+import { useDevice, useDiscovery, useAnalytics } from '@suite-hooks';
 
 const Section = styled.div`
     display: flex;
@@ -51,7 +51,8 @@ const SecurityFeatures = ({
     ...rest
 }: Props) => {
     const [isHidden, setIsHidden] = useState(false);
-    const [isTrezorActionEnabled] = useDeviceActionLocks();
+    const { isLocked } = useDevice();
+    const isDeviceLocked = isLocked();
     const { getDiscoveryStatus } = useDiscovery();
     const discoveryStatus = getDiscoveryStatus();
     const isDisabled = discoveryStatus && discoveryStatus.status === 'loading';
@@ -124,7 +125,7 @@ const SecurityFeatures = ({
                       changePin({});
                       analytics.report({ type: 'ui', payload: 'dashboard/security-card/set-pin' });
                   },
-                  isDisabled: !isTrezorActionEnabled,
+                  isDisabled: isDeviceLocked,
               },
           }
         : {
@@ -163,7 +164,7 @@ const SecurityFeatures = ({
                       });
                   },
                   dataTest: 'hidden-wallet',
-                  isDisabled: !isTrezorActionEnabled,
+                  isDisabled: isDeviceLocked,
               },
           }
         : {
@@ -180,7 +181,7 @@ const SecurityFeatures = ({
                       });
                   },
                   dataTest: 'create-hidden-wallet',
-                  isDisabled: !isTrezorActionEnabled,
+                  isDisabled: isDeviceLocked,
               },
           };
 

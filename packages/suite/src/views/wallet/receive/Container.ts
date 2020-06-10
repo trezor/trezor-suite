@@ -12,7 +12,6 @@ const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
     receive: state.wallet.receive,
     modal: state.modal,
-    locks: state.suite.locks,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
