@@ -1,3 +1,2 @@
-## Views & Layouts
-![Layout](./assets/suite-layout-rendering.png)
-
+## Suite docs
+nothing here :(
