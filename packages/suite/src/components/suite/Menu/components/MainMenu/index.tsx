@@ -91,13 +91,13 @@ const Menu = (props: Props) => {
     const gotoWithReport = (routeName: typeof MAIN_MENU_ITEMS[number]['route']) => {
         switch (routeName) {
             case 'suite-index':
-                analytics.report({ eventType: 'menu/goto/suite-index' });
+                analytics.report({ type: 'menu/goto/suite-index' });
                 break;
             case 'exchange-index':
-                analytics.report({ eventType: 'menu/goto/exchange-index' });
+                analytics.report({ type: 'menu/goto/exchange-index' });
                 break;
             case 'wallet-index':
-                analytics.report({ eventType: 'menu/goto/wallet-index' });
+                analytics.report({ type: 'menu/goto/wallet-index' });
                 break;
             default:
             // no default

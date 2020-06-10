@@ -92,7 +92,7 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
     // -- (ofc I may store logging data in our data model and send it at once, hmm maybe?)
     dispatch(
         analyticsActions.report({
-            eventType: 'device-update-firmware',
+            type: 'device-update-firmware',
             payload: {
                 // todo: fromFwVersion
                 // todo: fromBtcOnly,

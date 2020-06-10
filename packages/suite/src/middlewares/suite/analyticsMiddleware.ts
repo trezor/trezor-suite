@@ -29,7 +29,7 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
         case STORAGE.LOADED:
             api.dispatch(
                 analyticsActions.report({
-                    eventType: 'suite-ready',
+                    type: 'suite-ready',
                     payload: {
                         language: state.suite.settings.language,
                         enabledNetworks: state.wallet.settings.enabledNetworks,
@@ -44,7 +44,7 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
         case TRANSPORT.START:
             api.dispatch(
                 analyticsActions.report({
-                    eventType: 'transport-type',
+                    type: 'transport-type',
                     payload: {
                         type: action.payload.type,
                         version: action.payload.version,
@@ -57,7 +57,7 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
             if (features && mode !== 'bootloader') {
                 api.dispatch(
                     analyticsActions.report({
-                        eventType: 'device-connect',
+                        type: 'device-connect',
                         payload: {
                             mode,
                             firmware: `${features.major_version}.${features.minor_version}.${features.patch_version}`,
@@ -70,7 +70,7 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
             } else {
                 api.dispatch(
                     analyticsActions.report({
-                        eventType: 'device-connect',
+                        type: 'device-connect',
                         payload: {
                             mode: 'bootloader',
                         },
@@ -86,7 +86,7 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                     api.dispatch(
                         analyticsActions.report(
                             {
-                                eventType: 'initial-run-completed',
+                                type: 'initial-run-completed',
                                 payload: {
                                     analytics: true,
                                     createSeed: state.onboarding.path.includes('create'),
@@ -102,7 +102,7 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                     api.dispatch(
                         analyticsActions.report(
                             {
-                                eventType: 'initial-run-completed',
+                                type: 'initial-run-completed',
                                 payload: {
                                     analytics: false,
                                 },
@@ -116,7 +116,7 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
         case ACCOUNT.CREATE:
             api.dispatch(
                 analyticsActions.report({
-                    eventType: 'account-create',
+                    type: 'account-create',
                     payload: {
                         type: action.payload.accountType,
                         symbol: action.payload.symbol,

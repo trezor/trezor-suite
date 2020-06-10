@@ -11,6 +11,12 @@ export type AnalyticsActions =
     | { type: typeof ANALYTICS.DISPOSE }
     | { type: typeof ANALYTICS.INIT; payload: { instanceId: string } };
 
+/**
+simple semver for data-analytics part.
+<breaking-change>.<analytics-extended>
+*/
+const version = '1.0';
+
 export type AnalyticsEvent =
     | {
           /**
@@ -18,7 +24,7 @@ export type AnalyticsEvent =
         Triggers on application start. Logs part of suite setup that might have been loaded from storage
         but it might also be suite default setup that is loaded when suite starts for the first time.
         */
-          eventType: 'suite-ready';
+          type: 'suite-ready';
           payload: {
               language: AppState['suite']['settings']['language'];
               enabledNetworks: AppState['wallet']['settings']['enabledNetworks'];
@@ -28,14 +34,14 @@ export type AnalyticsEvent =
               screenHeight: number;
           };
       }
-    | { eventType: 'transport-type'; payload: { type: string; version: string } }
+    | { type: 'transport-type'; payload: { type: string; version: string } }
     | {
           /**
         device-connect
         is logged when user connects device
         - if device is not in bootloader, some of its features are logged 
         */
-          eventType: 'device-connect';
+          type: 'device-connect';
           payload: {
               mode: TrezorDevice['mode'];
               firmware: string;
@@ -45,7 +51,7 @@ export type AnalyticsEvent =
       }
     | {
           /** if device is in bootloader, only this event is logged */
-          eventType: 'device-connect';
+          type: 'device-connect';
           payload: { mode: 'bootloader' };
       }
     | {
@@ -53,7 +59,7 @@ export type AnalyticsEvent =
         device-update-firmware
         is log after firmware update call to device is finished. 
         */
-          eventType: 'device-update-firmware';
+          type: 'device-update-firmware';
           payload: {
               /** version of bootloader before update started. unluckily fw version before update is not logged */
               fromBlVersion: string;
@@ -71,13 +77,13 @@ export type AnalyticsEvent =
         when new installation of trezor suite starts it is in initial-run mode which means that some additional screens appear (welcome, analytics, onboarding)
         it is completed either by going trough onboarding or skipping it. once completed event is registered, we log some data connected up to this point     
          */
-          eventType: 'initial-run-completed';
+          type: 'initial-run-completed';
           payload: {
               analytics: false;
           };
       }
     | {
-          eventType: 'initial-run-completed';
+          type: 'initial-run-completed';
           payload: {
               analytics: true;
               /** how many users chose to create new wallet */
@@ -96,7 +102,7 @@ export type AnalyticsEvent =
         logged either automatically upon each suite start as default switched on accounts are loaded
         or when user adds account manually 
         */
-          eventType: 'account-create';
+          type: 'account-create';
           payload: {
               /** normal, segwit, legacy */
               type: Account['accountType'];
@@ -107,34 +113,34 @@ export type AnalyticsEvent =
               symbol: Account['symbol'];
           };
       }
-    | { eventType: 'switch-device/eject' }
-    | { eventType: 'dashboard/security-card/create-backup' }
-    | { eventType: 'dashboard/security-card/seed-link' }
-    | { eventType: 'dashboard/security-card/set-pin' }
-    | { eventType: 'dashboard/security-card/change-pin' }
-    | { eventType: 'dashboard/security-card/enable-passphrase' }
-    | { eventType: 'dashboard/security-card/create-hidden-wallet' }
-    | { eventType: 'dashboard/security-card/enable-discreet' }
+    | { type: 'switch-device/eject' }
+    | { type: 'dashboard/security-card/create-backup' }
+    | { type: 'dashboard/security-card/seed-link' }
+    | { type: 'dashboard/security-card/set-pin' }
+    | { type: 'dashboard/security-card/change-pin' }
+    | { type: 'dashboard/security-card/enable-passphrase' }
+    | { type: 'dashboard/security-card/create-hidden-wallet' }
+    | { type: 'dashboard/security-card/enable-discreet' }
     | {
-          eventType: 'dashboard/security-card/toggle-discreet';
+          type: 'dashboard/security-card/toggle-discreet';
           payload: {
               value: boolean;
           };
       }
-    | { eventType: 'menu/goto/switch-device' }
-    | { eventType: 'menu/goto/suite-index' }
-    | { eventType: 'menu/goto/exchange-index' }
-    | { eventType: 'menu/goto/wallet-index' }
-    | { eventType: 'menu/goto/notifications-index' }
-    | { eventType: 'menu/goto/settings-index' }
+    | { type: 'menu/goto/switch-device' }
+    | { type: 'menu/goto/suite-index' }
+    | { type: 'menu/goto/exchange-index' }
+    | { type: 'menu/goto/wallet-index' }
+    | { type: 'menu/goto/notifications-index' }
+    | { type: 'menu/goto/settings-index' }
     | {
-          eventType: 'menu/toggle-discreet';
+          type: 'menu/toggle-discreet';
           payload: {
               value: boolean;
           };
       }
     | {
-          eventType: 'wallet/add-account';
+          type: 'wallet/add-account';
           payload: {
               /** normal, segwit, legacy */
               type: Account['accountType'];
@@ -144,46 +150,46 @@ export type AnalyticsEvent =
               symbol: Account['symbol'];
           };
       }
-    | { eventType: 'switch-device/add-wallet' }
+    | { type: 'switch-device/add-wallet' }
     // todo: check if forget remember works as expected
-    | { eventType: 'switch-device/forget' }
-    | { eventType: 'switch-device/remember' }
-    | { eventType: 'switch-device/eject' }
-    | { eventType: 'settings/device/goto/backup' }
-    | { eventType: 'settings/device/goto/recovery' }
-    | { eventType: 'settings/device/goto/firmware' }
+    | { type: 'switch-device/forget' }
+    | { type: 'switch-device/remember' }
+    | { type: 'switch-device/eject' }
+    | { type: 'settings/device/goto/backup' }
+    | { type: 'settings/device/goto/recovery' }
+    | { type: 'settings/device/goto/firmware' }
     | {
-          eventType: 'settings/device/change-pin-protection';
+          type: 'settings/device/change-pin-protection';
           payload: {
               remove: boolean;
           };
       }
     | {
-          eventType: 'settings/device/change-pin';
+          type: 'settings/device/change-pin';
       }
-    | { eventType: 'settings/device/change-label' }
-    | { eventType: 'settings/device/goto/background' }
+    | { type: 'settings/device/change-label' }
+    | { type: 'settings/device/goto/background' }
     | {
-          eventType: 'settings/device/change-orientation';
+          type: 'settings/device/change-orientation';
           payload: {
               value: 0 | 90 | 180 | 270;
           };
       }
-    | { eventType: 'settings/device/goto/wipe' }
+    | { type: 'settings/device/goto/wipe' }
     | {
-          eventType: 'settings/device/change-passphrase-protection';
+          type: 'settings/device/change-passphrase-protection';
           payload: {
               use_passphrase: boolean;
           };
       }
     | {
-          eventType: 'settings/general/change-language';
+          type: 'settings/general/change-language';
           payload: {
               language: AppState['suite']['settings']['language'];
           };
       }
     | {
-          eventType: 'settings/general/change-fiat';
+          type: 'settings/general/change-fiat';
           payload: {
               fiat: string;
           };
@@ -252,7 +258,7 @@ export const report = (data: AnalyticsEvent, force = false) => async (
     if (!enabled && !force) {
         return;
     }
-    const qs = encodeDataToQueryString(data, { sessionId, instanceId });
+    const qs = encodeDataToQueryString(data, { sessionId, instanceId, version });
     const url = getUrl();
 
     if (!url) {

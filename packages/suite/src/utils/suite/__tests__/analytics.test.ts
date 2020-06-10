@@ -3,10 +3,14 @@ import fixtures from '../__fixtures__/analytics';
 
 describe('analytics', () => {
     fixtures.forEach(f => {
-        it(f.input.eventType, () => {
-            expect(encodeDataToQueryString(f.input, { instanceId: '1', sessionId: '2' })).toEqual(
-                f.encoded,
-            );
+        it(f.input.type, () => {
+            expect(
+                encodeDataToQueryString(f.input, {
+                    instanceId: '1',
+                    sessionId: '2',
+                    version: '1.0',
+                }),
+            ).toEqual(f.encoded);
         });
     });
 });

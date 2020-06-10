@@ -63,11 +63,11 @@ describe('Analytics Actions', () => {
         process.env.SUITE_TYPE = 'desktop';
         const state = getInitialState({ analytics: { enabled: true, instanceId: '1' } });
         const store = initStore(state);
-        store.dispatch(analyticsActions.report({ eventType: 'switch-device/eject' }));
+        store.dispatch(analyticsActions.report({ type: 'switch-device/eject' }));
         // @ts-ignore
         expect(global.fetch).toHaveBeenNthCalledWith(
             1,
-            'https://data.trezor.io/suite/log/desktop/beta.log?v=1.0&eventType=switch-device%2Feject&sessionId=very-random&instanceId=1',
+            'https://data.trezor.io/suite/log/desktop/beta.log?c_v=1.0&c_type=switch-device%2Feject&c_instance_id=1&c_session_id=very-random',
             { method: 'GET' },
         );
         process.env.SUITE_TYPE = env;
@@ -76,7 +76,7 @@ describe('Analytics Actions', () => {
     it('analyticsActions.report() - should not report if not enabled', () => {
         const state = getInitialState({ analytics: { enabled: false } });
         const store = initStore(state);
-        store.dispatch(analyticsActions.report({ eventType: 'switch-device/eject' }));
+        store.dispatch(analyticsActions.report({ type: 'switch-device/eject' }));
         // @ts-ignore
         expect(global.fetch).toHaveBeenCalledTimes(0);
     });
@@ -86,7 +86,7 @@ describe('Analytics Actions', () => {
         process.env.NODE_ENV = 'development';
         const state = getInitialState({ analytics: { enabled: true } });
         const store = initStore(state);
-        store.dispatch(analyticsActions.report({ eventType: 'switch-device/eject' }));
+        store.dispatch(analyticsActions.report({ type: 'switch-device/eject' }));
         // @ts-ignore
         expect(global.fetch).toHaveBeenCalledTimes(0);
         process.env.NODE_ENV = env;

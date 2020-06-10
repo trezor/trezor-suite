@@ -3,24 +3,26 @@ import { AppState } from '@suite-types';
 
 import { AnalyticsEvent } from '@suite-actions/analyticsActions';
 
-type Common = Pick<AppState['analytics'], 'instanceId' | 'sessionId'>;
+type Common = Pick<AppState['analytics'], 'instanceId' | 'sessionId'> & { version: string };
 
-// type EventWithPayload = AnalyticsEvent & { payload: any };
-
-// function isEventWithPayload(event: Fish | Bird): pet is Fish {
-//     return (pet as Fish).swim !== undefined;
-// }
-
+/**
+encodeDataToQueryString method encodes analytics data to querystring in expected format
+common properties are prefixed with "c" as common to avoid identifiers collisions
+*/
 export const encodeDataToQueryString = (event: AnalyticsEvent, common: Common) => {
-    const { eventType } = event;
-    // watched data is sent in query string
+    const { type } = event;
+    const { version, sessionId, instanceId } = common;
     const commonEncoded = qs.stringify({
-        // simple semver for data-analytics part.
-        // <breaking-change>.<analytics-extended>
-        v: '1.0',
-        commit: process.env.COMMITHASH,
-        eventType,
-        ...common,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        c_v: version,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        c_type: type,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        c_commit: process.env.COMMITHASH,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        c_instance_id: instanceId,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        c_session_id: sessionId,
     });
 
     if ('payload' in event) {

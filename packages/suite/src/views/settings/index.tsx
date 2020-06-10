@@ -66,7 +66,7 @@ export default ({
                             }) => {
                                 fetchLocale(option.value);
                                 analytics.report({
-                                    eventType: 'settings/general/change-language',
+                                    type: 'settings/general/change-language',
                                     payload: {
                                         language: option.value,
                                     },
@@ -84,7 +84,7 @@ export default ({
                             onChange={(option: { value: string; label: string }) => {
                                 setLocalCurrency(option.value);
                                 analytics.report({
-                                    eventType: 'settings/general/change-fiat',
+                                    type: 'settings/general/change-fiat',
                                     payload: {
                                         fiat: option.value,
                                     },
