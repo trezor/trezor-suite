@@ -113,12 +113,7 @@ export const showAddress = (path: string, address: string) => async (
         });
     } else {
         // special case: device no-backup permissions not granted
-        // TODO: remove old code after trezor-connect@8.1.7
-        if (
-            response.payload.code === 403 ||
-            response.payload.code === 'Method_PermissionsNotGranted'
-        )
-            return;
+        if (response.payload.code === 'Method_PermissionsNotGranted') return;
 
         dispatch(
             notificationActions.addToast({

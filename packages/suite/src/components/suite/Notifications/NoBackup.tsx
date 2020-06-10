@@ -4,7 +4,9 @@ import { Translation } from '@suite-components';
 
 import Wrapper from './components/Wrapper';
 import { Props as BaseProps } from './index';
+import styled from 'styled-components';
 
+const Message = styled.span``;
 interface Props {
     device: BaseProps['suite']['device'];
     goto: BaseProps['goto'];
@@ -15,8 +17,10 @@ export default ({ device, goto }: Props) => {
     if (!needsBackup) return null;
     return (
         <Wrapper variant="warning">
-            <Translation id="TR_YOUR_TREZOR_IS_NOT_BACKED_UP" />{' '}
-            <Translation id="TR_IF_YOUR_DEVICE_IS_EVER_LOST" />
+            <Message>
+                <Translation id="TR_YOUR_TREZOR_IS_NOT_BACKED_UP" />{' '}
+                <Translation id="TR_IF_YOUR_DEVICE_IS_EVER_LOST" />
+            </Message>
             <Button
                 variant="tertiary"
                 color={colors.WHITE}

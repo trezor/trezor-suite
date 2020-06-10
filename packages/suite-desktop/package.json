@@ -1,7 +1,7 @@
 {
     "name": "@trezor/suite-desktop",
     "description": "TrezorSuite desktop application",
-    "version": "20.5.1-beta",
+    "version": "20.6.1-beta",
     "private": true,
     "author": "Satoshilabs s.r.o <info@satoshilabs.com>",
     "homepage": "http://www.trezor.io",

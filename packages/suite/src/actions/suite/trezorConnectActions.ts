@@ -66,7 +66,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         const connectSrc =
             process.env.SUITE_TYPE === 'desktop'
                 ? resolveStaticPath('connect/')
-                : 'https://connect.trezor.io/8/';
+                : 'https://connect.corp.sldev.cz/develop/';
         // 'https://localhost:8088/';
         // 'https://connect.corp.sldev.cz/develop/';
 
@@ -117,7 +117,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     } catch (error) {
         dispatch({
             type: SUITE.ERROR,
-            error: typeof error === 'string' ? error : error.message, // TODO: use with code after trezor-connect@8.1.7
+            error: `${error.code}: ${error.message}`,
         });
     }
 };
