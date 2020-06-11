@@ -191,8 +191,7 @@ type RouteParamsTypes = {
     cancelable: boolean;
 };
 
-type ExtractType<T extends any> = {
-    // @ts-ignore
+type ExtractType<T extends keyof RouteParamsTypes> = {
     [P in T]: RouteParamsTypes[P];
 };
 
