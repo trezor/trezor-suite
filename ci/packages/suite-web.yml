@@ -136,7 +136,7 @@ suite-web deploy staging:
 suite-web deploy analyze:
     stage: deploy to dev servers
     variables:
-        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/@bundle/${CI_BUILD_REF_NAME}/wallet
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/@bundle/${CI_BUILD_REF_NAME}
     before_script: []
     script:
         - cd packages/suite-web
