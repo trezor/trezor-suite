@@ -63,10 +63,7 @@ interface Props {
     signVerify: StateProps['signVerify'];
     signVerifyActions: DispatchProps['signVerifyActions'];
 }
-interface AddressToSign {
-    address: string;
-    path: string;
-}
+
 interface FormEvent {
     target: {
         name: string;
@@ -97,7 +94,7 @@ const SignVerify = (props: Props) => {
         };
     }, [signVerifyActions]);
 
-    const { device } = useDevice();
+    const { device, isLocked } = useDevice();
     if (!device || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Sign & Verify" account={selectedAccount} />;
     }
@@ -110,7 +107,7 @@ const SignVerify = (props: Props) => {
         signVerifyActions.inputChange(event.target.name as InputNameType[0], event.target.value);
     };
 
-    const getAddress = (): AddressToSign => {
+    const getAddress = () => {
         if (
             selectedAccount.account.networkType === 'bitcoin' &&
             typeof selectedAccount.account.addresses?.unused[0]?.address === 'string' &&
@@ -136,6 +133,7 @@ const SignVerify = (props: Props) => {
     };
 
     const verifyAddressError = getError('verifyAddress');
+    const { address, path } = getAddress();
 
     return (
         <WalletLayout title="Sign & Verify" account={selectedAccount}>
@@ -148,7 +146,7 @@ const SignVerify = (props: Props) => {
                         <Input
                             topLabel={<Translation id="TR_ADDRESS" />}
                             name="signAddress"
-                            value={getAddress().address}
+                            value={address}
                             type="text"
                             readOnly
                         />
@@ -180,12 +178,8 @@ const SignVerify = (props: Props) => {
                             <Translation id="TR_CLEAR" />
                         </StyledButton>
                         <StyledButton
-                            isDisabled={
-                                signMessage.length <= 0 ||
-                                !device.connected ||
-                                getAddress().path.length <= 0
-                            }
-                            onClick={() => signVerifyActions.sign(signMessage, getAddress().path)}
+                            isDisabled={signMessage.length <= 0 || !isLocked || path.length <= 0}
+                            onClick={() => signVerifyActions.sign(signMessage, path)}
                         >
                             <Translation id="TR_SIGN" />
                         </StyledButton>
@@ -241,7 +235,7 @@ const SignVerify = (props: Props) => {
                                 verifySignature.length <= 0 ||
                                 verifyMessage.length <= 0 ||
                                 verifyAddress.length <= 0 ||
-                                !device.connected
+                                !isLocked
                             }
                             onClick={() => {
                                 if (errors.length <= 0) {

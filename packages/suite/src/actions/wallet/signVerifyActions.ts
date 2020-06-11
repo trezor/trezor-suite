@@ -3,7 +3,6 @@ import { isAddressValid } from '@wallet-utils/validation';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { SIGN_VERIFY } from './constants';
 import { GetState, Dispatch, ExtendedMessageDescriptor } from '@suite-types';
-import { Account as Account$ } from '@wallet-reducers/accountsReducer';
 
 export type inputNameType =
     | 'signAddress'
@@ -96,9 +95,6 @@ export const verify = (address: string, message: string, signature: string, hex 
         coin: account.symbol,
         hex,
     };
-    const error = isAddressValid(address, params.coin as Account$['symbol'])
-        ? null
-        : 'TR_ADDRESS_IS_NOT_VALID';
 
     switch (account.networkType) {
         case 'bitcoin':
@@ -117,15 +113,6 @@ export const verify = (address: string, message: string, signature: string, hex 
                 },
             });
             break;
-    }
-
-    if (error) {
-        dispatch({
-            type: SIGN_VERIFY.ERROR,
-            inputName: 'verifyAddress',
-            message: error,
-        });
-        return;
     }
 
     const response = await fn(params);
@@ -163,9 +150,7 @@ export const inputChange = (inputName: inputNameType, value: string) => (
     if (inputName === 'verifyAddress') {
         const { account } = getState().wallet.selectedAccount;
         if (!account) return;
-        const error = isAddressValid(value, account.symbol as Account$['symbol'])
-            ? null
-            : 'TR_ADDRESS_IS_NOT_VALID';
+        const error = isAddressValid(value, account.symbol) ? null : 'TR_ADDRESS_IS_NOT_VALID';
 
         if (error) {
             dispatch({
