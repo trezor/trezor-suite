@@ -29,9 +29,8 @@ const Translation = (props: MsgType) => {
             <FormattedMessage
                 id={props.id}
                 tagName={props.isNested ? undefined : 'span'}
-                {...messages[props.id]}
-                {...props}
-                values={Object.keys(values).length === 0 ? undefined : values}
+                defaultMessage={props.defaultMessage || messages[props.id].defaultMessage}
+                values={props.values || Object.keys(values).length === 0 ? undefined : values}
             />
         </HelperTooltip>
     );

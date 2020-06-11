@@ -3039,7 +3039,7 @@ const definedMessages = defineMessages({
     },
     TR_BUT_THERE_IS_ANOTHER_UPDATE: {
         id: 'TR_BUT_THERE_IS_ANOTHER_UPDATE',
-        deafaultMessage: 'But there is still another update ahead!',
+        defaultMessage: 'But there is still another update ahead!',
     },
     TR_SUCCESS: {
         id: 'TR_SUCCESS',
