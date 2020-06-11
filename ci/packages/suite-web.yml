@@ -1,7 +1,7 @@
 suite-web build:
     stage: build
     script:
-        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/wallet yarn workspace @trezor/suite-web build
+        - ANALYZE=true assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/wallet yarn workspace @trezor/suite-web build
     artifacts:
         expire_in: 7 days
         paths:
@@ -132,17 +132,3 @@ suite-web deploy staging:
     tags:
         - deploy
 # todo: add smoke test job on stage / beta (need basic auth)
-
-suite-web deploy analyze:
-    stage: deploy to dev servers
-    variables:
-        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/@bundle/${CI_BUILD_REF_NAME}
-    before_script: []
-    script:
-        - cd packages/suite-web
-        - ANALYZE=true yarn workspace @trezor/suite-web build
-        - mkdir -p ${DEPLOY_BASE_DIR}/suite-web/@bundle
-        - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
-        - rsync --delete -va build/analyze "${DEPLOY_DIRECTORY}/"
-    tags:
-        - deploy
