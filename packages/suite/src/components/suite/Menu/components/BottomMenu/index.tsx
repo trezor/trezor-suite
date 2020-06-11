@@ -100,8 +100,12 @@ interface Props {
 
 const BottomMenu = (props: Props) => {
     const analytics = useAnalytics();
-    const gotoWithReport = (routeName: Parameters<typeof props.goto>[0]) => {
-        analytics.report({ type: 'ui', payload: `menu/goto/${routeName}` });
+    const gotoWithReport = (routeName: typeof BOTTOM_MENU_ITEMS[number]['route']) => {
+        if (routeName === 'notifications-index') {
+            analytics.report({ type: 'menu/goto/notifications-index' });
+        } else if (routeName === 'settings-index') {
+            analytics.report({ type: 'menu/goto/settings-index' });
+        }
         props.goto(routeName);
     };
 
@@ -131,7 +135,7 @@ const BottomMenu = (props: Props) => {
                         <In
                             key={translationId}
                             data-test={dataTestId}
-                            onClick={() => callback(routeObj!.name)}
+                            onClick={() => callback(route)}
                             isActive={isActive}
                         >
                             <MenuItemWrapper>
@@ -164,6 +168,12 @@ const BottomMenu = (props: Props) => {
                             isSmall
                             checked={props.discreetMode}
                             onChange={checked => {
+                                analytics.report({
+                                    type: 'menu/toggle-discreet',
+                                    payload: {
+                                        value: checked,
+                                    },
+                                });
                                 props.setDiscreetMode(checked);
                             }}
                         />
