@@ -12,7 +12,7 @@ export function useFetchNews() {
 
     useEffect(() => {
         const abortController = new AbortController();
-        const origin = isDev ? NEWS_API_STAGING_URL : NEWS_API_PRODUCTION_URL;
+        const origin = isDev() ? NEWS_API_STAGING_URL : NEWS_API_PRODUCTION_URL;
 
         fetch(`${origin}/posts?limit=${fetchCount}`, { signal: abortController.signal })
             .then(response => response.json())
