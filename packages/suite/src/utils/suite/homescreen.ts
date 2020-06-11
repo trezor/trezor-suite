@@ -132,6 +132,7 @@ const toif = (w: number, h: number, imageData: ImageData) => {
     // Uint16Array -> Uint8Array
     const bytes = [].concat.apply(
         [],
+        // @ts-ignore
         pixels.map((p: number) => {
             return [Math.floor(p / 256), p % 256];
         }),

@@ -192,6 +192,7 @@ type RouteParamsTypes = {
 };
 
 type ExtractType<T extends any> = {
+    // @ts-ignore
     [P in T]: RouteParamsTypes[P];
 };
 

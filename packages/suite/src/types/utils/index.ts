@@ -10,6 +10,7 @@ export type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[numbe
 // const with optional types
 export type ConstWithOptionalFields<Const extends { [key: string]: any }, Fields extends any> = {
     [Key in keyof Const]: {
+        // @ts-ignore
         [FieldKey in Fields]: Const[Key][FieldKey] extends string | number | object | boolean
             ? Const[Key][FieldKey]
             : undefined;
