@@ -113,7 +113,7 @@ export const showAddress = (path: string, address: string) => async (
         });
     } else {
         // special case: device no-backup permissions not granted
-        if (response.payload.code === 403) return;
+        if (response.payload.code === 'Method_PermissionsNotGranted') return;
 
         dispatch(
             notificationActions.addToast({

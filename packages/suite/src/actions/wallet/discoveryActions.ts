@@ -383,7 +383,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         // - UI.FIRMWARE_NOT_COMPATIBLE
         // - UI.FIRMWARE_OLD
         // those coins should be added to "failed" field
-        if (result.payload.code === 'bundle_fw_exception') {
+        if (result.payload.code === 'Method_Discovery_BundleException') {
             try {
                 const coins: { index: number; coin: string; exception: string }[] = JSON.parse(
                     result.payload.error,

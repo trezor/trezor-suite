@@ -7,6 +7,20 @@ import { AggregatedDashboardHistory, AggregatedAccountHistory } from '@wallet-ty
 
 type FiatRates = NonNullable<CoinFiatRates['current']>['rates'];
 
+type TypeName = 'account' | 'dashboard';
+type ObjectType<T> = T extends 'account'
+    ? AggregatedAccountHistory
+    : T extends 'dashboard'
+    ? AggregatedDashboardHistory
+    : never;
+
+export const isAccountAggregatedHistory = (
+    history: AggregatedAccountHistory | AggregatedDashboardHistory,
+    type: 'account' | 'dashboard',
+): history is AggregatedAccountHistory => {
+    return (history as AggregatedAccountHistory).sent !== undefined && type === 'account';
+};
+
 export const calcFiatValueMap = (
     amount: string,
     rates: FiatRates,
@@ -45,19 +59,36 @@ export const sumFiatValueMap = (
     return newMap;
 };
 
-export const isAccountAggregatedHistory = (
-    history: AggregatedAccountHistory | AggregatedDashboardHistory,
-    type: 'account' | 'dashboard',
-): history is AggregatedAccountHistory => {
-    return (history as AggregatedAccountHistory).sent !== undefined && type === 'account';
+/**
+ * Return maximum sent/received crypto or fiat amount from the data
+ */
+export const getMaxValueFromData = <TType extends TypeName>(
+    data: ObjectType<TType>[],
+    _type: TType,
+    extractSentValue: (sourceData: ObjectType<TType>) => string | undefined,
+    extractReceivedValue: (sourceData: ObjectType<TType>) => string | undefined,
+) => {
+    let maxSent =
+        data && data.length > 0 ? new BigNumber(extractSentValue(data[0]) || 0) : new BigNumber(0);
+    let maxReceived =
+        data && data.length > 0
+            ? new BigNumber(extractReceivedValue(data[0]) || 0)
+            : new BigNumber(0);
+
+    data.forEach(d => {
+        const newSentValue = new BigNumber(extractSentValue(d) || 0);
+        const newReceivedValue = new BigNumber(extractReceivedValue(d) || 0);
+        if (newSentValue.gt(maxSent)) {
+            maxSent = newSentValue;
+        }
+        if (newReceivedValue.gt(maxReceived)) {
+            maxReceived = newReceivedValue;
+        }
+    });
+    const maxValue = Math.max(maxSent.toNumber(), maxReceived.toNumber());
+    return maxValue;
 };
 
-type TypeName = 'account' | 'dashboard';
-type ObjectType<T> = T extends 'account'
-    ? AggregatedAccountHistory
-    : T extends 'dashboard'
-    ? AggregatedDashboardHistory
-    : never;
 export const aggregateBalanceHistory = <TType extends TypeName>(
     graphData: GraphData[],
     groupBy: 'day' | 'month',

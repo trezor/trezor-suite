@@ -72,7 +72,7 @@ export const fixtures = [
         connect: {
             error: {
                 error: '[{"index":0,"coin":"btc","exception":"Btc not supported"}]',
-                code: 'bundle_fw_exception',
+                code: 'Method_Discovery_BundleException',
             },
             success: true,
         },
@@ -104,7 +104,7 @@ export const fixtures = [
                         exception: 'Testnet legacy not supported',
                     },
                 ]),
-                code: 'bundle_fw_exception',
+                code: 'Method_Discovery_BundleException',
             },
             success: true,
         },

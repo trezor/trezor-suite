@@ -7,7 +7,11 @@ import InfoCard from './components/InfoCard';
 import BigNumber from 'bignumber.js';
 import { getUnixTime } from 'date-fns';
 import { calcTicks, calcTicksFromData } from '@suite-utils/date';
-import { aggregateBalanceHistory, sumFiatValueMap } from '@wallet-utils/graphUtils';
+import {
+    aggregateBalanceHistory,
+    sumFiatValueMap,
+    getMaxValueFromData,
+} from '@wallet-utils/graphUtils';
 import { GraphRange } from '@wallet-types/fiatRates';
 import { Props } from './Container';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
@@ -101,6 +105,13 @@ const TransactionSummary = (props: Props) => {
         (acc, d) => sumFiatValueMap(acc, d.receivedFiat),
         {},
     );
+    const maxValue = getMaxValueFromData(
+        data,
+        'account',
+        d => d.sent,
+        d => d.received,
+    );
+
     const xTicks =
         selectedRange.label === 'all'
             ? calcTicksFromData(data).map(getUnixTime)
@@ -145,6 +156,7 @@ const TransactionSummary = (props: Props) => {
                                     account={account}
                                     isLoading={isLoading}
                                     data={data}
+                                    maxValue={maxValue}
                                     localCurrency={props.localCurrency}
                                     onRefresh={onRefresh}
                                     selectedRange={selectedRange}

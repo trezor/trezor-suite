@@ -28,9 +28,9 @@ cache:
         - packages/translations-manager/lib
 
 variables:
-    DEV_SERVER_URL: "https://suite.corp.sldev.cz"
-    STAGING_SERVER_URL: "http://staging-wallet.trezor.io/wallet"
-    DESKTOP_APP_NAME: "Trezor Beta Wallet"
+    DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
+    STAGING_SERVER_URL: 'http://staging-wallet.trezor.io/wallet'
+    DESKTOP_APP_NAME: 'Trezor Beta Wallet'
 
 stages:
     - setup environment
@@ -39,8 +39,10 @@ stages:
     - deploy to dev servers
     - integration testing
     - build artifacts
-    - deploy artifacts, others
+    - misc
+    - deploy to dev
     - deploy to staging
+    - deploy to production
 
 lint:
     stage: lint, types, unit tests

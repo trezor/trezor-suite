@@ -46,7 +46,10 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
     return (
         <Input
             variant="small"
-            disabled={isDisabled(networkType, getInputState(data.error, data.value, false, false))}
+            isDisabled={isDisabled(
+                networkType,
+                getInputState(data.error, data.value, false, false),
+            )}
             state={getInputState(error, value, true, true)}
             topLabel={
                 <Label>

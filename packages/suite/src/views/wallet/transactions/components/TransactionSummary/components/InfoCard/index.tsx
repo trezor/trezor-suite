@@ -10,7 +10,7 @@ const Wrapper = styled.div`
     display: flex;
     width: 100%;
     min-height: 80px;
-    width: 320px;
+    min-width: 320px;
 
     & + & {
         border-top: 1px solid ${colors.BLACK92};

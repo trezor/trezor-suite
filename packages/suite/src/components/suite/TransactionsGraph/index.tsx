@@ -8,12 +8,14 @@ import {
     AggregatedAccountHistory,
     AggregatedDashboardHistory,
 } from '@wallet-types/fiatRates';
-import { BarChart, Tooltip, Bar, ReferenceLine, ResponsiveContainer, YAxis, XAxis } from 'recharts';
+import { BarChart, Tooltip, Bar, ReferenceLine, YAxis, XAxis } from 'recharts';
 import RangeSelector from './components/RangeSelector';
-import CustomTooltip from './components/CustomTooltip';
+import CustomResponsiveContainer from './components/CustomResponsiveContainer';
 import CustomXAxisTick from './components/CustomXAxisTick';
 import CustomYAxisTick from './components/CustomYAxisTick';
 import CustomBar from './components/CustomBar';
+import CustomTooltipDashboard from './components/CustomTooltipDashboard';
+import CustomTooltipAccount from './components/CustomTooltipAccount';
 
 const Wrapper = styled.div`
     display: flex;
@@ -59,6 +61,7 @@ interface CommonProps {
     isLoading?: boolean;
     selectedRange: GraphRange;
     xTicks: number[];
+    maxValue?: number;
     localCurrency: string;
     onSelectedRange: (range: GraphRange) => void;
     onRefresh?: () => void;
@@ -67,8 +70,8 @@ export interface CryptoGraphProps extends CommonProps {
     variant: 'one-asset';
     account: Account;
     data: AggregatedAccountHistory[] | null;
-    receivedValueFn: (data: AggregatedAccountHistory) => string;
-    sentValueFn: (data: AggregatedAccountHistory) => string;
+    receivedValueFn: (data: AggregatedAccountHistory) => string | undefined;
+    sentValueFn: (data: AggregatedAccountHistory) => string | undefined;
 }
 
 export interface FiatGraphProps extends CommonProps {
@@ -89,22 +92,6 @@ const TransactionsGraph = React.memo((props: Props) => {
     const setWidth = (n: number) => {
         setMaxYTickWidth(prevValue => (prevValue > n ? prevValue : n));
     };
-
-    // Will be useful if we'll wanna use custom ticks values
-    // const minY =
-    //     data && data.length > 0
-    //         ? data.reduce(
-    //               (min, p) => (new BigNumber(p.sent).lt(min) ? new BigNumber(p.sent) : min),
-    //               new BigNumber(data[0].sent),
-    //           )
-    //         : null;
-    // const maxY =
-    //     data && data.length > 0
-    //         ? data.reduce(
-    //               (max, p) => (new BigNumber(p.received).gt(max) ? new BigNumber(p.received) : max),
-    //               new BigNumber(data[0].received),
-    //           )
-    //         : null;
 
     const xAxisPadding =
         selectedRange.label === 'year' || selectedRange.label === 'all'
@@ -143,7 +130,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                     </NoTransactionsMessageWrapper>
                 )}
                 {!isLoading && data && data.length > 0 && (
-                    <ResponsiveContainer height="100%" width="99%">
+                    <CustomResponsiveContainer height="100%" width="99%">
                         <BarChart
                             data={data}
                             stackOffset="sign"
@@ -170,7 +157,12 @@ const TransactionsGraph = React.memo((props: Props) => {
                             <YAxis
                                 type="number"
                                 orientation="right"
-                                domain={['dataMin', 'dataMax']}
+                                scale="linear"
+                                domain={
+                                    props.maxValue
+                                        ? [props.maxValue * -1.2, props.maxValue * 1.2]
+                                        : undefined
+                                }
                                 stroke={colors.BLACK80}
                                 tick={
                                     props.variant === 'one-asset' ? (
@@ -189,8 +181,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                             <Tooltip
                                 content={
                                     props.variant === 'one-asset' ? (
-                                        <CustomTooltip
-                                            variant={props.variant}
+                                        <CustomTooltipAccount
                                             selectedRange={selectedRange}
                                             symbol={props.account.symbol}
                                             localCurrency={props.localCurrency}
@@ -198,8 +189,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                             receivedValueFn={props.receivedValueFn}
                                         />
                                     ) : (
-                                        <CustomTooltip
-                                            variant={props.variant}
+                                        <CustomTooltipDashboard
                                             selectedRange={selectedRange}
                                             localCurrency={props.localCurrency}
                                             sentValueFn={props.sentValueFn}
@@ -225,7 +215,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 shape={<CustomBar variant="received" />}
                             />
                         </BarChart>
-                    </ResponsiveContainer>
+                    </CustomResponsiveContainer>
                 )}
             </Description>
         </Wrapper>

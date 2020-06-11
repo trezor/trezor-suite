@@ -86,7 +86,17 @@ export type SuiteStorageUpdateMessage = StorageUpdateMessage<SuiteDBSchema>;
  *  Otherwise runs a migration function that transform the data to new scheme version if necessary
  */
 const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersion, transaction) => {
-    const shouldInitDB = oldVersion === 0;
+    let shouldInitDB = oldVersion === 0;
+    if (oldVersion > 0 && oldVersion < 13) {
+        // just delete whole db as migrations from version older than 13 (internal releases) are not implemented
+        try {
+            await SuiteDB.removeStores(db);
+            shouldInitDB = true;
+        } catch (err) {
+            console.error('Storage: Error during removing all stores', err);
+        }
+    }
+
     if (shouldInitDB) {
         // init db
         // object store for wallet transactions

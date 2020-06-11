@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { P } from '@trezor/components';
 import { WalletLayout } from '@wallet-components';
-import { SUITE } from '@suite-actions/constants';
+import { useDevice } from '@suite-hooks';
 import { Props } from './Container';
 import { Translation, Card } from '@suite-components';
 import messages from '@suite/support/messages';
@@ -38,13 +38,13 @@ const StyledRow = styled(Row)`
     padding-top: 0;
 `;
 
-export default ({ selectedAccount, locks, device, openModal }: Props) => {
+export default ({ selectedAccount, openModal }: Props) => {
+    const { device, isLocked } = useDevice();
     if (!device || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Account details" account={selectedAccount} />;
     }
 
     const { account } = selectedAccount;
-    const locked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
     const disabled = !!device.authConfirm;
 
     const accountTypeName = getAccountTypeIntl(account.accountType);
@@ -101,7 +101,7 @@ export default ({ selectedAccount, locks, device, openModal }: Props) => {
                                     symbol: account.symbol,
                                 })
                             }
-                            isLoading={locked && !disabled}
+                            isLoading={isLocked() && !disabled}
                             isDisabled={disabled}
                         >
                             <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />

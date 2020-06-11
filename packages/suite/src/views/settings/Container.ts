@@ -8,7 +8,6 @@ import { AppState, Dispatch } from '@suite-types';
 import Component from './index';
 
 const mapStateToProps = (state: AppState) => ({
-    locks: state.suite.locks,
     language: state.suite.settings.language,
     localCurrency: state.wallet.settings.localCurrency,
 });

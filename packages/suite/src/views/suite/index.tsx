@@ -1,6 +1,6 @@
 import Analytics from './analytics';
 import Bridge from './bridge';
-import DeviceAcquire from './device-acquire/Container';
+import DeviceAcquire from './device-acquire';
 import DeviceBootloader from './device-bootloader';
 import DeviceConnect from './device-connect';
 import DeviceInitialize from './device-initialize';

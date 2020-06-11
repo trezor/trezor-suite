@@ -1,7 +1,7 @@
 {
     "name": "@trezor/suite-desktop",
     "description": "TrezorSuite desktop application",
-    "version": "20.5.1-beta",
+    "version": "20.6.1-beta",
     "private": true,
     "author": "Satoshilabs s.r.o <info@satoshilabs.com>",
     "homepage": "http://www.trezor.io",
@@ -14,6 +14,7 @@
         "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac",
         "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux",
         "build:win": "yarn clean && yarn build:desktop && electron-builder --win",
+        "publish": "yarn clean && yarn build:desktop && electron-builder --publish always --mac --linux --win",
         "lint": "eslint '**/*{.ts,.tsx}'",
         "type-check": "tsc --project tsconfig.json"
     },
@@ -90,6 +91,7 @@
         "electron-next": "^3.1.5",
         "electron-store": "^5.1.1",
         "next": "^9.4.4",
+        "styled-components": "5.1.1",
         "os": "^0.1.1",
         "react": "16.9.0",
         "react-dom": "16.9.0",
@@ -97,6 +99,7 @@
         "worker-loader": "^2.0.0"
     },
     "devDependencies": {
+        "babel-plugin-styled-components": "1.10.7",
         "@types/electron-localshortcut": "^3.1.0",
         "@types/next": "^9.0.0",
         "@types/next-redux-wrapper": "^3.0.0",

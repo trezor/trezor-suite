@@ -20,9 +20,6 @@ const SetPinStep = (props: Props) => {
         if (activeSubStep) {
             return activeSubStep;
         }
-        // if (deviceCall.error === 'PIN mismatch') {
-        //     return 'mismatch';
-        // }
         if (device.buttonRequests.filter(b => b === UI.REQUEST_PIN).length === 1) {
             return 'first';
         }

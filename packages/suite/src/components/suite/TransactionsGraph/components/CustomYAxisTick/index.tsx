@@ -24,7 +24,9 @@ const CustomYAxisTick = (props: CustomProps) => {
     }, [ref, setWidth]);
 
     const bValue = new BigNumber(payload.value);
-    const cryptoValue = bValue.lt(0.01) ? formatCoinBalance(bValue.toFixed()) : bValue.toFixed(2);
+    const cryptoValue = bValue.abs().lt(0.01)
+        ? formatCoinBalance(bValue.toFixed())
+        : bValue.toFixed(2);
     return (
         <g ref={ref} transform={`translate(${x},${y})`}>
             <text x={0} y={0} dy={2} textAnchor="start" fill="#666">

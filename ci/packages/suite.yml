@@ -6,7 +6,7 @@ suite test integration:
         - yarn workspace @trezor/suite test-health
 
 suite check outdated:
-    stage: deploy artifacts, others
+    stage: misc
     only:
         refs:
             - develop
@@ -15,7 +15,7 @@ suite check outdated:
         - ./ci/scripts/outdated.sh
 
 suite check multiple same svgs:
-    stage: deploy artifacts, others
+    stage: misc
     only:
         refs:
             - develop
