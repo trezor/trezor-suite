@@ -38,7 +38,7 @@ suite-web e2e chrome stage=stable:
         - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
         - export BROWSER=chrome
-        - yarn concurrently --success first --kill-others 
+        - yarn concurrently --success first --kill-others
           "cd ./docker/trezor-user-env/controller && python3 ./main.py"
           "node ./packages/integration-tests/projects/suite-web/run_tests.js
           --project ./packages/integration-tests/projects/suite-web
@@ -65,7 +65,7 @@ suite-web e2e chrome stage=beta:
         - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
         - export BROWSER=/usr/bin/google-chrome-beta
-        - yarn concurrently --success first --kill-others 
+        - yarn concurrently --success first --kill-others
           "cd ./docker/trezor-user-env/controller && python3 ./main.py"
           "node ./packages/integration-tests/projects/suite-web/run_tests.js
           --project ./packages/integration-tests/projects/suite-web
@@ -82,7 +82,7 @@ suite-web e2e chrome stage=beta:
 
 suite-web e2e chrome-beta stage=stable:
     stage: integration testing
-    only:	
+    only:
         - schedules
     allow_failure: false
     script:
@@ -94,7 +94,7 @@ suite-web e2e chrome-beta stage=stable:
         - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
         - export BROWSER=/usr/bin/google-chrome-beta
-        - yarn concurrently --success first --kill-others 
+        - yarn concurrently --success first --kill-others
           "cd ./docker/trezor-user-env/controller && python3 ./main.py"
           "node ./packages/integration-tests/projects/suite-web/run_tests.js
           --project ./packages/integration-tests/projects/suite-web
@@ -131,5 +131,18 @@ suite-web deploy staging:
         # - ./scripts/s3sync.sh stage beta
     tags:
         - deploy
-
 # todo: add smoke test job on stage / beta (need basic auth)
+
+suite-web deploy analyze:
+    stage: deploy to dev servers
+    variables:
+        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/@bundle/${CI_BUILD_REF_NAME}/wallet
+    before_script: []
+    script:
+        - cd packages/suite-web
+        - ANALYZE=true yarn workspace @trezor/suite-web build
+        - mkdir -p ${DEPLOY_BASE_DIR}/suite-web/@bundle
+        - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
+        - rsync --delete -va build/analyze "${DEPLOY_DIRECTORY}/"
+    tags:
+        - deploy
