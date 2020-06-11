@@ -279,7 +279,7 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
         misc.nonce = payload.nonce;
     }
     if (payload.erc20Contract) {
-        const token = transformTokenInfo([{ type: 'ERC20', ...payload.erc20Contract }]);
+        const token = transformTokenInfo([payload.erc20Contract]);
         if (token) {
             const [erc20Contract] = token;
             misc.erc20Contract = erc20Contract;

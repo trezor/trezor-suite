@@ -44,17 +44,17 @@ const Wrapper = styled.div`
     display: flex;
 `;
 
-const Switch = ({ onChange, isDisabled, isSmall, dataTest, ...rest }: Props) => {
-    const [checked, setChecked] = useState<StateProps['checked']>(false);
+const Switch = ({ onChange, isDisabled, isSmall, dataTest, checked, ...rest }: Props) => {
+    const [isChecked, setIsChecked] = useState<StateProps['checked']>(false);
     const handleChange = (checked: boolean) => {
         onChange(checked);
-        setChecked(checked);
+        setIsChecked(checked);
     };
 
     return (
         <Wrapper data-test={dataTest}>
             <StyledReactSwitch
-                checked={checked}
+                checked={isChecked || checked}
                 disabled={isDisabled}
                 onChange={handleChange}
                 onColor={colors.GREEN}
