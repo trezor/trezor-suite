@@ -30,7 +30,7 @@ const Translation = (props: MsgType) => {
                 id={props.id}
                 tagName={props.isNested ? undefined : 'span'}
                 defaultMessage={props.defaultMessage || messages[props.id].defaultMessage}
-                values={props.values || Object.keys(values).length === 0 ? undefined : values}
+                values={Object.keys(values).length === 0 ? undefined : values}
             />
         </HelperTooltip>
     );
