@@ -65,6 +65,7 @@
         "prettier-eslint": "^9.0.1",
         "rimraf": "^3.0.2",
         "ts-jest": "^26.1.0",
+        "babel-jest": "^26.0.1",
         "typescript": "^3.9.5"
     }
 }
