@@ -34,7 +34,9 @@ const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceIns
                         hasAtLeastOneWallet
                             ? addDeviceInstance(device)
                             : selectDeviceInstance(instances[0]) &&
-                              analytics.report({ type: 'ui', payload: 'switch-device/add-wallet' })
+                              analytics.report({
+                                  type: 'switch-device/add-wallet',
+                              })
                     }
                 >
                     <Translation id="TR_ADD_WALLET" />

@@ -5464,10 +5464,10 @@
   resolved "https://registry.yarnpkg.com/@types/caseless/-/caseless-0.12.2.tgz#f65d3d6389e01eeb458bd54dc8f52b95a9463bc8"
   integrity sha512-6ckxMjBBD8URvjB6J3NcnuAn5Pkl7t3TizAg+xdlzzQGSPSmBcXf8KoIH0ua/i+tio+ZRUHEXp0HEmvaR4kt0w==
 
-"@types/cheerio@0.22.17":
-  version "0.22.17"
-  resolved "https://registry.npmjs.org/@types/cheerio/-/cheerio-0.22.17.tgz#e54f71c3135f71ebc16c8dc62edad533872c9e72"
-  integrity sha512-izlm+hbqWN9csuB9GSMfCnAyd3/57XZi3rfz1B0C4QBGVMp+9xQ7+9KYnep+ySfUrCWql4lGzkLf0XmprXcz9g==
+"@types/cheerio@0.22.18":
+  version "0.22.18"
+  resolved "https://registry.yarnpkg.com/@types/cheerio/-/cheerio-0.22.18.tgz#19018dceae691509901e339d63edf1e935978fe6"
+  integrity sha512-Fq7R3fINAPSdUEhOyjG4iVxgHrOnqDJbY0/BUuiN0pvD/rfmZWekVZnv+vcs8TtpA2XF50uv50LaE4EnpEL/Hw==
   dependencies:
     "@types/node" "*"
 
@@ -5544,13 +5544,23 @@
     "@types/node" "*"
     "@types/range-parser" "*"
 
-"@types/express@*", "@types/express@4.17.3":
+"@types/express@*":
   version "4.17.3"
   resolved "https://registry.npmjs.org/@types/express/-/express-4.17.3.tgz#38e4458ce2067873b09a73908df488870c303bd9"
   integrity sha512-I8cGRJj3pyOLs/HndoP+25vOqhqWkAZsWMEmq1qXy/b/M3ppufecUwaK2/TVDVxcV61/iSdhykUjQQ2DLSrTdg==
   dependencies:
     "@types/body-parser" "*"
     "@types/express-serve-static-core" "*"
+    "@types/serve-static" "*"
+
+"@types/express@4.17.6":
+  version "4.17.6"
+  resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.6.tgz#6bce49e49570507b86ea1b07b806f04697fac45e"
+  integrity sha512-n/mr9tZI83kd4azlPG5y997C/M4DNABK9yErhFM6hKdym4kkmd9j0vtsJyjFIwfRBxtrxZtAfGZCNRIBMFLK5w==
+  dependencies:
+    "@types/body-parser" "*"
+    "@types/express-serve-static-core" "*"
+    "@types/qs" "*"
     "@types/serve-static" "*"
 
 "@types/extract-zip@^1.6.2":
@@ -5752,6 +5762,11 @@
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.2.tgz#690a1475b84f2a884fd07cd797c00f5f31356ea8"
   integrity sha512-ce5d3q03Ex0sy4R14722Rmt6MT07Ua+k4FwDfdcToYJcMKNtRVQvJ6JCAPdAmAnbRb6CsX6aYb9m96NGod9uTw==
+
+"@types/qs@*":
+  version "6.9.3"
+  resolved "https://registry.yarnpkg.com/@types/qs/-/qs-6.9.3.tgz#b755a0934564a200d3efdf88546ec93c369abd03"
+  integrity sha512-7s9EQWupR1fTc2pSMtXRQ9w9gLOcrJn+h7HOXw4evxyvVqMi4f+q7d2tnFe3ng3SNHjtK+0EzGMGFUQX4/AQRA==
 
 "@types/qs@^6.9.2":
   version "6.9.2"
@@ -12802,10 +12817,10 @@ fast-safe-stringify@^1.0.8, fast-safe-stringify@^1.2.1:
   resolved "https://registry.npmjs.org/fast-safe-stringify/-/fast-safe-stringify-1.2.3.tgz#9fe22c37fb2f7f86f06b8f004377dbf8f1ee7bc1"
   integrity sha512-QJYT/i0QYoiZBQ71ivxdyTqkwKkQ0oxACXHYxH2zYHJEgzi2LsbjgvtzTbLi1SZcF190Db2YP7I7eTsU2egOlw==
 
-fast-xml-parser@3.16.0:
-  version "3.16.0"
-  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-3.16.0.tgz#d905e7e6b28fc4648cabebcb074363867fb56ee2"
-  integrity sha512-U+bpScacfgnfNfIKlWHDu4u6rtOaCyxhblOLJ8sZPkhsjgGqdZmVPBhdOyvdMGCDt8CsAv+cssOP3NzQptNt2w==
+fast-xml-parser@3.17.1:
+  version "3.17.1"
+  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-3.17.1.tgz#579fa64346cc891ce240d378268c6216e74aab10"
+  integrity sha512-jZ0EVn1iBuZtx/sbQnfvhSaaUltz+0+yfR+6QRyzrlt5yMiU+8ZfGj9i3/hoXJxm+aFri7dycBWbncox7frCAQ==
 
 fastq@^1.6.0:
   version "1.6.0"
@@ -25683,10 +25698,10 @@ tree-kill@^1.1.0, tree-kill@^1.2.1, tree-kill@^1.2.2:
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
   integrity sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==
 
-trezor-connect@8.1.7-beta.1:
-  version "8.1.7-beta.1"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.7-beta.1.tgz#bf3a81c601c5772c56aa1d79eba68303f720a1b2"
-  integrity sha512-YhXkY1kNoYA65noZeBluhOWyqbpLXXSV0oR/7XDFL3pjucJ9+ZGSfLvl7J1TJJOLgA1QJx7unAuDJFKY/k0jWA==
+trezor-connect@8.1.7-beta.2:
+  version "8.1.7-beta.2"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.7-beta.2.tgz#1792b35dcd821ff71dab0ffa7bd4a788bcc1dc4c"
+  integrity sha512-/os4kDrgB0VbZ/unp54/fyrgYqodL5s7KKxxyDx3olW6fcPRZqkJMfml/HoOGAm9RPhwhPRM1WCN5pl9WrRvJw==
   dependencies:
     "@babel/runtime" "^7.10.2"
     "@trezor/blockchain-link" "^1.0.12"

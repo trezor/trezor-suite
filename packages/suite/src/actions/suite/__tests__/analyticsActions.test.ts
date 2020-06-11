@@ -63,36 +63,11 @@ describe('Analytics Actions', () => {
         process.env.SUITE_TYPE = 'desktop';
         const state = getInitialState({ analytics: { enabled: true, instanceId: '1' } });
         const store = initStore(state);
-        store.dispatch(analyticsActions.report({ type: 'ui', payload: 'test-bla-bla' }));
+        store.dispatch(analyticsActions.report({ type: 'switch-device/eject' }));
         // @ts-ignore
         expect(global.fetch).toHaveBeenNthCalledWith(
             1,
-            'https://data.trezor.io/suite/log/desktop/beta.log?sessionId=very-random&instanceId=1&type=ui&payload=test-bla-bla',
-            { method: 'GET' },
-        );
-        process.env.SUITE_TYPE = env;
-    });
-
-    it('analyticsActions.report() - event with complex payload including array', () => {
-        const env = process.env.SUITE_TYPE;
-        process.env.SUITE_TYPE = 'desktop';
-        const state = getInitialState({ analytics: { enabled: true, instanceId: '1' } });
-        const store = initStore(state);
-        store.dispatch(
-            analyticsActions.report({
-                type: 'suite-ready',
-                payload: {
-                    enabledNetworks: ['btc', 'bch'],
-                    language: 'en',
-                    localCurrency: 'usd',
-                    discreetMode: false,
-                },
-            }),
-        );
-        // @ts-ignore
-        expect(global.fetch).toHaveBeenNthCalledWith(
-            1,
-            'https://data.trezor.io/suite/log/desktop/beta.log?sessionId=very-random&instanceId=1&type=suite-ready&enabledNetworks=btc%2Cbch&language=en&localCurrency=usd&discreetMode=false',
+            'https://data.trezor.io/suite/log/desktop/beta.log?c_v=1.0&c_type=switch-device%2Feject&c_instance_id=1&c_session_id=very-random',
             { method: 'GET' },
         );
         process.env.SUITE_TYPE = env;
@@ -101,7 +76,7 @@ describe('Analytics Actions', () => {
     it('analyticsActions.report() - should not report if not enabled', () => {
         const state = getInitialState({ analytics: { enabled: false } });
         const store = initStore(state);
-        store.dispatch(analyticsActions.report({ type: 'ui', payload: 'wrrr' }));
+        store.dispatch(analyticsActions.report({ type: 'switch-device/eject' }));
         // @ts-ignore
         expect(global.fetch).toHaveBeenCalledTimes(0);
     });
@@ -111,7 +86,7 @@ describe('Analytics Actions', () => {
         process.env.NODE_ENV = 'development';
         const state = getInitialState({ analytics: { enabled: true } });
         const store = initStore(state);
-        store.dispatch(analyticsActions.report({ type: 'ui', payload: 'wrrr' }));
+        store.dispatch(analyticsActions.report({ type: 'switch-device/eject' }));
         // @ts-ignore
         expect(global.fetch).toHaveBeenCalledTimes(0);
         process.env.NODE_ENV = env;

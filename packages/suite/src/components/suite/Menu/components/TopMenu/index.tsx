@@ -144,7 +144,7 @@ const TopMenu = (props: Props) => {
                 onClick={() =>
                     props.goto('suite-switch-device', {
                         cancelable: true,
-                    }) && analytics.report({ type: 'ui', payload: 'menu/goto/switch-device' })
+                    }) && analytics.report({ type: 'menu/goto/switch-device' })
                 }
             >
                 {!props.selectedDevice && <DeviceRow />}
