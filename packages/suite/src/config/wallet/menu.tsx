@@ -36,10 +36,7 @@ export const ITEMS = [
         icon: 'SIGN',
         isHidden: (_account: Account) => {
             const network = NETWORKS.find(n => n.symbol === _account.symbol);
-            return !(
-                (network?.networkType === 'bitcoin' || network?.networkType === 'ethereum') &&
-                network.hasSignVerify
-            );
+            return !(network && network.hasSignVerify);
         },
     },
     {
