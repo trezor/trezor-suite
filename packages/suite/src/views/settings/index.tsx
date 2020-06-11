@@ -1,10 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
 import { SettingsLayout } from '@settings-components';
-import { useDevice } from '@suite-hooks';
-import styled from 'styled-components';
 import { Translation } from '@suite-components';
-import { Button, Tooltip } from '@trezor/components';
 import {
     ActionButton,
     ActionColumn,
@@ -15,7 +10,10 @@ import {
     TextColumn,
 } from '@suite-components/Settings';
 import { FIAT, LANGUAGES } from '@suite-config';
-import { useAnalytics } from '@suite-hooks';
+import { useAnalytics, useDevice } from '@suite-hooks';
+import { Button, Tooltip } from '@trezor/components';
+import React from 'react';
+import styled from 'styled-components';
 
 import { Props } from './Container';
 

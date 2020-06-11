@@ -15,8 +15,10 @@ export const isAndroid = () => {
 
 export const getScreenWidth = () => {
     // todo
-}
+    return 1;
+};
 
 export const getScreenHeight = () => {
     // todo
-}
+    return 1;
+};
