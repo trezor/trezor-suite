@@ -88,8 +88,20 @@ interface Props {
 const Menu = (props: Props) => {
     const analytics = useAnalytics();
 
-    const gotoWithReport = (routeName: Parameters<typeof props.goto>[0]) => {
-        analytics.report({ type: 'ui', payload: `menu/goto${routeName}` });
+    const gotoWithReport = (routeName: typeof MAIN_MENU_ITEMS[number]['route']) => {
+        switch (routeName) {
+            case 'suite-index':
+                analytics.report({ type: 'menu/goto/suite-index' });
+                break;
+            case 'exchange-index':
+                analytics.report({ type: 'menu/goto/exchange-index' });
+                break;
+            case 'wallet-index':
+                analytics.report({ type: 'menu/goto/wallet-index' });
+                break;
+            default:
+            // no default
+        }
         props.goto(routeName);
     };
 
@@ -105,7 +117,7 @@ const Menu = (props: Props) => {
                         <RoundedCorner top isActive={isActive} />
                         <In
                             data-test={`@suite/menu/${route}`}
-                            onClick={() => !isDisabled && callback(routeObj!.name)}
+                            onClick={() => !isDisabled && callback(route)}
                             isActive={isActive}
                             isDisabled={isDisabled}
                         >

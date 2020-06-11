@@ -101,8 +101,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             onClick={() => {
                                 goto('backup-index', { cancelable: true });
                                 analytics.report({
-                                    type: 'ui',
-                                    payload: 'settings/device/goto/backup',
+                                    type: 'settings/device/goto/backup',
                                 });
                             }}
                             isDisabled={
@@ -149,8 +148,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                 onClick={() => {
                                     goto('recovery-index', { cancelable: true });
                                     analytics.report({
-                                        type: 'ui',
-                                        payload: 'settings/device/goto/recovery',
+                                        type: 'settings/device/goto/recovery',
                                     });
                                 }}
                                 isDisabled={
@@ -186,8 +184,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             onClick={() => {
                                 goto('firmware-index', { cancelable: true });
                                 analytics.report({
-                                    type: 'ui',
-                                    payload: 'settings/device/goto/firmware',
+                                    type: 'settings/device/goto/firmware',
                                 });
                             }}
                             data-test="@settings/device/update-button"
@@ -213,8 +210,10 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             onChange={() => {
                                 changePin({ remove: features.pin_protection });
                                 analytics.report({
-                                    type: 'ui',
-                                    payload: 'settings/device/change-pin',
+                                    type: 'settings/device/change-pin-protection',
+                                    payload: {
+                                        remove: features.pin_protection,
+                                    },
                                 });
                             }}
                             isDisabled={isDeviceLocked}
@@ -230,10 +229,14 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         />
                         <ActionColumn>
                             <ActionButton
-                                onClick={() => changePin({ remove: false })}
+                                onClick={() => {
+                                    changePin({ remove: false });
+                                    analytics.report({
+                                        type: 'settings/device/change-pin',
+                                    });
+                                }}
                                 isDisabled={isDeviceLocked}
                                 variant="secondary"
-                                data-test="@settings/device/update-button"
                             >
                                 <Translation id="TR_CHANGE_PIN" />
                             </ActionButton>
@@ -255,11 +258,17 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                     <ActionColumn>
                         <Switch
                             checked={!!features.passphrase_protection}
-                            onChange={() =>
+                            onChange={() => {
                                 applySettings({
                                     use_passphrase: !features.passphrase_protection,
-                                })
-                            }
+                                });
+                                analytics.report({
+                                    type: 'settings/device/change-passphrase-protection',
+                                    payload: {
+                                        use_passphrase: !features.passphrase_protection,
+                                    },
+                                });
+                            }}
                             data-test="@settings/device/passphrase-switch"
                             isDisabled={isDeviceLocked}
                         />
@@ -292,8 +301,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             onClick={() => {
                                 applySettings({ label });
                                 analytics.report({
-                                    type: 'ui',
-                                    payload: 'settings/device/change-label',
+                                    type: 'settings/device/change-label',
                                 });
                             }}
                             isDisabled={isDeviceLocked || label.length > MAX_LABEL_LENGTH}
@@ -347,8 +355,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                     device,
                                 });
                                 analytics.report({
-                                    type: 'ui',
-                                    payload: 'settings/device/goto/background',
+                                    type: 'settings/device/goto/background',
                                 });
                             }}
                             isDisabled={isDeviceLocked}
@@ -399,8 +406,10 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                             display_rotation: variant.value,
                                         });
                                         analytics.report({
-                                            type: 'ui',
-                                            payload: `settings/device/change-orientation/${variant.value}`,
+                                            type: 'settings/device/change-orientation',
+                                            payload: {
+                                                value: variant.value,
+                                            },
                                         });
                                     }}
                                     data-test={`@settings/device/rotation-button/${variant.value}`}
@@ -426,8 +435,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                     type: 'wipe-device',
                                 });
                                 analytics.report({
-                                    type: 'ui',
-                                    payload: 'settings/device/goto/wipe',
+                                    type: 'settings/device/goto/wipe',
                                 });
                             }}
                             variant="danger"
