@@ -1,5 +1,3 @@
-NOT FINISHED
-
 # Send
 
 ## Common
@@ -63,17 +61,21 @@ NOT FINISHED
 - disabled
 
 ### Fiat
-
 - not visible with testnets (no fiat rates)
 
 #### BTC
+- compose transaction
+- recalculate Amount
 
 #### ETH
+- compose transaction
+- recalculate Amount
 
 #### XRP
+- compose transaction
+- recalculate Amount
 
 ### Currency select
-
 - not visible with testnets (no fiat rates)
 
 #### BTC
@@ -99,8 +101,8 @@ NOT FINISHED
 - recalculate Amount if setMax is active
 
 ### Custom fee
-
-- units are drops
+- units drops
+- recalculate Fee
 
 ### Locktime
 - coming soon
@@ -111,11 +113,32 @@ NOT FINISHED
 ## Advanced form Ethereum
 
 #### Data
+- validation: `TR_ETH_DATA_NOT_HEX`
+- recalculate Fee
+- disable Fee (Normal)
+- disable GasPrice
+
 #### Gas price
+- validation: `TR_ETH_GAS_PRICE_NOT_NUMBER`
+- change selected fee level to custom
+- recalculate Fee
+
 #### Gas limit
+- validation: `TR_ETH_GAS_LIMIT_NOT_NUMBER`
+- change selected fee level to custom
+- recalculate Fee
 
 ## Advanced form Ripple
 
 #### Fee
+- change selected fee level (Normal, Low, Hight, Custom)
+- recalculate Amount if setMax is active
+
 #### Custom fee
+- validation: `TR_CUSTOM_FEE_IS_NOT_SET | TR_CUSTOM_FEE_IS_NOT_NUMBER | TR_CUSTOM_FEE_NOT_IN_RANGE`
+- units sat/B
+- recalculate Fee
+
 #### Destination tag
+- validation: `TR_DESTINATION_TAG_IS_NOT_NUMBER`
+- set additional tx param
