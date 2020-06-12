@@ -38,6 +38,7 @@
         "react": "16.9.0",
         "react-dom": "16.9.0",
         "react-focus-lock": "^2.0.5",
+        "react-hook-form": "^5.7.2",
         "react-hotkeys-hook": "^1.5.4",
         "react-intl": "^3.9.2",
         "react-native-web": "^0.11.2",
