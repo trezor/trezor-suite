@@ -114,6 +114,7 @@ export default () => {
     const dataIsDirty = formState.dirtyFields.has('ethereumData');
     const { networkType, symbol } = account;
     const customFeeHasError = errors.customFee;
+    console.log('aaa', selectedFee);
 
     return (
         <Wrapper>
@@ -149,10 +150,10 @@ export default () => {
                     onChange={(selectedFeeLevel: FeeLevel) => {
                         if (selectedFeeLevel.label === 'custom') {
                             setSelectedFee({ ...selectedFee, label: 'custom' });
-                            setValue('custom-fee', selectedFee.feePerUnit, true);
+                            setValue('customFee', selectedFee.feePerUnit, true);
                         } else {
                             setSelectedFee(selectedFeeLevel);
-                            setValue('custom-fee', '');
+                            setValue('customFee', '');
                         }
                     }}
                     options={feeInfo.levels}

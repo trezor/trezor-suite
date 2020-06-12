@@ -377,3 +377,71 @@ export const composeTx = async (
         await composeBtcTransaction(account, formValues, outputs, selectedFee, true);
     }
 };
+
+export const signEthTx = async (account, token, networkId, device) => {
+    const transaction = prepareEthereumTransaction({
+        token,
+        chainId: network.chainId,
+        to: address,
+        amount,
+        data: data.value,
+        gasLimit: gasLimit.value,
+        gasPrice: gasPrice.value,
+        nonce: account.misc.nonce,
+    });
+
+    const signedTx = await TrezorConnect.ethereumSignTransaction({
+        device: {
+            path: device.path,
+            instance: device.instance,
+            state: device.state,
+        },
+        useEmptyPassphrase: device.useEmptyPassphrase,
+        path: account.path,
+        transaction,
+    });
+
+    if (!signedTx.success) {
+        dispatch(
+            notificationActions.addToast({
+                type: 'sign-tx-error',
+                error: signedTx.payload.error,
+            }),
+        );
+        return;
+    }
+
+    const serializedTx = serializeEthereumTx({
+        ...transaction,
+        ...signedTx.payload,
+    });
+
+    // TODO: add possibility to show serialized tx without pushing (locktime)
+    const sentTx = await TrezorConnect.pushTransaction({
+        tx: serializedTx,
+        coin: network.symbol,
+    });
+
+    // if (sentTx.success) {
+    //     dispatch(commonActions.clear());
+    //     const symbol = token ? token.symbol!.toUpperCase() : account.symbol.toUpperCase();
+    //     dispatch(
+    //         notificationActions.addToast({
+    //             type: 'tx-sent',
+    //             formattedAmount: `${amount} ${symbol}`,
+    //             device: selectedDevice,
+    //             descriptor: account.descriptor,
+    //             symbol: account.symbol,
+    //             txid: sentTx.payload.txid,
+    //         }),
+    //     );
+    //     dispatch(accountActions.fetchAndUpdateAccount(account));
+    // } else {
+    //     dispatch(
+    //         notificationActions.addToast({
+    //             type: 'sign-tx-error',
+    //             error: sentTx.payload.error,
+    //         }),
+    //     );
+    // }
+};

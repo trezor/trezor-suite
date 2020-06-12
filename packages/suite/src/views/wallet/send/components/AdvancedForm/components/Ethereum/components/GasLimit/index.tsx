@@ -3,6 +3,7 @@ import { colors, Icon, Input, Tooltip } from '@trezor/components';
 import { useSendContext } from '@wallet-hooks/useSendContext';
 import { getState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
+import { toWei } from 'web3-utils';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import validator from 'validator';
@@ -22,7 +23,7 @@ const StyledIcon = styled(Icon)`
 
 export default () => {
     const { register, errors, getValues } = useFormContext();
-    const { account, initialSelectedFee } = useSendContext();
+    const { account, initialSelectedFee, setSelectedFee } = useSendContext();
     const { networkType } = account;
     const inputName = 'ethereumGasLimit';
     const ethData = getValues('ethereumData');
@@ -34,6 +35,18 @@ export default () => {
             name={inputName}
             isDisabled={networkType === 'ethereum' && ethData}
             state={getState(error)}
+            onChange={event => {
+                if (!error) {
+                    const gasPrice = getValues('ethereumGasPrice');
+                    const gasLimit = event.target.value;
+                    setSelectedFee({
+                        feePerUnit: gasPrice,
+                        feeLimit: gasLimit,
+                        label: 'custom',
+                        blocks: -1,
+                    });
+                }
+            }}
             innerRef={register({
                 validate: {
                     TR_ETH_GAS_LIMIT_NOT_NUMBER: (value: string) => {

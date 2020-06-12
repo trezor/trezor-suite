@@ -1,4 +1,5 @@
 import { Translation } from '@suite-components';
+import { toWei } from 'web3-utils';
 import { colors, Icon, Input, Tooltip } from '@trezor/components';
 import { useSendContext } from '@wallet-hooks/useSendContext';
 import { getState } from '@wallet-utils/sendFormUtils';
@@ -21,8 +22,8 @@ const StyledIcon = styled(Icon)`
 `;
 
 export default () => {
-    const { initialSelectedFee } = useSendContext();
-    const { register, errors } = useFormContext();
+    const { initialSelectedFee, setSelectedFee } = useSendContext();
+    const { register, errors, getValues } = useFormContext();
     const inputName = 'ethereumGasPrice';
     const error = errors[inputName];
 
@@ -31,6 +32,18 @@ export default () => {
             variant="small"
             name={inputName}
             state={getState(error)}
+            onChange={event => {
+                if (!error) {
+                    const gasPrice = event.target.value;
+                    const gasLimit = getValues('ethereumGasLimit');
+                    setSelectedFee({
+                        feePerUnit: gasPrice,
+                        feeLimit: gasLimit,
+                        label: 'custom',
+                        blocks: -1,
+                    });
+                }
+            }}
             topLabel={
                 <Label>
                     <Text>
