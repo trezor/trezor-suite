@@ -10,6 +10,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
 
 import { Action } from '@suite-types';
+import routes from '@suite/constants/suite/routes';
 
 jest.mock('next/router', () => {
     return {
@@ -108,7 +109,6 @@ describe('suite middleware', () => {
 
     describe('redirection on initial run', () => {
         it('if initialRun is true, should redirect to welcome screen after STORAGE.LOADED action', () => {
-            const goto = jest.spyOn(routerActions, 'goto');
             // eslint-disable-next-line global-require
             require('next/router').default.pathname = '/accounts';
 
@@ -127,13 +127,18 @@ describe('suite middleware', () => {
                     },
                 },
             });
-            expect(goto).toHaveBeenNthCalledWith(1, 'suite-welcome');
 
-            goto.mockClear();
+            // redirect to suite-welcome called once
+            const locationsChangedAction = store
+                .getActions()
+                .filter(a => a.type === ROUTER.LOCATION_CHANGE);
+            expect(locationsChangedAction.length).toBe(1);
+            expect(locationsChangedAction[0].url).toBe(
+                routes.find(r => r.name === 'suite-welcome')?.pattern,
+            );
         });
 
         it('if route is modal window, should not redirect and show modal directly', () => {
-            const goto = jest.spyOn(routerActions, 'goto');
             // eslint-disable-next-line global-require
             require('next/router').default.pathname = '/version';
 
@@ -152,10 +157,15 @@ describe('suite middleware', () => {
                     },
                 },
             });
-            expect(goto).toHaveBeenCalledTimes(1);
-            expect(goto).toHaveBeenCalledWith('suite-version');
 
-            goto.mockClear();
+            // redirect to suite-version called once
+            const locationsChangedAction = store
+                .getActions()
+                .filter(a => a.type === ROUTER.LOCATION_CHANGE);
+            expect(locationsChangedAction.length).toBe(1);
+            expect(locationsChangedAction[0].url).toBe(
+                routes.find(r => r.name === 'suite-version')?.pattern,
+            );
         });
 
         it('if route is 404, should not redirect and show modal directly', () => {

@@ -139,11 +139,13 @@ class CommonDB<TDBStructure> {
         // @ts-ignore
         const db = unwrap(await this.getDB()) as IDBDatabase;
 
+        const storeName = store as string;
+
         const p = new Promise<StoreKey<TDBStructure, TStoreName>>((resolve, reject) => {
-            const tx = db.transaction(store as string, 'readwrite');
+            const tx = db.transaction(storeName, 'readwrite');
             const req: IDBRequest = key
-                ? tx.objectStore(store as string).put(item, key)
-                : tx.objectStore(store as string).add(item);
+                ? tx.objectStore(storeName).put(item, key)
+                : tx.objectStore(storeName).add(item);
             req.onerror = _event => {
                 reject(req.error);
             };

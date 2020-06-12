@@ -13,9 +13,6 @@ import {
     RouteParams,
 } from '@suite-utils/router';
 import { Dispatch, GetState, Route } from '@suite-types';
-// https://stackoverflow.com/a/52770749
-// eslint-disable-next-line import/no-self-import
-import * as selfRouterActions from './routerActions';
 
 interface LocationChange {
     type: typeof ROUTER.LOCATION_CHANGE;
@@ -137,10 +134,10 @@ export const initialRedirection = () => async (dispatch: Dispatch, getState: Get
     const { initialRun } = getState().suite.flags;
 
     if (route && route.isModal) {
-        await dispatch(selfRouterActions.goto(route.name));
+        await dispatch(goto(route.name));
     } else if (route && initialRun) {
         // only do initial redirection of route is valid
-        await dispatch(selfRouterActions.goto('suite-welcome'));
+        await dispatch(goto('suite-welcome'));
     }
     // otherwise do nothing -> just show 404 page
 };
