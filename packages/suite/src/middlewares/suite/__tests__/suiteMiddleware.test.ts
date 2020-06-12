@@ -127,8 +127,7 @@ describe('suite middleware', () => {
                     },
                 },
             });
-            // TODO
-            // expect(goto).toHaveBeenNthCalledWith(1, 'suite-welcome');
+            expect(goto).toHaveBeenNthCalledWith(1, 'suite-welcome');
 
             goto.mockClear();
         });
@@ -153,9 +152,8 @@ describe('suite middleware', () => {
                     },
                 },
             });
-            // TODO
-            // expect(goto).toHaveBeenCalledTimes(1);
-            // expect(goto).toHaveBeenCalledWith('suite-version');
+            expect(goto).toHaveBeenCalledTimes(1);
+            expect(goto).toHaveBeenCalledWith('suite-version');
 
             goto.mockClear();
         });
