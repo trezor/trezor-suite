@@ -3,7 +3,7 @@ import * as modalActions from '@suite-actions/modalActions';
 import { Translation } from '@suite-components/Translation';
 import { useActions } from '@suite-hooks';
 import { AppState, TrezorDevice } from '@suite-types';
-import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext';
+import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { Button, colors } from '@trezor/components';
 import React from 'react';
 import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
@@ -47,7 +47,7 @@ const isDisabled = (
         return true;
     }
 
-    if ((networkType !== 'bitcoin' && !address) || !amount) {
+    if (networkType !== 'bitcoin' && (!address || !amount)) {
         return true;
     }
 

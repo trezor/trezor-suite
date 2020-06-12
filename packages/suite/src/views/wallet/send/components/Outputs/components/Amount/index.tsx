@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import validator from 'validator';
 
 import CurrencySelect from './components/CurrencySelect';
-import Fiat from './components/Fiat';
+import LocalCurrency from './components/LocalCurrency';
 
 const Wrapper = styled.div`
     display: flex;
@@ -65,7 +65,9 @@ const EqualsSign = styled.div`
     }
 `;
 
-const getMaxIcon = (isActive: boolean) => (isActive ? 'CHECK' : 'SEND');
+const getMaxIcon = (isActive: boolean) => {
+    return isActive ? 'CHECK' : 'SEND';
+};
 
 const getError = (
     error: NestDataObject<Record<string, any>, FieldError>,
@@ -106,10 +108,13 @@ export default ({ outputId }: { outputId: number }) => {
         outputs,
         localCurrencyOption,
         destinationAddressEmpty,
+        fiatRates,
     } = useSendContext();
     const { register, errors, formState, getValues, setValue, setError } = useFormContext();
     const inputName = `amount-${outputId}`;
     const inputNameMax = `setMaxActive-${outputId}`;
+    const localCurrencySelect = `localCurrencySelect-${outputId}`;
+    const localCurrencyInput = `localCurrencyInput-${outputId}`;
     const touched = formState.dirtyFields.has(inputName);
     const { symbol, availableBalance, networkType } = account;
     const formattedAvailableBalance = token
@@ -134,6 +139,23 @@ export default ({ outputId }: { outputId: number }) => {
                             <QuestionTooltip messageId="TR_SEND_AMOUNT_TOOLTIP" />
                         </Label>
                     }
+                    onChange={() => {
+                        if (fiatRates) {
+                            const localCurrency = getValues(localCurrencySelect);
+                            const rate = fiatRates.current?.rates[localCurrency.value];
+
+                            if (rate) {
+                                const oldValue = getValues(inputName);
+                                const fiatValueBigNumber = new BigNumber(oldValue).multipliedBy(
+                                    new BigNumber(rate),
+                                );
+                                const fiatValue = fiatValueBigNumber.isNaN()
+                                    ? ''
+                                    : fiatValueBigNumber.toFixed(2);
+                                setValue(localCurrencyInput, fiatValue);
+                            }
+                        }
+                    }}
                     button={{
                         icon: getMaxIcon(getValues(inputNameMax)),
                         iconSize: 15,
@@ -175,7 +197,7 @@ export default ({ outputId }: { outputId: number }) => {
                             TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE: (value: string) => {
                                 if (networkType === 'ethereum' && reserve) {
                                     const amountBig = new BigNumber(value);
-                                    return (
+                                    return !(
                                         destinationAddressEmpty &&
                                         reserve &&
                                         amountBig.isLessThan(reserve)
@@ -205,14 +227,14 @@ export default ({ outputId }: { outputId: number }) => {
                             <>
                                 <EqualsSign>=</EqualsSign>
                                 <Right>
-                                    <Fiat outputId={outputId} />
+                                    <LocalCurrency outputId={outputId} />
                                 </Right>
                             </>
                         )
                     }
                 </FiatValue>
             )}
-            <Input type="hidden" name={inputNameMax} innerRef={register()} />
+            <Input type="hidden" name={inputNameMax} innerRef={register} />
         </Wrapper>
     );
 };

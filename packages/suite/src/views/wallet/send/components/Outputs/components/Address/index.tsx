@@ -41,7 +41,7 @@ export default ({ outputId }: { outputId: number }) => {
                 </Label>
             }
             onChange={async () => {
-                // check only xrp and valid addresses
+                // check only xrp and valid address
                 if (!error && networkType === 'ripple') {
                     const response = await TrezorConnect.getAccountInfo({
                         coin: symbol,

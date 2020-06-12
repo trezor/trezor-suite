@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Select, Input } from '@trezor/components';
-import { getState } from '@wallet-utils/sendFormUtils';
 // import { fromFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { useFormContext, Controller } from 'react-hook-form';
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
+import BigNumber from 'bignumber.js';
+import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext';
 import { FIAT } from '@suite-config';
-import { composeTx } from '@wallet-utils/sendFormUtils';
+import { composeTx, getState } from '@wallet-utils/sendFormUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -26,7 +26,7 @@ const getCurrencyOptions = (currency: string) => {
 };
 
 export default ({ outputId }: { outputId: number }) => {
-    const { register, errors, getValues, control, setValue, setError } = useFormContext();
+    const { register, errors, getValues, control, setValue } = useFormContext();
     const {
         fiatRates,
         token,
@@ -37,7 +37,6 @@ export default ({ outputId }: { outputId: number }) => {
         setTransactionInfo,
     } = useSendContext();
     const inputName = `localCurrencyInput-${outputId}`;
-    const amountInput = `amount-${outputId}`;
     const inputNameSelect = `localCurrencySelect-${outputId}`;
     const error = errors[inputName];
 
@@ -85,7 +84,22 @@ export default ({ outputId }: { outputId: number }) => {
                     name={inputNameSelect}
                     isSearchable
                     isClearable={false}
-                    onChange={() => console.log('aaa')}
+                    onChange={option => {
+                        if (fiatRates) {
+                            const rate = fiatRates.current?.rates[option[0].value];
+                            console.log('rate', rate);
+                            if (rate) {
+                                const oldValue = getValues(inputName);
+                                const fiatValueBigNumber = new BigNumber(oldValue).multipliedBy(
+                                    new BigNumber(rate),
+                                );
+                                const fiatValue = fiatValueBigNumber.isNaN()
+                                    ? ''
+                                    : fiatValueBigNumber.toFixed(2);
+                                setValue(inputName, fiatValue);
+                            }
+                        }
+                    }}
                     control={control}
                 />
             </SelectWrapper>

@@ -7,6 +7,17 @@ import { TrezorDevice, AppState } from '@suite-types';
 export type Output = { id: number };
 
 export interface SendContext {
+    defaultValues: {
+        'address-0': string;
+        'amount-0': string;
+        'setMaxActive-0': boolean;
+        'localCurrencyInput-0': string;
+        'localCurrencySelect-0': { value: string; label: string };
+        ethereumGasPrice: string;
+        ethereumGasLimit: string;
+        ethereumData: string;
+        rippleDestinationTag: string;
+    };
     account: Account;
     network: Network;
     device: TrezorDevice;

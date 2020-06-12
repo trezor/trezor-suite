@@ -50,9 +50,9 @@ export default () => {
             <CurrencySelect
                 key="token"
                 isSearchable={false}
-                onChange={(t: Option) => setToken(t.value || null)}
+                onChange={(option: Option) => setToken(option.value || null)}
                 isClearable={false}
-                value={values.find(v => v.value === token?.symbol)}
+                value={values.find((option: Option) => option.value === token?.symbol)}
                 isDisabled={values.length === 1}
                 options={values}
                 display

@@ -113,7 +113,7 @@ export default () => {
     const { formState, setValue, errors } = useFormContext();
     const dataIsDirty = formState.dirtyFields.has('ethereumData');
     const { networkType, symbol } = account;
-    const customFeeHasError = errors['custom-fee'];
+    const customFeeHasError = errors.customFee;
 
     return (
         <Wrapper>
@@ -163,7 +163,6 @@ export default () => {
                             {!customFeeHasError && option.feePerUnit !== '0' && (
                                 <OptionValue>{getValue(networkType, option, symbol)}</OptionValue>
                             )}
-                            {customFeeHasError && <OptionValue>(not valid)</OptionValue>}
                         </OptionWrapper>
                     )}
                 />

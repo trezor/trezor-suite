@@ -20,31 +20,13 @@ const In = styled.div`
 
 export default () => {
     const { reset } = useFormContext();
-    const {
-        initialSelectedFee,
-        setSelectedFee,
-        localCurrencyOption,
-        updateOutputs,
-    } = useSendContext();
+    const { initialSelectedFee, setSelectedFee, defaultValues, updateOutputs } = useSendContext();
 
     return (
         <Wrapper>
             <In
                 onClick={() => {
-                    reset(
-                        {
-                            'address-0': '',
-                            'amount-0': '',
-                            'settMaxActive-0': false,
-                            'fiatValue-0': '',
-                            'localCurrency-0': localCurrencyOption,
-                            ethereumGasPrice: initialSelectedFee.feePerUnit,
-                            ethereumGasLimit: initialSelectedFee.feeLimit,
-                            ethereumData: '',
-                            rippleDestinationTag: '',
-                        },
-                        { dirty: true },
-                    );
+                    reset(defaultValues, { dirty: true });
                     setSelectedFee(initialSelectedFee);
                     updateOutputs([
                         {

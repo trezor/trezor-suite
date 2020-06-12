@@ -62,19 +62,21 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     const initialOutputs = [{ id: 0 }];
     const [outputs, updateOutputs] = useState(initialOutputs);
 
+    const defaultValues = {
+        'address-0': '',
+        'amount-0': '',
+        'setMaxActive-0': false,
+        'localCurrencyInput-0': '',
+        'localCurrencySelect-0': localCurrencyOption,
+        ethereumGasPrice: initialSelectedFee.feePerUnit,
+        ethereumGasLimit: initialSelectedFee.feeLimit,
+        ethereumData: '',
+        rippleDestinationTag: '',
+    };
+
     const methods = useForm({
         mode: 'onChange',
-        defaultValues: {
-            'address-0': '',
-            'amount-0': '',
-            'setMaxActive-0': false,
-            'localCurrencyInput-0': '',
-            'localCurrencySelect-0': localCurrencyOption,
-            ethereumGasPrice: initialSelectedFee.feePerUnit,
-            ethereumGasLimit: initialSelectedFee.feeLimit,
-            ethereumData: '',
-            rippleDestinationTag: '',
-        },
+        defaultValues,
     });
 
     return (
@@ -82,6 +84,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
             <SendContext.Provider
                 value={{
                     feeInfo,
+                    defaultValues,
                     initialSelectedFee,
                     outputs,
                     fiatRates,
