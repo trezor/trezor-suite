@@ -163,6 +163,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Address is not valid',
         id: 'TR_ADDRESS_IS_NOT_VALID',
     },
+    TR_REQUIRED_FIELD: {
+        defaultMessage: 'This field is required. Please enter a value.',
+        id: 'TR_REQUIRED_FIELD',
+    },
     TR_ADDRESS_MODAL_BTC_DESCRIPTION: {
         defaultMessage:
             'Try to always use a fresh address as a prerequisite to keep your transactions and accounts untrackable by anyone else than you.',
@@ -532,6 +536,10 @@ const definedMessages = defineMessages({
     TR_COPY_TO_CLIPBOARD: {
         defaultMessage: 'Copy to clipboard',
         id: 'TR_COPY_TO_CLIPBOARD',
+    },
+    TR_COPY_TO_CLIPBOARD_FAILED: {
+        defaultMessage: 'Attention! Copying to the clipboard failed.',
+        id: 'TR_COPY_TO_CLIPBOARD_FAILED',
     },
     TR_CREATE_BACKUP: {
         defaultMessage: 'Create backup',
