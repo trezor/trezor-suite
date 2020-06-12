@@ -9,8 +9,8 @@ import analyticsReducer from '@suite-reducers/analyticsReducer';
 import * as routerActions from '@suite-actions/routerActions';
 import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
 
+import routes from '@suite-constants/routes';
 import { Action } from '@suite-types';
-import routes from '@suite/constants/suite/routes';
 
 jest.mock('next/router', () => {
     return {
@@ -129,11 +129,11 @@ describe('suite middleware', () => {
             });
 
             // redirect to suite-welcome called once
-            const locationsChangedAction = store
+            const locationChangedAction = store
                 .getActions()
                 .filter(a => a.type === ROUTER.LOCATION_CHANGE);
-            expect(locationsChangedAction.length).toBe(1);
-            expect(locationsChangedAction[0].url).toBe(
+            expect(locationChangedAction.length).toBe(1);
+            expect(locationChangedAction[0].url).toBe(
                 routes.find(r => r.name === 'suite-welcome')?.pattern,
             );
         });
@@ -159,11 +159,11 @@ describe('suite middleware', () => {
             });
 
             // redirect to suite-version called once
-            const locationsChangedAction = store
+            const locationChangedAction = store
                 .getActions()
                 .filter(a => a.type === ROUTER.LOCATION_CHANGE);
-            expect(locationsChangedAction.length).toBe(1);
-            expect(locationsChangedAction[0].url).toBe(
+            expect(locationChangedAction.length).toBe(1);
+            expect(locationChangedAction[0].url).toBe(
                 routes.find(r => r.name === 'suite-version')?.pattern,
             );
         });
