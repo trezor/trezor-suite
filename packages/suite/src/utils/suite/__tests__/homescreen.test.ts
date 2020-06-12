@@ -11,8 +11,7 @@ const getHash = (str: string) => {
 };
 
 const getMockElementToImageData = (image: HTMLImageElement) => {
-    // @ts-ignore
-    return (element, w, h) => {
+    return (_element: HTMLImageElement, w: number, h: number) => {
         const canvas = Canvas.createCanvas(w, h);
         const ctx = canvas.getContext('2d');
         ctx.drawImage(image, 0, 0);
@@ -60,13 +59,13 @@ describe('homescreen', () => {
                 const image: any = await Canvas.loadImage(
                     `${homescreensPath}/t${fixture.model}/${fixture.img}`,
                 );
+
                 const fooElement = document.createElement('img');
-
-                // elementToImageData must be mocked with module working in node environment
-                const spy = jest.spyOn(homescreen, 'elementToImageData');
-                spy.mockImplementationOnce(getMockElementToImageData(image));
-
-                const hex = homescreen.elementToHomescreen(fooElement, fixture.model);
+                const hex = homescreen.elementToHomescreen(
+                    fooElement,
+                    fixture.model,
+                    getMockElementToImageData(image),
+                );
                 expect(getHash(hex)).toEqual(fixture.hexHash);
             });
         });
