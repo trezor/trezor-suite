@@ -1,3 +1,5 @@
+NOT FINISHED
+
 # Send
 
 ## Common
@@ -52,26 +54,53 @@
 ### Token select
 
 #### BTC
+- disabled
+
 #### ETH
+- select ERC-20 token
+
 #### XRP
+- disabled
 
 ### Fiat
 
+- not visible with testnets (no fiat rates)
+
 #### BTC
+
 #### ETH
+
 #### XRP
 
 ### Currency select
 
+- not visible with testnets (no fiat rates)
+
 #### BTC
+- change currency for input
+- recalculate fiat value
+
 #### ETH
+- change currency for input
+- recalculate fiat value
+
 #### XRP
+- change currency for input
+- recalculate fiat value
 
 ## Advanced form Bitcoin
 
 ### Add
+- add 1 output (Recipient Address, Amount, Token Select, Currency select)
+
 ### Fee
+- change selected fee level (Normal, Low, Hight, Custom)
+- if custom option - show custom fee input and paste last selected fee value
+- recalculate Amount if setMax is active
+
 ### Custom fee
+
+- units are drops
 
 ### Locktime
 - coming soon
@@ -87,6 +116,6 @@
 
 ## Advanced form Ripple
 
-### Fee
-### Custom fee
-### Destination tag
+#### Fee
+#### Custom fee
+#### Destination tag
