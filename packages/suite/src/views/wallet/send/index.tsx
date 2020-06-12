@@ -50,6 +50,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     const coinFees = fees[symbol];
     const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
+    const fiatRates = fiat.coins.find(item => item.symbol === account.symbol);
     const initialSelectedFee = levels.find(l => l.label === 'normal') || levels[0];
     const [advancedForm, showAdvancedForm] = useState(false);
     const [destinationAddressEmpty, setDestinationAddressEmpty] = useState(false);
@@ -67,8 +68,8 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
             'address-0': '',
             'amount-0': '',
             'setMaxActive-0': false,
-            'fiatValue-0': '',
-            'localCurrency-0': localCurrencyOption,
+            'localCurrencyInput-0': '',
+            'localCurrencySelect-0': localCurrencyOption,
             ethereumGasPrice: initialSelectedFee.feePerUnit,
             ethereumGasLimit: initialSelectedFee.feeLimit,
             ethereumData: '',
@@ -83,6 +84,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
                     feeInfo,
                     initialSelectedFee,
                     outputs,
+                    fiatRates,
                     destinationAddressEmpty,
                     setDestinationAddressEmpty,
                     network,
@@ -97,7 +99,6 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
                     advancedForm,
                     showAdvancedForm,
                     account,
-                    fiat,
                     feeOutdated,
                     setFeeOutdated,
                     device,

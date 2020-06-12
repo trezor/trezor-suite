@@ -51,7 +51,8 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
     }
     if (resetReducers) {
         api.dispatch(selectedAccountActions.dispose());
-        api.dispatch(sendFormActions.dispose());
+        // TODO: send form
+        // api.dispatch(sendFormActions.dispose());
         api.dispatch(receiveActions.dispose());
     }
 

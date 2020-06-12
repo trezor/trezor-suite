@@ -6,7 +6,6 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as commonActions from './sendFormCommonActions';
 import { formatNetworkAmount, networkAmountToSatoshi } from '@wallet-utils/accountUtils';
-import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 
@@ -89,48 +88,6 @@ export const compose = (setMax = false) => async (dispatch: Dispatch, getState: 
     }
 };
 
-/**
- *    Creates new output (address, amount, fiatValue, localCurrency)
- */
-export const addRecipient = () => (dispatch: Dispatch, getState: GetState) => {
-    const { send, settings } = getState().wallet;
-    const { account } = getState().wallet.selectedAccount;
-    if (!send || !account || !settings) return null;
-
-    const { outputs } = send;
-    const outputsCount = outputs.length;
-    const lastOutput = outputs[outputsCount - 1];
-    const lastOutputId = lastOutput.id;
-    const localCurrency = getLocalCurrency(settings.localCurrency);
-
-    const newOutput = {
-        id: lastOutputId + 1,
-        address: { value: null, error: null },
-        amount: { value: null, error: null, isLoading: false },
-        fiatValue: { value: null },
-        localCurrency: { value: localCurrency },
-    };
-
-    dispatch({
-        type: SEND.BTC_ADD_RECIPIENT,
-        newOutput,
-    });
-
-    dispatch(commonActions.cache());
-};
-
-/**
- *    Removes added output (address, amount, fiatValue, localCurrency)
- */
-export const removeRecipient = (outputId: number) => (dispatch: Dispatch, getState: GetState) => {
-    const { send } = getState().wallet;
-    const { account } = getState().wallet.selectedAccount;
-    if (!send || !account) return null;
-
-    dispatch({ type: SEND.BTC_REMOVE_RECIPIENT, outputId });
-    dispatch(commonActions.cache());
-};
-
 /*
     Send transaction
  */
@@ -195,7 +152,6 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         .toString();
 
     if (sentTx.success) {
-        dispatch(commonActions.clear());
         dispatch(
             notificationActions.addToast({
                 type: 'tx-sent',

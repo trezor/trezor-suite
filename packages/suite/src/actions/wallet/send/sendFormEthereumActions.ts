@@ -142,7 +142,6 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 
     if (sentTx.success) {
-        dispatch(commonActions.clear());
         const symbol = token ? token.symbol!.toUpperCase() : account.symbol.toUpperCase();
         dispatch(
             notificationActions.addToast({

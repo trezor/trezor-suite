@@ -2,17 +2,10 @@ import { Dispatch, GetState } from '@suite-types';
 import { TokenInfo } from 'trezor-connect';
 import { SEND } from '@wallet-actions/constants';
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
-import { ETH_DEFAULT_GAS_LIMIT, ETH_DEFAULT_GAS_PRICE } from '@wallet-constants/sendForm';
 import { FeeLevel, Output } from '@wallet-types/sendForm';
 import { formatNetworkAmount, getFiatValue } from '@wallet-utils/accountUtils';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
-import {
-    getFeeLevels,
-    getOutput,
-    getReserveInXrp,
-    hasDecimals,
-    shouldComposeBy,
-} from '@wallet-utils/sendFormUtils';
+import { getFeeLevels, getOutput, getReserveInXrp, hasDecimals } from '@wallet-utils/sendFormUtils';
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import { isAddressValid } from '@wallet-utils/validation';
 import BigNumber from 'bignumber.js';
@@ -21,118 +14,6 @@ import * as bitcoinActions from './sendFormBitcoinActions';
 import * as commonActions from './sendFormCommonActions';
 import * as ethereumActions from './sendFormEthereumActions';
 import * as rippleActions from './sendFormRippleActions';
-
-/**
- * Initialize current form, load values from session storage
- */
-export const init = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { settings, selectedAccount } = getState().wallet;
-    if (selectedAccount.status !== 'loaded') return null;
-    const { account, network } = selectedAccount;
-    const feeInfo = getState().wallet.fees[network.symbol];
-    const levels = getFeeLevels(network.networkType, feeInfo);
-    const firstFeeLevel = levels.find(l => l.label === 'normal') || levels[0];
-    const localCurrency = getLocalCurrency(settings.localCurrency);
-
-    dispatch({
-        type: SEND.INIT,
-        payload: {
-            deviceState: account.deviceState,
-            feeInfo: {
-                ...feeInfo,
-                levels,
-            },
-            networkTypeEthereum: {
-                transactionInfo: null,
-                gasPrice: {
-                    value: firstFeeLevel.feePerUnit || ETH_DEFAULT_GAS_PRICE,
-                    error: null,
-                },
-                gasLimit: {
-                    value: firstFeeLevel.feeLimit || ETH_DEFAULT_GAS_LIMIT,
-                    error: null,
-                },
-                data: { value: null, error: null },
-            },
-            selectedFee: firstFeeLevel,
-        },
-        localCurrency,
-    });
-};
-
-export const compose = (setMax = false) => async (dispatch: Dispatch, getState: GetState) => {
-    dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: true });
-    const { selectedAccount } = getState().wallet;
-    if (selectedAccount.status !== 'loaded') return null;
-    const { account } = selectedAccount;
-    switch (account.networkType) {
-        case 'bitcoin': {
-            return dispatch(bitcoinActions.compose(setMax));
-        }
-        case 'ripple': {
-            return dispatch(rippleActions.compose());
-        }
-        case 'ethereum': {
-            return dispatch(ethereumActions.compose(setMax));
-        }
-        // no default
-    }
-};
-
-export const composeChange = (composeBy?: 'address' | 'amount', setMax = false) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const { send } = getState().wallet;
-    const { account } = getState().wallet.selectedAccount;
-    if (!send || !account) return null;
-
-    dispatch({
-        type: SEND.DELETE_TRANSACTION_INFO,
-        networkType: account.networkType,
-    });
-
-    if (!composeBy) {
-        dispatch(compose(setMax));
-    }
-
-    if (composeBy) {
-        if (shouldComposeBy(composeBy, send.outputs, account.networkType)) {
-            dispatch(compose(setMax));
-        }
-    }
-
-    dispatch(commonActions.cache());
-};
-
-/*
-    Change value in input "Address"
- */
-export const handleAddressChange = (outputId: number, address: string) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const { send, selectedAccount } = getState().wallet;
-    if (!send || selectedAccount.status !== 'loaded') return null;
-    const { account } = selectedAccount;
-    const { networkType } = account;
-    const output = getOutput(send.outputs, outputId);
-
-    dispatch({
-        type: SEND.HANDLE_ADDRESS_CHANGE,
-        outputId,
-        address,
-        symbol: account.symbol,
-        networkType,
-        currentAccountAddress: account.descriptor,
-    });
-
-    if (networkType === 'ripple' && isAddressValid(address, account.symbol)) {
-        dispatch(rippleActions.checkAccountReserve(output.id, address));
-    }
-
-    dispatch(composeChange('address', send.setMaxActivated));
-};
 
 // common method called from multiple places:
 // handleAmountChange, handleFiatSelectChange, handleFiatInputChange, setMax, handleTokenSelectChange
@@ -322,101 +203,6 @@ export const setMax = (outputIdIn?: number) => async (dispatch: Dispatch, getSta
 };
 
 /*
-    Change value in select "Fee"
- */
-export const handleFeeValueChange = (fee: FeeLevel) => (dispatch: Dispatch, getState: GetState) => {
-    const { send, selectedAccount } = getState().wallet;
-    if (!send || selectedAccount.status !== 'loaded') return;
-    const { account } = selectedAccount;
-    if (send.selectedFee.label === fee.label) return;
-
-    if (fee.label === 'custom') {
-        dispatch({
-            type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
-            customFee: send.selectedFee.feePerUnit,
-        });
-
-        dispatch({
-            type: SEND.HANDLE_FEE_VALUE_CHANGE,
-            fee: { label: 'custom', feePerUnit: send.selectedFee.feePerUnit, blocks: 0 },
-        });
-    } else {
-        dispatch({
-            type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
-            customFee: null,
-        });
-
-        dispatch({ type: SEND.HANDLE_FEE_VALUE_CHANGE, fee });
-
-        if (send.setMaxActivated) {
-            dispatch(setMax());
-        }
-    }
-
-    // eth update gas price and gas limit
-    if (account.networkType === 'ethereum') {
-        dispatch({
-            type: SEND.ETH_HANDLE_GAS_LIMIT,
-            gasLimit: fee.feeLimit || '0',
-        });
-
-        dispatch({
-            type: SEND.ETH_HANDLE_GAS_PRICE,
-            gasPrice: fee.feePerUnit || '0',
-        });
-    }
-
-    dispatch(composeChange(undefined, send.setMaxActivated));
-};
-
-/*
-    Change value in additional form - select "Fee"
- */
-export const handleCustomFeeValueChange = (customFee: string) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const { send } = getState().wallet;
-    const { account } = getState().wallet.selectedAccount;
-    if (!account || !send) return null;
-
-    dispatch({
-        type: SEND.HANDLE_FEE_VALUE_CHANGE,
-        fee: {
-            label: 'custom',
-            feePerUnit: customFee,
-            blocks: 0,
-        },
-    });
-
-    dispatch({
-        type: SEND.HANDLE_CUSTOM_FEE_VALUE_CHANGE,
-        customFee,
-    });
-
-    if (send.setMaxActivated) {
-        dispatch(setMax());
-    }
-};
-
-/*
-    Click on button "Advanced settings"
- */
-export const toggleAdditionalFormVisibility = () => (dispatch: Dispatch, getState: GetState) => {
-    const { send, selectedAccount } = getState().wallet;
-    if (!send || selectedAccount.status !== 'loaded') return;
-
-    dispatch({ type: SEND.SET_ADDITIONAL_FORM_VISIBILITY });
-    dispatch(commonActions.cache(false));
-};
-
-export const dispose = () => (dispatch: Dispatch, _getState: GetState) => {
-    dispatch({
-        type: SEND.DISPOSE,
-    });
-};
-
-/*
     Fill the address/amount inputs with data from QR code
 */
 export const onQrScan = (parsedUri: ParsedURI, outputId: number) => (dispatch: Dispatch) => {
@@ -538,6 +324,5 @@ export const handleTokenSelectChange = (token?: TokenInfo) => (
     Clear to default state
 */
 export const clear = () => (dispatch: Dispatch) => {
-    dispatch(commonActions.clear());
     dispatch(manuallyUpdateFee());
 };

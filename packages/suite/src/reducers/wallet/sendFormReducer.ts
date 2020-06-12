@@ -1,55 +1,13 @@
 import { SEND } from '@wallet-actions/constants';
-import { NETWORK_TYPE } from '@wallet-constants/account';
-import { FIRST_OUTPUT_ID, U_INT_32, VALIDATION_ERRORS } from '@wallet-constants/sendForm';
+import { U_INT_32, VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { WalletAction } from '@wallet-types';
-import { InitialState, Output, State } from '@wallet-types/sendForm';
+import { Output, State } from '@wallet-types/sendForm';
 import { getOutput, hasDecimals } from '@wallet-utils/sendFormUtils';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { isAddressValid } from '@wallet-utils/validation';
 import BigNumber from 'bignumber.js';
 import produce from 'immer';
 import validator from 'validator';
-
-const initialState = (
-    loaded: InitialState,
-    localCurrency: Output['localCurrency']['value'],
-): State => ({
-    deviceState: '',
-    outputs: [
-        {
-            // fill first output by default
-            id: FIRST_OUTPUT_ID,
-            address: { value: null, error: null },
-            amount: { value: null, error: null, isLoading: false },
-            fiatValue: { value: null },
-            localCurrency: { value: localCurrency },
-        },
-    ],
-    touched: false,
-    feeOutdated: false,
-    setMaxActivated: false,
-    isComposing: false,
-    customFee: { value: null, error: null },
-    isAdditionalFormVisible: false,
-    networkTypeRipple: {
-        transactionInfo: null,
-        destinationTag: {
-            value: null,
-            error: null,
-        },
-        isDestinationAccountEmpty: null,
-    },
-    networkTypeEthereum: {
-        transactionInfo: null,
-        gasPrice: { value: null, error: null },
-        gasLimit: { value: null, error: null },
-        data: { value: null, error: null },
-    },
-    networkTypeBitcoin: {
-        transactionInfo: null,
-    },
-    ...loaded,
-});
 
 export default (state: State | null = null, action: WalletAction): State | null => {
     if (!state || action.type === SEND.DISPOSE) return null;
@@ -89,31 +47,6 @@ export default (state: State | null = null, action: WalletAction): State | null 
             // change setMax state
             case SEND.CHANGE_SET_MAX_STATE: {
                 draft.setMaxActivated = action.activated;
-                break;
-            }
-
-            // change input "Address"
-            case SEND.HANDLE_ADDRESS_CHANGE: {
-                const { outputId, address, symbol, currentAccountAddress, networkType } = action;
-                const output = getOutput(draft.outputs, outputId);
-                output.address.error = null;
-                output.address.value = address;
-
-                if (validator.isEmpty(address)) {
-                    output.address.error = VALIDATION_ERRORS.IS_EMPTY;
-                    return draft;
-                }
-
-                // turn off validation for bitcoin like coins - handled by connect compose transaction
-                if (networkType !== 'bitcoin' && !isAddressValid(action.address, symbol)) {
-                    output.address.error = VALIDATION_ERRORS.NOT_VALID;
-                    return draft;
-                }
-
-                if (networkType === 'ripple' && currentAccountAddress === address) {
-                    output.address.error = VALIDATION_ERRORS.XRP_CANNOT_SEND_TO_MYSELF;
-                    return draft;
-                }
                 break;
             }
 
@@ -227,65 +160,9 @@ export default (state: State | null = null, action: WalletAction): State | null 
                 return draft;
             }
 
-            // click button "SetMax"
-            case SEND.SET_MAX: {
-                return state;
-            }
-
-            case SEND.COMPOSE_PROGRESS: {
-                draft.isComposing = action.isComposing;
-                return draft;
-            }
-
-            case SEND.DELETE_TRANSACTION_INFO: {
-                const { networkType } = action;
-                switch (networkType) {
-                    case NETWORK_TYPE.BITCOIN:
-                        draft.networkTypeBitcoin.transactionInfo = null;
-                        return draft;
-                    case NETWORK_TYPE.ETHEREUM:
-                        draft.networkTypeEthereum.transactionInfo = null;
-                        return draft;
-                    case NETWORK_TYPE.RIPPLE:
-                        draft.networkTypeRipple.transactionInfo = null;
-                        return draft;
-                    // no default
-                }
-                break;
-            }
-
-            // click button "Clear"
-            case SEND.CLEAR: {
-                return initialState(
-                    {
-                        feeInfo: draft.feeInfo,
-                        selectedFee:
-                            draft.feeInfo.levels.find(f => f.label === 'normal') ||
-                            draft.feeInfo.levels[0],
-                        isAdditionalFormVisible: draft.isAdditionalFormVisible,
-                    },
-                    action.localCurrency,
-                );
-            }
-
             /* 
                 BTC specific
             */
-
-            // click button "Add recipient"
-            case SEND.BTC_ADD_RECIPIENT: {
-                const { newOutput } = action;
-                draft.outputs.push(newOutput);
-                return draft;
-            }
-
-            // click button "Remove recipient"
-            case SEND.BTC_REMOVE_RECIPIENT: {
-                const { outputId } = action;
-                const removed = draft.outputs.filter(output => output.id !== outputId);
-                draft.outputs = removed;
-                return draft;
-            }
 
             // compose btc transaction after form change
             case SEND.BTC_PRECOMPOSED_TX: {

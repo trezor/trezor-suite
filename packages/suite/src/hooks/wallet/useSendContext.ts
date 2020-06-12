@@ -1,5 +1,5 @@
 import { useContext, createContext } from 'react';
-import { Account, Network } from '@wallet-types';
+import { Account, Network, CoinFiatRates } from '@wallet-types';
 import { FeeLevel, PrecomposedTransaction, TokenInfo } from 'trezor-connect';
 import { FeeInfo } from '@wallet-types/sendForm';
 import { TrezorDevice, AppState } from '@suite-types';
@@ -11,7 +11,7 @@ export interface SendContext {
     network: Network;
     device: TrezorDevice;
     online: boolean;
-    fiat: AppState['wallet']['fiat'];
+    fiatRates: CoinFiatRates | undefined;
     locks: AppState['suite']['locks'];
     feeInfo: FeeInfo;
     initialSelectedFee: FeeLevel;

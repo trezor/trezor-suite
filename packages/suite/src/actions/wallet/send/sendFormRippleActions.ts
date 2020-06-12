@@ -6,12 +6,7 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as commonActions from './sendFormCommonActions';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
-import {
-    calculateMax,
-    calculateTotal,
-    getOutput,
-    getReserveInXrp,
-} from '@wallet-utils/sendFormUtils';
+import { calculateMax, calculateTotal, getOutput } from '@wallet-utils/sendFormUtils';
 import { Dispatch, GetState } from '@suite-types';
 
 /*
@@ -66,59 +61,6 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
 
     dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: false });
     return tx;
-};
-
-/*
-    Check destination account reserve
-*/
-
-export const checkAccountReserve = (outputId: number, address: string) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const { send, selectedAccount } = getState().wallet;
-    if (!send || selectedAccount.status !== 'loaded') return;
-    const { account } = selectedAccount;
-    const output = getOutput(send.outputs, outputId);
-
-    dispatch({
-        type: SEND.AMOUNT_LOADING,
-        isLoading: true,
-        outputId: output.id,
-    });
-
-    if (!address) return null;
-
-    const response = await TrezorConnect.getAccountInfo({
-        coin: account.symbol,
-        descriptor: address,
-    });
-
-    // TODO: handle error state
-
-    if (response.success) {
-        dispatch({
-            type: SEND.XRP_IS_DESTINATION_ACCOUNT_EMPTY,
-            isDestinationAccountEmpty: response.payload.empty,
-            reserve: getReserveInXrp(account),
-        });
-    }
-
-    dispatch({
-        type: SEND.AMOUNT_LOADING,
-        isLoading: false,
-        outputId: output.id,
-    });
-};
-
-/*
-    Change value in input "destination tag"
- */
-export const handleDestinationTagChange = (destinationTag: string) => (dispatch: Dispatch) => {
-    dispatch({
-        type: SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE,
-        destinationTag,
-    });
 };
 
 /*
@@ -181,7 +123,6 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 
     if (sentTx.success) {
-        dispatch(commonActions.clear());
         dispatch(
             notificationActions.addToast({
                 type: 'tx-sent',
