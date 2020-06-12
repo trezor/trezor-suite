@@ -252,7 +252,7 @@ export const imageDataToHex = (imageData: ImageData, model: number) => {
 export const elementToHomescreen = (
     element: HTMLImageElement,
     model: number,
-    customElToDataFn: typeof elementToImageData | undefined,
+    customElToDataFn?: typeof elementToImageData | undefined,
 ) => {
     // customElToDataFn needed for injecting mocked elementToImageData function in jest tests
     const w = getWidth(model);
