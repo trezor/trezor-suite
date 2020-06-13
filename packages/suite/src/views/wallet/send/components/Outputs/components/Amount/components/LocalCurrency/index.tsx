@@ -26,7 +26,7 @@ const getCurrencyOptions = (currency: string) => {
 
 export default ({ outputId }: { outputId: number }) => {
     const { register, errors, getValues, control, setValue } = useFormContext();
-    const { fiatRates, token, network } = useSendContext();
+    const { fiatRates, token, network, localCurrencyOption } = useSendContext();
     const inputName = `localCurrencyInput-${outputId}`;
     const inputNameSelect = `localCurrencySelect-${outputId}`;
     const error = errors[inputName];
@@ -59,6 +59,7 @@ export default ({ outputId }: { outputId: number }) => {
                     name={inputNameSelect}
                     register={register}
                     isSearchable
+                    defaultValue={localCurrencyOption}
                     isClearable={false}
                     onChange={([selected]) => {
                         if (fiatRates) {
