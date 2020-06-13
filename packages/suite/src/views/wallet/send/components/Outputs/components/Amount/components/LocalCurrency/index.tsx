@@ -63,16 +63,14 @@ export default ({ outputId }: { outputId: number }) => {
                     onChange={([selected]) => {
                         if (fiatRates) {
                             const rate = fiatRates.current?.rates[selected.value];
-                            console.log(rate);
                             if (rate) {
-                                const oldValue = getValues(inputName);
-                                const fiatValueBigNumber = new BigNumber(rate).multipliedBy(
-                                    new BigNumber(oldValue),
-                                );
-                                const fiatValue = fiatValueBigNumber.isNaN()
-                                    ? ''
-                                    : fiatValueBigNumber.toFixed();
-                                setValue(inputName, fiatValue);
+                                const amountValue = getValues(`amount-${outputId}`);
+                                if (amountValue) {
+                                    const fiatValueBigNumber = new BigNumber(
+                                        amountValue,
+                                    ).multipliedBy(rate);
+                                    setValue(inputName, fiatValueBigNumber.toFixed(2));
+                                }
                             }
                         }
                         return { ...selected };
