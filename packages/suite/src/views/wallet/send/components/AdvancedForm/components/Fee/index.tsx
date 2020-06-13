@@ -67,10 +67,10 @@ const OptionValue = styled(P)`
     min-width: 70px;
     margin-right: 5px;
     display: flex;
+    flex: 1;
+    align-items: center;
     justify-content: flex-start;
     text-indent: 1ch;
-    align-items: center;
-    padding-top: 2px;
 
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${colors.BLACK50};
@@ -114,7 +114,8 @@ export default () => {
     const dataIsDirty = formState.dirtyFields.has('ethereumData');
     const { networkType, symbol } = account;
     const customFeeHasError = errors.customFee;
-    console.log('aaa', selectedFee);
+    const ethereumGasPriceError = errors.ethereumGasPrice;
+    const ethereumGasLimitError = errors.ethereumGasLimit;
 
     return (
         <Wrapper>
@@ -161,9 +162,14 @@ export default () => {
                     formatOptionLabel={(option: FeeLevel) => (
                         <OptionWrapper>
                             <OptionLabel>{capitalizeFirstLetter(option.label)} </OptionLabel>
-                            {!customFeeHasError && option.feePerUnit !== '0' && (
-                                <OptionValue>{getValue(networkType, option, symbol)}</OptionValue>
-                            )}
+                            {!customFeeHasError &&
+                                !ethereumGasPriceError &&
+                                !ethereumGasLimitError &&
+                                option.feePerUnit !== '0' && (
+                                    <OptionValue>
+                                        {getValue(networkType, option, symbol)}
+                                    </OptionValue>
+                                )}
                         </OptionWrapper>
                     )}
                 />

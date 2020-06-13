@@ -3,7 +3,6 @@ import { colors, Icon, Input, Tooltip } from '@trezor/components';
 import { useSendContext } from '@wallet-hooks/useSendContext';
 import { getState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
-import { toWei } from 'web3-utils';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import validator from 'validator';

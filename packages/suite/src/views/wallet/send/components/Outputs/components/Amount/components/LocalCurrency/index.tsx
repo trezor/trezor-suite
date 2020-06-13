@@ -1,12 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Select, Input } from '@trezor/components';
-// import { fromFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { useFormContext, Controller } from 'react-hook-form';
 import BigNumber from 'bignumber.js';
-import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext';
+import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { FIAT } from '@suite-config';
-import { composeTx, getState } from '@wallet-utils/sendFormUtils';
+import { getState } from '@wallet-utils/sendFormUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -27,18 +26,11 @@ const getCurrencyOptions = (currency: string) => {
 
 export default ({ outputId }: { outputId: number }) => {
     const { register, errors, getValues, control, setValue } = useFormContext();
-    const {
-        fiatRates,
-        token,
-        network,
-        account,
-        selectedFee,
-        outputs,
-        setTransactionInfo,
-    } = useSendContext();
+    const { fiatRates, token, network } = useSendContext();
     const inputName = `localCurrencyInput-${outputId}`;
     const inputNameSelect = `localCurrencySelect-${outputId}`;
     const error = errors[inputName];
+    const decimals = token ? token.decimals : network.decimals;
 
     return (
         <Wrapper>
@@ -46,33 +38,16 @@ export default ({ outputId }: { outputId: number }) => {
                 state={getState(error)}
                 name={inputName}
                 innerRef={register}
-                onChange={async () => {
-                    // const formValues = getValues();
-                    // const composedTransaction = await composeTx(
-                    //     account,
-                    //     formValues,
-                    //     selectedFee,
-                    //     outputs,
-                    //     token,
-                    // );
-                    // if (composedTransaction && composedTransaction.type === 'error') {
-                    //     setError(amountInput, composedTransaction.error);
-                    // }
-                    // if (composedTransaction && composedTransaction.type !== 'error') {
-                    //     setTransactionInfo(composedTransaction);
-                    //     setValue(amountInput, composedTransaction.max);
-                    //     // setValue(inputNameMax, true);
-                    // }
-                    // console.log('composedTransaction', composedTransaction);
-                    // if (fiatRates) {
-                    //     const coinValue = fromFiatCurrency(
-                    //         event.target.value,
-                    //         localCurrency.value,
-                    //         fiatRates.current?.rates,
-                    //         decimals,
-                    //     );
-                    //     setValue(`amount-${outputId}`, coinValue);
-                    // }
+                onChange={event => {
+                    const selectedCurrency = getValues(inputNameSelect);
+                    const localCurrencyValue = new BigNumber(event.target.value);
+                    if (fiatRates) {
+                        const rate = fiatRates.current?.rates[selectedCurrency.value];
+                        if (rate) {
+                            const amountBigNumber = localCurrencyValue.dividedBy(rate);
+                            setValue(`amount-${outputId}`, amountBigNumber.toFixed(decimals));
+                        }
+                    }
                 }}
             />
             <SelectWrapper>
@@ -82,23 +57,25 @@ export default ({ outputId }: { outputId: number }) => {
                         getCurrencyOptions(currency),
                     )}
                     name={inputNameSelect}
+                    register={register}
                     isSearchable
                     isClearable={false}
-                    onChange={option => {
+                    onChange={([selected]) => {
                         if (fiatRates) {
-                            const rate = fiatRates.current?.rates[option[0].value];
-                            console.log('rate', rate);
+                            const rate = fiatRates.current?.rates[selected.value];
+                            console.log(rate);
                             if (rate) {
                                 const oldValue = getValues(inputName);
-                                const fiatValueBigNumber = new BigNumber(oldValue).multipliedBy(
-                                    new BigNumber(rate),
+                                const fiatValueBigNumber = new BigNumber(rate).multipliedBy(
+                                    new BigNumber(oldValue),
                                 );
                                 const fiatValue = fiatValueBigNumber.isNaN()
                                     ? ''
-                                    : fiatValueBigNumber.toFixed(2);
+                                    : fiatValueBigNumber.toFixed();
                                 setValue(inputName, fiatValue);
                             }
                         }
+                        return { ...selected };
                     }}
                     control={control}
                 />
