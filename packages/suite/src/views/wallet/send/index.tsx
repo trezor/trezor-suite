@@ -63,10 +63,10 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     const [outputs, updateOutputs] = useState(initialOutputs);
 
     const defaultValues = {
-        'address-0': 'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H',
+        'address-0': '',
         'amount-0': '',
         'setMaxActive-0': 'no',
-        'localCurrencyInput-0': '',
+        'fiatInput-0': '',
         'localCurrencySelect-0': localCurrencyOption,
         ethereumGasPrice: initialSelectedFee.feePerUnit,
         ethereumGasLimit: initialSelectedFee.feeLimit,

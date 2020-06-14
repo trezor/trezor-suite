@@ -3,7 +3,7 @@ import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext'
 import { Input, variables } from '@trezor/components';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { composeTx, getInputState } from '@wallet-utils/sendFormUtils';
+import { composeTx, getInputState, updateFiatInput } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
 import React from 'react';
 import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
@@ -112,7 +112,6 @@ export default ({ outputId }: { outputId: number }) => {
     const inputName = `amount-${outputId}`;
     const inputNameMax = `setMaxActive-${outputId}`;
     const localCurrencySelect = `localCurrencySelect-${outputId}`;
-    const localCurrencyInput = `localCurrencyInput-${outputId}`;
     const touched = formState.dirtyFields.has(inputName);
     const { symbol, availableBalance, networkType } = account;
     const formattedAvailableBalance = token
@@ -138,22 +137,10 @@ export default ({ outputId }: { outputId: number }) => {
                             <QuestionTooltip messageId="TR_SEND_AMOUNT_TOOLTIP" />
                         </Label>
                     }
-                    onChange={() => {
-                        if (fiatRates) {
-                            const localCurrency = getValues(localCurrencySelect);
-                            const rate = fiatRates.current?.rates[localCurrency.value];
-
-                            if (rate) {
-                                const oldValue = getValues(inputName);
-                                const fiatValueBigNumber = new BigNumber(oldValue).multipliedBy(
-                                    new BigNumber(rate),
-                                );
-                                const fiatValue = fiatValueBigNumber.isNaN()
-                                    ? ''
-                                    : fiatValueBigNumber.toFixed(2);
-                                setValue(localCurrencyInput, fiatValue);
-                            }
-                        }
+                    onChange={event => {
+                        updateFiatInput(outputId, fiatRates, getValues, setValue);
+                        const amount = event.target.value;
+                        console.log('amount', amount);
                     }}
                     button={{
                         icon: getMaxIcon(getValues(inputNameMax)),
@@ -174,8 +161,22 @@ export default ({ outputId }: { outputId: number }) => {
                             }
 
                             if (composedTransaction && composedTransaction.type !== 'error') {
-                                setTransactionInfo(composedTransaction);
                                 setValue(inputName, composedTransaction.max);
+                                updateFiatInput(outputId, fiatRates, getValues, setValue);
+
+                                const composedTransactionAfterMax = await composeTx(
+                                    account,
+                                    formValues,
+                                    selectedFee,
+                                    outputs,
+                                    token,
+                                );
+                                if (
+                                    composedTransactionAfterMax &&
+                                    composedTransactionAfterMax.type !== 'error'
+                                ) {
+                                    setTransactionInfo(composedTransactionAfterMax);
+                                }
                             }
                         },
                         text: <Translation id="TR_SEND_SEND_MAX" />,

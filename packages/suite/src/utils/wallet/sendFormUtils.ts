@@ -1,7 +1,7 @@
 import { ERC20_GAS_LIMIT, ERC20_TRANSFER } from '@wallet-constants/sendForm';
 import { SendContext } from '@wallet-hooks/useSendContext';
 import { Account, Network } from '@wallet-types';
-import { EthTransactionData, FeeInfo, FeeLevel, Output } from '@wallet-types/sendForm';
+import { EthTransactionData, FeeInfo, FeeLevel } from '@wallet-types/sendForm';
 import {
     amountToSatoshi,
     formatNetworkAmount,
@@ -10,7 +10,7 @@ import {
 import BigNumber from 'bignumber.js';
 import Common from 'ethereumjs-common';
 import { Transaction, TxData } from 'ethereumjs-tx';
-import { FieldError, NestDataObject } from 'react-hook-form';
+import { FieldError, NestDataObject, useForm } from 'react-hook-form';
 import TrezorConnect, { EthereumTransaction } from 'trezor-connect';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 
@@ -156,19 +156,11 @@ export const getFeeLevels = (
 
 export const getInputState = (
     error: NestDataObject<Record<string, any>, FieldError>,
-    isDirty: boolean,
+    isDirty?: boolean,
 ) => {
     if (error) {
         return 'error';
     }
-
-    // if (!isMandatory && !value) {
-    //     return undefined;
-    // }
-
-    // if (noSuccess) {
-    //     return undefined;
-    // }
 
     if (isDirty && !error) {
         return 'success';
@@ -384,4 +376,23 @@ export const signEthTx = async (account, token, networkId, device) => {
     //         }),
     //     );
     // }
+};
+
+export const updateFiatInput = (
+    id: number,
+    fiatRates: SendContext['fiatRates'],
+    getValues: ReturnType<typeof useForm>['getValues'],
+    setValue: ReturnType<typeof useForm>['setValue'],
+) => {
+    if (fiatRates) {
+        const localCurrency = getValues(`localCurrencySelect-${id}`);
+        const rate = fiatRates.current?.rates[localCurrency.value];
+
+        if (rate) {
+            const oldValue = getValues(`amount-${id}`);
+            const fiatValueBigNumber = new BigNumber(oldValue).multipliedBy(new BigNumber(rate));
+            const fiatValue = fiatValueBigNumber.isNaN() ? '' : fiatValueBigNumber.toFixed(2);
+            setValue(`fiatInput-${id}`, fiatValue);
+        }
+    }
 };

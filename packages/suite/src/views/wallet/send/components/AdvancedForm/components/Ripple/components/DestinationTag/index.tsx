@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import validator from 'validator';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Input } from '@trezor/components';
-import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
+import { U_INT_32 } from '@wallet-constants/sendForm';
+import { useFormContext } from 'react-hook-form';
 import { Translation, QuestionTooltip } from '@suite-components';
 
 const Label = styled.div`
@@ -39,7 +40,12 @@ const DestinationTag = () => {
                 validate: {
                     TR_DESTINATION_TAG_IS_NOT_NUMBER: (value: string) => {
                         if (value !== '') {
-                            return validator.isNumeric(value);
+                            return validator.isNumeric(value) && parseInt(value, 10) > U_INT_32;
+                        }
+                    },
+                    TR_DESTINATION_TAG_IS_NOT_VALID: (value: string) => {
+                        if (value !== '') {
+                            return !(parseInt(value, 10) > U_INT_32);
                         }
                     },
                 },

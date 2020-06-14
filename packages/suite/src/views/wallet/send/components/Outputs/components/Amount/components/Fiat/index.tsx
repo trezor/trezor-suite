@@ -27,7 +27,7 @@ const getCurrencyOptions = (currency: string) => {
 export default ({ outputId }: { outputId: number }) => {
     const { register, errors, getValues, control, setValue } = useFormContext();
     const { fiatRates, token, network, localCurrencyOption } = useSendContext();
-    const inputName = `localCurrencyInput-${outputId}`;
+    const inputName = `fiatInput-${outputId}`;
     const inputNameSelect = `localCurrencySelect-${outputId}`;
     const error = errors[inputName];
     const decimals = token ? token.decimals : network.decimals;

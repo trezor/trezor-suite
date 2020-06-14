@@ -8,7 +8,6 @@ import discoveryReducer from './discoveryReducer';
 import accountsReducer from './accountsReducer';
 import selectedAccountReducer from './selectedAccountReducer';
 import receiveReducer from './receiveReducer';
-import sendFormReducer from './sendFormReducer';
 import feesReducer from './feesReducer';
 import blockchainReducer from './blockchainReducer';
 
@@ -22,7 +21,6 @@ const WalletReducers = combineReducers({
     accounts: accountsReducer,
     selectedAccount: selectedAccountReducer,
     receive: receiveReducer,
-    send: sendFormReducer,
     fees: feesReducer,
     blockchain: blockchainReducer,
 });

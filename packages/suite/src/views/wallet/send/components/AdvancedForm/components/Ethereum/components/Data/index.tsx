@@ -64,7 +64,7 @@ export default () => {
                         label: 'normal',
                         feePerUnit: gasPrice,
                         feeLimit: gasLimit,
-                        blocks: -1, // irrelevant for eth
+                        blocks: -1,
                     });
                 }
             }}

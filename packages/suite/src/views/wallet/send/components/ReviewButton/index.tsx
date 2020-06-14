@@ -77,7 +77,6 @@ export default () => {
     const { networkType } = account;
     const address = getValues('address-0');
     const amount = getValues('amount-0');
-    const formValues = getValues();
 
     return (
         <Wrapper>
@@ -94,7 +93,7 @@ export default () => {
                     )}
                     onClick={() => {
                         if (transactionInfo && transactionInfo.type === 'final') {
-                            console.log('transactionInfo', transactionInfo);
+                            const formValues = getValues();
                             openModal({
                                 type: 'review-transaction',
                                 outputs,

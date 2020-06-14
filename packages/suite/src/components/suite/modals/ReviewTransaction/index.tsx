@@ -94,7 +94,7 @@ export default ({
     const outputSymbol = token ? token.symbol!.toUpperCase() : symbol.toUpperCase();
     const [isEnabled] = useDeviceActionLocks();
     const fee = getFeeValue(transactionInfo, networkType, symbol);
-    const { totalSpent } = transactionInfo;
+    const totalSpent = formatNetworkAmount(transactionInfo.totalSpent, symbol);
 
     return (
         <Modal
@@ -158,7 +158,7 @@ export default ({
                         <Translation id="TR_TOTAL_AMOUNT" />
                     </Label>
                     <Value>
-                        {transactionInfo.totalSpent} {outputSymbol}
+                        {totalSpent} {outputSymbol}
                         <FiatValueWrapper>
                             <FiatValue
                                 amount={totalSpent}
