@@ -65,9 +65,7 @@ const EqualsSign = styled.div`
     }
 `;
 
-const getMaxIcon = (isActive: boolean) => {
-    return isActive ? 'CHECK' : 'SEND';
-};
+const getMaxIcon = (activeState: string) => (activeState === 'yes' ? 'CHECK' : 'SEND');
 
 const getError = (
     error: NestDataObject<Record<string, any>, FieldError>,
@@ -128,6 +126,7 @@ export default ({ outputId }: { outputId: number }) => {
 
     return (
         <Wrapper>
+            <input type="hidden" name={inputNameMax} ref={register} />
             <Left>
                 <StyledInput
                     state={getState(error, touched)}
@@ -160,6 +159,7 @@ export default ({ outputId }: { outputId: number }) => {
                         icon: getMaxIcon(getValues(inputNameMax)),
                         iconSize: 15,
                         onClick: async () => {
+                            setValue(inputNameMax, 'yes');
                             const formValues = getValues();
                             const composedTransaction = await composeTx(
                                 account,
@@ -176,7 +176,6 @@ export default ({ outputId }: { outputId: number }) => {
                             if (composedTransaction && composedTransaction.type !== 'error') {
                                 setTransactionInfo(composedTransaction);
                                 setValue(inputName, composedTransaction.max);
-                                setValue(inputNameMax, true);
                             }
                         },
                         text: <Translation id="TR_SEND_SEND_MAX" />,
@@ -234,7 +233,6 @@ export default ({ outputId }: { outputId: number }) => {
                     }
                 </FiatValue>
             )}
-            <Input type="hidden" name={inputNameMax} innerRef={register} />
         </Wrapper>
     );
 };

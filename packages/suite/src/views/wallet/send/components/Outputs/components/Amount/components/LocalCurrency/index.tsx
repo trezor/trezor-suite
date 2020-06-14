@@ -64,14 +64,11 @@ export default ({ outputId }: { outputId: number }) => {
                     onChange={([selected]) => {
                         if (fiatRates) {
                             const rate = fiatRates.current?.rates[selected.value];
-                            if (rate) {
-                                const amountValue = getValues(`amount-${outputId}`);
-                                if (amountValue) {
-                                    const fiatValueBigNumber = new BigNumber(
-                                        amountValue,
-                                    ).multipliedBy(rate);
-                                    setValue(inputName, fiatValueBigNumber.toFixed(2));
-                                }
+                            const amountValue = getValues(`amount-${outputId}`);
+                            const amountBig = new BigNumber(amountValue);
+                            if (rate && amountValue) {
+                                const fiatValueBigNumber = amountBig.multipliedBy(rate);
+                                setValue(inputName, fiatValueBigNumber.toFixed(2));
                             }
                         }
                         return { ...selected };
