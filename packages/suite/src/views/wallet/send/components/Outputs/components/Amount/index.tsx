@@ -194,7 +194,7 @@ export default ({ outputId }: { outputId: number }) => {
                                 return !amountBig.isGreaterThan(formattedAvailableBalance);
                             },
                             TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE: (value: string) => {
-                                if (networkType === 'ethereum' && reserve) {
+                                if (networkType === 'ripple' && reserve) {
                                     const amountBig = new BigNumber(value);
                                     return !(
                                         destinationAddressEmpty &&

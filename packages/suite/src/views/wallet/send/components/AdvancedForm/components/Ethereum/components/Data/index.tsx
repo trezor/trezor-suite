@@ -19,7 +19,7 @@ const Text = styled.div`
 `;
 
 export default () => {
-    const { token, account, setSelectedFee } = useSendContext();
+    const { token, account, setSelectedFee, initialSelectedFee } = useSendContext();
     const { register, errors, getValues, setValue } = useFormContext();
     const inputName = 'ethereumData';
     const error = errors[inputName];
@@ -55,7 +55,7 @@ export default () => {
                     if (!response.success) return null;
 
                     const level = response.payload.levels[0];
-                    const gasLimit = level.feeLimit || '0'; // TODO: default
+                    const gasLimit = level.feeLimit || initialSelectedFee.feeLimit;
                     const gasPrice = fromWei(level.feePerUnit, 'gwei');
 
                     setValue('ethereumGasPrice', gasPrice);
