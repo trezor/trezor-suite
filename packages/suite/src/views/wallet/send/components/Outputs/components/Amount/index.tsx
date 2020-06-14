@@ -65,8 +65,6 @@ const EqualsSign = styled.div`
     }
 `;
 
-const getMaxIcon = (activeState: string) => (activeState === 'yes' ? 'CHECK' : 'SEND');
-
 const getError = (
     error: NestDataObject<Record<string, any>, FieldError>,
     decimals: number,
@@ -142,11 +140,11 @@ export default ({ outputId }: { outputId: number }) => {
                         console.log('amount', amount);
                     }}
                     button={{
-                        icon: getMaxIcon(getValues(inputNameMax)),
-                        iconSize: 15,
+                        icon: getValues(inputNameMax) === '1' ? 'CHECK' : 'SEND',
+                        iconSize: 17,
                         onClick: async () => {
                             // todo refactor this to utils
-                            setValue(inputNameMax, 'yes');
+                            setValue(inputNameMax, '1');
                             const formValues = getValues();
                             const composedTransaction = await composeTx(
                                 account,

@@ -116,6 +116,8 @@ export default () => {
     const customFeeHasError = errors.customFee;
     const ethereumGasPriceError = errors.ethereumGasPrice;
     const ethereumGasLimitError = errors.ethereumGasLimit;
+    const showCustomFeeValue =
+        !customFeeHasError && !ethereumGasPriceError && !ethereumGasLimitError;
 
     return (
         <Wrapper>
@@ -162,14 +164,9 @@ export default () => {
                     formatOptionLabel={(option: FeeLevel) => (
                         <OptionWrapper>
                             <OptionLabel>{capitalizeFirstLetter(option.label)} </OptionLabel>
-                            {!customFeeHasError &&
-                                !ethereumGasPriceError &&
-                                !ethereumGasLimitError &&
-                                option.feePerUnit !== '0' && (
-                                    <OptionValue>
-                                        {getValue(networkType, option, symbol)}
-                                    </OptionValue>
-                                )}
+                            {showCustomFeeValue && option.feePerUnit !== '0' && (
+                                <OptionValue>{getValue(networkType, option, symbol)}</OptionValue>
+                            )}
                         </OptionWrapper>
                     )}
                 />
