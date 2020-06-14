@@ -5,15 +5,10 @@ import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import { FeeLevel, Output } from '@wallet-types/sendForm';
 import { formatNetworkAmount, getFiatValue } from '@wallet-utils/accountUtils';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
-import { getFeeLevels, getOutput, getReserveInXrp, hasDecimals } from '@wallet-utils/sendFormUtils';
+import { getFeeLevels, getReserveInXrp, hasDecimals } from '@wallet-utils/sendFormUtils';
 import { getLocalCurrency } from '@wallet-utils/settingsUtils';
 import { isAddressValid } from '@wallet-utils/validation';
 import BigNumber from 'bignumber.js';
-
-import * as bitcoinActions from './sendFormBitcoinActions';
-import * as commonActions from './sendFormCommonActions';
-import * as ethereumActions from './sendFormEthereumActions';
-import * as rippleActions from './sendFormRippleActions';
 
 // common method called from multiple places:
 // handleAmountChange, handleFiatSelectChange, handleFiatInputChange, setMax, handleTokenSelectChange
@@ -43,43 +38,6 @@ const amountChange = (amountIn?: string, outputIdIn?: number) => (
         isDestinationAccountEmpty,
         reserve,
     });
-};
-
-/*
-    Change value in input "Amount"
- */
-export const handleAmountChange = (outputId: number, amount: string) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const { send, selectedAccount } = getState().wallet;
-    const fiat = getState().wallet.fiat.coins;
-    if (!send || !fiat || selectedAccount.status !== 'loaded') return null;
-    const { account, network } = selectedAccount;
-
-    dispatch({
-        type: SEND.CHANGE_SET_MAX_STATE,
-        activated: false,
-    });
-
-    const output = getOutput(send.outputs, outputId);
-    const fiatNetwork = fiat.find(item => item.symbol === account.symbol);
-    const isValidAmount = hasDecimals(amount, network.decimals);
-
-    if (fiatNetwork && isValidAmount) {
-        const rate = fiatNetwork.current?.rates[output.localCurrency.value.value];
-        if (rate) {
-            const fiatValue = getFiatValue(amount, rate.toString());
-            dispatch({
-                type: SEND.HANDLE_FIAT_VALUE_CHANGE,
-                outputId,
-                fiatValue,
-            });
-        }
-    }
-
-    dispatch(amountChange(amount, outputId));
-    dispatch(composeChange('amount', send.setMaxActivated));
 };
 
 /*
@@ -197,9 +155,6 @@ export const setMax = (outputIdIn?: number) => async (dispatch: Dispatch, getSta
         const maxBig = new BigNumber(formattedAmount);
         amount = maxBig.isLessThanOrEqualTo(0) ? '0' : formattedAmount;
     }
-
-    dispatch(amountChange(amount, outputId));
-    dispatch(composeChange('amount', send.setMaxActivated));
 };
 
 /*

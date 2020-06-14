@@ -94,6 +94,7 @@ export default () => {
                     )}
                     onClick={() => {
                         if (transactionInfo && transactionInfo.type === 'final') {
+                            console.log('transactionInfo', transactionInfo);
                             openModal({
                                 type: 'review-transaction',
                                 outputs,

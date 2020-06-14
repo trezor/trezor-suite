@@ -63,7 +63,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     const [outputs, updateOutputs] = useState(initialOutputs);
 
     const defaultValues = {
-        'address-0': '',
+        'address-0': 'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H',
         'amount-0': '',
         'setMaxActive-0': 'no',
         'localCurrencyInput-0': '',

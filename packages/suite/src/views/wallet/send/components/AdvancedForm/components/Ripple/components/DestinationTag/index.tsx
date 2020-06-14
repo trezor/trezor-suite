@@ -16,14 +16,6 @@ const Text = styled.div`
     margin-right: 3px;
 `;
 
-const getState = (error: NestDataObject<Record<string, any>, FieldError>) => {
-    if (error) {
-        return 'error';
-    }
-
-    return undefined;
-};
-
 const DestinationTag = () => {
     const { register, errors } = useFormContext();
     const inputName = 'rippleDestinationTag';

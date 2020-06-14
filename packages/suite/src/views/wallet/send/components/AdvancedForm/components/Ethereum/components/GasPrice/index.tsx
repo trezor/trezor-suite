@@ -1,5 +1,4 @@
 import { Translation } from '@suite-components';
-import { toWei } from 'web3-utils';
 import { colors, Icon, Input, Tooltip } from '@trezor/components';
 import { useSendContext } from '@wallet-hooks/useSendContext';
 import { getInputState } from '@wallet-utils/sendFormUtils';

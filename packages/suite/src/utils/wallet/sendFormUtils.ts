@@ -14,47 +14,6 @@ import { FieldError, NestDataObject } from 'react-hook-form';
 import TrezorConnect, { EthereumTransaction } from 'trezor-connect';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 
-export const getOutput = (outputs: Output[], id: number) =>
-    outputs.find(outputItem => outputItem.id === id);
-
-export const hasDecimals = (value: string, decimals: number) => {
-    const DECIMALS_REGEX = new RegExp(
-        `^(0|0\\.([0-9]{0,${decimals}})?|[1-9][0-9]*\\.?([0-9]{0,${decimals}})?)$`,
-    );
-    return DECIMALS_REGEX.test(value);
-};
-
-export const shouldComposeBy = (
-    name: 'address' | 'amount',
-    outputs: Output[],
-    networkType: Account['networkType'],
-) => {
-    let shouldCompose = true;
-    const results = [];
-
-    // check if there is at least one filled
-    outputs.forEach(output => {
-        if (output[name].value) {
-            results.push(output[name].value);
-        }
-    });
-
-    if (results.length === 0) {
-        shouldCompose = false;
-    }
-
-    if (networkType !== 'bitcoin') {
-        // one of the inputs is not valid
-        outputs.forEach(output => {
-            if (output[name].error) {
-                shouldCompose = false;
-            }
-        });
-    }
-
-    return shouldCompose;
-};
-
 export const calculateTotal = (amount: string, fee: string): string => {
     try {
         const bAmount = new BigNumber(amount);
@@ -348,6 +307,7 @@ export const composeTx = async (
 ) => {
     if (account.networkType === 'ripple') {
         const amount = formValues['amount-0'];
+        console.log('formValues', formValues);
         return composeXrpTransaction(account, amount, selectedFee);
     }
 

@@ -4,9 +4,8 @@ import { SEND } from '@wallet-actions/constants';
 import { XRP_FLAG } from '@wallet-constants/sendForm';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as accountActions from '@wallet-actions/accountActions';
-import * as commonActions from './sendFormCommonActions';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
-import { calculateMax, calculateTotal, getOutput } from '@wallet-utils/sendFormUtils';
+import { calculateMax, calculateTotal } from '@wallet-utils/sendFormUtils';
 import { Dispatch, GetState } from '@suite-types';
 
 /*
@@ -17,7 +16,7 @@ export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!send || selectedAccount.status !== 'loaded') return;
     const { account } = selectedAccount;
 
-    const output = getOutput(send.outputs, 0);
+    const output = send.outputs[0];
     const amountInSatoshi = networkAmountToSatoshi(output.amount.value, account.symbol).toString();
     const { availableBalance } = account;
     const feeInSatoshi = send.selectedFee.feePerUnit;

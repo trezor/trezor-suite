@@ -3,17 +3,14 @@ import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as accountActions from '@wallet-actions/accountActions';
-import * as commonActions from './sendFormCommonActions';
-import * as sendFormActions from './sendFormActions';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
-import { toWei, fromWei } from 'web3-utils';
+import { toWei } from 'web3-utils';
 import {
     prepareEthereumTransaction,
     serializeEthereumTx,
     calculateEthFee,
     calculateMax,
     calculateTotal,
-    getOutput,
 } from '@wallet-utils/sendFormUtils';
 import { Dispatch, GetState } from '@suite-types';
 
@@ -158,126 +155,5 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         dispatch(
             notificationActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),
         );
-    }
-};
-
-/*
-    Change value in input "gas price"
- */
-export const handleGasPrice = (gasPrice: string) => (dispatch: Dispatch, getState: GetState) => {
-    const { send } = getState().wallet;
-    const { account } = getState().wallet.selectedAccount;
-    if (!send || !account) return null;
-
-    const gasLimit = send.networkTypeEthereum.gasLimit.value || '0';
-    const fee = calculateEthFee(gasPrice, gasLimit);
-
-    dispatch({
-        type: SEND.ETH_HANDLE_GAS_PRICE,
-        gasPrice,
-    });
-
-    dispatch({
-        type: SEND.HANDLE_FEE_VALUE_CHANGE,
-        fee: {
-            label: 'custom',
-            feePerUnit: gasPrice,
-            feeLimit: gasLimit,
-            blocks: -1,
-            value: fee,
-        },
-    });
-
-    if (send.setMaxActivated) {
-        dispatch(sendFormActions.setMax());
-    }
-};
-
-/*
-    Change value in input "gas limit "
- */
-export const handleGasLimit = (gasLimit: string) => (dispatch: Dispatch, getState: GetState) => {
-    const { send } = getState().wallet;
-    const { account } = getState().wallet.selectedAccount;
-    if (!send || !account) return null;
-
-    const gasPrice = send.networkTypeEthereum.gasPrice.value || '0';
-
-    dispatch({
-        type: SEND.ETH_HANDLE_GAS_LIMIT,
-        gasLimit,
-    });
-
-    dispatch({
-        type: SEND.HANDLE_FEE_VALUE_CHANGE,
-        fee: {
-            label: 'custom',
-            feePerUnit: gasPrice,
-            feeLimit: gasLimit,
-            blocks: -1,
-        },
-    });
-
-    if (send.setMaxActivated) {
-        dispatch(sendFormActions.setMax());
-    }
-};
-
-/*
-    Change value in input "Data"
- */
-export const handleData = (data: string) => async (dispatch: Dispatch, getState: GetState) => {
-    const { send, selectedAccount } = getState().wallet;
-    const { account } = selectedAccount;
-    if (!send || !account) return null;
-
-    dispatch({
-        type: SEND.ETH_HANDLE_DATA,
-        data,
-    });
-
-    const newFeeLevels = await TrezorConnect.blockchainEstimateFee({
-        coin: account.symbol,
-        request: {
-            blocks: [2],
-            specific: {
-                from: account.descriptor,
-                to: send.outputs[0].address.value || account.descriptor,
-                data,
-            },
-        },
-    });
-
-    if (!newFeeLevels.success) return null;
-
-    const level = newFeeLevels.payload.levels[0];
-    const gasLimit = level.feeLimit || '0'; // TODO: default
-    const gasPrice = fromWei(level.feePerUnit, 'gwei');
-
-    // update fee
-    dispatch({
-        type: SEND.HANDLE_FEE_VALUE_CHANGE,
-        fee: {
-            label: 'normal',
-            feePerUnit: gasPrice,
-            feeLimit: gasLimit,
-            blocks: -1,
-        },
-    });
-
-    // update gas limit input
-    dispatch({
-        type: SEND.ETH_HANDLE_GAS_LIMIT,
-        gasLimit,
-    });
-
-    // update gas price input
-    dispatch({
-        type: SEND.ETH_HANDLE_GAS_PRICE,
-        gasPrice,
-    });
-
-    if (send.setMaxActivated) {
-        dispatch(sendFormActions.setMax());
     }
 };

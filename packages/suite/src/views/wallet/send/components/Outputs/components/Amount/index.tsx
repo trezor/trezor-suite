@@ -3,15 +3,15 @@ import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext'
 import { Input, variables } from '@trezor/components';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { composeTx, getInputState, hasDecimals } from '@wallet-utils/sendFormUtils';
+import { composeTx, getInputState } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
 import React from 'react';
 import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import validator from 'validator';
 
-import CurrencySelect from './components/CurrencySelect';
-import LocalCurrency from './components/LocalCurrency';
+import TokenSelect from './components/TokenSelect';
+import Fiat from './components/Fiat';
 
 const Wrapper = styled.div`
     display: flex;
@@ -191,7 +191,10 @@ export default ({ outputId }: { outputId: number }) => {
                             },
                             TR_AMOUNT_IS_NOT_ENOUGH: (value: string) => {
                                 const amountBig = new BigNumber(value);
-                                return !amountBig.isGreaterThan(formattedAvailableBalance);
+                                return (
+                                    !amountBig.isGreaterThan(formattedAvailableBalance) ||
+                                    !amountBig.isLessThanOrEqualTo('0')
+                                );
                             },
                             TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE: (value: string) => {
                                 if (networkType === 'ripple' && reserve) {
@@ -204,7 +207,10 @@ export default ({ outputId }: { outputId: number }) => {
                                 }
                             },
                             TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS: (value: string) => {
-                                return hasDecimals(value, decimals);
+                                return validator.isDecimal(value, {
+                                    // eslint-disable-next-line @typescript-eslint/camelcase
+                                    decimal_digits: `0,${decimals}`,
+                                });
                             },
                         },
                     })}
@@ -216,7 +222,7 @@ export default ({ outputId }: { outputId: number }) => {
                         <Translation id="TR_TOKEN_BALANCE" values={{ balance: tokenBalance }} />
                     </TokenBalance>
                 )}
-                <CurrencySelect />
+                <TokenSelect />
             </Left>
             {/* TODO: token FIAT rates calculation */}
             {!token && (
@@ -226,7 +232,7 @@ export default ({ outputId }: { outputId: number }) => {
                             <>
                                 <EqualsSign>=</EqualsSign>
                                 <Right>
-                                    <LocalCurrency outputId={outputId} />
+                                    <Fiat outputId={outputId} />
                                 </Right>
                             </>
                         )

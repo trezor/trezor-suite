@@ -4,6 +4,7 @@
 
 import addressValidator from 'multicoin-address-validator';
 import { Account } from '@wallet-types';
+import validator from 'validator';
 
 const isTestnet = (symbol: Account['symbol']): boolean => {
     const testnets = ['test', 'txrp', 'trop'];
@@ -39,7 +40,6 @@ export const isAddressValid = (address: string, symbol: Account['symbol']) => {
         case 'btg':
         case 'dash':
         case 'xrp':
-        case 'dgb':
         case 'doge':
         case 'ltc':
         case 'nmc':
@@ -48,6 +48,8 @@ export const isAddressValid = (address: string, symbol: Account['symbol']) => {
         case 'eth':
         case 'etc':
             return addressValidator.validate(address, updatedSymbol.toUpperCase(), networkType);
+        case 'dgb':
+            return validator.isBtcAddress(address);
         // no default
     }
 };
