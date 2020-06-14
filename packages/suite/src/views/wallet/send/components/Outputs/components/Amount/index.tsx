@@ -111,7 +111,6 @@ export default ({ outputId }: { outputId: number }) => {
     const { register, errors, formState, getValues, setValue, setError } = useFormContext();
     const inputName = `amount-${outputId}`;
     const inputNameMax = `setMaxActive-${outputId}`;
-    const localCurrencySelect = `localCurrencySelect-${outputId}`;
     const touched = formState.dirtyFields.has(inputName);
     const { symbol, availableBalance, networkType } = account;
     const formattedAvailableBalance = token
@@ -122,7 +121,7 @@ export default ({ outputId }: { outputId: number }) => {
         account.networkType === 'ripple' ? formatNetworkAmount(account.misc.reserve, symbol) : null;
     const tokenBalance = token ? `${token.balance} ${token.symbol!.toUpperCase()}` : undefined;
     const decimals = token ? token.decimals : network.decimals;
-
+    console.log('error', error);
     return (
         <Wrapper>
             <input type="hidden" name={inputNameMax} ref={register} />
@@ -146,6 +145,7 @@ export default ({ outputId }: { outputId: number }) => {
                         icon: getMaxIcon(getValues(inputNameMax)),
                         iconSize: 15,
                         onClick: async () => {
+                            // todo refactor this to utils
                             setValue(inputNameMax, 'yes');
                             const formValues = getValues();
                             const composedTransaction = await composeTx(
@@ -155,9 +155,12 @@ export default ({ outputId }: { outputId: number }) => {
                                 outputs,
                                 token,
                             );
+                            console.log('composedTransaction', composedTransaction);
 
                             if (composedTransaction && composedTransaction.type === 'error') {
-                                setError(inputName, composedTransaction.error);
+                                if (composedTransaction.error === 'NOT-ENOUGH-FUNDS') {
+                                    setError(inputName, 'TR_AMOUNT_IS_NOT_ENOUGH');
+                                }
                             }
 
                             if (composedTransaction && composedTransaction.type !== 'error') {

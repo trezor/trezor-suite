@@ -1,4 +1,4 @@
-import { ERC20_GAS_LIMIT, ERC20_TRANSFER } from '@wallet-constants/sendForm';
+import { ERC20_GAS_LIMIT, ERC20_TRANSFER, INPUTS } from '@wallet-constants/sendForm';
 import { SendContext } from '@wallet-hooks/useSendContext';
 import { Account, Network } from '@wallet-types';
 import { EthTransactionData, FeeInfo, FeeLevel } from '@wallet-types/sendForm';
@@ -299,7 +299,6 @@ export const composeTx = async (
 ) => {
     if (account.networkType === 'ripple') {
         const amount = formValues['amount-0'];
-        console.log('formValues', formValues);
         return composeXrpTransaction(account, amount, selectedFee);
     }
 
@@ -385,7 +384,7 @@ export const updateFiatInput = (
     setValue: ReturnType<typeof useForm>['setValue'],
 ) => {
     if (fiatRates) {
-        const localCurrency = getValues(`localCurrencySelect-${id}`);
+        const localCurrency = getValues(`localCurrency-${id}`);
         const rate = fiatRates.current?.rates[localCurrency.value];
 
         if (rate) {
@@ -395,4 +394,18 @@ export const updateFiatInput = (
             setValue(`fiatInput-${id}`, fiatValue);
         }
     }
+};
+
+export const getFiatRate = (fiatRates: SendContext['fiatRates'], currency: string) => {
+    if (fiatRates) {
+        const rate = fiatRates.current?.rates[currency];
+        if (rate) return rate;
+        return null;
+    }
+
+    return null;
+};
+
+export const buildCurrencyOption = (currency: string) => {
+    return { value: currency, label: currency.toUpperCase() };
 };

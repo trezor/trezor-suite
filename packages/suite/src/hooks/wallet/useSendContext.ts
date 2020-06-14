@@ -12,7 +12,7 @@ export interface SendContext {
         'amount-0': string;
         'setMaxActive-0': boolean;
         'fiatInput-0': string;
-        'localCurrencySelect-0': { value: string; label: string };
+        'localCurrency-0': { value: string; label: string };
         ethereumGasPrice: string;
         ethereumGasLimit: string;
         ethereumData: string;

@@ -67,7 +67,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
         'amount-0': '',
         'setMaxActive-0': 'no',
         'fiatInput-0': '',
-        'localCurrencySelect-0': localCurrencyOption,
+        'localCurrency-0': localCurrencyOption,
         ethereumGasPrice: initialSelectedFee.feePerUnit,
         ethereumGasLimit: initialSelectedFee.feeLimit,
         ethereumData: '',

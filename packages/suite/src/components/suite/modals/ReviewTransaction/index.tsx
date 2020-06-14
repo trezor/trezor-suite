@@ -3,7 +3,6 @@ import { useDeviceActionLocks } from '@suite-hooks';
 import { Button, colors, Modal, variables } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import BigNumber from 'bignumber.js';
 import React from 'react';
 import styled from 'styled-components';
 import { fromWei, toWei } from 'web3-utils';

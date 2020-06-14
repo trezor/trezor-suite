@@ -38,6 +38,7 @@ export default () => {
                 if (!error) {
                     const gasPrice = getValues('ethereumGasPrice');
                     const gasLimit = event.target.value;
+
                     setSelectedFee({
                         feePerUnit: gasPrice,
                         feeLimit: gasLimit,

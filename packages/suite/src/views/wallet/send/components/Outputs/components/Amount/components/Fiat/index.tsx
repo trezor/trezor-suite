@@ -5,7 +5,7 @@ import { useFormContext, Controller } from 'react-hook-form';
 import BigNumber from 'bignumber.js';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { FIAT } from '@suite-config';
-import { getInputState } from '@wallet-utils/sendFormUtils';
+import { getInputState, getFiatRate, buildCurrencyOption } from '@wallet-utils/sendFormUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -20,15 +20,11 @@ const SelectWrapper = styled.div`
     margin-left: 10px;
 `;
 
-const getCurrencyOptions = (currency: string) => {
-    return { value: currency, label: currency.toUpperCase() };
-};
-
 export default ({ outputId }: { outputId: number }) => {
     const { register, errors, getValues, control, setValue } = useFormContext();
     const { fiatRates, token, network, localCurrencyOption } = useSendContext();
     const inputName = `fiatInput-${outputId}`;
-    const inputNameSelect = `localCurrencySelect-${outputId}`;
+    const inputNameSelect = `localCurrency-${outputId}`;
     const error = errors[inputName];
     const decimals = token ? token.decimals : network.decimals;
 
@@ -41,12 +37,11 @@ export default ({ outputId }: { outputId: number }) => {
                 onChange={event => {
                     const selectedCurrency = getValues(inputNameSelect);
                     const localCurrencyValue = new BigNumber(event.target.value);
-                    if (fiatRates) {
-                        const rate = fiatRates.current?.rates[selectedCurrency.value];
-                        if (rate) {
-                            const amountBigNumber = localCurrencyValue.dividedBy(rate);
-                            setValue(`amount-${outputId}`, amountBigNumber.toFixed(decimals));
-                        }
+                    const rate = getFiatRate(fiatRates, selectedCurrency.value);
+
+                    if (rate) {
+                        const amountBigNumber = localCurrencyValue.dividedBy(rate);
+                        setValue(`amount-${outputId}`, amountBigNumber.toFixed(decimals));
                     }
                 }}
             />
@@ -54,7 +49,7 @@ export default ({ outputId }: { outputId: number }) => {
                 <Controller
                     as={Select}
                     options={FIAT.currencies.map((currency: string) =>
-                        getCurrencyOptions(currency),
+                        buildCurrencyOption(currency),
                     )}
                     name={inputNameSelect}
                     register={register}
@@ -62,15 +57,15 @@ export default ({ outputId }: { outputId: number }) => {
                     defaultValue={localCurrencyOption}
                     isClearable={false}
                     onChange={([selected]) => {
-                        if (fiatRates) {
-                            const rate = fiatRates.current?.rates[selected.value];
-                            const amountValue = getValues(`amount-${outputId}`);
-                            const amountBig = new BigNumber(amountValue);
-                            if (rate && amountValue) {
-                                const fiatValueBigNumber = amountBig.multipliedBy(rate);
-                                setValue(inputName, fiatValueBigNumber.toFixed(2));
-                            }
+                        const rate = getFiatRate(fiatRates, selected.value);
+                        const amountValue = getValues(`amount-${outputId}`);
+                        const amountBig = new BigNumber(amountValue);
+
+                        if (rate && amountValue) {
+                            const fiatValueBigNumber = amountBig.multipliedBy(rate);
+                            setValue(inputName, fiatValueBigNumber.toFixed(2));
                         }
+
                         return { ...selected };
                     }}
                     control={control}
