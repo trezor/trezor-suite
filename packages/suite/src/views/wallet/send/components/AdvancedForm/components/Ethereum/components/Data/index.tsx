@@ -1,7 +1,9 @@
 import { QuestionTooltip, Translation } from '@suite-components';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { Textarea } from '@trezor/components';
-import { getState } from '@wallet-utils/sendFormUtils';
+import TrezorConnect from 'trezor-connect';
+import { fromWei } from 'web3-utils';
+import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
@@ -17,8 +19,8 @@ const Text = styled.div`
 `;
 
 export default () => {
-    const { token } = useSendContext();
-    const { register, errors } = useFormContext();
+    const { token, account, setSelectedFee } = useSendContext();
+    const { register, errors, getValues, setValue } = useFormContext();
     const inputName = 'ethereumData';
     const error = errors[inputName];
 
@@ -34,7 +36,39 @@ export default () => {
                     },
                 },
             })}
-            state={getState(error)}
+            onChange={async event => {
+                if (!error) {
+                    const data = event.target.value;
+                    const address = getValues('address-0');
+                    const response = await TrezorConnect.blockchainEstimateFee({
+                        coin: account.symbol,
+                        request: {
+                            blocks: [2],
+                            specific: {
+                                from: account.descriptor,
+                                to: address || account.descriptor,
+                                data,
+                            },
+                        },
+                    });
+
+                    if (!response.success) return null;
+
+                    const level = response.payload.levels[0];
+                    const gasLimit = level.feeLimit || '0'; // TODO: default
+                    const gasPrice = fromWei(level.feePerUnit, 'gwei');
+
+                    setValue('ethereumGasPrice', gasPrice);
+                    setValue('ethereumGasLimit', gasLimit);
+                    setSelectedFee({
+                        label: 'normal',
+                        feePerUnit: gasPrice,
+                        feeLimit: gasLimit,
+                        blocks: -1, // irrelevant for eth
+                    });
+                }
+            }}
+            state={getInputState(error)}
             bottomText={error && <Translation id={error.type} />}
             disabled={token !== null}
             topLabel={

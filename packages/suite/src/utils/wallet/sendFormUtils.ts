@@ -1,4 +1,4 @@
-import { ERC20_GAS_LIMIT, ERC20_TRANSFER, VALIDATION_ERRORS } from '@wallet-constants/sendForm';
+import { ERC20_GAS_LIMIT, ERC20_TRANSFER } from '@wallet-constants/sendForm';
 import { SendContext } from '@wallet-hooks/useSendContext';
 import { Account, Network } from '@wallet-types';
 import { EthTransactionData, FeeInfo, FeeLevel, Output } from '@wallet-types/sendForm';
@@ -75,29 +75,6 @@ export const calculateMax = (availableBalance: string, fee: string): string => {
         return max.toFixed();
     } catch (error) {
         return '0';
-    }
-};
-
-export const getInputState = (
-    error: typeof VALIDATION_ERRORS[keyof typeof VALIDATION_ERRORS] | null,
-    value: string | null,
-    noSuccess?: boolean,
-    isMandatory?: boolean,
-) => {
-    if (!isMandatory && !value) {
-        return undefined;
-    }
-
-    if (error) {
-        return 'error';
-    }
-
-    if (noSuccess) {
-        return undefined;
-    }
-
-    if (value && !error) {
-        return 'success';
     }
 };
 
@@ -218,19 +195,25 @@ export const getFeeLevels = (
     return networkType === 'ethereum' ? convertedEthLevels : initialLevels;
 };
 
-export const getState = (
+export const getInputState = (
     error: NestDataObject<Record<string, any>, FieldError>,
-    touched?: boolean,
+    isDirty: boolean,
 ) => {
-    if (touched && !error) {
-        return 'success';
-    }
-
     if (error) {
         return 'error';
     }
 
-    return undefined;
+    // if (!isMandatory && !value) {
+    //     return undefined;
+    // }
+
+    // if (noSuccess) {
+    //     return undefined;
+    // }
+
+    if (isDirty && !error) {
+        return 'success';
+    }
 };
 
 export const composeXrpTransaction = (
@@ -243,17 +226,17 @@ export const composeXrpTransaction = (
     const feeInSatoshi = selectedFee.feePerUnit;
     const totalSpentBig = new BigNumber(calculateTotal(amountInSatoshi, feeInSatoshi));
     const max = new BigNumber(calculateMax(availableBalance, feeInSatoshi));
-    const payloadData = {
-        totalSpent: totalSpentBig.toString(),
-        fee: feeInSatoshi,
-        max: max.isLessThan('0') ? '' : formatNetworkAmount(max.toFixed(), 'xrp'),
-    };
 
     if (totalSpentBig.isGreaterThan(availableBalance)) {
         return { type: 'error', error: 'NOT-ENOUGH-FUNDS' } as const;
     }
 
-    return { type: 'final', ...payloadData } as const;
+    return {
+        type: 'final',
+        totalSpent: totalSpentBig.toString(),
+        fee: feeInSatoshi,
+        max: max.isLessThan('0') ? '' : formatNetworkAmount(max.toFixed(), 'xrp'),
+    } as const;
 };
 
 export const composeEthTransaction = (
@@ -282,19 +265,19 @@ export const composeEthTransaction = (
     const totalSpentBig = new BigNumber(
         calculateTotal(token ? '0' : amountInSatoshi, feeInSatoshi),
     );
-    const payloadData = {
-        totalSpent: totalSpentBig.toString(),
-        fee: feeInSatoshi,
-        feePerUnit: selectedFee.feePerUnit,
-        max: max.isLessThan('0') ? '' : formatNetworkAmount(max.toFixed(), 'eth'),
-    };
 
     if (totalSpentBig.isGreaterThan(availableBalance)) {
         const error = token ? 'NOT-ENOUGH-CURRENCY-FEE' : 'NOT-ENOUGH-FUNDS';
         return { type: 'error', error } as const;
     }
 
-    return { type: 'final', ...payloadData } as const;
+    return {
+        type: 'final',
+        totalSpent: totalSpentBig.toString(),
+        fee: feeInSatoshi,
+        feePerUnit: selectedFee.feePerUnit,
+        max: max.isLessThan('0') ? '' : formatNetworkAmount(max.toFixed(), 'eth'),
+    } as const;
 };
 
 export const composeBtcTransaction = async (
@@ -402,13 +385,10 @@ export const signEthTx = async (account, token, networkId, device) => {
     });
 
     if (!signedTx.success) {
-        dispatch(
-            notificationActions.addToast({
-                type: 'sign-tx-error',
-                error: signedTx.payload.error,
-            }),
-        );
-        return;
+        notificationActions.addToast({
+            type: 'sign-tx-error',
+            error: signedTx.payload.error,
+        });
     }
 
     const serializedTx = serializeEthereumTx({

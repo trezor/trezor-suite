@@ -3,7 +3,7 @@ import { Translation } from '@suite-components/Translation';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { Input, Select } from '@trezor/components';
 import { Account } from '@wallet-types';
-import { getState } from '@wallet-utils/sendFormUtils';
+import { getInputState } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
 import React from 'react';
 import { useFormContext, FieldError, NestDataObject } from 'react-hook-form';
@@ -79,7 +79,7 @@ export default ({ isVisible }: { isVisible: boolean }) => {
                 <Input
                     variant="small"
                     name={inputNameValue}
-                    state={getState(error)}
+                    state={getInputState(error)}
                     onChange={event =>
                         setSelectedFee({
                             label: 'custom',

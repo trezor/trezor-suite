@@ -2,7 +2,7 @@ import { Translation } from '@suite-components';
 import { toWei } from 'web3-utils';
 import { colors, Icon, Input, Tooltip } from '@trezor/components';
 import { useSendContext } from '@wallet-hooks/useSendContext';
-import { getState } from '@wallet-utils/sendFormUtils';
+import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
@@ -31,7 +31,7 @@ export default () => {
         <Input
             variant="small"
             name={inputName}
-            state={getState(error)}
+            state={getInputState(error)}
             onChange={event => {
                 if (!error) {
                     const gasPrice = event.target.value;

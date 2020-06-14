@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import validator from 'validator';
+import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Input } from '@trezor/components';
 import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
 import { Translation, QuestionTooltip } from '@suite-components';
@@ -30,7 +31,7 @@ const DestinationTag = () => {
 
     return (
         <Input
-            state={getState(error)}
+            state={getInputState(error)}
             variant="small"
             topLabel={
                 <Label>

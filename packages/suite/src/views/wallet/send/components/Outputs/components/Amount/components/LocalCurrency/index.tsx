@@ -5,7 +5,7 @@ import { useFormContext, Controller } from 'react-hook-form';
 import BigNumber from 'bignumber.js';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { FIAT } from '@suite-config';
-import { getState } from '@wallet-utils/sendFormUtils';
+import { getInputState } from '@wallet-utils/sendFormUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -35,7 +35,7 @@ export default ({ outputId }: { outputId: number }) => {
     return (
         <Wrapper>
             <Input
-                state={getState(error)}
+                state={getInputState(error)}
                 name={inputName}
                 innerRef={register}
                 onChange={event => {

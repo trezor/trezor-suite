@@ -4,7 +4,7 @@ import { useActions } from '@suite-hooks';
 import TrezorConnect from 'trezor-connect';
 import { Input } from '@trezor/components';
 import { isAddressValid } from '@wallet-utils/validation';
-import { getState } from '@wallet-utils/sendFormUtils';
+import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { useFormContext } from 'react-hook-form';
@@ -23,14 +23,14 @@ export default ({ outputId }: { outputId: number }) => {
     const { account, setDestinationAddressEmpty } = useSendContext();
     const { register, errors, getValues, formState } = useFormContext();
     const inputName = `address-${outputId}`;
-    const touched = formState.dirtyFields.has(inputName);
+    const isDirty = formState.dirtyFields.has(inputName);
     const { descriptor, networkType, symbol } = account;
     const { openModal } = useActions({ openModal: modalActions.openModal });
     const error = errors[inputName];
 
     return (
         <Input
-            state={getState(error, touched)}
+            state={getInputState(error, isDirty)}
             monospace
             topLabel={
                 <Label>
@@ -63,7 +63,7 @@ export default ({ outputId }: { outputId: number }) => {
             name={inputName}
             innerRef={register({
                 validate: {
-                    TR_ADDRESS_IS_NOT_SET: (value: string) => !(touched && value.length === 0),
+                    TR_ADDRESS_IS_NOT_SET: (value: string) => !(isDirty && value.length === 0),
                     TR_ADDRESS_IS_NOT_VALID: (value: string) => isAddressValid(value, symbol),
                     TR_XRP_CANNOT_SEND_TO_MYSELF: (value: string) => {
                         if (networkType === 'ripple') {

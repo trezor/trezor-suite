@@ -3,7 +3,7 @@ import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext'
 import { Input, variables } from '@trezor/components';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { composeTx, getState, hasDecimals } from '@wallet-utils/sendFormUtils';
+import { composeTx, getInputState, hasDecimals } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
 import React from 'react';
 import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
@@ -129,7 +129,7 @@ export default ({ outputId }: { outputId: number }) => {
             <input type="hidden" name={inputNameMax} ref={register} />
             <Left>
                 <StyledInput
-                    state={getState(error, touched)}
+                    state={getInputState(error, touched)}
                     topLabel={
                         <Label>
                             <Text>
