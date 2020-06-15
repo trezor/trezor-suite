@@ -150,7 +150,7 @@ export default () => {
                     isSearchable={false}
                     // hack for react select, it needs the "value"
                     value={{ ...selectedFee, value: selectedFee.feePerUnit }}
-                    onChange={(selectedFeeLevel: FeeLevel) => {
+                    onChange={async (selectedFeeLevel: FeeLevel) => {
                         if (selectedFeeLevel.label === 'custom') {
                             setSelectedFee({ ...selectedFee, label: 'custom' });
                             setValue('customFee', selectedFee.feePerUnit, true);

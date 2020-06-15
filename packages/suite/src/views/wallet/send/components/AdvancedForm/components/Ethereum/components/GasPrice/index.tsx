@@ -1,7 +1,7 @@
 import { Translation } from '@suite-components';
 import { colors, Icon, Input, Tooltip } from '@trezor/components';
-import { useSendContext } from '@wallet-hooks/useSendContext';
-import { getInputState } from '@wallet-utils/sendFormUtils';
+import { useSendContext, SendContext } from '@wallet-hooks/useSendContext';
+import { getInputState, updateMax } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
@@ -21,8 +21,16 @@ const StyledIcon = styled(Icon)`
 `;
 
 export default () => {
-    const { initialSelectedFee, setSelectedFee } = useSendContext();
-    const { register, errors, getValues } = useFormContext();
+    const {
+        initialSelectedFee,
+        setSelectedFee,
+        setTransactionInfo,
+        outputs,
+        account,
+        fiatRates,
+        token,
+    } = useSendContext();
+    const { register, errors, getValues, setError, setValue } = useFormContext();
     const inputName = 'ethereumGasPrice';
     const error = errors[inputName];
 
@@ -31,17 +39,34 @@ export default () => {
             variant="small"
             name={inputName}
             state={getInputState(error)}
-            onChange={event => {
+            onChange={async event => {
                 if (!error) {
+                    const isMaxActive = getValues('setMax-0') === '1';
                     const gasPrice = event.target.value;
                     const gasLimit = getValues('ethereumGasLimit');
-
-                    setSelectedFee({
+                    const newFeeLevel: SendContext['selectedFee'] = {
                         feePerUnit: gasPrice,
                         feeLimit: gasLimit,
                         label: 'custom',
                         blocks: -1,
-                    });
+                    };
+
+                    setSelectedFee(newFeeLevel);
+
+                    if (isMaxActive) {
+                        await updateMax(
+                            0,
+                            account,
+                            setValue,
+                            getValues,
+                            setError,
+                            newFeeLevel,
+                            outputs,
+                            token,
+                            fiatRates,
+                            setTransactionInfo,
+                        );
+                    }
                 }
             }}
             topLabel={

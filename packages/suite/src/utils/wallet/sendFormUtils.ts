@@ -198,7 +198,6 @@ export const composeEthTransaction = (
     setMax = false,
 ) => {
     const isFeeValid = !new BigNumber(selectedFee.feePerUnit).isNaN();
-
     const { availableBalance } = account;
     const feeInSatoshi = calculateEthFee(
         toWei(isFeeValid ? selectedFee.feePerUnit : '0', 'gwei'),
@@ -274,6 +273,17 @@ export const composeBtcTransaction = async (
         } as const;
     });
 
+    console.log('data', {
+        account: {
+            path: account.path,
+            addresses: account.addresses,
+            utxo: account.utxo,
+        },
+        feeLevels: [selectedFee],
+        outputs: composedOutputs,
+        coin: account.symbol,
+    });
+
     const resp = await TrezorConnect.composeTransaction({
         account: {
             path: account.path,
@@ -284,6 +294,8 @@ export const composeBtcTransaction = async (
         outputs: composedOutputs,
         coin: account.symbol,
     });
+
+    console.log('resp', resp);
 
     if (resp.success) {
         return resp.payload[0];
@@ -310,71 +322,6 @@ export const composeTx = async (
     if (account.networkType === 'bitcoin') {
         await composeBtcTransaction(account, formValues, outputs, selectedFee, true);
     }
-};
-
-export const signEthTx = async (account, token, networkId, device) => {
-    const transaction = prepareEthereumTransaction({
-        token,
-        chainId: network.chainId,
-        to: address,
-        amount,
-        data: data.value,
-        gasLimit: gasLimit.value,
-        gasPrice: gasPrice.value,
-        nonce: account.misc.nonce,
-    });
-
-    const signedTx = await TrezorConnect.ethereumSignTransaction({
-        device: {
-            path: device.path,
-            instance: device.instance,
-            state: device.state,
-        },
-        useEmptyPassphrase: device.useEmptyPassphrase,
-        path: account.path,
-        transaction,
-    });
-
-    if (!signedTx.success) {
-        notificationActions.addToast({
-            type: 'sign-tx-error',
-            error: signedTx.payload.error,
-        });
-    }
-
-    const serializedTx = serializeEthereumTx({
-        ...transaction,
-        ...signedTx.payload,
-    });
-
-    // TODO: add possibility to show serialized tx without pushing (locktime)
-    const sentTx = await TrezorConnect.pushTransaction({
-        tx: serializedTx,
-        coin: network.symbol,
-    });
-
-    // if (sentTx.success) {
-    //     dispatch(commonActions.clear());
-    //     const symbol = token ? token.symbol!.toUpperCase() : account.symbol.toUpperCase();
-    //     dispatch(
-    //         notificationActions.addToast({
-    //             type: 'tx-sent',
-    //             formattedAmount: `${amount} ${symbol}`,
-    //             device: selectedDevice,
-    //             descriptor: account.descriptor,
-    //             symbol: account.symbol,
-    //             txid: sentTx.payload.txid,
-    //         }),
-    //     );
-    //     dispatch(accountActions.fetchAndUpdateAccount(account));
-    // } else {
-    //     dispatch(
-    //         notificationActions.addToast({
-    //             type: 'sign-tx-error',
-    //             error: sentTx.payload.error,
-    //         }),
-    //     );
-    // }
 };
 
 export const updateFiatInput = (
@@ -406,4 +353,66 @@ export const getFiatRate = (fiatRates: SendContext['fiatRates'], currency: strin
 
 export const buildCurrencyOption = (currency: string) => {
     return { value: currency, label: currency.toUpperCase() };
+};
+
+export const composeChange = async (
+    id: number,
+    account: Account,
+    setTransactionInfo: SendContext['setTransactionInfo'],
+    getValues: ReturnType<typeof useForm>['getValues'],
+    setError: ReturnType<typeof useForm>['setError'],
+    selectedFee: FeeLevel,
+    outputs: SendContext['outputs'],
+    token: SendContext['token'],
+) => {
+    const formValues = getValues();
+    const composedTransaction = await composeTx(account, formValues, selectedFee, outputs, token);
+
+    if (!composedTransaction) return null; // TODO handle error
+
+    if (composedTransaction.type === 'error') {
+        setError(`amount-${id}`, 'TR_AMOUNT_IS_NOT_ENOUGH');
+    }
+
+    if (composedTransaction.type !== 'error') {
+        setTransactionInfo(composedTransaction);
+    }
+};
+
+export const updateMax = async (
+    id: number,
+    account: Account,
+    setValue: ReturnType<typeof useForm>['setValue'],
+    getValues: ReturnType<typeof useForm>['getValues'],
+    setError: ReturnType<typeof useForm>['setError'],
+    selectedFee: FeeLevel,
+    outputs: SendContext['outputs'],
+    token: SendContext['token'],
+    fiatRates: SendContext['fiatRates'],
+    setTransactionInfo: SendContext['setTransactionInfo'],
+) => {
+    setValue(`setMax-${id}`, '1');
+    const formValues = getValues();
+    const composedTransaction = await composeTx(account, formValues, selectedFee, outputs, token);
+
+    if (!composedTransaction) return null; // TODO handle error
+
+    if (composedTransaction.type === 'error') {
+        setError(`amount-${id}`, 'TR_AMOUNT_IS_NOT_ENOUGH');
+    }
+
+    if (composedTransaction.type !== 'error') {
+        setValue(`amount-${id}`, composedTransaction.max);
+        updateFiatInput(id, fiatRates, getValues, setValue);
+        await composeChange(
+            id,
+            account,
+            setTransactionInfo,
+            getValues,
+            setError,
+            selectedFee,
+            outputs,
+            token,
+        );
+    }
 };

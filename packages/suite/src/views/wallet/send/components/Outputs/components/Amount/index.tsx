@@ -3,7 +3,12 @@ import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext'
 import { Input, variables } from '@trezor/components';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { composeTx, getInputState, updateFiatInput } from '@wallet-utils/sendFormUtils';
+import {
+    composeChange,
+    getInputState,
+    updateFiatInput,
+    updateMax,
+} from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
 import React from 'react';
 import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
@@ -108,7 +113,7 @@ export default ({ outputId }: { outputId: number }) => {
     } = useSendContext();
     const { register, errors, formState, getValues, setValue, setError } = useFormContext();
     const inputName = `amount-${outputId}`;
-    const inputNameMax = `setMaxActive-${outputId}`;
+    const inputNameMax = `setMax-${outputId}`;
     const touched = formState.dirtyFields.has(inputName);
     const { symbol, availableBalance, networkType } = account;
     const formattedAvailableBalance = token
@@ -134,51 +139,26 @@ export default ({ outputId }: { outputId: number }) => {
                             <QuestionTooltip messageId="TR_SEND_AMOUNT_TOOLTIP" />
                         </Label>
                     }
-                    onChange={event => {
+                    onChange={async () => {
                         updateFiatInput(outputId, fiatRates, getValues, setValue);
-                        const amount = event.target.value;
-                        console.log('amount', amount);
+                        setValue(`setMax-${outputId}`, '0');
                     }}
                     button={{
                         icon: getValues(inputNameMax) === '1' ? 'CHECK' : 'SEND',
                         iconSize: 17,
                         onClick: async () => {
-                            // todo refactor this to utils
-                            setValue(inputNameMax, '1');
-                            const formValues = getValues();
-                            const composedTransaction = await composeTx(
+                            await updateMax(
+                                outputId,
                                 account,
-                                formValues,
+                                setValue,
+                                getValues,
+                                setError,
                                 selectedFee,
                                 outputs,
                                 token,
+                                fiatRates,
+                                setTransactionInfo,
                             );
-                            console.log('composedTransaction', composedTransaction);
-
-                            if (composedTransaction && composedTransaction.type === 'error') {
-                                if (composedTransaction.error === 'NOT-ENOUGH-FUNDS') {
-                                    setError(inputName, 'TR_AMOUNT_IS_NOT_ENOUGH');
-                                }
-                            }
-
-                            if (composedTransaction && composedTransaction.type !== 'error') {
-                                setValue(inputName, composedTransaction.max);
-                                updateFiatInput(outputId, fiatRates, getValues, setValue);
-
-                                const composedTransactionAfterMax = await composeTx(
-                                    account,
-                                    formValues,
-                                    selectedFee,
-                                    outputs,
-                                    token,
-                                );
-                                if (
-                                    composedTransactionAfterMax &&
-                                    composedTransactionAfterMax.type !== 'error'
-                                ) {
-                                    setTransactionInfo(composedTransactionAfterMax);
-                                }
-                            }
                         },
                         text: <Translation id="TR_SEND_SEND_MAX" />,
                     }}
