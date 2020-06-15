@@ -46,13 +46,13 @@ const CustomTooltipAccount = (props: Props) => {
                 {...props}
                 selectedRange={props.selectedRange}
                 sentAmount={formatAmount(
-                    receivedAmountString,
+                    sentAmountString,
                     props.symbol,
                     sentFiat,
                     props.localCurrency,
                 )}
                 receivedAmount={formatAmount(
-                    sentAmountString,
+                    receivedAmountString,
                     props.symbol,
                     receivedFiat,
                     props.localCurrency,
