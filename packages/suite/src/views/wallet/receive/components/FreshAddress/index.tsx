@@ -13,16 +13,8 @@ const StyledCard = styled(Card)`
     width: 100%;
     margin-bottom: 40px;
     padding: 32px 40px 36px 20px;
-    align-items: flex-end;
     justify-content: space-between;
     flex-wrap: wrap;
-    @media all and (max-width: 860px) {
-        button {
-            width: 100%;
-            margin-left: auto;
-            margin-top: 12px;
-        }
-    }
 `;
 
 const AddressContainer = styled.div`
@@ -41,11 +33,17 @@ const AddressPath = styled.div`
 
 const StyledInput = styled(Input)`
     height: 36px;
+    min-width: 200px;
+`;
+
+const ButtonContainer = styled.div`
+    padding-top: 32px;
 `;
 
 const StyledButton = styled(Button)`
-    min-width: 220px;
-    margin-left: 20px;
+    min-width: 180px;
+    width: 100%;
+    margin-left: 12px;
 `;
 
 const FreshAddress = ({
@@ -67,6 +65,7 @@ const FreshAddress = ({
                   transfers: account.history.total,
               },
           ];
+
     const unrevealed = unused.filter(a => !addresses.find(r => r.path === a.path));
     const addressLabel = isBitcoin ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS';
     // NOTE: unrevealed[0] can be undefined (limit exceeded)
@@ -98,14 +97,16 @@ const FreshAddress = ({
                 </AddressLabel>
                 <StyledInput variant="small" isDisabled value={addressValue} />
             </AddressContainer>
-            <StyledButton
-                data-test="@wallet/receive/reveal-address-button"
-                onClick={() => showAddress(firstFreshAddress.path, firstFreshAddress.address)}
-                isDisabled={disabled || locked || !firstFreshAddress}
-                isLoading={!disabled && locked}
-            >
-                <Translation id="RECEIVE_ADDRESS_REVEAL" />
-            </StyledButton>
+            <ButtonContainer>
+                <StyledButton
+                    data-test="@wallet/receive/reveal-address-button"
+                    onClick={() => showAddress(firstFreshAddress.path, firstFreshAddress.address)}
+                    isDisabled={disabled || locked || !firstFreshAddress}
+                    isLoading={!disabled && locked}
+                >
+                    <Translation id="RECEIVE_ADDRESS_REVEAL" />
+                </StyledButton>
+            </ButtonContainer>
         </StyledCard>
     );
 };

@@ -23,6 +23,7 @@ export default () => {
     const { register, errors, getValues, setValue } = useFormContext();
     const inputName = 'ethereumData';
     const error = errors[inputName];
+    const addressError = errors['address-0'];
 
     return (
         <Textarea
@@ -37,7 +38,7 @@ export default () => {
                 },
             })}
             onChange={async event => {
-                if (!error) {
+                if (!error && !addressError) {
                     const data = event.target.value;
                     const address = getValues('address-0');
                     const response = await TrezorConnect.blockchainEstimateFee({

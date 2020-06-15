@@ -119,7 +119,7 @@ export default ({ outputId }: { outputId: number }) => {
         account.networkType === 'ripple' ? formatNetworkAmount(account.misc.reserve, symbol) : null;
     const tokenBalance = token ? `${token.balance} ${token.symbol!.toUpperCase()}` : undefined;
     const decimals = token ? token.decimals : network.decimals;
-    console.log('error', error);
+
     return (
         <Wrapper>
             <input type="hidden" name={inputNameMax} ref={register} />

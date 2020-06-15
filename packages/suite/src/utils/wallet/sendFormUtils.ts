@@ -398,9 +398,7 @@ export const updateFiatInput = (
 
 export const getFiatRate = (fiatRates: SendContext['fiatRates'], currency: string) => {
     if (fiatRates) {
-        const rate = fiatRates.current?.rates[currency];
-        if (rate) return rate;
-        return null;
+        return fiatRates.current?.rates[currency] || null;
     }
 
     return null;
