@@ -3477,6 +3477,10 @@ const definedMessages = defineMessages({
         defaultMessage:
             'A previous attempt to backup this device failed. Device backup may be done only once.',
     },
+    DISCONNECT_DEVICE_DESCRIPTION: {
+        id: 'DISCONNECT_DEVICE_DESCRIPTION',
+        defaultMessage: 'Your device was wiped and does not hold private keys anymore.',
+    },
 } as const);
 
 export default definedMessages;
