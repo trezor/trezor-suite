@@ -127,7 +127,7 @@ describe('suite middleware', () => {
                     },
                 },
             });
-            expect(goto).toHaveBeenNthCalledWith(1, 'suite-index');
+            expect(goto).toHaveBeenNthCalledWith(1, 'suite-welcome');
 
             goto.mockClear();
         });
