@@ -1,4 +1,5 @@
 // @stable
+// @retry=2
 
 describe('Dashboard', () => {
     beforeEach(() => {
