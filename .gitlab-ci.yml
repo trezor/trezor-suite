@@ -57,7 +57,7 @@ typescript:
 unit tests:
     stage: lint, types, unit tests
     script:
-        - lerna run test:unit -- --passWithNoTests
+        - lerna run --stream test:unit -- --passWithNoTests
 
 include:
     - ci/environment.yml
