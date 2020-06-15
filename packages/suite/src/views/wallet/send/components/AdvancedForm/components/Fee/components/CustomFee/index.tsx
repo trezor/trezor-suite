@@ -1,9 +1,9 @@
 import { FiatValue } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
+import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext';
 import { Input, Select } from '@trezor/components';
 import { Account } from '@wallet-types';
-import { getInputState } from '@wallet-utils/sendFormUtils';
+import { getInputState, findActiveMaxId, updateMax } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
 import React from 'react';
 import { useFormContext, FieldError, NestDataObject } from 'react-hook-form';
@@ -65,8 +65,17 @@ const getError = (
 };
 
 export default ({ isVisible }: { isVisible: boolean }) => {
-    const { account, feeInfo, transactionInfo, setSelectedFee } = useSendContext();
-    const { register, errors } = useFormContext();
+    const {
+        account,
+        feeInfo,
+        transactionInfo,
+        setSelectedFee,
+        outputs,
+        token,
+        fiatRates,
+        setTransactionInfo,
+    } = useSendContext();
+    const { register, errors, getValues, setValue, clearError, setError } = useFormContext();
     const inputNameValue = 'customFee';
     const inputNameUnit = 'customFeeUnit';
     const { networkType, symbol } = account;
@@ -80,13 +89,37 @@ export default ({ isVisible }: { isVisible: boolean }) => {
                     variant="small"
                     name={inputNameValue}
                     state={getInputState(error)}
-                    onChange={event =>
+                    onChange={async event => {
+                        const newFeeLevel: SendContext['selectedFee'] = {
+                            label: 'custom',
+                            feePerUnit: event.target.value,
+                            blocks: -1,
+                        };
+
                         setSelectedFee({
                             label: 'custom',
                             feePerUnit: event.target.value,
                             blocks: -1,
-                        })
-                    }
+                        });
+
+                        const activeMax = findActiveMaxId(outputs, getValues);
+
+                        if (activeMax) {
+                            await updateMax(
+                                activeMax,
+                                account,
+                                setValue,
+                                getValues,
+                                clearError,
+                                setError,
+                                newFeeLevel,
+                                outputs,
+                                token,
+                                fiatRates,
+                                setTransactionInfo,
+                            );
+                        }
+                    }}
                     innerRef={register({
                         validate: {
                             TR_CUSTOM_FEE_IS_NOT_SET: (value: string) => {

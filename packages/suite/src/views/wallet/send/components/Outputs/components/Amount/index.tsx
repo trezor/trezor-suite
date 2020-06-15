@@ -3,12 +3,7 @@ import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext'
 import { Input, variables } from '@trezor/components';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import {
-    composeChange,
-    getInputState,
-    updateFiatInput,
-    updateMax,
-} from '@wallet-utils/sendFormUtils';
+import { getInputState, updateFiatInput, updateMax } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
 import React from 'react';
 import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
@@ -111,7 +106,15 @@ export default ({ outputId }: { outputId: number }) => {
         destinationAddressEmpty,
         fiatRates,
     } = useSendContext();
-    const { register, errors, formState, getValues, setValue, setError } = useFormContext();
+    const {
+        register,
+        errors,
+        formState,
+        getValues,
+        setValue,
+        setError,
+        clearError,
+    } = useFormContext();
     const inputName = `amount-${outputId}`;
     const inputNameMax = `setMax-${outputId}`;
     const touched = formState.dirtyFields.has(inputName);
@@ -152,6 +155,7 @@ export default ({ outputId }: { outputId: number }) => {
                                 account,
                                 setValue,
                                 getValues,
+                                clearError,
                                 setError,
                                 selectedFee,
                                 outputs,
@@ -169,14 +173,12 @@ export default ({ outputId }: { outputId: number }) => {
                                 return !(touched && value.length === 0);
                             },
                             TR_AMOUNT_IS_NOT_NUMBER: (value: string) => {
-                                return validator.isNumeric(value);
+                                const amountBig = new BigNumber(value);
+                                return validator.isNumeric(value) && amountBig.isGreaterThan(0);
                             },
                             TR_AMOUNT_IS_NOT_ENOUGH: (value: string) => {
                                 const amountBig = new BigNumber(value);
-                                return (
-                                    !amountBig.isGreaterThan(formattedAvailableBalance) ||
-                                    !amountBig.isLessThanOrEqualTo('0')
-                                );
+                                return !amountBig.isGreaterThan(formattedAvailableBalance);
                             },
                             TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE: (value: string) => {
                                 if (networkType === 'ripple' && reserve) {

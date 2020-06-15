@@ -1,4 +1,4 @@
-import { ERC20_GAS_LIMIT, ERC20_TRANSFER, INPUTS } from '@wallet-constants/sendForm';
+import { ERC20_GAS_LIMIT, ERC20_TRANSFER } from '@wallet-constants/sendForm';
 import { SendContext } from '@wallet-hooks/useSendContext';
 import { Account, Network } from '@wallet-types';
 import { EthTransactionData, FeeInfo, FeeLevel } from '@wallet-types/sendForm';
@@ -379,11 +379,33 @@ export const composeChange = async (
     }
 };
 
+const resetAllMax = (
+    outputs: SendContext['outputs'],
+    setValue: ReturnType<typeof useForm>['setValue'],
+) => {
+    outputs.map(output => setValue(`setMax-${output.id}`, '0'));
+};
+
+export const findActiveMaxId = (
+    outputs: SendContext['outputs'],
+    getValues: ReturnType<typeof useForm>['getValues'],
+): number | null => {
+    let maxId = null;
+    outputs.forEach(output => {
+        if (getValues(`setMax-${output.id}`) === '1') {
+            maxId = output.id;
+        }
+    });
+
+    return maxId;
+};
+
 export const updateMax = async (
     id: number,
     account: Account,
     setValue: ReturnType<typeof useForm>['setValue'],
     getValues: ReturnType<typeof useForm>['getValues'],
+    clearError: ReturnType<typeof useForm>['clearError'],
     setError: ReturnType<typeof useForm>['setError'],
     selectedFee: FeeLevel,
     outputs: SendContext['outputs'],
@@ -391,6 +413,7 @@ export const updateMax = async (
     fiatRates: SendContext['fiatRates'],
     setTransactionInfo: SendContext['setTransactionInfo'],
 ) => {
+    resetAllMax(outputs, setValue);
     setValue(`setMax-${id}`, '1');
     const formValues = getValues();
     const composedTransaction = await composeTx(account, formValues, selectedFee, outputs, token);
@@ -398,10 +421,19 @@ export const updateMax = async (
     if (!composedTransaction) return null; // TODO handle error
 
     if (composedTransaction.type === 'error') {
-        setError(`amount-${id}`, 'TR_AMOUNT_IS_NOT_ENOUGH');
+        switch (composedTransaction.error) {
+            case 'NOT-ENOUGH-FUNDS':
+                setError(`amount-${id}`, 'TR_AMOUNT_IS_NOT_ENOUGH');
+                break;
+            case 'NOT-ENOUGH-CURRENCY-FEE':
+                setError(`amount-${id}`, 'NOT_ENOUGH_CURRENCY_FEE');
+                break;
+            // no default
+        }
     }
 
     if (composedTransaction.type !== 'error') {
+        clearError(`amount-${id}`);
         setValue(`amount-${id}`, composedTransaction.max);
         updateFiatInput(id, fiatRates, getValues, setValue);
         await composeChange(

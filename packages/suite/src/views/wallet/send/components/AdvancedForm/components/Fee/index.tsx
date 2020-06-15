@@ -4,7 +4,7 @@ import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { Button, colors, P, Select, variables } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { calculateEthFee } from '@wallet-utils/sendFormUtils';
+import { calculateEthFee, findActiveMaxId, updateMax } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
@@ -109,8 +109,18 @@ const getValue = (
 };
 
 export default () => {
-    const { account, feeInfo, feeOutdated, selectedFee, setSelectedFee } = useSendContext();
-    const { formState, setValue, errors } = useFormContext();
+    const {
+        account,
+        feeInfo,
+        feeOutdated,
+        selectedFee,
+        setSelectedFee,
+        outputs,
+        token,
+        fiatRates,
+        setTransactionInfo,
+    } = useSendContext();
+    const { formState, setValue, errors, getValues, setError, clearError } = useFormContext();
     const dataIsDirty = formState.dirtyFields.has('ethereumData');
     const { networkType, symbol } = account;
     const customFeeHasError = errors.customFee;
@@ -157,6 +167,24 @@ export default () => {
                         } else {
                             setSelectedFee(selectedFeeLevel);
                             setValue('customFee', '');
+                        }
+
+                        const activeMax = findActiveMaxId(outputs, getValues);
+
+                        if (activeMax) {
+                            await updateMax(
+                                activeMax,
+                                account,
+                                setValue,
+                                getValues,
+                                clearError,
+                                setError,
+                                selectedFeeLevel,
+                                outputs,
+                                token,
+                                fiatRates,
+                                setTransactionInfo,
+                            );
                         }
                     }}
                     options={feeInfo.levels}

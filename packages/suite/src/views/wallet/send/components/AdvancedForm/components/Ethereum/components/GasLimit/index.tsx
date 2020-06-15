@@ -21,7 +21,7 @@ const StyledIcon = styled(Icon)`
 `;
 
 export default () => {
-    const { register, errors, getValues, setValue, setError } = useFormContext();
+    const { register, errors, getValues, setValue, setError, clearError } = useFormContext();
     const {
         account,
         initialSelectedFee,
@@ -62,6 +62,7 @@ export default () => {
                             account,
                             setValue,
                             getValues,
+                            clearError,
                             setError,
                             newFeeLevel,
                             outputs,

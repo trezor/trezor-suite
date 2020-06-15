@@ -20,7 +20,13 @@ const In = styled.div`
 
 export default () => {
     const { reset } = useFormContext();
-    const { initialSelectedFee, setSelectedFee, defaultValues, updateOutputs } = useSendContext();
+    const {
+        initialSelectedFee,
+        setSelectedFee,
+        defaultValues,
+        updateOutputs,
+        showAdvancedForm,
+    } = useSendContext();
 
     return (
         <Wrapper>
@@ -28,6 +34,7 @@ export default () => {
                 onClick={() => {
                     reset(defaultValues, { dirty: true });
                     setSelectedFee(initialSelectedFee);
+                    showAdvancedForm(false);
                     updateOutputs([
                         {
                             id: 0,

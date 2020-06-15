@@ -28,7 +28,7 @@ export default () => {
         fiatRates,
         setTransactionInfo,
     } = useSendContext();
-    const { register, errors, getValues, setValue, setError } = useFormContext();
+    const { register, errors, getValues, setValue, clearError, setError } = useFormContext();
     const inputName = 'ethereumData';
     const error = errors[inputName];
     const addressError = errors['address-0'];
@@ -84,6 +84,7 @@ export default () => {
                             account,
                             setValue,
                             getValues,
+                            clearError,
                             setError,
                             newFeeLevel,
                             outputs,

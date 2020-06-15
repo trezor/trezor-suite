@@ -30,7 +30,7 @@ export default () => {
         fiatRates,
         token,
     } = useSendContext();
-    const { register, errors, getValues, setError, setValue } = useFormContext();
+    const { register, errors, getValues, setError, setValue, clearError } = useFormContext();
     const inputName = 'ethereumGasPrice';
     const error = errors[inputName];
 
@@ -59,6 +59,7 @@ export default () => {
                             account,
                             setValue,
                             getValues,
+                            clearError,
                             setError,
                             newFeeLevel,
                             outputs,
