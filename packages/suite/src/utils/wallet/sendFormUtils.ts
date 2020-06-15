@@ -273,17 +273,6 @@ export const composeBtcTransaction = async (
         } as const;
     });
 
-    console.log('data', {
-        account: {
-            path: account.path,
-            addresses: account.addresses,
-            utxo: account.utxo,
-        },
-        feeLevels: [selectedFee],
-        outputs: composedOutputs,
-        coin: account.symbol,
-    });
-
     const resp = await TrezorConnect.composeTransaction({
         account: {
             path: account.path,
@@ -294,8 +283,6 @@ export const composeBtcTransaction = async (
         outputs: composedOutputs,
         coin: account.symbol,
     });
-
-    console.log('resp', resp);
 
     if (resp.success) {
         return resp.payload[0];
@@ -375,6 +362,7 @@ export const composeChange = async (
     }
 
     if (composedTransaction.type !== 'error') {
+        // @ts-ignore TODO
         setTransactionInfo(composedTransaction);
     }
 };
@@ -416,8 +404,14 @@ export const updateMax = async (
     resetAllMax(outputs, setValue);
     setValue(`setMax-${id}`, '1');
     const formValues = getValues();
-    const composedTransaction = await composeTx(account, formValues, selectedFee, outputs, token);
-
+    const composedTransaction = await composeTx(
+        account,
+        formValues,
+        selectedFee,
+        outputs,
+        token,
+        true,
+    );
     if (!composedTransaction) return null; // TODO handle error
 
     if (composedTransaction.type === 'error') {
