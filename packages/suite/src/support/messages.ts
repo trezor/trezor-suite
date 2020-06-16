@@ -226,6 +226,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Not enough funds',
         id: 'TR_AMOUNT_IS_NOT_ENOUGH',
     },
+    TR_DESTINATION_TAG_IS_NOT_VALID: {
+        defaultMessage: 'Destination tag is not valid',
+        id: 'TR_DESTINATION_TAG_IS_NOT_VALID',
+    },
     NOT_ENOUGH_CURRENCY_FEE: {
         defaultMessage: 'Not enough {symbol} to cover transaction fee',
         id: 'NOT_ENOUGH_CURRENCY_FEE',
