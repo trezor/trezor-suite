@@ -8,7 +8,10 @@ export type ObjectValues<T extends object> = T[keyof T];
 export type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[number];
 
 // const with optional types
-export type ConstWithOptionalFields<Const extends { [key: string]: any }, Fields extends any> = {
+export type ConstWithOptionalFields<
+    Const extends { [key: string]: any },
+    Fields extends string | number | symbol
+> = {
     [Key in keyof Const]: {
         [FieldKey in Fields]: Const[Key][FieldKey] extends string | number | object | boolean
             ? Const[Key][FieldKey]

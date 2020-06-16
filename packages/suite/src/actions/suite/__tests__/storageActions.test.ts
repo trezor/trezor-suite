@@ -34,7 +34,7 @@ const { getSuiteDevice, getWalletAccount, getWalletTransaction } = global.JestMo
 jest.mock('@trezor/suite-storage', () => {
     return {
         __esModule: true,
-        ...jest.requireActual('@trezor/suite-storage/lib/web/index'),
+        ...(jest.requireActual('@trezor/suite-storage/lib/web/index') as object), // cast so ts stops complaining
     };
 });
 

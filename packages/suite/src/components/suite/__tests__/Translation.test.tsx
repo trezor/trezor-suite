@@ -42,8 +42,8 @@ describe('Translation component', () => {
         const component = createComponentWithIntl(
             <Translation
                 {...messages.TR_HELLO_NAME}
-                // @ts-ignore
                 values={{
+                    // @ts-ignore
                     TR_NAME: { ...messages.TR_NAME, values: { name: 'John' } },
                     TR_AGE: 100,
                 }}
