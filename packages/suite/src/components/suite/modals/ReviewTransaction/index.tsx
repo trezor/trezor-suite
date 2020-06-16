@@ -3,11 +3,12 @@ import { useDeviceActionLocks, useActions } from '@suite-hooks';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import { Button, colors, Modal, variables } from '@trezor/components';
-import { XRP_FLAG } from '@wallet-constants/sendForm';
+import { XRP_FLAG, ZEC_SIGN_ENHANCEMENT } from '@wallet-constants/sendForm';
 import { serializeEthereumTx, prepareEthereumTransaction } from '@wallet-utils/sendFormUtils';
 import { Account } from '@wallet-types';
 import { formatNetworkAmount, networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import React from 'react';
+import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import TrezorConnect, { RipplePayment } from 'trezor-connect';
 import { fromWei, toWei } from 'web3-utils';
@@ -128,9 +129,90 @@ export default ({
                     <Button
                         isDisabled={!isEnabled}
                         onClick={async () => {
+                            // TODO refactor to functions
                             switch (networkType) {
                                 case 'bitcoin':
-                                    console.log('send');
+                                    {
+                                        if (!transactionInfo || transactionInfo.type !== 'final')
+                                            return;
+                                        const { transaction } = transactionInfo;
+
+                                        const inputs = transaction.inputs.map(input => ({
+                                            ...input,
+                                            // sequence: BTC_RBF_SEQUENCE, // TODO: rbf is set
+                                            // sequence: BTC_LOCKTIME_SEQUENCE, // TODO: locktime is set
+                                        }));
+
+                                        let signEnhancement = {};
+
+                                        if (account.symbol === 'zec') {
+                                            signEnhancement = ZEC_SIGN_ENHANCEMENT;
+                                        }
+
+                                        // connect undefined amount hotfix
+                                        inputs.forEach(input => {
+                                            if (!input.amount) delete input.amount;
+                                        });
+
+                                        const signPayload = {
+                                            device: {
+                                                path: device.path,
+                                                instance: device.instance,
+                                                state: device.state,
+                                            },
+                                            useEmptyPassphrase: device.useEmptyPassphrase,
+                                            outputs: transaction.outputs,
+                                            inputs,
+                                            coin: account.symbol,
+                                            ...signEnhancement,
+                                        };
+
+                                        const signedTx = await TrezorConnect.signTransaction(
+                                            signPayload,
+                                        );
+
+                                        if (!signedTx.success) {
+                                            addToast({
+                                                type: 'sign-tx-error',
+                                                error: signedTx.payload.error,
+                                            });
+                                            return;
+                                        }
+
+                                        // TODO: add possibility to show serialized tx without pushing (locktime)
+                                        const sentTx = await TrezorConnect.pushTransaction({
+                                            tx: signedTx.payload.serializedTx,
+                                            coin: account.symbol,
+                                        });
+
+                                        const spentWithoutFee = new BigNumber(
+                                            transactionInfo.totalSpent,
+                                        )
+                                            .minus(transactionInfo.fee)
+                                            .toString();
+
+                                        if (sentTx.success) {
+                                            addToast({
+                                                type: 'tx-sent',
+                                                formattedAmount: formatNetworkAmount(
+                                                    spentWithoutFee,
+                                                    account.symbol,
+                                                    true,
+                                                ),
+                                                device,
+                                                descriptor: account.descriptor,
+                                                symbol: account.symbol,
+                                                txid: sentTx.payload.txid,
+                                            });
+
+                                            fetchAndUpdateAccount(account);
+                                        } else {
+                                            addToast({
+                                                type: 'sign-tx-error',
+                                                error: sentTx.payload.error,
+                                            });
+                                        }
+                                    }
                                     break;
                                 case 'ethereum':
                                     {

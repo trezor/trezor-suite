@@ -40,7 +40,7 @@ const DestinationTag = () => {
                 validate: {
                     TR_DESTINATION_TAG_IS_NOT_NUMBER: (value: string) => {
                         if (value !== '') {
-                            return validator.isNumeric(value) && parseInt(value, 10) > U_INT_32;
+                            return validator.isNumeric(value) && !(parseInt(value, 10) > U_INT_32);
                         }
                     },
                     TR_DESTINATION_TAG_IS_NOT_VALID: (value: string) => {
