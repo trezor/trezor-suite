@@ -41,7 +41,9 @@ export default ({ outputId }: { outputId: number }) => {
 
                     if (rate) {
                         const amountBigNumber = localCurrencyValue.dividedBy(rate);
-                        setValue(`amount-${outputId}`, amountBigNumber.toFixed(decimals));
+                        if (!amountBigNumber.isNaN()) {
+                            setValue(`amount-${outputId}`, amountBigNumber.toFixed(decimals));
+                        }
                     }
                 }}
             />

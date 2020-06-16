@@ -117,7 +117,6 @@ export default ({ outputId }: { outputId: number }) => {
     } = useFormContext();
     const inputName = `amount-${outputId}`;
     const inputNameMax = `setMax-${outputId}`;
-    const touched = formState.dirtyFields.has(inputName);
     const { symbol, availableBalance, networkType } = account;
     const formattedAvailableBalance = token
         ? token.balance || '0'
@@ -133,7 +132,7 @@ export default ({ outputId }: { outputId: number }) => {
             <input type="hidden" name={inputNameMax} ref={register} />
             <Left>
                 <StyledInput
-                    state={getInputState(error, touched)}
+                    state={getInputState(error)}
                     topLabel={
                         <Label>
                             <Text>
@@ -170,7 +169,7 @@ export default ({ outputId }: { outputId: number }) => {
                     innerRef={register({
                         validate: {
                             TR_AMOUNT_IS_NOT_SET: (value: string) => {
-                                return !(touched && value.length === 0);
+                                return !(value.length === 0);
                             },
                             TR_AMOUNT_IS_NOT_NUMBER: (value: string) => {
                                 const amountBig = new BigNumber(value);
@@ -199,7 +198,7 @@ export default ({ outputId }: { outputId: number }) => {
                         },
                     })}
                     name={inputName}
-                    bottomText={error && touched && getError(error, decimals, symbol, reserve)}
+                    bottomText={error && getError(error, decimals, symbol, reserve)}
                 />
                 {tokenBalance && (
                     <TokenBalance>

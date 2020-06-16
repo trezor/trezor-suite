@@ -168,7 +168,7 @@ export const getInputState = (
     }
 };
 
-export const composeXrpTransaction = (
+export const composeXrpTransaction = async (
     account: SendContext['account'],
     amount: string,
     selectedFee: SendContext['selectedFee'],
@@ -191,7 +191,7 @@ export const composeXrpTransaction = (
     } as const;
 };
 
-export const composeEthTransaction = (
+export const composeEthTransaction = async (
     account: SendContext['account'],
     amount: string,
     selectedFee: SendContext['selectedFee'],
@@ -219,6 +219,7 @@ export const composeEthTransaction = (
 
     if (totalSpentBig.isGreaterThan(availableBalance)) {
         const error = token ? 'NOT-ENOUGH-CURRENCY-FEE' : 'NOT-ENOUGH-FUNDS';
+        console.log(error);
         return { type: 'error', error } as const;
     }
 
@@ -304,7 +305,7 @@ export const composeTx = async (
 
     if (account.networkType === 'ethereum') {
         const amount = formValues['amount-0'];
-        return composeEthTransaction(account, amount, selectedFee, token, true);
+        return composeEthTransaction(account, amount, selectedFee, token);
     }
 
     if (account.networkType === 'bitcoin') {
@@ -427,15 +428,16 @@ export const updateMax = async (
     const formValues = getValues();
     const filledAmountsCount = countFilledAmounts(outputs, getValues);
     const composedTransaction = await composeTx(account, formValues, selectedFee, outputs, token);
+
     if (!composedTransaction) return null; // TODO handle error
 
     if (composedTransaction.type === 'error') {
         switch (composedTransaction.error) {
             case 'NOT-ENOUGH-FUNDS':
-                setError(`amount-${id}`, 'TR_AMOUNT_IS_NOT_ENOUGH');
+                setError(`amount-${id}`, 'TR_AMOUNT_IS_NOT_ENOUGH', 'bbb');
                 break;
             case 'NOT-ENOUGH-CURRENCY-FEE':
-                setError(`amount-${id}`, 'NOT_ENOUGH_CURRENCY_FEE');
+                setError(`amount-${id}`, 'NOT_ENOUGH_CURRENCY_FEE', 'aaa');
                 break;
             // no default
         }
