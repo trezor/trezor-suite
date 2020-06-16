@@ -7,6 +7,7 @@ import * as electronLocalshortcut from 'electron-localshortcut';
 import * as store from './store';
 import { runBridgeProcess } from './bridge';
 import { buildMainMenu } from './menu';
+import { openOauthPopup } from './oauth';
 
 let mainWindow: BrowserWindow;
 const APP_NAME = 'Trezor Beta Wallet';
@@ -85,6 +86,11 @@ const init = async () => {
 
     // open external links in default browser
     const handleExternalLink = (event: Event, url: string) => {
+        if (url.indexOf('dropbox') >= 0) {
+            event.preventDefault();
+            openOauthPopup(url);
+            return;
+        }
         // TODO? url.startsWith('http:') || url.startsWith('https:');
         if (url !== mainWindow.webContents.getURL()) {
             event.preventDefault();
@@ -190,4 +196,9 @@ ipcMain.on('start-bridge', async () => {
 ipcMain.on('restart-app', () => {
     app.relaunch();
     app.exit();
+});
+
+ipcMain.on('oauth-receiver', (event, message) => {
+    console.log('oauth-receiver', message);
+    mainWindow.webContents.send('oauth', { data: message });
 });
