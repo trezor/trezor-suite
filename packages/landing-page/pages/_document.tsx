@@ -41,6 +41,9 @@ export default class MyDocument extends Document {
                 <Head>
                     <meta charSet="utf-8" />
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
+                    <meta httpEquiv="Pragma" content="no-cache" />
+                    <meta httpEquiv="cache-control" content="no-cache" />
+                    <meta httpEquiv="expires" content="-1" />
                     <link
                         media="all"
                         rel="stylesheet"
