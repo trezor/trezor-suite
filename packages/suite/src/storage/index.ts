@@ -126,8 +126,8 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
         db.createObjectStore('discovery', { keyPath: 'deviceState' });
 
         // object store for send form
-        const sendFormStore = db.createObjectStore('sendForm');
-        sendFormStore.createIndex('deviceState', 'deviceState', { unique: false });
+        // const sendFormStore = db.createObjectStore('sendForm');
+        // sendFormStore.createIndex('deviceState', 'deviceState', { unique: false });
 
         db.createObjectStore('fiatRates', { keyPath: 'symbol' });
         db.createObjectStore('analytics');

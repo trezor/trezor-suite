@@ -297,6 +297,7 @@ export const composeTx = async (
     selectedFee: SendContext['selectedFee'],
     outputs: SendContext['outputs'],
     token: SendContext['token'],
+    setMax = false,
 ) => {
     if (account.networkType === 'ripple') {
         const amount = formValues['amount-0'];
@@ -305,11 +306,11 @@ export const composeTx = async (
 
     if (account.networkType === 'ethereum') {
         const amount = formValues['amount-0'];
-        return composeEthTransaction(account, amount, selectedFee, token);
+        return composeEthTransaction(account, amount, selectedFee, token, setMax);
     }
 
     if (account.networkType === 'bitcoin') {
-        await composeBtcTransaction(account, formValues, outputs, selectedFee, true);
+        await composeBtcTransaction(account, formValues, outputs, selectedFee, setMax);
     }
 };
 
@@ -427,7 +428,14 @@ export const updateMax = async (
     setValue(`setMax-${id}`, '1');
     const formValues = getValues();
     const filledAmountsCount = countFilledAmounts(outputs, getValues);
-    const composedTransaction = await composeTx(account, formValues, selectedFee, outputs, token);
+    const composedTransaction = await composeTx(
+        account,
+        formValues,
+        selectedFee,
+        outputs,
+        token,
+        true,
+    );
 
     if (!composedTransaction) return null; // TODO handle error
 
