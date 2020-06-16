@@ -206,7 +206,7 @@ export default ({ outputId }: { outputId: number }) => {
                         <Translation id="TR_TOKEN_BALANCE" values={{ balance: tokenBalance }} />
                     </TokenBalance>
                 )}
-                <TokenSelect />
+                <TokenSelect outputId={outputId} />
             </Left>
             {/* TODO: token FIAT rates calculation */}
             {!token && (
