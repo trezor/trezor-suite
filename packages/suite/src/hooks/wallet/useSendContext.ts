@@ -1,10 +1,18 @@
 import { useContext, createContext } from 'react';
 import { Account, Network, CoinFiatRates } from '@wallet-types';
 import { FeeLevel, PrecomposedTransaction, TokenInfo } from 'trezor-connect';
-import { FeeInfo } from '@wallet-types/sendForm';
 import { TrezorDevice, AppState } from '@suite-types';
 
 export type Output = { id: number };
+
+export interface FeeInfo {
+    blockHeight: number; // when fee info was updated; 0 = never
+    blockTime: number; // how often block is mined
+    minFee: number;
+    maxFee: number;
+    feeLimit?: number; // eth gas limit
+    levels: FeeLevel[]; // fee levels are predefined in trezor-connect > trezor-firmware/common
+}
 
 export interface SendContext {
     defaultValues: {
