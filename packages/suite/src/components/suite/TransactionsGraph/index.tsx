@@ -8,7 +8,7 @@ import {
     AggregatedAccountHistory,
     AggregatedDashboardHistory,
 } from '@wallet-types/fiatRates';
-import { BarChart, Tooltip, Bar, ReferenceLine, YAxis, XAxis } from 'recharts';
+import { ComposedChart, Tooltip, Bar, ReferenceLine, YAxis, XAxis, Line, Area } from 'recharts';
 import RangeSelector from './components/RangeSelector';
 import CustomResponsiveContainer from './components/CustomResponsiveContainer';
 import CustomXAxisTick from './components/CustomXAxisTick';
@@ -131,7 +131,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                 )}
                 {!isLoading && data && data.length > 0 && (
                     <CustomResponsiveContainer height="100%" width="99%">
-                        <BarChart
+                        <ComposedChart
                             data={data}
                             stackOffset="sign"
                             margin={{
@@ -198,8 +198,13 @@ const TransactionsGraph = React.memo((props: Props) => {
                                     )
                                 }
                             />
-                            />
+
                             <ReferenceLine y={0} stroke={colors.BLACK80} />
+                            <Line
+                                type="linear"
+                                dataKey={(data: any) => Number(data.balance)}
+                                stroke="#ff7300"
+                            />
                             <Bar
                                 dataKey={(data: any) => -1 * Number(props.sentValueFn(data))}
                                 stackId="stack"
@@ -214,7 +219,13 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 barSize={selectedRange.label === 'all' ? 4 : 8}
                                 shape={<CustomBar variant="received" />}
                             />
-                        </BarChart>
+                            {/* <Area
+                                type="monotone"
+                                dataKey={(data: any) => Number(data.balance)}
+                                fill="#8884d8"
+                                stroke="#8884d8"
+                            /> */}
+                        </ComposedChart>
                     </CustomResponsiveContainer>
                 )}
             </Description>

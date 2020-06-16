@@ -1,4 +1,4 @@
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect, { BlockchainAccountBalanceHistory } from 'trezor-connect';
 import { getUnixTime, subWeeks, isWithinInterval, fromUnixTime } from 'date-fns';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { resetTime } from '@suite-utils/date';
@@ -63,6 +63,8 @@ export const fetchAccountGraphData = (
     endDate: Date | null,
     range: GraphRange,
 ) => async (dispatch: Dispatch, _getState: GetState) => {
+    const lastBalance = account.formattedBalance; // todo availableBalance or balance?
+
     dispatch({
         type: ACCOUNT_GRAPH_START,
         payload: {
@@ -85,7 +87,6 @@ export const fetchAccountGraphData = (
         };
     }
 
-    // const setDayToFirstOfMonth = groupBy >= secondsInMonth;
     const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
         coin: account.symbol,
         descriptor: account.descriptor,
@@ -109,6 +110,29 @@ export const fetchAccountGraphData = (
                 time: resetTime(h.time),
             };
         });
+
+        let balance = lastBalance;
+
+        interface WithBalance extends BlockchainAccountBalanceHistory {
+            balance: string;
+        }
+
+        const withBalance: WithBalance[] = [];
+
+        for (let i = enhancedResponse.length - 1; i > 0; i--) {
+            const curItem = enhancedResponse[i];
+            console.log('i', i);
+            console.log('balance', balance);
+            // console.log('enhancedResponse[i]', enhancedResponse[i]);
+            withBalance.push({
+                ...curItem,
+                balance,
+            });
+            balance = new BigNumber(balance).minus(curItem.received).plus(curItem.sent).toFixed();
+            console.log('prev balance', balance);
+        }
+        console.log('withBalance', withBalance);
+
         dispatch({
             type: ACCOUNT_GRAPH_SUCCESS,
             payload: {
@@ -117,7 +141,7 @@ export const fetchAccountGraphData = (
                     descriptor: account.descriptor,
                     symbol: account.symbol,
                 },
-                data: enhancedResponse,
+                data: withBalance,
                 isLoading: false,
                 error: false,
             },
@@ -161,9 +185,6 @@ export const updateGraphData = (
         }
     }
 
-    // const startDate =
-    //     selectedRange.label === 'all' ? null : subWeeks(new Date(), selectedRange.weeks!);
-    // const endDate = selectedRange.label === 'all' ? null : new Date();
     dispatch({
         type: AGGREGATED_GRAPH_START,
     });

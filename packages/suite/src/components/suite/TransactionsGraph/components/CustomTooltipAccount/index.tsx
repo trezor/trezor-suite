@@ -33,6 +33,7 @@ const formatAmount = (
 
 const CustomTooltipAccount = (props: Props) => {
     if (props.active && props.payload) {
+        const { balance } = props.payload[0].payload;
         const receivedAmountString = props.receivedValueFn(props.payload[0].payload);
         const sentAmountString = props.sentValueFn(props.payload[0].payload);
 
@@ -57,6 +58,7 @@ const CustomTooltipAccount = (props: Props) => {
                     receivedFiat,
                     props.localCurrency,
                 )}
+                balance={<>{balance}</>}
             />
         );
     }

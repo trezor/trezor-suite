@@ -123,6 +123,7 @@ export const aggregateBalanceHistory = <TType extends TypeName>(
                                 ? dataPoint.time
                                 : getUnixTime(startOfMonth(fromUnixTime(dataPoint.time))), // set timestamp to first day of the month
                         txs: dataPoint.txs,
+                        balance: dataPoint.balance,
                         sentFiat: dataPoint.sentFiat,
                         receivedFiat: dataPoint.receivedFiat,
                     };

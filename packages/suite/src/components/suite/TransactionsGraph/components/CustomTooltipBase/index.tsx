@@ -41,6 +41,7 @@ interface Props extends TooltipProps {
     selectedRange: GraphProps['selectedRange'];
     receivedAmount: JSX.Element;
     sentAmount: JSX.Element;
+    balance: JSX.Element | undefined;
 }
 
 const formatDate = (date: Date, dateFormat: 'day' | 'month') => {
@@ -61,6 +62,9 @@ const CustomTooltipBase = (props: Props) => {
         return (
             <CustomTooltipWrapper coordinate={props.coordinate!}>
                 <DateWrapper>{date && formatDate(date, dateFormat)}</DateWrapper>
+                <Row>
+                    <Rect color={colors.BLUE_INFO} /> Balance {props.balance}
+                </Row>
                 <Row>
                     <Rect color={colors.GREEN} />{' '}
                     <Translation
