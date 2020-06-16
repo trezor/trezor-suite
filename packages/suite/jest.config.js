@@ -45,7 +45,6 @@ module.exports = {
         '!**/constants/**',
         '!**/constants/**',
         '!**/__tests__/**',
-        '!<rootDir>/src/actions/wallet/send/**', // TODO write tests
     ],
     coverageThreshold: {
         global: {
