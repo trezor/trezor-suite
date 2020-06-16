@@ -23,6 +23,7 @@ export default () => {
     const {
         initialSelectedFee,
         setSelectedFee,
+        setToken,
         defaultValues,
         updateOutputs,
         showAdvancedForm,
@@ -35,6 +36,7 @@ export default () => {
                     reset(defaultValues, { dirty: true });
                     setSelectedFee(initialSelectedFee);
                     showAdvancedForm(false);
+                    setToken(null);
                     updateOutputs([
                         {
                             id: 0,
