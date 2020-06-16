@@ -2,13 +2,6 @@ import { ReceiveActions } from '@wallet-actions/receiveActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
 
 import {
-    State as SendState,
-    SendFormActions,
-    SendFormBtcActions,
-    SendFormXrpActions,
-    SendFormEthActions,
-} from '@wallet-types/sendForm';
-import {
     FiatTicker as FiatTicker$,
     CoinFiatRates as CoinFiatRates$,
 } from '@wallet-types/fiatRates';
@@ -35,7 +28,6 @@ export type ExternalNetwork = ArrayElement<typeof EXTERNAL_NETWORKS>;
 export type NetworkToken = NetworkToken$;
 export type Token = Token$;
 export type Account = Account$;
-export type Send = SendState;
 export type Icon = Icon$;
 export type CoinFiatRates = CoinFiatRates$;
 export type Discovery = Discovery$;
@@ -61,10 +53,6 @@ export type ReceiveInfo = ReceiveInfo$;
 export type WalletAction =
     | BlockchainActions
     | ReceiveActions
-    | SendFormActions
-    | SendFormBtcActions
-    | SendFormXrpActions
-    | SendFormEthActions
     | SignVerifyActions
     | TransactionAction
     | FiatRatesActions
