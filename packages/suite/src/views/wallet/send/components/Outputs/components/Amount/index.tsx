@@ -1,6 +1,6 @@
 import { FiatValue, QuestionTooltip, Translation } from '@suite-components';
 import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext';
-import { Input, variables } from '@trezor/components';
+import { Input } from '@trezor/components';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getInputState, updateFiatInput, updateMax } from '@wallet-utils/sendFormUtils';
