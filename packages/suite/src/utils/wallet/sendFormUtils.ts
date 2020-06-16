@@ -382,7 +382,7 @@ const resetAllMax = (
     outputs: SendContext['outputs'],
     setValue: ReturnType<typeof useForm>['setValue'],
 ) => {
-    outputs.map(output => setValue(`setMax-${output.id}`, '0'));
+    outputs.map(output => setValue(`setMax-${output.id}`, 'inactive'));
 };
 
 const countFilledAmounts = (
@@ -403,7 +403,7 @@ export const findActiveMaxId = (
 ): number | null => {
     let maxId = null;
     outputs.forEach(output => {
-        if (getValues(`setMax-${output.id}`) === '1') {
+        if (getValues(`setMax-${output.id}`) === 'active') {
             maxId = output.id;
         }
     });
@@ -412,7 +412,7 @@ export const findActiveMaxId = (
 };
 
 export const updateMax = async (
-    id: number,
+    id: number | null,
     account: Account,
     setValue: ReturnType<typeof useForm>['setValue'],
     getValues: ReturnType<typeof useForm>['getValues'],
@@ -424,8 +424,10 @@ export const updateMax = async (
     fiatRates: SendContext['fiatRates'],
     setTransactionInfo: SendContext['setTransactionInfo'],
 ) => {
+    if (id === null) return null;
+
     resetAllMax(outputs, setValue);
-    setValue(`setMax-${id}`, '1');
+    setValue(`setMax-${id}`, 'active');
     const formValues = getValues();
     const filledAmountsCount = countFilledAmounts(outputs, getValues);
     const composedTransaction = await composeTx(

@@ -92,6 +92,7 @@ export default ({ isVisible }: { isVisible: boolean }) => {
                     onChange={async event => {
                         const newFeeLevel: SendContext['selectedFee'] = {
                             label: 'custom',
+                            feePerTx: event.target.value,
                             feePerUnit: event.target.value,
                             blocks: 0,
                         };
@@ -100,21 +101,19 @@ export default ({ isVisible }: { isVisible: boolean }) => {
 
                         const activeMax = findActiveMaxId(outputs, getValues);
 
-                        if (activeMax) {
-                            await updateMax(
-                                activeMax,
-                                account,
-                                setValue,
-                                getValues,
-                                clearError,
-                                setError,
-                                newFeeLevel,
-                                outputs,
-                                token,
-                                fiatRates,
-                                setTransactionInfo,
-                            );
-                        }
+                        await updateMax(
+                            activeMax,
+                            account,
+                            setValue,
+                            getValues,
+                            clearError,
+                            setError,
+                            newFeeLevel,
+                            outputs,
+                            token,
+                            fiatRates,
+                            setTransactionInfo,
+                        );
                     }}
                     innerRef={register({
                         validate: {

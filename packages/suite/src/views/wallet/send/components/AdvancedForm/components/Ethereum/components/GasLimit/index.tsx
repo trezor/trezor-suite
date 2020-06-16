@@ -46,7 +46,7 @@ export default () => {
                 if (!error) {
                     const gasPrice = getValues('ethereumGasPrice');
                     const gasLimit = event.target.value;
-                    const isMaxActive = getValues('setMax-0') === '1';
+                    const isMaxActive = getValues('setMax-0') === 'active';
                     const newFeeLevel: SendContext['selectedFee'] = {
                         feePerUnit: gasPrice,
                         feeLimit: gasLimit,

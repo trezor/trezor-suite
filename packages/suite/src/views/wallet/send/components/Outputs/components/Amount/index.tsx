@@ -144,10 +144,10 @@ export default ({ outputId }: { outputId: number }) => {
                     }
                     onChange={async () => {
                         updateFiatInput(outputId, fiatRates, getValues, setValue);
-                        setValue(`setMax-${outputId}`, '0');
+                        setValue(`setMax-${outputId}`, 'inactive');
                     }}
                     button={{
-                        icon: getValues(inputNameMax) === '1' ? 'CHECK' : 'SEND',
+                        icon: getValues(inputNameMax) === 'active' ? 'CHECK' : 'SEND',
                         iconSize: 16,
                         onClick: async () => {
                             await updateMax(

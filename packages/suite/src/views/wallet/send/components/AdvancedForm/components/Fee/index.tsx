@@ -167,22 +167,22 @@ export default () => {
                         } else {
                             setSelectedFee(selectedFeeLevel);
                             setValue('customFee', '');
+
                             const activeMax = findActiveMaxId(outputs, getValues);
-                            if (activeMax) {
-                                await updateMax(
-                                    activeMax,
-                                    account,
-                                    setValue,
-                                    getValues,
-                                    clearError,
-                                    setError,
-                                    selectedFeeLevel,
-                                    outputs,
-                                    token,
-                                    fiatRates,
-                                    setTransactionInfo,
-                                );
-                            }
+
+                            await updateMax(
+                                activeMax,
+                                account,
+                                setValue,
+                                getValues,
+                                clearError,
+                                setError,
+                                selectedFeeLevel,
+                                outputs,
+                                token,
+                                fiatRates,
+                                setTransactionInfo,
+                            );
                         }
                     }}
                     options={feeInfo.levels}
