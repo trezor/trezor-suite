@@ -2,7 +2,7 @@ import { db } from '@suite/storage';
 import SuiteDB from '@trezor/suite-storage';
 import { STORAGE } from './constants';
 import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
-import { Account, Send } from '@wallet-types';
+import { Account } from '@wallet-types';
 import { getAccountKey } from '@wallet-utils/accountUtils';
 import { Discovery } from '@wallet-reducers/discoveryReducer';
 import { GraphData } from '@wallet-reducers/graphReducer';
@@ -18,17 +18,17 @@ export type StorageActions =
     | { type: typeof STORAGE.LOADED; payload: AppState }
     | { type: typeof STORAGE.ERROR; error: any };
 
-export const saveSendForm = async (saveSendFormState: Send, accountKey: string) => {
-    return db.addItem('sendForm', saveSendFormState, accountKey);
-};
+// export const saveSendForm = async (saveSendFormState, accountKey: string) => {
+//     return db.addItem('sendForm', saveSendFormState, accountKey);
+// };
 
-export const loadSendForm = async (accountKey: string) => {
-    return db.getItemByPK('sendForm', accountKey);
-};
+// export const loadSendForm = async (accountKey: string) => {
+//     return db.getItemByPK('sendForm', accountKey);
+// };
 
-export const removeSendForm = async (accountKey: string) => {
-    return db.removeItemByPK('sendForm', accountKey);
-};
+// export const removeSendForm = async (accountKey: string) => {
+//     return db.removeItemByPK('sendForm', accountKey);
+// };
 
 export const saveDevice = async (device: TrezorDevice) => {
     if (!device || !device.features || !device.state) return;
@@ -54,7 +54,7 @@ export const forgetDevice = (device: TrezorDevice) => async () => {
         db.removeItemByIndex('accounts', 'deviceState', device.state),
         db.removeItemByPK('discovery', device.state),
         db.removeItemByIndex('txs', 'deviceState', device.state),
-        db.removeItemByIndex('sendForm', 'deviceState', device.state),
+        // db.removeItemByIndex('sendForm', 'deviceState', device.state),
         db.removeItemByIndex('graph', 'deviceState', device.state),
     ]);
     return promises;

@@ -2,7 +2,6 @@ import SuiteDB, { StorageUpdateMessage, OnUpgradeFunc } from '@trezor/suite-stor
 import { DBSchema } from 'idb';
 import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
 import { SuiteState } from '@suite-reducers/suiteReducer';
-import { State as SendFormState } from '@wallet-types/sendForm';
 import { State as AnalyticsState } from '@suite-reducers/analyticsReducer';
 import { GraphData } from '@wallet-reducers/graphReducer';
 import { AcquiredDevice } from '@suite-types';
@@ -28,13 +27,13 @@ export interface SuiteDBSchema extends DBSchema {
             blockTime: number; // TODO: blockTime can be undefined
         };
     };
-    sendForm: {
-        key: string;
-        value: SendFormState;
-        indexes: {
-            deviceState: string;
-        };
-    };
+    // sendForm: {
+    //     key: string;
+    //     value: SendFormState;
+    //     indexes: {
+    //         deviceState: string;
+    //     };
+    // };
     suiteSettings: {
         key: string;
         value: {
