@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button, Tooltip } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
-import { useDeviceActionLocks, useAnalytics } from '@suite-hooks';
+import { useDevice, useAnalytics } from '@suite-hooks';
 
 const AddWallet = styled.div`
     display: flex;
@@ -20,7 +20,7 @@ interface Props {
 const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceInstance }: Props) => {
     const hasAtLeastOneWallet = instances.find(d => d.state);
     const tooltipMsg = <Translation id="TR_TO_ACCESS_OTHER_WALLETS" />;
-    const [actionEnabled] = useDeviceActionLocks();
+    const { isLocked } = useDevice();
     const analytics = useAnalytics();
     return (
         <AddWallet>
@@ -29,12 +29,14 @@ const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceIns
                     data-test="@switch-device/add-wallet-button"
                     variant="tertiary"
                     icon="PLUS"
-                    isDisabled={!actionEnabled}
+                    isDisabled={isLocked()}
                     onClick={() =>
                         hasAtLeastOneWallet
                             ? addDeviceInstance(device)
                             : selectDeviceInstance(instances[0]) &&
-                              analytics.report({ type: 'ui', payload: 'switch-device/add-wallet' })
+                              analytics.report({
+                                  type: 'switch-device/add-wallet',
+                              })
                     }
                 >
                     <Translation id="TR_ADD_WALLET" />

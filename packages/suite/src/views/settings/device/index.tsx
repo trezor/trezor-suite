@@ -17,7 +17,7 @@ import {
 } from '@suite-constants/urls';
 import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import * as homescreen from '@suite-utils/homescreen';
-import { useDeviceActionLocks, useAnalytics } from '@suite-hooks';
+import { useDevice, useAnalytics } from '@suite-hooks';
 import { variables, Switch, Link } from '@trezor/components';
 import React, { createRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -46,7 +46,8 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
     const [label, setLabel] = useState('');
     const [customHomescreen, setCustomHomescreen] = useState('');
     const fileInputElement = createRef<HTMLInputElement>();
-    const [actionEnabled] = useDeviceActionLocks();
+    const { isLocked } = useDevice();
+    const isDeviceLocked = isLocked();
     const analytics = useAnalytics();
     const MAX_LABEL_LENGTH = 16;
 
@@ -100,12 +101,11 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             onClick={() => {
                                 goto('backup-index', { cancelable: true });
                                 analytics.report({
-                                    type: 'ui',
-                                    payload: 'settings/device/goto/backup',
+                                    type: 'settings/device/goto/backup',
                                 });
                             }}
                             isDisabled={
-                                !actionEnabled ||
+                                isDeviceLocked ||
                                 !features.needs_backup ||
                                 features.unfinished_backup
                             }
@@ -148,12 +148,11 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                 onClick={() => {
                                     goto('recovery-index', { cancelable: true });
                                     analytics.report({
-                                        type: 'ui',
-                                        payload: 'settings/device/goto/recovery',
+                                        type: 'settings/device/goto/recovery',
                                     });
                                 }}
                                 isDisabled={
-                                    !actionEnabled ||
+                                    isDeviceLocked ||
                                     features.needs_backup ||
                                     features.unfinished_backup
                                 }
@@ -185,12 +184,11 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             onClick={() => {
                                 goto('firmware-index', { cancelable: true });
                                 analytics.report({
-                                    type: 'ui',
-                                    payload: 'settings/device/goto/firmware',
+                                    type: 'settings/device/goto/firmware',
                                 });
                             }}
                             data-test="@settings/device/update-button"
-                            isDisabled={!actionEnabled}
+                            isDisabled={isDeviceLocked}
                         >
                             {device && ['required', 'outdated'].includes(device.firmware) && (
                                 <Translation id="TR_UPDATE_AVAILABLE" />
@@ -212,11 +210,13 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             onChange={() => {
                                 changePin({ remove: features.pin_protection });
                                 analytics.report({
-                                    type: 'ui',
-                                    payload: 'settings/device/change-pin',
+                                    type: 'settings/device/change-pin-protection',
+                                    payload: {
+                                        remove: features.pin_protection,
+                                    },
                                 });
                             }}
-                            isDisabled={!actionEnabled}
+                            isDisabled={isDeviceLocked}
                             data-test="@settings/device/pin-switch"
                         />
                     </ActionColumn>
@@ -229,10 +229,14 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         />
                         <ActionColumn>
                             <ActionButton
-                                onClick={() => changePin({ remove: false })}
-                                isDisabled={!actionEnabled}
+                                onClick={() => {
+                                    changePin({ remove: false });
+                                    analytics.report({
+                                        type: 'settings/device/change-pin',
+                                    });
+                                }}
+                                isDisabled={isDeviceLocked}
                                 variant="secondary"
-                                data-test="@settings/device/update-button"
                             >
                                 <Translation id="TR_CHANGE_PIN" />
                             </ActionButton>
@@ -254,13 +258,19 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                     <ActionColumn>
                         <Switch
                             checked={!!features.passphrase_protection}
-                            onChange={() =>
+                            onChange={() => {
                                 applySettings({
                                     use_passphrase: !features.passphrase_protection,
-                                })
-                            }
+                                });
+                                analytics.report({
+                                    type: 'settings/device/change-passphrase-protection',
+                                    payload: {
+                                        use_passphrase: !features.passphrase_protection,
+                                    },
+                                });
+                            }}
                             data-test="@settings/device/passphrase-switch"
-                            isDisabled={!actionEnabled}
+                            isDisabled={isDeviceLocked}
                         />
                     </ActionColumn>
                 </SectionItem>
@@ -285,17 +295,16 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                 setLabel(event.currentTarget.value)
                             }
                             data-test="@settings/device/label-input"
-                            readOnly={!actionEnabled}
+                            readOnly={isDeviceLocked}
                         />
                         <ActionButton
                             onClick={() => {
                                 applySettings({ label });
                                 analytics.report({
-                                    type: 'ui',
-                                    payload: 'settings/device/change-label',
+                                    type: 'settings/device/change-label',
                                 });
                             }}
-                            isDisabled={!actionEnabled || label.length > MAX_LABEL_LENGTH}
+                            isDisabled={isDeviceLocked || label.length > MAX_LABEL_LENGTH}
                             data-test="@settings/device/label-submit"
                         >
                             <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />
@@ -332,7 +341,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                         fileInputElement.current.click();
                                     }
                                 }}
-                                isDisabled={!actionEnabled}
+                                isDisabled={isDeviceLocked}
                                 variant="secondary"
                             >
                                 <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
@@ -346,11 +355,10 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                     device,
                                 });
                                 analytics.report({
-                                    type: 'ui',
-                                    payload: 'settings/device/goto/background',
+                                    type: 'settings/device/goto/background',
                                 });
                             }}
-                            isDisabled={!actionEnabled}
+                            isDisabled={isDeviceLocked}
                             data-test="@settings/device/select-from-gallery"
                             variant="secondary"
                         >
@@ -376,7 +384,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                             <ActionButton
                                 variant="secondary"
                                 onClick={() => setCustomHomescreen('')}
-                                isDisabled={!actionEnabled}
+                                isDisabled={isDeviceLocked}
                             >
                                 Drop image
                             </ActionButton>
@@ -398,12 +406,14 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                             display_rotation: variant.value,
                                         });
                                         analytics.report({
-                                            type: 'ui',
-                                            payload: `settings/device/change-orientation/${variant.value}`,
+                                            type: 'settings/device/change-orientation',
+                                            payload: {
+                                                value: variant.value,
+                                            },
                                         });
                                     }}
                                     data-test={`@settings/device/rotation-button/${variant.value}`}
-                                    isDisabled={!actionEnabled}
+                                    isDisabled={isDeviceLocked}
                                 >
                                     {variant.label}
                                 </RotationButton>
@@ -425,12 +435,11 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                     type: 'wipe-device',
                                 });
                                 analytics.report({
-                                    type: 'ui',
-                                    payload: 'settings/device/goto/wipe',
+                                    type: 'settings/device/goto/wipe',
                                 });
                             }}
                             variant="danger"
-                            isDisabled={!actionEnabled}
+                            isDisabled={isDeviceLocked}
                             data-test="@settings/device/open-wipe-modal-button"
                         >
                             <Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />

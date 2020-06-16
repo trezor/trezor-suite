@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Modal, Button } from '@trezor/components';
 import { Translation, CheckItem, Image } from '@suite-components';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { useDeviceActionLocks, useActions } from '@suite-hooks';
+import { useDevice, useActions } from '@suite-hooks';
 
 const Row = styled.div`
     display: flex;
@@ -35,7 +35,7 @@ const WipeDevice = ({ onCancel }: Props) => {
     const [checkbox2, setCheckbox2] = useState(false);
     const { wipeDevice } = useActions({ wipeDevice: deviceSettingsActions.wipeDevice });
 
-    const [actionEnabled] = useDeviceActionLocks();
+    const { isLocked } = useDevice();
 
     return (
         <Modal
@@ -50,7 +50,7 @@ const WipeDevice = ({ onCancel }: Props) => {
                         <Button
                             variant="danger"
                             onClick={() => wipeDevice()}
-                            isDisabled={!actionEnabled || !checkbox1 || !checkbox2}
+                            isDisabled={isLocked() || !checkbox1 || !checkbox2}
                             data-test="@wipe/wipe-button"
                         >
                             <Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />

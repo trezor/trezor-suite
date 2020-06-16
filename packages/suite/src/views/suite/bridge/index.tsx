@@ -130,6 +130,7 @@ const InstallBridge = (props: Props) => {
 
     const target = selectedTarget || data.target;
     const isLoading = !props.transport || process.env.SUITE_TYPE === 'desktop';
+    const transportAvailable = props.transport && props.transport.type;
 
     return (
         <Modal
@@ -178,16 +179,18 @@ const InstallBridge = (props: Props) => {
             </Content>
 
             <Footer>
-                <Col justify="flex-start">
-                    <Button
-                        icon="ARROW_LEFT"
-                        variant="tertiary"
-                        color={colors.BLACK50}
-                        onClick={() => props.goto('wallet-index')}
-                    >
-                        <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
-                    </Button>
-                </Col>
+                {transportAvailable && (
+                    <Col justify="flex-start">
+                        <Button
+                            icon="ARROW_LEFT"
+                            variant="tertiary"
+                            color={colors.BLACK50}
+                            onClick={() => props.goto('wallet-index')}
+                        >
+                            <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
+                        </Button>
+                    </Col>
+                )}
                 {!isLoading && (
                     <>
                         <Col justify="center">

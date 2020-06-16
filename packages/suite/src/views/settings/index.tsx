@@ -1,8 +1,5 @@
 import { SettingsLayout } from '@settings-components';
-import { SUITE } from '@suite-actions/constants';
-import styled from 'styled-components';
 import { Translation } from '@suite-components';
-import { Button, Tooltip } from '@trezor/components';
 import {
     ActionButton,
     ActionColumn,
@@ -13,7 +10,10 @@ import {
     TextColumn,
 } from '@suite-components/Settings';
 import { FIAT, LANGUAGES } from '@suite-config';
+import { useAnalytics, useDevice } from '@suite-hooks';
+import { Button, Tooltip } from '@trezor/components';
 import React from 'react';
+import styled from 'styled-components';
 
 import { Props } from './Container';
 
@@ -34,7 +34,6 @@ const VersionButton = styled(Button)`
 const VersionLink = styled.a``;
 
 export default ({
-    locks,
     language,
     setLocalCurrency,
     localCurrency,
@@ -42,7 +41,8 @@ export default ({
     clearStores,
     goto,
 }: Props) => {
-    const uiLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
+    const { isLocked } = useDevice();
+    const analytics = useAnalytics();
 
     return (
         <SettingsLayout data-test="@settings/index">
@@ -61,7 +61,15 @@ export default ({
                             onChange={(option: {
                                 value: typeof LANGUAGES[number]['code'];
                                 label: typeof LANGUAGES[number]['name'];
-                            }) => fetchLocale(option.value)}
+                            }) => {
+                                fetchLocale(option.value);
+                                analytics.report({
+                                    type: 'settings/general/change-language',
+                                    payload: {
+                                        language: option.value,
+                                    },
+                                });
+                            }}
                         />
                     </ActionColumn>
                 </SectionItem>
@@ -71,12 +79,18 @@ export default ({
                     <ActionColumn>
                         <ActionSelect
                             variant="small"
-                            onChange={(option: { value: string; label: string }) =>
-                                setLocalCurrency(option.value)
-                            }
+                            onChange={(option: { value: string; label: string }) => {
+                                setLocalCurrency(option.value);
+                                analytics.report({
+                                    type: 'settings/general/change-fiat',
+                                    payload: {
+                                        fiat: option.value,
+                                    },
+                                });
+                            }}
                             value={buildCurrencyOption(localCurrency)}
                             options={FIAT.currencies.map(c => buildCurrencyOption(c))}
-                            isDisabled={uiLocked}
+                            isDisabled={isLocked()}
                         />
                     </ActionColumn>
                 </SectionItem>

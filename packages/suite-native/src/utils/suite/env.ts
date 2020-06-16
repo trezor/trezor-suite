@@ -12,3 +12,13 @@ export const getUserAgent = () => {
 export const isAndroid = () => {
     return Platform.OS === 'android';
 };
+
+export const getScreenWidth = () => {
+    // todo
+    return 1;
+};
+
+export const getScreenHeight = () => {
+    // todo
+    return 1;
+};

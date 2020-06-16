@@ -5,7 +5,7 @@ import { Translation } from '@suite-components';
 import SecurityCard, { Props as CardProps } from './components/SecurityCard';
 import { Props } from './Container';
 import { AcquiredDevice } from '@suite-types';
-import { useDeviceActionLocks, useDiscovery, useAnalytics } from '@suite-hooks';
+import { useDevice, useDiscovery, useAnalytics } from '@suite-hooks';
 
 const Section = styled.div`
     display: flex;
@@ -51,7 +51,8 @@ const SecurityFeatures = ({
     ...rest
 }: Props) => {
     const [isHidden, setIsHidden] = useState(false);
-    const [isTrezorActionEnabled] = useDeviceActionLocks();
+    const { isLocked } = useDevice();
+    const isDeviceLocked = isLocked();
     const { getDiscoveryStatus } = useDiscovery();
     const discoveryStatus = getDiscoveryStatus();
     const isDisabled = discoveryStatus && discoveryStatus.status === 'loading';
@@ -88,8 +89,7 @@ const SecurityFeatures = ({
                   action: () => {
                       goto('backup-index');
                       analytics.report({
-                          type: 'ui',
-                          payload: 'dashboard/security-card/create-backup',
+                          type: 'dashboard/security-card/create-backup',
                       });
                   },
               },
@@ -104,8 +104,7 @@ const SecurityFeatures = ({
                   action: () => {
                       goto('settings-device');
                       analytics.report({
-                          type: 'ui',
-                          payload: 'dashboard/security-card/seed-link',
+                          type: 'dashboard/security-card/seed-link',
                       });
                   },
               },
@@ -122,9 +121,11 @@ const SecurityFeatures = ({
                   dataTest: 'pin',
                   action: () => {
                       changePin({});
-                      analytics.report({ type: 'ui', payload: 'dashboard/security-card/set-pin' });
+                      analytics.report({
+                          type: 'dashboard/security-card/set-pin',
+                      });
                   },
-                  isDisabled: !isTrezorActionEnabled,
+                  isDisabled: isDeviceLocked,
               },
           }
         : {
@@ -137,8 +138,7 @@ const SecurityFeatures = ({
                   action: () => {
                       goto('settings-device');
                       analytics.report({
-                          type: 'ui',
-                          payload: 'dashboard/security-card/change-pin',
+                          type: 'dashboard/security-card/change-pin',
                       });
                   },
               },
@@ -158,12 +158,11 @@ const SecurityFeatures = ({
                           use_passphrase: true,
                       });
                       analytics.report({
-                          type: 'ui',
-                          payload: 'dashboard/security-card/enable-passphrase',
+                          type: 'dashboard/security-card/enable-passphrase',
                       });
                   },
                   dataTest: 'hidden-wallet',
-                  isDisabled: !isTrezorActionEnabled,
+                  isDisabled: isDeviceLocked,
               },
           }
         : {
@@ -175,12 +174,11 @@ const SecurityFeatures = ({
                   action: () => {
                       createDeviceInstance(device as AcquiredDevice);
                       analytics.report({
-                          type: 'ui',
-                          payload: 'dashboard/security-card/create-hidden-wallet',
+                          type: 'dashboard/security-card/create-hidden-wallet',
                       });
                   },
                   dataTest: 'create-hidden-wallet',
-                  isDisabled: !isTrezorActionEnabled,
+                  isDisabled: isDeviceLocked,
               },
           };
 
@@ -195,8 +193,7 @@ const SecurityFeatures = ({
                   action: () => {
                       setDiscreetMode(true);
                       analytics.report({
-                          type: 'ui',
-                          payload: 'dashboard/security-card/enable-discreet',
+                          type: 'dashboard/security-card/enable-discreet',
                       });
                   },
                   dataTest: 'discreet',
@@ -215,8 +212,10 @@ const SecurityFeatures = ({
                   action: () => {
                       setDiscreetMode(!discreetMode);
                       analytics.report({
-                          type: 'ui',
-                          payload: 'dashboard/security-card/toggle-discreet',
+                          type: 'dashboard/security-card/toggle-discreet',
+                          payload: {
+                              value: !discreetMode,
+                          },
                       });
                   },
                   dataTest: 'toggle-discreet',

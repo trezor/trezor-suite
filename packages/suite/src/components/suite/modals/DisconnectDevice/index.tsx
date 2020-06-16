@@ -1,23 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Modal } from '@trezor/components';
-import { Image } from '@suite-components';
+import { Image, Translation } from '@suite-components';
 
 const StyledImage = styled(Image)`
     flex: 1;
 `;
-
-// todo: add translations
 
 const DisconnectDevice = () => {
     return (
         <Modal
             cancelable={false}
             size="tiny"
-            // heading={<Translation id="TR_PIN_MISMATCH_HEADING" />}
-            // description={<Translation id="TR_PIN_MISMATCH_TEXT" />}
-            heading="Disconnect your device"
-            description="Your device was wiped. Disconnect it now."
+            heading={<Translation id="TR_DISCONNECT_YOUR_DEVICE" />}
+            description={<Translation id="DISCONNECT_DEVICE_DESCRIPTION" />}
         >
             <StyledImage image="UNI_SUCCESS" />
         </Modal>

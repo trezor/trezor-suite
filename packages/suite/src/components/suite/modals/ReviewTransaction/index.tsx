@@ -1,5 +1,5 @@
 import { AccountLabeling, FiatValue, Translation } from '@suite-components';
-import { useDeviceActionLocks, useActions } from '@suite-hooks';
+import { useActions, useDevice } from '@suite-hooks';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import { Button, colors, Modal, variables } from '@trezor/components';
@@ -102,11 +102,12 @@ export default ({
     const { networkType, symbol } = account;
     const upperCaseSymbol = account.symbol.toUpperCase();
     const outputSymbol = token ? token.symbol!.toUpperCase() : symbol.toUpperCase();
-    const [isEnabled] = useDeviceActionLocks();
     const { addToast } = useActions({ addToast: notificationActions.addToast });
     const { fetchAndUpdateAccount } = useActions({
         fetchAndUpdateAccount: accountActions.fetchAndUpdateAccount,
     });
+    const { isLocked } = useDevice();
+    const isDeviceLocked = isLocked();
     const fee = getFeeValue(transactionInfo, networkType, symbol);
     const totalSpent = formatNetworkAmount(transactionInfo.totalSpent, symbol);
 
@@ -114,20 +115,20 @@ export default ({
         <Modal
             size="large"
             cancelable
-            onCancel={isEnabled ? modalActions.onCancel : () => {}}
+            onCancel={!isDeviceLocked ? modalActions.onCancel : () => {}}
             heading={<Translation id="TR_MODAL_CONFIRM_TX_TITLE" />}
             bottomBar={
                 <Buttons>
                     <Button
                         icon="ARROW_LEFT"
                         variant="secondary"
-                        isDisabled={!isEnabled}
+                        isDisabled={isDeviceLocked}
                         onClick={() => modalActions.onCancel()}
                     >
                         <Translation id="TR_EDIT" />
                     </Button>
                     <Button
-                        isDisabled={!isEnabled}
+                        isDisabled={isDeviceLocked}
                         onClick={async () => {
                             // TODO refactor to functions
                             switch (networkType) {

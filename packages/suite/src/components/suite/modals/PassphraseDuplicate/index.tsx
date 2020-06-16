@@ -1,32 +1,16 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Button, Modal } from '@trezor/components';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import * as suiteActions from '@suite-actions/suiteActions';
-import { SUITE } from '@suite-actions/constants';
-import { AppState, Dispatch, TrezorDevice } from '@suite-types';
+import { useDevice, useActions } from '@suite-hooks';
+import { TrezorDevice } from '@suite-types';
 import { Translation } from '@suite-components';
-
-const mapStateToProps = (state: AppState) => ({
-    locks: state.suite.locks,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) =>
-    bindActionCreators(
-        {
-            switchDuplicatedDevice: suiteActions.switchDuplicatedDevice,
-            authorizeDevice: suiteActions.authorizeDevice,
-        },
-        dispatch,
-    );
 
 type Props = {
     device: TrezorDevice;
     duplicate: TrezorDevice;
-} & ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>;
+};
 
 const Actions = styled.div`
     width: 100%;
@@ -35,14 +19,13 @@ const Actions = styled.div`
     }
 `;
 
-const PassphraseDuplicate = ({
-    locks,
-    device,
-    duplicate,
-    switchDuplicatedDevice,
-    authorizeDevice,
-}: Props) => {
-    const progress = locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI);
+const PassphraseDuplicate = ({ device, duplicate }: Props) => {
+    const { isLocked } = useDevice();
+    const isDeviceLocked = isLocked();
+    const { switchDuplicatedDevice, authorizeDevice } = useActions({
+        switchDuplicatedDevice: suiteActions.switchDuplicatedDevice,
+        authorizeDevice: suiteActions.authorizeDevice,
+    });
     return (
         <Modal
             size="tiny"
@@ -53,7 +36,7 @@ const PassphraseDuplicate = ({
                     <Button
                         variant="primary"
                         onClick={() => switchDuplicatedDevice(device, duplicate)}
-                        isLoading={progress}
+                        isLoading={isDeviceLocked}
                         fullWidth
                     >
                         <Translation id="TR_WALLET_DUPLICATE_SWITCH" />
@@ -61,7 +44,7 @@ const PassphraseDuplicate = ({
                     <Button
                         variant="secondary"
                         onClick={authorizeDevice}
-                        isLoading={progress}
+                        isLoading={isDeviceLocked}
                         fullWidth
                     >
                         <Translation id="TR_WALLET_DUPLICATE_RETRY" />
@@ -74,4 +57,4 @@ const PassphraseDuplicate = ({
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PassphraseDuplicate);
+export default PassphraseDuplicate;

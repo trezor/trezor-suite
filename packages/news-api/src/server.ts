@@ -6,8 +6,10 @@ import childProcess from 'child_process';
 
 const app: Application = express();
 const PORT = process.env.PORT || 3003;
+
+// TODO: validate if this is ok or not
 const options: cors.CorsOptions = {
-    origin: process.env.ENV === 'staging' ? '*' : ['trezor.io', 'ustrezordevice.myshopify.com/'],
+    origin: '*',
 };
 
 app.use(cors(options));
