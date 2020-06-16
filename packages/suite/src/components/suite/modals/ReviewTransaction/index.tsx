@@ -4,6 +4,7 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import { Button, colors, Modal, variables } from '@trezor/components';
 import { XRP_FLAG } from '@wallet-constants/sendForm';
+import { serializeEthereumTx, prepareEthereumTransaction } from '@wallet-utils/sendFormUtils';
 import { Account } from '@wallet-types';
 import { formatNetworkAmount, networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import React from 'react';
@@ -81,7 +82,7 @@ const getFeeValue = (
 
 export default ({
     modalActions,
-    account,
+    selectedAccount,
     getValues,
     token,
     selectedFee,
@@ -89,9 +90,15 @@ export default ({
     transactionInfo,
     device,
 }: Props) => {
-    if (!account) return null;
+    if (
+        selectedAccount.status !== 'loaded' ||
+        !device ||
+        !transactionInfo ||
+        transactionInfo.type === 'error'
+    )
+        return null;
+    const { account, network } = selectedAccount;
     const { networkType, symbol } = account;
-    if (!transactionInfo || transactionInfo.type === 'error') return null;
     const upperCaseSymbol = account.symbol.toUpperCase();
     const outputSymbol = token ? token.symbol!.toUpperCase() : symbol.toUpperCase();
     const [isEnabled] = useDeviceActionLocks();
@@ -126,11 +133,89 @@ export default ({
                                     console.log('send');
                                     break;
                                 case 'ethereum':
-                                    console.log('send');
+                                    {
+                                        const amount = getValues('amount-0');
+                                        const address = getValues('address-0');
+                                        const data = getValues('ethereumData');
+                                        const gasPrice = getValues('ethereumGasPrice');
+                                        const gasLimit = getValues('ethereumGasLimit');
+
+                                        if (
+                                            account.networkType !== 'ethereum' ||
+                                            !network.chainId ||
+                                            !amount ||
+                                            !address
+                                        )
+                                            return null;
+
+                                        const transaction = prepareEthereumTransaction({
+                                            token,
+                                            chainId: network.chainId,
+                                            to: address,
+                                            amount,
+                                            data,
+                                            gasLimit,
+                                            gasPrice,
+                                            nonce: account.misc.nonce,
+                                        });
+
+                                        const signedTx = await TrezorConnect.ethereumSignTransaction(
+                                            {
+                                                device: {
+                                                    path: device.path,
+                                                    instance: device.instance,
+                                                    state: device.state,
+                                                },
+                                                useEmptyPassphrase: device.useEmptyPassphrase,
+                                                path: account.path,
+                                                transaction,
+                                            },
+                                        );
+
+                                        if (!signedTx.success) {
+                                            addToast({
+                                                type: 'sign-tx-error',
+                                                error: signedTx.payload.error,
+                                            });
+                                            return;
+                                        }
+
+                                        const serializedTx = serializeEthereumTx({
+                                            ...transaction,
+                                            ...signedTx.payload,
+                                        });
+
+                                        // TODO: add possibility to show serialized tx without pushing (locktime)
+                                        const sentTx = await TrezorConnect.pushTransaction({
+                                            tx: serializedTx,
+                                            coin: network.symbol,
+                                        });
+
+                                        if (sentTx.success) {
+                                            addToast({
+                                                type: 'tx-sent',
+                                                formattedAmount: `${amount} ${
+                                                    token
+                                                        ? token.symbol!.toUpperCase()
+                                                        : account.symbol.toUpperCase()
+                                                }`,
+                                                device,
+                                                descriptor: account.descriptor,
+                                                symbol: account.symbol,
+                                                txid: sentTx.payload.txid,
+                                            });
+                                            accountActions.fetchAndUpdateAccount(account);
+                                        } else {
+                                            addToast({
+                                                type: 'sign-tx-error',
+                                                error: sentTx.payload.error,
+                                            });
+                                        }
+                                    }
                                     break;
                                 case 'ripple': {
                                     const { symbol, networkType } = account;
-                                    if (networkType !== 'ripple' || !device) return null;
+                                    if (networkType !== 'ripple') return null;
 
                                     const amount = getValues('amount-0');
                                     const address = getValues('address-0');

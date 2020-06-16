@@ -5,7 +5,6 @@ import Component from './index';
 
 const mapStateToProps = (state: AppState) => ({
     selectedAccount: state.wallet.selectedAccount,
-    send: state.wallet.send,
     accounts: state.wallet.accounts,
     fiat: state.wallet.fiat,
     settings: state.suite.settings,

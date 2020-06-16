@@ -69,7 +69,7 @@ interface State {
     error: JSX.Element | null;
 }
 
-const QrScanner = ({ onCancel, outputId }: Props) => {
+const QrScanner = ({ onCancel, outputId, setValue }: Props) => {
     const [readerLoaded, setReaderLoaded] = useState<State['readerLoaded']>(false);
     const [error, setError] = useState<State['error']>(null);
     // const { onScan } = useActions({ onScan: sendFormActions.onQrScan });
@@ -98,7 +98,13 @@ const QrScanner = ({ onCancel, outputId }: Props) => {
             try {
                 const parsedUri = parseUri(data);
                 if (parsedUri) {
-                    // onScan(parsedUri, outputId);
+                    const { address, amount } = parsedUri;
+                    if (address) {
+                        setValue(`address-${outputId}`, address);
+                    }
+                    if (amount) {
+                        setValue(`amount-${outputId}`, amount);
+                    }
                     setReaderLoaded(true);
                     onCancel();
                 }

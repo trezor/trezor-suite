@@ -9,7 +9,7 @@ import { AppState, Dispatch } from '@suite-types';
 import Component from './index';
 
 const mapStateToProps = (state: AppState) => ({
-    account: state.wallet.selectedAccount.account,
+    selectedAccount: state.wallet.selectedAccount,
     device: state.suite.device,
     suite: state.suite,
     fiat: state.wallet.fiat,

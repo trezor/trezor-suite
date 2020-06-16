@@ -157,7 +157,7 @@ const getUserContextModal = (props: Props) => {
             return (
                 <QrScanner
                     outputId={payload.outputId}
-                    setValues={payload.setValues}
+                    setValue={payload.setValue}
                     onCancel={modalActions.onCancel}
                 />
             );

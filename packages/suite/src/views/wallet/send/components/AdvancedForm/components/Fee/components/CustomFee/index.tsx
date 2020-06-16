@@ -93,14 +93,10 @@ export default ({ isVisible }: { isVisible: boolean }) => {
                         const newFeeLevel: SendContext['selectedFee'] = {
                             label: 'custom',
                             feePerUnit: event.target.value,
-                            blocks: -1,
+                            blocks: 0,
                         };
 
-                        setSelectedFee({
-                            label: 'custom',
-                            feePerUnit: event.target.value,
-                            blocks: -1,
-                        });
+                        setSelectedFee(newFeeLevel);
 
                         const activeMax = findActiveMaxId(outputs, getValues);
 

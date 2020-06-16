@@ -163,28 +163,26 @@ export default () => {
                     onChange={async (selectedFeeLevel: FeeLevel) => {
                         if (selectedFeeLevel.label === 'custom') {
                             setSelectedFee({ ...selectedFee, label: 'custom' });
-                            setValue('customFee', selectedFee.feePerUnit, true);
+                            setValue('customFee', selectedFee.feePerUnit);
                         } else {
                             setSelectedFee(selectedFeeLevel);
                             setValue('customFee', '');
-                        }
-
-                        const activeMax = findActiveMaxId(outputs, getValues);
-
-                        if (activeMax) {
-                            await updateMax(
-                                activeMax,
-                                account,
-                                setValue,
-                                getValues,
-                                clearError,
-                                setError,
-                                selectedFeeLevel,
-                                outputs,
-                                token,
-                                fiatRates,
-                                setTransactionInfo,
-                            );
+                            const activeMax = findActiveMaxId(outputs, getValues);
+                            if (activeMax) {
+                                await updateMax(
+                                    activeMax,
+                                    account,
+                                    setValue,
+                                    getValues,
+                                    clearError,
+                                    setError,
+                                    selectedFeeLevel,
+                                    outputs,
+                                    token,
+                                    fiatRates,
+                                    setTransactionInfo,
+                                );
+                            }
                         }
                     }}
                     options={feeInfo.levels}
