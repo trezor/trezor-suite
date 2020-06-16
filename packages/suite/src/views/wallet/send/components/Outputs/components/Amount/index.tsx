@@ -117,6 +117,7 @@ export default ({ outputId }: { outputId: number }) => {
     } = useFormContext();
     const inputName = `amount-${outputId}`;
     const inputNameMax = `setMax-${outputId}`;
+    const isDirty = formState.dirtyFields.has(inputName);
     const { symbol, availableBalance, networkType } = account;
     const formattedAvailableBalance = token
         ? token.balance || '0'
@@ -132,7 +133,7 @@ export default ({ outputId }: { outputId: number }) => {
             <input type="hidden" name={inputNameMax} ref={register} />
             <Left>
                 <StyledInput
-                    state={getInputState(error)}
+                    state={getInputState(error, isDirty)}
                     topLabel={
                         <Label>
                             <Text>
@@ -147,7 +148,7 @@ export default ({ outputId }: { outputId: number }) => {
                     }}
                     button={{
                         icon: getValues(inputNameMax) === '1' ? 'CHECK' : 'SEND',
-                        iconSize: 17,
+                        iconSize: 16,
                         onClick: async () => {
                             await updateMax(
                                 outputId,
