@@ -29,13 +29,13 @@ module.exports = api => {
 
                         // === Views - no reuse at all ===
                         // exclude .messages.*
-                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-views/(?!.*[.]messages)(.+)':
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery|hooks)-views/(?!.*[.]messages)(.+)':
                             './packages/suite-native/src/views/\\1/\\2',
-                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-views$':
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery|hooks)-views$':
                             './packages/suite-native/src/views/\\1/index',
 
                         // === Components - no reuse at all ===
-                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-components/(?!.*[.]messages)(.+)':
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery|hooks)-components/(?!.*[.]messages)(.+)':
                             './packages/suite-native/src/components/\\1/\\2',
                         // '^@(.+)-components': './packages/suite-native/src/components/\\1/index',
 
@@ -44,33 +44,33 @@ module.exports = api => {
                         // '^@(.+)-views/(.+)': './packages/suite/src/views/\\1/\\2',
                         // '^@(.+)-components/(.+)': './packages/suite/src/components/\\1/\\2',
 
-                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-actions/(.+)':
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery|hooks)-actions/(.+)':
                             './packages/suite/src/actions/\\1/\\2',
-                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-actions':
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery|hooks)-actions':
                             './packages/suite/src/actions/\\1/index',
-                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-reducers/(.+)':
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery|hooks)-reducers/(.+)':
                             './packages/suite/src/reducers/\\1/\\2',
-                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-reducers':
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery|hooks)-reducers':
                             './packages/suite/src/reducers/\\1/index',
-                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-config/(.+)':
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery|hooks)-config/(.+)':
                             './packages/suite/src/config/\\1/\\2',
-                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-config':
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery|hooks)-config':
                             './packages/suite/src/config/\\1/index',
-                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-constants/(.+)':
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery|hooks)-constants/(.+)':
                             './packages/suite/src/constants/\\1/\\2',
-                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-constants':
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery|hooks)-constants':
                             './packages/suite/src/constants/\\1/index',
-                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-utils/(.+)':
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery|hooks)-utils/(.+)':
                             './packages/suite/src/utils/\\1/\\2',
-                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-utils':
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery|hooks)-utils':
                             './packages/suite/src/utils/\\1/index',
-                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-types/(.+)':
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery|hooks)-types/(.+)':
                             './packages/suite/src/types/\\1/\\2',
-                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-types':
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery|hooks)-types':
                             './packages/suite/src/types/\\1/index',
-                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-middlewares/(.+)':
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery|hooks)-middlewares/(.+)':
                             './packages/suite/src/middlewares/\\1/\\2',
-                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-middlewares':
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery|hooks)-middlewares':
                             './packages/suite/src/middlewares/\\1/index',
 
                         // ??????

@@ -4,10 +4,8 @@ import styled from 'styled-components';
 import { Translation, ExternalLink } from '@suite-components';
 import { parseUri } from '@suite-utils/parseUri';
 import { Modal, P, Icon, colors } from '@trezor/components';
-import * as sendFormActions from '@wallet-actions/send/sendFormActions';
 
 import * as URLS from '@suite-constants/urls';
-import { useActions } from '@suite-hooks';
 
 const QrReader = dynamic(() => import('react-qr-reader'), { ssr: false });
 
@@ -74,7 +72,7 @@ interface State {
 const QrScanner = ({ onCancel, outputId }: Props) => {
     const [readerLoaded, setReaderLoaded] = useState<State['readerLoaded']>(false);
     const [error, setError] = useState<State['error']>(null);
-    const { onScan } = useActions({ onScan: sendFormActions.onQrScan });
+    // const { onScan } = useActions({ onScan: sendFormActions.onQrScan });
 
     const onLoad = () => {
         setReaderLoaded(true);
@@ -100,7 +98,7 @@ const QrScanner = ({ onCancel, outputId }: Props) => {
             try {
                 const parsedUri = parseUri(data);
                 if (parsedUri) {
-                    onScan(parsedUri, outputId);
+                    // onScan(parsedUri, outputId);
                     setReaderLoaded(true);
                     onCancel();
                 }

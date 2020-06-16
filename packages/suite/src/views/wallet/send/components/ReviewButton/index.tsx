@@ -71,7 +71,16 @@ const isDisabled = (
 
 export default () => {
     const { errors, getValues } = useFormContext();
-    const { online, locks, device, outputs, token, transactionInfo, account } = useSendContext();
+    const {
+        online,
+        locks,
+        device,
+        outputs,
+        token,
+        transactionInfo,
+        account,
+        selectedFee,
+    } = useSendContext();
     const { openModal } = useActions({ openModal: modalActions.openModal });
 
     const { networkType } = account;
@@ -93,13 +102,13 @@ export default () => {
                     )}
                     onClick={() => {
                         if (transactionInfo && transactionInfo.type === 'final') {
-                            const formValues = getValues();
                             openModal({
                                 type: 'review-transaction',
                                 outputs,
                                 transactionInfo,
                                 token,
-                                formValues,
+                                getValues,
+                                selectedFee,
                             });
                         }
                     }}

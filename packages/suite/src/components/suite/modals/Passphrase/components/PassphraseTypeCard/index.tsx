@@ -1,12 +1,11 @@
-import React, { useState, createRef, useLayoutEffect } from 'react';
-import { useKeyPress } from '@suite-utils/dom';
-import styled, { css } from 'styled-components';
-import { Button, colors, variables, Input, Checkbox } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
-
-import { MAX_PASSPHRASE_LENGTH } from '@suite-constants/passphrase';
-import { countBytesInString } from '@suite-utils/string';
 import PasswordStrengthIndicator from '@suite-components/PasswordStrengthIndicator';
+import { Translation } from '@suite-components/Translation';
+import { MAX_PASSPHRASE_LENGTH } from '@suite-constants/passphrase';
+import { useKeyPress } from '@suite-utils/dom';
+import { countBytesInString } from '@suite-utils/string';
+import { Button, Checkbox, colors, Input, variables } from '@trezor/components';
+import React, { createRef, useLayoutEffect, useState } from 'react';
+import styled, { css } from 'styled-components';
 
 const WalletTitle = styled.div`
     font-size: ${variables.FONT_SIZE.NORMAL};
@@ -196,6 +195,7 @@ const PassphraseTypeCard = (props: Props) => {
                                 icon: showPassword ? 'HIDE' : 'SHOW',
                                 onClick: () => setShowPassword(!showPassword),
                             }}
+                            noError
                         />
                         {!isTooLong && <PasswordStrengthIndicator password={value} />}
                     </InputWrapper>

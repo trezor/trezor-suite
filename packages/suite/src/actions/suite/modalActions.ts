@@ -1,5 +1,6 @@
 import TrezorConnect, { UI, TokenInfo, PrecomposedTransaction } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
+import { useForm } from 'react-hook-form';
 import { SendContext } from '@wallet-hooks/useSendContext';
 import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
 import { Account, WalletAccountTransaction } from '@wallet-types';
@@ -53,10 +54,11 @@ export type UserContextPayload =
       }
     | {
           type: 'review-transaction';
-          transactionInfo: PrecomposedTransaction | null;
+          transactionInfo: PrecomposedTransaction;
           outputs: SendContext['outputs'];
           token: TokenInfo | null;
-          formValues: any;
+          getValues: ReturnType<typeof useForm>['getValues'];
+          selectedFee: SendContext['selectedFee'];
       }
     | {
           type: 'log';

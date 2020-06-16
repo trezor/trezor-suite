@@ -1,10 +1,14 @@
 import { AccountLabeling, FiatValue, Translation } from '@suite-components';
-import { useDeviceActionLocks } from '@suite-hooks';
+import { useDeviceActionLocks, useActions } from '@suite-hooks';
+import * as notificationActions from '@suite-actions/notificationActions';
+import * as accountActions from '@wallet-actions/accountActions';
 import { Button, colors, Modal, variables } from '@trezor/components';
+import { XRP_FLAG } from '@wallet-constants/sendForm';
 import { Account } from '@wallet-types';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount, networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import React from 'react';
 import styled from 'styled-components';
+import TrezorConnect, { RipplePayment } from 'trezor-connect';
 import { fromWei, toWei } from 'web3-utils';
 
 import { Props } from './Container';
@@ -78,13 +82,12 @@ const getFeeValue = (
 export default ({
     modalActions,
     account,
-    formValues,
+    getValues,
     token,
+    selectedFee,
     outputs,
     transactionInfo,
-    sendFormActionsBitcoin,
-    sendFormActionsRipple,
-    sendFormActionsEthereum,
+    device,
 }: Props) => {
     if (!account) return null;
     const { networkType, symbol } = account;
@@ -92,6 +95,10 @@ export default ({
     const upperCaseSymbol = account.symbol.toUpperCase();
     const outputSymbol = token ? token.symbol!.toUpperCase() : symbol.toUpperCase();
     const [isEnabled] = useDeviceActionLocks();
+    const { addToast } = useActions({ addToast: notificationActions.addToast });
+    const { fetchAndUpdateAccount } = useActions({
+        fetchAndUpdateAccount: accountActions.fetchAndUpdateAccount,
+    });
     const fee = getFeeValue(transactionInfo, networkType, symbol);
     const totalSpent = formatNetworkAmount(transactionInfo.totalSpent, symbol);
 
@@ -113,18 +120,81 @@ export default ({
                     </Button>
                     <Button
                         isDisabled={!isEnabled}
-                        onClick={() => {
+                        onClick={async () => {
                             switch (networkType) {
                                 case 'bitcoin':
-                                    sendFormActionsBitcoin.send();
+                                    console.log('send');
                                     break;
                                 case 'ethereum':
-                                    sendFormActionsEthereum.send();
+                                    console.log('send');
                                     break;
-                                case 'ripple':
-                                    sendFormActionsRipple.send();
+                                case 'ripple': {
+                                    const { symbol, networkType } = account;
+                                    if (networkType !== 'ripple' || !device) return null;
+
+                                    const amount = getValues('amount-0');
+                                    const address = getValues('address-0');
+                                    const destinationTag = getValues('rippleDestinationTag');
+                                    const { path, instance, state, useEmptyPassphrase } = device;
+
+                                    const payment: RipplePayment = {
+                                        destination: address,
+                                        amount: networkAmountToSatoshi(amount, symbol),
+                                    };
+
+                                    if (destinationTag) {
+                                        payment.destinationTag = parseInt(destinationTag, 10);
+                                    }
+
+                                    const signedTx = await TrezorConnect.rippleSignTransaction({
+                                        device: {
+                                            path,
+                                            instance,
+                                            state,
+                                        },
+                                        useEmptyPassphrase,
+                                        path: account.path,
+                                        transaction: {
+                                            fee: selectedFee.feePerUnit,
+                                            flags: XRP_FLAG,
+                                            sequence: account.misc.sequence,
+                                            payment,
+                                        },
+                                    });
+
+                                    if (!signedTx.success) {
+                                        addToast({
+                                            type: 'sign-tx-error',
+                                            error: signedTx.payload.error,
+                                        });
+                                        return;
+                                    }
+
+                                    // TODO: add possibility to show serialized tx without pushing (locktime)
+                                    const sentTx = await TrezorConnect.pushTransaction({
+                                        tx: signedTx.payload.serializedTx,
+                                        coin: account.symbol,
+                                    });
+
+                                    if (sentTx.success) {
+                                        addToast({
+                                            type: 'tx-sent',
+                                            formattedAmount: `${amount} ${account.symbol.toUpperCase()}`,
+                                            device,
+                                            descriptor: account.descriptor,
+                                            symbol: account.symbol,
+                                            txid: sentTx.payload.txid,
+                                        });
+
+                                        fetchAndUpdateAccount(account);
+                                    } else {
+                                        addToast({
+                                            type: 'sign-tx-error',
+                                            error: sentTx.payload.error,
+                                        });
+                                    }
                                     break;
-                                // no default
+                                } // no default
                             }
                         }}
                     >
@@ -148,7 +218,7 @@ export default ({
                             <Label>
                                 <Translation id="TR_TO" />
                             </Label>
-                            <Value>{formValues[`address-${index}`]}</Value>
+                            <Value>{getValues(`address-${index}`)}</Value>
                         </Box>
                     </OutputWrapper>
                 ))}

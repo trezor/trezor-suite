@@ -176,6 +176,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     type?: string;
     state?: InputState;
     align?: TextAlign;
+    noError?: boolean;
 }
 
 const Input = ({
@@ -197,6 +198,7 @@ const Input = ({
     dataTest,
     isPartiallyHidden,
     align = 'left',
+    noError = false,
     ...rest
 }: Props) => {
     const [buttonHover, setButtonHover] = React.useState(false);
@@ -257,7 +259,7 @@ const Input = ({
                     {...rest}
                 />
             </InputWrapper>
-            <BottomText state={state}>{bottomText}</BottomText>
+            {!noError && <BottomText state={state}>{bottomText}</BottomText>}
         </Wrapper>
     );
 };

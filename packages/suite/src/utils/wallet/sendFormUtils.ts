@@ -1,6 +1,7 @@
 import { ERC20_GAS_LIMIT, ERC20_TRANSFER } from '@wallet-constants/sendForm';
 import { SendContext } from '@wallet-hooks/useSendContext';
 import { Account, Network } from '@wallet-types';
+// import { ParsedURI } from '@wallet-utils/cryptoUriParser';
 import { EthTransactionData, FeeInfo, FeeLevel } from '@wallet-types/sendForm';
 import {
     amountToSatoshi,
@@ -374,6 +375,18 @@ const resetAllMax = (
     outputs.map(output => setValue(`setMax-${output.id}`, '0'));
 };
 
+const countFilledAmounts = (
+    outputs: SendContext['outputs'],
+    getValues: ReturnType<typeof useForm>['getValues'],
+) => {
+    const totalAmount = new BigNumber(0);
+    outputs.forEach(output => {
+        totalAmount.plus(getValues(`amount-${output.id}`));
+    });
+
+    return totalAmount.toFixed();
+};
+
 export const findActiveMaxId = (
     outputs: SendContext['outputs'],
     getValues: ReturnType<typeof useForm>['getValues'],
@@ -404,14 +417,8 @@ export const updateMax = async (
     resetAllMax(outputs, setValue);
     setValue(`setMax-${id}`, '1');
     const formValues = getValues();
-    const composedTransaction = await composeTx(
-        account,
-        formValues,
-        selectedFee,
-        outputs,
-        token,
-        true,
-    );
+    const filledAmountsCount = countFilledAmounts(outputs, getValues);
+    const composedTransaction = await composeTx(account, formValues, selectedFee, outputs, token);
     if (!composedTransaction) return null; // TODO handle error
 
     if (composedTransaction.type === 'error') {
@@ -427,8 +434,9 @@ export const updateMax = async (
     }
 
     if (composedTransaction.type !== 'error') {
+        const amountToFill = new BigNumber(composedTransaction.max).minus(filledAmountsCount);
         clearError(`amount-${id}`);
-        setValue(`amount-${id}`, composedTransaction.max);
+        setValue(`amount-${id}`, amountToFill);
         updateFiatInput(id, fiatRates, getValues, setValue);
         await composeChange(
             id,

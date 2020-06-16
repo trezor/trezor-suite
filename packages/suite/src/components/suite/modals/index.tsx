@@ -154,7 +154,13 @@ const getUserContextModal = (props: Props) => {
         case 'wipe-device':
             return <WipeDevice onCancel={modalActions.onCancel} />;
         case 'qr-reader':
-            return <QrScanner outputId={payload.outputId} onCancel={modalActions.onCancel} />;
+            return (
+                <QrScanner
+                    outputId={payload.outputId}
+                    setValues={payload.setValues}
+                    onCancel={modalActions.onCancel}
+                />
+            );
         case 'transaction-detail':
             return <TransactionDetail tx={payload.tx} onCancel={modalActions.onCancel} />;
         case 'passphrase-duplicate':
@@ -164,8 +170,9 @@ const getUserContextModal = (props: Props) => {
                 <ReviewTransaction
                     outputs={payload.outputs}
                     token={payload.token}
+                    selectedFee={payload.selectedFee}
                     transactionInfo={payload.transactionInfo}
-                    formValues={payload.formValues}
+                    getValues={payload.getValues}
                 />
             );
         case 'pin-mismatch':

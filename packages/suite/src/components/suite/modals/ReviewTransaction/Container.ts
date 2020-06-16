@@ -1,17 +1,16 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Output } from '@wallet-hooks/useSendContext';
+import { useForm } from 'react-hook-form';
+import { SendContext } from '@wallet-hooks/useSendContext';
 import { TokenInfo, PrecomposedTransaction } from 'trezor-connect';
 import * as modalActions from '@suite-actions/modalActions';
-import * as sendFormActionsBitcoin from '@wallet-actions/send/sendFormBitcoinActions';
-import * as sendFormActionsEthereum from '@wallet-actions/send/sendFormEthereumActions';
-import * as sendFormActionsRipple from '@wallet-actions/send/sendFormRippleActions';
 
 import { AppState, Dispatch } from '@suite-types';
 import Component from './index';
 
 const mapStateToProps = (state: AppState) => ({
     account: state.wallet.selectedAccount.account,
+    device: state.suite.device,
     suite: state.suite,
     fiat: state.wallet.fiat,
     settings: state.wallet.settings,
@@ -19,16 +18,14 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     modalActions: bindActionCreators(modalActions, dispatch),
-    sendFormActionsBitcoin: bindActionCreators(sendFormActionsBitcoin, dispatch),
-    sendFormActionsRipple: bindActionCreators(sendFormActionsRipple, dispatch),
-    sendFormActionsEthereum: bindActionCreators(sendFormActionsEthereum, dispatch),
 });
 
 interface ComponentProps {
     transactionInfo: PrecomposedTransaction;
-    outputs: Output[];
+    outputs: SendContext['outputs'];
     token: TokenInfo | null;
-    formValues: any;
+    getValues: ReturnType<typeof useForm>['getValues'];
+    selectedFee: SendContext['selectedFee'];
 }
 
 export type StateProps = ReturnType<typeof mapStateToProps>;
