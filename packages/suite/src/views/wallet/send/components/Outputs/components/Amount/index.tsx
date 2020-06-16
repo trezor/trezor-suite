@@ -60,7 +60,7 @@ const EqualsSign = styled.div`
     align-items: flex-start;
     padding: ${LABEL_HEIGHT + 15}px 20px 0;
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+    @media screen and (max-width: 1170px) {
         display: none;
     }
 `;
