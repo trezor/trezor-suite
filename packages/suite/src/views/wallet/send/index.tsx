@@ -61,7 +61,6 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
     const initialOutputs = [{ id: 0 }];
     const [outputs, updateOutputs] = useState(initialOutputs);
-
     const defaultValues = {
         'address-0': '',
         'amount-0': '',

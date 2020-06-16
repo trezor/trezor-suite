@@ -187,7 +187,7 @@ export const composeXrpTransaction = async (
         type: 'final',
         totalSpent: totalSpentBig.toString(),
         fee: feeInSatoshi,
-        max: max.isLessThan('0') ? '' : formatNetworkAmount(max.toFixed(), 'xrp'),
+        max: max.isLessThan('0') ? '' : formatNetworkAmount(max.toFixed(), account.symbol),
     } as const;
 };
 
@@ -219,7 +219,6 @@ export const composeEthTransaction = async (
 
     if (totalSpentBig.isGreaterThan(availableBalance)) {
         const error = token ? 'NOT-ENOUGH-CURRENCY-FEE' : 'NOT-ENOUGH-FUNDS';
-        console.log(error);
         return { type: 'error', error } as const;
     }
 
@@ -228,13 +227,13 @@ export const composeEthTransaction = async (
         totalSpent: totalSpentBig.toString(),
         fee: feeInSatoshi,
         feePerUnit: selectedFee.feePerUnit,
-        max: max.isLessThan('0') ? '' : formatNetworkAmount(max.toFixed(), 'eth'),
+        max: max.isLessThan('0') ? '' : formatNetworkAmount(max.toFixed(), account.symbol),
     } as const;
 };
 
 export const composeBtcTransaction = async (
     account: Account,
-    formValues: any,
+    getValues: ReturnType<typeof useForm>['getValues'],
     outputs: SendContext['outputs'],
     selectedFee: SendContext['selectedFee'],
     setMax = false,
@@ -242,8 +241,8 @@ export const composeBtcTransaction = async (
     if (!account.addresses || !account.utxo) return;
 
     const composedOutputs = outputs.map(output => {
-        const amount = networkAmountToSatoshi(formValues[`amount-${output.id}`], account.symbol);
-        const address = formValues[`address-${output.id}`];
+        const amount = networkAmountToSatoshi(getValues(`amount-${output.id}`), account.symbol);
+        const address = getValues(`address-${output.id}`);
 
         // address is set
         if (address) {
@@ -275,7 +274,7 @@ export const composeBtcTransaction = async (
         } as const;
     });
 
-    const resp = await TrezorConnect.composeTransaction({
+    const response = await TrezorConnect.composeTransaction({
         account: {
             path: account.path,
             addresses: account.addresses,
@@ -286,31 +285,39 @@ export const composeBtcTransaction = async (
         coin: account.symbol,
     });
 
-    if (resp.success) {
-        return resp.payload[0];
+    if (response.success) {
+        const { max } = response.payload[0];
+        const maxBig = new BigNumber(max);
+
+        return {
+            ...response.payload[0],
+            max: maxBig.isLessThan('0')
+                ? ''
+                : formatNetworkAmount(maxBig.toFixed(), account.symbol),
+        } as const;
     }
 };
 
 export const composeTx = async (
     account: Account,
-    formValues: any,
+    getValues: ReturnType<typeof useForm>['getValues'],
     selectedFee: SendContext['selectedFee'],
     outputs: SendContext['outputs'],
     token: SendContext['token'],
     setMax = false,
 ) => {
     if (account.networkType === 'ripple') {
-        const amount = formValues['amount-0'];
+        const amount = getValues('amount-0');
         return composeXrpTransaction(account, amount, selectedFee);
     }
 
     if (account.networkType === 'ethereum') {
-        const amount = formValues['amount-0'];
+        const amount = getValues('amount-0');
         return composeEthTransaction(account, amount, selectedFee, token, setMax);
     }
 
     if (account.networkType === 'bitcoin') {
-        await composeBtcTransaction(account, formValues, outputs, selectedFee, setMax);
+        return composeBtcTransaction(account, getValues, outputs, selectedFee, setMax);
     }
 };
 
@@ -355,8 +362,9 @@ export const composeChange = async (
     outputs: SendContext['outputs'],
     token: SendContext['token'],
 ) => {
-    const formValues = getValues();
-    const composedTransaction = await composeTx(account, formValues, selectedFee, outputs, token);
+    const composedTransaction = await composeTx(account, getValues, selectedFee, outputs, token);
+
+    console.log('composedTransaction', composedTransaction);
 
     if (!composedTransaction) return null; // TODO handle error
 
@@ -428,11 +436,10 @@ export const updateMax = async (
 
     resetAllMax(outputs, setValue);
     setValue(`setMax-${id}`, 'active');
-    const formValues = getValues();
     const filledAmountsCount = countFilledAmounts(outputs, getValues);
     const composedTransaction = await composeTx(
         account,
-        formValues,
+        getValues,
         selectedFee,
         outputs,
         token,
