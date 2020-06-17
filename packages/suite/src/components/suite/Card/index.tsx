@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { colors, variables } from '@trezor/components';
 import { CARD_PADDING_SIZE, CARD_PADDING_SIZE_LARGE } from '@suite-constants/layout';
 
@@ -17,9 +17,14 @@ const getPaddingSize = (
     return CARD_PADDING_SIZE;
 };
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ isColumn?: boolean }>`
     display: flex;
     flex-direction: column;
+    ${props =>
+        props.isColumn &&
+        css`
+            flex: 1;
+        `}
 `;
 
 const Content = styled.div<{ paddingSize: string }>`
@@ -54,6 +59,7 @@ export interface Props {
     largePadding?: boolean;
     noPadding?: boolean;
     noVerticalPadding?: boolean;
+    isColumn?: boolean;
 }
 
 const Card = ({
@@ -64,9 +70,10 @@ const Card = ({
     noPadding,
     noVerticalPadding,
     customHeader,
+    isColumn,
     ...rest
 }: Props) => (
-    <Wrapper>
+    <Wrapper isColumn={isColumn}>
         {title && (
             <Header>
                 <Title>{title}</Title>
