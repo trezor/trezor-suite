@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux';
-import signVerifyReducer from './signVerifyReducer';
 import settingsReducer from './settingsReducer';
 import fiatRateReducer from './fiatRatesReducer';
 import graphReducer from './graphReducer';
@@ -13,7 +12,6 @@ import feesReducer from './feesReducer';
 import blockchainReducer from './blockchainReducer';
 
 const WalletReducers = combineReducers({
-    signVerify: signVerifyReducer,
     fiat: fiatRateReducer,
     graph: graphReducer,
     settings: settingsReducer,

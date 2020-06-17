@@ -5,9 +5,10 @@ import { Card, Translation } from '@suite-components';
 import { useForm } from 'react-hook-form';
 import { isAddressValid } from '@wallet-utils/validation';
 import { ChildProps as Props } from '../../Container';
-import TrezorConnect from 'trezor-connect';
+import { useActions } from '@suite-hooks';
+import * as signVerifyActions from '@wallet-actions/signVerifyActions';
 
-const ApperAnimation = keyframes`
+const AppearAnimation = keyframes`
  0% { opacity: 0; }
  10% { opacity: 0.1; }
  30% { opacity: 0.3; }
@@ -21,7 +22,7 @@ const Column = styled.div`
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
-    animation-name: ${ApperAnimation};
+    animation-name: ${AppearAnimation};
     animation-duration: 0.6s;
     animation-iteration-count: 1;
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
@@ -47,7 +48,9 @@ const StyledButton = styled(Button)`
 `;
 type errorsMessage = 'TR_ADDRESS_IS_NOT_VALID' | 'TR_REQUIRED_FIELD';
 
-const VerifyMessage = ({ notificationActions, account, isLocked, device }: Props) => {
+const VerifyMessage = ({ account, isLocked }: Props) => {
+    const { initVerify } = useActions({ initVerify: signVerifyActions.initVerify });
+
     const { register, getValues, errors, formState, reset } = useForm({
         mode: 'onChange',
         defaultValues: {
@@ -139,48 +142,13 @@ const VerifyMessage = ({ notificationActions, account, isLocked, device }: Props
                         <Translation id="TR_CLEAR" />
                     </StyledButton>
                     <StyledButton
-                        isDisabled={!isValid || isLocked() || !device}
+                        isDisabled={!isValid || isLocked()}
                         onClick={async () => {
-                            let fn;
-                            const params = {
-                                address: getValues('verifyAddressInput'),
-                                message: getValues('verifyMessage'),
-                                signature: getValues('verifySignature'),
-                                coin: account.symbol,
-                                hex: false,
-                            };
-
-                            switch (account.networkType) {
-                                case 'bitcoin':
-                                    fn = TrezorConnect.verifyMessage;
-                                    break;
-                                case 'ethereum':
-                                    fn = TrezorConnect.ethereumVerifyMessage;
-                                    break;
-                                default:
-                                    fn = () => ({
-                                        success: false,
-                                        payload: {
-                                            error: `Unsupported network: ${account.networkType}`,
-                                            code: undefined,
-                                            signature: '',
-                                        },
-                                    });
-                                    break;
-                            }
-
-                            const response = await fn(params);
-
-                            if (response.success) {
-                                notificationActions.addToast({
-                                    type: 'verify-message-success',
-                                });
-                            } else {
-                                notificationActions.addToast({
-                                    type: 'verify-message-error',
-                                    error: response.payload.error,
-                                });
-                            }
+                            await initVerify(
+                                getValues('verifyAddressInput'),
+                                getValues('verifyMessage'),
+                                getValues('verifySignature'),
+                            );
                         }}
                     >
                         <Translation id="TR_VERIFY" />

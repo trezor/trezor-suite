@@ -26,7 +26,8 @@ export type ToastPayload = (
               | 'device-wiped'
               | 'backup-success'
               | 'backup-failed'
-              | 'verify-message-success';
+              | 'verify-message-success'
+              | 'sign-message-success';
       }
     | {
           type: 'tx-sent';
