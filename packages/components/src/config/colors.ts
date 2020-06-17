@@ -46,4 +46,19 @@ export default {
     BADGE_BLUE_TEXT_COLOR: '#0077b3',
     BADGE_GRAY_BACKGROUND: '#ebebeb',
     BADGE_GRAY_TEXT_COLOR: '#808080',
+
+    NEUE_BG_GREEN: '#39a814',
+    NEUE_BG_LIGHT_GREEN: '#e1f2dc',
+    NEUE_BG_GRAY: '#f8f8f8',
+    NEUE_BG_LIGHT_GREY: '#fcfcfc',
+    NEUE_BG_WHITE: '#ffffff',
+
+    NEUE_TYPE_GREEN: '#279503',
+    NEUE_TYPE_ORANGE: '#c19009',
+    NEUE_TYPE_RED: '#cd4949',
+    NEUE_TYPE_DARK_GREY: '#404040',
+    NEUE_TYPE_LIGHT_GREY: '#808080',
+    NEUE_TYPE_WHITE: '#ffffff',
+
+    NEUE_STROKE_GREY: '#e8e8e8',
 } as const;
