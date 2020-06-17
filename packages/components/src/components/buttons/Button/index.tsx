@@ -12,7 +12,17 @@ const BUTTON_PADDING = {
 
 const getIconColor = (variant: ButtonVariant, isDisabled: boolean) => {
     if (isDisabled) return colors.BLACK80;
-    return variant === 'primary' || variant === 'danger' ? colors.WHITE : colors.BLACK25;
+
+    switch (variant) {
+        case 'primary':
+        case 'danger':
+            return colors.WHITE;
+        case 'tertiary':
+            return colors.NEUE_TYPE_DARK_GREY;
+        case 'secondary':
+            return colors.NEUE_TYPE_GREEN;
+        // no default
+    }
 };
 
 const getFontSize = (variant: ButtonVariant, size: ButtonSize) => {
@@ -20,7 +30,8 @@ const getFontSize = (variant: ButtonVariant, size: ButtonSize) => {
     if (variant === 'tertiary' && size === 'small') {
         return variables.FONT_SIZE.TINY;
     }
-    return variables.FONT_SIZE.BUTTON;
+
+    return variables.FONT_SIZE.NORMAL;
 };
 
 const Wrapper = styled.button<WrapperProps>`
@@ -48,51 +59,46 @@ const Wrapper = styled.button<WrapperProps>`
         props.variant === 'primary' &&
         css`
             color: ${colors.WHITE};
-            font-weight: ${variables.FONT_WEIGHT.BOLD};
-            background: ${colors.BUTTON_PRIMARY};
+            font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+            font-size: ${variables.FONT_SIZE.NORMAL};
+            background: ${colors.NEUE_BG_GREEN};
 
             &:hover,
-            &:focus {
-                box-shadow: 0 0 0 4px ${colors.BUTTON_PRIMARY_BORDER};
-                background: ${colors.BUTTON_PRIMARY_HOVER};
-            }
-
+            &:focus,
             &:active {
-                box-shadow: 0 0 0 4px ${colors.BUTTON_PRIMARY_BORDER};
-                background: ${colors.BUTTON_PRIMARY_ACTIVE};
+                background: #339714;
             }
         `}
 
     ${props =>
         props.variant === 'secondary' &&
         css`
-            background: ${colors.BUTTON_SECONDARY};
+            background: ${colors.NEUE_BG_LIGHT_GREEN};
+            font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+            color: ${colors.NEUE_TYPE_GREEN};
 
             &:hover,
-            &:focus {
-                box-shadow: 0 0 0 4px ${colors.BUTTON_SECONDARY_BORDER};
-                background: ${colors.BUTTON_SECONDARY_HOVER};
-            }
-
+            &:focus,
             &:active {
-                box-shadow: 0 0 0 4px ${colors.BUTTON_SECONDARY_BORDER};
-                background: ${colors.BUTTON_SECONDARY_ACTIVE};
+                background: #edf7ea;
             }
         `}
     ${props =>
         props.variant === 'tertiary' &&
         css`
-            padding: 0px;
+            color: ${colors.NEUE_TYPE_DARK_GREY};
+            padding: 4px 6px;
         `}
 
     ${props =>
         props.variant === 'tertiary' &&
         !props.isDisabled &&
         css`
+            background: #f8f8f8;
+
             &:hover,
             &:focus {
                 color: ${colors.BLACK25};
-                text-decoration: underline;
             }
             &:active {
                 color: ${colors.BLACK25};
@@ -104,7 +110,7 @@ const Wrapper = styled.button<WrapperProps>`
         props.variant === 'danger' &&
         css`
             color: ${colors.WHITE};
-            font-weight: ${variables.FONT_WEIGHT.BOLD};
+            font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
             background: ${colors.BUTTON_RED};
 
             &:hover,
