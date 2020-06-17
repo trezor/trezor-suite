@@ -21,11 +21,7 @@ const SignVerifyContainer = styled.div`
     }
 `;
 
-interface Props {
-    selectedAccount: StateProps['selectedAccount'];
-}
-
-const SignVerify = ({ selectedAccount }: Props) => {
+const SignVerify = ({ selectedAccount }: StateProps) => {
     const { isLocked } = useDevice();
     if (selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Sign & Verify" account={selectedAccount} />;
