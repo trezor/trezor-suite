@@ -231,6 +231,8 @@ export default ({
                                         )
                                             return null;
 
+                                        console.log('amount', amount);
+
                                         const transaction = prepareEthereumTransaction({
                                             token,
                                             chainId: network.chainId,
@@ -241,6 +243,8 @@ export default ({
                                             gasPrice,
                                             nonce: account.misc.nonce,
                                         });
+
+                                        console.log('transaction', transaction);
 
                                         const signedTx = await TrezorConnect.ethereumSignTransaction(
                                             {
@@ -388,23 +392,23 @@ export default ({
                             </Label>
                             <Value>{getValues(`address-${index}`)}</Value>
                         </Box>
+                        <Box>
+                            <Label>
+                                <Translation id="TR_TOTAL_AMOUNT" />
+                            </Label>
+                            <Value>
+                                {getValues(`amount-${output.id}`)} {outputSymbol}
+                                <FiatValueWrapper>
+                                    <FiatValue
+                                        amount={getValues(`amount-${output.id}`)}
+                                        symbol={symbol}
+                                        badge={{ color: 'gray' }}
+                                    />
+                                </FiatValueWrapper>
+                            </Value>
+                        </Box>
                     </OutputWrapper>
                 ))}
-                <Box>
-                    <Label>
-                        <Translation id="TR_TOTAL_AMOUNT" />
-                    </Label>
-                    <Value>
-                        {totalSpent} {outputSymbol}
-                        <FiatValueWrapper>
-                            <FiatValue
-                                amount={totalSpent}
-                                symbol={symbol}
-                                badge={{ color: 'gray' }}
-                            />
-                        </FiatValueWrapper>
-                    </Value>
-                </Box>
                 <Box>
                     <Label>
                         {networkType === 'ethereum' ? (

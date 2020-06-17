@@ -222,12 +222,22 @@ export const composeEthTransaction = async (
         return { type: 'error', error } as const;
     }
 
+    let formattedMax;
+
+    if (token) {
+        formattedMax = max.isLessThan('0') ? '' : max.toString();
+    } else {
+        formattedMax = max.isLessThan('0')
+            ? ''
+            : formatNetworkAmount(max.toFixed(), account.symbol);
+    }
+
     return {
         type: 'final',
         totalSpent: totalSpentBig.toString(),
         fee: feeInSatoshi,
         feePerUnit: selectedFee.feePerUnit,
-        max: max.isLessThan('0') ? '' : formatNetworkAmount(max.toFixed(), account.symbol),
+        max: formattedMax,
     } as const;
 };
 
@@ -364,8 +374,6 @@ export const composeChange = async (
 ) => {
     const composedTransaction = await composeTx(account, getValues, selectedFee, outputs, token);
 
-    console.log('composedTransaction', composedTransaction);
-
     if (!composedTransaction) return null; // TODO handle error
 
     if (composedTransaction.type === 'error') {
@@ -461,7 +469,10 @@ export const updateMax = async (
     }
 
     if (composedTransaction.type !== 'error') {
-        const amountToFill = new BigNumber(composedTransaction.max).minus(filledAmountsCount);
+        const amountToFill = new BigNumber(composedTransaction.max)
+            .minus(filledAmountsCount)
+            .toFixed();
+        console.log('amountToFill', amountToFill);
         clearError(`amount-${id}`);
         setValue(`amount-${id}`, amountToFill);
         updateFiatInput(id, fiatRates, getValues, setValue);

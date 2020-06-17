@@ -14,7 +14,7 @@ const Wrapper = styled.div`
 `;
 
 const ToggleIcon = styled(Icon)`
-    margin-left: 8px;
+    margin-left: 5px;
 `;
 
 const Text = styled.div`
@@ -43,11 +43,10 @@ export default () => {
                 ) : (
                     <Translation id="TR_SHOW_ADVANCED_OPTIONS" />
                 )}
-
                 <ToggleIcon
                     icon="ARROW_DOWN"
                     color={colors.BLACK17}
-                    size={12}
+                    size={20}
                     isActive={advancedForm}
                     canAnimate={advancedForm}
                 />
