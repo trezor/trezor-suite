@@ -2,12 +2,12 @@ import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Input, Button, Textarea, Select, Icon, variables } from '@trezor/components';
 import { Card, Translation } from '@suite-components';
-import { copyToClipboard } from '@suite-utils/dom';
 import { useForm, Controller } from 'react-hook-form';
 import { ChildProps as Props } from '../../Container';
-import TrezorConnect from 'trezor-connect';
+import { useActions } from '@suite-hooks';
+import * as signVerifyActions from '@wallet-actions/signVerifyActions';
 
-const ApperAnimation = keyframes`
+const AppearAnimation = keyframes`
  0% { opacity: 0; }
  10% { opacity: 0.1; }
  30% { opacity: 0.3; }
@@ -21,7 +21,7 @@ const Column = styled.div`
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
-    animation-name: ${ApperAnimation};
+    animation-name: ${AppearAnimation};
     animation-duration: 0.6s;
     animation-iteration-count: 1;
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
@@ -81,7 +81,11 @@ let path: AddressToSign['address'] = ''; // fast click on copy button failed if 
 let address: AddressToSign['path'] = '';
 let accountsSelectOpt: AddressToSign['accountsSelectOpt'];
 
-const SignMessage = ({ notificationActions, account, isLocked, device }: Props) => {
+const SignMessage = ({ account, isLocked }: Props) => {
+    const { sign, copyAddress } = useActions({
+        sign: signVerifyActions.sign,
+        copyAddress: signVerifyActions.copyAddress,
+    });
     if (
         account.networkType === 'bitcoin' &&
         typeof account.addresses?.unused[0]?.address === 'string' &&
@@ -111,7 +115,9 @@ const SignMessage = ({ notificationActions, account, isLocked, device }: Props) 
 
     useEffect(() => {
         return () => {
-            reset(); // clear inputs after coin change
+            reset(); // clear data after coin change
+            path = '';
+            address = '';
         };
     }, [reset]);
 
@@ -161,13 +167,7 @@ const SignMessage = ({ notificationActions, account, isLocked, device }: Props) 
                     <StyledIcon
                         icon="COPY"
                         onClick={() => {
-                            // eslint-disable-next-line no-unused-expressions
-                            copyToClipboard(address, null)
-                                ? notificationActions.addToast({ type: 'copy-to-clipboard' })
-                                : notificationActions.addToast({
-                                      type: 'error',
-                                      error: 'Attention! Copying to the clipboard failed.', // 1. how to: <Translation id="TR_COPY_TO_CLIPBOARD_FAILED" />
-                                  });
+                            copyAddress(address);
                         }}
                     />
                 </Row>
@@ -205,54 +205,22 @@ const SignMessage = ({ notificationActions, account, isLocked, device }: Props) 
                     />
                 </Row>
                 <RowButtons>
-                    <StyledButton onClick={() => reset()} variant="secondary">
+                    <StyledButton
+                        onClick={() => {
+                            reset();
+                            path = '';
+                            address = '';
+                        }}
+                        variant="secondary"
+                    >
                         <Translation id="TR_CLEAR" />
                     </StyledButton>
                     <StyledButton
-                        isDisabled={isLocked() || !isValid || !device}
+                        isDisabled={isLocked() || !isValid}
                         onClick={async () => {
-                            let fn;
-                            switch (account.networkType) {
-                                case 'bitcoin': {
-                                    fn = TrezorConnect.signMessage;
-                                    break;
-                                }
-                                case 'ethereum': {
-                                    fn = TrezorConnect.ethereumSignMessage;
-                                    break;
-                                }
-                                default: {
-                                    fn = () => ({
-                                        success: false,
-                                        payload: {
-                                            error: `Unsupported network: ${account.networkType}`,
-                                            code: undefined,
-                                            signature: '',
-                                        },
-                                    });
-                                    break;
-                                }
-                            }
-
-                            const params = {
-                                path,
-                                coin: account.symbol,
-                                message: getValues('signMessage'),
-                                hex: false,
-                                device,
-                            };
-
-                            const response = await fn(params);
-                            if (response.success) {
-                                setValue('signSignature', response.payload.signature);
-                                notificationActions.addToast({
-                                    type: 'verify-message-success',
-                                });
-                            } else {
-                                notificationActions.addToast({
-                                    type: 'sign-message-error',
-                                    error: response.payload.error,
-                                });
+                            const responseSign = await sign(getValues('signMessage'), path);
+                            if (typeof responseSign === 'string') {
+                                setValue('signSignature', responseSign);
                             }
                         }}
                     >

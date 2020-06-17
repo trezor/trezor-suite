@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { WalletLayout } from '@wallet-components';
-import { StateProps, DispatchProps } from './Container';
+import { StateProps } from './Container';
 import { useDevice } from '@suite-hooks';
 import SignMessage from './components/SignMessage';
 import VerifyMessage from './components/VerifyMessage';
@@ -23,13 +23,9 @@ const SignVerifyContainer = styled.div`
 
 interface Props {
     selectedAccount: StateProps['selectedAccount'];
-    notificationActions: DispatchProps['notificationActions'];
-    signVerify: StateProps['signVerify'];
-    suite: StateProps['suite'];
 }
 
-const SignVerify = (props: Props) => {
-    const { selectedAccount, notificationActions, suite } = props;
+const SignVerify = ({ selectedAccount }: Props) => {
     const { isLocked } = useDevice();
     if (selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Sign & Verify" account={selectedAccount} />;
@@ -38,19 +34,9 @@ const SignVerify = (props: Props) => {
     return (
         <WalletLayout title="Sign & Verify" account={selectedAccount}>
             <SignVerifyContainer>
-                <SignMessage
-                    notificationActions={notificationActions}
-                    account={selectedAccount.account}
-                    isLocked={isLocked}
-                    device={suite.device}
-                />
+                <SignMessage account={selectedAccount.account} isLocked={isLocked} />
                 <Row />
-                <VerifyMessage
-                    notificationActions={notificationActions}
-                    account={selectedAccount.account}
-                    isLocked={isLocked}
-                    device={suite.device}
-                />
+                <VerifyMessage account={selectedAccount.account} isLocked={isLocked} />
             </SignVerifyContainer>
         </WalletLayout>
     );

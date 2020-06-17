@@ -1,5 +1,4 @@
 import * as BLOCKCHAIN from './blockchainConstants';
-import * as SIGN_VERIFY from './signVerifyConstants';
 import * as RECEIVE from './receiveConstants';
 import * as ACCOUNT from './accountConstants';
 import * as SEND from './sendFormConstants';
@@ -12,7 +11,6 @@ import * as GRAPH from './graphConstants';
 
 export {
     BLOCKCHAIN,
-    SIGN_VERIFY,
     TOKEN,
     RECEIVE,
     ACCOUNT,
