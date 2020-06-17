@@ -73,7 +73,7 @@ type Inputs = {
     address: string;
     path: string;
     signMessage: string;
-    accountsSelect: { label: string; value: string };
+    accountsSelect: { label: string; value: string; type: '' };
     signSignature: string;
 };
 
@@ -97,7 +97,7 @@ const SignMessage = ({ notificationActions, account, isLocked, device }: Props) 
         path = account.path;
     }
 
-    const { getValues, setValue, errors, formState, reset, control, register } = useForm({
+    const { getValues, setValue, errors, formState, reset, control, register } = useForm<Inputs>({
         defaultValues: {
             address,
             path,
