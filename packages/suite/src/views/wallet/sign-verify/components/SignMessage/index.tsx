@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { Input, Button, Textarea, Select, Icon, variables } from '@trezor/components';
 import { Card, Translation } from '@suite-components';
 import { copyToClipboard } from '@suite-utils/dom';
@@ -7,17 +7,31 @@ import { useForm, Controller } from 'react-hook-form';
 import { ChildProps as Props } from '../../Container';
 import TrezorConnect from 'trezor-connect';
 
+const ApperAnimation = keyframes`
+ 0% { opacity: 0; }
+ 10% { opacity: 0.1; }
+ 30% { opacity: 0.3; }
+ 70% {  opacity: 0.7;}
+ 80% {  opacity: 0.8;}
+ 90% {  opacity: 0.9;}
+ 100% { opacity: 1; }
+`;
+
 const Column = styled.div`
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
-
+    animation-name: ${ApperAnimation};
+    animation-duration: 0.6s;
+    animation-iteration-count: 1;
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         flex: 1 1 100%;
     }
 `;
 
 const StyledSelect = styled(Select)`
+    padding: 0;
+    margin-bottom: 26px;
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         font-size: ${variables.FONT_SIZE.TINY};
     }
@@ -28,9 +42,7 @@ const StyledIcon = styled(Icon)`
     margin-right: 5px;
     position: relative;
     cursor: pointer;
-`;
-let CopyIcon = styled(StyledIcon)`
-    top: 55%;
+    top: 41%;
 `;
 
 const Row = styled.div`
@@ -56,7 +68,7 @@ interface AddressToSign {
     path: string;
     accountsSelectOpt?: Array<{ label: string; value: string }>;
 }
-
+type errorsMessage = 'TR_ADDRESS_IS_NOT_VALID' | 'TR_REQUIRED_FIELD';
 type Inputs = {
     address: string;
     path: string;
@@ -65,7 +77,7 @@ type Inputs = {
     signSignature: string;
 };
 
-let path: AddressToSign['address'] = '';
+let path: AddressToSign['address'] = ''; // fast click on copy button failed if put this inside a component
 let address: AddressToSign['path'] = '';
 let accountsSelectOpt: AddressToSign['accountsSelectOpt'];
 
@@ -83,17 +95,14 @@ const SignMessage = ({ notificationActions, account, isLocked, device }: Props) 
     } else if (account.networkType === 'ethereum') {
         address = account.descriptor;
         path = account.path;
-        CopyIcon = styled(StyledIcon)`
-            top: 41%;
-        `;
     }
 
-    const { getValues, setValue, errors, formState, reset, control, register } = useForm<Inputs>({
+    const { getValues, setValue, errors, formState, reset, control, register } = useForm({
         defaultValues: {
             address,
             path,
             signMessage: '',
-            accountsSelect: { label: '', value: '' },
+            accountsSelect: { label: '', value: '', type: '' },
             signSignature: '',
         },
         mode: 'onChange',
@@ -107,7 +116,7 @@ const SignMessage = ({ notificationActions, account, isLocked, device }: Props) 
     }, [reset]);
 
     return (
-        <Card title={<Translation id="TR_SIGN_MESSAGE" />}>
+        <Card title={<Translation id="TR_SIGN_MESSAGE" />} isColumn>
             <Column>
                 <Row>
                     {account.networkType === 'bitcoin' && (
@@ -123,10 +132,10 @@ const SignMessage = ({ notificationActions, account, isLocked, device }: Props) 
                                 return selected;
                             }}
                             bottomText={
-                                errors.accountsSelect ? (
-                                    <Translation id={errors.accountsSelect.type} />
-                                ) : (
-                                    ''
+                                errors.accountsSelect && (
+                                    <Translation
+                                        id={(errors.accountsSelect.type as any) as errorsMessage}
+                                    />
                                 )
                             }
                             rules={{
@@ -149,7 +158,7 @@ const SignMessage = ({ notificationActions, account, isLocked, device }: Props) 
                             readOnly
                         />
                     )}
-                    <CopyIcon
+                    <StyledIcon
                         icon="COPY"
                         onClick={() => {
                             // eslint-disable-next-line no-unused-expressions
@@ -157,39 +166,31 @@ const SignMessage = ({ notificationActions, account, isLocked, device }: Props) 
                                 ? notificationActions.addToast({ type: 'copy-to-clipboard' })
                                 : notificationActions.addToast({
                                       type: 'error',
-                                      error: 'Attention! Copying to the clipboard failed.', // 2. how to: <Translation id="TR_COPY_TO_CLIPBOARD_FAILED" />
+                                      error: 'Attention! Copying to the clipboard failed.', // 1. how to: <Translation id="TR_COPY_TO_CLIPBOARD_FAILED" />
                                   });
                         }}
                     />
                 </Row>
                 <Row>
-                    <Controller
-                        as={
-                            <Textarea
-                                topLabel={<Translation id="TR_MESSAGE" />}
-                                rows={4}
-                                maxRows={4}
-                                maxLength={255}
-                                state={errors.signMessage ? 'error' : undefined}
-                                bottomText={
-                                    errors.signMessage ? (
-                                        <Translation id={errors.signMessage.type} />
-                                    ) : (
-                                        ''
-                                    )
-                                }
-                            />
-                        }
+                    <Textarea
+                        topLabel={<Translation id="TR_MESSAGE" />}
                         name="signMessage"
-                        control={control}
-                        defaultValue=""
-                        rules={{
+                        rows={4}
+                        maxRows={4}
+                        maxLength={255}
+                        state={errors.signMessage ? 'error' : undefined}
+                        bottomText={
+                            errors.signMessage && (
+                                <Translation id={errors.signMessage.type as errorsMessage} />
+                            )
+                        }
+                        innerRef={register({
                             validate: {
                                 TR_REQUIRED_FIELD: (value: string) => {
                                     return value.length > 0;
                                 },
                             },
-                        }}
+                        })}
                     />
                 </Row>
                 <Row>
@@ -209,7 +210,6 @@ const SignMessage = ({ notificationActions, account, isLocked, device }: Props) 
                     </StyledButton>
                     <StyledButton
                         isDisabled={isLocked() || !isValid || !device}
-                        // isDisabled={isLocked() || !isValid}
                         onClick={async () => {
                             let fn;
                             switch (account.networkType) {

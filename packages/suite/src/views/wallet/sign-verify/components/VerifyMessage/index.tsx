@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { Input, Button, Textarea, variables } from '@trezor/components';
 import { Card, Translation } from '@suite-components';
 import { useForm } from 'react-hook-form';
@@ -7,11 +7,23 @@ import { isAddressValid } from '@wallet-utils/validation';
 import { ChildProps as Props } from '../../Container';
 import TrezorConnect from 'trezor-connect';
 
+const ApperAnimation = keyframes`
+ 0% { opacity: 0; }
+ 10% { opacity: 0.1; }
+ 30% { opacity: 0.3; }
+ 70% {  opacity: 0.7;}
+ 80% {  opacity: 0.8;}
+ 90% {  opacity: 0.9;}
+ 100% { opacity: 1; }
+`;
+
 const Column = styled.div`
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
-
+    animation-name: ${ApperAnimation};
+    animation-duration: 0.6s;
+    animation-iteration-count: 1;
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         flex: 1 1 100%;
     }
@@ -33,6 +45,7 @@ const StyledButton = styled(Button)`
         margin-left: 0;
     }
 `;
+type errorsMessage = 'TR_ADDRESS_IS_NOT_VALID' | 'TR_REQUIRED_FIELD';
 
 const VerifyMessage = ({ notificationActions, account, isLocked, device }: Props) => {
     const { register, getValues, errors, formState, reset } = useForm({
@@ -43,6 +56,7 @@ const VerifyMessage = ({ notificationActions, account, isLocked, device }: Props
             verifySignature: '',
         },
     });
+
     const { isValid } = formState;
 
     useEffect(() => {
@@ -52,7 +66,7 @@ const VerifyMessage = ({ notificationActions, account, isLocked, device }: Props
     }, [reset]);
 
     return (
-        <Card title={<Translation id="TR_VERIFY_MESSAGE" />}>
+        <Card title={<Translation id="TR_VERIFY_MESSAGE" />} isColumn>
             <Column>
                 <Row>
                     <Input
@@ -61,10 +75,8 @@ const VerifyMessage = ({ notificationActions, account, isLocked, device }: Props
                         type="text"
                         state={errors.verifyAddressInput ? 'error' : undefined}
                         bottomText={
-                            errors.verifyAddressInput ? (
-                                <Translation id={errors.verifyAddressInput.type} />
-                            ) : (
-                                ''
+                            errors.verifyAddressInput && (
+                                <Translation id={errors.verifyAddressInput.type as errorsMessage} />
                             )
                         }
                         innerRef={register({
@@ -87,10 +99,8 @@ const VerifyMessage = ({ notificationActions, account, isLocked, device }: Props
                         maxLength={255}
                         state={errors.verifyMessage ? 'error' : undefined}
                         bottomText={
-                            errors.verifyMessage ? (
-                                <Translation id={errors.verifyMessage.type} />
-                            ) : (
-                                ''
+                            errors.verifyMessage && (
+                                <Translation id={errors.verifyMessage.type as errorsMessage} />
                             )
                         }
                         innerRef={register({
@@ -111,10 +121,8 @@ const VerifyMessage = ({ notificationActions, account, isLocked, device }: Props
                         maxLength={255}
                         state={errors.verifySignature ? 'error' : undefined}
                         bottomText={
-                            errors.verifySignature ? (
-                                <Translation id={errors.verifySignature.type} />
-                            ) : (
-                                ''
+                            errors.verifySignature && (
+                                <Translation id={errors.verifySignature.type as errorsMessage} />
                             )
                         }
                         innerRef={register({

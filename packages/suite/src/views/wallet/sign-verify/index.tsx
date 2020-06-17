@@ -5,14 +5,20 @@ import { StateProps, DispatchProps } from './Container';
 import { useDevice } from '@suite-hooks';
 import SignMessage from './components/SignMessage';
 import VerifyMessage from './components/VerifyMessage';
-
-const StyledWalletLayout = styled(WalletLayout)`
-    flex-direction: row; // 1. dont work, why?
-`;
+import { variables } from '@trezor/components';
 
 const Row = styled.div`
-    padding-bottom: 28px;
+    width: 45px;
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        height: 25px;
+    }
+`;
+const SignVerifyContainer = styled.div`
     display: flex;
+    flex-direction: row;
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-direction: column;
+    }
 `;
 
 interface Props {
@@ -30,21 +36,23 @@ const SignVerify = (props: Props) => {
     }
 
     return (
-        <StyledWalletLayout title="Sign & Verify" account={selectedAccount}>
-            <SignMessage
-                notificationActions={notificationActions}
-                account={selectedAccount.account}
-                isLocked={isLocked}
-                device={suite.device}
-            />
-            <Row />
-            <VerifyMessage
-                notificationActions={notificationActions}
-                account={selectedAccount.account}
-                isLocked={isLocked}
-                device={suite.device}
-            />
-        </StyledWalletLayout>
+        <WalletLayout title="Sign & Verify" account={selectedAccount}>
+            <SignVerifyContainer>
+                <SignMessage
+                    notificationActions={notificationActions}
+                    account={selectedAccount.account}
+                    isLocked={isLocked}
+                    device={suite.device}
+                />
+                <Row />
+                <VerifyMessage
+                    notificationActions={notificationActions}
+                    account={selectedAccount.account}
+                    isLocked={isLocked}
+                    device={suite.device}
+                />
+            </SignVerifyContainer>
+        </WalletLayout>
     );
 };
 
