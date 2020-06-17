@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import dynamic from 'next/dynamic';
-import styled from 'styled-components';
-import { Translation, ExternalLink } from '@suite-components';
-import { parseUri } from '@suite-utils/parseUri';
-import { Modal, P, Icon, colors } from '@trezor/components';
-
+import { ExternalLink, Translation } from '@suite-components';
 import * as URLS from '@suite-constants/urls';
+import { useActions } from '@suite-hooks';
+import { useForm } from 'react-hook-form';
+import { parseUri } from '@suite-utils/parseUri';
+import { colors, Icon, Modal, P } from '@trezor/components';
+import * as sendFormActions from '@wallet-actions/sendFormActions';
+import dynamic from 'next/dynamic';
+import React, { useState } from 'react';
+import styled from 'styled-components';
 
 const QrReader = dynamic(() => import('react-qr-reader'), { ssr: false });
 
@@ -61,6 +63,7 @@ const Actions = styled.div`
 
 type Props = {
     outputId: number;
+    setValue: ReturnType<typeof useForm>['setValue'];
     onCancel: () => void;
 };
 
@@ -72,7 +75,7 @@ interface State {
 const QrScanner = ({ onCancel, outputId, setValue }: Props) => {
     const [readerLoaded, setReaderLoaded] = useState<State['readerLoaded']>(false);
     const [error, setError] = useState<State['error']>(null);
-    // const { onScan } = useActions({ onScan: sendFormActions.onQrScan });
+    const { onQrScan } = useActions({ onQrScan: sendFormActions.onQrScan });
 
     const onLoad = () => {
         setReaderLoaded(true);
@@ -98,13 +101,7 @@ const QrScanner = ({ onCancel, outputId, setValue }: Props) => {
             try {
                 const parsedUri = parseUri(data);
                 if (parsedUri) {
-                    const { address, amount } = parsedUri;
-                    if (address) {
-                        setValue(`address-${outputId}`, address);
-                    }
-                    if (amount) {
-                        setValue(`amount-${outputId}`, amount);
-                    }
+                    onQrScan(parsedUri, outputId, setValue);
                     setReaderLoaded(true);
                     onCancel();
                 }

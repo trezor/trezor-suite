@@ -1,18 +1,18 @@
 import { ERC20_GAS_LIMIT, ERC20_TRANSFER } from '@wallet-constants/sendForm';
 import { SendContext } from '@wallet-hooks/useSendContext';
 import { Account, Network } from '@wallet-types';
-// import { ParsedURI } from '@wallet-utils/cryptoUriParser';
-import { EthTransactionData, FeeInfo, FeeLevel } from '@wallet-types/sendForm';
 import {
-    amountToSatoshi,
-    formatNetworkAmount,
-    networkAmountToSatoshi,
-} from '@wallet-utils/accountUtils';
+    composeRippleTransaction,
+    composeEthereumTransaction,
+    composeBitcoinTransaction,
+} from '@wallet-actions/sendFormActions';
+import { EthTransactionData, FeeInfo, FeeLevel } from '@wallet-types/sendForm';
+import { amountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import BigNumber from 'bignumber.js';
 import Common from 'ethereumjs-common';
 import { Transaction, TxData } from 'ethereumjs-tx';
 import { FieldError, NestDataObject, useForm } from 'react-hook-form';
-import TrezorConnect, { EthereumTransaction } from 'trezor-connect';
+import { EthereumTransaction } from 'trezor-connect';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 
 export const calculateTotal = (amount: string, fee: string): string => {
@@ -168,146 +168,6 @@ export const getInputState = (
     }
 };
 
-export const composeXrpTransaction = async (
-    account: SendContext['account'],
-    amount: string,
-    selectedFee: SendContext['selectedFee'],
-) => {
-    const { symbol, availableBalance } = account;
-    const amountInSatoshi = networkAmountToSatoshi(amount, symbol).toString();
-    const feeInSatoshi = selectedFee.feePerUnit;
-    const totalSpentBig = new BigNumber(calculateTotal(amountInSatoshi, feeInSatoshi));
-    const max = new BigNumber(calculateMax(availableBalance, feeInSatoshi));
-
-    if (totalSpentBig.isGreaterThan(availableBalance)) {
-        return { type: 'error', error: 'NOT-ENOUGH-FUNDS' } as const;
-    }
-
-    return {
-        type: 'final',
-        totalSpent: totalSpentBig.toString(),
-        fee: feeInSatoshi,
-        max: max.isLessThan('0') ? '' : formatNetworkAmount(max.toFixed(), account.symbol),
-    } as const;
-};
-
-export const composeEthTransaction = async (
-    account: SendContext['account'],
-    amount: string,
-    selectedFee: SendContext['selectedFee'],
-    token: SendContext['token'],
-    setMax = false,
-) => {
-    const isFeeValid = !new BigNumber(selectedFee.feePerUnit).isNaN();
-    const { availableBalance } = account;
-    const feeInSatoshi = calculateEthFee(
-        toWei(isFeeValid ? selectedFee.feePerUnit : '0', 'gwei'),
-        selectedFee.feeLimit || '0',
-    );
-    const max = token
-        ? new BigNumber(token.balance!)
-        : new BigNumber(calculateMax(availableBalance, feeInSatoshi));
-    // use max possible value or input.value
-    // race condition when switching between tokens with set-max enabled
-    // input still holds previous value (previous token max)
-    const amountInSatoshi = setMax
-        ? max.toString()
-        : networkAmountToSatoshi(amount, account.symbol).toString();
-    const totalSpentBig = new BigNumber(
-        calculateTotal(token ? '0' : amountInSatoshi, feeInSatoshi),
-    );
-
-    if (totalSpentBig.isGreaterThan(availableBalance)) {
-        const error = token ? 'NOT-ENOUGH-CURRENCY-FEE' : 'NOT-ENOUGH-FUNDS';
-        return { type: 'error', error } as const;
-    }
-
-    let formattedMax;
-
-    if (token) {
-        formattedMax = max.isLessThan('0') ? '' : max.toString();
-    } else {
-        formattedMax = max.isLessThan('0')
-            ? ''
-            : formatNetworkAmount(max.toFixed(), account.symbol);
-    }
-
-    return {
-        type: 'final',
-        totalSpent: totalSpentBig.toString(),
-        fee: feeInSatoshi,
-        feePerUnit: selectedFee.feePerUnit,
-        max: formattedMax,
-    } as const;
-};
-
-export const composeBtcTransaction = async (
-    account: Account,
-    getValues: ReturnType<typeof useForm>['getValues'],
-    outputs: SendContext['outputs'],
-    selectedFee: SendContext['selectedFee'],
-    setMax = false,
-) => {
-    if (!account.addresses || !account.utxo) return;
-
-    const composedOutputs = outputs.map(output => {
-        const amount = networkAmountToSatoshi(getValues(`amount-${output.id}`), account.symbol);
-        const address = getValues(`address-${output.id}`);
-
-        // address is set
-        if (address) {
-            // set max without address
-            if (setMax) {
-                return {
-                    address,
-                    type: 'send-max',
-                } as const;
-            }
-
-            return {
-                address,
-                amount,
-            } as const;
-        }
-
-        // set max with address only
-        if (setMax) {
-            return {
-                type: 'send-max-noaddress',
-            } as const;
-        }
-
-        // set amount without address
-        return {
-            type: 'noaddress',
-            amount,
-        } as const;
-    });
-
-    const response = await TrezorConnect.composeTransaction({
-        account: {
-            path: account.path,
-            addresses: account.addresses,
-            utxo: account.utxo,
-        },
-        feeLevels: [selectedFee],
-        outputs: composedOutputs,
-        coin: account.symbol,
-    });
-
-    if (response.success) {
-        const { max } = response.payload[0];
-        const maxBig = new BigNumber(max);
-
-        return {
-            ...response.payload[0],
-            max: maxBig.isLessThan('0')
-                ? ''
-                : formatNetworkAmount(maxBig.toFixed(), account.symbol),
-        } as const;
-    }
-};
-
 export const composeTx = async (
     account: Account,
     getValues: ReturnType<typeof useForm>['getValues'],
@@ -318,16 +178,18 @@ export const composeTx = async (
 ) => {
     if (account.networkType === 'ripple') {
         const amount = getValues('amount-0');
-        return composeXrpTransaction(account, amount, selectedFee);
+        const address = getValues('address-0');
+        return composeRippleTransaction(account, address, amount, selectedFee);
     }
 
     if (account.networkType === 'ethereum') {
         const amount = getValues('amount-0');
-        return composeEthTransaction(account, amount, selectedFee, token, setMax);
+        const address = getValues('address-0');
+        return composeEthereumTransaction(account, address, amount, selectedFee, token, setMax);
     }
 
     if (account.networkType === 'bitcoin') {
-        return composeBtcTransaction(account, getValues, outputs, selectedFee, setMax);
+        return composeBitcoinTransaction(account, outputs, getValues, selectedFee, setMax);
     }
 };
 
@@ -372,7 +234,15 @@ export const composeChange = async (
     outputs: SendContext['outputs'],
     token: SendContext['token'],
 ) => {
-    const composedTransaction = await composeTx(account, getValues, selectedFee, outputs, token);
+    const isActive = getValues(`setMax-${id}`) === 'active';
+    const composedTransaction = await composeTx(
+        account,
+        getValues,
+        selectedFee,
+        outputs,
+        token,
+        isActive,
+    );
 
     if (!composedTransaction) return null; // TODO handle error
 
@@ -388,10 +258,7 @@ export const composeChange = async (
         }
     }
 
-    if (composedTransaction.type !== 'error') {
-        // @ts-ignore TODO
-        setTransactionInfo(composedTransaction);
-    }
+    setTransactionInfo(composedTransaction);
 };
 
 const resetAllMax = (
@@ -472,7 +339,6 @@ export const updateMax = async (
         const amountToFill = new BigNumber(composedTransaction.max)
             .minus(filledAmountsCount)
             .toFixed();
-        console.log('amountToFill', amountToFill);
         clearError(`amount-${id}`);
         setValue(`amount-${id}`, amountToFill);
         updateFiatInput(id, fiatRates, getValues, setValue);

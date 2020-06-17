@@ -9,6 +9,7 @@ export type UserContextPayload =
     | {
           type: 'qr-reader';
           outputId: number;
+          setValue: ReturnType<typeof useForm>['setValue'];
       }
     | {
           type: 'unverified-address';

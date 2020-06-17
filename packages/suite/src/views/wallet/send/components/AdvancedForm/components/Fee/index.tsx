@@ -169,7 +169,6 @@ export default () => {
                             setValue('customFee', '');
 
                             const activeMax = findActiveMaxId(outputs, getValues);
-
                             await updateMax(
                                 activeMax,
                                 account,

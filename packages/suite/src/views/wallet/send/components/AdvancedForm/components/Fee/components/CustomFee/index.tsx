@@ -3,8 +3,8 @@ import { Translation } from '@suite-components/Translation';
 import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext';
 import { Input, Select } from '@trezor/components';
 import { Account } from '@wallet-types';
-import { getInputState, findActiveMaxId, updateMax } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
+import { getInputState, findActiveMaxId, updateMax } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import { useFormContext, FieldError, NestDataObject } from 'react-hook-form';
 import styled from 'styled-components';
@@ -71,6 +71,7 @@ export default ({ isVisible }: { isVisible: boolean }) => {
         transactionInfo,
         setSelectedFee,
         outputs,
+        selectedFee,
         token,
         fiatRates,
         setTransactionInfo,
@@ -91,16 +92,11 @@ export default ({ isVisible }: { isVisible: boolean }) => {
                     state={getInputState(error)}
                     onChange={async event => {
                         const newFeeLevel: SendContext['selectedFee'] = {
-                            label: 'custom',
-                            feePerTx: event.target.value,
+                            ...selectedFee,
                             feePerUnit: event.target.value,
-                            blocks: 0,
                         };
-
                         setSelectedFee(newFeeLevel);
-
                         const activeMax = findActiveMaxId(outputs, getValues);
-
                         await updateMax(
                             activeMax,
                             account,

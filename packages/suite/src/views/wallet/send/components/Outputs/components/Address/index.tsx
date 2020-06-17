@@ -21,7 +21,7 @@ const Text = styled.div`
 
 export default ({ outputId }: { outputId: number }) => {
     const { account, setDestinationAddressEmpty } = useSendContext();
-    const { register, errors, getValues, formState } = useFormContext();
+    const { register, errors, getValues, formState, setValue } = useFormContext();
     const inputName = `address-${outputId}`;
     const isDirty = formState.dirtyFields.has(inputName);
     const { descriptor, networkType, symbol } = account;
@@ -78,6 +78,7 @@ export default ({ outputId }: { outputId: number }) => {
                     openModal({
                         type: 'qr-reader',
                         outputId,
+                        setValue,
                     }),
                 text: <Translation id="TR_SCAN" />,
             }}
