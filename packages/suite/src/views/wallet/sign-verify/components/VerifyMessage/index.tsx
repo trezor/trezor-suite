@@ -49,7 +49,7 @@ const StyledButton = styled(Button)`
 type errorsMessage = 'TR_ADDRESS_IS_NOT_VALID' | 'TR_REQUIRED_FIELD';
 
 const VerifyMessage = ({ account, isLocked }: Props) => {
-    const { initVerify } = useActions({ initVerify: signVerifyActions.initVerify });
+    const { verify } = useActions({ verify: signVerifyActions.verify });
 
     const { register, getValues, errors, formState, reset } = useForm({
         mode: 'onChange',
@@ -144,7 +144,7 @@ const VerifyMessage = ({ account, isLocked }: Props) => {
                     <StyledButton
                         isDisabled={!isValid || isLocked()}
                         onClick={async () => {
-                            await initVerify(
+                            await verify(
                                 getValues('verifyAddressInput'),
                                 getValues('verifyMessage'),
                                 getValues('verifySignature'),

@@ -21,10 +21,10 @@ export const copyAddress = (address: string) => (dispatch: Dispatch) => {
 export const sign = (message: string, path: string, hex = false) => async (
     dispatch: Dispatch,
     getState: GetState,
-): Promise<string | boolean> => {
+) => {
     const { device } = getState().suite;
     const { account } = getState().wallet.selectedAccount;
-    if (!device || !account) return false;
+    if (!device || !account) return;
 
     let fn;
 
@@ -71,15 +71,12 @@ export const sign = (message: string, path: string, hex = false) => async (
             error: response.payload.error,
         }),
     );
-    return false;
 };
 
-export const initVerify = (
-    address: string,
-    message: string,
-    signature: string,
-    hex = false,
-) => async (dispatch: Dispatch, getState: GetState) => {
+export const verify = (address: string, message: string, signature: string, hex = false) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     const { device } = getState().suite;
     const { account } = getState().wallet.selectedAccount;
     if (!device || !account) return;
@@ -91,6 +88,8 @@ export const initVerify = (
         signature,
         coin: account.symbol,
         hex,
+        device,
+        useEmptyPassphrase: device.useEmptyPassphrase,
     };
 
     switch (account.networkType) {
