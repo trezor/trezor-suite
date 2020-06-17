@@ -34,17 +34,17 @@ window.onload = function() {
     var supportedBrowsers = [
         {
             name: "Chrome",
-            version: 59,
+            version: 69,
             mobile: true,
         },
         {
             name: "Chromium",
-            version: 59,
+            version: 69,
             mobile: true,
         },
         {
             name: "Firefox",
-            version: 54,
+            version: 62,
             mobile: false, // no webusb support
         }
     ];
