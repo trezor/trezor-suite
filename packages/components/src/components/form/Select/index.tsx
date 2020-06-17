@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactSelect, { Props as SelectProps } from 'react-select';
+import ReactSelect, { components, Props as SelectProps } from 'react-select';
 import styled from 'styled-components';
 import { colors, variables } from '../../../config';
 import { InputVariant } from '../../../support/types';
@@ -117,15 +117,42 @@ const Select = ({
     topLabel,
     width,
     variant = 'large',
-    ...rest
+    ...props
 }: Props) => {
+    // customize control to pass data-test attribute
+    const Control = (controlProps: any) => {
+        return (
+            <components.Control
+                {...controlProps}
+                innerProps={{
+                    ...controlProps.innerProps,
+                    'data-test': `${props['data-test']}/input`,
+                }}
+            />
+        );
+    };
+
+    // customize options to pass data-test attribute
+    const Option = (optionProps: any) => {
+        return (
+            <components.Option
+                {...optionProps}
+                innerProps={{
+                    ...optionProps.innerProps,
+                    'data-test': `${props['data-test']}/option/${optionProps.value}`,
+                }}
+            />
+        );
+    };
+
     return (
         <Wrapper className={className} width={width} {...wrapperProps}>
             {topLabel && <TopLabel>{topLabel}</TopLabel>}
             <ReactSelect
                 styles={selectStyle(isSearchable, withDropdownIndicator, variant, isClean)}
                 isSearchable={isSearchable}
-                {...rest}
+                {...props}
+                components={{ Control, Option, ...props.components }}
             />
         </Wrapper>
     );
