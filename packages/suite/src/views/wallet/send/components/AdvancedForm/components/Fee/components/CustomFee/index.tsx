@@ -96,20 +96,22 @@ export default ({ isVisible }: { isVisible: boolean }) => {
                             feePerUnit: event.target.value,
                         };
                         setSelectedFee(newFeeLevel);
-                        const activeMax = findActiveMaxId(outputs, getValues);
-                        await updateMax(
-                            activeMax,
-                            account,
-                            setValue,
-                            getValues,
-                            clearError,
-                            setError,
-                            newFeeLevel,
-                            outputs,
-                            token,
-                            fiatRates,
-                            setTransactionInfo,
-                        );
+                        if (!error) {
+                            const activeMax = findActiveMaxId(outputs, getValues);
+                            await updateMax(
+                                activeMax,
+                                account,
+                                setValue,
+                                getValues,
+                                clearError,
+                                setError,
+                                newFeeLevel,
+                                outputs,
+                                token,
+                                fiatRates,
+                                setTransactionInfo,
+                            );
+                        }
                     }}
                     innerRef={register({
                         validate: {
