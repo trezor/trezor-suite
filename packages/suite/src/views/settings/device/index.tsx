@@ -328,7 +328,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         <HiddenInput
                             ref={fileInputElement}
                             type="file"
-                            accept=".png"
+                            accept=".png, .jpg"
                             onChange={e => {
                                 onUploadHomescreen(e.target.files);
                             }}
@@ -366,7 +366,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         </ActionButton>
                     </ActionColumn>
                 </SectionItem>
-                {customHomescreen && (
+                {customHomescreen && homescreen.isValid(customHomescreen) && (
                     <SectionItem>
                         <Col>
                             <img
@@ -387,6 +387,21 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                 isDisabled={isDeviceLocked}
                             >
                                 Drop image
+                            </ActionButton>
+                        </ActionColumn>
+                    </SectionItem>
+                )}
+                {customHomescreen && !homescreen.isValid(customHomescreen) && (
+                    <SectionItem>
+                        <Col>Invalid file selected</Col>
+
+                        <ActionColumn>
+                            <ActionButton
+                                variant="secondary"
+                                onClick={() => setCustomHomescreen('')}
+                                isDisabled={isDeviceLocked}
+                            >
+                                Drop file
                             </ActionButton>
                         </ActionColumn>
                     </SectionItem>
