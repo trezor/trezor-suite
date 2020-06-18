@@ -541,10 +541,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Copy to clipboard',
         id: 'TR_COPY_TO_CLIPBOARD',
     },
-    TR_COPY_TO_CLIPBOARD_FAILED: {
-        defaultMessage: 'Attention! Copying to the clipboard failed.',
-        id: 'TR_COPY_TO_CLIPBOARD_FAILED',
-    },
     TR_CREATE_BACKUP: {
         defaultMessage: 'Create backup',
         id: 'TR_CREATE_BACKUP',
