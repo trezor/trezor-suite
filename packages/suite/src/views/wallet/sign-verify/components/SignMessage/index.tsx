@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { Input, Button, Textarea, Select, Icon, variables } from '@trezor/components';
+import { Input, Button, Textarea, Select, variables } from '@trezor/components';
 import { Card, Translation } from '@suite-components';
 import { useForm, Controller } from 'react-hook-form';
 import { ChildProps as Props } from '../../Container';
 import { useActions } from '@suite-hooks';
 import * as signVerifyActions from '@wallet-actions/signVerifyActions';
+import * as modalActions from '@suite-actions/modalActions';
 
 const AppearAnimation = keyframes`
  0% { opacity: 0; }
@@ -31,18 +32,10 @@ const Column = styled.div`
 
 const StyledSelect = styled(Select)`
     padding: 0;
-    margin-bottom: 26px;
+    margin-bottom: 0px;
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         font-size: ${variables.FONT_SIZE.TINY};
     }
-`;
-
-const StyledIcon = styled(Icon)`
-    margin-left: 10px;
-    margin-right: 5px;
-    position: relative;
-    cursor: pointer;
-    top: 41%;
 `;
 
 const Row = styled.div`
@@ -62,6 +55,9 @@ const StyledButton = styled(Button)`
         margin-left: 0;
     }
 `;
+const LeftSideButton = styled(StyledButton)`
+    margin-right: auto;
+`;
 
 interface AddressToSign {
     address: string;
@@ -74,7 +70,7 @@ type Inputs = {
     path: string;
     signMessage: string;
     accountsSelect: { label: string; value: string; type: '' };
-    signSignature: string;
+    signature: string;
 };
 
 let path: AddressToSign['address'] = ''; // fast click on copy button failed if put this inside a component
@@ -82,9 +78,9 @@ let address: AddressToSign['path'] = '';
 let accountsSelectOpt: AddressToSign['accountsSelectOpt'];
 
 const SignMessage = ({ account, isLocked }: Props) => {
-    const { sign, copyAddress } = useActions({
+    const { sign, openModal } = useActions({
         sign: signVerifyActions.sign,
-        copyAddress: signVerifyActions.copyAddress,
+        openModal: modalActions.openModal,
     });
     if (
         account.networkType === 'bitcoin' &&
@@ -101,17 +97,20 @@ const SignMessage = ({ account, isLocked }: Props) => {
         path = account.path;
     }
 
-    const { getValues, setValue, errors, formState, reset, control, register } = useForm<Inputs>({
+    const { getValues, setValue, errors, formState, reset, control, register, watch } = useForm<
+        Inputs
+    >({
         defaultValues: {
             address,
             path,
             signMessage: '',
             accountsSelect: { label: '', value: '', type: '' },
-            signSignature: '',
+            signature: '',
         },
         mode: 'onChange',
     });
     const { isValid } = formState;
+    const watchSignature = watch('signature');
 
     useEffect(() => {
         return () => {
@@ -164,12 +163,6 @@ const SignMessage = ({ account, isLocked }: Props) => {
                             readOnly
                         />
                     )}
-                    <StyledIcon
-                        icon="COPY"
-                        onClick={() => {
-                            copyAddress(address);
-                        }}
-                    />
                 </Row>
                 <Row>
                     <Textarea
@@ -178,6 +171,9 @@ const SignMessage = ({ account, isLocked }: Props) => {
                         rows={4}
                         maxRows={4}
                         maxLength={255}
+                        onChange={() => {
+                            setValue('signature', ''); // reset signature if user changes the message
+                        }}
                         state={errors.signMessage ? 'error' : undefined}
                         bottomText={
                             errors.signMessage && (
@@ -196,7 +192,7 @@ const SignMessage = ({ account, isLocked }: Props) => {
                 <Row>
                     <Textarea
                         topLabel={<Translation id="TR_SIGNATURE" />}
-                        name="signSignature"
+                        name="signature"
                         rows={4}
                         maxRows={4}
                         maxLength={255}
@@ -205,6 +201,24 @@ const SignMessage = ({ account, isLocked }: Props) => {
                     />
                 </Row>
                 <RowButtons>
+                    {watchSignature && (
+                        <LeftSideButton
+                            onClick={() => {
+                                openModal({
+                                    type: 'review-signed-message',
+                                    signedObj: {
+                                        address,
+                                        message: getValues('signMessage'),
+                                        signature: getValues('signature'),
+                                    },
+                                });
+                            }}
+                            variant="secondary"
+                        >
+                            <Translation id="TR_COPY_SIGN_RESULTS" />
+                        </LeftSideButton>
+                    )}
+
                     <StyledButton
                         onClick={() => {
                             reset();
@@ -220,7 +234,7 @@ const SignMessage = ({ account, isLocked }: Props) => {
                         onClick={async () => {
                             const responseSign = await sign(getValues('signMessage'), path);
                             if (typeof responseSign === 'string') {
-                                setValue('signSignature', responseSign);
+                                setValue('signature', responseSign);
                             }
                         }}
                     >

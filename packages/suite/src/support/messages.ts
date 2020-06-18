@@ -412,6 +412,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Close',
         id: 'TR_CLOSE',
     },
+    TR_COPY_SIGN_RESULTS: {
+        defaultMessage: 'Copy the result',
+        id: 'TR_COPY_SIGN_RESULTS',
+    },
     TR_COIN_DISCOVERY_IN_PROGRESS: {
         defaultMessage: 'Coin discovery in progress…',
         id: 'TR_COIN_DISCOVERY_IN_PROGRESS',
@@ -1177,6 +1181,27 @@ const definedMessages = defineMessages({
         defaultMessage: 'Full-color touch-screen display',
         description: 'Description of Trezor model T',
         id: 'TR_MODEL_T_DESC',
+    },
+    TR_SUCCESS_COPIED: {
+        defaultMessage: 'Successfully copied to clipboard',
+        id: 'TR_SUCCESS_COPIED',
+    },
+    TR_SIGNED_MESSAGE_MODAL_HEADING: {
+        defaultMessage:
+            'We have copied all the fields of your signed message to the clipboard in JSON format. You can overview it below.',
+        id: 'TR_SIGNED_MESSAGE_MODAL_HEADING',
+    },
+    TR_SHOW_PLAIN_TEXT: {
+        defaultMessage: 'Show in plain text format?',
+        id: 'TR_SHOW_PLAIN_TEXT',
+    },
+    TR_SHOW_JSON_FORMAT: {
+        defaultMessage: 'Show in JSON format?',
+        id: 'TR_SHOW_JSON_FORMAT',
+    },
+    TR_TIP_SELECT_FORMAT: {
+        defaultMessage: 'Use the switch on the right to select the appropriate format.',
+        id: 'TR_TIP_SELECT_FORMAT',
     },
     TR_NAV_RECEIVE: {
         defaultMessage: 'Receive',

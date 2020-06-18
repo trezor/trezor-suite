@@ -1,22 +1,6 @@
 import TrezorConnect from 'trezor-connect';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { GetState, Dispatch } from '@suite-types';
-import { copyToClipboard } from '@suite-utils/dom';
-
-export const copyAddress = (address: string) => (dispatch: Dispatch) => {
-    const errorResponse = copyToClipboard(address, null);
-
-    if (typeof errorResponse === 'string') {
-        dispatch(
-            notificationActions.addToast({
-                type: 'error',
-                error: errorResponse,
-            }),
-        );
-    } else {
-        dispatch(notificationActions.addToast({ type: 'copy-to-clipboard' }));
-    }
-};
 
 export const sign = (message: string, path: string, hex = false) => async (
     dispatch: Dispatch,

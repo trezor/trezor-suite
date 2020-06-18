@@ -64,6 +64,10 @@ export type UserContextPayload =
       }
     | {
           type: 'disconnect-device';
+      }
+    | {
+          type: 'review-signed-message';
+          signedObj: { address: string; message: string; signature: string };
       };
 
 export type ModalActions =
