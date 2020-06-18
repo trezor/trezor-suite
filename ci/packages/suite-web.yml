@@ -127,7 +127,7 @@ suite-web deploy staging:
     script:
         - source $STAGING_DEPLOY_KEYFILE
         - cd packages/suite-web
-        - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/suite-web build
+        - assetPrefix=/wallet yarn workspace @trezor/suite-web build
         - ./scripts/s3sync.sh stage beta
     tags:
         - deploy
