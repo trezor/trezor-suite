@@ -49,7 +49,7 @@ export default {
 
     NEUE_BG_GREEN: '#39a814',
     NEUE_BG_LIGHT_GREEN: '#e1f2dc',
-    NEUE_BG_GRAY: '#f8f8f8',
+    NEUE_BG_GRAY: '#F4F4F4',
     NEUE_BG_LIGHT_GREY: '#fcfcfc',
     NEUE_BG_WHITE: '#ffffff',
 
