@@ -7,6 +7,15 @@ suite-web build:
         paths:
             - packages/suite-web/build
 
+suite-web build-staging:
+    stage: build
+    script:
+        - assetPrefix=/wallet yarn workspace @trezor/suite-web build
+    artifacts:
+        expire_in: 7 days
+        paths:
+            - packages/suite-web/build
+
 suite-web deploy dev:
     stage: deploy to dev servers
     variables:
@@ -119,6 +128,8 @@ suite-web test security:
 
 suite-web deploy staging:
     stage: deploy to staging
+    dependencies:
+        - suite-web build-staging
     environment:
         name: ${CI_BUILD_REF_NAME}-staging
         url: ${STAGING_SERVER_URL}
@@ -127,7 +138,6 @@ suite-web deploy staging:
     script:
         - source $STAGING_DEPLOY_KEYFILE
         - cd packages/suite-web
-        - assetPrefix=/wallet yarn workspace @trezor/suite-web build
         - ./scripts/s3sync.sh stage beta
     tags:
         - deploy
