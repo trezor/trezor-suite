@@ -38,7 +38,7 @@ suite-web e2e chrome stage=stable:
         - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
         - export BROWSER=chrome
-        - yarn concurrently --success first --kill-others 
+        - yarn concurrently --success first --kill-others
           "cd ./docker/trezor-user-env/controller && python3 ./main.py"
           "node ./packages/integration-tests/projects/suite-web/run_tests.js
           --project ./packages/integration-tests/projects/suite-web
@@ -65,7 +65,7 @@ suite-web e2e chrome stage=beta:
         - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
         - export BROWSER=/usr/bin/google-chrome-beta
-        - yarn concurrently --success first --kill-others 
+        - yarn concurrently --success first --kill-others
           "cd ./docker/trezor-user-env/controller && python3 ./main.py"
           "node ./packages/integration-tests/projects/suite-web/run_tests.js
           --project ./packages/integration-tests/projects/suite-web
@@ -82,7 +82,7 @@ suite-web e2e chrome stage=beta:
 
 suite-web e2e chrome-beta stage=stable:
     stage: integration testing
-    only:	
+    only:
         - schedules
     allow_failure: false
     script:
@@ -94,7 +94,7 @@ suite-web e2e chrome-beta stage=stable:
         - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
         - export BROWSER=/usr/bin/google-chrome-beta
-        - yarn concurrently --success first --kill-others 
+        - yarn concurrently --success first --kill-others
           "cd ./docker/trezor-user-env/controller && python3 ./main.py"
           "node ./packages/integration-tests/projects/suite-web/run_tests.js
           --project ./packages/integration-tests/projects/suite-web
@@ -125,11 +125,10 @@ suite-web deploy staging:
     before_script: []
     when: manual
     script:
-        - echo "I don't have aws credentials, fixme"
-        # - cd packages/suite-web
-        # - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/suite-web build
-        # - ./scripts/s3sync.sh stage beta
+        - source $STAGING_DEPLOY_KEYFILE
+        - cd packages/suite-web
+        - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/suite-web build
+        - ./scripts/s3sync.sh stage beta
     tags:
         - deploy
-
 # todo: add smoke test job on stage / beta (need basic auth)
