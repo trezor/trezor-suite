@@ -29,6 +29,7 @@ import QrScanner from './QrScanner';
 import BackgroundGallery from './BackgroundGallery';
 import TransactionDetail from './TransactionDetail';
 import Log from './Log';
+import SignedMessage from './SignedMessage';
 import WipeDevice from './WipeDevice';
 import DisconnectDevice from './DisconnectDevice';
 
@@ -161,6 +162,8 @@ const getUserContextModal = (props: Props) => {
             return <PassphraseDuplicate device={payload.device} duplicate={payload.duplicate} />;
         case 'review-transaction':
             return <ReviewTransaction />;
+        case 'review-signed-message':
+            return <SignedMessage signedObj={payload.signedObj} onCancel={modalActions.onCancel} />;
         case 'pin-mismatch':
             return <PinMismatch />;
         case 'disconnect-device':
