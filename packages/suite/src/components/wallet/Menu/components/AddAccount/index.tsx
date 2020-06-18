@@ -11,30 +11,18 @@ interface Props {
     device?: TrezorDevice;
 }
 
-const Wrapper = styled.div<{ isOverlaying?: boolean }>`
+const Wrapper = styled.div`
     display: flex;
-    padding: 10px;
-    position: sticky;
-    z-index: 2;
-    bottom: 0;
-    background: ${colors.WHITE};
-    box-shadow: ${props => (props.isOverlaying ? '0 0 14px 0 rgba(0, 0, 0, 0.2)' : 'none')};
+    flex: 1;
+    justify-content: flex-end;
 `;
 
 // workaround to expand tooltip (and child button) to full width
-const StyledTooltip = styled(Tooltip)`
-    width: 100%;
-    > span:first-of-type {
-        width: 100%;
-    }
-`;
+const StyledTooltip = styled(Tooltip)``;
 
-const StyledButton = styled(Button)`
-    border: dashed 1px ${colors.BLACK50};
-    background: ${colors.WHITE};
-`;
+const StyledButton = styled(Button)``;
 
-const AddAccountButton = ({ onClick, disabled, device, isOverlaying }: Props) => {
+const AddAccountButton = ({ onClick, disabled, device }: Props) => {
     const clickHandler = !disabled ? onClick : undefined;
     const tooltipMessage =
         device && !device.connected ? (
@@ -45,24 +33,22 @@ const AddAccountButton = ({ onClick, disabled, device, isOverlaying }: Props) =>
         <StyledButton
             onClick={clickHandler}
             icon="PLUS"
-            variant="secondary"
+            variant="tertiary"
             fullWidth
             isDisabled={disabled}
-        >
-            <Translation id="TR_ADD_ACCOUNT" />
-        </StyledButton>
+        />
     );
 
     if (tooltipMessage) {
         return (
-            <Wrapper isOverlaying={isOverlaying}>
-                <StyledTooltip maxWidth={200} content={tooltipMessage} placement="top">
+            <Wrapper>
+                <Tooltip maxWidth={200} offset={50} content={tooltipMessage} placement="bottom">
                     {ButtonRow}
-                </StyledTooltip>
+                </Tooltip>
             </Wrapper>
         );
     }
-    return <Wrapper isOverlaying={isOverlaying}>{ButtonRow}</Wrapper>;
+    return <Wrapper>{ButtonRow}</Wrapper>;
 };
 
 export default AddAccountButton;

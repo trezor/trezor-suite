@@ -3,7 +3,7 @@ import { TrezorDevice } from '@suite-types';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import styled from 'styled-components';
 
-interface Props extends React.HTMLAttributes<HTMLImageElement> {
+interface Props extends React.HTMLProps<HTMLImageElement> {
     device: TrezorDevice;
 }
 
@@ -23,7 +23,7 @@ const Img = styled.img``;
 const DeviceImage = ({ device, ...rest }: Props) => {
     const majorVersion = device.features?.major_version ?? 2;
     const image = getDeviceImage(majorVersion);
-    return <Img src={resolveStaticPath(`images/svg/${image}.svg`)} {...rest} />;
+    return <Img src={resolveStaticPath(`images/png/trezor/${image}.png`)} {...rest} />;
 };
 
 export default DeviceImage;

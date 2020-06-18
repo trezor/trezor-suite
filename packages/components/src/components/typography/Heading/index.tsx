@@ -1,14 +1,16 @@
 import styled, { css } from 'styled-components';
 
-import { FONT_SIZE } from '../../../config/variables';
+import { NEUE_FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
 import colors from '../../../config/colors';
 
 interface Props {
     textAlign?: 'left' | 'center' | 'right' | 'justify';
+    weight?: typeof FONT_WEIGHT[keyof typeof FONT_WEIGHT];
 }
 
 const textAlignStyle = css`
     text-align: ${(props: Props) => props.textAlign};
+    font-weight: ${(props: Props) => props.weight};
 `;
 
 const baseStyles = css`
@@ -21,21 +23,22 @@ const baseStyles = css`
     font-style: normal;
     line-height: normal;
     letter-spacing: normal;
+    color: ${colors.NEUE_TYPE_DARK_GREY};
 `;
 
 const H1 = styled.h1<Props>`
     ${baseStyles};
-    font-size: ${FONT_SIZE.H1};
-    padding-bottom: 10px;
-    color: ${colors.BLACK17};
-    font-weight: 300;
+    font-size: ${NEUE_FONT_SIZE.H1};
+    /* padding-bottom: 10px; */
+    line-height: 32px;
+    font-weight: normal;
 `;
 
 const H2 = styled.h2<Props>`
     ${baseStyles};
-    font-size: ${FONT_SIZE.H2};
-    padding-bottom: 10px;
-    color: ${colors.BLACK0};
+    font-size: ${NEUE_FONT_SIZE.H2};
+    /* padding-bottom: 10px; */
+    line-height: 24px;
     font-weight: normal;
 `;
 

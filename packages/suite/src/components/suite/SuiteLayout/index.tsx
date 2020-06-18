@@ -10,10 +10,12 @@ import MenuSecondary from '@suite-components/MenuSecondary';
 import MenuDrawer from '@suite-components/MenuDrawer';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import { DiscoveryProgress } from '@wallet-components';
+import NeueNavigation from '../NeueNavigation';
 
 const PageWrapper = styled.div`
     display: flex;
     flex: 1;
+    flex-direction: column;
     min-height: 600px;
     height: 100vh;
     overflow-x: hidden;
@@ -45,9 +47,10 @@ const AppWrapper = styled.div`
 `;
 
 const MaxWidthWrapper = styled.div<{ withMenu: boolean }>`
-    max-width: ${variables.SCREEN_SIZE.XL};
     max-width: ${props => (props.withMenu ? '1664px' : MAX_WIDTH)};
+    width: 100%;
     height: 100%;
+    margin: 0 auto;
 `;
 
 const mapStateToProps = (state: AppState) => ({
@@ -90,8 +93,6 @@ const ScrollAppWrapper = ({ url, children }: BodyProps) => {
 
 const BodyWide = ({ url, menu, children }: BodyProps) => (
     <Body>
-        <DiscoveryProgress />
-        <SuiteNotifications />
         <Columns>
             {menu && <MenuSecondary>{menu}</MenuSecondary>}
             <ScrollAppWrapper url={url}>
@@ -104,8 +105,6 @@ const BodyWide = ({ url, menu, children }: BodyProps) => (
 const BodyNarrow = ({ url, menu, children }: BodyProps) => (
     <Body>
         <MenuDrawer>{menu}</MenuDrawer>
-        <DiscoveryProgress />
-        <SuiteNotifications />
         <Columns>
             <ScrollAppWrapper url={url}>{children}</ScrollAppWrapper>
         </Columns>
@@ -130,7 +129,10 @@ const SuiteLayout = (props: Props) => {
             <Head>
                 <title>{title ? `${title} | Trezor Suite` : 'Trezor Suite'}</title>
             </Head>
-            {isWide && <Menu />}
+            <SuiteNotifications />
+            <DiscoveryProgress />
+            {/* {isWide && <Menu />} */}
+            {isWide && <NeueNavigation />}
             <LayoutContext.Provider value={{ title, menu, setLayout }}>
                 {isWide && (
                     <BodyWide menu={menu} url={props.router.url}>

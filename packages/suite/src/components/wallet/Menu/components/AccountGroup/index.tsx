@@ -5,22 +5,18 @@ import { colors, Icon } from '@trezor/components';
 import { Account } from '@wallet-types';
 import AnimationWrapper from '../AnimationWrapper';
 
-const Wrapper = styled.div`
-    padding: 0px 10px;
-`;
+const Wrapper = styled.div``;
 
 const HeaderWrapper = styled.div`
     position: sticky;
     top: 0;
     z-index: 1;
-    padding: 0px 10px;
-    margin: 10px 0px;
     background: ${colors.WHITE};
 `;
 
 const Header = styled.header<{ onClick?: () => void }>`
     display: flex;
-    padding: 10px 0px;
+    padding: 16px;
     cursor: ${props => (props.onClick ? 'pointer' : 'default')};
     justify-content: space-between;
     align-items: center;
@@ -29,7 +25,7 @@ const Header = styled.header<{ onClick?: () => void }>`
     font-size: 12px;
     font-weight: 600;
     color: ${colors.BLACK50};
-    border-bottom: 2px solid ${colors.BLACK96};
+    border-top: 2px solid ${colors.BLACK96};
 `;
 
 interface Props {
@@ -104,7 +100,7 @@ export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
                             <Icon
                                 canAnimate={animatedIcon}
                                 isActive={isOpened}
-                                size={12}
+                                size={16}
                                 color={colors.BLACK50}
                                 icon="ARROW_DOWN"
                             />

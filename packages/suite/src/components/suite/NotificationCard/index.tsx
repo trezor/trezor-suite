@@ -43,13 +43,9 @@ const Wrapper = styled(Card)<{ variant: Props['variant'] }>`
     max-width: ${MAX_WIDTH};
     border: 1px solid ${props => getBorderColor(props.variant)};
     color: ${props => getTextColor(props.variant)};
-    margin: 8px 32px;
+    margin: 8px 0;
     padding: 16px;
     align-items: center;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        margin: 8px 16px;
-    }
 `;
 
 const IconWrapper = styled.div`

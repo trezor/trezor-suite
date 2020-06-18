@@ -17,7 +17,7 @@ import { Modal, ModalProps } from './components/Modal';
 import { CoinLogo, CoinLogoProps } from './components/logos/CoinLogo';
 import { TrezorLogo, TrezorLogoProps } from './components/logos/TrezorLogo';
 import { Loader, LoaderProps } from './components/loaders/Loader';
-import { Tooltip, TooltipProps } from './components/Tooltip';
+import { Tooltip, TooltipProps, tooltipGlobalStyles } from './components/Tooltip';
 import * as types from './support/types';
 
 export {
@@ -57,5 +57,6 @@ export {
     LoaderProps,
     Tooltip,
     TooltipProps,
+    tooltipGlobalStyles,
     types,
 };

@@ -1,19 +1,15 @@
 import React, { forwardRef } from 'react';
 import { CoinLogo, colors, variables } from '@trezor/components';
 import styled, { css } from 'styled-components';
-import { getTitleForNetwork, getAccountFiatBalance } from '@wallet-utils/accountUtils';
-import { Translation } from '@suite-components/Translation';
+import { getTitleForNetwork } from '@wallet-utils/accountUtils';
+import { Translation, FiatValue } from '@suite-components';
 import { CoinBalance } from '@wallet-components';
-import { FormattedNumber, HiddenPlaceholder } from '@suite-components';
-import Badge from '@suite-components/Badge';
 import { Props } from './Container';
-import AnimationWrapper from '../AnimationWrapper';
-import AccountNavigation from '../AccountNavigation';
 
 // position: inherit - get position from parent (AccountGroup), it will be set after animation ends
 // sticky top: 34, sticky header
 const Wrapper = styled.div<{ selected: boolean; type: string }>`
-    padding: 2px 0px 2px 0px;
+    /* padding: 2px 0px 2px 0px; */
     display: flex;
     flex-direction: column;
     &:first-of-type {
@@ -23,8 +19,7 @@ const Wrapper = styled.div<{ selected: boolean; type: string }>`
         props.selected &&
         css`
             border-radius: 4px;
-            border-bottom: 0px;
-            background: ${colors.BLACK96};
+            background: ${colors.NEUE_BG_GRAY};
             position: inherit;
             top: ${props.type !== 'normal' ? '34px' : '0px'};
             bottom: 0px;
@@ -33,65 +28,65 @@ const Wrapper = styled.div<{ selected: boolean; type: string }>`
         `}
 `;
 
+const Left = styled.div`
+    display: flex;
+    padding-top: 3px;
+`;
+const Right = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-left: 8px;
+`;
+
 const Row = styled.div`
     display: flex;
     align-items: center;
     text-overflow: ellipsis;
     white-space: nowrap;
-    border-bottom: 2px solid ${colors.BLACK96};
-    padding-bottom: 10px;
 `;
 
 const AccountName = styled.div`
+    display: flex;
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 16px;
-    font-weight: 500;
-    color: ${colors.BLACK17};
-    display: flex;
-    justify-content: space-between;
-    padding-bottom: 2px;
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+    line-height: 1.5;
 `;
 
 const Balance = styled.div`
-    padding-left: 8px;
-    flex: 1;
-    padding-top: 2px;
-    font-size: 14px;
-    font-weight: normal;
-    color: #404040;
-    flex-wrap: wrap;
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+    line-height: 1.57;
+`;
+
+const FiatValueWrapper = styled.div`
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    line-height: 1.57;
 `;
 
 const AccountHeader = styled.div`
     display: flex;
-    flex-direction: column;
-    padding: 10px;
-    padding-bottom: 0px;
+    padding: 12px 16px;
     border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-    &:hover {
-        background: ${colors.BLACK96};
-    }
-`;
-
-const StyledBadge = styled(Badge)`
-    font-size: ${variables.FONT_SIZE.TINY};
 `;
 
 // Using `React.forwardRef` to be able to pass `ref` (item) TO parent (Menu/index)
 const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) => {
     const { account, selected } = props;
 
-    const fiatBalance = getAccountFiatBalance(account, props.localCurrency, props.fiat.coins);
     const accountLabel = props.labeling[`account:${account.descriptor}`] ? (
         <span>{props.labeling[`account:${account.descriptor}`]}</span>
     ) : (
         <>
             <Translation {...getTitleForNetwork(account.symbol)} />
-            <div># {account.index + 1}</div>
+            <span>&nbsp;#{account.index + 1}</span>
         </>
     );
 
@@ -106,31 +101,27 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
                     })
                 }
             >
-                <AccountName>{accountLabel}</AccountName>
-                <Row>
+                <Left>
                     <CoinLogo size={16} symbol={account.symbol} />
-                    <Balance>
-                        <CoinBalance value={account.formattedBalance} symbol={account.symbol} />
-                    </Balance>
-                    {fiatBalance && (
-                        <HiddenPlaceholder>
-                            <StyledBadge>
-                                <FormattedNumber
-                                    value={fiatBalance}
-                                    currency={props.localCurrency}
-                                />
-                            </StyledBadge>
-                        </HiddenPlaceholder>
-                    )}
-                </Row>
+                </Left>
+                <Right>
+                    <Row>
+                        <AccountName>{accountLabel}</AccountName>
+                    </Row>
+                    <Row>
+                        <Balance>
+                            <CoinBalance value={account.formattedBalance} symbol={account.symbol} />
+                        </Balance>
+                    </Row>
+                    <Row>
+                        <FiatValue amount={account.formattedBalance} symbol={account.symbol}>
+                            {({ value }) =>
+                                value ? <FiatValueWrapper>≈ {value}</FiatValueWrapper> : null
+                            }
+                        </FiatValue>
+                    </Row>
+                </Right>
             </AccountHeader>
-            <AnimationWrapper opened={selected}>
-                <AccountNavigation
-                    account={account}
-                    routeName={props.router.route?.name}
-                    onClick={route => props.goto(route, undefined, true)}
-                />
-            </AnimationWrapper>
         </Wrapper>
     );
 });

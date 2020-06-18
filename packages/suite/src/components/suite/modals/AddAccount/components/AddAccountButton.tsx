@@ -53,7 +53,7 @@ export default (props: Props) => {
 
     if (tooltip) {
         return (
-            <Tooltip maxWidth={285} placement="top" content={tooltip}>
+            <Tooltip placement="bottom" content={tooltip}>
                 {addButton}
             </Tooltip>
         );

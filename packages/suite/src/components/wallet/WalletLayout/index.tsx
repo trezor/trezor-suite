@@ -6,20 +6,23 @@ import AccountLoader from './components/AccountLoader';
 import Exception from '@wallet-components/AccountException';
 import AccountMode from '@wallet-components/AccountMode';
 import AccountAnnouncement from '@wallet-components/AccountAnnouncement';
+import AccountTopPanel from '@wallet-components/AccountTopPanel';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import { AppState } from '@suite-types';
 import { variables } from '@trezor/components';
 
-const Wrapper = styled.div<{ noPadding?: boolean }>`
+const Wrapper = styled.div`
     display: flex;
     flex: 1;
+    margin: 0 auto;
     flex-direction: column;
-    padding: 16px 32px 32px 32px;
+    padding: 0px 32px 32px 32px;
+    width: 100%;
     max-width: ${MAX_WIDTH};
     height: 100%;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        padding: 16px;
+        padding: 0px 16px 16px 16px;
     }
 `;
 
@@ -37,15 +40,23 @@ const WalletLayout = (props: Props) => {
     const { account } = props;
 
     if (account.status === 'loading') {
-        return <AccountLoader type={account.loader} />;
+        return (
+            <>
+                <AccountTopPanel />
+                <Wrapper>
+                    <AccountLoader type={account.loader} />
+                </Wrapper>
+            </>
+        );
     }
 
     if (account.status === 'exception') {
         return (
             <>
-                <AccountMode mode={account.mode} />
-                <AccountAnnouncement selectedAccount={account} />
-                <Wrapper noPadding={!!account.mode}>
+                <AccountTopPanel />
+                <Wrapper>
+                    <AccountMode mode={account.mode} />
+                    <AccountAnnouncement selectedAccount={account} />
                     <Exception account={account} />
                 </Wrapper>
             </>
@@ -58,9 +69,10 @@ const WalletLayout = (props: Props) => {
 
     return (
         <>
-            <AccountMode mode={account.mode} />
-            <AccountAnnouncement selectedAccount={account} />
-            <Wrapper noPadding={!!account.mode}>
+            <AccountTopPanel />
+            <Wrapper>
+                <AccountMode mode={account.mode} />
+                <AccountAnnouncement selectedAccount={account} />
                 {/* <WalletNotifications /> */}
                 {props.children}
             </Wrapper>

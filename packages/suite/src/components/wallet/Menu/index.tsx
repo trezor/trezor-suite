@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { H2, variables, colors } from '@trezor/components';
 import styled from 'styled-components';
 
 import { DISCOVERY } from '@wallet-actions/constants';
@@ -21,7 +22,23 @@ const Wrapper = styled.div`
     flex-direction: column;
     justify-content: space-between;
     overflow: auto;
-    margin-top: 10px;
+    /* margin-top: 10px; */
+    padding: 20px 8px;
+`;
+
+const MenuHeader = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 16px;
+    padding-bottom: 16px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+`;
+
+const Heading = styled(H2)`
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.NEUE_TYPE_DARK_GREY};
 `;
 
 const Scroll = styled.div`
@@ -142,21 +159,23 @@ const Menu = ({ device, accounts, selectedAccount, openModal }: Props) => {
     return (
         <Wrapper>
             <Scroll ref={ref}>
+                <MenuHeader>
+                    <Heading>My Accounts</Heading>
+                    <AddAccountButton
+                        onClick={() =>
+                            openModal({
+                                type: 'add-account',
+                                device,
+                            })
+                        }
+                        disabled={!!addAccountDisabled}
+                        device={device}
+                    />
+                </MenuHeader>
                 {buildGroup('normal', normalAccounts)}
                 {buildGroup('segwit', segwitAccounts)}
                 {buildGroup('legacy', legacyAccounts)}
             </Scroll>
-            <AddAccountButton
-                onClick={() =>
-                    openModal({
-                        type: 'add-account',
-                        device,
-                    })
-                }
-                disabled={!!addAccountDisabled}
-                isOverlaying={dimensions && dimensions.hasScroll}
-                device={device}
-            />
         </Wrapper>
     );
 };
