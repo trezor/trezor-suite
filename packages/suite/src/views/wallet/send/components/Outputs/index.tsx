@@ -1,5 +1,5 @@
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
-import { findActiveMaxId } from '@wallet-utils/sendFormUtils';
+import { updateFeeOrNotify } from '@wallet-actions/sendFormActions';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
@@ -30,18 +30,27 @@ const Row = styled.div`
 `;
 
 export default () => {
-    const { outputs, coinFees } = useSendContext();
-    const { getValues } = useFormContext();
+    const {
+        outputs,
+        coinFees,
+        selectedFee,
+        token,
+        setSelectedFee,
+        account,
+        setFeeOutdated,
+    } = useSendContext();
+    const { setValue } = useFormContext();
 
     useEffect(() => {
-        const isMaxActive = findActiveMaxId(outputs, getValues);
-
-        if (isMaxActive === null) {
-            console.log('aaaa', isMaxActive);
-        } else {
-            console.log('bbb');
-        }
-        // setFeeOutdated(true);
+        updateFeeOrNotify(
+            account,
+            coinFees,
+            token,
+            selectedFee,
+            setFeeOutdated,
+            setValue,
+            setSelectedFee,
+        );
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [coinFees]);
 

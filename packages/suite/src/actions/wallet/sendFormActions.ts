@@ -3,9 +3,14 @@ import { SendContext } from '@wallet-hooks/useSendContext';
 import { toWei } from 'web3-utils';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
 import { useForm } from 'react-hook-form';
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect, { FeeLevel } from 'trezor-connect';
 import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { calculateTotal, calculateMax, calculateEthFee } from '@wallet-utils/sendFormUtils';
+import {
+    calculateTotal,
+    calculateMax,
+    calculateEthFee,
+    getFeeLevels,
+} from '@wallet-utils/sendFormUtils';
 
 export const composeRippleTransaction = (
     account: SendContext['account'],
@@ -193,6 +198,33 @@ export const checkRippleEmptyAddress = async (
 
     if (response.success) {
         setDestinationAddressEmpty(response.payload.empty);
+    }
+};
+
+export const updateFeeOrNotify = (
+    account: SendContext['account'],
+    coinFees: SendContext['coinFees'],
+    token: SendContext['token'],
+    selectedFee: SendContext['selectedFee'],
+    setFeeOutdated: SendContext['setFeeOutdated'],
+    setValue: ReturnType<typeof useForm>['setValue'],
+    setSelectedFee: SendContext['setSelectedFee'],
+) => {
+    const { networkType } = account;
+    const updatedLevels = getFeeLevels(networkType, coinFees, !!token);
+    const selectedFeeLevel = updatedLevels.find(
+        (level: FeeLevel) => level.label === selectedFee.label,
+    );
+
+    if (selectedFee.label === 'custom') {
+        setFeeOutdated(true);
+    } else if (selectedFeeLevel) {
+        if (networkType === 'ethereum') {
+            setValue('ethereumGasPrice', selectedFeeLevel.feePerUnit);
+            setValue('ethereumGasLimit', selectedFeeLevel.feeLimit);
+        }
+
+        setSelectedFee(selectedFeeLevel);
     }
 };
 
