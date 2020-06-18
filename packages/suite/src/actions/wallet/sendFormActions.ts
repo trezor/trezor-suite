@@ -168,9 +168,6 @@ export const composeBitcoinTransaction = async (
     };
 };
 
-/*
-    Fill the address/amount inputs with data from QR code
-*/
 export const onQrScan = (
     parsedUri: ParsedURI,
     outputId: number,
@@ -181,4 +178,24 @@ export const onQrScan = (
     if (amount) {
         setValue(`amount-${outputId}`, amount);
     }
+};
+
+export const checkRippleEmptyAddress = async (
+    symbol: SendContext['account']['symbol'],
+    inputName: string,
+    getValues: ReturnType<typeof useForm>['getValues'],
+    setDestinationAddressEmpty: SendContext['setDestinationAddressEmpty'],
+) => {
+    const response = await TrezorConnect.getAccountInfo({
+        coin: symbol,
+        descriptor: getValues(inputName),
+    });
+
+    if (response.success) {
+        setDestinationAddressEmpty(response.payload.empty);
+    }
+};
+
+export const manuallyUpdateFee = () => {
+    console.log('update');
 };

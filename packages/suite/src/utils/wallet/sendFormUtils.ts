@@ -1,18 +1,17 @@
 import { ERC20_GAS_LIMIT, ERC20_TRANSFER } from '@wallet-constants/sendForm';
-import { SendContext } from '@wallet-hooks/useSendContext';
+import { SendContext, FeeInfo, EthTransactionData } from '@wallet-hooks/useSendContext';
 import { Account, Network } from '@wallet-types';
 import {
     composeRippleTransaction,
     composeEthereumTransaction,
     composeBitcoinTransaction,
 } from '@wallet-actions/sendFormActions';
-import { EthTransactionData, FeeInfo, FeeLevel } from '@wallet-types/sendForm';
 import { amountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import BigNumber from 'bignumber.js';
 import Common from 'ethereumjs-common';
 import { Transaction, TxData } from 'ethereumjs-tx';
 import { FieldError, NestDataObject, useForm } from 'react-hook-form';
-import { EthereumTransaction } from 'trezor-connect';
+import { EthereumTransaction, FeeLevel } from 'trezor-connect';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 
 export const calculateTotal = (amount: string, fee: string): string => {

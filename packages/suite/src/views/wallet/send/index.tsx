@@ -1,7 +1,7 @@
 import { SendContext } from '@wallet-hooks/useSendContext';
 import { WalletLayout } from '@wallet-components';
 import { Card, Translation } from '@suite-components';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import styled from 'styled-components';
 import { variables, colors } from '@trezor/components';
@@ -46,6 +46,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     }
 
     const { account, network } = selectedAccount;
+    const [feeOutdated, setFeeOutdated] = useState(false);
     const { symbol, networkType } = account;
     const coinFees = fees[symbol];
     const levels = getFeeLevels(networkType, coinFees);
@@ -55,7 +56,6 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     const [advancedForm, showAdvancedForm] = useState(false);
     const [destinationAddressEmpty, setDestinationAddressEmpty] = useState(false);
     const [token, setToken] = useState(null);
-    const [feeOutdated, setFeeOutdated] = useState(false);
     const [transactionInfo, setTransactionInfo] = useState(null);
     const [selectedFee, setSelectedFee] = useState(initialSelectedFee);
     const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
@@ -73,6 +73,14 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
         rippleDestinationTag: '',
     };
 
+    useEffect(() => {
+        console.log('availableBalance update');
+    }, [account.availableBalance]);
+
+    useEffect(() => {
+        console.log('fiat update');
+    }, [fiat]);
+
     const methods = useForm({
         mode: 'onChange',
         defaultValues,
@@ -86,6 +94,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
                     defaultValues,
                     initialSelectedFee,
                     outputs,
+                    coinFees,
                     fiatRates,
                     destinationAddressEmpty,
                     setDestinationAddressEmpty,

@@ -14,6 +14,17 @@ export interface FeeInfo {
     levels: FeeLevel[]; // fee levels are predefined in trezor-connect > trezor-firmware/common
 }
 
+export type EthTransactionData = {
+    token?: TokenInfo;
+    chainId: Network['chainId'];
+    to: string;
+    amount: string;
+    data?: string;
+    gasLimit: string;
+    gasPrice: string;
+    nonce: string;
+};
+
 export interface SendContext {
     defaultValues: {
         'address-0': string;
@@ -27,6 +38,7 @@ export interface SendContext {
         rippleDestinationTag: string;
     };
     account: Account;
+    coinFees: FeeInfo;
     network: Network;
     device: TrezorDevice;
     online: boolean;

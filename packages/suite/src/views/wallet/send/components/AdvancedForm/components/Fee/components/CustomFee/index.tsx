@@ -6,7 +6,7 @@ import { Account } from '@wallet-types';
 import BigNumber from 'bignumber.js';
 import { getInputState, findActiveMaxId, updateMax } from '@wallet-utils/sendFormUtils';
 import React from 'react';
-import { useFormContext, FieldError, NestDataObject } from 'react-hook-form';
+import { useFormContext, FieldError, NestDataObject, Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import validator from 'validator';
 
@@ -136,7 +136,8 @@ export default ({ isVisible }: { isVisible: boolean }) => {
                 />
             </CustomFeeWrapper>
             <CustomFeeUnitWrapper>
-                <Select
+                <Controller
+                    as={Select}
                     name={inputNameUnit}
                     innerRef={register()}
                     value={getValue(networkType)}

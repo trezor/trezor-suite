@@ -1,8 +1,8 @@
 import * as modalActions from '@suite-actions/modalActions';
 import { AddressLabeling, QuestionTooltip, Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
-import TrezorConnect from 'trezor-connect';
 import { Input } from '@trezor/components';
+import { checkRippleEmptyAddress } from '@wallet-actions/sendFormActions';
 import { isAddressValid } from '@wallet-utils/validation';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
@@ -41,16 +41,13 @@ export default ({ outputId }: { outputId: number }) => {
                 </Label>
             }
             onChange={async () => {
-                // check only xrp and valid address
                 if (!error && networkType === 'ripple') {
-                    const response = await TrezorConnect.getAccountInfo({
-                        coin: symbol,
-                        descriptor: getValues(inputName),
-                    });
-
-                    if (response.success) {
-                        setDestinationAddressEmpty(response.payload.empty);
-                    }
+                    await checkRippleEmptyAddress(
+                        account.symbol,
+                        inputName,
+                        getValues,
+                        setDestinationAddressEmpty,
+                    );
                 }
             }}
             bottomText={
