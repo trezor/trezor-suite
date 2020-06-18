@@ -39,6 +39,8 @@ export const sign = (message: string, path: string, hex = false) => async (
         coin: account.symbol,
         message,
         hex,
+        device,
+        useEmptyPassphrase: device.useEmptyPassphrase,
     };
     const response = await fn(params);
 
