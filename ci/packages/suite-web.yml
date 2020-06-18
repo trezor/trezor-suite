@@ -14,6 +14,7 @@ suite-web build-staging:
     artifacts:
         expire_in: 7 days
         paths:
+            - packages/suite-web/scripts/s3sync.sh
             - packages/suite-web/build
 
 suite-web deploy dev:
