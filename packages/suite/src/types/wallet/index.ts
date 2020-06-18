@@ -1,5 +1,4 @@
 import { ReceiveActions } from '@wallet-actions/receiveActions';
-import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
 
 import {
     State as SendState,
@@ -65,7 +64,6 @@ export type WalletAction =
     | SendFormBtcActions
     | SendFormXrpActions
     | SendFormEthActions
-    | SignVerifyActions
     | TransactionAction
     | FiatRatesActions
     | GraphActions
