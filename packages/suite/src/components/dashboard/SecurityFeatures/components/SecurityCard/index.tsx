@@ -105,7 +105,6 @@ const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Pro
                 <Action>
                     <Button
                         variant="tertiary"
-                        size="small"
                         isDisabled={cta.isDisabled}
                         onClick={cta.action}
                         icon="ARROW_RIGHT"

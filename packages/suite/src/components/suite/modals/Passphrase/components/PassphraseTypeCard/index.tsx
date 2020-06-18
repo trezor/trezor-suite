@@ -237,7 +237,6 @@ const PassphraseTypeCard = (props: Props) => {
                             variant="tertiary"
                             icon="ARROW_LEFT"
                             color={colors.BLACK50}
-                            size="small"
                             onClick={props.recreateWallet}
                         >
                             <Translation id="TR_TRY_AGAIN" />

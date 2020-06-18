@@ -233,7 +233,6 @@ const UsedAddresses = ({ account, addresses, showAddress, addToast, locked }: Pr
                     {actionShowVisible && (
                         <Button
                             variant="tertiary"
-                            size="small"
                             icon="ARROW_DOWN"
                             alignIcon="right"
                             onClick={() => setLimit(limit + 20)}
@@ -244,7 +243,6 @@ const UsedAddresses = ({ account, addresses, showAddress, addToast, locked }: Pr
                     {actionHideVisible && (
                         <Button
                             variant="tertiary"
-                            size="small"
                             icon="ARROW_UP"
                             onClick={() => setLimit(DEFAULT_LIMIT)}
                         >

@@ -69,6 +69,7 @@ const Wrapper = styled.button<WrapperProps>`
             &:hover,
             &:focus,
             &:active {
+                /* we use this color only for this case  */
                 background: #339714;
             }
         `}
@@ -83,6 +84,7 @@ const Wrapper = styled.button<WrapperProps>`
             &:hover,
             &:focus,
             &:active {
+                /* we use this color only for this case  */
                 background: #edf7ea;
             }
         `}
@@ -91,6 +93,7 @@ const Wrapper = styled.button<WrapperProps>`
         props.variant === 'tertiary' &&
         css`
             color: ${colors.NEUE_TYPE_DARK_GREY};
+            /* we use this color only for this case  */
             background: #f8f8f8;
 
             &:hover,
