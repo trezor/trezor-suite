@@ -9,9 +9,10 @@ import {
     AccountLabeling,
 } from '@suite-components';
 import styled, { keyframes } from 'styled-components';
-import { useSelector } from '@suite/hooks/suite';
+import { useSelector, useActions } from '@suite-hooks';
+import * as routerActions from '@suite-actions/routerActions';
 import messages from '@suite/support/messages';
-import { CoinLogo, H1, H2, colors, Icon, Tooltip, variables } from '@trezor/components';
+import { CoinLogo, H1, H2, colors, Dropdown, Icon, Tooltip, variables } from '@trezor/components';
 import { getAccountFiatBalance, getTitleForNetwork, isTestnet } from '@wallet-utils/accountUtils';
 import { differenceInMinutes } from 'date-fns';
 import React from 'react';
@@ -51,6 +52,11 @@ const Row = styled.div`
     width: 100%;
     align-items: center;
     justify-content: space-between;
+`;
+
+const AccountNameRow = styled(Row)`
+    margin-bottom: 6px;
+    align-items: normal;
 `;
 
 const BalanceWrapper = styled.div`
@@ -149,7 +155,9 @@ const AccountTopPanel = () => {
     const fiat = useSelector(state => state.wallet.fiat);
     const settings = useSelector(state => state.wallet.settings);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-
+    const { goto } = useActions({
+        goto: routerActions.goto,
+    });
     const { localCurrency } = settings;
     if (selectedAccount.status !== 'loaded') return null;
 
@@ -158,15 +166,27 @@ const AccountTopPanel = () => {
     const fiatBalance = getAccountFiatBalance(account, localCurrency, fiat.coins);
     const MAX_AGE = 5; // after 5 minutes the ticker will show tooltip with info about last update instead of blinking LIVE text
     const rateAge = (timestamp: number) => differenceInMinutes(new Date(), new Date(timestamp));
+    const dropdownItems = [
+        {
+            callback: () => goto('wallet-details'),
+            label: <Translation id="TR_NAV_DETAILS" />,
+            isHidden: account.networkType !== 'bitcoin',
+        },
+    ];
 
     return (
         <Wrapper>
             <Content>
-                <Row>
+                <AccountNameRow>
                     <AccountName>
                         <AccountLabeling account={account} />
                     </AccountName>
-                </Row>
+                    <Dropdown
+                        isDisabled={dropdownItems.every(item => item.isHidden)}
+                        alignMenu="right"
+                        items={dropdownItems}
+                    />
+                </AccountNameRow>
                 <Row>
                     <BalanceWrapper>
                         <CoinLogo size={24} symbol={symbol} />
