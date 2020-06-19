@@ -137,7 +137,7 @@ suite-web deploy staging:
     before_script: []
     when: manual
     script:
-        - source $STAGING_DEPLOY_KEYFILE
+        - source ${STAGING_DEPLOY_KEYFILE}
         - cd packages/suite-web
         - ./scripts/s3sync.sh stage beta
     tags:
