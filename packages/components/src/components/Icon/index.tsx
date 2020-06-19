@@ -79,44 +79,50 @@ interface Props extends React.SVGAttributes<HTMLDivElement> {
     onFocus?: (event: React.FocusEvent<HTMLDivElement>) => any;
 }
 
-const Icon = ({
-    icon,
-    size = 24,
-    color = colors.BLACK50,
-    isActive,
-    canAnimate,
-    hoverColor,
-    className,
-    onClick,
-    onMouseEnter,
-    onMouseLeave,
-    onFocus,
-    ...rest
-}: Props) => {
-    return (
-        <SvgWrapper
-            className={className}
-            canAnimate={canAnimate}
-            hoverColor={hoverColor}
-            onClick={onClick}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
-            onFocus={onFocus}
-            isActive={isActive}
-            size={size}
-            {...rest}
-        >
-            <ReactSVG
-                src={ICONS[icon]}
-                beforeInjection={svg => {
-                    svg.setAttribute('width', `${size}px`);
-                    svg.setAttribute('height', `${size}px`);
-                    svg.setAttribute('fill', color);
-                }}
-                loading={() => <span className="loading" />}
-            />
-        </SvgWrapper>
-    );
-};
+const Icon = React.forwardRef(
+    (
+        {
+            icon,
+            size = 24,
+            color = colors.BLACK50,
+            isActive,
+            canAnimate,
+            hoverColor,
+            className,
+            onClick,
+            onMouseEnter,
+            onMouseLeave,
+            onFocus,
+            ...rest
+        }: Props,
+        ref?: React.Ref<HTMLDivElement>
+    ) => {
+        return (
+            <SvgWrapper
+                className={className}
+                canAnimate={canAnimate}
+                hoverColor={hoverColor}
+                onClick={onClick}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+                onFocus={onFocus}
+                isActive={isActive}
+                size={size}
+                ref={ref}
+                {...rest}
+            >
+                <ReactSVG
+                    src={ICONS[icon]}
+                    beforeInjection={svg => {
+                        svg.setAttribute('width', `${size}px`);
+                        svg.setAttribute('height', `${size}px`);
+                        svg.setAttribute('fill', color);
+                    }}
+                    loading={() => <span className="loading" />}
+                />
+            </SvgWrapper>
+        );
+    }
+);
 
 export { Icon, Props as IconProps };

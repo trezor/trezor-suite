@@ -3,6 +3,7 @@ import * as variables from './config/variables';
 
 import { Button, ButtonProps } from './components/buttons/Button';
 import { ButtonPin, ButtonPinProps } from './components/buttons/Pin';
+import { Dropdown, DropdownProps } from './components/Dropdown';
 import { Input, InputProps } from './components/form/Input';
 import { Textarea, TextareaProps } from './components/form/Textarea';
 import { Select, SelectProps } from './components/form/Select';
@@ -27,6 +28,8 @@ export {
     ButtonProps,
     ButtonPin,
     ButtonPinProps,
+    Dropdown,
+    DropdownProps,
     Input,
     InputProps,
     Textarea,
