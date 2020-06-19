@@ -17,7 +17,7 @@ describe('Onboarding - recover wallet T1', () => {
         cy.getTestElement('@onboarding/pair-device-step').click();
     });
 
-    it('Incomplete run', () => {
+    it('Incomplete run of advanced recovery', () => {
         // todo: acquire device problem with model T1 emu, but why? stop and start bridge is sad workaround :(
         cy.task('stopBridge');
         cy.task('startEmu', { version: '1.9.0', wipe: true });
@@ -47,6 +47,5 @@ describe('Onboarding - recover wallet T1', () => {
 
         cy.task('sendDecision');
         cy.getTestElement('@recovery/word');
-        // todo: figure out how to work with select in tests
     });
 });
