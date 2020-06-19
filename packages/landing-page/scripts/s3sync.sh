@@ -14,7 +14,7 @@
 # ./s3sync.sh stage stable
 # ./s3sync.sh stage stable clear
 # ./s3sync.sh beta beta
-# ./s3sync.sh stable stable 
+# ./s3sync.sh stable stable
 
 function confirm {
     read -r -p "Are you sure? [y/N] " response
