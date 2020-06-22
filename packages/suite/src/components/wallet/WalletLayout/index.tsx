@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { LayoutContext } from '@suite-components';
-import { Menu } from '@wallet-components';
+import { AccountsMenu } from '@wallet-components';
 import AccountLoader from './components/AccountLoader';
 import Exception from '@wallet-components/AccountException';
 import AccountMode from '@wallet-components/AccountMode';
@@ -35,31 +35,30 @@ type Props = {
 const WalletLayout = (props: Props) => {
     const { setLayout } = React.useContext(LayoutContext);
     React.useMemo(() => {
-        if (setLayout) setLayout(props.title || 'Trezor Suite | Wallet', <Menu />);
+        if (setLayout)
+            setLayout(
+                props.title || 'Trezor Suite | Wallet',
+                <AccountsMenu />,
+                <AccountTopPanel />,
+            );
     }, [props.title, setLayout]);
     const { account } = props;
 
     if (account.status === 'loading') {
         return (
-            <>
-                <AccountTopPanel />
-                <Wrapper>
-                    <AccountLoader type={account.loader} />
-                </Wrapper>
-            </>
+            <Wrapper>
+                <AccountLoader type={account.loader} />
+            </Wrapper>
         );
     }
 
     if (account.status === 'exception') {
         return (
-            <>
-                <AccountTopPanel />
-                <Wrapper>
-                    <AccountMode mode={account.mode} />
-                    <AccountAnnouncement selectedAccount={account} />
-                    <Exception account={account} />
-                </Wrapper>
-            </>
+            <Wrapper>
+                <AccountMode mode={account.mode} />
+                <AccountAnnouncement selectedAccount={account} />
+                <Exception account={account} />
+            </Wrapper>
         );
     }
 
@@ -68,15 +67,12 @@ const WalletLayout = (props: Props) => {
     // }
 
     return (
-        <>
-            <AccountTopPanel />
-            <Wrapper>
-                <AccountMode mode={account.mode} />
-                <AccountAnnouncement selectedAccount={account} />
-                {/* <WalletNotifications /> */}
-                {props.children}
-            </Wrapper>
-        </>
+        <Wrapper>
+            <AccountMode mode={account.mode} />
+            <AccountAnnouncement selectedAccount={account} />
+            {/* <WalletNotifications /> */}
+            {props.children}
+        </Wrapper>
     );
 };
 

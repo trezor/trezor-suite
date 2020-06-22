@@ -83,7 +83,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-const Menu = ({ device, accounts, selectedAccount, openModal }: Props) => {
+const AccountsMenu = ({ device, accounts, selectedAccount, openModal }: Props) => {
     const { discovery } = useDiscovery();
     const { params } = selectedAccount;
     const { ref, dimensions, updateDimensions } = useScrollRef();
@@ -180,4 +180,4 @@ const Menu = ({ device, accounts, selectedAccount, openModal }: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Menu);
+export default connect(mapStateToProps, mapDispatchToProps)(AccountsMenu);
