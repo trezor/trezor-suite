@@ -167,7 +167,8 @@ export const composeBitcoinTransaction = async (
         const max = new BigNumber(resp.payload[0].max).isLessThan('0')
             ? '0'
             : formatNetworkAmount(resp.payload[0].max.toString(), account.symbol);
-        return { ...resp.payload[0], max };
+        const fee = formatNetworkAmount(resp.payload[0].fee.toString(), account.symbol);
+        return { ...resp.payload[0], max, fee };
     }
 
     return {
@@ -239,12 +240,14 @@ export const manuallyUpdateFee = (
     selectedFee: SendContext['selectedFee'],
     setValue: ReturnType<typeof useForm>['setValue'],
     setSelectedFee: SendContext['setSelectedFee'],
+    setFeeOutdated: SendContext['setFeeOutdated'],
 ) => {
     const { networkType } = account;
     const updatedLevels = getFeeLevels(networkType, coinFees, !!token);
     const selectedFeeLevel = updatedLevels.find(
         (level: FeeLevel) => level.label === selectedFee.label,
     );
+
     if (selectedFeeLevel) {
         if (networkType === 'ethereum') {
             setValue('ethereumGasPrice', selectedFeeLevel.feePerUnit);
@@ -252,5 +255,6 @@ export const manuallyUpdateFee = (
         }
 
         setSelectedFee(selectedFeeLevel);
+        setFeeOutdated(false);
     }
 };

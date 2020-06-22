@@ -116,6 +116,7 @@ export default () => {
         feeOutdated,
         selectedFee,
         setSelectedFee,
+        setFeeOutdated,
         outputs,
         token,
         fiatRates,
@@ -155,6 +156,7 @@ export default () => {
                                         selectedFee,
                                         setValue,
                                         setSelectedFee,
+                                        setFeeOutdated,
                                     )
                                 }
                                 icon="REFRESH"

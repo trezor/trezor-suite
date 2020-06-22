@@ -140,7 +140,7 @@ export default ({ isVisible }: { isVisible: boolean }) => {
                     as={Select}
                     name={inputNameUnit}
                     innerRef={register()}
-                    value={getValue(networkType)}
+                    defaultValue={getValue(networkType)}
                     variant="small"
                     isDisabled
                 />
