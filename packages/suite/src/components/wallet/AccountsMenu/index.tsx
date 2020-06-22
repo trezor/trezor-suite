@@ -160,7 +160,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount, openModal }: Props) =
         <Wrapper>
             <Scroll ref={ref}>
                 <MenuHeader>
-                    <Heading>My Accounts</Heading>
+                    <Heading noMargin>My Accounts</Heading>
                     <AddAccountButton
                         onClick={() =>
                             openModal({

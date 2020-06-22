@@ -61,7 +61,7 @@ const TopNavigationPanel = (props: Props) => {
             <Content>
                 <BasicInfo>
                     <TitleRow>
-                        <Title>{props.title}</Title>
+                        <Title noMargin>{props.title}</Title>
                         {props.dropdown && props.dropdown}
                     </TitleRow>
                     {props.children && <Row>{props.children}</Row>}

@@ -24,7 +24,7 @@ const Title = styled(H2)`
 
 const Description = styled.div`
     display: flex;
-    font-size: ${variables.FONT_SIZE.TINY};
+    font-size: ${variables.FONT_SIZE.SMALL};
     text-align: center;
     color: ${colors.BLACK50};
     margin-bottom: 10px;

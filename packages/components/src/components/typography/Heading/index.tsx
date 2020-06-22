@@ -5,12 +5,16 @@ import colors from '../../../config/colors';
 
 interface Props {
     textAlign?: 'left' | 'center' | 'right' | 'justify';
-    weight?: typeof FONT_WEIGHT[keyof typeof FONT_WEIGHT];
+    noMargin?: boolean;
+    fontWeight?: typeof FONT_WEIGHT[keyof typeof FONT_WEIGHT];
 }
 
 const textAlignStyle = css`
     text-align: ${(props: Props) => props.textAlign};
-    font-weight: ${(props: Props) => props.weight};
+`;
+
+const fontWeightStyle = css`
+    font-weight: ${(props: Props) => props.fontWeight};
 `;
 
 const baseStyles = css`
@@ -23,7 +27,14 @@ const baseStyles = css`
     font-style: normal;
     line-height: normal;
     letter-spacing: normal;
+    ${(props: Props) => props.fontWeight && fontWeightStyle}
     color: ${colors.NEUE_TYPE_DARK_GREY};
+
+    ${props =>
+        !props.noMargin &&
+        css`
+            margin-bottom: 10px;
+        `};
 `;
 
 const H1 = styled.h1<Props>`
