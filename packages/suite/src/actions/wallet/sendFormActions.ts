@@ -26,13 +26,17 @@ export const composeRippleTransaction = (
     const feeInSatoshi = selectedFee.feePerUnit;
     const totalSpentBig = new BigNumber(calculateTotal(amountInSatoshi, feeInSatoshi));
     const max = new BigNumber(calculateMax(availableBalance, feeInSatoshi));
+    const formattedMax = max.isLessThan('0')
+        ? ''
+        : formatNetworkAmount(max.toString(), account.symbol);
+
     const payloadData = {
         totalSpent: totalSpentBig.toString(),
         fee: feeInSatoshi,
-        max: max.isLessThan('0') ? '' : formatNetworkAmount(max.toString(), account.symbol),
+        max: formattedMax,
     };
 
-    if (!address) {
+    if (!address && formattedMax !== '0') {
         return {
             type: 'nonfinal',
             ...payloadData,
@@ -96,7 +100,7 @@ export const composeEthereumTransaction = (
         max: formattedMax,
     };
 
-    if (!address) {
+    if (!address && formattedMax !== '0') {
         return {
             type: 'nonfinal',
             ...payloadData,
