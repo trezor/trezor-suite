@@ -123,8 +123,6 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
             type: BLOCKCHAIN.UPDATE_FEE,
             payload: partial,
         });
-
-        // dispatch(sendActions.updateFeeOrNotify());
     }
 };
 

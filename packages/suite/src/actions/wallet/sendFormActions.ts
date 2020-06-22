@@ -10,6 +10,8 @@ import {
     calculateMax,
     calculateEthFee,
     getFeeLevels,
+    findActiveMaxId,
+    updateMax,
 } from '@wallet-utils/sendFormUtils';
 
 export const composeRippleTransaction = (
@@ -30,17 +32,17 @@ export const composeRippleTransaction = (
         max: max.isLessThan('0') ? '' : formatNetworkAmount(max.toString(), account.symbol),
     };
 
-    if (totalSpentBig.isGreaterThan(availableBalance)) {
-        return {
-            type: 'error',
-            error: 'NOT-ENOUGH-FUNDS',
-        };
-    }
-
     if (!address) {
         return {
             type: 'nonfinal',
             ...payloadData,
+        };
+    }
+
+    if (totalSpentBig.isGreaterThan(availableBalance)) {
+        return {
+            type: 'error',
+            error: 'NOT-ENOUGH-FUNDS',
         };
     }
 
@@ -94,16 +96,16 @@ export const composeEthereumTransaction = (
         max: formattedMax,
     };
 
-    if (totalSpentBig.isGreaterThan(availableBalance)) {
-        const error = token ? 'NOT-ENOUGH-CURRENCY-FEE' : 'NOT-ENOUGH-FUNDS';
-        return { type: 'error', error } as const;
-    }
-
     if (!address) {
         return {
             type: 'nonfinal',
             ...payloadData,
         };
+    }
+
+    if (totalSpentBig.isGreaterThan(availableBalance)) {
+        const error = token ? 'NOT-ENOUGH-CURRENCY-FEE' : 'NOT-ENOUGH-FUNDS';
+        return { type: 'error', error } as const;
     }
 
     return {
@@ -209,55 +211,45 @@ export const checkRippleEmptyAddress = async (
     }
 };
 
-export const updateFeeOrNotify = (
+export const updateFeeLevel = async (
     account: SendContext['account'],
     coinFees: SendContext['coinFees'],
     token: SendContext['token'],
-    selectedFee: SendContext['selectedFee'],
-    setFeeOutdated: SendContext['setFeeOutdated'],
     setValue: ReturnType<typeof useForm>['setValue'],
     setSelectedFee: SendContext['setSelectedFee'],
+    outputs: SendContext['outputs'],
+    getValues: ReturnType<typeof useForm>['getValues'],
+    clearError: ReturnType<typeof useForm>['clearError'],
+    setError: ReturnType<typeof useForm>['setError'],
+    fiatRates: SendContext['fiatRates'],
+    setTransactionInfo: SendContext['setTransactionInfo'],
 ) => {
     const { networkType } = account;
     const updatedLevels = getFeeLevels(networkType, coinFees, !!token);
-    const selectedFeeLevel = updatedLevels.find(
-        (level: FeeLevel) => level.label === selectedFee.label,
-    );
-
-    if (selectedFee.label === 'custom') {
-        setFeeOutdated(true);
-    } else if (selectedFeeLevel) {
-        if (networkType === 'ethereum') {
-            setValue('ethereumGasPrice', selectedFeeLevel.feePerUnit);
-            setValue('ethereumGasLimit', selectedFeeLevel.feeLimit);
-        }
-
-        setSelectedFee(selectedFeeLevel);
-    }
-};
-
-export const manuallyUpdateFee = (
-    account: SendContext['account'],
-    coinFees: SendContext['coinFees'],
-    token: SendContext['token'],
-    selectedFee: SendContext['selectedFee'],
-    setValue: ReturnType<typeof useForm>['setValue'],
-    setSelectedFee: SendContext['setSelectedFee'],
-    setFeeOutdated: SendContext['setFeeOutdated'],
-) => {
-    const { networkType } = account;
-    const updatedLevels = getFeeLevels(networkType, coinFees, !!token);
-    const selectedFeeLevel = updatedLevels.find(
-        (level: FeeLevel) => level.label === selectedFee.label,
-    );
+    const selectedFeeLevel = updatedLevels.find((level: FeeLevel) => level.label === 'normal');
 
     if (selectedFeeLevel) {
         if (networkType === 'ethereum') {
             setValue('ethereumGasPrice', selectedFeeLevel.feePerUnit);
             setValue('ethereumGasLimit', selectedFeeLevel.feeLimit);
+        } else {
+            setValue('customFee', null);
         }
 
         setSelectedFee(selectedFeeLevel);
-        setFeeOutdated(false);
+        const activeMax = findActiveMaxId(outputs, getValues);
+        await updateMax(
+            activeMax,
+            account,
+            setValue,
+            getValues,
+            clearError,
+            setError,
+            selectedFeeLevel,
+            outputs,
+            token,
+            fiatRates,
+            setTransactionInfo,
+        );
     }
 };

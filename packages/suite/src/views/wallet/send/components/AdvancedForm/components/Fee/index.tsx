@@ -2,7 +2,7 @@ import { QuestionTooltip, Translation } from '@suite-components';
 import { capitalizeFirstLetter } from '@suite-utils/string';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { Button, colors, P, Select, variables } from '@trezor/components';
-import { manuallyUpdateFee } from '@wallet-actions/sendFormActions';
+import { updateFeeLevel } from '@wallet-actions/sendFormActions';
 import { Account } from '@wallet-types';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { calculateEthFee, findActiveMaxId, updateMax } from '@wallet-utils/sendFormUtils';
@@ -148,17 +148,22 @@ export default () => {
                                 <Translation id="TR_FEE_NEEDS_UPDATE" />
                             </RefreshText>
                             <Button
-                                onClick={() =>
-                                    manuallyUpdateFee(
+                                onClick={() => {
+                                    updateFeeLevel(
                                         account,
                                         coinFees,
                                         token,
-                                        selectedFee,
                                         setValue,
                                         setSelectedFee,
-                                        setFeeOutdated,
-                                    )
-                                }
+                                        outputs,
+                                        getValues,
+                                        clearError,
+                                        setError,
+                                        fiatRates,
+                                        setTransactionInfo,
+                                    );
+                                    setFeeOutdated(false);
+                                }}
                                 icon="REFRESH"
                                 variant="tertiary"
                                 alignIcon="right"

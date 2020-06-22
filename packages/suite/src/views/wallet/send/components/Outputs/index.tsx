@@ -1,5 +1,5 @@
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
-import { updateFeeOrNotify } from '@wallet-actions/sendFormActions';
+import { updateFeeLevel } from '@wallet-actions/sendFormActions';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
@@ -36,21 +36,31 @@ export default () => {
         selectedFee,
         token,
         setSelectedFee,
+        fiatRates,
         account,
+        setTransactionInfo,
         setFeeOutdated,
     } = useSendContext();
-    const { setValue } = useFormContext();
+    const { setValue, getValues, clearError, setError } = useFormContext();
 
     useEffect(() => {
-        updateFeeOrNotify(
-            account,
-            coinFees,
-            token,
-            selectedFee,
-            setFeeOutdated,
-            setValue,
-            setSelectedFee,
-        );
+        if (selectedFee.label === 'custom') {
+            setFeeOutdated(true);
+        } else {
+            updateFeeLevel(
+                account,
+                coinFees,
+                token,
+                setValue,
+                setSelectedFee,
+                outputs,
+                getValues,
+                clearError,
+                setError,
+                fiatRates,
+                setTransactionInfo,
+            );
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [coinFees]);
 
