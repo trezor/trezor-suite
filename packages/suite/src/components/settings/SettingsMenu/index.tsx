@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 
 import { Link, Dropdown } from '@trezor/components';
 import * as modalActions from '@suite-actions/modalActions';
@@ -7,6 +8,11 @@ import { Translation } from '@suite-components/Translation';
 import { SUPPORT_URL } from '@suite-constants/urls';
 import { TopNavigationPanel, AppNavigation } from '@suite-components';
 import { useActions } from '@suite-hooks';
+
+const StyledLink = styled(Link)`
+    padding: 10px 16px;
+    width: 100%;
+`;
 
 const SettingsMenu = () => {
     const { openModal } = useActions({
@@ -45,12 +51,13 @@ const SettingsMenu = () => {
                     items={[
                         {
                             label: (
-                                <Link variant="nostyle" href={SUPPORT_URL}>
+                                <StyledLink variant="nostyle" href={SUPPORT_URL}>
                                     <Translation id="TR_SUPPORT" />
-                                </Link>
+                                </StyledLink>
                             ),
                             'data-test': '@settings/menu/support',
                             callback: () => {},
+                            noPadding: true,
                         },
                         {
                             label: <Translation id="TR_SHOW_LOG" />,
