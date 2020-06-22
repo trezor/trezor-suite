@@ -1,10 +1,10 @@
 import React, { useState, createContext } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { colors, variables } from '@trezor/components';
+import { colors } from '@trezor/components';
 import SuiteNotifications from '@suite-components/Notifications';
 import Head from 'next/head';
-import Menu from '@suite-components/Menu/Container';
+// import Menu from '@suite-components/Menu/Container';
 import { AppState } from '@suite-types';
 import MenuSecondary from '@suite-components/MenuSecondary';
 import MenuDrawer from '@suite-components/MenuDrawer';

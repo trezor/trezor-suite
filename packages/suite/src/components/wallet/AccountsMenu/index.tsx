@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { H2, variables, colors } from '@trezor/components';
@@ -14,7 +14,6 @@ import { Account } from '@wallet-types';
 import AccountGroup from './components/AccountGroup';
 import AccountItem from './components/AccountItem/Container';
 import AddAccountButton from './components/AddAccount';
-import { useScrollRef } from '@suite-hooks/useScrollRef';
 
 const Wrapper = styled.div`
     flex: 1;
@@ -86,16 +85,9 @@ type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchT
 const AccountsMenu = ({ device, accounts, selectedAccount, openModal }: Props) => {
     const { discovery } = useDiscovery();
     const { params } = selectedAccount;
-    const { ref, dimensions, updateDimensions } = useScrollRef();
     const selectedItemRef = useCallback((_item: HTMLDivElement | null) => {
         // TODO: scroll to selected item
     }, []);
-
-    // update Scroll dimensions whenever discovery changes (adding account)
-    // or whenever AccountGroup updates its animation
-    useEffect(() => {
-        updateDimensions();
-    }, [discovery, updateDimensions]);
 
     if (!device || !discovery) {
         return (
@@ -138,7 +130,6 @@ const AccountsMenu = ({ device, accounts, selectedAccount, openModal }: Props) =
                 type={type}
                 hasBalance={!!groupHasBalance}
                 keepOpened={isOpened(type)}
-                onUpdate={updateDimensions}
             >
                 {accounts.map(account => {
                     const selected = !!isSelected(account);
@@ -158,7 +149,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount, openModal }: Props) =
 
     return (
         <Wrapper>
-            <Scroll ref={ref}>
+            <Scroll>
                 <MenuHeader>
                     <Heading noMargin>My Accounts</Heading>
                     <AddAccountButton
