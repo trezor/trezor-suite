@@ -163,12 +163,16 @@ export const composeBitcoinTransaction = async (
         coin: account.symbol,
     });
 
-    if (resp.success) {
-        return resp.payload[0];
+    if (resp.success && resp.payload[0].type !== 'error') {
+        const max = new BigNumber(resp.payload[0].max).isLessThan('0')
+            ? '0'
+            : formatNetworkAmount(resp.payload[0].max.toString(), account.symbol);
+        return { ...resp.payload[0], max };
     }
 
     return {
         type: 'error',
+        // @ts-ignore
         error: resp.payload.error,
     };
 };

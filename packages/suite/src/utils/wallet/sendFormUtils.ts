@@ -243,6 +243,8 @@ export const composeChange = async (
         isActive,
     );
 
+    console.log('composedTransaction', composedTransaction);
+
     if (!composedTransaction) return null; // TODO handle error
 
     if (composedTransaction.error) {
@@ -334,7 +336,8 @@ export const updateMax = async (
         }
     }
 
-    if (composedTransaction.type !== 'error') {
+    if (composedTransaction.type !== 'error' && !composedTransaction.error) {
+        // @ts-ignore
         const amountToFill = new BigNumber(composedTransaction.max)
             .minus(filledAmountsCount)
             .toFixed();
