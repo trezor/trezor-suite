@@ -3033,7 +3033,7 @@ const definedMessages = defineMessages({
     },
     TR_BUT_THERE_IS_ANOTHER_UPDATE: {
         id: 'TR_BUT_THERE_IS_ANOTHER_UPDATE',
-        deafaultMessage: 'But there is still another update ahead!',
+        defaultMessage: 'But there is still another update ahead!',
     },
     TR_SUCCESS: {
         id: 'TR_SUCCESS',
@@ -3474,6 +3474,18 @@ const definedMessages = defineMessages({
     DISCONNECT_DEVICE_DESCRIPTION: {
         id: 'DISCONNECT_DEVICE_DESCRIPTION',
         defaultMessage: 'Your device was wiped and does not hold private keys anymore.',
+    },
+    TR_CHANGE_HOMESCREEN: {
+        id: 'TR_CHANGE_HOMESCREEN',
+        defaultMessage: 'Change homescreen',
+    },
+    TR_DROP_IMAGE: {
+        id: 'TR_DROP_IMAGE',
+        defaultMessage: 'Drop image',
+    },
+    TR_INVALID_FILE_SELECTED: {
+        id: 'TR_INVALID_FILE_SELECTED',
+        defaultMessage: 'Invalid file selected. Must be .jpg or .png',
     },
 } as const);
 

@@ -110,11 +110,9 @@ const toig = (w: number, h: number, imageData: ImageData) => {
 };
 
 const toif = (w: number, h: number, imageData: ImageData) => {
-    // concat does [[1, 2], [3, 4]] -> [1, 2, 3, 4] here
-    const pixels = [].concat.apply(
-        [],
-        // @ts-ignore
-        range(h).map(row => {
+    // flat does [[1, 2], [3, 4]] -> [1, 2, 3, 4] here
+    const pixels = range(h)
+        .map(row => {
             return range(w).map(col => {
                 const i = row * w + col;
                 // draw black outside the visible area for smaller image size
@@ -126,16 +124,15 @@ const toif = (w: number, h: number, imageData: ImageData) => {
                 const b = imageData.data[4 * i + 2];
                 return ((r & 0xf8) << 8) | ((g & 0xfc) << 3) | ((b & 0xf8) >> 3);
             });
-        }),
-    );
+        })
+        .flat();
 
     // Uint16Array -> Uint8Array
-    const bytes = [].concat.apply(
-        [],
-        pixels.map((p: number) => {
+    const bytes = pixels
+        .map((p: number) => {
             return [Math.floor(p / 256), p % 256];
-        }),
-    );
+        })
+        .flat();
 
     const packed = pako.deflateRaw(bytes, {
         level: 9,
@@ -252,10 +249,27 @@ export const imageDataToHex = (imageData: ImageData, model: number) => {
     return toig(w, h, imageData);
 };
 
-export const elementToHomescreen = (element: HTMLImageElement, model: number) => {
+export const isValid = (dataUrl: string) => {
+    if (
+        !dataUrl ||
+        !(dataUrl.startsWith('data:image/jpeg') || dataUrl.startsWith('data:image/png'))
+    ) {
+        return false;
+    }
+    return true;
+};
+
+export const elementToHomescreen = (
+    element: HTMLImageElement,
+    model: number,
+    customElToDataFn?: typeof elementToImageData | undefined,
+) => {
+    // customElToDataFn needed for injecting mocked elementToImageData function in jest tests
     const w = getWidth(model);
     const h = getHeight(model);
-    const imageData = elementToImageData(element, w, h);
+    const imageData = customElToDataFn
+        ? customElToDataFn(element, w, h)
+        : elementToImageData(element, w, h);
     const hex = imageDataToHex(imageData, model);
     removeCanvas();
     return hex;

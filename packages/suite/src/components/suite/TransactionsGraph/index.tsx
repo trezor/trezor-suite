@@ -198,7 +198,6 @@ const TransactionsGraph = React.memo((props: Props) => {
                                     )
                                 }
                             />
-                            />
                             <ReferenceLine y={0} stroke={colors.BLACK80} />
                             <Bar
                                 dataKey={(data: any) => -1 * Number(props.sentValueFn(data))}
