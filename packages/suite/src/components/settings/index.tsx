@@ -1,4 +1,4 @@
-import Menu from './Menu';
+import SettingsMenu from './SettingsMenu';
 import SettingsLayout from './SettingsLayout';
 
-export { Menu, SettingsLayout };
+export { SettingsMenu, SettingsLayout };

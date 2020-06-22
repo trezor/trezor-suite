@@ -22,6 +22,8 @@ import QrCode from './QrCode';
 import QuestionTooltip from './QuestionTooltip';
 import TransactionsGraph from './TransactionsGraph';
 import DeviceInvalidModeLayout from './DeviceInvalidModeLayout';
+import TopNavigationPanel from './TopNavigationPanel';
+import AppNavigation from './AppNavigation';
 import { Translation } from './Translation';
 import { AccountLabeling, AddressLabeling, WalletLabeling } from './Labeling';
 
@@ -55,4 +57,6 @@ export {
     Image,
     QuestionTooltip,
     TransactionsGraph,
+    TopNavigationPanel,
+    AppNavigation,
 };

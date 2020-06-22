@@ -1,62 +1,17 @@
-import {
-    Badge,
-    Card,
-    FiatValue,
-    FormattedNumber,
-    HiddenPlaceholder,
-    NoRatesTooltip,
-    Translation,
-    AccountLabeling,
-} from '@suite-components';
-import styled, { keyframes } from 'styled-components';
+import { FiatValue, Translation, AccountLabeling, TopNavigationPanel } from '@suite-components';
+import styled from 'styled-components';
 import { useSelector, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
-import messages from '@suite/support/messages';
-import { CoinLogo, H1, H2, colors, Dropdown, Icon, Tooltip, variables } from '@trezor/components';
-import { getAccountFiatBalance, getTitleForNetwork, isTestnet } from '@wallet-utils/accountUtils';
-import { differenceInMinutes } from 'date-fns';
+import { CoinLogo, H1, H2, colors, Dropdown, variables } from '@trezor/components';
 import React from 'react';
-import { FormattedRelativeTime } from 'react-intl';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import AccountNavigation from './components/AccountNavigation';
-
-const Wrapper = styled.div`
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    background: ${colors.NEUE_BG_LIGHT_GREY};
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
-    margin-bottom: 22px;
-`;
-
-const Content = styled.div`
-    display: flex;
-    width: 100%;
-    padding: 24px 32px 0px 32px;
-    max-width: ${MAX_WIDTH};
-    flex-direction: column;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        padding: 24px 16px 0px 16px;
-    }
-`;
-
-const AccountName = styled(H1)`
-    font-size: ${variables.NEUE_FONT_SIZE.H1};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    white-space: nowrap;
-`;
 
 const Row = styled.div`
     display: flex;
     width: 100%;
     align-items: center;
     justify-content: space-between;
-`;
-
-const AccountNameRow = styled(Row)`
-    margin-bottom: 6px;
-    align-items: normal;
 `;
 
 const BalanceWrapper = styled.div`
@@ -152,20 +107,17 @@ const FiatRateWrapper = styled.span`
 // `;
 
 const AccountTopPanel = () => {
-    const fiat = useSelector(state => state.wallet.fiat);
     const settings = useSelector(state => state.wallet.settings);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const { goto } = useActions({
         goto: routerActions.goto,
     });
-    const { localCurrency } = settings;
     if (selectedAccount.status !== 'loaded') return null;
 
     const { account } = selectedAccount;
     const { symbol, formattedBalance } = account;
-    const fiatBalance = getAccountFiatBalance(account, localCurrency, fiat.coins);
-    const MAX_AGE = 5; // after 5 minutes the ticker will show tooltip with info about last update instead of blinking LIVE text
-    const rateAge = (timestamp: number) => differenceInMinutes(new Date(), new Date(timestamp));
+    // const MAX_AGE = 5; // after 5 minutes the ticker will show tooltip with info about last update instead of blinking LIVE text
+    // const rateAge = (timestamp: number) => differenceInMinutes(new Date(), new Date(timestamp));
     const dropdownItems = [
         {
             callback: () => goto('wallet-details'),
@@ -175,38 +127,33 @@ const AccountTopPanel = () => {
     ];
 
     return (
-        <Wrapper>
-            <Content>
-                <AccountNameRow>
-                    <AccountName>
-                        <AccountLabeling account={account} />
-                    </AccountName>
-                    <Dropdown
-                        isDisabled={dropdownItems.every(item => item.isHidden)}
-                        alignMenu="right"
-                        items={dropdownItems}
-                    />
-                </AccountNameRow>
-                <Row>
-                    <BalanceWrapper>
-                        <CoinLogo size={24} symbol={symbol} />
-                        <Balance>
-                            {formattedBalance} {symbol.toUpperCase()}
-                        </Balance>
-                        <FiatValue amount={account.formattedBalance} symbol={symbol}>
-                            {({ value }) =>
-                                value ? <FiatBalanceWrapper>≈ {value}</FiatBalanceWrapper> : null
-                            }
-                        </FiatValue>
-                    </BalanceWrapper>
+        <TopNavigationPanel
+            title={<AccountLabeling account={account} />}
+            navigation={<AccountNavigation account={account} />}
+            dropdown={
+                <Dropdown
+                    isDisabled={dropdownItems.every(item => item.isHidden)}
+                    alignMenu="right"
+                    items={dropdownItems}
+                />
+            }
+        >
+            <BalanceWrapper>
+                <CoinLogo size={24} symbol={symbol} />
+                <Balance>
+                    {formattedBalance} {symbol.toUpperCase()}
+                </Balance>
+                <FiatValue amount={account.formattedBalance} symbol={symbol}>
+                    {({ value }) =>
+                        value ? <FiatBalanceWrapper>≈ {value}</FiatBalanceWrapper> : null
+                    }
+                </FiatValue>
+            </BalanceWrapper>
 
-                    <FiatValue amount="1" symbol={symbol}>
-                        {({ rate }) => (rate ? <FiatRateWrapper>{rate}</FiatRateWrapper> : null)}
-                    </FiatValue>
-                </Row>
-                <AccountNavigation account={account} />
-            </Content>
-        </Wrapper>
+            <FiatValue amount="1" symbol={symbol}>
+                {({ rate }) => (rate ? <FiatRateWrapper>{rate}</FiatRateWrapper> : null)}
+            </FiatValue>
+        </TopNavigationPanel>
     );
 
     // return (

@@ -46,8 +46,8 @@ const AppWrapper = styled.div`
     flex: 1 1 0%;
 `;
 
-const MaxWidthWrapper = styled.div<{ withMenu: boolean }>`
-    max-width: ${props => (props.withMenu ? '1664px' : MAX_WIDTH)};
+const MaxWidthWrapper = styled.div`
+    max-width: ${MAX_WIDTH};
     width: 100%;
     height: 100%;
     margin: 0 auto;
@@ -65,18 +65,21 @@ type Props = ReturnType<typeof mapStateToProps> & {
 interface BodyProps {
     url: string;
     menu?: React.ReactNode;
+    appMenu?: React.ReactNode;
     children?: React.ReactNode;
 }
 
 interface LayoutContextI {
     title?: string;
     menu?: React.ReactNode;
-    setLayout?: (title?: string, menu?: React.ReactNode) => void;
+    appMenu?: React.ReactNode;
+    setLayout?: (title?: string, menu?: React.ReactNode, appMenu?: React.ReactNode) => void;
 }
 
 export const LayoutContext = createContext<LayoutContextI>({
     title: undefined,
     menu: undefined,
+    appMenu: undefined,
     setLayout: undefined,
 });
 
@@ -91,18 +94,19 @@ const ScrollAppWrapper = ({ url, children }: BodyProps) => {
     return <AppWrapper ref={ref}>{children}</AppWrapper>;
 };
 
-const BodyWide = ({ url, menu, children }: BodyProps) => (
+const BodyWide = ({ url, menu, appMenu, children }: BodyProps) => (
     <Body>
         <Columns>
             {menu && <MenuSecondary>{menu}</MenuSecondary>}
             <ScrollAppWrapper url={url}>
-                <MaxWidthWrapper withMenu={!!menu}>{children}</MaxWidthWrapper>
+                {appMenu}
+                <MaxWidthWrapper>{children}</MaxWidthWrapper>
             </ScrollAppWrapper>
         </Columns>
     </Body>
 );
 
-const BodyNarrow = ({ url, menu, children }: BodyProps) => (
+const BodyNarrow = ({ url, menu, appMenu, children }: BodyProps) => (
     <Body>
         <MenuDrawer>{menu}</MenuDrawer>
         <Columns>
@@ -116,10 +120,12 @@ const SuiteLayout = (props: Props) => {
     const isWide = ['XLARGE', 'LARGE'].includes(props.layoutSize);
     const [title, setTitle] = useState<string | undefined>(undefined);
     const [menu, setMenu] = useState<any>(undefined);
+    const [appMenu, setAppMenu] = useState<any>(undefined);
     const setLayout = React.useCallback<NonNullable<LayoutContextI['setLayout']>>(
-        (newTitle, newMenu) => {
+        (newTitle, newMenu, newAppMenu) => {
             setTitle(newTitle);
             setMenu(newMenu);
+            setAppMenu(newAppMenu);
         },
         [],
     );
@@ -135,12 +141,12 @@ const SuiteLayout = (props: Props) => {
             {isWide && <NeueNavigation />}
             <LayoutContext.Provider value={{ title, menu, setLayout }}>
                 {isWide && (
-                    <BodyWide menu={menu} url={props.router.url}>
+                    <BodyWide menu={menu} appMenu={appMenu} url={props.router.url}>
                         {props.children}
                     </BodyWide>
                 )}
                 {!isWide && (
-                    <BodyNarrow menu={menu} url={props.router.url}>
+                    <BodyNarrow menu={menu} appMenu={appMenu} url={props.router.url}>
                         {props.children}
                     </BodyNarrow>
                 )}
