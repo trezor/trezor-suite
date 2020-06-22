@@ -232,6 +232,25 @@ export const updateFeeOrNotify = (
     }
 };
 
-export const manuallyUpdateFee = () => {
-    console.log('update');
+export const manuallyUpdateFee = (
+    account: SendContext['account'],
+    coinFees: SendContext['coinFees'],
+    token: SendContext['token'],
+    selectedFee: SendContext['selectedFee'],
+    setValue: ReturnType<typeof useForm>['setValue'],
+    setSelectedFee: SendContext['setSelectedFee'],
+) => {
+    const { networkType } = account;
+    const updatedLevels = getFeeLevels(networkType, coinFees, !!token);
+    const selectedFeeLevel = updatedLevels.find(
+        (level: FeeLevel) => level.label === selectedFee.label,
+    );
+    if (selectedFeeLevel) {
+        if (networkType === 'ethereum') {
+            setValue('ethereumGasPrice', selectedFeeLevel.feePerUnit);
+            setValue('ethereumGasLimit', selectedFeeLevel.feeLimit);
+        }
+
+        setSelectedFee(selectedFeeLevel);
+    }
 };

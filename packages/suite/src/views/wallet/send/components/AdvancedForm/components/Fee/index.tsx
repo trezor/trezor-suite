@@ -120,6 +120,7 @@ export default () => {
         token,
         fiatRates,
         setTransactionInfo,
+        coinFees,
     } = useSendContext();
     const { formState, setValue, errors, getValues, setError, clearError } = useFormContext();
     const dataIsDirty = formState.dirtyFields.has('ethereumData');
@@ -146,7 +147,16 @@ export default () => {
                                 <Translation id="TR_FEE_NEEDS_UPDATE" />
                             </RefreshText>
                             <Button
-                                onClick={() => manuallyUpdateFee()}
+                                onClick={() =>
+                                    manuallyUpdateFee(
+                                        account,
+                                        coinFees,
+                                        token,
+                                        selectedFee,
+                                        setValue,
+                                        setSelectedFee,
+                                    )
+                                }
                                 icon="REFRESH"
                                 variant="tertiary"
                                 alignIcon="right"

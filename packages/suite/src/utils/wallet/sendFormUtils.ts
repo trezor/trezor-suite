@@ -233,17 +233,15 @@ export const composeChange = async (
     outputs: SendContext['outputs'],
     token: SendContext['token'],
 ) => {
-    const isActive = getValues(`setMax-${id}`) === 'active';
+    const setMaxActive = getValues(`setMax-${id}`) === 'active';
     const composedTransaction = await composeTx(
         account,
         getValues,
         selectedFee,
         outputs,
         token,
-        isActive,
+        setMaxActive,
     );
-
-    console.log('composedTransaction', composedTransaction);
 
     if (!composedTransaction) return null; // TODO handle error
 

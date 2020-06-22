@@ -1,6 +1,6 @@
 import { useContext, createContext } from 'react';
 import { Account, Network, CoinFiatRates } from '@wallet-types';
-import { FeeLevel, PrecomposedTransaction, TokenInfo } from 'trezor-connect';
+import { FeeLevel, TokenInfo } from 'trezor-connect';
 import { TrezorDevice, AppState } from '@suite-types';
 
 export type Output = { id: number };
@@ -29,7 +29,7 @@ export interface SendContext {
     defaultValues: {
         'address-0': string;
         'amount-0': string;
-        'setMax-0': boolean;
+        'setMax-0': 'active' | 'inactive';
         'fiatInput-0': string;
         'localCurrency-0': { value: string; label: string };
         ethereumGasPrice: string;
