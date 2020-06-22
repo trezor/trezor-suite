@@ -24,7 +24,7 @@ const Text = styled.div`
 `;
 
 const StyledInput = styled(Input)`
-    min-width: 250px;
+    min-width: 300px;
     display: flex;
     flex: 1;
     margin-right: 10px;

@@ -244,8 +244,6 @@ export default ({
                                             nonce: account.misc.nonce,
                                         });
 
-                                        console.log('transaction', transaction);
-
                                         const signedTx = await TrezorConnect.ethereumSignTransaction(
                                             {
                                                 device: {
@@ -368,6 +366,7 @@ export default ({
                                     break;
                                 } // no default
                             }
+                            reset();
                         }}
                     >
                         <Translation id="TR_MODAL_CONFIRM_TX_BUTTON" />

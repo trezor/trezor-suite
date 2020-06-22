@@ -176,19 +176,15 @@ export const composeTx = async (
     setMax = false,
 ) => {
     if (account.networkType === 'ripple') {
-        const amount = getValues('amount-0');
-        const address = getValues('address-0');
-        return composeRippleTransaction(account, address, amount, selectedFee);
+        return composeRippleTransaction(account, getValues, selectedFee);
     }
 
     if (account.networkType === 'ethereum') {
-        const amount = getValues('amount-0');
-        const address = getValues('address-0');
-        return composeEthereumTransaction(account, address, amount, selectedFee, token, setMax);
+        return composeEthereumTransaction(account, getValues, selectedFee, token, setMax);
     }
 
     if (account.networkType === 'bitcoin') {
-        return composeBitcoinTransaction(account, outputs, getValues, selectedFee, setMax);
+        return composeBitcoinTransaction(account, outputs, getValues, selectedFee);
     }
 };
 
@@ -267,18 +263,6 @@ const resetAllMax = (
     outputs.map(output => setValue(`setMax-${output.id}`, 'inactive'));
 };
 
-const countFilledAmounts = (
-    outputs: SendContext['outputs'],
-    getValues: ReturnType<typeof useForm>['getValues'],
-) => {
-    const totalAmount = new BigNumber(0);
-    outputs.forEach(output => {
-        totalAmount.plus(getValues(`amount-${output.id}`));
-    });
-
-    return totalAmount.toFixed();
-};
-
 export const findActiveMaxId = (
     outputs: SendContext['outputs'],
     getValues: ReturnType<typeof useForm>['getValues'],
@@ -310,14 +294,13 @@ export const updateMax = async (
 
     resetAllMax(outputs, setValue);
     setValue(`setMax-${id}`, 'active');
-    const filledAmountsCount = countFilledAmounts(outputs, getValues);
     const composedTransaction = await composeTx(
         account,
         getValues,
         selectedFee,
         outputs,
         token,
-        true,
+        getValues(`setMax-${id}`) === 'active',
     );
 
     if (!composedTransaction) return null; // TODO handle error
@@ -325,22 +308,18 @@ export const updateMax = async (
     if (composedTransaction.type === 'error') {
         switch (composedTransaction.error) {
             case 'NOT-ENOUGH-FUNDS':
-                setError(`amount-${id}`, 'TR_AMOUNT_IS_NOT_ENOUGH', 'bbb');
+                setError(`amount-${id}`, 'TR_AMOUNT_IS_NOT_ENOUGH');
                 break;
             case 'NOT-ENOUGH-CURRENCY-FEE':
-                setError(`amount-${id}`, 'NOT_ENOUGH_CURRENCY_FEE', 'aaa');
+                setError(`amount-${id}`, 'NOT_ENOUGH_CURRENCY_FEE');
                 break;
             // no default
         }
     }
 
     if (composedTransaction.type !== 'error' && !composedTransaction.error) {
-        // @ts-ignore
-        const amountToFill = new BigNumber(composedTransaction.max)
-            .minus(filledAmountsCount)
-            .toFixed();
         clearError(`amount-${id}`);
-        setValue(`amount-${id}`, amountToFill);
+        setValue(`amount-${id}`, composedTransaction.max);
         updateFiatInput(id, fiatRates, getValues, setValue);
         await composeChange(
             id,

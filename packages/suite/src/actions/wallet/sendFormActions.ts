@@ -14,10 +14,11 @@ import {
 
 export const composeRippleTransaction = (
     account: SendContext['account'],
-    address: string,
-    amount: string,
+    getValues: ReturnType<typeof useForm>['getValues'],
     selectedFee: SendContext['selectedFee'],
 ) => {
+    const amount = getValues('amount-0');
+    const address = getValues('address-0');
     const amountInSatoshi = networkAmountToSatoshi(amount, account.symbol).toString();
     const { availableBalance } = account;
     const feeInSatoshi = selectedFee.feePerUnit;
@@ -26,20 +27,20 @@ export const composeRippleTransaction = (
     const payloadData = {
         totalSpent: totalSpentBig.toString(),
         fee: feeInSatoshi,
-        max: max.isLessThan('0') ? '0' : formatNetworkAmount(max.toString(), account.symbol),
+        max: max.isLessThan('0') ? '' : formatNetworkAmount(max.toString(), account.symbol),
     };
-
-    if (!address) {
-        return {
-            type: 'nonfinal',
-            ...payloadData,
-        };
-    }
 
     if (totalSpentBig.isGreaterThan(availableBalance)) {
         return {
             type: 'error',
             error: 'NOT-ENOUGH-FUNDS',
+        };
+    }
+
+    if (!address) {
+        return {
+            type: 'nonfinal',
+            ...payloadData,
         };
     }
 
@@ -51,12 +52,13 @@ export const composeRippleTransaction = (
 
 export const composeEthereumTransaction = (
     account: SendContext['account'],
-    address: string,
-    amount: string,
+    getValues: ReturnType<typeof useForm>['getValues'],
     selectedFee: SendContext['selectedFee'],
     token: SendContext['token'],
     setMax = false,
 ) => {
+    const amount = getValues('amount-0');
+    const address = getValues('address-0');
     const isFeeValid = !new BigNumber(selectedFee.feePerUnit).isNaN();
     const { availableBalance } = account;
     const feeInSatoshi = calculateEthFee(
@@ -115,17 +117,17 @@ export const composeBitcoinTransaction = async (
     outputs: SendContext['outputs'],
     getValues: ReturnType<typeof useForm>['getValues'],
     selectedFee: SendContext['selectedFee'],
-    setMax = false,
 ) => {
     if (!account.addresses || !account.utxo) return;
 
     const composedOutputs = outputs.map(output => {
         const amount = networkAmountToSatoshi(getValues(`amount-${output.id}`), account.symbol);
         const address = getValues(`address-${output.id}`);
+        const isMaxActive = getValues(`setMax-${output.id}`) === 'active';
         // address is set
         if (address) {
             // set max without address
-            if (setMax) {
+            if (isMaxActive) {
                 return {
                     address,
                     type: 'send-max',
@@ -139,7 +141,7 @@ export const composeBitcoinTransaction = async (
         }
 
         // set max with address only
-        if (setMax) {
+        if (isMaxActive) {
             return {
                 type: 'send-max-noaddress',
             } as const;
@@ -152,7 +154,7 @@ export const composeBitcoinTransaction = async (
         } as const;
     });
 
-    const resp = await TrezorConnect.composeTransaction({
+    const response = await TrezorConnect.composeTransaction({
         account: {
             path: account.path,
             addresses: account.addresses,
@@ -163,19 +165,20 @@ export const composeBitcoinTransaction = async (
         coin: account.symbol,
     });
 
-    if (resp.success && resp.payload[0].type !== 'error') {
-        const max = new BigNumber(resp.payload[0].max).isLessThan('0')
-            ? '0'
-            : formatNetworkAmount(resp.payload[0].max.toString(), account.symbol);
-        const fee = formatNetworkAmount(resp.payload[0].fee.toString(), account.symbol);
-        return { ...resp.payload[0], max, fee };
-    }
+    if (response.success) {
+        if (response.payload[0].type !== 'error') {
+            const max = new BigNumber(response.payload[0].max).isLessThan('0')
+                ? '0'
+                : formatNetworkAmount(response.payload[0].max.toString(), account.symbol);
+            const fee = formatNetworkAmount(response.payload[0].fee.toString(), account.symbol);
+            return { ...response.payload[0], max, fee };
+        }
 
-    return {
-        type: 'error',
-        // @ts-ignore
-        error: resp.payload.error,
-    };
+        return {
+            type: 'error',
+            error: response.payload[0].error,
+        };
+    }
 };
 
 export const onQrScan = (

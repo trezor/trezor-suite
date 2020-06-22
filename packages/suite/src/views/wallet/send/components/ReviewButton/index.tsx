@@ -47,7 +47,7 @@ const isDisabled = (
         return true;
     }
 
-    if (networkType !== 'bitcoin' && (!address || !amount)) {
+    if (!address || !amount) {
         return true;
     }
 
