@@ -28,6 +28,8 @@ const Wrapper = styled.div<{ variant: Props['variant'] }>`
     display: flex;
     background: ${props => getBgColor(props.variant)};
     color: ${colors.WHITE};
+    padding: 16px;
+
     & + & {
         border-top: 1px solid ${colors.WHITE};
     }
