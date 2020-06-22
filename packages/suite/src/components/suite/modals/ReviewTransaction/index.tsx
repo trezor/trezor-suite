@@ -109,7 +109,6 @@ export default ({
     const { isLocked } = useDevice();
     const isDeviceLocked = isLocked();
     const fee = getFeeValue(transactionInfo, networkType, symbol);
-    const totalSpent = formatNetworkAmount(transactionInfo.totalSpent, symbol);
 
     return (
         <Modal
@@ -366,7 +365,6 @@ export default ({
                                     break;
                                 } // no default
                             }
-                            reset();
                         }}
                     >
                         <Translation id="TR_MODAL_CONFIRM_TX_BUTTON" />

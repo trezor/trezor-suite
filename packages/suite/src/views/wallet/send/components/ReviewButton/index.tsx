@@ -77,6 +77,7 @@ export default () => {
         device,
         outputs,
         token,
+        isLoading,
         transactionInfo,
         account,
         selectedFee,
@@ -100,6 +101,7 @@ export default () => {
                         address,
                         amount,
                     )}
+                    isLoading={isLoading}
                     onClick={() => {
                         if (transactionInfo && transactionInfo.type === 'final') {
                             openModal({

@@ -54,6 +54,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     const fiatRates = fiat.coins.find(item => item.symbol === account.symbol);
     const initialSelectedFee = levels.find(l => l.label === 'normal') || levels[0];
     const [advancedForm, showAdvancedForm] = useState(false);
+    const [isLoading, setLoading] = useState(false);
     const [destinationAddressEmpty, setDestinationAddressEmpty] = useState(false);
     const [token, setToken] = useState(null);
     const [transactionInfo, setTransactionInfo] = useState(null);
@@ -91,6 +92,8 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
             <SendContext.Provider
                 value={{
                     feeInfo,
+                    isLoading,
+                    setLoading,
                     defaultValues,
                     initialSelectedFee,
                     outputs,

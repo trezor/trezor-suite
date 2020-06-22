@@ -103,6 +103,7 @@ export default ({ outputId }: { outputId: number }) => {
         selectedFee,
         outputs,
         localCurrencyOption,
+        setLoading,
         destinationAddressEmpty,
         fiatRates,
     } = useSendContext();
@@ -150,6 +151,9 @@ export default ({ outputId }: { outputId: number }) => {
                         icon: getValues(inputNameMax) === 'active' ? 'CHECK' : 'SEND',
                         iconSize: 16,
                         onClick: async () => {
+                            if (networkType === 'bitcoin') {
+                                setLoading(true);
+                            }
                             await updateMax(
                                 outputId,
                                 account,
@@ -163,6 +167,9 @@ export default ({ outputId }: { outputId: number }) => {
                                 fiatRates,
                                 setTransactionInfo,
                             );
+                            if (networkType === 'bitcoin') {
+                                setLoading(false);
+                            }
                         },
                         text: <Translation id="TR_SEND_SEND_MAX" />,
                     }}

@@ -61,6 +61,8 @@ export interface SendContext {
     showAdvancedForm: (isVisible: boolean) => void;
     outputs: Output[];
     updateOutputs: (outputs: Output[]) => void;
+    isLoading: boolean;
+    setLoading: (isLoading: boolean) => void;
 }
 
 export const SendContext = createContext<SendContext | null>(null);
