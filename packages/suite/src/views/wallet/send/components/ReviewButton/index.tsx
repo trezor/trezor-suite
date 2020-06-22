@@ -3,10 +3,10 @@ import * as modalActions from '@suite-actions/modalActions';
 import { Translation } from '@suite-components/Translation';
 import { useActions } from '@suite-hooks';
 import { AppState, TrezorDevice } from '@suite-types';
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
+import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext';
 import { Button, colors } from '@trezor/components';
 import React from 'react';
-import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
+import { FieldError, NestDataObject, useFormContext, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -38,16 +38,30 @@ const isDisabled = (
     locks: AppState['suite']['locks'],
     device: TrezorDevice,
     online: AppState['suite']['online'],
-    networkType: any,
-    address: string,
-    amount: string,
+    outputs: SendContext['outputs'],
+    getValues: ReturnType<typeof useForm>['getValues'],
 ) => {
     // any form error
     if (Object.entries(errors).length > 0) {
         return true;
     }
 
-    if (!address || !amount) {
+    let filledAddress = 0;
+    let filledAmounts = 0;
+
+    outputs.forEach(output => {
+        const address = getValues(`address-${output.id}`);
+        if (address.length > 0) {
+            filledAddress++;
+        }
+
+        const amount = getValues(`amount-${output.id}`);
+        if (amount.length > 0) {
+            filledAmounts++;
+        }
+    });
+
+    if (filledAddress !== outputs.length || filledAmounts !== outputs.length) {
         return true;
     }
 
@@ -79,28 +93,15 @@ export default () => {
         token,
         isLoading,
         transactionInfo,
-        account,
         selectedFee,
     } = useSendContext();
     const { openModal } = useActions({ openModal: modalActions.openModal });
-
-    const { networkType } = account;
-    const address = getValues('address-0');
-    const amount = getValues('amount-0');
 
     return (
         <Wrapper>
             <Row>
                 <ButtonReview
-                    isDisabled={isDisabled(
-                        errors,
-                        locks,
-                        device,
-                        online,
-                        networkType,
-                        address,
-                        amount,
-                    )}
+                    isDisabled={isDisabled(errors, locks, device, online, outputs, getValues)}
                     isLoading={isLoading}
                     onClick={() => {
                         if (transactionInfo && transactionInfo.type === 'final') {

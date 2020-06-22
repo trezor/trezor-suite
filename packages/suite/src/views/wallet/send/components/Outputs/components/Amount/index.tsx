@@ -167,6 +167,7 @@ export default ({ outputId }: { outputId: number }) => {
                                 fiatRates,
                                 setTransactionInfo,
                             );
+
                             if (networkType === 'bitcoin') {
                                 setLoading(false);
                             }
