@@ -36,7 +36,7 @@ const Menu = styled.ul<MenuProps>`
 `;
 
 const MenuItem = styled.li<Pick<DropdownMenuItem, 'isDisabled'>>`
-    padding: 8px 16px;
+    padding: 10px 16px;
     white-space: nowrap;
     cursor: ${props => (!props.isDisabled ? 'pointer' : 'default')};
     color: ${props =>
@@ -63,6 +63,7 @@ interface DropdownMenuItem {
     icon?: React.ReactNode;
     isDisabled?: boolean;
     isHidden?: boolean;
+    'data-test'?: string;
 }
 
 interface MenuItemProps {
@@ -152,6 +153,7 @@ const Dropdown = ({
                         <MenuItemComponent
                             onClick={() => onMenuItemClick(item)}
                             isDisabled={item.isDisabled}
+                            data-test={item['data-test']}
                             item={item}
                         >
                             {item.label}
