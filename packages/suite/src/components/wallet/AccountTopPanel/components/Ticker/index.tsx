@@ -69,7 +69,7 @@ const Ticker = ({ symbol }: Props) => {
                     >
                         <FiatRateWrapper>
                             <Icon
-                                icon={rateGoingUp ? 'ARROW_UP' : 'ARROW_DOWN'}
+                                icon={rateGoingUp ? 'UP' : 'DOWN'}
                                 color={rateGoingUp ? colors.NEUE_TYPE_GREEN : colors.NEUE_TYPE_RED}
                             />
                             {rate}

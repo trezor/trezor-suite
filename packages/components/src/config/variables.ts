@@ -118,4 +118,6 @@ export const ICONS: IconType[] = [
     'COLLAPSE',
     'NOTIFICATION',
     'SHOP',
+    'UP',
+    'DOWN',
 ];

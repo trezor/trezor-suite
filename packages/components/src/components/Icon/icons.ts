@@ -55,4 +55,6 @@ export const ICONS = {
     BACKUP: require('../../images/icons/backup.svg'),
     COLLAPSE: require('../../images/icons/collapse.svg'),
     SHOP: require('../../images/icons/shop.svg'),
+    UP: require('../../images/icons/up.svg'),
+    DOWN: require('../../images/icons/down.svg'),
 };
