@@ -1,9 +1,13 @@
 import BigNumber from 'bignumber.js';
+import { Dispatch, GetState } from '@suite-types';
+import * as accountActions from '@wallet-actions/accountActions';
+import * as notificationActions from '@suite-actions/notificationActions';
 import { SendContext } from '@wallet-hooks/useSendContext';
 import { toWei } from 'web3-utils';
+import { ZEC_SIGN_ENHANCEMENT, XRP_FLAG } from '@wallet-constants/sendForm';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
 import { useForm } from 'react-hook-form';
-import TrezorConnect, { FeeLevel } from 'trezor-connect';
+import TrezorConnect, { FeeLevel, RipplePayment } from 'trezor-connect';
 import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import {
     calculateTotal,
@@ -12,6 +16,8 @@ import {
     getFeeLevels,
     findActiveMaxId,
     updateMax,
+    serializeEthereumTx,
+    prepareEthereumTransaction,
 } from '@wallet-utils/sendFormUtils';
 
 export const composeRippleTransaction = (
@@ -254,6 +260,255 @@ export const updateFeeLevel = async (
             token,
             fiatRates,
             setTransactionInfo,
+        );
+    }
+};
+
+export const sendBitcoinTransaction = (transactionInfo: SendContext['transactionInfo']) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { selectedAccount } = getState().wallet;
+    const { device } = getState().suite;
+    if (selectedAccount.status !== 'loaded' || !device) return null;
+    const { account } = selectedAccount;
+    if (!transactionInfo || transactionInfo.type !== 'final') return;
+    const { transaction } = transactionInfo;
+
+    const inputs = transaction.inputs.map((input: any) => ({
+        ...input,
+        // sequence: BTC_RBF_SEQUENCE, // TODO: rbf is set
+        // sequence: BTC_LOCKTIME_SEQUENCE, // TODO: locktime is set
+    }));
+
+    let signEnhancement = {};
+
+    if (account.symbol === 'zec') {
+        signEnhancement = ZEC_SIGN_ENHANCEMENT;
+    }
+
+    // connect undefined amount hotfix
+    inputs.forEach((input: any) => {
+        if (!input.amount) delete input.amount;
+    });
+
+    const signPayload = {
+        device: {
+            path: device.path,
+            instance: device.instance,
+            state: device.state,
+        },
+        useEmptyPassphrase: device.useEmptyPassphrase,
+        outputs: transaction.outputs,
+        inputs,
+        coin: account.symbol,
+        ...signEnhancement,
+    };
+
+    const signedTx = await TrezorConnect.signTransaction(signPayload);
+
+    if (!signedTx.success) {
+        dispatch(
+            notificationActions.addToast({
+                type: 'sign-tx-error',
+                error: signedTx.payload.error,
+            }),
+        );
+        return;
+    }
+
+    // TODO: add possibility to show serialized tx without pushing (locktime)
+    const sentTx = await TrezorConnect.pushTransaction({
+        tx: signedTx.payload.serializedTx,
+        coin: account.symbol,
+    });
+
+    const spentWithoutFee = new BigNumber(transactionInfo.totalSpent)
+        .minus(transactionInfo.fee)
+        .toString();
+
+    if (sentTx.success) {
+        dispatch(
+            notificationActions.addToast({
+                type: 'tx-sent',
+                formattedAmount: formatNetworkAmount(spentWithoutFee, account.symbol, true),
+                device,
+                descriptor: account.descriptor,
+                symbol: account.symbol,
+                txid: sentTx.payload.txid,
+            }),
+        );
+
+        dispatch(accountActions.fetchAndUpdateAccount(account));
+    } else {
+        dispatch(
+            notificationActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),
+        );
+    }
+};
+
+export const sendEthereumTransaction = (
+    getValues: ReturnType<typeof useForm>['getValues'],
+    token: SendContext['token'],
+) => async (dispatch: Dispatch, getState: GetState) => {
+    const { selectedAccount } = getState().wallet;
+    const { device } = getState().suite;
+    if (selectedAccount.status !== 'loaded' || !device) return null;
+    const { account, network } = selectedAccount;
+
+    const amount = getValues('amount-0');
+    const address = getValues('address-0');
+    const data = getValues('ethereumData');
+    const gasPrice = getValues('ethereumGasPrice');
+    const gasLimit = getValues('ethereumGasLimit');
+
+    if (account.networkType !== 'ethereum' || !network.chainId || !amount || !address) return null;
+
+    const transaction = prepareEthereumTransaction({
+        token: token || undefined,
+        chainId: network.chainId,
+        to: address,
+        amount,
+        data,
+        gasLimit,
+        gasPrice,
+        nonce: account.misc.nonce,
+    });
+
+    const signedTx = await TrezorConnect.ethereumSignTransaction({
+        device: {
+            path: device.path,
+            instance: device.instance,
+            state: device.state,
+        },
+        useEmptyPassphrase: device.useEmptyPassphrase,
+        path: account.path,
+        transaction,
+    });
+
+    if (!signedTx.success) {
+        dispatch(
+            notificationActions.addToast({
+                type: 'sign-tx-error',
+                error: signedTx.payload.error,
+            }),
+        );
+        return;
+    }
+
+    const serializedTx = serializeEthereumTx({
+        ...transaction,
+        ...signedTx.payload,
+    });
+
+    // TODO: add possibility to show serialized tx without pushing (locktime)
+    const sentTx = await TrezorConnect.pushTransaction({
+        tx: serializedTx,
+        coin: network.symbol,
+    });
+
+    if (sentTx.success) {
+        dispatch(
+            notificationActions.addToast({
+                type: 'tx-sent',
+                formattedAmount: `${amount} ${
+                    token ? token.symbol!.toUpperCase() : account.symbol.toUpperCase()
+                }`,
+                device,
+                descriptor: account.descriptor,
+                symbol: account.symbol,
+                txid: sentTx.payload.txid,
+            }),
+        );
+        dispatch(accountActions.fetchAndUpdateAccount(account));
+    } else {
+        dispatch(
+            notificationActions.addToast({
+                type: 'sign-tx-error',
+                error: sentTx.payload.error,
+            }),
+        );
+    }
+};
+
+export const sendRippleTransaction = (
+    getValues: ReturnType<typeof useForm>['getValues'],
+    selectedFee: SendContext['selectedFee'],
+) => async (dispatch: Dispatch, getState: GetState) => {
+    const { selectedAccount } = getState().wallet;
+    const { device } = getState().suite;
+    if (selectedAccount.status !== 'loaded' || !device) return null;
+    const { account } = selectedAccount;
+    const { symbol, networkType } = account;
+
+    if (networkType !== 'ripple' || !account || !account.misc || !account.misc.sequence)
+        return null;
+
+    const amount = getValues('amount-0');
+    const address = getValues('address-0');
+    const destinationTag = getValues('rippleDestinationTag');
+    const { path, instance, state, useEmptyPassphrase } = device;
+
+    const payment: RipplePayment = {
+        destination: address,
+        amount: networkAmountToSatoshi(amount, symbol),
+    };
+
+    if (destinationTag) {
+        payment.destinationTag = parseInt(destinationTag, 10);
+    }
+
+    const signedTx = await TrezorConnect.rippleSignTransaction({
+        device: {
+            path,
+            instance,
+            state,
+        },
+        useEmptyPassphrase,
+        path: account.path,
+        transaction: {
+            fee: selectedFee.feePerUnit,
+            flags: XRP_FLAG,
+            sequence: account.misc.sequence,
+            payment,
+        },
+    });
+
+    if (!signedTx.success) {
+        dispatch(
+            notificationActions.addToast({
+                type: 'sign-tx-error',
+                error: signedTx.payload.error,
+            }),
+        );
+        return;
+    }
+
+    // TODO: add possibility to show serialized tx without pushing (locktime)
+    const sentTx = await TrezorConnect.pushTransaction({
+        tx: signedTx.payload.serializedTx,
+        coin: account.symbol,
+    });
+
+    if (sentTx.success) {
+        dispatch(
+            notificationActions.addToast({
+                type: 'tx-sent',
+                formattedAmount: `${amount} ${account.symbol.toUpperCase()}`,
+                device,
+                descriptor: account.descriptor,
+                symbol: account.symbol,
+                txid: sentTx.payload.txid,
+            }),
+        );
+
+        dispatch(accountActions.fetchAndUpdateAccount(account));
+    } else {
+        dispatch(
+            notificationActions.addToast({
+                type: 'sign-tx-error',
+                error: sentTx.payload.error,
+            }),
         );
     }
 };

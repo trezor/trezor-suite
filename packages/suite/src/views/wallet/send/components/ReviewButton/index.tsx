@@ -51,12 +51,12 @@ const isDisabled = (
 
     outputs.forEach(output => {
         const address = getValues(`address-${output.id}`);
-        if (address.length > 0) {
+        if (address && address.length > 0) {
             filledAddress++;
         }
 
         const amount = getValues(`amount-${output.id}`);
-        if (amount.length > 0) {
+        if (amount && amount.length > 0) {
             filledAmounts++;
         }
     });
