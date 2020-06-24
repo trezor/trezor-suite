@@ -11,7 +11,10 @@ export default (props: Props) => {
     const { account } = props;
 
     // collect all items suitable for current networkType
-    const items = ITEMS.filter(item => !item.isHidden(account));
+    const items = ITEMS.filter(item => !item.isHidden(account)).map(item => ({
+        ...item,
+        'data-test': `@wallet/menu/${item.route}`,
+    }));
 
     // TODO: Do we still need hidden items?
     // const gotHiddenItems = items.length > VISIBLE_ITEMS_LIMIT + 1;
