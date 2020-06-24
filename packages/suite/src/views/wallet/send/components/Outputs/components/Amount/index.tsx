@@ -116,14 +116,14 @@ export default ({ outputId }: { outputId: number }) => {
         setError,
         clearError,
     } = useFormContext();
-    const inputName = `amount-${outputId}`;
-    const inputNameMax = `setMax-${outputId}`;
+    const inputName = `amount[${outputId}]`;
+    const inputNameMax = `setMax[${outputId}]`;
     const isDirty = formState.dirtyFields.has(inputName);
     const { symbol, availableBalance, networkType } = account;
     const formattedAvailableBalance = token
         ? token.balance || '0'
         : formatNetworkAmount(availableBalance, symbol);
-    const error = errors[inputName];
+    const error = errors && errors.amount ? errors.amount[outputId] : null;
     const reserve =
         account.networkType === 'ripple' ? formatNetworkAmount(account.misc.reserve, symbol) : null;
     const tokenBalance = token ? `${token.balance} ${token.symbol!.toUpperCase()}` : undefined;
@@ -145,7 +145,7 @@ export default ({ outputId }: { outputId: number }) => {
                     }
                     onChange={async () => {
                         updateFiatInput(outputId, fiatRates, getValues, setValue);
-                        setValue(`setMax-${outputId}`, 'inactive');
+                        setValue(`setMax[${outputId}]`, 'inactive');
                     }}
                     button={{
                         icon: getValues(inputNameMax) === 'active' ? 'CHECK' : 'SEND',

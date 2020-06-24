@@ -54,8 +54,8 @@ export default ({ outputId }: { outputId: number }) => {
                 isSearchable={false}
                 onChange={(option: Option) => {
                     setToken(option.value || null);
-                    setValue(`amount-${outputId}`, '');
-                    clearError(`amount-${outputId}`);
+                    setValue(`amount[${outputId}]`, '');
+                    clearError(`amount[${outputId}]`);
                 }}
                 isClearable={false}
                 value={values.find((option: Option) => option.value === token?.symbol)}

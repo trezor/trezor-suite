@@ -22,11 +22,11 @@ const Text = styled.div`
 export default ({ outputId }: { outputId: number }) => {
     const { account, setDestinationAddressEmpty } = useSendContext();
     const { register, errors, getValues, formState, setValue } = useFormContext();
-    const inputName = `address-${outputId}`;
+    const inputName = `address[${outputId}]`;
     const isDirty = formState.dirtyFields.has(inputName);
     const { descriptor, networkType, symbol } = account;
     const { openModal } = useActions({ openModal: modalActions.openModal });
-    const error = errors[inputName];
+    const error = errors && errors.address ? errors.address[outputId] : null;
 
     return (
         <Input

@@ -137,17 +137,17 @@ export default ({
                             <Label>
                                 <Translation id="TR_TO" />
                             </Label>
-                            <Value>{getValues(`address-${index}`)}</Value>
+                            <Value>{getValues(`address[${index}]`)}</Value>
                         </Box>
                         <Box>
                             <Label>
                                 <Translation id="TR_TOTAL_AMOUNT" />
                             </Label>
                             <Value>
-                                {getValues(`amount-${output.id}`)} {outputSymbol}
+                                {getValues(`amount[${output.id}]`)} {outputSymbol}
                                 <FiatValueWrapper>
                                     <FiatValue
-                                        amount={getValues(`amount-${output.id}`)}
+                                        amount={getValues(`amount[${output.id}]`)}
                                         symbol={symbol}
                                         badge={{ color: 'gray' }}
                                     />

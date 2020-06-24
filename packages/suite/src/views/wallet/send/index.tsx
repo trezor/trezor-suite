@@ -64,20 +64,18 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     const [outputs, updateOutputs] = useState(initialOutputs);
 
     const defaultValues: SendContext['defaultValues'] = {
-        'address-0': '',
-        'amount-0': '',
-        'setMax-0': 'inactive',
-        'fiatInput-0': '',
-        'localCurrency-0': localCurrencyOption,
+        address: [''],
+        amount: [''],
+        setMax: ['inactive'],
+        fiatInput: [''],
+        localCurrency: [localCurrencyOption],
         ethereumGasPrice: initialSelectedFee.feePerUnit,
         ethereumGasLimit: initialSelectedFee.feeLimit,
         ethereumData: '',
         rippleDestinationTag: '',
     };
 
-    useEffect(() => {
-        console.log('availableBalance update');
-    }, [account.availableBalance]);
+    useEffect(() => {}, [account.availableBalance]);
 
     const methods = useForm({
         mode: 'onChange',

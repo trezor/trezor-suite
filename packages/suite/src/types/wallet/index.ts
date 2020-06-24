@@ -17,6 +17,7 @@ import { GraphActions } from '@wallet-actions/graphActions';
 import { BlockchainActions } from '@wallet-actions/blockchainActions';
 import { TransactionAction } from '@wallet-actions/transactionActions';
 import { SelectedAccountActions } from '@wallet-actions/selectedAccountActions';
+import { SendFormActions } from '@wallet-actions/sendFormActions';
 import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
 import { Icon as Icon$ } from './iconTypes';
 import { NetworkToken as NetworkToken$, Token as Token$ } from './tokenTypes';
@@ -59,4 +60,5 @@ export type WalletAction =
     | GraphActions
     | DiscoveryActions
     | AccountActions
-    | SelectedAccountActions;
+    | SelectedAccountActions
+    | SendFormActions;

@@ -41,7 +41,7 @@ export default () => {
             state={getInputState(error)}
             onChange={async event => {
                 if (!error) {
-                    const isMaxActive = getValues('setMax-0') === 'active';
+                    const isMaxActive = getValues('setMax[0]') === 'active';
                     const gasPrice = event.target.value;
                     const gasLimit = getValues('ethereumGasLimit');
                     const newFeeLevel: SendContext['selectedFee'] = {

@@ -20,6 +20,11 @@ import {
     prepareEthereumTransaction,
 } from '@wallet-utils/sendFormUtils';
 
+export type SendFormActions = {
+    type: 'STORE_DRAFT';
+    draft: any;
+};
+
 export const composeRippleTransaction = (
     account: SendContext['account'],
     getValues: ReturnType<typeof useForm>['getValues'],
@@ -133,9 +138,9 @@ export const composeBitcoinTransaction = async (
     if (!account.addresses || !account.utxo) return;
 
     const composedOutputs = outputs.map(output => {
-        const amount = networkAmountToSatoshi(getValues(`amount-${output.id}`), account.symbol);
-        const address = getValues(`address-${output.id}`);
-        const isMaxActive = getValues(`setMax-${output.id}`) === 'active';
+        const amount = networkAmountToSatoshi(getValues(`amount[${output.id}]`), account.symbol);
+        const address = getValues(`address[${output.id}]`);
+        const isMaxActive = getValues(`setMax[${output.id}]`) === 'active';
 
         if (address) {
             if (isMaxActive) {
@@ -196,9 +201,9 @@ export const onQrScan = (
     setValue: ReturnType<typeof useForm>['setValue'],
 ) => {
     const { address = '', amount } = parsedUri;
-    setValue(`address-${outputId}`, address);
+    setValue(`address[${outputId}]`, address);
     if (amount) {
-        setValue(`amount-${outputId}`, amount);
+        setValue(`amount[${outputId}]`, amount);
     }
 };
 

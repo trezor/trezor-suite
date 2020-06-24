@@ -38,9 +38,9 @@ export default ({ outputId }: { outputId: number }) => {
         selectedFee,
         outputs,
     } = useSendContext();
-    const inputName = `fiatInput-${outputId}`;
-    const inputNameSelect = `localCurrency-${outputId}`;
-    const error = errors[inputName];
+    const inputName = `fiatInput[${outputId}]`;
+    const inputNameSelect = `localCurrency[${outputId}]`;
+    const error = errors && errors.fiatInput ? errors.fiatInput[outputId] : null;
     const decimals = token ? token.decimals : network.decimals;
 
     useEffect(() => {
@@ -78,7 +78,7 @@ export default ({ outputId }: { outputId: number }) => {
                         if (!amountBigNumber.isNaN() && !amountBigNumber.isLessThan(0)) {
                             const isFixed = amountBigNumber.isZero();
                             const fixedDecimals = isFixed ? 0 : decimals;
-                            setValue(`amount-${outputId}`, amountBigNumber.toFixed(fixedDecimals));
+                            setValue(`amount[${outputId}]`, amountBigNumber.toFixed(fixedDecimals));
                         }
                     }
                 }}
@@ -96,7 +96,7 @@ export default ({ outputId }: { outputId: number }) => {
                     isClearable={false}
                     onChange={([selected]) => {
                         const rate = getFiatRate(fiatRates, selected.value);
-                        const amountValue = getValues(`amount-${outputId}`);
+                        const amountValue = getValues(`amount[${outputId}]`);
                         const amountBig = new BigNumber(amountValue);
 
                         if (rate && amountValue) {

@@ -48,8 +48,8 @@ export default () => {
             onChange={async event => {
                 if (!error && !addressError) {
                     const data = event.target.value;
-                    const address = getValues('address-0');
-                    const isMaxActive = getValues('setMax-0') === 'active';
+                    const address = getValues('address[0]');
+                    const isMaxActive = getValues('setMax[0]') === 'active';
                     const response = await TrezorConnect.blockchainEstimateFee({
                         coin: account.symbol,
                         request: {

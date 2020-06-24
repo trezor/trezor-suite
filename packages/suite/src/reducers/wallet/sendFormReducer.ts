@@ -1,14 +1,19 @@
 import produce from 'immer';
+import { WalletAction } from '@wallet-types';
+
+interface State {
+    drafts: [];
+}
 
 const initialState = {
-    draft: null,
+    drafts: [],
 };
 
-export default (state = initialState, action: WalletAction) => {
+export default (state = initialState, action: WalletAction): State => {
     return produce(state, draft => {
         switch (action.type) {
-            case 'STORE':
-                draft = action.payload;
+            case 'STORE_DRAFT':
+                draft = action.draft;
                 break;
             // no default
         }

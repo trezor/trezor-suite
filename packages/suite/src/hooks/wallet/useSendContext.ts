@@ -25,13 +25,16 @@ export type EthTransactionData = {
     nonce: string;
 };
 
+type Max = 'active' | 'inactive';
+type LocalCurrencyOption = { value: string; label: string };
+
 export interface SendContext {
     defaultValues: {
-        'address-0': string;
-        'amount-0': string;
-        'setMax-0': 'active' | 'inactive';
-        'fiatInput-0': string;
-        'localCurrency-0': { value: string; label: string };
+        address: string[];
+        amount: string[];
+        setMax: Max[];
+        fiatInput: string[];
+        localCurrency: LocalCurrencyOption[];
         ethereumGasPrice: string;
         ethereumGasLimit?: string;
         ethereumData: string;
