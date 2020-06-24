@@ -31,7 +31,6 @@ export default () => {
     const { register, errors, getValues, setValue, clearError, setError } = useFormContext();
     const inputName = 'ethereumData';
     const error = errors[inputName];
-    const addressError = errors && errors.address ? errors.address[0] : null;
 
     return (
         <Textarea
@@ -46,7 +45,7 @@ export default () => {
                 },
             })}
             onChange={async event => {
-                if (!error && !addressError) {
+                if (!error) {
                     const data = event.target.value;
                     const address = getValues('address[0]');
                     const isMaxActive = getValues('setMax[0]') === 'active';
