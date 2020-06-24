@@ -127,16 +127,25 @@ export default ({
                         onClick={async () => {
                             switch (networkType) {
                                 case 'bitcoin':
-                                    sendBitcoinTransaction(transactionInfo);
+                                    await sendBitcoinTransaction(transactionInfo);
                                     break;
                                 case 'ethereum':
-                                    sendEthereumTransaction(getValues, token);
+                                    await sendEthereumTransaction(getValues, token);
                                     break;
                                 case 'ripple': {
-                                    sendRippleTransaction(getValues, selectedFee);
+                                    await sendRippleTransaction(getValues, selectedFee);
                                     break;
                                 } // no default
                             }
+                            // reset(defaultValues, { dirty: true });
+                            // setSelectedFee(initialSelectedFee);
+                            // showAdvancedForm(false);
+                            // setToken(null);
+                            // updateOutputs([
+                            //     {
+                            //         id: 0,
+                            //     },
+                            // ]);
                         }}
                     >
                         <Translation id="TR_MODAL_CONFIRM_TX_BUTTON" />

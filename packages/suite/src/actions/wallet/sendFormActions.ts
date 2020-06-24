@@ -441,8 +441,7 @@ export const sendRippleTransaction = (
     const { account } = selectedAccount;
     const { symbol, networkType } = account;
 
-    if (networkType !== 'ripple' || !account || !account.misc || !account.misc.sequence)
-        return null;
+    if (networkType !== 'ripple' || !account || !account.misc) return null;
 
     const amount = getValues('amount-0');
     const address = getValues('address-0');
