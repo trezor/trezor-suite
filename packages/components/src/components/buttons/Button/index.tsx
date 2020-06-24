@@ -144,6 +144,7 @@ const Wrapper = styled.button<WrapperProps>`
 `;
 
 interface IconWrapperProps {
+    hasLabel?: boolean;
     alignIcon?: Props['alignIcon'];
     variant?: Props['variant'];
 }
@@ -154,18 +155,21 @@ const IconWrapper = styled.div<IconWrapperProps>`
 
     ${props =>
         props.alignIcon === 'left' &&
+        props.hasLabel &&
         css`
             margin: 0 8px 0 3px;
         `}
 
     ${props =>
         props.alignIcon === 'right' &&
+        props.hasLabel &&
         css`
             margin: 0 0 0 8px;
         `}
     
     ${props =>
         props.variant === 'tertiary' &&
+        props.hasLabel &&
         props.alignIcon === 'right' &&
         css`
             margin: 0 0 0 3px;
@@ -173,6 +177,7 @@ const IconWrapper = styled.div<IconWrapperProps>`
 
     ${props =>
         props.variant === 'tertiary' &&
+        props.hasLabel &&
         props.alignIcon === 'left' &&
         css`
             margin: 0 3px 0 0;
@@ -211,7 +216,7 @@ const Button = React.forwardRef(
             ? `${className} ${additionalClassName}`
             : className;
         const IconComponent = icon ? (
-            <IconWrapper alignIcon={alignIcon} variant={variant}>
+            <IconWrapper alignIcon={alignIcon} variant={variant} hasLabel={!!children}>
                 <Icon icon={icon} size={14} color={color || getIconColor(variant, isDisabled)} />
             </IconWrapper>
         ) : null;
