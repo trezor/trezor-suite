@@ -13,6 +13,7 @@ const StyledNavigationBar = styled.div<{ isMobileLayout: boolean }>`
     width: 100%;
     min-height: 80px;
     flex: 0;
+    z-index: 3;
     padding: ${props => (!props.isMobileLayout ? '6px 32px 6px 8px' : '6px 8px')};
     align-items: center;
     background: ${colors.NEUE_BG_WHITE};

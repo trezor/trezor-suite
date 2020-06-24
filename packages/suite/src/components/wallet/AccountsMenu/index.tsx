@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { H2, variables, colors, Icon } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation, Backdrop } from '@suite-components';
 
 import { DISCOVERY } from '@wallet-actions/constants';
 import { useDiscovery, useLayoutSize } from '@suite-hooks';
@@ -20,6 +20,7 @@ const Wrapper = styled.div<{ isMobileLayout?: boolean }>`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    z-index: 3;
     /* margin-top: 10px; */
 
     ${props =>
@@ -92,6 +93,7 @@ const ExpandedMobileWrapper = styled.div`
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     padding: 0px 16px;
+    padding-bottom: 16px;
 `;
 
 const Scroll = styled.div`
@@ -257,6 +259,14 @@ const AccountsMenu = ({ device, accounts, selectedAccount, openModal }: Props) =
                             {buildGroup('segwit', segwitAccounts)}
                             {buildGroup('legacy', legacyAccounts)}
                         </ExpandedMobileWrapper>
+                        <Backdrop
+                            show={isExpanded}
+                            animated
+                            onClick={() => {
+                                setIsExpanded(!isExpanded);
+                                setAnimatedIcon(true);
+                            }}
+                        />
                     </MenuItemsWrapper>
                 )}
             </>
