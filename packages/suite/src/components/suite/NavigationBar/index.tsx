@@ -11,7 +11,7 @@ const StyledDeviceSelector = styled(DeviceSelector)``;
 const StyledNavigationBar = styled.div<{ isMobileLayout: boolean }>`
     display: flex;
     width: 100%;
-    height: 80px;
+    min-height: 80px;
     flex: 0;
     padding: ${props => (!props.isMobileLayout ? '6px 32px 6px 8px' : '6px 8px')};
     align-items: center;
