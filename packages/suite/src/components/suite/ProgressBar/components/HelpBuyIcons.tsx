@@ -18,12 +18,7 @@ interface Props {
 
 const BuyButton = () => (
     <Link variant="nostyle" href={URLS.SHOP_URL}>
-        <Button
-            variant="tertiary"
-            icon="TREZOR"
-            size="small"
-            style={{ backgroundColor: 'initial' }}
-        >
+        <Button variant="tertiary" icon="TREZOR" style={{ backgroundColor: 'initial' }}>
             <Translation id="TR_BUY_TREZOR" />
         </Button>
     </Link>
@@ -31,12 +26,7 @@ const BuyButton = () => (
 
 const HelpButton = () => (
     <Link variant="nostyle" href={URLS.SUPPORT_URL}>
-        <Button
-            variant="tertiary"
-            icon="SUPPORT"
-            size="small"
-            style={{ backgroundColor: 'initial' }}
-        >
+        <Button variant="tertiary" icon="SUPPORT" style={{ backgroundColor: 'initial' }}>
             <Translation id="TR_HELP" />
         </Button>
     </Link>

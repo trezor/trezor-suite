@@ -269,7 +269,6 @@ export default React.memo((props: Props) => {
             {isExpandable && (
                 <ExpandButton
                     variant="tertiary"
-                    size="small"
                     icon={toExpand > 0 ? 'ARROW_DOWN' : 'ARROW_UP'}
                     alignIcon="right"
                     onClick={e => {

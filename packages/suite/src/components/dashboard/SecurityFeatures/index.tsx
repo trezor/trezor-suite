@@ -236,7 +236,6 @@ const SecurityFeatures = ({
                 <SectionAction>
                     <Button
                         variant="tertiary"
-                        size="small"
                         icon={isHidden ? 'ARROW_DOWN' : 'ARROW_UP'}
                         onClick={() => {
                             setIsHidden(!isHidden);

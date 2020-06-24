@@ -78,12 +78,7 @@ export default (props: InjectedModalApplicationProps) => {
                         </StyledButton>
                     </Link>
                     <Link variant="nostyle" href={URLS.WIKI_UDEV_RULES}>
-                        <StyledButton
-                            variant="tertiary"
-                            size="small"
-                            icon="EXTERNAL_LINK"
-                            alignIcon="right"
-                        >
+                        <StyledButton variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
                             <Translation id="TR_UDEV_DOWNLOAD_MANUAL" />
                         </StyledButton>
                     </Link>
