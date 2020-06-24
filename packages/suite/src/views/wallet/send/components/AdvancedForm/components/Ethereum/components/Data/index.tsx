@@ -31,7 +31,7 @@ export default () => {
     const { register, errors, getValues, setValue, clearError, setError } = useFormContext();
     const inputName = 'ethereumData';
     const error = errors[inputName];
-    const addressError = errors['address-0'];
+    const addressError = errors && errors.address ? errors.address[0] : null;
 
     return (
         <Textarea
