@@ -221,8 +221,7 @@ export const checkRippleEmptyAddress = async (
     }
 };
 
-export const updateFeeLevel = async (
-    account: SendContext['account'],
+export const updateFeeLevel = (
     coinFees: SendContext['coinFees'],
     token: SendContext['token'],
     setValue: ReturnType<typeof useForm>['setValue'],
@@ -233,7 +232,10 @@ export const updateFeeLevel = async (
     setError: ReturnType<typeof useForm>['setError'],
     fiatRates: SendContext['fiatRates'],
     setTransactionInfo: SendContext['setTransactionInfo'],
-) => {
+) => async (_dispatch: Dispatch, getState: GetState) => {
+    const { selectedAccount } = getState().wallet;
+    if (selectedAccount.status !== 'loaded') return null;
+    const { account } = selectedAccount;
     const { networkType } = account;
     const updatedLevels = getFeeLevels(networkType, coinFees, !!token);
     const selectedFeeLevel = updatedLevels.find((level: FeeLevel) => level.label === 'normal');

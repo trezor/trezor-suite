@@ -1,5 +1,6 @@
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
-import { updateFeeLevel } from '@wallet-actions/sendFormActions';
+import * as sendFormActions from '@wallet-actions/sendFormActions';
+import { useActions } from '@suite-hooks';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
@@ -37,10 +38,10 @@ export default () => {
         token,
         setSelectedFee,
         fiatRates,
-        account,
         setTransactionInfo,
         setFeeOutdated,
     } = useSendContext();
+    const { updateFeeLevel } = useActions({ updateFeeLevel: sendFormActions.updateFeeLevel });
     const { setValue, getValues, clearError, setError } = useFormContext();
 
     useEffect(() => {
@@ -48,7 +49,6 @@ export default () => {
             setFeeOutdated(true);
         } else {
             updateFeeLevel(
-                account,
                 coinFees,
                 token,
                 setValue,

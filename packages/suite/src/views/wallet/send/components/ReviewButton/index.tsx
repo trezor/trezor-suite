@@ -84,7 +84,7 @@ const isDisabled = (
 };
 
 export default () => {
-    const { errors, getValues } = useFormContext();
+    const { errors, getValues, reset } = useFormContext();
     const {
         online,
         locks,
@@ -94,6 +94,12 @@ export default () => {
         isLoading,
         transactionInfo,
         selectedFee,
+        setSelectedFee,
+        updateOutputs,
+        showAdvancedForm,
+        initialSelectedFee,
+        defaultValues,
+        setToken,
     } = useSendContext();
     const { openModal } = useActions({ openModal: modalActions.openModal });
 
@@ -112,6 +118,13 @@ export default () => {
                                 token,
                                 getValues,
                                 selectedFee,
+                                reset,
+                                setSelectedFee,
+                                showAdvancedForm,
+                                setToken,
+                                updateOutputs,
+                                initialSelectedFee,
+                                defaultValues,
                             });
                         }
                     }}

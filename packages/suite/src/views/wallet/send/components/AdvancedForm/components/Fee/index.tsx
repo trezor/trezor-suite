@@ -1,8 +1,9 @@
 import { QuestionTooltip, Translation } from '@suite-components';
+import { useActions } from '@suite-hooks';
 import { capitalizeFirstLetter } from '@suite-utils/string';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { Button, colors, P, Select, variables } from '@trezor/components';
-import { updateFeeLevel } from '@wallet-actions/sendFormActions';
+import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { Account } from '@wallet-types';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { calculateEthFee, findActiveMaxId, updateMax } from '@wallet-utils/sendFormUtils';
@@ -123,6 +124,7 @@ export default () => {
         setTransactionInfo,
         coinFees,
     } = useSendContext();
+    const { updateFeeLevel } = useActions({ updateFeeLevel: sendFormActions.updateFeeLevel });
     const { formState, setValue, errors, getValues, setError, clearError } = useFormContext();
     const dataIsDirty = formState.dirtyFields.has('ethereumData');
     const { networkType, symbol } = account;
@@ -150,7 +152,6 @@ export default () => {
                             <Button
                                 onClick={() => {
                                     updateFeeLevel(
-                                        account,
                                         coinFees,
                                         token,
                                         setValue,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Select, Input } from '@trezor/components';
 import { useFormContext, Controller } from 'react-hook-form';
@@ -10,6 +10,7 @@ import {
     getFiatRate,
     buildCurrencyOption,
     composeChange,
+    updateFiatInput,
 } from '@wallet-utils/sendFormUtils';
 
 const Wrapper = styled.div`
@@ -41,6 +42,13 @@ export default ({ outputId }: { outputId: number }) => {
     const inputNameSelect = `localCurrency-${outputId}`;
     const error = errors[inputName];
     const decimals = token ? token.decimals : network.decimals;
+
+    useEffect(() => {
+        const fiatInputValue = getValues(inputName);
+        if (fiatInputValue.length > 0) {
+            updateFiatInput(outputId, fiatRates, getValues, setValue);
+        }
+    }, [outputId, fiatRates, getValues, setValue, inputName]);
 
     return (
         <Wrapper>

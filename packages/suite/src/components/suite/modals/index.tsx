@@ -167,12 +167,20 @@ const getUserContextModal = (props: Props) => {
             return <PassphraseDuplicate device={payload.device} duplicate={payload.duplicate} />;
         case 'review-transaction':
             return (
+                // TODO: Find a better way to pass values from send context
                 <ReviewTransaction
                     outputs={payload.outputs}
                     token={payload.token}
                     selectedFee={payload.selectedFee}
                     transactionInfo={payload.transactionInfo}
                     getValues={payload.getValues}
+                    reset={payload.reset}
+                    setSelectedFee={payload.setSelectedFee}
+                    showAdvancedForm={payload.showAdvancedForm}
+                    setToken={payload.setToken}
+                    updateOutputs={payload.updateOutputs}
+                    initialSelectedFee={payload.initialSelectedFee}
+                    defaultValues={payload.defaultValues}
                 />
             );
         case 'pin-mismatch':

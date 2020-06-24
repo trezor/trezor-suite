@@ -85,6 +85,13 @@ export default ({
     outputs,
     transactionInfo,
     device,
+    reset,
+    setSelectedFee,
+    showAdvancedForm,
+    setToken,
+    updateOutputs,
+    initialSelectedFee,
+    defaultValues,
 }: Props) => {
     if (
         selectedAccount.status !== 'loaded' ||
@@ -137,15 +144,15 @@ export default ({
                                     break;
                                 } // no default
                             }
-                            // reset(defaultValues, { dirty: true });
-                            // setSelectedFee(initialSelectedFee);
-                            // showAdvancedForm(false);
-                            // setToken(null);
-                            // updateOutputs([
-                            //     {
-                            //         id: 0,
-                            //     },
-                            // ]);
+                            reset(defaultValues, { dirty: true });
+                            setSelectedFee(initialSelectedFee);
+                            showAdvancedForm(false);
+                            setToken(null);
+                            updateOutputs([
+                                {
+                                    id: 0,
+                                },
+                            ]);
                         }}
                     >
                         <Translation id="TR_MODAL_CONFIRM_TX_BUTTON" />

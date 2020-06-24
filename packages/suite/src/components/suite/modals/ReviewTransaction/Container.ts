@@ -26,6 +26,13 @@ interface ComponentProps {
     token: TokenInfo | null;
     getValues: ReturnType<typeof useForm>['getValues'];
     selectedFee: SendContext['selectedFee'];
+    reset: ReturnType<typeof useForm>['reset'];
+    setSelectedFee: SendContext['setSelectedFee'];
+    showAdvancedForm: SendContext['showAdvancedForm'];
+    setToken: SendContext['setToken'];
+    updateOutputs: SendContext['updateOutputs'];
+    initialSelectedFee: SendContext['initialSelectedFee'];
+    defaultValues: SendContext['defaultValues'];
 }
 
 export type StateProps = ReturnType<typeof mapStateToProps>;

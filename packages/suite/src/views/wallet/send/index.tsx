@@ -78,10 +78,6 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
         console.log('availableBalance update');
     }, [account.availableBalance]);
 
-    useEffect(() => {
-        console.log('fiat update');
-    }, [fiat]);
-
     const methods = useForm({
         mode: 'onChange',
         defaultValues,
