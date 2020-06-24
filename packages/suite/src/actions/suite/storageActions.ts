@@ -3,6 +3,7 @@ import SuiteDB from '@trezor/suite-storage';
 import { STORAGE } from './constants';
 import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
+import { SendContext } from '@suite/hooks/wallet/useSendContext';
 import { getAccountKey } from '@wallet-utils/accountUtils';
 import { Discovery } from '@wallet-reducers/discoveryReducer';
 import { GraphData } from '@wallet-reducers/graphReducer';
@@ -18,17 +19,23 @@ export type StorageActions =
     | { type: typeof STORAGE.LOADED; payload: AppState }
     | { type: typeof STORAGE.ERROR; error: any };
 
-// export const saveSendForm = async (saveSendFormState, accountKey: string) => {
-//     return db.addItem('sendForm', saveSendFormState, accountKey);
-// };
+export const saveSendForm = async (
+    saveSendFormState: {
+        data: SendContext['defaultValues'];
+        outputs: SendContext['outputs'];
+    },
+    accountKey: string,
+) => {
+    return db.addItem('sendForm', saveSendFormState, accountKey);
+};
 
-// export const loadSendForm = async (accountKey: string) => {
-//     return db.getItemByPK('sendForm', accountKey);
-// };
+export const loadSendForm = async (accountKey: string) => {
+    return db.getItemByPK('sendForm', accountKey);
+};
 
-// export const removeSendForm = async (accountKey: string) => {
-//     return db.removeItemByPK('sendForm', accountKey);
-// };
+export const removeSendForm = async (accountKey: string) => {
+    return db.removeItemByPK('sendForm', accountKey);
+};
 
 export const saveDevice = async (device: TrezorDevice) => {
     if (!device || !device.features || !device.state) return;

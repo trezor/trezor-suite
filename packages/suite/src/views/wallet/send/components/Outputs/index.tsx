@@ -64,6 +64,11 @@ export default () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [coinFees]);
 
+    // const formValues = getValues();
+    // useEffect(() => {
+    //     console.log('formValues', formValues);
+    // }, [formValues]);
+
     return (
         <Wrapper>
             {outputs.map((output, key: number) => (

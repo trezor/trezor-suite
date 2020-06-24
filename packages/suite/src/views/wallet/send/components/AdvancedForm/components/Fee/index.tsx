@@ -186,7 +186,6 @@ export default () => {
                         } else {
                             setSelectedFee(selectedFeeLevel);
                             setValue('customFee', '');
-
                             const activeMax = findActiveMaxId(outputs, getValues);
                             await updateMax(
                                 activeMax,

@@ -1,5 +1,6 @@
 import SuiteDB, { StorageUpdateMessage, OnUpgradeFunc } from '@trezor/suite-storage';
 import { DBSchema } from 'idb';
+import { SendContext } from '@suite/hooks/wallet/useSendContext';
 import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
 import { SuiteState } from '@suite-reducers/suiteReducer';
 import { State as AnalyticsState } from '@suite-reducers/analyticsReducer';
@@ -27,13 +28,16 @@ export interface SuiteDBSchema extends DBSchema {
             blockTime: number; // TODO: blockTime can be undefined
         };
     };
-    // sendForm: {
-    //     key: string;
-    //     value: SendFormState;
-    //     indexes: {
-    //         deviceState: string;
-    //     };
-    // };
+    sendForm: {
+        key: string;
+        value: {
+            data: SendContext['defaultValues'];
+            outputs: SendContext['outputs'];
+        };
+        indexes: {
+            deviceState: string;
+        };
+    };
     suiteSettings: {
         key: string;
         value: {
@@ -126,8 +130,8 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
         db.createObjectStore('discovery', { keyPath: 'deviceState' });
 
         // object store for send form
-        // const sendFormStore = db.createObjectStore('sendForm');
-        // sendFormStore.createIndex('deviceState', 'deviceState', { unique: false });
+        const sendFormStore = db.createObjectStore('sendForm');
+        sendFormStore.createIndex('deviceState', 'deviceState', { unique: false });
 
         db.createObjectStore('fiatRates', { keyPath: 'symbol' });
         db.createObjectStore('analytics');
