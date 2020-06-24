@@ -1,5 +1,5 @@
 import React from 'react';
-import { colors } from '@trezor/components';
+import { Icon, colors } from '@trezor/components';
 import styled from 'styled-components';
 import * as deviceUtils from '@suite-utils/device';
 import { TrezorDevice } from '@suite-types';
@@ -29,6 +29,15 @@ const getStatusForDevice = (device: TrezorDevice) => {
     return 'connected';
 };
 
+const IconWrapper = styled.div`
+    display: flex;
+    align-self: flex-start;
+    margin-top: 4px;
+`;
+
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
+`;
 const OuterCircle = styled.div<{ status: Status }>`
     position: absolute;
     top: 12px;
@@ -52,11 +61,30 @@ const InnerCircle = styled.div<{ status: Status }>`
 
 interface Props {
     device: TrezorDevice;
+    onRefreshClick?: () => void;
 }
 
-const DeviceStatus = (props: Props) => {
-    const status = getStatusForDevice(props.device);
+const DeviceStatus = ({ device, onRefreshClick }: Props) => {
+    const status = getStatusForDevice(device);
 
+    // if device needs attention and CTA func was passed show refresh button
+    if (status === 'warning' && onRefreshClick) {
+        return (
+            <IconWrapper>
+                <StyledIcon
+                    onClick={e => {
+                        e.stopPropagation();
+                        onRefreshClick();
+                    }}
+                    icon="REFRESH"
+                    size={16}
+                    color={getDotColor(status)}
+                />
+            </IconWrapper>
+        );
+    }
+
+    // otherwise show dot icon (green/orange/red)
     return (
         <OuterCircle status={status}>
             <InnerCircle status={status} />

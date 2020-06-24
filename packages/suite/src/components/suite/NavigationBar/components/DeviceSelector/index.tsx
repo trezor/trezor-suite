@@ -7,6 +7,8 @@ import { Translation } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
 import * as routerActions from '@suite-actions/routerActions';
 import { useAnalytics, useSelector, useActions } from '@suite-hooks';
+import * as suiteActions from '@suite-actions/suiteActions';
+import * as deviceUtils from '@suite-utils/device';
 import DeviceStatus from './components/DeviceStatus';
 
 const Wrapper = styled.div<{ triggerAnim?: boolean }>`
@@ -42,9 +44,14 @@ const DeviceLabel = styled.div`
     min-width: 0;
 `;
 
-const DeviceImageWrapper = styled.div`
+const DeviceImageWrapper = styled.div<{ lowerOpacity: boolean }>`
     margin-right: 12px;
     flex: 0;
+    ${props =>
+        props.lowerOpacity &&
+        css`
+            opacity: 0.4;
+        `}
 `;
 
 const WalletNameWrapper = styled.div`
@@ -74,11 +81,23 @@ const getWalletName = (device?: TrezorDevice) => {
     return <Translation id="TR_UNDISCOVERED_WALLET" />;
 };
 
+const needsRefresh = (device?: TrezorDevice) => {
+    if (!device) return false;
+
+    const deviceStatus = deviceUtils.getStatus(device);
+    const needsAcquire =
+        device.type === 'unacquired' ||
+        deviceStatus === 'used-in-other-window' ||
+        deviceStatus === 'was-used-in-other-window';
+    return needsAcquire;
+};
+
 const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
     const selectedDevice = useSelector(state => state.suite.device);
     const deviceCount = useSelector(state => state.devices).length;
-    const { goto } = useActions({
+    const { goto, acquireDevice } = useActions({
         goto: routerActions.goto,
+        acquireDevice: suiteActions.acquireDevice,
     });
 
     const [localCount, setLocalCount] = useState<number | null>(null);
@@ -89,6 +108,8 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
 
     const walletName = getWalletName(selectedDevice);
     const analytics = useAnalytics();
+
+    const deviceNeedsRefresh = needsRefresh(selectedDevice);
 
     useEffect(() => {
         // clear timer on unmount
@@ -127,14 +148,23 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
         >
             {selectedDevice && (
                 <>
-                    <DeviceImageWrapper>
+                    <DeviceImageWrapper lowerOpacity={deviceNeedsRefresh}>
                         <DeviceImage height={36} device={selectedDevice} />
                     </DeviceImageWrapper>
                     <DeviceDetail>
                         <DeviceLabel>{selectedDevice.label}</DeviceLabel>
                         {walletName && <WalletNameWrapper>{walletName}</WalletNameWrapper>}
                     </DeviceDetail>
-                    <DeviceStatus device={selectedDevice} />
+                    <DeviceStatus
+                        device={selectedDevice}
+                        onRefreshClick={
+                            deviceNeedsRefresh
+                                ? () => {
+                                      acquireDevice(selectedDevice);
+                                  }
+                                : undefined
+                        }
+                    />
                 </>
             )}
         </Wrapper>
