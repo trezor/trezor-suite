@@ -36,6 +36,8 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: Function }>`
     white-space: nowrap;
     padding: 8px 24px;
     border-bottom: 2px solid ${colors.BLACK96};
+    font-variant-numeric: tabular-nums;
+
     &:nth-child(1n) {
         padding-left: 0px;
     }

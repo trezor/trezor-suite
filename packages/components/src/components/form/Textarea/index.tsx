@@ -70,7 +70,7 @@ const StyledTextarea = styled.textarea<StyledTextareaProps>`
     ${props =>
         props.monospace &&
         css`
-            font-family: ${variables.FONT_FAMILY.MONOSPACE};
+            font-variant-numeric: slashed-zero tabular-nums;
         `}
 `;
 

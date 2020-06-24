@@ -40,7 +40,6 @@ const ColType = styled.div`
 const Addr = styled(motion.div)`
     grid-column: target;
     color: ${colors.BLACK0};
-    /* font-family: ${variables.FONT_FAMILY.MONOSPACE}; */
     font-size: ${variables.FONT_SIZE.SMALL};
     overflow: hidden;
     white-space: nowrap;
@@ -58,6 +57,8 @@ const Balance = styled(motion.div)<{ partial?: boolean; secondary?: boolean }>`
     text-overflow: ellipsis;
     text-transform: uppercase;
     text-align: right;
+    font-variant-numeric: tabular-nums;
+
     @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
         text-align: left;
     }

@@ -3,7 +3,12 @@ import { FormattedDate } from 'react-intl';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { variables, colors } from '@trezor/components';
-import { Translation, HiddenPlaceholder, FiatValue } from '@suite-components';
+import {
+    Translation,
+    HiddenPlaceholder,
+    FiatValue,
+    FormattedCryptoAmount,
+} from '@suite-components';
 import { parseKey } from '@wallet-utils/transactionUtils';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import { Network } from '@wallet-types';
@@ -82,9 +87,7 @@ export default ({ dateKey, symbol, totalAmount }: Props) => {
                     </ColDate>
                     <ColAmount>
                         {totalAmount.gte(0) && <span>+</span>}
-                        <span>
-                            {totalAmount.toFixed()} {symbol}
-                        </span>
+                        <FormattedCryptoAmount value={totalAmount.toFixed()} symbol={symbol} />
                     </ColAmount>
                     {useFiatValues && (
                         <ColFiat>

@@ -26,6 +26,7 @@ import AppNavigationPanel from './AppNavigationPanel';
 import AppNavigation from './AppNavigation';
 import { Translation } from './Translation';
 import { AccountLabeling, AddressLabeling, WalletLabeling } from './Labeling';
+import FormattedCryptoAmount from './FormattedCryptoAmount';
 
 export {
     Backdrop,
@@ -59,4 +60,5 @@ export {
     TransactionsGraph,
     AppNavigationPanel,
     AppNavigation,
+    FormattedCryptoAmount,
 };
