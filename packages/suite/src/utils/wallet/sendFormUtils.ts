@@ -303,10 +303,7 @@ export const updateMax = async (
         getValues(`setMax[${id}]`) === 'active',
     );
 
-    if (!composedTransaction) {
-        setError(`amount[${id}]`, 'TR_SEND_COMPOSE_ERROR');
-        return;
-    }
+    if (!composedTransaction) return null;
 
     if (composedTransaction.type === 'error' || composedTransaction.error) {
         switch (composedTransaction.error) {
@@ -315,9 +312,6 @@ export const updateMax = async (
                 break;
             case 'NOT-ENOUGH-CURRENCY-FEE':
                 setError(`amount[${id}]`, 'NOT_ENOUGH_CURRENCY_FEE');
-                break;
-            default:
-                setError(`amount[${id}]`, 'TR_SEND_COMPOSE_ERROR');
                 break;
             // no default
         }
