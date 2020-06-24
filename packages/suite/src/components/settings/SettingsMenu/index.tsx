@@ -48,6 +48,7 @@ const SettingsMenu = () => {
             dropdown={
                 <Dropdown
                     alignMenu="right"
+                    data-test="@settings/menu/dropdown"
                     items={[
                         {
                             label: (

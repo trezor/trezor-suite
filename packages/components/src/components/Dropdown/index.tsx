@@ -94,6 +94,7 @@ const Dropdown = ({
     isDisabled,
     alignMenu = 'left',
     offset = 10,
+    ...rest
 }: Props) => {
     const [toggled, setToggled] = useState(false);
     const menuRef = useRef<HTMLUListElement>(null);
@@ -142,6 +143,7 @@ const Dropdown = ({
                     : undefined
             }
             isDisabled={isDisabled}
+            {...rest}
         />
     );
 
