@@ -33,7 +33,7 @@ export interface SendContext {
         'fiatInput-0': string;
         'localCurrency-0': { value: string; label: string };
         ethereumGasPrice: string;
-        ethereumGasLimit: string;
+        ethereumGasLimit?: string;
         ethereumData: string;
         rippleDestinationTag: string;
     };

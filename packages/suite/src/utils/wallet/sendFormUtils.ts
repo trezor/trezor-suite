@@ -174,7 +174,7 @@ export const composeTx = async (
     outputs: SendContext['outputs'],
     token: SendContext['token'],
     setMax = false,
-) => {
+): Promise<any> => {
     if (account.networkType === 'ripple') {
         return composeRippleTransaction(account, getValues, selectedFee);
     }
@@ -290,7 +290,7 @@ export const updateMax = async (
     fiatRates: SendContext['fiatRates'],
     setTransactionInfo: SendContext['setTransactionInfo'],
 ) => {
-    if (id === null) return null;
+    if (id === null) return;
 
     resetAllMax(outputs, setValue);
     setValue(`setMax-${id}`, 'active');
@@ -303,9 +303,12 @@ export const updateMax = async (
         getValues(`setMax-${id}`) === 'active',
     );
 
-    if (!composedTransaction) return null; // TODO handle error
+    if (!composedTransaction) {
+        setError(`amount-${id}`, 'TR_SEND_COMPOSE_ERROR');
+        return;
+    }
 
-    if (composedTransaction.type === 'error') {
+    if (composedTransaction.type === 'error' || composedTransaction.error) {
         switch (composedTransaction.error) {
             case 'NOT-ENOUGH-FUNDS':
                 setError(`amount-${id}`, 'TR_AMOUNT_IS_NOT_ENOUGH');
@@ -313,11 +316,15 @@ export const updateMax = async (
             case 'NOT-ENOUGH-CURRENCY-FEE':
                 setError(`amount-${id}`, 'NOT_ENOUGH_CURRENCY_FEE');
                 break;
+            default:
+                setError(`amount-${id}`, 'TR_SEND_COMPOSE_ERROR');
+                break;
             // no default
         }
+        return;
     }
 
-    if (composedTransaction.type !== 'error' && !composedTransaction.error) {
+    if (composedTransaction && composedTransaction.error !== null) {
         clearError(`amount-${id}`);
         setValue(`amount-${id}`, composedTransaction.max);
         updateFiatInput(id, fiatRates, getValues, setValue);

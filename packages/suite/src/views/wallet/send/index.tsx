@@ -62,7 +62,8 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
     const initialOutputs = [{ id: 0 }];
     const [outputs, updateOutputs] = useState(initialOutputs);
-    const defaultValues = {
+
+    const defaultValues: SendContext['defaultValues'] = {
         'address-0': '',
         'amount-0': '',
         'setMax-0': 'inactive',
@@ -103,6 +104,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
                     transactionInfo,
                     setTransactionInfo,
                     token,
+                    // @ts-ignore
                     setToken,
                     selectedFee,
                     setSelectedFee,
