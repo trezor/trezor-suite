@@ -221,7 +221,7 @@ const Button = React.forwardRef(
             </IconWrapper>
         ) : null;
         const Loader = (
-            <IconWrapper alignIcon={alignIcon}>
+            <IconWrapper alignIcon={alignIcon} hasLabel={!!children}>
                 <FluidSpinner size={10} color={color} />
             </IconWrapper>
         );
