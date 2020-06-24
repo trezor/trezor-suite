@@ -41,7 +41,7 @@ const MenuItem = styled.div<ComponentProps>`
         `}
 
     & + & {
-        margin-left: 24px;
+        margin-left: 32px;
     }
 `;
 
