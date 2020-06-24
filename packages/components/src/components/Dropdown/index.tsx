@@ -150,13 +150,15 @@ const Dropdown = ({
             {toggleComponent}
             {toggled && (
                 <MenuComponent ref={menuRef} alignMenu={alignMenu} offset={offset}>
-                    {visibleItems.map(item => (
+                    {visibleItems.map((item, i) => (
                         <MenuItemComponent
                             onClick={() => onMenuItemClick(item)}
                             isDisabled={item.isDisabled}
                             data-test={item['data-test']}
                             noPadding={item.noPadding}
                             item={item}
+                            // eslint-disable-next-line react/no-array-index-key
+                            key={i}
                         >
                             {item.label}
                         </MenuItemComponent>
