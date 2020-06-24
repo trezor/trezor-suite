@@ -3,7 +3,7 @@ import { Dispatch, GetState } from '@suite-types';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { SendContext } from '@wallet-hooks/useSendContext';
-import { toWei } from 'web3-utils';
+import { toWei, fromWei } from 'web3-utils';
 import { ZEC_SIGN_ENHANCEMENT, XRP_FLAG } from '@wallet-constants/sendForm';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
 import { useForm } from 'react-hook-form';
@@ -260,6 +260,70 @@ export const updateFeeLevel = (
             clearError,
             setError,
             selectedFeeLevel,
+            outputs,
+            token,
+            fiatRates,
+            setTransactionInfo,
+        );
+    }
+};
+
+export const updateFeeLevelWithData = (
+    data: SendContext['defaultValues']['ethereumData'],
+    setSelectedFee: SendContext['setSelectedFee'],
+    initialSelectedFee: SendContext['initialSelectedFee'],
+    token: SendContext['token'],
+    setTransactionInfo: SendContext['setTransactionInfo'],
+    outputs: SendContext['outputs'],
+    fiatRates: SendContext['fiatRates'],
+    setValue: ReturnType<typeof useForm>['setValue'],
+    clearError: ReturnType<typeof useForm>['clearError'],
+    setError: ReturnType<typeof useForm>['setError'],
+    getValues: ReturnType<typeof useForm>['getValues'],
+) => async (_dispatch: Dispatch, getState: GetState) => {
+    const { selectedAccount } = getState().wallet;
+    if (selectedAccount.status !== 'loaded') return null;
+    const { account } = selectedAccount;
+    const address = getValues('address[0]');
+    const response = await TrezorConnect.blockchainEstimateFee({
+        coin: account.symbol,
+        request: {
+            blocks: [2],
+            specific: {
+                from: account.descriptor,
+                to: address || account.descriptor,
+                data,
+            },
+        },
+    });
+
+    if (!response.success) return null;
+
+    const level = response.payload.levels[0];
+    const gasLimit = level.feeLimit || initialSelectedFee.feeLimit;
+    const gasPrice = fromWei(level.feePerUnit, 'gwei');
+    const newFeeLevel: SendContext['selectedFee'] = {
+        label: 'normal',
+        feePerUnit: gasPrice,
+        feeLimit: gasLimit,
+        blocks: -1,
+    };
+
+    setValue('ethereumGasPrice', gasPrice);
+    setValue('ethereumGasLimit', gasLimit);
+    setSelectedFee(newFeeLevel);
+
+    const isMaxActive = getValues('setMax[0]') === 'active';
+
+    if (isMaxActive) {
+        await updateMax(
+            0,
+            account,
+            setValue,
+            getValues,
+            clearError,
+            setError,
+            newFeeLevel,
             outputs,
             token,
             fiatRates,

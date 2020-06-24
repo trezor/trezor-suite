@@ -1,9 +1,9 @@
 import { QuestionTooltip, Translation } from '@suite-components';
-import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext';
+import { useActions } from '@suite-hooks';
+import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { Textarea } from '@trezor/components';
-import TrezorConnect from 'trezor-connect';
-import { fromWei } from 'web3-utils';
-import { getInputState, updateMax } from '@wallet-utils/sendFormUtils';
+import * as sendFormActions from '@wallet-actions/sendFormActions';
+import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
@@ -21,7 +21,6 @@ const Text = styled.div`
 export default () => {
     const {
         token,
-        account,
         setSelectedFee,
         initialSelectedFee,
         outputs,
@@ -30,6 +29,9 @@ export default () => {
     } = useSendContext();
     const { register, errors, getValues, setValue, clearError, setError } = useFormContext();
     const inputName = 'ethereumData';
+    const { updateFeeLevelWithData } = useActions({
+        updateFeeLevelWithData: sendFormActions.updateFeeLevelWithData,
+    });
     const error = errors[inputName];
 
     return (
@@ -46,52 +48,19 @@ export default () => {
             })}
             onChange={async event => {
                 if (!error) {
-                    const data = event.target.value;
-                    const address = getValues('address[0]');
-                    const isMaxActive = getValues('setMax[0]') === 'active';
-                    const response = await TrezorConnect.blockchainEstimateFee({
-                        coin: account.symbol,
-                        request: {
-                            blocks: [2],
-                            specific: {
-                                from: account.descriptor,
-                                to: address || account.descriptor,
-                                data,
-                            },
-                        },
-                    });
-
-                    if (!response.success) return null;
-
-                    const level = response.payload.levels[0];
-                    const gasLimit = level.feeLimit || initialSelectedFee.feeLimit;
-                    const gasPrice = fromWei(level.feePerUnit, 'gwei');
-                    const newFeeLevel: SendContext['selectedFee'] = {
-                        label: 'normal',
-                        feePerUnit: gasPrice,
-                        feeLimit: gasLimit,
-                        blocks: -1,
-                    };
-
-                    setValue('ethereumGasPrice', gasPrice);
-                    setValue('ethereumGasLimit', gasLimit);
-                    setSelectedFee(newFeeLevel);
-
-                    if (isMaxActive) {
-                        await updateMax(
-                            0,
-                            account,
-                            setValue,
-                            getValues,
-                            clearError,
-                            setError,
-                            newFeeLevel,
-                            outputs,
-                            token,
-                            fiatRates,
-                            setTransactionInfo,
-                        );
-                    }
+                    updateFeeLevelWithData(
+                        event.target.value,
+                        setSelectedFee,
+                        initialSelectedFee,
+                        token,
+                        setTransactionInfo,
+                        outputs,
+                        fiatRates,
+                        setValue,
+                        clearError,
+                        setError,
+                        getValues,
+                    );
                 }
             }}
             state={getInputState(error)}
