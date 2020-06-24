@@ -114,9 +114,13 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
                         </Balance>
                     </Row>
                     <Row>
-                        <FiatValue amount={account.formattedBalance} symbol={account.symbol}>
+                        <FiatValue
+                            amount={account.formattedBalance}
+                            symbol={account.symbol}
+                            showApproximationIndicator
+                        >
                             {({ value }) =>
-                                value ? <FiatValueWrapper>≈ {value}</FiatValueWrapper> : null
+                                value ? <FiatValueWrapper>{value}</FiatValueWrapper> : null
                             }
                         </FiatValue>
                     </Row>

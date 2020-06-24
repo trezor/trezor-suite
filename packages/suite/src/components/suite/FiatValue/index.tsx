@@ -23,6 +23,7 @@ const FiatValue = ({
     source,
     useCustomSource,
     badge,
+    showApproximationIndicator,
     ...props
 }: Props) => {
     const targetCurrency = fiatCurrency ?? props.settings.localCurrency;
@@ -32,6 +33,7 @@ const FiatValue = ({
     if (fiat) {
         let fiatValueComponent = (
             <HiddenPlaceholder>
+                {showApproximationIndicator && <>≈ </>}
                 <FormattedNumber currency={targetCurrency} value={fiat} />
             </HiddenPlaceholder>
         );

@@ -58,9 +58,13 @@ const AccountTopPanel = () => {
                 <Balance noMargin>
                     {formattedBalance} {symbol.toUpperCase()}
                 </Balance>
-                <FiatValue amount={account.formattedBalance} symbol={symbol}>
+                <FiatValue
+                    amount={account.formattedBalance}
+                    symbol={symbol}
+                    showApproximationIndicator
+                >
                     {({ value }) =>
-                        value ? <FiatBalanceWrapper noMargin>≈ {value}</FiatBalanceWrapper> : null
+                        value ? <FiatBalanceWrapper noMargin>{value}</FiatBalanceWrapper> : null
                     }
                 </FiatValue>
             </BalanceWrapper>
