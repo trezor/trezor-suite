@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { CoinLogo, H1, H2, colors, Dropdown, variables } from '@trezor/components';
-import { FiatValue, Translation, AccountLabeling, TopNavigationPanel } from '@suite-components';
+import { FiatValue, Translation, AccountLabeling, AppNavigationPanel } from '@suite-components';
 import { useSelector, useActions } from '@suite-hooks';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import * as routerActions from '@suite-actions/routerActions';
@@ -42,7 +42,7 @@ const AccountTopPanel = () => {
     ];
 
     return (
-        <TopNavigationPanel
+        <AppNavigationPanel
             title={<AccountLabeling account={account} />}
             navigation={<AccountNavigation account={account} />}
             dropdown={
@@ -66,7 +66,7 @@ const AccountTopPanel = () => {
             </BalanceWrapper>
 
             {!isTestnet(symbol) && <Ticker symbol={symbol} />}
-        </TopNavigationPanel>
+        </AppNavigationPanel>
     );
 };
 

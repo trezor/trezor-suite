@@ -6,7 +6,7 @@ import * as modalActions from '@suite-actions/modalActions';
 import { Translation } from '@suite-components/Translation';
 
 import { SUPPORT_URL } from '@suite-constants/urls';
-import { TopNavigationPanel, AppNavigation } from '@suite-components';
+import { AppNavigationPanel, AppNavigation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 
 const StyledLink = styled(Link)`
@@ -19,7 +19,7 @@ const SettingsMenu = () => {
         openModal: modalActions.openModal,
     });
     return (
-        <TopNavigationPanel
+        <AppNavigationPanel
             title="Settings"
             navigation={
                 <AppNavigation

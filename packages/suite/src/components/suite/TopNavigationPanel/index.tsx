@@ -54,7 +54,7 @@ interface Props {
     navigation?: React.ReactNode;
 }
 
-const TopNavigationPanel = (props: Props) => {
+const AppNavigationPanel = (props: Props) => {
     return (
         <Wrapper>
             <Content>
@@ -71,4 +71,4 @@ const TopNavigationPanel = (props: Props) => {
     );
 };
 
-export default TopNavigationPanel;
+export default AppNavigationPanel;
