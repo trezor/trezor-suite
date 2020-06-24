@@ -136,9 +136,8 @@ export const composeBitcoinTransaction = async (
         const amount = networkAmountToSatoshi(getValues(`amount-${output.id}`), account.symbol);
         const address = getValues(`address-${output.id}`);
         const isMaxActive = getValues(`setMax-${output.id}`) === 'active';
-        // address is set
+
         if (address) {
-            // set max without address
             if (isMaxActive) {
                 return {
                     address,
@@ -152,14 +151,12 @@ export const composeBitcoinTransaction = async (
             } as const;
         }
 
-        // set max with address only
         if (isMaxActive) {
             return {
                 type: 'send-max-noaddress',
             } as const;
         }
 
-        // set amount without address
         return {
             type: 'noaddress',
             amount,
@@ -269,12 +266,17 @@ export const updateFeeLevel = (
 export const sendBitcoinTransaction = (transactionInfo: SendContext['transactionInfo']) => async (
     dispatch: Dispatch,
     getState: GetState,
-) => {
+): Promise<'error' | 'success'> => {
     const { selectedAccount } = getState().wallet;
     const { device } = getState().suite;
-    if (selectedAccount.status !== 'loaded' || !device) return null;
+    if (
+        selectedAccount.status !== 'loaded' ||
+        !device ||
+        !transactionInfo ||
+        transactionInfo.type !== 'final'
+    )
+        return 'error';
     const { account } = selectedAccount;
-    if (!transactionInfo || transactionInfo.type !== 'final') return;
     const { transaction } = transactionInfo;
 
     const inputs = transaction.inputs.map((input: any) => ({
@@ -316,7 +318,8 @@ export const sendBitcoinTransaction = (transactionInfo: SendContext['transaction
                 error: signedTx.payload.error,
             }),
         );
-        return;
+
+        return 'error';
     }
 
     // TODO: add possibility to show serialized tx without pushing (locktime)
@@ -346,16 +349,20 @@ export const sendBitcoinTransaction = (transactionInfo: SendContext['transaction
         dispatch(
             notificationActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),
         );
+
+        return 'error';
     }
+
+    return 'success';
 };
 
 export const sendEthereumTransaction = (
     getValues: ReturnType<typeof useForm>['getValues'],
     token: SendContext['token'],
-) => async (dispatch: Dispatch, getState: GetState) => {
+) => async (dispatch: Dispatch, getState: GetState): Promise<'error' | 'success'> => {
     const { selectedAccount } = getState().wallet;
     const { device } = getState().suite;
-    if (selectedAccount.status !== 'loaded' || !device) return null;
+    if (selectedAccount.status !== 'loaded' || !device) return 'error';
     const { account, network } = selectedAccount;
 
     const amount = getValues('amount-0');
@@ -364,7 +371,8 @@ export const sendEthereumTransaction = (
     const gasPrice = getValues('ethereumGasPrice');
     const gasLimit = getValues('ethereumGasLimit');
 
-    if (account.networkType !== 'ethereum' || !network.chainId || !amount || !address) return null;
+    if (account.networkType !== 'ethereum' || !network.chainId || !amount || !address)
+        return 'error';
 
     const transaction = prepareEthereumTransaction({
         token: token || undefined,
@@ -395,7 +403,8 @@ export const sendEthereumTransaction = (
                 error: signedTx.payload.error,
             }),
         );
-        return;
+
+        return 'error';
     }
 
     const serializedTx = serializeEthereumTx({
@@ -430,20 +439,23 @@ export const sendEthereumTransaction = (
                 error: sentTx.payload.error,
             }),
         );
+
+        return 'error';
     }
+
+    return 'success';
 };
 
 export const sendRippleTransaction = (
     getValues: ReturnType<typeof useForm>['getValues'],
     selectedFee: SendContext['selectedFee'],
-) => async (dispatch: Dispatch, getState: GetState) => {
+) => async (dispatch: Dispatch, getState: GetState): Promise<'error' | 'success'> => {
     const { selectedAccount } = getState().wallet;
     const { device } = getState().suite;
-    if (selectedAccount.status !== 'loaded' || !device) return null;
+    if (selectedAccount.status !== 'loaded' || !device) return 'error';
     const { account } = selectedAccount;
     const { symbol } = account;
-
-    if (account.networkType !== 'ripple' || !account) return;
+    if (!account || account.networkType !== 'ripple') return 'error';
 
     const amount = getValues('amount-0');
     const address = getValues('address-0');
@@ -482,7 +494,8 @@ export const sendRippleTransaction = (
                 error: signedTx.payload.error,
             }),
         );
-        return;
+
+        return 'error';
     }
 
     // TODO: add possibility to show serialized tx without pushing (locktime)
@@ -511,5 +524,9 @@ export const sendRippleTransaction = (
                 error: sentTx.payload.error,
             }),
         );
+
+        return 'error';
     }
+
+    return 'success';
 };

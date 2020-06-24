@@ -1,7 +1,6 @@
 import { AccountLabeling, FiatValue, Translation } from '@suite-components';
-import { useActions, useDevice } from '@suite-hooks';
+import { useDevice } from '@suite-hooks';
 import { Button, colors, Modal, variables } from '@trezor/components';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { Account } from '@wallet-types';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import React from 'react';
@@ -81,17 +80,10 @@ export default ({
     selectedAccount,
     getValues,
     token,
-    selectedFee,
     outputs,
     transactionInfo,
     device,
-    reset,
-    setSelectedFee,
-    showAdvancedForm,
-    setToken,
-    updateOutputs,
-    initialSelectedFee,
-    defaultValues,
+    send,
 }: Props) => {
     if (
         selectedAccount.status !== 'loaded' ||
@@ -107,11 +99,6 @@ export default ({
     const { isLocked } = useDevice();
     const isDeviceLocked = isLocked();
     const fee = getFeeValue(transactionInfo, networkType, symbol);
-    const { sendBitcoinTransaction, sendEthereumTransaction, sendRippleTransaction } = useActions({
-        sendBitcoinTransaction: sendFormActions.sendBitcoinTransaction,
-        sendEthereumTransaction: sendFormActions.sendEthereumTransaction,
-        sendRippleTransaction: sendFormActions.sendRippleTransaction,
-    });
 
     return (
         <Modal
@@ -129,32 +116,7 @@ export default ({
                     >
                         <Translation id="TR_EDIT" />
                     </Button>
-                    <Button
-                        isDisabled={isDeviceLocked}
-                        onClick={async () => {
-                            switch (networkType) {
-                                case 'bitcoin':
-                                    await sendBitcoinTransaction(transactionInfo);
-                                    break;
-                                case 'ethereum':
-                                    await sendEthereumTransaction(getValues, token);
-                                    break;
-                                case 'ripple': {
-                                    await sendRippleTransaction(getValues, selectedFee);
-                                    break;
-                                } // no default
-                            }
-                            reset(defaultValues, { dirty: true });
-                            setSelectedFee(initialSelectedFee);
-                            showAdvancedForm(false);
-                            setToken(null);
-                            updateOutputs([
-                                {
-                                    id: 0,
-                                },
-                            ]);
-                        }}
-                    >
+                    <Button isDisabled={isDeviceLocked} onClick={() => send()}>
                         <Translation id="TR_MODAL_CONFIRM_TX_BUTTON" />
                     </Button>
                 </Buttons>

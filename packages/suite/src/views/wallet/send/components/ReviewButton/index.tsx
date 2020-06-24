@@ -1,6 +1,7 @@
 import { SUITE } from '@suite-actions/constants';
 import * as modalActions from '@suite-actions/modalActions';
 import { Translation } from '@suite-components/Translation';
+import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { useActions } from '@suite-hooks';
 import { AppState, TrezorDevice } from '@suite-types';
 import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext';
@@ -85,7 +86,14 @@ const isDisabled = (
 
 export default () => {
     const { errors, getValues, reset } = useFormContext();
+    const { sendBitcoinTransaction, sendEthereumTransaction, sendRippleTransaction } = useActions({
+        sendBitcoinTransaction: sendFormActions.sendBitcoinTransaction,
+        sendEthereumTransaction: sendFormActions.sendEthereumTransaction,
+        sendRippleTransaction: sendFormActions.sendRippleTransaction,
+    });
+
     const {
+        account,
         online,
         locks,
         device,
@@ -101,6 +109,7 @@ export default () => {
         defaultValues,
         setToken,
     } = useSendContext();
+    const { networkType } = account;
     const { openModal } = useActions({ openModal: modalActions.openModal });
 
     return (
@@ -118,13 +127,41 @@ export default () => {
                                 token,
                                 getValues,
                                 selectedFee,
-                                reset,
-                                setSelectedFee,
-                                showAdvancedForm,
-                                setToken,
-                                updateOutputs,
-                                initialSelectedFee,
-                                defaultValues,
+                                send: async () => {
+                                    let response: 'error' | 'success';
+                                    switch (networkType) {
+                                        case 'bitcoin':
+                                            response = await sendBitcoinTransaction(
+                                                transactionInfo,
+                                            );
+                                            break;
+                                        case 'ethereum':
+                                            response = await sendEthereumTransaction(
+                                                getValues,
+                                                token,
+                                            );
+                                            break;
+                                        case 'ripple': {
+                                            response = await sendRippleTransaction(
+                                                getValues,
+                                                selectedFee,
+                                            );
+                                            break;
+                                        } // no default
+                                    }
+
+                                    if (response !== 'error') {
+                                        reset(defaultValues, { dirty: true });
+                                        setSelectedFee(initialSelectedFee);
+                                        showAdvancedForm(false);
+                                        setToken(null);
+                                        updateOutputs([
+                                            {
+                                                id: 0,
+                                            },
+                                        ]);
+                                    }
+                                },
                             });
                         }
                     }}
