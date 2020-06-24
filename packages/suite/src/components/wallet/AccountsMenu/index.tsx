@@ -1,11 +1,12 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
+import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { H2, variables, colors } from '@trezor/components';
-import styled from 'styled-components';
+import { H2, variables, colors, Icon } from '@trezor/components';
+import { Translation } from '@suite-components';
 
 import { DISCOVERY } from '@wallet-actions/constants';
-import { useDiscovery } from '@suite-hooks';
+import { useDiscovery, useLayoutSize } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
 import { sortByCoin, getFailedAccounts } from '@wallet-utils/accountUtils';
 import { AppState, Dispatch } from '@suite-types';
@@ -15,29 +16,83 @@ import AccountGroup from './components/AccountGroup';
 import AccountItem from './components/AccountItem/Container';
 import AddAccountButton from './components/AddAccount';
 
-const Wrapper = styled.div`
-    flex: 1;
+const Wrapper = styled.div<{ isMobileLayout?: boolean }>`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    overflow: auto;
     /* margin-top: 10px; */
-    padding: 20px 8px;
+
+    ${props =>
+        !props.isMobileLayout &&
+        css`
+            flex: 1;
+            padding: 20px 8px;
+            overflow: auto;
+        `}
 `;
 
-const MenuHeader = styled.div`
+const MenuHeader = styled.div<{ isMobileLayout?: boolean }>`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0px 16px;
-    padding-bottom: 16px;
-    margin-bottom: 8px;
+    background: ${colors.NEUE_BG_WHITE};
     border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+
+    ${props =>
+        props.isMobileLayout &&
+        css`
+            padding: 12px 16px;
+        `}
+
+    ${props =>
+        !props.isMobileLayout &&
+        css`
+            padding: 0px 8px;
+            padding-bottom: 16px;
+            margin-bottom: 8px;
+        `}
 `;
 
-const Heading = styled(H2)`
+const Search = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    /* margin: 0px 16px; */
+    padding: 8px 16px;
+    background: ${colors.NEUE_BG_WHITE};
+    /* border-bottom: 1px solid ${colors.NEUE_STROKE_GREY}; */
+`;
+
+const Heading = styled(H2)<{ isMobileLayout?: boolean }>`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${colors.NEUE_TYPE_DARK_GREY};
+    ${props =>
+        props.isMobileLayout &&
+        css`
+            font-size: 18px;
+        `}
+`;
+
+const ExpandIcon = styled(Icon)`
+    cursor: pointer;
+`;
+
+const MenuItemsWrapper = styled.div`
+    position: relative;
+    height: 100vh;
+`;
+
+const ExpandedMobileWrapper = styled.div`
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+    background: ${colors.NEUE_BG_WHITE};
+    z-index: 3;
+    width: 100%;
+    overflow-y: auto;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
 `;
 
 const Scroll = styled.div`
@@ -85,15 +140,23 @@ type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchT
 const AccountsMenu = ({ device, accounts, selectedAccount, openModal }: Props) => {
     const { discovery } = useDiscovery();
     const { params } = selectedAccount;
+    const { isMobileLayout } = useLayoutSize();
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [animatedIcon, setAnimatedIcon] = useState(false);
+
     const selectedItemRef = useCallback((_item: HTMLDivElement | null) => {
         // TODO: scroll to selected item
     }, []);
 
     if (!device || !discovery) {
+        // TODO: default empty state while retrieving data from the device
         return (
-            <Wrapper>
-                <div />
-                <AddAccountButton disabled />
+            <Wrapper isMobileLayout={isMobileLayout}>
+                <MenuHeader isMobileLayout={isMobileLayout}>
+                    <Heading noMargin isMobileLayout={isMobileLayout}>
+                        <Translation id="TR_MY_ACCOUNTS" />
+                    </Heading>
+                </MenuHeader>
             </Wrapper>
         );
     }
@@ -147,11 +210,68 @@ const AccountsMenu = ({ device, accounts, selectedAccount, openModal }: Props) =
         );
     };
 
+    if (isMobileLayout) {
+        return (
+            <>
+                <Wrapper isMobileLayout={isMobileLayout}>
+                    <MenuHeader
+                        isMobileLayout={isMobileLayout}
+                        onClick={() => {
+                            if (isMobileLayout) {
+                                setIsExpanded(!isExpanded);
+                                setAnimatedIcon(true);
+                            }
+                        }}
+                    >
+                        <Heading noMargin isMobileLayout={isMobileLayout}>
+                            <Translation id="TR_MY_ACCOUNTS" />
+                        </Heading>
+                        <ExpandIcon
+                            canAnimate={animatedIcon}
+                            isActive={isExpanded}
+                            size={20}
+                            color={colors.BLACK50}
+                            onClick={() => {
+                                setIsExpanded(!isExpanded);
+                                setAnimatedIcon(true);
+                            }}
+                            icon="ARROW_DOWN"
+                        />
+                    </MenuHeader>
+                </Wrapper>
+                {isExpanded && (
+                    <MenuItemsWrapper>
+                        <ExpandedMobileWrapper>
+                            <Search>
+                                <AddAccountButton
+                                    onClick={() =>
+                                        openModal({
+                                            type: 'add-account',
+                                            device,
+                                        })
+                                    }
+                                    disabled={!!addAccountDisabled}
+                                    device={device}
+                                />
+                            </Search>
+                            {buildGroup('normal', normalAccounts)}
+                            {buildGroup('segwit', segwitAccounts)}
+                            {buildGroup('legacy', legacyAccounts)}
+                        </ExpandedMobileWrapper>
+                    </MenuItemsWrapper>
+                )}
+            </>
+        );
+    }
+
     return (
         <Wrapper>
             <Scroll>
                 <MenuHeader>
-                    <Heading noMargin>My Accounts</Heading>
+                    <Heading noMargin>
+                        <Translation id="TR_MY_ACCOUNTS" />
+                    </Heading>
+
                     <AddAccountButton
                         onClick={() =>
                             openModal({
@@ -163,6 +283,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount, openModal }: Props) =
                         device={device}
                     />
                 </MenuHeader>
+
                 {buildGroup('normal', normalAccounts)}
                 {buildGroup('segwit', segwitAccounts)}
                 {buildGroup('legacy', legacyAccounts)}

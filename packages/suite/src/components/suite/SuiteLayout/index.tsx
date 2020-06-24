@@ -4,13 +4,12 @@ import { connect } from 'react-redux';
 import { colors } from '@trezor/components';
 import SuiteNotifications from '@suite-components/Notifications';
 import Head from 'next/head';
-// import Menu from '@suite-components/Menu/Container';
 import { AppState } from '@suite-types';
 import MenuSecondary from '@suite-components/MenuSecondary';
-import MenuDrawer from '@suite-components/MenuDrawer';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import { DiscoveryProgress } from '@wallet-components';
-import NeueNavigation from '../NeueNavigation';
+import NavigationBar from '../NavigationBar';
+import { useLayoutSize } from '@suite-hooks';
 
 const PageWrapper = styled.div`
     display: flex;
@@ -108,16 +107,19 @@ const BodyWide = ({ url, menu, appMenu, children }: BodyProps) => (
 
 const BodyNarrow = ({ url, menu, appMenu, children }: BodyProps) => (
     <Body>
-        <MenuDrawer>{menu}</MenuDrawer>
         <Columns>
-            <ScrollAppWrapper url={url}>{children}</ScrollAppWrapper>
+            <ScrollAppWrapper url={url}>
+                {menu}
+                {appMenu}
+                {children}
+            </ScrollAppWrapper>
         </Columns>
     </Body>
 );
 
 const SuiteLayout = (props: Props) => {
     // TODO: if (props.layoutSize === 'UNAVAILABLE') return <SmallLayout />;
-    const isWide = ['XLARGE', 'LARGE'].includes(props.layoutSize);
+    const { isMobileLayout } = useLayoutSize();
     const [title, setTitle] = useState<string | undefined>(undefined);
     const [menu, setMenu] = useState<any>(undefined);
     const [appMenu, setAppMenu] = useState<any>(undefined);
@@ -137,15 +139,14 @@ const SuiteLayout = (props: Props) => {
             </Head>
             <SuiteNotifications />
             <DiscoveryProgress />
-            {/* {isWide && <Menu />} */}
-            {isWide && <NeueNavigation />}
+            <NavigationBar />
             <LayoutContext.Provider value={{ title, menu, setLayout }}>
-                {isWide && (
+                {!isMobileLayout && (
                     <BodyWide menu={menu} appMenu={appMenu} url={props.router.url}>
                         {props.children}
                     </BodyWide>
                 )}
-                {!isWide && (
+                {isMobileLayout && (
                     <BodyNarrow menu={menu} appMenu={appMenu} url={props.router.url}>
                         {props.children}
                     </BodyNarrow>

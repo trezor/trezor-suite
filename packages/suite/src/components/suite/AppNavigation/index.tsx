@@ -28,9 +28,7 @@ const StyledNavLink = styled.div<{ active?: boolean }>`
     font-weight: ${FONT_WEIGHT.MEDIUM};
     display: flex;
     align-items: center;
-    padding-top: 14px;
-    padding-bottom: 12px;
-    padding-right: 2px;
+    padding: 14px 8px 12px 6px;
     white-space: nowrap;
     border-bottom: 2px solid ${props => (props.active ? colors.NEUE_BG_GREEN : 'transparent')};
 

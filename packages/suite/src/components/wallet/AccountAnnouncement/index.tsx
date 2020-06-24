@@ -1,4 +1,5 @@
 import * as React from 'react';
+import styled from 'styled-components';
 import Bignumber from 'bignumber.js';
 import { AppState } from '@suite-types';
 
@@ -10,6 +11,12 @@ import AccountImported from './AccountImported';
 interface Props {
     selectedAccount: AppState['wallet']['selectedAccount'];
 }
+
+const AnnouncementsWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+`;
 
 const Announcement = (props: Props) => {
     const { account } = props.selectedAccount;
@@ -34,7 +41,7 @@ const Announcement = (props: Props) => {
         }
     }
 
-    return <>{notifications}</>;
+    return <AnnouncementsWrapper>{notifications}</AnnouncementsWrapper>;
 };
 
 export default Announcement;

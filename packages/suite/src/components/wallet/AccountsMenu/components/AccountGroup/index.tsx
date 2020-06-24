@@ -5,7 +5,9 @@ import { colors, Icon } from '@trezor/components';
 import { Account } from '@wallet-types';
 import AnimationWrapper from '../AnimationWrapper';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+    background: ${colors.NEUE_BG_WHITE};
+`;
 
 const HeaderWrapper = styled.div`
     position: sticky;

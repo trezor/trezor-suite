@@ -9,7 +9,6 @@ const Wrapper = styled.div`
     justify-content: center;
     background: ${colors.NEUE_BG_LIGHT_GREY};
     border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
-    margin-bottom: 22px;
 `;
 
 const Content = styled.div`

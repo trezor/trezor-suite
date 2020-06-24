@@ -1,4 +1,4 @@
-import { colors, Icon, IconProps } from '@trezor/components';
+import { colors, Icon, IconProps, variables } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -11,6 +11,33 @@ const Wrapper = styled.div<Pick<Props, 'isActive'>>`
     & + & {
         margin-left: 28px;
     }
+`;
+
+const MobileWrapper = styled.div<Pick<Props, 'isActive'>>`
+    display: flex;
+    position: relative;
+    cursor: pointer;
+    align-items: center;
+    margin-right: 16px;
+
+    & + & {
+        border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+    }
+`;
+
+const MobileIconWrapper = styled.div<Pick<Props, 'isActive'>>`
+    display: flex;
+    position: relative;
+    cursor: pointer;
+    align-items: center;
+    margin-right: 16px;
+`;
+
+const Label = styled.span`
+    padding: 16px 8px;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-size: ${variables.FONT_SIZE.NORMAL};
 `;
 
 const AlertDotWrapper = styled.div`
@@ -35,8 +62,10 @@ const AlertDot = styled.div`
 `;
 
 interface CommonProps extends Pick<React.HTMLAttributes<HTMLDivElement>, 'onClick'> {
+    label: React.ReactNode;
     isActive?: boolean;
     withAlertDot?: boolean;
+    isMobileLayout?: boolean;
 }
 
 interface CustomIconComponentProps extends CommonProps {
@@ -60,6 +89,22 @@ const ActionItem = (props: Props) => {
     ) : (
         props.iconComponent
     );
+
+    if (props.isMobileLayout) {
+        return (
+            <MobileWrapper {...props}>
+                <MobileIconWrapper isActive={props.isActive}>
+                    {iconComponent}
+                    {props.withAlertDot && (
+                        <AlertDotWrapper>
+                            <AlertDot />
+                        </AlertDotWrapper>
+                    )}
+                </MobileIconWrapper>
+                <Label>{props.label}</Label>
+            </MobileWrapper>
+        );
+    }
 
     return (
         <Wrapper isActive={props.isActive} {...props}>

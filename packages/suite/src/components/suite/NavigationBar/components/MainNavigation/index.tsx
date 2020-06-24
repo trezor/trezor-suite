@@ -7,16 +7,25 @@ import { MAIN_MENU_ITEMS } from '@suite-constants/menu';
 import { useAnalytics, useActions, useSelector } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 
+interface ComponentProps {
+    isActive: boolean;
+    isDisabled?: boolean;
+}
+
 const Wrapper = styled.div`
     display: flex;
     flex: 1;
     justify-content: center;
 `;
 
-interface ComponentProps {
-    isActive: boolean;
-    isDisabled?: boolean;
-}
+const MobileWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    padding: 0px 16px;
+    flex: 1;
+
+    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+`;
 
 const MenuItem = styled.div<ComponentProps>`
     display: flex;
@@ -33,6 +42,23 @@ const MenuItem = styled.div<ComponentProps>`
 
     & + & {
         margin-left: 24px;
+    }
+`;
+
+const MobileMenuItem = styled.div<ComponentProps>`
+    display: flex;
+    padding: 20px 24px;
+    cursor: ${props => (!props.isDisabled ? 'pointer' : 'auto')};
+    font-size: ${props => (props.isActive ? '20px' : '16px')};
+
+    ${props =>
+        props.isActive &&
+        css`
+            font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+        `}
+
+    & + & {
+        border-top: 1px solid ${colors.NEUE_STROKE_GREY};
     }
 `;
 
@@ -67,6 +93,8 @@ const NewBadge = styled.span`
 
 interface Props {
     openSecondaryMenu?: () => void;
+    closeMainNavigation?: () => void;
+    isMobileLayout?: boolean;
 }
 
 const MainNavigation = (props: Props) => {
@@ -93,18 +121,27 @@ const MainNavigation = (props: Props) => {
         goto(routeName);
     };
 
+    const WrapperComponent = props.isMobileLayout ? MobileWrapper : Wrapper;
+    const MenuItemComponent = props.isMobileLayout ? MobileMenuItem : MenuItem;
+
     return (
-        <Wrapper>
+        <WrapperComponent>
             {MAIN_MENU_ITEMS.map(item => {
                 const { route, translationId, isDisabled } = item;
                 const routeObj = findRouteByName(route);
                 const isActive = routeObj ? routeObj.app === activeApp : false;
-                const callback = (isActive && props.openSecondaryMenu) || gotoWithReport;
                 return (
-                    <MenuItem
+                    <MenuItemComponent
                         key={route}
                         data-test={`@suite/menu/${route}`}
-                        onClick={() => !isDisabled && callback(route)}
+                        onClick={() => {
+                            if (!isDisabled) {
+                                gotoWithReport(route);
+                                if (props.closeMainNavigation) {
+                                    props.closeMainNavigation();
+                                }
+                            }
+                        }}
                         isActive={isActive}
                         isDisabled={isDisabled}
                     >
@@ -112,12 +149,12 @@ const MainNavigation = (props: Props) => {
                             <ItemTitle isActive={isActive} isDisabled={isDisabled}>
                                 <Translation id={translationId} />
                             </ItemTitle>
-                            {isDisabled && <NewBadge>new</NewBadge>}
+                            {isDisabled && <NewBadge>soon</NewBadge>}
                         </ItemTitleWrapper>
-                    </MenuItem>
+                    </MenuItemComponent>
                 );
             })}
-        </Wrapper>
+        </WrapperComponent>
     );
 };
 

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as routerActions from '@suite-actions/routerActions';
+import { Translation } from '@suite-components';
 import { findRouteByName } from '@suite-utils/router';
 import { BOTTOM_MENU_ITEMS } from '@suite-constants/menu';
 import { useActions, useAnalytics, useSelector } from '@suite-hooks';
@@ -16,8 +17,15 @@ const Wrapper = styled.div`
     justify-content: flex-end;
 `;
 
+const MobileWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    padding: 0px 16px;
+`;
+
 interface Props {
-    openSecondaryMenu?: () => void;
+    closeMainNavigation?: () => void;
+    isMobileLayout?: boolean;
 }
 
 const NavigationActions = (props: Props) => {
@@ -30,6 +38,8 @@ const NavigationActions = (props: Props) => {
         setDiscreetMode: walletSettingsActions.setDiscreetMode,
     });
 
+    const WrapperComponent = props.isMobileLayout ? MobileWrapper : Wrapper;
+
     const gotoWithReport = (routeName: typeof BOTTOM_MENU_ITEMS[number]['route']) => {
         if (routeName === 'notifications-index') {
             analytics.report({ type: 'menu/goto/notifications-index' });
@@ -40,7 +50,7 @@ const NavigationActions = (props: Props) => {
     };
 
     return (
-        <Wrapper>
+        <WrapperComponent>
             <ActionItem
                 onClick={() => {
                     analytics.report({
@@ -51,7 +61,9 @@ const NavigationActions = (props: Props) => {
                     });
                     setDiscreetMode(!discreetMode);
                 }}
+                label={<Translation id="TR_DISCREET" />}
                 icon={discreetMode ? 'HIDE' : 'SHOW'}
+                isMobileLayout={props.isMobileLayout}
             />
 
             {BOTTOM_MENU_ITEMS.map(item => {
@@ -59,22 +71,26 @@ const NavigationActions = (props: Props) => {
                 const dataTestId = `@suite/menu/${route}`;
                 const routeObj = findRouteByName(route);
                 const isActive = routeObj ? routeObj.app === activeApp : false;
-                const callback = (isActive && props.openSecondaryMenu) || gotoWithReport;
                 const unseenNotifications = notifications.some(n => !n.seen);
 
                 return (
                     <ActionItem
+                        label={<Translation id={item.translationId} />}
                         data-test={dataTestId}
-                        onClick={() => callback(route)}
+                        onClick={() => {
+                            gotoWithReport(route);
+                            if (props.closeMainNavigation) props.closeMainNavigation();
+                        }}
                         isActive={isActive}
                         icon={icon}
                         withAlertDot={
                             !isActive && route === 'notifications-index' && unseenNotifications
                         }
+                        isMobileLayout={props.isMobileLayout}
                     />
                 );
             })}
-        </Wrapper>
+        </WrapperComponent>
     );
 };
 
