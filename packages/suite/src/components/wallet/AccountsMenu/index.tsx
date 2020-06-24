@@ -26,7 +26,7 @@ const Wrapper = styled.div<{ isMobileLayout?: boolean }>`
         !props.isMobileLayout &&
         css`
             flex: 1;
-            padding: 20px 8px;
+            padding: 0px 8px;
             overflow: auto;
         `}
 `;
@@ -47,8 +47,7 @@ const MenuHeader = styled.div<{ isMobileLayout?: boolean }>`
     ${props =>
         !props.isMobileLayout &&
         css`
-            padding: 0px 8px;
-            padding-bottom: 16px;
+            padding: 20px 8px 16px 8px;
             margin-bottom: 8px;
         `}
 `;
@@ -57,8 +56,7 @@ const Search = styled.div`
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    /* margin: 0px 16px; */
-    padding: 8px 16px;
+    padding: 8px 0px;
     background: ${colors.NEUE_BG_WHITE};
     /* border-bottom: 1px solid ${colors.NEUE_STROKE_GREY}; */
 `;
@@ -93,6 +91,7 @@ const ExpandedMobileWrapper = styled.div`
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
+    padding: 0px 16px;
 `;
 
 const Scroll = styled.div`
