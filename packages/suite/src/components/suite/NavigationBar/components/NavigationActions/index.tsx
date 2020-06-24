@@ -8,8 +8,6 @@ import { BOTTOM_MENU_ITEMS } from '@suite-constants/menu';
 import { useActions, useAnalytics, useSelector } from '@suite-hooks';
 import ActionItem from './components/ActionItem';
 
-// import NotificationsBadge from './NotificationsBadge';
-
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
