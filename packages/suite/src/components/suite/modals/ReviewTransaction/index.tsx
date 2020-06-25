@@ -141,7 +141,7 @@ export default ({
                         </Box>
                         <Box>
                             <Label>
-                                <Translation id="TR_TOTAL_AMOUNT" />
+                                <Translation id="TR_AMOUNT" />
                             </Label>
                             <Value>
                                 {getValues(`amount[${output.id}]`)} {outputSymbol}
