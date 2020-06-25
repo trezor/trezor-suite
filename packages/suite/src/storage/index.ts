@@ -6,10 +6,11 @@ import { State as SendFormState } from '@wallet-types/sendForm';
 import { State as AnalyticsState } from '@suite-reducers/analyticsReducer';
 import { GraphData } from '@wallet-reducers/graphReducer';
 import { AcquiredDevice } from '@suite-types';
+import { MetadataState } from '@suite-types/metadata';
 import { Account, Discovery, CoinFiatRates, WalletAccountTransaction } from '@wallet-types';
 import { migrate } from './migrations';
 
-const VERSION = 14;
+const VERSION = 15;
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
@@ -77,6 +78,10 @@ export interface SuiteDBSchema extends DBSchema {
             deviceState: string;
         };
     };
+    metadata: {
+        key: 'state';
+        value: MetadataState;
+    };
 }
 
 export type SuiteStorageUpdateMessage = StorageUpdateMessage<SuiteDBSchema>;
@@ -143,8 +148,12 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
             'account.deviceState',
         ]);
         graphStore.createIndex('deviceState', 'account.deviceState');
+
+        // metadata
+        db.createObjectStore('metadata');
     } else {
         // migrate functions
+        console.warn('MIGRATE!', oldVersion, newVersion);
         migrate(db, oldVersion, newVersion, transaction);
     }
 };
