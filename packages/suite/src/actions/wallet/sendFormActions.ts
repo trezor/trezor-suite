@@ -38,8 +38,8 @@ export const composeRippleTransaction = (
     getValues: ReturnType<typeof useForm>['getValues'],
     selectedFee: SendContext['selectedFee'],
 ) => {
-    const amount = getValues('amount-0');
-    const address = getValues('address-0');
+    const amount = getValues('amount[0]');
+    const address = getValues('address[0]');
     const amountInSatoshi = networkAmountToSatoshi(amount, account.symbol).toString();
     const { availableBalance } = account;
     const feeInSatoshi = selectedFee.feePerUnit;
@@ -82,8 +82,8 @@ export const composeEthereumTransaction = (
     token: SendContext['token'],
     setMax = false,
 ) => {
-    const amount = getValues('amount-0');
-    const address = getValues('address-0');
+    const amount = getValues('amount[0]');
+    const address = getValues('address[0]');
     const isFeeValid = !new BigNumber(selectedFee.feePerUnit).isNaN();
     const { availableBalance } = account;
     const feeInSatoshi = calculateEthFee(
@@ -597,8 +597,8 @@ export const sendEthereumTransaction = (
     if (selectedAccount.status !== 'loaded' || !device) return 'error';
     const { account, network } = selectedAccount;
 
-    const amount = getValues('amount-0');
-    const address = getValues('address-0');
+    const amount = getValues('amount[0]');
+    const address = getValues('address[0]');
     const data = getValues('ethereumData');
     const gasPrice = getValues('ethereumGasPrice');
     const gasLimit = getValues('ethereumGasLimit');
@@ -689,8 +689,8 @@ export const sendRippleTransaction = (
     const { symbol } = account;
     if (!account || account.networkType !== 'ripple') return 'error';
 
-    const amount = getValues('amount-0');
-    const address = getValues('address-0');
+    const amount = getValues('amount[0]');
+    const address = getValues('address[0]');
     const destinationTag = getValues('rippleDestinationTag');
     const { path, instance, state, useEmptyPassphrase } = device;
 

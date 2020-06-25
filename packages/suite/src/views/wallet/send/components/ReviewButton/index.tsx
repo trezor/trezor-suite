@@ -119,6 +119,7 @@ export default () => {
                     isDisabled={isDisabled(errors, locks, device, online, outputs, getValues)}
                     isLoading={isLoading}
                     onClick={() => {
+                        console.log('transactionInfo', transactionInfo);
                         if (transactionInfo && transactionInfo.type === 'final') {
                             openModal({
                                 type: 'review-transaction',
