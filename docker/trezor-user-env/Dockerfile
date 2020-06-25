@@ -10,10 +10,12 @@ RUN apt-get update && apt-get install -y \
 
 RUN apt-get install -y \
     python3-dev \
-    python3-pip
+    python3-pip \
+    git-all
 
 RUN pip3 install --upgrade setuptools
-RUN pip3 install trezor
+# RUN pip3 install trezor
+RUN pip3 install "git+https://github.com/trezor/trezor-firmware#egg=trezor&subdirectory=python"
 RUN pip3 install termcolor
 
 # handle file permissions of generated files inside container
@@ -48,3 +50,5 @@ RUN trezorctl version
 WORKDIR /controller
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+CMD [ "/bin/bash", "-c", "rm -rf /var/tmp/trezor.flash && trezorctl --version && python3 ./main.py" ]
