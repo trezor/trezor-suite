@@ -1,7 +1,7 @@
 import { ERC20_GAS_LIMIT, ERC20_TRANSFER } from '@wallet-constants/sendForm';
 import { SendContext, FeeInfo, EthTransactionData } from '@wallet-hooks/useSendContext';
-import { Account, Network } from '@wallet-types';
-import { amountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { Network } from '@wallet-types';
+import { amountToSatoshi } from '@wallet-utils/accountUtils';
 import BigNumber from 'bignumber.js';
 import Common from 'ethereumjs-common';
 import { Transaction, TxData } from 'ethereumjs-tx';
@@ -113,12 +113,6 @@ export const serializeEthereumTx = (tx: TxData & EthereumTransaction) => {
 
     const ethTx = new Transaction(tx, options);
     return `0x${ethTx.serialize().toString('hex')}`;
-};
-
-export const getReserveInXrp = (account: Account) => {
-    if (account.networkType !== 'ripple') return null;
-    const { misc } = account;
-    return formatNetworkAmount(misc.reserve, account.symbol);
 };
 
 export const getFeeLevels = (

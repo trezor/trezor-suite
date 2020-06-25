@@ -38,6 +38,7 @@ module.exports = {
         '!**/constants/**',
         '!**/constants/**',
         '!**/__tests__/**',
+        '!<rootDir>/src/actions/wallet/sendFormActions.ts', // TODO write tests
     ],
     coverageThreshold: {
         global: {

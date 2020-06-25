@@ -1,7 +1,13 @@
 import { FakeTransaction } from 'ethereumjs-tx';
 import { sha3 } from 'web3-utils';
 import * as fixtures from '../__fixtures__/sendFormFixtures';
-import { prepareEthereumTransaction, serializeEthereumTx } from '../sendFormUtils';
+import {
+    prepareEthereumTransaction,
+    serializeEthereumTx,
+    getInputState,
+    calculateTotal,
+    calculateMax,
+} from '../sendFormUtils';
 
 describe('sendForm utils', () => {
     fixtures.prepareEthereumTransaction.forEach(f => {
@@ -23,5 +29,17 @@ describe('sendForm utils', () => {
             const hash2 = sha3(serialized);
             expect(hash2).toEqual(f.result);
         });
+    });
+
+    it('getInputState', () => {
+        expect(getInputState({ address: 'error address' })).toEqual('error');
+    });
+
+    it('calculateTotal', () => {
+        expect(calculateTotal('1', '2')).toEqual('3');
+    });
+
+    it('calculateMax', () => {
+        expect(calculateMax('2', '1')).toEqual('1');
     });
 });
