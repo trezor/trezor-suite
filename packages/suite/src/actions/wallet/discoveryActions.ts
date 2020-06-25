@@ -3,6 +3,7 @@ import TrezorConnect, { BundleProgress, AccountInfo, UI } from 'trezor-connect';
 import { addToast } from '@suite-actions/notificationActions';
 import { SUITE } from '@suite-actions/constants';
 import { create as createAccount } from '@wallet-actions/accountActions';
+import { getDeviceMetadataKey } from '@suite-actions/metadataActions';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { SETTINGS } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
@@ -302,6 +303,9 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         discovery.status === DISCOVERY.STATUS.IDLE ||
         discovery.status > DISCOVERY.STATUS.STOPPING
     ) {
+        // always try to generate device metadata master key first
+        await dispatch(getDeviceMetadataKey());
+        // start discovery
         dispatch({
             type: DISCOVERY.START,
             payload: {
