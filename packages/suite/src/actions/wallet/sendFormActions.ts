@@ -192,8 +192,7 @@ export const composeBitcoinTransaction = async (
             const max = new BigNumber(response.payload[0].max).isLessThan('0')
                 ? '0'
                 : formatNetworkAmount(response.payload[0].max.toString(), account.symbol);
-            const fee = formatNetworkAmount(response.payload[0].fee.toString(), account.symbol);
-            return { ...response.payload[0], max, fee };
+            return { ...response.payload[0], max };
         }
 
         return {
