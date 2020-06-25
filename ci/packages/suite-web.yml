@@ -131,6 +131,9 @@ suite-web deploy staging:
     stage: deploy to staging
     dependencies:
         - suite-web build-staging
+        - suite-desktop build mac
+        - suite-desktop build linux
+        - suite-desktop build windows
     environment:
         name: ${CI_BUILD_REF_NAME}-staging
         url: ${STAGING_SERVER_URL}
@@ -139,6 +142,10 @@ suite-web deploy staging:
     script:
         - source ${STAGING_DEPLOY_KEYFILE}
         - cd packages/suite-web
+        - mkdir -p /packages/suite-web/build/static/desktop
+        - rsync -abviuzP -va ./${DESKTOP_APP_NAME}.AppImage
+        - rsync -abviuzP -va ./${DESKTOP_APP_NAME}.zip
+        - rsync -abviuzP -va ./${DESKTOP_APP_NAME}.exe
         - ./scripts/s3sync.sh stage beta
     tags:
         - deploy
