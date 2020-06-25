@@ -17,6 +17,9 @@ import { getDateWithTimeZone } from '@suite-utils/date';
 import TransactionTypeIcon from './components/TransactionTypeIcon';
 import { Props } from './Container';
 
+import { useActions } from '@suite-hooks';
+import * as modalActions from '@suite-actions/modalActions';
+
 const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
     padding: 8px 0px; /* row padding */
     display: block;
@@ -120,6 +123,7 @@ export default React.memo((props: Props) => {
     const operation =
         (type === 'sent' || type === 'self' ? '-' : null) || (type === 'recv' ? '+' : null);
     let key = 0;
+    const { openModal } = useActions({ openModal: modalActions.openModal });
 
     const buildTargetRow = (
         target: ArrayElement<Props['transaction']['targets']>,
@@ -133,7 +137,7 @@ export default React.memo((props: Props) => {
                 type === 'sent' ? (
                     <AddressLabeling key={`${key}${i}`} address={a} />
                 ) : (
-                    <span>{a}</span>
+                    <span key={`${key}${i}`}>{a}</span>
                 ),
             )
         );
@@ -152,7 +156,20 @@ export default React.memo((props: Props) => {
 
         return (
             <React.Fragment key={key}>
-                <Addr {...animation}>
+                <Addr
+                    {...animation}
+                    onClick={() =>
+                        openModal({
+                            type: 'metadata-add',
+                            payload: {
+                                type: 'outputLabel',
+                                txid: transaction.txid,
+                                outputIndex: key,
+                                defaultValue: target.addresses!.join(''),
+                            },
+                        })
+                    }
+                >
                     <StyledHiddenPlaceholder>{addr}</StyledHiddenPlaceholder>
                 </Addr>
                 {targetAmount && (
