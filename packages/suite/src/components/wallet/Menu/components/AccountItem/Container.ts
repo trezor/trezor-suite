@@ -10,7 +10,6 @@ const mapStateToProps = (state: AppState) => ({
     localCurrency: state.wallet.settings.localCurrency,
     discreetMode: state.wallet.settings.discreetMode,
     fiat: state.wallet.fiat,
-    labeling: state.labeling,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
