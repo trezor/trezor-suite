@@ -2,7 +2,6 @@ import * as BLOCKCHAIN from './blockchainConstants';
 import * as SIGN_VERIFY from './signVerifyConstants';
 import * as RECEIVE from './receiveConstants';
 import * as ACCOUNT from './accountConstants';
-import * as SEND from './sendFormConstants';
 import * as TOKEN from './token';
 import * as TRANSACTION from './transactionConstants';
 import * as DISCOVERY from './discoveryConstants';
@@ -21,5 +20,4 @@ export {
     WALLET,
     FIAT_RATES,
     GRAPH,
-    SEND,
 };
