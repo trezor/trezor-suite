@@ -27,6 +27,7 @@ export const create = (
         index: discoveryItem.index,
         path: discoveryItem.path,
         descriptor: accountInfo.descriptor,
+        key: `${accountInfo.descriptor}-${discoveryItem.coin}-${deviceState}`,
         accountType: discoveryItem.accountType,
         symbol: discoveryItem.coin,
         empty: accountInfo.empty,
@@ -46,6 +47,14 @@ export const create = (
         addresses: accountInfo.addresses,
         utxo: accountInfo.utxo,
         history: accountInfo.history,
+        metadata: {
+            // @ts-ignore: legacyXpub missing in trezor-connect
+            key: accountInfo.legacyXpub || accountInfo.descriptor,
+            fileName: '',
+            aesKey: '',
+            outputLabels: {},
+            addressLabels: {},
+        },
         ...accountUtils.getAccountSpecific(accountInfo, discoveryItem.networkType),
     },
 });

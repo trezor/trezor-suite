@@ -3,7 +3,7 @@ import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import * as deviceUtils from '@suite-utils/device';
 import { addToast } from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
-import { SUITE } from './constants';
+import { SUITE, METADATA } from './constants';
 import { LANGUAGES } from '@suite-config';
 import { Action, Dispatch, GetState, TrezorDevice, AppState } from '@suite-types';
 import { DebugModeOptions } from '@suite-reducers/suiteReducer';
@@ -273,6 +273,7 @@ const actions = [
     SUITE.UPDATE_PASSPHRASE_MODE,
     SUITE.ADD_BUTTON_REQUEST,
     SUITE.FORGET_DEVICE,
+    METADATA.SET_MASTER_KEY,
     ...Object.values(DEVICE).filter(v => typeof v === 'string'),
 ];
 

@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { Device, DEVICE } from 'trezor-connect';
-import { SUITE, STORAGE } from '@suite-actions/constants';
+import { SUITE, STORAGE, METADATA } from '@suite-actions/constants';
 import * as deviceUtils from '@suite-utils/device';
 import { TrezorDevice, AcquiredDevice, Action } from '@suite-types';
 
@@ -43,6 +43,7 @@ const connectDevice = (draft: State, device: Device) => {
             available: false,
             useEmptyPassphrase: true,
             buttonRequests: [],
+            metadata: { status: 'disabled' },
             ts: new Date().getTime(),
         });
         return;
@@ -76,6 +77,7 @@ const connectDevice = (draft: State, device: Device) => {
             ? deviceUtils.getNewInstanceNumber(draft, device) || 1
             : undefined,
         buttonRequests: [],
+        metadata: { status: 'disabled' },
         ts: new Date().getTime(),
     };
 
@@ -357,6 +359,13 @@ const addButtonRequest = (
     draft[index].buttonRequests.push(buttonRequest);
 };
 
+const setMetadata = (draft: State, state: string, metadata: TrezorDevice['metadata']) => {
+    const index = draft.findIndex(d => d.state === state);
+    if (!draft[index]) return;
+    // update state
+    draft[index].metadata = metadata;
+};
+
 export default (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
@@ -398,6 +407,9 @@ export default (state: State = initialState, action: Action): State => {
                 break;
             case SUITE.ADD_BUTTON_REQUEST:
                 addButtonRequest(draft, action.device, action.payload);
+                break;
+            case METADATA.SET_MASTER_KEY:
+                setMetadata(draft, action.payload.deviceState, action.payload.metadata);
                 break;
             // no default
         }
