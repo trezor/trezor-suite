@@ -171,6 +171,21 @@ export default ({
                         </FiatValueWrapper>
                     </Value>
                 </Box>
+                <Box>
+                    <Label>
+                        <Translation id="TR_TOTAL_AMOUNT" />
+                    </Label>
+                    <Value>
+                        {formatNetworkAmount(transactionInfo.totalSpent, symbol)} {outputSymbol}
+                        <FiatValueWrapper>
+                            <FiatValue
+                                amount={formatNetworkAmount(transactionInfo.totalSpent, symbol)}
+                                symbol={symbol}
+                                badge={{ color: 'gray' }}
+                            />
+                        </FiatValueWrapper>
+                    </Value>
+                </Box>
             </Content>
         </Modal>
     );
