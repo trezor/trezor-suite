@@ -8,6 +8,7 @@ import * as store from './store';
 import { runBridgeProcess } from './bridge';
 import { buildMainMenu } from './menu';
 import { openOauthPopup } from './oauth';
+import * as metadata from './metadata';
 
 let mainWindow: BrowserWindow;
 const APP_NAME = 'Trezor Beta Wallet';
@@ -45,6 +46,7 @@ const registerShortcuts = (window: BrowserWindow) => {
 };
 
 const init = async () => {
+    metadata.init();
     try {
         // TODO: not necessary since suite will send a request to start bridge via IPC
         // but right now removing it causes showing the download bridge modal for a sec
@@ -198,7 +200,6 @@ ipcMain.on('restart-app', () => {
     app.exit();
 });
 
-ipcMain.on('oauth-receiver', (event, message) => {
-    console.log('oauth-receiver', message);
+ipcMain.on('oauth-receiver', (_event, message) => {
     mainWindow.webContents.send('oauth', { data: message });
 });
