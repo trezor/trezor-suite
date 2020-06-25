@@ -142,7 +142,7 @@ suite-web deploy staging:
     script:
         - source ${STAGING_DEPLOY_KEYFILE}
         - cd packages/suite-web
-        - mkdir -p /packages/suite-web/build/static/desktop
+        - mkdir -p packages/suite-web/build/static/desktop
         - rsync -abviuzP -va ./${DESKTOP_APP_NAME}.AppImage
         - rsync -abviuzP -va ./${DESKTOP_APP_NAME}.zip
         - rsync -abviuzP -va ./${DESKTOP_APP_NAME}.exe
