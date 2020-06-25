@@ -314,8 +314,6 @@ export const composeChange = async (
 
     if (!composedTransaction) return null; // TODO handle error
 
-    console.log('composedTransaction', composedTransaction);
-
     if (composedTransaction.error) {
         switch (composedTransaction.error) {
             case 'NOT-ENOUGH-FUNDS':
