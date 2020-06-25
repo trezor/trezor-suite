@@ -6,5 +6,6 @@ import * as NOTIFICATION from './notificationConstants';
 import * as ROUTER from './routerConstants';
 import * as RESIZE from './resizeConstants';
 import * as ANALYTICS from './analyticsConstants';
+import * as METADATA from './metadataConstants';
 
-export { STORAGE, SUITE, LOG, MODAL, NOTIFICATION, ROUTER, RESIZE, ANALYTICS };
+export { STORAGE, SUITE, LOG, MODAL, NOTIFICATION, ROUTER, RESIZE, ANALYTICS, METADATA };

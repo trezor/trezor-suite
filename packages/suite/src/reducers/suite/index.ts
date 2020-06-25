@@ -7,6 +7,7 @@ import notifications from './notificationReducer';
 import resize from './resizeReducer';
 import labeling from './labelingReducer';
 import analytics from './analyticsReducer';
+import metadata from './metadataReducer';
 
 export default {
     suite,
@@ -18,4 +19,5 @@ export default {
     resize,
     labeling,
     analytics,
+    metadata,
 };
