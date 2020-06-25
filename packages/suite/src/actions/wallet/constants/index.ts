@@ -19,7 +19,7 @@ export {
     TRANSACTION,
     DISCOVERY,
     WALLET,
-    SEND,
     FIAT_RATES,
     GRAPH,
+    SEND,
 };

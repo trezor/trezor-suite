@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { Dispatch, GetState } from '@suite-types';
+import * as storageActions from '@suite-actions/storageActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { SendContext } from '@wallet-hooks/useSendContext';
@@ -8,7 +9,11 @@ import { ZEC_SIGN_ENHANCEMENT, XRP_FLAG } from '@wallet-constants/sendForm';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
 import { useForm } from 'react-hook-form';
 import TrezorConnect, { FeeLevel, RipplePayment } from 'trezor-connect';
-import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
+import {
+    networkAmountToSatoshi,
+    formatNetworkAmount,
+    getAccountKey,
+} from '@wallet-utils/accountUtils';
 import {
     calculateTotal,
     calculateMax,
@@ -22,7 +27,11 @@ import {
 
 export type SendFormActions = {
     type: 'STORE_DRAFT';
-    draft: any;
+    draft: {
+        key: string;
+        data: Record<string, any>;
+        outputs: SendContext['outputs'];
+    };
 };
 
 export const composeRippleTransaction = (
@@ -598,4 +607,18 @@ export const sendRippleTransaction = (
     }
 
     return 'success';
+};
+
+export const saveDraft = (data: Record<string, any>, outputs: SendContext['outputs']) => async (
+    _dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { selectedAccount } = getState().wallet;
+    const { device } = getState().suite;
+    if (selectedAccount.status !== 'loaded' || !device) return null;
+    const { account } = selectedAccount;
+    const { symbol, descriptor, deviceState } = account;
+    const accountKey = getAccountKey(descriptor, symbol, deviceState);
+
+    storageActions.saveSendForm({ data, outputs }, accountKey);
 };

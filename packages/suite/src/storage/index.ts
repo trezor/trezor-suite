@@ -31,7 +31,7 @@ export interface SuiteDBSchema extends DBSchema {
     sendForm: {
         key: string;
         value: {
-            data: SendContext['defaultValues'];
+            data: Record<string, any>;
             outputs: SendContext['outputs'];
         };
         indexes: {

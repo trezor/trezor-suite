@@ -35,13 +35,7 @@ export default ({ outputId, outputIndex }: { outputId: number; outputIndex: numb
         <Wrapper>
             <Column />
             <Column>{outputs.length > 1 && <OutputIndex>#{outputIndex + 1}</OutputIndex>}</Column>
-            <ColumnRight>
-                {outputId !== 0 && (
-                    <>
-                        <Remove outputId={outputId} />
-                    </>
-                )}
-            </ColumnRight>
+            <ColumnRight>{outputId !== 0 && <Remove outputId={outputId} />}</ColumnRight>
         </Wrapper>
     );
 };

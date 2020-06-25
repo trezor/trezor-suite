@@ -21,7 +21,7 @@ export type StorageActions =
 
 export const saveSendForm = async (
     saveSendFormState: {
-        data: SendContext['defaultValues'];
+        data: Record<string, any>;
         outputs: SendContext['outputs'];
     },
     accountKey: string,
@@ -29,7 +29,7 @@ export const saveSendForm = async (
     return db.addItem('sendForm', saveSendFormState, accountKey);
 };
 
-export const loadSendForm = async (accountKey: string) => {
+export const loadSendForm = (accountKey: string) => {
     return db.getItemByPK('sendForm', accountKey);
 };
 
@@ -61,7 +61,7 @@ export const forgetDevice = (device: TrezorDevice) => async () => {
         db.removeItemByIndex('accounts', 'deviceState', device.state),
         db.removeItemByPK('discovery', device.state),
         db.removeItemByIndex('txs', 'deviceState', device.state),
-        // db.removeItemByIndex('sendForm', 'deviceState', device.state),
+        db.removeItemByIndex('sendForm', 'deviceState', device.state),
         db.removeItemByIndex('graph', 'deviceState', device.state),
     ]);
     return promises;

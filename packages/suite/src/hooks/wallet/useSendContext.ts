@@ -53,7 +53,7 @@ export interface SendContext {
     destinationAddressEmpty: boolean;
     setDestinationAddressEmpty: (isEmpty: boolean) => void;
     transactionInfo: any;
-    setTransactionInfo: (transactionInfo: null | any) => void;
+    setTransactionInfo: (transactionInfo: any) => void;
     token: null | TokenInfo;
     setToken: (token: TokenInfo | null) => void;
     feeOutdated: boolean;

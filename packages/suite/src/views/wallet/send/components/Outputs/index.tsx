@@ -43,6 +43,8 @@ export default () => {
     } = useSendContext();
     const { updateFeeLevel } = useActions({ updateFeeLevel: sendFormActions.updateFeeLevel });
     const { setValue, getValues, clearError, setError } = useFormContext();
+    // const { saveDraft } = useActions({ saveDraft: sendFormActions.saveDraft });
+    // const formValues = getValues();
 
     useEffect(() => {
         if (selectedFee.label === 'custom') {
@@ -64,10 +66,12 @@ export default () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [coinFees]);
 
-    // const formValues = getValues();
     // useEffect(() => {
-    //     console.log('formValues', formValues);
-    // }, [formValues]);
+    //     if (Object.keys(errors).length === 0 && Object.keys(formState.touched).length > 0) {
+    //         console.log('formValues', formValues);
+    //         saveDraft(formValues, outputs);
+    //     }
+    // }, [formValues, outputs, saveDraft, formState, errors]);
 
     return (
         <Wrapper>
