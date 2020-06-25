@@ -1,7 +1,8 @@
 import { Translation } from '@suite-components';
 import { colors, Icon, Input, Tooltip } from '@trezor/components';
 import { useSendContext, SendContext } from '@wallet-hooks/useSendContext';
-import { getInputState, updateMax } from '@wallet-utils/sendFormUtils';
+import { getInputState } from '@wallet-utils/sendFormUtils';
+import { updateMax } from '@wallet-actions/sendFormActions';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';

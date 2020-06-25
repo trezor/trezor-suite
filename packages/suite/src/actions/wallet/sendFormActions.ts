@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 import * as storageActions from '@suite-actions/storageActions';
 import * as accountActions from '@wallet-actions/accountActions';
@@ -19,8 +20,6 @@ import {
     calculateMax,
     calculateEthFee,
     getFeeLevels,
-    findActiveMaxId,
-    updateMax,
     serializeEthereumTx,
     prepareEthereumTransaction,
 } from '@wallet-utils/sendFormUtils';
@@ -229,6 +228,162 @@ export const checkRippleEmptyAddress = async (
 
     if (response.success) {
         setDestinationAddressEmpty(response.payload.empty);
+    }
+};
+
+export const updateFiatInput = (
+    id: number,
+    fiatRates: SendContext['fiatRates'],
+    getValues: ReturnType<typeof useForm>['getValues'],
+    setValue: ReturnType<typeof useForm>['setValue'],
+) => {
+    if (fiatRates) {
+        const localCurrency = getValues(`localCurrency[${id}]`);
+        const rate = fiatRates.current?.rates[localCurrency.value];
+
+        if (rate) {
+            const oldValue = getValues(`amount[${id}]`);
+            const fiatValueBigNumber = new BigNumber(oldValue).multipliedBy(new BigNumber(rate));
+            const fiatValue = fiatValueBigNumber.isNaN() ? '' : fiatValueBigNumber.toFixed(2);
+            setValue(`fiatInput[${id}]`, fiatValue);
+        }
+    }
+};
+
+const resetAllMax = (
+    outputs: SendContext['outputs'],
+    setValue: ReturnType<typeof useForm>['setValue'],
+) => {
+    outputs.map(output => setValue(`setMax[${output.id}]`, 'inactive'));
+};
+
+export const findActiveMaxId = (
+    outputs: SendContext['outputs'],
+    getValues: ReturnType<typeof useForm>['getValues'],
+): number | null => {
+    let maxId = null;
+    outputs.forEach(output => {
+        if (getValues(`setMax[${output.id}]`) === 'active') {
+            maxId = output.id;
+        }
+    });
+
+    return maxId;
+};
+
+export const composeTx = async (
+    account: Account,
+    getValues: ReturnType<typeof useForm>['getValues'],
+    selectedFee: SendContext['selectedFee'],
+    outputs: SendContext['outputs'],
+    token: SendContext['token'],
+    setMax = false,
+): Promise<any> => {
+    if (account.networkType === 'ripple') {
+        return composeRippleTransaction(account, getValues, selectedFee);
+    }
+
+    if (account.networkType === 'ethereum') {
+        return composeEthereumTransaction(account, getValues, selectedFee, token, setMax);
+    }
+
+    if (account.networkType === 'bitcoin') {
+        return composeBitcoinTransaction(account, outputs, getValues, selectedFee);
+    }
+};
+
+export const composeChange = async (
+    id: number,
+    account: Account,
+    setTransactionInfo: SendContext['setTransactionInfo'],
+    getValues: ReturnType<typeof useForm>['getValues'],
+    setError: ReturnType<typeof useForm>['setError'],
+    selectedFee: FeeLevel,
+    outputs: SendContext['outputs'],
+    token: SendContext['token'],
+) => {
+    const setMaxActive = getValues(`setMax[${id}]`) === 'active';
+    const composedTransaction = await composeTx(
+        account,
+        getValues,
+        selectedFee,
+        outputs,
+        token,
+        setMaxActive,
+    );
+
+    if (!composedTransaction) return null; // TODO handle error
+
+    if (composedTransaction.error) {
+        switch (composedTransaction.error) {
+            case 'NOT-ENOUGH-FUNDS':
+                setError(`amount${id}]`, 'TR_AMOUNT_IS_NOT_ENOUGH');
+                break;
+            case 'NOT-ENOUGH-CURRENCY-FEE':
+                setError(`amount[${id}]`, 'NOT_ENOUGH_CURRENCY_FEE');
+                break;
+            // no default
+        }
+    }
+
+    setTransactionInfo(composedTransaction);
+};
+
+export const updateMax = async (
+    id: number | null,
+    account: Account,
+    setValue: ReturnType<typeof useForm>['setValue'],
+    getValues: ReturnType<typeof useForm>['getValues'],
+    clearError: ReturnType<typeof useForm>['clearError'],
+    setError: ReturnType<typeof useForm>['setError'],
+    selectedFee: FeeLevel,
+    outputs: SendContext['outputs'],
+    token: SendContext['token'],
+    fiatRates: SendContext['fiatRates'],
+    setTransactionInfo: SendContext['setTransactionInfo'],
+) => {
+    if (id === null) return;
+
+    resetAllMax(outputs, setValue);
+    setValue(`setMax[${id}]`, 'active');
+    const composedTransaction = await composeTx(
+        account,
+        getValues,
+        selectedFee,
+        outputs,
+        token,
+        getValues(`setMax[${id}]`) === 'active',
+    );
+
+    if (!composedTransaction) return null;
+
+    if (composedTransaction.type === 'error' || composedTransaction.error) {
+        switch (composedTransaction.error) {
+            case 'NOT-ENOUGH-FUNDS':
+                setError(`amount[${id}]`, 'TR_AMOUNT_IS_NOT_ENOUGH');
+                break;
+            case 'NOT-ENOUGH-CURRENCY-FEE':
+                setError(`amount[${id}]`, 'NOT_ENOUGH_CURRENCY_FEE');
+                break;
+            // no default
+        }
+        return;
+    }
+
+    if (composedTransaction && composedTransaction.error !== null) {
+        clearError(`amount[${id}]`);
+        setValue(`amount[${id}]`, composedTransaction.max);
+        updateFiatInput(id, fiatRates, getValues, setValue);
+        await composeChange(
+            id,
+            account,
+            setTransactionInfo,
+            getValues,
+            setError,
+            selectedFee,
+            outputs,
+            token,
+        );
     }
 };
 

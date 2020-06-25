@@ -5,13 +5,8 @@ import { useFormContext, Controller } from 'react-hook-form';
 import BigNumber from 'bignumber.js';
 import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { FIAT } from '@suite-config';
-import {
-    getInputState,
-    getFiatRate,
-    buildCurrencyOption,
-    composeChange,
-    updateFiatInput,
-} from '@wallet-utils/sendFormUtils';
+import { composeChange, updateFiatInput } from '@wallet-actions/sendFormActions';
+import { getInputState, getFiatRate, buildCurrencyOption } from '@wallet-utils/sendFormUtils';
 
 const Wrapper = styled.div`
     display: flex;

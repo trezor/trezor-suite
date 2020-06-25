@@ -3,7 +3,8 @@ import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext'
 import { Input } from '@trezor/components';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { getInputState, updateFiatInput, updateMax } from '@wallet-utils/sendFormUtils';
+import { updateFiatInput, updateMax } from '@wallet-actions/sendFormActions';
+import { getInputState } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
 import React from 'react';
 import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';

@@ -4,7 +4,8 @@ import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext'
 import { Input, Select } from '@trezor/components';
 import { Account } from '@wallet-types';
 import BigNumber from 'bignumber.js';
-import { getInputState, findActiveMaxId, updateMax } from '@wallet-utils/sendFormUtils';
+import { updateMax, findActiveMaxId } from '@wallet-actions/sendFormActions';
+import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import { useFormContext, FieldError, NestDataObject, Controller } from 'react-hook-form';
 import styled from 'styled-components';
