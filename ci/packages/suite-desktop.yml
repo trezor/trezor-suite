@@ -25,7 +25,7 @@ suite-desktop build mac:
         artifact: ${DESKTOP_APP_NAME}*
     <<: *build
 
-suite-desktop build mac:
+suite-desktop build mac manual:
     except:
         <<: *auto_run_branches
     when: manual
@@ -42,7 +42,7 @@ suite-desktop build linux:
         artifact: ${DESKTOP_APP_NAME}*
     <<: *build
 
-suite-desktop build linux:
+suite-desktop build linux manual:
     except:
         <<: *auto_run_branches
     when: manual
@@ -60,7 +60,7 @@ suite-desktop build windows:
         artifact: ${DESKTOP_APP_NAME}*
     <<: *build
 
-suite-desktop build windows:
+suite-desktop build windows manual:
     except:
         <<: *auto_run_branches
     when: manual
