@@ -24,15 +24,6 @@ import {
     prepareEthereumTransaction,
 } from '@wallet-utils/sendFormUtils';
 
-export type SendFormActions = {
-    type: 'STORE_DRAFT';
-    draft: {
-        key: string;
-        data: Record<string, any>;
-        outputs: SendContext['outputs'];
-    };
-};
-
 export const composeRippleTransaction = (
     account: SendContext['account'],
     getValues: ReturnType<typeof useForm>['getValues'],
