@@ -31,6 +31,8 @@ import TransactionDetail from './TransactionDetail';
 import Log from './Log';
 import WipeDevice from './WipeDevice';
 import DisconnectDevice from './DisconnectDevice';
+import MetadataProvider from './metadata/MetadataProvider';
+import MetadataAdd from './metadata/MetadataAdd';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -56,7 +58,7 @@ const getDeviceContextModal = (props: Props) => {
     switch (modal.windowType) {
         // T1 firmware
         case UI.REQUEST_PIN:
-            return <Pin device={device} onCancel={modalActions.onPinCancel} />;
+            return <Pin device={device} onCancel={props.modalActions.onPinCancel} />;
         // T1 firmware
         case UI.INVALID_PIN:
             return <PinInvalid device={device} />;
@@ -167,6 +169,12 @@ const getUserContextModal = (props: Props) => {
             return <DisconnectDevice />;
         case 'log':
             return <Log onCancel={modalActions.onCancel} />;
+        case 'metadata-provider':
+            return (
+                <MetadataProvider onCancel={modalActions.onCancel} decision={payload.decision} />
+            );
+        case 'metadata-add':
+            return <MetadataAdd onCancel={modalActions.onCancel} {...payload} />;
         default:
             return null;
     }
