@@ -48,7 +48,7 @@ describe('Backup', () => {
         cy.task('stopEmu');
         cy.getTestElement('@backup/no-device', { timeout: 20000 });
         cy.task('stopBridge');
-        // latest (2.3.0 at the time of writing this) has default behavior needs_backup false
+        // latest (2.3.1 at the time of writing this) has default behavior needs_backup false
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         cy.getTestElement('@backup/already-finished-message');

@@ -18,7 +18,7 @@ describe('Onboarding - recover wallet T2', () => {
 
     it('Success', () => {
         // using 2.1.4 firmware here. I don't know how to click on final screen after
-        // recovery is finished on 2.3.0 atm
+        // recovery is finished on 2.3.1 atm
         cy.task('startEmu', { version: '2.1.4', wipe: true });
 
         cy.getTestElement('@onboarding/button-continue').click();
@@ -34,7 +34,7 @@ describe('Onboarding - recover wallet T2', () => {
             cy.task('inputEmu', 'all');
         }
 
-        // this does nothing with 2.3.0
+        // this does nothing with 2.3.1
         cy.task('sendDecision');
 
         // pin is tested in create path, so here we test 'skipping' path instead
