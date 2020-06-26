@@ -11,28 +11,6 @@ describe('Backup', () => {
         cy.passThroughInitialRun();
     });
 
-    it('Backup failed - device disconnected during action', () => {
-        cy.getTestElement('@notification/no-backup/button').click();
-        cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
-        cy.getTestElement('@backup/check-item/has-enough-time').click();
-        cy.getTestElement('@backup/check-item/is-in-private').click();
-        cy.getTestElement('@backup/start-button').click();
-        cy.getConfirmActionOnDeviceModal();
-        cy.task('sendDecision');
-        cy.task('stopEmu');
-        cy.getTestElement('@backup/no-device', { timeout: 20000 });
-        cy.task('startEmu');
-        cy.getTestElement('@backup/error-message');
-
-        cy.log('Now go to dashboard and see if security card and notification reflects backup failed state correctly');
-        cy.getTestElement('@backup/close-button').click();
-        cy.getTestElement('@notification/failed-backup/learn-more-link').should('be.visible');
-
-        cy.getTestElement('@dashboard/security-card/backup/button', { timeout: 20000 }).click();
-        cy.getTestElement('@backup/already-failed-message');
-
-    });
-
     it('Backup should reset if modal is closed', () => {
         cy.getTestElement('@notification/no-backup/button').click();
         cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
@@ -53,4 +31,20 @@ describe('Backup', () => {
         cy.task('setupEmu');
         cy.getTestElement('@backup/already-finished-message');
     });
+
+    // https://github.com/trezor/trezor-suite/issues/1116#issuecomment-634299789
+    it('User disconnected device that is remembered. Should not be allowed to initiate backup', () => {
+        cy.getTestElement('@dashboard/graph', { timeout: 30000 }).should('be.visible');
+        cy.toggleDeviceMenu();
+        cy.getTestElement('@switch-device/wallet-instance/toggle-remember-switch').click({
+            force: true,
+        });
+        cy.getTestElement('@switch-device/wallet-instance').click();
+        cy.getTestElement('@notification/no-backup/button').click();
+        cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
+        cy.getTestElement('@backup/check-item/has-enough-time').click();
+        cy.getTestElement('@backup/check-item/is-in-private').click();
+        cy.task('stopEmu');
+        cy.getTestElement('@backup/no-device');
+    })
 });
