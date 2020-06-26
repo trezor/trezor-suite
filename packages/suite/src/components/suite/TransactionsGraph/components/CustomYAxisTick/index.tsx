@@ -29,7 +29,14 @@ const CustomYAxisTick = (props: CustomProps) => {
         : bValue.toFixed(2);
     return (
         <g ref={ref} transform={`translate(${x},${y})`}>
-            <text x={0} y={0} dy={2} textAnchor="start" fill="#666">
+            <text
+                x={0}
+                y={0}
+                dy={2}
+                textAnchor="start"
+                fill="#666"
+                style={{ fontVariantNumeric: 'tabular-nums' }}
+            >
                 {props.localCurrency && (
                     <FormattedNumber
                         currency={props.localCurrency}

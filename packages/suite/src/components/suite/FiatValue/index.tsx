@@ -9,6 +9,10 @@ const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />
     font-variant-numeric: tabular-nums;
 `;
 
+const SameWidthNums = styled.span`
+    font-variant-numeric: tabular-nums;
+`;
+
 /**
  * If used without children prop it returns a value of an crypto assets in fiat currency.
  * If prop `fiatCurrency` is not specified, the currency is read from suite settings.
@@ -55,7 +59,9 @@ const FiatValue = ({
 
         const fiatRateValue = ratesSource?.[targetCurrency] ?? null;
         const fiatRateComponent = fiatRateValue ? (
-            <FormattedNumber currency={targetCurrency} value={fiatRateValue} />
+            <SameWidthNums>
+                <FormattedNumber currency={targetCurrency} value={fiatRateValue} />
+            </SameWidthNums>
         ) : null;
         if (!props.children) return fiatValueComponent;
         return props.children({

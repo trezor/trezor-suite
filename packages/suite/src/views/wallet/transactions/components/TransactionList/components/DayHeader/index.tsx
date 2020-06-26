@@ -27,6 +27,7 @@ const Col = styled(HiddenPlaceholder)`
 `;
 
 const ColDate = styled(Col)`
+    font-variant-numeric: tabular-nums;
     grid-column: date / target;
     @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
         grid-column: date / target;

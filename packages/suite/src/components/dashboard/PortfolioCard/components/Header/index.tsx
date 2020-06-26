@@ -15,6 +15,7 @@ const ValueWrapper = styled.div`
     font-size: ${variables.FONT_SIZE.H1};
     font-weight: ${variables.FONT_WEIGHT.LIGHT};
     color: ${colors.BLACK17};
+    font-variant-numeric: tabular-nums;
 `;
 
 const Left = styled.div`

@@ -26,6 +26,7 @@ const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
 `;
 
 const ColDate = styled(Link)`
+    font-variant-numeric: tabular-nums;
     grid-column: date;
     color: ${colors.BLACK50};
     font-size: ${variables.FONT_SIZE.TINY};
@@ -44,6 +45,7 @@ const Addr = styled(motion.div)`
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    font-variant-numeric: tabular-nums;
     @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
         grid-column: target / fiat;
     }

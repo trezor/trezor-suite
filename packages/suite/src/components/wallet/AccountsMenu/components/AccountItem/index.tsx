@@ -54,6 +54,7 @@ const AccountName = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${colors.NEUE_TYPE_DARK_GREY};
     line-height: 1.5;
+    font-variant-numeric: tabular-nums;
 `;
 
 const Balance = styled.div`
