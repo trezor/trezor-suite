@@ -1,6 +1,7 @@
 export type MetadataAddPayload =
     | {
           type: 'outputLabel';
+          accountKey: string;
           txid: string;
           outputIndex: number;
           defaultValue: string;
@@ -8,11 +9,13 @@ export type MetadataAddPayload =
       }
     | {
           type: 'addressLabel';
+          accountKey: string;
           defaultValue: string;
           value?: string;
       }
     | {
           type: 'accountLabel';
+          accountKey: string;
           defaultValue: string;
           value?: string;
       }
@@ -23,10 +26,12 @@ export type MetadataAddPayload =
           value?: string;
       };
 
-export interface MetadataItem {
-    ts: number;
-    value?: string;
-}
+// TODO version 2.0.0
+// export interface MetadataItem {
+//     ts: number;
+//     value?: string;
+// }
+export type MetadataItem = string;
 
 export type MetadataProviderType = 'dropbox' | 'google' | 'userData' | 'sdCard';
 

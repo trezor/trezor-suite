@@ -32,9 +32,6 @@ global.fetch = () => {};
 
 jest.mock('dropbox', () => {
     class Dropbox {
-        constructor() {
-            console.warn('DB contr');
-        }
         filesUpload() {
             return true;
         }
@@ -135,8 +132,8 @@ describe('Metadata Actions', () => {
         it(`addDeviceMetadata: ${f.description}`, async () => {
             // @ts-ignore
             const store = initStore(getInitialState(f.initialState));
-            // TODO: params
-            await store.dispatch(metadataActions.addDeviceMetadata({}));
+            // @ts-ignore, params
+            await store.dispatch(metadataActions.addDeviceMetadata(f.params));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             }

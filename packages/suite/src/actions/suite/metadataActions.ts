@@ -25,6 +25,10 @@ export type MetadataActions =
           payload: MetadataProviderCredentials;
       }
     | {
+          type: typeof METADATA.WALLET_LOADED | typeof METADATA.WALLET_ADD;
+          payload: { deviceState: string; walletLabel?: string };
+      }
+    | {
           type: typeof METADATA.ACCOUNT_LOADED | typeof METADATA.ACCOUNT_ADD;
           payload: Account;
       }
@@ -55,24 +59,32 @@ const getProvider = async (state?: Partial<MetadataProviderCredentials>) => {
     return providerInstance;
 };
 
-export const addDeviceMetadata = (_payload: any) => async (
-    _dispatch: Dispatch,
-    getState: GetState,
-) => {
+export const addDeviceMetadata = (
+    payload: Extract<MetadataAddPayload, { type: 'walletLabel' }>,
+) => async (dispatch: Dispatch, getState: GetState) => {
     const provider = await getProvider(getState().metadata.provider);
     if (!provider) return;
-    const { device } = getState().suite;
+    const device = getState().devices.find(d => d.state === payload.deviceState);
     if (!device || device.metadata.status !== 'enabled') return;
 
-    console.warn('updateMetadata4', device.metadata);
+    const walletLabel =
+        typeof payload.value === 'string' && payload.value.length > 0 ? payload.value : undefined;
 
     const encrypted = await metadataUtils.encrypt(
         {
             version: '1.0.0',
-            walletLabel: 'FOO',
+            walletLabel,
         },
         device.metadata.aesKey,
     );
+
+    dispatch({
+        type: METADATA.WALLET_ADD,
+        payload: {
+            deviceState: payload.deviceState,
+            walletLabel,
+        },
+    });
 
     provider.setFileContent(device.metadata.fileName, encrypted);
 };
@@ -81,9 +93,14 @@ export const addAccountMetadata = (payload: MetadataAddPayload) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
+    if (payload.type === 'walletLabel') {
+        dispatch(addDeviceMetadata(payload));
+        return;
+    }
+
     const provider = await getProvider(getState().metadata.provider);
     if (!provider) return;
-    const { account } = getState().wallet.selectedAccount;
+    const account = getState().wallet.accounts.find(a => a.key === payload.accountKey);
     if (!account) return;
 
     // clone Account.metadata
@@ -103,6 +120,22 @@ export const addAccountMetadata = (payload: MetadataAddPayload) => async (
             //     ts,
             //     value: payload.value,
             // };
+        }
+    }
+
+    if (payload.type === 'addressLabel') {
+        if (typeof payload.value !== 'string' || payload.value.length === 0) {
+            delete metadata.addressLabels[payload.defaultValue];
+        } else {
+            metadata.addressLabels[payload.defaultValue] = payload.value;
+        }
+    }
+
+    if (payload.type === 'accountLabel') {
+        if (typeof payload.value !== 'string' || payload.value.length === 0) {
+            delete metadata.accountLabel;
+        } else {
+            metadata.accountLabel = payload.value;
         }
     }
 
@@ -209,20 +242,6 @@ export const getDeviceMetadataKey = (force = false) => async (
         const fileName = metadataUtils.deriveFilename(metaKey);
         const aesKey = metadataUtils.deriveAesKey(metaKey);
 
-        // const encrypted = await metadataUtils.encrypt(
-        //     {
-        //         version: '1.0.0',
-        //         walletLabel: 'FOO',
-        //     },
-        //     aesKey,
-        // );
-
-        // console.warn('METAKEY2', encrypted);
-
-        // const json = metadataUtils.decrypt(encrypted, aesKey);
-
-        // console.warn('METAKEY3', json);
-
         dispatch({
             type: METADATA.SET_MASTER_KEY,
             payload: {
@@ -265,10 +284,7 @@ export const connectProvider = (type: MetadataProviderType) => async (dispatch: 
     const provider = await getProvider({ type });
     if (!provider) return;
 
-    console.log('provider', provider);
-
     const connected = await provider.connect();
-    console.log('connected', connected);
 
     if (connected) {
         const credentials = await provider.getCredentials();
@@ -301,13 +317,21 @@ export const fetchMetadata = (deviceState: string) => async (
     if (!device || device.metadata.status !== 'enabled') return;
 
     try {
-        const buffer = await provider.getFileContent(device!.metadata.fileName);
+        const buffer = await provider.getFileContent(device.metadata.fileName);
         if (buffer) {
             const json = metadataUtils.decrypt(
                 metadataUtils.getFileContent(buffer),
                 device!.metadata.aesKey,
             );
             console.warn('DONE decrypted device!', json);
+
+            dispatch({
+                type: METADATA.WALLET_LOADED,
+                payload: {
+                    deviceState,
+                    walletLabel: json.walletLabel,
+                },
+            });
         }
     } catch (error) {
         console.warn('fetchMetadata-device', error);

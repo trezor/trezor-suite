@@ -136,19 +136,23 @@ export const addDeviceMetadata = [
         initialState: {
             metadata: {},
         },
+        params: {},
     },
     {
         description: `Unknown provider`,
         initialState: {
             metadata: { provider: { type: 'unknown-provider' } },
         },
+        params: {},
         result: undefined,
     },
     {
         description: `Without device`,
         initialState: {
             metadata: { provider: { type: 'dropbox', key: 'A' } },
+            device: { state: undefined },
         },
+        params: { type: 'walletLabel', deviceState: 'device-state' },
         result: undefined,
     },
     {
@@ -156,6 +160,7 @@ export const addDeviceMetadata = [
         initialState: {
             metadata: { provider: { type: 'dropbox', key: 'A' } },
             device: {
+                state: 'device-state',
                 metadata: {
                     aesKey: 'eb0f1f0238c7fa8018c6101f4e887b871ce07b99d01d5ea57089b82f93149557',
                     fileName: '039fe833cba71d84b7bf4c99d44468ee48e311e741cbfcd6daf5263f584ef9f6',
@@ -164,7 +169,11 @@ export const addDeviceMetadata = [
                 },
             },
         },
-        result: undefined,
+        params: { type: 'walletLabel', deviceState: 'device-state', value: 'Custom label' },
+        result: {
+            type: METADATA.WALLET_ADD,
+            payload: { deviceState: 'device-state', walletLabel: 'Custom label' },
+        },
     },
 ];
 
