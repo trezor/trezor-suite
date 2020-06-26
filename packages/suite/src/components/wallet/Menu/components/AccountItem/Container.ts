@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux';
 import { Dispatch, AppState } from '@suite-types';
 import { Account } from '@wallet-types';
 import * as routerActions from '@suite-actions/routerActions';
+import * as modalActions from '@suite-actions/modalActions';
 import AccountItem from './index';
 
 const mapStateToProps = (state: AppState) => ({
@@ -12,9 +13,14 @@ const mapStateToProps = (state: AppState) => ({
     fiat: state.wallet.fiat,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
+const mapDispatchToProps = (dispatch: Dispatch) =>
+    bindActionCreators(
+        {
+            goto: routerActions.goto,
+            openModal: modalActions.openModal,
+        },
+        dispatch,
+    );
 
 interface OwnProps {
     account: Account;

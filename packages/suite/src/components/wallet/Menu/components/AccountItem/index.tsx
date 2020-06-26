@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { CoinLogo, colors, variables } from '@trezor/components';
+import { CoinLogo, Button, colors, variables } from '@trezor/components';
 import styled, { css } from 'styled-components';
 import { getTitleForNetwork, getAccountFiatBalance } from '@wallet-utils/accountUtils';
 import { Translation } from '@suite-components/Translation';
@@ -107,6 +107,22 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
                 }
             >
                 <AccountName>{accountLabel}</AccountName>
+                <Button
+                    variant="tertiary"
+                    icon="LABEL"
+                    onClick={event => {
+                        event.preventDefault();
+                        props.openModal({
+                            type: 'metadata-add',
+                            payload: {
+                                type: 'accountLabel',
+                                accountKey: account.key,
+                                defaultValue: account.path,
+                                value: account.metadata.accountLabel,
+                            },
+                        });
+                    }}
+                />
                 <Row>
                     <CoinLogo size={16} symbol={account.symbol} />
                     <Balance>
