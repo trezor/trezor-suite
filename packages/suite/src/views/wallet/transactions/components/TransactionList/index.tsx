@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { colors, variables, Loader } from '@trezor/components';
 import { groupTransactionsByDate, sumTransactions } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
-import { WalletAccountTransaction } from '@wallet-types';
-import TransactionItem from './components/TransactionItem/Container';
+import { Account, WalletAccountTransaction } from '@wallet-types';
+import TransactionItem from './components/TransactionItem';
 import Pagination from './components/Pagination';
 import { Card, Translation } from '@suite-components';
 import DayHeader from './components/DayHeader';
@@ -48,6 +48,7 @@ const LoaderText = styled.div`
 `;
 
 interface Props {
+    account: Account;
     transactions: WalletAccountTransaction[];
     currentPage: number;
     totalPages?: number;
@@ -58,6 +59,7 @@ interface Props {
 }
 
 const TransactionList = ({
+    account,
     transactions,
     currentPage,
     totalPages,
@@ -106,8 +108,12 @@ const TransactionList = ({
                                     symbol={props.symbol}
                                     totalAmount={totalAmountPerDay}
                                 />
-                                {transactionsByDate[dateKey].map((tx: WalletAccountTransaction) => (
-                                    <TransactionItem key={tx.txid} transaction={tx} />
+                                {transactionsByDate[dateKey].map(tx => (
+                                    <TransactionItem
+                                        key={tx.txid}
+                                        transaction={tx}
+                                        account={account}
+                                    />
                                 ))}
                             </React.Fragment>
                         );

@@ -68,6 +68,7 @@ export default (props: Props) => {
         return (
             <Content selectedAccount={selectedAccount} showSummary>
                 <TransactionList
+                    account={account}
                     transactions={accountTransactions}
                     currentPage={selectedPage}
                     totalPages={total}

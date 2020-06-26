@@ -15,7 +15,7 @@ import { ArrayElement } from '@suite/types/utils';
 
 import { getDateWithTimeZone } from '@suite-utils/date';
 import TransactionTypeIcon from './components/TransactionTypeIcon';
-import { Props } from './Container';
+import { Account, WalletAccountTransaction } from '@wallet-types';
 
 import { useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
@@ -104,6 +104,11 @@ const ANIMATION = {
     transition: { duration: 0.24, ease: 'easeInOut' },
 };
 
+interface Props {
+    account: Account;
+    transaction: WalletAccountTransaction;
+}
+
 export default React.memo((props: Props) => {
     const { transaction } = props;
     const { symbol, type, blockTime, blockHeight, targets, tokens } = transaction;
@@ -130,16 +135,35 @@ export default React.memo((props: Props) => {
         useAnimation = false,
     ) => {
         const isLocalTarget = (type === 'sent' || type === 'self') && target.isAccountTarget;
+        const { metadata } = props.account;
+        const targetMetadata = metadata.outputLabels[transaction.txid]
+            ? // @ts-ignore missing in trezor-connect
+              metadata.outputLabels[transaction.txid][target.n]
+            : undefined;
+
+        const openMetadataPopup = () => {
+            openModal({
+                type: 'metadata-add',
+                payload: {
+                    type: 'outputLabel',
+                    accountKey: props.account.key,
+                    txid: transaction.txid,
+                    // @ts-ignore missing in trezor-connect
+                    outputIndex: target.n,
+                    defaultValue: target.addresses!.join(''),
+                },
+            });
+        };
+
         const addr = isLocalTarget ? (
             <Translation id="TR_SENT_TO_SELF" />
         ) : (
-            target.addresses?.map((a, i) =>
-                type === 'sent' ? (
-                    <AddressLabeling key={`${key}${i}`} address={a} />
-                ) : (
-                    <span key={`${key}${i}`}>{a}</span>
-                ),
-            )
+            target.addresses?.map((a, i) => {
+                const targetKey = `${key}${i}`;
+                if (targetMetadata) return <span key={targetKey}>{targetMetadata}</span>;
+                if (type === 'sent') return <AddressLabeling key={targetKey} address={a} />;
+                return <span key={targetKey}>{a}</span>;
+            })
         );
 
         const hasAmount =
@@ -156,21 +180,11 @@ export default React.memo((props: Props) => {
 
         return (
             <React.Fragment key={key}>
-                <Addr
-                    {...animation}
-                    onClick={() =>
-                        openModal({
-                            type: 'metadata-add',
-                            payload: {
-                                type: 'outputLabel',
-                                txid: transaction.txid,
-                                outputIndex: key,
-                                defaultValue: target.addresses!.join(''),
-                            },
-                        })
-                    }
-                >
-                    <StyledHiddenPlaceholder>{addr}</StyledHiddenPlaceholder>
+                <Addr {...animation}>
+                    <StyledHiddenPlaceholder>
+                        <Button variant="tertiary" icon="LABEL" onClick={openMetadataPopup} />
+                        {addr}
+                    </StyledHiddenPlaceholder>
                 </Addr>
                 {targetAmount && (
                     <Balance {...animation}>
@@ -235,7 +249,7 @@ export default React.memo((props: Props) => {
         <>
             <ColDate
                 onClick={() => {
-                    props.openModal({
+                    openModal({
                         type: 'transaction-detail',
                         tx: transaction,
                     });
