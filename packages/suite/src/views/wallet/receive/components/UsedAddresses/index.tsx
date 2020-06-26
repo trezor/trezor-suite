@@ -119,11 +119,22 @@ interface ItemProps {
     addr: AccountAddress;
     symbol: Network['symbol'];
     revealed?: ReceiveInfo;
-    onClick: (_ev: any) => void;
-    onCopy: (_ev: any) => void;
+    metadata?: string;
+    onClick: () => void;
+    onCopy: () => void;
+    onMetadataClick: () => void;
 }
 
-const Item = ({ addr, symbol, onClick, onCopy, revealed, index }: ItemProps) => {
+const Item = ({
+    addr,
+    symbol,
+    onClick,
+    onCopy,
+    revealed,
+    metadata,
+    onMetadataClick,
+    index,
+}: ItemProps) => {
     const amount = formatNetworkAmount(addr.received || '0', symbol, true);
     const [amountF] = amount.split(' ');
     const fresh = addr.transfers < 1;
@@ -146,6 +157,7 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, index }: ItemProps) => 
                         style={{ marginLeft: '12px' }}
                     />
                 )}
+                {metadata && `(${metadata})`}
             </GridItem>
             <GridItem revealed={isRevealed}>
                 {!fresh && (
@@ -165,9 +177,9 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, index }: ItemProps) => 
                 {fresh && <Translation id="RECEIVE_TABLE_NOT_USED" />}
             </GridItem>
             <GridItem>
-                {/* <IconButton variant="tertiary">
+                <IconButton variant="tertiary" onClick={onMetadataClick}>
                     <Icon size={16} icon="LABEL" />
-                </IconButton> */}
+                </IconButton>
                 <IconButton variant="tertiary" isDisabled={!revealed} onClick={onCopy}>
                     <Icon size={16} icon="COPY" />
                 </IconButton>
@@ -176,10 +188,18 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, index }: ItemProps) => 
     );
 };
 
-const UsedAddresses = ({ account, addresses, showAddress, addToast, locked }: Props) => {
+const UsedAddresses = ({
+    account,
+    addresses,
+    showAddress,
+    addToast,
+    changeMetadata,
+    locked,
+}: Props) => {
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
     if (account.networkType !== 'bitcoin' || !account.addresses) return null;
     const { used, unused } = account.addresses;
+    const { addressLabels } = account.metadata;
     // find revealed addresses in `unused` list
     const revealed = addresses.reduce((result, addr) => {
         const x = unused.find(u => u.path === addr.path);
@@ -222,6 +242,10 @@ const UsedAddresses = ({ account, addresses, showAddress, addToast, locked }: Pr
                         key={addr.path}
                         addr={addr}
                         symbol={account.symbol}
+                        metadata={addressLabels[addr.address]}
+                        onMetadataClick={() =>
+                            changeMetadata(addr.address, addressLabels[addr.address])
+                        }
                         revealed={addresses.find(f => f.address === addr.address)}
                         onClick={() => (!locked ? showAddress(addr.path, addr.address) : undefined)}
                         onCopy={() => copyAddress(addr.address)}

@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl } from 'react-intl';
 import * as notificationActions from '@suite-actions/notificationActions';
+import * as modalActions from '@suite-actions/modalActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
 
 import { AppState, Dispatch } from '@suite-types';
@@ -19,6 +20,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
         {
             showAddress: receiveActions.showAddress,
             addToast: notificationActions.addToast,
+            openModal: modalActions.openModal,
         },
         dispatch,
     );
@@ -32,6 +34,7 @@ export interface ChildProps {
     addresses: Props['receive'];
     showAddress: Props['showAddress'];
     addToast: Props['addToast'];
+    changeMetadata: (address: string, currentValue?: string) => void;
     disabled: boolean;
     locked: boolean;
 }
