@@ -20,7 +20,7 @@ const Wrapper = styled.div<{ isMobileLayout?: boolean }>`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    z-index: 3;
+    z-index: 4; /*  higher than accounts list to prevent box-shadow overflow */
     /* margin-top: 10px; */
 
     ${props =>
@@ -89,7 +89,7 @@ const ExpandedMobileWrapper = styled.div`
     z-index: 3;
     width: 100%;
     overflow-y: auto;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2);
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     padding: 0px 16px;
@@ -204,6 +204,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount, openModal }: Props) =
                             account={account}
                             selected={selected}
                             forwardedRef={forwardedRef}
+                            closeMenu={() => setIsExpanded(false)}
                         />
                     );
                 })}
@@ -259,14 +260,14 @@ const AccountsMenu = ({ device, accounts, selectedAccount, openModal }: Props) =
                             {buildGroup('segwit', segwitAccounts)}
                             {buildGroup('legacy', legacyAccounts)}
                         </ExpandedMobileWrapper>
-                        <Backdrop
+                        {/* <Backdrop
                             show={isExpanded}
                             animated
                             onClick={() => {
                                 setIsExpanded(!isExpanded);
                                 setAnimatedIcon(true);
                             }}
-                        />
+                        /> */}
                     </MenuItemsWrapper>
                 )}
             </>
