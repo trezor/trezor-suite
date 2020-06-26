@@ -129,6 +129,8 @@ export default React.memo((props: Props) => {
         (type === 'sent' || type === 'self' ? '-' : null) || (type === 'recv' ? '+' : null);
     let key = 0;
     const { openModal } = useActions({ openModal: modalActions.openModal });
+    // @ts-ignore: missing in connect
+    const targetN = target.n || 0;
 
     const buildTargetRow = (
         target: ArrayElement<Props['transaction']['targets']>,
@@ -137,8 +139,7 @@ export default React.memo((props: Props) => {
         const isLocalTarget = (type === 'sent' || type === 'self') && target.isAccountTarget;
         const { metadata } = props.account;
         const targetMetadata = metadata.outputLabels[transaction.txid]
-            ? // @ts-ignore missing in trezor-connect
-              metadata.outputLabels[transaction.txid][target.n]
+            ? metadata.outputLabels[transaction.txid][targetN]
             : undefined;
 
         const openMetadataPopup = () => {
@@ -148,8 +149,7 @@ export default React.memo((props: Props) => {
                     type: 'outputLabel',
                     accountKey: props.account.key,
                     txid: transaction.txid,
-                    // @ts-ignore missing in trezor-connect
-                    outputIndex: target.n,
+                    outputIndex: targetN,
                     defaultValue: target.addresses!.join(''),
                 },
             });
