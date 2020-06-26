@@ -88,6 +88,7 @@ const ExpandedMobileWrapper = styled.div`
     background: ${colors.NEUE_BG_WHITE};
     z-index: 3;
     width: 100%;
+    max-height: 80vh;
     overflow-y: auto;
     box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2);
     border-bottom-left-radius: 4px;
