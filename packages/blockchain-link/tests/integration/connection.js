@@ -1,15 +1,32 @@
 import BlockchainLink from '@trezor/blockchain-link';
 import createServer from '../websocket';
-import { rippleWorkerFactory, blockbookWorkerFactory } from './worker';
+import {
+    rippleWorkerFactory,
+    rippleModuleFactory,
+    blockbookWorkerFactory,
+    blockbookModuleFactory,
+} from './worker';
 
 const backends = [
     {
-        name: 'blockbook',
+        name: 'nodejs-build:blockbook',
+        type: 'blockbook',
         worker: blockbookWorkerFactory,
     },
     {
-        name: 'ripple',
+        name: 'nodejs-build:ripple',
+        type: 'ripple',
         worker: rippleWorkerFactory,
+    },
+    {
+        name: 'module-build:blockbook',
+        type: 'blockbook',
+        worker: blockbookModuleFactory,
+    },
+    {
+        name: 'module-build:ripple',
+        type: 'ripple',
+        worker: rippleModuleFactory,
     },
 ];
 
@@ -19,7 +36,7 @@ backends.forEach((b, i) => {
         let blockchain;
 
         beforeEach(async () => {
-            server = await createServer(b.name);
+            server = await createServer(b.type);
             blockchain = new BlockchainLink({
                 ...backends[i],
                 server: [`ws://localhost:${server.options.port}`],
