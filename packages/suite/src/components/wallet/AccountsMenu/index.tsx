@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { H2, variables, colors, Icon } from '@trezor/components';
-import { Translation, Backdrop } from '@suite-components';
+import { Translation } from '@suite-components';
 
 import { DISCOVERY } from '@wallet-actions/constants';
 import { useDiscovery, useLayoutSize } from '@suite-hooks';
@@ -261,14 +261,6 @@ const AccountsMenu = ({ device, accounts, selectedAccount, openModal }: Props) =
                             {buildGroup('segwit', segwitAccounts)}
                             {buildGroup('legacy', legacyAccounts)}
                         </ExpandedMobileWrapper>
-                        {/* <Backdrop
-                            show={isExpanded}
-                            animated
-                            onClick={() => {
-                                setIsExpanded(!isExpanded);
-                                setAnimatedIcon(true);
-                            }}
-                        /> */}
                     </MenuItemsWrapper>
                 )}
             </>

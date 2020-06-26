@@ -91,7 +91,12 @@ const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
                         <Col isTestnet={isTestnet} justify="right">
                             <HiddenPlaceholder>
                                 <TokenValue>
-                                    <FormattedCryptoAmount value={t.balance} symbol={t.symbol} />
+                                    {t.balance && (
+                                        <FormattedCryptoAmount
+                                            value={t.balance}
+                                            symbol={t.symbol}
+                                        />
+                                    )}
                                 </TokenValue>
                             </HiddenPlaceholder>
                         </Col>
