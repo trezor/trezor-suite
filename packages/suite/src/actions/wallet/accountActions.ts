@@ -48,7 +48,6 @@ export const create = (
         utxo: accountInfo.utxo,
         history: accountInfo.history,
         metadata: {
-            // @ts-ignore: legacyXpub missing in trezor-connect
             key: accountInfo.legacyXpub || accountInfo.descriptor,
             fileName: '',
             aesKey: '',

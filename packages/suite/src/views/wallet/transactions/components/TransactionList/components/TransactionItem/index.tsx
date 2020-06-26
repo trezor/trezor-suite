@@ -148,7 +148,6 @@ export default React.memo((props: Props) => {
         target: ArrayElement<Props['transaction']['targets']>,
         useAnimation = false,
     ) => {
-        // @ts-ignore: missing in connect
         const targetN = target.n || 0;
         const isLocalTarget = (type === 'sent' || type === 'self') && target.isAccountTarget;
         const { metadata } = props.account;
