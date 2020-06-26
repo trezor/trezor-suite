@@ -1,13 +1,16 @@
 version: '2'
 services:
+  
   trezor-user-env:  
     extends:
       file: docker-compose.suite-dev.yml
       service: trezor-user-env
+  
   suite-dev:
     extends:
       file: docker-compose.suite-dev.yml
       service: suite-dev
+  
   test-open:
     # the Docker image to use from https://github.com/cypress-io/cypress-docker-images
     build:

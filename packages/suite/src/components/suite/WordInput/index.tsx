@@ -94,6 +94,7 @@ const WordInput = (props: Props) => {
                     trim: true,
                     matchFrom: 'start',
                 })}
+                data-test="@word-input-select"
             />
         </SelectWrapper>
     );
