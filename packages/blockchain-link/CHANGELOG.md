@@ -3,6 +3,7 @@
 #### changes
 
 -   Add `AccountTransaction.target.n` (output index) field
+-   Fix `build/node/ripple-worker` (webpack configuration)
 -   Update dependencies
 
 # 1.0.12
