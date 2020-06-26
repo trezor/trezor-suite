@@ -1,3 +1,10 @@
+# 1.0.13
+
+#### changes
+
+-   Add `AccountTransaction.target.n` (output index) field
+-   Update dependencies
+
 # 1.0.12
 
 #### changes
