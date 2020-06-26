@@ -5,8 +5,7 @@ import Divider from '../Divider';
 import DeviceIcon from '@suite-components/images/DeviceIcon';
 import { Props as ContainerProps } from '../../Container';
 import { SHAKE } from '@suite-support/styles/animations';
-import { Translation } from '@suite-components';
-import { TrezorDevice } from '@suite-types';
+import { WalletLabeling } from '@suite-components';
 import { useAnalytics } from '@suite-hooks';
 
 const Wrapper = styled.div`
@@ -85,17 +84,6 @@ const IconWrapper = styled.div`
     align-items: center;
 `;
 
-const getWalletName = (device?: TrezorDevice) => {
-    if (!device) return null;
-    if (device.useEmptyPassphrase) {
-        return <Translation id="TR_STANDARD_WALLET" />;
-    }
-    if (device.state) {
-        return <Translation id="TR_HIDDEN_WALLET" values={{ id: device.instance }} />;
-    }
-    return <Translation id="TR_UNDISCOVERED_WALLET" />;
-};
-
 interface Props {
     selectedDevice: ContainerProps['selectedDevice'];
     goto: ContainerProps['goto'];
@@ -110,7 +98,6 @@ const TopMenu = (props: Props) => {
     const countChanged = localCount && localCount !== deviceCount;
     const timerRef = useRef<number | undefined>(undefined);
 
-    const walletName = getWalletName(props.selectedDevice);
     const analytics = useAnalytics();
 
     useEffect(() => {
@@ -161,15 +148,12 @@ const TopMenu = (props: Props) => {
                             </DeviceIconWrapper>
                         </DeviceRow>
                         <WalletRow>
-                            {/* TODO: labeling support */}
-                            {walletName && (
-                                <>
-                                    <WalletNameWrapper>{walletName}</WalletNameWrapper>
-                                    <IconWrapper>
-                                        <Icon size={16} color={colors.BLACK70} icon="ARROW_RIGHT" />
-                                    </IconWrapper>
-                                </>
-                            )}
+                            <WalletNameWrapper>
+                                <WalletLabeling device={props.selectedDevice} />
+                            </WalletNameWrapper>
+                            <IconWrapper>
+                                <Icon size={16} color={colors.BLACK70} icon="ARROW_RIGHT" />
+                            </IconWrapper>
                         </WalletRow>
                     </>
                 )}

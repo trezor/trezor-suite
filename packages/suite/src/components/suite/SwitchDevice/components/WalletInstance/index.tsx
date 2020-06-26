@@ -78,6 +78,7 @@ const WalletInstance = ({
     selectDeviceInstance,
     rememberDevice,
     forgetDevice,
+    openModal,
     accounts,
     fiat,
     localCurrency,
@@ -100,10 +101,23 @@ const WalletInstance = ({
         }
         return '@switch-device/wallet-instance';
     };
+
+    const changeWalletMetadata = (event: any) => {
+        event.preventDefault();
+        if (!instance.state || instance.metadata.status !== 'enabled') return;
+        openModal({
+            type: 'metadata-add',
+            payload: {
+                type: 'walletLabel',
+                deviceState: instance.state,
+                defaultValue: 'TODO: wallet default state',
+                value: instance.metadata.walletLabel,
+            },
+        });
+    };
     return (
         <Wrapper
             data-test={getDataTestBase()}
-            // data-test={`@switch-device/wallet-instance/${instance.instance ? }`}
             key={`${instance.label}${instance.instance}${instance.state}`}
             selected={enabled && selected && !!discoveryProcess}
             {...rest}
@@ -112,6 +126,13 @@ const WalletInstance = ({
                 {discoveryProcess && (
                     <InstanceType>
                         <WalletLabeling device={instance} />
+                        {instance.state && (
+                            <Button
+                                variant="tertiary"
+                                icon="LABEL"
+                                onClick={changeWalletMetadata}
+                            />
+                        )}
                     </InstanceType>
                 )}
                 {!discoveryProcess && (
