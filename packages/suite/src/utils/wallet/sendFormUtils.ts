@@ -1,7 +1,7 @@
 import { ERC20_GAS_LIMIT, ERC20_TRANSFER } from '@wallet-constants/sendForm';
 import { SendContext, FeeInfo, EthTransactionData } from '@wallet-hooks/useSendContext';
-import { Network } from '@wallet-types';
-import { amountToSatoshi } from '@wallet-utils/accountUtils';
+import { Network, Account } from '@wallet-types';
+import { amountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import BigNumber from 'bignumber.js';
 import Common from 'ethereumjs-common';
 import { Transaction, TxData } from 'ethereumjs-tx';
@@ -30,6 +30,19 @@ export const calculateMax = (availableBalance: string, fee: string): string => {
     } catch (error) {
         return '0';
     }
+};
+
+export const getFee = (
+    transactionInfo: any,
+    networkType: Account['networkType'],
+    symbol: Account['symbol'],
+) => {
+    if (networkType === 'ethereum') {
+        const gasPriceInWei = toWei(transactionInfo.feePerUnit, 'gwei');
+        return fromWei(gasPriceInWei, 'ether');
+    }
+
+    return formatNetworkAmount(transactionInfo.fee, symbol);
 };
 
 // ETH SPECIFIC

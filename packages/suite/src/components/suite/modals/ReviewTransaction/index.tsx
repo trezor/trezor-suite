@@ -1,11 +1,10 @@
 import { AccountLabeling, FiatValue, Translation } from '@suite-components';
 import { useDevice } from '@suite-hooks';
 import { Button, colors, Modal, variables } from '@trezor/components';
-import { Account } from '@wallet-types';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { getFee } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import styled from 'styled-components';
-import { fromWei, toWei } from 'web3-utils';
 
 import { Props } from './Container';
 
@@ -62,19 +61,6 @@ const FiatValueWrapper = styled.div`
     justify-content: flex-end;
 `;
 
-const getFeeValue = (
-    transactionInfo: any,
-    networkType: Account['networkType'],
-    symbol: Account['symbol'],
-) => {
-    if (networkType === 'ethereum') {
-        const gasPriceInWei = toWei(transactionInfo.feePerUnit, 'gwei');
-        return fromWei(gasPriceInWei, 'ether');
-    }
-
-    return formatNetworkAmount(transactionInfo.fee, symbol);
-};
-
 export default ({
     modalActions,
     selectedAccount,
@@ -98,7 +84,7 @@ export default ({
     const outputSymbol = token ? token.symbol!.toUpperCase() : symbol.toUpperCase();
     const { isLocked } = useDevice();
     const isDeviceLocked = isLocked();
-    const fee = getFeeValue(transactionInfo, networkType, symbol);
+    const fee = getFee(transactionInfo, networkType, symbol);
 
     return (
         <Modal

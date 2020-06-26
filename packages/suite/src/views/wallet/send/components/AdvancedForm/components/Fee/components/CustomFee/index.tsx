@@ -5,7 +5,7 @@ import { Input, Select } from '@trezor/components';
 import { Account } from '@wallet-types';
 import BigNumber from 'bignumber.js';
 import { updateMax, findActiveMaxId } from '@wallet-actions/sendFormActions';
-import { getInputState } from '@wallet-utils/sendFormUtils';
+import { getInputState, getFee } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import { useFormContext, FieldError, NestDataObject, Controller } from 'react-hook-form';
 import styled from 'styled-components';
@@ -149,7 +149,7 @@ export default ({ isVisible }: { isVisible: boolean }) => {
             <FiatValueWrapper>
                 {transactionInfo && transactionInfo.type !== 'error' && (
                     <FiatValue
-                        amount={transactionInfo.fee}
+                        amount={getFee(transactionInfo, networkType, symbol)}
                         symbol={symbol}
                         badge={{ color: 'gray' }}
                     />
