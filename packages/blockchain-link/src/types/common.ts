@@ -24,6 +24,7 @@ export interface TokenTransfer {
 }
 
 export interface Target {
+    n: number;
     addresses?: string[];
     isAddress: boolean;
     amount?: string;

@@ -107,6 +107,7 @@ export const filterTokenTransfers = (
 
 const transformTarget = (target: VinVout, incoming: VinVout[]) => {
     return {
+        n: target.n || 0,
         addresses: target.addresses,
         isAddress: target.isAddress,
         amount: target.value,

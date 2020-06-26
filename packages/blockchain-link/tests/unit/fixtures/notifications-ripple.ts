@@ -108,12 +108,7 @@ const notifyAddresses = [
             tx: {
                 ...tx,
                 type: 'sent',
-                targets: [
-                    {
-                        addresses: ['B'],
-                        isAddress: true,
-                    },
-                ],
+                targets: [{ addresses: ['B'], isAddress: true, n: 0 }],
             },
         },
     },
@@ -139,7 +134,7 @@ const notifyAddresses = [
             tx: {
                 ...tx,
                 type: 'recv',
-                targets: [{ addresses: ['A'], isAddress: true }],
+                targets: [{ addresses: ['A'], isAddress: true, n: 0 }],
             },
         },
     },
@@ -181,12 +176,7 @@ const notifyAddresses = [
             tx: {
                 ...tx,
                 type: 'sent',
-                targets: [
-                    {
-                        addresses: ['B'],
-                        isAddress: true,
-                    },
-                ],
+                targets: [{ addresses: ['B'], isAddress: true, n: 0 }],
             },
         },
     },
@@ -213,12 +203,7 @@ const notifyAddresses = [
             tx: {
                 ...tx,
                 type: 'recv',
-                targets: [
-                    {
-                        addresses: ['C'],
-                        isAddress: true,
-                    },
-                ],
+                targets: [{ addresses: ['C'], isAddress: true, n: 0 }],
             },
         },
     },
