@@ -31,7 +31,7 @@
         "build:workers-module": "webpack --config ./webpack/workers.module.babel.js --mode production",
         "lint": "eslint '**/*{.ts,.tsx}'",
         "test:unit": "jest --verbose -c jest.config.unit.js",
-        "test:node": "jest -c jest.config.integration.js",
+        "test:integration": "jest -c jest.config.integration.js",
         "build": "rimraf lib && tsc --p ./tsconfig.lib.json && tsc --p ./tsconfig.workers.json",
         "type-check": "tsc --project tsconfig.json"
     },
