@@ -297,6 +297,8 @@ const createInstance = (draft: State, device: TrezorDevice) => {
         state: undefined,
         authConfirm: false,
         ts: new Date().getTime(),
+        buttonRequests: [],
+        metadata: { status: 'disabled' },
     };
     draft.push(newDevice);
 };
@@ -337,6 +339,7 @@ const forget = (draft: State, device: TrezorDevice) => {
         draft[index].passphraseOnDevice = false;
         // set remember to false to make it disappear after device is disconnected
         draft[index].remember = false;
+        draft[index].metadata = { status: 'disabled' };
     } else {
         draft.splice(index, 1);
     }
@@ -364,6 +367,15 @@ const setMetadata = (draft: State, state: string, metadata: TrezorDevice['metada
     if (!draft[index]) return;
     // update state
     draft[index].metadata = metadata;
+};
+
+const updateMetadata = (draft: State, state: string, walletLabel?: string) => {
+    const index = draft.findIndex(d => d.state === state);
+    if (!draft[index]) return;
+    const { metadata } = draft[index];
+    if (metadata.status !== 'enabled') return;
+    // update state
+    metadata.walletLabel = walletLabel;
 };
 
 export default (state: State = initialState, action: Action): State => {
@@ -410,6 +422,10 @@ export default (state: State = initialState, action: Action): State => {
                 break;
             case METADATA.SET_MASTER_KEY:
                 setMetadata(draft, action.payload.deviceState, action.payload.metadata);
+                break;
+            case METADATA.WALLET_LOADED:
+            case METADATA.WALLET_ADD:
+                updateMetadata(draft, action.payload.deviceState, action.payload.walletLabel);
                 break;
             // no default
         }

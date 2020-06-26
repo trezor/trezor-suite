@@ -274,6 +274,8 @@ const actions = [
     SUITE.ADD_BUTTON_REQUEST,
     SUITE.FORGET_DEVICE,
     METADATA.SET_MASTER_KEY,
+    METADATA.WALLET_LOADED,
+    METADATA.WALLET_ADD,
     ...Object.values(DEVICE).filter(v => typeof v === 'string'),
 ];
 
