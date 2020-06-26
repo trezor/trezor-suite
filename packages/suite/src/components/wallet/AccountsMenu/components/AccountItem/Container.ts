@@ -20,6 +20,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 interface OwnProps {
     account: Account;
     selected: boolean;
+    closeMenu: () => void;
     forwardedRef?: (ref: HTMLDivElement | null) => void | null;
 }
 

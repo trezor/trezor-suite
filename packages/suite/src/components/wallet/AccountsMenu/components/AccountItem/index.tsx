@@ -94,13 +94,14 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
     return (
         <Wrapper selected={selected} type={account.accountType} ref={ref}>
             <AccountHeader
-                onClick={() =>
+                onClick={() => {
+                    props.closeMenu();
                     props.goto('wallet-index', {
                         symbol: account.symbol,
                         accountIndex: account.index,
                         accountType: account.accountType,
-                    })
-                }
+                    });
+                }}
             >
                 <Left>
                     <CoinLogo size={16} symbol={account.symbol} />
