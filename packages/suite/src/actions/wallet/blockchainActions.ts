@@ -130,18 +130,7 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
 };
 
 // call TrezorConnect.unsubscribe, it doesn't cost anything and should emit BLOCKCHAIN.CONNECT or BLOCKCHAIN.ERROR event
-export const reconnect = (coin: Network['symbol'], isBetaBackend?: boolean) => async (
-    _dispatch: Dispatch,
-    getState: GetState,
-) => {
-    if (isBetaBackend) {
-        const blockchain = getState().wallet.blockchain[coin];
-        if (blockchain.reconnection?.count === 1) {
-            TrezorConnect.blockchainSetCustomBackend({
-                coin,
-            });
-        }
-    }
+export const reconnect = (coin: Network['symbol']) => async (_dispatch: Dispatch) => {
     return TrezorConnect.blockchainUnsubscribeFiatRates({ coin });
 };
 
@@ -286,9 +275,6 @@ export const setReconnectionTimeout = (error: BlockchainError) => async (
 ) => {
     const network = getNetwork(error.coin.shortcut.toLowerCase());
     if (!network) return;
-    const isBetaBackend = error.coin.blockchainLink
-        ? !!error.coin.blockchainLink.url.find(u => u.startsWith('https://beta-'))
-        : false;
 
     const blockchain = getState().wallet.blockchain[network.symbol];
     if (blockchain.reconnection) {
@@ -299,12 +285,6 @@ export const setReconnectionTimeout = (error: BlockchainError) => async (
     // there is no need to reconnect since there are no accounts for this network
     const accounts = getState().wallet.accounts.filter(a => a.symbol === network.symbol);
     if (!accounts.length) {
-        if (isBetaBackend) {
-            // error during discovery with beta backend
-            TrezorConnect.blockchainSetCustomBackend({
-                coin: network.symbol,
-            });
-        }
         return;
     }
 
@@ -312,7 +292,7 @@ export const setReconnectionTimeout = (error: BlockchainError) => async (
     const timeout = Math.min(2500 * count, 20000);
 
     const id = setTimeout(async () => {
-        await dispatch(reconnect(network.symbol, isBetaBackend));
+        await dispatch(reconnect(network.symbol));
     }, timeout);
 
     dispatch({
