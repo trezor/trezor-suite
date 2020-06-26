@@ -129,31 +129,32 @@ export default React.memo((props: Props) => {
         (type === 'sent' || type === 'self' ? '-' : null) || (type === 'recv' ? '+' : null);
     let key = 0;
     const { openModal } = useActions({ openModal: modalActions.openModal });
-    // @ts-ignore: missing in connect
-    const targetN = target.n || 0;
+
+    const openMetadataPopup = (outputIndex: number, defaultValue: string, value?: string) => {
+        openModal({
+            type: 'metadata-add',
+            payload: {
+                type: 'outputLabel',
+                accountKey: props.account.key,
+                txid: transaction.txid,
+                outputIndex,
+                defaultValue,
+                value,
+            },
+        });
+    };
 
     const buildTargetRow = (
         target: ArrayElement<Props['transaction']['targets']>,
         useAnimation = false,
     ) => {
+        // @ts-ignore: missing in connect
+        const targetN = target.n || 0;
         const isLocalTarget = (type === 'sent' || type === 'self') && target.isAccountTarget;
         const { metadata } = props.account;
         const targetMetadata = metadata.outputLabels[transaction.txid]
             ? metadata.outputLabels[transaction.txid][targetN]
             : undefined;
-
-        const openMetadataPopup = () => {
-            openModal({
-                type: 'metadata-add',
-                payload: {
-                    type: 'outputLabel',
-                    accountKey: props.account.key,
-                    txid: transaction.txid,
-                    outputIndex: targetN,
-                    defaultValue: target.addresses!.join(''),
-                },
-            });
-        };
 
         const addr = isLocalTarget ? (
             <Translation id="TR_SENT_TO_SELF" />
@@ -182,7 +183,17 @@ export default React.memo((props: Props) => {
             <React.Fragment key={key}>
                 <Addr {...animation}>
                     <StyledHiddenPlaceholder>
-                        <Button variant="tertiary" icon="LABEL" onClick={openMetadataPopup} />
+                        <Button
+                            variant="tertiary"
+                            icon="LABEL"
+                            onClick={() =>
+                                openMetadataPopup(
+                                    targetN,
+                                    target.addresses!.join(''),
+                                    targetMetadata,
+                                )
+                            }
+                        />
                         {addr}
                     </StyledHiddenPlaceholder>
                 </Addr>
