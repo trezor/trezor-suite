@@ -3485,6 +3485,18 @@ const definedMessages = defineMessages({
         id: 'TR_MY_ACCOUNTS',
         defaultMessage: 'My Accounts',
     },
+    TR_CHANGE_HOMESCREEN: {
+        id: 'TR_CHANGE_HOMESCREEN',
+        defaultMessage: 'Change homescreen',
+    },
+    TR_DROP_IMAGE: {
+        id: 'TR_DROP_IMAGE',
+        defaultMessage: 'Drop image',
+    },
+    TR_INVALID_FILE_SELECTED: {
+        id: 'TR_INVALID_FILE_SELECTED',
+        defaultMessage: 'Invalid file selected. Must be .jpg or .png',
+    },
 } as const);
 
 export default definedMessages;

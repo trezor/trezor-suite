@@ -249,6 +249,16 @@ export const imageDataToHex = (imageData: ImageData, model: number) => {
     return toig(w, h, imageData);
 };
 
+export const isValid = (dataUrl: string) => {
+    if (
+        !dataUrl ||
+        !(dataUrl.startsWith('data:image/jpeg') || dataUrl.startsWith('data:image/png'))
+    ) {
+        return false;
+    }
+    return true;
+};
+
 export const elementToHomescreen = (
     element: HTMLImageElement,
     model: number,

@@ -1,47 +1,79 @@
-suite-desktop build mac:
+.build: &build
     stage: build
     script:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
-        - yarn workspace @trezor/suite-desktop build:mac
-        - mv packages/suite-desktop/build-electron/"${DESKTOP_APP_NAME}"-*.zip .
+        - yarn workspace @trezor/suite-desktop build:${platform}
+        - ls -la packages/suite-desktop/build-electron 
+        - mv packages/suite-desktop/build-electron/* .
     artifacts:
-        expire_in: 1 week
         paths:
-            - ${DESKTOP_APP_NAME}-*.zip
+            - ${artifact}
+        expire_in: 1 days
+
+.auto_run_branches: &auto_run_branches
+    refs:
+        - develop
+        - releases
+        - schedules
+
+suite-desktop build mac:
+    only:
+        <<: *auto_run_branches
+    variables:
+        platform: mac
+        artifact: ${DESKTOP_APP_NAME}*
+    <<: *build
+
+suite-desktop build mac manual:
+    except:
+        <<: *auto_run_branches
+    when: manual
+    variables:
+        platform: mac
+        artifact: ${DESKTOP_APP_NAME}*
+    <<: *build
 
 suite-desktop build linux:
-    stage: build
-    script:
-        - yarn cache clean
-        - yarn workspace @trezor/suite-data copy-static-files
-        - yarn workspace @trezor/suite-desktop build:linux
-        - mv packages/suite-desktop/build-electron/"${DESKTOP_APP_NAME}"-*.AppImage .
-    artifacts:
-        expire_in: 1 day
-        paths:
-            - ${DESKTOP_APP_NAME}-*.AppImage
+    only:
+        <<: *auto_run_branches
+    variables:
+        platform: linux
+        artifact: ${DESKTOP_APP_NAME}*
+    <<: *build
+
+suite-desktop build linux manual:
+    except:
+        <<: *auto_run_branches
+    when: manual
+    variables:
+        platform: linux
+        artifact: ${DESKTOP_APP_NAME}*
+    <<: *build
 
 suite-desktop build windows:
+    only:
+        <<: *auto_run_branches
     image: electronuserland/builder:wine
-    stage: build
-    script:
-        - yarn cache clean
-        - yarn workspace @trezor/suite-data copy-static-files
-        - yarn workspace @trezor/suite-desktop build:win
-        - mv packages/suite-desktop/build-electron/"${DESKTOP_APP_NAME}"-*.exe .
-    artifacts:
-        expire_in: 1 day
-        paths:
-            - ${DESKTOP_APP_NAME}-*.exe
+    variables:
+        platform: win
+        artifact: ${DESKTOP_APP_NAME}*
+    <<: *build
+
+suite-desktop build windows manual:
+    except:
+        <<: *auto_run_branches
+    when: manual
+    image: electronuserland/builder:wine
+    variables:
+        platform: win
+        artifact: ${DESKTOP_APP_NAME}*
+    <<: *build
 
 suite-desktop deploy dev:
     stage: deploy to dev
     only:
-        refs:
-            - develop
-            - schedules
-            - releases
+        <<: *auto_run_branches
     variables:
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_BUILD_REF_NAME}
     script:
