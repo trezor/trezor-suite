@@ -96,8 +96,6 @@ const Onboarding = (props: Props) => {
 
     return (
         <Modal
-            // padding={['0px', '0px', '0px', '0px']}
-            // useFixedWidth={false}
             useFixedHeight
             heading={
                 <ProgressBar

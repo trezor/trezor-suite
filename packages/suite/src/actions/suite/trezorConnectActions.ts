@@ -49,6 +49,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         'rippleSignTransaction',
         'composeTransaction',
         'backupDevice',
+        'recoveryDevice',
     ] as const;
     wrappedMethods.forEach(key => {
         // typescript complains about params and return type, need to be "any"

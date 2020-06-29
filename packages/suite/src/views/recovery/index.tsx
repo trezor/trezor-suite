@@ -310,7 +310,7 @@ const Recovery = ({
                 )}
                 {recovery.status === 'finished' && !recovery.error && (
                     <>
-                        <H2>
+                        <H2 data-test="@recovery/success-title">
                             <Translation id="TR_SEED_CHECK_SUCCESS_TITLE" />
                         </H2>
                         <StyledP>
