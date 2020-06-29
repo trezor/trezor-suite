@@ -75,18 +75,27 @@ const ItemTitle = styled.span<ComponentProps>`
         css`
             color: ${colors.BLACK25};
         `}
+
+    ${props =>
+        props.isDisabled &&
+        css`
+            cursor: default;
+        `}
 `;
 
 const NewBadge = styled.span`
     position: absolute;
-    top: -12px;
-    right: -12px;
-    padding: 3px;
+    top: -14px;
+    right: -30px;
+    padding: 3px 3px 2px 3px;
     background: ${colors.NEUE_BG_LIGHT_GREEN};
     color: ${colors.NEUE_TYPE_GREEN};
     letter-spacing: 0.2px;
     text-transform: UPPERCASE;
     font-size: 12px;
+    display: flex;
+    cursor: default;
+    align-items: center;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     border-radius: 4px;
 `;
