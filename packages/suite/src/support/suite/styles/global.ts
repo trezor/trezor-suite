@@ -1,6 +1,6 @@
 import animations from './animations';
 import { notifications } from './notifications';
-import { variables, colors } from '@trezor/components';
+import { variables, colors, tooltipGlobalStyles } from '@trezor/components';
 
 export default `
     #__next {
@@ -42,4 +42,5 @@ export default `
 
     ${animations}
     ${notifications}
+    ${tooltipGlobalStyles}
 `;

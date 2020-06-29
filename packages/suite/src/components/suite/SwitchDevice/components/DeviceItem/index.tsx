@@ -150,7 +150,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
             <Device>
                 <DeviceHeader>
                     <DeviceImageWrapper>
-                        <DeviceImage device={device} />
+                        <DeviceImage height={46} device={device} />
                     </DeviceImageWrapper>
                     <Col grow={1}>
                         <DeviceTitle>{device.label}</DeviceTitle>

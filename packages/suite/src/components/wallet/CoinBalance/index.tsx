@@ -5,7 +5,9 @@ import { formatCoinBalance } from '@wallet-utils/balanceUtils';
 import { HiddenPlaceholder } from '@suite-components';
 
 const Wrapper = styled.div``;
-const Value = styled.span``;
+const Value = styled.span`
+    font-variant-numeric: tabular-nums;
+`;
 const Symbol = styled.span`
     margin-left: 3px;
 `;

@@ -1,19 +1,20 @@
 import React, { useState, createContext } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { colors, variables } from '@trezor/components';
+import { colors } from '@trezor/components';
 import SuiteNotifications from '@suite-components/Notifications';
 import Head from 'next/head';
-import Menu from '@suite-components/Menu/Container';
 import { AppState } from '@suite-types';
 import MenuSecondary from '@suite-components/MenuSecondary';
-import MenuDrawer from '@suite-components/MenuDrawer';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import { DiscoveryProgress } from '@wallet-components';
+import NavigationBar from '../NavigationBar';
+import { useLayoutSize } from '@suite-hooks';
 
 const PageWrapper = styled.div`
     display: flex;
     flex: 1;
+    flex-direction: column;
     min-height: 600px;
     height: 100vh;
     overflow-x: hidden;
@@ -44,10 +45,11 @@ const AppWrapper = styled.div`
     flex: 1 1 0%;
 `;
 
-const MaxWidthWrapper = styled.div<{ withMenu: boolean }>`
-    max-width: ${variables.SCREEN_SIZE.XL};
-    max-width: ${props => (props.withMenu ? '1664px' : MAX_WIDTH)};
+const MaxWidthWrapper = styled.div`
+    max-width: ${MAX_WIDTH};
+    width: 100%;
     height: 100%;
+    margin: 0 auto;
 `;
 
 const mapStateToProps = (state: AppState) => ({
@@ -62,18 +64,21 @@ type Props = ReturnType<typeof mapStateToProps> & {
 interface BodyProps {
     url: string;
     menu?: React.ReactNode;
+    appMenu?: React.ReactNode;
     children?: React.ReactNode;
 }
 
 interface LayoutContextI {
     title?: string;
     menu?: React.ReactNode;
-    setLayout?: (title?: string, menu?: React.ReactNode) => void;
+    appMenu?: React.ReactNode;
+    setLayout?: (title?: string, menu?: React.ReactNode, appMenu?: React.ReactNode) => void;
 }
 
 export const LayoutContext = createContext<LayoutContextI>({
     title: undefined,
     menu: undefined,
+    appMenu: undefined,
     setLayout: undefined,
 });
 
@@ -88,39 +93,41 @@ const ScrollAppWrapper = ({ url, children }: BodyProps) => {
     return <AppWrapper ref={ref}>{children}</AppWrapper>;
 };
 
-const BodyWide = ({ url, menu, children }: BodyProps) => (
+const BodyWide = ({ url, menu, appMenu, children }: BodyProps) => (
     <Body>
-        <DiscoveryProgress />
-        <SuiteNotifications />
         <Columns>
             {menu && <MenuSecondary>{menu}</MenuSecondary>}
             <ScrollAppWrapper url={url}>
-                <MaxWidthWrapper withMenu={!!menu}>{children}</MaxWidthWrapper>
+                {appMenu}
+                <MaxWidthWrapper>{children}</MaxWidthWrapper>
             </ScrollAppWrapper>
         </Columns>
     </Body>
 );
 
-const BodyNarrow = ({ url, menu, children }: BodyProps) => (
+const BodyNarrow = ({ url, menu, appMenu, children }: BodyProps) => (
     <Body>
-        <MenuDrawer>{menu}</MenuDrawer>
-        <DiscoveryProgress />
-        <SuiteNotifications />
         <Columns>
-            <ScrollAppWrapper url={url}>{children}</ScrollAppWrapper>
+            <ScrollAppWrapper url={url}>
+                {menu}
+                {appMenu}
+                {children}
+            </ScrollAppWrapper>
         </Columns>
     </Body>
 );
 
 const SuiteLayout = (props: Props) => {
     // TODO: if (props.layoutSize === 'UNAVAILABLE') return <SmallLayout />;
-    const isWide = ['XLARGE', 'LARGE'].includes(props.layoutSize);
+    const { isMobileLayout } = useLayoutSize();
     const [title, setTitle] = useState<string | undefined>(undefined);
     const [menu, setMenu] = useState<any>(undefined);
+    const [appMenu, setAppMenu] = useState<any>(undefined);
     const setLayout = React.useCallback<NonNullable<LayoutContextI['setLayout']>>(
-        (newTitle, newMenu) => {
+        (newTitle, newMenu, newAppMenu) => {
             setTitle(newTitle);
             setMenu(newMenu);
+            setAppMenu(newAppMenu);
         },
         [],
     );
@@ -130,15 +137,17 @@ const SuiteLayout = (props: Props) => {
             <Head>
                 <title>{title ? `${title} | Trezor Suite` : 'Trezor Suite'}</title>
             </Head>
-            {isWide && <Menu />}
+            <SuiteNotifications />
+            <DiscoveryProgress />
+            <NavigationBar />
             <LayoutContext.Provider value={{ title, menu, setLayout }}>
-                {isWide && (
-                    <BodyWide menu={menu} url={props.router.url}>
+                {!isMobileLayout && (
+                    <BodyWide menu={menu} appMenu={appMenu} url={props.router.url}>
                         {props.children}
                     </BodyWide>
                 )}
-                {!isWide && (
-                    <BodyNarrow menu={menu} url={props.router.url}>
+                {isMobileLayout && (
+                    <BodyNarrow menu={menu} appMenu={appMenu} url={props.router.url}>
                         {props.children}
                     </BodyNarrow>
                 )}

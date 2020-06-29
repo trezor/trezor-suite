@@ -280,7 +280,7 @@ const Modal = ({
         onCancel();
     }
 
-    useOnClickOutside(ref, () => {
+    useOnClickOutside([ref], () => {
         if (cancelable && onCancel) {
             onCancel();
         }

@@ -36,16 +36,21 @@ export const useKeyPress = (targetKey: string) => {
 };
 
 export const useOnClickOutside = (
-    ref: React.MutableRefObject<HTMLDivElement | null>,
+    elementRefs: React.MutableRefObject<HTMLElement | null>[],
     callback: (event: MouseEvent | TouchEvent) => void
 ) => {
     useEffect(() => {
-        if (!ref) return;
+        if (!elementRefs?.length) return;
         const listener = (event: MouseEvent | TouchEvent) => {
-            // Do nothing if clicking ref's element or descendent elements
-            if (!ref.current || ref.current.contains(event.target as Node)) {
-                return;
-            }
+            let clickInsideElements = false;
+
+            elementRefs.forEach(elRef => {
+                // Do nothing if clicking ref's element or descendent elements
+                if (!elRef.current || elRef.current.contains(event.target as Node)) {
+                    clickInsideElements = true;
+                }
+            });
+            if (clickInsideElements) return;
 
             callback(event);
         };
@@ -57,5 +62,5 @@ export const useOnClickOutside = (
             document.removeEventListener('mousedown', listener);
             document.removeEventListener('touchstart', listener);
         };
-    }, [ref, callback]);
+    }, [elementRefs, callback]);
 };
