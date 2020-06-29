@@ -61,7 +61,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     //     data: null,
     //     outputs: null,
     // });
-    const fiatRates = fiat.coins.find(item => item.symbol === account.symbol);
+    const fiatRates = fiat.coins.find(item => item.symbol === symbol);
     const initialSelectedFee = levels.find(l => l.label === 'normal') || levels[0];
     const [advancedForm, showAdvancedForm] = useState(false);
     const [isLoading, setLoading] = useState(false);
@@ -148,10 +148,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
                         customHeader={
                             <Header>
                                 <HeaderLeft>
-                                    <Translation
-                                        id="SEND_TITLE"
-                                        values={{ symbol: symbol.toUpperCase() }}
-                                    />
+                                    <Translation id="SEND_TITLE" values={{ symbol }} />
                                 </HeaderLeft>
                                 <HeaderRight>
                                     <Clear />
