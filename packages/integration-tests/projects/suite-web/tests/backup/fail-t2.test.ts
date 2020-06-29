@@ -1,4 +1,4 @@
-// @beta
+// @stable
 
 describe('Backup', () => {
     beforeEach(() => {
