@@ -4,8 +4,7 @@ import { Select } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { TokenInfo } from 'trezor-connect';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
-import { useFormContext } from 'react-hook-form';
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
+import { useSendFormContext } from '@wallet-hooks';
 
 const Wrapper = styled.div`
     min-width: 110px;
@@ -42,8 +41,9 @@ const getValues = (symbol: Account['symbol'], tokens: Account['tokens']) => {
 };
 
 export default ({ outputId }: { outputId: number }) => {
-    const { account, setToken, token } = useSendContext();
-    const { setValue, clearError } = useFormContext();
+    const { formContext, sendContext } = useSendFormContext();
+    const { account, token, updateContext } = sendContext;
+    const { setValue, clearError } = formContext;
     const { symbol, tokens } = account;
     const values = getValues(symbol, tokens);
 
@@ -53,7 +53,7 @@ export default ({ outputId }: { outputId: number }) => {
                 key="token"
                 isSearchable={false}
                 onChange={(option: Option) => {
-                    setToken(option.value || null);
+                    updateContext({ token: option.value });
                     setValue(`amount[${outputId}]`, '');
                     clearError(`amount[${outputId}]`);
                 }}

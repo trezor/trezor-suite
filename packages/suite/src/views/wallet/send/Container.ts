@@ -1,6 +1,5 @@
-import { AppState } from '@suite-types';
 import { connect } from 'react-redux';
-
+import { AppState } from '@suite-types';
 import Component from './index';
 
 const mapStateToProps = (state: AppState) => ({
@@ -11,14 +10,10 @@ const mapStateToProps = (state: AppState) => ({
     localCurrency: state.wallet.settings.localCurrency,
     fees: state.wallet.fees,
     device: state.suite.device,
-    locks: state.suite.locks,
+    locks: state.suite.locks, // todo: use lock hooks
     online: state.suite.online,
 });
 
-const mapDispatchToProps = () => ({});
+export type Props = ReturnType<typeof mapStateToProps>;
 
-export type StateProps = ReturnType<typeof mapStateToProps>;
-export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-export type Props = StateProps & DispatchProps;
-
-export default connect(mapStateToProps, mapDispatchToProps)(Component);
+export default connect(mapStateToProps)(Component);

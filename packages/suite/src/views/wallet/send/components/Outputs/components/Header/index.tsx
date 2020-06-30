@@ -1,8 +1,7 @@
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
-import { colors, variables } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
-
+import { colors, variables } from '@trezor/components';
+import { useSendFormContext } from '@wallet-hooks';
 import Remove from './components/Remove';
 
 const Wrapper = styled.div`
@@ -29,13 +28,13 @@ const ColumnRight = styled(Column)`
 `;
 
 export default ({ outputId, outputIndex }: { outputId: number; outputIndex: number }) => {
-    const { outputs } = useSendContext();
+    const { outputs } = useSendFormContext().sendContext;
 
     return (
         <Wrapper>
             <Column />
             <Column>{outputs.length > 1 && <OutputIndex>#{outputIndex + 1}</OutputIndex>}</Column>
-            <ColumnRight>{outputId !== 0 && <Remove outputId={outputId} />}</ColumnRight>
+            <ColumnRight>{outputs.length > 1 && <Remove outputId={outputId} />}</ColumnRight>
         </Wrapper>
     );
 };

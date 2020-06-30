@@ -1,14 +1,15 @@
-import * as modalActions from '@suite-actions/modalActions';
-import { AddressLabeling, QuestionTooltip, Translation } from '@suite-components';
-import { useActions } from '@suite-hooks';
+import React from 'react';
+import styled from 'styled-components';
 import { Input } from '@trezor/components';
+
+import * as modalActions from '@suite-actions/modalActions';
 import { checkRippleEmptyAddress } from '@wallet-actions/sendFormActions';
+import { useActions } from '@suite-hooks';
+import { useSendFormContext } from '@wallet-hooks';
 import { isAddressValid } from '@wallet-utils/validation';
 import { getInputState } from '@wallet-utils/sendFormUtils';
-import React from 'react';
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
-import { useFormContext } from 'react-hook-form';
-import styled from 'styled-components';
+
+import { AddressLabeling, QuestionTooltip, Translation } from '@suite-components';
 
 const Label = styled.div`
     display: flex;
@@ -20,13 +21,14 @@ const Text = styled.div`
 `;
 
 export default ({ outputId }: { outputId: number }) => {
-    const { account, setDestinationAddressEmpty } = useSendContext();
-    const { register, errors, getValues, formState, setValue } = useFormContext();
+    const { formContext, sendContext } = useSendFormContext();
+    const { register, errors, getValues, formState, setValue } = formContext;
+    const { account, updateContext } = sendContext;
     const inputName = `address[${outputId}]`;
     const isDirty = formState.dirtyFields.has(inputName);
     const { descriptor, networkType, symbol } = account;
     const { openModal } = useActions({ openModal: modalActions.openModal });
-    const error = errors && errors.address ? errors.address[outputId] : null;
+    const error = errors && errors.address ? errors.address[outputId] : undefined;
 
     return (
         <Input
@@ -42,12 +44,11 @@ export default ({ outputId }: { outputId: number }) => {
             }
             onChange={async () => {
                 if (!error && networkType === 'ripple') {
-                    await checkRippleEmptyAddress(
+                    const destinationAddressEmpty = await checkRippleEmptyAddress(
+                        getValues(inputName),
                         account.symbol,
-                        inputName,
-                        getValues,
-                        setDestinationAddressEmpty,
                     );
+                    updateContext({ destinationAddressEmpty });
                 }
             }}
             bottomText={

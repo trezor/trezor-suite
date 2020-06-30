@@ -1,19 +1,22 @@
-import { SendContext } from '@wallet-hooks/useSendContext';
-import { WalletLayout } from '@wallet-components';
-import { TokenInfo } from 'trezor-connect';
-// import * as storageActions from '@suite-actions/storageActions';
-import { Card, Translation } from '@suite-components';
-import React, { useState, useEffect } from 'react';
-import { getFeeLevels } from '@wallet-utils/sendFormUtils';
-// import { getAccountKey } from '@wallet-utils/accountUtils';
+import React, { useEffect } from 'react';
+import { useForm, FormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import { variables, colors } from '@trezor/components';
+
+import { WalletLayout } from '@wallet-components';
+// import * as storageActions from '@suite-actions/storageActions';
+import { Card, Translation } from '@suite-components';
+
+import { getFeeLevels } from '@wallet-utils/sendFormUtils';
+import { FormState, ContextState } from '@wallet-types/sendForm';
+import { useSendForm, SendContext } from '@wallet-hooks';
+// import { getAccountKey } from '@wallet-utils/accountUtils';
+
 import Outputs from './components/Outputs';
 import Clear from './components/Clear';
 import AdvancedForm from './components/AdvancedForm';
 import ReviewButton from './components/ReviewButton';
 import { Props } from './Container';
-import { useForm, FormContext } from 'react-hook-form';
 
 const Header = styled.div`
     display: flex;
@@ -44,16 +47,67 @@ const StyledCard = styled(Card)`
 `;
 
 export default ({ device, fees, selectedAccount, locks, online, fiat, localCurrency }: Props) => {
-    if (!device || !fees || selectedAccount.status !== 'loaded') {
+    if (!device || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Send" account={selectedAccount} />;
     }
 
+    useEffect(() => {
+        console.warn('--->>>SEND MOUNT Load cached tx!');
+        return () => {
+            console.warn('<<<---SEND UNMOUNT Store cached tx');
+        };
+    }, []);
+
+    // useEffect(() => {
+    //     console.warn('--->>>selectedAccount.account MOUNT!', selectedAccount.account);
+    //     return () => {
+    //         console.warn('<<<---selectedAccount.account UNMOUNT', selectedAccount.account);
+    //     };
+    // }, [selectedAccount.account]);
+
     const { account, network } = selectedAccount;
-    const [feeOutdated, setFeeOutdated] = useState(false);
     const { symbol, networkType } = account;
     const coinFees = fees[symbol];
     const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
+
+    const fiatRates = fiat.coins.find(item => item.symbol === symbol);
+
+    useEffect(() => {
+        // TODO: handle fee levels change (and update them)
+        // TODO: precompose ALL levels, disable "unrealistic" levels
+        console.warn('SET FEES!', coinFees);
+
+        let loading = false;
+
+        const precompose = async () => {
+            loading = true;
+            const freezed = coinFees;
+            console.log('PREKO START', freezed);
+            const f = await new Promise(resolve => {
+                setTimeout(() => resolve(freezed), 1000);
+            });
+
+            console.log('FEES PRECOMPOSED', f, loading);
+            loading = false;
+        };
+
+        precompose();
+
+        return () => {
+            loading = false;
+        };
+    }, [coinFees]);
+
+    useEffect(() => {
+        console.warn('SET BALANCE', account.balance);
+    }, [account.balance]);
+
+    // TODO: exclude testnet from this hook
+    // useEffect(() => {
+    //     console.warn('SET FIAT', fiatRates.current);
+    // }, [fiatRates.current]);
+
     // const [cached, setCached] = useState<{
     //     data: Record<string, any> | null;
     //     outputs: SendContext['outputs'] | null;
@@ -61,19 +115,6 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     //     data: null,
     //     outputs: null,
     // });
-    const fiatRates = fiat.coins.find(item => item.symbol === account.symbol);
-    const initialSelectedFee = levels.find(l => l.label === 'normal') || levels[0];
-    const [advancedForm, showAdvancedForm] = useState(false);
-    const [isLoading, setLoading] = useState(false);
-    const [destinationAddressEmpty, setDestinationAddressEmpty] = useState(false);
-    const [token, setToken] = useState<TokenInfo | null>(null);
-    const [transactionInfo, setTransactionInfo] = useState(null);
-    const [selectedFee, setSelectedFee] = useState(initialSelectedFee);
-    const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
-    const initialOutputs = [{ id: 0 }];
-    const [outputs, updateOutputs] = useState(initialOutputs);
-
-    useEffect(() => {}, [account.availableBalance]);
 
     // useEffect(() => {
     //     async function getCachedItem() {
@@ -91,19 +132,46 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     //     getCachedItem();
     // }, []);
 
-    const defaultValues: SendContext['defaultValues'] = {
+    const initialSelectedFee = levels.find(l => l.label === 'normal') || levels[0];
+    const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
+
+    useEffect(() => {}, [account.availableBalance]);
+
+    const sendState = useSendForm({
+        device,
+        account,
+        network,
+        coinFees,
+        online,
+
+        fiatRates,
+        locks,
+        feeInfo,
+        initialSelectedFee,
+        localCurrencyOption,
+        destinationAddressEmpty: false,
+        transactionInfo: null, // TODO: type
+        token: null,
+        feeOutdated: false,
+        selectedFee: initialSelectedFee,
+        advancedForm: false,
+        outputs: [{ id: 0 }],
+        isLoading: false,
+    });
+
+    const defaultValues: FormState = {
+        // inputs
         address: [''],
         amount: [''],
         setMax: ['inactive'],
         fiatInput: [''],
         localCurrency: [localCurrencyOption],
+        bitcoinLockTime: '',
         ethereumGasPrice: initialSelectedFee.feePerUnit,
-        ethereumGasLimit: initialSelectedFee.feeLimit,
+        ethereumGasLimit: initialSelectedFee.feeLimit || '',
         ethereumData: '',
         rippleDestinationTag: '',
     };
-
-    useEffect(() => {}, [account.availableBalance]);
 
     const methods = useForm({
         mode: 'onChange',
@@ -112,46 +180,13 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
 
     return (
         <WalletLayout title="Send" account={selectedAccount}>
-            <SendContext.Provider
-                value={{
-                    feeInfo,
-                    isLoading,
-                    setLoading,
-                    defaultValues,
-                    initialSelectedFee,
-                    outputs,
-                    coinFees,
-                    fiatRates,
-                    destinationAddressEmpty,
-                    setDestinationAddressEmpty,
-                    network,
-                    localCurrencyOption,
-                    updateOutputs,
-                    transactionInfo,
-                    setTransactionInfo,
-                    token,
-                    setToken,
-                    selectedFee,
-                    setSelectedFee,
-                    advancedForm,
-                    showAdvancedForm,
-                    account,
-                    feeOutdated,
-                    setFeeOutdated,
-                    device,
-                    online,
-                    locks,
-                }}
-            >
+            <SendContext.Provider value={sendState}>
                 <FormContext {...methods}>
                     <StyledCard
                         customHeader={
                             <Header>
                                 <HeaderLeft>
-                                    <Translation
-                                        id="SEND_TITLE"
-                                        values={{ symbol: symbol.toUpperCase() }}
-                                    />
+                                    <Translation id="SEND_TITLE" values={{ symbol }} />
                                 </HeaderLeft>
                                 <HeaderRight>
                                     <Clear />
@@ -161,7 +196,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
                     >
                         <Outputs />
                         <AdvancedForm />
-                        <ReviewButton />
+                        {/* <ReviewButton /> */}
                     </StyledCard>
                 </FormContext>
             </SendContext.Provider>

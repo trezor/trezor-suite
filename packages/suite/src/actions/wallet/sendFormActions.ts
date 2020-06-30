@@ -167,6 +167,8 @@ export const composeBitcoinTransaction = async (
         } as const;
     });
 
+    console.warn('COMPOSE BTC?');
+
     const response = await TrezorConnect.composeTransaction({
         account: {
             path: account.path,
@@ -205,20 +207,20 @@ export const onQrScan = (
     }
 };
 
+// non-redux action
 export const checkRippleEmptyAddress = async (
-    symbol: SendContext['account']['symbol'],
-    inputName: string,
-    getValues: ReturnType<typeof useForm>['getValues'],
-    setDestinationAddressEmpty: SendContext['setDestinationAddressEmpty'],
+    descriptor: string,
+    coin: SendContext['account']['symbol'],
 ) => {
     const response = await TrezorConnect.getAccountInfo({
-        coin: symbol,
-        descriptor: getValues(inputName),
+        descriptor,
+        coin,
     });
 
     if (response.success) {
-        setDestinationAddressEmpty(response.payload.empty);
+        return response.payload.empty;
     }
+    return false;
 };
 
 export const updateFiatInput = (
@@ -292,6 +294,7 @@ export const composeChange = async (
     outputs: SendContext['outputs'],
     token: SendContext['token'],
 ) => {
+    console.warn('composeChange', id, getValues());
     const setMaxActive = getValues(`setMax[${id}]`) === 'active';
     const composedTransaction = await composeTx(
         account,

@@ -1,15 +1,15 @@
-import { FiatValue, QuestionTooltip, Translation } from '@suite-components';
-import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext';
+import React from 'react';
+import BigNumber from 'bignumber.js';
+import validator from 'validator';
+import styled from 'styled-components';
 import { Input } from '@trezor/components';
+import { FiatValue, QuestionTooltip, Translation } from '@suite-components';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { updateFiatInput, updateMax } from '@wallet-actions/sendFormActions';
 import { getInputState } from '@wallet-utils/sendFormUtils';
-import BigNumber from 'bignumber.js';
-import React from 'react';
 import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
-import styled from 'styled-components';
-import validator from 'validator';
+import { useSendFormContext } from '@wallet-hooks';
 
 import TokenSelect from './components/TokenSelect';
 import Fiat from './components/Fiat';
@@ -96,27 +96,19 @@ const getError = (
 };
 
 export default ({ outputId }: { outputId: number }) => {
+    const { formContext, sendContext } = useSendFormContext();
     const {
         account,
-        setTransactionInfo,
         token,
         network,
         selectedFee,
         outputs,
         localCurrencyOption,
-        setLoading,
         destinationAddressEmpty,
         fiatRates,
-    } = useSendContext();
-    const {
-        register,
-        errors,
-        formState,
-        getValues,
-        setValue,
-        setError,
-        clearError,
-    } = useFormContext();
+        updateContext,
+    } = sendContext;
+    const { register, errors, formState, getValues, setValue, setError, clearError } = formContext;
     const inputName = `amount[${outputId}]`;
     const inputNameMax = `setMax[${outputId}]`;
     const isDirty = formState.dirtyFields.has(inputName);
@@ -153,24 +145,24 @@ export default ({ outputId }: { outputId: number }) => {
                         iconSize: 16,
                         onClick: async () => {
                             if (networkType === 'bitcoin') {
-                                setLoading(true);
+                                updateContext({ isLoading: true });
                             }
-                            await updateMax(
-                                outputId,
-                                account,
-                                setValue,
-                                getValues,
-                                clearError,
-                                setError,
-                                selectedFee,
-                                outputs,
-                                token,
-                                fiatRates,
-                                setTransactionInfo,
-                            );
+                            // await updateMax(
+                            //     outputId,
+                            //     account,
+                            //     setValue,
+                            //     getValues,
+                            //     clearError,
+                            //     setError,
+                            //     selectedFee,
+                            //     outputs,
+                            //     token,
+                            //     fiatRates,
+                            //     setTransactionInfo,
+                            // );
 
                             if (networkType === 'bitcoin') {
-                                setLoading(false);
+                                updateContext({ isLoading: true });
                             }
                         },
                         text: <Translation id="TR_SEND_SEND_MAX" />,
@@ -218,7 +210,7 @@ export default ({ outputId }: { outputId: number }) => {
                 <TokenSelect outputId={outputId} />
             </Left>
             {/* TODO: token FIAT rates calculation */}
-            {!token && (
+            {/* {!token && (
                 <FiatValue amount="1" symbol={symbol} fiatCurrency={localCurrencyOption.value}>
                     {({ rate }) =>
                         rate && (
@@ -231,7 +223,7 @@ export default ({ outputId }: { outputId: number }) => {
                         )
                     }
                 </FiatValue>
-            )}
+            )} */}
         </Wrapper>
     );
 };

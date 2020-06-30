@@ -1,3 +1,8 @@
+import React from 'react';
+import styled from 'styled-components';
+import { Button, colors } from '@trezor/components';
+import { FieldError, NestDataObject, useFormContext, useForm } from 'react-hook-form';
+
 import { SUITE } from '@suite-actions/constants';
 import * as modalActions from '@suite-actions/modalActions';
 import { Translation } from '@suite-components/Translation';
@@ -5,10 +10,6 @@ import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { useActions } from '@suite-hooks';
 import { AppState, TrezorDevice } from '@suite-types';
 import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext';
-import { Button, colors } from '@trezor/components';
-import React from 'react';
-import { FieldError, NestDataObject, useFormContext, useForm } from 'react-hook-form';
-import styled from 'styled-components';
 
 const Wrapper = styled.div`
     display: flex;

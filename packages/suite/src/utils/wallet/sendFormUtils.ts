@@ -1,4 +1,5 @@
 import { ERC20_GAS_LIMIT, ERC20_TRANSFER } from '@wallet-constants/sendForm';
+import { SendFormState } from '@wallet-types/sendForm';
 import { SendContext, FeeInfo, EthTransactionData } from '@wallet-hooks/useSendContext';
 import { Network, Account } from '@wallet-types';
 import { amountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -157,7 +158,7 @@ export const getFeeLevels = (
 };
 
 export const getInputState = (
-    error: NestDataObject<Record<string, any>, FieldError>,
+    error?: NestDataObject<SendFormState, FieldError>,
     isDirty?: boolean,
 ) => {
     if (error) {

@@ -1,16 +1,17 @@
+import React from 'react';
+import styled from 'styled-components';
+
 import { QuestionTooltip, Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
+import { useSendFormContext } from '@wallet-hooks';
 import { capitalizeFirstLetter } from '@suite-utils/string';
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import { Button, colors, P, Select, variables } from '@trezor/components';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { Account } from '@wallet-types';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { updateMax, findActiveMaxId } from '@wallet-actions/sendFormActions';
 import { calculateEthFee } from '@wallet-utils/sendFormUtils';
-import React from 'react';
-import { useFormContext } from 'react-hook-form';
-import styled from 'styled-components';
+
 import { FeeLevel } from 'trezor-connect';
 import { fromWei, toWei } from 'web3-utils';
 
@@ -112,21 +113,21 @@ const getValue = (
 };
 
 export default () => {
+    const { formContext, sendContext } = useSendFormContext();
+    const { formState, setValue, errors, getValues, setError, clearError } = formContext;
     const {
         account,
         feeInfo,
         feeOutdated,
         selectedFee,
-        setSelectedFee,
-        setFeeOutdated,
         outputs,
         token,
         fiatRates,
-        setTransactionInfo,
         coinFees,
-    } = useSendContext();
+        updateContext,
+    } = sendContext;
     const { updateFeeLevel } = useActions({ updateFeeLevel: sendFormActions.updateFeeLevel });
-    const { formState, setValue, errors, getValues, setError, clearError } = useFormContext();
+
     const dataIsDirty = formState.dirtyFields.has('ethereumData');
     const { networkType, symbol } = account;
     const customFeeHasError = errors.customFee;
@@ -152,19 +153,19 @@ export default () => {
                             </RefreshText>
                             <Button
                                 onClick={() => {
-                                    updateFeeLevel(
-                                        coinFees,
-                                        token,
-                                        setValue,
-                                        setSelectedFee,
-                                        outputs,
-                                        getValues,
-                                        clearError,
-                                        setError,
-                                        fiatRates,
-                                        setTransactionInfo,
-                                    );
-                                    setFeeOutdated(false);
+                                    // updateFeeLevel(
+                                    //     coinFees,
+                                    //     token,
+                                    //     setValue,
+                                    //     setSelectedFee: () => console.log("unnecessary callback"),
+                                    //     outputs,
+                                    //     getValues,
+                                    //     clearError,
+                                    //     setError: () => console.log("unnecessary callback"),
+                                    //     fiatRates,
+                                    //     setTransactionInfo: () => console.log("unnecessary callback"),
+                                    // );
+                                    updateContext({ feeOutdated: false });
                                 }}
                                 icon="REFRESH"
                                 variant="tertiary"

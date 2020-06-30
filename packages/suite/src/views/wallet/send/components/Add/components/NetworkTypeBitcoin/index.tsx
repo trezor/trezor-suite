@@ -1,8 +1,8 @@
-import { Translation } from '@suite-components';
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
-import { Select } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
+import { Select } from '@trezor/components';
+import { Translation } from '@suite-components';
+import { useSendFormContext } from '@wallet-hooks';
 
 const Wrapper = styled.div`
     min-width: 90px;
@@ -12,7 +12,7 @@ const StyledSelect = styled(Select)``;
 const options = [{ value: 'RECIPIENT', label: <Translation id="TR_RECIPIENT" /> }];
 
 export default () => {
-    const { updateOutputs, outputs } = useSendContext();
+    const { outputs, updateContext } = useSendFormContext().sendContext;
 
     return (
         <Wrapper>
@@ -30,7 +30,7 @@ export default () => {
                                 id: lastOutput.id + 1,
                             },
                         ];
-                        updateOutputs(outputsWithNewItem);
+                        updateContext({ outputs: outputsWithNewItem });
                     }
                 }}
                 options={options}

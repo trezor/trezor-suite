@@ -1,8 +1,8 @@
-import { Translation } from '@suite-components/Translation';
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
-import { colors, Icon, variables } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
+import { colors, Icon, variables } from '@trezor/components';
+import { Translation } from '@suite-components/Translation';
+import { useSendFormContext } from '@wallet-hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -23,13 +23,13 @@ interface Props {
 }
 
 export default ({ outputId }: Props) => {
-    const { updateOutputs, outputs } = useSendContext();
+    const { outputs, updateContext } = useSendFormContext().sendContext;
 
     return (
         <Wrapper
             onClick={() => {
                 const filteredOutputs = outputs.filter(output => output.id !== outputId);
-                updateOutputs(filteredOutputs);
+                updateContext({ outputs: filteredOutputs });
             }}
         >
             <StyledIcon size={12} color={colors.BLACK50} icon="CLEAR" />

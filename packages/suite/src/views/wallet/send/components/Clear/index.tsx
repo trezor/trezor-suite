@@ -2,8 +2,7 @@ import React from 'react';
 import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
 import { colors, Button } from '@trezor/components';
-import { useFormContext } from 'react-hook-form';
-import { useSendContext } from '@wallet-hooks/useSendContext';
+import { useSendFormContext } from '@wallet-hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -19,29 +18,14 @@ const In = styled.div`
 `;
 
 export default () => {
-    const { reset } = useFormContext();
-    const {
-        initialSelectedFee,
-        setSelectedFee,
-        setToken,
-        defaultValues,
-        updateOutputs,
-        showAdvancedForm,
-    } = useSendContext();
+    const { formContext, sendContext } = useSendFormContext();
 
     return (
         <Wrapper>
             <In
                 onClick={() => {
-                    reset(defaultValues, { dirty: true });
-                    setSelectedFee(initialSelectedFee);
-                    showAdvancedForm(false);
-                    setToken(null);
-                    updateOutputs([
-                        {
-                            id: 0,
-                        },
-                    ]);
+                    formContext.reset();
+                    sendContext.resetContext();
                 }}
             >
                 <Button variant="tertiary" icon="CLEAR" alignIcon="left">

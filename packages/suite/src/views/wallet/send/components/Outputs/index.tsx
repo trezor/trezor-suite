@@ -1,4 +1,4 @@
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
+import { useSendFormContext } from '@wallet-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { useActions } from '@suite-hooks';
 import React, { useEffect } from 'react';
@@ -31,40 +31,36 @@ const Row = styled.div`
 `;
 
 export default () => {
-    const {
-        outputs,
-        coinFees,
-        selectedFee,
-        token,
-        setSelectedFee,
-        fiatRates,
-        setTransactionInfo,
-        setFeeOutdated,
-    } = useSendContext();
-    const { updateFeeLevel } = useActions({ updateFeeLevel: sendFormActions.updateFeeLevel });
-    const { setValue, getValues, clearError, setError } = useFormContext();
-    // const { saveDraft } = useActions({ saveDraft: sendFormActions.saveDraft });
-    // const formValues = getValues();
+    const { formContext, sendContext } = useSendFormContext();
+    const { getValues, setValue, clearError, setError } = formContext;
+    const { outputs, coinFees, selectedFee, token, fiatRates } = sendContext;
 
-    useEffect(() => {
-        if (selectedFee.label === 'custom') {
-            setFeeOutdated(true);
-        } else {
-            updateFeeLevel(
-                coinFees,
-                token,
-                setValue,
-                setSelectedFee,
-                outputs,
-                getValues,
-                clearError,
-                setError,
-                fiatRates,
-                setTransactionInfo,
-            );
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [coinFees]);
+    // const outputs = getValues('outputs');
+    // const coinFees = getValues('coinFees');
+    // const selectedFee = getValues('selectedFee');
+    // const token = getValues('token');
+    // const fiatRates = getValues('fiatRates');
+    const { updateFeeLevel } = useActions({ updateFeeLevel: sendFormActions.updateFeeLevel });
+
+    // useEffect(() => {
+    //     if (selectedFee.label === 'custom') {
+    //         setValue('feeOutdated', true);
+    //     } else {
+    //         // updateFeeLevel(
+    //         //     coinFees,
+    //         //     token,
+    //         //     setValue,
+    //         //     setSelectedFee,
+    //         //     outputs,
+    //         //     getValues,
+    //         //     clearError,
+    //         //     setError,
+    //         //     fiatRates,
+    //         //     setTransactionInfo,
+    //         // );
+    //     }
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [coinFees]);
 
     // useEffect(() => {
     //     if (Object.keys(errors).length === 0 && Object.keys(formState.touched).length > 0) {
@@ -75,9 +71,9 @@ export default () => {
 
     return (
         <Wrapper>
-            {outputs.map((output, key: number) => (
+            {outputs.map((output, index) => (
                 <OutputWrapper key={output.id}>
-                    <Header outputIndex={key} outputId={output.id} />
+                    <Header outputIndex={index} outputId={output.id} />
                     <Row>
                         <Address outputId={output.id} />
                     </Row>
