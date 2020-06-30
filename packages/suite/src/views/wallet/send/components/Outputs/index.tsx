@@ -32,8 +32,9 @@ const Row = styled.div`
 export default () => {
     const { formContext, sendContext } = useSendFormContext();
     const { saveDraft } = useActions({ saveDraft: sendFormActions.saveDraft });
-    const { getValues, setValue, clearError, setError } = formContext;
+    const { getValues, setValue, clearError, setError, formState, errors } = formContext;
     const { outputs, coinFees, selectedFee, token, fiatRates } = sendContext;
+    const { dirty } = formState;
 
     // const outputs = getValues('outputs');
     // const coinFees = getValues('coinFees');
@@ -62,10 +63,11 @@ export default () => {
     //     // eslint-disable-next-line react-hooks/exhaustive-deps
     // }, [coinFees]);
 
-    // useEffect(() => {
-    //     console.log(getValues());
-    //     saveDraft(getValues(), sendContext);
-    // }, [getValues, sendContext]);
+    useEffect(() => {
+        if (dirty && Object.keys(errors).length === 0) {
+            saveDraft(getValues({ nest: true }), sendContext);
+        }
+    }, [getValues, sendContext, saveDraft, dirty, errors]);
 
     return (
         <Wrapper>
