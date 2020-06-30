@@ -21,7 +21,7 @@ const Text = styled.div`
 `;
 
 export default ({ outputId }: { outputId: number }) => {
-    const { formContext, sendContext } = useSendFormContext();
+    const { formContext, sendContext, composeTransaction } = useSendFormContext();
     const { register, errors, getValues, formState, setValue } = formContext;
     const { account, updateContext } = sendContext;
     const inputName = `address[${outputId}]`;
@@ -43,13 +43,16 @@ export default ({ outputId }: { outputId: number }) => {
                 </Label>
             }
             onChange={async () => {
-                if (!error && networkType === 'ripple') {
+                if (error) return;
+
+                if (networkType === 'ripple') {
                     const destinationAddressEmpty = await checkRippleEmptyAddress(
                         getValues(inputName),
                         account.symbol,
                     );
                     updateContext({ destinationAddressEmpty });
                 }
+                composeTransaction();
             }}
             bottomText={
                 error ? error.message : <AddressLabeling address={getValues(inputName)} knownOnly />

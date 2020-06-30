@@ -1,17 +1,16 @@
+import TrezorConnect, { FeeLevel, RipplePayment } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
-import { Account } from '@wallet-types';
-import { SEND } from '@wallet-actions/constants';
-import { Dispatch, GetState } from '@suite-types';
+import { toWei, fromWei } from 'web3-utils';
+import { useForm } from 'react-hook-form';
+
 import * as storageActions from '@suite-actions/storageActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { SendContext } from '@wallet-hooks/useSendContext';
-import { toWei, fromWei } from 'web3-utils';
-import { FormState, ContextStateValues } from '@wallet-types/sendForm';
+import { SendContext } from '@wallet-hooks/useSendContext'; // to remove
+import { SEND } from '@wallet-actions/constants';
 import { ZEC_SIGN_ENHANCEMENT, XRP_FLAG } from '@wallet-constants/sendForm';
+
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
-import { useForm } from 'react-hook-form';
-import TrezorConnect, { FeeLevel, RipplePayment } from 'trezor-connect';
 import {
     networkAmountToSatoshi,
     formatNetworkAmount,
@@ -25,6 +24,10 @@ import {
     serializeEthereumTx,
     prepareEthereumTransaction,
 } from '@wallet-utils/sendFormUtils';
+
+import { Dispatch, GetState } from '@suite-types';
+import { Account } from '@wallet-types';
+import { FormState, ContextState, ContextStateValues } from '@wallet-types/sendForm';
 
 export type SendFormActions = {
     type: typeof SEND.STORE_DRAFT;
@@ -309,6 +312,19 @@ export const composeTx = async (
     if (account.networkType === 'bitcoin') {
         return composeBitcoinTransaction(account, outputs, getValues, selectedFee);
     }
+};
+
+export const composeTransactionNew = (
+    sendValues: ContextState,
+    formValues: FormState,
+) => async () => {
+    // TODO: translate formValues/sendValues to trezor-connect params
+    // TODO: return precomposed transactions for multiple levels (will be stored in SendContext)
+    console.warn('------->>>>> COMPOSING ACTION NEW!!!!', sendValues, formValues);
+    if (formValues.setMaxOutputId >= 0) {
+        return true;
+    }
+    return false;
 };
 
 export const composeChange = async (

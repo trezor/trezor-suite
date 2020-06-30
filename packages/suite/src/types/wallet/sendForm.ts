@@ -32,6 +32,7 @@ export type FormState = {
     address: string[];
     amount: string[];
     setMax: Max[];
+    setMaxOutputId: number;
     fiatInput: string[];
     localCurrency: LocalCurrencyOption[];
     // advanced form inputs

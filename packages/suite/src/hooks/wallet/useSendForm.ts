@@ -1,6 +1,8 @@
 import { createContext, useContext, useCallback, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { FormState, ContextStateValues, ContextState } from '@wallet-types/sendForm';
+import { useActions } from '@suite-hooks';
+import * as sendFormActions from '@wallet-actions/sendFormActions';
 
 export const SendContext = createContext<ContextState | null>(null);
 SendContext.displayName = 'SendContext';
@@ -37,9 +39,17 @@ export const useSendForm = (defaultValues: ContextStateValues) => {
 export const useSendFormContext = () => {
     const sendContext = useContext(SendContext) as ContextState;
     const formContext = useFormContext<FormState>();
+    const { composeTransaction } = useActions({
+        composeTransaction: sendFormActions.composeTransactionNew,
+    });
+
+    const compose = useCallback(async () => {
+        const result = await composeTransaction(sendContext, formContext.getValues());
+    }, [sendContext, formContext, composeTransaction]);
 
     return {
         sendContext,
         formContext,
+        composeTransaction: compose,
     };
 };
