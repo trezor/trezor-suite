@@ -10,7 +10,7 @@ import { Card, Translation } from '@suite-components';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { FormState, ContextState } from '@wallet-types/sendForm';
 import { useSendForm, SendContext } from '@wallet-hooks/useSendForm';
-// import { getAccountKey } from '@wallet-utils/accountUtils';
+import { getAccountKey } from '@wallet-utils/accountUtils';
 
 import Outputs from './components/Outputs';
 import Clear from './components/Clear';
@@ -66,12 +66,15 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     // }, [selectedAccount.account]);
 
     const { account, network } = selectedAccount;
-    const { symbol, networkType } = account;
+    const { descriptor, deviceState, symbol, networkType } = account;
     const coinFees = fees[symbol];
     const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
-
     const fiatRates = fiat.coins.find(item => item.symbol === symbol);
+    const key = getAccountKey(descriptor, symbol, deviceState);
+    // const draft = send[key];
+
+    // console.log('draft', draft);
 
     useEffect(() => {
         // TODO: handle fee levels change (and update them)
@@ -157,6 +160,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
         advancedForm: false,
         outputs: [{ id: 0 }],
         isLoading: false,
+        // ...(draft ? draft.sendContext : {}),
     });
 
     const defaultValues: FormState = {
@@ -171,6 +175,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
         ethereumGasLimit: initialSelectedFee.feeLimit || '',
         ethereumData: '',
         rippleDestinationTag: '',
+        // ...(draft ? draft.formState : {}),
     };
 
     const methods = useForm({

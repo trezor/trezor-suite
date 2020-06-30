@@ -93,8 +93,6 @@ export default ({ outputId }: { outputId: number }) => {
     const tokenBalance = token ? `${token.balance} ${token.symbol!.toUpperCase()}` : undefined;
     const decimals = token ? token.decimals : network.decimals;
 
-    console.log(error);
-
     return (
         <Wrapper>
             <input type="hidden" name={inputNameMax} ref={register} />
