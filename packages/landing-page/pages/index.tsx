@@ -20,10 +20,6 @@ const StyledP = styled(P)`
     font-size: ${variables.FONT_SIZE.NORMAL};
 `;
 
-const ButtonBecomeTester = styled(Button)`
-    margin: 2px 0 0 10px;
-`;
-
 const ButtonWallet = styled(Button)`
     margin: 10px 0;
 `;
