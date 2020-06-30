@@ -9,7 +9,7 @@ import { Button, colors, P, Select, variables } from '@trezor/components';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { Account } from '@wallet-types';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { updateMax, findActiveMaxId } from '@wallet-actions/sendFormActions';
+import { Controller } from 'react-hook-form';
 import { calculateEthFee } from '@wallet-utils/sendFormUtils';
 
 import { FeeLevel } from 'trezor-connect';
@@ -114,7 +114,7 @@ const getValue = (
 
 export default () => {
     const { formContext, sendContext } = useSendFormContext();
-    const { formState, setValue, errors, getValues, setError, clearError } = formContext;
+    const { formState, setValue, errors, register, getValues, setError, clearError } = formContext;
     const {
         account,
         feeInfo,
@@ -129,6 +129,7 @@ export default () => {
     const { updateFeeLevel } = useActions({ updateFeeLevel: sendFormActions.updateFeeLevel });
 
     const dataIsDirty = formState.dirtyFields.has('ethereumData');
+    const selectName = 'selectedFee';
     const { networkType, symbol } = account;
     const customFeeHasError = errors.customFee;
     const ethereumGasPriceError = errors.ethereumGasPrice;
@@ -176,34 +177,14 @@ export default () => {
                         </Refresh>
                     )}
                 </Top>
-                <Select
-                    variant="small"
-                    isSearchable={false}
+                <Controller
+                    as={Select}
+                    name={selectName}
+                    innerRef={register()}
                     // hack for react select, it needs the "value"
-                    value={{ ...selectedFee, value: selectedFee.feePerUnit }}
-                    onChange={async (selectedFeeLevel: FeeLevel) => {
-                        if (selectedFeeLevel.label === 'custom') {
-                            setSelectedFee({ ...selectedFee, label: 'custom' });
-                            setValue('customFee', selectedFee.feePerUnit);
-                        } else {
-                            setSelectedFee(selectedFeeLevel);
-                            setValue('customFee', '');
-                            const activeMax = findActiveMaxId(outputs, getValues);
-                            await updateMax(
-                                activeMax,
-                                account,
-                                setValue,
-                                getValues,
-                                clearError,
-                                setError,
-                                selectedFeeLevel,
-                                outputs,
-                                token,
-                                fiatRates,
-                                setTransactionInfo,
-                            );
-                        }
-                    }}
+                    defaultValue={{ ...selectedFee, value: selectedFee.feePerUnit }}
+                    isSearchable={false}
+                    variant="small"
                     options={feeInfo.levels}
                     isDisabled={networkType === 'ethereum' && dataIsDirty}
                     formatOptionLabel={(option: FeeLevel) => (
