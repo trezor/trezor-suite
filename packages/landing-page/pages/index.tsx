@@ -31,11 +31,6 @@ const HeadBackP = styled(P)`
     flex-direction: column;
 `;
 
-const Row = styled.div`
-    display: flex;
-    align-items: center;
-`;
-
 const InfoRow = styled.div`
     display: flex;
     margin: 0 0 20px 0;
