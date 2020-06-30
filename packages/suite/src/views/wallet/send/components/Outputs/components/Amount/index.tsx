@@ -175,7 +175,10 @@ export default ({ outputId }: { outputId: number }) => {
                             },
                             TR_AMOUNT_IS_NOT_NUMBER: (value: string) => {
                                 const amountBig = new BigNumber(value);
-                                return validator.isNumeric(value) && amountBig.isGreaterThan(0);
+                                return (
+                                    validator.isNumeric(value) &&
+                                    amountBig.isGreaterThanOrEqualTo(0)
+                                );
                             },
                             TR_AMOUNT_IS_NOT_ENOUGH: (value: string) => {
                                 const amountBig = new BigNumber(value);

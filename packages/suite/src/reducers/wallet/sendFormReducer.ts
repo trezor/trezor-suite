@@ -10,7 +10,7 @@ export interface State {
 interface Drafts {
     [key: string]: {
         sendContext: ContextStateValues;
-        formContext: FormState;
+        formState: FormState;
     };
 }
 
@@ -22,7 +22,7 @@ export default (state: Drafts = initialState, action: Action) => {
             case SEND.STORE_DRAFT:
                 draft[action.key] = {
                     sendContext: action.sendContext,
-                    formContext: action.formContext,
+                    formState: action.formState,
                 };
                 break;
             // no default
