@@ -35,18 +35,18 @@ const DestinationTag = () => {
                     <QuestionTooltip messageId="TR_XRP_DESTINATION_TAG_EXPLAINED" />
                 </Label>
             }
-            bottomText={error && <Translation id={error.type} />}
+            bottomText={error && error.message}
             name={inputName}
             innerRef={register({
                 validate: {
-                    TR_DESTINATION_TAG_IS_NOT_NUMBER: (value: string) => {
-                        if (value !== '') {
-                            return validator.isNumeric(value);
+                    xrpDestinationTagNotNumber: (value: string) => {
+                        if (value && !validator.isNumeric(value)) {
+                            return <Translation id="TR_DESTINATION_TAG_IS_NOT_NUMBER" />;
                         }
                     },
-                    TR_DESTINATION_TAG_IS_NOT_VALID: (value: string) => {
-                        if (value !== '') {
-                            return !(parseInt(value, 10) > U_INT_32);
+                    xrpDestinationTagNotValid: (value: string) => {
+                        if (value && parseInt(value, 10) > U_INT_32) {
+                            return <Translation id="TR_DESTINATION_TAG_IS_NOT_VALID" />;
                         }
                     },
                 },

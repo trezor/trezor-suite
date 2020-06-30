@@ -76,14 +76,14 @@ export default () => {
             }}
             innerRef={register({
                 validate: {
-                    TR_ETH_GAS_LIMIT_NOT_NUMBER: (value: string) => {
-                        if (value) {
-                            return validator.isNumeric(value);
+                    ethGasLimitNotNumber: (value: string) => {
+                        if (value && !validator.isNumeric(value)) {
+                            return <Translation id="TR_ETH_GAS_LIMIT_NOT_NUMBER" />;
                         }
                     },
                 },
             })}
-            bottomText={error && <Translation id={error.type} />}
+            bottomText={error && error.message}
             topLabel={
                 <Label>
                     <Text>
