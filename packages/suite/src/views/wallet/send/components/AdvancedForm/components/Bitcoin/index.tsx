@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useSendFormContext } from '@wallet-hooks';
+
 import EstimatedMiningTime from '../../../EstimatedMiningTime';
 import Fee from '../Fee';
 import Layout from '../Layout';

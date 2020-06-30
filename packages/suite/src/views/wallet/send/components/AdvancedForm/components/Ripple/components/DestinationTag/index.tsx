@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import validator from 'validator';
+import { useSendFormContext } from '@wallet-hooks';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Input } from '@trezor/components';
 import { U_INT_32 } from '@wallet-constants/sendForm';
-import { useFormContext } from 'react-hook-form';
 import { Translation, QuestionTooltip } from '@suite-components';
 
 const Label = styled.div`
@@ -18,7 +18,8 @@ const Text = styled.div`
 `;
 
 const DestinationTag = () => {
-    const { register, errors } = useFormContext();
+    const { formContext } = useSendFormContext();
+    const { register, errors } = formContext;
     const inputName = 'rippleDestinationTag';
     const error = errors[inputName];
 

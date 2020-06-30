@@ -43,7 +43,7 @@ export type FormState = {
     // various common props
 };
 
-export type ContextState = {
+export type ContextStateValues = {
     account: Account;
     coinFees: FeeInfo;
     network: Network;

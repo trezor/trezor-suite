@@ -1,15 +1,15 @@
 import { FiatValue } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
 import { Input, Select } from '@trezor/components';
+import { findActiveMaxId } from '@wallet-actions/sendFormActions';
+import { useSendFormContext } from '@wallet-hooks';
 import { Account } from '@wallet-types';
+import { getFee, getInputState } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
-import { updateMax, findActiveMaxId } from '@wallet-actions/sendFormActions';
-import { getInputState, getFee } from '@wallet-utils/sendFormUtils';
 import React from 'react';
-import { FieldError, NestDataObject, Controller } from 'react-hook-form';
+import { Controller, FieldError, NestDataObject } from 'react-hook-form';
 import styled from 'styled-components';
 import validator from 'validator';
-import { useSendFormContext } from '@wallet-hooks';
 
 interface WrapperProps {
     isVisible: boolean;

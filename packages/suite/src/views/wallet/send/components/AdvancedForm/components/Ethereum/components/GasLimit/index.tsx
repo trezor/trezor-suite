@@ -1,10 +1,9 @@
 import { Translation } from '@suite-components';
 import { colors, Icon, Input, Tooltip } from '@trezor/components';
-import { useSendContext, SendContext } from '@wallet-hooks/useSendContext';
-import { getInputState } from '@wallet-utils/sendFormUtils';
 import { updateMax } from '@wallet-actions/sendFormActions';
+import { useSendFormContext } from '@wallet-hooks';
+import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import validator from 'validator';
 
@@ -22,7 +21,8 @@ const StyledIcon = styled(Icon)`
 `;
 
 export default () => {
-    const { register, errors, getValues, setValue, setError, clearError } = useFormContext();
+    const { formContext, sendContext } = useSendFormContext();
+    const { register, errors, getValues, setValue, setError, clearError } = formContext;
     const {
         account,
         initialSelectedFee,
@@ -31,7 +31,7 @@ export default () => {
         token,
         outputs,
         setTransactionInfo,
-    } = useSendContext();
+    } = sendContext;
     const { networkType } = account;
     const inputName = 'ethereumGasLimit';
     const ethData = getValues('ethereumData');

@@ -9,7 +9,7 @@ import { Card, Translation } from '@suite-components';
 
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { FormState, ContextState } from '@wallet-types/sendForm';
-import { useSendForm, SendContext } from '@wallet-hooks';
+import { useSendForm, SendContext } from '@wallet-hooks/useSendForm';
 // import { getAccountKey } from '@wallet-utils/accountUtils';
 
 import Outputs from './components/Outputs';
@@ -196,7 +196,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
                     >
                         <Outputs />
                         <AdvancedForm />
-                        {/* <ReviewButton /> */}
+                        <ReviewButton />
                     </StyledCard>
                 </FormContext>
             </SendContext.Provider>

@@ -1,6 +1,6 @@
 import { QuestionTooltip, Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
+import { useSendFormContext } from '@wallet-hooks';
 import { Textarea } from '@trezor/components';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { getInputState } from '@wallet-utils/sendFormUtils';
@@ -19,6 +19,7 @@ const Text = styled.div`
 `;
 
 export default () => {
+    const { formContext, sendContext } = useSendFormContext();
     const {
         token,
         setSelectedFee,
@@ -26,8 +27,8 @@ export default () => {
         outputs,
         fiatRates,
         setTransactionInfo,
-    } = useSendContext();
-    const { register, errors, getValues, setValue, clearError, setError } = useFormContext();
+    } = sendContext;
+    const { register, errors, getValues, setValue, clearError, setError } = formContext;
     const inputName = 'ethereumData';
     const { updateFeeLevelWithData } = useActions({
         updateFeeLevelWithData: sendFormActions.updateFeeLevelWithData,

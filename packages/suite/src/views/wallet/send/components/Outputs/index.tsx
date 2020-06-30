@@ -1,13 +1,12 @@
-import { useSendFormContext } from '@wallet-hooks';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { useActions } from '@suite-hooks';
+import * as sendFormActions from '@wallet-actions/sendFormActions';
+import { useSendFormContext } from '@wallet-hooks';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 import Address from './components/Address';
 import Amount from './components/Amount';
 import Header from './components/Header';
-import { useFormContext } from 'react-hook-form';
 
 const Wrapper = styled.div``;
 

@@ -1,15 +1,14 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Button, colors } from '@trezor/components';
-import { FieldError, NestDataObject, useFormContext, useForm } from 'react-hook-form';
-
 import { SUITE } from '@suite-actions/constants';
 import * as modalActions from '@suite-actions/modalActions';
 import { Translation } from '@suite-components/Translation';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { useActions } from '@suite-hooks';
 import { AppState, TrezorDevice } from '@suite-types';
-import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext';
+import { useSendFormContext } from '@wallet-hooks';
+import { Button, colors } from '@trezor/components';
+import * as sendFormActions from '@wallet-actions/sendFormActions';
+import React from 'react';
+import { FieldError, NestDataObject, useForm } from 'react-hook-form';
+import styled from 'styled-components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -86,7 +85,8 @@ const isDisabled = (
 };
 
 export default () => {
-    const { errors, getValues, reset } = useFormContext();
+    const { formContext, sendContext } = useSendFormContext();
+    const { errors, getValues, reset } = formContext;
     const { sendBitcoinTransaction, sendEthereumTransaction, sendRippleTransaction } = useActions({
         sendBitcoinTransaction: sendFormActions.sendBitcoinTransaction,
         sendEthereumTransaction: sendFormActions.sendEthereumTransaction,
@@ -103,13 +103,7 @@ export default () => {
         isLoading,
         transactionInfo,
         selectedFee,
-        setSelectedFee,
-        updateOutputs,
-        showAdvancedForm,
-        initialSelectedFee,
-        defaultValues,
-        setToken,
-    } = useSendContext();
+    } = sendContext;
     const { networkType } = account;
     const { openModal } = useActions({ openModal: modalActions.openModal });
 
@@ -153,15 +147,7 @@ export default () => {
                                     }
 
                                     if (response !== 'error') {
-                                        reset(defaultValues, { dirty: true });
-                                        setSelectedFee(initialSelectedFee);
-                                        showAdvancedForm(false);
-                                        setToken(null);
-                                        updateOutputs([
-                                            {
-                                                id: 0,
-                                            },
-                                        ]);
+                                        reset();
                                     }
                                 },
                             });
