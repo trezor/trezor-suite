@@ -1,11 +1,13 @@
 import BigNumber from 'bignumber.js';
 import { Account } from '@wallet-types';
+import { SEND } from '@wallet-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 import * as storageActions from '@suite-actions/storageActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { SendContext } from '@wallet-hooks/useSendContext';
 import { toWei, fromWei } from 'web3-utils';
+import { FormState, ContextStateValues } from '@wallet-types/sendForm';
 import { ZEC_SIGN_ENHANCEMENT, XRP_FLAG } from '@wallet-constants/sendForm';
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
 import { useForm } from 'react-hook-form';
@@ -23,6 +25,31 @@ import {
     serializeEthereumTx,
     prepareEthereumTransaction,
 } from '@wallet-utils/sendFormUtils';
+
+export type SendFormActions = {
+    type: typeof SEND.STORE_DRAFT;
+    key: string;
+    sendContext: ContextStateValues;
+    formState: FormState;
+};
+
+export const saveDraft = (formState: FormState, sendContext: ContextStateValues) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { selectedAccount } = getState().wallet;
+    if (selectedAccount.status !== 'loaded') return null;
+    const { account } = selectedAccount;
+    const { symbol, descriptor, deviceState } = account;
+    const key = getAccountKey(descriptor, symbol, deviceState);
+
+    dispatch({
+        type: SEND.STORE_DRAFT,
+        key,
+        formState,
+        sendContext,
+    });
+};
 
 export const composeRippleTransaction = (
     account: SendContext['account'],
@@ -755,18 +782,4 @@ export const sendRippleTransaction = (
     }
 
     return 'success';
-};
-
-export const saveDraft = (data: Record<string, any>, outputs: SendContext['outputs']) => async (
-    _dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const { selectedAccount } = getState().wallet;
-    const { device } = getState().suite;
-    if (selectedAccount.status !== 'loaded' || !device) return null;
-    const { account } = selectedAccount;
-    const { symbol, descriptor, deviceState } = account;
-    const accountKey = getAccountKey(descriptor, symbol, deviceState);
-
-    storageActions.saveSendForm({ data, outputs }, accountKey);
 };

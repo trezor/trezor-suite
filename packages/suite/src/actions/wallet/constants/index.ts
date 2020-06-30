@@ -8,6 +8,7 @@ import * as DISCOVERY from './discoveryConstants';
 import * as WALLET from './walletConstants';
 import * as FIAT_RATES from './fiatRatesConstants';
 import * as GRAPH from './graphConstants';
+import * as SEND from './sendConstants';
 
 export {
     BLOCKCHAIN,
@@ -20,4 +21,5 @@ export {
     WALLET,
     FIAT_RATES,
     GRAPH,
+    SEND,
 };

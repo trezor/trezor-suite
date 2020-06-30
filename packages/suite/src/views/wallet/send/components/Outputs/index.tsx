@@ -31,6 +31,7 @@ const Row = styled.div`
 
 export default () => {
     const { formContext, sendContext } = useSendFormContext();
+    const { saveDraft } = useActions({ saveDraft: sendFormActions.saveDraft });
     const { getValues, setValue, clearError, setError } = formContext;
     const { outputs, coinFees, selectedFee, token, fiatRates } = sendContext;
 
@@ -62,11 +63,9 @@ export default () => {
     // }, [coinFees]);
 
     // useEffect(() => {
-    //     if (Object.keys(errors).length === 0 && Object.keys(formState.touched).length > 0) {
-    //         console.log('formValues', formValues);
-    //         saveDraft(formValues, outputs);
-    //     }
-    // }, [formValues, outputs, saveDraft, formState, errors]);
+    //     console.log(getValues());
+    //     saveDraft(getValues(), sendContext);
+    // }, [getValues, sendContext]);
 
     return (
         <Wrapper>
