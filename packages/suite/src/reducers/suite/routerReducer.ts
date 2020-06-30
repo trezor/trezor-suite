@@ -4,12 +4,14 @@ import { getAppWithParams } from '@suite-utils/router';
 import { Action } from '@suite-types';
 
 type State = {
+    loaded: boolean;
     url: string;
     pathname: string;
     hash?: string;
 } & RouterAppWithParams;
 
 const initialState: State = {
+    loaded: false,
     url: '/',
     pathname: '/',
     app: 'unknown',
@@ -20,6 +22,7 @@ const initialState: State = {
 const onLocationChange = (url: string) => {
     const [pathname, hash] = url.split('#');
     return {
+        loaded: true,
         url,
         pathname,
         hash,
