@@ -1,7 +1,6 @@
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import React from 'react';
 import styled from 'styled-components';
-
+import { useSendFormContext } from '@wallet-hooks';
 import Add from '../Add';
 import Bitcoin from './components/Bitcoin';
 import Ethereum from './components/Ethereum';
@@ -31,7 +30,7 @@ const Header = styled.div`
 `;
 
 export default () => {
-    const { advancedForm, account } = useSendContext();
+    const { account, advancedForm } = useSendFormContext().sendContext;
     const { networkType } = account;
 
     return (

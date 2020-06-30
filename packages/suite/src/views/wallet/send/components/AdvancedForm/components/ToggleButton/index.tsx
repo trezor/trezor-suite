@@ -1,8 +1,8 @@
 import React from 'react';
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
-import { variables, colors, Icon } from '@trezor/components';
 import styled from 'styled-components';
+import { variables, colors, Icon } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
+import { useSendFormContext } from '@wallet-hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -25,17 +25,13 @@ const Text = styled.div`
 `;
 
 export default () => {
-    const { advancedForm, showAdvancedForm } = useSendContext();
+    const { advancedForm, updateContext } = useSendFormContext().sendContext;
 
     return (
         <Wrapper>
             <Text
                 onClick={() => {
-                    if (advancedForm) {
-                        showAdvancedForm(false);
-                    } else {
-                        showAdvancedForm(true);
-                    }
+                    updateContext({ advancedForm: !advancedForm });
                 }}
             >
                 {advancedForm ? (

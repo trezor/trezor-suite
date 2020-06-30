@@ -1,8 +1,6 @@
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
-
+import { useSendFormContext } from '@wallet-hooks';
 import EstimatedMiningTime from '../../../EstimatedMiningTime';
 import Fee from '../Fee';
 import Layout from '../Layout';
@@ -25,8 +23,9 @@ const Row = styled.div`
 `;
 
 export default () => {
-    const { getValues } = useFormContext();
-    const { feeInfo, selectedFee } = useSendContext();
+    const { formContext, sendContext } = useSendFormContext();
+    const { getValues } = formContext;
+    const { feeInfo, selectedFee } = sendContext;
     const customFee = getValues('customFee');
 
     return (

@@ -1,15 +1,15 @@
 import { FiatValue } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
-import { useSendContext, SendContext } from '@suite/hooks/wallet/useSendContext';
 import { Input, Select } from '@trezor/components';
 import { Account } from '@wallet-types';
 import BigNumber from 'bignumber.js';
 import { updateMax, findActiveMaxId } from '@wallet-actions/sendFormActions';
 import { getInputState, getFee } from '@wallet-utils/sendFormUtils';
 import React from 'react';
-import { useFormContext, FieldError, NestDataObject, Controller } from 'react-hook-form';
+import { FieldError, NestDataObject, Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import validator from 'validator';
+import { useSendFormContext } from '@wallet-hooks';
 
 interface WrapperProps {
     isVisible: boolean;
@@ -66,18 +66,20 @@ const getError = (
 };
 
 export default ({ isVisible }: { isVisible: boolean }) => {
+    const { formContext, sendContext } = useSendFormContext();
     const {
         account,
         feeInfo,
         transactionInfo,
-        setSelectedFee,
+        // setSelectedFee,
         outputs,
         selectedFee,
         token,
         fiatRates,
-        setTransactionInfo,
-    } = useSendContext();
-    const { register, errors, getValues, setValue, clearError, setError } = useFormContext();
+        // setTransactionInfo,
+        updateContext,
+    } = sendContext;
+    const { register, errors, getValues, setValue, clearError, setError } = formContext;
     const inputNameValue = 'customFee';
     const inputNameUnit = 'customFeeUnit';
     const { networkType, symbol } = account;
@@ -92,26 +94,27 @@ export default ({ isVisible }: { isVisible: boolean }) => {
                     name={inputNameValue}
                     state={getInputState(error)}
                     onChange={async event => {
-                        const newFeeLevel: SendContext['selectedFee'] = {
+                        const newFeeLevel = {
                             ...selectedFee,
                             feePerUnit: event.target.value,
                         };
-                        setSelectedFee(newFeeLevel);
+                        updateContext({ selectedFee: newFeeLevel });
+
                         if (!error) {
                             const activeMax = findActiveMaxId(outputs, getValues);
-                            await updateMax(
-                                activeMax,
-                                account,
-                                setValue,
-                                getValues,
-                                clearError,
-                                setError,
-                                newFeeLevel,
-                                outputs,
-                                token,
-                                fiatRates,
-                                setTransactionInfo,
-                            );
+                            // await updateMax(
+                            //     activeMax,
+                            //     account,
+                            //     setValue,
+                            //     getValues,
+                            //     clearError,
+                            //     setError,
+                            //     newFeeLevel,
+                            //     outputs,
+                            //     token,
+                            //     fiatRates,
+                            //     setTransactionInfo,
+                            // );
                         }
                     }}
                     innerRef={register({

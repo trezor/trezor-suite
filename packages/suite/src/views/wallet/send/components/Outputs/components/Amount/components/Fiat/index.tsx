@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Select, Input } from '@trezor/components';
-import { useFormContext, Controller } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import BigNumber from 'bignumber.js';
-import { useSendContext } from '@suite/hooks/wallet/useSendContext';
+import { useSendFormContext } from '@wallet-hooks';
 import { FIAT } from '@suite-config';
 import { composeChange, updateFiatInput } from '@wallet-actions/sendFormActions';
 import { getInputState, getFiatRate, buildCurrencyOption } from '@wallet-utils/sendFormUtils';
+import { useSendFormContext } from '@wallet-hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -22,24 +23,25 @@ const SelectWrapper = styled.div`
 `;
 
 export default ({ outputId }: { outputId: number }) => {
-    const { register, errors, getValues, control, setValue, setError } = useFormContext();
+    const { formContext, sendContext } = useSendFormContext();
+    const { register, errors, getValues, control, setValue, setError } = formContext;
     const {
         fiatRates,
         token,
         network,
         localCurrencyOption,
         account,
-        setTransactionInfo,
         selectedFee,
         outputs,
-    } = useSendContext();
+    } = sendContext;
+
     const inputName = `fiatInput[${outputId}]`;
     const inputNameSelect = `localCurrency[${outputId}]`;
     const error = errors && errors.fiatInput ? errors.fiatInput[outputId] : null;
     const decimals = token ? token.decimals : network.decimals;
 
     useEffect(() => {
-        const fiatInputValue = getValues(inputName);
+        const fiatInputValue = getValues('fiatInput')[outputId];
         if (fiatInputValue.length > 0) {
             updateFiatInput(outputId, fiatRates, getValues, setValue);
         }
@@ -60,7 +62,7 @@ export default ({ outputId }: { outputId: number }) => {
                         await composeChange(
                             outputId,
                             account,
-                            setTransactionInfo,
+                            setTransactionInfo: () => {},
                             getValues,
                             setError,
                             selectedFee,
