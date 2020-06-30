@@ -21,7 +21,7 @@ const Text = styled.div`
 `;
 
 export default ({ outputId }: { outputId: number }) => {
-    const { formContext, sendContext } = useSendFormContext();
+    const { formContext, sendContext, composeTransaction } = useSendFormContext();
     const { register, errors, getValues, formState, setValue } = formContext;
     const { account, updateContext } = sendContext;
     const inputName = `address[${outputId}]`;
@@ -43,13 +43,16 @@ export default ({ outputId }: { outputId: number }) => {
                 </Label>
             }
             onChange={async () => {
-                if (!error && networkType === 'ripple') {
+                if (error) return;
+
+                if (networkType === 'ripple') {
                     const destinationAddressEmpty = await checkRippleEmptyAddress(
                         getValues(inputName),
                         account.symbol,
                     );
                     updateContext({ destinationAddressEmpty });
                 }
+                composeTransaction();
             }}
             bottomText={
                 error ? (
@@ -62,7 +65,8 @@ export default ({ outputId }: { outputId: number }) => {
             innerRef={register({
                 validate: {
                     TR_ADDRESS_IS_NOT_SET: (value: string) => !(isDirty && value.length === 0),
-                    TR_ADDRESS_IS_NOT_VALID: (value: string) => isAddressValid(value, symbol),
+                    TR_ADDRESS_IS_NOT_VALID: (value: string) =>
+                        !(isDirty && !isAddressValid(value, symbol)),
                     TR_XRP_CANNOT_SEND_TO_MYSELF: (value: string) => {
                         if (networkType === 'ripple') {
                             return !(value === descriptor);

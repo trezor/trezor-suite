@@ -7,7 +7,6 @@ import { useSendFormContext } from '@wallet-hooks';
 import { FIAT } from '@suite-config';
 import { composeChange, updateFiatInput } from '@wallet-actions/sendFormActions';
 import { getInputState, getFiatRate, buildCurrencyOption } from '@wallet-utils/sendFormUtils';
-import { useSendFormContext } from '@wallet-hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -23,7 +22,7 @@ const SelectWrapper = styled.div`
 `;
 
 export default ({ outputId }: { outputId: number }) => {
-    const { formContext, sendContext } = useSendFormContext();
+    const { formContext, sendContext, composeTransaction } = useSendFormContext();
     const { register, errors, getValues, control, setValue, setError } = formContext;
     const {
         fiatRates,
@@ -59,23 +58,29 @@ export default ({ outputId }: { outputId: number }) => {
                     const rate = getFiatRate(fiatRates, selectedCurrency.value);
 
                     if (rate) {
-                        await composeChange(
-                            outputId,
-                            account,
-                            setTransactionInfo: () => {},
-                            getValues,
-                            setError,
-                            selectedFee,
-                            outputs,
-                            token,
-                        );
+                        // await composeChange(
+                        //     outputId,
+                        //     account,
+                        //     setTransactionInfo: () => {},
+                        //     getValues,
+                        //     setError,
+                        //     selectedFee,
+                        //     outputs,
+                        //     token,
+                        // );
 
                         const amountBigNumber = localCurrencyValue.dividedBy(rate);
 
                         if (!amountBigNumber.isNaN() && !amountBigNumber.isLessThan(0)) {
                             const isFixed = amountBigNumber.isZero();
                             const fixedDecimals = isFixed ? 0 : decimals;
-                            setValue(`amount[${outputId}]`, amountBigNumber.toFixed(fixedDecimals));
+                            setValue(
+                                `amount[${outputId}]`,
+                                amountBigNumber.toFixed(fixedDecimals),
+                                true,
+                            );
+
+                            composeTransaction();
                         }
                     }
                 }}
@@ -100,6 +105,8 @@ export default ({ outputId }: { outputId: number }) => {
                             const fiatValueBigNumber = amountBig.multipliedBy(rate);
                             setValue(inputName, fiatValueBigNumber.toFixed(2));
                         }
+
+                        composeTransaction();
 
                         return { ...selected };
                     }}
