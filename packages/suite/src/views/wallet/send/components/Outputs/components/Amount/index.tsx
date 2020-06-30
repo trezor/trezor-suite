@@ -66,35 +66,6 @@ const EqualsSign = styled.div`
     }
 `;
 
-const getError = (
-    error: NestDataObject<Record<string, any>, FieldError>,
-    decimals: number,
-    symbol: SendContext['account']['symbol'],
-    reserve: string | null,
-) => {
-    const reserveError = 'TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE';
-    const currencyError = 'NOT_ENOUGH_CURRENCY_FEE';
-    const decimalError = 'TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS';
-    const { type } = error;
-
-    switch (type) {
-        case reserveError:
-            return <Translation id={reserveError} values={{ reserve }} />;
-        case decimalError:
-            return <Translation id="TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS" values={{ decimals }} />;
-        case currencyError:
-            return (
-                <Translation
-                    id="NOT_ENOUGH_CURRENCY_FEE"
-                    values={{ symbol: symbol.toUpperCase() }}
-                />
-            );
-
-        default:
-            return <Translation id={error.type} />;
-    }
-};
-
 export default ({ outputId }: { outputId: number }) => {
     const { formContext, sendContext, composeTransaction } = useSendFormContext();
     const {
@@ -121,6 +92,8 @@ export default ({ outputId }: { outputId: number }) => {
         account.networkType === 'ripple' ? formatNetworkAmount(account.misc.reserve, symbol) : null;
     const tokenBalance = token ? `${token.balance} ${token.symbol!.toUpperCase()}` : undefined;
     const decimals = token ? token.decimals : network.decimals;
+
+    console.log(error);
 
     return (
         <Wrapper>
@@ -155,31 +128,71 @@ export default ({ outputId }: { outputId: number }) => {
                     align="right"
                     innerRef={register({
                         validate: {
-                            TR_AMOUNT_IS_NOT_SET: (value: string) => {
-                                return !(value.length === 0);
+                            notSet: (value: string) => {
+                                console.log('value.length', value.length);
+                                if (value.length === 0) {
+                                    return <Translation id="TR_AMOUNT_IS_NOT_SET" />;
+                                }
                             },
-                            TR_AMOUNT_IS_NOT_NUMBER: (value: string) => {
+                            notNumber: (value: string) => {
+                                if (!validator.isNumeric(value)) {
+                                    return <Translation id="TR_AMOUNT_IS_NOT_NUMBER" />;
+                                }
+                            },
+                            notEnough: (value: string) => {
                                 const amountBig = new BigNumber(value);
-                                return (
-                                    validator.isNumeric(value) &&
-                                    amountBig.isGreaterThanOrEqualTo(0)
-                                );
+                                if (
+                                    value.length > 0 &&
+                                    amountBig.isGreaterThan(formattedAvailableBalance)
+                                ) {
+                                    return <Translation id="TR_AMOUNT_IS_NOT_ENOUGH" />;
+                                }
                             },
-                            TR_AMOUNT_IS_NOT_ENOUGH: (value: string) => {
+                            xrpSmallReserve: (value: string) => {
                                 const amountBig = new BigNumber(value);
-                                return !amountBig.isGreaterThan(formattedAvailableBalance);
-                            },
-                            TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE: (value: string) => {
-                                if (networkType === 'ripple' && reserve) {
-                                    const amountBig = new BigNumber(value);
-                                    return !(
-                                        destinationAddressEmpty &&
-                                        reserve &&
-                                        amountBig.isLessThan(reserve)
+                                if (
+                                    networkType === 'ripple' &&
+                                    destinationAddressEmpty &&
+                                    reserve &&
+                                    amountBig.isLessThan(reserve)
+                                ) {
+                                    return (
+                                        <Translation
+                                            id="TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE"
+                                            values={{ reserve }}
+                                        />
                                     );
                                 }
                             },
-                            TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS: (value: string) => {
+                            notEnoughCurrencyFee: () => {
+                                if (
+                                    networkType === 'ethereum' &&
+                                    error &&
+                                    error.type === 'notEnoughCurrencyFee'
+                                ) {
+                                    return (
+                                        <Translation
+                                            id="NOT_ENOUGH_CURRENCY_FEE"
+                                            values={{ symbol: symbol.toUpperCase() }}
+                                        />
+                                    );
+                                }
+                            },
+                            decimalOverflow: (value: string) => {
+                                if (
+                                    !validator.isDecimal(value, {
+                                        // eslint-disable-next-line @typescript-eslint/camelcase
+                                        decimal_digits: `0,${decimals}`,
+                                    })
+                                ) {
+                                    return (
+                                        <Translation
+                                            id="TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                                            values={{ decimals }}
+                                        />
+                                    );
+                                }
+
                                 return validator.isDecimal(value, {
                                     // eslint-disable-next-line @typescript-eslint/camelcase
                                     decimal_digits: `0,${decimals}`,
@@ -188,7 +201,7 @@ export default ({ outputId }: { outputId: number }) => {
                         },
                     })}
                     name={inputName}
-                    bottomText={error && getError(error, decimals, symbol, reserve)}
+                    bottomText={error && error.message}
                 />
                 {tokenBalance && (
                     <TokenBalance>

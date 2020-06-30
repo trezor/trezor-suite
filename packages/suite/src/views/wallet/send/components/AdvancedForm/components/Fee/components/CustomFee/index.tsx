@@ -119,20 +119,23 @@ export default ({ isVisible }: { isVisible: boolean }) => {
                     }}
                     innerRef={register({
                         validate: {
-                            TR_CUSTOM_FEE_IS_NOT_SET: (value: string) => {
+                            notSet: (value: string) => {
                                 if (!value) {
-                                    return false;
+                                    return <Translation id="TR_CUSTOM_FEE_IS_NOT_SET" />;
                                 }
                             },
-                            TR_CUSTOM_FEE_IS_NOT_NUMBER: (value: string) => {
-                                return validator.isNumeric(value);
+                            notNumber: (value: string) => {
+                                if (!validator.isNumeric(value)) {
+                                    return <Translation id="TR_CUSTOM_FEE_IS_NOT_NUMBER" />;
+                                }
                             },
                             TR_CUSTOM_FEE_NOT_IN_RANGE: (value: string) => {
                                 const customFeeBig = new BigNumber(value);
-                                return !(
+                                if (
                                     customFeeBig.isGreaterThan(maxFee) ||
                                     customFeeBig.isLessThan(minFee)
-                                );
+                                )
+                                    return <Translation id="TR_CUSTOM_FEE_NOT_IN_RANGE" />;
                             },
                         },
                     })}

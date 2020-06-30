@@ -39,9 +39,9 @@ export default () => {
             name={inputName}
             innerRef={register({
                 validate: {
-                    TR_ETH_DATA_NOT_HEX: (value: string) => {
-                        if (value) {
-                            return validator.isHexadecimal(value);
+                    ethDataNotHex: (value: string) => {
+                        if (value && !validator.isHexadecimal(value)) {
+                            return <Translation id="TR_ETH_DATA_NOT_HEX" />;
                         }
                     },
                 },
@@ -64,7 +64,7 @@ export default () => {
                 }
             }}
             state={getInputState(error)}
-            bottomText={error && <Translation id={error.type} />}
+            bottomText={error && error.message}
             disabled={token !== null}
             topLabel={
                 <Label>

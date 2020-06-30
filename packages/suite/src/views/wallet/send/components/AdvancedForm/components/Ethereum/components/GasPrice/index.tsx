@@ -89,12 +89,12 @@ export default () => {
                     </Tooltip>
                 </Label>
             }
-            bottomText={error && <Translation id={error.type} />}
+            bottomText={error && error.message}
             innerRef={register({
                 validate: {
-                    TR_ETH_GAS_PRICE_NOT_NUMBER: (value: string) => {
-                        if (value) {
-                            return validator.isNumeric(value);
+                    gasPriceNotNumber: (value: string) => {
+                        if (value && !validator.isNumeric(value)) {
+                            return <Translation id="TR_ETH_GAS_PRICE_NOT_NUMBER" />;
                         }
                     },
                 },

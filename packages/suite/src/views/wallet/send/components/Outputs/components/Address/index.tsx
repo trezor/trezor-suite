@@ -55,21 +55,24 @@ export default ({ outputId }: { outputId: number }) => {
                 composeTransaction();
             }}
             bottomText={
-                error ? (
-                    <Translation id={error.type} />
-                ) : (
-                    <AddressLabeling address={getValues(inputName)} knownOnly />
-                )
+                error ? error.message : <AddressLabeling address={getValues(inputName)} knownOnly />
             }
             name={inputName}
             innerRef={register({
                 validate: {
-                    TR_ADDRESS_IS_NOT_SET: (value: string) => !(isDirty && value.length === 0),
-                    TR_ADDRESS_IS_NOT_VALID: (value: string) =>
-                        !(isDirty && !isAddressValid(value, symbol)),
-                    TR_XRP_CANNOT_SEND_TO_MYSELF: (value: string) => {
-                        if (networkType === 'ripple') {
-                            return !(value === descriptor);
+                    notSet: (value: string) => {
+                        if (isDirty && value.length === 0) {
+                            return <Translation id="TR_ADDRESS_IS_NOT_SET" />;
+                        }
+                    },
+                    notValid: (value: string) => {
+                        if (value && !isAddressValid(value, symbol)) {
+                            return <Translation id="TR_ADDRESS_IS_NOT_VALID" />;
+                        }
+                    },
+                    xrpCannotSendMyself: (value: string) => {
+                        if (networkType === 'ripple' && value === descriptor) {
+                            return <Translation id="TR_XRP_CANNOT_SEND_TO_MYSELF" />;
                         }
                     },
                 },
