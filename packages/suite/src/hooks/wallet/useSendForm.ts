@@ -39,7 +39,7 @@ export const useSendForm = (defaultValues: ContextStateValues) => {
 // Used across send form components
 // Provide combined FormState from `react-hook-form` and ContextState from `SendContext`
 export const useSendFormContext = () => {
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const sendContext = useContext(SendContext) as ContextState;
     const formContext = useFormContext<FormState>();
     const { saveDraft, composeTransaction, removeDraft } = useActions({
@@ -63,7 +63,7 @@ export const useSendFormContext = () => {
             // save precomposed tx to reducer
             // dispatch({ type: SEND.SAVE_PRECOMPOSED_TX, precomposedTx: result });
         }
-    }, [sendContext, formContext, composeTransaction, dispatch]);
+    }, [sendContext, formContext, composeTransaction]);
 
     return {
         sendContext,
