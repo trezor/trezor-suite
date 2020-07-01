@@ -65,7 +65,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     // }, [selectedAccount.account]);
 
     const { account, network } = selectedAccount;
-    const { descriptor, deviceState, symbol, networkType } = account;
+    const { symbol, networkType } = account;
     const coinFees = fees[symbol];
     const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
@@ -188,8 +188,8 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
 
     // save initial selected fee to reduce
     useEffect(() => {
-        setLastUsedFeeLevel(initialSelectedFee);
-    }, [setLastUsedFeeLevel, initialSelectedFee]);
+        setLastUsedFeeLevel(initialSelectedFee, symbol);
+    }, [setLastUsedFeeLevel, initialSelectedFee, symbol]);
 
     return (
         <WalletLayout title="Send" account={selectedAccount}>

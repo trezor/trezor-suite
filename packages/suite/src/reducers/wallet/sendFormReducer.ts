@@ -11,13 +11,15 @@ interface State {
         };
     };
     precomposedTx: any; // TODO create type
-    lastUsedFeeLevel: FeeLevel | null;
+    lastUsedFeeLevel: {
+        [key: string]: FeeLevel;
+    };
 }
 
 export const initialState: State = {
     drafts: {},
     precomposedTx: null,
-    lastUsedFeeLevel: null,
+    lastUsedFeeLevel: {},
 };
 
 export default (state: State = initialState, action: Action) => {
@@ -32,7 +34,7 @@ export default (state: State = initialState, action: Action) => {
                 delete draft.drafts[action.key];
                 break;
             case SEND.SET_LAST_USED_FEE_LEVEL:
-                draft.lastUsedFeeLevel = action.lastUsedFeeLevel;
+                draft.lastUsedFeeLevel[action.symbol] = action.feeLevel;
                 break;
             case SEND.SAVE_PRECOMPOSED_TX:
                 draft.precomposedTx = action.precomposedTx;
