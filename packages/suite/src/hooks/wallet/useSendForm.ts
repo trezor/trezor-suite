@@ -51,8 +51,8 @@ export const useSendFormContext = () => {
     });
 
     const updateDraft = useCallback(() => {
-        saveDraft(getValues({ nest: true }), sendContext);
-    }, [sendContext, getValues, saveDraft]);
+        saveDraft(getValues({ nest: true }));
+    }, [getValues, saveDraft]);
 
     const resetFormContext = useCallback(() => {
         removeDraft();

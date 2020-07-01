@@ -25,13 +25,12 @@ import {
 
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
-import { FormState, ContextState, ContextStateValues } from '@wallet-types/sendForm';
+import { FormState, ContextState } from '@wallet-types/sendForm';
 
 export type SendFormActions =
     | {
           type: typeof SEND.STORE_DRAFT;
           key: string;
-          sendContext: ContextStateValues;
           formState: FormState;
       }
     | {
@@ -47,7 +46,7 @@ export type SendFormActions =
           precomposedTx: any;
       };
 
-export const saveDraft = (formState: FormState, sendContext: ContextStateValues) => async (
+export const saveDraft = (formState: FormState) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -61,7 +60,6 @@ export const saveDraft = (formState: FormState, sendContext: ContextStateValues)
         type: SEND.STORE_DRAFT,
         key,
         formState,
-        sendContext,
     });
 };
 

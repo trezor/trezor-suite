@@ -1,13 +1,12 @@
 import produce from 'immer';
 import { SEND } from '@wallet-actions/constants';
 import { Action } from '@suite-types';
-import { FormState, ContextStateValues } from '@wallet-types/sendForm';
+import { FormState } from '@wallet-types/sendForm';
 import { FeeLevel } from 'trezor-connect';
 
 interface State {
     drafts: {
         [key: string]: {
-            sendContext: ContextStateValues;
             formState: FormState;
         };
     };
@@ -26,7 +25,6 @@ export default (state: State = initialState, action: Action) => {
         switch (action.type) {
             case SEND.STORE_DRAFT:
                 draft.drafts[action.key] = {
-                    sendContext: action.sendContext,
                     formState: action.formState,
                 };
                 break;
