@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useForm, FormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
@@ -12,7 +12,6 @@ import { Card, Translation } from '@suite-components';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { FormState } from '@wallet-types/sendForm';
 import { useSendForm, SendContext } from '@wallet-hooks/useSendForm';
-import { getAccountKey } from '@wallet-utils/accountUtils';
 
 import Outputs from './components/Outputs';
 import Clear from './components/Clear';
@@ -52,17 +51,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     if (!device || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Send" account={selectedAccount} />;
     }
-    // const [draft, setDraft] = useState({});
     const { getDraft } = useActions({ getDraft: sendFormActions.getDraft });
-
-    // useEffect(() => {
-    //     const draft = getDraft();
-    //     console.log('draft', draft);
-    //     // setDraft(draft);
-    //     return () => {
-    //         console.warn('<<<---SEND UNMOUNT Store cached tx');
-    //     };
-    // }, [getDraft]);
 
     // useEffect(() => {
     //     console.warn('--->>>selectedAccount.account MOUNT!', selectedAccount.account);
@@ -77,10 +66,6 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
     const fiatRates = fiat.coins.find(item => item.symbol === symbol);
-    const key = getAccountKey(descriptor, symbol, deviceState);
-    // const draft = send[key];
-
-    // console.log('draft', draft);
 
     // useEffect(() => {
     //     // TODO: handle fee levels change (and update them)
