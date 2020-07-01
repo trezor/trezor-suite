@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
 import { SEND } from '@wallet-actions/constants';
 import { QuestionTooltip, Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
@@ -115,7 +114,6 @@ const getValue = (
 
 export default () => {
     const { formContext, sendContext } = useSendFormContext();
-    const dispatch = useDispatch();
     const { formState, setValue, errors, register, getValues, setError, clearError } = formContext;
     const {
         account,
@@ -128,8 +126,11 @@ export default () => {
         coinFees,
         updateContext,
     } = sendContext;
-    const { updateFeeLevel } = useActions({ updateFeeLevel: sendFormActions.updateFeeLevel });
 
+    const { updateFeeLevel, setLastUsedFeeLevel } = useActions({
+        updateFeeLevel: sendFormActions.updateFeeLevel,
+        setLastUsedFeeLevel: sendFormActions.setLastUsedFeeLevel,
+    });
     const dataIsDirty = formState.dirtyFields.has('ethereumData');
     const selectName = 'selectedFee';
     const { networkType, symbol } = account;
@@ -189,7 +190,7 @@ export default () => {
                     variant="small"
                     onChange={([selected]) => {
                         // preserve fee level for next transaction
-                        dispatch({ type: SEND.SET_LAST_USED_FEE_LEVEL, selected });
+                        setLastUsedFeeLevel(selected);
                         return { ...selected };
                     }}
                     options={feeInfo.levels}

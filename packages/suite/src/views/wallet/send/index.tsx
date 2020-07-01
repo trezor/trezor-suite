@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useForm, FormContext } from 'react-hook-form';
 import styled from 'styled-components';
-import { SEND } from '@wallet-actions/constants';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { useActions } from '@suite-hooks';
 import { variables, colors } from '@trezor/components';
@@ -181,7 +180,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     });
 
     const { register } = methods;
-    
+
     // register custom form values which doesn't have own HTMLElement
     useEffect(() => {
         register({ name: 'setMaxOutputId', type: 'custom' });
