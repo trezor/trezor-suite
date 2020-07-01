@@ -23,7 +23,7 @@ export const ZEC_SIGN_ENHANCEMENT = {
     overwintered: true,
     version: 4,
     versionGroupId: 0x892f2085,
-    branchId: 0x2bb40e60,
+    branchId: 0xf5b9230b,
 };
 
 // UI

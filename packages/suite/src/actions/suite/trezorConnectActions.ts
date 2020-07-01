@@ -67,9 +67,9 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         const connectSrc =
             process.env.SUITE_TYPE === 'desktop'
                 ? resolveStaticPath('connect/')
-                : 'https://connect.trezor.io/8/';
-        // 'https://localhost:8088/';
-        // 'https://connect.corp.sldev.cz/develop/';
+                : // : 'https://connect.trezor.io/8/';
+                  // 'https://localhost:8088/';
+                  'https://connect.corp.sldev.cz/feat/zcash-heartwood/';
 
         await TrezorConnect.init({
             connectSrc,
