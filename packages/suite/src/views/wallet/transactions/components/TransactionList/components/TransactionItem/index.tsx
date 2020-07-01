@@ -35,7 +35,7 @@ const ColDate = styled(Link)`
 
 const ColType = styled.div`
     grid-column: type;
-    padding: 0px 12px;
+    padding: 0px 7px 0 12px;
 `;
 
 const Addr = styled(motion.div)`
@@ -44,6 +44,7 @@ const Addr = styled(motion.div)`
     font-size: ${variables.FONT_SIZE.SMALL};
     overflow: hidden;
     white-space: nowrap;
+    padding-left: 5px;
     text-overflow: ellipsis;
     font-variant-numeric: tabular-nums;
     @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
