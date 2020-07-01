@@ -69,7 +69,7 @@ export default ({ isVisible }: { isVisible: boolean }) => {
     const error = errors[inputNameValue];
     const { maxFee, minFee } = feeInfo;
 
-    return (gi
+    return (
         <Wrapper isVisible={isVisible}>
             <CustomFeeWrapper>
                 <Input
