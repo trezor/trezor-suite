@@ -1,8 +1,6 @@
 import { createContext, useContext, useCallback, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useActions } from '@suite-hooks';
-import { AppState } from '@suite-types';
-import { useSelector } from 'react-redux';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { FormState, ContextStateValues, ContextState } from '@wallet-types/sendForm';
 
@@ -46,10 +44,18 @@ export const useSendFormContext = () => {
     const updateDraft = useCallback(() => {
         saveDraft(formContext.getValues({ nest: true }), sendContext);
     }, [sendContext, formContext, saveDraft]);
+    const { composeTransaction } = useActions({
+        composeTransaction: sendFormActions.composeTransactionNew,
+    });
+
+    const compose = useCallback(async () => {
+        const result = await composeTransaction(sendContext, formContext.getValues());
+    }, [sendContext, formContext, composeTransaction]);
 
     return {
         sendContext,
         formContext,
         updateDraft,
+        composeTransaction: compose,
     };
 };

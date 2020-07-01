@@ -67,7 +67,7 @@ const EqualsSign = styled.div`
 `;
 
 export default ({ outputId }: { outputId: number }) => {
-    const { formContext, sendContext } = useSendFormContext();
+    const { formContext, sendContext, composeTransaction } = useSendFormContext();
     const {
         account,
         token,
@@ -81,7 +81,7 @@ export default ({ outputId }: { outputId: number }) => {
     } = sendContext;
     const { register, errors, formState, getValues, setValue, setError, clearError } = formContext;
     const inputName = `amount[${outputId}]`;
-    const inputNameMax = `setMax[${outputId}]`;
+    const isSetMaxActive = getValues('setMaxOutputId') === outputId;
     const isDirty = formState.dirtyFields.has(inputName);
     const { symbol, availableBalance, networkType } = account;
     const formattedAvailableBalance = token
@@ -95,7 +95,6 @@ export default ({ outputId }: { outputId: number }) => {
 
     return (
         <Wrapper>
-            <input type="hidden" name={inputNameMax} ref={register} />
             <Left>
                 <StyledInput
                     state={getInputState(error, isDirty)}
@@ -107,34 +106,20 @@ export default ({ outputId }: { outputId: number }) => {
                             <QuestionTooltip messageId="TR_SEND_AMOUNT_TOOLTIP" />
                         </Label>
                     }
-                    onChange={async () => {
-                        updateFiatInput(outputId, fiatRates, getValues, setValue);
-                        setValue(`setMax[${outputId}]`, 'inactive');
+                    onChange={() => {
+                        if (isSetMaxActive) {
+                            setValue('setMaxOutputId', -1);
+                        }
+                        if (error) return;
+                        // updateFiatInput(outputId, fiatRates, getValues, setValue);
+                        composeTransaction();
                     }}
                     button={{
-                        icon: getValues(inputNameMax) === 'active' ? 'CHECK' : 'SEND',
+                        icon: isSetMaxActive ? 'CHECK' : 'SEND',
                         iconSize: 16,
-                        onClick: async () => {
-                            if (networkType === 'bitcoin') {
-                                updateContext({ isLoading: true });
-                            }
-                            // await updateMax(
-                            //     outputId,
-                            //     account,
-                            //     setValue,
-                            //     getValues,
-                            //     clearError,
-                            //     setError,
-                            //     selectedFee,
-                            //     outputs,
-                            //     token,
-                            //     fiatRates,
-                            //     setTransactionInfo,
-                            // );
-
-                            if (networkType === 'bitcoin') {
-                                updateContext({ isLoading: true });
-                            }
+                        onClick: () => {
+                            setValue('setMaxOutputId', isSetMaxActive ? -1 : outputId);
+                            composeTransaction();
                         },
                         text: <Translation id="TR_SEND_SEND_MAX" />,
                     }}
@@ -224,7 +209,7 @@ export default ({ outputId }: { outputId: number }) => {
                 <TokenSelect outputId={outputId} />
             </Left>
             {/* TODO: token FIAT rates calculation */}
-            {/* {!token && (
+            {!token && (
                 <FiatValue amount="1" symbol={symbol} fiatCurrency={localCurrencyOption.value}>
                     {({ rate }) =>
                         rate && (
@@ -237,7 +222,7 @@ export default ({ outputId }: { outputId: number }) => {
                         )
                     }
                 </FiatValue>
-            )} */}
+            )}
         </Wrapper>
     );
 };

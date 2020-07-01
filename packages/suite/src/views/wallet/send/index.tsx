@@ -8,7 +8,7 @@ import { WalletLayout } from '@wallet-components';
 import { Card, Translation } from '@suite-components';
 
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
-import { FormState, ContextState } from '@wallet-types/sendForm';
+import { FormState } from '@wallet-types/sendForm';
 import { useSendForm, SendContext } from '@wallet-hooks/useSendForm';
 import { getAccountKey } from '@wallet-utils/accountUtils';
 
@@ -76,35 +76,35 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
 
     // console.log('draft', draft);
 
-    useEffect(() => {
-        // TODO: handle fee levels change (and update them)
-        // TODO: precompose ALL levels, disable "unrealistic" levels
-        console.warn('SET FEES!', coinFees);
+    // useEffect(() => {
+    //     // TODO: handle fee levels change (and update them)
+    //     // TODO: precompose ALL levels, disable "unrealistic" levels
+    //     console.warn('SET FEES!', coinFees);
 
-        let loading = false;
+    //     let loading = false;
 
-        const precompose = async () => {
-            loading = true;
-            const freezed = coinFees;
-            console.log('PREKO START', freezed);
-            const f = await new Promise(resolve => {
-                setTimeout(() => resolve(freezed), 1000);
-            });
+    //     const precompose = async () => {
+    //         loading = true;
+    //         const freezed = coinFees;
+    //         console.log('PREKO START', freezed);
+    //         const f = await new Promise(resolve => {
+    //             setTimeout(() => resolve(freezed), 1000);
+    //         });
 
-            console.log('FEES PRECOMPOSED', f, loading);
-            loading = false;
-        };
+    //         console.log('FEES PRECOMPOSED', f, loading);
+    //         loading = false;
+    //     };
 
-        precompose();
+    //     precompose();
 
-        return () => {
-            loading = false;
-        };
-    }, [coinFees]);
+    //     return () => {
+    //         loading = false;
+    //     };
+    // }, [coinFees]);
 
-    useEffect(() => {
-        console.warn('SET BALANCE', account.balance);
-    }, [account.balance]);
+    // useEffect(() => {
+    //     console.warn('SET BALANCE', account.balance);
+    // }, [account.balance]);
 
     // TODO: exclude testnet from this hook
     // useEffect(() => {
@@ -168,6 +168,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
         address: [''],
         amount: [''],
         setMax: ['inactive'],
+        setMaxOutputId: -1, // it has to be a number ??? investigate, otherwise watch() will not catch change [1 > null | undefined]
         fiatInput: [''],
         localCurrency: [localCurrencyOption],
         bitcoinLockTime: '',
@@ -182,6 +183,12 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
         mode: 'onChange',
         defaultValues,
     });
+
+    const { register } = methods;
+    // register custom form values which doesn't have own HTMLElement
+    useEffect(() => {
+        register({ name: 'setMaxOutputId', type: 'custom' });
+    }, [register]);
 
     return (
         <WalletLayout title="Send" account={selectedAccount}>
