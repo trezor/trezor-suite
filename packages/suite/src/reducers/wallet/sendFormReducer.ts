@@ -2,28 +2,42 @@ import produce from 'immer';
 import { SEND } from '@wallet-actions/constants';
 import { Action } from '@suite-types';
 import { FormState, ContextStateValues } from '@wallet-types/sendForm';
+import { FeeLevel } from 'trezor-connect';
 
-export interface State {
-    localCurrency: string;
-}
-
-interface Drafts {
-    [key: string]: {
-        sendContext: ContextStateValues;
-        formState: FormState;
+interface State {
+    drafts: {
+        [key: string]: {
+            sendContext: ContextStateValues;
+            formState: FormState;
+        };
     };
+    precomposedTx: any; // TODO create type
+    lastUsedFeeLevel: FeeLevel | null;
 }
 
-export const initialState: Drafts = {};
+export const initialState: State = {
+    drafts: {},
+    precomposedTx: null,
+    lastUsedFeeLevel: null,
+};
 
-export default (state: Drafts = initialState, action: Action) => {
+export default (state: State = initialState, action: Action) => {
     return produce(state, draft => {
         switch (action.type) {
             case SEND.STORE_DRAFT:
-                draft[action.key] = {
+                draft.drafts[action.key] = {
                     sendContext: action.sendContext,
                     formState: action.formState,
                 };
+                break;
+            case SEND.REMOVE_DRAFT:
+                delete draft.drafts[action.key];
+                break;
+            case SEND.SET_LAST_USED_FEE_LEVEL:
+                draft.lastUsedFeeLevel = action.lastUsedFeeLevel;
+                break;
+            case SEND.SAVE_PRECOMPOSED_TX:
+                draft.precomposedTx = action.precomposedTx;
                 break;
             // no default
         }

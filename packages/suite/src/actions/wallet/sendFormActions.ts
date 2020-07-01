@@ -2,8 +2,6 @@ import TrezorConnect, { FeeLevel, RipplePayment } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import { toWei, fromWei } from 'web3-utils';
 import { useForm } from 'react-hook-form';
-
-import * as storageActions from '@suite-actions/storageActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { SendContext } from '@wallet-hooks/useSendContext'; // to remove
@@ -29,12 +27,25 @@ import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 import { FormState, ContextState, ContextStateValues } from '@wallet-types/sendForm';
 
-export type SendFormActions = {
-    type: typeof SEND.STORE_DRAFT;
-    key: string;
-    sendContext: ContextStateValues;
-    formState: FormState;
-};
+export type SendFormActions =
+    | {
+          type: typeof SEND.STORE_DRAFT;
+          key: string;
+          sendContext: ContextStateValues;
+          formState: FormState;
+      }
+    | {
+          type: typeof SEND.REMOVE_DRAFT;
+          key: string;
+      }
+    | {
+          type: typeof SEND.SET_LAST_USED_FEE_LEVEL;
+          lastUsedFeeLevel: FeeLevel;
+      }
+    | {
+          type: typeof SEND.SAVE_PRECOMPOSED_TX;
+          precomposedTx: any;
+      };
 
 export const saveDraft = (formState: FormState, sendContext: ContextStateValues) => async (
     dispatch: Dispatch,
@@ -61,7 +72,20 @@ export const getDraft = () => (_dispatch: Dispatch, getState: GetState) => {
     const { symbol, descriptor, deviceState } = account;
     const key = getAccountKey(descriptor, symbol, deviceState);
 
-    return send[key] || {};
+    return send.drafts[key] || null;
+};
+
+export const removeDraft = () => (dispatch: Dispatch, getState: GetState) => {
+    const { selectedAccount } = getState().wallet;
+    if (selectedAccount.status !== 'loaded') return null;
+    const { account } = selectedAccount;
+    const { symbol, descriptor, deviceState } = account;
+    const key = getAccountKey(descriptor, symbol, deviceState);
+
+    dispatch({
+        type: SEND.REMOVE_DRAFT,
+        key,
+    });
 };
 
 export const composeRippleTransaction = (

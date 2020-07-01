@@ -40,7 +40,7 @@ export default ({ outputId }: { outputId: number }) => {
     const decimals = token ? token.decimals : network.decimals;
 
     useEffect(() => {
-        const fiatInputValue = getValues('fiatInput')[outputId];
+        const fiatInputValue = getValues(inputName);
         if (fiatInputValue.length > 0) {
             updateFiatInput(outputId, fiatRates, getValues, setValue);
         }
