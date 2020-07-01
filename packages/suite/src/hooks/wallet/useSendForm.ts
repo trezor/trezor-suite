@@ -1,5 +1,5 @@
 import { createContext, useContext, useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 import { useFormContext } from 'react-hook-form';
 // import { SEND } from '@wallet-actions/constants';
 import { useActions } from '@suite-hooks';

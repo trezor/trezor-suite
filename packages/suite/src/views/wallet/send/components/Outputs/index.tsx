@@ -31,7 +31,6 @@ const Row = styled.div`
 
 export default () => {
     const { formContext, sendContext, updateDraft } = useSendFormContext();
-    const { saveDraft } = useActions({ saveDraft: sendFormActions.saveDraft });
     const {
         getValues,
         setValue,

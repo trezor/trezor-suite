@@ -3,12 +3,11 @@ import BigNumber from 'bignumber.js';
 import validator from 'validator';
 import styled from 'styled-components';
 import { Input } from '@trezor/components';
-import { FiatValue, QuestionTooltip, Translation } from '@suite-components';
+import { FiatValue, Translation } from '@suite-components';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { updateFiatInput, updateMax } from '@wallet-actions/sendFormActions';
 import { getInputState } from '@wallet-utils/sendFormUtils';
-import { FieldError, NestDataObject, useFormContext } from 'react-hook-form';
 import { useSendFormContext } from '@wallet-hooks';
 
 import TokenSelect from './components/TokenSelect';
@@ -126,7 +125,6 @@ export default ({ outputId }: { outputId: number }) => {
                     innerRef={register({
                         validate: {
                             notSet: (value: string) => {
-                                console.log('value.length', value.length);
                                 if (value.length === 0) {
                                     return <Translation id="TR_AMOUNT_IS_NOT_SET" />;
                                 }

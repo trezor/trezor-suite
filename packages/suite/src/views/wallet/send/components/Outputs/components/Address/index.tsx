@@ -53,6 +53,7 @@ export default ({ outputId }: { outputId: number }) => {
                     );
                     updateContext({ destinationAddressEmpty });
                 }
+
                 composeTransaction();
             }}
             bottomText={
