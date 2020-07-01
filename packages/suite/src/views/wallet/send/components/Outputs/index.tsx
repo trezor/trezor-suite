@@ -32,7 +32,15 @@ const Row = styled.div`
 export default () => {
     const { formContext, sendContext, updateDraft } = useSendFormContext();
     const { saveDraft } = useActions({ saveDraft: sendFormActions.saveDraft });
-    const { getValues, setValue, clearError, setError, formState, errors } = formContext;
+    const {
+        getValues,
+        setValue,
+        clearError,
+        setError,
+        formState,
+        errors,
+        triggerValidation,
+    } = formContext;
     const { outputs, coinFees, selectedFee, token, fiatRates } = sendContext;
     const { dirty } = formState;
 

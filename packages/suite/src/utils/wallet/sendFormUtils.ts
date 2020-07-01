@@ -160,7 +160,12 @@ export const getFeeLevels = (
 export const getInputState = (
     error?: NestDataObject<SendFormState, FieldError>,
     isDirty?: boolean,
+    value?: string,
 ) => {
+    if (value && !isDirty && !error) {
+        return 'success';
+    }
+
     if (error) {
         return 'error';
     }

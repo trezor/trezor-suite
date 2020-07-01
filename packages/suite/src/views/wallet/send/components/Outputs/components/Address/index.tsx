@@ -29,10 +29,11 @@ export default ({ outputId }: { outputId: number }) => {
     const { descriptor, networkType, symbol } = account;
     const { openModal } = useActions({ openModal: modalActions.openModal });
     const error = errors && errors.address ? errors.address[outputId] : undefined;
+    const addressValue = getValues(inputName);
 
     return (
         <Input
-            state={getInputState(error, isDirty)}
+            state={getInputState(error, isDirty, addressValue)}
             monospace
             topLabel={
                 <Label>
