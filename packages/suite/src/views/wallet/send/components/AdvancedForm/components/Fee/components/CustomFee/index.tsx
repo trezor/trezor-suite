@@ -48,23 +48,6 @@ const getValue = (networkType: Account['networkType']) => {
     }
 };
 
-const getError = (
-    error: NestDataObject<Record<string, any>, FieldError>,
-    minFee: number,
-    maxFee: number,
-) => {
-    const notInRangeError = 'TR_CUSTOM_FEE_NOT_IN_RANGE';
-    const { type } = error;
-
-    switch (type) {
-        case notInRangeError:
-            return <Translation id={notInRangeError} values={{ maxFee, minFee }} />;
-
-        default:
-            return <Translation id={error.type} />;
-    }
-};
-
 export default ({ isVisible }: { isVisible: boolean }) => {
     const { formContext, sendContext } = useSendFormContext();
     const {
@@ -86,7 +69,7 @@ export default ({ isVisible }: { isVisible: boolean }) => {
     const error = errors[inputNameValue];
     const { maxFee, minFee } = feeInfo;
 
-    return (
+    return (gi
         <Wrapper isVisible={isVisible}>
             <CustomFeeWrapper>
                 <Input
@@ -139,7 +122,7 @@ export default ({ isVisible }: { isVisible: boolean }) => {
                             },
                         },
                     })}
-                    bottomText={error && getError(error, maxFee, minFee)}
+                    bottomText={error && error.message}
                 />
             </CustomFeeWrapper>
             <CustomFeeUnitWrapper>
