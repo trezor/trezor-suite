@@ -1,6 +1,7 @@
 import React from 'react';
-import { Props } from './Container';
 import styled, { css } from 'styled-components';
+
+import { Props } from './Container';
 
 interface WrapperProps {
     intensity: number;

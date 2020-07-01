@@ -63,6 +63,13 @@ export const saveDraft = (formState: FormState) => async (
     });
 };
 
+export const setLastUsedFeeLevel = (selectedFee: FeeLevel) => (dispatch: Dispatch) => {
+    dispatch({
+        type: SEND.SET_LAST_USED_FEE_LEVEL,
+        lastUsedFeeLevel: selectedFee,
+    });
+};
+
 export const getDraft = () => (_dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount, send } = getState().wallet;
     if (selectedAccount.status !== 'loaded') return null;

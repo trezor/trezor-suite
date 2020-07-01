@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useForm, FormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import { SEND } from '@wallet-actions/constants';
-import { useDispatch } from 'react-redux';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { useActions } from '@suite-hooks';
 import { variables, colors } from '@trezor/components';
@@ -53,8 +52,11 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     if (!device || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Send" account={selectedAccount} />;
     }
-    const { getDraft } = useActions({ getDraft: sendFormActions.getDraft });
-    const dispatch = useDispatch();
+
+    const { getDraft, setLastUsedFeeLevel } = useActions({
+        getDraft: sendFormActions.getDraft,
+        setLastUsedFeeLevel: sendFormActions.setLastUsedFeeLevel,
+    });
 
     // useEffect(() => {
     //     console.warn('--->>>selectedAccount.account MOUNT!', selectedAccount.account);
@@ -155,7 +157,6 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
         advancedForm: false,
         outputs: [{ id: 0 }],
         isLoading: false,
-        ...(draft ? draft.sendContext : {}),
     });
 
     const defaultValues: FormState = {
@@ -180,13 +181,16 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     });
 
     const { register } = methods;
+    
     // register custom form values which doesn't have own HTMLElement
     useEffect(() => {
         register({ name: 'setMaxOutputId', type: 'custom' });
     }, [register]);
 
-    // save initial selected fee to reducer
-    dispatch({ type: SEND.SET_LAST_USED_FEE_LEVEL, initialSelectedFee });
+    // save initial selected fee to reduce
+    useEffect(() => {
+        setLastUsedFeeLevel(initialSelectedFee);
+    }, [setLastUsedFeeLevel, initialSelectedFee]);
 
     return (
         <WalletLayout title="Send" account={selectedAccount}>
