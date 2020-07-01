@@ -1,6 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm, FormContext } from 'react-hook-form';
 import styled from 'styled-components';
+import * as sendFormActions from '@wallet-actions/sendFormActions';
+import { useActions } from '@suite-hooks';
 import { variables, colors } from '@trezor/components';
 
 import { WalletLayout } from '@wallet-components';
@@ -50,13 +52,17 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
     if (!device || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Send" account={selectedAccount} />;
     }
+    // const [draft, setDraft] = useState({});
+    const { getDraft } = useActions({ getDraft: sendFormActions.getDraft });
 
-    useEffect(() => {
-        console.warn('--->>>SEND MOUNT Load cached tx!');
-        return () => {
-            console.warn('<<<---SEND UNMOUNT Store cached tx');
-        };
-    }, []);
+    // useEffect(() => {
+    //     const draft = getDraft();
+    //     console.log('draft', draft);
+    //     // setDraft(draft);
+    //     return () => {
+    //         console.warn('<<<---SEND UNMOUNT Store cached tx');
+    //     };
+    // }, [getDraft]);
 
     // useEffect(() => {
     //     console.warn('--->>>selectedAccount.account MOUNT!', selectedAccount.account);
@@ -140,6 +146,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
 
     useEffect(() => {}, [account.availableBalance]);
 
+    const draft = getDraft();
     const sendState = useSendForm({
         device,
         account,
@@ -160,7 +167,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
         advancedForm: false,
         outputs: [{ id: 0 }],
         isLoading: false,
-        // ...(draft ? draft.sendContext : {}),
+        ...(draft ? draft.sendContext : {}),
     });
 
     const defaultValues: FormState = {
@@ -176,7 +183,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
         ethereumGasLimit: initialSelectedFee.feeLimit || '',
         ethereumData: '',
         rippleDestinationTag: '',
-        // ...(draft ? draft.formState : {}),
+        ...(draft ? draft.formState : {}),
     };
 
     const methods = useForm({

@@ -54,6 +54,16 @@ export const saveDraft = (formState: FormState, sendContext: ContextStateValues)
     });
 };
 
+export const getDraft = () => (_dispatch: Dispatch, getState: GetState) => {
+    const { selectedAccount, send } = getState().wallet;
+    if (selectedAccount.status !== 'loaded') return null;
+    const { account } = selectedAccount;
+    const { symbol, descriptor, deviceState } = account;
+    const key = getAccountKey(descriptor, symbol, deviceState);
+
+    return send[key] || {};
+};
+
 export const composeRippleTransaction = (
     account: SendContext['account'],
     getValues: ReturnType<typeof useForm>['getValues'],

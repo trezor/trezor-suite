@@ -44,6 +44,7 @@ export const useSendFormContext = () => {
     const updateDraft = useCallback(() => {
         saveDraft(formContext.getValues({ nest: true }), sendContext);
     }, [sendContext, formContext, saveDraft]);
+
     const { composeTransaction } = useActions({
         composeTransaction: sendFormActions.composeTransactionNew,
     });
