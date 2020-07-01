@@ -42,6 +42,8 @@ export const useSendFormContext = () => {
     // const dispatch = useDispatch();
     const sendContext = useContext(SendContext) as ContextState;
     const formContext = useFormContext<FormState>();
+    const { reset, getValues } = formContext;
+    const { localCurrencyOption, initialSelectedFee } = sendContext;
     const { saveDraft, composeTransaction, removeDraft } = useActions({
         removeDraft: sendFormActions.removeDraft,
         saveDraft: sendFormActions.saveDraft,
@@ -49,16 +51,29 @@ export const useSendFormContext = () => {
     });
 
     const updateDraft = useCallback(() => {
-        saveDraft(formContext.getValues({ nest: true }), sendContext);
-    }, [sendContext, formContext, saveDraft]);
+        saveDraft(getValues({ nest: true }), sendContext);
+    }, [sendContext, getValues, saveDraft]);
 
-    const clearDraft = useCallback(() => {
+    const resetFormContext = useCallback(() => {
         removeDraft();
-    }, [removeDraft]);
+        // TODO maybe pass this default from context?
+        reset({
+            address: [''],
+            amount: [''],
+            setMax: ['inactive'],
+            setMaxOutputId: -1, // it has to be a number ??? investigate, otherwise watch() will not catch change [1 > null | undefined]
+            fiatInput: [''],
+            localCurrency: [localCurrencyOption],
+            bitcoinLockTime: '',
+            ethereumGasPrice: initialSelectedFee.feePerUnit,
+            ethereumGasLimit: initialSelectedFee.feeLimit || '',
+            ethereumData: '',
+            rippleDestinationTag: '',
+        });
+    }, [reset, initialSelectedFee, localCurrencyOption, removeDraft]);
 
     const compose = useCallback(async () => {
         const result = await composeTransaction(sendContext, formContext.getValues({ nest: true }));
-        console.log(result);
         if (result) {
             // save precomposed tx to reducer
             // dispatch({ type: SEND.SAVE_PRECOMPOSED_TX, precomposedTx: result });
@@ -68,8 +83,8 @@ export const useSendFormContext = () => {
     return {
         sendContext,
         formContext,
+        resetFormContext,
         updateDraft,
-        clearDraft,
         composeTransaction: compose,
     };
 };

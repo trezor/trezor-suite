@@ -18,13 +18,13 @@ const In = styled.div`
 `;
 
 export default () => {
-    const { formContext, sendContext } = useSendFormContext();
+    const { resetFormContext, sendContext } = useSendFormContext();
 
     return (
         <Wrapper>
             <In
                 onClick={() => {
-                    formContext.reset();
+                    resetFormContext();
                     sendContext.resetContext();
                 }}
             >
