@@ -30,7 +30,7 @@ const Row = styled.div`
 `;
 
 export default () => {
-    const { formContext, sendContext, updateDraft } = useSendFormContext();
+    const { formContext, sendContext } = useSendFormContext();
     const {
         getValues,
         setValue,
@@ -69,12 +69,6 @@ export default () => {
     //     }
     //     // eslint-disable-next-line react-hooks/exhaustive-deps
     // }, [coinFees]);
-
-    useEffect(() => {
-        if (dirty && Object.keys(errors).length === 0) {
-            updateDraft();
-        }
-    }, [updateDraft, dirty, errors]);
 
     return (
         <Wrapper>

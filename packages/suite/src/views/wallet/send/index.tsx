@@ -52,8 +52,9 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
         return <WalletLayout title="Send" account={selectedAccount} />;
     }
 
-    const { getDraft, setLastUsedFeeLevel } = useActions({
+    const { getDraft, saveDraft, setLastUsedFeeLevel } = useActions({
         getDraft: sendFormActions.getDraft,
+        saveDraft: sendFormActions.saveDraft,
         setLastUsedFeeLevel: sendFormActions.setLastUsedFeeLevel,
     });
 
@@ -135,7 +136,6 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
 
     useEffect(() => {}, [account.availableBalance]);
 
-    const draft = getDraft();
     const sendState = useSendForm({
         device,
         account,
@@ -153,7 +153,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
         token: null,
         feeOutdated: false,
         selectedFee: initialSelectedFee,
-        advancedForm: false,
+        advancedForm: true,
         outputs: [{ id: 0 }],
         isLoading: false,
     });
@@ -171,7 +171,6 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
         ethereumGasLimit: initialSelectedFee.feeLimit || '',
         ethereumData: '',
         rippleDestinationTag: '',
-        ...(draft ? draft.formState : {}),
     };
 
     const methods = useForm({
@@ -179,12 +178,26 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
         defaultValues,
     });
 
-    const { register } = methods;
+    const { register, reset, errors, formState, getValues } = methods;
 
     // register custom form values which doesn't have own HTMLElement
     useEffect(() => {
         register({ name: 'setMaxOutputId', type: 'custom' });
     }, [register]);
+
+    // load draft from reducer
+    useEffect(() => {
+        const draft = getDraft();
+        if (draft) reset(draft.formState);
+    }, [getDraft, reset]);
+
+    // save draft to reducer
+    const { dirty } = methods.formState;
+    useEffect(() => {
+        if (dirty && Object.keys(errors).length === 0) {
+            saveDraft(getValues({ nest: true }));
+        }
+    });
 
     // save initial selected fee to reduce
     useEffect(() => {
