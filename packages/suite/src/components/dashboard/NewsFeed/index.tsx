@@ -133,7 +133,6 @@ const NewsFeed = ({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
                             <ReadMore target="_blank" href={item.link}>
                                 <Button
                                     variant="tertiary"
-                                    size="small"
                                     alignIcon="right"
                                     color={colors.BLACK0}
                                     icon="EXTERNAL_LINK"
@@ -149,7 +148,6 @@ const NewsFeed = ({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
                 <BottomAction>
                     <Button
                         variant="tertiary"
-                        size="small"
                         icon="ARROW_DOWN"
                         onClick={() => {
                             incrementVisibleCount(visibleCount + 3);

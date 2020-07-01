@@ -3475,6 +3475,10 @@ const definedMessages = defineMessages({
         id: 'DISCONNECT_DEVICE_DESCRIPTION',
         defaultMessage: 'Your device was wiped and does not hold private keys anymore.',
     },
+    TR_MY_ACCOUNTS: {
+        id: 'TR_MY_ACCOUNTS',
+        defaultMessage: 'My Accounts',
+    },
     TR_CHANGE_HOMESCREEN: {
         id: 'TR_CHANGE_HOMESCREEN',
         defaultMessage: 'Change homescreen',

@@ -82,34 +82,6 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                 appUrl: '@trezor/suite',
             },
         });
-        TrezorConnect.blockchainSetCustomBackend({
-            coin: 'btc',
-            blockchainLink: {
-                type: 'blockbook',
-                url: ['https://beta-btc.trezor.io/'],
-            },
-        });
-        TrezorConnect.blockchainSetCustomBackend({
-            coin: 'eth',
-            blockchainLink: {
-                type: 'blockbook',
-                url: ['https://beta-eth.trezor.io/'],
-            },
-        });
-        TrezorConnect.blockchainSetCustomBackend({
-            coin: 'bch',
-            blockchainLink: {
-                type: 'blockbook',
-                url: ['https://beta-bch.trezor.io/'],
-            },
-        });
-        TrezorConnect.blockchainSetCustomBackend({
-            coin: 'ltc',
-            blockchainLink: {
-                type: 'blockbook',
-                url: ['https://beta-ltc.trezor.io/'],
-            },
-        });
 
         dispatch({
             type: SUITE.CONNECT_INITIALIZED,

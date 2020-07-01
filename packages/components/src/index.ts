@@ -3,6 +3,7 @@ import * as variables from './config/variables';
 
 import { Button, ButtonProps } from './components/buttons/Button';
 import { ButtonPin, ButtonPinProps } from './components/buttons/Pin';
+import { Dropdown, DropdownProps } from './components/Dropdown';
 import { Input, InputProps } from './components/form/Input';
 import { Textarea, TextareaProps } from './components/form/Textarea';
 import { Select, SelectProps } from './components/form/Select';
@@ -17,7 +18,7 @@ import { Modal, ModalProps } from './components/Modal';
 import { CoinLogo, CoinLogoProps } from './components/logos/CoinLogo';
 import { TrezorLogo, TrezorLogoProps } from './components/logos/TrezorLogo';
 import { Loader, LoaderProps } from './components/loaders/Loader';
-import { Tooltip, TooltipProps } from './components/Tooltip';
+import { Tooltip, TooltipProps, tooltipGlobalStyles } from './components/Tooltip';
 import * as types from './support/types';
 
 export {
@@ -27,6 +28,8 @@ export {
     ButtonProps,
     ButtonPin,
     ButtonPinProps,
+    Dropdown,
+    DropdownProps,
     Input,
     InputProps,
     Textarea,
@@ -57,5 +60,6 @@ export {
     LoaderProps,
     Tooltip,
     TooltipProps,
+    tooltipGlobalStyles,
     types,
 };

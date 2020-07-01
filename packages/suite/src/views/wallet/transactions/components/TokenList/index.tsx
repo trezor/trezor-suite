@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import styled, { css } from 'styled-components';
 import { Account } from '@wallet-types';
-import { Card, FiatValue, HiddenPlaceholder } from '@suite-components';
+import { Card, FiatValue, HiddenPlaceholder, FormattedCryptoAmount } from '@suite-components';
 import { variables, colors, Icon, Link } from '@trezor/components';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
@@ -90,7 +90,14 @@ const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
                         </Col>
                         <Col isTestnet={isTestnet} justify="right">
                             <HiddenPlaceholder>
-                                <TokenValue>{`${t.balance} ${t.symbol?.toUpperCase()}`}</TokenValue>
+                                <TokenValue>
+                                    {t.balance && (
+                                        <FormattedCryptoAmount
+                                            value={t.balance}
+                                            symbol={t.symbol}
+                                        />
+                                    )}
+                                </TokenValue>
                             </HiddenPlaceholder>
                         </Col>
                         {!isTestnet && (

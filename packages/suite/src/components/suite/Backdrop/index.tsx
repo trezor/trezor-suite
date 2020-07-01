@@ -13,6 +13,7 @@ export const FADE_IN = keyframes`
 interface Props {
     show?: boolean;
     className?: string;
+    zIndex?: number;
     animated: boolean;
     onClick: () => void;
 }
@@ -21,10 +22,10 @@ const StyledBackdrop = styled.div<Props>`
     width: 100%;
     height: 100%;
     position: fixed;
-    z-index: 100;
+    z-index: ${props => props.zIndex ?? 2};
     left: 0;
     top: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.3);
 
     ${props =>
         props.animated &&
@@ -33,7 +34,14 @@ const StyledBackdrop = styled.div<Props>`
         `};
 `;
 
-const Backdrop = ({ className, show, animated, onClick }: Props) =>
-    show ? <StyledBackdrop className={className} animated={animated} onClick={onClick} /> : null;
+const Backdrop = ({ className, show, animated, zIndex, onClick }: Props) =>
+    show ? (
+        <StyledBackdrop
+            className={className}
+            zIndex={zIndex}
+            animated={animated}
+            onClick={onClick}
+        />
+    ) : null;
 
 export default Backdrop;

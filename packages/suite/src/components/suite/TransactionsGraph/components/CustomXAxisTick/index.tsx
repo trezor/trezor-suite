@@ -15,7 +15,15 @@ const CustomXAxisTick = (props: CustomXAxisProps) => {
         props.selectedRange?.label === 'year' || props.selectedRange?.label === 'all';
     return (
         <g transform={`translate(${x},${y})`}>
-            <text x={0} y={0} dy={16} textAnchor="end" fill="#666" transform="rotate(-50)">
+            <text
+                x={0}
+                y={0}
+                dy={16}
+                textAnchor="end"
+                fill="#666"
+                transform="rotate(-50)"
+                style={{ fontVariantNumeric: 'tabular-nums' }}
+            >
                 {date && showMMYYFormat && (
                     <FormattedDate value={date} month="2-digit" year="numeric" />
                 )}

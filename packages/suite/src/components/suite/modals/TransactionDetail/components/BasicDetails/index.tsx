@@ -7,6 +7,7 @@ import Box from '../Box';
 import BoxRow from '../BoxRow';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction } from '@wallet-types';
+import FormattedCryptoAmount from '@suite/components/suite/FormattedCryptoAmount';
 
 const COLOR_TEXT_PRIMARY = colors.BLACK0;
 
@@ -20,7 +21,7 @@ const TransactionIdWrapper = styled.div`
 const TransactionId = styled(props => <HiddenPlaceholder {...props} />)`
     text-overflow: ellipsis;
     overflow: hidden;
-    font-family: ${variables.FONT_FAMILY.MONOSPACE};
+    font-variant-numeric: slashed-zero tabular-nums;
     font-weight: lighter;
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${COLOR_TEXT_PRIMARY};
@@ -183,19 +184,27 @@ const BasicDetails = ({
             <Box>
                 {totalInput && (
                     <BoxRow title={<Translation id="TR_TOTAL_INPUT" />}>
-                        <HiddenPlaceholder>{`${totalInput} ${assetSymbol}`}</HiddenPlaceholder>
+                        <HiddenPlaceholder>
+                            <FormattedCryptoAmount value={totalInput} symbol={assetSymbol} />
+                        </HiddenPlaceholder>
                     </BoxRow>
                 )}
                 {totalOutput && (
                     <BoxRow title={<Translation id="TR_TOTAL_OUTPUT" />}>
-                        <HiddenPlaceholder>{`${totalOutput} ${assetSymbol}`}</HiddenPlaceholder>
+                        <HiddenPlaceholder>
+                            <FormattedCryptoAmount value={totalOutput} symbol={assetSymbol} />
+                        </HiddenPlaceholder>
                     </BoxRow>
                 )}
                 <BoxRow title={<Translation id="TR_AMOUNT" />}>
-                    <HiddenPlaceholder>{`${tx.amount} ${assetSymbol}`}</HiddenPlaceholder>
+                    <HiddenPlaceholder>
+                        <FormattedCryptoAmount value={tx.amount} symbol={assetSymbol} />
+                    </HiddenPlaceholder>
                 </BoxRow>
                 <BoxRow title={<Translation id="TR_TX_FEE" />}>
-                    <HiddenPlaceholder>{`${tx.fee} ${assetSymbol}`}</HiddenPlaceholder>
+                    <HiddenPlaceholder>
+                        <FormattedCryptoAmount value={tx.fee} symbol={assetSymbol} />
+                    </HiddenPlaceholder>
                 </BoxRow>
                 {/* TODO: BlockchainLink doesn't return size/vsize field */}
                 {/* {txDetails?.size && <BoxRow title="Size">{`${txDetails.size} B`}</BoxRow>} */}

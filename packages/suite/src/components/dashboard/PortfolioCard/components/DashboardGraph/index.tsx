@@ -124,7 +124,7 @@ const DashboardGraph = React.memo((props: Props) => {
                 {allFailed ? (
                     <ErrorMessage>
                         <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
-                        <Button onClick={onRefresh} icon="REFRESH" variant="tertiary" size="small">
+                        <Button onClick={onRefresh} icon="REFRESH" variant="tertiary">
                             <Translation id="TR_RETRY" />
                         </Button>
                     </ErrorMessage>

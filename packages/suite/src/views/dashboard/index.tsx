@@ -6,7 +6,6 @@ import { AssetsCard, PortfolioCard, SecurityFeatures, NewsFeed } from '@dashboar
 
 const Wrapper = styled.div`
     padding: 16px 32px 32px 32px;
-
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         padding: 16px;
     }

@@ -40,8 +40,8 @@ const StyledInput = styled.input<Props>`
     ${props =>
         props.monospace &&
         css`
-            font-family: ${variables.FONT_FAMILY.MONOSPACE};
-            padding-bottom: 2px;
+            /* same width nums, slashed zero */
+            font-variant-numeric: slashed-zero tabular-nums;
         `}
 
     ${props =>

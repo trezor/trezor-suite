@@ -122,7 +122,6 @@ const TransactionSummary = (props: Props) => {
             <Actions>
                 <Button
                     variant="tertiary"
-                    size="small"
                     icon={isGraphHidden ? 'ARROW_DOWN' : 'ARROW_UP'}
                     onClick={() => {
                         setIsGraphHidden(!isGraphHidden);
@@ -137,12 +136,7 @@ const TransactionSummary = (props: Props) => {
                     {error && (
                         <ErrorMessage>
                             <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
-                            <Button
-                                onClick={onRefresh}
-                                icon="REFRESH"
-                                variant="tertiary"
-                                size="small"
-                            >
+                            <Button onClick={onRefresh} icon="REFRESH" variant="tertiary">
                                 <Translation id="TR_RETRY" />
                             </Button>
                         </ErrorMessage>

@@ -75,6 +75,7 @@ export const transformTransaction = (descriptor: string, tx: any): Transaction =
                 addresses,
                 isAddress: true,
                 amount,
+                n: 0, // no multi-targets in ripple
             },
         ],
         tokens: [],

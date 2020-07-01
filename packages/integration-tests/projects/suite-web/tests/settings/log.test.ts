@@ -10,6 +10,7 @@ describe('Log', () => {
     });
 
     it('open log modal', () => {
+        cy.getTestElement('@settings/menu/dropdown').click();
         cy.getTestElement('@settings/menu/log').click();
         cy.getTestElement('@log/copy-button');
         // todo: check that we really copied something;

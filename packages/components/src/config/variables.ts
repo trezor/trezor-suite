@@ -18,6 +18,14 @@ export const FONT_SIZE = {
     H2: '24px',
 } as const;
 
+export const NEUE_FONT_SIZE = {
+    TINY: '12px',
+    SMALL: '14px',
+    NORMAL: '16px',
+    H1: '24px',
+    H2: '20px',
+} as const;
+
 export const FONT_WEIGHT = {
     LIGHT: 300,
     REGULAR: 400,
@@ -28,7 +36,6 @@ export const FONT_WEIGHT = {
 
 export const FONT_FAMILY = {
     TTHOVES: 'TT Hoves',
-    MONOSPACE: 'Menlo, Monaco, Consolas, “Courier New”, monospace',
 } as const;
 
 export const COINS: CoinType[] = [
@@ -110,4 +117,6 @@ export const ICONS: IconType[] = [
     'COLLAPSE',
     'NOTIFICATION',
     'SHOP',
+    'UP',
+    'DOWN',
 ];
