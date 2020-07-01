@@ -76,16 +76,18 @@ export const getDraft = () => (_dispatch: Dispatch, getState: GetState) => {
 };
 
 export const removeDraft = () => (dispatch: Dispatch, getState: GetState) => {
-    const { selectedAccount } = getState().wallet;
+    const { selectedAccount, send } = getState().wallet;
     if (selectedAccount.status !== 'loaded') return null;
     const { account } = selectedAccount;
     const { symbol, descriptor, deviceState } = account;
     const key = getAccountKey(descriptor, symbol, deviceState);
 
-    dispatch({
-        type: SEND.REMOVE_DRAFT,
-        key,
-    });
+    if (send.drafts[key]) {
+        dispatch({
+            type: SEND.REMOVE_DRAFT,
+            key,
+        });
+    }
 };
 
 export const composeRippleTransaction = (
