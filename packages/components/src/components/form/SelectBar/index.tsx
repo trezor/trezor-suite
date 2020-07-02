@@ -16,6 +16,7 @@ interface Props {
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
+    min-height: 20px;
 `;
 
 const Options = styled.div`

@@ -3,11 +3,11 @@ import { useForm, FormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { useActions } from '@suite-hooks';
-import { variables, colors, SelectBar } from '@trezor/components';
+import { variables, colors } from '@trezor/components';
 
 import { WalletLayout } from '@wallet-components';
 // import * as storageActions from '@suite-actions/storageActions';
-import { Card, Translation } from '@suite-components';
+import { Card } from '@suite-components';
 
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { FormState } from '@wallet-types/sendForm';
@@ -200,7 +200,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
         }
     });
 
-    // save initial selected fee to reduce
+    // save initial selected fee to reducer
     useEffect(() => {
         setLastUsedFeeLevel(initialSelectedFee, symbol);
     }, [setLastUsedFeeLevel, initialSelectedFee, symbol]);
@@ -212,9 +212,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
                     <StyledCard
                         customHeader={
                             <Header>
-                                <HeaderLeft>
-                                    <Translation id="SEND_TITLE" values={{ symbol }} />
-                                </HeaderLeft>
+                                <HeaderLeft />
                                 <HeaderRight>
                                     <Clear />
                                 </HeaderRight>
