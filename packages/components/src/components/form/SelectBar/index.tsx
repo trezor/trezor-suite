@@ -16,13 +16,14 @@ interface Props {
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
-    min-height: 20px;
 `;
 
 const Options = styled.div`
     display: flex;
+    align-items: center;
     padding: 2px;
     border-radius: 4px;
+    min-height: 30px;
     background: ${colors.NEUE_BG_GRAY};
 `;
 
@@ -45,6 +46,9 @@ const Option = styled.div<{ isSelected: boolean }>`
         props.isSelected &&
         css`
             background: white;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+            color: ${colors.NEUE_TYPE_DARK_GREY};
+            font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
         `}
 `;
 
