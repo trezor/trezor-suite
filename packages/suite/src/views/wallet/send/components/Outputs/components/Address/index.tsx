@@ -22,18 +22,19 @@ const Text = styled.div`
 
 export default ({ outputId }: { outputId: number }) => {
     const { formContext, sendContext, composeTransaction } = useSendFormContext();
-    const { register, errors, getValues, formState, setValue } = formContext;
+    const { register, errors, getValues, setValue } = formContext;
+    const { dirtyFields, touched } = formContext.formState;
     const { account, updateContext } = sendContext;
     const inputName = `address[${outputId}]`;
-    const isDirty = formState.dirtyFields.has(inputName);
+    const amountInputName = `amount[${outputId}]`;
     const { descriptor, networkType, symbol } = account;
     const { openModal } = useActions({ openModal: modalActions.openModal });
-    const error = errors && errors.address ? errors.address[outputId] : undefined;
+    const error = errors.address ? errors.address[outputId] : undefined;
     const addressValue = getValues(inputName);
 
     return (
         <Input
-            state={getInputState(error, isDirty, addressValue)}
+            state={getInputState(error, dirtyFields.has(inputName), addressValue)}
             monospace
             topLabel={
                 <Label>
@@ -54,21 +55,20 @@ export default ({ outputId }: { outputId: number }) => {
                     updateContext({ destinationAddressEmpty });
                 }
 
-                composeTransaction();
+                // prevent composing if this output doesn't have amount set
+                if (dirtyFields.has(amountInputName)) {
+                    composeTransaction();
+                }
             }}
             bottomText={
                 error ? error.message : <AddressLabeling address={getValues(inputName)} knownOnly />
             }
             name={inputName}
             innerRef={register({
+                required: <Translation id="TR_ADDRESS_IS_NOT_SET" />,
                 validate: {
-                    notSet: (value: string) => {
-                        if (isDirty && value.length === 0) {
-                            return <Translation id="TR_ADDRESS_IS_NOT_SET" />;
-                        }
-                    },
                     notValid: (value: string) => {
-                        if (value && !isAddressValid(value, symbol)) {
+                        if (!isAddressValid(value, symbol)) {
                             return <Translation id="TR_ADDRESS_IS_NOT_VALID" />;
                         }
                     },

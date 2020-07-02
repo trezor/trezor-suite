@@ -246,6 +246,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Amount is not set',
         id: 'TR_AMOUNT_IS_NOT_SET',
     },
+    TR_AMOUNT_IS_TOO_LOW: {
+        defaultMessage: 'Amount is too low',
+        id: 'TR_AMOUNT_IS_TOO_LOW',
+    },
     TR_ASSETS: {
         defaultMessage: 'Assets',
         id: 'TR_ASSETS',

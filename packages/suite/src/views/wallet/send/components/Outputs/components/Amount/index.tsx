@@ -123,23 +123,24 @@ export default ({ outputId }: { outputId: number }) => {
                     }}
                     align="right"
                     innerRef={register({
+                        // idk why "TR_AMOUNT_IS_NOT_SET" returns TR_AMOUNT_IS_NOT_ENOUGH
+                        required: <Translation id="TR_ADDRESS_IS_NOT_SET" />,
                         validate: {
-                            notSet: (value: string) => {
-                                if (value.length === 0) {
-                                    return <Translation id="TR_AMOUNT_IS_NOT_SET" />;
+                            notNumber: (value: string) => {
+                                const amountBig = new BigNumber(value);
+                                if (amountBig.isNaN()) {
+                                    return <Translation id="TR_AMOUNT_IS_NOT_NUMBER" />;
                                 }
                             },
-                            notNumber: (value: string) => {
-                                if (!validator.isNumeric(value)) {
-                                    return <Translation id="TR_AMOUNT_IS_NOT_NUMBER" />;
+                            toLow: (value: string) => {
+                                const amountBig = new BigNumber(value);
+                                if (amountBig.lte(0)) {
+                                    return <Translation id="TR_AMOUNT_IS_TOO_LOW" />;
                                 }
                             },
                             notEnough: (value: string) => {
                                 const amountBig = new BigNumber(value);
-                                if (
-                                    value.length > 0 &&
-                                    amountBig.isGreaterThan(formattedAvailableBalance)
-                                ) {
+                                if (amountBig.isGreaterThan(formattedAvailableBalance)) {
                                     return <Translation id="TR_AMOUNT_IS_NOT_ENOUGH" />;
                                 }
                             },
@@ -187,11 +188,6 @@ export default ({ outputId }: { outputId: number }) => {
                                         />
                                     );
                                 }
-
-                                return validator.isDecimal(value, {
-                                    // eslint-disable-next-line @typescript-eslint/camelcase
-                                    decimal_digits: `0,${decimals}`,
-                                });
                             },
                         },
                     })}
