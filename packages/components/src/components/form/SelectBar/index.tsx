@@ -21,9 +21,8 @@ const Wrapper = styled.div`
 const Options = styled.div`
     display: flex;
     align-items: center;
-    padding: 2px;
+    padding: 0 2px;
     border-radius: 4px;
-    min-height: 30px;
     background: ${colors.NEUE_BG_GRAY};
 `;
 
@@ -37,6 +36,11 @@ const Label = styled.div`
 
 const Option = styled.div<{ isSelected: boolean }>`
     padding: 0 14px;
+    min-height: 25px;
+    margin: 2px 0;
+    display: flex;
+    align-items: center;
+    flex: 1;
     border-radius: 4px;
     font-size: ${variables.FONT_SIZE.SMALL};
     text-transform: capitalize;
