@@ -38,6 +38,7 @@ const Option = styled.div<{ isSelected: boolean }>`
     padding: 0 14px;
     min-height: 25px;
     margin: 2px 0;
+    padding-top: 1px;
     display: flex;
     align-items: center;
     flex: 1;
