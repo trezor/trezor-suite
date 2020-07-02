@@ -13,7 +13,7 @@ import { Switch, SwitchProps } from './components/form/Switch';
 import { Icon, IconProps } from './components/Icon';
 import { H1, H2 } from './components/typography/Heading';
 import { P, PProps } from './components/typography/Paragraph';
-import { Prompt, PromptProps } from './components/Prompt';
+import ConfirmOnTrezor from './components/prompts/ConfirmOnTrezor';
 import { Link, LinkProps } from './components/typography/Link';
 import { Modal, ModalProps } from './components/Modal';
 import { CoinLogo, CoinLogoProps } from './components/logos/CoinLogo';
@@ -32,6 +32,7 @@ export {
     Dropdown,
     DropdownProps,
     Input,
+    ConfirmOnTrezor,
     InputProps,
     Textarea,
     TextareaProps,
@@ -48,8 +49,6 @@ export {
     P,
     PProps,
     Link,
-    Prompt,
-    PromptProps,
     LinkProps,
     Modal,
     ModalProps,
