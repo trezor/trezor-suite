@@ -2,7 +2,7 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 import validator from 'validator';
 import styled from 'styled-components';
-import { Input } from '@trezor/components';
+import { Input, Icon } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -47,22 +47,19 @@ const TokenBalance = styled.div`
     right: 0;
 `;
 
+const StyledTranserIcon = styled(Icon)`
+    display: flex;
+    flex-direction: column;
+
+    margin: ${LABEL_HEIGHT + 12}px 22px 0 22px;
+`;
+
 const Right = styled.div`
     display: flex;
     margin-top: ${LABEL_HEIGHT}px;
     flex: 1;
     min-width: 250px;
     align-items: flex-start;
-`;
-
-const EqualsSign = styled.div`
-    display: flex;
-    align-items: flex-start;
-    padding: ${LABEL_HEIGHT + 15}px 20px 0;
-
-    @media screen and (max-width: 1170px) {
-        display: none;
-    }
 `;
 
 export default ({ outputId }: { outputId: number }) => {
@@ -207,7 +204,7 @@ export default ({ outputId }: { outputId: number }) => {
                     {({ rate }) =>
                         rate && (
                             <>
-                                <EqualsSign>=</EqualsSign>
+                                <StyledTranserIcon icon="TRANSFER" />
                                 <Right>
                                     <Fiat outputId={outputId} />
                                 </Right>
