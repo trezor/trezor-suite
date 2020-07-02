@@ -15,6 +15,7 @@ import { useSendForm, SendContext } from '@wallet-hooks/useSendForm';
 
 import Outputs from './components/Outputs';
 import Clear from './components/Clear';
+import Fees from './components/Fees';
 import AdvancedForm from './components/AdvancedForm';
 import ReviewButton from './components/ReviewButton';
 import { Props } from './Container';
@@ -222,19 +223,9 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
                     >
                         <Outputs />
                         <AdvancedForm />
-                        <ReviewButton />
                     </StyledCard>
-                    <StyledCard>
-                        <SelectBar
-                            label="fee"
-                            options={[
-                                { label: 'low', value: 'low' },
-                                { label: 'medium', value: 'medium' },
-                                { label: 'high', value: 'high' },
-                                { label: 'custom', value: 'custom' },
-                            ]}
-                        />
-                    </StyledCard>
+                    <Fees />
+                    <ReviewButton />
                 </FormContext>
             </SendContext.Provider>
         </WalletLayout>
