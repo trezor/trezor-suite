@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useSendFormContext } from '@wallet-hooks';
-import Add from '../Add';
+import AddRecipient from '../AddRecipient';
 import Bitcoin from './components/Bitcoin';
 import Ethereum from './components/Ethereum';
 import Ripple from './components/Ripple';
@@ -38,7 +38,7 @@ export default () => {
             <Row isColumn={advancedForm}>
                 <Header>
                     <ToggleButton />
-                    {networkType === 'bitcoin' && <Add />}
+                    {networkType === 'bitcoin' && <AddRecipient />}
                 </Header>
                 {advancedForm && networkType === 'bitcoin' && <Bitcoin />}
                 {advancedForm && networkType === 'ethereum' && <Ethereum />}
