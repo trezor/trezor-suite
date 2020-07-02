@@ -62,11 +62,12 @@ const Close = styled.div`
     border-radius: 100%;
     cursor: pointer;
     background: ${colors.NEUE_STROKE_GREY};
-    width: 34px;
-    height: 34px;
+    width: 35px;
+    height: 35px;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-bottom: 1px;
 `;
 
 const StyledDeviceImage = styled(DeviceImage)`
