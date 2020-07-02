@@ -27,7 +27,7 @@ export const ZEC_SIGN_ENHANCEMENT = {
 };
 
 // UI
-export const LABEL_HEIGHT = 30;
+export const LABEL_HEIGHT = 32;
 
 export const ERC20_TRANSFER = 'a9059cbb'; // 4 bytes function signature of solidity erc20 `transfer(address,uint256)`
 export const ERC20_GAS_LIMIT = '200000';

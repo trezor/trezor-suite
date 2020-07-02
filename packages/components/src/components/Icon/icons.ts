@@ -57,4 +57,5 @@ export const ICONS = {
     SHOP: require('../../images/icons/shop.svg'),
     UP: require('../../images/icons/up.svg'),
     DOWN: require('../../images/icons/down.svg'),
+    TRANSFER: require('../../images/icons/transfer.svg'),
 };

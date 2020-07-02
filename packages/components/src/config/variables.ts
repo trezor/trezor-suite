@@ -119,4 +119,5 @@ export const ICONS: IconType[] = [
     'SHOP',
     'UP',
     'DOWN',
+    'TRANSFER',
 ];

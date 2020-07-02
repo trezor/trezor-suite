@@ -18,7 +18,7 @@ const Wrapper = styled.div<WrappedProps>`
 
 const StyledInput = styled.input<Props>`
     font-family: ${variables.FONT_FAMILY.TTHOVES};
-    padding: 2px 16px 0 16px; /* 2px from top = input height should be 36px and 48px  */
+    padding: 1px 16px 0 16px; /* 2px from top = input height should be 36px and 48px  */
     font-size: ${variables.FONT_SIZE.SMALL};
     border-radius: 4px;
     border: solid 2px ${props =>
@@ -27,7 +27,7 @@ const StyledInput = styled.input<Props>`
     outline: none;
     box-sizing: border-box;
     width: 100%;
-    height: ${props => (props.variant === 'small' ? '34px' : '46px')};
+    height: ${props => (props.variant === 'small' ? '36px' : '48px')};
     text-align: ${props => props.align || 'left'};
     color: ${props => getStateColor(props.state)};
 

@@ -22,7 +22,7 @@ const OutputWrapper = styled.div`
 const Row = styled.div`
     display: flex;
     flex-direction: ${(props: { isColumn?: boolean }) => (props.isColumn ? 'column' : 'row')};
-    padding: 0 0 30px 0;
+    padding: 0 0 10px 0;
 
     &:last-child {
         padding: 0;
