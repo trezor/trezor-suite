@@ -3,7 +3,7 @@ import { useForm, FormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { useActions } from '@suite-hooks';
-import { variables, colors } from '@trezor/components';
+import { variables, colors, SelectBar } from '@trezor/components';
 
 import { WalletLayout } from '@wallet-components';
 // import * as storageActions from '@suite-actions/storageActions';
@@ -223,6 +223,17 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
                         <Outputs />
                         <AdvancedForm />
                         <ReviewButton />
+                    </StyledCard>
+                    <StyledCard>
+                        <SelectBar
+                            label="fee"
+                            options={[
+                                { label: 'low', value: 'low' },
+                                { label: 'medium', value: 'medium' },
+                                { label: 'high', value: 'high' },
+                                { label: 'custom', value: 'custom' },
+                            ]}
+                        />
                     </StyledCard>
                 </FormContext>
             </SendContext.Provider>

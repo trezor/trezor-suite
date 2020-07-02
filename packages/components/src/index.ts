@@ -5,6 +5,7 @@ import { Button, ButtonProps } from './components/buttons/Button';
 import { ButtonPin, ButtonPinProps } from './components/buttons/Pin';
 import { Dropdown, DropdownProps } from './components/Dropdown';
 import { Input, InputProps } from './components/form/Input';
+import SelectBar from './components/form/SelectBar';
 import { Textarea, TextareaProps } from './components/form/Textarea';
 import { Select, SelectProps } from './components/form/Select';
 import { Checkbox, CheckboxProps } from './components/form/Checkbox';
@@ -52,6 +53,7 @@ export {
     LinkProps,
     Modal,
     ModalProps,
+    SelectBar,
     CoinLogo,
     CoinLogoProps,
     TrezorLogo,
