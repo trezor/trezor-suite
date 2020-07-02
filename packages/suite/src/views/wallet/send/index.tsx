@@ -16,7 +16,6 @@ import { useSendForm, SendContext } from '@wallet-hooks/useSendForm';
 import Outputs from './components/Outputs';
 import Clear from './components/Clear';
 import Fees from './components/Fees';
-import Add from './components/Add';
 import TotalSent from './components/TotalSent';
 import AdvancedForm from './components/AdvancedForm';
 import ReviewButton from './components/ReviewButton';

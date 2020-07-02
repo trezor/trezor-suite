@@ -46,6 +46,7 @@ const Option = styled.div<{ isSelected: boolean }>`
     text-transform: capitalize;
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
     cursor: pointer;
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 
     ${props =>
         props.isSelected &&
