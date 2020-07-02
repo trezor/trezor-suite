@@ -29,6 +29,7 @@ const Options = styled.div`
 
 const Label = styled.div`
     padding-right: 20px;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-transform: capitalize;
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${colors.NEUE_TYPE_DARK_GREY};
