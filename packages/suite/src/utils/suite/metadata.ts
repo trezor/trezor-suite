@@ -104,3 +104,17 @@ export const decrypt = (input: Buffer, key: string | Buffer) => {
     const stringified = res.toString('utf8');
     return JSON.parse(stringified);
 };
+
+export const urlHashParams = (hash: string) => {
+    const result: { [param: string]: string } = {};
+    if (!hash) return result;
+    if (hash[0] === '#') {
+        hash = hash.substring(1, hash.length);
+    }
+    const parts = hash.split('&');
+    parts.forEach(part => {
+        const [key, value] = part.split('=');
+        result[key] = decodeURIComponent(value);
+    });
+    return result;
+};

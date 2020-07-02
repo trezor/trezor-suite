@@ -15,6 +15,9 @@ export default (state = initialState, action: Action): MetadataState => {
             case METADATA.ENABLE:
                 draft.enabled = true;
                 break;
+            case METADATA.DISABLE:
+                draft.enabled = false;
+                break;
             case METADATA.SET_PROVIDER:
                 draft.provider = action.payload;
                 break;

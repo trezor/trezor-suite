@@ -12,7 +12,9 @@ import {
 import { Account } from '@wallet-types';
 import * as metadataUtils from '@suite-utils/metadata';
 import * as modalActions from '@suite-actions/modalActions';
+import * as notificationActions from '@suite-actions/notificationActions';
 import DropboxProvider from '@suite/services/metadata/DropboxProvider';
+import GoogleProvider from '@suite/services/metadata/GoogleProvider';
 
 export type MetadataActions =
     | { type: typeof METADATA.ENABLE; payload: boolean }
@@ -43,6 +45,9 @@ const getProvider = async (state?: Partial<MetadataProviderCredentials>) => {
     switch (state.type) {
         case 'dropbox':
             providerInstance = new DropboxProvider(state.token);
+            break;
+        case 'google':
+            providerInstance = new GoogleProvider(state.token);
             break;
         default:
             break;
@@ -97,7 +102,6 @@ export const addAccountMetadata = (payload: MetadataAddPayload) => async (
         dispatch(addDeviceMetadata(payload));
         return;
     }
-
     const provider = await getProvider(getState().metadata.provider);
     if (!provider) return;
     const account = getState().wallet.accounts.find(a => a.key === payload.accountKey);
@@ -199,6 +203,7 @@ export const setAccountMetadataKey = (account: Account) => (
 };
 
 // Generate device master-key
+// todo: maybe rename to "initMetadata ?"
 export const getDeviceMetadataKey = (force = false) => async (
     dispatch: Dispatch,
     getState: GetState,
@@ -281,6 +286,7 @@ export const getDeviceMetadataKey = (force = false) => async (
 };
 
 export const connectProvider = (type: MetadataProviderType) => async (dispatch: Dispatch) => {
+    console.log('metadataActions connectProvider', type);
     const provider = await getProvider({ type });
     if (!provider) return;
 
@@ -288,7 +294,14 @@ export const connectProvider = (type: MetadataProviderType) => async (dispatch: 
 
     if (connected) {
         const credentials = await provider.getCredentials();
-        if (!credentials) return; // TODO: toast errors
+        if (!credentials) {
+            return dispatch(
+                notificationActions.addToast({
+                    type: 'error',
+                    error: 'Failed to log in metadata provider',
+                }),
+            );
+        }
 
         // set metadata reducer
         dispatch({
