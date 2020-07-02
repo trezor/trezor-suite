@@ -18,16 +18,16 @@ const Wrapper = styled.div<WrappedProps>`
 
 const StyledInput = styled.input<Props>`
     font-family: ${variables.FONT_FAMILY.TTHOVES};
-    padding: 0 10px;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    border-radius: 3px;
-    box-shadow: inset 0 3px 6px 0 ${colors.BLACK92};
-    border: solid 1px ${props => (props.state ? getStateColor(props.state) : colors.BLACK80)};
+    padding: 2px 16px 0 16px; /* 2px from top = input height should be 36px and 48px  */
+    font-size: ${variables.FONT_SIZE.SMALL};
+    border-radius: 4px;
+    border: solid 2px ${props =>
+        props.state ? getStateColor(props.state) : colors.NEUE_STROKE_GREY};
     background-color: ${colors.WHITE};
     outline: none;
     box-sizing: border-box;
     width: 100%;
-    height: ${props => (props.variant === 'small' ? '36px' : '48px')};
+    height: ${props => (props.variant === 'small' ? '34px' : '46px')};
     text-align: ${props => props.align || 'left'};
     color: ${props => getStateColor(props.state)};
 
@@ -61,7 +61,7 @@ const StyledInput = styled.input<Props>`
             &:hover,
             &:focus,
             &:active {
-                border-color: ${colors.BLACK50};
+                /* border-color: ${colors.BLACK50}; */
             }
         `}
 `;
@@ -95,7 +95,11 @@ const InputIconWrapper = styled.div<Props>`
 const SpinnerWrapper = styled.div``;
 
 const Label = styled.label`
-    padding: 0 0 10px 0;
+    min-height: 24px;
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    padding: 0 0 12px 0;
+    color: ${colors.NEUE_TYPE_DARK_GREY};
 `;
 
 const BottomText = styled.div<Props>`

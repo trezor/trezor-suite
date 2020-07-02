@@ -8,7 +8,7 @@ interface Option {
 }
 
 interface Props {
-    label?: string;
+    label?: React.ReactNode;
     selectedOption?: Option;
     options: Option[];
 }
