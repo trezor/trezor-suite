@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import AddRecipient from '../AddRecipient';
 import { colors } from '@trezor/components';
+import { useSendFormContext } from '@wallet-hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -25,14 +26,16 @@ const Line = styled.div`
 `;
 
 export default () => {
+    const {
+        account: { networkType },
+    } = useSendFormContext();
+
     return (
         <Wrapper>
             <Line />
             <Content>
                 <Left />
-                <Right>
-                    <AddRecipient />
-                </Right>
+                <Right>{networkType === 'bitcoin' && <AddRecipient />}</Right>
             </Content>
         </Wrapper>
     );
