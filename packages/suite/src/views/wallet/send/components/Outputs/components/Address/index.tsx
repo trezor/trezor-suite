@@ -102,7 +102,7 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
                     );
                     updateContext({ destinationAddressEmpty });
                 }
-                composeTransaction();
+                composeTransaction(outputId);
             }}
             bottomText={
                 error ? (

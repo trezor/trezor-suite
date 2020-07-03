@@ -134,7 +134,7 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
 
     // update custom values
     const updateContext = useCallback(
-        (value: Parameters<SendContextState['updateContext']>[0]) => {
+        (value: Partial<SendContextProps>) => {
             setState({
                 ...state,
                 ...value,
