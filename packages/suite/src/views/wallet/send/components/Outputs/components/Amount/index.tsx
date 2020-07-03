@@ -6,6 +6,7 @@ import { Input, Icon } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 // import { updateFiatInput, updateMax } from '@wallet-actions/sendFormActions';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { useSendFormContext } from '@wallet-hooks';
@@ -47,7 +48,7 @@ const TokenBalance = styled.div`
     right: 0;
 `;
 
-const StyledTranserIcon = styled(Icon)`
+const StyledTransferIcon = styled(Icon)`
     display: flex;
     flex-direction: column;
 
@@ -74,6 +75,7 @@ export default ({ outputId }: { outputId: number }) => {
         errors,
         setValue,
         composeTransaction,
+        fiatRates,
     } = useSendFormContext();
     const inputName = `outputs[${outputId}].amount`;
     const isSetMaxActive = values.setMaxOutputId === outputId;
@@ -81,8 +83,19 @@ export default ({ outputId }: { outputId: number }) => {
     const formattedAvailableBalance = token
         ? token.balance || '0'
         : formatNetworkAmount(availableBalance, symbol);
-    const error =
+
+    // find related fiat error
+    const fiatError =
+        errors.outputs && errors.outputs[outputId] ? errors.outputs[outputId].fiat : undefined;
+    // find local error
+    const amountError =
         errors.outputs && errors.outputs[outputId] ? errors.outputs[outputId].amount : undefined;
+    // display error only if there is no related fiatError and local error is 'TR_AMOUNT_IS_NOT_SET' (empty field)
+    const error =
+        fiatError && amountError && amountError.message === 'TR_AMOUNT_IS_NOT_SET'
+            ? undefined
+            : amountError;
+
     const reserve =
         account.networkType === 'ripple' ? formatNetworkAmount(account.misc.reserve, symbol) : null;
     const tokenBalance = token ? `${token.balance} ${token.symbol!.toUpperCase()}` : undefined;
@@ -95,6 +108,8 @@ export default ({ outputId }: { outputId: number }) => {
             <Left>
                 <StyledInput
                     state={getInputState(error, amountValue)}
+                    monospace
+                    align="right"
                     topLabel={
                         <Label>
                             <Text>
@@ -102,14 +117,7 @@ export default ({ outputId }: { outputId: number }) => {
                             </Text>
                         </Label>
                     }
-                    onChange={() => {
-                        if (isSetMaxActive) {
-                            setValue('setMaxOutputId', -1);
-                        }
-                        if (error) return;
-                        // updateFiatInput(outputId, fiatRates, getValues, setValue);
-                        composeTransaction(outputId);
-                    }}
+                    bottomText={error && error.message}
                     button={{
                         icon: isSetMaxActive ? 'CHECK' : 'SEND',
                         iconSize: 16,
@@ -119,7 +127,33 @@ export default ({ outputId }: { outputId: number }) => {
                         },
                         text: <Translation id="TR_SEND_SEND_MAX" />,
                     }}
-                    align="right"
+                    onChange={event => {
+                        if (isSetMaxActive) {
+                            setValue('setMaxOutputId', -1);
+                        }
+
+                        if (error) {
+                            if (values.outputs[outputId].fiat.length > 0) {
+                                setValue(`outputs[${outputId}].fiat`, '');
+                            }
+                            return;
+                        }
+
+                        const selectedCurrency = values.outputs[outputId].currency;
+                        const fiat =
+                            fiatRates && fiatRates.current
+                                ? toFiatCurrency(
+                                      event.target.value,
+                                      selectedCurrency.value,
+                                      fiatRates.current.rates,
+                                  )
+                                : null;
+                        if (fiat) {
+                            setValue(`outputs[${outputId}].fiat`, fiat, true);
+                        }
+
+                        composeTransaction(outputId);
+                    }}
                     name={inputName}
                     defaultValue={amountValue}
                     innerRef={register({
@@ -165,7 +199,6 @@ export default ({ outputId }: { outputId: number }) => {
                             }
                         },
                     })}
-                    bottomText={error && error.message}
                 />
                 {tokenBalance && (
                     <TokenBalance>
@@ -180,7 +213,7 @@ export default ({ outputId }: { outputId: number }) => {
                     {({ rate }) =>
                         rate && (
                             <>
-                                <StyledTranserIcon icon="TRANSFER" />
+                                <StyledTransferIcon icon="TRANSFER" />
                                 <Right>
                                     <Fiat outputId={outputId} />
                                 </Right>
