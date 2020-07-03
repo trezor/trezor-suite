@@ -18,20 +18,20 @@ const Wrapper = styled.div`
     align-items: center;
 `;
 
-const Options = styled.div`
-    display: flex;
-    align-items: center;
-    padding: 0 2px;
-    border-radius: 4px;
-    background: ${colors.NEUE_BG_GRAY};
-`;
-
 const Label = styled.div`
     padding-right: 20px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-transform: capitalize;
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${colors.NEUE_TYPE_DARK_GREY};
+`;
+
+const Options = styled.div`
+    display: flex;
+    align-items: center;
+    padding: 0 2px;
+    border-radius: 4px;
+    background: ${colors.NEUE_BG_GRAY};
 `;
 
 const Option = styled.div<{ isSelected: boolean }>`

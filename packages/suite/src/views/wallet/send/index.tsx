@@ -203,7 +203,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
 
     // save initial selected fee to reducer
     useEffect(() => {
-        setLastUsedFeeLevel(initialSelectedFee, symbol);
+        setLastUsedFeeLevel(initialSelectedFee.label, symbol);
     }, [setLastUsedFeeLevel, initialSelectedFee, symbol]);
 
     return (

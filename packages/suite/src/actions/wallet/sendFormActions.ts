@@ -40,7 +40,7 @@ export type SendFormActions =
     | {
           type: typeof SEND.SET_LAST_USED_FEE_LEVEL;
           symbol: Account['symbol'];
-          feeLevel: FeeLevel;
+          feeLevelLabel: FeeLevel['label'];
       }
     | {
           type: typeof SEND.SAVE_PRECOMPOSED_TX;
@@ -64,13 +64,14 @@ export const saveDraft = (formState: FormState) => async (
     });
 };
 
-export const setLastUsedFeeLevel = (feeLevel: FeeLevel, symbol: Account['symbol']) => (
-    dispatch: Dispatch,
-) => {
+export const setLastUsedFeeLevel = (
+    feeLevelLabel: FeeLevel['label'],
+    symbol: Account['symbol'],
+) => (dispatch: Dispatch) => {
     dispatch({
         type: SEND.SET_LAST_USED_FEE_LEVEL,
         symbol,
-        feeLevel,
+        feeLevelLabel,
     });
 };
 

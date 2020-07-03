@@ -18,6 +18,7 @@ const Wrapper = styled.div<WrappedProps>`
 
 const StyledInput = styled.input<Props>`
     font-family: ${variables.FONT_FAMILY.TTHOVES};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding: 1px 16px 0 16px; /* 2px from top = input height should be 36px and 48px  */
     font-size: ${variables.FONT_SIZE.SMALL};
     border-radius: 4px;
@@ -27,7 +28,7 @@ const StyledInput = styled.input<Props>`
     outline: none;
     box-sizing: border-box;
     width: 100%;
-    height: ${props => (props.variant === 'small' ? '36px' : '48px')};
+    height: ${props => (props.variant === 'small' ? '30px' : '48px')};
     text-align: ${props => props.align || 'left'};
     color: ${props => getStateColor(props.state)};
 
@@ -224,25 +225,27 @@ const Input = ({
                         </SpinnerWrapper>
                     )}
                     {button && (
-                        <Button
-                            onClick={button.onClick}
-                            onMouseEnter={handleButtonEnter}
-                            onMouseLeave={handleButtonLeave}
-                            disabled={button.isDisabled}
-                        >
-                            {button.icon && (
-                                <StyledIcon
-                                    icon={button.icon}
-                                    size={button.iconSize || 10}
-                                    color={
-                                        buttonHover
-                                            ? button.iconColorHover || colors.BLACK0
-                                            : button.iconColor || colors.BLACK25
-                                    }
-                                />
-                            )}
-                            {button.text && <ButtonText>{button.text}</ButtonText>}
-                        </Button>
+                        <>
+                            <Button
+                                onClick={button.onClick}
+                                onMouseEnter={handleButtonEnter}
+                                onMouseLeave={handleButtonLeave}
+                                disabled={button.isDisabled}
+                            >
+                                {button.icon && (
+                                    <StyledIcon
+                                        icon={button.icon}
+                                        size={button.iconSize || 10}
+                                        color={
+                                            buttonHover
+                                                ? button.iconColorHover || colors.BLACK0
+                                                : button.iconColor || colors.BLACK25
+                                        }
+                                    />
+                                )}
+                                {button.text && <ButtonText>{button.text}</ButtonText>}
+                            </Button>
+                        </>
                     )}
                 </InputIconWrapper>
                 {isPartiallyHidden && <Overlay />}
