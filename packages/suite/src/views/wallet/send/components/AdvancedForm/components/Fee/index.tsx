@@ -190,7 +190,7 @@ export default () => {
                     variant="small"
                     onChange={([selected]) => {
                         // preserve fee level for next transaction
-                        setLastUsedFeeLevel(selected.label);
+                        setLastUsedFeeLevel(selected.label, symbol);
                         return { ...selected };
                     }}
                     options={feeInfo.levels}
