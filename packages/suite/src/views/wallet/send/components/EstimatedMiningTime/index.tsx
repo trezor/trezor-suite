@@ -21,9 +21,9 @@ interface Props {
     className?: 'string';
 }
 
-export default ({ seconds, className }: Props) => {
+export default ({ seconds }: Props) => {
     return (
-        <Wrapper className={className}>
+        <Wrapper>
             <Translation id="TR_ESTIMATED_TIME" />
             <Duration>{formatDuration(seconds)}</Duration>
         </Wrapper>

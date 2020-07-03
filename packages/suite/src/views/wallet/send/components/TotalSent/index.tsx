@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { variables, colors } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { Card, Translation, FiatValue } from '@suite-components';
 
 const StyledCard = styled(Card)`
@@ -9,6 +10,7 @@ const StyledCard = styled(Card)`
     flex-direction: row;
     justify-items: space-between;
     align-items: center;
+    min-height: 86px;
 `;
 
 const Left = styled.div`
@@ -25,6 +27,7 @@ const Label = styled.div`
 `;
 
 const SecondaryLabel = styled.div`
+    padding-top: 2px;
     font-size: ${variables.FONT_SIZE.SMALL};
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
 `;
@@ -60,6 +63,7 @@ const TotalSentFiat = styled.div`
 export default () => {
     const {
         account: { symbol },
+        transactionInfo,
     } = useSendFormContext();
 
     return (
@@ -72,14 +76,20 @@ export default () => {
                     <Translation id="TR_INCLUDING_FEE" />
                 </SecondaryLabel>
             </Left>
-            <Right>
-                <TotalSentCoin>
-                    666 <Symbol>{symbol}</Symbol>
-                </TotalSentCoin>
-                <TotalSentFiat>
-                    <FiatValue amount="666" symbol={symbol} />
-                </TotalSentFiat>
-            </Right>
+            {transactionInfo && (
+                <Right>
+                    <TotalSentCoin>
+                        {formatNetworkAmount(transactionInfo.totalSent, symbol)}
+                        <Symbol>{symbol}</Symbol>
+                    </TotalSentCoin>
+                    <TotalSentFiat>
+                        <FiatValue
+                            amount={formatNetworkAmount(transactionInfo.totalSent, symbol)}
+                            symbol={symbol}
+                        />
+                    </TotalSentFiat>
+                </Right>
+            )}
         </StyledCard>
     );
 };

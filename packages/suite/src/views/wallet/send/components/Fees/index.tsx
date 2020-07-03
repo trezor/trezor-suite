@@ -67,7 +67,7 @@ const FeeUnits = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const StyledEstimatedMiningTime = styled(EstimatedMiningTime)`
+const EstimatedMiningTimeWrapper = styled.div`
     padding-right: 4px;
 `;
 
@@ -118,10 +118,11 @@ export default () => {
             </Top>
             <Bottom>
                 {networkType === 'bitcoin' && (
-                    <StyledEstimatedMiningTime
-                        className="StyledEstimatedMiningTime"
-                        seconds={feeInfo.blockTime * selectedFee.blocks * 60}
-                    />
+                    <EstimatedMiningTimeWrapper>
+                        <EstimatedMiningTime
+                            seconds={feeInfo.blockTime * selectedFee.blocks * 60}
+                        />
+                    </EstimatedMiningTimeWrapper>
                 )}
                 {networkType !== 'ethereum' && (
                     <FeeUnits>
