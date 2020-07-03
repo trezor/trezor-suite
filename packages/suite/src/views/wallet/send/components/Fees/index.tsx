@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { SelectBar, colors, variables } from '@trezor/components';
 import { Card, Translation } from '@suite-components';
-import { FeeLevel } from '@wallet-types/sendForm';
+import { FeeLevel } from 'trezor-connect';
 import { useSendFormContext } from '@wallet-hooks';
 
 const StyledCard = styled(Card)`
