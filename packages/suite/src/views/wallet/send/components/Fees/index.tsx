@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { SelectBar, colors, variables } from '@trezor/components';
-import { Card, Translation } from '@suite-components';
+import { Card, Translation, FiatValue } from '@suite-components';
 import { FeeLevel } from 'trezor-connect';
 import { useSendFormContext } from '@wallet-hooks';
 
@@ -26,6 +26,7 @@ const Right = styled.div`
 `;
 
 const CoinAmount = styled.div`
+    display: flex;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${colors.NEUE_TYPE_DARK_GREY};
@@ -33,9 +34,15 @@ const CoinAmount = styled.div`
 `;
 
 const FiatAmount = styled.div`
+    display: flex;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
+`;
+
+const Label = styled.div`
+    text-transform: uppercase;
+    padding-left: 4px;
 `;
 
 const buildFeeOptions = (levels: FeeLevel[]) => {
@@ -56,6 +63,7 @@ const buildFeeOptions = (levels: FeeLevel[]) => {
 export default () => {
     const {
         feeInfo: { levels },
+        account: { symbol },
         selectedFee,
     } = useSendFormContext();
 
@@ -69,8 +77,12 @@ export default () => {
                 />
             </Left>
             <Right>
-                <CoinAmount>123123123 BTC</CoinAmount>
-                <FiatAmount>103.22 USD</FiatAmount>
+                <CoinAmount>
+                    0.0000012 <Label>{symbol}</Label>
+                </CoinAmount>
+                <FiatAmount>
+                    <FiatValue amount="0.0000012" symbol={symbol} />
+                </FiatAmount>
             </Right>
         </StyledCard>
     );

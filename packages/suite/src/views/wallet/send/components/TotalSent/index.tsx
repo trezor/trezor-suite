@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables, colors } from '@trezor/components';
-import { Card, Translation } from '@suite-components';
+import { useSendFormContext } from '@wallet-hooks';
+import { Card, Translation, FiatValue } from '@suite-components';
 
 const StyledCard = styled(Card)`
     display: flex;
@@ -36,20 +37,31 @@ const Right = styled.div`
     align-items: flex-end;
 `;
 
-const CoinAmount = styled.div`
+const TotalSentCoin = styled.div`
+    display: flex;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${colors.NEUE_TYPE_DARK_GREY};
     padding-bottom: 6px;
 `;
 
-const Fee = styled.div`
+const Symbol = styled.div`
+    text-transform: uppercase;
+    padding-left: 4px;
+`;
+
+const TotalSentFiat = styled.div`
+    display: flex;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
 `;
 
 export default () => {
+    const {
+        account: { symbol },
+    } = useSendFormContext();
+
     return (
         <StyledCard>
             <Left>
@@ -61,8 +73,12 @@ export default () => {
                 </SecondaryLabel>
             </Left>
             <Right>
-                <CoinAmount>0.15123512 BTC</CoinAmount>
-                <Fee>103.22 USD</Fee>
+                <TotalSentCoin>
+                    666 <Symbol>{symbol}</Symbol>
+                </TotalSentCoin>
+                <TotalSentFiat>
+                    <FiatValue amount="666" symbol={symbol} />
+                </TotalSentFiat>
             </Right>
         </StyledCard>
     );
