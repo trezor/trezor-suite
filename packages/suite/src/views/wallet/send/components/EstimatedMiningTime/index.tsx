@@ -7,23 +7,25 @@ import { variables, colors } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
-    color: ${colors.BLACK50};
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.NEUE_TYPE_DARK_GREY};
 `;
 
-const Bold = styled.div`
+const Duration = styled.div`
     padding-left: 4px;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
 interface Props {
     seconds: number;
+    className?: 'string';
 }
 
-export default ({ seconds }: Props) => {
+export default ({ seconds, className }: Props) => {
     return (
-        <Wrapper>
+        <Wrapper className={className}>
             <Translation id="TR_ESTIMATED_TIME" />
-            <Bold>{formatDuration(seconds)}</Bold>
+            <Duration>{formatDuration(seconds)}</Duration>
         </Wrapper>
     );
 };

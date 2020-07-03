@@ -178,3 +178,26 @@ export const getFiatRate = (fiatRates: SendContext['fiatRates'], currency: strin
 export const buildCurrencyOption = (currency: string) => {
     return { value: currency, label: currency.toUpperCase() };
 };
+
+export const buildFeeOptions = (levels: FeeLevel[]) => {
+    interface Item {
+        label: FeeLevel['label'];
+        value: FeeLevel['label'];
+    }
+    const result: Item[] = [];
+
+    levels.forEach(level => {
+        const { label } = level;
+        result.push({ label, value: label });
+    });
+
+    return result;
+};
+
+export const getFeeUnits = (networkType: 'ripple' | 'bitcoin') => {
+    if (networkType === 'ripple') {
+        return { value: 'drop', label: 'drops' };
+    }
+
+    return { value: 'sat', label: 'sat/B' };
+};
