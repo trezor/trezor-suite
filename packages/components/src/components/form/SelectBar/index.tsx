@@ -36,7 +36,7 @@ const Options = styled.div`
 
 const Option = styled.div<{ isSelected: boolean }>`
     padding: 0 14px;
-    min-height: 25px;
+    min-height: 32px;
     margin: 2px 0;
     padding-top: 1px;
     display: flex;

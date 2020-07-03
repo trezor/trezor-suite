@@ -11,8 +11,8 @@ import { useSendForm, SendContext } from '@wallet-hooks/useSendForm';
 import Outputs from './components/Outputs';
 import Clear from './components/Clear';
 import Fees from './components/Fees';
+import CoinActions from './components/CoinActions';
 import TotalSent from './components/TotalSent';
-import AdvancedForm from './components/AdvancedForm';
 import ReviewButton from './components/ReviewButton';
 import { Props } from './Container';
 
@@ -42,6 +42,7 @@ const StyledCard = styled(Card)`
     display: flex;
     flex-direction: column;
     margin-bottom: 40px;
+    padding: 0;
 `;
 
 export default ({ device, fees, selectedAccount, locks, online, fiat, localCurrency }: Props) => {
@@ -93,7 +94,7 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
                     }
                 >
                     <Outputs />
-                    <AdvancedForm />
+                    <CoinActions />
                 </StyledCard>
                 <Fees />
                 <TotalSent />

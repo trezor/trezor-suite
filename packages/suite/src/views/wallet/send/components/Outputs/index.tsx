@@ -8,7 +8,7 @@ import Header from './components/Header';
 const Wrapper = styled.div``;
 
 const OutputWrapper = styled.div`
-    padding: 0 12px 12px 12px;
+    padding: 32px 42px;
     margin-bottom: 20px;
 
     &:last-child {
