@@ -94,6 +94,10 @@ export default () => {
                                 level => level.label === value,
                             );
                             if (selectedFeeForUpdate) {
+                                if (selectedFeeForUpdate.label === 'custom') {
+                                    const { feePerUnit } = selectedFee;
+                                    selectedFeeForUpdate.feePerUnit = feePerUnit;
+                                }
                                 updateContext({ selectedFee: selectedFeeForUpdate });
                             }
                         }}
