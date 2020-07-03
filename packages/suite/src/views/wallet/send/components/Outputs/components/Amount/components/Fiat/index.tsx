@@ -32,9 +32,9 @@ export default ({ outputId }: { outputId: number }) => {
         register,
         values,
         errors,
-        getValues,
         control,
         setValue,
+        clearError,
         composeTransaction,
     } = useSendFormContext();
 
@@ -81,6 +81,8 @@ export default ({ outputId }: { outputId: number }) => {
                               )
                             : null;
                     if (amount) {
+                        // error needs to be cleared before updating value, otherwise react-select-hook will not propagate changes into contexts (cached error)
+                        if (amountError) clearError(amountInputName);
                         setValue(amountInputName, amount, true);
                         composeTransaction(outputId);
                     }
@@ -115,8 +117,6 @@ export default ({ outputId }: { outputId: number }) => {
                     defaultValue={localCurrencyOption}
                     isClearable={false}
                     onChange={([selected]) => {
-                        // do not calculate if related amount has errors?
-                        // if (amountError) return selected;
                         const rate = getFiatRate(fiatRates, selected.value);
                         const amountValue = new BigNumber(values.outputs[outputId].amount);
                         if (rate && amountValue && !amountValue.isNaN()) {
