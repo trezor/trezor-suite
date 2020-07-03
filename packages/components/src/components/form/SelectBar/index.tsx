@@ -9,7 +9,7 @@ interface Option {
 
 interface Props {
     label?: React.ReactNode;
-    selectedOption?: Option;
+    selectedOption?: Option['value'];
     options: Option[];
 }
 
@@ -60,7 +60,9 @@ const Option = styled.div<{ isSelected: boolean }>`
 `;
 
 export default ({ options, selectedOption, label }: Props) => {
-    const [selectedOptionIn, setSelected] = useState<Option | null>(selectedOption || null);
+    const [selectedOptionIn, setSelected] = useState<Option['value'] | null>(
+        selectedOption || null
+    );
 
     return (
         <Wrapper>
@@ -68,10 +70,8 @@ export default ({ options, selectedOption, label }: Props) => {
             <Options>
                 {options.map(option => (
                     <Option
-                        onClick={() => setSelected(option)}
-                        isSelected={
-                            selectedOptionIn ? selectedOptionIn.value === option.value : false
-                        }
+                        onClick={() => setSelected(option.value)}
+                        isSelected={selectedOptionIn ? selectedOptionIn === option.value : false}
                         key={option.value}
                     >
                         {option.label}

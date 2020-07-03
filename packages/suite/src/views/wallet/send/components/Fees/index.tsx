@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { SelectBar, colors, variables } from '@trezor/components';
 import { Card, Translation } from '@suite-components';
+import { FeeLevel } from '@wallet-types/sendForm';
+import { useSendFormContext } from '@wallet-hooks';
 
 const StyledCard = styled(Card)`
     display: flex;
@@ -36,18 +38,34 @@ const FiatAmount = styled.div`
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
 `;
 
+const buildFeeOptions = (levels: FeeLevel[]) => {
+    interface Item {
+        label: FeeLevel['label'];
+        value: FeeLevel['label'];
+    }
+    const result: Item[] = [];
+
+    levels.forEach(level => {
+        const { label } = level;
+        result.push({ label, value: label });
+    });
+
+    return result;
+};
+
 export default () => {
+    const {
+        feeInfo: { levels },
+        selectedFee,
+    } = useSendFormContext();
+
     return (
         <StyledCard>
             <Left>
                 <SelectBar
                     label={<Translation id="TR_FEE" />}
-                    options={[
-                        { label: 'low', value: 'low' },
-                        { label: 'medium', value: 'medium' },
-                        { label: 'high', value: 'high' },
-                        { label: 'custom', value: 'custom' },
-                    ]}
+                    selectedOption={selectedFee.label}
+                    options={buildFeeOptions(levels)}
                 />
             </Left>
             <Right>

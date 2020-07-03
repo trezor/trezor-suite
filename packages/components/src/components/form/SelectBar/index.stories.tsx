@@ -14,13 +14,7 @@ storiesOf('Form', module).add(
             { label: 'custom', value: 'custom' },
         ];
 
-        return (
-            <SelectBar
-                label="fee"
-                selectedOption={{ label: 'low', value: 'low' }}
-                options={options}
-            />
-        );
+        return <SelectBar label="fee" selectedOption="low" options={options} />;
     },
     {
         options: {
