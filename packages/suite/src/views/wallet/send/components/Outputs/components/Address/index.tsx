@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input } from '@trezor/components';
+import { Input, colors, variables, Icon } from '@trezor/components';
+import { FormattedPlural } from 'react-intl';
 
 import * as modalActions from '@suite-actions/modalActions';
 import { checkRippleEmptyAddress } from '@wallet-actions/sendFormActions';
@@ -13,17 +14,38 @@ import { AddressLabeling, QuestionTooltip, Translation } from '@suite-components
 
 const Label = styled.div`
     display: flex;
+    justify-content: space-between;
     align-items: center;
+`;
+
+const Left = styled.div`
+    display: flex;
+`;
+
+const Right = styled.div`
+    display: flex;
 `;
 
 const Text = styled.div`
     margin-right: 3px;
 `;
 
-export default ({ outputId }: { outputId: number }) => {
+const Remove = styled.div`
+    display: flex;
+    cursor: pointer;
+    font-size: ${variables.FONT_SIZE.TINY};
+`;
+
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
+    display: flex;
+`;
+
+export default ({ outputId, outputsCount }: { outputId: number; outputsCount: number }) => {
     const {
         account,
         updateContext,
+        outputs,
         composeTransaction,
         register,
         values,
@@ -43,10 +65,31 @@ export default ({ outputId }: { outputId: number }) => {
             monospace
             topLabel={
                 <Label>
-                    <Text>
-                        <Translation id="TR_RECIPIENT_ADDRESS" />
-                    </Text>
-                    <QuestionTooltip messageId="TR_RECIPIENT_ADDRESS_TOOLTIP" />
+                    <Left>
+                        <Text>
+                            {outputsCount > 1 && (
+                                <>
+                                    {outputId + 1}
+                                    <FormattedPlural
+                                        one="st"
+                                        two="nd"
+                                        few="rd"
+                                        other="th"
+                                        value={outputId + 1}
+                                    />
+                                </>
+                            )}{' '}
+                            <Translation id="TR_RECIPIENT_ADDRESS" />
+                        </Text>
+                        <QuestionTooltip messageId="TR_RECIPIENT_ADDRESS_TOOLTIP" />
+                    </Left>
+                    <Right>
+                        {outputsCount > 1 && (
+                            <Remove onClick={() => outputs.remove(outputId)}>
+                                <StyledIcon size={20} color={colors.BLACK50} icon="CROSS" />
+                            </Remove>
+                        )}
+                    </Right>
                 </Label>
             }
             onChange={async () => {
