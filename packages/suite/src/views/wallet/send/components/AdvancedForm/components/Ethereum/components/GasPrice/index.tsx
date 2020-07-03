@@ -21,7 +21,6 @@ const StyledIcon = styled(Icon)`
 `;
 
 export default () => {
-    const { formContext, sendContext } = useSendFormContext();
     const {
         initialSelectedFee,
         // setSelectedFee,
@@ -30,8 +29,13 @@ export default () => {
         account,
         fiatRates,
         token,
-    } = sendContext;
-    const { register, errors, getValues, setError, setValue, clearError } = formContext;
+        register,
+        errors,
+        getValues,
+        setError,
+        setValue,
+        clearError,
+    } = useSendFormContext();
     const inputName = 'ethereumGasPrice';
     const error = errors[inputName];
 

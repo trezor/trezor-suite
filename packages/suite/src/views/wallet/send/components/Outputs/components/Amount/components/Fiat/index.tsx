@@ -22,8 +22,6 @@ const SelectWrapper = styled.div`
 `;
 
 export default ({ outputId }: { outputId: number }) => {
-    const { formContext, sendContext, composeTransaction } = useSendFormContext();
-    const { register, errors, getValues, control, setValue, setError } = formContext;
     const {
         fiatRates,
         token,
@@ -32,11 +30,19 @@ export default ({ outputId }: { outputId: number }) => {
         account,
         selectedFee,
         outputs,
-    } = sendContext;
+        register,
+        errors,
+        getValues,
+        control,
+        setValue,
+        setError,
+        composeTransaction,
+    } = useSendFormContext();
 
-    const inputName = `fiatInput[${outputId}]`;
-    const inputNameSelect = `localCurrency[${outputId}]`;
-    const error = errors && errors.fiatInput ? errors.fiatInput[outputId] : null;
+    const inputName = `outputs[${outputId}].fiat`;
+    const inputNameSelect = `outputs[${outputId}].currency`;
+    const error =
+        errors.outputs && errors.outputs[outputId] ? errors.outputs[outputId].fiat : undefined;
     const decimals = token ? token.decimals : network.decimals;
 
     useEffect(() => {

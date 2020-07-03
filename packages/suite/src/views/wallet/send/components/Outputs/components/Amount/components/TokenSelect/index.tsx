@@ -41,9 +41,7 @@ const getValues = (symbol: Account['symbol'], tokens: Account['tokens']) => {
 };
 
 export default ({ outputId }: { outputId: number }) => {
-    const { formContext, sendContext } = useSendFormContext();
-    const { account, token, updateContext } = sendContext;
-    const { setValue, clearError } = formContext;
+    const { account, token, updateContext, setValue, clearError } = useSendFormContext();
     const { symbol, tokens } = account;
     const values = getValues(symbol, tokens);
 

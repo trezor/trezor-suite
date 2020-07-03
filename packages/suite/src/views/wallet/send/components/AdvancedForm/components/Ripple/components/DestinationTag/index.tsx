@@ -18,8 +18,7 @@ const Text = styled.div`
 `;
 
 const DestinationTag = () => {
-    const { formContext } = useSendFormContext();
-    const { register, errors } = formContext;
+    const { register, errors } = useSendFormContext();
     const inputName = 'rippleDestinationTag';
     const error = errors[inputName];
 

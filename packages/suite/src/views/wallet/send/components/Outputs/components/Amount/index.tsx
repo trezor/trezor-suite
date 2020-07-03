@@ -6,7 +6,7 @@ import { Input, Icon } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
 import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { updateFiatInput, updateMax } from '@wallet-actions/sendFormActions';
+// import { updateFiatInput, updateMax } from '@wallet-actions/sendFormActions';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { useSendFormContext } from '@wallet-hooks';
 
@@ -63,37 +63,38 @@ const Right = styled.div`
 `;
 
 export default ({ outputId }: { outputId: number }) => {
-    const { formContext, sendContext, composeTransaction } = useSendFormContext();
     const {
         account,
         token,
         network,
-        selectedFee,
-        outputs,
         localCurrencyOption,
         destinationAddressEmpty,
-        fiatRates,
-        updateContext,
-    } = sendContext;
-    const { register, errors, formState, getValues, setValue, setError, clearError } = formContext;
-    const inputName = `amount[${outputId}]`;
-    const isSetMaxActive = getValues('setMaxOutputId') === outputId;
-    const isDirty = formState.dirtyFields.has(inputName);
+        register,
+        values,
+        errors,
+        setValue,
+        composeTransaction,
+    } = useSendFormContext();
+    const inputName = `outputs[${outputId}].amount`;
+    const isSetMaxActive = values.setMaxOutputId === outputId;
     const { symbol, availableBalance, networkType } = account;
     const formattedAvailableBalance = token
         ? token.balance || '0'
         : formatNetworkAmount(availableBalance, symbol);
-    const error = errors && errors.amount ? errors.amount[outputId] : null;
+    const error =
+        errors.outputs && errors.outputs[outputId] ? errors.outputs[outputId].amount : undefined;
     const reserve =
         account.networkType === 'ripple' ? formatNetworkAmount(account.misc.reserve, symbol) : null;
     const tokenBalance = token ? `${token.balance} ${token.symbol!.toUpperCase()}` : undefined;
     const decimals = token ? token.decimals : network.decimals;
+    const amountValue =
+        values.outputs && values.outputs[outputId] ? values.outputs[outputId].amount : '';
 
     return (
         <Wrapper>
             <Left>
                 <StyledInput
-                    state={getInputState(error, isDirty)}
+                    state={getInputState(error, amountValue)}
                     topLabel={
                         <Label>
                             <Text>
@@ -107,88 +108,63 @@ export default ({ outputId }: { outputId: number }) => {
                         }
                         if (error) return;
                         // updateFiatInput(outputId, fiatRates, getValues, setValue);
-                        composeTransaction();
+                        composeTransaction(outputId);
                     }}
                     button={{
                         icon: isSetMaxActive ? 'CHECK' : 'SEND',
                         iconSize: 16,
                         onClick: () => {
                             setValue('setMaxOutputId', isSetMaxActive ? -1 : outputId);
-                            composeTransaction();
+                            composeTransaction(outputId);
                         },
                         text: <Translation id="TR_SEND_SEND_MAX" />,
                     }}
                     align="right"
+                    name={inputName}
+                    defaultValue={amountValue}
                     innerRef={register({
-                        // idk why "TR_AMOUNT_IS_NOT_SET" returns TR_AMOUNT_IS_NOT_ENOUGH
-                        required: <Translation id="TR_ADDRESS_IS_NOT_SET" />,
-                        validate: {
-                            notNumber: (value: string) => {
-                                const amountBig = new BigNumber(value);
-                                if (amountBig.isNaN()) {
-                                    return <Translation id="TR_AMOUNT_IS_NOT_NUMBER" />;
-                                }
-                            },
-                            toLow: (value: string) => {
-                                const amountBig = new BigNumber(value);
-                                if (amountBig.lte(0)) {
-                                    return <Translation id="TR_AMOUNT_IS_TOO_LOW" />;
-                                }
-                            },
-                            notEnough: (value: string) => {
-                                const amountBig = new BigNumber(value);
-                                if (amountBig.isGreaterThan(formattedAvailableBalance)) {
-                                    return <Translation id="TR_AMOUNT_IS_NOT_ENOUGH" />;
-                                }
-                            },
-                            xrpSmallReserve: (value: string) => {
-                                const amountBig = new BigNumber(value);
-                                if (
-                                    networkType === 'ripple' &&
-                                    destinationAddressEmpty &&
-                                    reserve &&
-                                    amountBig.isLessThan(reserve)
-                                ) {
-                                    return (
-                                        <Translation
-                                            id="TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE"
-                                            values={{ reserve }}
-                                        />
-                                    );
-                                }
-                            },
-                            notEnoughCurrencyFee: () => {
-                                if (
-                                    networkType === 'ethereum' &&
-                                    error &&
-                                    error.type === 'notEnoughCurrencyFee'
-                                ) {
-                                    return (
-                                        <Translation
-                                            id="NOT_ENOUGH_CURRENCY_FEE"
-                                            values={{ symbol: symbol.toUpperCase() }}
-                                        />
-                                    );
-                                }
-                            },
-                            decimalOverflow: (value: string) => {
-                                if (
-                                    !validator.isDecimal(value, {
-                                        // eslint-disable-next-line @typescript-eslint/camelcase
-                                        decimal_digits: `0,${decimals}`,
-                                    })
-                                ) {
-                                    return (
-                                        <Translation
-                                            id="TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                                            values={{ decimals }}
-                                        />
-                                    );
-                                }
-                            },
+                        required: 'TR_AMOUNT_IS_NOT_SET',
+                        validate: (value: string) => {
+                            const amountBig = new BigNumber(value);
+                            if (amountBig.isNaN()) {
+                                return 'TR_AMOUNT_IS_NOT_NUMBER';
+                            }
+
+                            if (amountBig.lte(0)) {
+                                return 'TR_AMOUNT_IS_TOO_LOW';
+                            }
+
+                            if (amountBig.isGreaterThan(formattedAvailableBalance)) {
+                                return 'TR_AMOUNT_IS_NOT_ENOUGH';
+                            }
+
+                            if (
+                                networkType === 'ripple' &&
+                                destinationAddressEmpty &&
+                                reserve &&
+                                amountBig.isLessThan(reserve)
+                            ) {
+                                return 'TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE';
+                            }
+
+                            if (
+                                networkType === 'ethereum' &&
+                                error &&
+                                error.type === 'notEnoughCurrencyFee'
+                            ) {
+                                return 'NOT_ENOUGH_CURRENCY_FEE';
+                            }
+
+                            if (
+                                !validator.isDecimal(value, {
+                                    // eslint-disable-next-line @typescript-eslint/camelcase
+                                    decimal_digits: `0,${decimals}`,
+                                })
+                            ) {
+                                return 'TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS';
+                            }
                         },
                     })}
-                    name={inputName}
                     bottomText={error && error.message}
                 />
                 {tokenBalance && (

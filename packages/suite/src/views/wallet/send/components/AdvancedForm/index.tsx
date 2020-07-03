@@ -30,7 +30,7 @@ const Header = styled.div`
 `;
 
 export default () => {
-    const { account, advancedForm } = useSendFormContext().sendContext;
+    const { account, advancedForm } = useSendFormContext();
     const { networkType } = account;
 
     return (

@@ -113,8 +113,6 @@ const getValue = (
 };
 
 export default () => {
-    const { formContext, sendContext } = useSendFormContext();
-    const { formState, setValue, errors, register, getValues, setError, clearError } = formContext;
     const {
         account,
         feeInfo,
@@ -125,7 +123,14 @@ export default () => {
         fiatRates,
         coinFees,
         updateContext,
-    } = sendContext;
+        formState,
+        setValue,
+        errors,
+        register,
+        getValues,
+        setError,
+        clearError,
+    } = useSendFormContext();
 
     const { updateFeeLevel, setLastUsedFeeLevel } = useActions({
         updateFeeLevel: sendFormActions.updateFeeLevel,

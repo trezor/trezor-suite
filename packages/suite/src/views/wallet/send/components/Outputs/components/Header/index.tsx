@@ -27,14 +27,15 @@ const ColumnRight = styled(Column)`
     justify-content: flex-end;
 `;
 
-export default ({ outputId, outputIndex }: { outputId: number; outputIndex: number }) => {
-    const { outputs } = useSendFormContext().sendContext;
-
+export default ({ outputId }: { outputId: number }) => {
+    const { outputs } = useSendFormContext();
     return (
         <Wrapper>
             <Column />
-            <Column>{outputs.length > 1 && <OutputIndex>#{outputIndex + 1}</OutputIndex>}</Column>
-            <ColumnRight>{outputs.length > 1 && <Remove outputId={outputId} />}</ColumnRight>
+            <Column>
+                {outputs.fields.length > 1 && <OutputIndex>#{outputId + 1}</OutputIndex>}
+            </Column>
+            <ColumnRight>{outputs.fields.length > 1 && <Remove outputId={outputId} />}</ColumnRight>
         </Wrapper>
     );
 };

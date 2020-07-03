@@ -24,9 +24,7 @@ const Row = styled.div`
 `;
 
 export default () => {
-    const { formContext, sendContext } = useSendFormContext();
-    const { getValues } = formContext;
-    const { feeInfo, selectedFee } = sendContext;
+    const { feeInfo, selectedFee, getValues } = useSendFormContext();
     const customFee = getValues('customFee');
 
     return (

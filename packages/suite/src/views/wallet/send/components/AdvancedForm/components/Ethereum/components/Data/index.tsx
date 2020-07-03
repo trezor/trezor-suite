@@ -18,16 +18,19 @@ const Text = styled.div`
 `;
 
 export default () => {
-    const { formContext, sendContext } = useSendFormContext();
     const {
         token,
         setSelectedFee,
         initialSelectedFee,
         outputs,
         fiatRates,
-        setTransactionInfo,
-    } = sendContext;
-    const { register, errors, getValues, setValue, clearError, setError } = formContext;
+        register,
+        errors,
+        getValues,
+        setValue,
+        clearError,
+        setError,
+    } = useSendFormContext();
     const inputName = 'ethereumData';
     const { updateFeeLevelWithData } = useActions({
         updateFeeLevelWithData: sendFormActions.updateFeeLevelWithData,

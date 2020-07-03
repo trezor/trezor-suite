@@ -8,22 +8,19 @@ import { useSendFormContext } from '@wallet-hooks';
 const Wrapper = styled.div``;
 
 export default () => {
-    const { outputs, updateContext } = useSendFormContext().sendContext;
-
+    const { outputs } = useSendFormContext();
     return (
         <Wrapper>
             <Button
                 variant="tertiary"
                 icon="PLUS"
                 onClick={() => {
-                    const lastOutput = outputs[outputs.length - 1];
-                    const outputsWithNewItem = [
-                        ...outputs,
-                        {
-                            id: lastOutput.id + 1,
-                        },
-                    ];
-                    updateContext({ outputs: outputsWithNewItem });
+                    outputs.append({
+                        address: '',
+                        amount: '',
+                        fiat: '',
+                        currency: undefined,
+                    });
                 }}
             >
                 <Translation id="TR_ANOTHER_RECIPIENT" />

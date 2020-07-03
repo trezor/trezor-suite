@@ -1,8 +1,14 @@
+import { FormContextValues, ArrayField } from 'react-hook-form';
 import { Account, Network, CoinFiatRates } from '@wallet-types';
-import { FeeLevel, TokenInfo } from 'trezor-connect';
+import { FeeLevel, TokenInfo, PrecomposedTransaction } from 'trezor-connect';
 import { TrezorDevice, AppState } from '@suite-types';
 
-export type Output = { id: number };
+export type Output = {
+    address: string;
+    amount: string;
+    fiat: string;
+    currency: LocalCurrencyOption;
+};
 
 export interface FeeInfo {
     blockHeight: number; // when fee info was updated; 0 = never
@@ -24,27 +30,35 @@ export type EthTransactionData = {
     nonce: string;
 };
 
-type Max = 'active' | 'inactive';
 type LocalCurrencyOption = { value: string; label: string };
 
 export type FormState = {
+    outputs: Output[];
     // output arrays, each element is corresponding with single Output item
-    address: string[];
-    amount: string[];
-    setMax: Max[];
     setMaxOutputId: number;
-    fiatInput: string[];
-    localCurrency: LocalCurrencyOption[];
     // advanced form inputs
     bitcoinLockTime: string;
     ethereumGasPrice: string;
     ethereumGasLimit: string;
     ethereumData: string;
     rippleDestinationTag: string;
-    // various common props
 };
 
-export type ContextStateValues = {
+// export type PrecomposedLevels = {[key: FeeLevel['label']]: PrecomposedTransaction };
+export type PrecomposedLevels = { [key: string]: PrecomposedTransaction };
+
+// this type is not exported from `react-hook-form`, it's a ReturnType of useFieldArray hook
+type FieldArray<T, KeyName extends string = 'id'> = {
+    swap: (indexA: number, indexB: number) => void;
+    move: (from: number, to: number) => void;
+    prepend: (value: Partial<T> | Partial<T>[]) => void;
+    append: (value: Partial<T> | Partial<T>[]) => void;
+    remove: (index?: number | number[] | undefined) => void;
+    insert: (index: number, value: Partial<T> | Partial<T>[]) => void;
+    fields: Partial<ArrayField<T, KeyName>>[];
+};
+
+export type SendContextProps = {
     account: Account;
     coinFees: FeeInfo;
     network: Network;
@@ -61,11 +75,16 @@ export type ContextStateValues = {
     feeOutdated: boolean;
     selectedFee: FeeLevel;
     advancedForm: boolean;
-    outputs: Output[];
     isLoading: boolean;
 };
-
-export type ContextState = ContextStateValues & {
-    updateContext: (value: Partial<ContextState>) => void;
-    resetContext: () => void;
-};
+export type SendContextState = FormContextValues<FormState> &
+    SendContextProps & {
+        // additional field
+        outputs: FieldArray<Output>;
+        getDraft: () => { formState: FormState } | undefined;
+        saveDraft: (draft: FormState) => void;
+        updateContext: (value: Partial<SendContextProps>) => void;
+        resetContext: () => void;
+        composeTransaction: (outputId?: number) => void;
+        values: FormState;
+    };

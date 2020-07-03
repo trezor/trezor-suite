@@ -21,20 +21,25 @@ const Text = styled.div`
 `;
 
 export default ({ outputId }: { outputId: number }) => {
-    const { formContext, sendContext, composeTransaction } = useSendFormContext();
-    const { register, errors, getValues, setValue } = formContext;
-    const { dirtyFields, touched } = formContext.formState;
-    const { account, updateContext } = sendContext;
-    const inputName = `address[${outputId}]`;
-    const amountInputName = `amount[${outputId}]`;
+    const {
+        account,
+        updateContext,
+        composeTransaction,
+        register,
+        values,
+        errors,
+        setValue,
+    } = useSendFormContext();
     const { descriptor, networkType, symbol } = account;
     const { openModal } = useActions({ openModal: modalActions.openModal });
-    const error = errors.address ? errors.address[outputId] : undefined;
-    const addressValue = getValues(inputName);
+    const error =
+        errors.outputs && errors.outputs[outputId] ? errors.outputs[outputId].address : undefined;
+    const addressValue =
+        values.outputs && values.outputs[outputId] ? values.outputs[outputId].address : '';
 
     return (
         <Input
-            state={getInputState(error, dirtyFields.has(inputName), addressValue)}
+            state={getInputState(error, addressValue)}
             monospace
             topLabel={
                 <Label>
@@ -49,34 +54,31 @@ export default ({ outputId }: { outputId: number }) => {
 
                 if (networkType === 'ripple') {
                     const destinationAddressEmpty = await checkRippleEmptyAddress(
-                        getValues(inputName),
-                        account.symbol,
+                        addressValue,
+                        symbol,
                     );
                     updateContext({ destinationAddressEmpty });
                 }
-
-                // prevent composing if this output doesn't have amount set
-                if (dirtyFields.has(amountInputName)) {
-                    composeTransaction();
-                }
+                composeTransaction();
             }}
             bottomText={
-                error ? error.message : <AddressLabeling address={getValues(inputName)} knownOnly />
+                error ? (
+                    <Translation id={error.message as any} />
+                ) : (
+                    <AddressLabeling address={addressValue} knownOnly />
+                )
             }
-            name={inputName}
+            name={`outputs[${outputId}].address`}
+            defaultValue={addressValue}
             innerRef={register({
-                required: <Translation id="TR_ADDRESS_IS_NOT_SET" />,
-                validate: {
-                    notValid: (value: string) => {
-                        if (!isAddressValid(value, symbol)) {
-                            return <Translation id="TR_ADDRESS_IS_NOT_VALID" />;
-                        }
-                    },
-                    xrpCannotSendMyself: (value: string) => {
-                        if (networkType === 'ripple' && value === descriptor) {
-                            return <Translation id="TR_XRP_CANNOT_SEND_TO_MYSELF" />;
-                        }
-                    },
+                required: 'TR_ADDRESS_IS_NOT_SET',
+                validate: (value: string) => {
+                    if (!isAddressValid(value, symbol)) {
+                        return 'TR_ADDRESS_IS_NOT_VALID';
+                    }
+                    if (networkType === 'ripple' && value === descriptor) {
+                        return 'TR_XRP_CANNOT_SEND_TO_MYSELF';
+                    }
                 },
             })}
             button={{

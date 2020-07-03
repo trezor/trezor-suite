@@ -25,7 +25,7 @@ import {
 
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
-import { FormState, ContextState } from '@wallet-types/sendForm';
+import { FormState, ContextStateProps, PrecomposedLevels } from '@wallet-types/sendForm';
 
 export type SendFormActions =
     | {
@@ -77,17 +77,17 @@ export const setLastUsedFeeLevel = (
 
 export const getDraft = () => (_dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount, send } = getState().wallet;
-    if (selectedAccount.status !== 'loaded') return null;
+    if (selectedAccount.status !== 'loaded') return;
     const { account } = selectedAccount;
     const { symbol, descriptor, deviceState } = account;
     const key = getAccountKey(descriptor, symbol, deviceState);
 
-    return send.drafts[key] || null;
+    return send.drafts[key];
 };
 
 export const removeDraft = () => (dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount, send } = getState().wallet;
-    if (selectedAccount.status !== 'loaded') return null;
+    if (selectedAccount.status !== 'loaded') return;
     const { account } = selectedAccount;
     const { symbol, descriptor, deviceState } = account;
     const key = getAccountKey(descriptor, symbol, deviceState);
@@ -205,70 +205,119 @@ export const composeEthereumTransaction = (
 };
 
 export const composeBitcoinTransaction = async (
-    account: SendContext['account'],
-    outputs: SendContext['outputs'],
-    getValues: ReturnType<typeof useForm>['getValues'],
-    selectedFee: SendContext['selectedFee'],
+    sendValues: ContextStateProps,
+    formValues: FormState,
 ) => {
+    const { account, outputs, feeInfo } = sendValues;
     if (!account.addresses || !account.utxo) return;
 
-    const composedOutputs = outputs.map(output => {
-        const amount = networkAmountToSatoshi(getValues(`amount[${output.id}]`), account.symbol);
-        const address = getValues(`address[${output.id}]`);
-        const isMaxActive = getValues(`setMax[${output.id}]`) === 'active';
-
-        if (address) {
+    const composedOutputs = outputs
+        .map(output => {
+            const address = formValues.address[output.id];
+            const isMaxActive = formValues.setMaxOutputId === output.id;
             if (isMaxActive) {
+                if (address) {
+                    return {
+                        address,
+                        type: 'send-max',
+                    } as const;
+                }
+
+                return {
+                    type: 'send-max-noaddress',
+                } as const;
+            }
+
+            const amount = networkAmountToSatoshi(formValues.amount[output.id], account.symbol);
+            if (address) {
                 return {
                     address,
-                    type: 'send-max',
+                    amount,
                 } as const;
             }
 
             return {
-                address,
+                type: 'noaddress',
                 amount,
             } as const;
-        }
+        })
+        .filter(output => typeof output.amount === 'string' && output.amount !== '0');
 
-        if (isMaxActive) {
-            return {
-                type: 'send-max-noaddress',
-            } as const;
-        }
+    // const account1: PrecomposeParams['account'] = {
+    //     path: account.path,
+    //     addresses: account.addresses,
+    //     utxo: account.utxo,
+    // };
 
-        return {
-            type: 'noaddress',
-            amount,
-        } as const;
-    });
-
-    console.warn('COMPOSE BTC?');
-
-    const response = await TrezorConnect.composeTransaction({
+    const params = {
         account: {
             path: account.path,
             addresses: account.addresses,
             utxo: account.utxo,
         },
-        feeLevels: [selectedFee],
+        feeLevels: feeInfo.levels.filter(l => l.label !== 'custom'),
         outputs: composedOutputs,
         coin: account.symbol,
+    };
+
+    const response = await TrezorConnect.composeTransaction({
+        ...params,
+        account: params.account, // needs to be present in order to correct resolve of trezor-connect params overload
     });
 
-    if (response.success) {
-        if (response.payload[0].type !== 'error') {
-            const max = new BigNumber(response.payload[0].max).isLessThan('0')
-                ? '0'
-                : formatNetworkAmount(response.payload[0].max.toString(), account.symbol);
-            return { ...response.payload[0], max };
+    if (!response.success) return; // TODO: show toast?
+
+    const wrappedResponse: PrecomposedLevels = {};
+
+    response.payload.forEach((tx, index) => {
+        const feeLabel = feeInfo.levels[index].label as FeeLevel['label'];
+        wrappedResponse[feeLabel] = tx;
+    });
+
+    const hasAtLeastOneValid = response.payload.find(r => r.type !== 'error');
+    if (!hasAtLeastOneValid) {
+        const { minFee, levels } = feeInfo;
+        console.warn('LEVELS', levels);
+        let maxFee = new BigNumber(levels[levels.length - 1].feePerUnit).minus(1);
+        const customLevels: any[] = [];
+        while (maxFee.gte(minFee)) {
+            customLevels.push({ feePerUnit: maxFee.toString(), label: 'custom' });
+            maxFee = maxFee.minus(1);
         }
 
-        return {
-            type: 'error',
-            error: response.payload[0].error,
-        };
+        if (!customLevels.length) return;
+
+        console.warn('CUSTOM LEVELS!', customLevels);
+
+        const customLevelsResponse = await TrezorConnect.composeTransaction({
+            ...params,
+            account: params.account, // needs to be present in order to correct resolve of trezor-connect params overload
+            feeLevels: customLevels,
+        });
+
+        console.warn('CUSTOM LEVELS RESPONSE', customLevelsResponse);
+
+        if (!customLevelsResponse.success) return; // TODO: show toast?
+
+        const customValid = customLevelsResponse.payload.findIndex(r => r.type !== 'error');
+        if (customValid >= 0) {
+            wrappedResponse.custom = customLevelsResponse.payload[customValid];
+        }
+
+        // if (response.payload[0].type !== 'error') {
+        //     const max = new BigNumber(response.payload[0].max).isLessThan('0')
+        //         ? '0'
+        //         : formatNetworkAmount(response.payload[0].max.toString(), account.symbol);
+        //     return { ...response.payload[0], max };
+        // }
+
+        // return {
+        //     type: 'error',
+        //     error: response.payload[0].error,
+        // };
     }
+
+    return wrappedResponse;
 };
 
 export const onQrScan = (
@@ -361,16 +410,16 @@ export const composeTx = async (
 };
 
 export const composeTransactionNew = (
-    sendValues: ContextState,
+    sendValues: ContextStateProps,
     formValues: FormState,
 ) => async () => {
+    const { account } = sendValues;
+    if (account.networkType === 'bitcoin') {
+        return composeBitcoinTransaction(sendValues, formValues);
+    }
     // TODO: translate formValues/sendValues to trezor-connect params
     // TODO: return precomposed transactions for multiple levels (will be stored in SendContext)
     console.warn('------->>>>> COMPOSING ACTION NEW!!!!', sendValues, formValues);
-    if (formValues.setMaxOutputId >= 0) {
-        return true;
-    }
-    return false;
 };
 
 export const composeChange = async (

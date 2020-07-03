@@ -18,16 +18,10 @@ const In = styled.div`
 `;
 
 export default () => {
-    const { resetFormContext, sendContext } = useSendFormContext();
-
+    const { resetContext } = useSendFormContext();
     return (
         <Wrapper>
-            <In
-                onClick={() => {
-                    resetFormContext();
-                    sendContext.resetContext();
-                }}
-            >
+            <In onClick={resetContext}>
                 <Button variant="tertiary" icon="CLEAR" alignIcon="left">
                     <Translation id="TR_CLEAR_ALL" />
                 </Button>

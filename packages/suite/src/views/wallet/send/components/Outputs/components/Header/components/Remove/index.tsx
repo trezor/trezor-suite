@@ -23,15 +23,10 @@ interface Props {
 }
 
 export default ({ outputId }: Props) => {
-    const { outputs, updateContext } = useSendFormContext().sendContext;
+    const { outputs } = useSendFormContext();
 
     return (
-        <Wrapper
-            onClick={() => {
-                const filteredOutputs = outputs.filter(output => output.id !== outputId);
-                updateContext({ outputs: filteredOutputs });
-            }}
-        >
+        <Wrapper onClick={() => outputs.remove(outputId)}>
             <StyledIcon size={12} color={colors.BLACK50} icon="CLEAR" />
             <Translation id="TR_REMOVE" />
         </Wrapper>

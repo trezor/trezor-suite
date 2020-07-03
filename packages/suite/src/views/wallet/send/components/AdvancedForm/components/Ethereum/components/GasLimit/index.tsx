@@ -21,8 +21,6 @@ const StyledIcon = styled(Icon)`
 `;
 
 export default () => {
-    const { formContext, sendContext } = useSendFormContext();
-    const { register, errors, getValues, setValue, setError, clearError } = formContext;
     const {
         account,
         initialSelectedFee,
@@ -31,7 +29,13 @@ export default () => {
         token,
         outputs,
         setTransactionInfo,
-    } = sendContext;
+        register,
+        errors,
+        getValues,
+        setValue,
+        setError,
+        clearError,
+    } = useSendFormContext();
     const { networkType } = account;
     const inputName = 'ethereumGasLimit';
     const ethData = getValues('ethereumData');

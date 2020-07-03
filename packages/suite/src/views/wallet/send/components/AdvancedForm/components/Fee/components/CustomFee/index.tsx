@@ -49,7 +49,6 @@ const getValue = (networkType: Account['networkType']) => {
 };
 
 export default ({ isVisible }: { isVisible: boolean }) => {
-    const { formContext, sendContext } = useSendFormContext();
     const {
         account,
         feeInfo,
@@ -61,8 +60,13 @@ export default ({ isVisible }: { isVisible: boolean }) => {
         fiatRates,
         // setTransactionInfo,
         updateContext,
-    } = sendContext;
-    const { register, errors, getValues, setValue, clearError, setError } = formContext;
+        register,
+        errors,
+        getValues,
+        setValue,
+        clearError,
+        setError,
+    } = useSendFormContext();
     const inputNameValue = 'customFee';
     const inputNameUnit = 'customFeeUnit';
     const { networkType, symbol } = account;

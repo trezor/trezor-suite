@@ -157,20 +157,12 @@ export const getFeeLevels = (
     return networkType === 'ethereum' ? convertedEthLevels : initialLevels;
 };
 
-export const getInputState = (
-    error?: NestDataObject<SendFormState, FieldError>,
-    isDirty?: boolean,
-    value?: string,
-) => {
-    if (value && !isDirty && !error) {
-        return 'success';
-    }
-
+export const getInputState = (error?: FieldError, value?: string) => {
     if (error) {
         return 'error';
     }
 
-    if (isDirty && !error) {
+    if (value && value.length > 0 && !error) {
         return 'success';
     }
 };

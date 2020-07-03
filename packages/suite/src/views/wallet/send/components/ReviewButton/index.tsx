@@ -50,7 +50,7 @@ const isDisabled = (
     let filledAddress = 0;
     let filledAmounts = 0;
 
-    outputs.forEach(output => {
+    outputs.fields.forEach(output => {
         const address = getValues(`address[${output.id}]`);
         if (address && address.length > 0) {
             filledAddress++;
@@ -85,14 +85,6 @@ const isDisabled = (
 };
 
 export default () => {
-    const { formContext, sendContext } = useSendFormContext();
-    const { errors, getValues, reset } = formContext;
-    const { sendBitcoinTransaction, sendEthereumTransaction, sendRippleTransaction } = useActions({
-        sendBitcoinTransaction: sendFormActions.sendBitcoinTransaction,
-        sendEthereumTransaction: sendFormActions.sendEthereumTransaction,
-        sendRippleTransaction: sendFormActions.sendRippleTransaction,
-    });
-
     const {
         account,
         online,
@@ -103,7 +95,16 @@ export default () => {
         isLoading,
         transactionInfo,
         selectedFee,
-    } = sendContext;
+        errors,
+        getValues,
+        reset,
+    } = useSendFormContext();
+
+    const { sendBitcoinTransaction, sendEthereumTransaction, sendRippleTransaction } = useActions({
+        sendBitcoinTransaction: sendFormActions.sendBitcoinTransaction,
+        sendEthereumTransaction: sendFormActions.sendEthereumTransaction,
+        sendRippleTransaction: sendFormActions.sendRippleTransaction,
+    });
     const { networkType } = account;
     const { openModal } = useActions({ openModal: modalActions.openModal });
 

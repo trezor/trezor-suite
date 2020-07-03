@@ -25,7 +25,7 @@ const Text = styled.div`
 `;
 
 export default () => {
-    const { advancedForm, updateContext } = useSendFormContext().sendContext;
+    const { advancedForm, updateContext } = useSendFormContext();
 
     return (
         <Wrapper>
