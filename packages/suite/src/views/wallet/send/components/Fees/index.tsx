@@ -6,6 +6,7 @@ import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import EstimatedMiningTime from '../EstimatedMiningTime';
 import { buildFeeOptions, getFeeUnits } from '@wallet-utils/sendFormUtils';
 import { FeeLevel } from 'trezor-connect';
+import CustomFee from './components/CustomFee';
 import { useSendFormContext } from '@wallet-hooks';
 
 const StyledCard = styled(Card)`
@@ -22,7 +23,7 @@ const Top = styled.div`
 
 const Left = styled.div`
     display: flex;
-    flex: 1;
+    align-items: flex-start;
 `;
 
 const Right = styled.div``;
@@ -78,6 +79,7 @@ export default () => {
         account: { symbol, networkType },
         selectedFee,
         updateContext,
+        setValue,
         transactionInfo,
     } = useSendFormContext();
 
@@ -97,11 +99,13 @@ export default () => {
                                 if (selectedFeeForUpdate.label === 'custom') {
                                     const { feePerUnit } = selectedFee;
                                     selectedFeeForUpdate.feePerUnit = feePerUnit;
+                                    setValue('customFee', feePerUnit);
                                 }
                                 updateContext({ selectedFee: selectedFeeForUpdate });
                             }
                         }}
                     />
+                    <CustomFee isVisible={selectedFee.label === 'custom'} />
                 </Left>
                 <Right>
                     {transactionInfo && (
@@ -121,7 +125,7 @@ export default () => {
                 </Right>
             </Top>
             <Bottom>
-                {networkType === 'bitcoin' && (
+                {networkType === 'bitcoin' && selectedFee.label !== 'custom' && (
                     <EstimatedMiningTimeWrapper>
                         <EstimatedMiningTime
                             seconds={feeInfo.blockTime * selectedFee.blocks * 60}
