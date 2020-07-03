@@ -24,9 +24,11 @@ const Top = styled.div`
 const Left = styled.div`
     display: flex;
     align-items: flex-start;
+    flex-direction: column;
 `;
 
 const Right = styled.div``;
+const Middle = styled.div``;
 
 const RightContent = styled.div`
     display: flex;
@@ -56,7 +58,7 @@ const Label = styled.div`
     padding-left: 4px;
 `;
 
-const Bottom = styled.div`
+const FeeInfo = styled.div`
     display: flex;
     margin-top: 15px;
     padding-left: 47px;
@@ -105,8 +107,24 @@ export default () => {
                             }
                         }}
                     />
-                    <CustomFee isVisible={selectedFee.label === 'custom'} />
+                    <FeeInfo>
+                        {networkType === 'bitcoin' && selectedFee.label !== 'custom' && (
+                            <EstimatedMiningTimeWrapper>
+                                <EstimatedMiningTime
+                                    seconds={feeInfo.blockTime * selectedFee.blocks * 60}
+                                />
+                            </EstimatedMiningTimeWrapper>
+                        )}
+                        {networkType !== 'ethereum' && (
+                            <FeeUnits>
+                                {selectedFee.feePerUnit} {getFeeUnits(networkType).label}
+                            </FeeUnits>
+                        )}
+                    </FeeInfo>
                 </Left>
+                <Middle>
+                    <CustomFee isVisible={selectedFee.label === 'custom'} />
+                </Middle>
                 <Right>
                     {transactionInfo && (
                         <RightContent>
@@ -124,20 +142,6 @@ export default () => {
                     )}
                 </Right>
             </Top>
-            <Bottom>
-                {networkType === 'bitcoin' && selectedFee.label !== 'custom' && (
-                    <EstimatedMiningTimeWrapper>
-                        <EstimatedMiningTime
-                            seconds={feeInfo.blockTime * selectedFee.blocks * 60}
-                        />
-                    </EstimatedMiningTimeWrapper>
-                )}
-                {networkType !== 'ethereum' && (
-                    <FeeUnits>
-                        {selectedFee.feePerUnit} {getFeeUnits(networkType).label}
-                    </FeeUnits>
-                )}
-            </Bottom>
         </StyledCard>
     );
 };

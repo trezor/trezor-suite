@@ -27,7 +27,6 @@ export default ({ isVisible }: { isVisible: boolean }) => {
                 variant="small"
                 name="customFee"
                 width={150}
-                noError
                 state={getInputState(error)}
                 onChange={async event => {
                     const newFeeLevel = {
