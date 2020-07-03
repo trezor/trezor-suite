@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { SelectBar, colors, variables } from '@trezor/components';
 import { Card, Translation, FiatValue } from '@suite-components';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { FeeLevel } from 'trezor-connect';
 import { useSendFormContext } from '@wallet-hooks';
 
@@ -65,7 +66,10 @@ export default () => {
         feeInfo: { levels },
         account: { symbol },
         selectedFee,
+        updateContext,
     } = useSendFormContext();
+
+    const formattedSelectedFee = formatNetworkAmount(selectedFee.feePerUnit, symbol);
 
     return (
         <StyledCard>
@@ -74,14 +78,20 @@ export default () => {
                     label={<Translation id="TR_FEE" />}
                     selectedOption={selectedFee.label}
                     options={buildFeeOptions(levels)}
+                    onChange={(value: FeeLevel['label']) => {
+                        const selectedFeeForUpdate = levels.find(level => level.label === value);
+                        if (selectedFeeForUpdate) {
+                            updateContext({ selectedFee: selectedFeeForUpdate });
+                        }
+                    }}
                 />
             </Left>
             <Right>
                 <CoinAmount>
-                    0.0000012 <Label>{symbol}</Label>
+                    {formattedSelectedFee} <Label>{symbol}</Label>
                 </CoinAmount>
                 <FiatAmount>
-                    <FiatValue amount="0.0000012" symbol={symbol} />
+                    <FiatValue amount={formattedSelectedFee} symbol={symbol} />
                 </FiatAmount>
             </Right>
         </StyledCard>

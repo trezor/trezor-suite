@@ -11,6 +11,7 @@ interface Props {
     label?: React.ReactNode;
     selectedOption?: Option['value'];
     options: Option[];
+    onChange?: (value: any) => void;
 }
 
 const Wrapper = styled.div`
@@ -59,7 +60,7 @@ const Option = styled.div<{ isSelected: boolean }>`
         `}
 `;
 
-export default ({ options, selectedOption, label }: Props) => {
+export default ({ options, selectedOption, label, onChange }: Props) => {
     const [selectedOptionIn, setSelected] = useState<Option['value'] | null>(
         selectedOption || null
     );
@@ -70,7 +71,12 @@ export default ({ options, selectedOption, label }: Props) => {
             <Options>
                 {options.map(option => (
                     <Option
-                        onClick={() => setSelected(option.value)}
+                        onClick={() => {
+                            setSelected(option.value);
+                            if (onChange) {
+                                onChange(option.value);
+                            }
+                        }}
                         isSelected={selectedOptionIn ? selectedOptionIn === option.value : false}
                         key={option.value}
                     >
