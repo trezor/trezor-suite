@@ -74,6 +74,16 @@ storiesOf('Prompts', module).add(
                         trezorModel="T2"
                     />
                 </StoryColumn>
+                <StoryColumn minWidth={300}>
+                    <ConfirmOnDevice
+                        successText="Confirmed"
+                        title="Confirm on Trezor"
+                        steps={5}
+                        activeStep={5}
+                        onCancel={() => {}}
+                        trezorModel="T2"
+                    />
+                </StoryColumn>
             </>
         );
     },

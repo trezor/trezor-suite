@@ -21,6 +21,7 @@ const Column = styled.div`
 
 const Title = styled.div`
     display: flex;
+    max-height: 20px;
     justify-content: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.BIG};
@@ -38,7 +39,7 @@ const Right = styled(Column)``;
 
 const Steps = styled.div`
     display: flex;
-    margin-top: 5px;
+    margin-top: 10px;
     max-width: 200px;
     padding: 0 10px;
     justify-content: center;
@@ -67,7 +68,14 @@ const StyledDeviceImage = styled(DeviceImage)`
     height: 34px;
 `;
 
-const Success = styled.div``;
+const Success = styled.div`
+    display: flex;
+    flex: 1;
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    color: ${colors.NEUE_TYPE_GREEN};
+    text-align: center;
+    justify-content: center;
+`;
 
 const Step = styled.div<{ isActive: boolean }>`
     width: 18px;
