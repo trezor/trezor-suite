@@ -12,8 +12,8 @@ import { Switch, SwitchProps } from './components/form/Switch';
 import { Icon, IconProps } from './components/Icon';
 import { H1, H2 } from './components/typography/Heading';
 import { P, PProps } from './components/typography/Paragraph';
-import { Prompt, PromptProps } from './components/Prompt';
 import { Link, LinkProps } from './components/typography/Link';
+import { ConfirmOnDevice, ConfirmOnDeviceProps } from './components/prompts/ConfirmOnDevice';
 import { Modal, ModalProps } from './components/Modal';
 import { CoinLogo, CoinLogoProps } from './components/logos/CoinLogo';
 import { TrezorLogo, TrezorLogoProps } from './components/logos/TrezorLogo';
@@ -47,8 +47,6 @@ export {
     P,
     PProps,
     Link,
-    Prompt,
-    PromptProps,
     LinkProps,
     Modal,
     ModalProps,
@@ -62,4 +60,6 @@ export {
     TooltipProps,
     tooltipGlobalStyles,
     types,
+    ConfirmOnDevice,
+    ConfirmOnDeviceProps,
 };

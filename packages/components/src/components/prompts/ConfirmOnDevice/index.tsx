@@ -4,14 +4,6 @@ import DeviceImage from '../../DeviceImage';
 import { Icon } from '../../Icon';
 import { colors, variables } from '../../../config';
 
-interface Props {
-    title: React.ReactNode;
-    trezorModel: 'T1' | 'T2';
-    steps?: number;
-    activeStep?: number;
-    onCancel?: () => void;
-}
-
 const Wrapper = styled.div`
     display: flex;
     width: 300px;
@@ -98,7 +90,15 @@ const isStepActive = (index: number, activeStep?: number) => {
     return index < activeStep;
 };
 
-export default ({ title, steps, activeStep, onCancel, trezorModel }: Props) => {
+interface Props {
+    title: React.ReactNode;
+    trezorModel: 'T1' | 'T2';
+    steps?: number;
+    activeStep?: number;
+    onCancel?: () => void;
+}
+
+const ConfirmOnDevice = ({ title, steps, activeStep, onCancel, trezorModel }: Props) => {
     return (
         <Wrapper>
             <Left>
@@ -126,3 +126,5 @@ export default ({ title, steps, activeStep, onCancel, trezorModel }: Props) => {
         </Wrapper>
     );
 };
+
+export { ConfirmOnDevice, Props as ConfirmOnDeviceProps };
