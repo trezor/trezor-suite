@@ -290,8 +290,3 @@ export const isBitcoinOnly = (device: TrezorDevice) => {
         !features.capabilities.includes('Capability_Bitcoin_like')
     );
 };
-
-export const getDeviceModel = (device: TrezorDevice): 1 | 2 => {
-    const version = device.features?.major_version === 1 ? 1 : 2;
-    return `T${version}`;
-};
