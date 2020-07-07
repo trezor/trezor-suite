@@ -10,6 +10,7 @@ const Wrapper = styled.div`
     height: 62px;
     padding: 0 10px 0 30px;
     border-radius: 100px;
+    background: white;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.19);
     align-items: center;
 `;
@@ -66,6 +67,8 @@ const StyledDeviceImage = styled(DeviceImage)`
     height: 34px;
 `;
 
+const Success = styled.div``;
+
 const Step = styled.div<{ isActive: boolean }>`
     width: 18px;
     height: 4px;
@@ -92,13 +95,21 @@ const isStepActive = (index: number, activeStep?: number) => {
 
 interface Props {
     title: React.ReactNode;
+    successText: React.ReactNode;
     trezorModel: 'T1' | 'T2';
     steps?: number;
     activeStep?: number;
     onCancel?: () => void;
 }
 
-const ConfirmOnDevice = ({ title, steps, activeStep, onCancel, trezorModel }: Props) => {
+const ConfirmOnDevice = ({
+    title,
+    steps,
+    activeStep,
+    onCancel,
+    trezorModel,
+    successText,
+}: Props) => {
     return (
         <Wrapper>
             <Left>
@@ -106,7 +117,8 @@ const ConfirmOnDevice = ({ title, steps, activeStep, onCancel, trezorModel }: Pr
             </Left>
             <Middle>
                 <Title>{title}</Title>
-                {steps && steps > 1 && (
+                {steps && activeStep && activeStep >= steps && <Success>{successText}</Success>}
+                {steps && activeStep && steps > 1 && activeStep < steps && (
                     <Steps>
                         {[...Array(steps)].map((_x, i) => (
                             <Step isActive={isStepActive(i, activeStep)} />
