@@ -35,8 +35,16 @@ const Menu = styled.ul<MenuProps>`
         `};
 `;
 
+const Group = styled.li`
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    padding: 16px 16px 10px 16px;
+    cursor: default;
+`;
+
 const MenuItem = styled.li<Pick<DropdownMenuItem, 'isDisabled' | 'noPadding'>>`
-    padding: ${props => (!props.noPadding ? '10px 16px' : '0px')};
+    padding: ${props => (!props.noPadding ? '8px 16px' : '0px')};
     white-space: nowrap;
     cursor: ${props => (!props.isDisabled ? 'pointer' : 'default')};
     color: ${props =>
@@ -67,6 +75,11 @@ interface DropdownMenuItem {
     'data-test'?: string;
 }
 
+interface GroupedMenuItems {
+    label?: React.ReactNode;
+    options: DropdownMenuItem[];
+}
+
 interface MenuItemProps {
     item: DropdownMenuItem;
 }
@@ -77,7 +90,7 @@ interface MenuProps {
 
 interface Props extends MenuProps, React.ButtonHTMLAttributes<HTMLDivElement> {
     children?: React.ReactElement<any>;
-    items: DropdownMenuItem[];
+    items: GroupedMenuItems[];
     components?: {
         DropdownMenuItem?: React.ComponentType<MenuItemProps>;
         DropdownMenu?: React.ComponentType<MenuProps>;
@@ -102,7 +115,10 @@ const Dropdown = ({
     const MenuComponent = components?.DropdownMenu ?? Menu;
     const MenuItemComponent = components?.DropdownMenuItem ?? MenuItem;
 
-    const visibleItems = items.filter(item => !item.isHidden);
+    const visibleItems = items.filter(group => ({
+        ...group,
+        options: group.options.filter(item => !item.isHidden),
+    }));
 
     useOnClickOutside([menuRef, toggleRef], event => {
         if (toggled) {
@@ -152,18 +168,23 @@ const Dropdown = ({
             {toggleComponent}
             {toggled && (
                 <MenuComponent ref={menuRef} alignMenu={alignMenu} offset={offset}>
-                    {visibleItems.map((item, i) => (
-                        <MenuItemComponent
-                            onClick={() => onMenuItemClick(item)}
-                            isDisabled={item.isDisabled}
-                            data-test={item['data-test']}
-                            noPadding={item.noPadding}
-                            item={item}
-                            // eslint-disable-next-line react/no-array-index-key
-                            key={i}
-                        >
-                            {item.label}
-                        </MenuItemComponent>
+                    {visibleItems.map((group, i) => (
+                        <>
+                            {group.label && <Group>{group.label}</Group>}
+                            {group.options.map(item => (
+                                <MenuItemComponent
+                                    onClick={() => onMenuItemClick(item)}
+                                    isDisabled={item.isDisabled}
+                                    data-test={item['data-test']}
+                                    noPadding={item.noPadding}
+                                    item={item}
+                                    // eslint-disable-next-line react/no-array-index-key
+                                    key={i}
+                                >
+                                    {item.label}
+                                </MenuItemComponent>
+                            ))}
+                        </>
                     ))}
                 </MenuComponent>
             )}

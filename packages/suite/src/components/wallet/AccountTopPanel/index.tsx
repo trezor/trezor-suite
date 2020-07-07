@@ -54,7 +54,7 @@ const AccountTopPanel = () => {
             navigation={<AccountNavigation account={account} />}
             dropdown={
                 visibleDropdownItems.length > 0 ? (
-                    <Dropdown alignMenu="right" items={visibleDropdownItems} />
+                    <Dropdown alignMenu="right" items={[{ options: visibleDropdownItems }]} />
                 ) : undefined
             }
         >
