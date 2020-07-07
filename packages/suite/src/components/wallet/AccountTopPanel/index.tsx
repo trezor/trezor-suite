@@ -46,17 +46,16 @@ const AccountTopPanel = () => {
             isHidden: account.networkType !== 'bitcoin',
         },
     ];
+    const visibleDropdownItems = dropdownItems.filter(item => !item.isHidden);
 
     return (
         <AppNavigationPanel
             title={<AccountLabeling account={account} />}
             navigation={<AccountNavigation account={account} />}
             dropdown={
-                <Dropdown
-                    isDisabled={dropdownItems.every(item => item.isHidden)}
-                    alignMenu="right"
-                    items={dropdownItems}
-                />
+                visibleDropdownItems.length > 0 ? (
+                    <Dropdown alignMenu="right" items={visibleDropdownItems} />
+                ) : undefined
             }
         >
             <BalanceWrapper>
