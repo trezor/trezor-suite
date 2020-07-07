@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { H2, Button, Modal, ModalProps } from '@trezor/components';
 import { Loading, Translation, Image } from '@suite-components';
+import { useDevice } from '@suite-hooks';
 
 import { Props } from './Container';
 
@@ -22,49 +23,34 @@ const StyledImage = styled(Image)`
     flex: 1;
 `;
 
-const Index = ({
-    recovery,
-    device,
-    rerun,
-    goToStep,
-    addPath,
-    modalProps,
-}: Props & { modalProps?: ModalProps }) => (
-    <Modal {...modalProps}>
-        <Wrapper>
-            {recovery.status === 'in-progress' && <Loading noBackground />}
-            {recovery.status !== 'in-progress' && (
-                <>
-                    <H2>
-                        <Translation id="TR_DEVICE_IN_RECOVERY_MODE" />
-                    </H2>
-                    <StyledImage image="FIRMWARE_INIT_2" />
-                    <Buttons>
-                        {!device?.features?.initialized && (
-                            <Button
-                                data-test="@device-invalid-mode/recovery/continue-button"
-                                onClick={() => {
-                                    rerun();
-                                    goToStep('recovery');
-                                    addPath('recovery');
-                                }}
-                            >
-                                <Translation id="TR_CONTINUE" />
-                            </Button>
+const Index = ({ recovery, rerun, modalProps }: Props & { modalProps?: ModalProps }) => {
+    const { isLocked } = useDevice();
+    return (
+        <Modal {...modalProps}>
+            <Wrapper data-test="@device-invalid-mode/recovery">
+                {recovery.status === 'in-progress' && <Loading noBackground />}
+                {/* 
+                    The section below shall actually never render. RecoveryDevice call should be triggered 
+                    immediately after suite finds that user has connected device in recovery mode
+                */}
+                {recovery.status !== 'in-progress' && (
+                    <>
+                        <H2>
+                            <Translation id="TR_DEVICE_IN_RECOVERY_MODE" />
+                        </H2>
+                        <StyledImage image="FIRMWARE_INIT_2" />
+                        {!isLocked && (
+                            <Buttons>
+                                <Button onClick={rerun}>
+                                    <Translation id="TR_CONTINUE" />
+                                </Button>
+                            </Buttons>
                         )}
-                        {device?.features?.initialized && (
-                            <Button
-                                onClick={() => rerun()}
-                                data-test="@device-invalid-mode/recovery/rerun-button"
-                            >
-                                <Translation id="TR_CONTINUE" />
-                            </Button>
-                        )}
-                    </Buttons>
-                </>
-            )}
-        </Wrapper>
-    </Modal>
-);
+                    </>
+                )}
+            </Wrapper>
+        </Modal>
+    );
+};
 
 export default Index;
