@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
-import { colors, variables } from '@trezor/components';
-import DeviceImage from '@suite-components/images/DeviceImage';
+import { colors, variables, DeviceImage } from '@trezor/components';
 import { SHAKE } from '@suite-support/styles/animations';
 import { Translation } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
@@ -149,7 +148,10 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
             {selectedDevice && (
                 <>
                     <DeviceImageWrapper lowerOpacity={deviceNeedsRefresh}>
-                        <DeviceImage height={36} device={selectedDevice} />
+                        <DeviceImage
+                            height={36}
+                            trezorModel={selectedDevice.features?.major_version === 1 ? 1 : 2}
+                        />
                     </DeviceImageWrapper>
                     <DeviceDetail>
                         <DeviceLabel>{selectedDevice.label}</DeviceLabel>

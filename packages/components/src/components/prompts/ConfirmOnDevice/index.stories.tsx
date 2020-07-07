@@ -12,7 +12,7 @@ storiesOf('Prompts', module).add(
                     <ConfirmOnDevice
                         successText="confirmed"
                         title="Confirm on Trezor T1"
-                        trezorModel="T1"
+                        trezorModel={1}
                     />
                 </StoryColumn>
                 <StoryColumn minWidth={300}>
@@ -20,14 +20,14 @@ storiesOf('Prompts', module).add(
                         successText="confirmed"
                         title="Confirm with cancel"
                         onCancel={() => {}}
-                        trezorModel="T1"
+                        trezorModel={1}
                     />
                 </StoryColumn>
                 <StoryColumn minWidth={300}>
                     <ConfirmOnDevice
                         successText="confirmed"
                         title="Confirm on Trezor T2"
-                        trezorModel="T2"
+                        trezorModel={2}
                     />
                 </StoryColumn>
                 <StoryColumn minWidth={300}>
@@ -35,7 +35,7 @@ storiesOf('Prompts', module).add(
                         successText="confirmed"
                         title="With 3 steps no active"
                         steps={3}
-                        trezorModel="T2"
+                        trezorModel={2}
                     />
                 </StoryColumn>
                 <StoryColumn minWidth={300}>
@@ -43,7 +43,7 @@ storiesOf('Prompts', module).add(
                         successText="confirmed"
                         title="With 2 steps no active"
                         steps={2}
-                        trezorModel="T2"
+                        trezorModel={2}
                     />
                 </StoryColumn>
                 <StoryColumn minWidth={300}>
@@ -52,7 +52,7 @@ storiesOf('Prompts', module).add(
                         title="With 5 steps - active 4"
                         steps={5}
                         activeStep={4}
-                        trezorModel="T2"
+                        trezorModel={2}
                     />
                 </StoryColumn>
                 <StoryColumn minWidth={300}>
@@ -61,7 +61,7 @@ storiesOf('Prompts', module).add(
                         title="With 3 steps - active 1"
                         steps={3}
                         activeStep={1}
-                        trezorModel="T2"
+                        trezorModel={2}
                     />
                 </StoryColumn>
                 <StoryColumn minWidth={300}>
@@ -71,7 +71,7 @@ storiesOf('Prompts', module).add(
                         steps={5}
                         activeStep={3}
                         onCancel={() => {}}
-                        trezorModel="T2"
+                        trezorModel={2}
                     />
                 </StoryColumn>
                 <StoryColumn minWidth={300}>
@@ -81,7 +81,7 @@ storiesOf('Prompts', module).add(
                         steps={5}
                         activeStep={5}
                         onCancel={() => {}}
-                        trezorModel="T2"
+                        trezorModel={2}
                     />
                 </StoryColumn>
             </>

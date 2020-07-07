@@ -3,6 +3,7 @@ import * as variables from './config/variables';
 
 import { Button, ButtonProps } from './components/buttons/Button';
 import { ButtonPin, ButtonPinProps } from './components/buttons/Pin';
+import { DeviceImage, DeviceImageProps } from './components/DeviceImage';
 import { Dropdown, DropdownProps } from './components/Dropdown';
 import { Input, InputProps } from './components/form/Input';
 import { Textarea, TextareaProps } from './components/form/Textarea';
@@ -62,4 +63,6 @@ export {
     types,
     ConfirmOnDevice,
     ConfirmOnDeviceProps,
+    DeviceImage,
+    DeviceImageProps,
 };
