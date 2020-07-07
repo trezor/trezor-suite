@@ -66,7 +66,7 @@ storiesOf('Modals', module)
                     <ConfirmOnDevice
                         successText="confirmed"
                         title="Confirm on trezor"
-                        trezorModel="T2"
+                        trezorModel={2}
                         steps={3}
                         activeStep={2}
                     />

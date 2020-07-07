@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import DeviceImage from '../../DeviceImage';
+import { DeviceImage } from '../../DeviceImage';
 import { Icon } from '../../Icon';
 import { colors, variables } from '../../../config';
 
@@ -64,10 +64,6 @@ const Close = styled.div`
     padding-bottom: 1px;
 `;
 
-const StyledDeviceImage = styled(DeviceImage)`
-    height: 34px;
-`;
-
 const Success = styled.div`
     display: flex;
     flex: 1;
@@ -104,7 +100,7 @@ const isStepActive = (index: number, activeStep?: number) => {
 interface Props {
     title: React.ReactNode;
     successText: React.ReactNode;
-    trezorModel: 'T1' | 'T2';
+    trezorModel: 1 | 2;
     steps?: number;
     activeStep?: number;
     onCancel?: () => void;
@@ -121,7 +117,7 @@ const ConfirmOnDevice = ({
     return (
         <Wrapper>
             <Left>
-                <StyledDeviceImage className="className" trezorModel={trezorModel} />
+                <DeviceImage height="34px" trezorModel={trezorModel} />
             </Left>
             <Middle>
                 <Title>{title}</Title>
