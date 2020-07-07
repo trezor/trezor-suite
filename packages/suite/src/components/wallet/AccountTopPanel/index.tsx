@@ -41,7 +41,7 @@ const AccountTopPanel = () => {
     const { symbol, formattedBalance } = account;
     const dropdownItems = [
         {
-            callback: () => goto('wallet-details'),
+            callback: () => goto('wallet-details', undefined, true),
             label: <Translation id="TR_NAV_DETAILS" />,
             isHidden: account.networkType !== 'bitcoin',
         },
