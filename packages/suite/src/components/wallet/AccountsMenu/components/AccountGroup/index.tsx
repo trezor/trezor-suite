@@ -22,6 +22,7 @@ const Header = styled.header<{ onClick?: () => void }>`
     cursor: ${props => (props.onClick ? 'pointer' : 'default')};
     justify-content: space-between;
     align-items: center;
+    height: 50px; /* otherwise it jumps on hiding arrow_down/up icon */
 
     text-transform: uppercase;
     font-size: 12px;
