@@ -17,6 +17,7 @@ const PADDING: [string, string, string, string] = [
     '35px 40px',
     '35px 40px',
 ];
+
 const PADDING_TINY: [string, string, string, string] = [
     '16px 8px',
     '35px 24px',
@@ -144,6 +145,8 @@ const ModalWindow = styled.div<ModalWindowProps>`
             }
         `}
 `;
+
+const Wrapper = styled.div``;
 
 const Heading = styled(H2)`
     text-align: center;
@@ -287,28 +290,31 @@ const Modal = ({
     });
 
     const modalWindow = (
-        <ModalWindow
-            ref={ref}
-            size={size}
-            padding={padding}
-            useFixedWidth={useFixedWidth}
-            fixedWidth={fixedWidth}
-            useFixedHeight={useFixedHeight}
-            fixedHeight={fixedHeight}
-            bottomBar={bottomBar}
-            noBackground={noBackground}
-            {...rest}
-        >
-            {heading && <Heading>{heading}</Heading>}
-            {description && <Description>{description}</Description>}
-            {cancelable && (
-                <StyledLink onClick={onCancel}>
-                    <Icon size={24} color={colors.BLACK0} icon="CROSS" />
-                </StyledLink>
-            )}
-            <Content>{children}</Content>
-            {bottomBar && <BottomBar>{bottomBar}</BottomBar>}
-        </ModalWindow>
+        <Wrapper>
+            aa
+            <ModalWindow
+                ref={ref}
+                size={size}
+                padding={padding}
+                useFixedWidth={useFixedWidth}
+                fixedWidth={fixedWidth}
+                useFixedHeight={useFixedHeight}
+                fixedHeight={fixedHeight}
+                bottomBar={bottomBar}
+                noBackground={noBackground}
+                {...rest}
+            >
+                {heading && <Heading>{heading}</Heading>}
+                {description && <Description>{description}</Description>}
+                {cancelable && (
+                    <StyledLink onClick={onCancel}>
+                        <Icon size={24} color={colors.BLACK0} icon="CROSS" />
+                    </StyledLink>
+                )}
+                <Content>{children}</Content>
+                {bottomBar && <BottomBar>{bottomBar}</BottomBar>}
+            </ModalWindow>
+        </Wrapper>
     );
 
     if (noBackground) {
