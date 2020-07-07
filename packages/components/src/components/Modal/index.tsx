@@ -146,8 +146,6 @@ const ModalWindow = styled.div<ModalWindowProps>`
         `}
 `;
 
-const Wrapper = styled.div``;
-
 const Heading = styled(H2)`
     text-align: center;
 
@@ -290,31 +288,28 @@ const Modal = ({
     });
 
     const modalWindow = (
-        <Wrapper>
-            aa
-            <ModalWindow
-                ref={ref}
-                size={size}
-                padding={padding}
-                useFixedWidth={useFixedWidth}
-                fixedWidth={fixedWidth}
-                useFixedHeight={useFixedHeight}
-                fixedHeight={fixedHeight}
-                bottomBar={bottomBar}
-                noBackground={noBackground}
-                {...rest}
-            >
-                {heading && <Heading>{heading}</Heading>}
-                {description && <Description>{description}</Description>}
-                {cancelable && (
-                    <StyledLink onClick={onCancel}>
-                        <Icon size={24} color={colors.BLACK0} icon="CROSS" />
-                    </StyledLink>
-                )}
-                <Content>{children}</Content>
-                {bottomBar && <BottomBar>{bottomBar}</BottomBar>}
-            </ModalWindow>
-        </Wrapper>
+        <ModalWindow
+            ref={ref}
+            size={size}
+            padding={padding}
+            useFixedWidth={useFixedWidth}
+            fixedWidth={fixedWidth}
+            useFixedHeight={useFixedHeight}
+            fixedHeight={fixedHeight}
+            bottomBar={bottomBar}
+            noBackground={noBackground}
+            {...rest}
+        >
+            {heading && <Heading>{heading}</Heading>}
+            {description && <Description>{description}</Description>}
+            {cancelable && (
+                <StyledLink onClick={onCancel}>
+                    <Icon size={24} color={colors.BLACK0} icon="CROSS" />
+                </StyledLink>
+            )}
+            <Content>{children}</Content>
+            {bottomBar && <BottomBar>{bottomBar}</BottomBar>}
+        </ModalWindow>
     );
 
     if (noBackground) {
