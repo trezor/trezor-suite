@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { MenuListComponentProps, createFilter } from 'react-select';
 
 import styled, { keyframes } from 'styled-components';
@@ -56,24 +56,11 @@ interface Props extends WrappedComponentProps {
     onSubmit: (word: string) => void;
 }
 
-const WordInput = (props: Props) => {
+const WordInput = React.memo((props: Props) => {
     const { onSubmit } = props;
 
-    useEffect(() => {
-        const keyboardHandler = (event: KeyboardEvent) => {
-            // 13 enter, 9 tab
-            if (event.keyCode === 13 || event.keyCode === 9) {
-                return onSubmit;
-            }
-        };
-        window.addEventListener('keydown', keyboardHandler, false);
-        return () => {
-            window.removeEventListener('keydown', keyboardHandler, false);
-        };
-    }, [onSubmit]);
-
-    return (
-        <SelectWrapper>
+    const MemoSelect = React.memo(() => {
+        return (
             <Select
                 autoFocus
                 isSearchable
@@ -96,8 +83,14 @@ const WordInput = (props: Props) => {
                 })}
                 data-test="@word-input-select"
             />
+        );
+    });
+
+    return (
+        <SelectWrapper>
+            <MemoSelect />
         </SelectWrapper>
     );
-};
+});
 
 export default injectIntl(WordInput);
