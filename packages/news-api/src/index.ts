@@ -1,8 +1,13 @@
 import axios from 'axios';
 import { Post } from './types';
 import parser from 'fast-xml-parser';
-import { FEED_URL } from './config';
+import { FEED_URL, MEDIUM_CDN_BASE, TREZOR_CDN_BASE } from './config';
 import cheerio from 'cheerio';
+
+const replaceCDNLink = (trezorLink?: string) => {
+    if (!trezorLink) return undefined;
+    return trezorLink.replace(MEDIUM_CDN_BASE, TREZOR_CDN_BASE);
+};
 
 const getPosts = (data: any, limit = 5) => {
     const posts = data.rss.channel.item;
@@ -17,12 +22,13 @@ const getPosts = (data: any, limit = 5) => {
 
         const { title, pubDate, link } = posts[i];
         const $ = cheerio.load(posts[i]['content:encoded']);
+        const thumbnail = replaceCDNLink($('img').first().attr('src'));
 
         if (link.includes('blog.trezor.io')) {
             result.push({
                 title,
                 description: $('p').first().text(),
-                thumbnail: $('img').first().attr('src'),
+                thumbnail,
                 pubDate,
                 link,
             });
