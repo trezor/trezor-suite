@@ -55,6 +55,7 @@ const StyledButton = styled(Button)`
 `;
 
 const ChangesSummary = styled.div`
+    width: 100%;
     background-color: ${colors.BLACK96};
     border: 1px solid ${colors.BLACK80};
     padding: 20px;

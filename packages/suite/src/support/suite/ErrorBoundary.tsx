@@ -50,6 +50,18 @@ const StyledButton = styled(Button)`
     margin: 6px 12px;
 `;
 
+const GenericMessage = styled(P)`
+    margin-bottom: 10px;
+`;
+
+const ErrorMessage = styled.span`
+    text-align: center;
+    max-width: 600px;
+    font-family: Consolas, Menlo, Courier, monospace;
+    font-size: ${variables.FONT_SIZE.TINY};
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+`;
+
 const refresh = () => {
     // @ts-ignore global.ipcRenderer is declared in @desktop/preloader.js
     const { ipcRenderer } = global;
@@ -104,10 +116,10 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
             return (
                 <Wrapper>
                     <H1>Error occurred</H1>
-                    <P textAlign="center">
+                    <GenericMessage textAlign="center">
                         It appears something is broken. You might let us know by sending report
-                    </P>
-                    <P>{this.state.error.message}</P>
+                    </GenericMessage>
+                    <ErrorMessage>{this.state.error.message}</ErrorMessage>
                     {/* <P>{this.state.error.stack}</P> */}
 
                     <SendReportButton variant="primary" onClick={() => Sentry.showReportDialog()}>

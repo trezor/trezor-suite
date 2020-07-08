@@ -2,13 +2,12 @@
 
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { useKeyPress, useOnClickOutside } from '../../utils/hooks';
+import { useKeyPress } from '../../utils/hooks';
 
 import { Link } from '../typography/Link';
 import { Icon } from '../Icon';
 import { H2 } from '../typography/Heading';
 import { colors, variables } from '../../config';
-import { useRef } from 'react';
 
 // each item in array corresponds to a screen size  [SM, MD, LG, XL]
 const PADDING: [string, string, string, string] = [
@@ -38,6 +37,7 @@ const ModalOverlay = styled.div`
     top: 0px;
     left: 0px;
     background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -270,6 +270,7 @@ const Modal = ({
     description,
     bottomBar,
     cancelable,
+    onClick,
     onCancel,
     size = 'large',
     padding = getPadding(size),
@@ -281,21 +282,13 @@ const Modal = ({
     ...rest
 }: Props) => {
     const escPressed = useKeyPress('Escape');
-    const ref = useRef<HTMLDivElement>(null);
 
     if (cancelable && onCancel && escPressed) {
         onCancel();
     }
 
-    useOnClickOutside([ref], () => {
-        if (cancelable && onCancel) {
-            onCancel();
-        }
-    });
-
     const modalWindow = (
         <ModalWindow
-            ref={ref}
             size={size}
             padding={padding}
             useFixedWidth={useFixedWidth}
@@ -304,6 +297,11 @@ const Modal = ({
             fixedHeight={fixedHeight}
             bottomBar={bottomBar}
             noBackground={noBackground}
+            onClick={e => {
+                if (onClick) onClick(e);
+                e.stopPropagation();
+                e.preventDefault();
+            }}
             {...rest}
         >
             {heading && <Heading>{heading}</Heading>}
@@ -323,7 +321,13 @@ const Modal = ({
     }
 
     return (
-        <ModalOverlay>
+        <ModalOverlay
+            onClick={() => {
+                if (cancelable && onCancel) {
+                    onCancel();
+                }
+            }}
+        >
             {header && <Header>{header}</Header>}
             {modalWindow}
         </ModalOverlay>

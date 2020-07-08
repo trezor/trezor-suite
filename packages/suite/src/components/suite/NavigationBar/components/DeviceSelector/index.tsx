@@ -143,11 +143,9 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
                     </DeviceImageWrapper>
                     <DeviceDetail>
                         <DeviceLabel>{selectedDevice.label}</DeviceLabel>
-                        {walletName && (
-                            <WalletNameWrapper>
-                                <WalletLabeling device={props.selectedDevice} />
-                            </WalletNameWrapper>
-                        )}
+                        <WalletNameWrapper>
+                            <WalletLabeling device={selectedDevice} />
+                        </WalletNameWrapper>
                     </DeviceDetail>
                     <DeviceStatus
                         device={selectedDevice}
