@@ -16,6 +16,7 @@ const PADDING: [string, string, string, string] = [
     '35px 40px',
     '35px 40px',
 ];
+
 const PADDING_TINY: [string, string, string, string] = [
     '16px 8px',
     '35px 24px',
@@ -35,11 +36,16 @@ const ModalOverlay = styled.div`
     height: 100%;
     top: 0px;
     left: 0px;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
     align-items: center;
     overflow: auto;
+    justify-content: center;
+`;
+
+const Header = styled.div`
+    margin-bottom: 25px;
 `;
 
 type ModalWindowProps = Omit<Props, 'padding' | 'fixedWidth' | 'fixedHeight'> &
@@ -47,7 +53,6 @@ type ModalWindowProps = Omit<Props, 'padding' | 'fixedWidth' | 'fixedHeight'> &
 const ModalWindow = styled.div<ModalWindowProps>`
     display: flex;
     flex-direction: column;
-    margin: auto;
     position: relative;
     border-radius: 6px;
     text-align: center;
@@ -76,7 +81,7 @@ const ModalWindow = styled.div<ModalWindowProps>`
         !props.noBackground &&
         css`
             background: ${colors.WHITE};
-            box-shadow: 0 10px 60px 0 ${colors.BLACK25};
+            box-shadow: 0 10px 80px 0 rgba(77, 77, 77, 0.2);
         `}
 
     /* if bottomBar is active we need to disable bottom padding */
@@ -243,6 +248,7 @@ const getPadding = (size: SIZE) => {
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
     children?: React.ReactNode;
     heading?: React.ReactNode;
+    header?: React.ReactNode;
     description?: React.ReactNode;
     bottomBar?: React.ReactNode;
     cancelable?: boolean;
@@ -259,6 +265,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
 const Modal = ({
     children,
     heading,
+    header,
     description,
     bottomBar,
     cancelable,
@@ -320,6 +327,7 @@ const Modal = ({
                 }
             }}
         >
+            {header && <Header>{header}</Header>}
             {modalWindow}
         </ModalOverlay>
     );
