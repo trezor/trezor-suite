@@ -117,6 +117,7 @@ const Icon = React.forwardRef(
                         svg.setAttribute('width', `${size}px`);
                         svg.setAttribute('height', `${size}px`);
                         svg.setAttribute('fill', color);
+                        svg.setAttribute('stroke', color);
                     }}
                     loading={() => <span className="loading" />}
                 />
