@@ -39,6 +39,7 @@ const getFontSize = (variant: ButtonVariant) => {
 interface WrapperProps {
     variant: ButtonVariant;
     isDisabled: boolean;
+    isWhite: boolean;
     fullWidth: boolean;
     color: string | undefined;
 }
@@ -103,6 +104,13 @@ const Wrapper = styled.button<WrapperProps>`
             &:active {
                 color: ${colors.BLACK25};
             }
+        `};
+
+    ${props =>
+        props.variant === 'tertiary' &&
+        props.isWhite &&
+        css`
+            background: ${colors.WHITE};
         `};
 
     ${props =>
@@ -190,6 +198,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     icon?: IconType;
     isDisabled?: boolean;
     isLoading?: boolean;
+    isWhite?: boolean;
     fullWidth?: boolean;
     alignIcon?: 'left' | 'right';
 }
@@ -204,6 +213,7 @@ const Button = React.forwardRef(
             additionalClassName,
             color,
             fullWidth = false,
+            isWhite = false,
             isDisabled = false,
             isLoading = false,
             alignIcon = 'left',
@@ -231,6 +241,7 @@ const Button = React.forwardRef(
                 variant={variant}
                 onChange={onChange}
                 isDisabled={isDisabled}
+                isWhite={isWhite}
                 disabled={isDisabled || isLoading}
                 fullWidth={fullWidth}
                 color={color}

@@ -79,10 +79,6 @@ const Description = styled.div`
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
 `;
 
-const CTAWrapper = styled.a`
-    margin-top: 12px;
-`;
-
 const ReadMore = styled.a`
     display: flex;
     align-self: flex-start;
@@ -105,7 +101,9 @@ const NewsFeed = () => {
                     <Translation id="TR_WHATS_NEW" />
                 </Left>
                 <Right>
-                    <Button variant="tertiary">Open in medium</Button>
+                    <Button isWhite variant="tertiary">
+                        <Translation id="TR_OPEN_IN_MEDIUM" />
+                    </Button>
                 </Right>
             </Header>
             <Posts>
@@ -113,9 +111,7 @@ const NewsFeed = () => {
                     <Post key={item.link}>
                         <Image src={item.thumbnail} />
                         <Content>
-                            <CTAWrapper target="_blank" href={item.link}>
-                                <Title>{item.title}</Title>
-                            </CTAWrapper>
+                            <Title>{item.title}</Title>
                             <Description>
                                 <TextTruncate
                                     line={3}
@@ -142,6 +138,7 @@ const NewsFeed = () => {
                 <BottomAction>
                     <Button
                         variant="tertiary"
+                        isWhite
                         onClick={() => {
                             incrementVisibleCount(visibleCount + 3);
                             incrementFetchCount(fetchCount + 3);
