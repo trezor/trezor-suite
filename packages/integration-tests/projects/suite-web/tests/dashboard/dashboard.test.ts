@@ -1,4 +1,4 @@
-// @stable
+// @beta
 // @retry=2
 
 describe('Dashboard', () => {
