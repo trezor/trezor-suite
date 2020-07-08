@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { CoinLogo, colors, variables } from '@trezor/components';
+import { CoinLogo, Button, colors, variables } from '@trezor/components';
 import styled, { css } from 'styled-components';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 import { Translation, FiatValue } from '@suite-components';
