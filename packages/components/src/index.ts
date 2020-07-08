@@ -14,6 +14,7 @@ import { Icon, IconProps } from './components/Icon';
 import { H1, H2 } from './components/typography/Heading';
 import { P, PProps } from './components/typography/Paragraph';
 import { Link, LinkProps } from './components/typography/Link';
+import { Row, RowProps } from './components/others/Row';
 import { ConfirmOnDevice, ConfirmOnDeviceProps } from './components/prompts/ConfirmOnDevice';
 import { Modal, ModalProps } from './components/Modal';
 import { CoinLogo, CoinLogoProps } from './components/logos/CoinLogo';
@@ -65,4 +66,6 @@ export {
     ConfirmOnDeviceProps,
     DeviceImage,
     DeviceImageProps,
+    Row,
+    RowProps,
 };
