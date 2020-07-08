@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { getStateColor } from '../../../utils/colors';
 import { colors } from '../../../config';
 
@@ -9,29 +9,23 @@ interface Props {
     className?: string;
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ state: Props['state'] }>`
     display: flex;
     flex: 1;
     border-radius: 6px;
     border: solid 1px ${colors.NEUE_STROKE_GREY};
-`;
 
-const Line = styled.div<{ state: Props['state'] }>`
-    height: 100%;
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
-    width: 4px;
-    background: ${props => getStateColor(props.state)};
+    ${props => props.state && css && `border-left: 6px solid ${getStateColor(props.state)};`}
+    ${props => !props.state && css && `padding-left: 6px`}
 `;
 
 const Content = styled.div`
-    padding: 15px 20px 15px 10px;
+    padding: 10px;
 `;
 
 const Row = ({ state, children, className }: Props) => {
     return (
-        <Wrapper className={className}>
-            {state && <Line state={state} />}
+        <Wrapper state={state} className={className}>
             <Content>{children}</Content>
         </Wrapper>
     );
