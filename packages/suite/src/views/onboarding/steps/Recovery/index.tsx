@@ -54,7 +54,7 @@ const RecoveryStep = (props: Props) => {
             <Wrapper.StepHeading>
                 {recovery.status === 'initial' && 'Recover your device from seed'}
                 {recovery.status === 'select-recovery-type' && 'Select recovery method'}
-                {recovery.status === 'finished' && !recovery.error && 'Device recovered from seed'}
+                {device && device.mode === 'normal' && 'Device recovered from seed'}
                 {recovery.status === 'finished' && recovery.error && 'Recovery failed'}
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
@@ -98,7 +98,7 @@ const RecoveryStep = (props: Props) => {
 
                 {recovery.status === 'in-progress' && <Loading noBackground />}
 
-                {recovery.status === 'finished' && !recovery.error && (
+                {device && device.mode === 'normal' && (
                     <>
                         <StyledImage image="UNI_SUCCESS" />
                         <Wrapper.Controls>

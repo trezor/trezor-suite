@@ -25,13 +25,7 @@ export default ({ icon, message, action, actionLabel }: ViewProps) => {
                 <Translation {...message} />
             </Text>
             {action && actionLabel && (
-                <Button
-                    variant="tertiary"
-                    icon="ARROW_RIGHT"
-                    alignIcon="right"
-                    color={colors.WHITE}
-                    onClick={action}
-                >
+                <Button variant="tertiary" icon="ARROW_RIGHT" alignIcon="right" onClick={action}>
                     <Translation {...actionLabel} />
                 </Button>
             )}

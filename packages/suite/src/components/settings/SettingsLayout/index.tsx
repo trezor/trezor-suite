@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { LayoutContext } from '@suite-components';
-import { Menu } from '@settings-components';
+import { SettingsMenu } from '@settings-components';
 import { variables } from '@trezor/components';
 
 const Wrapper = styled.div`
@@ -23,8 +23,9 @@ type Props = {
 
 const SettingsLayout = (props: Props) => {
     const { setLayout } = React.useContext(LayoutContext);
+
     React.useMemo(() => {
-        if (setLayout) setLayout(props.title || 'Settings', <Menu />);
+        if (setLayout) setLayout(props.title || 'Settings', null, <SettingsMenu />);
     }, [props.title, setLayout]);
 
     return <Wrapper data-test={props['data-test']}>{props.children}</Wrapper>;

@@ -4,7 +4,6 @@ import { WalletLayout } from '@wallet-components';
 import { getAccountTransactions, isTestnet } from '@wallet-utils/accountUtils';
 import NoTransactions from './components/NoTransactions';
 import AccountEmpty from './components/AccountEmpty';
-import PricePanel from './components/PricePanel/Container';
 import TokenList from './components/TokenList';
 import TransactionList from './components/TransactionList';
 import TransactionSummary from './components/TransactionSummary/Container';
@@ -23,7 +22,6 @@ const Content = ({ selectedAccount, showSummary, children }: ContentProps) => {
 
     return (
         <WalletLayout title="Transactions" account={selectedAccount}>
-            <PricePanel />
             {showSummary && account.networkType !== 'ripple' && (
                 <TransactionSummary account={account} />
             )}

@@ -36,6 +36,8 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: Function }>`
     white-space: nowrap;
     padding: 8px 24px;
     border-bottom: 2px solid ${colors.BLACK96};
+    font-variant-numeric: tabular-nums;
+
     &:nth-child(1n) {
         padding-left: 0px;
     }
@@ -257,7 +259,6 @@ const UsedAddresses = ({
                     {actionShowVisible && (
                         <Button
                             variant="tertiary"
-                            size="small"
                             icon="ARROW_DOWN"
                             alignIcon="right"
                             onClick={() => setLimit(limit + 20)}
@@ -268,7 +269,6 @@ const UsedAddresses = ({
                     {actionHideVisible && (
                         <Button
                             variant="tertiary"
-                            size="small"
                             icon="ARROW_UP"
                             onClick={() => setLimit(DEFAULT_LIMIT)}
                         >

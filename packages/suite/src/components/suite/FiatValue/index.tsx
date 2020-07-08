@@ -3,6 +3,15 @@ import { Props } from './Container';
 import { Badge, HiddenPlaceholder } from '@suite-components';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import FormattedNumber from '../FormattedNumber';
+import styled from 'styled-components';
+
+const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />)`
+    font-variant-numeric: tabular-nums;
+`;
+
+const SameWidthNums = styled.span`
+    font-variant-numeric: tabular-nums;
+`;
 
 /**
  * If used without children prop it returns a value of an crypto assets in fiat currency.
@@ -23,6 +32,7 @@ const FiatValue = ({
     source,
     useCustomSource,
     badge,
+    showApproximationIndicator,
     ...props
 }: Props) => {
     const targetCurrency = fiatCurrency ?? props.settings.localCurrency;
@@ -31,24 +41,27 @@ const FiatValue = ({
     const fiat = ratesSource ? toFiatCurrency(amount, targetCurrency, ratesSource) : null;
     if (fiat) {
         let fiatValueComponent = (
-            <HiddenPlaceholder>
+            <StyledHiddenPlaceholder>
+                {showApproximationIndicator && <>≈ </>}
                 <FormattedNumber currency={targetCurrency} value={fiat} />
-            </HiddenPlaceholder>
+            </StyledHiddenPlaceholder>
         );
 
         if (badge) {
             fiatValueComponent = (
-                <HiddenPlaceholder>
+                <StyledHiddenPlaceholder>
                     <Badge isGray={badge.color === 'gray'} isSmall={badge.size === 'small'}>
                         <FormattedNumber currency={targetCurrency} value={fiat} />
                     </Badge>
-                </HiddenPlaceholder>
+                </StyledHiddenPlaceholder>
             );
         }
 
         const fiatRateValue = ratesSource?.[targetCurrency] ?? null;
         const fiatRateComponent = fiatRateValue ? (
-            <FormattedNumber currency={targetCurrency} value={fiatRateValue} />
+            <SameWidthNums>
+                <FormattedNumber currency={targetCurrency} value={fiatRateValue} />
+            </SameWidthNums>
         ) : null;
         if (!props.children) return fiatValueComponent;
         return props.children({

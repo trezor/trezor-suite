@@ -48,7 +48,6 @@ export default class MyDocument extends Document {
                         href={resolveStaticPath('fonts/fonts.css')}
                     />
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
-                    {this.props.styles}
                 </Head>
                 <body>
                     <Main />

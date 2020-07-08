@@ -29,6 +29,7 @@ const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
 `;
 
 const ColDate = styled(Link)`
+    font-variant-numeric: tabular-nums;
     grid-column: date;
     color: ${colors.BLACK50};
     font-size: ${variables.FONT_SIZE.TINY};
@@ -37,17 +38,18 @@ const ColDate = styled(Link)`
 
 const ColType = styled.div`
     grid-column: type;
-    padding: 0px 12px;
+    padding: 0px 7px 0 12px;
 `;
 
 const Addr = styled(motion.div)`
     grid-column: target;
     color: ${colors.BLACK0};
-    /* font-family: ${variables.FONT_FAMILY.MONOSPACE}; */
     font-size: ${variables.FONT_SIZE.SMALL};
     overflow: hidden;
     white-space: nowrap;
+    padding-left: 5px;
     text-overflow: ellipsis;
+    font-variant-numeric: tabular-nums;
     @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
         grid-column: target / fiat;
     }
@@ -61,6 +63,8 @@ const Balance = styled(motion.div)<{ partial?: boolean; secondary?: boolean }>`
     text-overflow: ellipsis;
     text-transform: uppercase;
     text-align: right;
+    font-variant-numeric: tabular-nums;
+
     @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
         text-align: left;
     }
@@ -310,7 +314,6 @@ export default React.memo((props: Props) => {
             {isExpandable && (
                 <ExpandButton
                     variant="tertiary"
-                    size="small"
                     icon={toExpand > 0 ? 'ARROW_DOWN' : 'ARROW_UP'}
                     alignIcon="right"
                     onClick={e => {

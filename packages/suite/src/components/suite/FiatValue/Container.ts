@@ -21,6 +21,7 @@ interface CommonOwnProps {
     fiatCurrency?: string;
     children?: (props: Params) => React.ReactElement | null;
     badge?: { color: 'blue' | 'gray'; size?: 'small' };
+    showApproximationIndicator?: boolean;
 }
 
 interface DefaultSourceProps extends CommonOwnProps {

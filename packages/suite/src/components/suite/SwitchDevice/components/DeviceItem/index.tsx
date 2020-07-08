@@ -1,7 +1,7 @@
 import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components';
+import { colors, variables, DeviceImage } from '@trezor/components';
 import { Translation } from '@suite-components';
 import Card from '@suite-components/Card';
 import * as deviceUtils from '@suite-utils/device';
@@ -9,7 +9,6 @@ import * as deviceUtils from '@suite-utils/device';
 import WalletInstance from '../WalletInstance/Container';
 import { Props } from './Container';
 import ColHeader from './components/ColHeader';
-import DeviceImage from '@suite-components/images/DeviceImage';
 import AddWalletButton from './components/AddWalletButton';
 import DeviceHeaderButton from './components/DeviceHeaderButton';
 
@@ -150,7 +149,10 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
             <Device>
                 <DeviceHeader>
                     <DeviceImageWrapper>
-                        <DeviceImage device={device} />
+                        <DeviceImage
+                            height={46}
+                            trezorModel={device.features?.major_version === 1 ? 1 : 2}
+                        />
                     </DeviceImageWrapper>
                     <Col grow={1}>
                         <DeviceTitle>{device.label}</DeviceTitle>

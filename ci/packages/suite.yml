@@ -1,33 +1,18 @@
-suite test integration:
-    only:
-        - schedules
-    stage: integration testing
+# number of utility scripts that are nice and useful but perfectly ok if they run only once a day :]
+suite misc:
+    # only:
+    #     - schedules
+    stage: misc
     script:
+        # tests whether urls in constants return 200 status (shall detect dead links)
         - yarn workspace @trezor/suite test-health
-
-suite check outdated:
-    stage: misc
-    only:
-        refs:
-            - develop
-    allow_failure: true
-    script:
+        # tests whether there are not 'too many' outdated dependencies
         - ./ci/scripts/outdated.sh
-
-suite check multiple same svgs:
-    stage: misc
-    only:
-        refs:
-            - develop
-    script:
+        # tests whether we have not included same svgs multiple times (it is hard to see from code)
         - yarn workspace @trezor/suite-data test-same-svgs
-
-# needs some fixing 
-# suite check unused messages:
-#     stage: lint, types, unit tests
-#     script:
-#         # create the master.json first. later we shall use directly messages.ts
-#         - yarn workspace @trezor/suite translations:extract
-#         - yarn workspace @trezor/suite translations:unused
-
-# TODO: add messages (values) duplicities check
+        # some random script pretending it checks something (actually it should use part of lighthouse.js for vulnerabilities checking)
+        # but it should probably be used in more elaborate way. Or we may use lighthouse directly
+        - yarn is-website-vulnerable ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} | node ./ci/scripts/check-vulnerabilities.js
+        # find unused messages. these don't have right to exist as they pose additional budget on translators
+        # todo: make it work with messages.ts
+        # - yarn workspace @trezor/suite translations:unused

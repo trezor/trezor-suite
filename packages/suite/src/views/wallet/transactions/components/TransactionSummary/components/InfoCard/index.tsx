@@ -1,7 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, variables, Loader } from '@trezor/components';
-import { HiddenPlaceholder, Badge, FormattedNumber } from '@suite-components';
+import {
+    HiddenPlaceholder,
+    Badge,
+    FormattedNumber,
+    FormattedCryptoAmount,
+} from '@suite-components';
 import { Account } from '@wallet-types';
 import BigNumber from 'bignumber.js';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
@@ -50,6 +55,7 @@ const Value = styled.div`
 const FiatAmountWrapper = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     margin-left: 20px;
+    font-variant-numeric: tabular-nums;
 `;
 
 const LoaderWrapper = styled.div`
@@ -100,10 +106,13 @@ const InfoCard = (props: Props) => {
                     {!props.isLoading && (
                         <>
                             <Value>
-                                {bigValue && (
+                                {bigValue && props.symbol && (
                                     <HiddenPlaceholder>
-                                        {isValuePos && '+'}
-                                        {bigValue.toFixed()} {props.symbol?.toUpperCase()}
+                                        {isValuePos && <>+</>}
+                                        <FormattedCryptoAmount
+                                            value={bigValue.toFixed()}
+                                            symbol={props.symbol}
+                                        />
                                     </HiddenPlaceholder>
                                 )}
                                 {!bigValue && props.value}
