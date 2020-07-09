@@ -261,6 +261,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     padding?: [string, string, string, string]; // [SM, MD, LG, XL]
     noBackground?: boolean;
     onCancel?: () => void;
+    hideCancelButton?: boolean;
 }
 
 const Modal = ({
@@ -279,6 +280,7 @@ const Modal = ({
     fixedWidth = getFixedWidth(size),
     useFixedHeight = false,
     fixedHeight = FIXED_HEIGHT,
+    hideCancelButton = false,
     ...rest
 }: Props) => {
     const escPressed = useKeyPress('Escape');
@@ -306,7 +308,7 @@ const Modal = ({
         >
             {heading && <Heading>{heading}</Heading>}
             {description && <Description>{description}</Description>}
-            {cancelable && (
+            {cancelable && !hideCancelButton && (
                 <StyledLink onClick={onCancel}>
                     <Icon size={24} color={colors.BLACK0} icon="CROSS" />
                 </StyledLink>
