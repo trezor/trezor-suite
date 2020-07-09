@@ -69,6 +69,7 @@ const Title = styled.div`
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${colors.NEUE_TYPE_DARK_GREY};
     padding: 14px 0 8px 0;
+    min-height: 62px;
 `;
 
 const Description = styled.div`
