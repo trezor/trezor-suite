@@ -1,9 +1,8 @@
 import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
-import { colors, variables, DeviceImage } from '@trezor/components';
+import { colors, variables, Icon, DeviceImage } from '@trezor/components';
 import { Translation } from '@suite-components';
-import Card from '@suite-components/Card';
 import * as deviceUtils from '@suite-utils/device';
 
 import WalletInstance from '../WalletInstance/Container';
@@ -15,32 +14,36 @@ import DeviceHeaderButton from './components/DeviceHeaderButton';
 const DeviceWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    border-radius: 6px;
-    background-color: ${colors.BLACK96};
     width: 100%;
-    padding: 24px 30px;
 
     & + & {
-        margin-top: 20px;
+        margin-top: 64px;
     }
 `;
 
 const Device = styled.div`
     display: flex;
-    flex-direction: row;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 24px;
 `;
 
 const DeviceTitle = styled.span`
     font-size: ${variables.FONT_SIZE.NORMAL};
-    margin-bottom: 6px;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.NEUE_TYPE_DARK_GREY};
 `;
 
 const DeviceStatus = styled.span<{ color: string }>`
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: 600;
+    text-transform: uppercase;
     color: ${props => props.color};
+    margin-bottom: 2px;
+`;
+
+const DeviceActions = styled.div`
+    display: flex;
+    align-items: center;
 `;
 
 const Col = styled.div<{ grow?: number }>`
@@ -54,22 +57,23 @@ const WalletsWrapper = styled.div<{ enabled: boolean }>`
     opacity: ${props => (props.enabled ? 1 : 0.5)};
     pointer-events: ${props => (props.enabled ? 'unset' : 'none')};
     padding-bottom: ${props => (props.enabled ? '0px' : '24px')};
+    margin-left: 37px;
 `;
 
 const WalletsTooltips = styled.div`
-    /* padding: 10px 24px; */
-    /* flex-direction: column; */
     display: flex;
     justify-content: flex-end;
-    padding-bottom: 12px;
+    padding-bottom: 10px;
 `;
 
-const InstancesWrapper = styled(Card)`
+const WalletsCount = styled(ColHeader)`
+    flex: 1;
+    justify-content: flex-start;
+`;
+
+const InstancesWrapper = styled.div`
+    display: flex;
     flex-direction: column;
-    border-radius: 3px;
-    background-color: #f5f5f5;
-    margin-bottom: 20px;
-    box-shadow: 0px 3px 20px 6px #e6e6e6;
 `;
 
 const StyledWalletInstance = styled(WalletInstance)`
@@ -88,15 +92,21 @@ const DeviceImageWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 60px;
-    height: 60px;
+    width: 21px;
+    height: 36px;
+    margin-right: 16px;
+`;
+
+const ExpandIcon = styled(Icon)`
+    margin-left: 24px;
 `;
 
 // TODO: this is going to be a problem with different col headers length since they won't be aligned with the columns inside WalletInstance
-const RememberWallet = styled(ColHeader)``;
-const HideWallet = styled(ColHeader)`
-    margin-left: 78px;
-    margin-right: 38px;
+const ColRememberHeader = styled(ColHeader)`
+    margin: 0 24px;
+`;
+const ColEjectHeader = styled(ColHeader)`
+    margin: 0px 24px;
 `;
 
 const DeviceItem = (props: Props & WrappedComponentProps) => {
@@ -150,44 +160,65 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                 <DeviceHeader>
                     <DeviceImageWrapper>
                         <DeviceImage
-                            height={46}
+                            height={36}
                             trezorModel={device.features?.major_version === 1 ? 1 : 2}
                         />
                     </DeviceImageWrapper>
                     <Col grow={1}>
-                        <DeviceTitle>{device.label}</DeviceTitle>
-                        <DeviceStatus color={device.connected ? colors.GREEN : colors.BLACK50}>
+                        <DeviceStatus
+                            color={
+                                device.connected
+                                    ? colors.NEUE_TYPE_GREEN
+                                    : colors.NEUE_TYPE_LIGHT_GREY
+                            }
+                        >
                             {device.connected ? (
                                 <Translation id="TR_CONNECTED" />
                             ) : (
                                 <Translation id="TR_DISCONNECTED" />
                             )}
                         </DeviceStatus>
+                        <DeviceTitle>{device.label}</DeviceTitle>
                     </Col>
 
-                    <DeviceHeaderButton
-                        device={device}
-                        onSolveIssueClick={onSolveIssueClick}
-                        onDeviceSettingsClick={onDeviceSettingsClick}
-                    />
+                    <DeviceActions>
+                        <DeviceHeaderButton
+                            device={device}
+                            onSolveIssueClick={onSolveIssueClick}
+                            onDeviceSettingsClick={onDeviceSettingsClick}
+                        />
+                        <ExpandIcon
+                            usePointerCursor
+                            size={24}
+                            icon="ARROW_DOWN"
+                            color={colors.NEUE_TYPE_LIGHT_GREY}
+                            onClick={onDeviceSettingsClick}
+                        />
+                    </DeviceActions>
                 </DeviceHeader>
             </Device>
             {!isUnknown && (
                 <WalletsWrapper enabled>
                     <WalletsTooltips>
-                        <RememberWallet
+                        <WalletsCount>
+                            <Translation
+                                id="TR_COUNT_WALLETS"
+                                values={{ count: props.instances.length }}
+                            />
+                        </WalletsCount>
+                        <ColRememberHeader
                             tooltipContent={<Translation id="TR_REMEMBER_ALLOWS_YOU_TO" />}
                         >
                             <Translation id="TR_REMEMBER_HEADING" />
-                        </RememberWallet>
-                        <HideWallet
+                        </ColRememberHeader>
+                        <ColEjectHeader
                             tooltipContent={<Translation id="TR_EJECT_WALLET_EXPLANATION" />}
                         >
                             <Translation id="TR_EJECT_HEADING" />
-                        </HideWallet>
+                        </ColEjectHeader>
                     </WalletsTooltips>
 
-                    <InstancesWrapper noPadding>
+                    <InstancesWrapper>
                         {props.instances.map(instance => (
                             <StyledWalletInstance
                                 key={`${instance.label}-${instance.instance}-${instance.state}`}
