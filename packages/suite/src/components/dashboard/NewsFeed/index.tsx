@@ -89,6 +89,8 @@ const ReadMore = styled.a`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
+const MediumLink = styled.a``;
+
 const NewsFeed = () => {
     const [visibleCount, incrementVisibleCount] = useState(3);
     const { posts, isError, fetchCount, incrementFetchCount } = useFetchNews();
@@ -102,9 +104,11 @@ const NewsFeed = () => {
                     <Translation id="TR_WHATS_NEW" />
                 </Left>
                 <Right>
-                    <Button isWhite variant="tertiary">
-                        <Translation id="TR_OPEN_IN_MEDIUM" />
-                    </Button>
+                    <MediumLink target="_blank" href="https://blog.trezor.io/">
+                        <Button isWhite variant="tertiary" icon="MEDIUM">
+                            <Translation id="TR_OPEN_IN_MEDIUM" />
+                        </Button>
+                    </MediumLink>
                 </Right>
             </Header>
             <Posts>
