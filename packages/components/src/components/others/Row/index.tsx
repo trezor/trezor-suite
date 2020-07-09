@@ -17,7 +17,7 @@ const Wrapper = styled.div<{ state: Props['state'] }>`
     border: solid 1px ${colors.NEUE_STROKE_GREY};
 
     ${props => props.state && css && `border-left: 6px solid ${getStateColor(props.state)};`}
-    ${props => !props.state && css && `padding-left: 6px`}
+    ${props => !props.state && css && `padding-left: 20px`}
 `;
 
 const Row = ({ state, children, className }: Props) => {
