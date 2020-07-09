@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Switch, Row, Icon, colors, variables } from '@trezor/components';
+import { Switch, Row, Icon, colors, variables } from '@trezor/components';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { Props } from './Container';
 import { FormattedNumber, WalletLabeling, Translation } from '@suite-components';
