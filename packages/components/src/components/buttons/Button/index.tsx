@@ -180,7 +180,7 @@ const IconWrapper = styled.div<IconWrapperProps>`
         props.hasLabel &&
         props.alignIcon === 'right' &&
         css`
-            margin: 0 0 0 3px;
+            margin: 0 0 0 4px;
         `}
 
     ${props =>
@@ -188,7 +188,7 @@ const IconWrapper = styled.div<IconWrapperProps>`
         props.hasLabel &&
         props.alignIcon === 'left' &&
         css`
-            margin: 0 3px 0 0;
+            margin: 0 4px 0 0;
         `}
 `;
 
@@ -227,7 +227,11 @@ const Button = React.forwardRef(
             : className;
         const IconComponent = icon ? (
             <IconWrapper alignIcon={alignIcon} variant={variant} hasLabel={!!children}>
-                <Icon icon={icon} size={14} color={color || getIconColor(variant, isDisabled)} />
+                <Icon
+                    icon={icon}
+                    size={variant === 'tertiary' ? 12 : 14}
+                    color={color || getIconColor(variant, isDisabled)}
+                />
             </IconWrapper>
         ) : null;
         const Loader = (
