@@ -131,4 +131,5 @@ export const ICONS: IconType[] = [
     'CALENDAR',
     'PDF',
     'CSV',
+    'MEDIUM',
 ];

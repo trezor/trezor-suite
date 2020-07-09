@@ -69,4 +69,5 @@ export const ICONS = {
     CALENDAR: require('../../images/icons/calendar.svg'),
     PDF: require('../../images/icons/pdf.svg'),
     CSV: require('../../images/icons/csv.svg'),
+    MEDIUM: require('../../images/icons/medium.svg'),
 };
