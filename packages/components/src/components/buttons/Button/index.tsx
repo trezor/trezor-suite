@@ -39,6 +39,7 @@ const getFontSize = (variant: ButtonVariant) => {
 interface WrapperProps {
     variant: ButtonVariant;
     isDisabled: boolean;
+    isWhite: boolean;
     fullWidth: boolean;
     color: string | undefined;
 }
@@ -102,6 +103,13 @@ const Wrapper = styled.button<WrapperProps>`
             &:active {
                 color: ${colors.BLACK25};
             }
+        `};
+
+    ${props =>
+        props.variant === 'tertiary' &&
+        props.isWhite &&
+        css`
+            background: ${colors.WHITE};
         `};
 
     ${props =>
@@ -171,7 +179,7 @@ const IconWrapper = styled.div<IconWrapperProps>`
         props.hasLabel &&
         props.alignIcon === 'right' &&
         css`
-            margin: 0 0 0 3px;
+            margin: 0 0 0 4px;
         `}
 
     ${props =>
@@ -179,7 +187,7 @@ const IconWrapper = styled.div<IconWrapperProps>`
         props.hasLabel &&
         props.alignIcon === 'left' &&
         css`
-            margin: 0 3px 0 0;
+            margin: 0 4px 0 0;
         `}
 `;
 
@@ -189,6 +197,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     icon?: IconType;
     isDisabled?: boolean;
     isLoading?: boolean;
+    isWhite?: boolean;
     fullWidth?: boolean;
     alignIcon?: 'left' | 'right';
 }
@@ -203,6 +212,7 @@ const Button = React.forwardRef(
             additionalClassName,
             color,
             fullWidth = false,
+            isWhite = false,
             isDisabled = false,
             isLoading = false,
             alignIcon = 'left',
@@ -216,7 +226,11 @@ const Button = React.forwardRef(
             : className;
         const IconComponent = icon ? (
             <IconWrapper alignIcon={alignIcon} variant={variant} hasLabel={!!children}>
-                <Icon icon={icon} size={14} color={color || getIconColor(variant, isDisabled)} />
+                <Icon
+                    icon={icon}
+                    size={variant === 'tertiary' ? 12 : 14}
+                    color={color || getIconColor(variant, isDisabled)}
+                />
             </IconWrapper>
         ) : null;
         const Loader = (
@@ -230,6 +244,7 @@ const Button = React.forwardRef(
                 variant={variant}
                 onChange={onChange}
                 isDisabled={isDisabled}
+                isWhite={isWhite}
                 disabled={isDisabled || isLoading}
                 fullWidth={fullWidth}
                 color={color}
