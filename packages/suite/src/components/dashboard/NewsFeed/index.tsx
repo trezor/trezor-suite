@@ -1,95 +1,82 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Card, Translation } from '@suite-components';
-import { isToday, format } from 'date-fns';
+import TextTruncate from 'react-text-truncate';
+import { Translation } from '@suite-components';
 import { colors, Button, variables } from '@trezor/components';
-import { useFetchNews } from '@dashboard-hooks/news';
-import { CARD_PADDING_SIZE } from '@suite-constants/layout';
+import { useFetchNews } from '@dashboard-hooks/useNews';
 
-const StyledCard = styled(Card)`
+const Wrapper = styled.div`
+    display: flex;
     flex-direction: column;
-    width: 100%;
+    margin-top: 64px;
 `;
 
-const Section = styled.div`
+const Header = styled.div`
     display: flex;
+    justify-content: space-between;
+    padding-bottom: 25px;
+`;
+
+const Left = styled.div`
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+    font-size: ${variables.NEUE_FONT_SIZE.H2};
+`;
+
+const Right = styled.div``;
+
+const Posts = styled.div`
+    display: grid;
+    grid-gap: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     width: 100%;
     flex-direction: column;
 `;
 
 const BottomAction = styled.div`
     display: flex;
-    margin-top: 13px;
+    margin-top: 28px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     justify-content: center;
     color: ${colors.BLACK25};
 `;
 
-const Post = styled.div`
+const Content = styled.div`
+    padding: 4px;
     display: flex;
-
-    & + & {
-        border-top: 2px solid ${colors.BLACK96};
-    }
-
-    &:not(:first-child) {
-        padding-top: ${CARD_PADDING_SIZE};
-    }
-
-    &:not(:last-child) {
-        padding-bottom: ${CARD_PADDING_SIZE};
-    }
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        flex-direction: column;
-    }
-`;
-
-const Left = styled.div`
-    display: flex;
-`;
-
-const Right = styled.div`
-    display: flex;
-    padding-left: 16px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding-left: 0;
-    }
-
+    flex: 1;
     flex-direction: column;
 `;
 
-const Image = styled.img`
-    width: 280px;
-    height: 140px;
-    border-radius: 2px;
-    object-fit: cover;
+const Post = styled.div`
+    display: flex;
+    padding: 6px;
+    flex-direction: column;
+    background: ${colors.WHITE};
+    border-radius: 3px;
+`;
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        width: 100%;
-    }
+const Image = styled.img`
+    width: 100%;
+    height: 195px;
+    border-radius: 3px;
+    object-fit: cover;
 `;
 
 const Title = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${colors.BLACK0};
-    margin-bottom: 2px;
-`;
-
-const Timestamp = styled.div`
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.BLACK25};
-    margin: 10px 0;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+    padding: 14px 0 8px 0;
+    min-height: 62px;
 `;
 
 const Description = styled.div`
+    display: flex;
+    flex: 1;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.BLACK25};
-`;
-
-const CTAWrapper = styled.a`
-    margin-top: 12px;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
 `;
 
 const ReadMore = styled.a`
@@ -101,35 +88,49 @@ const ReadMore = styled.a`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const getDate = (date: string) => {
-    const dateObj = new Date(date);
+const MediumLink = styled.a``;
 
-    if (isToday(dateObj)) {
-        return <Translation id="TR_TODAY" />;
-    }
-    return format(dateObj, 'MMM d');
-};
-
-const NewsFeed = ({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
+const NewsFeed = () => {
     const [visibleCount, incrementVisibleCount] = useState(3);
     const { posts, isError, fetchCount, incrementFetchCount } = useFetchNews();
 
     if (isError) return null;
 
     return (
-        <Section {...rest}>
-            <StyledCard title={<Translation id="TR_WHATS_NEW" />}>
+        <Wrapper>
+            <Header>
+                <Left>
+                    <Translation id="TR_WHATS_NEW" />
+                </Left>
+                <Right>
+                    <MediumLink target="_blank" href="https://blog.trezor.io/">
+                        <Button isWhite variant="tertiary" icon="MEDIUM">
+                            <Translation id="TR_OPEN_IN_MEDIUM" />
+                        </Button>
+                    </MediumLink>
+                </Right>
+            </Header>
+            <Posts>
                 {posts.slice(0, visibleCount).map(item => (
                     <Post key={item.link}>
-                        <Left>
-                            <Image src={item.thumbnail} />
-                        </Left>
-                        <Right>
-                            <CTAWrapper target="_blank" href={item.link}>
-                                <Title>{item.title}</Title>
-                            </CTAWrapper>
-                            <Timestamp>{getDate(item.pubDate)}</Timestamp>
-                            <Description>{item.description}</Description>
+                        <Image src={item.thumbnail} />
+                        <Content>
+                            <Title>
+                                <TextTruncate
+                                    line={2}
+                                    element="div"
+                                    truncateText="…"
+                                    text={item.title}
+                                />
+                            </Title>
+                            <Description>
+                                <TextTruncate
+                                    line={3}
+                                    element="div"
+                                    truncateText="…"
+                                    text={item.description}
+                                />
+                            </Description>
                             <ReadMore target="_blank" href={item.link}>
                                 <Button
                                     variant="tertiary"
@@ -140,15 +141,15 @@ const NewsFeed = ({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
                                     <Translation id="TR_READ_MORE" />
                                 </Button>
                             </ReadMore>
-                        </Right>
+                        </Content>
                     </Post>
                 ))}
-            </StyledCard>
+            </Posts>
             {posts.length > visibleCount && (
                 <BottomAction>
                     <Button
                         variant="tertiary"
-                        icon="ARROW_DOWN"
+                        isWhite
                         onClick={() => {
                             incrementVisibleCount(visibleCount + 3);
                             incrementFetchCount(fetchCount + 3);
@@ -158,7 +159,7 @@ const NewsFeed = ({ ...rest }: React.HTMLAttributes<HTMLDivElement>) => {
                     </Button>
                 </BottomAction>
             )}
-        </Section>
+        </Wrapper>
     );
 };
 
