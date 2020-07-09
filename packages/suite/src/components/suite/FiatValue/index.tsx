@@ -19,9 +19,9 @@ const SameWidthNums = styled.span`
  * null is returned if there was some problem with conversion (eg. missing rates)
  *
  * Advanced usage is with passing a function as a children prop.
- * The function will called (and rendered) with 1 object param: {fiatValue, fiatRateValue, fiatRateTimestamp}.
+ * The function will be called (and rendered) with 1 object param: {fiatValue, fiatRateValue, fiatRateTimestamp}.
  *
- *  In case of custom source of fiat rates returned timestamp is null;
+ *  In case of custom source of fiat rates returned timestamp is always null;
  * @param {Props} { amount, symbol, fiatCurrency, ...props }
  * @returns
  */
