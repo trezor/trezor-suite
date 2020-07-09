@@ -18,6 +18,7 @@ const Wrapper = styled.div<{ triggerAnim?: boolean }>`
     align-items: center;
     background-color: ${colors.NEUE_BG_LIGHT_GREY};
     cursor: pointer;
+    margin-right: 24px;
 
     &:hover {
         border-radius: 4px;
