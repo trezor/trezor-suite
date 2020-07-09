@@ -94,8 +94,7 @@ const Wrapper = styled.button<WrapperProps>`
         props.variant === 'tertiary' &&
         css`
             color: ${colors.NEUE_TYPE_DARK_GREY};
-            /* we use this color only for this case  */
-            background: #f8f8f8;
+            background: ${colors.NEUE_BG_GRAY};
 
             &:hover,
             &:focus {

@@ -116,7 +116,14 @@ const NewsFeed = () => {
                     <Post key={item.link}>
                         <Image src={item.thumbnail} />
                         <Content>
-                            <Title>{item.title}</Title>
+                            <Title>
+                                <TextTruncate
+                                    line={2}
+                                    element="div"
+                                    truncateText="…"
+                                    text={item.title}
+                                />
+                            </Title>
                             <Description>
                                 <TextTruncate
                                     line={3}
