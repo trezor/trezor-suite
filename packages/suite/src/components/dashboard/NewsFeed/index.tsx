@@ -58,8 +58,7 @@ const Post = styled.div`
 
 const Image = styled.img`
     width: 100%;
-    height: auto;
-    min-height: 195px;
+    height: 195px;
     border-radius: 3px;
     object-fit: cover;
 `;
