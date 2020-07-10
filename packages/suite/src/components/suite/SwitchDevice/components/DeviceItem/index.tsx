@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
+import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 import { colors, variables, Icon, DeviceImage } from '@trezor/components';
 import { Translation } from '@suite-components';
@@ -109,8 +110,28 @@ const ColEjectHeader = styled(ColHeader)`
     margin: 0px 24px;
 `;
 
+const ANIMATION = {
+    variants: {
+        initial: {
+            overflow: 'hidden',
+            height: 0,
+        },
+        visible: {
+            height: 'auto',
+        },
+    },
+    initial: 'initial',
+    animate: 'visible',
+    exit: 'initial',
+    transition: { duration: 0.15, ease: 'easeInOut' },
+};
+
 const DeviceItem = (props: Props & WrappedComponentProps) => {
+    const [isExpanded, setIsExpanded] = useState(true);
+    const [animateArrow, setAnimateArrow] = useState(false);
+
     const { device, selectedDevice, backgroundRoute } = props;
+
     const deviceStatus = deviceUtils.getStatus(device);
     const isUnknown = device.type !== 'acquired';
     const isSelected = deviceUtils.isSelectedDevice(selectedDevice, device);
@@ -190,54 +211,68 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                         <ExpandIcon
                             usePointerCursor
                             size={24}
-                            icon="ARROW_DOWN"
+                            icon="ARROW_UP"
                             color={colors.NEUE_TYPE_LIGHT_GREY}
-                            onClick={onDeviceSettingsClick}
+                            canAnimate={animateArrow}
+                            isActive={!isExpanded}
+                            onClick={() => {
+                                setIsExpanded(!isExpanded);
+                                setAnimateArrow(true);
+                            }}
                         />
                     </DeviceActions>
                 </DeviceHeader>
             </Device>
-            {!isUnknown && (
-                <WalletsWrapper enabled>
-                    <WalletsTooltips>
-                        <WalletsCount>
-                            <Translation
-                                id="TR_COUNT_WALLETS"
-                                values={{ count: props.instances.length }}
-                            />
-                        </WalletsCount>
-                        <ColRememberHeader
-                            tooltipContent={<Translation id="TR_REMEMBER_ALLOWS_YOU_TO" />}
-                        >
-                            <Translation id="TR_REMEMBER_HEADING" />
-                        </ColRememberHeader>
-                        <ColEjectHeader
-                            tooltipContent={<Translation id="TR_EJECT_WALLET_EXPLANATION" />}
-                        >
-                            <Translation id="TR_EJECT_HEADING" />
-                        </ColEjectHeader>
-                    </WalletsTooltips>
+            <AnimatePresence initial={false}>
+                {!isUnknown && isExpanded && (
+                    <motion.div {...ANIMATION}>
+                        <WalletsWrapper enabled>
+                            <WalletsTooltips>
+                                <WalletsCount>
+                                    <Translation
+                                        id="TR_COUNT_WALLETS"
+                                        values={{ count: props.instances.length }}
+                                    />
+                                </WalletsCount>
+                                <ColRememberHeader
+                                    tooltipContent={<Translation id="TR_REMEMBER_ALLOWS_YOU_TO" />}
+                                >
+                                    <Translation id="TR_REMEMBER_HEADING" />
+                                </ColRememberHeader>
+                                <ColEjectHeader
+                                    tooltipContent={
+                                        <Translation id="TR_EJECT_WALLET_EXPLANATION" />
+                                    }
+                                >
+                                    <Translation id="TR_EJECT_HEADING" />
+                                </ColEjectHeader>
+                            </WalletsTooltips>
 
-                    <InstancesWrapper>
-                        {props.instances.map(instance => (
-                            <StyledWalletInstance
-                                key={`${instance.label}-${instance.instance}-${instance.state}`}
-                                instance={instance}
-                                enabled
-                                selected={deviceUtils.isSelectedInstance(selectedDevice, instance)}
+                            <InstancesWrapper>
+                                {props.instances.map(instance => (
+                                    <StyledWalletInstance
+                                        key={`${instance.label}-${instance.instance}-${instance.state}`}
+                                        instance={instance}
+                                        enabled
+                                        selected={deviceUtils.isSelectedInstance(
+                                            selectedDevice,
+                                            instance,
+                                        )}
+                                        selectDeviceInstance={selectDeviceInstance}
+                                    />
+                                ))}
+                            </InstancesWrapper>
+
+                            <AddWalletButton
+                                device={device}
+                                instances={props.instances}
+                                addDeviceInstance={addDeviceInstance}
                                 selectDeviceInstance={selectDeviceInstance}
                             />
-                        ))}
-                    </InstancesWrapper>
-
-                    <AddWalletButton
-                        device={device}
-                        instances={props.instances}
-                        addDeviceInstance={addDeviceInstance}
-                        selectDeviceInstance={selectDeviceInstance}
-                    />
-                </WalletsWrapper>
-            )}
+                        </WalletsWrapper>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </DeviceWrapper>
     );
 };
