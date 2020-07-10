@@ -20,33 +20,31 @@ storiesOf('Others', module).add('Security Card', () => {
         <Wrapper>
             <StyledSecurityCard
                 description="PIN Set strong PIN number against unauthorized access"
-                variant="primary"
-                heading="Heading of the card"
-                icon="CHECK"
+                variant="disabled"
+                heading="PIN code created succesfully!"
+                icon="WALLET"
+                cta={{ label: 'Set PIN', isPrimary: true }}
             />
             <StyledSecurityCard
                 description="PIN Set strong PIN number against unauthorized access"
                 variant="secondary"
-                heading="heading"
-                icon="CHECK"
+                heading="PIN code created succesfully!"
+                icon="MEDIUM"
+                cta={{ label: 'view something', isPrimary: false }}
             />
             <StyledSecurityCard
                 description="PIN Set strong PIN number against unauthorized access"
                 variant="secondary"
-                heading="heading"
-                icon="CHECK"
+                heading="PIN code created succesfully!"
+                icon="DASHBOARD"
+                cta={{ label: 'Some action', isPrimary: true }}
             />
             <StyledSecurityCard
                 description="PIN Set strong PIN number against unauthorized access"
                 variant="secondary"
-                heading="heading"
-                icon="CHECK"
-            />
-            <StyledSecurityCard
-                description="PIN Set strong PIN number against unauthorized access"
-                variant="secondary"
-                heading="Heading of the card"
-                icon="CHECK"
+                heading="PIN code created succesfully!"
+                icon="EXCHANGE"
+                cta={{ label: 'view something', isPrimary: false }}
             />
         </Wrapper>
     );
