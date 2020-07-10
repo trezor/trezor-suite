@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { colors, Button } from '@trezor/components';
+import { Button, SecurityCard, SecurityCardProps } from '@trezor/components';
 import { Translation } from '@suite-components';
-import SecurityCard, { Props as CardProps } from './components/SecurityCard';
 import { Props } from './Container';
 import { AcquiredDevice } from '@suite-types';
+import Header from '../Header';
 import { useDevice, useDiscovery, useAnalytics } from '@suite-hooks';
 
 const Section = styled.div`
@@ -16,27 +16,6 @@ const Content = styled.div`
     display: grid;
     grid-gap: 20px;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-`;
-
-const Header = styled.div`
-    display: flex;
-    padding: 12px;
-    flex-direction: row;
-    font-size: 12px;
-    align-items: center;
-`;
-
-const Title = styled.div`
-    flex: 1;
-    margin-bottom: 2px;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: ${colors.BLACK50};
-`;
-
-const SectionAction = styled.div`
-    font-weight: 500;
-    color: ${colors.BLACK25};
 `;
 
 const SecurityFeatures = ({
@@ -77,7 +56,7 @@ const SecurityFeatures = ({
         Number(!!discreetModeCompleted) +
         Number(!!hiddenWalletCreated);
 
-    const backupData: CardProps = needsBackup
+    const backupData = needsBackup
         ? {
               variant: 'secondary',
               icon: 'BACKUP',
@@ -110,7 +89,7 @@ const SecurityFeatures = ({
               },
           };
 
-    const pinData: CardProps = !pinEnabled
+    const pinData = !pinEnabled
         ? {
               variant: 'secondary',
               icon: 'PIN',
@@ -144,7 +123,7 @@ const SecurityFeatures = ({
               },
           };
 
-    const hiddenWalletData: CardProps = !hiddenWalletCreated
+    const hiddenWalletData = !hiddenWalletCreated
         ? {
               variant: 'secondary',
               icon: 'WALLET_HIDDEN',
@@ -182,7 +161,7 @@ const SecurityFeatures = ({
               },
           };
 
-    const discreetModeData: CardProps = !discreetModeCompleted
+    const discreetModeData = !discreetModeCompleted
         ? {
               variant: 'secondary',
               icon: 'DISCREET',
@@ -222,18 +201,18 @@ const SecurityFeatures = ({
               },
           };
 
-    const cards = [backupData, pinData, hiddenWalletData, discreetModeData];
+    const cards: SecurityCardProps[] = [backupData, pinData, hiddenWalletData, discreetModeData];
 
     return (
         <Section {...rest}>
-            <Header>
-                <Title>
+            <Header
+                left={
                     <Translation
                         id="TR_SECURITY_FEATURES_COMPLETED_N"
                         values={{ n: featuresCompleted, m: 4 }}
                     />
-                </Title>
-                <SectionAction>
+                }
+                right={
                     <Button
                         variant="tertiary"
                         icon={isHidden ? 'ARROW_DOWN' : 'ARROW_UP'}
@@ -247,14 +226,13 @@ const SecurityFeatures = ({
                             <Translation id="TR_HIDE_BUTTON" />
                         )}
                     </Button>
-                </SectionAction>
-            </Header>
+                }
+            />
             <Content>
                 {!isHidden &&
-                    cards.map((card, i) => (
+                    cards.map(card => (
                         <SecurityCard
-                            // eslint-disable-next-line react/no-array-index-key
-                            key={i}
+                            key={`${card.heading}-${card.variant}`}
                             variant={isDisabled ? 'disabled' : card.variant}
                             icon={card.icon}
                             heading={card.heading}

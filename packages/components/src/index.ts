@@ -72,4 +72,6 @@ export {
     BoxProps,
     Card,
     CardProps,
+    SecurityCard,
+    SecurityCardProps,
 };

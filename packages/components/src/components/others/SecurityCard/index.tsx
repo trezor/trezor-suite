@@ -71,8 +71,6 @@ const Line = styled.div`
     border-top: 1px solid ${colors.NEUE_STROKE_GREY};
 `;
 
-const Done = styled.div``;
-
 export interface Props extends CardProps {
     variant: 'primary' | 'secondary' | 'disabled';
     icon: IconProps['icon'];
@@ -91,17 +89,28 @@ const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Pro
     <Wrapper>
         <Header>
             <Circle>
-                <Icon
-                    icon={icon}
-                    size={25}
-                    color={variant === 'primary' ? colors.WHITE : colors.BLACK0}
-                />
+                <Icon icon={icon} size={25} color={colors.NEUE_TYPE_DARK_GREY} />
             </Circle>
         </Header>
         <StyledCard noPadding {...rest}>
             <Title>{heading}</Title>
-            {cta && cta.isPrimary && <Description>{description}</Description>}
-            {cta && cta.isPrimary && (
+            {variant === 'primary' && <Description>{description}</Description>}
+            {cta && variant === 'primary' && (
+                 <SecondaryAction>
+                    <Line />
+                    <Button
+                        variant="tertiary"
+                        isDisabled={cta.isDisabled}
+                        onClick={cta.action}
+                        icon="ARROW_RIGHT"
+                        alignIcon="right"
+                        {...(cta.dataTest
+                            ? { 'data-test': `@dashboard/security-card/${cta.dataTest}/button` }
+                            : {})}
+                    >
+                        {cta.label}
+                    </Button>
+                </SecondaryAction>
                 <PrimaryAction>
                     <Button
                         fullWidth
@@ -116,7 +125,7 @@ const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Pro
                     </Button>
                 </PrimaryAction>
             )}
-            {cta && !cta.isPrimary && (
+            {cta && variant !== 'primary' && (
                 <SecondaryAction>
                     <Line />
                     <Button
