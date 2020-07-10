@@ -23,7 +23,7 @@ const Content = styled.div`
     padding: 10px;
 `;
 
-const Row = ({ state, children, className }: Props) => {
+const Box = ({ state, children, className }: Props) => {
     return (
         <Wrapper state={state} className={className}>
             <Content>{children}</Content>
@@ -31,4 +31,4 @@ const Row = ({ state, children, className }: Props) => {
     );
 };
 
-export { Row, Props as RowProps };
+export { Box, Props as BoxProps };
