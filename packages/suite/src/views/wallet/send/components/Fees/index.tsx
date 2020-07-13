@@ -7,12 +7,14 @@ import EstimatedMiningTime from '../EstimatedMiningTime';
 import { buildFeeOptions, getFeeUnits } from '@wallet-utils/sendFormUtils';
 import { FeeLevel } from 'trezor-connect';
 import CustomFee from './components/CustomFee';
+import EthFees from './components/EthFees';
 import { useSendFormContext } from '@wallet-hooks';
 
 const StyledCard = styled(Card)`
     display: flex;
     flex-direction: column;
     margin-bottom: 25px;
+    padding: 0;
 `;
 
 const Top = styled.div`
@@ -87,61 +89,62 @@ export default () => {
 
     return (
         <StyledCard>
-            <Top>
-                <Left>
-                    <SelectBar
-                        label={<Translation id="TR_FEE" />}
-                        selectedOption={selectedFee.label}
-                        options={buildFeeOptions(levels)}
-                        onChange={(value: FeeLevel['label']) => {
-                            const selectedFeeForUpdate = levels.find(
-                                level => level.label === value,
-                            );
-                            if (selectedFeeForUpdate) {
-                                if (selectedFeeForUpdate.label === 'custom') {
-                                    const { feePerUnit } = selectedFee;
-                                    selectedFeeForUpdate.feePerUnit = feePerUnit;
-                                    setValue('customFee', feePerUnit);
+            {networkType === 'ethereum' && <EthFees />}
+            {networkType !== 'ethereum' && (
+                <Top>
+                    <Left>
+                        <SelectBar
+                            label={<Translation id="TR_FEE" />}
+                            selectedOption={selectedFee.label}
+                            options={buildFeeOptions(levels)}
+                            onChange={(value: FeeLevel['label']) => {
+                                const selectedFeeForUpdate = levels.find(
+                                    level => level.label === value,
+                                );
+                                if (selectedFeeForUpdate) {
+                                    if (selectedFeeForUpdate.label === 'custom') {
+                                        const { feePerUnit } = selectedFee;
+                                        selectedFeeForUpdate.feePerUnit = feePerUnit;
+                                        setValue('customFee', feePerUnit);
+                                    }
+                                    updateContext({ selectedFee: selectedFeeForUpdate });
                                 }
-                                updateContext({ selectedFee: selectedFeeForUpdate });
-                            }
-                        }}
-                    />
-                    <FeeInfo>
-                        {networkType === 'bitcoin' && selectedFee.label !== 'custom' && (
-                            <EstimatedMiningTimeWrapper>
-                                <EstimatedMiningTime
-                                    seconds={feeInfo.blockTime * selectedFee.blocks * 60}
-                                />
-                            </EstimatedMiningTimeWrapper>
-                        )}
-                        {networkType !== 'ethereum' && (
+                            }}
+                        />
+                        <FeeInfo>
+                            {networkType === 'bitcoin' && selectedFee.label !== 'custom' && (
+                                <EstimatedMiningTimeWrapper>
+                                    <EstimatedMiningTime
+                                        seconds={feeInfo.blockTime * selectedFee.blocks * 60}
+                                    />
+                                </EstimatedMiningTimeWrapper>
+                            )}
                             <FeeUnits>
                                 {selectedFee.feePerUnit} {getFeeUnits(networkType).label}
                             </FeeUnits>
+                        </FeeInfo>
+                    </Left>
+                    <Middle>
+                        <CustomFee isVisible={selectedFee.label === 'custom'} />
+                    </Middle>
+                    <Right>
+                        {transactionInfo && (
+                            <RightContent>
+                                <CoinAmount>
+                                    {formatNetworkAmount(transactionInfo.fee, symbol)}
+                                    <Label>{symbol}</Label>
+                                </CoinAmount>
+                                <FiatAmount>
+                                    <FiatValue
+                                        amount={formatNetworkAmount(transactionInfo.fee, symbol)}
+                                        symbol={symbol}
+                                    />
+                                </FiatAmount>
+                            </RightContent>
                         )}
-                    </FeeInfo>
-                </Left>
-                <Middle>
-                    <CustomFee isVisible={selectedFee.label === 'custom'} />
-                </Middle>
-                <Right>
-                    {transactionInfo && (
-                        <RightContent>
-                            <CoinAmount>
-                                {formatNetworkAmount(transactionInfo.fee, symbol)}
-                                <Label>{symbol}</Label>
-                            </CoinAmount>
-                            <FiatAmount>
-                                <FiatValue
-                                    amount={formatNetworkAmount(transactionInfo.fee, symbol)}
-                                    symbol={symbol}
-                                />
-                            </FiatAmount>
-                        </RightContent>
-                    )}
-                </Right>
-            </Top>
+                    </Right>
+                </Top>
+            )}
         </StyledCard>
     );
 };

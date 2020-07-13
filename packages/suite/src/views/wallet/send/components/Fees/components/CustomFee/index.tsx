@@ -37,7 +37,7 @@ export default ({ isVisible }: { isVisible: boolean }) => {
                 }}
                 innerRef={register({
                     validate: {
-                        notSet: (value: string) => {
+                        error: (value: string) => {
                             if (!value) {
                                 return <Translation id="TR_CUSTOM_FEE_IS_NOT_SET" />;
                             }

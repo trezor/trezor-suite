@@ -22,33 +22,35 @@ const StyledIcon = styled(Icon)`
 
 export default () => {
     const {
-        initialSelectedFee,
-        // setSelectedFee,
-        // setTransactionInfo,
-        outputs,
         account,
+        initialSelectedFee,
+        setSelectedFee,
         fiatRates,
         token,
+        outputs,
+        setTransactionInfo,
         register,
         errors,
         getValues,
-        setError,
         setValue,
+        setError,
         clearError,
     } = useSendFormContext();
-    const inputName = 'ethereumGasPrice';
+    const { networkType } = account;
+    const inputName = 'ethereumGasLimit';
+    const ethData = getValues('ethereumData');
     const error = errors[inputName];
 
     return (
         <Input
-            variant="small"
             name={inputName}
+            isDisabled={networkType === 'ethereum' && ethData}
             state={getInputState(error)}
             onChange={async event => {
                 if (!error) {
+                    const gasPrice = getValues('ethereumGasPrice');
+                    const gasLimit = event.target.value;
                     const isMaxActive = getValues('setMax[0]') === 'active';
-                    const gasPrice = event.target.value;
-                    const gasLimit = getValues('ethereumGasLimit');
                     const newFeeLevel: SendContext['selectedFee'] = {
                         feePerUnit: gasPrice,
                         feeLimit: gasLimit,
@@ -75,17 +77,27 @@ export default () => {
                     }
                 }
             }}
+            innerRef={register({
+                validate: {
+                    error: (value: string) => {
+                        if (value && !validator.isNumeric(value)) {
+                            return <Translation id="TR_ETH_GAS_LIMIT_NOT_NUMBER" />;
+                        }
+                    },
+                },
+            })}
+            bottomText={error && error.message}
             topLabel={
                 <Label>
                     <Text>
-                        <Translation id="TR_GAS_PRICE" />
+                        <Translation id="TR_GAS_LIMIT" />
                     </Text>
                     <Tooltip
                         placement="top"
                         content={
                             <Translation
-                                id="TR_SEND_GAS_PRICE_TOOLTIP"
-                                values={{ defaultGasPrice: initialSelectedFee.feePerUnit }}
+                                id="TR_SEND_GAS_LIMIT_TOOLTIP"
+                                values={{ defaultGasLimit: initialSelectedFee.feeLimit }}
                             />
                         }
                     >
@@ -93,16 +105,6 @@ export default () => {
                     </Tooltip>
                 </Label>
             }
-            bottomText={error && error.message}
-            innerRef={register({
-                validate: {
-                    gasPriceNotNumber: (value: string) => {
-                        if (value && !validator.isNumeric(value)) {
-                            return <Translation id="TR_ETH_GAS_PRICE_NOT_NUMBER" />;
-                        }
-                    },
-                },
-            })}
         />
     );
 };

@@ -11,6 +11,7 @@ const StyledCard = styled(Card)`
     justify-items: space-between;
     align-items: center;
     min-height: 86px;
+    padding: 0 42px;
 `;
 
 const Left = styled.div`

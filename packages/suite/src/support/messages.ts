@@ -3515,6 +3515,10 @@ const definedMessages = defineMessages({
         id: 'TR_CONFIRM_ON_TREZOR',
         defaultMessage: 'Confirm on Trezor',
     },
+    TR_FEE_ETH_EXPLANATION: {
+        id: 'TR_FEE_ETH_EXPLANATION',
+        defaultMessage: 'Gas Limit * Gas Price',
+    },
 } as const);
 
 export default definedMessages;
