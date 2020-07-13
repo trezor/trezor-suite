@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import AddRecipient from '../AddRecipient';
+import AddRecipient from './components/AddRecipient';
+import DestinationTag from './components/DestinationTag';
+import AddData from './components/AddData';
 import { colors } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
 
@@ -34,7 +36,10 @@ export default () => {
         <Wrapper>
             <Line />
             <Content>
-                <Left />
+                <Left>
+                    {networkType === 'ripple' && <DestinationTag />}
+                    {networkType === 'ethereum' && <AddData />}
+                </Left>
                 <Right>{networkType === 'bitcoin' && <AddRecipient />}</Right>
             </Content>
         </Wrapper>

@@ -3519,6 +3519,14 @@ const definedMessages = defineMessages({
         id: 'TR_FEE_ETH_EXPLANATION',
         defaultMessage: 'Gas Limit * Gas Price',
     },
+    TR_ETH_ADD_DATA: {
+        id: 'TR_ETH_ADD_DATA',
+        defaultMessage: 'Add Data',
+    },
+    TR_ADD_LABEL: {
+        id: 'TR_ADD_LABEL',
+        defaultMessage: 'Add Label',
+    },
 } as const);
 
 export default definedMessages;
