@@ -20,13 +20,14 @@ const Wrapper = styled.div`
     }
 `;
 
-const Col = styled.div`
+const Col = styled.div<{ cancelable?: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 348px;
     height: 100%;
-    padding: 40px 40px 20px 40px;
+    /* no vertical padding if the modal is used as inner modal (eg. inside Recovery) */
+    padding: ${props => (!props.cancelable ? '0px 40px' : '40px 40px 20px 40px')};
 
     @media only screen and (max-width: ${SCREEN_SIZE.MD}) {
         align-self: center;
@@ -125,12 +126,13 @@ const ExplanationCol = (props: { heading: React.ReactNode; description?: React.R
 
 interface OwnProps extends ModalProps {
     device: TrezorDevice;
+    cancelable?: boolean;
     onCancel: () => void;
 }
 
 type Props = OwnProps;
 
-const Pin = ({ device, ...rest }: Props) => {
+const Pin = ({ device, cancelable, ...rest }: Props) => {
     const [submitted, setSubmitted] = useState(false);
     const { onPinSubmit } = useActions({ onPinSubmit: modalActions.onPinSubmit });
 
@@ -168,7 +170,12 @@ const Pin = ({ device, ...rest }: Props) => {
 
     // TODO: figure out responsive design
     return (
-        <Modal padding={['0px', '0px', '0px', '0px']} useFixedWidth={false} cancelable {...rest}>
+        <Modal
+            padding={['0px', '0px', '0px', '0px']}
+            useFixedWidth={false}
+            cancelable={cancelable}
+            {...rest}
+        >
             <Wrapper>
                 {isExtended && (
                     <ExplanationCol
@@ -186,7 +193,7 @@ const Pin = ({ device, ...rest }: Props) => {
                         }
                     />
                 )}
-                <Col>
+                <Col cancelable={cancelable}>
                     <H2>
                         <Translation
                             id="TR_ENTER_PIN"
