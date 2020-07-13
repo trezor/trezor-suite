@@ -1,8 +1,12 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { CardProps, Card, colors, variables, IconProps, Icon, Button } from '../../../index';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+    display: flex;
+    border: 1px solid lime;
+    flex-direction: column;
+`;
 
 const StyledCard = styled(Card)`
     display: flex;
@@ -15,9 +19,11 @@ const StyledCard = styled(Card)`
 
 const Header = styled.div`
     display: flex;
+    border: 1px solid blue;
+    width: 100%;
+    min-height: 60px;
+    margin-bottom: -54px;
     justify-content: center;
-    align-items: center;
-    margin-bottom: -52px;
 `;
 
 const Circle = styled.div`
@@ -37,6 +43,7 @@ const Title = styled.div`
     color: ${colors.NEUE_TYPE_DARK_GREY};
     width: 200px;
     margin-top: 30px;
+    min-height: 44px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
     text-align: center;
@@ -47,6 +54,7 @@ const Description = styled.div`
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
     text-align: center;
     width: 200px;
+    min-height: 40px;
     margin-top: 7px;
     margin-bottom: 14px;
 `;
@@ -77,7 +85,6 @@ export interface Props extends CardProps {
     heading: React.ReactNode;
     description?: React.ReactNode;
     cta?: {
-        isPrimary: boolean;
         label: React.ReactNode;
         action?: () => void;
         dataTest?: string;
@@ -96,21 +103,6 @@ const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Pro
             <Title>{heading}</Title>
             {variant === 'primary' && <Description>{description}</Description>}
             {cta && variant === 'primary' && (
-                 <SecondaryAction>
-                    <Line />
-                    <Button
-                        variant="tertiary"
-                        isDisabled={cta.isDisabled}
-                        onClick={cta.action}
-                        icon="ARROW_RIGHT"
-                        alignIcon="right"
-                        {...(cta.dataTest
-                            ? { 'data-test': `@dashboard/security-card/${cta.dataTest}/button` }
-                            : {})}
-                    >
-                        {cta.label}
-                    </Button>
-                </SecondaryAction>
                 <PrimaryAction>
                     <Button
                         fullWidth
@@ -125,7 +117,7 @@ const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Pro
                     </Button>
                 </PrimaryAction>
             )}
-            {cta && variant !== 'primary' && (
+            {cta && variant === 'secondary' && (
                 <SecondaryAction>
                     <Line />
                     <Button
