@@ -132,4 +132,7 @@ export const ICONS: IconType[] = [
     'PDF',
     'CSV',
     'MEDIUM',
+    'TAG',
+    'GAS',
+    'DATA',
 ];

@@ -70,4 +70,7 @@ export const ICONS = {
     PDF: require('../../images/icons/pdf.svg'),
     CSV: require('../../images/icons/csv.svg'),
     MEDIUM: require('../../images/icons/medium.svg'),
+    GAS: require('../../images/icons/gas.svg'),
+    TAG: require('../../images/icons/tag.svg'),
+    DATA: require('../../images/icons/data.svg'),
 };
