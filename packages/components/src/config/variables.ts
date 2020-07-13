@@ -135,4 +135,7 @@ export const ICONS: IconType[] = [
     'TAG',
     'GAS',
     'DATA',
+    'BANK',
+    'BUY',
+    'CREDIT_CARD',
 ];

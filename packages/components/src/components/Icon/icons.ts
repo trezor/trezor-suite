@@ -73,4 +73,7 @@ export const ICONS = {
     GAS: require('../../images/icons/gas.svg'),
     TAG: require('../../images/icons/tag.svg'),
     DATA: require('../../images/icons/data.svg'),
+    BANK: require('../../images/icons/bank.svg'),
+    BUY: require('../../images/icons/buy.svg'),
+    CREDIT_CARD: require('../../images/icons/credit_card.svg'),
 };
