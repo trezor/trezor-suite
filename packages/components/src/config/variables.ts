@@ -92,6 +92,7 @@ export const ICONS: IconType[] = [
     'SEND',
     'SETTINGS',
     'SIGN',
+    'SIGNATURE',
     'SORT',
     'SUPPORT',
     'TIPS',

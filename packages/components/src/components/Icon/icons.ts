@@ -30,6 +30,7 @@ export const ICONS = {
     SEND: require('../../images/icons/send.svg'),
     SETTINGS: require('../../images/icons/settings.svg'),
     SIGN: require('../../images/icons/sign.svg'),
+    SIGNATURE: require('../../images/icons/signature.svg'),
     SORT: require('../../images/icons/sort.svg'),
     SUPPORT: require('../../images/icons/support.svg'),
     TIPS: require('../../images/icons/tips.svg'),
