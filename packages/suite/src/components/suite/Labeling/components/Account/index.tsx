@@ -1,10 +1,15 @@
 import React from 'react';
+import styled from 'styled-components';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import * as deviceUtils from '@suite-utils/device';
 import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
 import { Props } from './Container';
 import WalletLabel from '../Wallet/Container';
+
+const TabularNums = styled.span`
+    font-variant-numeric: tabular-nums;
+`;
 
 export default (props: Props) => {
     const { device, labeling } = props;
@@ -49,11 +54,11 @@ export default (props: Props) => {
                         device={accountDevice}
                         useDeviceLabel={!deviceUtils.isSelectedDevice(device, accountDevice)}
                     />{' '}
-                    {accountLabel}
+                    <TabularNums>{accountLabel}</TabularNums>
                 </>
             );
         }
     }
 
-    return accountLabel;
+    return <TabularNums>{accountLabel}</TabularNums>;
 };
