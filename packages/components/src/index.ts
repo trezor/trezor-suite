@@ -34,7 +34,6 @@ export {
     Dropdown,
     DropdownProps,
     Input,
-    ConfirmOnTrezor,
     InputProps,
     Textarea,
     TextareaProps,
