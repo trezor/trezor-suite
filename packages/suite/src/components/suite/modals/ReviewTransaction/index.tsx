@@ -1,6 +1,6 @@
-import { AccountLabeling, FiatValue, Translation } from '@suite-components';
+import { FiatValue, Translation } from '@suite-components';
 import { useDevice } from '@suite-hooks';
-import { Button, colors, Modal, variables } from '@trezor/components';
+import { colors, Modal, variables, ConfirmOnDevice, Row } from '@trezor/components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getFee } from '@wallet-utils/sendFormUtils';
 import React from 'react';
@@ -8,38 +8,26 @@ import styled from 'styled-components';
 
 import { Props } from './Container';
 
-const Box = styled.div`
-    height: 46px;
-    border-radius: 3px;
-    border: solid 2px ${colors.BLACK96};
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    margin-bottom: 10px;
+const StyledRow = styled(Row)`
+    justify-content: space-between;
+    margin-bottom: 20px;
 `;
 
-const Symbol = styled.div`
-    margin-right: 4px;
+const Left = styled.div`
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
 `;
 
-const Label = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    min-width: 80px;
-    color: ${colors.BLACK50};
-    font-size: ${variables.FONT_SIZE.TINY};
-`;
+const Right = styled.div``;
 
-const Value = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    align-items: center;
-    flex: 1;
+const Bottom = styled.div`
+    justify-content: space-between;
+    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
 `;
 
 const Content = styled.div`
-    margin-top: 16px;
+    padding: 20px;
 `;
 
 const OutputWrapper = styled.div`
@@ -47,29 +35,33 @@ const OutputWrapper = styled.div`
     border-radius: 3px;
 `;
 
-const Buttons = styled.div`
+const Coin = styled.div`
     display: flex;
-    width: 100%;
-    margin-top: 24px;
-    justify-content: space-between;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+    padding-bottom: 6px;
 `;
 
-const FiatValueWrapper = styled.div`
-    margin-left: 10px;
+const Symbol = styled.div`
+    text-transform: uppercase;
+    padding-left: 4px;
+`;
+
+const Fiat = styled.div`
     display: flex;
-    flex: 1;
-    justify-content: flex-end;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
 `;
 
 export default ({
     modalActions,
     selectedAccount,
-    getValues,
     token,
     outputs,
     transactionInfo,
     device,
-    send,
 }: Props) => {
     if (
         selectedAccount.status !== 'loaded' ||
@@ -78,10 +70,11 @@ export default ({
         transactionInfo.type === 'error'
     )
         return null;
+
     const { account } = selectedAccount;
     const { networkType, symbol } = account;
     const upperCaseSymbol = account.symbol.toUpperCase();
-    const outputSymbol = token ? token.symbol!.toUpperCase() : symbol.toUpperCase();
+    // const outputSymbol = token ? token.symbol!.toUpperCase() : symbol.toUpperCase();
     const { isLocked } = useDevice();
     const isDeviceLocked = isLocked();
     const fee = getFee(transactionInfo, networkType, symbol);
@@ -90,88 +83,74 @@ export default ({
         <Modal
             size="large"
             cancelable
-            onCancel={!isDeviceLocked ? modalActions.onCancel : () => {}}
-            heading={<Translation id="TR_MODAL_CONFIRM_TX_TITLE" />}
+            padding={['20px', '0', '20px', '0']}
+            header={
+                <ConfirmOnDevice
+                    title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
+                    steps={outputs.length}
+                    trezorModel={device.features?.major_version === 1 ? 1 : 2}
+                    successText={<Translation id="TR_CONFIRMED_TX" />}
+                    onCancel={!isDeviceLocked ? modalActions.onCancel : () => {}}
+                />
+            }
             bottomBar={
-                <Buttons>
-                    <Button
-                        icon="ARROW_LEFT"
-                        variant="secondary"
-                        isDisabled={isDeviceLocked}
-                        onClick={() => modalActions.onCancel()}
-                    >
-                        <Translation id="TR_EDIT" />
-                    </Button>
-                    <Button isDisabled={isDeviceLocked} onClick={() => send()}>
-                        <Translation id="TR_MODAL_CONFIRM_TX_BUTTON" />
-                    </Button>
-                </Buttons>
+                <Bottom>
+                    <Left>
+                        <Translation id="TR_TOTAL_SYMBOL" values={{ symbol: upperCaseSymbol }} />
+                    </Left>
+                    <Right>
+                        <Coin>
+                            {/* @ts-ignore */}
+                            {formatNetworkAmount(transactionInfo.totalSent, symbol)}
+                            <Symbol>{symbol}</Symbol>
+                        </Coin>
+                        <Fiat>
+                            <FiatValue
+                                // @ts-ignore
+                                amount={formatNetworkAmount(transactionInfo.totalSent, symbol)}
+                                symbol={symbol}
+                            />
+                        </Fiat>
+                    </Right>
+                </Bottom>
             }
         >
             <Content>
-                <Box>
-                    <Label>
-                        <Translation id="TR_ADDRESS_FROM" />
-                    </Label>
-                    <Value>
-                        <Symbol>{upperCaseSymbol}</Symbol> <AccountLabeling account={account} />
-                    </Value>
-                </Box>
                 {outputs.map((output, index) => (
                     <OutputWrapper key={output.id}>
-                        <Box>
-                            <Label>
-                                <Translation id="TR_TO" />
-                            </Label>
-                            <Value>{getValues(`address[${index}]`)}</Value>
-                        </Box>
-                        <Box>
-                            <Label>
-                                <Translation id="TR_AMOUNT" />
-                            </Label>
-                            <Value>
-                                {getValues(`amount[${output.id}]`)} {outputSymbol}
-                                <FiatValueWrapper>
+                        <StyledRow>
+                            <Left>address</Left>
+                            <Right>
+                                <Coin>
+                                    {/* @ts-ignore */}
+                                    {formatNetworkAmount(output.amount, symbol)}
+                                    <Symbol>{symbol}</Symbol>
+                                </Coin>
+                                <Fiat>
                                     <FiatValue
-                                        amount={getValues(`amount[${output.id}]`)}
+                                        // @ts-ignore
+                                        amount={formatNetworkAmount(output.amount, symbol)}
                                         symbol={symbol}
-                                        badge={{ color: 'gray' }}
                                     />
-                                </FiatValueWrapper>
-                            </Value>
-                        </Box>
+                                </Fiat>
+                            </Right>
+                        </StyledRow>
                     </OutputWrapper>
                 ))}
-                <Box>
-                    <Label>
-                        {networkType === 'ethereum' ? (
-                            <Translation id="TR_GAS_PRICE" />
-                        ) : (
-                            <Translation id="TR_INCLUDING_FEE" />
-                        )}
-                    </Label>
-                    <Value>
-                        {fee} {outputSymbol}
-                        <FiatValueWrapper>
-                            <FiatValue amount={fee} symbol={symbol} badge={{ color: 'gray' }} />
-                        </FiatValueWrapper>
-                    </Value>
-                </Box>
-                <Box>
-                    <Label>
-                        <Translation id="TR_TOTAL_AMOUNT" />
-                    </Label>
-                    <Value>
-                        {formatNetworkAmount(transactionInfo.totalSpent, symbol)} {outputSymbol}
-                        <FiatValueWrapper>
-                            <FiatValue
-                                amount={formatNetworkAmount(transactionInfo.totalSpent, symbol)}
-                                symbol={symbol}
-                                badge={{ color: 'gray' }}
-                            />
-                        </FiatValueWrapper>
-                    </Value>
-                </Box>
+                <StyledRow>
+                    <Left>
+                        <Translation id="TR_FEE" />
+                    </Left>
+                    <Right>
+                        <Coin>
+                            {fee}
+                            <Symbol>{symbol}</Symbol>
+                        </Coin>
+                        <Fiat>
+                            <FiatValue amount={fee} symbol={symbol} />
+                        </Fiat>
+                    </Right>
+                </StyledRow>
             </Content>
         </Modal>
     );

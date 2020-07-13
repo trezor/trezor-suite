@@ -3503,9 +3503,17 @@ const definedMessages = defineMessages({
         id: 'TR_TOTAL_SENT',
         defaultMessage: 'Total Sent',
     },
+    TR_TOTAL_SYMBOL: {
+        id: 'TR_TOTAL_SYMBOL',
+        defaultMessage: 'Total {symbol}',
+    },
     TR_OPEN_IN_MEDIUM: {
         id: 'TR_OPEN_IN_MEDIUM',
         defaultMessage: 'Open in Medium',
+    },
+    TR_CONFIRM_ON_TREZOR: {
+        id: 'TR_CONFIRM_ON_TREZOR',
+        defaultMessage: 'Confirm on Trezor',
     },
 } as const);
 
