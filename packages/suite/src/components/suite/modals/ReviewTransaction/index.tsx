@@ -1,4 +1,4 @@
-import { AccountLabeling, FiatValue, Translation } from '@suite-components';
+import { AccountLabeling, FiatValue, Translation, FormattedCryptoAmount } from '@suite-components';
 import { useDevice } from '@suite-hooks';
 import { Button, colors, Modal, variables } from '@trezor/components';
 import { Account } from '@wallet-types';
@@ -39,6 +39,7 @@ const Value = styled.div`
     font-size: ${variables.FONT_SIZE.NORMAL};
     align-items: center;
     flex: 1;
+    font-variant-numeric: tabular-nums;
 `;
 
 const Content = styled.div`
@@ -162,7 +163,10 @@ export default ({
                                     <Translation id="TR_TOTAL_AMOUNT" />
                                 </Label>
                                 <Value>
-                                    {totalAmount} {outputSymbol}
+                                    <FormattedCryptoAmount
+                                        value={totalAmount}
+                                        symbol={outputSymbol}
+                                    />
                                     <FiatValueWrapper>
                                         <FiatValue
                                             amount={totalAmount}
@@ -184,7 +188,7 @@ export default ({
                         )}
                     </Label>
                     <Value>
-                        {fee} {outputSymbol}
+                        <FormattedCryptoAmount value={fee} symbol={outputSymbol} />
                         <FiatValueWrapper>
                             <FiatValue amount={fee} symbol={symbol} badge={{ color: 'gray' }} />
                         </FiatValueWrapper>

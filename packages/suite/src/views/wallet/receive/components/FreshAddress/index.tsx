@@ -96,7 +96,7 @@ const FreshAddress = ({
                 <AddressLabel>
                     <Translation id={addressLabel} />
                 </AddressLabel>
-                <StyledInput variant="small" isDisabled value={addressValue} />
+                <StyledInput variant="small" monospace isDisabled value={addressValue} />
             </AddressContainer>
             <StyledButton
                 data-test="@wallet/receive/reveal-address-button"
