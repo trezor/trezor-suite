@@ -95,15 +95,14 @@ const Wrapper = styled.div<Props>`
     justify-content: flex-start;
 `;
 
-const TopLabel = styled.span`
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    padding: 0 0 10px 0;
+const Label = styled.span`
+    min-height: 32px;
 `;
 
 interface Props extends Omit<SelectProps, 'components'> {
     withDropdownIndicator?: boolean;
     isClean?: boolean;
-    topLabel?: React.ReactNode;
+    label?: React.ReactNode;
     wrapperProps?: Record<string, any>;
     variant?: InputVariant;
 }
@@ -114,7 +113,7 @@ const Select = ({
     className,
     wrapperProps,
     isClean = false,
-    topLabel,
+    label,
     width,
     variant = 'large',
     ...props
@@ -147,7 +146,7 @@ const Select = ({
 
     return (
         <Wrapper className={className} width={width} {...wrapperProps}>
-            {topLabel && <TopLabel>{topLabel}</TopLabel>}
+            <Label>{label}</Label>
             <ReactSelect
                 styles={selectStyle(isSearchable, withDropdownIndicator, variant, isClean)}
                 isSearchable={isSearchable}

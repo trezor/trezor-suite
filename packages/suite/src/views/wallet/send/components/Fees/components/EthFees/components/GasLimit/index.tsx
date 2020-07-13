@@ -33,6 +33,7 @@ export default () => {
         errors,
         getValues,
         setValue,
+        selectedFee,
         setError,
         clearError,
     } = useSendFormContext();
@@ -87,7 +88,7 @@ export default () => {
                 },
             })}
             bottomText={error && error.message}
-            topLabel={
+            label={
                 <Label>
                     <Text>
                         <Translation id="TR_GAS_LIMIT" />

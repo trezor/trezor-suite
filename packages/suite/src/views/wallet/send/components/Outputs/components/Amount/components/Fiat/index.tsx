@@ -94,7 +94,9 @@ export default ({ outputId }: { outputId: number }) => {
                         if (!value || value.length === 0) {
                             return 'TR_AMOUNT_IS_NOT_SET';
                         }
+
                         const amountBig = new BigNumber(value);
+
                         if (amountBig.isNaN()) {
                             return 'TR_AMOUNT_IS_NOT_NUMBER';
                         }

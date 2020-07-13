@@ -16,10 +16,15 @@ const Active = styled.div`
     justify-content: space-between;
 `;
 
-const Left = styled.div``;
+const Left = styled.div`
+    display: flex;
+    flex: 1;
+`;
 
 const Right = styled.div`
     display: flex;
+    flex: 1;
+    justify-content: flex-end;
 `;
 
 export default () => {

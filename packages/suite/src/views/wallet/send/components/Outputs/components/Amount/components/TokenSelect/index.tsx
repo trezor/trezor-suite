@@ -3,16 +3,13 @@ import styled from 'styled-components';
 import { Select } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { TokenInfo } from 'trezor-connect';
-import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { useSendFormContext } from '@wallet-hooks';
 
 const Wrapper = styled.div`
     min-width: 110px;
 `;
 
-const CurrencySelect = styled(Select)`
-    margin-top: ${LABEL_HEIGHT}px;
-`;
+const CurrencySelect = styled(Select)``;
 
 interface Option {
     value?: TokenInfo;

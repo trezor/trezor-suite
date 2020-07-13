@@ -10,6 +10,8 @@ const SubHeading = styled.h4`
     margin: 10px 0;
 `;
 
+const Label = styled.div``;
+
 const SELECT_OPTIONS = [
     {
         label: 'Option one',
@@ -69,45 +71,38 @@ storiesOf('Form', module).add(
                         }}
                     />
                     <SubHeading>With label &amp; bottom text</SubHeading>
-                    <Input
-                        value="Input label"
-                        dataTest="input-label"
-                        topLabel="Label"
-                        bottomText="bottom text"
-                    />
+                    <Input value="Input label" dataTest="input-label" bottomText="bottom text" />
                     <Input
                         variant="small"
                         value="Small input label"
                         dataTest="input-small-label"
-                        topLabel="Label"
                         bottomText="bottom text"
                     />
                     <Input
                         state="error"
                         value="Input label with error"
                         dataTest="input-error-label"
-                        topLabel="Label"
                         bottomText="bottom text"
                     />
                     <Input
                         state="warning"
                         value="Input label with warning"
                         dataTest="input-warning-label"
-                        topLabel="Label"
                         bottomText="bottom text"
                     />
                     <Input
                         state="success"
                         value="Input label with success"
                         dataTest="input-success-label"
-                        topLabel="Label"
                         bottomText="bottom text"
+                        label={<Label>Action</Label>}
+                        labelAddon={<Label>Action</Label>}
                     />
                     <Input
                         disabled
                         value="Disabled input label"
                         dataTest="input-disabled-label"
-                        topLabel="Label"
+                        label={<Label>label</Label>}
                         bottomText="bottom text"
                     />
                 </StoryColumn>

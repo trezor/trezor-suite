@@ -1,16 +1,3 @@
-export const VALIDATION_ERRORS = {
-    IS_EMPTY: 'is-empty',
-    NOT_ENOUGH: 'not-enough',
-    NOT_VALID: 'not-valid',
-    NOT_NUMBER: 'not-number',
-    NOT_HEX: 'not-hex',
-    NOT_IN_RANGE: 'not-in-range',
-    NOT_IN_RANGE_DECIMALS: 'not-in-range-decimals',
-    XRP_CANNOT_SEND_TO_MYSELF: 'xrp-cannot-send-to-myself',
-    XRP_CANNOT_SEND_LESS_THAN_RESERVE: 'xrp-cannot-send-less-than-reserve',
-    NOT_ENOUGH_CURRENCY_FEE: 'not-enough-currency-fee',
-} as const;
-
 export const CUSTOM_FEE = 'custom' as const;
 export const FIRST_OUTPUT_ID = 0;
 export const BTC_LOCKTIME_SEQUENCE = 0xffffffff - 1;
@@ -25,9 +12,6 @@ export const ZEC_SIGN_ENHANCEMENT = {
     versionGroupId: 0x892f2085,
     branchId: 0x2bb40e60,
 };
-
-// UI
-export const LABEL_HEIGHT = 32;
 
 export const ERC20_TRANSFER = 'a9059cbb'; // 4 bytes function signature of solidity erc20 `transfer(address,uint256)`
 export const ERC20_GAS_LIMIT = '200000';

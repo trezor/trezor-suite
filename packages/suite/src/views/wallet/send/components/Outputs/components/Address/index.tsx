@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input, colors, variables, Icon } from '@trezor/components';
+import { Input, colors, variables, Icon, Button } from '@trezor/components';
 import { FormattedPlural } from 'react-intl';
 
 import * as modalActions from '@suite-actions/modalActions';
@@ -63,7 +63,7 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
         <Input
             state={getInputState(error, addressValue)}
             monospace
-            topLabel={
+            label={
                 <Label>
                     <Left>
                         <Text>
@@ -83,14 +83,31 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
                         </Text>
                         <QuestionTooltip messageId="TR_RECIPIENT_ADDRESS_TOOLTIP" />
                     </Left>
-                    <Right>
-                        {outputsCount > 1 && (
-                            <Remove onClick={() => outputs.remove(outputId)}>
-                                <StyledIcon size={20} color={colors.BLACK50} icon="CROSS" />
-                            </Remove>
-                        )}
-                    </Right>
                 </Label>
+            }
+            labelAddon={
+                <Button
+                    variant="tertiary"
+                    icon="QR"
+                    onClick={() =>
+                        openModal({
+                            type: 'qr-reader',
+                            outputId,
+                            setValue,
+                        })
+                    }
+                >
+                    <Translation id="TR_SCAN" />
+                </Button>
+            }
+            labelRight={
+                <Right>
+                    {outputsCount > 1 && (
+                        <Remove onClick={() => outputs.remove(outputId)}>
+                            <StyledIcon size={20} color={colors.BLACK50} icon="CROSS" />
+                        </Remove>
+                    )}
+                </Right>
             }
             onChange={async () => {
                 if (error) return;
@@ -124,16 +141,6 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
                     }
                 },
             })}
-            button={{
-                icon: 'QR',
-                onClick: () =>
-                    openModal({
-                        type: 'qr-reader',
-                        outputId,
-                        setValue,
-                    }),
-                text: <Translation id="TR_SCAN" />,
-            }}
         />
     );
 };

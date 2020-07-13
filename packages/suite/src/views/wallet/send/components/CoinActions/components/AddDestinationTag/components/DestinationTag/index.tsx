@@ -25,7 +25,6 @@ const DestinationTag = () => {
     return (
         <Input
             state={getInputState(error)}
-            variant="small"
             topLabel={
                 <Label>
                     <Text>
@@ -39,12 +38,14 @@ const DestinationTag = () => {
             innerRef={register({
                 validate: {
                     error: (value: string) => {
-                        if (value && !validator.isNumeric(value)) {
-                            return <Translation id="TR_DESTINATION_TAG_IS_NOT_NUMBER" />;
-                        }
+                        if (value) {
+                            if (!validator.isNumeric(value)) {
+                                return <Translation id="TR_DESTINATION_TAG_IS_NOT_NUMBER" />;
+                            }
 
-                        if (value && parseInt(value, 10) > U_INT_32) {
-                            return <Translation id="TR_DESTINATION_TAG_IS_NOT_VALID" />;
+                            if (parseInt(value, 10) > U_INT_32) {
+                                return <Translation id="TR_DESTINATION_TAG_IS_NOT_VALID" />;
+                            }
                         }
                     },
                 },

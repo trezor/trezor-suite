@@ -74,7 +74,7 @@ export default () => {
                     }
                 }
             }}
-            topLabel={
+            label={
                 <Label>
                     <Text>
                         <Translation id="TR_GAS_PRICE" />

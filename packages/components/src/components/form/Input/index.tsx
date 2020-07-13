@@ -1,7 +1,5 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import FluidSpinner from '../../loaders/FluidSpinner';
-import { Icon } from '../../Icon';
 import { colors, variables } from '../../../config';
 import { InputState, InputVariant, InputButton, TextAlign } from '../../../support/types';
 import { getStateColor } from '../../../utils';
@@ -16,14 +14,20 @@ const Wrapper = styled.div<WrappedProps>`
     width: ${props => (props.width ? `${props.width}px` : '100%')};
 `;
 
+const Label = styled.label`
+    display: flex;
+    min-height: 32px;
+    justify-content: space-between;
+`;
+
 const StyledInput = styled.input<Props>`
     font-family: ${variables.FONT_FAMILY.TTHOVES};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding: 1px 16px 0 16px; /* 2px from top = input height should be 36px and 48px  */
     font-size: ${variables.FONT_SIZE.SMALL};
     border-radius: 4px;
-    border: solid 2px ${props =>
-        props.state ? getStateColor(props.state) : colors.NEUE_STROKE_GREY};
+    border: solid 2px
+        ${props => (props.state ? getStateColor(props.state) : colors.NEUE_STROKE_GREY)};
     background-color: ${colors.WHITE};
     outline: none;
     box-sizing: border-box;
@@ -41,7 +45,6 @@ const StyledInput = styled.input<Props>`
     ${props =>
         props.monospace &&
         css`
-            /* same width nums, slashed zero */
             font-variant-numeric: slashed-zero tabular-nums;
         `}
 
@@ -53,18 +56,6 @@ const StyledInput = styled.input<Props>`
             color: ${colors.BLACK50};
             cursor: default;
         `}
-
-    ${props =>
-        !props.disabled &&
-        !props.state &&
-        !props.readOnly &&
-        css`
-            &:hover,
-            &:focus,
-            &:active {
-                /* border-color: ${colors.BLACK50}; */
-            }
-        `}
 `;
 
 const InputWrapper = styled.div`
@@ -72,13 +63,23 @@ const InputWrapper = styled.div`
     position: relative;
 `;
 
-const InputIconWrapper = styled.div<Props>`
+const Left = styled.div`
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    padding: 0 0 12px 0;
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+`;
+
+const Right = styled.div``;
+
+const InputAddon = styled.div<Props>`
     position: absolute;
     top: 1px;
     bottom: 1px;
     display: flex;
     align-items: center;
     z-index: 2;
+    transition: all 0.5s;
 
     ${props =>
         props.align === 'left' &&
@@ -93,61 +94,11 @@ const InputIconWrapper = styled.div<Props>`
         `}
 `;
 
-const SpinnerWrapper = styled.div``;
-
-const Label = styled.label`
-    min-height: 24px;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    padding: 0 0 12px 0;
-    color: ${colors.NEUE_TYPE_DARK_GREY};
-`;
-
 const BottomText = styled.div<Props>`
     padding: 10px 10px 0 10px;
     min-height: 27px;
     font-size: 12px;
     color: ${props => getStateColor(props.state)};
-`;
-
-const Button = styled.button<{ disabled?: boolean }>`
-    font-family: ${variables.FONT_FAMILY.TTHOVES};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.BLACK25};
-    border: none;
-    outline: none;
-    display: flex;
-    align-items: center;
-    padding: 0 0 0 5px;
-    background: ${colors.WHITE};
-
-    ${props =>
-        !props.disabled &&
-        css`
-            cursor: pointer;
-
-            &:hover {
-                color: ${colors.BLACK0};
-            }
-        `}
-
-    ${props =>
-        props.disabled &&
-        css`
-            opacity: 0.7;
-        `}
-`;
-
-const ButtonText = styled.div`
-    font-size: 14px;
-    font-weight: 500;
-    height: 14px;
-    line-height: 16px;
-`;
-
-const StyledIcon = styled(Icon)`
-    margin-right: 5px;
 `;
 
 const Overlay = styled.div<Props>`
@@ -166,7 +117,11 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     innerRef?: React.Ref<HTMLInputElement>;
     variant?: InputVariant;
     button?: InputButton;
-    topLabel?: React.ReactNode;
+    label?: React.ReactElement;
+    labelAddon?: React.ReactElement;
+    labelRight?: React.ReactElement;
+    innerAddon?: React.ReactNode;
+    topLabelRight?: React.ReactNode;
     bottomText?: React.ReactNode;
     monospace?: boolean;
     isDisabled?: boolean;
@@ -191,7 +146,11 @@ const Input = ({
     variant = 'large',
     width,
     button,
-    topLabel,
+    label,
+    labelAddon,
+    labelRight,
+    innerAddon,
+    topLabelRight,
     bottomText,
     isDisabled,
     autoComplete = 'off',
@@ -206,48 +165,25 @@ const Input = ({
     noError = false,
     ...rest
 }: Props) => {
-    const [buttonHover, setButtonHover] = React.useState(false);
-    const handleButtonEnter = () => {
-        setButtonHover(true);
-    };
-    const handleButtonLeave = () => {
-        setButtonHover(false);
-    };
+    const [isHovered, setIsHovered] = React.useState(false);
 
     return (
-        <Wrapper width={width} {...wrapperProps} data-test={dataTest}>
-            {topLabel && <Label>{topLabel}</Label>}
+        <Wrapper
+            width={width}
+            {...wrapperProps}
+            data-test={dataTest}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
+            <Label>
+                <Left>{label}</Left>
+                <Right>
+                    {labelRight}
+                    {isHovered && labelAddon}
+                </Right>
+            </Label>
             <InputWrapper>
-                <InputIconWrapper align={align}>
-                    {isLoading && (
-                        <SpinnerWrapper>
-                            <FluidSpinner size={16} color={colors.GREEN} />
-                        </SpinnerWrapper>
-                    )}
-                    {button && (
-                        <>
-                            <Button
-                                onClick={button.onClick}
-                                onMouseEnter={handleButtonEnter}
-                                onMouseLeave={handleButtonLeave}
-                                disabled={button.isDisabled}
-                            >
-                                {button.icon && (
-                                    <StyledIcon
-                                        icon={button.icon}
-                                        size={button.iconSize || 10}
-                                        color={
-                                            buttonHover
-                                                ? button.iconColorHover || colors.BLACK0
-                                                : button.iconColor || colors.BLACK25
-                                        }
-                                    />
-                                )}
-                                {button.text && <ButtonText>{button.text}</ButtonText>}
-                            </Button>
-                        </>
-                    )}
-                </InputIconWrapper>
+                <InputAddon align={align}>{innerAddon}</InputAddon>
                 {isPartiallyHidden && <Overlay />}
                 <StyledInput
                     type={type}

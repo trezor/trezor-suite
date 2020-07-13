@@ -2,9 +2,8 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 import validator from 'validator';
 import styled from 'styled-components';
-import { Input, Icon } from '@trezor/components';
+import { Input, Icon, Button } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
-import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 // import { updateFiatInput, updateMax } from '@wallet-actions/sendFormActions';
@@ -25,10 +24,8 @@ const Text = styled.div`
 `;
 
 const StyledInput = styled(Input)`
-    min-width: 300px;
     display: flex;
     flex: 1;
-    margin-right: 10px;
 `;
 
 const Label = styled.div`
@@ -51,13 +48,12 @@ const TokenBalance = styled.div`
 const StyledTransferIcon = styled(Icon)`
     display: flex;
     flex-direction: column;
-
-    margin: ${LABEL_HEIGHT + 12}px 22px 0 22px;
+    width: 66px;
+    padding-top: 55px;
 `;
 
 const Right = styled.div`
     display: flex;
-    margin-top: ${LABEL_HEIGHT}px;
     flex: 1;
     min-width: 250px;
     align-items: flex-start;
@@ -110,7 +106,19 @@ export default ({ outputId }: { outputId: number }) => {
                     state={getInputState(error, amountValue)}
                     monospace
                     align="right"
-                    topLabel={
+                    labelAddon={
+                        <Button
+                            icon={isSetMaxActive ? 'CHECK' : 'SEND'}
+                            onClick={() => {
+                                setValue('setMaxOutputId', isSetMaxActive ? -1 : outputId);
+                                composeTransaction(outputId);
+                            }}
+                            variant="tertiary"
+                        >
+                            <Translation id="TR_SEND_SEND_MAX" />
+                        </Button>
+                    }
+                    label={
                         <Label>
                             <Text>
                                 <Translation id="TR_AMOUNT" />
@@ -118,15 +126,6 @@ export default ({ outputId }: { outputId: number }) => {
                         </Label>
                     }
                     bottomText={error && error.message}
-                    button={{
-                        icon: isSetMaxActive ? 'CHECK' : 'SEND',
-                        iconSize: 16,
-                        onClick: () => {
-                            setValue('setMaxOutputId', isSetMaxActive ? -1 : outputId);
-                            composeTransaction(outputId);
-                        },
-                        text: <Translation id="TR_SEND_SEND_MAX" />,
-                    }}
                     onChange={event => {
                         if (isSetMaxActive) {
                             setValue('setMaxOutputId', -1);
@@ -160,6 +159,7 @@ export default ({ outputId }: { outputId: number }) => {
                         required: 'TR_AMOUNT_IS_NOT_SET',
                         validate: (value: string) => {
                             const amountBig = new BigNumber(value);
+
                             if (amountBig.isNaN()) {
                                 return 'TR_AMOUNT_IS_NOT_NUMBER';
                             }
