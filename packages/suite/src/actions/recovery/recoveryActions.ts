@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import TrezorConnect, { UI } from 'trezor-connect';
 import { RECOVERY } from '@recovery-actions/constants';
-
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
+import * as routerActions from '@suite-actions/routerActions';
 import { Dispatch, GetState, Action } from '@suite-types';
 import { WordCount } from '@recovery-types';
 import { DEVICE } from '@suite-constants';
@@ -101,6 +102,7 @@ const rerun = () => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
 
     if (!device || !device.features) return;
+
     dispatch(setStatus('in-progress'));
 
     // user might have proceeded with recovery on screen which means that we need to
@@ -119,24 +121,18 @@ const rerun = () => async (dispatch: Dispatch, getState: GetState) => {
 
     const features = response.payload;
 
-    // cases that we cover here:
-
-    // !initialized && !recovery_mode => set initial, clear error
-    // initialized && !recovery_mode => set initial, clear error
-    // !initialized && recovery_mode => recoveryDevice(),
-    // initialized && recovery_mode => checkSeed()
-
     if (!features.recovery_mode) {
-        dispatch(setStatus('finished'));
-        dispatch(setError(''));
         return;
     }
 
     if (!features.initialized) {
+        dispatch(onboardingActions.goToStep('recovery'));
+        dispatch(onboardingActions.addPath('recovery'));
         dispatch(recoverDevice());
     }
 
     if (features.initialized) {
+        dispatch(routerActions.goto('recovery-index'));
         dispatch(checkSeed());
     }
 };

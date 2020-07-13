@@ -13,6 +13,7 @@ import Reconnect from './components/Reconnect';
 import IsSameDevice from './components/IsSameDevice';
 import IsNotNewDevice from './components/IsNotNewDevice';
 import DeviceIsUsedHere from './components/DeviceIsUsedHere';
+import { isWebUSB } from '@suite-utils/transport';
 
 const Wrapper = styled.div`
     height: 100%;
@@ -37,8 +38,7 @@ type Props = ReturnType<typeof mapStateToProps> & {
 
 const UnexpectedState = ({ onboarding, suite, children }: Props) => {
     const { prevDevice, path, activeStepId } = onboarding;
-    const { device } = suite;
-    const prevModel = prevDevice?.features?.major_version;
+    const { device, transport } = suite;
     const activeStep = steps.find(s => s.id === activeStepId);
 
     const isNotSameDevice = () => {
@@ -91,7 +91,7 @@ const UnexpectedState = ({ onboarding, suite, children }: Props) => {
     const getUnexpectedStateComponent = () => {
         switch (disallowedState) {
             case STEP.DISALLOWED_DEVICE_IS_NOT_CONNECTED:
-                return <Reconnect model={prevModel || 2} />;
+                return <Reconnect showWebUsb={isWebUSB(transport)} />;
             case STEP.DISALLOWED_IS_NOT_SAME_DEVICE:
                 return <IsSameDevice />;
             case STEP.DISALLOWED_DEVICE_IS_IN_BOOTLOADER:

@@ -20,10 +20,6 @@ const StyledP = styled(P)`
     font-size: ${variables.FONT_SIZE.NORMAL};
 `;
 
-const ButtonBecomeTester = styled(Button)`
-    margin: 2px 0 0 10px;
-`;
-
 const ButtonWallet = styled(Button)`
     margin: 10px 0;
 `;
@@ -33,11 +29,6 @@ const HeadBackP = styled(P)`
     margin-top: 10px;
     font-size: ${variables.FONT_SIZE.NORMAL};
     flex-direction: column;
-`;
-
-const Row = styled.div`
-    display: flex;
-    align-items: center;
 `;
 
 const InfoRow = styled.div`
@@ -71,24 +62,6 @@ const Index = () => (
                 >
                     <ButtonAccess variant="primary">Log in to Beta Wallet</ButtonAccess>
                 </Link>
-            </Item>
-            <Item>
-                <Row>
-                    <StyledP size="tiny">Not a tester yet?</StyledP>
-                    <Link
-                        href="https://blog.trezor.io/join-the-trezor-beta-testers-community-b19761f4960a"
-                        target="_blank"
-                        variant="nostyle"
-                    >
-                        <ButtonBecomeTester
-                            variant="tertiary"
-                            icon="EXTERNAL_LINK"
-                            alignIcon="right"
-                        >
-                            Become a tester
-                        </ButtonBecomeTester>
-                    </Link>
-                </Row>
             </Item>
             <Line />
             <H2>Stable Wallet &amp; ETH / XRP Wallet</H2>

@@ -1,6 +1,11 @@
 import React from 'react';
 import randomColor from 'randomcolor';
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
+import { tooltipGlobalStyles } from '../index';
+
+const GlobalStyle = createGlobalStyle`
+    ${tooltipGlobalStyles}
+`;
 
 const color = randomColor({ luminosity: 'light' });
 
@@ -15,7 +20,12 @@ interface StoryWrapperProps {
     children: any;
 }
 
-const StoryWrapper = ({ children }: StoryWrapperProps) => <Wrapper>{children}</Wrapper>;
+const StoryWrapper = ({ children }: StoryWrapperProps) => (
+    <Wrapper>
+        <GlobalStyle />
+        {children}
+    </Wrapper>
+);
 
 interface StoryColumnProps {
     children: any;

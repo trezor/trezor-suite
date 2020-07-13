@@ -1,7 +1,7 @@
 import React, { useState, forwardRef, useRef } from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
-import { colors, Icon } from '@trezor/components';
+import { colors, Icon, variables } from '@trezor/components';
 import { Account } from '@wallet-types';
 import AnimationWrapper from '../AnimationWrapper';
 
@@ -22,12 +22,13 @@ const Header = styled.header<{ onClick?: () => void }>`
     cursor: ${props => (props.onClick ? 'pointer' : 'default')};
     justify-content: space-between;
     align-items: center;
+    height: 50px; /* otherwise it jumps on hiding arrow_down/up icon */
 
     text-transform: uppercase;
-    font-size: 12px;
-    font-weight: 600;
-    color: ${colors.BLACK50};
-    border-top: 2px solid ${colors.BLACK96};
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
 `;
 
 interface Props {

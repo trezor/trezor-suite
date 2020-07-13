@@ -51,19 +51,23 @@ const SettingsMenu = () => {
                     data-test="@settings/menu/dropdown"
                     items={[
                         {
-                            label: (
-                                <StyledLink variant="nostyle" href={SUPPORT_URL}>
-                                    <Translation id="TR_SUPPORT" />
-                                </StyledLink>
-                            ),
-                            'data-test': '@settings/menu/support',
-                            callback: () => {},
-                            noPadding: true,
-                        },
-                        {
-                            label: <Translation id="TR_SHOW_LOG" />,
-                            'data-test': '@settings/menu/log',
-                            callback: () => openModal({ type: 'log' }),
+                            options: [
+                                {
+                                    label: (
+                                        <StyledLink variant="nostyle" href={SUPPORT_URL}>
+                                            <Translation id="TR_SUPPORT" />
+                                        </StyledLink>
+                                    ),
+                                    'data-test': '@settings/menu/support',
+                                    callback: () => {},
+                                    noPadding: true,
+                                },
+                                {
+                                    label: <Translation id="TR_SHOW_LOG" />,
+                                    'data-test': '@settings/menu/log',
+                                    callback: () => openModal({ type: 'log' }),
+                                },
+                            ],
                         },
                     ]}
                 />

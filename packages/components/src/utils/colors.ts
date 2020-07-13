@@ -17,11 +17,11 @@ const getFeedbackColor = (state: FeedbackState) => {
 const getStateColor = (state: InputState | undefined) => {
     switch (state) {
         case 'success':
-            return colors.GREENER;
+            return colors.NEUE_BG_GREEN;
         case 'warning':
-            return colors.YELLOWER;
+            return colors.NEUE_TYPE_ORANGE;
         case 'error':
-            return colors.RED;
+            return colors.NEUE_TYPE_RED;
         default:
             return colors.NEUE_TYPE_DARK_GREY;
     }
