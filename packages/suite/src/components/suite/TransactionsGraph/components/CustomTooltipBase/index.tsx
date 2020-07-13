@@ -14,6 +14,7 @@ const CustomTooltipWrapper = styled.div<{ coordinate: { x: number; y: number } }
     background: rgba(0, 0, 0, 0.8);
     padding: 12px 12px;
     border-radius: 3px;
+    font-variant-numeric: tabular-nums;
     transform: ${props => `translate(0px, ${props.coordinate.y - 100}px)`};
 
     line-height: 1.5;
