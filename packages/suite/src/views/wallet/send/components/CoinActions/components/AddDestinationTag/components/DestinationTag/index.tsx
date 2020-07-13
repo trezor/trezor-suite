@@ -38,12 +38,11 @@ const DestinationTag = () => {
             name={inputName}
             innerRef={register({
                 validate: {
-                    xrpDestinationTagNotNumber: (value: string) => {
+                    error: (value: string) => {
                         if (value && !validator.isNumeric(value)) {
                             return <Translation id="TR_DESTINATION_TAG_IS_NOT_NUMBER" />;
                         }
-                    },
-                    xrpDestinationTagNotValid: (value: string) => {
+
                         if (value && parseInt(value, 10) > U_INT_32) {
                             return <Translation id="TR_DESTINATION_TAG_IS_NOT_VALID" />;
                         }

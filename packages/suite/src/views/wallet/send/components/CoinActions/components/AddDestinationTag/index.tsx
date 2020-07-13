@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite-components';
 import { Button, Icon } from '@trezor/components';
-import Data from './components/Data';
+import DestinationTag from './components/DestinationTag';
 
 const Wrapper = styled.div`
     display: flex;
@@ -35,13 +35,13 @@ export default () => {
                         setIsActive(true);
                     }}
                 >
-                    <Translation id="TR_ETH_ADD_DATA" />
+                    <Translation id="TR_XRP_DESTINATION_TAG" />
                 </Button>
             )}
             {isActive && (
                 <Active>
                     <Left>
-                        <Data />
+                        <DestinationTag />
                     </Left>
                     <Right>
                         <Icon size={20} icon="CROSS" onClick={() => setIsActive(false)} />

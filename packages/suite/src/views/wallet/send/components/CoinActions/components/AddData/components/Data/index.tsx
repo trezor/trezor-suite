@@ -31,6 +31,7 @@ export default () => {
         clearError,
         setError,
     } = useSendFormContext();
+
     const inputName = 'ethereumData';
     const { updateFeeLevelWithData } = useActions({
         updateFeeLevelWithData: sendFormActions.updateFeeLevelWithData,
@@ -42,7 +43,7 @@ export default () => {
             name={inputName}
             innerRef={register({
                 validate: {
-                    ethDataNotHex: (value: string) => {
+                    error: (value: string) => {
                         if (value && !validator.isHexadecimal(value)) {
                             return <Translation id="TR_ETH_DATA_NOT_HEX" />;
                         }

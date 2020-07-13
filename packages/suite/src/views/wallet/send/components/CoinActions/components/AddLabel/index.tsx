@@ -8,7 +8,6 @@ import { useSendFormContext } from '@wallet-hooks';
 const Wrapper = styled.div``;
 
 export default () => {
-    const { outputs } = useSendFormContext();
     return (
         <Wrapper>
             <Button variant="tertiary" icon="LABEL" onClick={() => {}}>
