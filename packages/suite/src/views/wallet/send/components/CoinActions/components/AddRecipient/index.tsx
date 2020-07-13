@@ -5,7 +5,9 @@ import { Translation } from '@suite-components';
 import { Button } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+    display: flex;
+`;
 
 export default () => {
     const { outputs } = useSendFormContext();

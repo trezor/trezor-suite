@@ -14,15 +14,17 @@ const In = styled.div`
     cursor: pointer;
     display: flex;
     align-items: center;
+    padding-right: 10px;
     color: ${colors.BLACK50};
 `;
 
 export default () => {
     const { resetContext } = useSendFormContext();
+
     return (
         <Wrapper>
             <In onClick={resetContext}>
-                <Button variant="tertiary" icon="CLEAR" alignIcon="left">
+                <Button variant="tertiary">
                     <Translation id="TR_CLEAR_ALL" />
                 </Button>
             </In>
