@@ -3,10 +3,9 @@ import styled, { css } from 'styled-components';
 import { getStateColor } from '../../../utils/colors';
 import { colors } from '../../../config';
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
     state?: 'success' | 'error' | 'warning';
     children: ReactNode;
-    className?: string;
 }
 
 const Wrapper = styled.div<{ state: Props['state'] }>`
@@ -20,9 +19,9 @@ const Wrapper = styled.div<{ state: Props['state'] }>`
     ${props => !props.state && css && `padding-left: 20px`}
 `;
 
-const Row = ({ state, children, className }: Props) => {
+const Row = ({ state, children, ...rest }: Props) => {
     return (
-        <Wrapper state={state} className={className}>
+        <Wrapper state={state} {...rest}>
             {children}
         </Wrapper>
     );
