@@ -19,6 +19,7 @@ const StyledCard = styled(Card)`
 
 const Top = styled.div`
     display: flex;
+    margin: 32px 42px;
     flex-direction: row;
     justify-items: space-between;
 `;
