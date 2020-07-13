@@ -25,7 +25,7 @@ const DestinationTag = () => {
     return (
         <Input
             state={getInputState(error)}
-            topLabel={
+            label={
                 <Label>
                     <Text>
                         <Translation id="TR_XRP_DESTINATION_TAG" />

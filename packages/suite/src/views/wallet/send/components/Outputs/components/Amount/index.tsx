@@ -105,7 +105,6 @@ export default ({ outputId }: { outputId: number }) => {
                 <StyledInput
                     state={getInputState(error, amountValue)}
                     monospace
-                    align="right"
                     labelAddon={
                         <Button
                             icon={isSetMaxActive ? 'CHECK' : 'SEND'}
