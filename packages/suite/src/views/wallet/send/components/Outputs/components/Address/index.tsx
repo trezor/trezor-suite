@@ -22,10 +22,6 @@ const Left = styled.div`
     display: flex;
 `;
 
-const Right = styled.div`
-    display: flex;
-`;
-
 const Text = styled.div`
     margin-right: 3px;
 `;
@@ -101,13 +97,13 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
                 </Button>
             }
             labelRight={
-                <Right>
+                <>
                     {outputsCount > 1 && (
                         <Remove onClick={() => outputs.remove(outputId)}>
                             <StyledIcon size={20} color={colors.BLACK50} icon="CROSS" />
                         </Remove>
                     )}
-                </Right>
+                </>
             }
             onChange={async () => {
                 if (error) return;

@@ -1,7 +1,7 @@
 import { QuestionTooltip, Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import { useSendFormContext } from '@wallet-hooks';
-import { Textarea } from '@trezor/components';
+import { Textarea, Icon } from '@trezor/components';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
@@ -17,7 +17,15 @@ const Text = styled.div`
     margin-right: 3px;
 `;
 
-export default () => {
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
+`;
+
+interface Props {
+    setIsActive: (isActive: boolean) => void;
+}
+
+export default ({ setIsActive }: Props) => {
     const {
         token,
         setSelectedFee,
@@ -36,6 +44,7 @@ export default () => {
     const { updateFeeLevelWithData } = useActions({
         updateFeeLevelWithData: sendFormActions.updateFeeLevelWithData,
     });
+
     const error = errors[inputName];
 
     return (
@@ -70,7 +79,7 @@ export default () => {
             state={getInputState(error)}
             bottomText={error && error.message}
             disabled={token !== null}
-            topLabel={
+            label={
                 <Label>
                     <Text>
                         <Translation id="TR_SEND_DATA" />
@@ -78,6 +87,7 @@ export default () => {
                     <QuestionTooltip messageId="TR_SEND_DATA_TOOLTIP" />
                 </Label>
             }
+            labelRight={<StyledIcon size={20} icon="CROSS" onClick={() => setIsActive(false)} />}
         />
     );
 };

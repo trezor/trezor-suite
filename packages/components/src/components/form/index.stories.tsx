@@ -142,26 +142,26 @@ storiesOf('Form', module).add(
                         value="test value"
                         state="success"
                         wrapperProps={{ 'data-test': 'textarea-success' }}
-                        topLabel="Top label"
+                        label="Top label"
                         bottomText="bottom text"
                     />
                     <Textarea
                         value="test value"
                         state="warning"
                         wrapperProps={{ 'data-test': 'textarea-warning' }}
-                        topLabel="Top label"
+                        label="Top label"
                         bottomText="bottom text"
                     />
                     <Textarea
                         value="test value"
                         state="error"
                         wrapperProps={{ 'data-test': 'textarea-error' }}
-                        topLabel="Top label"
+                        label="Top label"
                         bottomText="bottom text"
                     />
                     <Textarea
                         wrapperProps={{ 'data-test': 'textarea-label' }}
-                        topLabel="Top label"
+                        label="Top label"
                         bottomText="bottom text"
                     />
                     <Textarea

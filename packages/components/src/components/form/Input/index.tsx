@@ -103,7 +103,7 @@ const InputAddon = styled.div<{ align: 'left' | 'right' }>`
 const BottomText = styled.div<Props>`
     padding: 10px 10px 0 10px;
     min-height: 27px;
-    font-size: 12px;
+    font-size: ${variables.FONT_SIZE.TINY};
     color: ${props => getStateColor(props.state)};
 `;
 

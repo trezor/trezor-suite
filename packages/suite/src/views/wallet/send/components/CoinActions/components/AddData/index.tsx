@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite-components';
-import { Button, Icon } from '@trezor/components';
+import { Button } from '@trezor/components';
 import Data from './components/Data';
 
 const Wrapper = styled.div`
@@ -14,12 +14,6 @@ const Active = styled.div`
     display: flex;
     width: 100%;
     justify-content: space-between;
-`;
-
-const Left = styled.div``;
-
-const Right = styled.div`
-    display: flex;
 `;
 
 export default () => {
@@ -40,12 +34,7 @@ export default () => {
             )}
             {isActive && (
                 <Active>
-                    <Left>
-                        <Data />
-                    </Left>
-                    <Right>
-                        <Icon size={20} icon="CROSS" onClick={() => setIsActive(false)} />
-                    </Right>
+                    <Data setIsActive={setIsActive} />
                 </Active>
             )}
         </Wrapper>
