@@ -1,4 +1,5 @@
-import { createContext, useContext, useCallback, useState, useEffect } from 'react';
+import { createContext, useContext, useCallback, useState, useEffect, useRef } from 'react';
+import { createDeferred, Deferred } from '@suite-utils/deferred';
 // import { useSelector } from 'react-redux';
 import { useForm, useFieldArray } from 'react-hook-form';
 // import { SEND } from '@wallet-actions/constants';
@@ -45,10 +46,56 @@ const DEFAULT_VALUES = {
     ],
 };
 
+// composeTransaction should be debounced from both sides
+// first: `timeout` prevents from calling 'trezor-connect' method to many times (inputs mad-clicking)
+// second: `dfd` prevents from processing outdated results from 'trezor-connect' (timeout was resolved correctly but 'trezor-connect' method waits too long to respond while another "compose" was called)
+const useComposeDebounced = () => {
+    const timeout = useRef<ReturnType<typeof setTimeout>>(-1);
+    const dfd = useRef<Deferred<boolean> | null>(null);
+
+    const composeDebounced = useCallback(
+        async <F extends (...args: any) => Promise<any>>(fn: F): Promise<ReturnType<F>> => {
+            // clear previous timeout
+            if (timeout.current >= 0) clearTimeout(timeout.current);
+
+            // set new timeout
+            const timeoutDfd = createDeferred();
+            const newTimeout = setTimeout(timeoutDfd.resolve, 300);
+            timeout.current = newTimeout;
+            await timeoutDfd.promise;
+            timeout.current = -1; // reset timeout
+
+            // reject previous pending call, do not process results from trezor-connect
+            if (dfd.current) dfd.current.resolve(false);
+
+            // set new pending call
+            const pending = createDeferred<boolean>();
+            dfd.current = pending;
+
+            // call compose function
+            const result = await fn();
+            if (!result) return;
+
+            pending.resolve(true); // try to unlock, it could be already resolved tho (see: dfd.resolve above)
+            const shouldBeProcessed = await pending.promise; // catch potential rejection
+            dfd.current = null; // reset dfd
+            if (!shouldBeProcessed) return;
+
+            return result;
+        },
+        [timeout, dfd],
+    );
+
+    return {
+        composeDebounced,
+    };
+};
+
 // Mounted in top level index: @wallet-views/send
 // returned ContextState is a object provided as SendContext values with custom callbacks for updating/resetting state
 export const useSendForm = (props: SendContextProps): SendContextState => {
     const [state, setState] = useState(props);
+    const { composeDebounced } = useComposeDebounced();
 
     const { localCurrencyOption } = props;
 
@@ -73,19 +120,19 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
         },
     });
 
-    const { control, reset, register, getValues } = useFormMethods;
-
-    // register array fields (outputs array in react-hook-form)
-    const outputs = useFieldArray<Output>({
-        control,
-        name: 'outputs',
-    });
+    const { control, reset, register, getValues, errors, setError, trigger } = useFormMethods;
 
     // register custom form values (without HTMLElement)
     useEffect(() => {
         register({ name: 'txType', type: 'custom' });
         register({ name: 'setMaxOutputId', type: 'custom' });
     }, [register]);
+
+    // register array fields (outputs array in react-hook-form)
+    const outputsFieldArray = useFieldArray<Output>({
+        control,
+        name: 'outputs',
+    });
 
     // load draft from reducer
     // TODO: load "remembered" fee level
@@ -94,7 +141,7 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
         if (draft) {
             // merge current values with storage values
             reset({
-                ...getValues({ nest: true }),
+                ...getValues(),
                 ...draft.formState,
             });
         }
@@ -122,16 +169,6 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
     //     console.warn('composedLevels', composedLevels);
     // }, [composedLevels]);
 
-    // save draft to reducer
-    // const { dirty } = methods.formState;
-    useEffect(() => {
-        // TODO: calling to many times
-        if (useFormMethods.formState.dirty && Object.keys(useFormMethods.errors).length === 0) {
-            console.warn('SAVE DRAFT!', useFormMethods.getValues({ nest: true }));
-            saveDraft(useFormMethods.getValues({ nest: true }));
-        }
-    });
-
     // update custom values
     const updateContext = useCallback(
         (value: Partial<SendContextProps>) => {
@@ -150,38 +187,64 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
         reset(DEFAULT_VALUES);
     }, [props, reset, removeDraft]);
 
+    // called from Address/Amount/Fiat onChange events
     const compose = useCallback(
-        async (outputId?: number) => {
-            // TODO: check errors
-            // TODO: check outputs (address + amount needs to be set)
-            // TODO: debouncing
-            console.warn('compose by', outputId);
-            // sendContext.updateContext({ composedLevels: undefined });
-            // const result = await composeTransaction(
-            //     state,
-            //     getValues({ nest: true }),
-            // );
-            // console.warn('compose hook result', result);
-            // if (result) {
-            //     // save precomposed tx to reducer
-            //     // dispatch({ type: SEND.SAVE_PRECOMPOSED_TX, precomposedTx: result });
-            //     sendContext.updateContext({ composedLevels: result });
-            // }
-        },
-        // [state, getValues, composeTransaction],
-        [],
-    );
+        async (outputId?: number, validateFields?: string | string[]) => {
+            const composeInner = async () => {
+                // do not compose if form has errors
+                if (Object.keys(errors).length > 0) return;
+                // collect form values
+                const values = getValues();
+                // save draft
+                saveDraft(values);
+                // outputs should have at least amount set
+                const validOutputs = values.outputs
+                    ? values.outputs.filter(o => o.amount !== '')
+                    : [];
+                // do not compose if there are no valid output
+                if (validOutputs.length < 1) return;
 
-    // propagate all values to context
-    const values = getValues({ nest: true });
+                if (validateFields) {
+                    // since values/errors of react-hook-form are propagated after useEffect (re-render)
+                    // we need to double check related fields validation
+                    // example: change Fiat value calls setValue on related Amount, possible `errors` will be set after re-render (they are not set at this point yet)
+                    const result = await trigger(validateFields);
+                    if (!result) return;
+                }
+
+                return composeTransaction(state, values);
+            };
+
+            // reset precomposed transactions
+            if (state.composedLevels) updateContext({ composedLevels: undefined });
+            const composedLevels = await composeDebounced(composeInner);
+            // set new composed transactions
+            updateContext({ composedLevels });
+
+            setError(`outputs[${outputId}].amount`, {
+                type: 'manual',
+                message: 'TR_AMOUNT_IS_NOT_ENOUGH',
+            });
+        },
+        [
+            state,
+            updateContext,
+            composeDebounced,
+            setError,
+            errors,
+            getValues,
+            saveDraft,
+            composeTransaction,
+            trigger,
+        ],
+    );
 
     return {
         ...state,
         ...useFormMethods,
-        values,
-        outputs,
-        getDraft,
-        saveDraft,
+        outputs: outputsFieldArray.fields,
+        addOutput: outputsFieldArray.append,
+        removeOutput: outputsFieldArray.remove,
         updateContext,
         resetContext,
         composeTransaction: compose,

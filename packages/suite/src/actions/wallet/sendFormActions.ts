@@ -25,7 +25,7 @@ import {
 
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
-import { FormState, ContextStateProps, PrecomposedLevels } from '@wallet-types/sendForm';
+import { FormState, SendContextProps, PrecomposedLevels } from '@wallet-types/sendForm';
 
 export type SendFormActions =
     | {
@@ -205,16 +205,17 @@ export const composeEthereumTransaction = (
 };
 
 export const composeBitcoinTransaction = async (
-    sendValues: ContextStateProps,
+    sendValues: SendContextProps,
     formValues: FormState,
 ) => {
-    const { account, outputs, feeInfo } = sendValues;
+    const { account, feeInfo } = sendValues;
+    const { outputs } = formValues;
     if (!account.addresses || !account.utxo) return;
 
     const composedOutputs = outputs
-        .map(output => {
-            const address = formValues.address[output.id];
-            const isMaxActive = formValues.setMaxOutputId === output.id;
+        .map((output, index) => {
+            const { address } = output;
+            const isMaxActive = formValues.setMaxOutputId === index;
             if (isMaxActive) {
                 if (address) {
                     return {
@@ -228,7 +229,7 @@ export const composeBitcoinTransaction = async (
                 } as const;
             }
 
-            const amount = networkAmountToSatoshi(formValues.amount[output.id], account.symbol);
+            const amount = networkAmountToSatoshi(output.amount, account.symbol);
             if (address) {
                 return {
                     address,
@@ -249,13 +250,14 @@ export const composeBitcoinTransaction = async (
     //     utxo: account.utxo,
     // };
 
+    const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
     const params = {
         account: {
             path: account.path,
             addresses: account.addresses,
             utxo: account.utxo,
         },
-        feeLevels: feeInfo.levels.filter(l => l.label !== 'custom'),
+        feeLevels: predefinedLevels,
         outputs: composedOutputs,
         coin: account.symbol,
     };
@@ -276,9 +278,11 @@ export const composeBitcoinTransaction = async (
 
     const hasAtLeastOneValid = response.payload.find(r => r.type !== 'error');
     if (!hasAtLeastOneValid) {
-        const { minFee, levels } = feeInfo;
-        console.warn('LEVELS', levels);
-        let maxFee = new BigNumber(levels[levels.length - 1].feePerUnit).minus(1);
+        const { minFee } = feeInfo;
+        console.warn('LEVELS', predefinedLevels);
+        let maxFee = new BigNumber(predefinedLevels[predefinedLevels.length - 1].feePerUnit).minus(
+            1,
+        );
         const customLevels: any[] = [];
         while (maxFee.gte(minFee)) {
             customLevels.push({ feePerUnit: maxFee.toString(), label: 'custom' });
@@ -318,6 +322,19 @@ export const composeBitcoinTransaction = async (
     }
 
     return wrappedResponse;
+};
+
+export const composeTransactionNew = (
+    sendValues: SendContextProps,
+    formValues: FormState,
+) => async () => {
+    const { account } = sendValues;
+    if (account.networkType === 'bitcoin') {
+        return composeBitcoinTransaction(sendValues, formValues);
+    }
+    // TODO: translate formValues/sendValues to trezor-connect params
+    // TODO: return precomposed transactions for multiple levels (will be stored in SendContext)
+    console.warn('------->>>>> COMPOSING ACTION NEW!!!!', sendValues, formValues);
 };
 
 export const onQrScan = (
@@ -407,19 +424,6 @@ export const composeTx = async (
     if (account.networkType === 'bitcoin') {
         return composeBitcoinTransaction(account, outputs, getValues, selectedFee);
     }
-};
-
-export const composeTransactionNew = (
-    sendValues: ContextStateProps,
-    formValues: FormState,
-) => async () => {
-    const { account } = sendValues;
-    if (account.networkType === 'bitcoin') {
-        return composeBitcoinTransaction(sendValues, formValues);
-    }
-    // TODO: translate formValues/sendValues to trezor-connect params
-    // TODO: return precomposed transactions for multiple levels (will be stored in SendContext)
-    console.warn('------->>>>> COMPOSING ACTION NEW!!!!', sendValues, formValues);
 };
 
 export const composeChange = async (
