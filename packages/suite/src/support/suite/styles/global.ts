@@ -14,7 +14,7 @@ export default `
     }
 
     body, html {
-      background: ${colors.BACKGROUND};
+      background: ${colors.NEUE_BG_GRAY};
       font-size: ${variables.FONT_SIZE.NORMAL};
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
