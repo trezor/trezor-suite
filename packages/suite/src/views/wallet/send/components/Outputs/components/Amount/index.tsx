@@ -198,13 +198,13 @@ export default ({ outputId }: { outputId: number }) => {
                             }
                         },
                     })}
+                    innerAddon={<TokenSelect outputId={outputId} />}
                 />
                 {tokenBalance && (
                     <TokenBalance>
                         <Translation id="TR_TOKEN_BALANCE" values={{ balance: tokenBalance }} />
                     </TokenBalance>
                 )}
-                <TokenSelect outputId={outputId} />
             </Left>
             {/* TODO: token FIAT rates calculation */}
             {!token && (

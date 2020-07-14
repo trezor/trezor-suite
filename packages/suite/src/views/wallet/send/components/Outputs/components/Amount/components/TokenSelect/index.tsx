@@ -1,15 +1,8 @@
 import React from 'react';
-import styled from 'styled-components';
-import { Select } from '@trezor/components';
+import { SelectInput } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { TokenInfo } from 'trezor-connect';
 import { useSendFormContext } from '@wallet-hooks';
-
-const Wrapper = styled.div`
-    min-width: 110px;
-`;
-
-const CurrencySelect = styled(Select)``;
 
 interface Option {
     value?: TokenInfo;
@@ -43,21 +36,16 @@ export default ({ outputId }: { outputId: number }) => {
     const values = getValues(symbol, tokens);
 
     return (
-        <Wrapper>
-            <CurrencySelect
-                key="token"
-                isSearchable={false}
-                onChange={(option: Option) => {
-                    updateContext({ token: option.value });
-                    setValue(`amount[${outputId}]`, '');
-                    clearError(`amount[${outputId}]`);
-                }}
-                isClearable={false}
-                value={values.find((option: Option) => option.value === token?.symbol)}
-                isDisabled={values.length === 1}
-                options={values}
-                display
-            />
-        </Wrapper>
+        <SelectInput
+            key="token"
+            onChange={(option: Option) => {
+                updateContext({ token: option.value });
+                setValue(`amount[${outputId}]`, '');
+                clearError(`amount[${outputId}]`);
+            }}
+            value={values.find((option: Option) => option.value === token?.symbol)}
+            options={values}
+            display
+        />
     );
 };

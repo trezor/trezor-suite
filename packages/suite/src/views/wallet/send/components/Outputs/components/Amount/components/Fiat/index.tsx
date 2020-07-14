@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import BigNumber from 'bignumber.js';
 import validator from 'validator';
 import styled from 'styled-components';
-import { Select, Input } from '@trezor/components';
+import { Select, Input, SelectInput } from '@trezor/components';
 import { Controller } from 'react-hook-form';
 import { useSendFormContext } from '@wallet-hooks';
 import { FIAT } from '@suite-config';
@@ -15,12 +15,6 @@ const Wrapper = styled.div`
     width: 100%;
     flex-direction: row;
     justify-content: flex-start;
-`;
-
-const SelectWrapper = styled.div`
-    width: 100px;
-    min-width: 80px;
-    margin-left: 10px;
 `;
 
 export default ({ outputId }: { outputId: number }) => {
@@ -106,30 +100,30 @@ export default ({ outputId }: { outputId: number }) => {
                         }
                     },
                 })}
+                innerAddon={
+                    <Controller
+                        as={SelectInput}
+                        options={FIAT.currencies.map((currency: string) =>
+                            buildCurrencyOption(currency),
+                        )}
+                        name={`outputs[${outputId}].currency`}
+                        register={register}
+                        isSearchable
+                        defaultValue={localCurrencyOption}
+                        isClearable={false}
+                        onChange={([selected]) => {
+                            const rate = getFiatRate(fiatRates, selected.value);
+                            const amountValue = new BigNumber(values.outputs[outputId].amount);
+                            if (rate && amountValue && !amountValue.isNaN()) {
+                                const fiatValueBigNumber = amountValue.multipliedBy(rate);
+                                setValue(inputName, fiatValueBigNumber.toFixed(2), true);
+                            }
+                            return selected;
+                        }}
+                        control={control}
+                    />
+                }
             />
-            <SelectWrapper>
-                <Controller
-                    as={Select}
-                    options={FIAT.currencies.map((currency: string) =>
-                        buildCurrencyOption(currency),
-                    )}
-                    name={`outputs[${outputId}].currency`}
-                    register={register}
-                    isSearchable
-                    defaultValue={localCurrencyOption}
-                    isClearable={false}
-                    onChange={([selected]) => {
-                        const rate = getFiatRate(fiatRates, selected.value);
-                        const amountValue = new BigNumber(values.outputs[outputId].amount);
-                        if (rate && amountValue && !amountValue.isNaN()) {
-                            const fiatValueBigNumber = amountValue.multipliedBy(rate);
-                            setValue(inputName, fiatValueBigNumber.toFixed(2), true);
-                        }
-                        return selected;
-                    }}
-                    control={control}
-                />
-            </SelectWrapper>
         </Wrapper>
     );
 };
