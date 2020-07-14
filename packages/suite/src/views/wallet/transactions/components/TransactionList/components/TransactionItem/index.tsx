@@ -46,7 +46,7 @@ const Addr = styled(motion.div)`
     white-space: nowrap;
     padding-left: 5px;
     text-overflow: ellipsis;
-    font-variant-numeric: tabular-nums;
+    font-variant-numeric: tabular-nums slashed-zero;
     @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
         grid-column: target / fiat;
     }
