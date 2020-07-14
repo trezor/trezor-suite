@@ -41,6 +41,7 @@ const AddressPath = styled.div`
 
 const StyledInput = styled(Input)`
     height: 36px;
+    font-variant-numeric: tabular-nums slashed-zero;
 `;
 
 const StyledButton = styled(Button)`
