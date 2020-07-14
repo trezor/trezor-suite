@@ -121,6 +121,7 @@ export default ({ outputId }: { outputId: number }) => {
                             return selected;
                         }}
                         control={control}
+                        minWidth="45px"
                     />
                 }
             />

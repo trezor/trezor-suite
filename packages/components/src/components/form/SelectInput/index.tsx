@@ -12,6 +12,7 @@ const selectStyle = (isSearchable: boolean, isHovered: boolean, minWidth = '50px
     container: (base: Record<string, any>) => ({
         ...base,
         border: 0,
+        cursor: 'pointer',
     }),
     control: (base: Record<string, any>) => {
         return {

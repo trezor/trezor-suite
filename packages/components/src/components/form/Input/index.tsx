@@ -14,12 +14,6 @@ const Wrapper = styled.div<WrappedProps>`
     width: ${props => (props.width ? `${props.width}px` : '100%')};
 `;
 
-const Label = styled.label`
-    display: flex;
-    min-height: 32px;
-    justify-content: space-between;
-`;
-
 const StyledInput = styled.input<Props>`
     font-family: ${variables.FONT_FAMILY.TTHOVES};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -62,6 +56,12 @@ const InputWrapper = styled.div`
     position: relative;
 `;
 
+const Label = styled.label`
+    display: flex;
+    min-height: 32px;
+    justify-content: space-between;
+`;
+
 const Left = styled.div`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -69,7 +69,15 @@ const Left = styled.div`
     color: ${colors.NEUE_TYPE_DARK_GREY};
 `;
 
-const Right = styled.div``;
+const Right = styled.div`
+    display: flex;
+`;
+
+const LabelAddon = styled.div``;
+
+const VisibleRightLabel = styled.div`
+    padding-left: 5px;
+`;
 
 const InputAddon = styled.div<{ align: 'left' | 'right' }>`
     position: absolute;
@@ -176,8 +184,8 @@ const Input = ({
             <Label>
                 <Left>{label}</Left>
                 <Right>
-                    {labelRight}
-                    {isHovered && labelAddon}
+                    {isHovered && <LabelAddon>{labelAddon}</LabelAddon>}
+                    {labelRight && <VisibleRightLabel>{labelRight}</VisibleRightLabel>}
                 </Right>
             </Label>
             <InputWrapper>

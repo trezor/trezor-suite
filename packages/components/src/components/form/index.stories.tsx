@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input, Textarea, Select, Checkbox, Switch, SelectInput } from '../../index';
+import { Input, Textarea, Select, Checkbox, Switch, SelectInput, Button } from '../../index';
 import { storiesOf } from '@storybook/react';
 import { StoryColumn } from '../../support/Story';
 
@@ -104,6 +104,11 @@ storiesOf('Form', module).add(
                         value="Input label with warning"
                         dataTest="input-warning-label"
                         bottomText="bottom text"
+                        labelAddon={
+                            <Button variant="tertiary" icon="QR" onClick={() => {}}>
+                                Scan QR code
+                            </Button>
+                        }
                     />
                     <Input
                         state="success"
@@ -111,7 +116,12 @@ storiesOf('Form', module).add(
                         dataTest="input-success-label"
                         bottomText="bottom text"
                         label={<Label>Action</Label>}
-                        labelAddon={<Label>Action</Label>}
+                        labelRight={<Label>label right</Label>}
+                        labelAddon={
+                            <Button variant="tertiary" icon="QR" onClick={() => {}}>
+                                Scan QR code
+                            </Button>
+                        }
                     />
                     <Input
                         disabled

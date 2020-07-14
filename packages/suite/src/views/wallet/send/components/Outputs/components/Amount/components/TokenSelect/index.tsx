@@ -45,7 +45,7 @@ export default ({ outputId }: { outputId: number }) => {
             }}
             value={values.find((option: Option) => option.value === token?.symbol)}
             options={values}
-            display
+            minWidth="60px"
         />
     );
 };
