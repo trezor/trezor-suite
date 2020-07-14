@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import validator from 'validator';
 import { useSendFormContext } from '@wallet-hooks';
 import { getInputState } from '@wallet-utils/sendFormUtils';
-import { Input } from '@trezor/components';
+import { Input, Icon } from '@trezor/components';
 import { U_INT_32 } from '@wallet-constants/sendForm';
 import { Translation, QuestionTooltip } from '@suite-components';
 
@@ -17,7 +17,15 @@ const Text = styled.div`
     margin-right: 3px;
 `;
 
-const DestinationTag = () => {
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
+`;
+
+interface Props {
+    setIsActive: (isActive: boolean) => void;
+}
+
+const DestinationTag = ({ setIsActive }: Props) => {
     const { register, errors } = useSendFormContext();
     const inputName = 'rippleDestinationTag';
     const error = errors[inputName];
@@ -35,6 +43,7 @@ const DestinationTag = () => {
             }
             bottomText={error && error.message}
             name={inputName}
+            labelRight={<StyledIcon size={20} icon="CROSS" onClick={() => setIsActive(false)} />}
             innerRef={register({
                 validate: {
                     error: (value: string) => {

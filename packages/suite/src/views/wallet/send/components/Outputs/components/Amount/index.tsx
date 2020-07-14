@@ -2,7 +2,7 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 import validator from 'validator';
 import styled from 'styled-components';
-import { Input, Icon, Button } from '@trezor/components';
+import { Input, Icon, Button, variables } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
@@ -37,6 +37,7 @@ const Left = styled.div`
     position: relative; /* for TokenBalance positioning */
     display: flex;
     flex: 1;
+    min-width: 350px;
 `;
 
 const TokenBalance = styled.div`
@@ -50,12 +51,16 @@ const StyledTransferIcon = styled(Icon)`
     flex-direction: column;
     width: 66px;
     padding-top: 55px;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
+        display: none;
+    }
 `;
 
 const Right = styled.div`
     display: flex;
     flex: 1;
-    min-width: 250px;
+    min-width: 350px;
     align-items: flex-start;
 `;
 
