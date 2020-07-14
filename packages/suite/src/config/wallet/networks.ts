@@ -239,6 +239,19 @@ const networks = [
             account: 'https://zec1.trezor.io/xpub/',
         },
     },
+    // TODO: remove after tested
+    {
+        name: 'Zcash testnet',
+        networkType: 'bitcoin',
+        symbol: 'taz',
+        bip44: "m/44'/1'/i'",
+        hasSignVerify: true,
+        decimals: 8,
+        explorer: {
+            tx: 'https://blockbook-dev.corp.sldev.cz:19132/tx/',
+            account: 'https://blockbook-dev.corp.sldev.cz:19132/xpub/',
+        },
+    },
     // Bitcoin testnet
     {
         name: 'Bitcoin Testnet',
