@@ -56,7 +56,6 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: Function }>`
         props.onClick &&
         css`
             cursor: pointer;
-            
         `};
 
     @media all and (max-width: ${variables.SCREEN_SIZE.MD}) {
@@ -82,7 +81,7 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: Function }>`
 
 const GridItemAddress = styled(GridItem)`
     font-variant-numeric: tabular-nums slashed-zero;
-`
+`;
 
 const HeaderItem = styled(GridItem)`
     text-transform: uppercase;
@@ -153,7 +152,7 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, index }: ItemProps) => 
                         style={{ marginLeft: '12px' }}
                     />
                 )}
-            </GridItem>
+            </GridItemAddress>
             <GridItem revealed={isRevealed}>
                 {!fresh && (
                     <>
