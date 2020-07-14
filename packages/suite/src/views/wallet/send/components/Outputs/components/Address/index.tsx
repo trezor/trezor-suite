@@ -45,23 +45,26 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
     const {
         account,
         updateContext,
-        outputs,
+        removeOutput,
         composeTransaction,
         register,
-        values,
+        outputs,
+        getValues,
         errors,
         setValue,
     } = useSendFormContext();
     const { descriptor, networkType, symbol } = account;
     const { openModal } = useActions({ openModal: modalActions.openModal });
-    const error =
-        errors.outputs && errors.outputs[outputId] ? errors.outputs[outputId].address : undefined;
+    const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
+    const addressError = outputError ? outputError.address : undefined;
+    // addressValue is a "defaultValue" from draft (`outputs` fields) OR regular "onChange" during lifecycle (`getValues` fields)
+    // it needs to be done like that, because of `useFieldArray` architecture which requires defaultValue for registered inputs
     const addressValue =
-        values.outputs && values.outputs[outputId] ? values.outputs[outputId].address : '';
+        outputs[outputId].address || getValues(`outputs[${outputId}].address`) || '';
 
     return (
         <Input
-            state={getInputState(error, addressValue)}
+            state={getInputState(addressError, addressValue)}
             monospace
             label={
                 <Label>
@@ -103,14 +106,14 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
             labelRight={
                 <Right>
                     {outputsCount > 1 && (
-                        <Remove onClick={() => outputs.remove(outputId)}>
+                        <Remove onClick={() => removeOutput(outputId)}>
                             <StyledIcon size={20} color={colors.BLACK50} icon="CROSS" />
                         </Remove>
                     )}
                 </Right>
             }
             onChange={async () => {
-                if (error) return;
+                if (addressError) return;
 
                 if (networkType === 'ripple') {
                     const destinationAddressEmpty = await checkRippleEmptyAddress(
@@ -122,8 +125,8 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
                 composeTransaction(outputId);
             }}
             bottomText={
-                error ? (
-                    <Translation id={error.message as any} />
+                addressError ? (
+                    addressError.message
                 ) : (
                     <AddressLabeling address={addressValue} knownOnly />
                 )

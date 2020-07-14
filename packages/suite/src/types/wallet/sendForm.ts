@@ -1,13 +1,15 @@
-import { FormContextValues, ArrayField } from 'react-hook-form';
+import { UseFormMethods } from 'react-hook-form';
 import { Account, Network, CoinFiatRates } from '@wallet-types';
 import { FeeLevel, TokenInfo, PrecomposedTransaction } from 'trezor-connect';
 import { TrezorDevice, AppState } from '@suite-types';
+
+export type CurrencyOption = { value: string; label: string };
 
 export type Output = {
     address: string;
     amount: string;
     fiat: string;
-    currency: LocalCurrencyOption;
+    currency: CurrencyOption;
 };
 
 export interface FeeInfo {
@@ -30,8 +32,6 @@ export type EthTransactionData = {
     nonce: string;
 };
 
-type LocalCurrencyOption = { value: string; label: string };
-
 export type FormState = {
     outputs: Output[];
     // output arrays, each element is corresponding with single Output item
@@ -46,17 +46,6 @@ export type FormState = {
 
 // export type PrecomposedLevels = {[key: FeeLevel['label']]: PrecomposedTransaction };
 export type PrecomposedLevels = { [key: string]: PrecomposedTransaction };
-
-// this type is not exported from `react-hook-form`, it's a ReturnType of useFieldArray hook
-type FieldArray<T, KeyName extends string = 'id'> = {
-    swap: (indexA: number, indexB: number) => void;
-    move: (from: number, to: number) => void;
-    prepend: (value: Partial<T> | Partial<T>[]) => void;
-    append: (value: Partial<T> | Partial<T>[]) => void;
-    remove: (index?: number | number[] | undefined) => void;
-    insert: (index: number, value: Partial<T> | Partial<T>[]) => void;
-    fields: Partial<ArrayField<T, KeyName>>[];
-};
 
 export type SendContextProps = {
     account: Account;
@@ -76,15 +65,16 @@ export type SendContextProps = {
     selectedFee: FeeLevel;
     advancedForm: boolean;
     isLoading: boolean;
+    composedLevels?: PrecomposedLevels;
 };
-export type SendContextState = FormContextValues<FormState> &
+
+export type SendContextState = UseFormMethods<FormState> &
     SendContextProps & {
-        // additional field
-        outputs: FieldArray<Output>;
-        getDraft: () => { formState: FormState } | undefined;
-        saveDraft: (draft: FormState) => void;
+        // additional fields
+        outputs: Partial<Output & { id: string }>[]; // useFieldArray fields
+        addOutput: (value: Partial<Output> | Partial<Output>[], shouldFocus?: boolean) => void; // useFieldArray append
+        removeOutput: (index?: number | number[] | undefined) => void; // useFieldArray remove
         updateContext: (value: Partial<SendContextProps>) => void;
         resetContext: () => void;
-        composeTransaction: (outputId?: number) => void;
-        values: FormState;
+        composeTransaction: (outputId?: number, validateField?: string | string[]) => void;
     };

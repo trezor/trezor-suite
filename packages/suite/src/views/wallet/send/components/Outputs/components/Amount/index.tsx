@@ -72,12 +72,15 @@ export default ({ outputId }: { outputId: number }) => {
         localCurrencyOption,
         destinationAddressEmpty,
         register,
-        values,
+        outputs,
+        getValues,
         errors,
         setValue,
         composeTransaction,
         fiatRates,
     } = useSendFormContext();
+
+    const values = getValues();
     const inputName = `outputs[${outputId}].amount`;
     const isSetMaxActive = values.setMaxOutputId === outputId;
     const { symbol, availableBalance, networkType } = account;
@@ -86,11 +89,10 @@ export default ({ outputId }: { outputId: number }) => {
         : formatNetworkAmount(availableBalance, symbol);
 
     // find related fiat error
-    const fiatError =
-        errors.outputs && errors.outputs[outputId] ? errors.outputs[outputId].fiat : undefined;
+    const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
+    const fiatError = outputError ? outputError.fiat : undefined;
     // find local error
-    const amountError =
-        errors.outputs && errors.outputs[outputId] ? errors.outputs[outputId].amount : undefined;
+    const amountError = outputError ? outputError.amount : undefined;
     // display error only if there is no related fiatError and local error is 'TR_AMOUNT_IS_NOT_SET' (empty field)
     const error =
         fiatError && amountError && amountError.message === 'TR_AMOUNT_IS_NOT_SET'
@@ -101,8 +103,10 @@ export default ({ outputId }: { outputId: number }) => {
         account.networkType === 'ripple' ? formatNetworkAmount(account.misc.reserve, symbol) : null;
     const tokenBalance = token ? `${token.balance} ${token.symbol!.toUpperCase()}` : undefined;
     const decimals = token ? token.decimals : network.decimals;
-    const amountValue =
-        values.outputs && values.outputs[outputId] ? values.outputs[outputId].amount : '';
+
+    // amountValue is a "defaultValue" from draft (`outputs` fields) OR regular "onChange" during lifecycle (`getValues` fields)
+    // it needs to be done like that, because of `useFieldArray` architecture which requires defaultValue for registered inputs
+    const amountValue = outputs[outputId].amount || getValues(inputName) || '';
 
     return (
         <Wrapper>
@@ -137,7 +141,7 @@ export default ({ outputId }: { outputId: number }) => {
 
                         if (error) {
                             if (values.outputs[outputId].fiat.length > 0) {
-                                setValue(`outputs[${outputId}].fiat`, '');
+                                setValue(`outputs[${outputId}].fiat`, '', { shouldValidate: true });
                             }
                             return;
                         }
@@ -152,7 +156,7 @@ export default ({ outputId }: { outputId: number }) => {
                                   )
                                 : null;
                         if (fiat) {
-                            setValue(`outputs[${outputId}].fiat`, fiat, true);
+                            setValue(`outputs[${outputId}].fiat`, fiat, { shouldValidate: true });
                         }
 
                         composeTransaction(outputId);

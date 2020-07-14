@@ -10,14 +10,14 @@ const Wrapper = styled.div`
 `;
 
 export default () => {
-    const { outputs } = useSendFormContext();
+    const { addOutput } = useSendFormContext();
     return (
         <Wrapper>
             <Button
                 variant="tertiary"
                 icon="PLUS"
                 onClick={() => {
-                    outputs.append({
+                    addOutput({
                         address: '',
                         amount: '',
                         fiat: '',

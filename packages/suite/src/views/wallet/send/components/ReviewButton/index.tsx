@@ -7,8 +7,8 @@ import { useSendFormContext } from '@wallet-hooks';
 import { Button, colors } from '@trezor/components';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import React from 'react';
-import { FieldError, NestDataObject, useForm } from 'react-hook-form';
 import styled from 'styled-components';
+import { SendContextState } from '@wallet-types/sendForm';
 
 const Wrapper = styled.div`
     display: flex;
@@ -35,12 +35,12 @@ const Row = styled.div`
 `;
 
 const isDisabled = (
-    errors: NestDataObject<Record<string, any>, FieldError>,
+    errors: SendContextState['errors'],
     locks: AppState['suite']['locks'],
     device: TrezorDevice,
     online: AppState['suite']['online'],
-    outputs: SendContext['outputs'],
-    getValues: ReturnType<typeof useForm>['getValues'],
+    outputs: SendContextState['outputs'],
+    getValues: SendContextState['getValues'],
 ) => {
     // any form error
     if (Object.entries(errors).length > 0) {
@@ -50,13 +50,11 @@ const isDisabled = (
     let filledAddress = 0;
     let filledAmounts = 0;
 
-    outputs.fields.forEach(output => {
-        const address = getValues(`address[${output.id}]`);
+    outputs.forEach(output => {
+        const { address, amount } = output;
         if (address && address.length > 0) {
             filledAddress++;
         }
-
-        const amount = getValues(`amount[${output.id}]`);
         if (amount && amount.length > 0) {
             filledAmounts++;
         }
@@ -90,12 +88,12 @@ export default () => {
         online,
         locks,
         device,
-        outputs,
         token,
         isLoading,
         transactionInfo,
         selectedFee,
         errors,
+        outputs,
         getValues,
         reset,
     } = useSendFormContext();
@@ -105,8 +103,8 @@ export default () => {
         sendEthereumTransaction: sendFormActions.sendEthereumTransaction,
         sendRippleTransaction: sendFormActions.sendRippleTransaction,
     });
-    const { networkType } = account;
-    const { openModal } = useActions({ openModal: modalActions.openModal });
+    // const { networkType } = account;
+    // const { openModal } = useActions({ openModal: modalActions.openModal });
 
     return (
         <Wrapper>
@@ -117,41 +115,40 @@ export default () => {
                     onClick={() => {
                         console.log('transactionInfo', transactionInfo);
                         if (transactionInfo && transactionInfo.type === 'final') {
-                            openModal({
-                                type: 'review-transaction',
-                                outputs,
-                                transactionInfo,
-                                token,
-                                getValues,
-                                selectedFee,
-                                send: async () => {
-                                    let response: 'error' | 'success';
-                                    switch (networkType) {
-                                        case 'bitcoin':
-                                            response = await sendBitcoinTransaction(
-                                                transactionInfo,
-                                            );
-                                            break;
-                                        case 'ethereum':
-                                            response = await sendEthereumTransaction(
-                                                getValues,
-                                                token,
-                                            );
-                                            break;
-                                        case 'ripple': {
-                                            response = await sendRippleTransaction(
-                                                getValues,
-                                                selectedFee,
-                                            );
-                                            break;
-                                        } // no default
-                                    }
-
-                                    if (response !== 'error') {
-                                        reset();
-                                    }
-                                },
-                            });
+                            // openModal({
+                            //     type: 'review-transaction',
+                            //     outputs,
+                            //     transactionInfo,
+                            //     token,
+                            //     getValues,
+                            //     selectedFee,
+                            //     send: async () => {
+                            //         let response: 'error' | 'success';
+                            //         switch (networkType) {
+                            //             case 'bitcoin':
+                            //                 response = await sendBitcoinTransaction(
+                            //                     transactionInfo,
+                            //                 );
+                            //                 break;
+                            //             case 'ethereum':
+                            //                 response = await sendEthereumTransaction(
+                            //                     getValues,
+                            //                     token,
+                            //                 );
+                            //                 break;
+                            //             case 'ripple': {
+                            //                 response = await sendRippleTransaction(
+                            //                     getValues,
+                            //                     selectedFee,
+                            //                 );
+                            //                 break;
+                            //             } // no default
+                            //         }
+                            //         if (response !== 'error') {
+                            //             reset();
+                            //         }
+                            //     },
+                            // });
                         }
                     }}
                 >

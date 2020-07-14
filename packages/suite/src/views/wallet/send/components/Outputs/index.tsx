@@ -38,10 +38,10 @@ export default () => {
     const { outputs } = useSendFormContext();
     return (
         <Wrapper>
-            {outputs.fields.map((output, index) => (
+            {outputs.map((output, index) => (
                 <OutputWrapper key={output.id} index={index}>
                     <Row>
-                        <Address outputId={index} outputsCount={outputs.fields.length} />
+                        <Address outputId={index} outputsCount={outputs.length} />
                     </Row>
                     <Row>
                         <Amount outputId={index} />
