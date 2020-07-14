@@ -26,7 +26,7 @@ const StyledInput = styled.input<Props>`
     outline: none;
     box-sizing: border-box;
     width: 100%;
-    height: ${props => (props.variant === 'small' ? '30px' : '48px')};
+    height: ${props => (props.variant === 'small' ? '32px' : '48px')};
     color: ${props => getStateColor(props.state)};
 
     &:read-only {
@@ -143,6 +143,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     state?: InputState;
     addonAlign?: 'left' | 'right';
     noError?: boolean;
+    noTopLabel?: boolean;
 }
 
 const Input = ({
@@ -169,6 +170,7 @@ const Input = ({
     isPartiallyHidden,
     addonAlign = 'left',
     noError = false,
+    noTopLabel = false,
     ...rest
 }: Props) => {
     const [isHovered, setIsHovered] = React.useState(false);
@@ -181,13 +183,15 @@ const Input = ({
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <Label>
-                <Left>{label}</Left>
-                <Right>
-                    {isHovered && <LabelAddon>{labelAddon}</LabelAddon>}
-                    {labelRight && <VisibleRightLabel>{labelRight}</VisibleRightLabel>}
-                </Right>
-            </Label>
+            {!noTopLabel && (
+                <Label>
+                    <Left>{label}</Left>
+                    <Right>
+                        {isHovered && <LabelAddon>{labelAddon}</LabelAddon>}
+                        {labelRight && <VisibleRightLabel>{labelRight}</VisibleRightLabel>}
+                    </Right>
+                </Label>
+            )}
             <InputWrapper>
                 <InputAddon align={addonAlign}>{innerAddon}</InputAddon>
                 {isPartiallyHidden && <Overlay />}

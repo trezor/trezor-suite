@@ -24,16 +24,16 @@ const StyledTextarea = styled.textarea<StyledTextareaProps>`
     width: ${props => (props.width ? `${props.width}px` : '100%')};
     padding: 10px;
     box-sizing: border-box;
-    border: solid 1px ${props => (props.state ? getStateColor(props.state) : colors.BLACK80)};
-    border-radius: 3px;
-    box-shadow: inset 0 3px 6px 0 ${colors.BLACK92};
+    border: solid 2px
+        ${props => (props.state ? getStateColor(props.state) : colors.NEUE_STROKE_GREY)};
+    border-radius: 4px;
     resize: none;
     outline: none;
     font-family: ${variables.FONT_FAMILY.TTHOVES};
     color: ${props => getStateColor(props.state)};
     background: ${colors.WHITE};
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
-    font-size: ${props => (props.value ? '16px' : '14px')};
+    font-size: ${variables.FONT_SIZE.SMALL};
     white-space: pre-wrap; /* css-3 */
     white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
     white-space: -pre-wrap; /* Opera 4-6 */
@@ -42,7 +42,6 @@ const StyledTextarea = styled.textarea<StyledTextareaProps>`
 
     &:read-only {
         background: ${colors.BLACK96};
-        box-shadow: none;
         color: ${colors.BLACK50};
     }
 
@@ -53,18 +52,6 @@ const StyledTextarea = styled.textarea<StyledTextareaProps>`
             box-shadow: none;
             color: ${colors.BLACK50};
             cursor: not-allowed;
-        `}
-
-    ${props =>
-        !props.disabled &&
-        !props.state &&
-        !props.readOnly &&
-        css`
-            &:hover,
-            &:focus,
-            &:active {
-                border-color: ${colors.BLACK50};
-            }
         `}
 
     ${props =>

@@ -24,6 +24,7 @@ export default ({ isVisible }: { isVisible: boolean }) => {
     return (
         <Wrapper isVisible={isVisible}>
             <Input
+                noTopLabel
                 variant="small"
                 name="customFee"
                 width={150}

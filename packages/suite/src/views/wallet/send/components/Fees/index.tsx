@@ -31,7 +31,11 @@ const Left = styled.div`
 `;
 
 const Right = styled.div``;
-const Middle = styled.div``;
+
+const Middle = styled.div`
+    display: flex;
+    justify-content: flex-start;
+`;
 
 const RightContent = styled.div`
     display: flex;
