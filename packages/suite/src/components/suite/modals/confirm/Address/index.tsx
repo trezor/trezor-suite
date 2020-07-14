@@ -19,7 +19,7 @@ const Address = styled.div`
     font-size: 20px;
     padding: 20px;
     margin-bottom: 40px;
-    font-variant-numeric: tabular-nums;
+    font-variant-numeric: tabular-nums slashed-zero;
 `;
 
 const Row = styled.div`
