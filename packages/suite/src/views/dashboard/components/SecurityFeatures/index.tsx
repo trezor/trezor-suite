@@ -58,7 +58,7 @@ const SecurityFeatures = ({
 
     const backupData = needsBackup
         ? {
-              variant: 'secondary',
+              variant: 'primary',
               icon: 'BACKUP',
               heading: <Translation id="TR_BACKUP_YOUR_DEVICE" />,
               description: <Translation id="TR_RECOVERY_SEED_IS_OFFLINE" />,
@@ -74,8 +74,8 @@ const SecurityFeatures = ({
               },
           }
         : {
-              variant: 'primary',
-              icon: 'CHECK',
+              variant: 'secondary',
+              icon: 'BACKUP',
               heading: <Translation id="TR_BACKUP_SEED_CREATED_SUCCESSFULLY" />,
               cta: {
                   label: <Translation id="TR_CHECK_SEED_IN_SETTINGS" />,
@@ -91,7 +91,7 @@ const SecurityFeatures = ({
 
     const pinData = !pinEnabled
         ? {
-              variant: 'secondary',
+              variant: 'primary',
               icon: 'PIN',
               heading: <Translation id="TR_PIN" />,
               description: <Translation id="TR_SET_STRONG_PIN_NUMBER_AGAINST" />,
@@ -108,8 +108,8 @@ const SecurityFeatures = ({
               },
           }
         : {
-              variant: 'primary',
-              icon: 'CHECK',
+              variant: 'secondary',
+              icon: 'PIN',
               heading: <Translation id="TR_DEVICE_PIN_PROTECTION_ENABLED" />,
               cta: {
                   label: <Translation id="TR_CHANGE_PIN_IN_SETTINGS" />,
@@ -125,7 +125,7 @@ const SecurityFeatures = ({
 
     const hiddenWalletData = !hiddenWalletCreated
         ? {
-              variant: 'secondary',
+              variant: 'primary',
               icon: 'WALLET_HIDDEN',
               heading: <Translation id="TR_PASSPHRASE_PROTECTION" />,
               description: <Translation id="TR_ENABLE_PASSPHRASE_DESCRIPTION" />,
@@ -145,8 +145,8 @@ const SecurityFeatures = ({
               },
           }
         : {
-              variant: 'primary',
-              icon: 'CHECK',
+              variant: 'secondary',
+              icon: 'WALLET_HIDDEN',
               heading: <Translation id="TR_PASSPHRASE_PROTECTION_ENABLED" />,
               cta: {
                   label: <Translation id="TR_CREATE_HIDDEN_WALLET" />,
@@ -163,7 +163,7 @@ const SecurityFeatures = ({
 
     const discreetModeData = !discreetModeCompleted
         ? {
-              variant: 'secondary',
+              variant: 'primary',
               icon: 'DISCREET',
               heading: <Translation id="TR_DISCREET_MODE" />,
               description: <Translation id="TR_TRY_TO_TEMPORARILY_HIDE" />,
@@ -179,8 +179,8 @@ const SecurityFeatures = ({
               },
           }
         : {
-              variant: 'primary',
-              icon: 'CHECK',
+              variant: 'secondary',
+              icon: 'DISCREET',
               heading: <Translation id="TR_DISCREET_MODE_TRIED_OUT" />,
               cta: {
                   label: discreetMode ? (
@@ -230,9 +230,10 @@ const SecurityFeatures = ({
             />
             <Content>
                 {!isHidden &&
-                    cards.map(card => (
+                    cards.map((card, i) => (
                         <SecurityCard
-                            key={`${card.heading}-${card.variant}`}
+                            // eslint-disable-next-line react/no-array-index-key
+                            key={`${i}`}
                             variant={isDisabled ? 'disabled' : card.variant}
                             icon={card.icon}
                             heading={card.heading}

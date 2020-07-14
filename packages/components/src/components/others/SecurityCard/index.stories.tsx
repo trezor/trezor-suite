@@ -5,8 +5,8 @@ import { SecurityCard } from './index';
 import { variables, colors } from '../../../index';
 
 const Wrapper = styled.div`
+    display: flex;
     margin: 10px 0;
-    height: 400px;
     display: flex;
     flex-wrap: wrap;
     background: ${colors.NEUE_BG_GRAY};

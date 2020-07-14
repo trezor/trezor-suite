@@ -4,13 +4,13 @@ import { CardProps, Card, colors, variables, IconProps, Icon, Button } from '../
 
 const Wrapper = styled.div`
     display: flex;
-    border: 1px solid lime;
     flex-direction: column;
 `;
 
 const StyledCard = styled(Card)`
     display: flex;
     flex-direction: column;
+    align-items: center;
     min-height: 200px;
     padding: 10px;
     z-index: 9;
@@ -19,10 +19,9 @@ const StyledCard = styled(Card)`
 
 const Header = styled.div`
     display: flex;
-    border: 1px solid blue;
     width: 100%;
     min-height: 60px;
-    margin-bottom: -54px;
+    margin-bottom: -30px;
     justify-content: center;
 `;
 
@@ -37,6 +36,7 @@ const Circle = styled.div`
     justify-content: center;
     align-items: center;
     transition: background-color 0.7s ease-out;
+    position: relative;
 `;
 
 const Title = styled.div`
@@ -54,7 +54,6 @@ const Description = styled.div`
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
     text-align: center;
     width: 200px;
-    min-height: 40px;
     margin-top: 7px;
     margin-bottom: 14px;
 `;
@@ -70,6 +69,20 @@ const SecondaryAction = styled.div`
     align-items: center;
     flex: 1;
     justify-content: center;
+`;
+
+const CheckIconWrapper = styled.div`
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    right: -10px;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    top: 10px;
+    right: 8px;
+    background: ${colors.NEUE_BG_GREEN};
 `;
 
 const Line = styled.div`
@@ -93,15 +106,20 @@ export interface Props extends CardProps {
 }
 
 const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Props) => (
-    <Wrapper>
+    <Wrapper {...rest}>
         <Header>
             <Circle>
-                <Icon icon={icon} size={25} color={colors.NEUE_TYPE_DARK_GREY} />
+                <Icon icon={icon} size={32} color={colors.NEUE_TYPE_DARK_GREY} />
+                {variant === 'secondary' && (
+                    <CheckIconWrapper>
+                        <Icon icon="CHECK" color={colors.WHITE} size={14} />
+                    </CheckIconWrapper>
+                )}
             </Circle>
         </Header>
-        <StyledCard noPadding {...rest}>
+        <StyledCard noPadding>
             <Title>{heading}</Title>
-            {variant === 'primary' && <Description>{description}</Description>}
+            <Description>{description}</Description>
             {cta && variant === 'primary' && (
                 <PrimaryAction>
                     <Button
