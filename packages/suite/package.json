@@ -17,7 +17,7 @@
         "test-health": "jest -c jest.config.health.js"
     },
     "dependencies": {
-        "react-hook-form": "5.7.2",
+        "react-hook-form": "6.0.4",
         "@formatjs/intl-pluralrules": "^1.5.3",
         "@formatjs/intl-relativetimeformat": "^4.5.10",
         "@trezor/components": "^1.0.0",
@@ -64,6 +64,8 @@
     "devDependencies": {
         "@babel/plugin-syntax-dynamic-import": "^7.8.3",
         "@next/bundle-analyzer": "^9.2.1",
+        "@testing-library/react": "^10.4.6",
+        "@testing-library/react-hooks": "^3.3.0",
         "@trezor/translations-manager": "^1.0.0",
         "@types/debounce": "^1.2.0",
         "@types/react-text-truncate": "0.14.0",
