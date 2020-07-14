@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input, Textarea, Select, Checkbox, Switch } from '../../index';
+import { Input, Textarea, Select, Checkbox, Switch, SelectInput } from '../../index';
 import { storiesOf } from '@storybook/react';
 import { StoryColumn } from '../../support/Story';
 
@@ -35,7 +35,22 @@ storiesOf('Form', module).add(
                 <StoryColumn minWidth={520}>
                     <Heading>Input</Heading>
                     <SubHeading>Default</SubHeading>
-                    <Input value="Default input" dataTest="input-default" />
+                    <Input value="Default input with select" dataTest="input-default" />
+                    <Input
+                        value="Input with select"
+                        dataTest="input-select"
+                        innerAddon={
+                            <SelectInput
+                                value={{ label: 'BTC', value: 'BTC' }}
+                                options={[
+                                    { label: 'ETH', value: 'ETH' },
+                                    { label: 'XRP', value: 'XRP' },
+                                    { label: 'BCT', value: 'BCT' },
+                                    { label: 'UAN', value: 'UAN' },
+                                ]}
+                            />
+                        }
+                    />
                     <Input variant="small" value="Small input" dataTest="input-default-small" />
                     <Input state="error" value="Input with error" dataTest="input-default-error" />
                     <Input

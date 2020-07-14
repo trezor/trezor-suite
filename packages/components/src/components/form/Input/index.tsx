@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { colors, variables } from '../../../config';
-import { InputState, InputVariant, InputButton, TextAlign } from '../../../support/types';
+import { InputState, InputVariant, InputButton } from '../../../support/types';
 import { getStateColor } from '../../../utils';
 
 interface WrappedProps {
@@ -33,7 +33,6 @@ const StyledInput = styled.input<Props>`
     box-sizing: border-box;
     width: 100%;
     height: ${props => (props.variant === 'small' ? '30px' : '48px')};
-    text-align: ${props => props.align || 'left'};
     color: ${props => getStateColor(props.state)};
 
     &:read-only {
@@ -72,14 +71,13 @@ const Left = styled.div`
 
 const Right = styled.div``;
 
-const InputAddon = styled.div<Props>`
+const InputAddon = styled.div<{ align: 'left' | 'right' }>`
     position: absolute;
     top: 1px;
     bottom: 1px;
     display: flex;
     align-items: center;
     z-index: 2;
-    transition: all 0.5s;
 
     ${props =>
         props.align === 'left' &&
@@ -135,7 +133,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     wrapperProps?: Record<string, any>;
     type?: string;
     state?: InputState;
-    align?: TextAlign;
+    addonAlign?: 'left' | 'right';
     noError?: boolean;
 }
 
@@ -161,7 +159,7 @@ const Input = ({
     isLoading,
     dataTest,
     isPartiallyHidden,
-    align = 'left',
+    addonAlign = 'left',
     noError = false,
     ...rest
 }: Props) => {
@@ -183,7 +181,7 @@ const Input = ({
                 </Right>
             </Label>
             <InputWrapper>
-                <InputAddon align={align}>{innerAddon}</InputAddon>
+                <InputAddon align={addonAlign}>{innerAddon}</InputAddon>
                 {isPartiallyHidden && <Overlay />}
                 <StyledInput
                     type={type}
@@ -196,7 +194,6 @@ const Input = ({
                     disabled={isDisabled}
                     width={width}
                     monospace={monospace}
-                    align={align}
                     ref={innerRef}
                     data-lpignore="true"
                     {...rest}
