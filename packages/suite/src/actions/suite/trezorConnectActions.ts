@@ -67,9 +67,9 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         const connectSrc =
             process.env.SUITE_TYPE === 'desktop'
                 ? resolveStaticPath('connect/')
-                : // : 'https://connect.trezor.io/8/';
-                  //   'https://localhost:8088/';
-                  'https://connect.corp.sldev.cz/feat/zcash-heartwood/';
+                : 'https://connect.trezor.io/8/';
+        // 'https://localhost:8088/';
+        // 'https://connect.corp.sldev.cz/develop/';
 
         await TrezorConnect.init({
             connectSrc,
@@ -81,15 +81,6 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             manifest: {
                 email: 'info@trezor.io',
                 appUrl: '@trezor/suite',
-            },
-        });
-
-        // todo: remove after tested
-        TrezorConnect.blockchainSetCustomBackend({
-            coin: 'taz',
-            blockchainLink: {
-                type: 'blockbook',
-                url: ['https://blockbook-dev.corp.sldev.cz:19132/'],
             },
         });
 

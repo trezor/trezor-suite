@@ -22,5 +22,4 @@ export const COINS = {
     xrp: require('../../../images/coins/xrp.svg'),
     xtz: require('../../../images/coins/xtz.svg'),
     zec: require('../../../images/coins/zec.svg'),
-    taz: require('../../../images/coins/zec.svg'),
 };

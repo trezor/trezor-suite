@@ -161,10 +161,6 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
             signEnhancement = ZEC_SIGN_ENHANCEMENT_LEGACY;
         }
     }
-    // todo: remove after testing
-    if (account.symbol === 'taz') {
-        signEnhancement = ZEC_SIGN_ENHANCEMENT;
-    }
 
     // connect undefined amount hotfix (not for zcash)
     inputs.forEach(input => {
