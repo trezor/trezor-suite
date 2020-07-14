@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { AccountLabeling } from '@suite-components';
 import * as suiteActions from '@suite-actions/suiteActions';
@@ -8,6 +9,10 @@ import * as accountUtils from '@wallet-utils/accountUtils';
 import * as transactionUtils from '@wallet-utils/transactionUtils';
 import { AppState, Dispatch } from '@suite-types';
 import { ViewProps } from '../index';
+
+const TabularNums = styled.span`
+    font-variant-numeric: tabular-nums;
+`;
 
 const mapStateToProps = (state: AppState) => ({
     devices: state.devices,
@@ -53,7 +58,7 @@ export default (View: React.ComponentType<ViewProps>, props: StrictViewProps) =>
                 : 0;
 
         props.message.values = {
-            amount: notification.formattedAmount,
+            amount: <TabularNums>{notification.formattedAmount}</TabularNums>,
             account: <AccountLabeling account={found} />,
             confirmations,
         };

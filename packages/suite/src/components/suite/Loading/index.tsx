@@ -8,6 +8,10 @@ interface Props extends ModalProps {
     imageProps?: React.ImgHTMLAttributes<HTMLImageElement>;
 }
 
+const StyledModal = styled(Modal)`
+    margin: auto;
+`;
+
 const LoaderWrapper = styled.div`
     display: flex;
     flex: 1;
@@ -17,11 +21,11 @@ const LoaderWrapper = styled.div`
 `;
 
 const Loading = ({ imageProps, ...props }: Props) => (
-    <Modal useFixedWidth={false} {...props}>
+    <StyledModal useFixedWidth={false} {...props}>
         <LoaderWrapper data-test="@suite/loading">
             <Image width={80} height={80} image="SPINNER" {...imageProps} />
         </LoaderWrapper>
-    </Modal>
+    </StyledModal>
 );
 
 export default Loading;
