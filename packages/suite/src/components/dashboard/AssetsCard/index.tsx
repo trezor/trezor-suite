@@ -2,35 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { NETWORKS } from '@wallet-config';
+import { DISCOVERY } from '@wallet-actions/constants';
 import Asset from './components/Asset';
 import { Account } from '@wallet-types';
-import { colors, variables, Loader, Icon } from '@trezor/components';
+import { Button, colors, variables, Loader, Icon } from '@trezor/components';
 import { Card, Translation } from '@suite-components';
-import { CARD_PADDING_SIZE } from '@suite/constants/suite/layout';
-import { useDiscovery } from '@suite-hooks';
+import { useDiscovery, useActions, useDevice } from '@suite-hooks';
 import { useAccounts } from '@wallet-hooks';
-
-// const Header = styled.div`
-//     display: flex;
-//     border-radius: 6px 6px 0px 0px;
-//     padding: 10px ${CARD_PADDING_SIZE};
-// `;
-
-// const HeaderTitle = styled.div`
-//     flex: 1;
-//     font-size: ${variables.FONT_SIZE.TINY};
-//     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-//     color: ${colors.BLACK50};
-//     text-transform: uppercase;
-//     display: grid;
-//     grid-gap: 10px;
-
-//     grid-template-columns: 1fr 1fr 1fr;
-
-//     /* @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-//         grid-template-columns: 1fr 1fr 1fr;
-//     } */
-// `;
+import Section from '../Section';
+import * as modalActions from '@suite-actions/modalActions';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -39,7 +19,7 @@ const StyledCard = styled(Card)`
 
 // padding for loader need to math with first row height
 const InfoMessage = styled.div`
-    padding: 14px 0px;
+    padding: 16px 25px;
     display: flex;
     color: ${colors.RED};
     font-size: ${variables.FONT_SIZE.TINY};
@@ -68,15 +48,28 @@ const Grid = styled.div`
     display: grid;
     overflow: hidden;
     grid-template-columns: 2fr 2fr 1fr;
+`;
 
-    /* @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        grid-template-columns: 1fr 1fr 1fr;
-    } */
+const NewAccountButton = styled(Button)`
+    margin-left: 20px;
 `;
 
 const AssetsCard = () => {
     const { discovery, getDiscoveryStatus } = useDiscovery();
+    const { device } = useDevice();
     const { accounts } = useAccounts(discovery);
+    const { openModal } = useActions({
+        openModal: modalActions.openModal,
+    });
+
+    // TODO: used at multiple places, extract to more general hook or something (along with func for opening add-account modal)
+    const discoveryIsRunning = discovery ? discovery.status <= DISCOVERY.STATUS.STOPPING : false;
+    const isAddingAccountDisabled =
+        discoveryIsRunning ||
+        !device ||
+        !device.connected ||
+        device.authConfirm ||
+        device.authFailed;
 
     const assets: { [key: string]: Account[] } = {};
     accounts.forEach(a => {
@@ -93,7 +86,29 @@ const AssetsCard = () => {
     const isError = discoveryStatus && discoveryStatus.status === 'exception' && !networks.length;
 
     return (
-        <>
+        <Section
+            heading={
+                <>
+                    My Assets
+                    <NewAccountButton
+                        variant="tertiary"
+                        icon="PLUS"
+                        isDisabled={isAddingAccountDisabled}
+                        onClick={
+                            device
+                                ? () =>
+                                      openModal({
+                                          type: 'add-account',
+                                          device,
+                                      })
+                                : undefined
+                        }
+                    >
+                        <Translation id="TR_ADD_ACCOUNT" />
+                    </NewAccountButton>
+                </>
+            }
+        >
             <StyledCard>
                 <Grid>
                     <Header>
@@ -148,7 +163,7 @@ const AssetsCard = () => {
                     </InfoMessage>
                 )}
             </StyledCard>
-        </>
+        </Section>
     );
 };
 

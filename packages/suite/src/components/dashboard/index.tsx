@@ -3,6 +3,7 @@ import AssetsCard from './AssetsCard';
 import NewsFeed from './NewsFeed';
 import PortfolioCard from './PortfolioCard';
 import SecurityFeatures from './SecurityFeatures/Container';
+import Section from './Section';
 
 // ConnectionStatusCard,
-export { AssetsCard, NewsFeed, PortfolioCard, SecurityFeatures };
+export { AssetsCard, NewsFeed, PortfolioCard, SecurityFeatures, Section };
