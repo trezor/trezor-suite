@@ -24,28 +24,22 @@ const selectStyle = (
         base: Record<string, any>,
         { isDisabled, isFocused }: { isDisabled: boolean; isFocused: boolean }
     ) => {
-        let backgroundImage = isFocused
-            ? `linear-gradient(to top, ${colors.WHITE}, ${colors.BLACK96})`
-            : `linear-gradient(to top, ${colors.BLACK96}, ${colors.WHITE})`;
-        if (isDisabled) {
-            backgroundImage = `linear-gradient(to top, ${colors.BLACK92}, ${colors.BLACK92})`;
-        }
-        if (isClean) {
-            backgroundImage = 'none';
-        }
         return {
             ...base,
             minHeight: 'initial',
             display: 'flex',
             alignItems: 'center',
+            fontSize: variables.FONT_SIZE.SMALL,
             height: variant === 'small' ? '36px' : '48px',
-            borderRadius: '3px',
-            borderColor: isClean ? 'white' : colors.BLACK80,
+            borderRadius: '4px',
+            borderWidth: '2px',
+            borderColor: colors.NEUE_STROKE_GREY,
             boxShadow: 'none',
-            backgroundImage,
             '&:hover, &:focus': {
                 cursor: 'pointer',
-                borderColor: isClean ? 'white' : colors.BLACK50,
+                borderRadius: '4px',
+                borderWidth: '2px',
+                borderColor: colors.NEUE_STROKE_GREY,
             },
         };
     },

@@ -1,7 +1,10 @@
 import React from 'react';
+import styled from 'styled-components';
 import ReactSelect, { components, Props as SelectProps } from 'react-select';
 import { colors, variables } from '../../../config';
 import { InputVariant } from '../../../support/types';
+
+const Wrapper = styled.div``;
 
 const selectStyle = (isSearchable: boolean, isHovered: boolean, minWidth = '50px') => ({
     singleValue: (base: Record<string, any>) => ({
@@ -44,6 +47,7 @@ const selectStyle = (isSearchable: boolean, isHovered: boolean, minWidth = '50px
             padding: 0,
             margin: 0,
             border: '0',
+            display: isHovered ? 'flex' : 'none',
         };
     },
     menu: (base: Record<string, any>) => ({
@@ -80,13 +84,13 @@ const SelectInput = ({
     const [isHovered, setIsHovered] = React.useState(false);
 
     return (
-        <ReactSelect
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            styles={selectStyle(isSearchable, isHovered, minWidth)}
-            isSearchable={false}
-            {...props}
-        />
+        <Wrapper onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+            <ReactSelect
+                styles={selectStyle(isSearchable, isHovered, minWidth)}
+                isSearchable={false}
+                {...props}
+            />
+        </Wrapper>
     );
 };
 
