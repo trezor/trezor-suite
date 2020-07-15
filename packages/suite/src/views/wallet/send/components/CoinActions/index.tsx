@@ -23,6 +23,23 @@ const Line = styled.div`
     border-top: 1px solid ${colors.NEUE_BG_GRAY};
 `;
 
+const Box = styled.div`
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+`;
+
+const Left = styled.div`
+    display: flex;
+    flex: 1;
+`;
+
+const Right = styled.div`
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+`;
+
 export default () => {
     const {
         account: { networkType },
@@ -34,7 +51,14 @@ export default () => {
             <Content>
                 {networkType === 'ripple' && <AddDestinationTag />}
                 {networkType === 'ethereum' && <AddData />}
-                {networkType === 'bitcoin' && <AddRecipient />}
+                {networkType === 'bitcoin' && (
+                    <Box>
+                        <Left />
+                        <Right>
+                            <AddRecipient />
+                        </Right>
+                    </Box>
+                )}
             </Content>
         </Wrapper>
     );
