@@ -79,7 +79,6 @@ const CheckIconWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    right: -10px;
     border-radius: 50%;
     width: 16px;
     height: 16px;

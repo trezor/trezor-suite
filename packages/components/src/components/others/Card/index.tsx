@@ -5,7 +5,6 @@ import { colors } from '../../../config';
 const Wrapper = styled.div<{ paddingSize: string }>`
     display: flex;
     flex-direction: column;
-    display: flex;
     border-radius: 6px;
     padding: ${props => props.paddingSize};
     background: ${colors.WHITE};
