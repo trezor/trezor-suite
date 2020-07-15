@@ -89,7 +89,7 @@ const AssetsCard = () => {
         <Section
             heading={
                 <>
-                    My Assets
+                    <Translation id="TR_MY_ASSETS" />
                     <NewAccountButton
                         variant="tertiary"
                         icon="PLUS"
