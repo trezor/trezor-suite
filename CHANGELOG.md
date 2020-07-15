@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [20.7.1-beta]
 
 ### Added
-- Send: Compability with Zcash Heartwood upgrade
+- Send: Compatibility with Zcash Heartwood upgrade
 
 ### Changed
 - Update trezor-connect, electron dependencies
