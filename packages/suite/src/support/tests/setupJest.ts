@@ -167,6 +167,7 @@ const getWalletTransaction = (t: Partial<WalletAccountTransaction>): WalletAccou
                 addresses: ['36JkLACrdxARqXXffZk91V9W6SJvghKaVK'],
                 amount: '0.00006497',
                 isAddress: true,
+                n: 0,
             },
         ],
         tokens: [],
