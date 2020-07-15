@@ -145,6 +145,7 @@ export default ({ exception, discovery }: Props) => {
                         {
                             action: () => dispatch(routerActions.goto('settings-wallet')),
                             variant: 'secondary',
+                            icon: 'SETTINGS',
                             label: 'TR_COIN_SETTINGS',
                         },
                         {
