@@ -144,6 +144,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     addonAlign?: 'left' | 'right';
     noError?: boolean;
     noTopLabel?: boolean;
+    labelAddonIsVisible?: boolean;
 }
 
 const Input = ({
@@ -165,6 +166,7 @@ const Input = ({
     autoCapitalize = 'off',
     monospace,
     wrapperProps,
+    labelAddonIsVisible,
     isLoading,
     dataTest,
     isPartiallyHidden,
@@ -187,7 +189,8 @@ const Input = ({
                 <Label>
                     <Left>{label}</Left>
                     <Right>
-                        {isHovered && <LabelAddon>{labelAddon}</LabelAddon>}
+                        {labelAddonIsVisible && <LabelAddon>{labelAddon}</LabelAddon>}
+                        {isHovered && !labelAddonIsVisible && <LabelAddon>{labelAddon}</LabelAddon>}
                         {labelRight && <VisibleRightLabel>{labelRight}</VisibleRightLabel>}
                     </Right>
                 </Label>

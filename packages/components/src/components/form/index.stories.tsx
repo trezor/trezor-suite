@@ -115,6 +115,7 @@ storiesOf('Form', module).add(
                         value="Input label with success"
                         dataTest="input-success-label"
                         bottomText="bottom text"
+                        labelAddonIsVisible
                         label={<Label>Action</Label>}
                         labelRight={<Label>label right</Label>}
                         labelAddon={
