@@ -93,7 +93,7 @@ const IOBoxAddress = styled.div`
     color: ${colors.BLACK17};
     overflow: hidden;
     text-overflow: ellipsis;
-
+    font-variant-numeric: tabular-nums slashed-zero;
     margin-bottom: 10px;
 `;
 

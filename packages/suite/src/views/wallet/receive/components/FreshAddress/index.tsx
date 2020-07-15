@@ -38,6 +38,7 @@ const StyledInput = styled(Input)`
 
 const ButtonContainer = styled.div`
     padding-top: 32px;
+    font-variant-numeric: tabular-nums slashed-zero;
 `;
 
 const StyledButton = styled(Button)`
