@@ -5,15 +5,16 @@ import { SecurityCard } from './index';
 import { variables, colors } from '../../../index';
 
 const Wrapper = styled.div`
-    display: flex;
-    margin: 10px 0;
-    display: flex;
-    flex-wrap: wrap;
+    width: 100%;
+    display: grid;
+    padding: 20px;
+    grid-gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     background: ${colors.NEUE_BG_GRAY};
 `;
 
 const StyledSecurityCard = styled(SecurityCard)`
-    margin: 20px;
+    height: 100%;
 `;
 
 storiesOf('Others', module).add('Security Card', () => {
@@ -31,14 +32,13 @@ storiesOf('Others', module).add('Security Card', () => {
                 }}
             />
             <StyledSecurityCard
-                description="PIN Set strong PIN number against unauthorized access"
+                description="PIN Set strong PIN number against unauthorized access. PIN Set strong PIN number against unauthorized access"
                 variant="primary"
-                heading="PIN code created succesfully!"
+                heading="PIN"
                 icon="MEDIUM"
-                cta={{ label: 'view something' }}
+                cta={{ label: 'set pin' }}
             />
             <StyledSecurityCard
-                description="PIN Set strong PIN number against unauthorized access"
                 variant="secondary"
                 heading="PIN code created succesfully!"
                 icon="DASHBOARD"
