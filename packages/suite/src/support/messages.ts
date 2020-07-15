@@ -3527,6 +3527,10 @@ const definedMessages = defineMessages({
         id: 'TR_ADD_LABEL',
         defaultMessage: 'Add Label',
     },
+    TR_XRP_AMOUNT_RESERVE_EXPLANATION: {
+        id: 'TR_XRP_AMOUNT_RESERVE_EXPLANATION',
+        defaultMessage: 'TR_XRP_AMOUNT_RESERVE_EXPLANATION {reserve}',
+    },
 } as const);
 
 export default definedMessages;

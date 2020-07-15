@@ -2,7 +2,7 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 import validator from 'validator';
 import styled from 'styled-components';
-import { Input, Icon, Button, variables } from '@trezor/components';
+import { Input, Icon, Button, variables, Tooltip, colors } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
@@ -42,6 +42,10 @@ const Left = styled.div`
 
 const TokenBalance = styled.div`
     padding-right: 6px;
+`;
+
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
 `;
 
 const StyledTransferIcon = styled(Icon)`
@@ -130,6 +134,19 @@ export default ({ outputId }: { outputId: number }) => {
                             <Text>
                                 <Translation id="TR_AMOUNT" />
                             </Text>
+                            {networkType === 'ripple' && (
+                                <Tooltip
+                                    placement="top"
+                                    content={
+                                        <Translation
+                                            id="TR_XRP_AMOUNT_RESERVE_EXPLANATION"
+                                            values={{ reserve: `${reserve} XRP` }}
+                                        />
+                                    }
+                                >
+                                    <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
+                                </Tooltip>
+                            )}
                         </Label>
                     }
                     labelRight={
