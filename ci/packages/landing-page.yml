@@ -7,4 +7,28 @@ landing-page build:
     paths:
       - packages/landing-page/build
 
-# deploy is part of "suite-web deploy dev" job
+landing-page build-staging:
+    stage: build
+    script:
+        - yarn workspace @trezor/suite-web build
+    artifacts:
+        expire_in: 7 days
+        paths:
+            - packages/landing-pag/scripts/s3sync.sh
+            - packages/landing-pag/build
+
+landing-page deploy-staging:
+    stage: deploy to staging
+    dependencies:
+        - landing-page build-staging
+    environment:
+        name: ${CI_BUILD_REF_NAME}-staging
+        url: ${STAGING_SERVER_URL}
+    before_script: []
+    when: manual
+    script:
+        - source ${STAGING_DEPLOY_KEYFILE}
+        - cd packages/landing-pag
+        - ./scripts/s3sync.sh stage beta
+    tags:
+        - deploy
