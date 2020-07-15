@@ -2,25 +2,12 @@ import { Dropbox } from 'dropbox';
 import { METADATA } from '@suite-actions/constants';
 import { Deferred, createDeferred } from '@suite-utils/deferred';
 import { AbstractMetadataProvider } from '@suite-types/metadata';
+import { urlHashParams } from '@suite-utils/metadata';
 
 const WINDOW_TITLE = 'DropboxAuthPopup';
 const WINDOW_WIDTH = 600;
 const WINDOW_HEIGHT = 720;
 const WINDOW_PROPS = `width=${WINDOW_WIDTH},height=${WINDOW_HEIGHT},dialog=yes,dependent=yes,scrollbars=yes,location=yes`;
-
-const urlHashParams = (hash: string) => {
-    const result: { [param: string]: string } = {};
-    if (!hash) return result;
-    if (hash[0] === '#') {
-        hash = hash.substring(1, hash.length);
-    }
-    const parts = hash.split('&');
-    parts.forEach(part => {
-        const [key, value] = part.split('=');
-        result[key] = decodeURIComponent(value);
-    });
-    return result;
-};
 
 export const getOauthToken = (url: string) => {
     const dfd: Deferred<string> = createDeferred();
@@ -78,6 +65,8 @@ class DropboxProvider implements AbstractMetadataProvider {
         const url = this.client.getAuthenticationUrl(METADATA.OAUTH_FILE, 'TODO:RandomToken');
         try {
             const token = await getOauthToken(url);
+            console.log('dropbox token', token);
+
             this.client.setAccessToken(token);
             this.connected = true;
             return true;
@@ -112,6 +101,8 @@ class DropboxProvider implements AbstractMetadataProvider {
     }
 
     async setFileContent(file: string, content: Buffer) {
+        console.log('dropbox setFileContent', file);
+
         try {
             const blob = new Blob([content], { type: 'text/plain;charset=UTF-8' });
             await this.client.filesUpload({
@@ -137,7 +128,6 @@ class DropboxProvider implements AbstractMetadataProvider {
     async getCredentials() {
         try {
             const account = await this.client.usersGetCurrentAccount();
-            console.warn('DROPBOXUSER', account);
             return {
                 type: 'dropbox',
                 token: this.client.getAccessToken(),
