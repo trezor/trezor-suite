@@ -11,7 +11,6 @@ const StyledCard = styled(Card)`
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 200px;
     padding: 10px;
     z-index: 9;
     flex: 1;
@@ -99,7 +98,7 @@ const Line = styled.div`
 `;
 
 export interface Props extends CardProps {
-    variant: 'primary' | 'secondary' | 'disabled';
+    variant: 'primary' | 'secondary';
     icon: IconProps['icon'];
     heading: React.ReactNode;
     description?: React.ReactNode;
@@ -113,6 +112,7 @@ export interface Props extends CardProps {
 
 const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Props) => (
     <Wrapper {...rest}>
+        {console.log('cta', cta)}
         <Header>
             <Circle>
                 <Icon icon={icon} size={32} color={colors.NEUE_TYPE_DARK_GREY} />

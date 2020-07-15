@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Button, SecurityCard, SecurityCardProps } from '@trezor/components';
+import { Button, SecurityCard, SecurityCardProps, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { Props } from './Container';
 import { AcquiredDevice } from '@suite-types';
@@ -16,6 +16,13 @@ const Content = styled.div`
     display: grid;
     grid-gap: 20px;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        grid-template-columns: 1fr 1fr;
+    }
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
 `;
 
 const SecurityFeatures = ({
@@ -230,17 +237,23 @@ const SecurityFeatures = ({
             />
             <Content>
                 {!isHidden &&
-                    cards.map((card, i) => (
-                        <SecurityCard
-                            // eslint-disable-next-line react/no-array-index-key
-                            key={`${i}`}
-                            variant={isDisabled ? 'disabled' : card.variant}
-                            icon={card.icon}
-                            heading={card.heading}
-                            description={card.description}
-                            cta={card.cta}
-                        />
-                    ))}
+                    cards.map((card, i) => {
+                        const ctaObject = card.cta
+                            ? { ...card.cta, isDisabled: !!isDisabled }
+                            : undefined;
+
+                        return (
+                            <SecurityCard
+                                // eslint-disable-next-line react/no-array-index-key
+                                key={`${i}`}
+                                variant={card.variant}
+                                icon={card.icon}
+                                heading={card.heading}
+                                description={card.description}
+                                cta={ctaObject}
+                            />
+                        );
+                    })}
             </Content>
         </Section>
     );
