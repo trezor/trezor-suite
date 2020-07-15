@@ -9,7 +9,6 @@ import Header from '../Header';
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    margin-top: 64px;
 `;
 
 const Posts = styled.div`

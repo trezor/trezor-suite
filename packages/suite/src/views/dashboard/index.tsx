@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 
 const Divider = styled.div`
     display: flex;
-    margin-bottom: 20px;
+    margin-bottom: 64px;
 `;
 
 export default () => {

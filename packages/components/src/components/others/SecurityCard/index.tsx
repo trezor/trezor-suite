@@ -14,6 +14,7 @@ const StyledCard = styled(Card)`
     min-height: 200px;
     padding: 10px;
     z-index: 9;
+    flex: 1;
     transition: background-color 0.7s ease-out;
 `;
 
@@ -58,16 +59,19 @@ const Description = styled.div`
     margin-bottom: 14px;
 `;
 
-const PrimaryAction = styled.div`
+const Footer = styled.div`
     display: flex;
-    justify-self: flex-end;
-`;
-
-const SecondaryAction = styled.div`
-    display: flex;
+    width: 100%;
     flex-direction: column;
     align-items: center;
-    flex: 1;
+    justify-content: center;
+    margin-top: auto;
+`;
+
+const Action = styled.div`
+    display: flex;
+    height: 40px;
+    align-items: center;
     justify-content: center;
 `;
 
@@ -86,10 +90,12 @@ const CheckIconWrapper = styled.div`
 `;
 
 const Line = styled.div`
+    display: flex;
     width: 100%;
-    height: 2px;
-    margin: 22px 0;
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+    height: 1px;
+    margin: 10px 0;
+    background: ${colors.NEUE_STROKE_GREY};
+    /* border-top: 1px solid ${colors.NEUE_STROKE_GREY}; */
 `;
 
 export interface Props extends CardProps {
@@ -120,38 +126,44 @@ const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Pro
         <StyledCard noPadding>
             <Title>{heading}</Title>
             <Description>{description}</Description>
-            {cta && variant === 'primary' && (
-                <PrimaryAction>
-                    <Button
-                        fullWidth
-                        variant="secondary"
-                        isDisabled={cta.isDisabled}
-                        onClick={cta.action}
-                        {...(cta.dataTest
-                            ? { 'data-test': `@dashboard/security-card/${cta.dataTest}/button` }
-                            : {})}
-                    >
-                        {cta.label}
-                    </Button>
-                </PrimaryAction>
-            )}
-            {cta && variant === 'secondary' && (
-                <SecondaryAction>
-                    <Line />
-                    <Button
-                        variant="tertiary"
-                        isDisabled={cta.isDisabled}
-                        onClick={cta.action}
-                        icon="ARROW_RIGHT"
-                        alignIcon="right"
-                        {...(cta.dataTest
-                            ? { 'data-test': `@dashboard/security-card/${cta.dataTest}/button` }
-                            : {})}
-                    >
-                        {cta.label}
-                    </Button>
-                </SecondaryAction>
-            )}
+            <Footer>
+                {cta && variant === 'primary' && (
+                    <Action>
+                        <Button
+                            fullWidth
+                            variant="secondary"
+                            isDisabled={cta.isDisabled}
+                            onClick={cta.action}
+                            {...(cta.dataTest
+                                ? { 'data-test': `@dashboard/security-card/${cta.dataTest}/button` }
+                                : {})}
+                        >
+                            {cta.label}
+                        </Button>
+                    </Action>
+                )}
+                {cta && variant === 'secondary' && (
+                    <>
+                        <Line />
+                        <Action>
+                            <Button
+                                variant="tertiary"
+                                isDisabled={cta.isDisabled}
+                                onClick={cta.action}
+                                icon="ARROW_RIGHT"
+                                alignIcon="right"
+                                {...(cta.dataTest
+                                    ? {
+                                          'data-test': `@dashboard/security-card/${cta.dataTest}/button`,
+                                      }
+                                    : {})}
+                            >
+                                {cta.label}
+                            </Button>
+                        </Action>
+                    </>
+                )}
+            </Footer>
         </StyledCard>
     </Wrapper>
 );
