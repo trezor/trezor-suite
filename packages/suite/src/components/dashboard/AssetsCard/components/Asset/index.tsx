@@ -2,19 +2,11 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { Network } from '@wallet-types';
 import { CoinLogo, Icon, variables, colors } from '@trezor/components';
-import {
-    NoRatesTooltip,
-    HiddenPlaceholder,
-    Badge,
-    FiatValue,
-    Translation,
-} from '@suite-components';
-import LastWeekGraph from '../LastWeekGraph';
+import { FiatValue, Ticker, Translation } from '@suite-components';
 import { CoinBalance } from '@wallet-components';
-import { useFiatValue } from '@wallet-hooks';
 
 const LogoWrapper = styled.div`
-    padding-right: 6px;
+    padding-right: 12px;
     display: flex;
     align-items: center;
 `;
@@ -26,150 +18,109 @@ const Coin = styled.div`
 `;
 
 const Symbol = styled.div`
-    color: ${colors.BLACK50};
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
     display: flex;
     align-items: center;
     padding-top: 2px;
     font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-indent: 6px;
 `;
 
-const Col = styled.div<{ failed?: boolean; isFirstRow?: boolean }>`
+const Col = styled.div<{ isLastRow?: boolean }>`
     display: flex;
     align-items: center;
-    padding: 12px 4px;
-    border-top: 2px solid ${colors.BLACK96};
+    padding: 16px 0px;
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    padding-right: 20px;
 
     ${props =>
-        props.failed &&
-        props.isFirstRow &&
+        props.isLastRow &&
         css`
-            &:nth-child(-n + 2) {
-                /* first row with failed account has only 2 cols */
-                border-top: none;
-            }
-        `}
-    ${props =>
-        !props.failed &&
-        props.isFirstRow &&
-        css`
-            &:nth-child(-n + 5) {
-                /* first row has 5 cols */
-                border-top: none;
-            }
+            border-bottom: none;
         `}
 `;
 
 const CoinNameWrapper = styled(Col)`
     overflow: hidden;
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    margin-left: 25px;
     text-overflow: ellipsis;
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        grid-column: 1 / 2;
-    }
+
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        grid-column: 1 / 4;
+        grid-column: 1 / 3;
+        border-bottom: none;
     }
 `;
 
 const FailedCol = styled(Col)`
-    grid-column: 2 / 6;
-    justify-content: flex-end;
     color: ${colors.RED};
-    font-size: ${variables.FONT_SIZE.TINY};
+    font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        border-top: none;
+        grid-column: 1 / 3;
+        margin-left: 25px;
+        border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
     }
 `;
 
-const CryptoValueWrapper = styled(Col)`
+const CryptoBalanceWrapper = styled(Col)`
     flex: 1;
-    justify-content: flex-end;
-    padding-right: 32px;
-    text-align: right;
     white-space: nowrap;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    /* overflow: hidden; */
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        grid-column: 2 / 2;
-    }
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        grid-column: 1 / 1;
-        border-top: none;
+        grid-column: 1 / 3;
+        margin-left: 25px;
+        border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
     }
 `;
 
-const FiatValueWrapper = styled(Col)`
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        grid-column: 3 / 3;
-        justify-content: flex-end;
-    }
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        grid-column: 2 / 4;
-        justify-content: flex-end;
-        text-align: right;
-        border-top: none;
-    }
+const FiatBalanceWrapper = styled.span`
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    margin-left: 0.5ch;
 `;
 
-const GraphWrapper = styled(Col)`
-    flex: 1;
-    width: 100%;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        max-width: 180px;
-    }
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        grid-column: 1 / 1;
-        border-top: none;
-    }
-`;
-
-const FiatRateWrapper = styled(Col)`
-    justify-content: flex-end;
+const ExchangeRateWrapper = styled(Col)`
     font-variant-numeric: tabular-nums;
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        grid-column: 3 / 3;
-        border-top: none;
-    }
+    margin-right: 25px;
+    padding-right: 0px;
 `;
 
 interface Props {
     network: Network;
     failed: boolean;
     cryptoValue: string;
-    isFirstRow?: boolean;
+    isLastRow?: boolean;
 }
 
-// TODO: there is no point in using grid for < SM/MD/LG screens, where we need to wrap one asset to multiple rows (making basically two cols per item).
-// It could be done much easier wth just flexbox.
-
-const Asset = React.memo(({ network, failed, cryptoValue, isFirstRow }: Props) => {
-    const { symbol, name, testnet } = network;
-    const { fiat, localCurrency } = useFiatValue();
-
-    // get graph data only for mainnet and not failed accounts
-    const lastWeekData =
-        !testnet && !failed ? fiat.coins.find(r => r.symbol === symbol)?.lastWeek?.tickers : [];
-
-    // display one of view:
-    // - failed
-    // - testnet
-    // - mainnet
-
+const Asset = React.memo(({ network, failed, cryptoValue, isLastRow }: Props) => {
+    const { symbol, name } = network;
     return (
         <>
-            <CoinNameWrapper isFirstRow={isFirstRow} failed={failed}>
+            <CoinNameWrapper isLastRow={isLastRow}>
                 <LogoWrapper>
-                    <CoinLogo symbol={symbol} size={16} />
+                    <CoinLogo symbol={symbol} size={24} />
                 </LogoWrapper>
                 <Coin>{name}</Coin>
                 <Symbol>{symbol.toUpperCase()}</Symbol>
             </CoinNameWrapper>
-            {failed && (
-                <FailedCol failed={failed} isFirstRow={isFirstRow}>
+            {!failed ? (
+                <CryptoBalanceWrapper isLastRow={isLastRow}>
+                    <CoinBalance value={cryptoValue} symbol={symbol} />
+                    <FiatBalanceWrapper>
+                        <FiatValue
+                            amount={cryptoValue}
+                            symbol={symbol}
+                            showApproximationIndicator
+                        />
+                    </FiatBalanceWrapper>
+                </CryptoBalanceWrapper>
+            ) : (
+                <FailedCol isLastRow={isLastRow}>
                     <Translation id="TR_DASHBOARD_ASSET_FAILED" />
                     <Icon
                         style={{ paddingLeft: '4px', paddingBottom: '2px' }}
@@ -179,44 +130,9 @@ const Asset = React.memo(({ network, failed, cryptoValue, isFirstRow }: Props) =
                     />
                 </FailedCol>
             )}
-            {!failed && (
-                <>
-                    <CryptoValueWrapper isFirstRow={isFirstRow}>
-                        <CoinBalance value={cryptoValue} symbol={symbol} />
-                    </CryptoValueWrapper>
-                    <FiatValueWrapper isFirstRow={isFirstRow}>
-                        <HiddenPlaceholder>
-                            <FiatValue
-                                amount={cryptoValue}
-                                symbol={symbol}
-                                badge={{ color: 'blue', size: 'small' }}
-                            />
-                        </HiddenPlaceholder>
-                    </FiatValueWrapper>
-                    <GraphWrapper isFirstRow={isFirstRow}>
-                        <LastWeekGraph
-                            lastWeekData={lastWeekData}
-                            symbol={symbol}
-                            localCurrency={localCurrency}
-                        />
-                    </GraphWrapper>
-                    <FiatRateWrapper isFirstRow={isFirstRow}>
-                        <FiatValue amount={cryptoValue} symbol={symbol}>
-                            {({ rate }) =>
-                                rate ? (
-                                    <Badge isSmall isGray>
-                                        {`1 ${symbol.toUpperCase()} =`}
-                                        &nbsp;
-                                        {rate}
-                                    </Badge>
-                                ) : (
-                                    <NoRatesTooltip />
-                                )
-                            }
-                        </FiatValue>
-                    </FiatRateWrapper>
-                </>
-            )}
+            <ExchangeRateWrapper isLastRow={isLastRow}>
+                <Ticker symbol={symbol} />
+            </ExchangeRateWrapper>
         </>
     );
 });

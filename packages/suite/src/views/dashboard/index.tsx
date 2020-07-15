@@ -20,7 +20,7 @@ const Row = styled.div`
     display: flex;
 `;
 
-export default () => {
+const Dashboard = () => {
     // set SuiteLayout
     const { setLayout } = React.useContext(LayoutContext);
     React.useMemo(() => {
@@ -42,3 +42,5 @@ export default () => {
         </Wrapper>
     );
 };
+
+export default Dashboard;

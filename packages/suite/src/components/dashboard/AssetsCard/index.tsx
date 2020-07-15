@@ -10,31 +10,31 @@ import { CARD_PADDING_SIZE } from '@suite/constants/suite/layout';
 import { useDiscovery } from '@suite-hooks';
 import { useAccounts } from '@wallet-hooks';
 
-const Header = styled.div`
-    display: flex;
-    border-radius: 6px 6px 0px 0px;
-    padding: 10px ${CARD_PADDING_SIZE};
-`;
+// const Header = styled.div`
+//     display: flex;
+//     border-radius: 6px 6px 0px 0px;
+//     padding: 10px ${CARD_PADDING_SIZE};
+// `;
 
-const HeaderTitle = styled.div`
-    flex: 1;
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${colors.BLACK50};
-    text-transform: uppercase;
-    display: grid;
-    grid-gap: 10px;
+// const HeaderTitle = styled.div`
+//     flex: 1;
+//     font-size: ${variables.FONT_SIZE.TINY};
+//     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+//     color: ${colors.BLACK50};
+//     text-transform: uppercase;
+//     display: grid;
+//     grid-gap: 10px;
 
-    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+//     grid-template-columns: 1fr 1fr 1fr;
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        grid-template-columns: 1fr 1fr 1fr;
-    }
-`;
+//     /* @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+//         grid-template-columns: 1fr 1fr 1fr;
+//     } */
+// `;
 
 const StyledCard = styled(Card)`
     flex-direction: column;
-    padding: 0px ${CARD_PADDING_SIZE};
+    padding: 0px;
 `;
 
 // padding for loader need to math with first row height
@@ -46,19 +46,32 @@ const InfoMessage = styled.div`
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
-const BalanceHeader = styled.div`
+const Header = styled.div`
     display: flex;
-    justify-content: center;
+    font-size: ${variables.FONT_SIZE.SMALL};
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-weight: 500;
+    line-height: 1.57;
+    align-items: center;
+    padding: 12px 0px;
+    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+
+    &:first-child {
+        padding-left: 18px;
+    }
+    &:last-child {
+        padding-right: 18px;
+    }
 `;
 
 const Grid = styled.div`
     display: grid;
     overflow: hidden;
-    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 2fr 2fr 1fr;
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+    /* @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         grid-template-columns: 1fr 1fr 1fr;
-    }
+    } */
 `;
 
 const AssetsCard = () => {
@@ -81,24 +94,17 @@ const AssetsCard = () => {
 
     return (
         <>
-            <Header>
-                <HeaderTitle>
-                    {/* todo */}
-                    <div>
-                        <Translation id="TR_ASSETS" />
-                    </div>
-                    <BalanceHeader>
-                        <Translation id="TR_VALUES" />
-                    </BalanceHeader>
-                    <div />
-                    <div>
-                        <Translation id="TR_EXCHANGE_RATE" />
-                    </div>
-                    <div />
-                </HeaderTitle>
-            </Header>
             <StyledCard>
                 <Grid>
+                    <Header>
+                        <Translation id="TR_ASSETS" />
+                    </Header>
+                    <Header>
+                        <Translation id="TR_VALUES" />
+                    </Header>
+                    <Header>
+                        <Translation id="TR_EXCHANGE_RATE" />
+                    </Header>
                     {networks.map((symbol, i) => {
                         const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
                         if (!network) {
@@ -120,7 +126,7 @@ const AssetsCard = () => {
                                 network={network}
                                 failed={!!assetFailed}
                                 cryptoValue={assetBalance.toFixed()}
-                                isFirstRow={i === 0}
+                                isLastRow={i === networks.length - 1}
                             />
                         );
                     })}
