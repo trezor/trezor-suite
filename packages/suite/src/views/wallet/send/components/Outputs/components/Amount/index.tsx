@@ -41,9 +41,7 @@ const Left = styled.div`
 `;
 
 const TokenBalance = styled.div`
-    position: absolute;
-    top: 0;
-    right: 0;
+    padding-right: 6px;
 `;
 
 const StyledTransferIcon = styled(Icon)`
@@ -134,6 +132,18 @@ export default ({ outputId }: { outputId: number }) => {
                             </Text>
                         </Label>
                     }
+                    labelRight={
+                        <Label>
+                            {tokenBalance && (
+                                <TokenBalance>
+                                    <Translation
+                                        id="TR_TOKEN_BALANCE"
+                                        values={{ balance: tokenBalance }}
+                                    />
+                                </TokenBalance>
+                            )}
+                        </Label>
+                    }
                     bottomText={error && error.message}
                     onChange={event => {
                         if (isSetMaxActive) {
@@ -210,11 +220,6 @@ export default ({ outputId }: { outputId: number }) => {
                     })}
                     innerAddon={<TokenSelect outputId={outputId} />}
                 />
-                {tokenBalance && (
-                    <TokenBalance>
-                        <Translation id="TR_TOKEN_BALANCE" values={{ balance: tokenBalance }} />
-                    </TokenBalance>
-                )}
             </Left>
             {/* TODO: token FIAT rates calculation */}
             {!token && (
