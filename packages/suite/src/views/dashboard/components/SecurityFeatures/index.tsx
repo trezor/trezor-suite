@@ -56,7 +56,7 @@ const SecurityFeatures = ({
         Number(!!discreetModeCompleted) +
         Number(!!hiddenWalletCreated);
 
-    const backupData = needsBackup
+    const backupData: SecurityCardProps = needsBackup
         ? {
               variant: 'primary',
               icon: 'BACKUP',
@@ -89,7 +89,7 @@ const SecurityFeatures = ({
               },
           };
 
-    const pinData = !pinEnabled
+    const pinData: SecurityCardProps = !pinEnabled
         ? {
               variant: 'primary',
               icon: 'PIN',
@@ -123,7 +123,7 @@ const SecurityFeatures = ({
               },
           };
 
-    const hiddenWalletData = !hiddenWalletCreated
+    const hiddenWalletData: SecurityCardProps = !hiddenWalletCreated
         ? {
               variant: 'primary',
               icon: 'WALLET_HIDDEN',
@@ -161,7 +161,7 @@ const SecurityFeatures = ({
               },
           };
 
-    const discreetModeData = !discreetModeCompleted
+    const discreetModeData: SecurityCardProps = !discreetModeCompleted
         ? {
               variant: 'primary',
               icon: 'DISCREET',
