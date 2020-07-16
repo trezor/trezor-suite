@@ -3505,6 +3505,10 @@ const definedMessages = defineMessages({
         id: 'TR_OPEN_IN_MEDIUM',
         defaultMessage: 'Open in Medium',
     },
+    TR_MY_ASSETS: {
+        id: 'TR_MY_ASSETS',
+        defaultMessage: 'My Assets',
+    },
 } as const);
 
 export default definedMessages;
