@@ -17,7 +17,6 @@ const StyledCard = styled(Card)`
     padding: 0px;
 `;
 
-// padding for loader need to math with first row height
 const InfoMessage = styled.div`
     padding: 16px 25px;
     display: flex;
