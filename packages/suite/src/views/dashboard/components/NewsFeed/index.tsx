@@ -5,7 +5,6 @@ import { Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
 import { colors, Button, variables } from '@trezor/components';
 import { useFetchNews } from '@dashboard-hooks/useNews';
-import Header from '../Header';
 
 const Posts = styled.div`
     display: grid;

@@ -5,7 +5,6 @@ import { Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
 import { Props } from './Container';
 import { AcquiredDevice } from '@suite-types';
-import Header from '../Header';
 import { useDevice, useDiscovery, useAnalytics } from '@suite-hooks';
 
 const Content = styled.div`
