@@ -12,7 +12,6 @@ interface Props {
 interface State {
     outdated: boolean;
     sha?: string;
-    changelog?: string;
 }
 
 const Content = styled.div`
