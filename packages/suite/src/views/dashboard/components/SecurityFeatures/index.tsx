@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { colors, Button } from '@trezor/components';
+import { Button, SecurityCard, SecurityCardProps, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
-import SecurityCard, { Props as CardProps } from './components/SecurityCard';
 import { Props } from './Container';
 import { AcquiredDevice } from '@suite-types';
+import Header from '../Header';
 import { useDevice, useDiscovery, useAnalytics } from '@suite-hooks';
 
 const Section = styled.div`
@@ -14,29 +14,15 @@ const Section = styled.div`
 
 const Content = styled.div`
     display: grid;
-    grid-gap: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
-`;
+    grid-gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 
-const Header = styled.div`
-    display: flex;
-    padding: 12px;
-    flex-direction: row;
-    font-size: 12px;
-    align-items: center;
-`;
-
-const Title = styled.div`
-    flex: 1;
-    margin-bottom: 2px;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: ${colors.BLACK50};
-`;
-
-const SectionAction = styled.div`
-    font-weight: 500;
-    color: ${colors.BLACK25};
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        grid-template-columns: 1fr 1fr;
+    }
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
 `;
 
 const SecurityFeatures = ({
@@ -77,9 +63,9 @@ const SecurityFeatures = ({
         Number(!!discreetModeCompleted) +
         Number(!!hiddenWalletCreated);
 
-    const backupData: CardProps = needsBackup
+    const backupData: SecurityCardProps = needsBackup
         ? {
-              variant: 'secondary',
+              variant: 'primary',
               icon: 'BACKUP',
               heading: <Translation id="TR_BACKUP_YOUR_DEVICE" />,
               description: <Translation id="TR_RECOVERY_SEED_IS_OFFLINE" />,
@@ -95,8 +81,8 @@ const SecurityFeatures = ({
               },
           }
         : {
-              variant: 'primary',
-              icon: 'CHECK',
+              variant: 'secondary',
+              icon: 'BACKUP',
               heading: <Translation id="TR_BACKUP_SEED_CREATED_SUCCESSFULLY" />,
               cta: {
                   label: <Translation id="TR_CHECK_SEED_IN_SETTINGS" />,
@@ -110,9 +96,9 @@ const SecurityFeatures = ({
               },
           };
 
-    const pinData: CardProps = !pinEnabled
+    const pinData: SecurityCardProps = !pinEnabled
         ? {
-              variant: 'secondary',
+              variant: 'primary',
               icon: 'PIN',
               heading: <Translation id="TR_PIN" />,
               description: <Translation id="TR_SET_STRONG_PIN_NUMBER_AGAINST" />,
@@ -129,8 +115,8 @@ const SecurityFeatures = ({
               },
           }
         : {
-              variant: 'primary',
-              icon: 'CHECK',
+              variant: 'secondary',
+              icon: 'PIN',
               heading: <Translation id="TR_DEVICE_PIN_PROTECTION_ENABLED" />,
               cta: {
                   label: <Translation id="TR_CHANGE_PIN_IN_SETTINGS" />,
@@ -144,9 +130,9 @@ const SecurityFeatures = ({
               },
           };
 
-    const hiddenWalletData: CardProps = !hiddenWalletCreated
+    const hiddenWalletData: SecurityCardProps = !hiddenWalletCreated
         ? {
-              variant: 'secondary',
+              variant: 'primary',
               icon: 'WALLET_HIDDEN',
               heading: <Translation id="TR_PASSPHRASE_PROTECTION" />,
               description: <Translation id="TR_ENABLE_PASSPHRASE_DESCRIPTION" />,
@@ -166,8 +152,8 @@ const SecurityFeatures = ({
               },
           }
         : {
-              variant: 'primary',
-              icon: 'CHECK',
+              variant: 'secondary',
+              icon: 'WALLET_HIDDEN',
               heading: <Translation id="TR_PASSPHRASE_PROTECTION_ENABLED" />,
               cta: {
                   label: <Translation id="TR_CREATE_HIDDEN_WALLET" />,
@@ -182,9 +168,9 @@ const SecurityFeatures = ({
               },
           };
 
-    const discreetModeData: CardProps = !discreetModeCompleted
+    const discreetModeData: SecurityCardProps = !discreetModeCompleted
         ? {
-              variant: 'secondary',
+              variant: 'primary',
               icon: 'DISCREET',
               heading: <Translation id="TR_DISCREET_MODE" />,
               description: <Translation id="TR_TRY_TO_TEMPORARILY_HIDE" />,
@@ -200,8 +186,8 @@ const SecurityFeatures = ({
               },
           }
         : {
-              variant: 'primary',
-              icon: 'CHECK',
+              variant: 'secondary',
+              icon: 'DISCREET',
               heading: <Translation id="TR_DISCREET_MODE_TRIED_OUT" />,
               cta: {
                   label: discreetMode ? (
@@ -222,18 +208,18 @@ const SecurityFeatures = ({
               },
           };
 
-    const cards = [backupData, pinData, hiddenWalletData, discreetModeData];
+    const cards: SecurityCardProps[] = [backupData, pinData, hiddenWalletData, discreetModeData];
 
     return (
         <Section {...rest}>
-            <Header>
-                <Title>
+            <Header
+                left={
                     <Translation
                         id="TR_SECURITY_FEATURES_COMPLETED_N"
                         values={{ n: featuresCompleted, m: 4 }}
                     />
-                </Title>
-                <SectionAction>
+                }
+                right={
                     <Button
                         variant="tertiary"
                         icon={isHidden ? 'ARROW_DOWN' : 'ARROW_UP'}
@@ -247,21 +233,27 @@ const SecurityFeatures = ({
                             <Translation id="TR_HIDE_BUTTON" />
                         )}
                     </Button>
-                </SectionAction>
-            </Header>
+                }
+            />
             <Content>
                 {!isHidden &&
-                    cards.map((card, i) => (
-                        <SecurityCard
-                            // eslint-disable-next-line react/no-array-index-key
-                            key={i}
-                            variant={isDisabled ? 'disabled' : card.variant}
-                            icon={card.icon}
-                            heading={card.heading}
-                            description={card.description}
-                            cta={card.cta}
-                        />
-                    ))}
+                    cards.map((card, i) => {
+                        const ctaObject = card.cta
+                            ? { ...card.cta, isDisabled: !!isDisabled }
+                            : undefined;
+
+                        return (
+                            <SecurityCard
+                                // eslint-disable-next-line react/no-array-index-key
+                                key={`${i}`}
+                                variant={card.variant}
+                                icon={card.icon}
+                                heading={card.heading}
+                                description={card.description}
+                                cta={ctaObject}
+                            />
+                        );
+                    })}
             </Content>
         </Section>
     );
