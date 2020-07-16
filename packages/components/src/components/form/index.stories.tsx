@@ -116,10 +116,16 @@ storiesOf('Form', module).add(
                         dataTest="input-success-label"
                         bottomText="bottom text"
                         labelAddonIsVisible
-                        label={<Label>Action</Label>}
-                        labelRight={<Label>label right</Label>}
+                        label={<Label>Label left</Label>}
+                        labelRight={<Label>Label right</Label>}
                         labelAddon={
-                            <Button variant="tertiary" icon="QR" onClick={() => {}}>
+                            <Button
+                                variant="tertiary"
+                                icon="QR"
+                                onClick={() => {
+                                    console.log('aaa');
+                                }}
+                            >
                                 Scan QR code
                             </Button>
                         }

@@ -54,9 +54,10 @@ const StyledInput = styled.input<Props>`
 const InputWrapper = styled.div`
     display: flex;
     position: relative;
+    background: tan;
 `;
 
-const Label = styled.label`
+const Label = styled.div`
     display: flex;
     min-height: 32px;
     justify-content: space-between;
