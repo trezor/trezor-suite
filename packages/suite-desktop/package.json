@@ -79,7 +79,7 @@
                 "build/static/bridge/**/trezord-linux-x64"
             ],
             "icon": "build/static/images/icons/512x512.png",
-            "artifactName": "${productName}-${version}.${ext}",
+            "artifactName": "${productName}-${version}-${arch}.${ext}",
             "target": "AppImage"
         }
     },

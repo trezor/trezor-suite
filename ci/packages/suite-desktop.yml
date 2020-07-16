@@ -70,22 +70,22 @@ suite-desktop build windows manual:
         artifact: ${DESKTOP_APP_NAME}*
     <<: *build
 
-# suite-desktop build arm:
-#     only:
-#         <<: *auto_run_branches
-#     variables:
-#         platform: arm
-#         artifact: ${DESKTOP_APP_NAME}*
-#     <<: *build
+suite-desktop build arm:
+    only:
+        <<: *auto_run_branches
+    variables:
+        platform: arm
+        artifact: ${DESKTOP_APP_NAME}*
+    <<: *build
 
-# suite-desktop build arm manual:
-#     except:
-#         <<: *auto_run_branches
-#     when: manual
-#     variables:
-#         platform: arm
-#         artifact: ${DESKTOP_APP_NAME}*
-#     <<: *build
+suite-desktop build arm manual:
+    except:
+        <<: *auto_run_branches
+    when: manual
+    variables:
+        platform: arm
+        artifact: ${DESKTOP_APP_NAME}*
+    <<: *build
 
 suite-desktop deploy dev:
     stage: deploy to dev
