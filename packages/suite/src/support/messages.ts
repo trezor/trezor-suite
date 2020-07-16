@@ -3535,6 +3535,10 @@ const definedMessages = defineMessages({
         id: 'TR_XRP_AMOUNT_RESERVE_EXPLANATION',
         defaultMessage: 'TR_XRP_AMOUNT_RESERVE_EXPLANATION {reserve}',
     },
+    TR_MY_ASSETS: {
+        id: 'TR_MY_ASSETS',
+        defaultMessage: 'My Assets',
+    },
 } as const);
 
 export default definedMessages;
