@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Modal } from '@trezor/components';
+import { Button, H1, Icon, Modal, colors } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import * as deviceUtils from '@suite-utils/device';
 import { isWebUSB } from '@suite-utils/transport';
@@ -14,10 +14,29 @@ const StyledModal = styled(Modal)`
     text-align: center;
 `;
 
+const Heading = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 32px;
+    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+`;
+
+const HeadingActions = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+const CancelIconWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    margin-left: 30px;
+    cursor: pointer;
+`;
+
 const CheckForDevicesWrapper = styled.div`
     display: flex;
     justify-content: center;
-    margin-top: 10px;
 `;
 
 const DeviceItemsWrapper = styled.div`
@@ -25,6 +44,7 @@ const DeviceItemsWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     flex: 1;
+    padding: 24px 32px;
 `;
 
 const SwitchDeviceModal = (props: Props) => {
@@ -53,23 +73,31 @@ const SwitchDeviceModal = (props: Props) => {
 
     return (
         <StyledModal
-            heading={<Translation id="TR_CHOOSE_WALLET" />}
+            padding={['0px', '0px', '0px', '0px']}
+            hideCancelButton
+            heading={
+                <Heading>
+                    <H1 noMargin>
+                        <Translation id="TR_CHOOSE_WALLET" />
+                    </H1>
+                    <HeadingActions>
+                        {showWebUsb && (
+                            <CheckForDevicesWrapper>
+                                <WebusbButton ready>
+                                    <Button icon="SEARCH" variant="tertiary">
+                                        <Translation id="TR_CHECK_FOR_DEVICES" />
+                                    </Button>
+                                </WebusbButton>
+                            </CheckForDevicesWrapper>
+                        )}
+                        <CancelIconWrapper onClick={props.onCancel}>
+                            <Icon size={24} color={colors.NEUE_TYPE_DARK_GREY} icon="CROSS" />
+                        </CancelIconWrapper>
+                    </HeadingActions>
+                </Heading>
+            }
             cancelable={props.cancelable}
             onCancel={props.onCancel}
-            description={
-                <>
-                    <Translation id="TR_THIS_IS_PLACE_TO_SEE_ALL" />
-                    {showWebUsb && (
-                        <CheckForDevicesWrapper>
-                            <WebusbButton ready>
-                                <Button icon="SEARCH" variant="tertiary">
-                                    <Translation id="TR_CHECK_FOR_DEVICES" />
-                                </Button>
-                            </WebusbButton>
-                        </CheckForDevicesWrapper>
-                    )}
-                </>
-            }
         >
             <DeviceItemsWrapper>
                 {sortedDevices.map(device => (
