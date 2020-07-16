@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { storiesOf } from '@storybook/react';
-import { Row } from '../../../index';
+import { Box } from '../../../index';
 import { FONT_WEIGHT } from '../../../config/variables';
 
 const Text = styled.div`
@@ -14,11 +14,11 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const StyledRow = styled(Row)`
+const StyledRow = styled(Box)`
     margin: 10px 0;
 `;
 
-storiesOf('Others', module).add('Row', () => {
+storiesOf('Others', module).add('Box', () => {
     return (
         <Wrapper>
             <StyledRow>

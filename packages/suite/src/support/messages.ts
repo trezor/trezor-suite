@@ -1314,6 +1314,10 @@ const definedMessages = defineMessages({
         description: 'Used as title for a wallet instance in Switch Device modal',
         id: 'TR_NUM_ACCOUNTS_FIAT_VALUE',
     },
+    TR_COUNT_WALLETS: {
+        defaultMessage: '{count} {count, plural, one {wallet} other {wallets}}',
+        id: 'TR_COUNT_WALLETS',
+    },
     TR_OFFLINE: {
         defaultMessage: 'Offline',
         id: 'TR_OFFLINE',

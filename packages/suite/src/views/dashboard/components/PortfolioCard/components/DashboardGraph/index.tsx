@@ -9,7 +9,7 @@ import { colors, variables, Button } from '@trezor/components';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 // https://github.com/zeit/next.js/issues/4768
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import GraphWorker from 'worker-loader?name=static/[hash].worker.js!../../../../../workers/graph.worker';
+import GraphWorker from 'worker-loader?name=static/[hash].worker.js!../../../../../../workers/graph.worker';
 import { getMaxValueFromData } from '@suite/utils/wallet/graphUtils';
 
 const Wrapper = styled.div`

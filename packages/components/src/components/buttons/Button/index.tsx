@@ -14,7 +14,7 @@ const getPadding = (variant: ButtonVariant) => {
 };
 
 const getIconColor = (variant: ButtonVariant, isDisabled: boolean) => {
-    if (isDisabled) return colors.BLACK80;
+    if (isDisabled) return colors.NEUE_TYPE_LIGHT_GREY;
 
     switch (variant) {
         case 'primary':
