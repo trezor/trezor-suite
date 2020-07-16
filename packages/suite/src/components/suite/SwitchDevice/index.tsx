@@ -98,11 +98,6 @@ const SwitchDeviceModal = (props: Props) => {
             }
             cancelable={props.cancelable}
             onCancel={props.onCancel}
-            // description={
-            //     <>
-            //         <Translation id="TR_THIS_IS_PLACE_TO_SEE_ALL" />
-            //     </>
-            // }
         >
             <DeviceItemsWrapper>
                 {sortedDevices.map(device => (
