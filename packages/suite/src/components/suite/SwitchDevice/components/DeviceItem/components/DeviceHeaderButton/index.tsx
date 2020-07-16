@@ -48,9 +48,13 @@ const SolveIssueButton = ({ onSolveIssueClick, deviceStatusMessage, device }: Pr
 );
 
 const DeviceSettingsButton = ({ onDeviceSettingsClick }: Props) => (
-    <Button variant="tertiary" icon="SETTINGS" onClick={onDeviceSettingsClick}>
-        <Translation id="TR_DEVICE_SETTINGS" />
-    </Button>
+    <Icon
+        usePointerCursor
+        size={24}
+        icon="SETTINGS"
+        color={colors.NEUE_TYPE_LIGHT_GREY}
+        onClick={onDeviceSettingsClick}
+    />
 );
 
 export default (props: Props) => {
