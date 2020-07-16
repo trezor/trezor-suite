@@ -210,7 +210,7 @@ const InstallBridge = (props: Props) => {
                                 <Link variant="nostyle" href={data.uri + target.signature}>
                                     <Button
                                         color={colors.BLACK50}
-                                        icon="SIGN"
+                                        icon="SIGNATURE"
                                         variant="tertiary"
                                         onClick={() => {}}
                                     >

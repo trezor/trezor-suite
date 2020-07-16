@@ -3497,6 +3497,10 @@ const definedMessages = defineMessages({
         id: 'TR_INVALID_FILE_SELECTED',
         defaultMessage: 'Invalid file selected. Must be .jpg or .png',
     },
+    TR_OPEN_IN_MEDIUM: {
+        id: 'TR_OPEN_IN_MEDIUM',
+        defaultMessage: 'Open in Medium',
+    },
 } as const);
 
 export default definedMessages;

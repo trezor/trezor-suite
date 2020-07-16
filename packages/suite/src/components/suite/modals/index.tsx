@@ -95,6 +95,7 @@ const getDeviceContextModal = (props: Props) => {
         case 'ButtonRequest_WipeDevice':
         case 'ButtonRequest_UnknownDerivationPath':
         case 'ButtonRequest_FirmwareUpdate':
+        case 'ButtonRequest_PinEntry':
             return <ConfirmAction device={device} />;
         default:
             return null;
@@ -207,7 +208,7 @@ const Modal = (props: Props) => {
         return <FocusLock autoFocus={false}>{modalComponent}</FocusLock>;
     }
 
-    return React.cloneElement(modalComponent, { noBackground: true });
+    return React.cloneElement(modalComponent, { noBackground: true, cancelable: false });
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Modal);

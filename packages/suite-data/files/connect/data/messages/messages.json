@@ -600,6 +600,63 @@
             "oneofs": {}
         },
         {
+            "name": "GetOwnershipId",
+            "fields": [
+                {
+                    "rule": "repeated",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "address_n",
+                    "id": 1
+                },
+                {
+                    "rule": "optional",
+                    "options": {
+                        "default": "Bitcoin"
+                    },
+                    "type": "string",
+                    "name": "coin_name",
+                    "id": 2
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "MultisigRedeemScriptType",
+                    "name": "multisig",
+                    "id": 3
+                },
+                {
+                    "rule": "optional",
+                    "options": {
+                        "default": "SPENDADDRESS"
+                    },
+                    "type": "InputScriptType",
+                    "name": "script_type",
+                    "id": 4
+                }
+            ],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "OwnershipId",
+            "fields": [
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "ownership_id",
+                    "id": 1
+                }
+            ],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
             "name": "SignMessage",
             "fields": [
                 {
@@ -755,7 +812,9 @@
                 },
                 {
                     "rule": "optional",
-                    "options": {},
+                    "options": {
+                        "deprecated": true
+                    },
                     "type": "bool",
                     "name": "overwintered",
                     "id": 7
@@ -1000,7 +1059,9 @@
                         },
                         {
                             "rule": "optional",
-                            "options": {},
+                            "options": {
+                                "deprecated": true
+                            },
                             "type": "bool",
                             "name": "overwintered",
                             "id": 11
@@ -1102,23 +1163,16 @@
                                 {
                                     "rule": "optional",
                                     "options": {},
-                                    "type": "uint32",
-                                    "name": "decred_script_version",
-                                    "id": 10
+                                    "type": "bytes",
+                                    "name": "witness",
+                                    "id": 13
                                 },
                                 {
                                     "rule": "optional",
                                     "options": {},
                                     "type": "bytes",
-                                    "name": "prev_block_hash_bip115",
-                                    "id": 11
-                                },
-                                {
-                                    "rule": "optional",
-                                    "options": {},
-                                    "type": "uint32",
-                                    "name": "prev_block_height_bip115",
-                                    "id": 12
+                                    "name": "ownership_proof",
+                                    "id": 14
                                 }
                             ],
                             "enums": [],
@@ -1200,27 +1254,6 @@
                                     "type": "bytes",
                                     "name": "op_return_data",
                                     "id": 6
-                                },
-                                {
-                                    "rule": "optional",
-                                    "options": {},
-                                    "type": "uint32",
-                                    "name": "decred_script_version",
-                                    "id": 7
-                                },
-                                {
-                                    "rule": "optional",
-                                    "options": {},
-                                    "type": "bytes",
-                                    "name": "block_hash_bip115",
-                                    "id": 8
-                                },
-                                {
-                                    "rule": "optional",
-                                    "options": {},
-                                    "type": "uint32",
-                                    "name": "block_height_bip115",
-                                    "id": 9
                                 }
                             ],
                             "enums": [
@@ -1264,6 +1297,91 @@
                     "oneofs": {}
                 }
             ],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "GetOwnershipProof",
+            "fields": [
+                {
+                    "rule": "repeated",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "address_n",
+                    "id": 1
+                },
+                {
+                    "rule": "optional",
+                    "options": {
+                        "default": "Bitcoin"
+                    },
+                    "type": "string",
+                    "name": "coin_name",
+                    "id": 2
+                },
+                {
+                    "rule": "optional",
+                    "options": {
+                        "default": "SPENDWITNESS"
+                    },
+                    "type": "InputScriptType",
+                    "name": "script_type",
+                    "id": 3
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "MultisigRedeemScriptType",
+                    "name": "multisig",
+                    "id": 4
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "user_confirmation",
+                    "id": 5
+                },
+                {
+                    "rule": "repeated",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "ownership_ids",
+                    "id": 6
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "commitment_data",
+                    "id": 7
+                }
+            ],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "OwnershipProof",
+            "fields": [
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "ownership_proof",
+                    "id": 1
+                },
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "signature",
+                    "id": 2
+                }
+            ],
+            "enums": [],
+            "messages": [],
             "options": {},
             "oneofs": {}
         },
@@ -1796,6 +1914,10 @@
                         {
                             "name": "ButtonRequest_PassphraseEntry",
                             "id": 19
+                        },
+                        {
+                            "name": "ButtonRequest_PinEntry",
+                            "id": 20
                         }
                     ],
                     "options": {}
@@ -2828,6 +2950,22 @@
             "oneofs": {}
         },
         {
+            "name": "DebugLinkWatchLayout",
+            "fields": [
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "watch",
+                    "id": 1
+                }
+            ],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
             "name": "EosGetPublicKey",
             "fields": [
                 {
@@ -3817,7 +3955,7 @@
                         "deprecated": true
                     },
                     "type": "bytes",
-                    "name": "old_address",
+                    "name": "_old_address",
                     "id": 1
                 },
                 {
@@ -4583,7 +4721,7 @@
                     "rule": "optional",
                     "options": {},
                     "type": "bool",
-                    "name": "pin_cached",
+                    "name": "unlocked",
                     "id": 16
                 },
                 {
@@ -4801,7 +4939,15 @@
             "oneofs": {}
         },
         {
-            "name": "ClearSession",
+            "name": "LockDevice",
+            "fields": [],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "EndSession",
             "fields": [],
             "enums": [],
             "messages": [],
@@ -6567,6 +6713,20 @@
                             "type": "uint64",
                             "name": "internal_output_index",
                             "id": 4
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "uint32",
+                            "name": "sub_addr_major",
+                            "id": 5
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "uint32",
+                            "name": "sub_addr_minor",
+                            "id": 6
                         }
                     ],
                     "enums": [],
@@ -9175,6 +9335,20 @@
                             "type": "bool",
                             "name": "use_sign_count",
                             "id": 10
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "sint32",
+                            "name": "algorithm",
+                            "id": 11
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "sint32",
+                            "name": "curve",
+                            "id": 12
                         }
                     ],
                     "enums": [],
@@ -9346,7 +9520,7 @@
                     "id": 20
                 },
                 {
-                    "name": "MessageType_ClearSession",
+                    "name": "MessageType_LockDevice",
                     "id": 24
                 },
                 {
@@ -9422,6 +9596,10 @@
                     "id": 82
                 },
                 {
+                    "name": "MessageType_EndSession",
+                    "id": 83
+                },
+                {
                     "name": "MessageType_Deprecated_PassphraseStateRequest",
                     "id": 77
                 },
@@ -9484,6 +9662,22 @@
                 {
                     "name": "MessageType_MessageSignature",
                     "id": 40
+                },
+                {
+                    "name": "MessageType_GetOwnershipId",
+                    "id": 43
+                },
+                {
+                    "name": "MessageType_OwnershipId",
+                    "id": 44
+                },
+                {
+                    "name": "MessageType_GetOwnershipProof",
+                    "id": 49
+                },
+                {
+                    "name": "MessageType_OwnershipProof",
+                    "id": 50
                 },
                 {
                     "name": "MessageType_CipherKeyValue",
@@ -9580,6 +9774,10 @@
                 {
                     "name": "MessageType_DebugLinkEraseSdCard",
                     "id": 9005
+                },
+                {
+                    "name": "MessageType_DebugLinkWatchLayout",
+                    "id": 9006
                 },
                 {
                     "name": "MessageType_EthereumGetPublicKey",

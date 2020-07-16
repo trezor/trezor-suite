@@ -52,6 +52,7 @@ const InstanceTitle = styled.div`
     margin-top: 6px;
     color: ${colors.BLACK25};
     font-size: ${variables.FONT_SIZE.TINY};
+    font-variant-numeric: tabular-nums;
 `;
 
 const Col = styled.div<{ grow?: number; centerItems?: boolean }>`

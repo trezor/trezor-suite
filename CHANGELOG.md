@@ -2,6 +2,26 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). [YY.MM.MICRO]
 
 
+## [20.7.1-beta]
+
+### Added
+- Send: Compatibility with Zcash Heartwood upgrade
+
+### Changed
+- Update trezor-connect, electron dependencies
+- Change Blockbook backends for BTC, BTH, ETH and LTC from the beta back to stable
+- Bump minimal supported chrome/firefox version
+- Design: General layout and navigation overhaul
+- Design: Dashboard news design refresh
+
+### Fixed
+- Recovery: Handle device reconnect during Shamir recovery
+- Recovery: Handle cancelling recovery by a device communicating through WebUSB
+- Modal: Clicking on tooltip won't close the modal window anymore
+
+### Removed
+- Landing page: Remove "become tester" button
+
 ## [20.6.1-beta]
 
 ### Added

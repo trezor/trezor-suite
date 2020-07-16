@@ -1,6 +1,6 @@
 {
     "name": "@trezor/suite",
-    "version": "20.6.1-beta",
+    "version": "20.7.1-beta",
     "private": true,
     "scripts": {
         "lint": "yarn lint:styles && yarn lint:js",
@@ -20,8 +20,8 @@
         "@formatjs/intl-pluralrules": "^1.5.3",
         "@formatjs/intl-relativetimeformat": "^4.5.10",
         "@trezor/components": "^1.0.0",
-        "@trezor/suite-data": "20.6.1-beta",
-        "@trezor/suite-storage": "20.6.1-beta",
+        "@trezor/suite-data": "20.7.1-beta",
+        "@trezor/suite-storage": "20.7.1-beta",
         "@types/zxcvbn": "^4.4.0",
         "bignumber.js": "^9.0.0",
         "color-hash": "^1.0.3",
@@ -38,6 +38,7 @@
         "qs": "^6.9.4",
         "react": "16.9.0",
         "react-dom": "16.9.0",
+        "react-text-truncate": "0.16.0",
         "react-focus-lock": "^2.0.5",
         "react-hotkeys-hook": "^1.5.4",
         "react-intl": "^3.9.2",
@@ -55,7 +56,7 @@
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.3.0",
         "styled-components": "^5.1.1",
-        "trezor-connect": "8.1.8-beta.1",
+        "trezor-connect": "8.1.8-extended",
         "validator": "^13.0.0",
         "web3-utils": "^1.2.6",
         "zxcvbn": "^4.4.2"
@@ -65,6 +66,7 @@
         "@next/bundle-analyzer": "^9.2.1",
         "@trezor/translations-manager": "^1.0.0",
         "@types/debounce": "^1.2.0",
+        "@types/react-text-truncate": "0.14.0",
         "@types/node-fetch": "^2.5.5",
         "@types/pako": "^1.0.1",
         "@types/qs": "^6.9.2",
