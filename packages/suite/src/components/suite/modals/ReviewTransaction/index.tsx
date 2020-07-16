@@ -1,6 +1,6 @@
 import { FiatValue, Translation } from '@suite-components';
 import { useDevice } from '@suite-hooks';
-import { colors, Modal, variables, ConfirmOnDevice, Row } from '@trezor/components';
+import { colors, Modal, variables, ConfirmOnDevice, Box } from '@trezor/components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getFee } from '@wallet-utils/sendFormUtils';
 import React from 'react';
@@ -8,7 +8,7 @@ import styled from 'styled-components';
 
 import { Props } from './Container';
 
-const StyledRow = styled(Row)`
+const StyledRow = styled(Box)`
     justify-content: space-between;
     margin-bottom: 20px;
 `;
