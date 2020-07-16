@@ -13,6 +13,7 @@ import { Account } from '@wallet-types';
 import * as metadataUtils from '@suite-utils/metadata';
 import * as modalActions from '@suite-actions/modalActions';
 import * as notificationActions from '@suite-actions/notificationActions';
+// import * as accountActions from '@wallet-actions/accountActions';
 import DropboxProvider from '@suite/services/metadata/DropboxProvider';
 import GoogleProvider from '@suite/services/metadata/GoogleProvider';
 
@@ -38,6 +39,20 @@ export type MetadataActions =
 
 // needs to be declared here in top level context because it's not recommended to keep classes instances in redux state (serialization)
 let providerInstance: AbstractMetadataProvider | undefined;
+
+export const initProvider = () => async (dispatch: Dispatch, getState: GetState) => {
+    // pick provider
+    const { provider } = getState().metadata;
+
+    if (!provider) {
+        // TODO: check is connected
+        const decision = createDeferred<boolean>();
+        dispatch(modalActions.openModal({ type: 'metadata-provider', decision }));
+        await decision.promise;
+    } else {
+        console.warn('TODO: hmm provider already init, what about it?');
+    }
+};
 
 const getProvider = async (state?: Partial<MetadataProviderCredentials>) => {
     if (!state) return;
@@ -94,18 +109,27 @@ export const addDeviceMetadata = (
     provider.setFileContent(device.metadata.fileName, encrypted);
 };
 
+// todo: remove export probably?, is private
 export const addAccountMetadata = (payload: MetadataAddPayload) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
+    console.warn('addAccountMetadata', payload);
+
+    // todo: why here? aha, typescript.
     if (payload.type === 'walletLabel') {
-        dispatch(addDeviceMetadata(payload));
         return;
     }
-    const provider = await getProvider(getState().metadata.provider);
-    if (!provider) return;
+
     const account = getState().wallet.accounts.find(a => a.key === payload.accountKey);
     if (!account) return;
+
+    const provider = await getProvider(getState().metadata.provider);
+
+    if (!provider) {
+        console.warn('provider is not defined. this should never happen');
+        return;
+    }
 
     // clone Account.metadata
     const metadata = JSON.parse(JSON.stringify(account.metadata));
@@ -193,10 +217,9 @@ export const setAccountMetadataKey = (account: Account) => (
         const metaKey = metadataUtils.deriveMetadataKey(device.metadata.key, account.metadata.key);
         const fileName = metadataUtils.deriveFilename(metaKey);
         const aesKey = metadataUtils.deriveAesKey(metaKey);
-        account.metadata.fileName = fileName;
-        account.metadata.aesKey = aesKey;
-        return account;
+        return { ...account, metadata: { ...account.metadata, fileName, aesKey } };
     } catch (error) {
+        console.warn('wtf kurwa err', error);
         // TODO: handle error in UI?
     }
     return account;
@@ -259,16 +282,6 @@ export const getDeviceMetadataKey = (force = false) => async (
                 },
             },
         });
-
-        // pick provider
-        const { provider } = getState().metadata;
-        if (!provider) {
-            // TODO: check is connected
-            const decision = createDeferred<boolean>();
-            dispatch(modalActions.openModal({ type: 'metadata-provider', decision }));
-            await decision.promise;
-        }
-
         // TODO: fill existing accounts with metadata keys
     } else {
         dispatch({
@@ -286,7 +299,6 @@ export const getDeviceMetadataKey = (force = false) => async (
 };
 
 export const connectProvider = (type: MetadataProviderType) => async (dispatch: Dispatch) => {
-    console.log('metadataActions connectProvider', type);
     const provider = await getProvider({ type });
     if (!provider) return;
 
@@ -325,7 +337,8 @@ export const fetchMetadata = (deviceState: string) => async (
 
     // TODO: watch files (sync)
     // TODO: watch internet connection
-        console.log('getState().devices.', getState().devices);
+    // TODO: run fetching in parallel
+    console.log('getState().devices.', getState().devices);
     const device = getState().devices.find(d => d.state === deviceState);
     if (!device || device.metadata.status !== 'enabled') return;
 
@@ -350,7 +363,7 @@ export const fetchMetadata = (deviceState: string) => async (
         console.warn('fetchMetadata-device', error);
     }
 
-    accounts.forEach(async account => {
+    const promises = accounts.map(async account => {
         try {
             const buffer = await provider.getFileContent(account.metadata.fileName);
             if (buffer) {
@@ -381,4 +394,85 @@ export const fetchMetadata = (deviceState: string) => async (
             console.warn('fetchMetadata-accounts', error);
         }
     });
+    return Promise.all(promises);
+};
+
+/**
+ * addMetadata method is intended to be called from component. Option to call it should
+ * appear only if metadata is enabled globally. This method shall then take care of everything
+ * needed to save metadata into a long-term storage.
+ */
+export const addMetadata = (payload: MetadataAddPayload) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    console.warn('addMetadata', payload);
+
+    // make sure metadata is enabled globally
+    const { metadata } = getState();
+
+    if (!metadata.enabled) {
+        console.warn('metadata is disabled globally, this should not actually happen');
+        return;
+    }
+
+    // make sure user has metadata enabled for this device
+    const { device } = getState().suite;
+
+    if (!device?.state) return;
+
+    const needsUpdate = device?.metadata.status !== 'enabled';
+
+    // user might have clicked cancel on device when he was prompting to enable labeling. In this case
+    // we override his choice as he is apparently willing to add label.
+    if (device?.metadata.status !== 'enabled') {
+        // prompt again to get metadata master key
+        await dispatch(getDeviceMetadataKey(true));
+    }
+
+    // this can actually be parallel to provider logging in
+    if (needsUpdate) {
+        // todo: fill all objects (accounts, transactions) with metadata keys. (really all ?)
+        getState().wallet.accounts.forEach(account => {
+            const accountWithMetadata = dispatch(setAccountMetadataKey(account));
+            dispatch({
+                type: METADATA.ACCOUNT_ADD,
+                payload: accountWithMetadata,
+            });
+        });
+    }
+
+    let provider = await getProvider(getState().metadata.provider);
+
+    if (!provider) {
+        await dispatch(initProvider());
+    }
+
+    provider = await getProvider(getState().metadata.provider);
+
+    // todo: fetch all files with metadata for all objects
+
+    if (needsUpdate) {
+        await dispatch(fetchMetadata(device?.state));
+        // check if there is value to pre fill into user input
+        if (payload.type === 'accountLabel') {
+            const account = getState().wallet.accounts.find(acc => acc.key === payload.accountKey);
+            if (account?.metadata.accountLabel) {
+                payload.value = account?.metadata.accountLabel;
+            }
+        }
+    }
+    const decision = createDeferred<string | undefined>();
+
+    dispatch(
+        modalActions.openModal({
+            type: 'metadata-add',
+            payload,
+            decision,
+        }),
+    );
+
+    const value = await decision.promise;
+
+    dispatch(addAccountMetadata({ ...payload, value }));
 };

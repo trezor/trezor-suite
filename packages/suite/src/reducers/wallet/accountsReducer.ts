@@ -125,6 +125,9 @@ export default (state: Account[] = initialState, action: WalletAction | SuiteAct
             case ACCOUNT.UPDATE:
                 update(draft, action.payload);
                 break;
+            case ACCOUNT.UPDATE_METADATA:
+                update(draft, action.payload);
+                break;
             case ACCOUNT.CHANGE_VISIBILITY:
                 changeVisibility(draft, action.payload);
                 break;

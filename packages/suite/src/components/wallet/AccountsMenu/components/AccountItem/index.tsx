@@ -111,19 +111,26 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
                 <Right>
                     <Row>
                         <AccountName>{accountLabel}</AccountName>
+
                         <Button
                             variant="tertiary"
                             icon="LABEL"
                             onClick={event => {
                                 event.preventDefault();
-                                props.openModal({
-                                    type: 'metadata-add',
-                                    payload: {
-                                        type: 'accountLabel',
-                                        accountKey: account.key,
-                                        defaultValue: account.path,
-                                        value: account.metadata.accountLabel,
-                                    },
+                                // props.openModal({
+                                //     type: 'metadata-add',
+                                //     payload: {
+                                //         type: 'accountLabel',
+                                //         accountKey: account.key,
+                                //         defaultValue: account.path,
+                                //         value: account.metadata.accountLabel,
+                                //     },
+                                // });
+                                props.addMetadata({
+                                    type: 'accountLabel',
+                                    accountKey: account.key,
+                                    defaultValue: account.path,
+                                    value: account.metadata.accountLabel,
                                 });
                             }}
                         />

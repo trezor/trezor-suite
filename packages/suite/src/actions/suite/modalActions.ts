@@ -73,7 +73,8 @@ export type UserContextPayload =
       }
     | {
           type: 'metadata-add';
-          payload: MetadataAddPayload;
+          payload: MetadataAddPayload; // todo: is this needed actually?
+          decision: Deferred<undefined | string>;
       };
 
 export type ModalActions =

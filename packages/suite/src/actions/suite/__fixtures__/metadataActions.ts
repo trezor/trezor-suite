@@ -1,6 +1,6 @@
-import { METADATA, MODAL } from '@suite-actions/constants';
+import { METADATA } from '@suite-actions/constants';
 
-export const getDeviceMetadataKey = [
+const getDeviceMetadataKey = [
     {
         description: `Metadata not enabled`,
         initialState: {
@@ -46,16 +46,16 @@ export const getDeviceMetadataKey = [
             },
         },
     },
-    {
-        description: `Master key successfully generated`,
-        initialState: {
-            metadata: { enabled: true },
-            device: { state: 'device-state', metadata: { status: 'disabled' } },
-        },
-        result: {
-            type: MODAL.OPEN_USER_CONTEXT,
-        },
-    },
+    // {
+    //     description: `Master key successfully generated`,
+    //     initialState: {
+    //         metadata: { enabled: true },
+    //         device: { state: 'device-state', metadata: { status: 'disabled' } },
+    //     },
+    //     result: {
+    //         type: MODAL.OPEN_USER_CONTEXT,
+    //     },
+    // },
 
     {
         description: `Master key successfully generated, provider already connected`,
@@ -80,7 +80,7 @@ export const getDeviceMetadataKey = [
     },
 ];
 
-export const setAccountMetadataKey = [
+const setAccountMetadataKey = [
     {
         description: `Device without master key`,
         initialState: {
@@ -130,7 +130,7 @@ export const setAccountMetadataKey = [
     },
 ];
 
-export const addDeviceMetadata = [
+const addDeviceMetadata = [
     {
         description: `Without provider`,
         initialState: {
@@ -177,7 +177,7 @@ export const addDeviceMetadata = [
     },
 ];
 
-export const addAccountMetadata = [
+const addAccountMetadata = [
     {
         description: `Without provider`,
         initialState: {
@@ -270,7 +270,7 @@ export const addAccountMetadata = [
     },
 ];
 
-export const fetchMetadata = [
+const fetchMetadata = [
     {
         description: `Without provider`,
         initialState: {
@@ -310,20 +310,21 @@ export const fetchMetadata = [
             },
         },
         params: 'mkUHEWSY9zaq4A4RjicJSPSPPxZ1dr2CfF@B45F1224E1EFDEE921BE328F:undefined',
-        result:  [
+        result: [
             {
-              type: '@metadata/wallet-loaded',
-              payload: {
-                deviceState: 'mkUHEWSY9zaq4A4RjicJSPSPPxZ1dr2CfF@B45F1224E1EFDEE921BE328F:undefined',
-                walletLabel: 'k'
-              }
-            }
-          ]
+                type: '@metadata/wallet-loaded',
+                payload: {
+                    deviceState:
+                        'mkUHEWSY9zaq4A4RjicJSPSPPxZ1dr2CfF@B45F1224E1EFDEE921BE328F:undefined',
+                    walletLabel: 'k',
+                },
+            },
+        ],
     },
     // todo: decode account metadata
 ];
 
-export const connectProvider = [
+const connectProvider = [
     {
         description: 'Dropbox',
         initialState: {
@@ -340,3 +341,93 @@ export const connectProvider = [
     // todo: google provider
     // todo: singleton (instance) behavior
 ];
+
+const addMetadata = [
+    {
+        description: 'when disabled globally, should return immediately',
+        initialState: {
+            metadata: { enabled: false },
+            // device: {
+            //     state: 'mmcGdEpTPqgQNRHqf3gmB5uDsEoPo2d3tp@46CE52D1ED50A900687D6BA2:undefined'
+            // },
+        },
+        params: {
+            accountKey:
+                'zpub6rGTYpdEKi9Hs1boNGxPPVDvb6MnAqQhXX4ts9zSxwxEVtxnTByAScDHKca8AB2cD3RGJd9upVD7ccNLrAMR5QEYvtKqrjpTYsz8yoR6RMz-btc-mmcGdEpTPqgQNRHqf3gmB5uDsEoPo2d3tp@46CE52D1ED50A900687D6BA2:undefined',
+            defaultValue: "m/84'/0'/0'",
+            type: 'accountLabel',
+            value: undefined,
+        },
+        result: [],
+    },
+    // {
+    //     description: 'when disabled for device, needsUpdate is true',
+    //     initialState: {
+    //         metadata: { enabled: true },
+    //         device: {
+    //             state: 'mmcGdEpTPqgQNRHqf3gmB5uDsEoPo2d3tp@46CE52D1ED50A900687D6BA2:undefined',
+    //             metadata: { status: 'cancelled' },
+    //         },
+    //         accounts: [
+    //             {
+    //                 metadata: {
+    //                     key: 'xpub6CbvwVHQ2M4LARDZhZP8yK2vFA4tHbRhhJ2TJNCgCwCUPhLKwse3CUu1HCexAMimPmBeofxnuAW1r39DQmXPUvsMCCvzgvBV1RrrCdnKaZ4',
+    //                     outputLabels: {},
+    //                 },
+    //             },
+    //         ],
+    //     },
+    //     params: {
+    //         accountKey:
+    //             'zpub6rGTYpdEKi9Hs1boNGxPPVDvb6MnAqQhXX4ts9zSxwxEVtxnTByAScDHKca8AB2cD3RGJd9upVD7ccNLrAMR5QEYvtKqrjpTYsz8yoR6RMz-btc-mmcGdEpTPqgQNRHqf3gmB5uDsEoPo2d3tp@46CE52D1ED50A900687D6BA2:undefined',
+    //         defaultValue: "m/84'/0'/0'",
+    //         type: 'accountLabel',
+    //         value: undefined,
+    //     },
+    //     result: [
+    //         {
+    //             type: METADATA.ENABLE,
+    //             payload: true,
+    //         },
+    //         {
+    //             type: METADATA.SET_MASTER_KEY,
+    //             payload: {
+    //                 deviceState:
+    //                     'mmcGdEpTPqgQNRHqf3gmB5uDsEoPo2d3tp@46CE52D1ED50A900687D6BA2:undefined',
+    //                 metadata: {
+    //                     aesKey: 'e5a761589ac4950ae899c7ffe572e492d21864f5a5822e228e165f02c0124d53',
+    //                     fileName:
+    //                         '597ff11fe9d82e88d449f5aca3c7747d0d8eccc46bd64a48f29e49f4aff5dc3f',
+    //                     key: 'CKValue',
+    //                     status: 'enabled',
+    //                 },
+    //             },
+    //         },
+    //         {
+    //             type: MODAL.OPEN_USER_CONTEXT,
+    //             payload: {
+    //                 decision: expect.any(Object),
+    //                 type: 'metadata-provider',
+    //             },
+    //         },
+    //         {
+    //             type: MODAL.OPEN_USER_CONTEXT,
+    //             payload: {
+    //                 decision: expect.any(Object),
+    //                 payload: expect.any(Object),
+    //                 type: 'metadata-add',
+    //             },
+    //         },
+    //     ],
+    // },
+];
+
+export {
+    getDeviceMetadataKey,
+    setAccountMetadataKey,
+    addDeviceMetadata,
+    addAccountMetadata,
+    fetchMetadata,
+    connectProvider,
+    addMetadata,
+};

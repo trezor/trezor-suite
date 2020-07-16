@@ -79,7 +79,8 @@ const WalletInstance = ({
     selectDeviceInstance,
     rememberDevice,
     forgetDevice,
-    openModal,
+    // openModal,
+    addMetadata,
     accounts,
     fiat,
     localCurrency,
@@ -105,15 +106,22 @@ const WalletInstance = ({
 
     const changeWalletMetadata = (event: any) => {
         event.preventDefault();
+        // todo: hmm is this if needed? probably not, shall be handled in action
         if (!instance.state || instance.metadata.status !== 'enabled') return;
-        openModal({
-            type: 'metadata-add',
-            payload: {
-                type: 'walletLabel',
-                deviceState: instance.state,
-                defaultValue: 'TODO: wallet default state',
-                value: instance.metadata.walletLabel,
-            },
+        // openModal({
+        //     type: 'metadata-add',
+        //     payload: {
+        //         type: 'walletLabel',
+        //         deviceState: instance.state,
+        //         defaultValue: 'TODO: wallet default state',
+        //         value: instance.metadata.walletLabel,
+        //     },
+        // });
+        addMetadata({
+            type: 'walletLabel',
+            deviceState: instance.state,
+            defaultValue: 'TODO: wallet default state',
+            value: instance.metadata.walletLabel,
         });
     };
     return (

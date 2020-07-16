@@ -25,6 +25,7 @@ jest.mock('trezor-connect', () => {
         },
         DEVICE: {},
         BLOCKCHAIN: {},
+        TRANSPORT: {},
     };
 });
 
@@ -42,6 +43,7 @@ jest.mock('dropbox', () => {
         setAccessToken() {}
         usersGetCurrentAccount() {
             return {
+                // eslint-disable-next-line
                 name: { given_name: 'haf' },
             };
         }
@@ -112,16 +114,6 @@ describe('Metadata Actions', () => {
             const store = initStore(getInitialState(f.initialState));
             await store.dispatch(metadataActions.getDeviceMetadataKey());
 
-            // store.subscribe(() => {
-            //     const actions = store.getActions();
-            //     const a = actions[actions.length - 1];
-
-            //     if (a.type === MODAL.OPEN_USER_CONTEXT) {
-            //         // catch bundle update called from 'start()' and stop discovery before TrezorConnect response
-            //         a.payload.decision.resolve(true);
-            //     }
-            // });
-
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -169,7 +161,12 @@ describe('Metadata Actions', () => {
         it(`fetchMetadata: ${f.description}`, async () => {
             jest.mock('@suite/services/metadata/DropboxProvider');
             DropboxProvider.prototype.getFileContent = () =>
-                Promise.resolve(Buffer.from('a51f4180855e22cf948febf317e7d9bd5b82765852ee491bbc7aae46cc28d6318f8780e58f2d177f8bf09a39332352be97144576e53266ad94d1ca4706234dce6e', 'hex'));
+                Promise.resolve(
+                    Buffer.from(
+                        'a51f4180855e22cf948febf317e7d9bd5b82765852ee491bbc7aae46cc28d6318f8780e58f2d177f8bf09a39332352be97144576e53266ad94d1ca4706234dce6e',
+                        'hex',
+                    ),
+                );
             // @ts-ignore
             const store = initStore(getInitialState(f.initialState));
             // @ts-ignore, params
@@ -196,6 +193,26 @@ describe('Metadata Actions', () => {
                 expect(store.getActions().length).toEqual(0);
             } else {
                 expect(store.getActions()).toEqual(f.result);
+            }
+        });
+    });
+
+    fixtures.addMetadata.forEach(f => {
+        it(`addMetadata: ${f.description}`, async () => {
+            // jest.mock('@suite/services/metadata/DropboxProvider');
+            // DropboxProvider.prototype.connect = () => Promise.resolve(true);
+
+            // @ts-ignore
+            const store = initStore(getInitialState(f.initialState));
+
+            // @ts-ignore, params
+            const result = await store.dispatch(metadataActions.addMetadata(f.params));
+
+            if (!f.result) {
+                expect(store.getActions().length).toEqual(0);
+            } else {
+                // expect(store.getActions()).toEqual(expect.arrayContaining(f.result));
+                expect(store.getActions()).toMatchObject(f.result);
             }
         });
     });

@@ -5,7 +5,14 @@ import FreshAddress from './components/FreshAddress';
 import UsedAddresses from './components/UsedAddresses';
 import { Props } from './Container';
 
-export default ({ selectedAccount, receive, device, showAddress, addToast, openModal }: Props) => {
+export default ({
+    selectedAccount,
+    receive,
+    device,
+    showAddress,
+    addToast,
+    addMetadata,
+}: Props) => {
     const { isLocked } = useDevice();
     const isDeviceLocked = isLocked();
     if (!device || selectedAccount.status !== 'loaded') {
@@ -16,14 +23,20 @@ export default ({ selectedAccount, receive, device, showAddress, addToast, openM
     const disabled = !!device.authConfirm;
 
     const changeMetadata = (address: string, currentValue?: string) => {
-        openModal({
-            type: 'metadata-add',
-            payload: {
-                type: 'addressLabel',
-                accountKey: account.key,
-                defaultValue: address,
-                value: currentValue,
-            },
+        // openModal({
+        //     type: 'metadata-add',
+        //     payload: {
+        //         type: 'addressLabel',
+        //         accountKey: account.key,
+        //         defaultValue: address,
+        //         value: currentValue,
+        //     },
+        // });
+        addMetadata({
+            type: 'addressLabel',
+            accountKey: account.key,
+            defaultValue: address,
+            value: currentValue,
         });
     };
 

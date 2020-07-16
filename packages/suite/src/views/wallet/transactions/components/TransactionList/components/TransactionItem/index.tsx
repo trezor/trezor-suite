@@ -19,6 +19,7 @@ import { Account, WalletAccountTransaction } from '@wallet-types';
 
 import { useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
+import * as metadataActions from '@suite-actions/metadataActions';
 
 const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
     padding: 8px 0px; /* row padding */
@@ -132,19 +133,31 @@ export default React.memo((props: Props) => {
     const operation =
         (type === 'sent' || type === 'self' ? '-' : null) || (type === 'recv' ? '+' : null);
     let key = 0;
-    const { openModal } = useActions({ openModal: modalActions.openModal });
+    // const { openModal } = useActions({ openModal: modalActions.openModal });
+    const { addMetadata, openModal } = useActions({
+        addMetadata: metadataActions.addMetadata,
+        openModal: modalActions.openModal,
+    });
 
     const openMetadataPopup = (outputIndex: number, defaultValue: string, value?: string) => {
-        openModal({
-            type: 'metadata-add',
-            payload: {
-                type: 'outputLabel',
-                accountKey: props.account.key,
-                txid: transaction.txid,
-                outputIndex,
-                defaultValue,
-                value,
-            },
+        // openModal({
+        //     type: 'metadata-add',
+        //     payload: {
+        //         type: 'outputLabel',
+        //         accountKey: props.account.key,
+        //         txid: transaction.txid,
+        //         outputIndex,
+        //         defaultValue,
+        //         value,
+        //     },
+        // });
+        addMetadata({
+            type: 'outputLabel',
+            accountKey: props.account.key,
+            txid: transaction.txid,
+            outputIndex,
+            defaultValue,
+            value,
         });
     };
 

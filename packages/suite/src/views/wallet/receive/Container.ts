@@ -2,8 +2,9 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { injectIntl } from 'react-intl';
 import * as notificationActions from '@suite-actions/notificationActions';
-import * as modalActions from '@suite-actions/modalActions';
+// import * as modalActions from '@suite-actions/modalActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
+import * as metadataActions from '@suite-actions/metadataActions';
 
 import { AppState, Dispatch } from '@suite-types';
 import SendIndex from './index';
@@ -20,7 +21,8 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
         {
             showAddress: receiveActions.showAddress,
             addToast: notificationActions.addToast,
-            openModal: modalActions.openModal,
+            // openModal: modalActions.openModal,
+            addMetadata: metadataActions.addMetadata,
         },
         dispatch,
     );

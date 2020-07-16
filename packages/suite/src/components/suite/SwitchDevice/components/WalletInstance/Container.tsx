@@ -2,8 +2,9 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
-import * as modalActions from '@suite-actions/modalActions';
+// import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
+import * as metadataActions from '@suite-actions/metadataActions';
 
 import { AppState, Dispatch, TrezorDevice, AcquiredDevice } from '@suite-types';
 import WalletInstance from './index';
@@ -23,7 +24,8 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
             forgetDevice: suiteActions.forgetDevice,
             getDiscovery: discoveryActions.getDiscovery,
             selectDevice: suiteActions.selectDevice,
-            openModal: modalActions.openModal,
+            // openModal: modalActions.openModal,
+            addMetadata: metadataActions.addMetadata,
         },
         dispatch,
     );

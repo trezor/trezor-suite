@@ -8,13 +8,15 @@ import { analyzeTransactions } from '@wallet-utils/transactionUtils';
 import { NETWORKS } from '@wallet-config';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
+// import { AccountMetadata } from '@suite-types/metadata';
 import { SETTINGS } from '@suite-config';
 
 export type AccountActions =
     | { type: typeof ACCOUNT.CREATE; payload: Account }
     | { type: typeof ACCOUNT.REMOVE; payload: Account[] }
     | { type: typeof ACCOUNT.CHANGE_VISIBILITY; payload: Account }
-    | { type: typeof ACCOUNT.UPDATE; payload: Account };
+    | { type: typeof ACCOUNT.UPDATE; payload: Account }
+    | { type: typeof ACCOUNT.UPDATE_METADATA; payload: Account };
 
 export const create = (
     deviceState: string,
@@ -58,6 +60,7 @@ export const create = (
     },
 });
 
+// TODO: rename to updateAccountInfo OR rework update and updateMetadata into single method that would update account from partial<Account>
 // TODO: imo we could extract payload object to separate function and use it in create, update methods
 export const update = (account: Account, accountInfo: AccountInfo): AccountActions => ({
     type: ACCOUNT.UPDATE,
@@ -74,6 +77,11 @@ export const update = (account: Account, accountInfo: AccountInfo): AccountActio
         tokens: accountUtils.enhanceTokens(accountInfo.tokens),
         ...accountUtils.getAccountSpecific(accountInfo, account.networkType),
     },
+});
+
+export const updateAccount = (account: Account): AccountActions => ({
+    type: ACCOUNT.UPDATE_METADATA,
+    payload: account,
 });
 
 export const disableAccounts = () => (dispatch: Dispatch, getState: GetState) => {
