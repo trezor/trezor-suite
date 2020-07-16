@@ -93,6 +93,7 @@ const getDeviceContextModal = (props: Props) => {
         case 'ButtonRequest_WipeDevice':
         case 'ButtonRequest_UnknownDerivationPath':
         case 'ButtonRequest_FirmwareUpdate':
+        case 'ButtonRequest_PinEntry':
             return <ConfirmAction device={device} />;
         default:
             return null;

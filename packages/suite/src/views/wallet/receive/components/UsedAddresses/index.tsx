@@ -79,6 +79,10 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: Function }>`
     }
 `;
 
+const GridItemAddress = styled(GridItem)`
+    font-variant-numeric: tabular-nums slashed-zero;
+`;
+
 const HeaderItem = styled(GridItem)`
     text-transform: uppercase;
     font-weight: 600;
@@ -134,7 +138,7 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, index }: ItemProps) => 
     return (
         <>
             <GridItem revealed={isRevealed}>/{parseBIP44Path(addr.path)!.addrIndex}</GridItem>
-            <GridItem
+            <GridItemAddress
                 data-test={`@wallet/receive/used-address/${index}`}
                 revealed={isRevealed}
                 onClick={onClick}
@@ -148,7 +152,7 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, index }: ItemProps) => 
                         style={{ marginLeft: '12px' }}
                     />
                 )}
-            </GridItem>
+            </GridItemAddress>
             <GridItem revealed={isRevealed}>
                 {!fresh && (
                     <>

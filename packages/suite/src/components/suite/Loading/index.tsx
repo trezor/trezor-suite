@@ -18,8 +18,6 @@ const LoaderWrapper = styled.div`
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    /* width: 360px;
-    height: 360px; */
 `;
 
 const Loading = ({ imageProps, ...props }: Props) => (

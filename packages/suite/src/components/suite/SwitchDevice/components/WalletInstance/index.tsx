@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Switch, Row, Icon, colors, variables } from '@trezor/components';
+import { Switch, Box, Icon, colors, variables } from '@trezor/components';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { Props } from './Container';
 import { FormattedNumber, WalletLabeling, Translation } from '@suite-components';
 import { useAnalytics } from '@suite-hooks';
 
-const Wrapper = styled(Row)`
+const Wrapper = styled(Box)`
     display: flex;
     width: 100%;
     align-items: center;
@@ -32,6 +32,7 @@ const InstanceTitle = styled.div`
     line-height: 1.57;
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
+    font-variant-numeric: tabular-nums;
 `;
 
 const Col = styled.div<{ grow?: number; centerItems?: boolean }>`

@@ -302,7 +302,6 @@ const Modal = ({
             onClick={e => {
                 if (onClick) onClick(e);
                 e.stopPropagation();
-                e.preventDefault();
             }}
             {...rest}
         >
