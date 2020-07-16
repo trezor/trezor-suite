@@ -3,13 +3,13 @@ import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { NETWORKS } from '@wallet-config';
 import { DISCOVERY } from '@wallet-actions/constants';
+import { Section } from '@dashboard-components';
 import Asset from './components/Asset';
 import { Account } from '@wallet-types';
 import { Button, colors, variables, Loader, Icon } from '@trezor/components';
 import { Card, Translation } from '@suite-components';
 import { useDiscovery, useActions, useDevice } from '@suite-hooks';
 import { useAccounts } from '@wallet-hooks';
-import Section from '../Section';
 import * as modalActions from '@suite-actions/modalActions';
 
 const StyledCard = styled(Card)`

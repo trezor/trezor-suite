@@ -2,14 +2,10 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import TextTruncate from 'react-text-truncate';
 import { Translation } from '@suite-components';
+import { Section } from '@dashboard-components';
 import { colors, Button, variables } from '@trezor/components';
 import { useFetchNews } from '@dashboard-hooks/useNews';
 import Header from '../Header';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
 
 const Posts = styled.div`
     display: grid;
@@ -83,17 +79,16 @@ const NewsFeed = () => {
     if (isError) return null;
 
     return (
-        <Wrapper>
-            <Header
-                left={<Translation id="TR_WHATS_NEW" />}
-                right={
-                    <MediumLink target="_blank" href="https://blog.trezor.io/">
-                        <Button isWhite variant="tertiary" icon="MEDIUM">
-                            <Translation id="TR_OPEN_IN_MEDIUM" />
-                        </Button>
-                    </MediumLink>
-                }
-            />
+        <Section
+            heading={<Translation id="TR_WHATS_NEW" />}
+            actions={
+                <MediumLink target="_blank" href="https://blog.trezor.io/">
+                    <Button isWhite variant="tertiary" icon="MEDIUM">
+                        <Translation id="TR_OPEN_IN_MEDIUM" />
+                    </Button>
+                </MediumLink>
+            }
+        >
             <Posts>
                 {posts.slice(0, visibleCount).map(item => (
                     <Post key={item.link}>
@@ -143,7 +138,7 @@ const NewsFeed = () => {
                     </Button>
                 </BottomAction>
             )}
-        </Wrapper>
+        </Section>
     );
 };
 

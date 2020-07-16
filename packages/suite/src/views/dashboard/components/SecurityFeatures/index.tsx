@@ -2,15 +2,11 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button, SecurityCard, SecurityCardProps, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
+import { Section } from '@dashboard-components';
 import { Props } from './Container';
 import { AcquiredDevice } from '@suite-types';
 import Header from '../Header';
 import { useDevice, useDiscovery, useAnalytics } from '@suite-hooks';
-
-const Section = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
 
 const Content = styled.div`
     display: grid;
@@ -211,30 +207,30 @@ const SecurityFeatures = ({
     const cards: SecurityCardProps[] = [backupData, pinData, hiddenWalletData, discreetModeData];
 
     return (
-        <Section {...rest}>
-            <Header
-                left={
-                    <Translation
-                        id="TR_SECURITY_FEATURES_COMPLETED_N"
-                        values={{ n: featuresCompleted, m: 4 }}
-                    />
-                }
-                right={
-                    <Button
-                        variant="tertiary"
-                        icon={isHidden ? 'ARROW_DOWN' : 'ARROW_UP'}
-                        onClick={() => {
-                            setIsHidden(!isHidden);
-                        }}
-                    >
-                        {isHidden ? (
-                            <Translation id="TR_SHOW_BUTTON" />
-                        ) : (
-                            <Translation id="TR_HIDE_BUTTON" />
-                        )}
-                    </Button>
-                }
-            />
+        <Section
+            heading={
+                <Translation
+                    id="TR_SECURITY_FEATURES_COMPLETED_N"
+                    values={{ n: featuresCompleted, m: 4 }}
+                />
+            }
+            actions={
+                <Button
+                    variant="tertiary"
+                    icon={isHidden ? 'ARROW_DOWN' : 'ARROW_UP'}
+                    onClick={() => {
+                        setIsHidden(!isHidden);
+                    }}
+                >
+                    {isHidden ? (
+                        <Translation id="TR_SHOW_BUTTON" />
+                    ) : (
+                        <Translation id="TR_HIDE_BUTTON" />
+                    )}
+                </Button>
+            }
+            {...rest}
+        >
             <Content>
                 {!isHidden &&
                     cards.map((card, i) => {
