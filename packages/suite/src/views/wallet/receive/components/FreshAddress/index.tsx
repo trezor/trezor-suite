@@ -21,11 +21,6 @@ const AddressContainer = styled.div`
     flex: 1;
 `;
 
-const AddressLabel = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    padding: 0 0 12px 0;
-`;
-
 const AddressPath = styled.div`
     padding: 0px 16px 10px 0px;
     font-size: ${variables.FONT_SIZE.TINY};
@@ -93,10 +88,13 @@ const FreshAddress = ({
         <StyledCard title={<Translation id="RECEIVE_TITLE" values={{ symbol }} />}>
             {addressPath && <AddressPath>{addressPath}</AddressPath>}
             <AddressContainer>
-                <AddressLabel>
-                    <Translation id={addressLabel} />
-                </AddressLabel>
-                <StyledInput variant="small" monospace isDisabled value={addressValue} />
+                <StyledInput
+                    label={<Translation id={addressLabel} />}
+                    variant="small"
+                    monospace
+                    isDisabled
+                    value={addressValue}
+                />
             </AddressContainer>
             <ButtonContainer>
                 <StyledButton

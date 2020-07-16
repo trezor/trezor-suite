@@ -54,7 +54,6 @@ const StyledInput = styled.input<Props>`
 const InputWrapper = styled.div`
     display: flex;
     position: relative;
-    background: tan;
 `;
 
 const Label = styled.div`
