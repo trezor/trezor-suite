@@ -2,12 +2,17 @@ import express, { Application } from 'express';
 import fetcher from './index';
 import cors from 'cors';
 import pkg from '../package.json';
+import { ENVIRONMENTS } from './config';
 import childProcess from 'child_process';
 
 const app: Application = express();
 const PORT = process.env.PORT || 3003;
+const ENVIRONMENT = process.env.ENV;
 
-// TODO: validate if this is ok or not
+if (!ENVIRONMENT || !ENVIRONMENTS.includes(ENVIRONMENT)) {
+    throw Error('Unknown environment set ENV=staging or ENV=production');
+}
+
 const options: cors.CorsOptions = {
     origin: '*',
 };

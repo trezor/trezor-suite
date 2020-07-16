@@ -145,7 +145,6 @@ export default ({
                                         NETWORKS.filter(filterFn).length === enabledNetworks.length
                                     }
                                     variant="tertiary"
-                                    size="small"
                                     icon="CHECK"
                                     onClick={() => onActivateAll()}
                                     data-test={`@settings/wallet/coins-group/${props.type}/activate-all`}
@@ -155,7 +154,6 @@ export default ({
                                 <StyledButton
                                     isDisabled={isDeviceLocked || enabledNetworks.length === 0}
                                     variant="tertiary"
-                                    size="small"
                                     icon="CROSS"
                                     onClick={() => onDeactivateAll()}
                                     data-test={`@settings/wallet/coins-group/${props.type}/deactivate-all`}

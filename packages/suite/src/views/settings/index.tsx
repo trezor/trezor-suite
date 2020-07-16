@@ -91,6 +91,7 @@ export default ({
                             value={buildCurrencyOption(localCurrency)}
                             options={FIAT.currencies.map(c => buildCurrencyOption(c))}
                             isDisabled={isLocked()}
+                            data-test="@settings/fiat-select"
                         />
                     </ActionColumn>
                 </SectionItem>

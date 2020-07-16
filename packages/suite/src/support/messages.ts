@@ -3481,6 +3481,10 @@ const definedMessages = defineMessages({
         id: 'DISCONNECT_DEVICE_DESCRIPTION',
         defaultMessage: 'Your device was wiped and does not hold private keys anymore.',
     },
+    TR_MY_ACCOUNTS: {
+        id: 'TR_MY_ACCOUNTS',
+        defaultMessage: 'My Accounts',
+    },
     TR_CHANGE_HOMESCREEN: {
         id: 'TR_CHANGE_HOMESCREEN',
         defaultMessage: 'Change homescreen',
@@ -3492,6 +3496,10 @@ const definedMessages = defineMessages({
     TR_INVALID_FILE_SELECTED: {
         id: 'TR_INVALID_FILE_SELECTED',
         defaultMessage: 'Invalid file selected. Must be .jpg or .png',
+    },
+    TR_OPEN_IN_MEDIUM: {
+        id: 'TR_OPEN_IN_MEDIUM',
+        defaultMessage: 'Open in Medium',
     },
 } as const);
 

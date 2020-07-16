@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const StyledImg = styled.img`
-    flex: 1;
+    flex: 1 0 auto;
 `;
 interface Props {
     model: number;

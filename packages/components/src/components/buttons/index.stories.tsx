@@ -4,7 +4,6 @@ import { storiesOf } from '@storybook/react';
 import { StoryColumn } from '../../support/Story';
 
 const variants = ['primary', 'secondary', 'tertiary', 'danger'] as const;
-const sizes = ['small', 'large'] as const;
 
 storiesOf('Buttons', module).add(
     'All',
@@ -13,19 +12,16 @@ storiesOf('Buttons', module).add(
             {variants.map(variant => {
                 return (
                     <StoryColumn key={variant} minWidth={350} maxWidth={420}>
-                        {sizes.map(size => {
-                            return (
-                                <Button
-                                    key={size}
-                                    variant={variant}
-                                    size={size}
-                                    data-test={`button-${variant}-${size}`}
-                                >
-                                    {variant[0].toUpperCase()}
-                                    {variant.slice(1)} {size}
-                                </Button>
-                            );
-                        })}
+                        <Button
+                            variant={variant}
+                            data-test={`button-${variant}`}
+                            onClick={() => {
+                                console.log('click');
+                            }}
+                        >
+                            {variant[0].toUpperCase()}
+                            {variant.slice(1)}
+                        </Button>
                         <Button
                             variant={variant}
                             data-test={`button-${variant}-icon`}

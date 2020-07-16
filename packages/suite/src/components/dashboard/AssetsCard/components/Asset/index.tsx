@@ -129,6 +129,7 @@ const GraphWrapper = styled(Col)`
 
 const FiatRateWrapper = styled(Col)`
     justify-content: flex-end;
+    font-variant-numeric: tabular-nums;
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         grid-column: 3 / 3;
         border-top: none;
@@ -204,7 +205,9 @@ const Asset = React.memo(({ network, failed, cryptoValue, isFirstRow }: Props) =
                             {({ rate }) =>
                                 rate ? (
                                     <Badge isSmall isGray>
-                                        1 {symbol.toUpperCase()} = {rate}
+                                        {`1 ${symbol.toUpperCase()} =`}
+                                        &nbsp;
+                                        {rate}
                                     </Badge>
                                 ) : (
                                     <NoRatesTooltip />

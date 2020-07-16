@@ -166,14 +166,15 @@ async function runTests() {
             console.log('[run_tests.js] response.error', response.error);
         }
     } 
-    
-    console.log(`[run_tests.js] retry ratio: ${((totalRetries / finalTestFiles.length) * 100).toFixed(2)}% `)
-    
+        
     // beta is only for collecting statistics, so it exits with non-zero code 
     // if there is some runtime error.
     if (stage === '@beta') {
         process.exit(0);
     }
+
+    console.log(`Browse test results: ${TRACK_SUITE_URL}`);
+
     process.exit(failedTests);
 }
 

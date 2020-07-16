@@ -28,7 +28,7 @@ const Divider = styled.div`
 const Buttons = styled.div`
     display: flex;
     flex: 1;
-    justify-content: space-between;
+    justify-content: flex-end;
 `;
 
 const mapStateToProps = (state: AppState) => ({
@@ -101,9 +101,6 @@ const TransactionDetail = (props: Props) => {
             heading={<Translation id="TR_TRANSACTION_DETAILS" />}
             bottomBar={
                 <Buttons>
-                    <Button variant="secondary" onClick={() => props.onCancel()}>
-                        <Translation id="TR_CLOSE" />
-                    </Button>
                     <Button alignIcon="right" icon="EXTERNAL_LINK" variant="secondary">
                         <Link variant="nostyle" href={explorerUrl}>
                             <Translation id="TR_SHOW_DETAILS_IN_BLOCK_EXPLORER" />

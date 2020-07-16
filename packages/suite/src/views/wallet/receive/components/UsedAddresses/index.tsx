@@ -36,6 +36,8 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: Function }>`
     white-space: nowrap;
     padding: 8px 24px;
     border-bottom: 2px solid ${colors.BLACK96};
+    font-variant-numeric: tabular-nums;
+
     &:nth-child(1n) {
         padding-left: 0px;
     }
@@ -75,6 +77,10 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: Function }>`
             border: 0;
         }
     }
+`;
+
+const GridItemAddress = styled(GridItem)`
+    font-variant-numeric: tabular-nums slashed-zero;
 `;
 
 const HeaderItem = styled(GridItem)`
@@ -132,7 +138,7 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, index }: ItemProps) => 
     return (
         <>
             <GridItem revealed={isRevealed}>/{parseBIP44Path(addr.path)!.addrIndex}</GridItem>
-            <GridItem
+            <GridItemAddress
                 data-test={`@wallet/receive/used-address/${index}`}
                 revealed={isRevealed}
                 onClick={onClick}
@@ -146,7 +152,7 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, index }: ItemProps) => 
                         style={{ marginLeft: '12px' }}
                     />
                 )}
-            </GridItem>
+            </GridItemAddress>
             <GridItem revealed={isRevealed}>
                 {!fresh && (
                     <>
@@ -233,7 +239,6 @@ const UsedAddresses = ({ account, addresses, showAddress, addToast, locked }: Pr
                     {actionShowVisible && (
                         <Button
                             variant="tertiary"
-                            size="small"
                             icon="ARROW_DOWN"
                             alignIcon="right"
                             onClick={() => setLimit(limit + 20)}
@@ -244,7 +249,6 @@ const UsedAddresses = ({ account, addresses, showAddress, addToast, locked }: Pr
                     {actionHideVisible && (
                         <Button
                             variant="tertiary"
-                            size="small"
                             icon="ARROW_UP"
                             onClick={() => setLimit(DEFAULT_LIMIT)}
                         >

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Card from '@suite-components/Card';
-import { Icon, Loader, colors, variables } from '@trezor/components';
+import { Icon, Loader, colors } from '@trezor/components';
 import { MAX_WIDTH } from '@suite-constants/layout';
 
 const getBorderColor = (variant: Props['variant']) => {
@@ -43,13 +43,9 @@ const Wrapper = styled(Card)<{ variant: Props['variant'] }>`
     max-width: ${MAX_WIDTH};
     border: 1px solid ${props => getBorderColor(props.variant)};
     color: ${props => getTextColor(props.variant)};
-    margin: 8px 32px;
+    margin: 8px 0;
     padding: 16px;
     align-items: center;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        margin: 8px 16px;
-    }
 `;
 
 const IconWrapper = styled.div`

@@ -119,14 +119,6 @@ suite-web e2e chrome-beta stage=stable:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
     dependencies: []
 
-# todo: not sure if this is relevant, could be removed and replaced with lighthouse in near (hopefully) future
-suite-web test security:
-    stage: misc
-    only:
-        - schedules
-    script: yarn is-website-vulnerable ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} | node ./ci/scripts/check-vulnerabilities.js
-    dependencies: []
-
 suite-web deploy staging:
     stage: deploy to staging
     dependencies:

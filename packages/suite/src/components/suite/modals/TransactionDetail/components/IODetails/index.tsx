@@ -4,7 +4,7 @@ import { Icon, colors, variables, Loader } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import FiatValue from '@suite-components/FiatValue/Container';
-import { Badge, HiddenPlaceholder } from '@suite-components';
+import { Badge, HiddenPlaceholder, FormattedCryptoAmount } from '@suite-components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -93,7 +93,7 @@ const IOBoxAddress = styled.div`
     color: ${colors.BLACK17};
     overflow: hidden;
     text-overflow: ellipsis;
-
+    font-variant-numeric: tabular-nums slashed-zero;
     margin-bottom: 10px;
 `;
 
@@ -132,7 +132,12 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                                     {/* <IOBoxPath>placeholder</IOBoxPath> */}
                                     <IOBoxAmountWrapper>
                                         <HiddenPlaceholder>
-                                            <Amount>{`${inputAmount} ${tx.symbol.toUpperCase()}`}</Amount>
+                                            <Amount>
+                                                <FormattedCryptoAmount
+                                                    value={inputAmount}
+                                                    symbol={tx.symbol}
+                                                />
+                                            </Amount>
                                         </HiddenPlaceholder>
 
                                         <BadgesWrapper>
@@ -184,7 +189,13 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                                     {/* <IOBoxPath>todo: bip44 path</IOBoxPath> */}
                                     <IOBoxAmountWrapper>
                                         <HiddenPlaceholder>
-                                            <Amount>{`${outputAmount} ${tx.symbol.toUpperCase()}`}</Amount>
+                                            <Amount>
+                                                {' '}
+                                                <FormattedCryptoAmount
+                                                    value={outputAmount}
+                                                    symbol={tx.symbol}
+                                                />
+                                            </Amount>
                                         </HiddenPlaceholder>
                                         <BadgesWrapper>
                                             <HiddenPlaceholder>

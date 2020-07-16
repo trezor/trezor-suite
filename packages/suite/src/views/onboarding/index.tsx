@@ -1,5 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -27,6 +28,13 @@ import FinalStep from '@onboarding-views/steps/Final/Container';
 import UnexpectedState from '@onboarding-views/unexpected-states';
 import { ProgressBar } from '@suite-components';
 import { AppState, Dispatch, InjectedModalApplicationProps } from '@suite-types';
+
+const InnerModalWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+`;
 
 const mapStateToProps = (state: AppState) => {
     return {
@@ -96,8 +104,6 @@ const Onboarding = (props: Props) => {
 
     return (
         <Modal
-            // padding={['0px', '0px', '0px', '0px']}
-            // useFixedWidth={false}
             useFixedHeight
             heading={
                 <ProgressBar
@@ -114,7 +120,7 @@ const Onboarding = (props: Props) => {
             </Head>
 
             <UnexpectedState>
-                {modal && modal}
+                {modal && <InnerModalWrapper>{modal}</InnerModalWrapper>}
                 {!modal && <StepComponent />}
             </UnexpectedState>
         </Modal>

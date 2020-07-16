@@ -32,6 +32,7 @@ const Item = styled.div<ItemProps>`
     color: #444;
     padding: 10px 12px;
     border-top: 1px solid #ccc;
+    font-variant-numeric: tabular-nums;
 
     ${props =>
         props.alignContent &&

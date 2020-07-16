@@ -211,6 +211,7 @@ export default [
                                 addresses: ['1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d'],
                                 amount: '1',
                                 isAccountTarget: true,
+                                n: 0,
                             },
                         ],
                         tokens: [],
@@ -278,10 +279,12 @@ export default [
                                     {
                                         addresses: ['19SW698tGLusJZVBmGDYmHvSwn79WqJP65'],
                                         value: '50',
+                                        n: 1,
                                     },
                                     {
                                         addresses: ['1RXiBGixLSBRAAXtZMsCx75EuFqqJnmXZ'],
                                         value: '40',
+                                        n: 0,
                                     },
                                 ],
                                 fees: '10',
@@ -312,6 +315,7 @@ export default [
                             {
                                 addresses: ['19SW698tGLusJZVBmGDYmHvSwn79WqJP65'],
                                 amount: '50',
+                                n: 1,
                             },
                         ],
                         tokens: [],
