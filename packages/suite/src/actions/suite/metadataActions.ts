@@ -325,7 +325,7 @@ export const fetchMetadata = (deviceState: string) => async (
 
     // TODO: watch files (sync)
     // TODO: watch internet connection
-
+        console.log('getState().devices.', getState().devices);
     const device = getState().devices.find(d => d.state === deviceState);
     if (!device || device.metadata.status !== 'enabled') return;
 

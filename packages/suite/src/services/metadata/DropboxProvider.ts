@@ -61,6 +61,7 @@ class DropboxProvider implements AbstractMetadataProvider {
     }
 
     async connect() {
+        console.warn('dopici original');
         // const hasToken = this.client.getAccessToken();
         const url = this.client.getAuthenticationUrl(METADATA.OAUTH_FILE, 'TODO:RandomToken');
         try {
@@ -101,8 +102,6 @@ class DropboxProvider implements AbstractMetadataProvider {
     }
 
     async setFileContent(file: string, content: Buffer) {
-        console.log('dropbox setFileContent', file);
-
         try {
             const blob = new Blob([content], { type: 'text/plain;charset=UTF-8' });
             await this.client.filesUpload({

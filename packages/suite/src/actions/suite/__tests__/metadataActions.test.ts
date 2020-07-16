@@ -5,6 +5,7 @@ import metadataReducer from '@suite-reducers/metadataReducer';
 import { STORAGE, MODAL } from '../constants';
 import * as metadataActions from '../metadataActions';
 import * as fixtures from '../__fixtures__/metadataActions';
+import DropboxProvider from '@suite/services/metadata/DropboxProvider';
 
 jest.mock('trezor-connect', () => {
     let fixture: any;
@@ -34,6 +35,18 @@ jest.mock('dropbox', () => {
     class Dropbox {
         filesUpload() {
             return true;
+        }
+        getAuthenticationUrl() {
+            return 'https://foo/bar';
+        }
+        setAccessToken() {}
+        usersGetCurrentAccount() {
+            return {
+                name: { given_name: 'haf' },
+            };
+        }
+        getAccessToken() {
+            return 'token-haf-mnau';
         }
     }
     return {
@@ -154,12 +167,35 @@ describe('Metadata Actions', () => {
 
     fixtures.fetchMetadata.forEach(f => {
         it(`fetchMetadata: ${f.description}`, async () => {
+            jest.mock('@suite/services/metadata/DropboxProvider');
+            DropboxProvider.prototype.getFileContent = () =>
+                Promise.resolve(Buffer.from('a51f4180855e22cf948febf317e7d9bd5b82765852ee491bbc7aae46cc28d6318f8780e58f2d177f8bf09a39332352be97144576e53266ad94d1ca4706234dce6e', 'hex'));
             // @ts-ignore
             const store = initStore(getInitialState(f.initialState));
             // @ts-ignore, params
-            await store.dispatch(metadataActions.fetchMetadata('A'));
+            await store.dispatch(metadataActions.fetchMetadata(f.params));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
+            } else {
+                expect(store.getActions()).toEqual(f.result);
+            }
+        });
+    });
+
+    fixtures.connectProvider.forEach(f => {
+        it(`connectProvider: ${f.description}`, async () => {
+            jest.mock('@suite/services/metadata/DropboxProvider');
+            DropboxProvider.prototype.connect = () => Promise.resolve(true);
+
+            // @ts-ignore
+            const store = initStore(getInitialState(f.initialState));
+            // @ts-ignore, params
+            const result = await store.dispatch(metadataActions.connectProvider(f.params));
+
+            if (!f.result) {
+                expect(store.getActions().length).toEqual(0);
+            } else {
+                expect(store.getActions()).toEqual(f.result);
             }
         });
     });

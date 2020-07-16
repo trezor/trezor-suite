@@ -197,7 +197,7 @@ export const addAccountMetadata = [
     {
         description: `add outputLabel`,
         initialState: {
-            metadata: { provider: { type: 'dropbox', key: 'A' } },
+            metadata: { provider: { type: 'drobox', key: 'A' } },
             device: {
                 metadata: { status: 'enabled', key: 'B' },
             },
@@ -278,4 +278,65 @@ export const fetchMetadata = [
         },
         result: undefined,
     },
+    {
+        description: 'Metadata not enabled',
+        initialState: {
+            metadata: {
+                enabled: true,
+                provider: {
+                    token: 'foo',
+                    type: 'google',
+                    user: 'batman',
+                },
+            },
+            device: { state: 'device-state', metadata: { status: 'cancelled' } },
+            accounts: [],
+        },
+        params: 'device-state',
+    },
+    {
+        description: 'Metadata enabled - decode device metadata',
+        initialState: {
+            metadata: {
+                enabled: true,
+                provider: { type: 'dropbox', user: 'User Name', token: 'oauth-token' },
+            },
+            device: {
+                state: 'mkUHEWSY9zaq4A4RjicJSPSPPxZ1dr2CfF@B45F1224E1EFDEE921BE328F:undefined',
+                metadata: {
+                    status: 'enabled',
+                    aesKey: 'f2734778f6b87864a02fc1e0ad2c69fcfc1160d86fff43b5acbef6f90772cba1',
+                },
+            },
+        },
+        params: 'mkUHEWSY9zaq4A4RjicJSPSPPxZ1dr2CfF@B45F1224E1EFDEE921BE328F:undefined',
+        result:  [
+            {
+              type: '@metadata/wallet-loaded',
+              payload: {
+                deviceState: 'mkUHEWSY9zaq4A4RjicJSPSPPxZ1dr2CfF@B45F1224E1EFDEE921BE328F:undefined',
+                walletLabel: 'k'
+              }
+            }
+          ]
+    },
+    // todo: decode account metadata
+];
+
+export const connectProvider = [
+    {
+        description: 'Dropbox',
+        initialState: {
+            metadata: undefined,
+        },
+        params: 'dropbox',
+        result: [
+            {
+                type: '@metadata/set-provider',
+                payload: { type: 'dropbox', token: 'token-haf-mnau', user: 'haf' },
+            },
+        ],
+    },
+    // todo: google provider
+    // todo: singleton (instance) behavior
 ];
