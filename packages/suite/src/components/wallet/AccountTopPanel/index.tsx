@@ -74,7 +74,7 @@ const AccountTopPanel = () => {
                 </FiatValue>
             </BalanceWrapper>
 
-            {!isTestnet(symbol) && <Ticker symbol={symbol} />}
+            {!isTestnet(symbol) && <Ticker symbol={symbol} tooltipPos="bottom" />}
         </AppNavigationPanel>
     );
 };
