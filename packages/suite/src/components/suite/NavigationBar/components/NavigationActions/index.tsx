@@ -74,6 +74,7 @@ const NavigationActions = (props: Props) => {
 
                 return (
                     <ActionItem
+                        key={item.translationId}
                         label={<Translation id={item.translationId} />}
                         data-test={dataTestId}
                         onClick={() => {
