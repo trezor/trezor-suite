@@ -22,6 +22,11 @@ const Content = styled.div`
 
 const DescriptionWrapper = styled.span`
     color: ${colors.NEUE_TYPE_DARK_GREY};
+    line-height: 1.5;
+`;
+
+const Version = styled.span`
+    font-family: Consolas, Menlo, Courier, monospace;
 `;
 
 const Span = styled.span`
@@ -109,6 +114,11 @@ const VersionCheck = ({ children }: Props) => {
                     'https://api.github.com/repos/trezor/trezor-suite/commits?per_page=1&sha=releases',
                     { signal: abortController.signal },
                 );
+                if (!response.ok) {
+                    throw Error(
+                        `Error while fetching info about latest version: ${response.status}`,
+                    );
+                }
                 const body = await response.json();
                 const { sha } = body[0];
                 const outdated = sha !== process.env.COMMITHASH;
@@ -125,11 +135,14 @@ const VersionCheck = ({ children }: Props) => {
 
         const fetchChangelog = async () => {
             try {
-                const req = await fetch(
+                const response = await fetch(
                     'https://raw.githubusercontent.com/trezor/trezor-suite/releases/CHANGELOG.md',
                     { signal: abortController.signal },
                 );
-                const changelog = await req.text();
+                if (!response.ok) {
+                    throw Error(`Error while fetching changelog: ${response.status}`);
+                }
+                const changelog = await response.text();
                 setChangelog(changelog);
             } catch (error) {
                 // fetch failed
@@ -137,7 +150,7 @@ const VersionCheck = ({ children }: Props) => {
             }
         };
 
-        if (isDev()) {
+        if (!isDev()) {
             fetchCommits();
             fetchChangelog();
         } else {
@@ -163,7 +176,12 @@ const VersionCheck = ({ children }: Props) => {
                         <Translation
                             id="DESKTOP_OUTDATED_MESSAGE"
                             values={{
-                                currentVersion: <Span>{process.env.COMMITHASH}</Span>,
+                                currentVersion: (
+                                    <>
+                                        <Span>{process.env.COMMITHASH}</Span>(
+                                        <Version>{process.env.VERSION}</Version>)
+                                    </>
+                                ),
                                 newVersion: <Span>{state.sha}</Span>,
                             }}
                         />
@@ -194,7 +212,7 @@ const VersionCheck = ({ children }: Props) => {
                                 renderers={{ linkReference: linkReferenceRenderer }}
                             />
                         ) : (
-                            <>Could not retrieve the changelog</>
+                            <Translation id="TR_COULD_NOT_RETRIEVE_CHANGELOG" />
                         )}
                     </ChangesSummary>
                 </Content>
