@@ -3216,12 +3216,12 @@ const definedMessages = defineMessages({
     },
     DESKTOP_OUTDATED_TITLE: {
         id: 'DESKTOP_OUTDATED_TITLE',
-        defaultMessage: 'Outdated version',
+        defaultMessage: 'New update is available',
     },
     DESKTOP_OUTDATED_MESSAGE: {
         id: 'DESKTOP_OUTDATED_MESSAGE',
         defaultMessage:
-            'Your version {currentVersion} does not match latest version from github {newVersion}',
+            'Your version {currentVersion} does not match the latest version from GitHub {newVersion}',
     },
     DESKTOP_OUTDATED_BUTTON_DOWNLOAD: {
         id: 'DESKTOP_OUTDATED_BUTTON_DOWNLOAD',
@@ -3508,6 +3508,10 @@ const definedMessages = defineMessages({
     TR_MY_ASSETS: {
         id: 'TR_MY_ASSETS',
         defaultMessage: 'My Assets',
+    },
+    TR_COULD_NOT_RETRIEVE_CHANGELOG: {
+        id: 'TR_COULD_NOT_RETRIEVE_CHANGELOG',
+        defaultMessage: 'Could not retrieve the changelog',
     },
 } as const);
 

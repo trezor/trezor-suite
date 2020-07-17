@@ -111,7 +111,6 @@ export interface Props extends CardProps {
 
 const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Props) => (
     <Wrapper {...rest}>
-        {console.log('cta', cta)}
         <Header>
             <Circle>
                 <Icon icon={icon} size={32} color={colors.NEUE_TYPE_DARK_GREY} />
