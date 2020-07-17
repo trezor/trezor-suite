@@ -59,6 +59,7 @@ const NavigationActions = (props: Props) => {
                     });
                     setDiscreetMode(!discreetMode);
                 }}
+                isActive={discreetMode}
                 label={<Translation id="TR_DISCREET" />}
                 icon={discreetMode ? 'HIDE' : 'SHOW'}
                 isMobileLayout={props.isMobileLayout}
