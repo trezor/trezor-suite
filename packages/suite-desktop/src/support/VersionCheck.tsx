@@ -87,7 +87,6 @@ const Actions = styled.div`
 `;
 
 const linkReferenceRenderer: Renderers[string] = reference => {
-    console.log('ref', reference);
     if (!reference.href) {
         return <>[{reference.children}]</>;
     }
