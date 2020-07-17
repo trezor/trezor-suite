@@ -4,12 +4,14 @@ import * as walletSettingsActions from '@settings-actions/walletSettingsActions'
 import * as storageActions from '@suite-actions/storageActions';
 import * as languageActions from '@settings-actions/languageActions';
 import * as routerActions from '@suite-actions/routerActions';
+import * as metadataActions from '@suite-actions/metadataActions';
 import { AppState, Dispatch } from '@suite-types';
 import Component from './index';
 
 const mapStateToProps = (state: AppState) => ({
     language: state.suite.settings.language,
     localCurrency: state.wallet.settings.localCurrency,
+    metadata: state.metadata,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
@@ -19,6 +21,9 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
             clearStores: storageActions.clearStores,
             fetchLocale: languageActions.fetchLocale,
             goto: routerActions.goto,
+            // initMetadata: metadataActions.init,
+            enableMetadata: metadataActions.enableMetadata,
+            disableMetadata: metadataActions.disableMetadata,
         },
         dispatch,
     );

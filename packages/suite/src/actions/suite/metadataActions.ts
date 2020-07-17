@@ -18,7 +18,8 @@ import DropboxProvider from '@suite/services/metadata/DropboxProvider';
 import GoogleProvider from '@suite/services/metadata/GoogleProvider';
 
 export type MetadataActions =
-    | { type: typeof METADATA.ENABLE; payload: boolean }
+    | { type: typeof METADATA.ENABLE }
+    | { type: typeof METADATA.DISABLE }
     | {
           type: typeof METADATA.SET_MASTER_KEY;
           payload: { deviceState: string; metadata: DeviceMetadata };
@@ -34,8 +35,7 @@ export type MetadataActions =
     | {
           type: typeof METADATA.ACCOUNT_LOADED | typeof METADATA.ACCOUNT_ADD;
           payload: Account;
-      }
-    | { type: typeof METADATA.DISABLE };
+      };
 
 // needs to be declared here in top level context because it's not recommended to keep classes instances in redux state (serialization)
 let providerInstance: AbstractMetadataProvider | undefined;
@@ -476,3 +476,29 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
 
     dispatch(addAccountMetadata({ ...payload, value }));
 };
+
+export const enableMetadata = () => (dispatch: Dispatch) => {
+    dispatch({
+        type: METADATA.ENABLE,
+    });
+};
+
+export const disableMetadata = () => (dispatch: Dispatch) => {
+    dispatch({
+        type: METADATA.DISABLE,
+    });
+};
+// export const init = (force = false) => async (dispatch: Dispatch, getState: GetState) => {
+//     dispatch({ type: METADATA.ENABLE, payload: true  });
+//     await dispatch(getDeviceMetadataKey(force));
+//     await dispatch(initProvider());
+// };
+
+// - getMasterKey
+// - initProvider
+
+// loadExisting
+
+// addMetadata
+// -init?
+// -load existing if needed

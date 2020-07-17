@@ -11,7 +11,7 @@ import {
 } from '@suite-components/Settings';
 import { FIAT, LANGUAGES } from '@suite-config';
 import { useAnalytics, useDevice } from '@suite-hooks';
-import { Button, Tooltip } from '@trezor/components';
+import { Button, Tooltip, Switch } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -35,11 +35,15 @@ const VersionLink = styled.a``;
 
 export default ({
     language,
+    metadata,
     setLocalCurrency,
     localCurrency,
     fetchLocale,
     clearStores,
     goto,
+    // initMetadata,
+    enableMetadata,
+    disableMetadata,
 }: Props) => {
     const { isLocked } = useDevice();
     const analytics = useAnalytics();
@@ -98,20 +102,22 @@ export default ({
             </Section>
 
             {/* TODO: KEEP IT HERE AND UNCOMMENT WHEN READY */}
-            {/* <Section header={<Translation id="TR_LABELING" />}>
+            <Section title={<Translation id="TR_LABELING" />}>
                 <SectionItem>
-                    <TextColumn title={<Translation id="TR_CONNECT_DROPBOX} />" />
+                    <TextColumn
+                        title="Labeling enabled"
+                        description="Labeling is pretty cool feature which allows you to label your wallets, accounts and transactions."
+                    />
                     <ActionColumn>
-                        <ActionButton
-                            onClick={() => console.log('fooo')}
-                            isDisabled={uiLocked}
-                            variant="secondary"
-                        >
-                            <Translation id="TR_CONNECT_DROPBOX" />
-                        </ActionButton>
+                        <Switch
+                            checked={metadata.enabled}
+                            onChange={() =>
+                                metadata.enabled ? disableMetadata() : enableMetadata()
+                            }
+                        />
                     </ActionColumn>
                 </SectionItem>
-            </Section> */}
+            </Section>
 
             <Section title={<Translation id="TR_APPLICATION" />}>
                 <Analytics />
