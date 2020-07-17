@@ -21,8 +21,9 @@ const LastUpdate = styled.div`
 
 interface Props {
     symbol: string;
+    tooltipPos?: 'top' | 'bottom';
 }
-const Ticker = ({ symbol }: Props) => {
+const Ticker = ({ symbol, tooltipPos = 'top' }: Props) => {
     const rateAge = (timestamp: number) => differenceInMinutes(new Date(timestamp), new Date());
     const lastWeekRates = useSelector(state => state.wallet.fiat.coins).find(
         r => r.symbol === symbol,
@@ -49,7 +50,7 @@ const Ticker = ({ symbol }: Props) => {
                 rate && timestamp ? (
                     <Tooltip
                         maxWidth={285}
-                        placement="top"
+                        placement={tooltipPos}
                         content={
                             <LastUpdate>
                                 <Translation

@@ -48,8 +48,7 @@ const OuterCircle = styled.div<{ status: Status }>`
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: ${props =>
-        props.status === 'connected' ? colors.NEUE_BG_LIGHT_GREEN : 'transparent'};
+    background: ${props => (props.status === 'connected' ? colors.NEUE_BG_LIGHT_GREEN : '#F6E2E2')};
 `;
 
 const InnerCircle = styled.div<{ status: Status }>`
