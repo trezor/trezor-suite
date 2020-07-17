@@ -24,11 +24,16 @@ describe('Backup', () => {
         cy.task('startEmu');
         cy.getTestElement('@backup/error-message');
 
-        cy.log('Now go to dashboard and see if security card and notification reflects backup failed state correctly');
+        cy.log(
+            'Now go to dashboard and see if security card and notification reflects backup failed state correctly',
+        );
         cy.getTestElement('@backup/close-button').click();
         cy.getTestElement('@notification/failed-backup/learn-more-link').should('be.visible');
 
-        cy.getTestElement('@dashboard/security-card/backup/button', { timeout: 20000 }).click();
+        cy.getTestElement('@dashboard/security-card/backup/button', { timeout: 30000 }).should(
+            'not.be.disabled',
+        );
+        cy.getTestElement('@dashboard/security-card/backup/button').click();
         cy.getTestElement('@backup/already-failed-message');
     });
 });
