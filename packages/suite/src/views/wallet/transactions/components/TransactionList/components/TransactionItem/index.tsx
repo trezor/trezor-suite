@@ -56,6 +56,10 @@ const Addr = styled(motion.div)`
     }
 `;
 
+const AddrInner = styled.div`
+    display: flex;
+`;
+
 const Balance = styled(motion.div)<{ partial?: boolean; secondary?: boolean }>`
     grid-column: amount;
     font-size: ${props => (props.secondary ? variables.FONT_SIZE.TINY : variables.FONT_SIZE.SMALL)};
@@ -140,17 +144,6 @@ export default React.memo((props: Props) => {
     });
 
     const openMetadataPopup = (outputIndex: number, defaultValue: string, value?: string) => {
-        // openModal({
-        //     type: 'metadata-add',
-        //     payload: {
-        //         type: 'outputLabel',
-        //         accountKey: props.account.key,
-        //         txid: transaction.txid,
-        //         outputIndex,
-        //         defaultValue,
-        //         value,
-        //     },
-        // });
         addMetadata({
             type: 'outputLabel',
             accountKey: props.account.key,
@@ -199,6 +192,8 @@ export default React.memo((props: Props) => {
             <React.Fragment key={key}>
                 <Addr {...animation}>
                     <StyledHiddenPlaceholder>
+                        <AddrInner>
+                        {addr}
                         <Button
                             variant="tertiary"
                             icon="LABEL"
@@ -210,7 +205,8 @@ export default React.memo((props: Props) => {
                                 )
                             }
                         />
-                        {addr}
+                        </AddrInner>
+
                     </StyledHiddenPlaceholder>
                 </Addr>
                 {targetAmount && (

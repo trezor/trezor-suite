@@ -19,6 +19,7 @@ const Buttons = styled.div`
 const MetadataAdd = (props: Props) => {
     const ref = useRef<HTMLInputElement>(null);
     const { payload } = props;
+    // const originalValue = payload.value;
 
     const add = () => {
         if (!ref.current) return;
@@ -27,7 +28,8 @@ const MetadataAdd = (props: Props) => {
     };
 
     const onCancel = () => {
-        props.decision.resolve(undefined);
+        // on cancel resolve with original value
+        props.decision.resolve(payload.value);
         props.onCancel();
     };
 

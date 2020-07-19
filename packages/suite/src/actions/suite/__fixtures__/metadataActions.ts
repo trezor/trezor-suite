@@ -422,6 +422,38 @@ const addMetadata = [
     // },
 ];
 
+export const enableMetadata = [{
+    description: 'enable metadata',
+    initialState: {
+                metadata: { enabled: true },
+                // device: {
+                //     state: 'mmcGdEpTPqgQNRHqf3gmB5uDsEoPo2d3tp@46CE52D1ED50A900687D6BA2:undefined',
+                //     metadata: { status: 'cancelled' },
+                // },
+    },
+    result: [
+                {
+                    type: METADATA.ENABLE,
+                },
+            ]
+}];
+
+export const disableMetadata = [{
+    description: 'disable metadata',
+    initialState: {
+                metadata: { enabled: true },
+                // device: {
+                //     state: 'mmcGdEpTPqgQNRHqf3gmB5uDsEoPo2d3tp@46CE52D1ED50A900687D6BA2:undefined',
+                //     metadata: { status: 'cancelled' },
+                // },
+    },
+    result: [
+                {
+                    type: METADATA.DISABLE,
+                },
+            ]
+}];
+
 export {
     getDeviceMetadataKey,
     setAccountMetadataKey,

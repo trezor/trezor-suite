@@ -53,11 +53,11 @@ const FreshAddress = ({
     account,
     addresses,
     showAddress,
-    changeMetadata,
+    // changeMetadata,
     disabled,
     locked,
     intl,
-}: Props & WrappedComponentProps) => {
+}: Omit<Props, 'changeMetadata'> & WrappedComponentProps) => {
     const { symbol } = account;
     const isBitcoin = account.networkType === 'bitcoin';
     const unused = account.addresses
@@ -73,7 +73,7 @@ const FreshAddress = ({
     const addressLabel = isBitcoin ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS';
     // NOTE: unrevealed[0] can be undefined (limit exceeded)
     const firstFreshAddress = isBitcoin ? unrevealed[0] : unused[0];
-    const { addressLabels } = account.metadata;
+    // const { addressLabels } = account.metadata;
 
     const getAddressValue = (address?: AccountAddress) => {
         if (!address) {
@@ -109,7 +109,7 @@ const FreshAddress = ({
             >
                 <Translation id="RECEIVE_ADDRESS_REVEAL" />
             </StyledButton>
-            <Button
+            {/* <Button
                 variant="tertiary"
                 icon="LABEL"
                 onClick={() =>
@@ -118,10 +118,10 @@ const FreshAddress = ({
                         addressLabels[firstFreshAddress.address],
                     )
                 }
-            />
-            {addressLabels[firstFreshAddress.address] && (
+            /> */}
+            {/* {addressLabels[firstFreshAddress.address] && (
                 <span>({addressLabels[firstFreshAddress.address]})</span>
-            )}
+            )} */}
         </StyledCard>
     );
 };

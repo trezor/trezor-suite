@@ -23,15 +23,6 @@ export default ({
     const disabled = !!device.authConfirm;
 
     const changeMetadata = (address: string, currentValue?: string) => {
-        // openModal({
-        //     type: 'metadata-add',
-        //     payload: {
-        //         type: 'addressLabel',
-        //         accountKey: account.key,
-        //         defaultValue: address,
-        //         value: currentValue,
-        //     },
-        // });
         addMetadata({
             type: 'addressLabel',
             accountKey: account.key,
@@ -47,7 +38,7 @@ export default ({
                 addresses={receive}
                 showAddress={showAddress}
                 addToast={addToast}
-                changeMetadata={changeMetadata}
+                // changeMetadata={changeMetadata}
                 disabled={disabled}
                 locked={isDeviceLocked}
             />

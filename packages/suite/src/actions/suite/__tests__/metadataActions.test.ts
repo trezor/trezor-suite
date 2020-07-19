@@ -216,4 +216,32 @@ describe('Metadata Actions', () => {
             }
         });
     });
+
+    fixtures.enableMetadata.forEach(f => {
+        it(f.description, async () => {
+            // @ts-ignore
+            const store = initStore(getInitialState(f.initialState));
+            // @ts-ignore, params
+            const result = await store.dispatch(metadataActions.enableMetadata());
+            if (!f.result) {
+                expect(store.getActions().length).toEqual(0);
+            } else {
+                expect(store.getActions()).toMatchObject(f.result);
+            }
+        });
+    });
+
+    fixtures.disableMetadata.forEach(f => {
+        it(f.description, async () => {
+            // @ts-ignore
+            const store = initStore(getInitialState(f.initialState));
+            // @ts-ignore, params
+            const result = await store.dispatch(metadataActions.disableMetadata());
+            if (!f.result) {
+                expect(store.getActions().length).toEqual(0);
+            } else {
+                expect(store.getActions()).toMatchObject(f.result);
+            }
+        });
+    });
 });

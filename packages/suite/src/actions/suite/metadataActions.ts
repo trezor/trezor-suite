@@ -12,7 +12,7 @@ import {
 import { Account } from '@wallet-types';
 import * as metadataUtils from '@suite-utils/metadata';
 import * as modalActions from '@suite-actions/modalActions';
-import * as notificationActions from '@suite-actions/notificationActions';
+// import * as notificationActions from '@suite-actions/notificationActions';
 // import * as accountActions from '@wallet-actions/accountActions';
 import DropboxProvider from '@suite/services/metadata/DropboxProvider';
 import GoogleProvider from '@suite/services/metadata/GoogleProvider';
@@ -40,17 +40,34 @@ export type MetadataActions =
 // needs to be declared here in top level context because it's not recommended to keep classes instances in redux state (serialization)
 let providerInstance: AbstractMetadataProvider | undefined;
 
-export const initProvider = () => async (dispatch: Dispatch, getState: GetState) => {
-    // pick provider
-    const { provider } = getState().metadata;
-
-    if (!provider) {
+export const initProvider = () => async (dispatch: Dispatch) => {
+    console.warn('init provider');
+    
         // TODO: check is connected
-        const decision = createDeferred<boolean>();
-        dispatch(modalActions.openModal({ type: 'metadata-provider', decision }));
-        await decision.promise;
-    } else {
-        console.warn('TODO: hmm provider already init, what about it?');
+    const decision = createDeferred<boolean>();
+    dispatch(modalActions.openModal({ type: 'metadata-provider', decision }));
+    await decision.promise;
+
+    return providerInstance;
+};
+
+export const connectProvider = (type: MetadataProviderType) => async (dispatch: Dispatch) => {
+    const provider = await getProvider({ type });
+    if (!provider) return;
+
+    const connected = await provider.connect();
+
+    if (connected) {
+        const credentials = await provider.getCredentials();
+        if (!credentials) return; // TODO: toast errors
+
+        // set metadata reducer
+        dispatch({
+            type: METADATA.SET_PROVIDER,
+            payload: credentials,
+        });
+
+        return true;
     }
 };
 
@@ -63,7 +80,6 @@ const getProvider = async (state?: Partial<MetadataProviderCredentials>) => {
             break;
         case 'google':
             providerInstance = new GoogleProvider(state.token);
-            break;
         default:
             break;
     }
@@ -79,9 +95,10 @@ const getProvider = async (state?: Partial<MetadataProviderCredentials>) => {
     return providerInstance;
 };
 
-export const addDeviceMetadata = (
-    payload: Extract<MetadataAddPayload, { type: 'walletLabel' }>,
-) => async (dispatch: Dispatch, getState: GetState) => {
+export const addDeviceMetadata = (payload: Extract<MetadataAddPayload, { type: 'walletLabel' }>) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     const provider = await getProvider(getState().metadata.provider);
     if (!provider) return;
     const device = getState().devices.find(d => d.state === payload.deviceState);
@@ -109,17 +126,10 @@ export const addDeviceMetadata = (
     provider.setFileContent(device.metadata.fileName, encrypted);
 };
 
-// todo: remove export probably?, is private
-export const addAccountMetadata = (payload: MetadataAddPayload) => async (
+export const addAccountMetadata = (payload: Exclude<MetadataAddPayload, {type: 'walletLabel'}>) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    console.warn('addAccountMetadata', payload);
-
-    // todo: why here? aha, typescript.
-    if (payload.type === 'walletLabel') {
-        return;
-    }
 
     const account = getState().wallet.accounts.find(a => a.key === payload.accountKey);
     if (!account) return;
@@ -161,6 +171,7 @@ export const addAccountMetadata = (payload: MetadataAddPayload) => async (
 
     if (payload.type === 'accountLabel') {
         if (typeof payload.value !== 'string' || payload.value.length === 0) {
+            // aha probably here deleted
             delete metadata.accountLabel;
         } else {
             metadata.accountLabel = payload.value;
@@ -298,39 +309,13 @@ export const getDeviceMetadataKey = (force = false) => async (
     // TODO: check if accounts for this device already exists, and fill keys if so
 };
 
-export const connectProvider = (type: MetadataProviderType) => async (dispatch: Dispatch) => {
-    const provider = await getProvider({ type });
-    if (!provider) return;
-
-    const connected = await provider.connect();
-
-    if (connected) {
-        const credentials = await provider.getCredentials();
-        if (!credentials) {
-            return dispatch(
-                notificationActions.addToast({
-                    type: 'error',
-                    error: 'Failed to log in metadata provider',
-                }),
-            );
-        }
-
-        // set metadata reducer
-        dispatch({
-            type: METADATA.SET_PROVIDER,
-            payload: credentials,
-        });
-
-        return true;
-    }
-};
-
 export const fetchMetadata = (deviceState: string) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
     const provider = await getProvider(getState().metadata.provider);
     if (!provider) return;
+
     const accounts = getState().wallet.accounts.filter(
         a => a.deviceState === deviceState && a.metadata.fileName,
     );
@@ -417,7 +402,7 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
     }
 
     // make sure user has metadata enabled for this device
-    const { device } = getState().suite;
+    let { device } = getState().suite;
 
     if (!device?.state) return;
 
@@ -425,9 +410,19 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
 
     // user might have clicked cancel on device when he was prompting to enable labeling. In this case
     // we override his choice as he is apparently willing to add label.
-    if (device?.metadata.status !== 'enabled') {
+    if (needsUpdate) {
         // prompt again to get metadata master key
         await dispatch(getDeviceMetadataKey(true));
+    }
+
+    // check if there is already initialized provider instance
+    let provider = await getProvider(getState().metadata.provider);
+
+    // if not, init provider log in flow but do not wait for it to finish as we may  already do
+    // some more synchronous tasks without waiting.
+    let providerPromise;
+    if (!provider) {
+        providerPromise = dispatch(initProvider());
     }
 
     // this can actually be parallel to provider logging in
@@ -442,25 +437,49 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
         });
     }
 
-    let provider = await getProvider(getState().metadata.provider);
-
-    if (!provider) {
-        await dispatch(initProvider());
-    }
-
+    // wait for provider here because right after this point, we are going to fetch data from provider
+    await providerPromise;
     provider = await getProvider(getState().metadata.provider);
 
-    // todo: fetch all files with metadata for all objects
+    if (!provider) {
+        console.warn('kurwa to je uz na hovno');
+        return;
+    }
+
+    // save reference to original value. we need to compare old and new value to determine
+    // if we need to save new value. If it hasn't changed we don't need to save it.
+    let originalValue = payload.value;
 
     if (needsUpdate) {
         await dispatch(fetchMetadata(device?.state));
         // check if there is value to pre fill into user input
-        if (payload.type === 'accountLabel') {
+
+        if (payload.type === 'walletLabel') {
+            device = getState().suite.device;
+            if (device?.features && device?.metadata.status === 'enabled' && device?.metadata.walletLabel) {
+                payload.value = device.metadata.walletLabel;
+            }
+            // todo:
+        } else {
             const account = getState().wallet.accounts.find(acc => acc.key === payload.accountKey);
-            if (account?.metadata.accountLabel) {
+            if (payload.type === 'accountLabel' && account?.metadata.accountLabel) {
                 payload.value = account?.metadata.accountLabel;
             }
+            if (
+                payload.type === 'addressLabel' &&
+                account?.metadata.addressLabels[payload.defaultValue]
+            ) {
+                payload.value = account?.metadata.addressLabels[payload.defaultValue];
+            }
+            if (
+                payload.type === 'outputLabel' &&
+                account?.metadata.outputLabels[payload.txid][payload.outputIndex]
+            ) {
+                payload.value = account?.metadata.outputLabels[payload.txid][payload.outputIndex];
+            }
         }
+        // ?
+        originalValue = payload.value;
     }
     const decision = createDeferred<string | undefined>();
 
@@ -473,14 +492,27 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
     );
 
     const value = await decision.promise;
+    console.warn('payload.value', value);
+    console.warn('originalValue', originalValue);
 
-    dispatch(addAccountMetadata({ ...payload, value }));
+    if (value === originalValue) {
+        console.warn('value has not changed, return');
+        return;
+    }
+
+    if (payload.type === 'walletLabel') {
+        dispatch(addDeviceMetadata({ ...payload, value }))        
+    } else {
+        dispatch(addAccountMetadata({ ...payload, value }));
+    }
 };
 
 export const enableMetadata = () => (dispatch: Dispatch) => {
     dispatch({
         type: METADATA.ENABLE,
     });
+    // todo? init right away?
+    dispatch(init(true));
 };
 
 export const disableMetadata = () => (dispatch: Dispatch) => {
@@ -488,11 +520,16 @@ export const disableMetadata = () => (dispatch: Dispatch) => {
         type: METADATA.DISABLE,
     });
 };
-// export const init = (force = false) => async (dispatch: Dispatch, getState: GetState) => {
-//     dispatch({ type: METADATA.ENABLE, payload: true  });
-//     await dispatch(getDeviceMetadataKey(force));
-//     await dispatch(initProvider());
-// };
+
+export const init = (force = false) => async (dispatch: Dispatch, getState: GetState) => {
+    // dispatch({ type: METADATA.ENABLE, payload: true  });
+    console.warn('init');
+    await dispatch(getDeviceMetadataKey(force));
+    console.warn('getState().suite.device?.metadata.status', getState().suite.device?.metadata.status);
+    if (getState().suite.device?.metadata.status === 'enabled') {
+        await dispatch(initProvider());
+    }
+};
 
 // - getMasterKey
 // - initProvider
