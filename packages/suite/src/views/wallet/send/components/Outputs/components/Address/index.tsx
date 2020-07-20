@@ -100,13 +100,11 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
                 </Button>
             }
             labelRight={
-                <>
-                    {outputsCount > 1 && (
-                        <Remove onClick={() => removeOutput(outputId)}>
-                            <StyledIcon size={20} color={colors.BLACK50} icon="CROSS" />
-                        </Remove>
-                    )}
-                </>
+                outputsCount > 1 ? (
+                    <Remove onClick={() => removeOutput(outputId)}>
+                        <StyledIcon size={20} color={colors.BLACK50} icon="CROSS" />
+                    </Remove>
+                ) : undefined
             }
             onChange={async () => {
                 if (addressError) return;

@@ -150,16 +150,16 @@ export default ({ outputId }: { outputId: number }) => {
                         </Label>
                     }
                     labelRight={
-                        <Label>
-                            {tokenBalance && (
+                        tokenBalance ? (
+                            <Label>
                                 <TokenBalance>
                                     <Translation
                                         id="TR_TOKEN_BALANCE"
                                         values={{ balance: tokenBalance }}
                                     />
                                 </TokenBalance>
-                            )}
-                        </Label>
+                            </Label>
+                        ) : undefined
                     }
                     bottomText={error && error.message}
                     onChange={event => {

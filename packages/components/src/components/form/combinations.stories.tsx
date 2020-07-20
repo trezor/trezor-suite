@@ -16,6 +16,7 @@ storiesOf('Form', module).add(
         return (
             <Wrapper>
                 <SelectBar
+                    label="Fee"
                     selectedOption="ETH"
                     options={[
                         { label: 'ETH', value: 'ETH' },

@@ -21,6 +21,8 @@ const Wrapper = styled.div`
 
 const Label = styled.div`
     padding-right: 20px;
+    display: flex;
+    align-items: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-transform: capitalize;
     font-size: ${variables.FONT_SIZE.NORMAL};

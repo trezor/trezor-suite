@@ -123,7 +123,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     innerRef?: React.Ref<HTMLInputElement>;
     variant?: InputVariant;
     button?: InputButton;
-    label?: React.ReactElement;
+    label?: React.ReactElement | string;
     labelAddon?: React.ReactElement;
     labelRight?: React.ReactElement;
     innerAddon?: React.ReactNode;
