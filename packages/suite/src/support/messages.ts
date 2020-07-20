@@ -3551,6 +3551,14 @@ const definedMessages = defineMessages({
         id: 'TR_RBF',
         defaultMessage: 'RBF',
     },
+    TR_ON: {
+        id: 'TR_ON',
+        defaultMessage: 'on',
+    },
+    TR_OFF: {
+        id: 'TR_OFF',
+        defaultMessage: 'off',
+    },
 } as const);
 
 export default definedMessages;

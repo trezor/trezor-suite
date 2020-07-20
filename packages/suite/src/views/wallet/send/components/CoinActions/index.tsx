@@ -5,10 +5,7 @@ import styled from 'styled-components';
 
 import AddData from './components/AddData';
 import AddDestinationTag from './components/AddDestinationTag';
-import AddRecipient from './components/AddRecipient';
-import AddLocktime from './components/AddLocktime';
-import RBF from './components/RBF';
-import Broadcast from './components/Broadcast';
+import BitcoinActions from './components/BitcoinActions';
 
 const Wrapper = styled.div`
     display: flex;
@@ -26,24 +23,6 @@ const Line = styled.div`
     border-top: 1px solid ${colors.NEUE_BG_GRAY};
 `;
 
-const Box = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: space-between;
-`;
-
-const Left = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: flex-start;
-`;
-
-const Right = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: flex-end;
-`;
-
 export default () => {
     const {
         account: { networkType },
@@ -55,18 +34,7 @@ export default () => {
             <Content>
                 {networkType === 'ripple' && <AddDestinationTag />}
                 {networkType === 'ethereum' && <AddData />}
-                {networkType === 'bitcoin' && (
-                    <Box>
-                        <Left>
-                            <AddLocktime />
-                            <Broadcast />
-                            <RBF />
-                        </Left>
-                        <Right>
-                            <AddRecipient />
-                        </Right>
-                    </Box>
-                )}
+                {networkType === 'bitcoin' && <BitcoinActions />}
             </Content>
         </Wrapper>
     );

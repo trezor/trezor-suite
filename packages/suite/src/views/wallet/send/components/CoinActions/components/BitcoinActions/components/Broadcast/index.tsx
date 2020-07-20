@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-
+import { OnOffSwitcher } from '@wallet-components';
 import { Translation } from '@suite-components';
 import { Button } from '@trezor/components';
 
@@ -29,6 +29,7 @@ export default () => {
                     }}
                 >
                     <Translation id="TR_BROADCAST" />
+                    <OnOffSwitcher isOn={false} />
                 </Button>
             )}
             {isActive && <Active>a</Active>}

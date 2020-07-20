@@ -1,23 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-
-import { Translation } from '@suite-components';
-import { Button } from '@trezor/components';
+import { Translation, OnOff } from '@suite-components';
+import { OnOffSwitcher } from '@wallet-components';
+import { Button, colors } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
     margin-left: 8px;
 `;
 
-const Active = styled.div`
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-`;
+interface Props {
+    isOn: boolean;
+    isActive: boolean;
+    setIsActive: (isActive: boolean) => void;
+}
 
-export default () => {
-    const [isActive, setIsActive] = useState(false);
-
+const RBF = ({ isActive = false, isOn = true, setIsActive }: Props) => {
     return (
         <Wrapper>
             {!isActive && (
@@ -29,9 +27,11 @@ export default () => {
                     }}
                 >
                     <Translation id="TR_RBF" />
+                    <OnOffSwitcher isOn={isOn} />
                 </Button>
             )}
-            {isActive && <Active>a</Active>}
         </Wrapper>
     );
 };
+
+export default RBF;
