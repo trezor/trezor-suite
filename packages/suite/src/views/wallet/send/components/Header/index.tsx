@@ -25,7 +25,11 @@ const HeaderRight = styled.div`
     flex: 1;
 `;
 
-export default () => (
+interface Props {
+    setOpReturnActive: (isOpReturnActive: boolean) => void;
+}
+
+export default ({ setOpReturnActive }: Props) => (
     <Wrapper>
         <HeaderLeft />
         <HeaderRight>
@@ -36,8 +40,10 @@ export default () => (
                     {
                         options: [
                             {
-                                callback: () => {},
-                                label: 'aaa',
+                                callback: () => {
+                                    setOpReturnActive(true);
+                                },
+                                label: 'OP Return',
                                 isHidden: false,
                             },
                         ],
