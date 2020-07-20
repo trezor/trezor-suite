@@ -23,7 +23,7 @@ describe('Passphrase', () => {
         // add 1st hidden wallet
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@switch-device/add-wallet-button').click();
-        cy.task('sendDecision');
+        cy.task('pressYes');
         // first input
         cy.getTestElement('@passphrase/input').type('abc');
         cy.getTestElement('@passphrase/submit-button').click();
@@ -44,7 +44,7 @@ describe('Passphrase', () => {
         // click reveal address
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
         cy.getTestElement('@address-modal/address-field').should('contain', abcAddr);
-        cy.task('sendDecision');
+        cy.task('pressYes');
 
         cy.log('passphrase def');
         // add 2nd hidden wallet
@@ -63,7 +63,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
 
         cy.getTestElement('@address-modal/address-field').should('contain', defAddr);
-        cy.task('sendDecision');
+        cy.task('pressYes');
 
         cy.log('passphrase abc again. now it is cached in device');
         // now go back to the 1st wallet
@@ -77,7 +77,7 @@ describe('Passphrase', () => {
         // should display confirm passphrase modal
         cy.getTestElement('@suite/loading').should('not.be.visible');
         cy.getTestElement('@address-modal/address-field').should('contain', abcAddr);
-        cy.task('sendDecision');
+        cy.task('pressYes');
     });
 
     // todo: passphrase duplicate test

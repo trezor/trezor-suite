@@ -9,6 +9,7 @@ const metadata = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
     if (action.type === ACCOUNT.CREATE) {
         action.payload = api.dispatch(metadataActions.setAccountMetadataKey(action.payload));
     }
+
     // pass action
     next(action);
 

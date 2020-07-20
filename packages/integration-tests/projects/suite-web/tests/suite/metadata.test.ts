@@ -64,7 +64,7 @@ describe('Metadata', () => {
         cy.task('startEmu');
         cy.passThroughInitialRun();
 
-        cy.task('sendDecision');
+        cy.task('pressYes');
         
 
         cy.getTestElement('@modal/metadata-provider/google-button').click();

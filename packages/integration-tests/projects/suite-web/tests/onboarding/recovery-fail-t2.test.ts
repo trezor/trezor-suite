@@ -23,7 +23,7 @@ describe('Onboarding - recover wallet T2', () => {
         cy.getTestElement('@onboarding/button-continue').click();
         cy.getTestElement('@onboarding/recovery/start-button').click();
         cy.getTestElement('@suite/modal/confirm-action-on-device');
-        cy.task('sendDecision');
+        cy.task('pressYes');
         cy.task('stopEmu');
         cy.getTestElement('@onboarding/unexpected-state/reconnect');
         cy.task('startEmu', { version: '2.1.4', wipe: false });

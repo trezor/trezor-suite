@@ -104,9 +104,15 @@ module.exports = on => {
             await controller.disconnect();
             return null;
         },
-        sendDecision: async method => {
+        pressYes: async () => {
             await controller.connect();
-            await controller.send({ type: 'emulator-decision', method });
+            await controller.send({ type: 'emulator-press-yes' });
+            await controller.disconnect();
+            return null;
+        },
+        pressNo: async () => {
+            await controller.connect();
+            await controller.send({ type: 'emulator-press-no' });
             await controller.disconnect();
             return null;
         },

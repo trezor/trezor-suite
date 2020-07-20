@@ -31,7 +31,7 @@ describe('Onboarding - T2 in recovery mode', () => {
         cy.getTestElement('@onboarding/button-continue').click();
         cy.getTestElement('@onboarding/recovery/start-button').click();
         cy.getTestElement('@suite/modal/confirm-action-on-device');
-        cy.task('sendDecision');
+        cy.task('pressYes');
         cy.task('stopEmu');
         cy.getTestElement('@onboarding/unexpected-state/reconnect');
 
@@ -64,11 +64,11 @@ describe('Onboarding - T2 in recovery mode', () => {
         cy.getTestElement('@onboarding/button-continue').click();
         cy.getTestElement('@onboarding/recovery/start-button').click();
         cy.getTestElement('@suite/modal/confirm-action-on-device');
-        cy.task('sendDecision');
+        cy.task('pressYes');
         cy.getTestElement('@suite/modal/confirm-action-on-device');
-        cy.task('sendDecision');
+        cy.task('pressYes');
         cy.task('selectNumOfWordsEmu', 20);
-        cy.task('sendDecision');
+        cy.task('pressYes');
         for (let i = 0; i<shareOneOfThree.length; i++) {
             cy.task('inputEmu', shareOneOfThree[i]);
         }
@@ -78,13 +78,13 @@ describe('Onboarding - T2 in recovery mode', () => {
 
         cy.task('startEmu', { version: '2.3.1', wipe: false });
         cy.getTestElement('@suite/modal/confirm-action-on-device');
-        cy.task('sendDecision');
+        cy.task('pressYes');
 
         for (let i = 0; i<shareTwoOfThree.length; i++) {
             cy.task('inputEmu', shareTwoOfThree[i]);
         }
 
-        cy.task('sendDecision');
+        cy.task('pressYes');
         cy.getTestElement('@onboarding/recovery/continue-button').click();
     });
 

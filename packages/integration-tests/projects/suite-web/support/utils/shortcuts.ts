@@ -44,7 +44,7 @@ export const passThroughBackup = () => {
     cy.log('Create backup on device');
     cy.getTestElement('@backup/start-button').click();
     cy.getConfirmActionOnDeviceModal();
-    cy.task('sendDecision');
+    cy.task('pressYes');
     cy.task('readAndConfirmMnemonicEmu');
 
     cy.log('click all after checkboxes and close backup modal');

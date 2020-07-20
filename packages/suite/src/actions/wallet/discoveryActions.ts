@@ -305,6 +305,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
     ) {
         // always try to generate device metadata master key first
         if (device.metadata.status !== 'enabled') {
+            console.warn('dispatch init===');
             await dispatch(metadataActions.init());
         }
 
