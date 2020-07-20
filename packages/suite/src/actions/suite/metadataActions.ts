@@ -41,13 +41,36 @@ export type MetadataActions =
 let providerInstance: AbstractMetadataProvider | undefined;
 
 export const initProvider = () => async (dispatch: Dispatch) => {
-    console.warn('init provider');
-    
-        // TODO: check is connected
+    // TODO: check is connected
     const decision = createDeferred<boolean>();
     dispatch(modalActions.openModal({ type: 'metadata-provider', decision }));
     await decision.promise;
 
+    return providerInstance;
+};
+
+const getProvider = async (state?: Partial<MetadataProviderCredentials>) => {
+    if (!state) return;
+    if (providerInstance) return providerInstance;
+    switch (state.type) {
+        case 'dropbox':
+            providerInstance = new DropboxProvider(state.token);
+            break;
+        case 'google':
+            providerInstance = new GoogleProvider(state.token);
+            break;
+        default:
+            break;
+    }
+
+    if (providerInstance && state.token) {
+        const credentials = await providerInstance.getCredentials();
+        if (!credentials) {
+            // reset provider in reducer
+            console.warn('TODO: incorrect credentials');
+            return;
+        }
+    }
     return providerInstance;
 };
 
@@ -71,34 +94,9 @@ export const connectProvider = (type: MetadataProviderType) => async (dispatch: 
     }
 };
 
-const getProvider = async (state?: Partial<MetadataProviderCredentials>) => {
-    if (!state) return;
-    if (providerInstance) return providerInstance;
-    switch (state.type) {
-        case 'dropbox':
-            providerInstance = new DropboxProvider(state.token);
-            break;
-        case 'google':
-            providerInstance = new GoogleProvider(state.token);
-        default:
-            break;
-    }
-
-    if (providerInstance && state.token) {
-        const credentials = await providerInstance.getCredentials();
-        if (!credentials) {
-            // reset provider in reducer
-            console.warn('TODO: incorrect credentials');
-            return;
-        }
-    }
-    return providerInstance;
-};
-
-export const addDeviceMetadata = (payload: Extract<MetadataAddPayload, { type: 'walletLabel' }>) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
+export const addDeviceMetadata = (
+    payload: Extract<MetadataAddPayload, { type: 'walletLabel' }>,
+) => async (dispatch: Dispatch, getState: GetState) => {
     const provider = await getProvider(getState().metadata.provider);
     if (!provider) return;
     const device = getState().devices.find(d => d.state === payload.deviceState);
@@ -126,11 +124,9 @@ export const addDeviceMetadata = (payload: Extract<MetadataAddPayload, { type: '
     provider.setFileContent(device.metadata.fileName, encrypted);
 };
 
-export const addAccountMetadata = (payload: Exclude<MetadataAddPayload, {type: 'walletLabel'}>) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-
+export const addAccountMetadata = (
+    payload: Exclude<MetadataAddPayload, { type: 'walletLabel' }>,
+) => async (dispatch: Dispatch, getState: GetState) => {
     const account = getState().wallet.accounts.find(a => a.key === payload.accountKey);
     if (!account) return;
 
@@ -230,15 +226,13 @@ export const setAccountMetadataKey = (account: Account) => (
         const aesKey = metadataUtils.deriveAesKey(metaKey);
         return { ...account, metadata: { ...account.metadata, fileName, aesKey } };
     } catch (error) {
-        console.warn('wtf kurwa err', error);
         // TODO: handle error in UI?
     }
     return account;
 };
 
 // Generate device master-key
-// todo: maybe rename to "initMetadata ?"
-export const getDeviceMetadataKey = (force = false) => async (
+export const setDeviceMetadataKey = (force = false) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -323,7 +317,6 @@ export const fetchMetadata = (deviceState: string) => async (
     // TODO: watch files (sync)
     // TODO: watch internet connection
     // TODO: run fetching in parallel
-    console.log('getState().devices.', getState().devices);
     const device = getState().devices.find(d => d.state === deviceState);
     if (!device || device.metadata.status !== 'enabled') return;
 
@@ -391,8 +384,6 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    console.warn('addMetadata', payload);
-
     // make sure metadata is enabled globally
     const { metadata } = getState();
 
@@ -412,7 +403,7 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
     // we override his choice as he is apparently willing to add label.
     if (needsUpdate) {
         // prompt again to get metadata master key
-        await dispatch(getDeviceMetadataKey(true));
+        await dispatch(setDeviceMetadataKey(true));
     }
 
     // check if there is already initialized provider instance
@@ -442,7 +433,6 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
     provider = await getProvider(getState().metadata.provider);
 
     if (!provider) {
-        console.warn('kurwa to je uz na hovno');
         return;
     }
 
@@ -456,7 +446,11 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
 
         if (payload.type === 'walletLabel') {
             device = getState().suite.device;
-            if (device?.features && device?.metadata.status === 'enabled' && device?.metadata.walletLabel) {
+            if (
+                device?.features &&
+                device?.metadata.status === 'enabled' &&
+                device?.metadata.walletLabel
+            ) {
                 payload.value = device.metadata.walletLabel;
             }
             // todo:
@@ -492,18 +486,24 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
     );
 
     const value = await decision.promise;
-    console.warn('payload.value', value);
-    console.warn('originalValue', originalValue);
 
+    // value did not change, stop here
     if (value === originalValue) {
-        console.warn('value has not changed, return');
         return;
     }
 
     if (payload.type === 'walletLabel') {
-        dispatch(addDeviceMetadata({ ...payload, value }))        
+        dispatch(addDeviceMetadata({ ...payload, value }));
     } else {
         dispatch(addAccountMetadata({ ...payload, value }));
+    }
+};
+
+export const init = (force = false) => async (dispatch: Dispatch, getState: GetState) => {
+    console.warn('init');
+    await dispatch(setDeviceMetadataKey(force));
+    if (getState().suite.device?.metadata.status === 'enabled' && !getProvider(getState().metadata.provider)) {
+        await dispatch(initProvider());
     }
 };
 
@@ -511,7 +511,6 @@ export const enableMetadata = () => (dispatch: Dispatch) => {
     dispatch({
         type: METADATA.ENABLE,
     });
-    // todo? init right away?
     dispatch(init(true));
 };
 
@@ -520,22 +519,3 @@ export const disableMetadata = () => (dispatch: Dispatch) => {
         type: METADATA.DISABLE,
     });
 };
-
-export const init = (force = false) => async (dispatch: Dispatch, getState: GetState) => {
-    // dispatch({ type: METADATA.ENABLE, payload: true  });
-    console.warn('init');
-    await dispatch(getDeviceMetadataKey(force));
-    console.warn('getState().suite.device?.metadata.status', getState().suite.device?.metadata.status);
-    if (getState().suite.device?.metadata.status === 'enabled') {
-        await dispatch(initProvider());
-    }
-};
-
-// - getMasterKey
-// - initProvider
-
-// loadExisting
-
-// addMetadata
-// -init?
-// -load existing if needed

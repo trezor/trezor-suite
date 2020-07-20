@@ -39,7 +39,7 @@ const originalJson = {
 
 describe('metadata', () => {
     it('decrypt real file data from dropbox', async () => {
-        require('trezor-connect');
+        // require('trezor-connect');
 
         const file = fs.readFileSync(`./src/utils/suite/__fixtures__/${filename}.mtdt`);
 
@@ -56,8 +56,6 @@ describe('metadata', () => {
         // deriveAesKey
         const aesKey = deriveAesKey(metadataKey);
         expect(aesKey).toEqual('9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480');
-
-        //
 
         // decrypt
         const decrypted = decrypt(file, Buffer.from(aesKey, 'hex'));

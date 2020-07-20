@@ -107,8 +107,6 @@ const update = (draft: Account[], account: Account) => {
 };
 
 const setMetadata = (draft: Account[], account: Account) => {
-    console.warn('setMetadata');
-
     const index = draft.findIndex(a => a.key === account.key);
     if (!draft[index]) return;
     draft[index].metadata = account.metadata;

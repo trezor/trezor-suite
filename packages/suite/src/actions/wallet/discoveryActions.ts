@@ -304,8 +304,10 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         discovery.status > DISCOVERY.STATUS.STOPPING
     ) {
         // always try to generate device metadata master key first
-        await dispatch(metadataActions.init());
-        
+        if (device.metadata.status !== 'enabled') {
+            await dispatch(metadataActions.init());
+        }
+
         // start discovery
         dispatch({
             type: DISCOVERY.START,

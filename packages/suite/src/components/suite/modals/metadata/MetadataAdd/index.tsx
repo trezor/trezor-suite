@@ -19,7 +19,6 @@ const Buttons = styled.div`
 const MetadataAdd = (props: Props) => {
     const ref = useRef<HTMLInputElement>(null);
     const { payload } = props;
-    // const originalValue = payload.value;
 
     const add = () => {
         if (!ref.current) return;

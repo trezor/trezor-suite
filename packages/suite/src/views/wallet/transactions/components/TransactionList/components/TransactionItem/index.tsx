@@ -193,20 +193,19 @@ export default React.memo((props: Props) => {
                 <Addr {...animation}>
                     <StyledHiddenPlaceholder>
                         <AddrInner>
-                        {addr}
-                        <Button
-                            variant="tertiary"
-                            icon="LABEL"
-                            onClick={() =>
-                                openMetadataPopup(
-                                    targetN,
-                                    target.addresses!.join(''),
-                                    targetMetadata,
-                                )
-                            }
-                        />
+                            {addr}
+                            <Button
+                                variant="tertiary"
+                                icon="LABEL"
+                                onClick={() =>
+                                    openMetadataPopup(
+                                        targetN,
+                                        target.addresses!.join(''),
+                                        targetMetadata,
+                                    )
+                                }
+                            />
                         </AddrInner>
-
                     </StyledHiddenPlaceholder>
                 </Addr>
                 {targetAmount && (

@@ -1,6 +1,6 @@
-import { METADATA } from '@suite-actions/constants';
+import { METADATA, MODAL, SUITE } from '@suite-actions/constants';
 
-const getDeviceMetadataKey = [
+const setDeviceMetadataKey = [
     {
         description: `Metadata not enabled`,
         initialState: {
@@ -37,14 +37,23 @@ const getDeviceMetadataKey = [
             metadata: { enabled: true },
             device: { state: 'device-state', metadata: { status: 'disabled' } },
         },
-        result: {
-            type: METADATA.SET_MASTER_KEY,
-            payload: {
-                metadata: {
-                    status: 'cancelled',
+        result: [
+            {
+                type: METADATA.SET_MASTER_KEY,
+                payload: {
+                    metadata: {
+                        status: 'cancelled',
+                    },
                 },
             },
-        },
+            {
+                type: SUITE.UPDATE_SELECTED_DEVICE,
+                payload: {
+                    state: 'device-state',
+                    metadata: { status: 'cancelled' },
+                },
+            },
+        ],
     },
     // {
     //     description: `Master key successfully generated`,
@@ -66,17 +75,28 @@ const getDeviceMetadataKey = [
             },
             device: { state: 'device-state', metadata: { status: 'disabled' } },
         },
-        result: {
-            type: METADATA.SET_MASTER_KEY,
-            payload: {
-                metadata: {
-                    aesKey: 'eb0f1f0238c7fa8018c6101f4e887b871ce07b99d01d5ea57089b82f93149557',
-                    fileName: '039fe833cba71d84b7bf4c99d44468ee48e311e741cbfcd6daf5263f584ef9f6',
-                    key: 'CKValue',
-                    status: 'enabled',
+        result: [
+            {
+                type: METADATA.ENABLE,
+                payload: true,
+            },
+            {
+                type: METADATA.SET_MASTER_KEY,
+                payload: {
+                    metadata: {
+                        aesKey: 'bc37a9a8c6cfa6ab2f75b384df2745895d75f2c572a195ccff59ae9958aaf0e8',
+                        fileName:
+                            'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f',
+                        key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
+                        status: 'enabled',
+                    },
                 },
             },
-        },
+            {
+                type: SUITE.UPDATE_SELECTED_DEVICE,
+                payload: expect.any(Object),
+            },
+        ],
     },
 ];
 
@@ -347,9 +367,6 @@ const addMetadata = [
         description: 'when disabled globally, should return immediately',
         initialState: {
             metadata: { enabled: false },
-            // device: {
-            //     state: 'mmcGdEpTPqgQNRHqf3gmB5uDsEoPo2d3tp@46CE52D1ED50A900687D6BA2:undefined'
-            // },
         },
         params: {
             accountKey:
@@ -360,102 +377,212 @@ const addMetadata = [
         },
         result: [],
     },
-    // {
-    //     description: 'when disabled for device, needsUpdate is true',
-    //     initialState: {
-    //         metadata: { enabled: true },
-    //         device: {
-    //             state: 'mmcGdEpTPqgQNRHqf3gmB5uDsEoPo2d3tp@46CE52D1ED50A900687D6BA2:undefined',
-    //             metadata: { status: 'cancelled' },
-    //         },
-    //         accounts: [
-    //             {
-    //                 metadata: {
-    //                     key: 'xpub6CbvwVHQ2M4LARDZhZP8yK2vFA4tHbRhhJ2TJNCgCwCUPhLKwse3CUu1HCexAMimPmBeofxnuAW1r39DQmXPUvsMCCvzgvBV1RrrCdnKaZ4',
-    //                     outputLabels: {},
-    //                 },
-    //             },
-    //         ],
-    //     },
-    //     params: {
-    //         accountKey:
-    //             'zpub6rGTYpdEKi9Hs1boNGxPPVDvb6MnAqQhXX4ts9zSxwxEVtxnTByAScDHKca8AB2cD3RGJd9upVD7ccNLrAMR5QEYvtKqrjpTYsz8yoR6RMz-btc-mmcGdEpTPqgQNRHqf3gmB5uDsEoPo2d3tp@46CE52D1ED50A900687D6BA2:undefined',
-    //         defaultValue: "m/84'/0'/0'",
-    //         type: 'accountLabel',
-    //         value: undefined,
-    //     },
-    //     result: [
-    //         {
-    //             type: METADATA.ENABLE,
-    //             payload: true,
-    //         },
-    //         {
-    //             type: METADATA.SET_MASTER_KEY,
-    //             payload: {
-    //                 deviceState:
-    //                     'mmcGdEpTPqgQNRHqf3gmB5uDsEoPo2d3tp@46CE52D1ED50A900687D6BA2:undefined',
-    //                 metadata: {
-    //                     aesKey: 'e5a761589ac4950ae899c7ffe572e492d21864f5a5822e228e165f02c0124d53',
-    //                     fileName:
-    //                         '597ff11fe9d82e88d449f5aca3c7747d0d8eccc46bd64a48f29e49f4aff5dc3f',
-    //                     key: 'CKValue',
-    //                     status: 'enabled',
-    //                 },
-    //             },
-    //         },
-    //         {
-    //             type: MODAL.OPEN_USER_CONTEXT,
-    //             payload: {
-    //                 decision: expect.any(Object),
-    //                 type: 'metadata-provider',
-    //             },
-    //         },
-    //         {
-    //             type: MODAL.OPEN_USER_CONTEXT,
-    //             payload: {
-    //                 decision: expect.any(Object),
-    //                 payload: expect.any(Object),
-    //                 type: 'metadata-add',
-    //             },
-    //         },
-    //     ],
-    // },
+    {
+        description: 'device without state',
+        initialState: {
+            metadata: { enabled: true },
+            device: {
+                state: undefined,
+            },
+        },
+        params: {},
+        result: [],
+    },
+    {
+        description: 'does not need update',
+        initialState: {
+            metadata: {
+                enabled: true,
+                provider: { type: 'dropbox', user: 'User Name', token: 'oauth-token' },
+            },
+            device: {
+                state: 'mmcGdEpTPqgQNRHqf3gmB5uDsEoPo2d3tp@46CE52D1ED50A900687D6BA2:undefined',
+                metadata: { status: 'enabled' },
+            },
+        },
+        params: {
+            accountKey: 'account-key',
+            defaultValue: "m/84'/0'/0'",
+            type: 'accountLabel',
+            value: undefined,
+        },
+        result: [
+            {
+                type: MODAL.OPEN_USER_CONTEXT,
+                payload: {
+                    type: 'metadata-add',
+                    decision: expect.any(Object),
+                    payload: {
+                        accountKey: 'account-key',
+                        defaultValue: "m/84'/0'/0'",
+                        type: 'accountLabel',
+                        value: undefined,
+                    },
+                },
+            },
+        ],
+    },
+    {
+        description: 'value from input === original value',
+        initialState: {
+            metadata: {
+                enabled: true,
+                provider: { type: 'dropbox', user: 'User Name', token: 'oauth-token' },
+            },
+            device: {
+                state: 'mmcGdEpTPqgQNRHqf3gmB5uDsEoPo2d3tp@46CE52D1ED50A900687D6BA2:undefined',
+                metadata: { status: 'enabled' },
+            },
+        },
+        params: {
+            accountKey: 'account-key',
+            defaultValue: "m/84'/0'/0'",
+            type: 'accountLabel',
+            value: 'my label', // see store setup in tests
+        },
+        result: [
+            {
+                type: MODAL.OPEN_USER_CONTEXT,
+                payload: {
+                    type: 'metadata-add',
+                    payload: expect.any(Object),
+                    decision: expect.any(Object),
+                },
+            },
+        ],
+    },
+    {
+        description: 'needs update',
+        initialState: {
+            metadata: { enabled: true },
+            device: {
+                state: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@3E6912223479F10023DDEBE8:1',
+                metadata: { status: 'cancelled' },
+            },
+            accounts: [
+                {
+                    deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@3E6912223479F10023DDEBE8:1',
+                    metadata: {
+                        key:
+                            'xpub6CVKsQYXc9awxgV1tWbG4foDvdcnieK2JkbpPEBKB5WwAPKBZ1mstLbKVB4ov7QzxzjaxNK6EfmNY5Jsk2cG26EVcEkycGW4tchT2dyUhrx',
+                        outputLabels: {},
+                    },
+                },
+            ],
+        },
+        params: {
+            accountKey:
+                'ypub6XKbB5DSkq8Royg8isNtGktj6bmEfGJXDs83Ad5CZ5tpDV8QofwSWQFTWP2Pv24vNdrPhquehL7vRMvSTj2GpKv6UaTQCBKZALm6RJAmxG6-btc-mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@3E6912223479F10023DDEBE8:1',
+            defaultValue: "m/49'/0'/0'",
+            type: 'accountLabel',
+            value: undefined,
+        },
+        result: [
+            {
+                type: METADATA.ENABLE,
+                payload: true,
+            },
+            {
+                type: METADATA.SET_MASTER_KEY,
+                payload: {
+                    deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@3E6912223479F10023DDEBE8:1',
+                    metadata: {
+                        aesKey: 'fe6f2d67a87af3199d62bb7b760187376c87808ab5fae52e9eaeec660a7716a0',
+                        fileName:
+                            '71fc0aa7707082174156029b52d0ac861400007bfb1439ebc418c64dc2187e1d',
+                        key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
+                        status: 'enabled',
+                    },
+                },
+            },
+            {
+                type: SUITE.UPDATE_SELECTED_DEVICE,
+                payload: {
+                    state: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@3E6912223479F10023DDEBE8:1',
+                    metadata: {
+                        status: 'enabled',
+                        key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
+                        fileName:
+                            '71fc0aa7707082174156029b52d0ac861400007bfb1439ebc418c64dc2187e1d',
+                        aesKey: 'fe6f2d67a87af3199d62bb7b760187376c87808ab5fae52e9eaeec660a7716a0',
+                    },
+                },
+            },
+            {
+                type: MODAL.OPEN_USER_CONTEXT,
+                payload: {
+                    decision: expect.any(Object),
+                    type: 'metadata-provider',
+                },
+            },
+            {
+                type: '@metadata/account-add',
+                payload: {
+                    deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@3E6912223479F10023DDEBE8:1',
+                    metadata: {
+                        key:
+                            'xpub6CVKsQYXc9awxgV1tWbG4foDvdcnieK2JkbpPEBKB5WwAPKBZ1mstLbKVB4ov7QzxzjaxNK6EfmNY5Jsk2cG26EVcEkycGW4tchT2dyUhrx',
+                        outputLabels: {},
+                        fileName:
+                            '828652b66f2e6f919fbb7fe4c9609d4891ed531c6fac4c28441e53ebe577ac85',
+                        aesKey: '9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480',
+                    },
+                },
+            },
+            {
+                type: '@metadata/set-provider',
+                payload: {
+                    type: 'dropbox',
+                    token: 'token',
+                    user: 'power-user',
+                },
+            },
+            {
+                type: METADATA.ACCOUNT_LOADED,
+                payload: expect.any(Object),
+            },
+            {
+                type: MODAL.OPEN_USER_CONTEXT,
+                payload: {
+                    decision: expect.any(Object),
+                    payload: expect.any(Object),
+                    type: 'metadata-add',
+                },
+            },
+        ],
+    },
 ];
 
-export const enableMetadata = [{
-    description: 'enable metadata',
-    initialState: {
-                metadata: { enabled: true },
-                // device: {
-                //     state: 'mmcGdEpTPqgQNRHqf3gmB5uDsEoPo2d3tp@46CE52D1ED50A900687D6BA2:undefined',
-                //     metadata: { status: 'cancelled' },
-                // },
+export const enableMetadata = [
+    {
+        description: 'enable metadata',
+        initialState: {
+            metadata: { enabled: true },
+        },
+        result: [
+            {
+                type: METADATA.ENABLE,
+            },
+        ],
     },
-    result: [
-                {
-                    type: METADATA.ENABLE,
-                },
-            ]
-}];
+];
 
-export const disableMetadata = [{
-    description: 'disable metadata',
-    initialState: {
-                metadata: { enabled: true },
-                // device: {
-                //     state: 'mmcGdEpTPqgQNRHqf3gmB5uDsEoPo2d3tp@46CE52D1ED50A900687D6BA2:undefined',
-                //     metadata: { status: 'cancelled' },
-                // },
+export const disableMetadata = [
+    {
+        description: 'disable metadata',
+        initialState: {
+            metadata: { enabled: true },
+        },
+        result: [
+            {
+                type: METADATA.DISABLE,
+            },
+        ],
     },
-    result: [
-                {
-                    type: METADATA.DISABLE,
-                },
-            ]
-}];
+];
 
 export {
-    getDeviceMetadataKey,
+    setDeviceMetadataKey,
     setAccountMetadataKey,
     addDeviceMetadata,
     addAccountMetadata,

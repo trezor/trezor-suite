@@ -15,7 +15,7 @@ const Buttons = styled.div`
 const StyledButton = styled(Button)`
     margin-top: 10px;
     margin-bottom: 10px;
-`
+`;
 
 type Props = {
     onCancel: () => void;
@@ -53,7 +53,7 @@ const MetadataProvider = (props: Props) => {
             description="Do you want to sync your labeling with selected data provider?"
         >
             <Buttons>
-                <StyledButton 
+                <StyledButton
                     onClick={() => connect('dropbox')}
                     isLoading={isLoading === 'dropbox'}
                     isDisabled={!!isLoading}
@@ -68,16 +68,15 @@ const MetadataProvider = (props: Props) => {
                     Google drive
                 </StyledButton>
                 {/* TODO: electron only */}
-                <StyledButton 
+                {/* <StyledButton
                     variant="secondary"
                     onClick={() => connect('userData')}
                     isLoading={isLoading === 'userData'}
                     isDisabled={!!isLoading}
                 >
                     Local file system
-                </StyledButton>
+                </StyledButton> */}
             </Buttons>
-            
         </Modal>
     );
 };
