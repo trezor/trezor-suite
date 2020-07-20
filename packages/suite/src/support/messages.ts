@@ -3559,6 +3559,18 @@ const definedMessages = defineMessages({
         id: 'TR_OFF',
         defaultMessage: 'off',
     },
+    TR_SCHEDULE_SEND: {
+        id: 'TR_SCHEDULE_SEND',
+        defaultMessage: 'Schedule send',
+    },
+    TR_RBF_OFF_TITLE: {
+        id: 'TR_RBF_OFF_TITLE',
+        defaultMessage: 'RBF = OFF',
+    },
+    TR_RBF_OFF_DESCRIPTION: {
+        id: 'TR_RBF_OFF_DESCRIPTION',
+        defaultMessage: 'This allows u to do something which is explained in this short copy.',
+    },
 } as const);
 
 export default definedMessages;
