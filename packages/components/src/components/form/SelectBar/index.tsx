@@ -16,7 +16,7 @@ interface Props {
 
 const Wrapper = styled.div`
     display: flex;
-    align-items: center;
+    height: 32px;
 `;
 
 const Label = styled.div`
@@ -29,7 +29,7 @@ const Label = styled.div`
 
 const Options = styled.div`
     display: flex;
-    align-items: center;
+    flex: 1;
     padding: 0 2px;
     border-radius: 4px;
     background: ${colors.NEUE_BG_GRAY};
@@ -37,7 +37,6 @@ const Options = styled.div`
 
 const Option = styled.div<{ isSelected: boolean }>`
     padding: 0 14px;
-    min-height: 32px;
     margin: 2px 0;
     padding-top: 1px;
     display: flex;
