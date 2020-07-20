@@ -84,8 +84,10 @@ const AccountHeader = styled.div`
 const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) => {
     const { account, selected } = props;
 
+    const dataTestKey = `@account-menu/${account.symbol}/${account.accountType}/${account.index}`;
+
     const accountLabel = account.metadata.accountLabel ? (
-        <span>{account.metadata.accountLabel}</span>
+        <span data-test={`${dataTestKey}/label`}>{account.metadata.accountLabel}</span>
     ) : (
         <>
             <Translation {...getTitleForNetwork(account.symbol)} />
@@ -124,6 +126,7 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
                                     value: account.metadata.accountLabel,
                                 });
                             }}
+                            data-test={`${dataTestKey}/add-label-button`}
                         />
                     </Row>
                     <Row>

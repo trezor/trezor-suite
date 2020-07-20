@@ -147,17 +147,24 @@ class Client {
             redirect_uri: 'https://track-suite.herokuapp.com/oauth',
         }).toString();
 
-        window.open(url.toString(), WINDOW_TITLE, WINDOW_PROPS);
-
         const onMessage = (e: MessageEvent) => {
             // filter non oauth messages
-            if (e.origin.indexOf('herokuapp.com') < 0) return;
+            // filter non oauth messages
+            if (
+                !['https://track-suite.herokuapp.com', 'http://localhost:3000'].includes(e.origin)
+            ) {
+                return;
+            }
+
+            if (typeof e.data !== 'string') return;
+
+            console.log(e);
             const params = urlHashParams(e.data);
-
             const token = params.access_token;
-
+            console.warn('token', token);
             if (token) {
                 this.token = token;
+                console.warn('resolve');
                 dfd.resolve(token);
             } else {
                 dfd.reject(new Error('Cancelled'));
@@ -175,6 +182,8 @@ class Client {
         } else {
             window.addEventListener('message', onMessage);
         }
+
+        window.open(url.toString(), WINDOW_TITLE, WINDOW_PROPS);
 
         return dfd.promise;
     }
@@ -237,6 +246,7 @@ class Client {
             json.files.forEach(file => {
                 this.nameIdMap[file.name] = file.id;
             });
+            console.warn('is list mocked? ', json);
             return {
                 success: true,
                 payload: json,

@@ -10,15 +10,21 @@ const WINDOW_HEIGHT = 720;
 const WINDOW_PROPS = `width=${WINDOW_WIDTH},height=${WINDOW_HEIGHT},dialog=yes,dependent=yes,scrollbars=yes,location=yes`;
 
 export const getOauthToken = (url: string) => {
+    console.log('getOauthToken orig');
     const dfd: Deferred<string> = createDeferred();
     // const props = WINDOW_PROPS + this._getRelativePosition();
     const props = WINDOW_PROPS;
-    window.open(url, WINDOW_TITLE, props);
 
     const onMessage = (e: MessageEvent) => {
-        // filter non oauth messages
-        if (e.origin.indexOf('herokuapp.com') < 0) return;
         console.warn('OnMessage', e, e.data);
+
+        // filter non oauth messages
+        if (!['https://track-suite.herokuapp.com', 'http://localhost:3000'].includes(e.origin)) {
+            return;
+        }
+
+        if (typeof e.data !== 'string') return;
+
         const params = urlHashParams(e.data);
 
         const token = params.access_token;
@@ -45,6 +51,8 @@ export const getOauthToken = (url: string) => {
         window.addEventListener('message', onMessage);
     }
 
+    window.open(url, WINDOW_TITLE, props);
+
     return dfd.promise;
 };
 
@@ -61,9 +69,9 @@ class DropboxProvider implements AbstractMetadataProvider {
     }
 
     async connect() {
-        console.warn('dopici original');
         // const hasToken = this.client.getAccessToken();
         const url = this.client.getAuthenticationUrl(METADATA.OAUTH_FILE, 'TODO:RandomToken');
+
         try {
             const token = await getOauthToken(url);
             console.log('dropbox token', token);
@@ -127,6 +135,7 @@ class DropboxProvider implements AbstractMetadataProvider {
     async getCredentials() {
         try {
             const account = await this.client.usersGetCurrentAccount();
+            console.warn('mnau haf');
             return {
                 type: 'dropbox',
                 token: this.client.getAccessToken(),

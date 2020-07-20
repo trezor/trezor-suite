@@ -51,6 +51,7 @@ const MetadataProvider = (props: Props) => {
             size="tiny"
             heading="Cloud sync"
             description="Do you want to sync your labeling with selected data provider?"
+            data-test="@modal/metadata-provider"
         >
             <Buttons>
                 <StyledButton
@@ -64,6 +65,7 @@ const MetadataProvider = (props: Props) => {
                     onClick={() => connect('google')}
                     isLoading={isLoading === 'google'}
                     isDisabled={!!isLoading}
+                    data-test="@modal/metadata-provider/google-button"
                 >
                     Google drive
                 </StyledButton>

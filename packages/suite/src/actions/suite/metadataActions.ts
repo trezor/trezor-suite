@@ -500,9 +500,9 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
 };
 
 export const init = (force = false) => async (dispatch: Dispatch, getState: GetState) => {
-    console.warn('init');
     await dispatch(setDeviceMetadataKey(force));
-    if (getState().suite.device?.metadata.status === 'enabled' && !getProvider(getState().metadata.provider)) {
+    // console.warn('getProvider(getState().metadata.provider)', getProvider(getState().metadata.provider));
+    if (getState().suite.device?.metadata.status === 'enabled' && !getState().metadata.provider) {
         await dispatch(initProvider());
     }
 };

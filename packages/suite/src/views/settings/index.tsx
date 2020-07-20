@@ -110,6 +110,7 @@ export default ({
                     />
                     <ActionColumn>
                         <Switch
+                            data-test="@settings/labeling-switch"
                             checked={metadata.enabled}
                             onChange={() =>
                                 metadata.enabled ? disableMetadata() : enableMetadata()
