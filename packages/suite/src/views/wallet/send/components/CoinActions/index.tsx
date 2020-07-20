@@ -6,6 +6,9 @@ import styled from 'styled-components';
 import AddData from './components/AddData';
 import AddDestinationTag from './components/AddDestinationTag';
 import AddRecipient from './components/AddRecipient';
+import AddLocktime from './components/AddLocktime';
+import RBF from './components/RBF';
+import Broadcast from './components/Broadcast';
 
 const Wrapper = styled.div`
     display: flex;
@@ -32,6 +35,7 @@ const Box = styled.div`
 const Left = styled.div`
     display: flex;
     flex: 1;
+    justify-content: flex-start;
 `;
 
 const Right = styled.div`
@@ -53,7 +57,11 @@ export default () => {
                 {networkType === 'ethereum' && <AddData />}
                 {networkType === 'bitcoin' && (
                     <Box>
-                        <Left />
+                        <Left>
+                            <AddLocktime />
+                            <Broadcast />
+                            <RBF />
+                        </Left>
                         <Right>
                             <AddRecipient />
                         </Right>

@@ -3539,6 +3539,18 @@ const definedMessages = defineMessages({
         id: 'TR_MY_ASSETS',
         defaultMessage: 'My Assets',
     },
+    TR_ADD_LOCKTIME: {
+        id: 'TR_ADD_LOCKTIME',
+        defaultMessage: 'Add Locktime',
+    },
+    TR_BROADCAST: {
+        id: 'TR_BROADCAST',
+        defaultMessage: 'Broadcast',
+    },
+    TR_RBF: {
+        id: 'TR_RBF',
+        defaultMessage: 'RBF',
+    },
 } as const);
 
 export default definedMessages;

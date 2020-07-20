@@ -9,7 +9,7 @@ const Wrapper = styled.div``;
 export default () => {
     return (
         <Wrapper>
-            <Button variant="tertiary" icon="LABEL" onClick={() => {}}>
+            <Button variant="tertiary" icon="TAG" onClick={() => {}}>
                 <Translation id="TR_ADD_LABEL" />
             </Button>
         </Wrapper>

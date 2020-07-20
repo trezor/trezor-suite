@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { colors, variables } from '../../../config';
 
@@ -65,6 +65,12 @@ export default ({ options, selectedOption, label, onChange }: Props) => {
     const [selectedOptionIn, setSelected] = useState<Option['value'] | null>(
         selectedOption || null
     );
+
+    useEffect(() => {
+        if (selectedOption) {
+            setSelected(selectedOption);
+        }
+    }, [selectedOption, setSelected]);
 
     return (
         <Wrapper>

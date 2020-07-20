@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Input, colors, variables, Icon, Button } from '@trezor/components';
 import { FormattedPlural } from 'react-intl';
 
+import AddLabel from './components/AddLabel';
 import * as modalActions from '@suite-actions/modalActions';
 import { checkRippleEmptyAddress } from '@wallet-actions/sendFormActions';
 import { useActions } from '@suite-hooks';
@@ -62,6 +63,7 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
         <Input
             state={getInputState(addressError, addressValue)}
             monospace
+            innerAddon={<AddLabel />}
             label={
                 <Label>
                     <Left>
