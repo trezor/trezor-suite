@@ -1,6 +1,6 @@
 import React from 'react';
 import { Translation } from '@suite-components/Translation';
-import { Input } from '@trezor/components';
+import { Input, variables, colors } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import BigNumber from 'bignumber.js';
@@ -16,9 +16,15 @@ const Wrapper = styled.div<WrapperProps>`
     padding-left: 11px;
 `;
 
+const Units = styled.div`
+    font-size: ${variables.FONT_SIZE.TINY};
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+`;
+
 export default ({ isVisible }: { isVisible: boolean }) => {
-    const { feeInfo, selectedFee, updateContext, errors, register } = useSendFormContext();
+    const { feeInfo, selectedFee, updateContext, errors, register, account } = useSendFormContext();
     const { maxFee, minFee } = feeInfo;
+    const { networkType } = account;
     const error = errors.customFee;
 
     return (
@@ -27,8 +33,14 @@ export default ({ isVisible }: { isVisible: boolean }) => {
                 noTopLabel
                 variant="small"
                 name="customFee"
-                width={150}
+                width={120}
                 state={getInputState(error)}
+                innerAddon={
+                    <Units>
+                        {networkType === 'bitcoin' && 'sat/B'}
+                        {networkType === 'ripple' && 'drops'}
+                    </Units>
+                }
                 onChange={async event => {
                     const newFeeLevel = {
                         ...selectedFee,
