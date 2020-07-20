@@ -1306,6 +1306,10 @@ const definedMessages = defineMessages({
         description: 'Used as title for a wallet instance in Switch Device modal',
         id: 'TR_NUM_ACCOUNTS_FIAT_VALUE',
     },
+    TR_COUNT_WALLETS: {
+        defaultMessage: '{count} {count, plural, one {wallet} other {wallets}}',
+        id: 'TR_COUNT_WALLETS',
+    },
     TR_OFFLINE: {
         defaultMessage: 'Offline',
         id: 'TR_OFFLINE',
@@ -3039,7 +3043,7 @@ const definedMessages = defineMessages({
     },
     TR_BUT_THERE_IS_ANOTHER_UPDATE: {
         id: 'TR_BUT_THERE_IS_ANOTHER_UPDATE',
-        deafaultMessage: 'But there is still another update ahead!',
+        defaultMessage: 'But there is still another update ahead!',
     },
     TR_SUCCESS: {
         id: 'TR_SUCCESS',
@@ -3212,12 +3216,12 @@ const definedMessages = defineMessages({
     },
     DESKTOP_OUTDATED_TITLE: {
         id: 'DESKTOP_OUTDATED_TITLE',
-        defaultMessage: 'Outdated version',
+        defaultMessage: 'New update is available',
     },
     DESKTOP_OUTDATED_MESSAGE: {
         id: 'DESKTOP_OUTDATED_MESSAGE',
         defaultMessage:
-            'Your version {currentVersion} does not match latest version from github {newVersion}',
+            'Your version {currentVersion} does not match the latest version from GitHub {newVersion}',
     },
     DESKTOP_OUTDATED_BUTTON_DOWNLOAD: {
         id: 'DESKTOP_OUTDATED_BUTTON_DOWNLOAD',
@@ -3480,6 +3484,34 @@ const definedMessages = defineMessages({
     DISCONNECT_DEVICE_DESCRIPTION: {
         id: 'DISCONNECT_DEVICE_DESCRIPTION',
         defaultMessage: 'Your device was wiped and does not hold private keys anymore.',
+    },
+    TR_MY_ACCOUNTS: {
+        id: 'TR_MY_ACCOUNTS',
+        defaultMessage: 'My Accounts',
+    },
+    TR_CHANGE_HOMESCREEN: {
+        id: 'TR_CHANGE_HOMESCREEN',
+        defaultMessage: 'Change homescreen',
+    },
+    TR_DROP_IMAGE: {
+        id: 'TR_DROP_IMAGE',
+        defaultMessage: 'Drop image',
+    },
+    TR_INVALID_FILE_SELECTED: {
+        id: 'TR_INVALID_FILE_SELECTED',
+        defaultMessage: 'Invalid file selected. Must be .jpg or .png',
+    },
+    TR_OPEN_IN_MEDIUM: {
+        id: 'TR_OPEN_IN_MEDIUM',
+        defaultMessage: 'Open in Medium',
+    },
+    TR_MY_ASSETS: {
+        id: 'TR_MY_ASSETS',
+        defaultMessage: 'My Assets',
+    },
+    TR_COULD_NOT_RETRIEVE_CHANGELOG: {
+        id: 'TR_COULD_NOT_RETRIEVE_CHANGELOG',
+        defaultMessage: 'Could not retrieve the changelog',
     },
 } as const);
 

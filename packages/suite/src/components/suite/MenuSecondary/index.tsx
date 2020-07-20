@@ -7,12 +7,10 @@ interface Props {
 }
 
 const AbsoluteWrapper = styled.aside`
-    width: 254px;
+    width: 300px;
     background: ${colors.WHITE};
-    margin: 10px 10px 20px 10px;
-    border-radius: 6px;
+    border-right: 1px solid ${colors.NEUE_STROKE_GREY};
     overflow: hidden;
-    box-shadow: 0 6px 14px 0 rgba(0, 0, 0, 0.1);
 `;
 
 const Wrapper = styled.div`

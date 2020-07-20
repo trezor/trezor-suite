@@ -1,7 +1,7 @@
 import TrezorConnect from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import { SEND } from '@wallet-actions/constants';
-import { ZEC_SIGN_ENHANCEMENT } from '@wallet-constants/sendForm'; // BTC_RBF_SEQUENCE, BTC_LOCKTIME_SEQUENCE
+import { ZEC_SIGN_ENHANCEMENT_LEGACY, ZEC_SIGN_ENHANCEMENT } from '@wallet-constants/sendForm'; // BTC_RBF_SEQUENCE, BTC_LOCKTIME_SEQUENCE
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as commonActions from './sendFormCommonActions';
@@ -135,7 +135,7 @@ export const removeRecipient = (outputId: number) => (dispatch: Dispatch, getSta
     Send transaction
  */
 export const send = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { send, selectedAccount } = getState().wallet;
+    const { send, selectedAccount, blockchain } = getState().wallet;
     const selectedDevice = getState().suite.device;
     const account = selectedAccount.account as Account;
     if (!send || !send.networkTypeBitcoin.transactionInfo || !selectedDevice) return;
@@ -154,7 +154,12 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     let signEnhancement = {};
 
     if (account.symbol === 'zec') {
-        signEnhancement = ZEC_SIGN_ENHANCEMENT;
+        // todo: remove blockheight check right anytime after zcash fork
+        if (blockchain.zec.blockHeight > 903000) {
+            signEnhancement = ZEC_SIGN_ENHANCEMENT;
+        } else {
+            signEnhancement = ZEC_SIGN_ENHANCEMENT_LEGACY;
+        }
     }
 
     // connect undefined amount hotfix (not for zcash)

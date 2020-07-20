@@ -1,7 +1,7 @@
 {
     "name": "@trezor/suite-desktop",
     "description": "TrezorSuite desktop application",
-    "version": "20.6.1-beta",
+    "version": "20.7.1-beta",
     "private": true,
     "author": "Satoshilabs s.r.o <info@satoshilabs.com>",
     "homepage": "http://www.trezor.io",
@@ -13,8 +13,9 @@
         "build:desktop": "rimraf ./build && next build && next export -o build && yarn build:lib",
         "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac",
         "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux",
+        "build:arm": "yarn clean && yarn build:desktop && electron-builder --armv7l",
         "build:win": "yarn clean && yarn build:desktop && electron-builder --win",
-        "publish": "yarn clean && yarn build:desktop && electron-builder --publish always --mac --linux --win",
+        "publish": "yarn clean && yarn build:desktop && electron-builder --publish always --mac --linux --win --armv7l",
         "lint": "eslint '**/*{.ts,.tsx}'",
         "type-check": "tsc --project tsconfig.json"
     },
@@ -26,7 +27,7 @@
         "asarUnpack": [
             "build/static/bridge/**/*"
         ],
-        "electronVersion": "9.0.1",
+        "electronVersion": "9.1.0",
         "directories": {
             "output": "build-electron"
         },
@@ -95,6 +96,7 @@
         "os": "^0.1.1",
         "react": "16.9.0",
         "react-dom": "16.9.0",
+        "react-markdown": "4.3.1",
         "ps-list": "6.3.0",
         "worker-loader": "^2.0.0"
     },
@@ -106,7 +108,7 @@
         "@types/react": "^16.7.11",
         "@types/react-dom": "^16.0.11",
         "@types/react-redux": "^7.1.7",
-        "electron": "^9.0.1",
+        "electron": "^9.1.0",
         "electron-builder": "^22.7.0",
         "git-revision-webpack-plugin": "^3.0.6",
         "next-plugin-custom-babel-config": "^1.0.4",

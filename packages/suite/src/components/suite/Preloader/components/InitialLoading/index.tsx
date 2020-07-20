@@ -15,7 +15,7 @@ const InitialLoading = () => {
     }, []);
 
     useEffect(() => {
-        if (seconds > 20) {
+        if (seconds > 30) {
             // throws an error to trigger error boundary where user can send a report and/or cleat storage and reload
             throw Error('Loading takes too long');
         }

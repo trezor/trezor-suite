@@ -137,13 +137,15 @@ class CommonDB<TDBStructure> {
         // and I couldn't figure out how to catch it. Maybe a bug in idb?
         // So instead of using idb wrapper I use indexedDB directly, wrapped in my own promise.
         // @ts-ignore
-        const db = unwrap(await this.getDB());
+        const db = unwrap(await this.getDB()) as IDBDatabase;
+
+        const storeName = store as string;
 
         const p = new Promise<StoreKey<TDBStructure, TStoreName>>((resolve, reject) => {
-            const tx = db.transaction(store, 'readwrite');
+            const tx = db.transaction(storeName, 'readwrite');
             const req: IDBRequest = key
-                ? tx.objectStore(store).put(item, key)
-                : tx.objectStore(store).add(item);
+                ? tx.objectStore(storeName).put(item, key)
+                : tx.objectStore(storeName).add(item);
             req.onerror = _event => {
                 reject(req.error);
             };

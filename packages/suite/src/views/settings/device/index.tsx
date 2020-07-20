@@ -328,7 +328,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         <HiddenInput
                             ref={fileInputElement}
                             type="file"
-                            accept=".png"
+                            accept=".png, .jpg"
                             onChange={e => {
                                 onUploadHomescreen(e.target.files);
                             }}
@@ -366,7 +366,7 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                         </ActionButton>
                     </ActionColumn>
                 </SectionItem>
-                {customHomescreen && (
+                {customHomescreen && homescreen.isValid(customHomescreen) && (
                     <SectionItem>
                         <Col>
                             <img
@@ -379,14 +379,30 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
 
                         <ActionColumn>
                             <ActionButton onClick={() => onSelectCustomHomescreen()}>
-                                Change homescreen
+                                <Translation id="TR_CHANGE_HOMESCREEN" />
                             </ActionButton>
                             <ActionButton
                                 variant="secondary"
                                 onClick={() => setCustomHomescreen('')}
                                 isDisabled={isDeviceLocked}
                             >
-                                Drop image
+                                <Translation id="TR_DROP_IMAGE" />
+                            </ActionButton>
+                        </ActionColumn>
+                    </SectionItem>
+                )}
+                {customHomescreen && !homescreen.isValid(customHomescreen) && (
+                    <SectionItem>
+                        <Col>
+                            <Translation id="TR_INVALID_FILE_SELECTED" />
+                        </Col>
+                        <ActionColumn>
+                            <ActionButton
+                                variant="secondary"
+                                onClick={() => setCustomHomescreen('')}
+                                isDisabled={isDeviceLocked}
+                            >
+                                <Translation id="TR_DROP_IMAGE" />
                             </ActionButton>
                         </ActionColumn>
                     </SectionItem>

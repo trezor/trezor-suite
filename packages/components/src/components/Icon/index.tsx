@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 
 import React from 'react';
 import { ReactSVG } from 'react-svg';
@@ -62,6 +62,12 @@ const SvgWrapper = styled.div<WrapperProps>`
             fill: ${props => props.hoverColor};
         }
     }
+
+    ${props =>
+        props.usePointerCursor &&
+        css`
+            cursor: pointer;
+        `}
 `;
 
 type WrapperProps = Omit<Props, 'icon'>;
@@ -73,50 +79,55 @@ interface Props extends React.SVGAttributes<HTMLDivElement> {
     isActive?: boolean;
     canAnimate?: boolean;
     hoverColor?: string;
-    onClick?: (event: React.MouseEvent<HTMLDivElement>) => any;
-    onMouseEnter?: (event: React.MouseEvent<HTMLDivElement>) => any;
-    onMouseLeave?: (event: React.MouseEvent<HTMLDivElement>) => any;
-    onFocus?: (event: React.FocusEvent<HTMLDivElement>) => any;
+    usePointerCursor?: boolean;
 }
 
-const Icon = ({
-    icon,
-    size = 24,
-    color = colors.BLACK50,
-    isActive,
-    canAnimate,
-    hoverColor,
-    className,
-    onClick,
-    onMouseEnter,
-    onMouseLeave,
-    onFocus,
-    ...rest
-}: Props) => {
-    return (
-        <SvgWrapper
-            className={className}
-            canAnimate={canAnimate}
-            hoverColor={hoverColor}
-            onClick={onClick}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
-            onFocus={onFocus}
-            isActive={isActive}
-            size={size}
-            {...rest}
-        >
-            <ReactSVG
-                src={ICONS[icon]}
-                beforeInjection={svg => {
-                    svg.setAttribute('width', `${size}px`);
-                    svg.setAttribute('height', `${size}px`);
-                    svg.setAttribute('fill', color);
-                }}
-                loading={() => <span className="loading" />}
-            />
-        </SvgWrapper>
-    );
-};
+const Icon = React.forwardRef(
+    (
+        {
+            icon,
+            size = 24,
+            color = colors.BLACK50,
+            isActive,
+            canAnimate,
+            hoverColor,
+            usePointerCursor,
+            className,
+            onClick,
+            onMouseEnter,
+            onMouseLeave,
+            onFocus,
+            ...rest
+        }: Props,
+        ref?: React.Ref<HTMLDivElement>
+    ) => {
+        return (
+            <SvgWrapper
+                className={className}
+                canAnimate={canAnimate}
+                hoverColor={hoverColor}
+                onClick={onClick}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+                onFocus={onFocus}
+                isActive={isActive}
+                size={size}
+                ref={ref}
+                usePointerCursor={usePointerCursor}
+                {...rest}
+            >
+                <ReactSVG
+                    src={ICONS[icon]}
+                    beforeInjection={svg => {
+                        svg.setAttribute('width', `${size}px`);
+                        svg.setAttribute('height', `${size}px`);
+                        svg.setAttribute('fill', color);
+                    }}
+                    loading={() => <span className="loading" />}
+                />
+            </SvgWrapper>
+        );
+    }
+);
 
 export { Icon, Props as IconProps };

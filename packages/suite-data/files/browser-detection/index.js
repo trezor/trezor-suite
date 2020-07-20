@@ -26,7 +26,7 @@ window.onload = function() {
 
     var updateFirefox = '<div style="position:absolute;left:0;right:0;top:0;bottom:0;background:#fff;z-index:99999;text-align:center;padding-top:150px"><h1 style="text-rendering:optimizeLegibility;color:#494949;font-weight:bold;margin:0;padding:0;font-size:2rem;padding-bottom:10px">Your browser is outdated</h1><p style="font-size:1rem;line-height:1.8;color:#757575;padding:0;margin:0">Please update your browser to the latest version.</p><a href="https://support.mozilla.org/en-US/kb/update-firefox-latest-release" target="_blank" style="display:inline-block;margin-top: 10px;position:relative;align-items:center;padding:11px 24px;text-align:center;border-radius:3px;font-size:1rem;font-weight:300;cursor:pointer;outline:none;background:#01B757;color:#FFFFFF;border:1px solid #01B757;justify-content:center;" rel="noopener noreferrer">Update Firefox</a></div>';
 
-    var getChromeAndroid = '<div style="position:absolute;left:0;right:0;top:0;bottom:0;background:#fff;z-index:99999;text-align:center;padding-top:150px"><h1 style="text-rendering:optimizeLegibility;color:#494949;font-weight:bold;margin:0;padding:0;font-size:2rem;padding-bottom:10px">Get Chrome for Android</h1><p style="font-size:1rem;line-height:1.8;color:#757575;padding:0;margin:0">Only Chrome for android has WebUSB support.</p><a href="https://play.google.com/store/apps/details?id=com.android.chrome&hl=en" target="_blank" style="display:inline-block;margin-top: 10px;position:relative;align-items:center;padding:11px 24px;text-align:center;border-radius:3px;font-size:1rem;font-weight:300;cursor:pointer;outline:none;background:#01B757;color:#FFFFFF;border:1px solid #01B757;justify-content:center;" rel="noopener noreferrer">Get Chrome for Android</a></div>';
+    var getChromeAndroid = '<div style="position:absolute;left:0;right:0;top:0;bottom:0;background:#fff;z-index:99999;text-align:center;padding-top:150px"><h1 style="text-rendering:optimizeLegibility;color:#494949;font-weight:bold;margin:0;padding:0;font-size:2rem;padding-bottom:10px">Get Chrome for Android</h1><p style="font-size:1rem;line-height:1.8;color:#757575;padding:0;margin:0">Only Chrome for Android has WebUSB support.</p><a href="https://play.google.com/store/apps/details?id=com.android.chrome&hl=en" target="_blank" style="display:inline-block;margin-top: 10px;position:relative;align-items:center;padding:11px 24px;text-align:center;border-radius:3px;font-size:1rem;font-weight:300;cursor:pointer;outline:none;background:#01B757;color:#FFFFFF;border:1px solid #01B757;justify-content:center;" rel="noopener noreferrer">Get Chrome for Android</a></div>';
 
     var noWebUSB = '<div style="position:absolute;left:0;right:0;top:0;bottom:0;background:#fff;z-index:99999;text-align:center;padding-top:150px"><h1 style="text-rendering:optimizeLegibility;color:#494949;font-weight:bold;margin:0;padding:0;font-size:2rem;padding-bottom:10px">No WebUSB support</h1><p style="font-size:1rem;line-height:1.8;color:#757575;padding:0;margin:0">Only Chrome for Android has WebUSB support.</p></div>';
 
@@ -34,17 +34,17 @@ window.onload = function() {
     var supportedBrowsers = [
         {
             name: "Chrome",
-            version: 59,
+            version: 69,
             mobile: true,
         },
         {
             name: "Chromium",
-            version: 59,
+            version: 69,
             mobile: true,
         },
         {
             name: "Firefox",
-            version: 54,
+            version: 62,
             mobile: false, // no webusb support
         }
     ];

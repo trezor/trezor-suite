@@ -22,6 +22,12 @@ const StyledCard = styled(Card)`
     flex-direction: column;
 `;
 
+const DateP = styled(P)`
+    display: flex;
+    flex-direction: column;
+    font-variant-numeric: tabular-nums;
+`;
+
 const EmptyWrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -64,7 +70,7 @@ const NotificationView = (props: ViewProps) => {
                 <P weight={props.notification.seen ? 'normal' : 'bold'}>
                     <Translation {...props.message} />
                 </P>
-                <P size="tiny">
+                <DateP size="tiny">
                     <FormattedDate
                         value={props.notification.id}
                         year="numeric"
@@ -73,7 +79,7 @@ const NotificationView = (props: ViewProps) => {
                         hour="2-digit"
                         minute="2-digit"
                     />
-                </P>
+                </DateP>
             </Text>
             {props.actionLabel && props.action && (
                 <ActionButton variant="secondary" onClick={props.action}>

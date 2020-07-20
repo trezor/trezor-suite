@@ -79,7 +79,7 @@ const Backup = (props: Props) => {
         );
     }
 
-    if (!device || !device.features) {
+    if (!device || !device.features || !device.connected) {
         return (
             <Modal
                 size="tiny"

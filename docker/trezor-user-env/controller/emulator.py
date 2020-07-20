@@ -22,7 +22,8 @@ proc = None
 # when communicating with device via bridge/debuglink, this sleep is required otherwise there
 # may appear weird race conditions in communications. when not going through bridge but webusb 
 # there is no need for it, but we can skip bridge only when doing initial setup before test. 
-SLEEP = 1
+SLEEP = 0.501
+# SLEEP = 1
 
 def get_bridge_device():
     devices = BridgeTransport.enumerate()
@@ -122,6 +123,7 @@ def setup_device(mnemonic, pin, passphrase_protection, label, needs_backup=None)
     # - check if device is acquired otherwise throws "wrong previous session" from bridge
     client = TrezorClientDebugLink(get_device())
     client.open()
+    time.sleep(SLEEP)
     debuglink.load_device(
         client,
         mnemonic,
@@ -136,12 +138,14 @@ def setup_device(mnemonic, pin, passphrase_protection, label, needs_backup=None)
 def wipe_device():
     client = TrezorClientDebugLink(get_device())
     client.open()
+    time.sleep(SLEEP)
     wipe(client)
     client.close()
 
 def reset_device():
     client = TrezorClientDebugLink(get_device())
     client.open()
+    time.sleep(SLEEP)
     reset(client, skip_backup=True, pin_protection=False)
     client.close()
 
@@ -151,7 +155,6 @@ def decision():
     client.open()
     time.sleep(SLEEP)
     client.press_yes()
-    # time.sleep(SLEEP)
     client.close()
 
 # enter recovery word or pin

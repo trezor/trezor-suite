@@ -1,27 +1,48 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { Icon } from '../../Icon';
-import { IconType, ButtonVariant, ButtonSize } from '../../../support/types';
+import { IconType, ButtonVariant } from '../../../support/types';
 import { colors, variables } from '../../../config';
 import FluidSpinner from '../../loaders/FluidSpinner';
 
-const BUTTON_PADDING = {
-    small: '2px 12px',
-    large: '9px 12px',
+const getPadding = (variant: ButtonVariant) => {
+    if (variant === 'tertiary') {
+        return '4px 6px';
+    }
+
+    return '9px 12px';
 };
 
 const getIconColor = (variant: ButtonVariant, isDisabled: boolean) => {
-    if (isDisabled) return colors.BLACK80;
-    return variant === 'primary' || variant === 'danger' ? colors.WHITE : colors.BLACK25;
+    if (isDisabled) return colors.NEUE_TYPE_LIGHT_GREY;
+
+    switch (variant) {
+        case 'primary':
+        case 'danger':
+            return colors.WHITE;
+        case 'tertiary':
+            return colors.NEUE_TYPE_DARK_GREY;
+        case 'secondary':
+            return colors.NEUE_TYPE_GREEN;
+        // no default
+    }
 };
 
-const getFontSize = (variant: ButtonVariant, size: ButtonSize) => {
-    // all button variants use same font size except the small tertiary btn
-    if (variant === 'tertiary' && size === 'small') {
+const getFontSize = (variant: ButtonVariant) => {
+    if (variant === 'tertiary') {
         return variables.FONT_SIZE.TINY;
     }
-    return variables.FONT_SIZE.BUTTON;
+
+    return variables.FONT_SIZE.NORMAL;
 };
+
+interface WrapperProps {
+    variant: ButtonVariant;
+    isDisabled: boolean;
+    isWhite: boolean;
+    fullWidth: boolean;
+    color: string | undefined;
+}
 
 const Wrapper = styled.button<WrapperProps>`
     display: flex;
@@ -32,89 +53,78 @@ const Wrapper = styled.button<WrapperProps>`
     white-space: nowrap;
     cursor: ${props => (props.isDisabled ? 'default' : 'pointer')};
     border-radius: 4px;
-    font-size: ${props => getFontSize(props.variant, props.size)}; 
+    font-size: ${props => getFontSize(props.variant)}; 
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${props => (props.color ? props.color : colors.BLACK25)};
     outline: none;
-    padding: ${props => BUTTON_PADDING[props.size]};
-
-    ${props =>
-        props.fullWidth &&
-        css`
-            width: 100%;
-        `}
+    padding: ${props => getPadding(props.variant)};
 
     ${props =>
         props.variant === 'primary' &&
         css`
             color: ${colors.WHITE};
-            font-weight: ${variables.FONT_WEIGHT.BOLD};
-            background: ${colors.BUTTON_PRIMARY};
+            font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+            font-size: ${variables.FONT_SIZE.NORMAL};
+            background: ${colors.NEUE_BG_GREEN};
 
             &:hover,
-            &:focus {
-                box-shadow: 0 0 0 4px ${colors.BUTTON_PRIMARY_BORDER};
-                background: ${colors.BUTTON_PRIMARY_HOVER};
-            }
-
+            &:focus,
             &:active {
-                box-shadow: 0 0 0 4px ${colors.BUTTON_PRIMARY_BORDER};
-                background: ${colors.BUTTON_PRIMARY_ACTIVE};
+                /* we use this color only for this case  */
+                background: #339714;
             }
         `}
 
     ${props =>
         props.variant === 'secondary' &&
         css`
-            background: ${colors.BUTTON_SECONDARY};
+            background: ${colors.NEUE_BG_LIGHT_GREEN};
+            font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+            color: ${colors.NEUE_TYPE_GREEN};
 
             &:hover,
-            &:focus {
-                box-shadow: 0 0 0 4px ${colors.BUTTON_SECONDARY_BORDER};
-                background: ${colors.BUTTON_SECONDARY_HOVER};
-            }
-
+            &:focus,
             &:active {
-                box-shadow: 0 0 0 4px ${colors.BUTTON_SECONDARY_BORDER};
-                background: ${colors.BUTTON_SECONDARY_ACTIVE};
+                /* we use this color only for this case  */
+                background: #d6e5d1;
             }
-        `}
-    ${props =>
-        props.variant === 'tertiary' &&
-        css`
-            padding: 0px;
         `}
 
     ${props =>
         props.variant === 'tertiary' &&
-        !props.isDisabled &&
         css`
+            color: ${colors.NEUE_TYPE_DARK_GREY};
+            background: ${colors.NEUE_BG_GRAY};
+
             &:hover,
             &:focus {
                 color: ${colors.BLACK25};
-                text-decoration: underline;
             }
             &:active {
                 color: ${colors.BLACK25};
-                text-decoration: underline;
             }
+        `};
+
+    ${props =>
+        props.variant === 'tertiary' &&
+        props.isWhite &&
+        css`
+            background: ${colors.WHITE};
         `};
 
     ${props =>
         props.variant === 'danger' &&
         css`
             color: ${colors.WHITE};
-            font-weight: ${variables.FONT_WEIGHT.BOLD};
+            font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
             background: ${colors.BUTTON_RED};
 
             &:hover,
             &:focus {
                 background: ${colors.BUTTON_RED_HOVER};
-                box-shadow: 0 0 0 4px ${colors.BUTTON_RED_BORDER};
             }
 
             &:active {
-                box-shadow: 0 0 0 4px ${colors.BUTTON_RED_BORDER};
                 background: ${colors.BUTTON_RED_ACTIVE};
             }
         `}
@@ -122,31 +132,29 @@ const Wrapper = styled.button<WrapperProps>`
     ${props =>
         props.isDisabled &&
         css`
-            background: ${colors.BUTTON_DISABLED_BACKGROUND};
-            color: ${colors.BUTTON_DISABLED_TEXT};
+            background: ${colors.NEUE_BG_GRAY};
+            color: ${colors.NEUE_TYPE_LIGHT_GREY};
 
             &:hover,
-            &:active {
-                box-shadow: none;
-                background: ${colors.BUTTON_DISABLED_BACKGROUND};
-                color: ${colors.BUTTON_DISABLED_TEXT};
+            &:active,
+            &:focus {
+                background: ${colors.NEUE_BG_GRAY};
+                color: ${colors.NEUE_TYPE_LIGHT_GREY};
             }
         `}
 
     ${props =>
-        props.isDisabled &&
-        props.variant === 'tertiary' &&
+        props.fullWidth &&
         css`
-            border: none;
-            background: transparent;
-
-            &:hover,
-            &:active {
-                box-shadow: none;
-                background: transparent;
-            }
+            width: 100%;
         `}
 `;
+
+interface IconWrapperProps {
+    hasLabel?: boolean;
+    alignIcon?: Props['alignIcon'];
+    variant?: Props['variant'];
+}
 
 const IconWrapper = styled.div<IconWrapperProps>`
     position: relative;
@@ -154,51 +162,42 @@ const IconWrapper = styled.div<IconWrapperProps>`
 
     ${props =>
         props.alignIcon === 'left' &&
+        props.hasLabel &&
         css`
             margin: 0 8px 0 3px;
         `}
 
     ${props =>
         props.alignIcon === 'right' &&
+        props.hasLabel &&
         css`
             margin: 0 0 0 8px;
         `}
     
     ${props =>
         props.variant === 'tertiary' &&
+        props.hasLabel &&
         props.alignIcon === 'right' &&
         css`
-            margin: 0 0 0 3px;
+            margin: 0 0 0 4px;
         `}
 
     ${props =>
         props.variant === 'tertiary' &&
+        props.hasLabel &&
         props.alignIcon === 'left' &&
         css`
-            margin: 0 3px 0 0;
+            margin: 0 4px 0 0;
         `}
 `;
 
-interface IconWrapperProps {
-    alignIcon?: Props['alignIcon'];
-    variant?: Props['variant'];
-}
-
-interface WrapperProps {
-    variant: ButtonVariant;
-    size: ButtonSize;
-    isDisabled: boolean;
-    fullWidth: boolean;
-    color: string | undefined;
-}
-
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: ButtonVariant;
-    size?: ButtonSize;
     additionalClassName?: string;
     icon?: IconType;
     isDisabled?: boolean;
     isLoading?: boolean;
+    isWhite?: boolean;
     fullWidth?: boolean;
     alignIcon?: 'left' | 'right';
 }
@@ -209,11 +208,11 @@ const Button = React.forwardRef(
             children,
             className,
             variant = 'primary',
-            size = 'large',
             icon,
             additionalClassName,
             color,
             fullWidth = false,
+            isWhite = false,
             isDisabled = false,
             isLoading = false,
             alignIcon = 'left',
@@ -226,16 +225,16 @@ const Button = React.forwardRef(
             ? `${className} ${additionalClassName}`
             : className;
         const IconComponent = icon ? (
-            <IconWrapper alignIcon={alignIcon} variant={variant}>
+            <IconWrapper alignIcon={alignIcon} variant={variant} hasLabel={!!children}>
                 <Icon
                     icon={icon}
-                    size={size === 'large' ? 14 : 12}
+                    size={variant === 'tertiary' ? 12 : 14}
                     color={color || getIconColor(variant, isDisabled)}
                 />
             </IconWrapper>
         ) : null;
         const Loader = (
-            <IconWrapper alignIcon={alignIcon}>
+            <IconWrapper alignIcon={alignIcon} hasLabel={!!children}>
                 <FluidSpinner size={10} color={color} />
             </IconWrapper>
         );
@@ -243,9 +242,9 @@ const Button = React.forwardRef(
             <Wrapper
                 className={newClassName}
                 variant={variant}
-                size={size}
                 onChange={onChange}
                 isDisabled={isDisabled}
+                isWhite={isWhite}
                 disabled={isDisabled || isLoading}
                 fullWidth={fullWidth}
                 color={color}

@@ -30,11 +30,20 @@ jest.mock('trezor-connect', () => {
     let progressCallback: Function = () => {};
     let fixture: Fixture | Promise<Fixture> | Function | typeof undefined;
 
+    // The module factory of `jest.mock()` is not allowed to reference any out-of-scope variables.
+    const scopedParamsError = (error: string, code?: string) => ({
+        success: false,
+        payload: {
+            error,
+            code,
+        },
+    });
+
     // mocked function
     const getAccountInfo = async (params: { bundle: Bundle }) => {
         // this error applies only for tests
         if (typeof fixture === 'undefined') {
-            return paramsError('Default error. Fixtures not set');
+            return scopedParamsError('Default error. Fixtures not set');
         }
         // this promise will be resolved by TrezorConnect.cancel
         if (fixture instanceof Promise) {
@@ -51,9 +60,9 @@ jest.mock('trezor-connect', () => {
             const { code, error } = connect.error;
             if (code) {
                 delete connect.error; // reset this value, it shouldn't be used in next iteration
-                return paramsError(error, code);
+                return scopedParamsError(error, code);
             }
-            return paramsError(error);
+            return scopedParamsError(error);
         }
 
         // emit BUNDLE_PROGRESS
@@ -123,7 +132,7 @@ jest.mock('trezor-connect', () => {
             };
         }
 
-        return paramsError('Fixture response not defined');
+        return scopedParamsError('Fixture response not defined');
     };
 
     return {

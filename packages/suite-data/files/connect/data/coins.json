@@ -2013,8 +2013,8 @@
             "slip44": 133,
             "support": {
                 "connect": true,
-                "trezor1": "1.7.1",
-                "trezor2": "2.0.8",
+                "trezor1": "1.8.1",
+                "trezor2": "2.1.1",
                 "webwallet": true
             },
             "timestamp": false,
@@ -2061,8 +2061,8 @@
             "slip44": 1,
             "support": {
                 "connect": true,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
+                "trezor1": "1.8.1",
+                "trezor2": "2.1.1",
                 "webwallet": true
             },
             "timestamp": false,

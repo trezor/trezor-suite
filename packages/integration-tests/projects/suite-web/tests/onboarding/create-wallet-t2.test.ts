@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
 // @stable
+// @retry=2
 
 describe('Onboarding - create wallet', () => {
     beforeEach(() => {

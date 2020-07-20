@@ -3,13 +3,6 @@ process.env.TZ = 'UTC';
 
 module.exports = {
     roots: ['./src'],
-    globals: {
-        'ts-jest': {
-            tsConfig: 'tsconfig.json',
-            // to speed up prototyping, this is how to disable ts in tests
-            // diagnostics: false,
-        },
-    },
     setupFiles: ['<rootDir>/src/support/tests/setupJest.ts'],
     moduleNameMapper: {
         '^@suite/(.+)': '<rootDir>/src/$1',
@@ -66,10 +59,9 @@ module.exports = {
     ],
     testMatch: ['**/*.test.(ts|tsx|js)'],
     transform: {
-        '^.+\\.(ts|tsx)$': 'ts-jest',
+        '^.+\\.(ts|tsx)$': 'babel-jest',
         '^.+\\.svg$': '<rootDir>/src/support/tests/svgTransform.js', // https://stackoverflow.com/questions/46791263/jest-test-fail-syntaxerror-unexpected-token
     },
-    preset: 'ts-jest',
     verbose: false,
     watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
 };

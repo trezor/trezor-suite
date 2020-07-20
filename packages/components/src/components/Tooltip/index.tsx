@@ -6,47 +6,49 @@ import colors from '../../config/colors';
 import { Link } from '../typography/Link';
 import { FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
 
-const Wrapper = styled.div`
-    ${tippy};
+const tooltipGlobalStyles = `
+${tippy}
 
-    .tippy-tooltip {
-        background: ${colors.BLACK0};
-        color: ${colors.WHITE};
-        font-weight: ${FONT_WEIGHT.DEMI_BOLD};
-        border-radius: 3px;
-        font-size: ${FONT_SIZE.TINY};
-        text-align: left;
-        box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.3);
+.tippy-tooltip {
+    background: ${colors.NEUE_BG_TOOLTIP};
+    color: ${colors.WHITE};
+    font-weight: ${FONT_WEIGHT.MEDIUM};
+    border-radius: 5px;
+    font-size: ${FONT_SIZE.TINY};
+    text-align: left;
+    box-shadow: 0 3px 14px 0 rgba(0, 0, 0, 0.15)
 
-        .tippy-arrow {
-            border: 5px solid transparent;
-        }
-
-        &[data-placement^='top'] {
-            .tippy-arrow {
-                border-top-color: ${colors.BLACK0};
-            }
-        }
-
-        &[data-placement^='bottom'] {
-            .tippy-arrow {
-                border-bottom-color: ${colors.BLACK0};
-            }
-        }
-
-        &[data-placement^='left'] {
-            .tippy-arrow {
-                border-left-color: ${colors.BLACK0};
-            }
-        }
-
-        &[data-placement^='right'] {
-            .tippy-arrow {
-                border-right-color: ${colors.BLACK0};
-            }
-        }
+    .tippy-arrow {
+        border: 5px solid transparent;
     }
+}
+
+.tippy-tooltip[data-placement^='top'] >
+    .tippy-arrow {
+        border-top-color: ${colors.NEUE_BG_TOOLTIP};
+    }
+
+
+.tippy-tooltip[data-placement^='bottom'] >
+    .tippy-arrow {
+        border-bottom-color: ${colors.NEUE_BG_TOOLTIP};
+    }
+
+
+.tippy-tooltip[data-placement^='left'] >
+    .tippy-arrow {
+        border-left-color: ${colors.NEUE_BG_TOOLTIP};
+    }
+
+
+.tippy-tooltip[data-placement^='right'] >
+    .tippy-arrow {
+        border-right-color: ${colors.NEUE_BG_TOOLTIP};
+    }
+
 `;
+
+const Wrapper = styled.div``;
 
 const Content = styled.div``;
 
@@ -81,6 +83,7 @@ const Tooltip = ({
             animation={animation}
             duration={duration}
             interactive={interactive}
+            appendTo={() => document.body}
             content={
                 <>
                     {content}
@@ -98,4 +101,4 @@ const Tooltip = ({
     </Wrapper>
 );
 
-export { Tooltip, TippyProps as TooltipProps };
+export { Tooltip, TippyProps as TooltipProps, tooltipGlobalStyles };

@@ -24,12 +24,12 @@ export const ITEMS = [
         icon: 'SEND',
         isHidden: () => false,
     },
-    {
-        route: 'wallet-details',
-        title: <Translation id="TR_NAV_DETAILS" />,
-        icon: 'INFO',
-        isHidden: (account: Account) => account.networkType !== 'bitcoin',
-    },
+    // {
+    //     route: 'wallet-details',
+    //     title: <Translation id="TR_NAV_DETAILS" />,
+    //     icon: 'INFO',
+    //     isHidden: (account: Account) => account.networkType !== 'bitcoin',
+    // },
     {
         route: 'wallet-sign-verify',
         title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,

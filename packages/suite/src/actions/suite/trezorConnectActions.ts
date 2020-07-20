@@ -49,6 +49,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         'rippleSignTransaction',
         'composeTransaction',
         'backupDevice',
+        'recoveryDevice',
     ] as const;
     wrappedMethods.forEach(key => {
         // typescript complains about params and return type, need to be "any"
@@ -66,7 +67,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         const connectSrc =
             process.env.SUITE_TYPE === 'desktop'
                 ? resolveStaticPath('connect/')
-                : 'https://connect.corp.sldev.cz/develop/';
+                : 'https://connect.trezor.io/8/';
         // 'https://localhost:8088/';
         // 'https://connect.corp.sldev.cz/develop/';
 
@@ -80,34 +81,6 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             manifest: {
                 email: 'info@trezor.io',
                 appUrl: '@trezor/suite',
-            },
-        });
-        TrezorConnect.blockchainSetCustomBackend({
-            coin: 'btc',
-            blockchainLink: {
-                type: 'blockbook',
-                url: ['https://beta-btc.trezor.io/'],
-            },
-        });
-        TrezorConnect.blockchainSetCustomBackend({
-            coin: 'eth',
-            blockchainLink: {
-                type: 'blockbook',
-                url: ['https://beta-eth.trezor.io/'],
-            },
-        });
-        TrezorConnect.blockchainSetCustomBackend({
-            coin: 'bch',
-            blockchainLink: {
-                type: 'blockbook',
-                url: ['https://beta-bch.trezor.io/'],
-            },
-        });
-        TrezorConnect.blockchainSetCustomBackend({
-            coin: 'ltc',
-            blockchainLink: {
-                type: 'blockbook',
-                url: ['https://beta-ltc.trezor.io/'],
             },
         });
 

@@ -9,7 +9,7 @@ const StyledReactSwitch = styled(({ isSmall, ...rest }) => <ReactSwitch {...rest
     .react-switch-handle {
         top: ${props => (props.isSmall ? 2 : 3)}px !important;
         border: solid 1px ${colors.WHITE} !important;
-        background-image: linear-gradient(to top, ${colors.BLACK96}, ${colors.WHITE}) !important;
+        background-color: linear-gradient(to top, ${colors.BLACK96}, ${colors.WHITE}) !important;
 
         ${props =>
             props.checked &&
@@ -44,24 +44,24 @@ const Wrapper = styled.div`
     display: flex;
 `;
 
-const Switch = ({ onChange, isDisabled, isSmall, dataTest, ...rest }: Props) => {
-    const [checked, setChecked] = useState<StateProps['checked']>(false);
+const Switch = ({ onChange, isDisabled, isSmall, dataTest, checked, ...rest }: Props) => {
+    const [isChecked, setIsChecked] = useState<StateProps['checked']>(false);
     const handleChange = (checked: boolean) => {
         onChange(checked);
-        setChecked(checked);
+        setIsChecked(checked);
     };
 
     return (
         <Wrapper data-test={dataTest}>
             <StyledReactSwitch
-                checked={checked}
+                checked={isChecked || checked}
                 disabled={isDisabled}
                 onChange={handleChange}
-                onColor={colors.GREEN}
+                onColor={colors.NEUE_BG_GREEN}
                 checkedIcon={false}
                 uncheckedIcon={false}
-                offColor={colors.BLACK70}
-                color={colors.GREEN}
+                offColor={colors.NEUE_STROKE_GREY}
+                color={colors.NEUE_BG_GREEN}
                 isSmall={isSmall}
                 width={isSmall ? 32 : 42}
                 height={isSmall ? 18 : 24}

@@ -17,6 +17,18 @@ const recovery = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
     // pass action
     next(action);
 
+    const { locks } = api.getState().suite;
+    const isLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE);
+
+    if (
+        !isLocked &&
+        action.type === SUITE.UPDATE_SELECTED_DEVICE &&
+        action.payload &&
+        action.payload.features?.recovery_mode
+    ) {
+        api.dispatch(recoveryActions.rerun());
+    }
+
     return action;
 };
 export default recovery;

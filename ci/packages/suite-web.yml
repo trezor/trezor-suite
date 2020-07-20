@@ -7,6 +7,16 @@ suite-web build:
         paths:
             - packages/suite-web/build
 
+suite-web build-staging:
+    stage: build
+    script:
+        - assetPrefix=/wallet yarn workspace @trezor/suite-web build
+    artifacts:
+        expire_in: 7 days
+        paths:
+            - packages/suite-web/scripts/s3sync.sh
+            - packages/suite-web/build
+
 suite-web deploy dev:
     stage: deploy to dev servers
     variables:
@@ -38,7 +48,7 @@ suite-web e2e chrome stage=stable:
         - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
         - export BROWSER=chrome
-        - yarn concurrently --success first --kill-others 
+        - yarn concurrently --success first --kill-others
           "cd ./docker/trezor-user-env/controller && python3 ./main.py"
           "node ./packages/integration-tests/projects/suite-web/run_tests.js
           --project ./packages/integration-tests/projects/suite-web
@@ -65,7 +75,7 @@ suite-web e2e chrome stage=beta:
         - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
         - export BROWSER=/usr/bin/google-chrome-beta
-        - yarn concurrently --success first --kill-others 
+        - yarn concurrently --success first --kill-others
           "cd ./docker/trezor-user-env/controller && python3 ./main.py"
           "node ./packages/integration-tests/projects/suite-web/run_tests.js
           --project ./packages/integration-tests/projects/suite-web
@@ -82,7 +92,7 @@ suite-web e2e chrome stage=beta:
 
 suite-web e2e chrome-beta stage=stable:
     stage: integration testing
-    only:	
+    only:
         - schedules
     allow_failure: false
     script:
@@ -94,7 +104,7 @@ suite-web e2e chrome-beta stage=stable:
         - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
         - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
         - export BROWSER=/usr/bin/google-chrome-beta
-        - yarn concurrently --success first --kill-others 
+        - yarn concurrently --success first --kill-others
           "cd ./docker/trezor-user-env/controller && python3 ./main.py"
           "node ./packages/integration-tests/projects/suite-web/run_tests.js
           --project ./packages/integration-tests/projects/suite-web
@@ -109,27 +119,19 @@ suite-web e2e chrome-beta stage=stable:
             - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
     dependencies: []
 
-# todo: not sure if this is relevant, could be removed and replaced with lighthouse in near (hopefully) future
-suite-web test security:
-    stage: misc
-    only:
-        - schedules
-    script: yarn is-website-vulnerable ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} | node ./ci/scripts/check-vulnerabilities.js
-    dependencies: []
-
 suite-web deploy staging:
     stage: deploy to staging
+    dependencies:
+        - suite-web build-staging
     environment:
         name: ${CI_BUILD_REF_NAME}-staging
         url: ${STAGING_SERVER_URL}
     before_script: []
     when: manual
     script:
-        - echo "I don't have aws credentials, fixme"
-        # - cd packages/suite-web
-        # - assetPrefix=/${STAGING_SERVER_URL} yarn workspace @trezor/suite-web build
-        # - ./scripts/s3sync.sh stage beta
+        - source ${STAGING_DEPLOY_KEYFILE}
+        - cd packages/suite-web
+        - ./scripts/s3sync.sh stage beta
     tags:
         - deploy
-
 # todo: add smoke test job on stage / beta (need basic auth)

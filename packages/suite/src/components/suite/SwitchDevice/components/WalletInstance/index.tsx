@@ -1,57 +1,38 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
-import { Button, Switch, colors, variables } from '@trezor/components';
+import styled from 'styled-components';
+import { Switch, Box, Icon, colors, variables } from '@trezor/components';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { Props } from './Container';
 import { FormattedNumber, WalletLabeling, Translation } from '@suite-components';
 import { useAnalytics } from '@suite-hooks';
 
-const Wrapper = styled.div<{ selected: boolean }>`
+const Wrapper = styled(Box)`
     display: flex;
     width: 100%;
-    padding: 18px 20px;
     align-items: center;
-    flex-direction: row;
-
-    cursor: pointer;
     background: ${colors.WHITE};
+    cursor: pointer;
 
-    &:hover {
-        background: ${colors.BLACK96};
+    & + & {
+        margin-top: 10px;
     }
-
-    &:first-of-type {
-        border-top-left-radius: 6px;
-        border-top-right-radius: 6px;
-    }
-
-    &:last-of-type {
-        border-bottom-left-radius: 6px;
-        border-bottom-right-radius: 6px;
-    }
-
-    ${props =>
-        props.selected &&
-        css`
-            background: #eaf8e5;
-            border: 1px solid ${colors.GREEN};
-
-            &:hover {
-                background: #eaf8e5;
-            }
-        `}
 `;
 
 const InstanceType = styled.div`
-    color: ${colors.BLACK25};
-    font-weight: 600;
+    display: flex;
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+    font-weight: 500;
     font-size: ${variables.FONT_SIZE.NORMAL};
+    line-height: 1.5;
+    align-items: center;
 `;
 
 const InstanceTitle = styled.div`
-    margin-top: 6px;
-    color: ${colors.BLACK25};
-    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: 500;
+    line-height: 1.57;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-variant-numeric: tabular-nums;
 `;
 
 const Col = styled.div<{ grow?: number; centerItems?: boolean }>`
@@ -61,14 +42,17 @@ const Col = styled.div<{ grow?: number; centerItems?: boolean }>`
     align-items: ${props => (props.centerItems ? 'center' : 'flex-start')};
 `;
 
-const SwitchCol = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin-right: 70px;
+const ColEject = styled(Col)`
+    margin: 0 24px;
 `;
 
-const ForgetButton = styled(Button)`
-    font-size: ${variables.FONT_SIZE.BUTTON};
+const SwitchCol = styled.div`
+    display: flex;
+    margin-right: 60px;
+`;
+
+const LockIcon = styled(Icon)`
+    margin-right: 4px;
 `;
 
 const WalletInstance = ({
@@ -93,6 +77,7 @@ const WalletInstance = ({
         fiat.coins,
     );
     const analytics = useAnalytics();
+    const isSelected = enabled && selected && !!discoveryProcess;
 
     const getDataTestBase = () => {
         if (instance.instance) {
@@ -105,12 +90,15 @@ const WalletInstance = ({
             data-test={getDataTestBase()}
             // data-test={`@switch-device/wallet-instance/${instance.instance ? }`}
             key={`${instance.label}${instance.instance}${instance.state}`}
-            selected={enabled && selected && !!discoveryProcess}
+            state={isSelected ? 'success' : undefined}
             {...rest}
         >
             <Col grow={1} onClick={() => selectDeviceInstance(instance)}>
                 {discoveryProcess && (
                     <InstanceType>
+                        {!instance.useEmptyPassphrase && (
+                            <LockIcon icon="LOCK" color={colors.NEUE_TYPE_DARK_GREY} size={12} />
+                        )}
                         <WalletLabeling device={instance} />
                     </InstanceType>
                 )}
@@ -150,20 +138,20 @@ const WalletInstance = ({
                             data-test={`${getDataTestBase()}/toggle-remember-switch`}
                         />
                     </SwitchCol>
-                    <Col>
-                        <ForgetButton
+                    <ColEject centerItems>
+                        <Icon
                             data-test={`${getDataTestBase()}/eject-button`}
-                            variant="secondary"
+                            icon="EJECT"
+                            size={22}
+                            color={colors.NEUE_TYPE_LIGHT_GREY}
                             onClick={() =>
                                 forgetDevice(instance) &&
                                 analytics.report({
                                     type: 'switch-device/eject',
                                 })
                             }
-                        >
-                            <Translation id="TR_EJECT_WALLET" />
-                        </ForgetButton>
-                    </Col>
+                        />
+                    </ColEject>
                 </>
             )}
         </Wrapper>
