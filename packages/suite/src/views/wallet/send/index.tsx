@@ -18,7 +18,7 @@ import { Props } from './Container';
 const StyledCard = styled(Card)`
     display: flex;
     flex-direction: column;
-    margin-bottom: 40px;
+    margin-bottom: 25px;
     padding: 0;
 `;
 
@@ -64,7 +64,9 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
                     <Outputs />
                     <CoinActions />
                 </StyledCard>
-                {networkType === 'bitcoin' && opReturnActive && <OpReturn />}
+                {networkType === 'bitcoin' && opReturnActive && (
+                    <OpReturn setIsActive={setOpReturnActive} />
+                )}
                 <Fees />
                 <TotalSent />
                 <ReviewButton />

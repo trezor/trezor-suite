@@ -3571,6 +3571,10 @@ const definedMessages = defineMessages({
         id: 'TR_RBF_OFF_DESCRIPTION',
         defaultMessage: 'This allows u to do something which is explained in this short copy.',
     },
+    TR_OP_RETURN: {
+        id: 'TR_OP_RETURN',
+        defaultMessage: 'OP RETURN',
+    },
 } as const);
 
 export default definedMessages;
