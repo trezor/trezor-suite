@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import ReactSelect, { components, Props as SelectProps } from 'react-select';
+import ReactSelect, { Props as SelectProps } from 'react-select';
 import { colors, variables } from '../../../config';
 import { InputVariant } from '../../../support/types';
 
@@ -11,6 +11,9 @@ const selectStyle = (isSearchable: boolean, isHovered: boolean, minWidth = '50px
         ...base,
         color: colors.NEUE_TYPE_LIGHT_GREY,
         border: 0,
+        display: 'flex',
+        width: '100%',
+        justifyContent: 'flex-end',
     }),
     container: (base: Record<string, any>) => ({
         ...base,
@@ -41,24 +44,34 @@ const selectStyle = (isSearchable: boolean, isHovered: boolean, minWidth = '50px
             display: 'none',
         };
     },
-    dropdownIndicator: (base: Record<string, any>) => {
+    dropdownIndicator: (base: Record<string, any>, { isFocused }: { isFocused: boolean }) => {
         return {
             ...base,
             padding: 0,
             margin: 0,
             border: '0',
-            display: isHovered ? 'flex' : 'none',
+            display: isFocused || isHovered ? 'flex' : 'none',
         };
     },
     menu: (base: Record<string, any>) => ({
         ...base,
         color: colors.NEUE_TYPE_LIGHT_GREY,
+        background: 'white',
+        boxShadow: '0 4px 10px 0 rgba(0, 0, 0, 0.15)',
     }),
     menuList: (base: Record<string, any>) => ({
         ...base,
     }),
-    option: (base: Record<string, any>) => ({
+    option: (base: Record<string, any>, { isFocused }: { isFocused: boolean }) => ({
         ...base,
+        background: isFocused ? colors.BLACK96 : colors.WHITE,
+        color: colors.NEUE_TYPE_DARK_GREY,
+        fontSize: variables.FONT_SIZE.SMALL,
+        fontWeight: variables.FONT_WEIGHT.MEDIUM,
+        '&:hover': {
+            cursor: 'pointer',
+            background: colors.NEUE_BG_GRAY,
+        },
     }),
 });
 
