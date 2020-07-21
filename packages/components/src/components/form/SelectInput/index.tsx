@@ -6,6 +6,18 @@ import { InputVariant } from '../../../support/types';
 
 const Wrapper = styled.div``;
 
+const getDropdownVisibility = (isDisabled: boolean, isFocused: boolean, isHovered: boolean) => {
+    if (isDisabled) {
+        return 'none';
+    }
+
+    if (isFocused || isHovered) {
+        return 'flex';
+    }
+
+    return 'none';
+};
+
 const selectStyle = (isSearchable: boolean, isHovered: boolean, minWidth = '50px') => ({
     singleValue: (base: Record<string, any>) => ({
         ...base,
@@ -24,6 +36,7 @@ const selectStyle = (isSearchable: boolean, isHovered: boolean, minWidth = '50px
         return {
             ...base,
             boxShadow: '0',
+            background: 'transparent',
             height: 22,
             border: 0,
         };
@@ -44,13 +57,16 @@ const selectStyle = (isSearchable: boolean, isHovered: boolean, minWidth = '50px
             display: 'none',
         };
     },
-    dropdownIndicator: (base: Record<string, any>, { isFocused }: { isFocused: boolean }) => {
+    dropdownIndicator: (
+        base: Record<string, any>,
+        { isFocused, isDisabled }: { isFocused: boolean; isDisabled: boolean }
+    ) => {
         return {
             ...base,
             padding: 0,
             margin: 0,
             border: '0',
-            display: isFocused || isHovered ? 'flex' : 'none',
+            display: getDropdownVisibility(isDisabled, isFocused, isHovered),
         };
     },
     menu: (base: Record<string, any>) => ({
@@ -92,15 +108,19 @@ const SelectInput = ({
     isClean = false,
     label,
     minWidth,
+    options,
     ...props
 }: Props) => {
     const [isHovered, setIsHovered] = React.useState(false);
+    const optionsLength = options.length;
 
     return (
         <Wrapper onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
             <ReactSelect
                 styles={selectStyle(isSearchable, isHovered, minWidth)}
                 isSearchable={false}
+                isDisabled={optionsLength <= 1}
+                options={options}
                 {...props}
             />
         </Wrapper>
