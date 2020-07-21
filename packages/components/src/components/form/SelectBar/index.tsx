@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { colors, variables } from '../../../config';
 
 interface Option {
-    label: string;
+    label: ReactNode;
     value: string;
 }
 
 interface Props {
-    label?: React.ReactNode;
+    label?: ReactNode;
     selectedOption?: Option['value'];
     options: Option[];
+    className?: string;
     onChange?: (value: any) => void;
 }
 
@@ -61,7 +62,7 @@ const Option = styled.div<{ isSelected: boolean }>`
         `}
 `;
 
-export default ({ options, selectedOption, label, onChange }: Props) => {
+export default ({ options, selectedOption, label, onChange, className }: Props) => {
     const [selectedOptionIn, setSelected] = useState<Option['value'] | null>(
         selectedOption || null
     );
@@ -73,7 +74,7 @@ export default ({ options, selectedOption, label, onChange }: Props) => {
     }, [selectedOption, setSelected]);
 
     return (
-        <Wrapper>
+        <Wrapper className={className}>
             {label && <Label>{label}</Label>}
             <Options>
                 {options.map(option => (
