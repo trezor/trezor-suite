@@ -1,11 +1,11 @@
 landing-page build:
-  stage: build
-  script:
-    - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/landing-page build
-  artifacts:
-    expire_in: 7 days
-    paths:
-      - packages/landing-page/build
+    stage: build
+    script:
+        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/landing-page build
+    artifacts:
+        expire_in: 7 days
+        paths:
+            - packages/landing-page/build
 
 landing-page build-staging:
     stage: build
@@ -28,7 +28,7 @@ landing-page deploy-staging:
     when: manual
     script:
         - source ${STAGING_DEPLOY_KEYFILE}
-        - cd packages/landing-pag
+        - cd packages/landing-page
         - ./scripts/s3sync.sh stage beta
     tags:
         - deploy
