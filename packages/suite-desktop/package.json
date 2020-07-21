@@ -21,7 +21,7 @@
     },
     "build": {
         "appId": "io.trezor.TrezorWallet",
-        "productName": "Trezor Beta Wallet",
+        "productName": "Trezor Suite",
         "copyright": "Copyright © year ${author}",
         "asar": true,
         "asarUnpack": [
