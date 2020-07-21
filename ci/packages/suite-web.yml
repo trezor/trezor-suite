@@ -133,11 +133,11 @@ suite-web deploy staging:
     when: manual
     script:
         - source ${STAGING_DEPLOY_KEYFILE}
-        - cd packages/suite-web
         - mkdir -p packages/suite-web/build/static/desktop
-        - rsync -abviuzP -va ./${DESKTOP_APP_NAME}.AppImage
-        - rsync -abviuzP -va ./${DESKTOP_APP_NAME}.zip
-        - rsync -abviuzP -va ./${DESKTOP_APP_NAME}.exe
+        - rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage ./packages/suite-web/build/static/desktop
+        - rsync --delete -va "${DESKTOP_APP_NAME}"-*.zip ./packages/suite-web/build/static/desktop
+        - rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe ./packages/suite-web/build/static/desktop
+        - cd packages/suite-web
         - ./scripts/s3sync.sh stage beta
     tags:
         - deploy
