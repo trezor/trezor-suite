@@ -113,7 +113,7 @@ const discoveryFailedMessage = (discovery?: Discovery) => {
     return <>{details}</>;
 };
 
-export default ({ exception, discovery }: Props) => {
+const Exception = ({ exception, discovery }: Props) => {
     const dispatch = useDispatch<Dispatch>();
     const { device } = useDevice();
     switch (exception.type) {
@@ -203,3 +203,5 @@ export default ({ exception, discovery }: Props) => {
             return null;
     }
 };
+
+export default Exception;

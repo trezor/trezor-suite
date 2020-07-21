@@ -51,7 +51,7 @@ interface Props {
     buy: () => any;
 }
 
-export default ({ receive }: Props) => (
+const AccountEmpty = ({ receive }: Props) => (
     <Wrapper>
         <Content>
             <Title>
@@ -72,3 +72,5 @@ export default ({ receive }: Props) => (
         </Content>
     </Wrapper>
 );
+
+export default AccountEmpty;

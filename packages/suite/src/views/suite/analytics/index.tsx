@@ -39,7 +39,7 @@ const StyledButton = styled(Button)`
     margin-top: 16px;
 `;
 
-export default () => {
+const Analytics = () => {
     const { goto } = useActions({ goto: routerActions.goto });
     return (
         <Modal
@@ -102,3 +102,5 @@ export default () => {
         </Modal>
     );
 };
+
+export default Analytics;
