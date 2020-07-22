@@ -40,6 +40,39 @@ export type MetadataActions =
 // needs to be declared here in top level context because it's not recommended to keep classes instances in redux state (serialization)
 let providerInstance: AbstractMetadataProvider | undefined;
 
+export const enableMetadata = () => (dispatch: Dispatch) => {
+    dispatch({
+        type: METADATA.ENABLE,
+    });
+};
+
+export const disposeMetadata = () => (dispatch: Dispatch, getState: GetState) => {
+    getState().wallet.accounts.forEach(account => {
+        // const accountWithMetadata = dispatch(setAccountMetadataKey(account));
+        dispatch({
+            type: METADATA.ACCOUNT_ADD,
+            payload: {
+                ...account,
+                metadata: {
+                    key: account.metadata.key,
+                    fileName: '',
+                    aesKey: '',
+                    outputLabels: {},
+                    addressLabels: {},
+                    accountLabel: '',
+                },
+            },
+        });
+    });
+};
+
+export const disableMetadata = () => (dispatch: Dispatch) => {
+    dispatch({
+        type: METADATA.DISABLE,
+    });
+    dispatch(disposeMetadata());
+};
+
 export const initProvider = () => async (dispatch: Dispatch) => {
     // TODO: check is connected
     const decision = createDeferred<boolean>();
@@ -236,6 +269,7 @@ export const setDeviceMetadataKey = (force = false) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
+    console.warn('getState().metadata', getState().metadata);
     if (!getState().metadata.enabled) return;
     const { device } = getState().suite;
     if (!device || !device.state) return;
@@ -376,6 +410,59 @@ export const fetchMetadata = (deviceState: string) => async (
 };
 
 /**
+ * Fill any record in reducer that may have metadata with metadata keys (not values).
+ */
+const syncMetadataKeys = () => (dispatch: Dispatch, getState: GetState) => {
+    // todo: fill all objects (accounts, transactions) with metadata keys. (really all ?)
+    getState().wallet.accounts.forEach(account => {
+        const accountWithMetadata = dispatch(setAccountMetadataKey(account));
+        dispatch({
+            type: METADATA.ACCOUNT_ADD,
+            payload: accountWithMetadata,
+        });
+    });
+};
+
+/**
+ */
+const syncMetadataPayload = (payload: MetadataAddPayload) => (
+    _dispatch: Dispatch,
+    getState: GetState,
+) => {
+    // check if there is value to pre fill into user input
+
+    if (payload.type === 'walletLabel') {
+        const { device } = getState().suite;
+        if (
+            device?.features &&
+            device?.metadata.status === 'enabled' &&
+            device?.metadata.walletLabel
+        ) {
+            payload.value = device.metadata.walletLabel;
+        }
+        // todo:
+    } else {
+        const account = getState().wallet.accounts.find(acc => acc.key === payload.accountKey);
+        if (payload.type === 'accountLabel' && account?.metadata.accountLabel) {
+            payload.value = account?.metadata.accountLabel;
+        }
+        if (
+            payload.type === 'addressLabel' &&
+            account?.metadata.addressLabels[payload.defaultValue]
+        ) {
+            payload.value = account?.metadata.addressLabels[payload.defaultValue];
+        }
+        if (
+            payload.type === 'outputLabel' &&
+            account?.metadata.outputLabels[payload.txid][payload.outputIndex]
+        ) {
+            payload.value = account?.metadata.outputLabels[payload.txid][payload.outputIndex];
+        }
+    }
+    return payload;
+};
+
+/**
  * addMetadata method is intended to be called from component. Option to call it should
  * appear only if metadata is enabled globally. This method shall then take care of everything
  * needed to save metadata into a long-term storage.
@@ -384,20 +471,24 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
+    console.warn('add Metadata');
     // make sure metadata is enabled globally
     const { metadata } = getState();
+    const { device } = getState().suite;
 
-    if (!metadata.enabled) {
-        console.warn('metadata is disabled globally, this should not actually happen');
-        return;
-    }
-
-    // make sure user has metadata enabled for this device
-    let { device } = getState().suite;
+    const needsUpdate = device?.metadata?.status !== 'enabled' || !metadata.enabled;
 
     if (!device?.state) return;
 
-    const needsUpdate = device?.metadata.status !== 'enabled';
+    // metadata is not enabled, it means that suite does not try to generate keys and download and decrypt files, but user activates
+    // metadata when trying to add it.
+    if (!metadata.enabled) {
+        console.warn('metadata is disabled globally, this should not actually happen');
+        // return;
+        dispatch(enableMetadata());
+    }
+
+    console.warn('needsUpdate', needsUpdate);
 
     // user might have clicked cancel on device when he was prompting to enable labeling. In this case
     // we override his choice as he is apparently willing to add label.
@@ -418,14 +509,7 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
 
     // this can actually be parallel to provider logging in
     if (needsUpdate) {
-        // todo: fill all objects (accounts, transactions) with metadata keys. (really all ?)
-        getState().wallet.accounts.forEach(account => {
-            const accountWithMetadata = dispatch(setAccountMetadataKey(account));
-            dispatch({
-                type: METADATA.ACCOUNT_ADD,
-                payload: accountWithMetadata,
-            });
-        });
+        dispatch(syncMetadataKeys());
     }
 
     // wait for provider here because right after this point, we are going to fetch data from provider
@@ -442,37 +526,8 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
 
     if (needsUpdate) {
         await dispatch(fetchMetadata(device?.state));
-        // check if there is value to pre fill into user input
-
-        if (payload.type === 'walletLabel') {
-            device = getState().suite.device;
-            if (
-                device?.features &&
-                device?.metadata.status === 'enabled' &&
-                device?.metadata.walletLabel
-            ) {
-                payload.value = device.metadata.walletLabel;
-            }
-            // todo:
-        } else {
-            const account = getState().wallet.accounts.find(acc => acc.key === payload.accountKey);
-            if (payload.type === 'accountLabel' && account?.metadata.accountLabel) {
-                payload.value = account?.metadata.accountLabel;
-            }
-            if (
-                payload.type === 'addressLabel' &&
-                account?.metadata.addressLabels[payload.defaultValue]
-            ) {
-                payload.value = account?.metadata.addressLabels[payload.defaultValue];
-            }
-            if (
-                payload.type === 'outputLabel' &&
-                account?.metadata.outputLabels[payload.txid][payload.outputIndex]
-            ) {
-                payload.value = account?.metadata.outputLabels[payload.txid][payload.outputIndex];
-            }
-        }
-        // ?
+        // after metadata is loaded, pre fill corresponding metadata value into payload
+        payload = dispatch(syncMetadataPayload(payload));
         originalValue = payload.value;
     }
     const decision = createDeferred<string | undefined>();
@@ -499,23 +554,28 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
     }
 };
 
+/**
+ * initMetadata - prepare everything needed to load + decrypt and upload + decrypt metadata. Note that this method
+ * consists of number of steps of which not all have to necessarily happen. For example
+ * user may directly navigate to /settings, enable metadata (by invoking init), but his device
+ * does not have state yet. In this case, setDeviceMetadataKey method and those that follow
+ * are skipped and user will be asked again either after authorization process or when user
+ * tries to add new label.
+ */
 export const init = (force = false) => async (dispatch: Dispatch, getState: GetState) => {
+    // 1. set metadata enabled globally
+    dispatch(enableMetadata());
+
+    // 2. set device metadata key (master key). Sometimes, if state is not present
+    const { device } = getState().suite;
+    if (!device?.state) return;
     await dispatch(setDeviceMetadataKey(force));
-    // console.warn('getProvider(getState().metadata.provider)', getProvider(getState().metadata.provider));
+
+    // 3. connect to provider
     if (getState().suite.device?.metadata.status === 'enabled' && !getState().metadata.provider) {
         await dispatch(initProvider());
     }
-};
 
-export const enableMetadata = () => (dispatch: Dispatch) => {
-    dispatch({
-        type: METADATA.ENABLE,
-    });
-    dispatch(init(true));
-};
-
-export const disableMetadata = () => (dispatch: Dispatch) => {
-    dispatch({
-        type: METADATA.DISABLE,
-    });
+    // 4. fill existing records (typically accounts) with metadata keys.
+    await dispatch(syncMetadataKeys());
 };

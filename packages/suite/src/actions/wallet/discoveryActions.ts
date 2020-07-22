@@ -283,6 +283,8 @@ export const remove = (deviceState: string): DiscoveryActions => ({
 
 export const start = () => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const { device } = getState().suite;
+    const { metadata } = getState();
+
     const discovery = dispatch(getDiscoveryForDevice());
     if (!device) {
         dispatch(addToast({ type: 'discovery-error', error: 'Device not found' }));
@@ -304,8 +306,10 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         discovery.status > DISCOVERY.STATUS.STOPPING
     ) {
         // always try to generate device metadata master key first
-        if (device.metadata.status !== 'enabled') {
-            console.warn('dispatch init===');
+        if (metadata.enabled && device.metadata.status !== 'enabled') {
+            console.warn(
+                'init metadata from discovery actions (only if globally enabled and not cancelled on device)',
+            );
             await dispatch(metadataActions.init());
         }
 

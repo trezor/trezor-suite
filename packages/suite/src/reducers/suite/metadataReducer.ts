@@ -4,7 +4,8 @@ import { Action } from '@suite-types';
 import { MetadataState } from '@suite-types/metadata';
 
 export const initialState: MetadataState = {
-    enabled: true,
+    // is suite trying to load metadata (get master key -> sync cloud)?
+    enabled: false,
 };
 
 export default (state = initialState, action: Action): MetadataState => {
@@ -17,6 +18,7 @@ export default (state = initialState, action: Action): MetadataState => {
                 break;
             case METADATA.DISABLE:
                 draft.enabled = false;
+                draft.provider = undefined;
                 break;
             case METADATA.SET_PROVIDER:
                 draft.provider = action.payload;
