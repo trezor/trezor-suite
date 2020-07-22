@@ -12,7 +12,7 @@ interface Props {
     selectedOption?: Option['value'];
     options: Option[];
     className?: string;
-    onChange?: (value: any) => void;
+    onChange?: (value: Option['value']) => void;
 }
 
 const Wrapper = styled.div`
@@ -62,7 +62,7 @@ const Option = styled.div<{ isSelected: boolean }>`
         `}
 `;
 
-export default ({ options, selectedOption, label, onChange, className }: Props) => {
+const SelectBar = ({ options, selectedOption, label, onChange, className }: Props) => {
     const [selectedOptionIn, setSelected] = useState<Option['value'] | null>(
         selectedOption || null
     );
@@ -95,3 +95,5 @@ export default ({ options, selectedOption, label, onChange, className }: Props) 
         </Wrapper>
     );
 };
+
+export { SelectBar, Props as SelectBarProps };
