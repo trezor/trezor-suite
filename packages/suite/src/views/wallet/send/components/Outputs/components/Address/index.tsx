@@ -103,7 +103,12 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
             }
             labelRight={
                 outputsCount > 1 ? (
-                    <Remove onClick={() => removeOutput(outputId)}>
+                    <Remove
+                        onClick={() => {
+                            removeOutput(outputId);
+                            composeTransaction(`outputs[0].amount`);
+                        }}
+                    >
                         <StyledIcon size={20} color={colors.BLACK50} icon="CROSS" />
                     </Remove>
                 ) : undefined
@@ -118,7 +123,7 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
                     );
                     updateContext({ destinationAddressEmpty });
                 }
-                composeTransaction(outputId);
+                composeTransaction(`outputs[${outputId}].amount`);
             }}
             bottomText={
                 addressError ? (

@@ -81,18 +81,7 @@ export default () => {
                     </StyledButton>
                 </Left>
                 <Right>
-                    <Button
-                        variant="tertiary"
-                        icon="PLUS"
-                        onClick={() => {
-                            addOutput({
-                                address: '',
-                                amount: '',
-                                fiat: '',
-                                currency: undefined,
-                            });
-                        }}
-                    >
+                    <Button variant="tertiary" icon="PLUS" onClick={addOutput}>
                         <Translation id="TR_ANOTHER_RECIPIENT" />
                     </Button>
                 </Right>

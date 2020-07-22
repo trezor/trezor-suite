@@ -64,9 +64,12 @@ const TotalSentFiat = styled.div`
 export default () => {
     const {
         account: { symbol },
-        transactionInfo,
+        composedLevels,
+        getValues,
     } = useSendFormContext();
 
+    const selectedFee = getValues().selectedFee || 'normal';
+    const transactionInfo = composedLevels ? composedLevels[selectedFee] : undefined;
     return (
         <StyledCard>
             <Left>
@@ -77,15 +80,15 @@ export default () => {
                     <Translation id="TR_INCLUDING_FEE" />
                 </SecondaryLabel>
             </Left>
-            {transactionInfo && (
+            {transactionInfo && transactionInfo.type !== 'error' && (
                 <Right>
                     <TotalSentCoin>
-                        {formatNetworkAmount(transactionInfo.totalSent, symbol)}
+                        {formatNetworkAmount(transactionInfo.totalSpent, symbol)}
                         <Symbol>{symbol}</Symbol>
                     </TotalSentCoin>
                     <TotalSentFiat>
                         <FiatValue
-                            amount={formatNetworkAmount(transactionInfo.totalSent, symbol)}
+                            amount={formatNetworkAmount(transactionInfo.totalSpent, symbol)}
                             symbol={symbol}
                         />
                     </TotalSentFiat>

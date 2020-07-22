@@ -80,6 +80,7 @@ export default ({ outputId }: { outputId: number }) => {
         setValue,
         composeTransaction,
         fiatRates,
+        formState,
     } = useSendFormContext();
 
     const values = getValues();
@@ -121,8 +122,8 @@ export default ({ outputId }: { outputId: number }) => {
                         <Button
                             icon={isSetMaxActive ? 'CHECK' : 'SEND'}
                             onClick={() => {
-                                setValue('setMaxOutputId', isSetMaxActive ? -1 : outputId);
-                                composeTransaction(outputId);
+                                setValue('setMaxOutputId', isSetMaxActive ? undefined : outputId);
+                                composeTransaction(inputName);
                             }}
                             variant="tertiary"
                         >
@@ -164,11 +165,14 @@ export default ({ outputId }: { outputId: number }) => {
                     bottomText={error && error.message}
                     onChange={event => {
                         if (isSetMaxActive) {
-                            setValue('setMaxOutputId', -1);
+                            setValue('setMaxOutputId', undefined);
                         }
 
                         if (error) {
-                            if (values.outputs[outputId].fiat.length > 0) {
+                            if (
+                                values.outputs[outputId].fiat &&
+                                values.outputs[outputId].fiat.length > 0
+                            ) {
                                 setValue(`outputs[${outputId}].fiat`, '', { shouldValidate: true });
                             }
                             return;
@@ -187,7 +191,7 @@ export default ({ outputId }: { outputId: number }) => {
                             setValue(`outputs[${outputId}].fiat`, fiat, { shouldValidate: true });
                         }
 
-                        composeTransaction(outputId);
+                        composeTransaction(inputName);
                     }}
                     name={inputName}
                     defaultValue={amountValue}

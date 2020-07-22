@@ -5,7 +5,6 @@ import { Card, Translation, FiatValue } from '@suite-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import EstimatedMiningTime from '../EstimatedMiningTime';
 import { buildFeeOptions, getFeeUnits } from '@wallet-utils/sendFormUtils';
-import { FeeLevel } from 'trezor-connect';
 import CustomFee from './components/CustomFee';
 import EthFees from './components/EthFees';
 import { useSendFormContext } from '@wallet-hooks';
@@ -83,14 +82,17 @@ const EstimatedMiningTimeWrapper = styled.div`
 
 export default () => {
     const {
-        feeInfo: { levels },
         feeInfo,
+        changeFeeLevel,
         account: { symbol, networkType },
-        selectedFee,
-        updateContext,
-        setValue,
-        transactionInfo,
+        getValues,
+        composedLevels,
     } = useSendFormContext();
+
+    const values = getValues();
+    const selectedLabel = values.selectedFee || 'normal';
+    const selectedLevel = feeInfo.levels.find(level => level.label === selectedLabel)!;
+    const transactionInfo = composedLevels ? composedLevels[selectedLabel] : undefined;
 
     return (
         <StyledCard>
@@ -100,40 +102,26 @@ export default () => {
                     <Left>
                         <SelectBar
                             label={<Translation id="TR_FEE" />}
-                            selectedOption={selectedFee.label}
-                            options={buildFeeOptions(levels)}
-                            onChange={(value: FeeLevel['label']) => {
-                                const selectedFeeForUpdate = levels.find(
-                                    level => level.label === value,
-                                );
-                                if (selectedFeeForUpdate) {
-                                    if (selectedFeeForUpdate.label === 'custom') {
-                                        const { feePerUnit } = selectedFee;
-                                        selectedFeeForUpdate.feePerUnit = feePerUnit;
-                                        setValue('customFee', feePerUnit);
-                                    }
-                                    updateContext({ selectedFee: selectedFeeForUpdate });
-                                }
-                            }}
+                            selectedOption={selectedLabel}
+                            options={buildFeeOptions(feeInfo.levels)}
+                            onChange={value => changeFeeLevel(selectedLevel, value)}
                         />
                         <FeeInfo>
-                            {networkType === 'bitcoin' && selectedFee.label !== 'custom' && (
+                            {networkType === 'bitcoin' && selectedLabel !== 'custom' && (
                                 <EstimatedMiningTimeWrapper>
                                     <EstimatedMiningTime
-                                        seconds={feeInfo.blockTime * selectedFee.blocks * 60}
+                                        seconds={feeInfo.blockTime * selectedLevel.blocks * 60}
                                     />
                                 </EstimatedMiningTimeWrapper>
                             )}
                             <FeeUnits>
-                                {selectedFee.feePerUnit} {getFeeUnits(networkType).label}
+                                {selectedLevel.feePerUnit} {getFeeUnits(networkType).label}
                             </FeeUnits>
                         </FeeInfo>
                     </Left>
-                    <Middle>
-                        <CustomFee isVisible={selectedFee.label === 'custom'} />
-                    </Middle>
+                    <Middle>{selectedLabel === 'custom' && <CustomFee />}</Middle>
                     <Right>
-                        {transactionInfo && (
+                        {transactionInfo && transactionInfo.type !== 'error' && (
                             <RightContent>
                                 <CoinAmount>
                                     {formatNetworkAmount(transactionInfo.fee, symbol)}

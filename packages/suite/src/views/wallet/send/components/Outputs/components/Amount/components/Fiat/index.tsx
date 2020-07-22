@@ -83,8 +83,7 @@ export default ({ outputId }: { outputId: number }) => {
                         setValue(amountInputName, amount, {
                             shouldValidate: true,
                         });
-                        // since Amount will be propagated after useEffect of react-hook-form
-                        composeTransaction(outputId, amountInputName);
+                        composeTransaction(amountInputName);
                     }
                 }}
                 name={inputName}
