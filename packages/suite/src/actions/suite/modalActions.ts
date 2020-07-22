@@ -1,15 +1,13 @@
-import TrezorConnect, { UI, TokenInfo, PrecomposedTransaction } from 'trezor-connect';
+import TrezorConnect, { UI } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
-import { useForm } from 'react-hook-form';
-import { SendContext } from '@wallet-hooks/useSendContext';
 import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
 import { Account, WalletAccountTransaction } from '@wallet-types';
+import { createDeferred, Deferred } from '@suite-utils/deferred';
 
 export type UserContextPayload =
     | {
           type: 'qr-reader';
-          outputId: number;
-          setValue: ReturnType<typeof useForm>['setValue'];
+          decision: Deferred<string>;
       }
     | {
           type: 'unverified-address';
@@ -55,12 +53,6 @@ export type UserContextPayload =
       }
     | {
           type: 'review-transaction';
-          transactionInfo: PrecomposedTransaction;
-          outputs: SendContext['outputs'];
-          token: TokenInfo | null;
-          getValues: ReturnType<typeof useForm>['getValues'];
-          selectedFee: SendContext['selectedFee'];
-          send: () => void;
       }
     | {
           type: 'log';
@@ -164,3 +156,26 @@ export const openModal = (payload: UserContextPayload): Action => ({
     type: MODAL.OPEN_USER_CONTEXT,
     payload,
 });
+
+type DeferredModals = Extract<UserContextPayload, { type: 'qr-reader' | 'review-transaction' }>;
+type DeferredModalsParams = Omit<DeferredModals, 'decision'>;
+// type DeferredDecision<T extends DeferredModals['type']> = Extract<
+//     DeferredModals,
+//     { type: T }
+// >['decision']['promise'];
+export const openDeferredModal = (payload: DeferredModalsParams) => async (dispatch: Dispatch) => {
+    const dfd = createDeferred<any>(); // : DeferredDecision<typeof payload.type>['decision']
+    dispatch({
+        type: MODAL.OPEN_USER_CONTEXT,
+        payload: {
+            ...payload,
+            decision: dfd,
+        },
+    });
+    try {
+        const result = await dfd.promise;
+        return result;
+    } catch (error) {
+        // do nothing, return void
+    }
+};

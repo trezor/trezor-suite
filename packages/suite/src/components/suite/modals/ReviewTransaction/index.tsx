@@ -1,10 +1,12 @@
 import { FiatValue, Translation } from '@suite-components';
-import { useDevice } from '@suite-hooks';
-import { colors, Modal, variables, ConfirmOnDevice, Box } from '@trezor/components';
+import { useDevice, useActions } from '@suite-hooks';
+import { colors, Modal, variables, ConfirmOnDevice, Box, Button } from '@trezor/components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getFee } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import styled from 'styled-components';
+
+import * as sendFormActions from '@wallet-actions/sendFormActions';
 
 import { Props } from './Container';
 
@@ -55,42 +57,41 @@ const Fiat = styled.div`
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
 `;
 
-export default ({
-    modalActions,
-    selectedAccount,
-    token,
-    outputs,
-    transactionInfo,
-    device,
-}: Props) => {
-    if (
-        selectedAccount.status !== 'loaded' ||
-        !device ||
-        !transactionInfo ||
-        transactionInfo.type === 'error'
-    )
-        return null;
+export default ({ selectedAccount, send, ...props }: Props) => {
+    const { device } = useDevice();
+    const { cancelSignTx, pushTransaction } = useActions({
+        cancelSignTx: sendFormActions.cancelSignTx,
+        pushTransaction: sendFormActions.pushTransaction,
+    });
+    const { precomposedTx, signedTx } = send;
+    if (selectedAccount.status !== 'loaded' || !device || !precomposedTx) return null;
+
+    const outputs = precomposedTx.transaction.outputs.filter(o => typeof o.address === 'string');
 
     const { account } = selectedAccount;
     const { networkType, symbol } = account;
     const upperCaseSymbol = account.symbol.toUpperCase();
     // const outputSymbol = token ? token.symbol!.toUpperCase() : symbol.toUpperCase();
-    const { isLocked } = useDevice();
-    const isDeviceLocked = isLocked();
-    const fee = getFee(transactionInfo, networkType, symbol);
+
+    const fee = getFee(precomposedTx, networkType, symbol);
+    // omit other button requests (like passphrase)
+    const expectedRequests = outputs.length + 1; // outputs + final confirmation (total and fee)
+    const buttonRequests = device.buttonRequests.filter(
+        r => r === 'ButtonRequest_ConfirmOutput' || r === 'ButtonRequest_SignTx',
+    );
 
     return (
         <Modal
             size="large"
-            cancelable
             padding={['20px', '0', '20px', '0']}
             header={
                 <ConfirmOnDevice
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                    steps={outputs.length}
+                    steps={expectedRequests}
+                    activeStep={buttonRequests.length}
                     trezorModel={device.features?.major_version === 1 ? 1 : 2}
                     successText={<Translation id="TR_CONFIRMED_TX" />}
-                    onCancel={!isDeviceLocked ? modalActions.onCancel : () => {}}
+                    onCancel={cancelSignTx}
                 />
             }
             bottomBar={
@@ -100,14 +101,12 @@ export default ({
                     </Left>
                     <Right>
                         <Coin>
-                            {/* @ts-ignore */}
-                            {formatNetworkAmount(transactionInfo.totalSent, symbol)}
+                            {formatNetworkAmount(precomposedTx.totalSpent, symbol)}
                             <Symbol>{symbol}</Symbol>
                         </Coin>
                         <Fiat>
                             <FiatValue
-                                // @ts-ignore
-                                amount={formatNetworkAmount(transactionInfo.totalSent, symbol)}
+                                amount={formatNetworkAmount(precomposedTx.totalSpent, symbol)}
                                 symbol={symbol}
                             />
                         </Fiat>
@@ -119,7 +118,12 @@ export default ({
                 {outputs.map((output, index) => (
                     <OutputWrapper key={output.id}>
                         <StyledRow>
-                            <Left>address</Left>
+                            <Left>
+                                {index === buttonRequests.length - 1 && (
+                                    <div>TODO: ACTIVE CHECKMARK</div>
+                                )}
+                                {output.address}
+                            </Left>
                             <Right>
                                 <Coin>
                                     {/* @ts-ignore */}
@@ -139,6 +143,9 @@ export default ({
                 ))}
                 <StyledRow>
                     <Left>
+                        {expectedRequests === buttonRequests.length && (
+                            <div>TODO: ACTIVE CHECKMARK</div>
+                        )}
                         <Translation id="TR_FEE" />
                     </Left>
                     <Right>
@@ -150,6 +157,18 @@ export default ({
                             <FiatValue amount={fee} symbol={symbol} />
                         </Fiat>
                     </Right>
+                </StyledRow>
+                <StyledRow>
+                    <Button
+                        isDisabled={!signedTx}
+                        onClick={async () => {
+                            const result = await pushTransaction();
+                            // @ts-ignore: type modal decision
+                            props.decision.resolve(result);
+                        }}
+                    >
+                        <Translation id="TR_SEND" />
+                    </Button>
                 </StyledRow>
             </Content>
         </Modal>

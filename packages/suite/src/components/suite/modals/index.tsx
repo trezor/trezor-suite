@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import FocusLock from 'react-focus-lock';
 import { UI } from 'trezor-connect';
 
-import * as modalActions from '@suite-actions/modalActions';
+import * as allModalActions from '@suite-actions/modalActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { MODAL } from '@suite-actions/constants';
 import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
@@ -39,7 +39,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    modalActions: bindActionCreators(modalActions, dispatch),
+    modalActions: bindActionCreators(allModalActions, dispatch),
     goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
@@ -56,7 +56,7 @@ const getDeviceContextModal = (props: Props) => {
     switch (modal.windowType) {
         // T1 firmware
         case UI.REQUEST_PIN:
-            return <Pin device={device} onCancel={modalActions.onPinCancel} />;
+            return <Pin device={device} onCancel={allModalActions.onPinCancel} />;
         // T1 firmware
         case UI.INVALID_PIN:
             return <PinInvalid device={device} />;
@@ -80,7 +80,6 @@ const getDeviceContextModal = (props: Props) => {
         // Button requests
         // todo: consider fallback (if windowType.contains('ButtonRequest')). but add also possibility to blacklist some buttonRequests
         case 'ButtonRequest_Warning':
-        case 'ButtonRequest_SignTx':
         case 'ButtonRequest_Success':
         case 'ButtonRequest_RecoveryHomepage':
         case 'ButtonRequest_MnemonicWordCount':
@@ -89,12 +88,14 @@ const getDeviceContextModal = (props: Props) => {
         case 'ButtonRequest_Other':
         case 'ButtonRequest_ResetDevice': // dispatched on BackupDevice call for model T, weird but true
         case 'ButtonRequest_ConfirmWord': // dispatched on BackupDevice call for model One
-        case 'ButtonRequest_ConfirmOutput':
         case 'ButtonRequest_WipeDevice':
         case 'ButtonRequest_UnknownDerivationPath':
         case 'ButtonRequest_FirmwareUpdate':
         case 'ButtonRequest_PinEntry':
             return <ConfirmAction device={device} />;
+        case 'ButtonRequest_ConfirmOutput':
+        case 'ButtonRequest_SignTx':
+            return <ReviewTransaction />;
         default:
             return null;
     }
