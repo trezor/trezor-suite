@@ -67,7 +67,7 @@ interface Props {
     totalAmount: BigNumber;
 }
 
-export default ({ dateKey, symbol, totalAmount }: Props) => {
+const DayHeader = ({ dateKey, symbol, totalAmount }: Props) => {
     const parsedDate = parseKey(dateKey);
     const useFiatValues = !isTestnet(symbol);
     return (
@@ -100,3 +100,5 @@ export default ({ dateKey, symbol, totalAmount }: Props) => {
         </>
     );
 };
+
+export default DayHeader;

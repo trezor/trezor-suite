@@ -20,7 +20,7 @@ const Title = styled.div`
 
 type Props = React.HTMLAttributes<HTMLDivElement>;
 
-export default (props: Props) => {
+const Loading = (props: Props) => {
     return (
         <Wrapper {...props} data-test="@dashboard/loading">
             <Loader size={20} />
@@ -30,3 +30,5 @@ export default (props: Props) => {
         </Wrapper>
     );
 };
+
+export default Loading;

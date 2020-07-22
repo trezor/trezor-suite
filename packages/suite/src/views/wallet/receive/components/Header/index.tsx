@@ -12,7 +12,7 @@ const Content = styled.div`
     margin: 0 0 24px 0;
 `;
 
-export default ({ account }: Props) => {
+const Header = ({ account }: Props) => {
     const title = (
         <Translation id="RECEIVE_TITLE" values={{ symbol: account.symbol.toUpperCase() }} />
     );
@@ -39,3 +39,5 @@ export default ({ account }: Props) => {
     }
     return <H2>{title}</H2>;
 };
+
+export default Header;

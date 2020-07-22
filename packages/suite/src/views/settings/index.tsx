@@ -33,7 +33,7 @@ const VersionButton = styled(Button)`
 
 const VersionLink = styled.a``;
 
-export default ({
+const Settings = ({
     language,
     setLocalCurrency,
     localCurrency,
@@ -180,3 +180,5 @@ export default ({
         </SettingsLayout>
     );
 };
+
+export default Settings;

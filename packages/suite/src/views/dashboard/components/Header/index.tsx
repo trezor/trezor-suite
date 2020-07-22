@@ -21,9 +21,11 @@ interface Props {
     right?: ReactElement;
 }
 
-export default ({ left, right }: Props) => (
+const Header = ({ left, right }: Props) => (
     <Wrapper>
         {left && <Left>{left}</Left>}
         {right && <Right>{right}</Right>}
     </Wrapper>
 );
+
+export default Header;
