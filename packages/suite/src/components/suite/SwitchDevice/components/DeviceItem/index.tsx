@@ -70,6 +70,7 @@ const WalletsTooltips = styled.div`
 const WalletsCount = styled(ColHeader)`
     flex: 1;
     justify-content: flex-start;
+    whitespace: no-wrap;
 `;
 
 const InstancesWrapper = styled.div`

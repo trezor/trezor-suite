@@ -41,7 +41,6 @@ const Settings = ({
     clearStores,
     goto,
 }: Props) => {
-    const { isLocked } = useDevice();
     const analytics = useAnalytics();
 
     return (
@@ -90,7 +89,6 @@ const Settings = ({
                             }}
                             value={buildCurrencyOption(localCurrency)}
                             options={FIAT.currencies.map(c => buildCurrencyOption(c))}
-                            isDisabled={isLocked()}
                             data-test="@settings/fiat-select"
                         />
                     </ActionColumn>
