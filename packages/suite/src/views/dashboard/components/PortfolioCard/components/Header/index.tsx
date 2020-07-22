@@ -45,7 +45,12 @@ export interface Props {
     receiveClickHandler: () => void;
 }
 
-export default ({ portfolioValue, localCurrency, actionsEnabled, receiveClickHandler }: Props) => (
+const PortfolioCard = ({
+    portfolioValue,
+    localCurrency,
+    actionsEnabled,
+    receiveClickHandler,
+}: Props) => (
     <Header>
         <Left>
             <ValueWrapper>
@@ -68,3 +73,5 @@ export default ({ portfolioValue, localCurrency, actionsEnabled, receiveClickHan
         </Right>
     </Header>
 );
+
+export default PortfolioCard;

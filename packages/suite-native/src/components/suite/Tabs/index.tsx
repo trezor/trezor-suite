@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     },
 });
 
-export default (props: BottomTabBarProps) => {
+const Tabs = (props: BottomTabBarProps) => {
     const { state, navigate } = props.navigation;
 
     const onClick = (routeName: string) => {
@@ -35,3 +35,5 @@ export default (props: BottomTabBarProps) => {
 
     return <View style={styles.container}>{buttons}</View>;
 };
+
+export default Tabs;
