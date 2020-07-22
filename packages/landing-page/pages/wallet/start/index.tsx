@@ -49,8 +49,6 @@ const getAppUrl = (appName: App) => {
     switch (appName) {
         case 'win':
             return encodeURI(`/wallet/static/desktop/Trezor Beta Wallet-${version}.exe`);
-        case 'arm':
-            return encodeURI(`/wallet/static/desktop/Trezor Beta Wallet-${version}-armv7l.zip`);
         case 'macos':
             return encodeURI(`/wallet/static/desktop/Trezor Beta Wallet-${version}.zip`);
         case 'linux':
@@ -84,7 +82,6 @@ export default () => {
                             { label: 'Windows', value: 'win' },
                             { label: 'Mac OS', value: 'macos' },
                             { label: 'Linux', value: 'linux' },
-                            { label: 'ARM', value: 'arm' },
                         ]}
                         onChange={(option: { value: App | null; label: string | null }) =>
                             setApp(option.value)
