@@ -1,9 +1,10 @@
-import TrezorConnect, { FeeLevel, RipplePayment } from 'trezor-connect';
+import TrezorConnect, { FeeLevel, RipplePayment, PrecomposedTransaction } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import { toWei, fromWei } from 'web3-utils';
 import { useForm } from 'react-hook-form';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as notificationActions from '@suite-actions/notificationActions';
+import * as modalActions from '@suite-actions/modalActions';
 import { SendContext } from '@wallet-hooks/useSendContext'; // to remove
 import { SEND } from '@wallet-actions/constants';
 import { ZEC_SIGN_ENHANCEMENT, XRP_FLAG } from '@wallet-constants/sendForm';
@@ -43,8 +44,15 @@ export type SendFormActions =
           feeLevelLabel: FeeLevel['label'];
       }
     | {
-          type: typeof SEND.SAVE_PRECOMPOSED_TX;
-          precomposedTx: any;
+          type: typeof SEND.REQUEST_SIGN_TRANSACTION;
+          payload?: Extract<PrecomposedTransaction, { type: 'final' }>;
+      }
+    | {
+          type: typeof SEND.REQUEST_PUSH_TRANSACTION;
+          payload?: {
+              tx: string;
+              coin: Account['symbol'];
+          };
       };
 
 export const saveDraft = (formState: FormState) => async (
@@ -205,10 +213,10 @@ export const composeEthereumTransaction = (
 };
 
 export const composeBitcoinTransaction = async (
-    sendValues: SendContextProps,
     formValues: FormState,
+    account: SendContextProps['account'],
+    feeInfo: SendContextProps['feeInfo'],
 ) => {
-    const { account, feeInfo } = sendValues;
     const { outputs } = formValues;
     if (!account.addresses || !account.utxo) return;
 
@@ -242,7 +250,9 @@ export const composeBitcoinTransaction = async (
                 amount,
             } as const;
         })
-        .filter(output => typeof output.amount === 'string' && output.amount !== '0');
+        .filter(output => !output.amount || output.amount !== '0');
+
+    if (composedOutputs.length < 1) return;
 
     // const account1: PrecomposeParams['account'] = {
     //     path: account.path,
@@ -255,7 +265,10 @@ export const composeBitcoinTransaction = async (
         account: {
             path: account.path,
             addresses: account.addresses,
-            utxo: account.utxo,
+            // it is technically possible to have utxo with amount '0' see: https://tbtc1.trezor.io/tx/352873fe6cd5a83ca4b02737848d7d839aab864b8223c5ba7150ae35c22f4e38
+            // however they should be excluded to avoid increase fee
+            // TODO: this should be fixed in TrezorConnect + hd-wallet.composeTx? (connect throws: 'Segwit output without amount' error)
+            utxo: account.utxo.filter(input => input.amount !== '0'),
         },
         feeLevels: predefinedLevels,
         outputs: composedOutputs,
@@ -325,16 +338,18 @@ export const composeBitcoinTransaction = async (
 };
 
 export const composeTransactionNew = (
-    sendValues: SendContextProps,
     formValues: FormState,
-) => async () => {
-    const { account } = sendValues;
+    feeInfo: SendContextProps['feeInfo'],
+) => async (_dispatch: Dispatch, getState: GetState) => {
+    const { selectedAccount } = getState().wallet;
+    if (selectedAccount.status !== 'loaded') return;
+
+    const { account } = selectedAccount;
     if (account.networkType === 'bitcoin') {
-        return composeBitcoinTransaction(sendValues, formValues);
+        return composeBitcoinTransaction(formValues, account, feeInfo);
     }
     // TODO: translate formValues/sendValues to trezor-connect params
     // TODO: return precomposed transactions for multiple levels (will be stored in SendContext)
-    console.warn('------->>>>> COMPOSING ACTION NEW!!!!', sendValues, formValues);
 };
 
 export const onQrScan = (
@@ -631,10 +646,19 @@ export const updateFeeLevelWithData = (
     }
 };
 
-export const sendBitcoinTransaction = (transactionInfo: SendContext['transactionInfo']) => async (
+const requestPushTransaction = (payload: any) => (dispatch: Dispatch) => {
+    dispatch({
+        type: SEND.REQUEST_PUSH_TRANSACTION,
+        payload,
+    });
+
+    return dispatch(modalActions.openDeferredModal({ type: 'review-transaction' }));
+};
+
+export const sendBitcoinTransaction = (transactionInfo: PrecomposedTransaction) => async (
     dispatch: Dispatch,
     getState: GetState,
-): Promise<'error' | 'success'> => {
+) => {
     const { selectedAccount } = getState().wallet;
     const { device } = getState().suite;
     if (
@@ -643,7 +667,13 @@ export const sendBitcoinTransaction = (transactionInfo: SendContext['transaction
         !transactionInfo ||
         transactionInfo.type !== 'final'
     )
-        return 'error';
+        return;
+
+    dispatch({
+        type: SEND.REQUEST_SIGN_TRANSACTION,
+        payload: transactionInfo,
+    });
+
     const { account } = selectedAccount;
     const { transaction } = transactionInfo;
 
@@ -672,7 +702,7 @@ export const sendBitcoinTransaction = (transactionInfo: SendContext['transaction
         },
         useEmptyPassphrase: device.useEmptyPassphrase,
         outputs: transaction.outputs,
-        inputs,
+        inputs: inputs.filter(input => input.amount !== '0'),
         coin: account.symbol,
         ...signEnhancement,
     };
@@ -680,24 +710,61 @@ export const sendBitcoinTransaction = (transactionInfo: SendContext['transaction
     const signedTx = await TrezorConnect.signTransaction(signPayload);
 
     if (!signedTx.success) {
+        // catch manual error from cancelSigning
+        if (signedTx.payload.error === 'tx-cancelled') return;
         dispatch(
             notificationActions.addToast({
                 type: 'sign-tx-error',
                 error: signedTx.payload.error,
             }),
         );
-
-        return 'error';
+        return;
     }
 
-    // TODO: add possibility to show serialized tx without pushing (locktime)
-    const sentTx = await TrezorConnect.pushTransaction({
-        tx: signedTx.payload.serializedTx,
-        coin: account.symbol,
-    });
+    return dispatch(
+        requestPushTransaction({
+            tx: signedTx.payload.serializedTx,
+            coin: account.symbol,
+        }),
+    );
+};
 
-    const spentWithoutFee = new BigNumber(transactionInfo.totalSpent)
-        .minus(transactionInfo.fee)
+export const signTransaction = (payload: any) => (dispatch: Dispatch, getState: GetState) => {
+    const { selectedAccount } = getState().wallet;
+    if (selectedAccount.status !== 'loaded') return;
+    if (selectedAccount.account.networkType === 'bitcoin') {
+        return dispatch(sendBitcoinTransaction(payload));
+    }
+};
+
+export const cancelSignTx = () => (dispatch: Dispatch, getState: GetState) => {
+    const { signedTx } = getState().wallet.send;
+    dispatch({ type: SEND.REQUEST_SIGN_TRANSACTION });
+    dispatch({ type: SEND.REQUEST_PUSH_TRANSACTION });
+    // if transaction is not signed yet interrupt signing in TrezorConnect
+    if (!signedTx) {
+        // TODO: handle case for trezord lower than 2.0.29 (cancel will not work)
+        TrezorConnect.cancel('tx-cancelled');
+        return;
+    }
+    // otherwise just close modal
+    dispatch(modalActions.onCancel());
+};
+
+export const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => {
+    const { signedTx, precomposedTx } = getState().wallet.send;
+    const { account } = getState().wallet.selectedAccount;
+    const { device } = getState().suite;
+    if (!signedTx || !precomposedTx || !account) return false;
+
+    // const sentTx = await TrezorConnect.pushTransaction(signedTx);
+    const sentTx = { success: true, payload: { txid: 'ABC ' } };
+
+    // close modal regardless result
+    dispatch(cancelSignTx());
+
+    const spentWithoutFee = new BigNumber(precomposedTx.totalSpent)
+        .minus(precomposedTx.fee)
         .toString();
 
     if (sentTx.success) {
@@ -717,11 +784,10 @@ export const sendBitcoinTransaction = (transactionInfo: SendContext['transaction
         dispatch(
             notificationActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),
         );
-
-        return 'error';
     }
 
-    return 'success';
+    // resolve sign process
+    return sentTx.success;
 };
 
 export const sendEthereumTransaction = (

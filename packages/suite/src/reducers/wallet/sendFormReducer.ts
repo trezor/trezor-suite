@@ -2,27 +2,29 @@ import produce from 'immer';
 import { SEND } from '@wallet-actions/constants';
 import { Action } from '@suite-types';
 import { FormState } from '@wallet-types/sendForm';
-import { FeeLevel } from 'trezor-connect';
+import { FeeLevel, PrecomposedTransaction } from 'trezor-connect';
 
-interface State {
+interface SendState {
     drafts: {
         [key: string]: {
             formState: FormState;
         };
     };
-    precomposedTx: any; // TODO create type
+    precomposedTx?: Extract<PrecomposedTransaction, { type: 'final' }>;
+    signedTx?: { tx: string; coin: string }; // payload for TrezorConnect.pushTransaction
     lastUsedFeeLevel: {
         [key: string]: FeeLevel['label'];
     };
 }
 
-export const initialState: State = {
+export const initialState: SendState = {
     drafts: {},
-    precomposedTx: null,
+    precomposedTx: undefined,
+    signedTx: undefined,
     lastUsedFeeLevel: {},
 };
 
-export default (state: State = initialState, action: Action) => {
+export default (state: SendState = initialState, action: Action) => {
     return produce(state, draft => {
         switch (action.type) {
             case SEND.STORE_DRAFT:
@@ -36,8 +38,19 @@ export default (state: State = initialState, action: Action) => {
             case SEND.SET_LAST_USED_FEE_LEVEL:
                 draft.lastUsedFeeLevel[action.symbol] = action.feeLevelLabel;
                 break;
-            case SEND.SAVE_PRECOMPOSED_TX:
-                draft.precomposedTx = action.precomposedTx;
+            case SEND.REQUEST_SIGN_TRANSACTION:
+                if (action.payload) {
+                    draft.precomposedTx = action.payload;
+                } else {
+                    delete draft.precomposedTx;
+                }
+                break;
+            case SEND.REQUEST_PUSH_TRANSACTION:
+                if (action.payload) {
+                    draft.signedTx = action.payload;
+                } else {
+                    delete draft.signedTx;
+                }
                 break;
             // no default
         }

@@ -6,6 +6,7 @@ import { TrezorDevice, AppState } from '@suite-types';
 export type CurrencyOption = { value: string; label: string };
 
 export type Output = {
+    outputId: number;
     address: string;
     amount: string;
     fiat: string;
@@ -33,9 +34,13 @@ export type EthTransactionData = {
 };
 
 export type FormState = {
+    txType: 'regular' | 'opreturn';
     outputs: Output[];
     // output arrays, each element is corresponding with single Output item
-    setMaxOutputId: number;
+    setMaxOutputId?: number;
+    selectedFee?: FeeLevel['label'];
+    feePerUnit: string; // bitcoin/ethereum/ripple field
+    feeLimit: string; // ethereum only
     // advanced form inputs
     bitcoinLockTime: string;
     ethereumGasPrice: string;
@@ -72,9 +77,10 @@ export type SendContextState = UseFormMethods<FormState> &
     SendContextProps & {
         // additional fields
         outputs: Partial<Output & { id: string }>[]; // useFieldArray fields
-        addOutput: (value: Partial<Output> | Partial<Output>[], shouldFocus?: boolean) => void; // useFieldArray append
-        removeOutput: (index?: number | number[] | undefined) => void; // useFieldArray remove
+        addOutput: () => void; // useFieldArray append
+        removeOutput: (index: number) => void; // useFieldArray remove
         updateContext: (value: Partial<SendContextProps>) => void;
         resetContext: () => void;
-        composeTransaction: (outputId?: number, validateField?: string | string[]) => void;
+        composeTransaction: (field: string, validateField?: string | string[]) => void;
+        changeFeeLevel: (currentLevel: FeeLevel, newLevel: FeeLevel['label']) => void;
     };

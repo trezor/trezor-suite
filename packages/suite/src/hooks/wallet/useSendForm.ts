@@ -6,6 +6,8 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { useActions } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { FormState, SendContextProps, SendContextState, Output } from '@wallet-types/sendForm';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { FeeLevel } from 'trezor-connect';
 
 export const SendContext = createContext<SendContextState | null>(null);
 SendContext.displayName = 'SendContext';
@@ -28,22 +30,31 @@ SendContext.displayName = 'SendContext';
 
 const DEFAULT_VALUES = {
     txType: 'regular',
-    setMaxOutputId: -1, // it has to be a number ??? TODO: investigate, otherwise watch() will not catch change [1 > null | undefined]
+    setMaxOutputId: undefined,
+    selectedFee: undefined,
+    feePerUnit: '',
+    feeLimit: '',
     bitcoinLockTime: '',
     ethereumGasPrice: '',
     ethereumGasLimit: '',
     ethereumData: '',
     rippleDestinationTag: '',
-
-    // txType: 'regular',
     outputs: [
         {
+            outputId: 0,
             address: '',
             amount: '',
             fiat: '',
             currency: { value: 'usd', label: 'USD' },
         },
     ],
+} as const;
+
+const getDefaultValues = (currency: Output['currency']) => {
+    return {
+        ...DEFAULT_VALUES,
+        outputs: [{ ...DEFAULT_VALUES.outputs[0], currency }],
+    };
 };
 
 // composeTransaction should be debounced from both sides
@@ -74,13 +85,13 @@ const useComposeDebounced = () => {
 
             // call compose function
             const result = await fn();
+            // function returns nothing (form state got errors or trezor-connect invalid params in sendFormActions)
             if (!result) return;
 
             pending.resolve(true); // try to unlock, it could be already resolved tho (see: dfd.resolve above)
             const shouldBeProcessed = await pending.promise; // catch potential rejection
             dfd.current = null; // reset dfd
             if (!shouldBeProcessed) return;
-
             return result;
         },
         [timeout, dfd],
@@ -95,9 +106,14 @@ const useComposeDebounced = () => {
 // returned ContextState is a object provided as SendContext values with custom callbacks for updating/resetting state
 export const useSendForm = (props: SendContextProps): SendContextState => {
     const [state, setState] = useState(props);
+    const draft = useRef<FormState | undefined>(undefined);
+    const [composeField, setComposeField] = useState<string | undefined>(undefined);
+    const [composedLevels, setComposedLevels] = useState<SendContextState['composedLevels']>(
+        undefined,
+    );
     const { composeDebounced } = useComposeDebounced();
 
-    const { localCurrencyOption } = props;
+    const { localCurrencyOption } = state;
 
     const { getDraft, saveDraft, removeDraft, composeTransaction } = useActions({
         getDraft: sendFormActions.getDraft,
@@ -106,26 +122,16 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
         composeTransaction: sendFormActions.composeTransactionNew,
     });
 
-    // register `react-hook-form`
-    const useFormMethods = useForm<FormState>({
-        mode: 'onChange',
-        defaultValues: {
-            ...DEFAULT_VALUES,
-            outputs: [
-                {
-                    ...DEFAULT_VALUES.outputs[0],
-                    currency: localCurrencyOption,
-                },
-            ],
-        },
-    });
+    // register `react-hook-form`, default values are set later in "loadDraft" useEffect block
+    const useFormMethods = useForm<FormState>({ mode: 'onChange' });
 
-    const { control, reset, register, getValues, errors, setError, trigger } = useFormMethods;
+    const { control, reset, register, getValues, errors, setValue, setError } = useFormMethods;
 
-    // register custom form values (without HTMLElement)
+    // register custom form fields (without HTMLElement)
     useEffect(() => {
         register({ name: 'txType', type: 'custom' });
         register({ name: 'setMaxOutputId', type: 'custom' });
+        register({ name: 'selectedFee', type: 'custom' });
     }, [register]);
 
     // register array fields (outputs array in react-hook-form)
@@ -137,26 +143,23 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
     // load draft from reducer
     // TODO: load "remembered" fee level
     useEffect(() => {
-        const draft = getDraft();
-        if (draft) {
-            // merge current values with storage values
-            reset({
-                ...getValues(),
-                ...draft.formState,
-            });
+        const stored = getDraft();
+        const formState = stored ? stored.formState : {};
+        const values = {
+            ...getDefaultValues(localCurrencyOption),
+            ...formState,
+        };
+        reset(values);
+
+        if (stored) {
+            draft.current = stored.formState;
         }
-        console.warn('LOAD DRAFT!', draft);
-    }, [getDraft, getValues, reset]);
+    }, [localCurrencyOption, getDraft, getValues, reset]);
 
     // TODO: useEffect on props (check: account change: key||balance, fee change, fiat change)
     // useEffect(() => {
     //     console.warn('SET BALANCE', account.balance);
     // }, [account.balance]);
-
-    // TODO: exclude testnet from this hook
-    // useEffect(() => {
-    //     console.warn('SET FIAT', fiatRates.current);
-    // }, [fiatRates.current]);
 
     // // save initial selected fee to reducer
     // useEffect(() => {
@@ -182,72 +185,202 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
     );
 
     const resetContext = useCallback(() => {
-        setState(props);
+        setComposedLevels(undefined);
         removeDraft();
-        reset(DEFAULT_VALUES);
-    }, [props, reset, removeDraft]);
+        setState(props); // resetting state will trigger "load draft" hook which will reset FormState
+    }, [props, removeDraft]);
+
+    const { feeInfo } = state;
+    const composeDraft = useCallback(
+        async (values: FormState) => {
+            updateContext({ composedLevels: undefined, isLoading: true });
+            setComposedLevels(undefined);
+            const result = await composeTransaction(values, feeInfo);
+            updateContext({ composedLevels: result, isLoading: false });
+            setComposedLevels(result);
+        },
+        [feeInfo, composeTransaction, updateContext],
+    );
 
     // called from Address/Amount/Fiat onChange events
-    const compose = useCallback(
-        async (outputId?: number, validateFields?: string | string[]) => {
+    const composeOnChange = useCallback(
+        async (field: string, validateFields?: string | string[]) => {
             const composeInner = async () => {
                 // do not compose if form has errors
+                console.warn('GOT ERROROS?', errors);
+                // Object.keys(errors).forEach(key => {
+                //     if (key === 'outputs') {
+
+                //     }
+                // })
                 if (Object.keys(errors).length > 0) return;
                 // collect form values
                 const values = getValues();
                 // save draft
                 saveDraft(values);
-                // outputs should have at least amount set
-                const validOutputs = values.outputs
-                    ? values.outputs.filter(o => o.amount !== '')
-                    : [];
+                // outputs should have at least amount OR set-max set
+                // const validOutputs = values.outputs
+                //     ? values.outputs.filter(o => o.amount !== '')
+                //     : [];
                 // do not compose if there are no valid output
-                if (validOutputs.length < 1) return;
+                // if (validOutputs.length < 1) return;
 
                 if (validateFields) {
                     // since values/errors of react-hook-form are propagated after useEffect (re-render)
                     // we need to double check related fields validation
                     // example: change Fiat value calls setValue on related Amount, possible `errors` will be set after re-render (they are not set at this point yet)
-                    const result = await trigger(validateFields);
-                    if (!result) return;
+                    // const result = await trigger(validateFields);
+                    // if (!result) return;
                 }
 
-                return composeTransaction(state, values);
+                return composeTransaction(values, state.feeInfo);
             };
-
             // reset precomposed transactions
-            if (state.composedLevels) updateContext({ composedLevels: undefined });
+            setComposeField(field);
+            setComposedLevels(undefined);
+            if (state.composedLevels) updateContext({ composedLevels: undefined, isLoading: true });
             const composedLevels = await composeDebounced(composeInner);
-            // set new composed transactions
-            updateContext({ composedLevels });
 
-            setError(`outputs[${outputId}].amount`, {
-                type: 'manual',
-                message: 'TR_AMOUNT_IS_NOT_ENOUGH',
-            });
+            if (!composedLevels) {
+                // setError(field, {
+                //     type: 'manual',
+                //     message: 'TR_AMOUNT_IS_NOT_ENOUGH',
+                // });
+                return;
+            }
+
+            // set new composed transactions
+            setComposedLevels(composedLevels);
+            updateContext({ composedLevels, isLoading: false });
+
+            const values = getValues();
+            const selectedLevel = values.selectedFee || 'normal';
+            const setMaxOutputId = getValues('setMaxOutputId');
+            // if (typeof setMaxOutputId === 'number') {
+            //     // process set-max result
+
+            //     // collect form values
+            //     const values = getValues();
+            //     // save draft
+            //     saveDraft(values);
+            // }
         },
-        [
-            state,
-            updateContext,
-            composeDebounced,
-            setError,
-            errors,
-            getValues,
-            saveDraft,
-            composeTransaction,
-            trigger,
-        ],
+        [state, updateContext, composeDebounced, errors, getValues, saveDraft, composeTransaction],
+    );
+
+    // handle draft change
+    useEffect(() => {
+        if (!draft.current) return;
+        composeDraft(draft.current);
+        draft.current = undefined;
+    }, [draft, composeDraft]);
+
+    // handle composedLevels change, setValues or errors for composeField
+    useEffect(() => {
+        if (!composedLevels) return;
+        const values = getValues();
+        const { selectedFee, setMaxOutputId } = values;
+        let composed = composedLevels[selectedFee || 'normal'];
+        if (!selectedFee && composed.type === 'error') {
+            // find nearest possible tx
+            const nearest = Object.keys(composedLevels).find(
+                key => composedLevels[key].type !== 'error',
+            );
+            if (nearest) {
+                composed = composedLevels[nearest];
+                setValue('selectedFee', nearest);
+                if (nearest === 'custom') {
+                    // @ts-ignore: type = error already filtered above
+                    setValue('feePerUnit', composed.feePerByte);
+                }
+            } else {
+                composed = { type: 'error', error: 'FOO' };
+            }
+        }
+
+        if (typeof setMaxOutputId === 'number' && composeField) {
+            if (!composed || composed.type === 'error') {
+                setError(composeField, {
+                    type: 'compose',
+                    message: 'TR_AMOUNT_IS_NOT_ENOUGH',
+                });
+            } else {
+                // TODO: recalc fiat
+                setValue(
+                    `outputs[0].amount`,
+                    formatNetworkAmount(composed.max, state.network.symbol),
+                    {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                    },
+                );
+            }
+        }
+
+        console.warn('---post composeTransaction', composeField, composedLevels, values, composed);
+
+        // if ((!selectedFee || selectedFee === 'custom') && composedLevels.custom) {
+        //     if (composedLevels.custom.type !== 'error') {
+        //         setValue('selectedFee', 'custom');
+        //         setValue('feePerUnit', composedLevels.custom.feePerByte);
+        //         // setValue('feeLimit', selectedLevel.feeLimit);
+        //     }
+        // }
+    }, [composeField, composedLevels, getValues, setValue, setError]);
+
+    const changeFeeLevel = useCallback(
+        (currentLevel: FeeLevel, newLevel: FeeLevel['label']) => {
+            const values = getValues();
+            // catch first change to custom
+            if (newLevel === 'custom' && !(values.feePerUnit || values.feePerUnit === '')) {
+                setValue('feePerUnit', currentLevel.feePerUnit);
+                // setValue('feeLimit', currentLevel.feeLimit);
+                setValue('feeLimit', '1');
+            }
+            setValue('selectedFee', newLevel);
+            control.reRender();
+        },
+        [getValues, setValue, control],
+    );
+
+    const addOutput = useCallback(() => {
+        outputsFieldArray.append({
+            ...DEFAULT_VALUES.outputs[0],
+            currency: localCurrencyOption,
+        });
+    }, [localCurrencyOption, outputsFieldArray]);
+
+    const removeOutput = useCallback(
+        async (index: number) => {
+            const values = getValues();
+            const { setMaxOutputId } = values;
+            if (setMaxOutputId === index) {
+                // reset setMaxOutputId
+                values.setMaxOutputId = undefined;
+            }
+            if (typeof setMaxOutputId === 'number' && setMaxOutputId > index) {
+                // reduce setMaxOutputId
+                values.setMaxOutputId = setMaxOutputId - 1;
+            }
+            // remove output at index
+            values.outputs.splice(index, 1);
+            // reset form state
+            reset(values);
+        },
+        [getValues, reset],
     );
 
     return {
         ...state,
         ...useFormMethods,
         outputs: outputsFieldArray.fields,
-        addOutput: outputsFieldArray.append,
-        removeOutput: outputsFieldArray.remove,
+        composedLevels,
+        addOutput,
+        removeOutput,
         updateContext,
         resetContext,
-        composeTransaction: compose,
+        composeTransaction: composeOnChange,
+        changeFeeLevel,
     };
 };
 
