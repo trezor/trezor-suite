@@ -137,7 +137,6 @@ export default React.memo((props: Props) => {
     const operation =
         (type === 'sent' || type === 'self' ? '-' : null) || (type === 'recv' ? '+' : null);
     let key = 0;
-    // const { openModal } = useActions({ openModal: modalActions.openModal });
     const { addMetadata, openModal } = useActions({
         addMetadata: metadataActions.addMetadata,
         openModal: modalActions.openModal,
@@ -194,6 +193,7 @@ export default React.memo((props: Props) => {
                     <StyledHiddenPlaceholder>
                         <AddrInner>
                             {addr}
+
                             <Button
                                 variant="tertiary"
                                 icon="LABEL"

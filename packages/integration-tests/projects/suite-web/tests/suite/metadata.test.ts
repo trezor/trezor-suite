@@ -64,14 +64,38 @@ describe('Metadata', () => {
         cy.task('startEmu');
         cy.passThroughInitialRun();
 
-        cy.task('pressYes');
         
+        // todo: wait for discovery to finish and remove this
+        cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 });
+        cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 }).should('not.be.visible');
+
+
+        cy.getTestElement('@account-menu/btc/normal/0/add-label-button').click();
+        cy.task('pressYes');
 
         cy.getTestElement('@modal/metadata-provider/google-button').click();
         cy.getTestElement('@modal/metadata-provider').should('not.exist');
+        // there is already some value pre filled in input
+        cy.getTestElement('@modal/add-metadata/input').should('have.value', 'label');
+        cy.getTestElement('@modal/add-metadata/input').type('{backspace}{backspace}{backspace}{backspace}{backspace}My cool label for account');
+        cy.getTestElement('@modal/add-metadata/submit-button').click();
 
-        cy.getTestElement('@account-menu/btc/normal/0/label', { timeout: 30000 }).should('contain', 'label');
-        cy.getTestElement('@account-menu/btc/normal/0/add-label-button').click();
+        cy.getTestElement('@suite/menu/settings-index').click();
+        cy.getTestElement('@settings/metadata-switch').click({ force: true });
+        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
+
+        cy.getTestElement('@suite/menu/settings-index').click();
+        cy.getTestElement('@settings/metadata-switch').click({ force: true });
+        cy.getTestElement('@modal/metadata-provider/google-button').click();
+        cy.getTestElement('@suite/menu/wallet-index').click();
+        // todo: mocks do not allow editing, it should be the new one but is still the original mock;
+        cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'label');
+
+
+
+
+
 
     });
 });

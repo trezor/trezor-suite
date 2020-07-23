@@ -21,7 +21,6 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
         {
             showAddress: receiveActions.showAddress,
             addToast: notificationActions.addToast,
-            // openModal: modalActions.openModal,
             addMetadata: metadataActions.addMetadata,
         },
         dispatch,

@@ -50,10 +50,22 @@ const MetadataAdd = (props: Props) => {
     }
 
     return (
-        <Modal cancelable onCancel={onCancel} heading={header} description={payload.defaultValue}>
-            <Input innerRef={ref} defaultValue={payload.value || ''} />
+        <Modal
+            cancelable
+            onCancel={onCancel}
+            heading={header}
+            description={payload.defaultValue}
+            data-test="@modal/add-metadata"
+        >
+            <Input
+                innerRef={ref}
+                defaultValue={payload.value || ''}
+                data-test="@modal/add-metadata/input"
+            />
             <Buttons>
-                <Button onClick={add}>Save</Button>
+                <Button onClick={add} data-test="@modal/add-metadata/submit-button">
+                    Save
+                </Button>
             </Buttons>
         </Modal>
     );

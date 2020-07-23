@@ -87,7 +87,7 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
     const dataTestKey = `@account-menu/${account.symbol}/${account.accountType}/${account.index}`;
 
     const accountLabel = account.metadata.accountLabel ? (
-        <span data-test={`${dataTestKey}/label`}>{account.metadata.accountLabel}</span>
+        <span>{account.metadata.accountLabel}</span>
     ) : (
         <>
             <Translation {...getTitleForNetwork(account.symbol)} />
@@ -112,7 +112,7 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
                 </Left>
                 <Right>
                     <Row>
-                        <AccountName>{accountLabel}</AccountName>
+                        <AccountName data-test={`${dataTestKey}/label`}>{accountLabel}</AccountName>
 
                         <Button
                             variant="tertiary"

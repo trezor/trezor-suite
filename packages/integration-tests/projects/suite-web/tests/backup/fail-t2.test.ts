@@ -27,10 +27,6 @@ describe('Backup', () => {
         cy.log('Now go to dashboard and see if security card and notification reflects backup failed state correctly');
         cy.getTestElement('@backup/close-button').click();
         
-        // discovery triggered -> enable labeling triggered
-        cy.getTestElement('@suite/modal/confirm-action-on-device');
-        cy.task('pressNo');
-        
         cy.getTestElement('@notification/failed-backup/learn-more-link').should('be.visible');
 
         cy.getTestElement('@dashboard/security-card/backup/button', { timeout: 20000 }).click();

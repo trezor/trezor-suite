@@ -16,12 +16,11 @@ export const getOauthToken = (url: string) => {
     const props = WINDOW_PROPS;
 
     const onMessage = (e: MessageEvent) => {
-        // console.warn('OnMessage', e, e.data);
-
         // filter non oauth messages
         if (!['https://track-suite.herokuapp.com', window.location.origin].includes(e.origin)) {
             return;
         }
+        console.warn('OnMessage', e, e.data);
 
         if (typeof e.data !== 'string') return;
 

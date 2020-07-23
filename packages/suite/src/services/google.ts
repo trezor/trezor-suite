@@ -149,12 +149,10 @@ class Client {
 
         const onMessage = (e: MessageEvent) => {
             // filter non oauth messages
-            // filter non oauth messages
-            if (
-                !['https://track-suite.herokuapp.com', 'http://localhost:3000'].includes(e.origin)
-            ) {
+            if (!['https://track-suite.herokuapp.com', window.location.origin].includes(e.origin)) {
                 return;
             }
+            console.warn('OnMessage', e, e.data);
 
             if (typeof e.data !== 'string') return;
 

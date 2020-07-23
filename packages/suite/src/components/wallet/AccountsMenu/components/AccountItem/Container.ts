@@ -5,7 +5,6 @@ import { Account } from '@wallet-types';
 import * as routerActions from '@suite-actions/routerActions';
 import * as modalActions from '@suite-actions/modalActions';
 import * as metadataActions from '@suite-actions/metadataActions';
-
 import AccountItem from './index';
 
 const mapStateToProps = (state: AppState) => ({
