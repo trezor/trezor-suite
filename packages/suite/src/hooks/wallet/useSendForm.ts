@@ -8,6 +8,7 @@ import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { FormState, SendContextProps, SendContextState, Output } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { FeeLevel } from 'trezor-connect';
+import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 
 export const SendContext = createContext<SendContextState | null>(null);
 SendContext.displayName = 'SendContext';
@@ -253,20 +254,29 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
             // set new composed transactions
             setComposedLevels(composedLevels);
             updateContext({ composedLevels, isLoading: false });
-
-            const values = getValues();
-            const selectedLevel = values.selectedFee || 'normal';
-            const setMaxOutputId = getValues('setMaxOutputId');
-            // if (typeof setMaxOutputId === 'number') {
-            //     // process set-max result
-
-            //     // collect form values
-            //     const values = getValues();
-            //     // save draft
-            //     saveDraft(values);
-            // }
         },
         [state, updateContext, composeDebounced, errors, getValues, saveDraft, composeTransaction],
+    );
+
+    const { fiatRates } = state;
+    const calculateFiat = useCallback(
+        (outputIndex: number, amount?: string) => {
+            const values = getValues();
+            if (!amount) {
+                // reset fiat value if Fiat field exists (Amount has error)
+                const { fiat } = values.outputs[outputIndex];
+                if (!fiat || fiat.length === 0) return;
+                setValue(`outputs[${outputIndex}].fiat`, '', { shouldValidate: true });
+                return;
+            }
+            if (!fiatRates || !fiatRates.current) return;
+            const selectedCurrency = values.outputs[outputIndex].currency;
+            const fiat = toFiatCurrency(amount, selectedCurrency.value, fiatRates.current.rates);
+            if (fiat) {
+                setValue(`outputs[${outputIndex}].fiat`, fiat, { shouldValidate: true });
+            }
+        },
+        [getValues, setValue, fiatRates],
     );
 
     // handle draft change
@@ -306,15 +316,12 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
                     message: 'TR_AMOUNT_IS_NOT_ENOUGH',
                 });
             } else {
-                // TODO: recalc fiat
-                setValue(
-                    `outputs[0].amount`,
-                    formatNetworkAmount(composed.max, state.network.symbol),
-                    {
-                        shouldValidate: true,
-                        shouldDirty: true,
-                    },
-                );
+                const amount = formatNetworkAmount(composed.max, state.network.symbol);
+                setValue(`outputs[0].amount`, amount, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                });
+                calculateFiat(0, amount);
             }
         }
 
@@ -396,6 +403,7 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
         resetContext,
         composeTransaction: composeOnChange,
         signTransaction: sign,
+        calculateFiat,
         changeFeeLevel,
     };
 };

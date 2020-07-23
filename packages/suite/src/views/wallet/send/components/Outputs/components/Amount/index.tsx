@@ -5,8 +5,6 @@ import styled from 'styled-components';
 import { Input, Icon, Button, variables, Tooltip, colors } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
-// import { updateFiatInput, updateMax } from '@wallet-actions/sendFormActions';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { useSendFormContext } from '@wallet-hooks';
 
@@ -78,9 +76,8 @@ export default ({ outputId }: { outputId: number }) => {
         getValues,
         errors,
         setValue,
+        calculateFiat,
         composeTransaction,
-        fiatRates,
-        formState,
     } = useSendFormContext();
 
     const values = getValues();
@@ -169,28 +166,11 @@ export default ({ outputId }: { outputId: number }) => {
                         }
 
                         if (error) {
-                            if (
-                                values.outputs[outputId].fiat &&
-                                values.outputs[outputId].fiat.length > 0
-                            ) {
-                                setValue(`outputs[${outputId}].fiat`, '', { shouldValidate: true });
-                            }
+                            calculateFiat(outputId); // reset
                             return;
                         }
 
-                        const selectedCurrency = values.outputs[outputId].currency;
-                        const fiat =
-                            fiatRates && fiatRates.current
-                                ? toFiatCurrency(
-                                      event.target.value,
-                                      selectedCurrency.value,
-                                      fiatRates.current.rates,
-                                  )
-                                : null;
-                        if (fiat) {
-                            setValue(`outputs[${outputId}].fiat`, fiat, { shouldValidate: true });
-                        }
-
+                        calculateFiat(outputId, event.target.value);
                         composeTransaction(inputName);
                     }}
                     name={inputName}

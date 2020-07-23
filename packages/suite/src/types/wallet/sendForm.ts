@@ -83,5 +83,6 @@ export type SendContextState = UseFormMethods<FormState> &
         resetContext: () => void;
         composeTransaction: (field: string, validateField?: string | string[]) => void;
         signTransaction: () => void;
+        calculateFiat: (outputIndex: number, amount?: string) => void;
         changeFeeLevel: (currentLevel: FeeLevel, newLevel: FeeLevel['label']) => void;
     };
