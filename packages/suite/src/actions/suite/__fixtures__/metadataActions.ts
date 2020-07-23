@@ -364,9 +364,10 @@ const connectProvider = [
 
 const addMetadata = [
     {
-        description: 'when disabled globally, should return immediately',
+        description: 'when disabled globally, should enable metadata',
         initialState: {
             metadata: { enabled: false },
+            device: { state: 'foo', metadata: { status: 'disabled' } },
         },
         params: {
             accountKey:
@@ -375,7 +376,11 @@ const addMetadata = [
             type: 'accountLabel',
             value: undefined,
         },
-        result: [],
+        result: [
+            {
+                type: METADATA.ENABLE,
+            },
+        ],
     },
     {
         description: 'device without state',
@@ -551,8 +556,83 @@ const addMetadata = [
             },
         ],
     },
+    {
+        description: 'pre fill value if it already exists in store (syncMetadataPayload action)',
+        initialState: {
+            metadata: {
+                enabled: true,
+            },
+            device: {
+                state: 'mkUHEWSY9zaq4A4RjicJSPSPPxZ1dr2CfF@B45F1224E1EFDEE921BE328F:undefined',
+                metadata: {
+                    status: 'enabled',
+                    aesKey: 'f2734778f6b87864a02fc1e0ad2c69fcfc1160d86fff43b5acbef6f90772cba1',
+                },
+            },
+            accounts: [
+                {
+                    key:
+                        'ypub6XKbB5DSkq8Royg8isNtGktj6bmEfGJXDs83Ad5CZ5tpDV8QofwSWQFTWP2Pv24vNdrPhquehL7vRMvSTj2GpKv6UaTQCBKZALm6RJAmxG6-btc-mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@3E6912223479F10023DDEBE8:1',
+                    deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@3E6912223479F10023DDEBE8:1',
+                    metadata: {
+                        key:
+                            'xpub6CVKsQYXc9awxgV1tWbG4foDvdcnieK2JkbpPEBKB5WwAPKBZ1mstLbKVB4ov7QzxzjaxNK6EfmNY5Jsk2cG26EVcEkycGW4tchT2dyUhrx',
+                        outputLabels: {},
+                        accountLabel: 'already existing label',
+                    },
+                },
+            ],
+        },
+        params: {
+            accountKey:
+                'ypub6XKbB5DSkq8Royg8isNtGktj6bmEfGJXDs83Ad5CZ5tpDV8QofwSWQFTWP2Pv24vNdrPhquehL7vRMvSTj2GpKv6UaTQCBKZALm6RJAmxG6-btc-mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@3E6912223479F10023DDEBE8:1',
+            defaultValue: "m/49'/0'/0'",
+            type: 'accountLabel',
+            value: 'new label',
+        },
+        result: [
+            {
+                payload: {
+                    payload: {
+                        accountKey:
+                            'ypub6XKbB5DSkq8Royg8isNtGktj6bmEfGJXDs83Ad5CZ5tpDV8QofwSWQFTWP2Pv24vNdrPhquehL7vRMvSTj2GpKv6UaTQCBKZALm6RJAmxG6-btc-mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@3E6912223479F10023DDEBE8:1',
+                        defaultValue: "m/49'/0'/0'",
+                        type: 'accountLabel',
+                        value: 'already existing label',
+                    },
+                    decision: expect.any(Object),
+                    type: 'metadata-add',
+                },
+                type: '@modal/open-user-context',
+            },
+        ],
+    },
 ];
 
+// nitialState: {
+//     metadata: { enabled: true },
+//     device: {
+//         state: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@3E6912223479F10023DDEBE8:1',
+//         metadata: { status: 'cancelled' },
+//     },
+//     accounts: [
+//         {
+//             deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@3E6912223479F10023DDEBE8:1',
+//             metadata: {
+//                 key:
+//                     'xpub6CVKsQYXc9awxgV1tWbG4foDvdcnieK2JkbpPEBKB5WwAPKBZ1mstLbKVB4ov7QzxzjaxNK6EfmNY5Jsk2cG26EVcEkycGW4tchT2dyUhrx',
+//                 outputLabels: {},
+//             },
+//         },
+//     ],
+// },
+// params: {
+//     accountKey:
+//         'ypub6XKbB5DSkq8Royg8isNtGktj6bmEfGJXDs83Ad5CZ5tpDV8QofwSWQFTWP2Pv24vNdrPhquehL7vRMvSTj2GpKv6UaTQCBKZALm6RJAmxG6-btc-mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@3E6912223479F10023DDEBE8:1',
+//     defaultValue: "m/49'/0'/0'",
+//     type: 'accountLabel',
+//     value: undefined,
+// },
 export const enableMetadata = [
     {
         description: 'enable metadata',

@@ -269,7 +269,6 @@ export const setDeviceMetadataKey = (force = false) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    console.warn('getState().metadata', getState().metadata);
     if (!getState().metadata.enabled) return;
     const { device } = getState().suite;
     if (!device || !device.state) return;
@@ -524,6 +523,7 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
         payload = dispatch(syncMetadataPayload(payload));
         originalValue = payload.value;
     }
+    console.warn('originalValue', originalValue);
     const decision = createDeferred<string | undefined>();
 
     dispatch(
@@ -535,6 +535,7 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
     );
 
     const value = await decision.promise;
+    console.warn('value', value);
 
     // value did not change, no need to sync with cloud, stop here
     if (value === originalValue) {
