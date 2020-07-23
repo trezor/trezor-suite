@@ -16,7 +16,7 @@ storiesOf('Form', module).add(
         const values: any = {
             None: null,
             Hello: { value: 'hello', label: 'Hello' },
-            // World: { value: 'world', label: 'World' },
+            World: { value: 'world', label: 'World' },
         };
 
         const options = Object.keys(values)

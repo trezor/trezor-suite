@@ -118,7 +118,7 @@ const SelectInput = ({
         <Wrapper onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
             <ReactSelect
                 styles={selectStyle(isSearchable, isHovered, minWidth)}
-                isSearchable={false}
+                isSearchable={isSearchable}
                 isDisabled={optionsLength <= 1}
                 options={options}
                 {...props}
