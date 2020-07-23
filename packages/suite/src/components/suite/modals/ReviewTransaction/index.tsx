@@ -10,26 +10,38 @@ import * as sendFormActions from '@wallet-actions/sendFormActions';
 
 import { Props } from './Container';
 
-const StyledRow = styled(Box)`
+const StyledRow = styled(Box)<{ noBottomPadding?: boolean }>`
     justify-content: space-between;
-    margin-bottom: 20px;
+    margin-bottom: ${props => (props.noBottomPadding ? '0' : '20px')};
 `;
 
 const Left = styled.div`
     display: flex;
     align-items: flex-start;
     flex-direction: column;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    color: ${colors.NEUE_TYPE_DARK_GREY};
 `;
 
 const Right = styled.div``;
 
 const Bottom = styled.div`
-    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
     border-top: 1px solid ${colors.NEUE_STROKE_GREY};
 `;
 
+const BottomContent = styled.div`
+    padding: 20px 37px;
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+`;
+
 const Content = styled.div`
-    padding: 20px;
+    padding: 20px 20px 0 20px;
 `;
 
 const OutputWrapper = styled.div`
@@ -37,9 +49,10 @@ const OutputWrapper = styled.div`
     border-radius: 3px;
 `;
 
-const Coin = styled.div`
+const Coin = styled.div<{ bold?: boolean }>`
     display: flex;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-weight: ${props =>
+        props.bold ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${colors.NEUE_TYPE_DARK_GREY};
     padding-bottom: 6px;
@@ -55,6 +68,12 @@ const Fiat = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
+`;
+
+const StyledButton = styled(Button)`
+    display: flex;
+    align-self: center;
+    width: 240px;
 `;
 
 export default ({ selectedAccount, send, ...props }: Props) => {
@@ -96,21 +115,36 @@ export default ({ selectedAccount, send, ...props }: Props) => {
             }
             bottomBar={
                 <Bottom>
-                    <Left>
-                        <Translation id="TR_TOTAL_SYMBOL" values={{ symbol: upperCaseSymbol }} />
-                    </Left>
-                    <Right>
-                        <Coin>
-                            {formatNetworkAmount(precomposedTx.totalSpent, symbol)}
-                            <Symbol>{symbol}</Symbol>
-                        </Coin>
-                        <Fiat>
-                            <FiatValue
-                                amount={formatNetworkAmount(precomposedTx.totalSpent, symbol)}
-                                symbol={symbol}
+                    <BottomContent>
+                        <Left>
+                            <Translation
+                                id="TR_TOTAL_SYMBOL"
+                                values={{ symbol: upperCaseSymbol }}
                             />
-                        </Fiat>
-                    </Right>
+                        </Left>
+                        <Right>
+                            <Coin bold>
+                                {formatNetworkAmount(precomposedTx.totalSpent, symbol)}
+                                <Symbol>{symbol}</Symbol>
+                            </Coin>
+                            <Fiat>
+                                <FiatValue
+                                    amount={formatNetworkAmount(precomposedTx.totalSpent, symbol)}
+                                    symbol={symbol}
+                                />
+                            </Fiat>
+                        </Right>
+                    </BottomContent>
+                    <StyledButton
+                        isDisabled={!signedTx}
+                        onClick={async () => {
+                            const result = await pushTransaction();
+                            // @ts-ignore: type modal decision
+                            props.decision.resolve(result);
+                        }}
+                    >
+                        <Translation id="TR_SEND" />
+                    </StyledButton>
                 </Bottom>
             }
         >
@@ -141,7 +175,7 @@ export default ({ selectedAccount, send, ...props }: Props) => {
                         </StyledRow>
                     </OutputWrapper>
                 ))}
-                <StyledRow>
+                <StyledRow noBottomPadding>
                     <Left>
                         {expectedRequests === buttonRequests.length && (
                             <div>TODO: ACTIVE CHECKMARK</div>
@@ -157,18 +191,6 @@ export default ({ selectedAccount, send, ...props }: Props) => {
                             <FiatValue amount={fee} symbol={symbol} />
                         </Fiat>
                     </Right>
-                </StyledRow>
-                <StyledRow>
-                    <Button
-                        isDisabled={!signedTx}
-                        onClick={async () => {
-                            const result = await pushTransaction();
-                            // @ts-ignore: type modal decision
-                            props.decision.resolve(result);
-                        }}
-                    >
-                        <Translation id="TR_SEND" />
-                    </Button>
                 </StyledRow>
             </Content>
         </Modal>
