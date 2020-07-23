@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import SelectBar from './index';
+import { SelectBar } from './index';
 import { storiesOf } from '@storybook/react';
 import { StoryColumn } from '../../../support/Story';
 
