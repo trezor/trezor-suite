@@ -3418,13 +3418,6 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.5.4":
-  version "7.10.4"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.10.4.tgz#a6724f1a6b8d2f6ea5236dbfe58c7d7ea9c5eb99"
-  integrity sha512-UpTN5yUJr9b4EX2CnGNWIvER7Ab83ibv0pcvvHc4UOdrBI5jb8bj+32cCwPX6xu0mt2daFNjYhoi+X7beH0RSw==
-  dependencies:
-    regenerator-runtime "^0.13.4"
-
 "@babel/standalone@^7.4.5":
   version "7.8.3"
   resolved "https://registry.npmjs.org/@babel/standalone/-/standalone-7.8.3.tgz#0674730a8c5fbb9352de5342bf0c0c040d658380"
@@ -6175,26 +6168,29 @@
     dom-accessibility-api "^0.4.6"
     pretty-format "^25.5.0"
 
-"@testing-library/react-hooks@^3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@testing-library/react-hooks/-/react-hooks-3.3.0.tgz#dc217bfce8e7c34a99c811d73d23feef957b7c1d"
-  integrity sha512-rE9geI1+HJ6jqXkzzJ6abREbeud6bLF8OmF+Vyc7gBoPwZAEVBYjbC1up5nNoVfYBhO5HUwdD4u9mTehAUeiyw==
+"@testing-library/dom@^7.21.4":
+  version "7.21.4"
+  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-7.21.4.tgz#24b045f3161b7c91fdb35da7c001908cdc99b55b"
+  integrity sha512-IXjKRTAH31nQ+mx6q3IPw85RTLul8VlWBm1rxURoxDt7JI0HPlAAfbtrKTdeq83XYCYO7HSHogyV+OsD+6FX0Q==
   dependencies:
-    "@babel/runtime" "^7.5.4"
-    "@types/testing-library__react-hooks" "^3.0.0"
+    "@babel/runtime" "^7.10.3"
+    "@types/aria-query" "^4.2.0"
+    aria-query "^4.2.2"
+    dom-accessibility-api "^0.4.6"
+    pretty-format "^25.5.0"
 
-"@testing-library/react@^10.4.6":
-  version "10.4.6"
-  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-10.4.6.tgz#70a7cac35ac8256c22a8cb0c4779e0efefd218c6"
-  integrity sha512-pVcm8v0HxCEzrtasbC2bdhWM0P5X9o8a/xfBugC97uVVTmhVeGHj+5CdE1JYi/i2K+mCyeq5YqzHLW/gB+K12w==
+"@testing-library/react@^10.4.7":
+  version "10.4.7"
+  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-10.4.7.tgz#fc14847fb70a5e93576b8f7f0d1490ead02a9061"
+  integrity sha512-hUYbum3X2f1ZKusKfPaooKNYqE/GtPiQ+D2HJaJ4pkxeNJQFVUEvAvEh9+3QuLdBeTWkDMNY5NSijc5+pGdM4Q==
   dependencies:
     "@babel/runtime" "^7.10.3"
     "@testing-library/dom" "^7.17.1"
 
-"@testing-library/user-event@^12.0.11":
-  version "12.0.11"
-  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-12.0.11.tgz#157594e6c6d73a1503003933177843648b8c7da4"
-  integrity sha512-r7QNfktLE2n8IODEl32orup/HNOMueJpoXRDeTMlvWR4nZIHJwx59+8SkLf6nqV4Ot5Xo6qNeaWrvC1KO4eOng==
+"@testing-library/user-event@^12.0.12":
+  version "12.0.12"
+  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-12.0.12.tgz#b2ee1af9e9b8b28b1aae6d2026f611d7a75794e3"
+  integrity sha512-sftHNrd7JGFVL9yjmg64crjilxf1J6R65qgwfmUtu0M+biu/chnQr+KD+JlNHQevZtkkxQ9C8ELzHyXJpD9QZQ==
   dependencies:
     "@babel/runtime" "^7.10.2"
 
@@ -6709,13 +6705,6 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-test-renderer@*":
-  version "16.9.2"
-  resolved "https://registry.yarnpkg.com/@types/react-test-renderer/-/react-test-renderer-16.9.2.tgz#e1c408831e8183e5ad748fdece02214a7c2ab6c5"
-  integrity sha512-4eJr1JFLIAlWhzDkBCkhrOIWOvOxcCAfQh+jiKg7l/nNZcCIL2MHl2dZhogIFKyHzedVWHaVP1Yydq/Ruu4agw==
-  dependencies:
-    "@types/react" "*"
-
 "@types/react-test-renderer@^16.9.1":
   version "16.9.1"
   resolved "https://registry.yarnpkg.com/@types/react-test-renderer/-/react-test-renderer-16.9.1.tgz#9d432c46c515ebe50c45fa92c6fb5acdc22e39c4"
@@ -6863,14 +6852,6 @@
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@types/tapable/-/tapable-1.0.5.tgz#9adbc12950582aa65ead76bffdf39fe0c27a3c02"
   integrity sha512-/gG2M/Imw7cQFp8PGvz/SwocNrmKFjFsm5Pb8HdbHkZ1K8pmuPzOX4VeVoiEecFCVf4CsN1r3/BRvx+6sNqwtQ==
-
-"@types/testing-library__react-hooks@^3.0.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@types/testing-library__react-hooks/-/testing-library__react-hooks-3.2.0.tgz#52f3a109bef06080e3b1e3ae7ea1c014ce859897"
-  integrity sha512-dE8iMTuR5lzB+MqnxlzORlXzXyCL0EKfzH0w/lau20OpkHD37EaWjZDz0iNG8b71iEtxT4XKGmSKAGVEqk46mw==
-  dependencies:
-    "@types/react" "*"
-    "@types/react-test-renderer" "*"
 
 "@types/tough-cookie@*":
   version "2.3.5"
