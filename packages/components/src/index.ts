@@ -11,7 +11,6 @@ import {
     DropdownMenuProps,
 } from './components/Dropdown';
 import { Input, InputProps } from './components/form/Input';
-import SelectBar from './components/form/SelectBar';
 import { Textarea, TextareaProps } from './components/form/Textarea';
 import { Select, SelectProps } from './components/form/Select';
 import { SelectInput, SelectInputProps } from './components/form/SelectInput';
@@ -64,7 +63,6 @@ export {
     LinkProps,
     Modal,
     ModalProps,
-    SelectBar,
     CoinLogo,
     CoinLogoProps,
     TrezorLogo,
