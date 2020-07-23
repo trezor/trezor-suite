@@ -31,7 +31,7 @@ interface Installer {
     preferred?: boolean;
 }
 
-export default (props: InjectedModalApplicationProps) => {
+const UdevRules = (props: InjectedModalApplicationProps) => {
     const [selectedTarget, setSelectedTarget] = useState<Installer | null>(null);
     const linuxPackage = getLinuxPackage();
     // TODO: this data should be a part of TRANSPORT.START event from trezor-connect (same as bridge installers)
@@ -87,3 +87,5 @@ export default (props: InjectedModalApplicationProps) => {
         </Modal>
     );
 };
+
+export default UdevRules;

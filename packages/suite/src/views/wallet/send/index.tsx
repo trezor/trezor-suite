@@ -22,7 +22,7 @@ const StyledCard = styled(Card)`
     padding: 0;
 `;
 
-export default ({ device, fees, selectedAccount, locks, online, fiat, localCurrency }: Props) => {
+const Send = ({ device, fees, selectedAccount, locks, online, fiat, localCurrency }: Props) => {
     if (!device || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Send" account={selectedAccount} />;
     }
@@ -74,3 +74,5 @@ export default ({ device, fees, selectedAccount, locks, online, fiat, localCurre
         </WalletLayout>
     );
 };
+
+export default Send;

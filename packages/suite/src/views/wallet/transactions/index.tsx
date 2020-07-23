@@ -37,7 +37,7 @@ const Content = ({ selectedAccount, showSummary, children }: ContentProps) => {
     );
 };
 
-export default (props: Props) => {
+const Transactions = (props: Props) => {
     const { selectedAccount, transactions } = props;
     const [selectedPage, setSelectedPage] = useState(1);
 
@@ -95,3 +95,5 @@ export default (props: Props) => {
         </Content>
     );
 };
+
+export default Transactions;

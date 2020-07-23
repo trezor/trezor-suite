@@ -1,15 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-
-import { Link, Dropdown } from '@trezor/components';
-import * as modalActions from '@suite-actions/modalActions';
-import { Translation } from '@suite-components/Translation';
-
-import { SUPPORT_URL } from '@suite-constants/urls';
-import { AppNavigationPanel, AppNavigation } from '@suite-components';
+import { Dropdown } from '@trezor/components';
+import { Translation, ExternalLink, AppNavigationPanel, AppNavigation } from '@suite-components';
 import { useActions } from '@suite-hooks';
+import * as modalActions from '@suite-actions/modalActions';
+import { SUPPORT_URL } from '@suite-constants/urls';
 
-const StyledLink = styled(Link)`
+const StyledLink = styled(ExternalLink)`
     padding: 10px 16px;
     width: 100%;
 `;
@@ -51,10 +48,12 @@ const SettingsMenu = () => {
                     data-test="@settings/menu/dropdown"
                     items={[
                         {
+                            key: 'group1',
                             options: [
                                 {
+                                    key: 'support',
                                     label: (
-                                        <StyledLink variant="nostyle" href={SUPPORT_URL}>
+                                        <StyledLink size="small" href={SUPPORT_URL}>
                                             <Translation id="TR_SUPPORT" />
                                         </StyledLink>
                                     ),
@@ -63,9 +62,12 @@ const SettingsMenu = () => {
                                     noPadding: true,
                                 },
                                 {
+                                    key: 'log',
                                     label: <Translation id="TR_SHOW_LOG" />,
                                     'data-test': '@settings/menu/log',
-                                    callback: () => openModal({ type: 'log' }),
+                                    callback: () => {
+                                        openModal({ type: 'log' });
+                                    },
                                 },
                             ],
                         },

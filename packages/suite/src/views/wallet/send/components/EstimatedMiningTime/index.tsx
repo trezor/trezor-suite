@@ -21,7 +21,7 @@ interface Props {
     className?: 'string';
 }
 
-export default ({ seconds }: Props) => {
+const EstimatedMiningTime = ({ seconds }: Props) => {
     return (
         <Wrapper>
             <Translation id="TR_ESTIMATED_TIME" />
@@ -29,3 +29,5 @@ export default ({ seconds }: Props) => {
         </Wrapper>
     );
 };
+
+export default EstimatedMiningTime;

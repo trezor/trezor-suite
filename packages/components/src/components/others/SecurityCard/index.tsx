@@ -69,6 +69,7 @@ const Footer = styled.div`
 
 const Action = styled.div`
     display: flex;
+    width: 100%;
     height: 40px;
     align-items: center;
     justify-content: center;
@@ -111,7 +112,6 @@ export interface Props extends CardProps {
 
 const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Props) => (
     <Wrapper {...rest}>
-        {console.log('cta', cta)}
         <Header>
             <Circle>
                 <Icon icon={icon} size={32} color={colors.NEUE_TYPE_DARK_GREY} />

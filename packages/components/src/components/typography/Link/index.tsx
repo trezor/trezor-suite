@@ -63,7 +63,7 @@ const Link = ({ icon, iconProps, ...props }: Props) => (
                 <Icon
                     size={props.size ? Number(A_SIZES[props.size].replace('px', '')) : 24}
                     icon={icon}
-                    color={colors.BLACK25}
+                    color={colors.NEUE_TYPE_DARK_GREY}
                     {...iconProps}
                 />
             </IconWrapper>

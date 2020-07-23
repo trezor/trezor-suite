@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { colors, variables } from '../../config';
 import { useOnClickOutside } from '../../utils/hooks';
-import { Icon } from '../Icon';
+import { Icon, IconProps } from '../Icon';
 
 const Wrapper = styled.div`
     position: relative;
@@ -16,6 +16,7 @@ const Menu = styled.ul<MenuProps>`
     flex: 1;
     min-width: 140px;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    z-index: 1;
 
     list-style-type: none;
     margin-top: ${props => (props.offset !== undefined ? `${props.offset}px` : '10px')};
@@ -43,17 +44,19 @@ const Group = styled.li`
     cursor: default;
 `;
 
-const MenuItem = styled.li<Pick<DropdownMenuItem, 'isDisabled' | 'noPadding'>>`
-    padding: ${props => (!props.noPadding ? '8px 16px' : '0px')};
+const MenuItem = styled.li<MenuItemProps>`
+    display: flex;
+    padding: ${props => (!props.item.noPadding ? '8px 16px' : '0px')};
     white-space: nowrap;
-    cursor: ${props => (!props.isDisabled ? 'pointer' : 'default')};
+    cursor: ${props => (!props.item.isDisabled ? 'pointer' : 'default')};
     color: ${props =>
-        !props.isDisabled ? colors.NEUE_TYPE_DARK_GREY : colors.NEUE_TYPE_LIGHT_GREY};
+        !props.item.isDisabled ? colors.NEUE_TYPE_DARK_GREY : colors.NEUE_TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
     ${props =>
-        !props.isDisabled &&
+        !props.item.isDisabled &&
+        !props.item.noHover &&
         css`
             &:hover {
                 background: ${colors.NEUE_BG_GRAY};
@@ -65,19 +68,26 @@ const DefaultTogglerIcon = styled(Icon)<Pick<Props, 'isDisabled'>>`
     cursor: ${props => (!props.isDisabled ? 'pointer' : 'default')};
 `;
 
+const IconWrapper = styled.div`
+    margin-right: 16px;
+`;
+
 interface DropdownMenuItem {
+    key: string;
     label: React.ReactNode;
-    callback: () => void;
-    icon?: React.ReactNode;
+    callback?: () => boolean | void;
+    icon?: IconProps['icon'];
     isDisabled?: boolean;
     isHidden?: boolean;
     noPadding?: boolean;
+    noHover?: boolean;
     'data-test'?: string;
 }
 
 interface GroupedMenuItems {
-    label?: React.ReactNode;
+    key: string;
     options: DropdownMenuItem[];
+    label?: React.ReactNode;
 }
 
 interface MenuItemProps {
@@ -127,9 +137,19 @@ const Dropdown = ({
     });
 
     const onMenuItemClick = (item: DropdownMenuItem) => {
+        // Close the menu if item is not disabled and if
+        // a) callback func is not defined
+        // or
+        // b) callback is defined and returns true/void
         if (!item.isDisabled) {
-            item.callback();
-            setToggled(false);
+            if (item.callback) {
+                const shouldCloseMenu = item.callback();
+                if (shouldCloseMenu === true || shouldCloseMenu === undefined) {
+                    setToggled(false);
+                }
+            } else {
+                setToggled(false);
+            }
         }
     };
 
@@ -169,22 +189,28 @@ const Dropdown = ({
             {toggled && (
                 <MenuComponent ref={menuRef} alignMenu={alignMenu} offset={offset}>
                     {visibleItems.map((group, i) => (
-                        <>
+                        <React.Fragment key={group.key}>
                             {group.label && <Group>{group.label}</Group>}
                             {group.options.map(item => (
                                 <MenuItemComponent
                                     onClick={() => onMenuItemClick(item)}
-                                    isDisabled={item.isDisabled}
                                     data-test={item['data-test']}
-                                    noPadding={item.noPadding}
+                                    key={item.key}
                                     item={item}
-                                    // eslint-disable-next-line react/no-array-index-key
-                                    key={i}
                                 >
+                                    {item.icon && (
+                                        <IconWrapper>
+                                            <Icon
+                                                icon={item.icon}
+                                                size={16}
+                                                color={colors.NEUE_TYPE_DARK_GREY}
+                                            />
+                                        </IconWrapper>
+                                    )}
                                     {item.label}
                                 </MenuItemComponent>
                             ))}
-                        </>
+                        </React.Fragment>
                     ))}
                 </MenuComponent>
             )}
@@ -194,4 +220,9 @@ const Dropdown = ({
 
 Dropdown.displayName = 'Dropdown';
 
-export { Dropdown, Props as DropdownProps };
+export {
+    Dropdown,
+    Props as DropdownProps,
+    MenuItemProps as DropdownMenuItemProps,
+    MenuProps as DropdownMenuProps,
+};

@@ -5,7 +5,7 @@ import FreshAddress from './components/FreshAddress';
 import UsedAddresses from './components/UsedAddresses';
 import { Props } from './Container';
 
-export default ({ selectedAccount, receive, device, showAddress, addToast }: Props) => {
+const Receive = ({ selectedAccount, receive, device, showAddress, addToast }: Props) => {
     const { isLocked } = useDevice();
     const isDeviceLocked = isLocked();
     if (!device || selectedAccount.status !== 'loaded') {
@@ -36,3 +36,5 @@ export default ({ selectedAccount, receive, device, showAddress, addToast }: Pro
         </WalletLayout>
     );
 };
+
+export default Receive;

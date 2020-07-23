@@ -4,7 +4,7 @@ import { Button } from '@trezor/components';
 import { DeviceInvalidModeLayout, Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 
-export default () => {
+const DeviceInitialize = () => {
     const { goto } = useActions({ goto: routerActions.goto });
     return (
         <DeviceInvalidModeLayout
@@ -23,3 +23,5 @@ export default () => {
         />
     );
 };
+
+export default DeviceInitialize;

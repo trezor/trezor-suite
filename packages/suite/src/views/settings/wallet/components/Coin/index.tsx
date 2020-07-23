@@ -27,10 +27,12 @@ interface Props {
     symbol: Network['symbol'] | ExternalNetwork['symbol'];
 }
 
-export default ({ name, symbol }: Props) => (
+const Coin = ({ name, symbol }: Props) => (
     <Wrapper>
         <CoinLogo size={24} symbol={symbol} />
         <Name> {name}</Name>
         <Symbol> {symbol.toUpperCase()}</Symbol>
     </Wrapper>
 );
+
+export default Coin;
