@@ -26,17 +26,17 @@ describe('Passphrase', () => {
         cy.task('pressYes');
         // first input
         cy.getTestElement('@passphrase/input').type('abc');
-        cy.getTestElement('@passphrase/submit-button').click();
+        cy.getTestElement('@passphrase/hidden/submit-button').click();
         // confirm
         cy.getTestElement('@passphrase/confirm-checkbox').click();
         cy.getTestElement('@passphrase/input').type('cba');
-        cy.getTestElement('@passphrase/submit-button').click();
+        cy.getTestElement('@passphrase/hidden/submit-button').click();
         // retry
         cy.getTestElement('@passphrase-mismatch/retry-button').click();
         // confirm again
         cy.getTestElement('@passphrase/confirm-checkbox').click();
         cy.getTestElement('@passphrase/input').type('abc');
-        cy.getTestElement('@passphrase/submit-button').click();
+        cy.getTestElement('@passphrase/hidden/submit-button').click();
         // go to wallet
         cy.getTestElement('@suite/menu/wallet-index').click();
         // go to receive
@@ -51,11 +51,11 @@ describe('Passphrase', () => {
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@switch-device/add-wallet-button').click();
         cy.getTestElement('@passphrase/input').type('def');
-        cy.getTestElement('@passphrase/submit-button').click();
+        cy.getTestElement('@passphrase/hidden/submit-button').click();
         // confirm
         cy.getTestElement('@passphrase/confirm-checkbox').click();
         cy.getTestElement('@passphrase/input').type('def');
-        cy.getTestElement('@passphrase/submit-button').click();
+        cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.getTestElement('@suite/loading').should('not.be.visible');
         // click reveal address
         // no address should be in table yet

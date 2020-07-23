@@ -475,32 +475,26 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
     // make sure metadata is enabled globally
     const { metadata } = getState();
     const { device } = getState().suite;
+    let provider = await getProvider(getState().metadata.provider);
 
-    const needsUpdate = device?.metadata?.status !== 'enabled' || !metadata.enabled;
+    // needs update indicates that metadata is probably out-of-sync with cloud
+    const needsUpdate = device?.metadata?.status !== 'enabled' || !metadata.enabled || !provider;
 
     if (!device?.state) return;
 
     // metadata is not enabled, it means that suite does not try to generate keys and download and decrypt files, but user activates
     // metadata when trying to add it.
     if (!metadata.enabled) {
-        console.warn('metadata is disabled globally, this should not actually happen');
         // return;
         dispatch(enableMetadata());
     }
 
-    console.warn('needsUpdate', needsUpdate);
-
-    // user might have clicked cancel on device when he was prompting to enable labeling. In this case
-    // we override his choice as he is apparently willing to add label.
-    if (needsUpdate) {
+    if (device?.metadata?.status !== 'enabled') {
         // prompt again to get metadata master key
         await dispatch(setDeviceMetadataKey(true));
     }
 
-    // check if there is already initialized provider instance
-    let provider = await getProvider(getState().metadata.provider);
-
-    // if not, init provider log in flow but do not wait for it to finish as we may  already do
+    // if not, init provider log-in flow but do not wait for it to finish as we may  already do
     // some more synchronous tasks without waiting.
     let providerPromise;
     if (!provider) {
@@ -542,7 +536,7 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
 
     const value = await decision.promise;
 
-    // value did not change, stop here
+    // value did not change, no need to sync with cloud, stop here
     if (value === originalValue) {
         return;
     }

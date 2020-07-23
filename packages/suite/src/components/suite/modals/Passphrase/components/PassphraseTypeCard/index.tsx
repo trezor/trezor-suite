@@ -213,7 +213,9 @@ const PassphraseTypeCard = (props: Props) => {
                 )}
                 <Actions>
                     <ActionButton
-                        data-test="@passphrase/submit-button"
+                        data-test={`@passphrase/${
+                            props.showPassphraseInput ? 'hidden' : 'standard'
+                        }/submit-button`}
                         isDisabled={!enabled || isTooLong}
                         variant={props.singleColModal ? 'primary' : props.colorVariant}
                         onClick={() => submit(value)}
