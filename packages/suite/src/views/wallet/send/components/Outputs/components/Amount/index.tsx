@@ -174,6 +174,7 @@ export default ({ outputId }: { outputId: number }) => {
                         composeTransaction(inputName);
                     }}
                     name={inputName}
+                    data-test={inputName}
                     defaultValue={amountValue}
                     innerRef={register({
                         required: 'TR_AMOUNT_IS_NOT_SET',

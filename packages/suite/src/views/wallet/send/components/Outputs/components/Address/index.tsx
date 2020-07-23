@@ -52,12 +52,12 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
     } = useSendFormContext();
     const { descriptor, networkType, symbol } = account;
     const { openModal } = useActions({ openModal: modalActions.openModal });
+    const inputName = `outputs[${outputId}].address`;
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const addressError = outputError ? outputError.address : undefined;
     // addressValue is a "defaultValue" from draft (`outputs` fields) OR regular "onChange" during lifecycle (`getValues` fields)
     // it needs to be done like that, because of `useFieldArray` architecture which requires defaultValue for registered inputs
-    const addressValue =
-        outputs[outputId].address || getValues(`outputs[${outputId}].address`) || '';
+    const addressValue = outputs[outputId].address || getValues(inputName) || '';
 
     return (
         <Input
@@ -104,6 +104,7 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
             labelRight={
                 outputsCount > 1 ? (
                     <Remove
+                        data-test={`outputs[${outputId}].remove`}
                         onClick={() => {
                             removeOutput(outputId);
                             composeTransaction(`outputs[0].amount`);
@@ -132,7 +133,8 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
                     <AddressLabeling address={addressValue} knownOnly />
                 )
             }
-            name={`outputs[${outputId}].address`}
+            name={inputName}
+            data-test={inputName}
             defaultValue={addressValue}
             innerRef={register({
                 required: 'TR_ADDRESS_IS_NOT_SET',

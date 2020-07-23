@@ -81,7 +81,12 @@ export default () => {
                     </StyledButton>
                 </Left>
                 <Right>
-                    <Button variant="tertiary" icon="PLUS" onClick={addOutput}>
+                    <Button
+                        variant="tertiary"
+                        icon="PLUS"
+                        data-test="add-output"
+                        onClick={addOutput}
+                    >
                         <Translation id="TR_ANOTHER_RECIPIENT" />
                     </Button>
                 </Right>

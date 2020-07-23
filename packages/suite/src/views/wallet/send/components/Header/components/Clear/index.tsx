@@ -23,8 +23,8 @@ export default () => {
 
     return (
         <Wrapper>
-            <In onClick={resetContext}>
-                <Button variant="tertiary">
+            <In>
+                <Button variant="tertiary" onClick={resetContext} data-test="clear-form">
                     <Translation id="TR_CLEAR_ALL" />
                 </Button>
             </In>
