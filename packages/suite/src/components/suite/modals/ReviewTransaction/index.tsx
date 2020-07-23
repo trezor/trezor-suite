@@ -1,6 +1,6 @@
 import { FiatValue, Translation } from '@suite-components';
 import { useDevice, useActions } from '@suite-hooks';
-import { colors, Modal, variables, ConfirmOnDevice, Box, Button } from '@trezor/components';
+import { colors, Modal, variables, ConfirmOnDevice, Box, Button, Icon } from '@trezor/components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getFee } from '@wallet-utils/sendFormUtils';
 import React from 'react';
@@ -17,14 +17,35 @@ const StyledRow = styled(Box)<{ noBottomPadding?: boolean }>`
 
 const Left = styled.div`
     display: flex;
-    align-items: flex-start;
-    flex-direction: column;
+    align-items: center;
+`;
+
+const IconWrapper = styled.div`
+    width: 25px;
+    height: 25px;
+    display: flex;
+    padding-right: 6px;
+    justify-content: center;
+    align-items: center;
+`;
+
+const Dot = styled.div`
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    background: ${colors.NEUE_TYPE_ORANGE};
+`;
+
+const Address = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${colors.NEUE_TYPE_DARK_GREY};
 `;
 
-const Right = styled.div``;
+const Right = styled.div`
+    display: flex;
+    align-items: center;
+`;
 
 const Bottom = styled.div`
     display: flex;
@@ -45,7 +66,6 @@ const Content = styled.div`
 `;
 
 const OutputWrapper = styled.div`
-    background: ${colors.BLACK96};
     border-radius: 3px;
 `;
 
@@ -55,7 +75,7 @@ const Coin = styled.div<{ bold?: boolean }>`
         props.bold ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${colors.NEUE_TYPE_DARK_GREY};
-    padding-bottom: 6px;
+    align-items: center;
 `;
 
 const Symbol = styled.div`
@@ -65,6 +85,8 @@ const Symbol = styled.div`
 
 const Fiat = styled.div`
     display: flex;
+    align-items: center;
+    padding-top: 5px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
@@ -75,6 +97,18 @@ const StyledButton = styled(Button)`
     align-self: center;
     width: 240px;
 `;
+
+const getState = (index: number, buttonRequests: number) => {
+    if (index === buttonRequests - 1) {
+        return 'warning';
+    }
+
+    if (index < buttonRequests - 1) {
+        return 'success';
+    }
+
+    return undefined;
+};
 
 export default ({ selectedAccount, send, ...props }: Props) => {
     const { device } = useDevice();
@@ -149,37 +183,42 @@ export default ({ selectedAccount, send, ...props }: Props) => {
             }
         >
             <Content>
-                {outputs.map((output, index) => (
-                    <OutputWrapper key={output.id}>
-                        <StyledRow>
-                            <Left>
-                                {index === buttonRequests.length - 1 && (
-                                    <div>TODO: ACTIVE CHECKMARK</div>
-                                )}
-                                {output.address}
-                            </Left>
-                            <Right>
-                                <Coin>
-                                    {/* @ts-ignore */}
-                                    {formatNetworkAmount(output.amount, symbol)}
-                                    <Symbol>{symbol}</Symbol>
-                                </Coin>
-                                <Fiat>
-                                    <FiatValue
-                                        // @ts-ignore
-                                        amount={formatNetworkAmount(output.amount, symbol)}
-                                        symbol={symbol}
-                                    />
-                                </Fiat>
-                            </Right>
-                        </StyledRow>
-                    </OutputWrapper>
-                ))}
+                {outputs.map((output, index) => {
+                    const state = getState(index, buttonRequests.length);
+
+                    return (
+                        <OutputWrapper key={output.id}>
+                            <StyledRow>
+                                <Left>
+                                    <IconWrapper>
+                                        {state === 'success' && (
+                                            <Icon color={colors.NEUE_BG_GREEN} icon="CHECK" />
+                                        )}
+                                        {state === 'warning' && <Dot />}
+                                    </IconWrapper>
+                                    <Address>{output.address}</Address>
+                                </Left>
+                                <Right>
+                                    <Coin>
+                                        {/* @ts-ignore */}
+                                        {formatNetworkAmount(output.amount, symbol)}
+                                        <Symbol>{symbol}</Symbol>
+                                    </Coin>
+                                    <Fiat>
+                                        <FiatValue
+                                            // @ts-ignore
+                                            amount={formatNetworkAmount(output.amount, symbol)}
+                                            symbol={symbol}
+                                        />
+                                    </Fiat>
+                                </Right>
+                            </StyledRow>
+                        </OutputWrapper>
+                    );
+                })}
                 <StyledRow noBottomPadding>
                     <Left>
-                        {expectedRequests === buttonRequests.length && (
-                            <div>TODO: ACTIVE CHECKMARK</div>
-                        )}
+                        <IconWrapper />
                         <Translation id="TR_FEE" />
                     </Left>
                     <Right>
