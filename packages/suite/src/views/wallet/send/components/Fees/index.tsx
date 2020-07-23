@@ -29,17 +29,22 @@ const Left = styled.div`
     flex-direction: column;
 `;
 
-const Right = styled.div``;
+const Right = styled.div`
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+`;
 
 const Middle = styled.div`
     display: flex;
+    flex: 1;
     justify-content: flex-start;
 `;
 
 const RightContent = styled.div`
     display: flex;
     flex: 1;
-    justify-content: center;
+    justify-content: flex-start;
     flex-direction: column;
     align-items: flex-end;
 `;
