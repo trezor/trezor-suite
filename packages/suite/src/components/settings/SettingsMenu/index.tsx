@@ -48,8 +48,10 @@ const SettingsMenu = () => {
                     data-test="@settings/menu/dropdown"
                     items={[
                         {
+                            key: 'group1',
                             options: [
                                 {
+                                    key: 'support',
                                     label: (
                                         <StyledLink size="small" href={SUPPORT_URL}>
                                             <Translation id="TR_SUPPORT" />
@@ -60,9 +62,12 @@ const SettingsMenu = () => {
                                     noPadding: true,
                                 },
                                 {
+                                    key: 'log',
                                     label: <Translation id="TR_SHOW_LOG" />,
                                     'data-test': '@settings/menu/log',
-                                    callback: () => openModal({ type: 'log' }),
+                                    callback: () => {
+                                        openModal({ type: 'log' });
+                                    },
                                 },
                             ],
                         },
