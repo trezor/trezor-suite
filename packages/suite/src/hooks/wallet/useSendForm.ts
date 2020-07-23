@@ -115,11 +115,12 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
 
     const { localCurrencyOption } = state;
 
-    const { getDraft, saveDraft, removeDraft, composeTransaction } = useActions({
+    const { getDraft, saveDraft, removeDraft, composeTransaction, signTransaction } = useActions({
         getDraft: sendFormActions.getDraft,
         saveDraft: sendFormActions.saveDraft,
         removeDraft: sendFormActions.removeDraft,
         composeTransaction: sendFormActions.composeTransactionNew,
+        signTransaction: sendFormActions.signTransaction,
     });
 
     // register `react-hook-form`, default values are set later in "loadDraft" useEffect block
@@ -370,6 +371,20 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
         [getValues, reset],
     );
 
+    const sign = useCallback(async () => {
+        const values = getValues();
+        const composedTx = composedLevels
+            ? composedLevels[values.selectedFee || 'normal']
+            : undefined;
+        if (composedTx && composedTx.type === 'final') {
+            // signTransaction > sign[COIN]Transaction > requestPush (modal with promise)
+            const result = await signTransaction(composedTx);
+            if (result) {
+                resetContext();
+            }
+        }
+    }, [getValues, composedLevels, signTransaction, resetContext]);
+
     return {
         ...state,
         ...useFormMethods,
@@ -380,6 +395,7 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
         updateContext,
         resetContext,
         composeTransaction: composeOnChange,
+        signTransaction: sign,
         changeFeeLevel,
     };
 };

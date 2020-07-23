@@ -1,11 +1,9 @@
 import { SUITE } from '@suite-actions/constants';
-import * as modalActions from '@suite-actions/modalActions';
 import { Translation } from '@suite-components/Translation';
 import { useActions } from '@suite-hooks';
 import { AppState, TrezorDevice } from '@suite-types';
 import { useSendFormContext } from '@wallet-hooks';
 import { Button, colors } from '@trezor/components';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
 import React from 'react';
 import styled from 'styled-components';
 import { SendContextState } from '@wallet-types/sendForm';
@@ -92,24 +90,10 @@ export default () => {
         isLoading,
         transactionInfo,
 
+        signTransaction,
         getValues,
         composedLevels,
-        resetContext,
     } = useSendFormContext();
-
-    const {
-        signTransaction,
-        sendBitcoinTransaction,
-        sendEthereumTransaction,
-        sendRippleTransaction,
-    } = useActions({
-        signTransaction: sendFormActions.signTransaction,
-        sendBitcoinTransaction: sendFormActions.sendBitcoinTransaction,
-        sendEthereumTransaction: sendFormActions.sendEthereumTransaction,
-        sendRippleTransaction: sendFormActions.sendRippleTransaction,
-    });
-    // const { networkType } = account;
-    const { openDeferredModal } = useActions({ openDeferredModal: modalActions.openDeferredModal });
 
     const values = getValues();
     const composedTx = composedLevels ? composedLevels[values.selectedFee || 'normal'] : undefined;
@@ -120,85 +104,7 @@ export default () => {
                 <ButtonReview
                     isDisabled={isDisabled}
                     isLoading={isLoading}
-                    onClick={async () => {
-                        if (composedTx && composedTx.type === 'final') {
-                            // signTransaction > sign[COIN]Transaction > requestPush (modal with promise)
-                            const result = await signTransaction(composedTx);
-                            if (result) {
-                                resetContext();
-                            }
-                        }
-                        // sendBitcoinTransaction({
-                        //     type: 'final',
-                        //     transaction: {
-                        //         inputs: [
-                        //             {
-                        //                 address_n: [2147483732, 2147483649, 2147483648, 1, 2],
-                        //                 amount: '249356',
-                        //                 prev_hash:
-                        //                     '352873fe6cd5a83ca4b02737848d7d839aab864b8223c5ba7150ae35c22f4e38',
-                        //                 prev_index: 4,
-                        //                 script_type: 'SPENDWITNESS',
-                        //                 sequence: 4294967295,
-                        //             },
-                        //         ],
-                        //         outputs: [
-                        //             {
-                        //                 address: 'tb1qf8hrrz6yy6ug5qenhndpsta87t57lnqk4ngswx',
-                        //                 amount: '100000',
-                        //                 script_type: 'PAYTOADDRESS',
-                        //             },
-                        //             {
-                        //                 address_n: [2147483732, 2147483649, 2147483648, 1, 3],
-                        //                 amount: '149190',
-                        //                 script_type: 'PAYTOWITNESS',
-                        //             },
-                        //         ],
-                        //     },
-                        // });
-
-                        // const decision = await openDeferredModal({ type: 'review-transaction' });
-                        // console.warn('DECISION', decision);
-                        // if (decision) {
-                        // }
-
-                        if (transactionInfo && transactionInfo.type === 'final') {
-                            // openModal({
-                            //     type: 'review-transaction',
-                            //     outputs,
-                            //     transactionInfo,
-                            //     token,
-                            //     getValues,
-                            //     selectedFee,
-                            //     send: async () => {
-                            //         let response: 'error' | 'success';
-                            //         switch (networkType) {
-                            //             case 'bitcoin':
-                            //                 response = await sendBitcoinTransaction(
-                            //                     transactionInfo,
-                            //                 );
-                            //                 break;
-                            //             case 'ethereum':
-                            //                 response = await sendEthereumTransaction(
-                            //                     getValues,
-                            //                     token,
-                            //                 );
-                            //                 break;
-                            //             case 'ripple': {
-                            //                 response = await sendRippleTransaction(
-                            //                     getValues,
-                            //                     selectedFee,
-                            //                 );
-                            //                 break;
-                            //             } // no default
-                            //         }
-                            //         if (response !== 'error') {
-                            //             reset();
-                            //         }
-                            //     },
-                            // });
-                        }
-                    }}
+                    onClick={signTransaction}
                 >
                     <Translation id="TR_SEND_REVIEW_TRANSACTION" />
                 </ButtonReview>

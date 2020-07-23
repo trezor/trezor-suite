@@ -82,5 +82,6 @@ export type SendContextState = UseFormMethods<FormState> &
         updateContext: (value: Partial<SendContextProps>) => void;
         resetContext: () => void;
         composeTransaction: (field: string, validateField?: string | string[]) => void;
+        signTransaction: () => void;
         changeFeeLevel: (currentLevel: FeeLevel, newLevel: FeeLevel['label']) => void;
     };
