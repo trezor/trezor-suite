@@ -4,19 +4,24 @@ import { Provider } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { act, renderHook } from '@testing-library/react-hooks';
-import { render, fireEvent, screen, waitFor, waitForDomChange } from '@testing-library/react';
+import { render, fireEvent, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import SendFormIndex from '@wallet-views/send/Container';
 import { SendContext, useSendForm } from '../useSendForm';
 import * as fixtures from '../__fixtures__/useSendForm';
 import sendFormReducer from '@wallet-reducers/sendFormReducer';
-import { createDeferred, Deferred } from '@suite-utils/deferred';
+
+import Outputs from '@wallet-views/send/components/Outputs';
+import Header from '@wallet-views/send/components/Header';
+// import OpReturn from '@wallet-views/send/components/OpReturn';
+import Fees from '@wallet-views/send/components/Fees';
+import CoinActions from '@wallet-views/send/components/CoinActions';
+import TotalSent from '@wallet-views/send/components/TotalSent';
+import ReviewButton from '@wallet-views/send/components/ReviewButton';
 
 jest.mock('react-svg', () => {
     return {
-        ReactSVG: props => {
-            console.log('ReactSVG', props, props.src);
+        ReactSVG: () => {
+            // console.log('ReactSVG', props, props.src);
             return 'SVG';
         },
     };
@@ -30,24 +35,21 @@ jest.mock('@suite-components/Translation', () => {
     };
 });
 
-const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
 jest.mock('trezor-connect', () => {
     let fixture: any;
+    let fixtureIndex = 0;
     return {
         __esModule: true, // this property makes it work
         default: {
-            composeTransaction2: () => {
-                console.warn('composeTransaction in connect');
-                return { success: false };
-            },
-            composeTransaction: jest.fn(async () => {
+            composeTransaction: jest.fn(async params => {
                 if (!fixture) return { success: false };
-                console.warn('---->WAIT FOR CONNECT!', fixture);
-                if (typeof fixture.delay === 'number') {
-                    await new Promise(resolve => setTimeout(resolve, fixture.delay));
+                const f = Array.isArray(fixture) ? fixture[fixtureIndex] : fixture;
+                if (!f) return { success: false };
+                if (typeof f.delay === 'number') {
+                    await new Promise(resolve => setTimeout(resolve, f.delay));
                 }
-                return fixture.response;
+                fixtureIndex++;
+                return f.response;
             }),
             blockchainEstimateFee: () =>
                 fixture || {
@@ -56,6 +58,7 @@ jest.mock('trezor-connect', () => {
         },
         setTestFixtures: (f: any) => {
             fixture = f;
+            fixtureIndex = 0;
         },
         DEVICE: {},
         BLOCKCHAIN: {},
@@ -65,7 +68,9 @@ jest.mock('trezor-connect', () => {
 export const getInitialState = (state?: any) => {
     return {
         suite: { device: {}, settings: { debug: {} } },
+        labeling: {}, // will not be used in the future
         wallet: {
+            accounts: [],
             selectedAccount: {
                 status: 'loaded',
                 account: {
@@ -74,9 +79,10 @@ export const getInitialState = (state?: any) => {
                     descriptor: 'xpub',
                     deviceState: 'deviceState',
                     addresses: { change: [], used: [], unused: [] },
+                    availableBalance: '100000000000',
                     utxo: [],
                 },
-                network: { networkType: 'bitcoin', decimals: 8 },
+                network: { networkType: 'bitcoin', symbol: 'btc', decimals: 8 },
             },
             settings: {
                 localCurrency: 'usd',
@@ -87,6 +93,11 @@ export const getInitialState = (state?: any) => {
                 coins: [
                     {
                         symbol: 'btc',
+                        current: {
+                            symbol: 'btc',
+                            ts: 0,
+                            rates: { usd: 1, eur: 1.2, czk: 22 },
+                        },
                     },
                 ],
             },
@@ -121,82 +132,86 @@ type Callback = {
     getContextValues: () => any;
 };
 
-const findByName = (list: HTMLElement[], filter: RegExp) => {
-    return list.filter(el => {
-        const name = el.getAttribute('name');
-        if (!name) return false;
-        return filter.test(name);
-    });
-};
-
-const Index = ({ callback }: any) => {
+const Index = ({ callback, store }: any) => {
+    const { account, network } = store.wallet.selectedAccount;
     const sendFormContext = useSendForm({
+        account,
+        network,
         localCurrencyOption: { value: 'usd', label: 'USD' },
-        feeInfo: { levels: [{ label: 'normal', feePerUnit: '1', blocks: 1 }] },
+        feeInfo: {
+            minFee: 1,
+            maxFee: 100,
+            blockHeight: 1,
+            blockTime: 1,
+            levels: [
+                { label: 'normal', feePerUnit: '4', blocks: 1 },
+                { label: 'custom', feePerUnit: '-1', blocks: -1 },
+            ],
+        },
+        fiatRates: store.wallet.fiat.coins.find(item => item.symbol === account.symbol),
     });
+
     callback.getContextValues = () => {
         return sendFormContext;
     };
 
-    const {
-        outputs,
-        register,
-        addOutput,
-        removeOutput,
-        resetContext,
-        composeTransaction,
-    } = sendFormContext;
-
     return (
-        <div>
-            <button type="button" onClick={addOutput}>
-                Add
-            </button>
-            <button type="button" onClick={resetContext}>
-                Reset
-            </button>
-            {outputs.map((output, index) => {
-                return (
-                    <div key={output.id}>
-                        <button type="button" onClick={() => removeOutput(index)}>
-                            Remove
-                        </button>
-                        <input
-                            name={`outputs[${index}].address`}
-                            ref={register({ required: 'TR_' })}
-                            defaultValue={output.address}
-                            onChange={() => {
-                                composeTransaction(`outputs[${index}].amount`);
-                            }}
-                        />
-                        <input
-                            name={`outputs[${index}].amount`}
-                            ref={register({ required: 'TR_' })}
-                            defaultValue={output.amount}
-                            onChange={event => {
-                                console.warn('AMOUNT ON CHANGE!', event.target.value);
-                                composeTransaction(`outputs[${index}].amount`);
-                            }}
-                        />
-                        <input
-                            name={`outputs[${index}].fiat`}
-                            ref={register({ required: 'TR_' })}
-                            defaultValue={output.fiat}
-                        />
-                    </div>
-                );
-            })}
-        </div>
+        <SendContext.Provider value={sendFormContext}>
+            {sendFormContext.isLoading && <div>Loading</div>}
+            <Header setOpReturnActive={() => false} />
+            <Outputs />
+            <CoinActions />
+            {/* {networkType === 'bitcoin' && opReturnActive && (
+                <OpReturn setIsActive={setOpReturnActive} />
+            )} */}
+            <Fees />
+            <TotalSent />
+            <ReviewButton />
+        </SendContext.Provider>
     );
 };
 
-const SendFormWithProviders = ({ store, callback }: any) => (
-    <Provider store={store}>
-        <IntlProvider locale="en">
-            <Index callback={callback} />
-        </IntlProvider>
-    </Provider>
-);
+const renderWithCallback = (store: any) => {
+    const callback: Callback = {
+        getContextValues: () => null,
+    };
+    const renderMethods = render(
+        <Provider store={store}>
+            <IntlProvider locale="en">
+                <Index callback={callback} store={store.getState()} />
+            </IntlProvider>
+        </Provider>,
+    );
+    return {
+        ...renderMethods,
+        callback,
+    };
+};
+
+const waitForLoader = () => {
+    const loading = screen.queryByText(/Loading/i);
+    if (loading) {
+        console.warn('---GOT LOADER?');
+        return waitForElementToBeRemoved(() => screen.getByText(/Loading/i));
+    }
+};
+interface Query {
+    (id: string): HTMLElement;
+    (id: RegExp): HTMLElement[];
+}
+
+const findByTestId: Query = id => {
+    if (typeof id === 'string') {
+        return screen.getByText((_, element) => {
+            const attrValue = element.getAttribute('data-test');
+            return attrValue ? attrValue === id : false;
+        });
+    }
+    return screen.getAllByText((_, element) => {
+        const attrValue = element.getAttribute('data-test');
+        return attrValue ? id.test(attrValue) : false;
+    });
+};
 
 describe('useSendForm hook', () => {
     afterEach(() => {
@@ -207,45 +222,52 @@ describe('useSendForm hook', () => {
         it(f.description, async () => {
             const state = getInitialState(f.state);
             const store = initStore(state);
-            const callback: Callback = {
-                getContextValues: () => null,
-            };
-            const { unmount } = render(<SendFormWithProviders store={store} callback={callback} />);
+            const { unmount, callback } = renderWithCallback(store);
 
-            // wait for first render (possible async compose after loading draft)
-            await waitFor(() => {});
+            // wait for compose
+            await waitForLoader();
 
-            const initialInputs = findByName(
-                screen.getAllByRole('textbox'),
-                /outputs\[.*\].address/,
+            expect(findByTestId(/outputs\[.*\].address/).length).toBe(f.initial.outputs.length);
+            expect(callback.getContextValues().getValues()).toMatchObject(f.initial);
+
+            for (let i = 0; i < f.actions.length; i++) {
+                const a = f.actions[i];
+                const button = findByTestId(a.button);
+                fireEvent.click(button); // TODO: why it doesn't work with userEvent?
+                // wait for compose
+                // eslint-disable-next-line no-await-in-loop
+                await waitForLoader();
+                expect(findByTestId(/outputs\[.*\].address/).length).toBe(a.result.outputs.length);
+                expect(callback.getContextValues().getValues()).toMatchObject(a.result);
+            }
+
+            unmount();
+        });
+    });
+
+    fixtures.setMax.forEach(f => {
+        it(f.description, async () => {
+            require('trezor-connect').setTestFixtures(f.connect);
+            const state = getInitialState(f.state);
+            const store = initStore(state);
+            const { unmount, callback } = renderWithCallback(store);
+
+            // wait for compose
+            await waitForLoader();
+            // wait for render
+            // await waitFor(() => {
+            const { composedLevels, getValues } = callback.getContextValues();
+            expect(require('trezor-connect').default.composeTransaction).toBeCalledTimes(
+                f.results.connectCalledTimes,
             );
-            expect(initialInputs.length).toBe(f.results[0].outputs.length);
-            expect(callback.getContextValues().getValues()).toMatchObject(f.results[0]);
 
-            const buttonAdd = screen.getByRole('button', { name: /Add/i });
-            // add new output
-            fireEvent.click(buttonAdd);
-            // should have two
-            const twoInputs = findByName(screen.getAllByRole('textbox'), /outputs\[.*\].address/);
-            expect(twoInputs.length).toBe(f.results[1].outputs.length);
-            expect(callback.getContextValues().getValues()).toMatchObject(f.results[1]);
-
-            // remove first output
-            const buttonsRemove = screen.getAllByRole('button', { name: 'Remove' });
-            fireEvent.click(buttonsRemove[0]);
-            // should have one
-            const oneInput = findByName(screen.getAllByRole('textbox'), /outputs\[.*\].address/);
-            expect(oneInput.length).toBe(f.results[2].outputs.length);
-            expect(callback.getContextValues().getValues()).toMatchObject(f.results[2]);
-
-            // reset form
-            const buttonReset = screen.getByRole('button', { name: 'Reset' });
-            fireEvent.click(buttonReset);
-
-            // after reset
-            const endInputs = findByName(screen.getAllByRole('textbox'), /outputs\[.*\].address/);
-            expect(endInputs.length).toBe(f.results[3].outputs.length);
-            expect(callback.getContextValues().getValues()).toMatchObject(f.results[3]);
+            if (f.results.composedLevels) {
+                expect(composedLevels).toMatchObject(f.results.composedLevels);
+                expect(getValues()).toMatchObject(f.results.values);
+            } else {
+                expect(composedLevels).toBe(undefined);
+            }
+            // });
 
             unmount();
         });
@@ -256,28 +278,14 @@ describe('useSendForm hook', () => {
             require('trezor-connect').setTestFixtures(f.connect);
             const state = getInitialState();
             const store = initStore(state);
-            const callback: Callback = {
-                getContextValues: () => null,
-            };
-            const { unmount } = render(<SendFormWithProviders store={store} callback={callback} />);
+            const { unmount, callback } = renderWithCallback(store);
 
-            // const mocked = jest.fn(() =>
-            //     f.connect ? { success: true, payload: f.connect } : { success: false },
-            // );
-            // const original = require('trezor-connect').composeTransaction;
-            // require('trezor-connect').composeTransaction = mocked;
-
-            const input = findByName(screen.getAllByRole('textbox'), /outputs\[.*\].amount/);
-            // fireEvent.input(input[0], { target: { value: a.value } });
-            await userEvent.type(input[0], f.typing.value, { delay: f.typing.delay });
-
-            // wait for processing last composeTransaction call (useComposeDebounced timeout)
-            // @ts-ignore waitFor with async
-            await waitFor(async () => {
-                const lastType = createDeferred();
-                setTimeout(lastType.resolve, 500);
-                await lastType.promise;
+            await userEvent.type(findByTestId(f.typing.element), f.typing.value, {
+                delay: f.typing.delay,
             });
+
+            // wait for compose
+            await waitForLoader();
 
             expect(require('trezor-connect').default.composeTransaction).toBeCalledTimes(
                 f.results.connectCalledTimes,
@@ -294,6 +302,4 @@ describe('useSendForm hook', () => {
             unmount();
         });
     });
-
-    it('compose', () => {});
 });
