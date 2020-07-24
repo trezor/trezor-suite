@@ -432,8 +432,8 @@ describe('Storage actions', () => {
             acc2,
         );
         expect(acc2Txs.length).toEqual(1);
-        // await store.dispatch(storageActions.forgetDevice(dev1));
-        // await store.dispatch(storageActions.forgetDevice(dev2));
+        await store.dispatch(storageActions.forgetDevice(dev1));
+        await store.dispatch(storageActions.forgetDevice(dev2));
     });
 
     it('should update device settings in the db', async () => {
