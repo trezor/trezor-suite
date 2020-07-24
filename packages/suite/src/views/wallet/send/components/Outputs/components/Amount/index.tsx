@@ -165,13 +165,10 @@ export default ({ outputId }: { outputId: number }) => {
                             setValue('setMaxOutputId', undefined);
                         }
 
-                        if (error) {
-                            calculateFiat(outputId); // reset
-                            return;
-                        }
+                        // calculate or reset Fiat value
+                        calculateFiat(outputId, !error ? event.target.value : undefined);
 
-                        calculateFiat(outputId, event.target.value);
-                        composeTransaction(inputName);
+                        composeTransaction(inputName, !!error);
                     }}
                     name={inputName}
                     data-test={inputName}

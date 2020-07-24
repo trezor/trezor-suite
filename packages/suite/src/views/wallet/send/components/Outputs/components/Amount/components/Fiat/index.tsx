@@ -58,12 +58,16 @@ export default ({ outputId }: { outputId: number }) => {
                 bottomText={error && error.message}
                 onChange={event => {
                     const values = getValues();
+                    if (values.setMaxOutputId === outputId) {
+                        setValue('setMaxOutputId', undefined);
+                    }
                     if (error) {
                         // reset Amount field in case of invalid Fiat value
                         if (values.outputs[outputId].amount.length > 0) {
                             setValue(amountInputName, '', {
                                 shouldValidate: true,
                             });
+                            composeTransaction(amountInputName, true);
                         }
                         return;
                     }

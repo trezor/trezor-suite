@@ -20,6 +20,7 @@ export default () => {
     const { maxFee, minFee } = feeInfo;
     const feePerUnitError = errors.feePerUnit;
     const feeLimitError = errors.feeLimit;
+    const error = feePerUnitError || feeLimitError;
 
     return (
         <Wrapper>
@@ -36,8 +37,7 @@ export default () => {
                     </Units>
                 }
                 onChange={() => {
-                    if (feePerUnitError || feeLimitError) return;
-                    composeTransaction('feePerUnit');
+                    composeTransaction('feePerUnit', !!error);
                 }}
                 innerRef={register({
                     required: 'TR_CUSTOM_FEE_IS_NOT_SET',

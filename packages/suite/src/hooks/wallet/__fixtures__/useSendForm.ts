@@ -1,3 +1,47 @@
+export const DEFAULT_STORE = {
+    suite: { device: {}, settings: { debug: {} } },
+    labeling: {}, // will not be used in the future
+    wallet: {
+        accounts: [],
+        selectedAccount: {
+            status: 'loaded',
+            account: {
+                symbol: 'btc',
+                networkType: 'bitcoin',
+                descriptor: 'xpub',
+                deviceState: 'deviceState',
+                addresses: { change: [], used: [], unused: [] },
+                availableBalance: '100000000000',
+                utxo: [],
+            },
+            network: { networkType: 'bitcoin', symbol: 'btc', decimals: 8 },
+        },
+        settings: {
+            localCurrency: 'usd',
+            debug: {},
+        },
+        fees: { btc: { levels: [] } },
+        fiat: {
+            coins: [
+                {
+                    symbol: 'btc',
+                    current: {
+                        symbol: 'btc',
+                        ts: 0,
+                        rates: { usd: 1, eur: 1.2, czk: 22 },
+                    },
+                },
+            ],
+        },
+        send: {
+            precomposedTx: undefined,
+            lastUsedFeeLevel: undefined,
+            drafts: {},
+        },
+    },
+    devices: [],
+};
+
 export const addingOutputs = [
     {
         description: 'Add/Remove/Reset outputs without draft',
@@ -138,6 +182,39 @@ export const drafts = [
 
 export const composeDebouncedTransaction = [
     {
+        description: 'compose with validation errors (Address not set)',
+        typing: { element: 'outputs[0].address', value: 'X', delay: 0 },
+        results: {
+            connectCalledTimes: 0,
+            composedLevels: undefined,
+            errors: {
+                outputs: [{ address: { message: 'TR_ADDRESS_IS_NOT_SET' } }],
+            },
+        },
+    },
+    {
+        description: 'compose with validation errors (Address invalid)',
+        typing: { element: 'outputs[0].address', value: 'FOO', delay: 1 },
+        results: {
+            connectCalledTimes: 0,
+            composedLevels: undefined,
+            errors: {
+                outputs: [{ address: { message: 'TR_ADDRESS_IS_NOT_VALID' } }],
+            },
+        },
+    },
+    {
+        description: 'compose with validation errors (Amount not a number)',
+        typing: { element: 'outputs[0].amount', value: '11a', delay: 1 },
+        results: {
+            connectCalledTimes: 0,
+            composedLevels: undefined,
+            errors: {
+                outputs: [{ amount: { message: 'TR_AMOUNT_IS_NOT_NUMBER' } }],
+            },
+        },
+    },
+    {
         description: 'trezor-connect call respond with success:false',
         connect: {
             response: {
@@ -174,23 +251,36 @@ export const composeDebouncedTransaction = [
     },
     {
         description: 'Slow typing, multiple trezor-connect calls, only last call gets processed',
-        connect: {
-            delay: 310, // delay in trezor-connect response, greater than typing delay
-            response: {
-                success: true,
-                payload: [
-                    {
-                        type: 'nonfinal',
-                    },
-                ],
+        connect: [
+            {
+                response: {
+                    success: true,
+                    payload: [{ type: 'nonfinal', totalSpent: '100000000' }],
+                },
             },
-        },
+            {
+                // delay in trezor-connect response greater than typing delay
+                // basically it means: return this response AFTER third call to connect, this response should be ignored
+                delay: 500,
+                response: {
+                    success: true,
+                    payload: [{ type: 'nonfinal', totalSpent: '1100000000' }],
+                },
+            },
+            {
+                response: {
+                    success: true,
+                    payload: [{ type: 'nonfinal', totalSpent: '11100000000' }],
+                },
+            }, // delay in trezor-connect response, greater than typing delay
+        ],
         typing: { element: 'outputs[0].amount', value: '111', delay: 301 }, // delay greater than composeDebounced timeout
         results: {
             connectCalledTimes: 3,
             composedLevels: {
                 normal: {
                     type: 'nonfinal',
+                    totalSpent: '11100000000',
                 },
             },
         },

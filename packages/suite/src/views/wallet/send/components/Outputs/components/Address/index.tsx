@@ -107,6 +107,7 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
                         data-test={`outputs[${outputId}].remove`}
                         onClick={() => {
                             removeOutput(outputId);
+                            // compose by first Output
                             composeTransaction(`outputs[0].amount`);
                         }}
                     >
@@ -115,16 +116,14 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
                 ) : undefined
             }
             onChange={async () => {
-                if (addressError) return;
-
-                if (networkType === 'ripple') {
+                if (!addressError && networkType === 'ripple') {
                     const destinationAddressEmpty = await checkRippleEmptyAddress(
                         addressValue,
                         symbol,
                     );
                     updateContext({ destinationAddressEmpty });
                 }
-                composeTransaction(`outputs[${outputId}].amount`);
+                composeTransaction(`outputs[${outputId}].amount`, !!addressError);
             }}
             bottomText={
                 addressError ? (

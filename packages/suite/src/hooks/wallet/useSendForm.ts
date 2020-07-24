@@ -1,20 +1,18 @@
 import { createContext, useContext, useCallback, useState, useEffect, useRef } from 'react';
-import { createDeferred, Deferred } from '@suite-utils/deferred';
-// import { useSelector } from 'react-redux';
 import { useForm, useFieldArray } from 'react-hook-form';
-// import { SEND } from '@wallet-actions/constants';
+import { FeeLevel } from 'trezor-connect';
 import { useActions } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
-import { FormState, SendContextProps, SendContextState, Output } from '@wallet-types/sendForm';
+import { createDeferred, Deferred } from '@suite-utils/deferred';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { FeeLevel } from 'trezor-connect';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
+import { FormState, SendContextProps, SendContextState, Output } from '@wallet-types/sendForm';
 
 export const SendContext = createContext<SendContextState | null>(null);
 SendContext.displayName = 'SendContext';
 
 // export const usePropsHook = () => {
-//     const device = useSelector(state => state.wallet.selectedAccount);
+//     const device = useSelector(state => state.suite.device);
 //     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 //     const fees = useSelector(state => state.wallet.fees);
 //     const fiat = useSelector(state => state.wallet.fiat);
@@ -66,15 +64,19 @@ const useComposeDebounced = () => {
     const dfd = useRef<Deferred<boolean> | null>(null);
 
     const composeDebounced = useCallback(
-        async <F extends (...args: any) => Promise<any>>(fn: F): Promise<ReturnType<F>> => {
+        async <F extends (...args: any) => Promise<any>>(
+            fn: F,
+            useTimeout = true,
+        ): Promise<ReturnType<F>> => {
             // clear previous timeout
             if (timeout.current >= 0) clearTimeout(timeout.current);
-
             // set new timeout
-            const timeoutDfd = createDeferred();
-            const newTimeout = setTimeout(timeoutDfd.resolve, 300);
-            timeout.current = newTimeout;
-            await timeoutDfd.promise;
+            if (useTimeout) {
+                const timeoutDfd = createDeferred();
+                const newTimeout = setTimeout(timeoutDfd.resolve, 300);
+                timeout.current = newTimeout;
+                await timeoutDfd.promise;
+            }
             timeout.current = -1; // reset timeout
 
             // reject previous pending call, do not process results from trezor-connect
@@ -86,9 +88,6 @@ const useComposeDebounced = () => {
 
             // call compose function
             const result = await fn();
-            // function returns nothing (form state got errors or trezor-connect invalid params in sendFormActions)
-            if (!result) return;
-
             pending.resolve(true); // try to unlock, it could be already resolved tho (see: dfd.resolve above)
             const shouldBeProcessed = await pending.promise; // catch potential rejection
             dfd.current = null; // reset dfd
@@ -103,6 +102,28 @@ const useComposeDebounced = () => {
     };
 };
 
+// const findErrors = (errors: any) => {
+//     let hasErrors = false;
+//     Object.keys(errors).forEach(key => {
+//         const val = errors[key];
+//         if (val) {
+//             if (Array.isArray(val)) {
+//                 val.forEach(output => findErrors(output));
+//                 // findErrors
+//             } else {
+//                 val.type !==
+//             }
+
+//         }
+//         // if (!val)
+
+//         if (key === 'outputs') {
+//             errors.output;
+//         } else {
+//         }
+//     });
+// };
+
 // Mounted in top level index: @wallet-views/send
 // returned ContextState is a object provided as SendContext values with custom callbacks for updating/resetting state
 export const useSendForm = (props: SendContextProps): SendContextState => {
@@ -114,6 +135,7 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
 
     // private variables, used inside sendForm hook
     const draft = useRef<FormState | undefined>(undefined);
+    const composeRequest = useRef<string | undefined>(undefined);
     const [composeField, setComposeField] = useState<string | undefined>(undefined);
     const { composeDebounced } = useComposeDebounced();
     const { getDraft, saveDraft, removeDraft, composeTransaction, signTransaction } = useActions({
@@ -208,66 +230,50 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
     );
 
     // called from Address/Amount/Fiat/CustomFee onChange events
-    const composeOnChange = useCallback(
-        async (field: string) => {
-            const composeInner = async () => {
-                // do not compose if form has errors
-                console.warn('GOT ERROROS?', errors);
-                // Object.keys(errors).forEach(key => {
-                //     if (key === 'outputs') {
+    const composeOnChange = useCallback(async () => {
+        const composeInner = async () => {
+            if (Object.keys(errors).length > 0) return;
+            // save draft
+            const values = getValues();
+            saveDraft(values);
+            return composeTransaction(values, state.feeInfo);
+        };
 
-                //     }
-                // })
-                if (Object.keys(errors).length > 0) return;
-                // collect form values
-                const values = getValues();
-                // save draft
-                saveDraft(values);
-                // outputs should have at least amount OR set-max set
-                // const validOutputs = values.outputs
-                //     ? values.outputs.filter(o => o.amount !== '')
-                //     : [];
-                // do not compose if there are no valid output
-                // if (validOutputs.length < 1) return;
-
-                return composeTransaction(values, state.feeInfo);
-            };
-            // set field for later use in composedLevels change useEffect
-            setComposeField(field);
-            // reset precomposed transactions
-            setComposedLevels(undefined);
-            // start composing
-            updateContext({ isLoading: true });
-            try {
-                const result = await composeDebounced(composeInner);
-                if (result) {
-                    // set new composed transactions
-                    setComposedLevels(result);
-                }
-                updateContext({ isLoading: false });
-            } catch (error) {
-                // error should be thrown ONLY when response from trezor-connect shouldn't be processes
+        try {
+            const result = await composeDebounced(composeInner);
+            if (result) {
+                // set new composed transactions
+                setComposedLevels(result);
             }
-        },
-        [state, updateContext, composeDebounced, errors, getValues, saveDraft, composeTransaction],
-    );
+            // result undefined: (FormState got errors or sendFormActions got errors)
+            updateContext({ isLoading: false });
+        } catch (error) {
+            // error should be thrown ONLY when response from trezor-connect shouldn't be processes (see composeDebounced hook)
+        }
+    }, [state, updateContext, composeDebounced, errors, getValues, saveDraft, composeTransaction]);
 
     const { fiatRates } = state;
     const calculateFiat = useCallback(
         (outputIndex: number, amount?: string) => {
             const values = getValues();
+            const { fiat } = values.outputs[outputIndex];
+            if (typeof fiat !== 'string') return; // fiat input not registered
             if (!amount) {
-                // reset fiat value if Fiat field exists (Amount has error)
-                const { fiat } = values.outputs[outputIndex];
-                if (!fiat || fiat.length === 0) return;
-                setValue(`outputs[${outputIndex}].fiat`, '', { shouldValidate: true });
+                // reset fiat value (Amount has error)
+                if (fiat.length > 0) {
+                    setValue(`outputs[${outputIndex}].fiat`, '', { shouldValidate: true });
+                }
                 return;
             }
             if (!fiatRates || !fiatRates.current) return;
             const selectedCurrency = values.outputs[outputIndex].currency;
-            const fiat = toFiatCurrency(amount, selectedCurrency.value, fiatRates.current.rates);
-            if (fiat) {
-                setValue(`outputs[${outputIndex}].fiat`, fiat, { shouldValidate: true });
+            const fiatValue = toFiatCurrency(
+                amount,
+                selectedCurrency.value,
+                fiatRates.current.rates,
+            );
+            if (fiatValue) {
+                setValue(`outputs[${outputIndex}].fiat`, fiatValue, { shouldValidate: true });
             }
         },
         [getValues, setValue, fiatRates],
@@ -282,15 +288,23 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
 
     // handle composedLevels change, setValues or errors for composeField
     useEffect(() => {
+        // do nothing if there are no composedLevels
         if (!composedLevels) return;
+
+        console.warn('---post composeTransaction', composeField, composedLevels);
+
         const values = getValues();
         const { selectedFee, setMaxOutputId } = values;
         let composed = composedLevels[selectedFee || 'normal'];
+
+        // selectedFee was not set (no interaction with Fees yet) and default (normal) fee tx is not valid
+        // try to switch to nearest possible composed transaction
         if (!selectedFee && composed.type === 'error') {
             // find nearest possible tx
             const nearest = Object.keys(composedLevels).find(
                 key => composedLevels[key].type !== 'error',
             );
+            // switch to it
             if (nearest) {
                 composed = composedLevels[nearest];
                 setValue('selectedFee', nearest);
@@ -298,40 +312,40 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
                     // @ts-ignore: type = error already filtered above
                     setValue('feePerUnit', composed.feePerByte);
                 }
-            } else {
-                composed = { type: 'error', error: 'FOO' };
             }
+            // or do nothing, use default composed tx
         }
 
-        if (typeof setMaxOutputId === 'number') {
-            if (!composed || composed.type === 'error') {
-                if (composeField) {
-                    setError(composeField, {
+        // composed transaction has error
+        if (!composed || composed.type === 'error') {
+            if (composeField) {
+                // setError to the field which created `composeRequest`
+                setError(composeField, {
+                    type: 'compose',
+                    message: 'TR_AMOUNT_IS_NOT_ENOUGH',
+                });
+            } else {
+                // setError to the all `Amount` fields, composeField not specified (load draft case)
+                values.outputs.forEach((_, i) => {
+                    setError(`outputs[${i}].amount`, {
                         type: 'compose',
                         message: 'TR_AMOUNT_IS_NOT_ENOUGH',
                     });
-                } else {
-                    console.warn('OUTS?', values.outputs);
-                }
-            } else {
-                const amount = formatNetworkAmount(composed.max, state.account.symbol);
-                setValue(`outputs[${setMaxOutputId}].amount`, amount, {
-                    shouldValidate: true,
-                    shouldDirty: true,
                 });
-                calculateFiat(setMaxOutputId, amount);
             }
+            return;
         }
 
-        console.warn('---post composeTransaction', composeField, composedLevels, values, composed);
-
-        // if ((!selectedFee || selectedFee === 'custom') && composedLevels.custom) {
-        //     if (composedLevels.custom.type !== 'error') {
-        //         setValue('selectedFee', 'custom');
-        //         setValue('feePerUnit', composedLevels.custom.feePerByte);
-        //         // setValue('feeLimit', selectedLevel.feeLimit);
-        //     }
-        // }
+        // set calculated "max" value to `Amount` input
+        if (typeof setMaxOutputId === 'number') {
+            const amount = formatNetworkAmount(composed.max, state.account.symbol);
+            setValue(`outputs[${setMaxOutputId}].amount`, amount, {
+                shouldValidate: true,
+                shouldDirty: true,
+            });
+            calculateFiat(setMaxOutputId, amount);
+            // TODO: save draft
+        }
     }, [
         composeField,
         composedLevels,
@@ -398,6 +412,35 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
         }
     }, [getValues, composedLevels, signTransaction, resetContext]);
 
+    // Create a compose request which should be processes in useEffect below
+    // This method should be called from the UI (input.onChange, button.click ...)
+    // react-hook-form doesn't propagate values right away and new values are available AFTER render tick
+    // Trying to processing request right after `input.onChange` will process a inconsistent values (values are not propagated yet, working with "previous" state at this point)
+    // ALSO this function doesn't have to be wrapped in useCallback since no component is using it as a hook dependency
+    // it will be cleared by garbage collector (useCallback are not)
+    const onComposeRequest = (field: string, fieldHasError = false) => {
+        // reset precomposed transactions
+        setComposedLevels(undefined);
+        // do nothing if there are no requests running and field got an error (component knows own errors in `onChange` blocks before they are propagated)
+        if (!state.isLoading && fieldHasError) return;
+        // set field for later use in composedLevels change useEffect
+        setComposeField(field);
+        // start composing
+        updateContext({ isLoading: true });
+        // call compose after re-render
+        composeRequest.current = field;
+    };
+
+    // Handle compose request
+    useEffect(() => {
+        // compose request is not set, do nothing
+        if (!composeRequest.current) return;
+        // TODO: check errors
+        // TODO: check "compose" errors
+        composeOnChange();
+        composeRequest.current = undefined;
+    }, [composeRequest, composeOnChange]);
+
     return {
         ...state,
         ...useFormMethods,
@@ -407,7 +450,7 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
         removeOutput,
         updateContext,
         resetContext,
-        composeTransaction: composeOnChange,
+        composeTransaction: onComposeRequest,
         signTransaction: sign,
         calculateFiat,
         changeFeeLevel,

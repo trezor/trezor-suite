@@ -302,9 +302,9 @@ export const composeBitcoinTransaction = async (
             maxFee = maxFee.minus(1);
         }
 
-        if (!customLevels.length) return;
+        console.warn('CUSTOM LEVELS!', customLevels, wrappedResponse);
 
-        console.warn('CUSTOM LEVELS!', customLevels);
+        if (!customLevels.length) return wrappedResponse;
 
         const customLevelsResponse = await TrezorConnect.composeTransaction({
             ...params,
