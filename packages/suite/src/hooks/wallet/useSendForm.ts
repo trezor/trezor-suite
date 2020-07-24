@@ -114,6 +114,8 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
 
     // private variables, used inside sendForm hook
     const draft = useRef<FormState | undefined>(undefined);
+    // const draftSave = useRef(false);
+    const [draftSaveRequest, setDraftSaveRequest] = useState(false);
     const composeRequest = useRef<string | undefined>(undefined);
     const [composeField, setComposeField] = useState<string | undefined>(undefined);
     const { composeDebounced } = useComposeDebounced();
@@ -221,10 +223,10 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
     const composeOnChange = useCallback(async () => {
         const composeInner = async () => {
             if (Object.keys(errors).length > 0) return;
-            // save draft
             const values = getValues();
-            saveDraft(values);
-            return composeTransaction(values, state.feeInfo);
+            // save draft (it could be changed later, after composing)
+            setDraftSaveRequest(true);
+            return composeTransaction(values, feeInfo);
         };
 
         try {
@@ -238,7 +240,7 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
         } catch (error) {
             // error should be thrown ONLY when response from trezor-connect shouldn't be processes (see composeDebounced hook)
         }
-    }, [state, updateContext, composeDebounced, errors, getValues, saveDraft, composeTransaction]);
+    }, [feeInfo, updateContext, composeDebounced, errors, getValues, composeTransaction]);
 
     const { fiatRates } = state;
     const calculateFiat = useCallback(
@@ -274,6 +276,12 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
         draft.current = undefined;
     }, [draft, composeDraft]);
 
+    useEffect(() => {
+        if (!draftSaveRequest) return;
+        saveDraft(getValues());
+        setDraftSaveRequest(false);
+    }, [draftSaveRequest, saveDraft, getValues]);
+
     // handle composedLevels change, setValues or errors for composeField
     useEffect(() => {
         // do nothing if there are no composedLevels
@@ -300,6 +308,7 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
                     // @ts-ignore: type = error already filtered above
                     setValue('feePerUnit', composed.feePerByte);
                 }
+                setDraftSaveRequest(true);
             }
             // or do nothing, use default composed tx
         }
@@ -332,7 +341,7 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
                 shouldDirty: true,
             });
             calculateFiat(setMaxOutputId, amount);
-            // TODO: save draft
+            setDraftSaveRequest(true);
         }
     }, [
         composeField,
@@ -346,17 +355,23 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
 
     const changeFeeLevel = useCallback(
         (currentLevel: FeeLevel, newLevel: FeeLevel['label']) => {
-            const values = getValues();
-            // catch first change to custom
-            if (newLevel === 'custom' && !(values.feePerUnit || values.feePerUnit === '')) {
-                setValue('feePerUnit', currentLevel.feePerUnit);
-                // setValue('feeLimit', currentLevel.feeLimit);
-                setValue('feeLimit', '1');
-            }
             setValue('selectedFee', newLevel);
-            control.reRender();
+            const isCustom = newLevel === 'custom';
+            // catch first change to custom
+            if (isCustom) {
+                setValue('feePerUnit', currentLevel.feePerUnit);
+                setValue('feeLimit', currentLevel.feeLimit);
+            }
+            if (isCustom && composedLevels) {
+                setComposedLevels({
+                    ...composedLevels,
+                    custom: composedLevels[currentLevel.label],
+                });
+            } else {
+                setDraftSaveRequest(true);
+            }
         },
-        [getValues, setValue, control],
+        [setValue, composedLevels],
     );
 
     const addOutput = useCallback(() => {

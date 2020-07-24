@@ -226,3 +226,13 @@ export const findComposeErrors = (errors: UseFormMethods['errors'], prefix?: str
     });
     return composeErrors;
 };
+
+export const findValidOutputs = (values: FormState) => {
+    if (!values || !Array.isArray(values.outputs)) return [];
+    return values.outputs.filter(
+        (output, index) =>
+            output &&
+            typeof output.amount === 'string' &&
+            (values.setMaxOutputId === index || output.amount.length > 0),
+    );
+};

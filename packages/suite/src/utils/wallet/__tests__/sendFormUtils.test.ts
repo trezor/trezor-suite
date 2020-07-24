@@ -8,6 +8,7 @@ import {
     calculateTotal,
     calculateMax,
     findComposeErrors,
+    findValidOutputs,
 } from '../sendFormUtils';
 
 describe('sendForm utils', () => {
@@ -73,5 +74,32 @@ describe('sendForm utils', () => {
                 invalidArray: [null, true, 1, 'A', {}],
             }),
         ).toEqual(['outputs[0].amount', 'outputs[1].address', 'topLevelField']);
+    });
+
+    it('findValidOutputs', () => {
+        // @ts-ignore: params
+        expect(findValidOutputs(null)).toEqual([]);
+        // @ts-ignore: params
+        expect(findValidOutputs(true)).toEqual([]);
+        // @ts-ignore: params
+        expect(findValidOutputs(1)).toEqual([]);
+        // @ts-ignore: params
+        expect(findValidOutputs('A')).toEqual([]);
+
+        // @ts-ignore: params
+        expect(findValidOutputs({ outputs: [] })).toEqual([]);
+
+        // @ts-ignore: params
+        expect(findValidOutputs({ outputs: [null, {}, { amount: '' }, { amount: '1' }] })).toEqual([
+            { amount: '1' },
+        ]);
+
+        expect(
+            findValidOutputs({
+                setMaxOutputId: 2,
+                // @ts-ignore: params
+                outputs: [{ amount: '' }, { amount: '1' }, { amount: '', fiat: '1' }],
+            }),
+        ).toEqual([{ amount: '1' }, { amount: '', fiat: '1' }]);
     });
 });

@@ -22,6 +22,7 @@ import {
     getFeeLevels,
     serializeEthereumTx,
     prepareEthereumTransaction,
+    findValidOutputs,
 } from '@wallet-utils/sendFormUtils';
 
 import { Dispatch, GetState } from '@suite-types';
@@ -254,13 +255,15 @@ export const composeBitcoinTransaction = async (
 
     if (composedOutputs.length < 1) return;
 
-    // const account1: PrecomposeParams['account'] = {
-    //     path: account.path,
-    //     addresses: account.addresses,
-    //     utxo: account.utxo,
-    // };
-
     const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
+    // in case when selectedFee is set to 'custom' construct this FeeLevel from values
+    if (formValues.selectedFee === 'custom') {
+        predefinedLevels.push({
+            label: 'custom',
+            feePerUnit: formValues.feePerUnit,
+            blocks: -1,
+        });
+    }
     const params = {
         account: {
             path: account.path,
@@ -285,12 +288,14 @@ export const composeBitcoinTransaction = async (
     const wrappedResponse: PrecomposedLevels = {};
 
     response.payload.forEach((tx, index) => {
-        const feeLabel = feeInfo.levels[index].label as FeeLevel['label'];
+        const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
         wrappedResponse[feeLabel] = tx;
     });
 
     const hasAtLeastOneValid = response.payload.find(r => r.type !== 'error');
-    if (!hasAtLeastOneValid) {
+
+    // there is no valid tx in predefinedLevels and there is no custom level
+    if (!hasAtLeastOneValid && !wrappedResponse.custom) {
         const { minFee } = feeInfo;
         console.warn('LEVELS', predefinedLevels);
         let maxFee = new BigNumber(predefinedLevels[predefinedLevels.length - 1].feePerUnit).minus(
@@ -308,30 +313,18 @@ export const composeBitcoinTransaction = async (
 
         const customLevelsResponse = await TrezorConnect.composeTransaction({
             ...params,
-            account: params.account, // needs to be present in order to correct resolve of trezor-connect params overload
+            account: params.account, // needs to be present in order to correct resolve type of trezor-connect params overload
             feeLevels: customLevels,
         });
 
         console.warn('CUSTOM LEVELS RESPONSE', customLevelsResponse);
 
-        if (!customLevelsResponse.success) return; // TODO: show toast?
+        if (!customLevelsResponse.success) return wrappedResponse; // TODO: show toast?
 
         const customValid = customLevelsResponse.payload.findIndex(r => r.type !== 'error');
         if (customValid >= 0) {
             wrappedResponse.custom = customLevelsResponse.payload[customValid];
         }
-
-        // if (response.payload[0].type !== 'error') {
-        //     const max = new BigNumber(response.payload[0].max).isLessThan('0')
-        //         ? '0'
-        //         : formatNetworkAmount(response.payload[0].max.toString(), account.symbol);
-        //     return { ...response.payload[0], max };
-        // }
-
-        // return {
-        //     type: 'error',
-        //     error: response.payload[0].error,
-        // };
     }
 
     return wrappedResponse;
@@ -344,9 +337,14 @@ export const composeTransactionNew = (
     const { selectedAccount } = getState().wallet;
     if (selectedAccount.status !== 'loaded') return;
 
+    const validOutputs = findValidOutputs(formValues);
+    if (validOutputs.length === 0) return;
+
+    const values = { ...formValues, outputs: validOutputs };
+
     const { account } = selectedAccount;
     if (account.networkType === 'bitcoin') {
-        return composeBitcoinTransaction(formValues, account, feeInfo);
+        return composeBitcoinTransaction(values, account, feeInfo);
     }
     // TODO: translate formValues/sendValues to trezor-connect params
     // TODO: return precomposed transactions for multiple levels (will be stored in SendContext)

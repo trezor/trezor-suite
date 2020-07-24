@@ -35,7 +35,13 @@ export default () => {
 
     const values = getValues();
     const composedTx = composedLevels ? composedLevels[values.selectedFee || 'normal'] : undefined;
-    const isDisabled = !composedTx || isLocked() || (device && !device.available) || !online;
+    const isDisabled =
+        !composedTx ||
+        composedTx.type !== 'final' ||
+        isLocked() ||
+        (device && !device.available) ||
+        !online;
+
     return (
         <Wrapper>
             <Row>
