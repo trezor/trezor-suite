@@ -90,7 +90,7 @@ export const saveAccountTransactions = (account: Account) => async (
     return db.addItems('txs', orderedTxs, true);
 };
 
-export const removeAccountGraph = (account: Account) => () => {
+export const removeAccountGraph = async (account: Account) => {
     return db.removeItemByIndex('graph', 'accountKey', [
         account.descriptor,
         account.symbol,

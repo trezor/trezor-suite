@@ -84,7 +84,7 @@
         "babel-plugin-react-intl": "^7.5.23",
         "canvas": "^2.6.1",
         "cross-env": "^7.0.2",
-        "fake-indexeddb": "^3.0.0",
+        "fake-indexeddb": "^3.1.2",
         "jest-watch-typeahead": "^0.4.2",
         "node-fetch": "^2.6.0",
         "react-test-renderer": "^16.12.0",
