@@ -1,12 +1,12 @@
 import { ERC20_GAS_LIMIT, ERC20_TRANSFER } from '@wallet-constants/sendForm';
-import { SendFormState } from '@wallet-types/sendForm';
 import { SendContext, FeeInfo, EthTransactionData } from '@wallet-hooks/useSendContext';
 import { Network, Account } from '@wallet-types';
 import { amountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import BigNumber from 'bignumber.js';
 import Common from 'ethereumjs-common';
 import { Transaction, TxData } from 'ethereumjs-tx';
-import { FieldError, NestDataObject } from 'react-hook-form';
+import { FieldError, UseFormMethods } from 'react-hook-form';
+import { FormState } from '@wallet-types/sendForm';
 import { EthereumTransaction, FeeLevel } from 'trezor-connect';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 
@@ -200,4 +200,29 @@ export const getFeeUnits = (networkType: 'ripple' | 'bitcoin') => {
     }
 
     return { value: 'sat', label: 'sat/B' };
+};
+
+// Find all errors with type='compose' in FormState errors
+export const findComposeErrors = (errors: UseFormMethods['errors'], prefix?: string) => {
+    const composeErrors: string[] = [];
+    if (!errors || typeof errors !== 'object') return composeErrors;
+    Object.keys(errors).forEach(key => {
+        const val = errors[key];
+        if (val) {
+            if (Array.isArray(val)) {
+                // outputs
+                val.forEach((output, index) =>
+                    composeErrors.push(...findComposeErrors(output, `outputs[${index}]`)),
+                );
+            } else if (
+                typeof val === 'object' &&
+                Object.prototype.hasOwnProperty.call(val, 'type') &&
+                val.type === 'compose'
+            ) {
+                // regular top level field
+                composeErrors.push(prefix ? `${prefix}.${key}` : key);
+            }
+        }
+    });
+    return composeErrors;
 };

@@ -6,6 +6,7 @@ import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { createDeferred, Deferred } from '@suite-utils/deferred';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
+import { findComposeErrors } from '@wallet-utils/sendFormUtils';
 import { FormState, SendContextProps, SendContextState, Output } from '@wallet-types/sendForm';
 
 export const SendContext = createContext<SendContextState | null>(null);
@@ -102,28 +103,6 @@ const useComposeDebounced = () => {
     };
 };
 
-// const findErrors = (errors: any) => {
-//     let hasErrors = false;
-//     Object.keys(errors).forEach(key => {
-//         const val = errors[key];
-//         if (val) {
-//             if (Array.isArray(val)) {
-//                 val.forEach(output => findErrors(output));
-//                 // findErrors
-//             } else {
-//                 val.type !==
-//             }
-
-//         }
-//         // if (!val)
-
-//         if (key === 'outputs') {
-//             errors.output;
-//         } else {
-//         }
-//     });
-// };
-
 // Mounted in top level index: @wallet-views/send
 // returned ContextState is a object provided as SendContext values with custom callbacks for updating/resetting state
 export const useSendForm = (props: SendContextProps): SendContextState => {
@@ -151,7 +130,16 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
     // register `react-hook-form`, default values are set later in "loadDraft" useEffect block
     const useFormMethods = useForm<FormState>({ mode: 'onChange' });
 
-    const { control, reset, register, getValues, errors, setValue, setError } = useFormMethods;
+    const {
+        control,
+        reset,
+        register,
+        getValues,
+        errors,
+        setValue,
+        setError,
+        clearErrors,
+    } = useFormMethods;
 
     // register custom form fields (without HTMLElement)
     useEffect(() => {
@@ -423,6 +411,10 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
         setComposedLevels(undefined);
         // do nothing if there are no requests running and field got an error (component knows own errors in `onChange` blocks before they are propagated)
         if (!state.isLoading && fieldHasError) return;
+        const composeErrors = findComposeErrors(errors);
+        if (composeErrors.length > 0) {
+            clearErrors(composeErrors);
+        }
         // set field for later use in composedLevels change useEffect
         setComposeField(field);
         // start composing

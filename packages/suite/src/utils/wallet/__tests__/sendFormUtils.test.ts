@@ -7,6 +7,7 @@ import {
     getInputState,
     calculateTotal,
     calculateMax,
+    findComposeErrors,
 } from '../sendFormUtils';
 
 describe('sendForm utils', () => {
@@ -41,5 +42,36 @@ describe('sendForm utils', () => {
 
     it('calculateMax', () => {
         expect(calculateMax('2', '1')).toEqual('1');
+    });
+
+    it('findComposeErrors', () => {
+        expect(findComposeErrors({})).toEqual([]);
+        // @ts-ignore: params
+        expect(findComposeErrors(null)).toEqual([]);
+        // @ts-ignore: params
+        expect(findComposeErrors(true)).toEqual([]);
+        // @ts-ignore: params
+        expect(findComposeErrors(1)).toEqual([]);
+        // @ts-ignore: params
+        expect(findComposeErrors('A')).toEqual([]);
+
+        expect(findComposeErrors({ someField: { type: 'validate' } })).toEqual([]);
+        expect(findComposeErrors({ someField: { type: 'compose' } })).toEqual(['someField']);
+        expect(
+            findComposeErrors({
+                someField: { type: 'validate' },
+                outputs: [
+                    { amount: { type: 'compose' }, address: { type: 'validate' } },
+                    { amount: { type: 'validate' }, address: { type: 'compose' } },
+                ],
+                topLevelField: { type: 'compose' },
+                invalidFieldNull: null,
+                invalidFieldBool: true,
+                invalidFieldNumber: 1,
+                invalidFieldString: 'A',
+                invalidFieldEmpty: {},
+                invalidArray: [null, true, 1, 'A', {}],
+            }),
+        ).toEqual(['outputs[0].amount', 'outputs[1].address', 'topLevelField']);
     });
 });
