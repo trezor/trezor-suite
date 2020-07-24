@@ -22,14 +22,18 @@ class GoogleProvider implements AbstractMetadataProvider {
     }
 
     async disconnect() {
-        return true;
+        try {
+            await this.client.revoke();
+            return true;
+        } catch (_err) {
+            return false;
+        }
     }
 
     async getFileContent(file: string) {
         console.warn('getFileContent', file);
 
         const id = await this.client.getIdByName(`${file}.mtdt`);
-        console.warn('id', id);
         if (!id) return;
 
         const response = await this.client.get(
@@ -41,16 +45,11 @@ class GoogleProvider implements AbstractMetadataProvider {
             id,
         );
 
-        if (!response.success) {
-            throw new Error('failed to download encrypted file from google drive');
-        }
-
-        return Buffer.from(response.payload, 'hex');
+        return Buffer.from(response, 'hex');
     }
 
     async setFileContent(file: string, content: Buffer) {
         const id = await this.client.getIdByName(`${file}.mtdt`);
-
         if (id) {
             await this.client.update(
                 {
@@ -78,19 +77,12 @@ class GoogleProvider implements AbstractMetadataProvider {
 
     async getCredentials() {
         if (!this.client.token) return;
-        try {
-            const response = await this.client.getTokenInfo();
-            console.warn('res', response);
-            if (!response.success) return;
-            return {
-                type: 'google',
-                token: this.client.token,
-                // @ts-ignore todo:?
-                user: response.payload.user.displayName,
-            } as const;
-        } catch (error) {
-            console.warn('getCredentials error', error);
-        }
+        const response = await this.client.getTokenInfo();
+        return {
+            type: 'google',
+            token: this.client.token,
+            user: response.user.displayName,
+        } as const;
     }
 
     isLoading() {

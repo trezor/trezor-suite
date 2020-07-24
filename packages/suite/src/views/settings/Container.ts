@@ -24,6 +24,8 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
             initMetadata: metadataActions.init,
             // enableMetadata: metadataActions.enableMetadata,
             disableMetadata: metadataActions.disableMetadata,
+            initProvider: metadataActions.initProvider,
+            disconnectProvider: metadataActions.disconnectProvider,
         },
         dispatch,
     );

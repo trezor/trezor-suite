@@ -108,7 +108,6 @@ const initStore = (state: State) => {
             // automatically resolve modal decision
             switch (action.payload.type) {
                 case 'metadata-add':
-                    console.warn('auto in test', action.payload);
                     action.payload.decision.resolve(action.payload.value || 'my label');
                     break;
                 case 'metadata-provider':
@@ -180,28 +179,6 @@ describe('Metadata Actions', () => {
         });
     });
 
-    // fixtures.fetchMetadata.forEach(f => {
-    //     it(`fetchMetadata: ${f.description}`, async () => {
-    //         jest.mock('@suite/services/metadata/DropboxProvider');
-    //         DropboxProvider.prototype.getFileContent = () =>
-    //             Promise.resolve(
-    //                 Buffer.from(
-    //                     'a51f4180855e22cf948febf317e7d9bd5b82765852ee491bbc7aae46cc28d6318f8780e58f2d177f8bf09a39332352be97144576e53266ad94d1ca4706234dce6e',
-    //                     'hex',
-    //                 ),
-    //             );
-    //         // @ts-ignore
-    //         const store = initStore(getInitialState(f.initialState));
-    //         // @ts-ignore, params
-    //         await store.dispatch(metadataActions.fetchMetadata(f.params));
-    //         if (!f.result) {
-    //             expect(store.getActions().length).toEqual(0);
-    //         } else {
-    //             expect(store.getActions()).toEqual(f.result);
-    //         }
-    //     });
-    // });
-
     fixtures.connectProvider.forEach(f => {
         it(`connectProvider: ${f.description}`, async () => {
             jest.mock('@suite/services/metadata/DropboxProvider');
@@ -247,7 +224,6 @@ describe('Metadata Actions', () => {
 
             // @ts-ignore, params
             const result = await store.dispatch(metadataActions.addMetadata(f.params));
-            console.warn(store.getActions());
 
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);

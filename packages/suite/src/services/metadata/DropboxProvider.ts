@@ -20,7 +20,6 @@ export const getOauthToken = (url: string) => {
         if (!['https://track-suite.herokuapp.com', window.location.origin].includes(e.origin)) {
             return;
         }
-        console.warn('OnMessage', e, e.data);
 
         if (typeof e.data !== 'string') return;
 
@@ -73,19 +72,25 @@ class DropboxProvider implements AbstractMetadataProvider {
 
         try {
             const token = await getOauthToken(url);
-            console.log('dropbox token', token);
 
             this.client.setAccessToken(token);
             this.connected = true;
             return true;
         } catch (error) {
             console.warn('connect error', error);
-            return false;
+            // return false;
+            throw error;
         }
     }
 
     async disconnect() {
-        return true;
+        try {
+            await this.client.authTokenRevoke();
+            return true;
+        } catch (error) {
+            // todo: silent error, maybe ok here?
+            return false;
+        }
     }
 
     async getFileContent(file: string) {
@@ -104,7 +109,8 @@ class DropboxProvider implements AbstractMetadataProvider {
                 return buffer;
             }
         } catch (error) {
-            console.warn('getFileContent error', error);
+            console.warn('getFileContent error', error.status);
+            throw error;
         }
     }
 
@@ -119,7 +125,7 @@ class DropboxProvider implements AbstractMetadataProvider {
             });
         } catch (error) {
             console.warn('setFileContent error', error);
-            // throw error;
+            throw error;
         }
     }
 
@@ -132,17 +138,12 @@ class DropboxProvider implements AbstractMetadataProvider {
     }
 
     async getCredentials() {
-        try {
-            const account = await this.client.usersGetCurrentAccount();
-            console.warn('mnau haf');
-            return {
-                type: 'dropbox',
-                token: this.client.getAccessToken(),
-                user: account.name.given_name,
-            } as const;
-        } catch (error) {
-            console.warn('getCredentials error', error);
-        }
+        const account = await this.client.usersGetCurrentAccount();
+        return {
+            type: 'dropbox',
+            token: this.client.getAccessToken(),
+            user: account.name.given_name,
+        } as const;
     }
 }
 

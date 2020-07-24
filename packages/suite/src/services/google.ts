@@ -1,11 +1,11 @@
+/* eslint no-throw-literal: 0 */
+
 import { Deferred, createDeferred } from '@suite-utils/deferred';
 import { urlHashParams } from '@suite-utils/metadata';
 import { getRandomId } from '@suite-utils/random';
 
 const CLIENT_ID = '842348096891-efhc485636d5t09klvrve0pi4njhq3l8.apps.googleusercontent.com';
 const SCOPES = 'https://www.googleapis.com/auth/drive.appdata';
-
-// https://www.googleapis.com/auth/drive.file
 
 const WINDOW_TITLE = 'Google auth popup';
 const WINDOW_WIDTH = 600;
@@ -32,11 +32,6 @@ type BodyParams =
       }
     | string;
 
-type ResponseError = {
-    success: false;
-    error: string;
-};
-
 interface ListParams {
     query?: QueryParams;
     body?: never;
@@ -60,55 +55,28 @@ type CreateParams = {
 type ApiParams = ListParams | GetParams | UpdateParams | CreateParams;
 
 type ListResponse = {
-    success: true;
-    payload: {
-        files: [
-            {
-                kind: string;
-                id: string;
-                name: string;
-                mimeType: string;
-            },
-        ];
-    };
-};
-
-type GetResponse = {
-    success: true;
-    payload: string;
+    files: [
+        {
+            kind: string;
+            id: string;
+            name: string;
+            mimeType: string;
+        },
+    ];
 };
 
 type CreateResponse = {
-    success: true;
-    payload: {
-        kind: string;
-        id: string;
-        name: string;
-        mimeType: string;
-    };
+    kind: string;
+    id: string;
+    name: string;
+    mimeType: string;
 };
 
-// todo: use generic to avoid repeating success: true and payload
-// type GetTokenInfoResponse = {
-//     success: true;
-//     payload: {
-//         access_type: 'online' | 'offline';
-//         aud: string;
-//         azp: string;
-//         email: string;
-//         email_verified: 'true' | 'false'; // bool?
-//         exp: string; // number?
-//         expires_in: string; // number?
-//         scope: string;
-//         sub: string; // number?
-//     };
-// };
 type GetTokenInfoResponse = {
-    success: true;
-    payload: {
-        token: string;
-        type: 'google';
-        user: string;
+    token: string;
+    type: 'google';
+    user: {
+        displayName: string;
     };
 };
 
@@ -121,7 +89,7 @@ class Client {
     token?: string;
     // status: number;
     nameIdMap: Record<string, string>;
-    listPromise?: Promise<ListResponse | ResponseError>;
+    listPromise?: Promise<ListResponse>;
 
     constructor(token?: string) {
         this.token = token;
@@ -152,7 +120,7 @@ class Client {
             if (!['https://track-suite.herokuapp.com', window.location.origin].includes(e.origin)) {
                 return;
             }
-            console.warn('OnMessage', e, e.data);
+            // console.warn('OnMessage', e, e.data);
 
             if (typeof e.data !== 'string') return;
 
@@ -191,126 +159,76 @@ class Client {
      */
     async revoke() {
         if (!this.token) return;
-        try {
-            this.call(`https://oauth2.googleapis.com/revoke?token=${this.token}`, {
-                method: 'GET',
-            });
-            return {
-                success: true,
-            };
-        } catch (err) {
-            return {
-                success: false,
-            };
-        }
+        this.call(`https://oauth2.googleapis.com/revoke?token=${this.token}`, {
+            method: 'POST',
+        });
+        this.token = '';
     }
 
-    async getTokenInfo(): Promise<GetTokenInfoResponse | ResponseError> {
-        try {
-            const response = await this.call(
-                `https://www.googleapis.com/drive/v3/about?fields=user&access_token=${this.token}`,
-                // `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${this.token}`,
-                { method: 'GET' },
-                {},
-            );
-            const json = await response.json();
-            console.warn('json', json);
-            return {
-                success: true,
-                payload: json,
-            };
-        } catch (err) {
-            return {
-                success: false,
-                error: err.message,
-            };
-        }
+    async getTokenInfo(): Promise<GetTokenInfoResponse> {
+        const response = await this.call(
+            `https://www.googleapis.com/drive/v3/about?fields=user&access_token=${this.token}`,
+            // `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${this.token}`,
+            { method: 'GET' },
+            {},
+        );
+        const json = await response.json();
+        return json;
     }
+
     /**
      * implementation of https://developers.google.com/drive/api/v3/reference/files/list
      */
-    async list(params: ListParams): Promise<ListResponse | ResponseError> {
-        try {
-            const response = await this.call(
-                'https://www.googleapis.com/drive/v3/files',
-                {
-                    method: 'GET',
-                },
-                params,
-            );
+    async list(params: ListParams): Promise<ListResponse> {
+        const response = await this.call(
+            'https://www.googleapis.com/drive/v3/files',
+            {
+                method: 'GET',
+            },
+            params,
+        );
 
-            const json: ListResponse['payload'] = await response.json();
-            this.nameIdMap = {};
-            json.files.forEach(file => {
-                this.nameIdMap[file.name] = file.id;
-            });
-            console.warn('is list mocked? ', json);
-            return {
-                success: true,
-                payload: json,
-            };
-        } catch (err) {
-            return {
-                success: false,
-                error: err.message,
-            };
-        }
+        const json: ListResponse = await response.json();
+        this.nameIdMap = {};
+        json.files.forEach(file => {
+            this.nameIdMap[file.name] = file.id;
+        });
+        return json;
     }
 
     /**
      * implementation of https://developers.google.com/drive/api/v3/reference/files/get
      */
-    async get(params: GetParams, id: string): Promise<GetResponse | ResponseError> {
-        try {
-            const response = await this.call(
-                `https://www.googleapis.com/drive/v3/files/${id}`,
-                {
-                    method: 'GET',
-                },
-                params,
-            );
-            return {
-                success: true,
-                payload: await response.text(),
-            };
-        } catch (err) {
-            return {
-                success: false,
-                error: err.message,
-            };
-        }
+    async get(params: GetParams, id: string) {
+        const response = await this.call(
+            `https://www.googleapis.com/drive/v3/files/${id}`,
+            {
+                method: 'GET',
+            },
+            params,
+        );
+        return response.text();
     }
 
     /**
      * implementation of https://developers.google.com/drive/api/v3/reference/files/create
      */
-    async create(params: CreateParams, payload: string): Promise<CreateResponse | ResponseError> {
+    async create(params: CreateParams, payload: string): Promise<CreateResponse> {
         params.body = this.getWriteBody(params.body, payload);
-
-        try {
-            const response = await this.call(
-                'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type':
-                            typeof params.body === 'string'
-                                ? `multipart/related; boundary="${BOUNDARY}"`
-                                : 'application/json',
-                    },
+        const response = await this.call(
+            'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type':
+                        typeof params.body === 'string'
+                            ? `multipart/related; boundary="${BOUNDARY}"`
+                            : 'application/json',
                 },
-                params,
-            );
-            return {
-                success: true,
-                payload: await response.json(),
-            };
-        } catch (err) {
-            return {
-                success: false,
-                error: err.message,
-            };
-        }
+            },
+            params,
+        );
+        return response.json();
     }
 
     /**
@@ -318,28 +236,17 @@ class Client {
      */
     async update(params: UpdateParams, payload: string, id: string) {
         params.body = this.getWriteBody(params.body, payload);
-
-        try {
-            const response = await this.call(
-                `https://www.googleapis.com/upload/drive/v3/files/${id}?uploadType=multipart`,
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': `multipart/related; boundary="${BOUNDARY}"`,
-                    },
+        const response = await this.call(
+            `https://www.googleapis.com/upload/drive/v3/files/${id}?uploadType=multipart`,
+            {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': `multipart/related; boundary="${BOUNDARY}"`,
                 },
-                params,
-            );
-            return {
-                success: true,
-                payload: await response.json(),
-            };
-        } catch (err) {
-            return {
-                success: false,
-                error: err.message,
-            };
-        }
+            },
+            params,
+        );
+        return response.json;
     }
 
     /**
@@ -405,15 +312,22 @@ class Client {
         }
 
         const response = await fetch(url, fetchOptions);
+        console.warn(response);
 
-        // todo: handle errors better
-        if (response.status === 401) {
-            this.token = '';
-            throw new Error('authorization error');
+        if (response.status === 200) return response;
+        switch (response.status) {
+            case 401:
+            case 403:
+                this.token = '';
+                throw { response, status: response.status, error: 'authorization error' };
+            default:
+                console.error(response);
+                throw {
+                    response,
+                    status: response.status,
+                    error: 'error communicating with google drive',
+                };
         }
-        if (response.status !== 200) throw new Error('failed to get data from google drive');
-
-        return response;
     }
 }
 

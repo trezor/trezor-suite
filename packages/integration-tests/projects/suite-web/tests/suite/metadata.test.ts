@@ -1,6 +1,5 @@
 // @stable
 
-
 const stubFetch = (uri: string, options: Parameters<typeof fetch>[1]) => {
     console.log(uri, options);
 
@@ -152,5 +151,45 @@ describe('Metadata', () => {
         cy.getTestElement('@passphrase/input').type('make metadata gr8 again');
         cy.getTestElement('@passphrase/confirm-checkbox').click();
         cy.getTestElement('@passphrase/hidden/submit-button').click();
+    });
+
+    it ('Token expires', () => {
+        cy.task('startEmu', { wipe: true });
+        cy.task('setupEmu');
+
+        cy.prefixedVisit('/settings', { onBeforeLoad: (win: Window) => {
+            cy.stub(win, 'open', stubOpen(win));
+            cy.stub(win, 'fetch', (uri, options) => {
+                if (uri.includes('https://www.googleapis.com/upload')) {
+                    return Promise.resolve({
+                        status: 401,
+
+                    })
+                }
+                return stubFetch(uri, options)
+
+            });
+        }});
+
+        cy.passThroughInitialRun();
+
+        cy.getTestElement('@settings/metadata-switch').click({ force: true });
+        cy.log('interesting is that init metadata flow does not start, it is because device is not authorized')
+
+        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.task('pressYes');
+        cy.getTestElement('@modal/metadata-provider/google-button').click();
+        cy.getTestElement('@modal/metadata-provider').should('not.exist');
+
+        // todo: wait for discovery to finish and remove this
+        cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 });
+        cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 }).should('not.be.visible');
+            
+        cy.log('at this moment, oauth token expires');
+        cy.getTestElement('@account-menu/btc/normal/0/add-label-button').click();
+        cy.getTestElement('@modal/add-metadata/input').type('Kvooo');
+        cy.getTestElement('@modal/add-metadata/submit-button').click();
+        cy.get('body').should('contain.text', 'Failed to sync data with cloud provider');
+
     })
 });

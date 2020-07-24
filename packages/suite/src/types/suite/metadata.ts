@@ -76,3 +76,14 @@ export interface MetadataState {
     enabled: boolean; // global for all devices
     provider?: MetadataProviderCredentials;
 }
+
+/**
+ * Error returned by metadata providers from async calls.
+ * - DropboxProvider implements dropbox library which returns errors in this shape
+ * - GoogleProvider has own implementation of REST endpoints and accommodates to this shape
+ */
+export interface MetadataProviderError {
+    error: string;
+    status: number;
+    response: Response;
+}

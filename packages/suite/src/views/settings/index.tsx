@@ -42,6 +42,8 @@ export default ({
     clearStores,
     goto,
     initMetadata,
+    initProvider,
+    disconnectProvider,
     // enableMetadata,
     disableMetadata,
 }: Props) => {
@@ -101,7 +103,6 @@ export default ({
                 </SectionItem>
             </Section>
 
-            {/* TODO: KEEP IT HERE AND UNCOMMENT WHEN READY */}
             <Section title={<Translation id="TR_LABELING" />}>
                 <SectionItem>
                     <TextColumn
@@ -116,6 +117,32 @@ export default ({
                         />
                     </ActionColumn>
                 </SectionItem>
+                {metadata.enabled && metadata.provider && (
+                    <SectionItem>
+                        <TextColumn
+                            title={`Connected to ${metadata.provider.type} as ${metadata.provider.user}`}
+                            description="Your labeling is synced with cloud storage provider. Your data are safe, only your Trezor can decrypt them."
+                        />
+                        <ActionColumn>
+                            <ActionButton variant="secondary" onClick={() => disconnectProvider()}>
+                                Disconnect
+                            </ActionButton>
+                        </ActionColumn>
+                    </SectionItem>
+                )}
+                {metadata.enabled && !metadata.provider && (
+                    <SectionItem>
+                        <TextColumn
+                            title="Labeling not persistent"
+                            description="To make your labels persistent and available on different devices connect to cloud storage provider. Either Google drive or Dropbox are available."
+                        />
+                        <ActionColumn>
+                            <ActionButton variant="secondary" onClick={() => initProvider()}>
+                                Connect
+                            </ActionButton>
+                        </ActionColumn>
+                    </SectionItem>
+                )}
             </Section>
 
             <Section title={<Translation id="TR_APPLICATION" />}>
