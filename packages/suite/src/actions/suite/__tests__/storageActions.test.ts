@@ -6,6 +6,8 @@ import * as suiteActions from '../suiteActions';
 import * as languageActions from '../../settings/languageActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
+import * as discoveryActions from '@wallet-actions/discoveryActions';
+import * as accountActions from '@wallet-actions/accountActions';
 import * as SUITE from '@suite-actions/constants/suiteConstants';
 
 import accountsReducer from '@wallet-reducers/accountsReducer';
@@ -16,11 +18,13 @@ import discoveryReducer from '@wallet-reducers/discoveryReducer';
 import sendFormReducer from '@wallet-reducers/sendFormReducer';
 import graphReducer from '@wallet-reducers/graphReducer';
 import transactionsReducer from '@wallet-reducers/transactionReducer';
+import fiatRatesReducer from '@wallet-reducers/fiatRatesReducer';
 import storageMiddleware from '@wallet-middlewares/storageMiddleware';
-import { getAccountTransactions } from '@wallet-utils/accountUtils';
+import { getAccountTransactions, getAccountIdentifier } from '@wallet-utils/accountUtils';
 import { AppState } from '@suite-types';
 // in-memory implementation of indexedDB
 import 'fake-indexeddb/auto';
+import { SETTINGS } from '@suite/config/suite';
 
 const { getSuiteDevice, getWalletAccount, getWalletTransaction } = global.JestMocks;
 
@@ -41,17 +45,19 @@ jest.mock('@trezor/suite-storage', () => {
 const dev1 = getSuiteDevice({
     state: 'state1',
     path: '1',
+    instance: 1,
     remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()
 });
 const dev2 = getSuiteDevice({
     state: 'state2',
     path: '2',
+    instance: 1,
     remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()
 });
 const dev2Instance1 = getSuiteDevice({
     state: 'state3',
     path: '2',
-    instance: 1,
+    instance: 2,
     remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()
 });
 
@@ -118,6 +124,10 @@ export const getInitialState = (prevState?: Partial<PartialState>, action?: any)
         ),
         transactions: transactionsReducer(
             prevState && prevState.wallet ? prevState.wallet.transactions : undefined,
+            action || ({ type: 'foo' } as any),
+        ),
+        fiat: fiatRatesReducer(
+            prevState && prevState.wallet ? prevState.wallet.fiat : undefined,
             action || ({ type: 'foo' } as any),
         ),
         graph: graphReducer(
@@ -281,6 +291,11 @@ describe('Storage actions', () => {
         const storedSend = await storageActions.loadSendForm(dev1.state!);
         expect(storedSend).toEqual(send);
 
+        // create discovery objects
+        store.dispatch(discoveryActions.create(dev1.state!, dev1));
+        store.dispatch(discoveryActions.create(dev2.state!, dev2));
+        store.dispatch(discoveryActions.create(dev2Instance1.state!, dev2Instance1));
+
         // add txs
         store.dispatch(transactionActions.add([tx1], acc1));
         store.dispatch(transactionActions.add([tx2], acc2));
@@ -290,42 +305,77 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.rememberDevice(dev2, true));
         await store.dispatch(storageActions.rememberDevice(dev2Instance1, true));
 
+        // update discovery object
+        store.dispatch(
+            discoveryActions.update({
+                deviceState: dev2.state!,
+                networks: ['btc', 'ltc'],
+            }),
+        );
+
         await store.dispatch(storageActions.loadStorage());
 
         // stored devices
-        expect(getLastAction(store).payload.devices.length).toEqual(3);
-        expect(getLastAction(store).payload.devices[0]).toEqual({ ...dev1, path: '' });
+        const loadFromStorageAction = getLastAction(store);
+        expect(loadFromStorageAction.payload.devices.length).toEqual(3);
+        expect(loadFromStorageAction.payload.devices[0]).toEqual({ ...dev1, path: '' });
+
+        // stored discoveries
+        const storedDiscovery = loadFromStorageAction.payload.wallet.discovery;
+        // all 3 discoveries saved
+        expect(storedDiscovery.length).toEqual(3);
+        expect(storedDiscovery.find((d: any) => d.deviceState === dev1.state!)).toBeTruthy();
+        expect(storedDiscovery.find((d: any) => d.deviceState === dev2.state!)).toBeTruthy();
+        expect(
+            storedDiscovery.find((d: any) => d.deviceState === dev2Instance1.state!),
+        ).toBeTruthy();
+
+        // discovery updated synced
+        expect(
+            storedDiscovery.find((d: any) => d.deviceState === dev2.state!)?.networks,
+        ).toStrictEqual(['btc', 'ltc']);
+
         // stored txs
         const acc1Txs = getAccountTransactions(
-            getLastAction(store).payload.wallet.transactions.transactions,
+            loadFromStorageAction.payload.wallet.transactions.transactions,
             acc1,
         );
 
         expect(acc1Txs.length).toEqual(1);
         expect(acc1Txs[0].deviceState).toEqual(tx1.deviceState);
         // stored accounts
-        expect(getLastAction(store).payload.wallet.accounts.length).toEqual(2);
-        expect(getLastAction(store).payload.wallet.accounts[0]).toEqual(acc1);
+        expect(loadFromStorageAction.payload.wallet.accounts.length).toEqual(2);
+        expect(loadFromStorageAction.payload.wallet.accounts[0]).toEqual(acc1);
 
         // stored device2
-        expect(getLastAction(store).payload.devices[1].state).toEqual(dev2.state);
+        expect(loadFromStorageAction.payload.devices[1].state).toEqual(dev2.state);
         // stored txs
         const acc2Txs = getAccountTransactions(
-            getLastAction(store).payload.wallet.transactions.transactions,
+            loadFromStorageAction.payload.wallet.transactions.transactions,
             acc2,
         );
 
         expect(acc2Txs.length).toEqual(1);
         expect(acc2Txs[0].deviceState).toEqual(tx2.deviceState);
         // stored 1 account
-        expect(getLastAction(store).payload.wallet.accounts[1]).toEqual(acc2);
+        expect(loadFromStorageAction.payload.wallet.accounts[1]).toEqual(acc2);
 
         // forget dev1
         await store.dispatch(storageActions.forgetDevice(dev1));
         await store.dispatch(storageActions.loadStorage());
+
         // device deleted, dev2 and dev2Instance1 should still be there
         expect(getLastAction(store).payload.devices.length).toEqual(2);
         expect(getLastAction(store).payload.devices[0]).toEqual({ ...dev2, path: '' });
+
+        // discovery object for dev1 deleted
+        expect(getLastAction(store).payload.wallet.discovery.length).toEqual(2);
+        expect(
+            getLastAction(store).payload.wallet.discovery.find(
+                (d: any) => d.deviceState === dev1.state!,
+            ),
+        ).toBeUndefined();
+
         // txs deleted
         const deletedAcc1Txs = getAccountTransactions(
             getLastAction(store).payload.wallet.transactions.transactions,
@@ -382,8 +432,8 @@ describe('Storage actions', () => {
             acc2,
         );
         expect(acc2Txs.length).toEqual(1);
-        await store.dispatch(storageActions.forgetDevice(dev1));
-        await store.dispatch(storageActions.forgetDevice(dev2));
+        // await store.dispatch(storageActions.forgetDevice(dev1));
+        // await store.dispatch(storageActions.forgetDevice(dev2));
     });
 
     it('should update device settings in the db', async () => {
@@ -415,5 +465,59 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.loadStorage());
         const dev = getLastAction(store).payload.devices[0];
         expect(dev.label).toBe('New Label');
+    });
+
+    it('should store graph data with the device and remove it on ACCOUNT.REMOVE (triggered by disabling the coin)', async () => {
+        const accLtc = getWalletAccount({
+            deviceState: dev1.state,
+            symbol: 'ltc',
+            descriptor: 'desc2',
+            networkType: 'bitcoin',
+        });
+
+        const store = mockStore(
+            getInitialState({
+                devices: [dev1],
+                wallet: {
+                    accounts: [acc1, accLtc],
+                    graph: {
+                        data: [
+                            {
+                                account: getAccountIdentifier(acc1),
+                                error: false,
+                                isLoading: false,
+                                data: null,
+                            },
+                            {
+                                account: getAccountIdentifier(accLtc),
+                                error: false,
+                                isLoading: false,
+                                data: null,
+                            },
+                        ],
+                        selectedRange: SETTINGS.DEFAULT_GRAPH_RANGE,
+                        error: null,
+                        isLoading: false,
+                    },
+                },
+            }),
+        );
+        updateStore(store);
+        // store device in db
+        await store.dispatch(storageActions.rememberDevice(dev1, true));
+
+        // verify that graph data are stored
+        await store.dispatch(storageActions.loadStorage());
+        expect(getLastAction(store).payload.wallet.graph.data.length).toBe(2);
+
+        // disable btc network, enable ltc
+        await store.dispatch(walletSettingsActions.changeNetworks(['ltc']));
+        // remove accounts belonging to disabled coins, triggering ACCOUNT.REMOVE
+        await store.dispatch(accountActions.disableAccounts());
+
+        // verify that graph data for acc1 were removed
+        await store.dispatch(storageActions.loadStorage());
+        expect(getLastAction(store).payload.wallet.graph.data.length).toBe(1);
+        expect(getLastAction(store).payload.wallet.graph.data[0].account.symbol).toBe('ltc');
     });
 });
