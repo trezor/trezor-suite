@@ -91,7 +91,7 @@ type PartialState = Pick<AppState, 'suite' | 'devices'> & {
     wallet: Partial<
         Pick<
             AppState['wallet'],
-            'accounts' | 'settings' | 'discovery' | 'send' | 'transactions' | 'graph'
+            'accounts' | 'settings' | 'discovery' | 'send' | 'transactions' | 'graph' | 'fiat'
         >
     >;
 };
