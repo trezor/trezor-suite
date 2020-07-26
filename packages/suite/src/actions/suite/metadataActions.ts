@@ -175,8 +175,6 @@ export const addDeviceMetadata = (
     payload: Extract<MetadataAddPayload, { type: 'walletLabel' }>,
 ) => async (dispatch: Dispatch, getState: GetState) => {
     try {
-        const provider = await getProvider(getState().metadata.provider);
-        if (!provider) return;
         const device = getState().devices.find(d => d.state === payload.deviceState);
         if (!device || device.metadata.status !== 'enabled') return;
 
@@ -184,14 +182,6 @@ export const addDeviceMetadata = (
             typeof payload.value === 'string' && payload.value.length > 0
                 ? payload.value
                 : undefined;
-
-        const encrypted = await metadataUtils.encrypt(
-            {
-                version: '1.0.0',
-                walletLabel,
-            },
-            device.metadata.aesKey,
-        );
 
         dispatch({
             type: METADATA.WALLET_ADD,
@@ -201,7 +191,19 @@ export const addDeviceMetadata = (
             },
         });
 
-        provider.setFileContent(device.metadata.fileName, encrypted);
+        const provider = await getProvider(getState().metadata.provider);
+        if (provider) {
+            const encrypted = await metadataUtils.encrypt(
+                {
+                    version: '1.0.0',
+                    walletLabel,
+                },
+                device.metadata.aesKey,
+            );
+            provider.setFileContent(device.metadata.fileName, encrypted);
+        } else {
+            // todo: probably toast that data was saved locally only
+        }
     } catch (error) {
         dispatch(handleProviderError(error));
     }
@@ -213,12 +215,6 @@ export const addAccountMetadata = (
     const account = getState().wallet.accounts.find(a => a.key === payload.accountKey);
     if (!account) return;
     try {
-        const provider = await getProvider(getState().metadata.provider);
-
-        if (!provider) {
-            return;
-        }
-
         // clone Account.metadata
         const metadata = JSON.parse(JSON.stringify(account.metadata));
         // const ts = new Date().getTime();
@@ -264,16 +260,23 @@ export const addAccountMetadata = (
             },
         });
 
-        const encrypted = await metadataUtils.encrypt(
-            {
-                version: '1.0.0',
-                accountLabel: metadata.accountLabel,
-                outputLabels: metadata.outputLabels,
-                addressLabels: metadata.addressLabels,
-            },
-            account.metadata.aesKey,
-        );
-        await provider.setFileContent(account.metadata.fileName, encrypted);
+        const provider = await getProvider(getState().metadata.provider);
+
+        if (provider) {
+            const encrypted = await metadataUtils.encrypt(
+                {
+                    version: '1.0.0',
+                    accountLabel: metadata.accountLabel,
+                    outputLabels: metadata.outputLabels,
+                    addressLabels: metadata.addressLabels,
+                },
+                account.metadata.aesKey,
+            );
+
+            await provider.setFileContent(account.metadata.fileName, encrypted);
+        } else {
+            // todo: probably toast that data was saved locally only
+        }
     } catch (error) {
         dispatch(handleProviderError(error));
     }
@@ -562,15 +565,17 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
         await providerPromise;
         provider = await getProvider(getState().metadata.provider);
 
-        if (!provider) {
-            return;
-        }
+        // let noSync = false;
+        // if (!provider) {
+        //     noSync = true;
+        //     return;
+        // }
 
         // save reference to original value. we need to compare old and new value to determine
         // if we need to save new value. If it hasn't changed we don't need to save it.
         let originalValue = payload.value;
 
-        if (needsUpdate) {
+        if (needsUpdate && provider) {
             const result = await dispatch(fetchMetadata(device?.state));
             // fetching metadata failed, we are possibly out of sync with cloud, return;
             if (!result) {

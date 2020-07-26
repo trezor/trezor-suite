@@ -2,7 +2,13 @@
 
 const stubFetch = (uri: string, options: Parameters<typeof fetch>[1]) => {
     console.log(uri, options);
-
+    if (uri.includes('https://api.coingecko.com')) {
+        return Promise.resolve(
+            {
+                status: 400,
+                json: () => Promise.resolve({})
+            })
+    }
     if (uri.includes('https://www.googleapis.com/drive/v3/about')) {
         return Promise.resolve(
             {
@@ -55,38 +61,6 @@ describe('Metadata', () => {
     });
 
     it(`
-        Metadata is by default disabled, this means, that application does not try to generate master key and connect to cloud.
-        But "add metadata" labels are still present and clicking on them enables metadata`, () => {
-            // prepare test
-            cy.task('startEmu', { wipe: true });
-            cy.task('setupEmu');
-            cy.prefixedVisit('/accounts', { onBeforeLoad: (win) => {
-                cy.stub(win, 'open', stubOpen(win));
-                cy.stub(win, 'fetch', stubFetch);
-            }});
-    
-            cy.passThroughInitialRun();
-    
-            
-            // todo: wait for discovery to finish and remove this
-            cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 });
-            cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 }).should('not.be.visible');
-    
-            cy.log('Default label is "Bitcoin #1". Clicking on add label button triggers metadata flow');
-            cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
-            cy.getTestElement('@account-menu/btc/normal/0/add-label-button').click();
-            cy.task('pressYes');
-            cy.getTestElement('@modal/metadata-provider/google-button').click();
-            cy.getTestElement('@modal/metadata-provider').should('not.exist');
-
-            cy.log("Before input becomes available to user, metadata is synced, so if there is already record for this account, it will be pre filled in the input");
-            cy.getTestElement('@modal/add-metadata/input').should('have.value', 'label');
-            cy.getTestElement('@modal/add-metadata/input').type('{backspace}{backspace}{backspace}{backspace}{backspace}My cool label for account');
-            cy.getTestElement('@modal/add-metadata/submit-button').click();
-            cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'My cool label for account');
-    });
-
-    it(`
         In settings, there is enable metadata switch. On enable, it initiates metadata right away (if device already has state).
         On disable, it throws away all metadata related records from memory.
     `, () => {
@@ -129,6 +103,49 @@ describe('Metadata', () => {
     });
 
     it(`
+        Metadata is by default disabled, this means, that application does not try to generate master key and connect to cloud.
+        - "add metadata" labels are still present and clicking on them enables metadata
+        `, () => {
+            // prepare test
+            cy.task('startEmu', { wipe: true });
+            cy.task('setupEmu');
+            cy.prefixedVisit('/accounts', { onBeforeLoad: (win) => {
+                cy.stub(win, 'open', stubOpen(win));
+                cy.stub(win, 'fetch', (uri, options) => {
+                    // upload request is mocked to respond with 200
+                    if (uri.includes('https://www.googleapis.com/upload')) {
+                        return Promise.resolve({
+                            status: 200,
+                        })
+                    }
+                    return stubFetch(uri, options)
+    
+                });
+            }});
+    
+            cy.passThroughInitialRun();
+    
+            
+            // todo: wait for discovery to finish and remove this
+            cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 });
+            cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 }).should('not.be.visible');
+    
+            cy.log('Default label is "Bitcoin #1". Clicking on add label button triggers metadata flow');
+            cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
+            cy.getTestElement('@account-menu/btc/normal/0/add-label-button').click();
+            cy.task('pressYes');
+            cy.getTestElement('@modal/metadata-provider/google-button').click();
+            cy.getTestElement('@modal/metadata-provider').should('not.exist');
+
+            cy.log("Before input becomes available to user, metadata is synced, so if there is already record for this account, it will be pre filled in the input");
+            cy.getTestElement('@modal/add-metadata/input').should('have.value', 'label');
+            cy.getTestElement('@modal/add-metadata/input').type('{backspace}{backspace}{backspace}{backspace}{backspace}My cool label for account');
+            cy.getTestElement('@modal/add-metadata/submit-button').click();
+            cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'My cool label for account');
+
+    });
+
+    it(`
         When passphrase is enabled, 
     `, () => {
         cy.task('startEmu', { wipe: true });
@@ -160,6 +177,7 @@ describe('Metadata', () => {
         cy.prefixedVisit('/settings', { onBeforeLoad: (win: Window) => {
             cy.stub(win, 'open', stubOpen(win));
             cy.stub(win, 'fetch', (uri, options) => {
+                // upload request is mocked to respond with 401 which mimics response in case of expired token
                 if (uri.includes('https://www.googleapis.com/upload')) {
                     return Promise.resolve({
                         status: 401,
@@ -191,5 +209,47 @@ describe('Metadata', () => {
         cy.getTestElement('@modal/add-metadata/submit-button').click();
         cy.get('body').should('contain.text', 'Failed to sync data with cloud provider');
 
+     
+
+    })
+
+    it(`
+        It is possible to work with metadata without sync with persistent storage
+        - click add metadata
+        - click "continue without saving"
+        - metadata is saved locally and survives reload if devices is set to "remember"
+    `, () => {
+        // prepare test
+        cy.task('startEmu', { wipe: true });
+        cy.task('setupEmu');
+        cy.prefixedVisit('/accounts', { onBeforeLoad: (win) => {
+            cy.stub(win, 'open', stubOpen(win));
+            cy.stub(win, 'fetch', stubFetch);
+        }});
+
+        cy.passThroughInitialRun();
+
+        cy.log('Remember device');
+
+        cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 });
+        cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 }).should('not.be.visible');
+
+        cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
+        cy.getTestElement('@account-menu/btc/normal/0/add-label-button').click();
+        cy.task('pressYes');
+        cy.getTestElement('@modal/metadata-provider/cancel-button').click();
+        cy.getTestElement('@modal/add-metadata/input').type('{backspace}{backspace}{backspace}{backspace}{backspace}My cool label for account');
+        cy.getTestElement('@modal/add-metadata/submit-button').click();
+        cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'My cool label for account');
+        cy.getTestElement('@menu/switch-device').click();
+        cy.getTestElement('@switch-device/wallet-instance/toggle-remember-switch').click({ force: true });
+        cy.getTestElement('@switch-device/wallet-instance').click();
+        // cy.reload();
+        cy.prefixedVisit('/accounts', { onBeforeLoad: (win) => {
+            cy.stub(win, 'fetch', stubFetch);
+        }});
+
+        cy.log('No "enable labeling" call, no sync cloud provider appears. All is loaded from storage');
+        cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'My cool label for account');
     })
 });

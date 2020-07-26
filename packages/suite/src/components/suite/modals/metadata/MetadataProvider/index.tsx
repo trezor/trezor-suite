@@ -69,6 +69,15 @@ const MetadataProvider = (props: Props) => {
                 >
                     Google drive
                 </StyledButton>
+
+                <StyledButton
+                    variant="secondary"
+                    onClick={() => onCancel()}
+                    isDisabled={!!isLoading}
+                    data-test="@modal/metadata-provider/cancel-button"
+                >
+                    Continue without saving
+                </StyledButton>
                 {/* TODO: electron only */}
                 {/* <StyledButton
                     variant="secondary"

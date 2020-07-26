@@ -151,21 +151,21 @@ const setAccountMetadataKey = [
 ];
 
 const addDeviceMetadata = [
-    {
-        description: `Without provider`,
-        initialState: {
-            metadata: {},
-        },
-        params: {},
-    },
-    {
-        description: `Unknown provider`,
-        initialState: {
-            metadata: { provider: { type: 'unknown-provider' } },
-        },
-        params: {},
-        result: undefined,
-    },
+    // {
+    //     description: `Without provider`,
+    //     initialState: {
+    //         metadata: {},
+    //     },
+    //     params: {},
+    // },
+    // {
+    //     description: `Unknown provider`,
+    //     initialState: {
+    //         metadata: { provider: { type: 'unknown-provider' } },
+    //     },
+    //     params: {},
+    //     result: undefined,
+    // },
     {
         description: `Without device`,
         initialState: {
