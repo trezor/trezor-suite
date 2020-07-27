@@ -31,8 +31,6 @@ class GoogleProvider implements AbstractMetadataProvider {
     }
 
     async getFileContent(file: string) {
-        console.warn('getFileContent', file);
-
         const id = await this.client.getIdByName(`${file}.mtdt`);
         if (!id) return;
 

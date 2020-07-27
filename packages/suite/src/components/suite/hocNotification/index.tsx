@@ -231,7 +231,13 @@ export default (notification: NotificationEntry, View: React.ComponentType<ViewP
                 icon: 'INFO',
                 message: messages.TR_STORAGE_CLEARED,
             });
-
+        case 'metadata-saved-locally':
+            return withAction(View, {
+                notification,
+                icon: 'WARNING',
+                message: messages.TOAST_METADATA_SAVED_LOCALLY,
+                actionLabel: messages.TR_RESOLVE,
+            });
         // Events:
         case DEVICE.CONNECT:
             return withAction(View, {

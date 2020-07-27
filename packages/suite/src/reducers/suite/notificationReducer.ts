@@ -43,6 +43,9 @@ export type ToastPayload = (
           type: 'clear-storage';
       }
     | {
+          type: 'metadata-saved-locally';
+      }
+    | {
           type:
               | 'error'
               | 'auth-failed'

@@ -312,7 +312,6 @@ class Client {
         }
 
         const response = await fetch(url, fetchOptions);
-        console.warn('response', response);
 
         if (response.status === 200) return response;
         switch (response.status) {

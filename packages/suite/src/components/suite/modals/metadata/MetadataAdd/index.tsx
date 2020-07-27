@@ -49,8 +49,11 @@ const MetadataAdd = (props: Props) => {
         // no default
     }
 
+    // todo: maybe limit length of label?
+
     return (
         <Modal
+            size="tiny"
             cancelable
             onCancel={onCancel}
             heading={header}

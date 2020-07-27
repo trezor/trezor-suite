@@ -2273,6 +2273,11 @@ const definedMessages = defineMessages({
         id: 'TOAST_GENERIC_ERROR',
         defaultMessage: 'Error: {error}',
     },
+    TOAST_METADATA_SAVED_LOCALLY: {
+        id: 'TOAST_METADATA_SAVED_LOCALLY',
+        defaultMessage:
+            'Label was saved locally. If you want it to persist app reload connect to cloud provider',
+    },
     TR_RECIPIENT: {
         id: 'TR_RECIPIENT',
         defaultMessage: 'Recipient',

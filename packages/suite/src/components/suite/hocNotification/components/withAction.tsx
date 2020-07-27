@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { DEVICE } from 'trezor-connect';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
+import * as metadataActions from '@suite-actions/metadataActions';
 import { Dispatch } from '@suite-types';
 import { ViewProps } from '../index';
 
@@ -29,6 +30,9 @@ export default (View: React.ComponentType<ViewProps>, props: ViewProps) => {
                 break;
             case 'discovery-error':
                 action = () => dispatch(discoveryActions.restart());
+                break;
+            case 'metadata-saved-locally':
+                action = () => dispatch(metadataActions.initProvider());
                 break;
             case DEVICE.CONNECT:
                 action = !notification.seen
