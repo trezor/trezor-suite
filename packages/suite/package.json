@@ -56,6 +56,7 @@
         "redux-thunk": "^2.3.0",
         "styled-components": "^5.1.1",
         "trezor-connect": "8.1.8-extended",
+        "uuid": "^7.0.3",
         "validator": "^13.0.0",
         "web3-utils": "^1.2.6",
         "zxcvbn": "^4.4.2"
@@ -80,6 +81,7 @@
         "@types/redux-logger": "^3.0.7",
         "@types/redux-mock-store": "^1.0.2",
         "@types/styled-components": "^5.1.0",
+        "@types/uuid": "^7.0.3",
         "@types/validator": "^12.0.1",
         "babel-plugin-react-intl": "^7.5.23",
         "canvas": "^2.6.1",
