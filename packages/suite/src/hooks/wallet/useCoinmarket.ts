@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { AppState } from '@suite-types';
 import { useState, useEffect } from 'react';
-import { BuyInfo, loadBuyInfo } from '@suite/actions/exchange/exchangeActions';
+import { BuyInfo, loadBuyInfo } from '@wallet-actions/coinmarketActions';
 
 export const useExchange = () => {
     const router = useSelector<AppState, AppState['router']>(state => state.router);

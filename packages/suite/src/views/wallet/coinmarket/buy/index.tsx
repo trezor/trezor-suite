@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { CoinmarketLayout, ProvidedByInvity } from '@wallet-components';
+import { useBuyInfo } from '@wallet-hooks/useCoinmarket';
 import { Button, Select, Icon, Input, colors, H2 } from '@trezor/components';
 
 const Content = styled.div`
@@ -66,6 +67,10 @@ const InvityFooter = styled.div`
 const PreviousTransactions = styled.div``;
 
 const CoinmarketBuy = () => {
+    const { buyInfo } = useBuyInfo();
+
+    console.log('buyInfo', buyInfo);
+
     return (
         <CoinmarketLayout
             bottom={

@@ -7,6 +7,7 @@ export interface BuyInfo {
     buyInfo?: BuyListResponse;
     providerInfos: { [name: string]: BuyProviderInfo };
 }
+
 export async function loadBuyInfo(): Promise<{
     coins: ExchangeCoinInfo[];
     buyInfo?: BuyListResponse;
@@ -16,17 +17,23 @@ export async function loadBuyInfo(): Promise<{
         invityAPI.getBuyList(),
         invityAPI.getExchangeCoins(),
     ]);
+
     if (!buyInfo) {
         buyInfo = { country: 'unknown', providers: [] };
     }
+
     if (!buyInfo.providers) {
         buyInfo.providers = [];
     }
+
     if (!coins) {
         coins = [];
     }
+
     const providerInfos: { [name: string]: BuyProviderInfo } = {};
+
     buyInfo.providers.forEach(e => (providerInfos[e.name] = e));
+
     return {
         coins,
         buyInfo,
