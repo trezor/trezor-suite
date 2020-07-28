@@ -41,6 +41,11 @@ const routes = [
         app: 'dashboard',
     },
     {
+        name: 'offers-index',
+        pattern: '/offers',
+        app: 'offers',
+    },
+    {
         name: 'suite-version',
         pattern: '/version',
         app: 'version',
