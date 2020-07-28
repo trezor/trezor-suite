@@ -54,6 +54,7 @@ const Controls = styled.div`
 `;
 
 const Control = styled.div``;
+
 const BottomContent = styled.div``;
 
 const InvityFooter = styled.div`
