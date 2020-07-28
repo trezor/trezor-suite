@@ -12,16 +12,9 @@ import { toggleDeviceMenu, goToOnboarding, passThroughInitialRun, passThroughBac
 
 const command = require('cypress-image-snapshot/command');
 
-const prefixedVisit = (route: string, options) => {
+const prefixedVisit = (route: string, options?: Partial<Cypress.VisitOptions>) => {
     const assetPrefix = Cypress.env('ASSET_PREFIX') || '';
-    return cy.visit(assetPrefix + route, {
-            auth: {
-              // todo: this does not really works 
-              username: Cypress.env('BASIC_AUTH_USER') || '',
-              password: Cypress.env('BASIC_AUTH_PASSWORD') || '',
-            },
-            ...options,
-    });
+    return cy.visit(assetPrefix + route, options);
 }
 declare global {
     namespace Cypress {

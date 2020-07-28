@@ -8,10 +8,11 @@ const { addMatchImageSnapshotPlugin } = require('cypress-image-snapshot/plugin')
 const webpack = require('@cypress/webpack-preprocessor');
 
 const { Controller } = require('./websocket-client');
+const googleMock = require('./google');
+
 const CONSTANTS = require('../constants');
 
 const controller = new Controller({ url: 'ws://localhost:9001/' });
-
 module.exports = on => {
     // make ts possible start
     const options = {
@@ -42,6 +43,19 @@ module.exports = on => {
     });
 
     on('task', {
+        startGoogle: async() => {
+            await googleMock.start();
+            return null;
+        },
+        setupGoogle: (options) => {
+            // use to set files, or user
+            googleMock.setup(options.prop, options.value);
+            return null;
+        },
+        stopGoogle: async() => {
+            await googleMock.stop();
+            return null;
+        },
         startBridge: async (version) => {
             await controller.connect();
             await controller.send({ type: 'bridge-start', version });

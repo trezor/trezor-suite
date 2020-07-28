@@ -85,6 +85,7 @@
         "babel-plugin-react-intl": "^7.5.23",
         "canvas": "^2.6.1",
         "cross-env": "^7.0.2",
+        "express": "4.17.1",
         "fake-indexeddb": "^3.0.0",
         "jest-watch-typeahead": "^0.4.2",
         "node-fetch": "^2.6.0",

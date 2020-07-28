@@ -189,6 +189,8 @@ class Client {
         );
 
         const json: ListResponse = await response.json();
+        console.warn('json', json);
+
         this.nameIdMap = {};
         json.files.forEach(file => {
             this.nameIdMap[file.name] = file.id;
@@ -312,7 +314,7 @@ class Client {
         }
 
         const response = await fetch(url, fetchOptions);
-
+        console.warn('response', response);
         if (response.status === 200) return response;
         switch (response.status) {
             case 401:

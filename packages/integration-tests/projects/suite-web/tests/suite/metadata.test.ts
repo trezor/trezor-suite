@@ -1,51 +1,50 @@
 // @stable
 
+// const stubFetch = (uri: string, options: Parameters<typeof fetch>[1]) => {
+//     if (uri.includes('https://www.googleapis.com/drive/v3/about')) {
+//         return Promise.resolve(
+//             {
+//                 status: 200,
+//                 json: () => Promise.resolve({
+//                     user: {
+//                         kind: "drive#user",
+//                         displayName: "Kryptonit",
+//                     }
+//                 })
+//             })
+//     }
+
+//     // list request
+//     if (uri === 'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder') {
+//         return Promise.resolve({
+//             status: 200,
+//             json: () => Promise.resolve({
+//                 "files": [
+//                     {
+//                         "kind": "drive#file",
+//                         "id": "13DH0FwzmGHmf2sWRBIvyJ9WJlkKTgL-KKamv-oqw6fvKqcQYGA",
+//                         "name": "f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt",
+//                         "mimeType": "text/plain"
+//                     },
+//             ]})
+//         })
+//     }
+
+//     // get request
+//     if (uri === 'https://www.googleapis.com/drive/v3/files/13DH0FwzmGHmf2sWRBIvyJ9WJlkKTgL-KKamv-oqw6fvKqcQYGA?alt=media') {
+//         return Promise.resolve({
+//             status: 200,
+//             text: () => Promise.resolve("fbace4e987076329426cc882058f8101dd99f1187cf075f9c76a4fedfa962fc5e34c55449fe4539d99dc31e83bff8084552416b43902500c9df9164ba84cf1845aaca0b7b70ec5a4ff90b83f6bb0d7e2ad0f215ec6aea65f5448534c17493d8ae150aa3e871e60b1978b68")
+//         })
+//     }
+//     return fetch(uri, options)
+// }
+
 const stubFetch = (uri: string, options: Parameters<typeof fetch>[1]) => {
-    console.log(uri, options);
-    if (uri.includes('https://api.coingecko.com')) {
-        return Promise.resolve(
-            {
-                status: 400,
-                json: () => Promise.resolve({})
-            })
+    if (uri.includes('https://www.googleapis.com')) {
+        return fetch(uri.replace('https://www.googleapis.com', 'http://localhost:30001'), options)
     }
-    if (uri.includes('https://www.googleapis.com/drive/v3/about')) {
-        return Promise.resolve(
-            {
-                status: 200,
-                json: () => Promise.resolve({
-                    user: {
-                        kind: "drive#user",
-                        displayName: "Kryptonit",
-                    }
-                })
-            })
-    }
-
-    // list request
-    if (uri === 'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder') {
-        return Promise.resolve({
-            status: 200,
-            json: () => Promise.resolve({
-                "files": [
-                    {
-                        "kind": "drive#file",
-                        "id": "13DH0FwzmGHmf2sWRBIvyJ9WJlkKTgL-KKamv-oqw6fvKqcQYGA",
-                        "name": "f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt",
-                        "mimeType": "text/plain"
-                    },
-            ]})
-        })
-    }
-
-    // get request
-    if (uri === 'https://www.googleapis.com/drive/v3/files/13DH0FwzmGHmf2sWRBIvyJ9WJlkKTgL-KKamv-oqw6fvKqcQYGA?alt=media') {
-        return Promise.resolve({
-            status: 200,
-            text: () => Promise.resolve("fbace4e987076329426cc882058f8101dd99f1187cf075f9c76a4fedfa962fc5e34c55449fe4539d99dc31e83bff8084552416b43902500c9df9164ba84cf1845aaca0b7b70ec5a4ff90b83f6bb0d7e2ad0f215ec6aea65f5448534c17493d8ae150aa3e871e60b1978b68")
-        })
-    }
-    // todo: return original fetch somehow, now it ends in endless loop if I return it here
+    return fetch(uri, options);
 }
 
 // process of getting oauth token involves widow.open and waits for post message from it. Cypress can't touch other windows/tabs it so what we do here is that we replace implementation of window 
@@ -59,6 +58,9 @@ describe('Metadata', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
     });
+    after(() => {
+        cy.task('stopGoogle');
+    });
 
     it(`
         In settings, there is enable metadata switch. On enable, it initiates metadata right away (if device already has state).
@@ -67,9 +69,12 @@ describe('Metadata', () => {
         // prepare test
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
+        cy.task('startGoogle');
+
         cy.prefixedVisit('/accounts', { onBeforeLoad: (win: Window) => {
             cy.stub(win, 'open', stubOpen(win));
-            cy.stub(win, 'fetch', stubFetch);
+            // cy.stub(win, 'fetch', stubFetch);
+            cy.stub(win, 'fetch', stubFetch)
         }});
 
         cy.passThroughInitialRun();
@@ -109,18 +114,12 @@ describe('Metadata', () => {
             // prepare test
             cy.task('startEmu', { wipe: true });
             cy.task('setupEmu');
-            cy.prefixedVisit('/accounts', { onBeforeLoad: (win) => {
+            cy.task('startGoogle');
+
+            cy.prefixedVisit('/accounts', { onBeforeLoad: (win: Window) => {
                 cy.stub(win, 'open', stubOpen(win));
-                cy.stub(win, 'fetch', (uri, options) => {
-                    // upload request is mocked to respond with 200
-                    if (uri.includes('https://www.googleapis.com/upload')) {
-                        return Promise.resolve({
-                            status: 200,
-                        })
-                    }
-                    return stubFetch(uri, options)
-    
-                });
+                cy.stub(win, 'fetch', stubFetch)
+
             }});
     
             cy.passThroughInitialRun();
@@ -150,6 +149,8 @@ describe('Metadata', () => {
     `, () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { passphrase_protection: true });
+        cy.task('startGoogle');
+
         cy.prefixedVisit('/settings', { onBeforeLoad: (win: Window) => {
             cy.stub(win, 'open', stubOpen(win));
             cy.stub(win, 'fetch', stubFetch);
@@ -170,23 +171,15 @@ describe('Metadata', () => {
         cy.getTestElement('@passphrase/hidden/submit-button').click();
     });
 
-    it ('Token expires', () => {
+    it('Token expires', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
+        cy.task('startGoogle');
 
         cy.prefixedVisit('/settings', { onBeforeLoad: (win: Window) => {
             cy.stub(win, 'open', stubOpen(win));
-            cy.stub(win, 'fetch', (uri, options) => {
-                // upload request is mocked to respond with 401 which mimics response in case of expired token
-                if (uri.includes('https://www.googleapis.com/upload')) {
-                    return Promise.resolve({
-                        status: 401,
+            cy.stub(win, 'fetch', stubFetch);
 
-                    })
-                }
-                return stubFetch(uri, options)
-
-            });
         }});
 
         cy.passThroughInitialRun();
@@ -206,10 +199,10 @@ describe('Metadata', () => {
         cy.log('at this moment, oauth token expires');
         cy.getTestElement('@account-menu/btc/normal/0/add-label-button').click();
         cy.getTestElement('@modal/add-metadata/input').type('Kvooo');
+        cy.task('setupGoogle', { prop: 'user', value: null });
+
         cy.getTestElement('@modal/add-metadata/submit-button').click();
         cy.get('body').should('contain.text', 'Failed to sync data with cloud provider');
-
-     
 
     })
 

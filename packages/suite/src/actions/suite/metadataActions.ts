@@ -249,6 +249,7 @@ export const fetchMetadata = (deviceState: string) => async (
             return result;
         },
         error => {
+            console.warn('error', error);
             dispatch(handleProviderError(error));
         },
     );
