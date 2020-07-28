@@ -124,7 +124,11 @@ export default ({
                             description="Your labeling is synced with cloud storage provider. Your data are safe, only your Trezor can decrypt them."
                         />
                         <ActionColumn>
-                            <ActionButton variant="secondary" onClick={() => disconnectProvider()}>
+                            <ActionButton
+                                variant="secondary"
+                                onClick={() => disconnectProvider()}
+                                data-test="@settings/metadata/disconnect-provider-button"
+                            >
                                 Disconnect
                             </ActionButton>
                         </ActionColumn>
@@ -137,7 +141,11 @@ export default ({
                             description="To make your labels persistent and available on different devices connect to cloud storage provider. Either Google drive or Dropbox are available."
                         />
                         <ActionColumn>
-                            <ActionButton variant="secondary" onClick={() => initProvider()}>
+                            <ActionButton
+                                variant="secondary"
+                                onClick={() => initProvider()}
+                                data-test="@settings/metadata/connect-provider-button"
+                            >
                                 Connect
                             </ActionButton>
                         </ActionColumn>

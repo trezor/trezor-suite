@@ -38,6 +38,7 @@ export type MetadataActions =
 
 // needs to be declared here in top level context because it's not recommended to keep classes instances in redux state (serialization)
 let providerInstance: AbstractMetadataProvider | undefined;
+let fetchInterval: any; // any because of native at the moment, otherwise number | undefined
 
 const getProvider = async (state?: Partial<MetadataProviderCredentials>) => {
     if (!state) return;
@@ -101,13 +102,15 @@ export const initProvider = () => async (dispatch: Dispatch) => {
 };
 
 export const disconnectProvider = () => async (dispatch: Dispatch, getState: GetState) => {
+    if (fetchInterval) {
+        clearInterval(fetchInterval);
+    }
     try {
         const provider = await getProvider(getState().metadata.provider);
         if (provider) {
             provider.disconnect();
             providerInstance = undefined;
         }
-        // invalidate access_token
     } catch (error) {
         // not sure if toast here or not? might make sense to error silently here...
     }
@@ -144,6 +147,15 @@ const handleProviderError = (error: Error) => (dispatch: Dispatch, getState: Get
                 dispatch(disconnectProvider());
             }
             break;
+        case 404:
+            dispatch(
+                notificationActions.addToast({
+                    type: 'error',
+                    error: 'Failed to find metadata in cloud provider.',
+                }),
+            );
+            dispatch(disconnectProvider());
+            break;
         default:
             dispatch(notificationActions.addToast({ type: 'error', error: 'action failed' }));
             break;
@@ -154,17 +166,21 @@ export const fetchMetadata = (deviceState: string) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
+    console.warn('fetchMetadata');
     const provider = await getProvider(getState().metadata.provider);
     if (!provider) return;
 
-    const accounts = getState().wallet.accounts.filter(
-        a => a.deviceState === deviceState && a.metadata.fileName,
-    );
-
-    // TODO: watch files (sync)
     // TODO: watch internet connection
-    // TODO: run fetching in parallel
+
     const device = getState().devices.find(d => d.state === deviceState);
+
+    if (!fetchInterval) {
+        fetchInterval = setInterval(() => {
+            console.warn('INTERVAL INTERVAL INTERVAL INTERVAL INTERVAL ');
+            if (!device?.state) return;
+            dispatch(fetchMetadata(device?.state));
+        }, METADATA.FETCH_INTERVAL);
+    }
 
     const deviceFileContentP = (async () => {
         if (!device || device.metadata.status !== 'enabled') return;
@@ -196,6 +212,10 @@ export const fetchMetadata = (deviceState: string) => async (
             provider.setFileContent(device.metadata.fileName, encrypted);
         }
     })();
+
+    const accounts = getState().wallet.accounts.filter(
+        a => a.deviceState === deviceState && a.metadata.fileName,
+    );
 
     const accountPromises = accounts.map(async account => {
         const buffer = await provider.getFileContent(account.metadata.fileName);

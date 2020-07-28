@@ -16,3 +16,4 @@ export const ENABLE_LABELING_PATH = "m/10015'/0'";
 export const ENABLE_LABELING_KEY = 'Enable labeling?';
 export const ENABLE_LABELING_VALUE =
     'fedcba98765432100123456789abcdeffedcba98765432100123456789abcdef';
+export const FETCH_INTERVAL = 1000 * 60 * 3; // 3 minutes?

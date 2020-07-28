@@ -1,44 +1,6 @@
 // @stable
 
-// const stubFetch = (uri: string, options: Parameters<typeof fetch>[1]) => {
-//     if (uri.includes('https://www.googleapis.com/drive/v3/about')) {
-//         return Promise.resolve(
-//             {
-//                 status: 200,
-//                 json: () => Promise.resolve({
-//                     user: {
-//                         kind: "drive#user",
-//                         displayName: "Kryptonit",
-//                     }
-//                 })
-//             })
-//     }
-
-//     // list request
-//     if (uri === 'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder') {
-//         return Promise.resolve({
-//             status: 200,
-//             json: () => Promise.resolve({
-//                 "files": [
-//                     {
-//                         "kind": "drive#file",
-//                         "id": "13DH0FwzmGHmf2sWRBIvyJ9WJlkKTgL-KKamv-oqw6fvKqcQYGA",
-//                         "name": "f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt",
-//                         "mimeType": "text/plain"
-//                     },
-//             ]})
-//         })
-//     }
-
-//     // get request
-//     if (uri === 'https://www.googleapis.com/drive/v3/files/13DH0FwzmGHmf2sWRBIvyJ9WJlkKTgL-KKamv-oqw6fvKqcQYGA?alt=media') {
-//         return Promise.resolve({
-//             status: 200,
-//             text: () => Promise.resolve("fbace4e987076329426cc882058f8101dd99f1187cf075f9c76a4fedfa962fc5e34c55449fe4539d99dc31e83bff8084552416b43902500c9df9164ba84cf1845aaca0b7b70ec5a4ff90b83f6bb0d7e2ad0f215ec6aea65f5448534c17493d8ae150aa3e871e60b1978b68")
-//         })
-//     }
-//     return fetch(uri, options)
-// }
+import * as METADATA from '../../../../../suite/src/actions/suite/constants/metadataConstants';
 
 const stubFetch = (uri: string, options: Parameters<typeof fetch>[1]) => {
     if (uri.includes('https://www.googleapis.com')) {
@@ -215,6 +177,8 @@ describe('Metadata', () => {
         // prepare test
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
+        cy.task('startGoogle');
+
         cy.prefixedVisit('/accounts', { onBeforeLoad: (win) => {
             cy.stub(win, 'open', stubOpen(win));
             cy.stub(win, 'fetch', stubFetch);
@@ -244,5 +208,48 @@ describe('Metadata', () => {
 
         cy.log('No "enable labeling" call, no sync cloud provider appears. All is loaded from storage');
         cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'My cool label for account');
+    })
+
+    it.only(`
+        suite is watching cloud provider and syncs periodically
+    `, () => {
+           // prepare test
+
+            cy.task('startEmu', { wipe: true });
+            cy.task('setupEmu');
+            cy.task('startGoogle');
+            cy.clock();
+    
+            cy.prefixedVisit('/accounts', { onBeforeLoad: (win) => {
+                cy.stub(win, 'open', stubOpen(win));
+                cy.stub(win, 'fetch', stubFetch);
+            }});
+            cy.tick(1000);
+    
+            cy.passThroughInitialRun();
+            cy.log('Wait for discovery to finish. There is "add label" button, but no actual metadata appeared')
+            cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 });
+            cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 }).should('not.be.visible');
+            cy.getTestElement('@account-menu/btc/normal/0/add-label-button').click();
+            cy.task('pressYes');
+            cy.getTestElement('@modal/metadata-provider/google-button').click();
+            cy.getTestElement('@modal/add-metadata/submit-button').click();
+            cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'label');
+    
+    
+            cy.log('Go to settings and lets see what happens if user wipes his data from google drive interface (out of suite)');            
+            cy.getTestElement('@suite/menu/settings-index').click();
+            cy.getTestElement('@settings/metadata/disconnect-provider-button');
+            cy.log('Next command simulates that user wiped his google drive');
+            cy.task('setupGoogle', { prop: 'files', value: []});
+            cy.tick(METADATA.FETCH_INTERVAL);
+            cy.getTestElement('@settings/metadata/connect-provider-button');
+
+            cy.log('In accounts, see that although provider is disconnected now, previously set label remains there (saved locally)');
+            cy.getTestElement('@suite/menu/wallet-index').click();
+            cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'label');
+
+            // cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
+
     })
 });

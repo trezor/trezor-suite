@@ -42,7 +42,7 @@ class GoogleProvider implements AbstractMetadataProvider {
             },
             id,
         );
-
+        console.warn('response getFileContent', response);
         return Buffer.from(response, 'hex');
     }
 

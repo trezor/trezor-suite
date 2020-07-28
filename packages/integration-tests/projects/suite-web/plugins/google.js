@@ -112,6 +112,13 @@ class GoogleMock {
             if(file) {
                 return res.send(file.data);
             }
+            res.status(404);
+            res.send({
+                error: {
+                    code: 404,
+                    message: `File not found for ${id}`
+                }
+            })
             
             res.send();
         });
