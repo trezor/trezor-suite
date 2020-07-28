@@ -1,3 +1,3 @@
-import CoinMarket from '@wallet-views/coinmarket';
+import CoinMarketBuy from '@wallet-views/coinmarket/buy';
 
-export default CoinMarket;
+export default CoinMarketBuy;
