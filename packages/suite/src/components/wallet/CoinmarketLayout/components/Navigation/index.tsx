@@ -47,7 +47,6 @@ interface Props {
     items: {
         route: Route['name'];
         title: JSX.Element;
-        'data-test'?: string;
     }[];
 }
 
@@ -60,14 +59,13 @@ const Navigation = ({ items }: Props) => {
     return (
         <Wrapper>
             {items.map(item => {
-                const { route, title, ...restItemProps } = item;
+                const { route, title } = item;
                 const active = routeName === route;
                 return (
                     <StyledNavLink
                         key={route}
                         active={active}
                         onClick={() => goto(route, undefined, true)}
-                        {...restItemProps}
                     >
                         <Text>{title}</Text>
                     </StyledNavLink>

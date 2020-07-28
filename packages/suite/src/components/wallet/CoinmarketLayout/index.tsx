@@ -11,14 +11,14 @@ const Content = styled.div`
     padding: 25px;
 `;
 
-const Footer = styled.div``;
+const BottomContent = styled.div``;
 
 interface Props {
     children: ReactNode;
-    footer: ReactNode;
+    bottom?: ReactNode;
 }
 
-const CoinmarketLayout = ({ children, footer }: Props) => {
+const CoinmarketLayout = ({ children, bottom }: Props) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     return (
@@ -27,7 +27,7 @@ const CoinmarketLayout = ({ children, footer }: Props) => {
                 <Navigation items={MENU_ITEMS} />
                 <Content>{children}</Content>
             </Card>
-            {footer && <Footer>{footer}</Footer>}
+            {bottom && <BottomContent>{bottom}</BottomContent>}
         </WalletLayout>
     );
 };
