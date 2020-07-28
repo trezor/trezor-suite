@@ -1,6 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import validator from 'validator';
+import BigNumber from 'bignumber.js';
+
 import { CoinmarketLayout, ProvidedByInvity } from '@wallet-components';
+import { useForm } from 'react-hook-form';
 import { useBuyInfo } from '@wallet-hooks/useCoinmarket';
 import { Button, Select, Icon, Input, colors, H2 } from '@trezor/components';
 
@@ -53,7 +57,10 @@ const Controls = styled.div`
     border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
 `;
 
-const Control = styled.div``;
+const Control = styled.div`
+    cursor: pointer;
+    padding: 0 10px 0 0;
+`;
 
 const BottomContent = styled.div``;
 
@@ -67,10 +74,22 @@ const InvityFooter = styled.div`
 
 const PreviousTransactions = styled.div``;
 
-const CoinmarketBuy = () => {
-    const { buyInfo } = useBuyInfo();
+const addValue = (currentValue = '0', addValue: string) => {
+    const result = new BigNumber(currentValue.length > 1 ? currentValue : '0')
+        .plus(addValue)
+        .toFixed();
 
+    return result;
+};
+
+const CoinmarketBuy = () => {
+    const { register, getValues, setValue, errors } = useForm({ mode: 'onChange' });
+    const { buyInfo } = useBuyInfo();
+    const fiatInputName = 'fiatInput';
+
+    console.log('errors', errors);
     console.log('buyInfo', buyInfo);
+    console.log('errors.fiatInputName', errors[fiatInputName]);
 
     return (
         <CoinmarketLayout
@@ -88,7 +107,22 @@ const CoinmarketBuy = () => {
             <Content>
                 <Top>
                     <Left>
-                        <Input />
+                        <Input
+                            innerRef={register({
+                                validate: value => {
+                                    if (!value) {
+                                        return 'TR_ERROR_EMPTY';
+                                    }
+
+                                    if (!validator.isNumeric(value)) {
+                                        return 'TR_ERROR_NOT_NUMBER';
+                                    }
+                                },
+                            })}
+                            state={errors[fiatInputName] ? 'error' : undefined}
+                            name={fiatInputName}
+                            bottomText={errors[fiatInputName] && errors[fiatInputName].message}
+                        />
                     </Left>
                     <Middle>
                         <Icon size={20} icon="RBF" />
@@ -98,8 +132,24 @@ const CoinmarketBuy = () => {
                     </Right>
                 </Top>
                 <Controls>
-                    <Control>+100</Control>
-                    <Control>+1000</Control>
+                    <Control
+                        onClick={() => {
+                            setValue(fiatInputName, addValue(getValues(fiatInputName), '100'), {
+                                shouldValidate: true,
+                            });
+                        }}
+                    >
+                        +100
+                    </Control>
+                    <Control
+                        onClick={() => {
+                            setValue(fiatInputName, addValue(getValues(fiatInputName), '1000'), {
+                                shouldValidate: true,
+                            });
+                        }}
+                    >
+                        +1000
+                    </Control>
                 </Controls>
                 <Footer>
                     <Left>
