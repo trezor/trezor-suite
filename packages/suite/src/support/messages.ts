@@ -3513,6 +3513,10 @@ const definedMessages = defineMessages({
         id: 'TR_COULD_NOT_RETRIEVE_CHANGELOG',
         defaultMessage: 'Could not retrieve the changelog',
     },
+    TR_NAV_COINMARKET: {
+        id: 'TR_NAV_COINMARKET',
+        defaultMessage: 'Coinmarket',
+    },
 } as const);
 
 export default definedMessages;

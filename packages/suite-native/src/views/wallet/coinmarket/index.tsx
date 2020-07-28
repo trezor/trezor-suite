@@ -2,12 +2,12 @@ import React from 'react';
 import { Text } from 'react-native';
 import Layout from '@suite-components/Layout';
 
-const Exchange = () => {
+const Coinmarket = () => {
     return (
-        <Layout title="Exchange">
-            <Text>Exchange</Text>
+        <Layout title="Coinmarket">
+            <Text>Coinmarket</Text>
         </Layout>
     );
 };
 
-export default Exchange;
+export default Coinmarket;

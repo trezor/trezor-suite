@@ -154,6 +154,12 @@ const routes = [
         params: walletParams,
     },
     {
+        name: 'wallet-coinmarket',
+        pattern: '/accounts/coinmarket',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
         name: 'wallet-details',
         pattern: '/accounts/details',
         app: 'wallet',
@@ -163,11 +169,6 @@ const routes = [
         name: 'passwords-index',
         pattern: '/passwords',
         app: 'passwords',
-    },
-    {
-        name: 'exchange-index',
-        pattern: '/exchange',
-        app: 'exchange',
     },
     {
         name: 'portfolio-index',
