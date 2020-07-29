@@ -1,18 +1,8 @@
 const express = require('express')
-const app = express();
-const port = 30001;
 const { v4: uuidv4 } = require('uuid');
 
-// {
-//     "kind": "drive#fileList",
-//     "incompleteSearch": false,
-//     "files": [
-//      {
-//       "kind": "drive#file",
-//       "id": "1GNw6ZDWv9Uczkm4eU0z2RTmLXbPH-zm9Arqj3FexmO6JCubm2w",
-//       "name": "2b462a0a98606521f153662e55016982edab2fcedae176ca35ef05fba2350219.mtdt",
-//       "mimeType": "text/plain"
-//      },
+const BOUNDARY = '---------314159265358979323846';
+const port = 30001;
 
 class File {
     constructor(id, name, data) {
@@ -33,19 +23,17 @@ class File {
     }
 }
 
-const BOUNDARY = '---------314159265358979323846';
 
+/**
+ * Mock implementation of google drive service intended to be used in e2e tests.
+ */
 class GoogleMock {
     constructor() {
         this.reset();
 
         const app = express();
         
-
         const handleSave = (rawBody, id) => {
-            console.log('==== handleSave', id, rawBody);
-            
-            const parts = rawBody.replace(/\r\n/g, '');
             const textContentType = 'Content-Type: text/plain;charset=UTF-8';
             const data = rawBody.substring(
                 rawBody.indexOf(textContentType) + textContentType.length,
@@ -58,12 +46,10 @@ class GoogleMock {
                 rawBody.indexOf(BOUNDARY, BOUNDARY.length),
             ).replace(/\r?\n|\r/g, '');
             
-            console.log('jsonStr', jsonStr);
             const json = JSON.parse(jsonStr);
             console.log('this.files', this.files[0].id, typeof this.files[0].id);
             if (id) {
                 const index = this.files.findIndex(f => f.id == id);
-                console.log('index', index);
                 if (index === -1) throw new Error('no such file exists');
                 this.files[index].data = data; 
 
@@ -74,9 +60,6 @@ class GoogleMock {
                     data,
                 ));
             }
-
-            console.log(this.files);
-
         }
 
         app.use((req, res, next) => {
@@ -102,8 +85,6 @@ class GoogleMock {
             handleSave(req.body, req.params.id);
             res.send();
         })
-
-        // app.use(express.json());
 
         app.get('/drive/v3/files/:id', express.json(), (req, res) => {
             const id = req.params.id;
@@ -152,7 +133,7 @@ class GoogleMock {
 
         return new Promise((resolve, reject) => {
             this.app.listen(port, (server) => {
-                console.log(`Example app listening at http://localhost:${port}`);
+                console.log(`[mockGoogleDrive] listening at http://localhost:${port}`);
                 this.running = true;
                 this.server = server;
                 resolve();
@@ -193,7 +174,5 @@ class GoogleMock {
 }
 
 const googleMock = new GoogleMock();
-
-// googleMock.start();
 
 module.exports = googleMock;
