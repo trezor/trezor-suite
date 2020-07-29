@@ -6,6 +6,8 @@ import BigNumber from 'bignumber.js';
 import { CoinmarketLayout, ProvidedByInvity } from '@wallet-components';
 import { useForm } from 'react-hook-form';
 import { useBuyInfo } from '@wallet-hooks/useCoinmarket';
+import * as coinmarketActions from '@wallet-actions/coinmarketActions';
+import { useActions } from '@suite-hooks';
 import { Button, Select, Icon, Input, colors, H2 } from '@trezor/components';
 
 const Content = styled.div`
@@ -84,12 +86,19 @@ const addValue = (currentValue = '0', addValue: string) => {
 
 const CoinmarketBuy = () => {
     const { register, getValues, setValue, errors } = useForm({ mode: 'onChange' });
+    const fiatInput = 'fiatInput';
+    const currencySelect = 'currencySelect';
+    const countrySelect = 'countrySelect';
+
     const { buyInfo } = useBuyInfo();
-    const fiatInputName = 'fiatInput';
+    const { saveOffers, saveBuyInfo } = useActions({
+        saveOffers: coinmarketActions.saveOffers,
+        saveBuyInfo: coinmarketActions.saveBuyInfo,
+    });
 
     console.log('errors', errors);
     console.log('buyInfo', buyInfo);
-    console.log('errors.fiatInputName', errors[fiatInputName]);
+    console.log('errors.fiatInputName', errors[fiatInput]);
 
     return (
         <CoinmarketLayout
@@ -119,9 +128,9 @@ const CoinmarketBuy = () => {
                                     }
                                 },
                             })}
-                            state={errors[fiatInputName] ? 'error' : undefined}
-                            name={fiatInputName}
-                            bottomText={errors[fiatInputName] && errors[fiatInputName].message}
+                            state={errors[fiatInput] ? 'error' : undefined}
+                            name={fiatInput}
+                            bottomText={errors[fiatInput] && errors[fiatInput].message}
                         />
                     </Left>
                     <Middle>
@@ -134,7 +143,7 @@ const CoinmarketBuy = () => {
                 <Controls>
                     <Control
                         onClick={() => {
-                            setValue(fiatInputName, addValue(getValues(fiatInputName), '100'), {
+                            setValue(fiatInput, addValue(getValues(fiatInput), '100'), {
                                 shouldValidate: true,
                             });
                         }}
@@ -143,7 +152,7 @@ const CoinmarketBuy = () => {
                     </Control>
                     <Control
                         onClick={() => {
-                            setValue(fiatInputName, addValue(getValues(fiatInputName), '1000'), {
+                            setValue(fiatInput, addValue(getValues(fiatInput), '1000'), {
                                 shouldValidate: true,
                             });
                         }}
@@ -157,7 +166,18 @@ const CoinmarketBuy = () => {
                         <Select />
                     </Left>
                     <Right>
-                        <StyledButton>Show offers</StyledButton>
+                        <StyledButton
+                            onClick={async () => {
+                                await saveBuyInfo({
+                                    country: getValues('countrySelect'),
+                                    currency: getValues('currencySelect'),
+                                    amount: getValues('fiatInput'),
+                                });
+                                await saveOffers({ test: 'testOffer' });
+                            }}
+                        >
+                            Show offers
+                        </StyledButton>
                     </Right>
                 </Footer>
             </Content>
