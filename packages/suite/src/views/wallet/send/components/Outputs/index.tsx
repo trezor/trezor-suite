@@ -1,10 +1,10 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { colors } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
 import Address from './components/Address';
 import Amount from './components/Amount';
-import OpReturn from '../OpReturn';
-import { colors } from '@trezor/components';
+import OpReturn from './components/OpReturn';
 
 const Wrapper = styled.div``;
 
