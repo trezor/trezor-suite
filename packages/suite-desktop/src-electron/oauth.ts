@@ -4,9 +4,11 @@ import * as path from 'path';
 export const openOauthPopup = (url: string) => {
     const popup = new BrowserWindow({
         // alwaysOnTop: true,
+        closable: true,
         minimizable: false,
-        height: 480,
-        width: 720,
+        // height: 480,
+        // width: 720,
+        useContentSize: true,
         frame: false,
         show: false,
         webPreferences: {

@@ -178,9 +178,9 @@ export const fetchMetadata = (deviceState: string) => async (
 
     const device = getState().devices.find(d => d.state === deviceState);
 
+    // if interval for watching provider is not set, create it
     if (!fetchInterval) {
         fetchInterval = setInterval(() => {
-            console.warn('INTERVAL INTERVAL INTERVAL INTERVAL INTERVAL ');
             if (!device?.state) return;
             dispatch(fetchMetadata(device?.state));
         }, METADATA.FETCH_INTERVAL);
@@ -535,7 +535,6 @@ export const setDeviceMetadataKey = (force = false) => async (
                 },
             },
         });
-        // TODO: fill existing accounts with metadata keys
     } else {
         dispatch({
             type: METADATA.SET_MASTER_KEY,
@@ -547,8 +546,6 @@ export const setDeviceMetadataKey = (force = false) => async (
             },
         });
     }
-
-    // TODO: check if accounts for this device already exists, and fill keys if so
 };
 
 /**
@@ -570,7 +567,6 @@ const syncMetadataPayload = (payload: MetadataAddPayload) => (
         ) {
             payload.value = device.metadata.walletLabel;
         }
-        // todo:
     } else {
         const account = getState().wallet.accounts.find(acc => acc.key === payload.accountKey);
         if (payload.type === 'accountLabel' && account?.metadata.accountLabel) {
