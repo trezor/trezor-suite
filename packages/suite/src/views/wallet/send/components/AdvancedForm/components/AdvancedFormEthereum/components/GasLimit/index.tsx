@@ -51,7 +51,7 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
                 getInputState(data.error, data.value, false, false),
             )}
             state={getInputState(error, value, true, true)}
-            topLabel={
+            label={
                 <Label>
                     <Text>
                         <Translation id="TR_GAS_LIMIT" />

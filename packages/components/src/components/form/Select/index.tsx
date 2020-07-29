@@ -24,28 +24,22 @@ const selectStyle = (
         base: Record<string, any>,
         { isDisabled, isFocused }: { isDisabled: boolean; isFocused: boolean }
     ) => {
-        let backgroundImage = isFocused
-            ? `linear-gradient(to top, ${colors.WHITE}, ${colors.BLACK96})`
-            : `linear-gradient(to top, ${colors.BLACK96}, ${colors.WHITE})`;
-        if (isDisabled) {
-            backgroundImage = `linear-gradient(to top, ${colors.BLACK92}, ${colors.BLACK92})`;
-        }
-        if (isClean) {
-            backgroundImage = 'none';
-        }
         return {
             ...base,
             minHeight: 'initial',
             display: 'flex',
             alignItems: 'center',
+            fontSize: variables.FONT_SIZE.SMALL,
             height: variant === 'small' ? '36px' : '48px',
-            borderRadius: '3px',
-            borderColor: isClean ? 'white' : colors.BLACK80,
+            borderRadius: '4px',
+            borderWidth: '2px',
+            borderColor: colors.NEUE_STROKE_GREY,
             boxShadow: 'none',
-            backgroundImage,
             '&:hover, &:focus': {
                 cursor: 'pointer',
-                borderColor: isClean ? 'white' : colors.BLACK50,
+                borderRadius: '4px',
+                borderWidth: '2px',
+                borderColor: colors.NEUE_STROKE_GREY,
             },
         };
     },
@@ -95,17 +89,17 @@ const Wrapper = styled.div<Props>`
     justify-content: flex-start;
 `;
 
-const TopLabel = styled.span`
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    padding: 0 0 10px 0;
+const Label = styled.span`
+    min-height: 32px;
 `;
 
 interface Props extends Omit<SelectProps, 'components'> {
     withDropdownIndicator?: boolean;
     isClean?: boolean;
-    topLabel?: React.ReactNode;
+    label?: React.ReactNode;
     wrapperProps?: Record<string, any>;
     variant?: InputVariant;
+    noTopLabel?: boolean;
 }
 
 const Select = ({
@@ -114,9 +108,10 @@ const Select = ({
     className,
     wrapperProps,
     isClean = false,
-    topLabel,
+    label,
     width,
     variant = 'large',
+    noTopLabel = false,
     ...props
 }: Props) => {
     // customize control to pass data-test attribute
@@ -147,7 +142,7 @@ const Select = ({
 
     return (
         <Wrapper className={className} width={width} {...wrapperProps}>
-            {topLabel && <TopLabel>{topLabel}</TopLabel>}
+            {!noTopLabel && <Label>{label}</Label>}
             <ReactSelect
                 styles={selectStyle(isSearchable, withDropdownIndicator, variant, isClean)}
                 isSearchable={isSearchable}

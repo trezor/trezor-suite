@@ -41,7 +41,7 @@ export default ({ send, sendFormActionsEthereum, selectedAccount }: Props) => {
         <Input
             variant="small"
             state={getInputState(error, value, true, true)}
-            topLabel={
+            label={
                 <Label>
                     <Text>
                         <Translation id="TR_GAS_PRICE" />
