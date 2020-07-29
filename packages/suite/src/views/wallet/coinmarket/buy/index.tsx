@@ -86,7 +86,7 @@ const addValue = (currentValue = '0', addValue: string) => {
     return result;
 };
 
-const buildCurrencyOption = (currency: string) => {
+const buildOption = (currency: string) => {
     return { value: currency, label: currency.toUpperCase() };
 };
 
@@ -103,6 +103,22 @@ const CoinmarketBuy = () => {
         saveOffers: coinmarketActions.saveOffers,
         saveBuyInfo: coinmarketActions.saveBuyInfo,
     });
+
+    const defaultCurrenyInfo = buyInfo.buyInfo?.suggestedFiatCurrency;
+    const defaultCurrency = defaultCurrenyInfo
+        ? buildOption(defaultCurrenyInfo)
+        : {
+              label: 'USD',
+              value: 'usd',
+          };
+
+    const defaultCountryInfo = buyInfo.buyInfo?.country;
+    const defaultCountry = defaultCountryInfo
+        ? buildOption(defaultCountryInfo)
+        : {
+              label: '🇨🇿 Czech Republic',
+              value: 'CZ',
+          };
 
     console.log('errors', errors);
     console.log('buyInfo', buyInfo);
@@ -145,17 +161,19 @@ const CoinmarketBuy = () => {
                                 <Controller
                                     control={control}
                                     name={currencySelect}
+                                    defaultValue={defaultCurrency}
                                     render={({ onChange, value }) => {
+                                        console.log('value', value);
                                         return (
                                             <SelectInput
                                                 options={FIAT.currencies.map((currency: string) =>
-                                                    buildCurrencyOption(currency),
+                                                    buildOption(currency),
                                                 )}
                                                 isSearchable
                                                 value={value}
                                                 isClearable={false}
                                                 minWidth="45px"
-                                                onChange={selected => {
+                                                onChange={(selected: any) => {
                                                     onChange(selected);
                                                 }}
                                             />
@@ -192,7 +210,7 @@ const CoinmarketBuy = () => {
                         <Label>Offers for:</Label>
                         <Controller
                             control={control}
-                            defaultValue={buyInfo.buyInfo?.country}
+                            defaultValue={defaultCountry}
                             name={countrySelect}
                             render={({ onChange, value }) => {
                                 return (
@@ -213,12 +231,22 @@ const CoinmarketBuy = () => {
                     <Right>
                         <StyledButton
                             onClick={async () => {
+                                const formValues = getValues();
+                                console.log('formValues', formValues);
+
+                                // call offers endpoint here
+
+                                // revalidate offers
+
                                 await saveBuyInfo({
-                                    country: getValues('countrySelect'),
-                                    currency: getValues('currencySelect'),
-                                    amount: getValues('fiatInput'),
+                                    country: formValues.countrySelect.value,
+                                    currency: formValues.currencySelect.value,
+                                    amount: formValues.fiatInput,
                                 });
+
                                 await saveOffers({ test: 'testOffer' });
+
+                                // if success redirect to offers views
                             }}
                         >
                             Show offers
