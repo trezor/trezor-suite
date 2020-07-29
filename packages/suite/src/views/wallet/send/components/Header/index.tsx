@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables, colors, Dropdown } from '@trezor/components';
+import { useSendFormContext } from '@wallet-hooks';
 import Clear from './components/Clear';
 
 const Wrapper = styled.div`
@@ -25,31 +26,38 @@ const HeaderRight = styled.div`
     flex: 1;
 `;
 
-interface Props {
-    setOpReturnActive: (isOpReturnActive: boolean) => void;
-}
+export default () => {
+    const {
+        account: { networkType },
+        getValues,
+        addOpReturn,
+    } = useSendFormContext();
 
-export default ({ setOpReturnActive }: Props) => (
-    <Wrapper>
-        <HeaderLeft />
-        <HeaderRight>
-            <Clear />
-            <Dropdown
-                alignMenu="right"
-                items={[
-                    {
-                        options: [
+    // getValues() and getValues('txType') returns different results - TODO: investigate
+    const opreturnOutput = getValues('outputs')?.find(o => o.type === 'opreturn');
+    const hasDropdown = networkType === 'bitcoin' && !opreturnOutput;
+    return (
+        <Wrapper>
+            <HeaderLeft />
+            <HeaderRight>
+                <Clear />
+                {hasDropdown && (
+                    <Dropdown
+                        alignMenu="right"
+                        items={[
                             {
-                                callback: () => {
-                                    setOpReturnActive(true);
-                                },
-                                label: 'OP Return',
-                                isHidden: false,
+                                options: [
+                                    {
+                                        callback: addOpReturn,
+                                        label: 'Add OP Return',
+                                        isHidden: false,
+                                    },
+                                ],
                             },
-                        ],
-                    },
-                ]}
-            />
-        </HeaderRight>
-    </Wrapper>
-);
+                        ]}
+                    />
+                )}
+            </HeaderRight>
+        </Wrapper>
+    );
+};

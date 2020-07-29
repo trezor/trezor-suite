@@ -232,7 +232,11 @@ export const findValidOutputs = (values: FormState) => {
     return values.outputs.filter(
         (output, index) =>
             output &&
-            typeof output.amount === 'string' &&
-            (values.setMaxOutputId === index || output.amount.length > 0),
+            ((output.type === 'payment' &&
+                typeof output.amount === 'string' &&
+                (values.setMaxOutputId === index || output.amount.length > 0)) ||
+                (output.type === 'opreturn' &&
+                    typeof output.dataHex === 'string' &&
+                    output.dataHex.length > 0)),
     );
 };

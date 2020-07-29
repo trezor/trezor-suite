@@ -8,7 +8,6 @@ import { useSendForm, SendContext } from '@wallet-hooks/useSendForm';
 
 import Outputs from './components/Outputs';
 import Header from './components/Header';
-import OpReturn from './components/OpReturn';
 import Fees from './components/Fees';
 import CoinActions from './components/CoinActions';
 import TotalSent from './components/TotalSent';
@@ -35,7 +34,6 @@ const Send = ({ device, fees, selectedAccount, locks, online, fiat, localCurrenc
     const fiatRates = fiat.coins.find(item => item.symbol === symbol);
     const initialSelectedFee = levels.find(l => l.label === 'normal') || levels[0];
     const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
-    const [opReturnActive, setOpReturnActive] = useState<boolean>(false);
 
     const sendState = useSendForm({
         device,
@@ -60,13 +58,10 @@ const Send = ({ device, fees, selectedAccount, locks, online, fiat, localCurrenc
     return (
         <WalletLayout title="Send" account={selectedAccount}>
             <SendContext.Provider value={sendState}>
-                <StyledCard customHeader={<Header setOpReturnActive={setOpReturnActive} />}>
+                <StyledCard customHeader={<Header />}>
                     <Outputs />
                     <CoinActions />
                 </StyledCard>
-                {networkType === 'bitcoin' && opReturnActive && (
-                    <OpReturn setIsActive={setOpReturnActive} />
-                )}
                 <Fees />
                 <TotalSent />
                 <ReviewButton />

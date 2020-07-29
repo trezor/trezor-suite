@@ -223,6 +223,13 @@ export const composeBitcoinTransaction = async (
 
     const composedOutputs = outputs
         .map((output, index) => {
+            if (output.type === 'opreturn') {
+                return {
+                    type: 'opreturn',
+                    dataHex: output.dataHex,
+                } as const;
+            }
+
             const { address } = output;
             const isMaxActive = formValues.setMaxOutputId === index;
             if (isMaxActive) {

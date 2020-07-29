@@ -1,16 +1,20 @@
 import { UseFormMethods } from 'react-hook-form';
 import { Account, Network, CoinFiatRates } from '@wallet-types';
 import { FeeLevel, TokenInfo, PrecomposedTransaction } from 'trezor-connect';
-import { TrezorDevice, AppState } from '@suite-types';
+import { TrezorDevice } from '@suite-types';
 
 export type CurrencyOption = { value: string; label: string };
 
 export type Output = {
-    outputId: number;
+    type: 'payment' | 'opreturn';
     address: string;
     amount: string;
     fiat: string;
     currency: CurrencyOption;
+    label?: string;
+    setMax: boolean;
+    dataHex: string; // bitcoin opreturn/ethereum data
+    dataAscii: string; // bitcoin opreturn/ethereum data
 };
 
 export interface FeeInfo {
@@ -34,18 +38,15 @@ export type EthTransactionData = {
 };
 
 export type FormState = {
-    txType: 'regular' | 'opreturn';
     outputs: Output[];
     // output arrays, each element is corresponding with single Output item
     setMaxOutputId?: number;
     selectedFee?: FeeLevel['label'];
-    feePerUnit: string; // bitcoin/ethereum/ripple field
-    feeLimit: string; // ethereum only
+    feePerUnit: string; // bitcoin/ethereum/ripple custom fee field (satB/gasPrice/drops)
+    feeLimit: string; // ethereum only (gasLimit)
     // advanced form inputs
-    bitcoinLockTime: string;
-    ethereumGasPrice: string;
-    ethereumGasLimit: string;
-    ethereumData: string;
+    bitcoinLockTime: string; // bitcoin RBF/schedule
+    ethereumNonce: string; // ethereum RBF
     rippleDestinationTag: string;
 };
 
@@ -53,22 +54,22 @@ export type FormState = {
 export type PrecomposedLevels = { [key: string]: PrecomposedTransaction };
 
 export type SendContextProps = {
-    account: Account;
-    coinFees: FeeInfo;
-    network: Network;
-    device: TrezorDevice;
-    online: boolean;
-    fiatRates: CoinFiatRates | undefined;
-    locks: AppState['suite']['locks'];
+    account: Account; // from reducer
+    coinFees: FeeInfo; // from reducer
+    network: Network; // from reducer
+    device: TrezorDevice; // from reducer (needed?)
+    online: boolean; // from reducer (needed?)
+    fiatRates: CoinFiatRates | undefined; // from reducer
+    // locks: AppState['suite']['locks'];
     feeInfo: FeeInfo;
-    initialSelectedFee: FeeLevel;
+    // initialSelectedFee: FeeLevel;
     localCurrencyOption: { value: string; label: string };
     destinationAddressEmpty: boolean;
-    transactionInfo: any; // TODO: type
+    // transactionInfo: any; // TODO: type
     token: null | TokenInfo;
     feeOutdated: boolean;
-    selectedFee: FeeLevel;
-    advancedForm: boolean;
+    // selectedFee: FeeLevel;
+    // advancedForm: boolean;
     isLoading: boolean;
     composedLevels?: PrecomposedLevels;
 };
@@ -85,4 +86,6 @@ export type SendContextState = UseFormMethods<FormState> &
         signTransaction: () => void;
         calculateFiat: (outputIndex: number, amount?: string) => void;
         changeFeeLevel: (currentLevel: FeeLevel, newLevel: FeeLevel['label']) => void;
+        addOpReturn: () => void;
+        removeOpReturn: (index: number) => void;
     };

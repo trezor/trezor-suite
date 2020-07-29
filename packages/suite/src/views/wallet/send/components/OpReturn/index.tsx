@@ -1,17 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useSendFormContext } from '@wallet-hooks';
-import { Card, Translation } from '@suite-components';
-import { Input, Icon } from '@trezor/components';
+import { Translation } from '@suite-components';
+import { Textarea, Icon } from '@trezor/components';
+import { getInputState } from '@wallet-utils/sendFormUtils';
 
-const StyledCard = styled(Card)`
+const Wrapper = styled.div`
     display: flex;
     flex-direction: row;
     justify-items: space-between;
     align-items: center;
-    min-height: 86px;
-    padding: 32px 42px 10px 42px;
-    margin-bottom: 25px;
 `;
 
 const StyledIcon = styled(Icon)`
@@ -33,23 +31,47 @@ const Space = styled.div`
     min-width: 65px;
 `;
 
-interface Props {
-    setIsActive: (siActive: boolean) => void;
-}
-
-export default ({ setIsActive }: Props) => {
+export default ({ outputId }: { outputId: number }) => {
     const {
-        account: { symbol },
-        transactionInfo,
+        register,
+        outputs,
+        getValues,
+        setValue,
+        errors,
+        composeTransaction,
+        removeOpReturn,
     } = useSendFormContext();
 
-    const inputTextName = 'BtcOpReturnText';
-    const inputHexName = 'BtcOpReturnHex';
+    const inputTextName = `outputs[${outputId}].dataAscii`;
+    const inputHexName = `outputs[${outputId}].dataHex`;
+
+    const asciiValue = outputs[outputId].dataAscii || getValues(inputTextName) || '';
+    const hexValue = outputs[outputId].dataHex || getValues(inputHexName) || '';
+
+    const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
+    const asciiError = outputError ? outputError.dataAscii : undefined;
+    const hexError = outputError ? outputError.dataHex : undefined;
 
     return (
-        <StyledCard>
-            <Input
+        <Wrapper>
+            <Textarea
+                state={getInputState(asciiError, asciiValue)}
+                monospace
                 name={inputTextName}
+                data-test={inputTextName}
+                defaultValue={asciiValue}
+                innerRef={register({
+                    required: 'TR_AMOUNT_IS_NOT_SET',
+                })}
+                onChange={event => {
+                    setValue(
+                        inputHexName,
+                        Buffer.from(event.target.value, 'ascii').toString('hex'),
+                        { shouldValidate: true },
+                    );
+                    composeTransaction(inputTextName, !!asciiError);
+                }}
+                bottomText={asciiError && asciiError.message}
                 label={
                     <Label>
                         <Icon size={16} icon="ASTERISK" />
@@ -60,12 +82,32 @@ export default ({ setIsActive }: Props) => {
                 }
             />
             <Space> = </Space>
-            <Input
+            <Textarea
+                state={getInputState(hexError, hexValue)}
+                monospace
                 name={inputHexName}
+                data-test={inputHexName}
+                defaultValue={hexValue}
+                innerRef={register({
+                    required: 'TR_AMOUNT_IS_NOT_SET',
+                    validate: (value: string) => {
+                        if (value.length % 2 !== 0) return 'TODO_1';
+                        if (value.length > 80 * 2) return 'TODO_2';
+                        if (!/^[\da-f]+$/.test(value)) return 'TODO_3';
+                    },
+                })}
+                onChange={event => {
+                    setValue(
+                        inputTextName,
+                        !hexError ? Buffer.from(event.target.value, 'hex').toString('ascii') : '',
+                    );
+                    composeTransaction(inputHexName, !!hexError);
+                }}
+                bottomText={hexError && hexError.message}
                 labelRight={
-                    <StyledIcon size={20} icon="CROSS" onClick={() => setIsActive(false)} />
+                    <StyledIcon size={20} icon="CROSS" onClick={() => removeOpReturn(outputId)} />
                 }
             />
-        </StyledCard>
+        </Wrapper>
     );
 };

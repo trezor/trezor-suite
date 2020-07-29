@@ -28,8 +28,21 @@ SendContext.displayName = 'SendContext';
 //     };
 // };
 
+const DEFAULT_PAYMENT = {
+    type: 'payment',
+    address: '',
+    amount: '',
+    fiat: '',
+    currency: { value: 'usd', label: 'USD' },
+} as const;
+
+const DEFAULT_OPRETURN = {
+    type: 'opreturn',
+    dataAscii: '',
+    dataHex: '',
+} as const;
+
 const DEFAULT_VALUES = {
-    txType: 'regular',
     setMaxOutputId: undefined,
     selectedFee: undefined,
     feePerUnit: '',
@@ -39,21 +52,13 @@ const DEFAULT_VALUES = {
     ethereumGasLimit: '',
     ethereumData: '',
     rippleDestinationTag: '',
-    outputs: [
-        {
-            outputId: 0,
-            address: '',
-            amount: '',
-            fiat: '',
-            currency: { value: 'usd', label: 'USD' },
-        },
-    ],
+    outputs: [],
 } as const;
 
 const getDefaultValues = (currency: Output['currency']) => {
     return {
         ...DEFAULT_VALUES,
-        outputs: [{ ...DEFAULT_VALUES.outputs[0], currency }],
+        outputs: [{ ...DEFAULT_PAYMENT, currency }],
     };
 };
 
@@ -143,13 +148,6 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
         clearErrors,
     } = useFormMethods;
 
-    // register custom form fields (without HTMLElement)
-    useEffect(() => {
-        register({ name: 'txType', type: 'custom' });
-        register({ name: 'setMaxOutputId', type: 'custom' });
-        register({ name: 'selectedFee', type: 'custom' });
-    }, [register]);
-
     // register array fields (outputs array in react-hook-form)
     const outputsFieldArray = useFieldArray<Output>({
         control,
@@ -171,6 +169,12 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
             draft.current = stored.formState;
         }
     }, [localCurrencyOption, getDraft, getValues, reset]);
+
+    // register custom form fields (without HTMLElement)
+    useEffect(() => {
+        register({ name: 'setMaxOutputId', type: 'custom' });
+        register({ name: 'selectedFee', type: 'custom' });
+    }, [register]);
 
     // TODO: useEffect on props (check: account change: key||balance, fee change, fiat change)
     // useEffect(() => {
@@ -246,6 +250,7 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
     const calculateFiat = useCallback(
         (outputIndex: number, amount?: string) => {
             const values = getValues();
+            if (!values.outputs) return; // this happens during hot-reload
             const { fiat } = values.outputs[outputIndex];
             if (typeof fiat !== 'string') return; // fiat input not registered
             if (!amount) {
@@ -376,7 +381,7 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
 
     const addOutput = useCallback(() => {
         outputsFieldArray.append({
-            ...DEFAULT_VALUES.outputs[0],
+            ...DEFAULT_PAYMENT,
             currency: localCurrencyOption,
         });
     }, [localCurrencyOption, outputsFieldArray]);
@@ -387,18 +392,16 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
             const { setMaxOutputId } = values;
             if (setMaxOutputId === index) {
                 // reset setMaxOutputId
-                values.setMaxOutputId = undefined;
+                setValue('setMaxOutputId', undefined);
             }
             if (typeof setMaxOutputId === 'number' && setMaxOutputId > index) {
                 // reduce setMaxOutputId
-                values.setMaxOutputId = setMaxOutputId - 1;
+                setValue('setMaxOutputId', setMaxOutputId - 1);
             }
-            // remove output at index
-            values.outputs.splice(index, 1);
-            // reset form state
-            reset(values);
+
+            outputsFieldArray.remove(index);
         },
-        [getValues, reset],
+        [getValues, setValue, outputsFieldArray],
     );
 
     const sign = useCallback(async () => {
@@ -438,6 +441,47 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
         composeRequest.current = field;
     };
 
+    const addOpReturn = () => {
+        // const outputs = getValues('outputs');
+        const values = getValues();
+        const lastOutput = values.outputs[values.outputs.length - 1];
+        const isLastOutputDirty = lastOutput.address.length > 0 || lastOutput.amount.length > 0;
+        if (isLastOutputDirty) {
+            outputsFieldArray.append({ ...DEFAULT_OPRETURN });
+        } else {
+            reset(
+                {
+                    ...values,
+                    outputs: [DEFAULT_OPRETURN],
+                },
+                { errors: true },
+            );
+        }
+    };
+
+    const removeOpReturn = (index: number) => {
+        const values = getValues();
+        if (values.outputs.length > 1) {
+            removeOutput(index);
+        } else {
+            clearErrors('outputs[0]');
+            reset(
+                {
+                    ...values,
+                    opreturnOutputId: undefined,
+                    outputs: [
+                        {
+                            ...DEFAULT_PAYMENT,
+                            currency: localCurrencyOption,
+                        },
+                    ],
+                },
+                { errors: true },
+            );
+        }
+        onComposeRequest('outputs[0].amount');
+    };
+
     // Handle compose request
     useEffect(() => {
         // compose request is not set, do nothing
@@ -461,6 +505,8 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
         signTransaction: sign,
         calculateFiat,
         changeFeeLevel,
+        addOpReturn,
+        removeOpReturn,
     };
 };
 

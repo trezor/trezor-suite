@@ -297,6 +297,7 @@ export const setMax = [
                     formState: {
                         outputs: [
                             {
+                                type: 'payment',
                                 address: '',
                                 amount: '1',
                                 fiat: '2.00',
@@ -340,6 +341,7 @@ export const setMax = [
                     formState: {
                         outputs: [
                             {
+                                type: 'payment',
                                 address: 'A',
                                 amount: '1',
                                 fiat: '2.00',

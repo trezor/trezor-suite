@@ -94,8 +94,7 @@ export default () => {
         composedLevels,
     } = useSendFormContext();
 
-    const values = getValues();
-    const selectedLabel = values.selectedFee || 'normal';
+    const selectedLabel = getValues('selectedFee') || 'normal';
     const selectedLevel = feeInfo.levels.find(level => level.label === selectedLabel)!;
     const transactionInfo = composedLevels ? composedLevels[selectedLabel] : undefined;
 
