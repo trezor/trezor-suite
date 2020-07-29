@@ -21,6 +21,7 @@ import { H1, H2 } from './components/typography/Heading';
 import { P, PProps } from './components/typography/Paragraph';
 import { Link, LinkProps } from './components/typography/Link';
 import { Box, BoxProps } from './components/others/Box';
+import { Offer, OfferProps } from './components/others/Offer';
 import { Card, CardProps } from './components/others/Card';
 import { SecurityCard, SecurityCardProps } from './components/others/SecurityCard';
 import { ConfirmOnDevice, ConfirmOnDeviceProps } from './components/prompts/ConfirmOnDevice';
@@ -87,4 +88,6 @@ export {
     SecurityCardProps,
     SelectBar,
     SelectBarProps,
+    Offer,
+    OfferProps,
 };
