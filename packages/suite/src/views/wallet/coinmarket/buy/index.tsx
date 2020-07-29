@@ -2,15 +2,17 @@ import React from 'react';
 import styled from 'styled-components';
 import validator from 'validator';
 import BigNumber from 'bignumber.js';
+import { useForm, Controller } from 'react-hook-form';
 
 import { FIAT } from '@suite-config';
+import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 import { CoinmarketLayout, ProvidedByInvity } from '@wallet-components';
-import { useForm, Controller } from 'react-hook-form';
 import { useBuyInfo } from '@wallet-hooks/useCoinmarket';
 import regional from '@wallet-constants/coinmarket/regional';
 import * as coinmarketActions from '@wallet-actions/coinmarketActions';
 import { useActions, useSelector } from '@suite-hooks';
-import { Button, Select, Input, colors, H2, SelectInput } from '@trezor/components';
+import { Button, Select, Input, colors, H2, SelectInput, CoinLogo } from '@trezor/components';
+import { Translation } from '@suite-components';
 
 const Content = styled.div`
     display: flex;
@@ -39,6 +41,7 @@ const Right = styled.div`
     display: flex;
     flex: 1;
     justify-content: flex-end;
+    align-items: center;
     padding-left: 10px;
     padding-top: 10px;
 `;
@@ -77,6 +80,10 @@ const InvityFooter = styled.div`
 `;
 
 const PreviousTransactions = styled.div``;
+
+const StyledCoinLogo = styled(CoinLogo)`
+    margin-right: 5px;
+`;
 
 const addValue = (currentValue = '0', addValue: string) => {
     const result = new BigNumber(currentValue.length > 1 ? currentValue : '0')
@@ -163,7 +170,6 @@ const CoinmarketBuy = () => {
                                     name={currencySelect}
                                     defaultValue={defaultCurrency}
                                     render={({ onChange, value }) => {
-                                        console.log('value', value);
                                         return (
                                             <SelectInput
                                                 options={FIAT.currencies.map((currency: string) =>
@@ -183,7 +189,10 @@ const CoinmarketBuy = () => {
                             }
                         />
                     </Left>
-                    <Right>{account ? account.networkType : 'loading'}</Right>
+                    <Right>
+                        {account && <StyledCoinLogo size={25} symbol={account.symbol} />}
+                        {account && <Translation {...getTitleForNetwork(account.symbol)} />}
+                    </Right>
                 </Top>
                 <Controls>
                     <Control
