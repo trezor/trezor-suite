@@ -41,6 +41,7 @@ const AccountTopPanel = () => {
     const { symbol, formattedBalance } = account;
     const dropdownItems = [
         {
+            key: 'accountDetails',
             callback: () => goto('wallet-details', undefined, true),
             label: <Translation id="TR_NAV_DETAILS" />,
             isHidden: account.networkType !== 'bitcoin',
@@ -54,7 +55,10 @@ const AccountTopPanel = () => {
             navigation={<AccountNavigation account={account} />}
             dropdown={
                 visibleDropdownItems.length > 0 ? (
-                    <Dropdown alignMenu="right" items={[{ options: visibleDropdownItems }]} />
+                    <Dropdown
+                        alignMenu="right"
+                        items={[{ key: 'group1', options: visibleDropdownItems }]}
+                    />
                 ) : undefined
             }
         >
