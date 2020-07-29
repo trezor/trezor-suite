@@ -99,6 +99,7 @@ interface Props extends Omit<SelectProps, 'components'> {
     label?: React.ReactNode;
     wrapperProps?: Record<string, any>;
     variant?: InputVariant;
+    noTopLabel?: boolean;
 }
 
 const Select = ({
@@ -110,6 +111,7 @@ const Select = ({
     label,
     width,
     variant = 'large',
+    noTopLabel = false,
     ...props
 }: Props) => {
     // customize control to pass data-test attribute
@@ -140,7 +142,7 @@ const Select = ({
 
     return (
         <Wrapper className={className} width={width} {...wrapperProps}>
-            <Label>{label}</Label>
+            {!noTopLabel && <Label>{label}</Label>}
             <ReactSelect
                 styles={selectStyle(isSearchable, withDropdownIndicator, variant, isClean)}
                 isSearchable={isSearchable}
