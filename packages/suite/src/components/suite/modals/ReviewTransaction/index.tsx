@@ -119,7 +119,9 @@ export default ({ selectedAccount, send, ...props }: Props) => {
     const { precomposedTx, signedTx } = send;
     if (selectedAccount.status !== 'loaded' || !device || !precomposedTx) return null;
 
-    const outputs = precomposedTx.transaction.outputs.filter(o => typeof o.address === 'string');
+    const outputs = precomposedTx.transaction.outputs.filter(
+        o => typeof o.address === 'string' || o.script_type === 'PAYTOOPRETURN',
+    );
 
     const { account } = selectedAccount;
     const { networkType, symbol } = account;
@@ -196,7 +198,7 @@ export default ({ selectedAccount, send, ...props }: Props) => {
                                         )}
                                         {state === 'warning' && <Dot />}
                                     </IconWrapper>
-                                    <Address>{output.address}</Address>
+                                    <Address>{output.op_return_data || output.address}</Address>
                                 </Left>
                                 <Right>
                                     <Coin>
