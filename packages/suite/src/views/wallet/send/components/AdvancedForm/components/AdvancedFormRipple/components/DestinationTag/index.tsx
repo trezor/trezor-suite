@@ -41,7 +41,7 @@ const AdvancedFormRipple = ({ send, sendFormActionsRipple }: Props) => {
         <Input
             state={getInputState(error, value, undefined, false)}
             variant="small"
-            topLabel={
+            label={
                 <Label>
                     <Text>
                         <Translation id="TR_XRP_DESTINATION_TAG" />

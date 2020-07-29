@@ -1,6 +1,6 @@
 import { FiatValue, QuestionTooltip, Translation } from '@suite-components';
-import { Input, variables } from '@trezor/components';
-import { LABEL_HEIGHT, VALIDATION_ERRORS } from '@wallet-constants/sendForm';
+import { Input, variables, Button } from '@trezor/components';
+import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Output, CustomFee } from '@wallet-types/sendForm';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getInputState } from '@wallet-utils/sendFormUtils';
@@ -24,7 +24,6 @@ const StyledInput = styled(Input)`
     min-width: 250px;
     display: flex;
     flex: 1;
-    margin-right: 10px;
 `;
 
 const Label = styled.div`
@@ -46,7 +45,6 @@ const TokenBalance = styled.div`
 
 const Right = styled.div`
     display: flex;
-    margin-top: ${LABEL_HEIGHT}px;
     flex: 1;
     min-width: 250px;
     align-items: flex-start;
@@ -55,7 +53,7 @@ const Right = styled.div`
 const EqualsSign = styled.div`
     display: flex;
     align-items: flex-start;
-    padding: ${LABEL_HEIGHT + 15}px 20px 0;
+    padding: 47px 20px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         display: none;
@@ -122,7 +120,7 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
             <Left>
                 <StyledInput
                     state={getInputState(error, value, isLoading, true)}
-                    topLabel={
+                    label={
                         <Label>
                             <Text>
                                 <Translation id="TR_AMOUNT" />
@@ -130,13 +128,17 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
                             <QuestionTooltip messageId="TR_SEND_AMOUNT_TOOLTIP" />
                         </Label>
                     }
-                    button={{
-                        icon: getMaxIcon(setMaxActivated),
-                        iconSize: 15,
-                        onClick: () => sendFormActions.setMax(id),
-                        text: <Translation id="TR_SEND_SEND_MAX" />,
-                    }}
-                    align="right"
+                    labelAddon={
+                        <Button
+                            icon={getMaxIcon(setMaxActivated)}
+                            onClick={() => {
+                                sendFormActions.setMax(id);
+                            }}
+                            variant="tertiary"
+                        >
+                            <Translation id="TR_SEND_SEND_MAX" />
+                        </Button>
+                    }
                     value={value || ''}
                     onChange={e => sendFormActions.handleAmountChange(id, e.target.value)}
                     bottomText={getMessage(

@@ -3,14 +3,10 @@ import styled from 'styled-components';
 import { Select } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { TokenInfo } from 'trezor-connect';
-import { LABEL_HEIGHT } from '@wallet-constants/sendForm';
 
 const Wrapper = styled.div`
     min-width: 110px;
-`;
-
-const CurrencySelect = styled(Select)`
-    margin-top: ${LABEL_HEIGHT}px;
+    padding-left: 10px;
 `;
 
 interface Props {
@@ -51,7 +47,7 @@ export default ({ symbol, tokens, selectedToken, onChange }: Props) => {
 
     return (
         <Wrapper>
-            <CurrencySelect
+            <Select
                 key="token"
                 isSearchable={false}
                 onChange={(t: Option) => onChange(t.value)}

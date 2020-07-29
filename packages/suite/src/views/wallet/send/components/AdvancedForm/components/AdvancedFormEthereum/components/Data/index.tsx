@@ -38,7 +38,7 @@ export default ({ send, sendFormActionsEthereum, account }: Props) => {
             bottomText={value && getError(error)}
             isDisabled={!!send.networkTypeEthereum.token}
             onChange={e => sendFormActionsEthereum.handleData(e.target.value)}
-            topLabel={
+            label={
                 <Label>
                     <Text>
                         <Translation id="TR_SEND_DATA" />
