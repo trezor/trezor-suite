@@ -3,9 +3,12 @@ import Google from '../google';
 
 class GoogleProvider implements AbstractMetadataProvider {
     client: Google;
+    type: 'google';
+
     constructor(_token?: string) {
         console.warn('native-GoogleProvider');
         this.client = new Google();
+        this.type = 'google';
     }
 
     async connect() {

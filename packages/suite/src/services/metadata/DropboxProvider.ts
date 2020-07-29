@@ -58,12 +58,14 @@ class DropboxProvider implements AbstractMetadataProvider {
     client: Dropbox;
     connected = false;
     user: DropboxTypes.users.FullAccount | undefined;
+    type: 'dropbox';
 
     constructor(token?: string) {
         this.client = new Dropbox({ clientId: 'g5f5vaogrxvvrnv', fetch });
         if (token) {
             this.client.setAccessToken(token);
         }
+        this.type = 'dropbox';
     }
 
     async connect() {

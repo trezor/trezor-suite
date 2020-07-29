@@ -49,6 +49,7 @@ export interface AbstractMetadataProvider {
     isConnected: () => boolean;
     isLoading: () => boolean;
     getCredentials: () => Promise<MetadataProviderCredentials | void>;
+    type: 'google' | 'dropbox' | 'userData';
 }
 
 export interface AccountMetadata {

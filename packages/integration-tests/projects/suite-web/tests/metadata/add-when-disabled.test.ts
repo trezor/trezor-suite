@@ -27,7 +27,6 @@ describe('Metadata', () => {
             }});
     
             cy.passThroughInitialRun();
-    
             
             // todo: wait for discovery to finish and remove this
             cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 });
@@ -45,6 +44,5 @@ describe('Metadata', () => {
             cy.getTestElement('@modal/add-metadata/input').type('{backspace}{backspace}{backspace}{backspace}{backspace}My cool label for account');
             cy.getTestElement('@modal/add-metadata/submit-button').click();
             cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'My cool label for account');
-
     });
 });

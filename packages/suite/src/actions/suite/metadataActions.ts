@@ -42,6 +42,10 @@ let fetchInterval: any; // any because of native at the moment, otherwise number
 
 const getProvider = async (state?: Partial<MetadataProviderCredentials>) => {
     if (!state) return;
+    // instance already exists but user did not finish log in and decided to use another provider;
+    if (providerInstance && providerInstance.type !== state.type) {
+        providerInstance = undefined;
+    }
     if (providerInstance) return providerInstance;
     switch (state.type) {
         case 'dropbox':

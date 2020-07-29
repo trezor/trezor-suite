@@ -1,8 +1,11 @@
 import { AbstractMetadataProvider } from '@suite-types/metadata';
 
 class DropboxProvider implements AbstractMetadataProvider {
+    type: 'dropbox';
+
     constructor(_token?: string) {
         console.warn('native-DropboxProvider');
+        this.type = 'dropbox';
     }
 
     async connect() {

@@ -4,9 +4,11 @@ import GoogleClient from '@suite/services/google';
 class GoogleProvider implements AbstractMetadataProvider {
     connected = false;
     client: GoogleClient;
+    type: 'google';
 
     constructor(token?: string) {
         this.client = new GoogleClient(token);
+        this.type = 'google';
     }
 
     async connect() {

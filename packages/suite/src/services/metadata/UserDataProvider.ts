@@ -1,8 +1,11 @@
 import { AbstractMetadataProvider } from '@suite-types/metadata';
 
 class UserDataProvider implements AbstractMetadataProvider {
+    type: 'userData';
+    
     constructor() {
         console.warn('UserDataProvider');
+        this.type = 'userData';
     }
 
     async connect() {
