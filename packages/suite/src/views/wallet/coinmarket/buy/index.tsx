@@ -10,6 +10,7 @@ import { CoinmarketLayout, ProvidedByInvity } from '@wallet-components';
 import { useBuyInfo } from '@wallet-hooks/useCoinmarket';
 import regional from '@wallet-constants/coinmarket/regional';
 import * as coinmarketActions from '@wallet-actions/coinmarketActions';
+import * as routerActions from '@suite-actions/routerActions';
 import { useActions, useSelector } from '@suite-hooks';
 import { Button, Select, Input, colors, H2, SelectInput, CoinLogo } from '@trezor/components';
 import { Translation } from '@suite-components';
@@ -109,6 +110,10 @@ const CoinmarketBuy = () => {
     const { saveOffers, saveBuyInfo } = useActions({
         saveOffers: coinmarketActions.saveOffers,
         saveBuyInfo: coinmarketActions.saveBuyInfo,
+    });
+
+    const { goto } = useActions({
+        goto: routerActions.goto,
     });
 
     const defaultCurrenyInfo = buyInfo.buyInfo?.suggestedFiatCurrency;
@@ -256,6 +261,7 @@ const CoinmarketBuy = () => {
                                 await saveOffers({ test: 'testOffer' });
 
                                 // if success redirect to offers views
+                                goto('wallet-coinmarket-buy-offers');
                             }}
                         >
                             Show offers

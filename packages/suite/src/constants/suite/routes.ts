@@ -41,11 +41,6 @@ const routes = [
         app: 'dashboard',
     },
     {
-        name: 'offers-index',
-        pattern: '/offers',
-        app: 'offers',
-    },
-    {
         name: 'suite-version',
         pattern: '/version',
         app: 'version',
@@ -173,6 +168,12 @@ const routes = [
     {
         name: 'wallet-coinmarket-spend',
         pattern: '/accounts/coinmarket/spend',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
+        name: 'wallet-coinmarket-buy-offers',
+        pattern: '/accounts/coinmarket/buy/offers',
         app: 'wallet',
         params: walletParams,
     },
