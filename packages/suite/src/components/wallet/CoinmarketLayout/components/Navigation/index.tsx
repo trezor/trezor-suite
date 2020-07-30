@@ -39,9 +39,7 @@ const StyledNavLink = styled.div<{ active?: boolean }>`
     }
 `;
 
-const Text = styled.div`
-    padding-left: 8px;
-`;
+const Text = styled.div``;
 
 interface Props {
     items: {
