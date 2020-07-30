@@ -41,7 +41,7 @@ const AccountTopPanel = () => {
     const { symbol, formattedBalance } = account;
     const dropdownItems = [
         {
-            key: 'accountDetails',
+            key: 'account-details',
             callback: () => {
                 goto('wallet-details', undefined, true);
             },
