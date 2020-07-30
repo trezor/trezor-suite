@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { GraphRange, AggregatedDashboardHistory } from '@wallet-types/fiatRates';
+import { AggregatedDashboardHistory } from '@wallet-types/graph';
 import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
 import { Props } from './Container';
 import { getUnixTime } from 'date-fns';
@@ -22,7 +22,7 @@ const GraphWrapper = styled(HiddenPlaceholder)`
     display: flex;
     flex: 1 1 auto;
     padding: ${CARD_PADDING_SIZE} 0px;
-    height: 270px;
+    height: 320px;
 `;
 
 const ErrorMessage = styled.div`
@@ -48,7 +48,6 @@ const DashboardGraph = React.memo((props: Props) => {
         accounts,
         selectedDevice,
         updateGraphData,
-        setSelectedRange,
         getGraphDataForInterval,
         localCurrency,
     } = props;
@@ -67,14 +66,6 @@ const DashboardGraph = React.memo((props: Props) => {
         updateGraphData(accounts);
     }, [updateGraphData, accounts]);
 
-    const onSelectedRange = useCallback(
-        (range: GraphRange) => {
-            setSelectedRange(range);
-            updateGraphData(accounts, { newAccountsOnly: true });
-        },
-        [setSelectedRange, updateGraphData, accounts],
-    );
-
     const receivedValueFn = useCallback(
         (sourceData: AggregatedDashboardHistory) => sourceData.receivedFiat[localCurrency],
         [localCurrency],
@@ -82,6 +73,11 @@ const DashboardGraph = React.memo((props: Props) => {
 
     const sentValueFn = useCallback(
         (sourceData: AggregatedDashboardHistory) => sourceData.sentFiat[localCurrency],
+        [localCurrency],
+    );
+
+    const balanceValueFn = useCallback(
+        (sourceData: AggregatedDashboardHistory) => sourceData.balanceFiat?.[localCurrency],
         [localCurrency],
     );
 
@@ -118,6 +114,8 @@ const DashboardGraph = React.memo((props: Props) => {
         }
     }, [isLoading, getGraphDataForInterval, selectedDeviceState, selectedRange]);
 
+    console.log('dashboard graph data', data);
+
     return (
         <Wrapper data-test="@dashboard/graph">
             <GraphWrapper>
@@ -130,6 +128,7 @@ const DashboardGraph = React.memo((props: Props) => {
                     </ErrorMessage>
                 ) : (
                     <TransactionsGraph
+                        hideToolbar
                         variant="all-assets"
                         onRefresh={onRefresh}
                         isLoading={isLoading || isProcessing}
@@ -138,9 +137,9 @@ const DashboardGraph = React.memo((props: Props) => {
                         maxValue={maxValue}
                         data={data}
                         selectedRange={selectedRange}
-                        onSelectedRange={onSelectedRange}
                         receivedValueFn={receivedValueFn}
                         sentValueFn={sentValueFn}
+                        balanceValueFn={balanceValueFn}
                     />
                 )}
             </GraphWrapper>

@@ -1,7 +1,5 @@
-import TrezorConnect, { BlockchainAccountBalanceHistory } from 'trezor-connect';
+import TrezorConnect from 'trezor-connect';
 import { getUnixTime, subWeeks, isWithinInterval, fromUnixTime } from 'date-fns';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { resetTime } from '@suite-utils/date';
 import { Dispatch, GetState } from '@suite-types';
 import {
     ACCOUNT_GRAPH_SUCCESS,
@@ -10,12 +8,15 @@ import {
     AGGREGATED_GRAPH_SUCCESS,
     ACCOUNT_GRAPH_START,
     SET_SELECTED_RANGE,
+    SET_SELECTED_VIEW,
 } from './constants/graphConstants';
 import { Account } from '@wallet-types';
-import { GraphRange } from '@wallet-types/fiatRates';
-import { accountGraphDataFilterFn, deviceGraphDataFilterFn } from '@suite/utils/wallet/graphUtils';
-import { GraphData } from '@wallet-reducers/graphReducer';
-import BigNumber from 'bignumber.js';
+import { GraphRange, GraphView, GraphData } from '@wallet-types/graph';
+import {
+    accountGraphDataFilterFn,
+    deviceGraphDataFilterFn,
+    enhanceBlockchainAccountHistory,
+} from '@wallet-utils/graphUtils';
 
 export type GraphActions =
     | {
@@ -39,11 +40,20 @@ export type GraphActions =
     | {
           type: typeof SET_SELECTED_RANGE;
           payload: GraphRange;
+      }
+    | {
+          type: typeof SET_SELECTED_VIEW;
+          payload: GraphView;
       };
 
 export const setSelectedRange = (range: GraphRange) => ({
     type: SET_SELECTED_RANGE,
     payload: range,
+});
+
+export const setSelectedView = (view: GraphView) => ({
+    type: SET_SELECTED_VIEW,
+    payload: view,
 });
 
 /**
@@ -63,8 +73,6 @@ export const fetchAccountGraphData = (
     endDate: Date | null,
     range: GraphRange,
 ) => async (dispatch: Dispatch, _getState: GetState) => {
-    const lastBalance = account.formattedBalance; // todo availableBalance or balance?
-
     dispatch({
         type: ACCOUNT_GRAPH_START,
         payload: {
@@ -73,7 +81,7 @@ export const fetchAccountGraphData = (
                 descriptor: account.descriptor,
                 symbol: account.symbol,
             },
-            data: null,
+            data: [],
             isLoading: true,
             error: false,
         },
@@ -95,43 +103,7 @@ export const fetchAccountGraphData = (
     });
 
     if (response?.success) {
-        const enhancedResponse = response.payload.map(h => {
-            const normalizedReceived = h.sentToSelf
-                ? new BigNumber(h.received).minus(h.sentToSelf || 0).toFixed()
-                : h.received;
-            const normalizedSent = h.sentToSelf
-                ? new BigNumber(h.sent).minus(h.sentToSelf || 0).toFixed()
-                : h.sent;
-
-            return {
-                ...h,
-                received: formatNetworkAmount(normalizedReceived, account.symbol),
-                sent: formatNetworkAmount(normalizedSent, account.symbol),
-                time: resetTime(h.time),
-            };
-        });
-
-        let balance = lastBalance;
-
-        interface WithBalance extends BlockchainAccountBalanceHistory {
-            balance: string;
-        }
-
-        const withBalance: WithBalance[] = [];
-
-        for (let i = enhancedResponse.length - 1; i > 0; i--) {
-            const curItem = enhancedResponse[i];
-            console.log('i', i);
-            console.log('balance', balance);
-            // console.log('enhancedResponse[i]', enhancedResponse[i]);
-            withBalance.push({
-                ...curItem,
-                balance,
-            });
-            balance = new BigNumber(balance).minus(curItem.received).plus(curItem.sent).toFixed();
-            console.log('prev balance', balance);
-        }
-        console.log('withBalance', withBalance);
+        const enhancedResponse = enhanceBlockchainAccountHistory(response.payload, account.symbol);
 
         dispatch({
             type: ACCOUNT_GRAPH_SUCCESS,
@@ -141,27 +113,26 @@ export const fetchAccountGraphData = (
                     descriptor: account.descriptor,
                     symbol: account.symbol,
                 },
-                data: withBalance,
+                data: enhancedResponse,
                 isLoading: false,
                 error: false,
             },
         });
-        return enhancedResponse;
-    }
-    dispatch({
-        type: ACCOUNT_GRAPH_FAIL,
-        payload: {
-            account: {
-                deviceState: account.deviceState,
-                descriptor: account.descriptor,
-                symbol: account.symbol,
+    } else {
+        dispatch({
+            type: ACCOUNT_GRAPH_FAIL,
+            payload: {
+                account: {
+                    deviceState: account.deviceState,
+                    descriptor: account.descriptor,
+                    symbol: account.symbol,
+                },
+                data: [],
+                isLoading: false,
+                error: true,
             },
-            data: null,
-            isLoading: false,
-            error: true,
-        },
-    });
-    return null;
+        });
+    }
 };
 
 export const updateGraphData = (

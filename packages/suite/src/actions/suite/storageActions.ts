@@ -3,9 +3,9 @@ import SuiteDB from '@trezor/suite-storage';
 import { STORAGE } from './constants';
 import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { Account, Send } from '@wallet-types';
+import { GraphData } from '@wallet-types/graph';
 import { getAccountKey } from '@wallet-utils/accountUtils';
 import { Discovery } from '@wallet-reducers/discoveryReducer';
-import { GraphData } from '@wallet-reducers/graphReducer';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
@@ -90,7 +90,7 @@ export const saveAccountTransactions = (account: Account) => async (
     return db.addItems('txs', orderedTxs, true);
 };
 
-export const removeAccountGraph = (account: Account) => () => {
+export const removeAccountGraph = async (account: Account) => {
     return db.removeItemByIndex('graph', 'accountKey', [
         account.descriptor,
         account.symbol,

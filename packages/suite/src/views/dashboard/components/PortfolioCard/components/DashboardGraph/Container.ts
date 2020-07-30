@@ -15,7 +15,6 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     bindActionCreators(
         {
             updateGraphData: graphActions.updateGraphData,
-            setSelectedRange: graphActions.setSelectedRange,
             getGraphDataForInterval: graphActions.getGraphDataForInterval,
         },
         dispatch,

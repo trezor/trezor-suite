@@ -45,11 +45,10 @@ const account1Dev2 = global.JestMocks.getWalletAccount({
 
 const graphData1 = {
     account: account1Dev1,
-    interval: 'year',
     error: false,
     isLoading: false,
-    data: null,
-} as const;
+    data: [],
+};
 
 const rates = {
     czk: 3007.1079886708517,
@@ -60,7 +59,6 @@ const rates = {
 };
 const graphData2 = {
     account: account1Dev1,
-    interval: 'year',
     error: false,
     isLoading: false,
     data: [
@@ -79,10 +77,9 @@ const graphData2 = {
             rates,
         },
     ],
-} as const;
+};
 const graphData3 = {
     account: account2Dev1,
-    interval: 'year',
     error: false,
     isLoading: false,
     data: [
@@ -101,7 +98,7 @@ const graphData3 = {
             rates,
         },
     ],
-} as const;
+};
 
 describe('Graph utils', () => {
     test('calcFiatValueMap', () => {

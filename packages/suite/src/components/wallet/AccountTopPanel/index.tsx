@@ -42,7 +42,9 @@ const AccountTopPanel = () => {
     const dropdownItems = [
         {
             key: 'accountDetails',
-            callback: () => goto('wallet-details', undefined, true),
+            callback: () => {
+                goto('wallet-details', undefined, true);
+            },
             label: <Translation id="TR_NAV_DETAILS" />,
             isHidden: account.networkType !== 'bitcoin',
         },

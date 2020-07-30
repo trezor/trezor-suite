@@ -1,7 +1,7 @@
 import React from 'react';
-import { FormattedNumber } from '@suite-components';
-import { Account } from '@wallet-types';
 import { TooltipProps } from 'recharts';
+import { FormattedNumber, FormattedCryptoAmount } from '@suite-components';
+import { Account } from '@wallet-types';
 import { Props as GraphProps, CryptoGraphProps } from '../../index';
 import CustomTooltipBase from '../CustomTooltipBase';
 
@@ -58,7 +58,13 @@ const CustomTooltipAccount = (props: Props) => {
                     receivedFiat,
                     props.localCurrency,
                 )}
-                balance={<>{balance}</>}
+                balance={
+                    <FormattedCryptoAmount
+                        disableHiddenPlaceholder
+                        value={balance}
+                        symbol={props.symbol}
+                    />
+                }
             />
         );
     }

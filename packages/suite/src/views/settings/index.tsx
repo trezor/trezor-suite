@@ -10,7 +10,7 @@ import {
     TextColumn,
 } from '@suite-components/Settings';
 import { FIAT, LANGUAGES } from '@suite-config';
-import { useAnalytics, useDevice } from '@suite-hooks';
+import { useAnalytics } from '@suite-hooks';
 import { Button, Tooltip } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';

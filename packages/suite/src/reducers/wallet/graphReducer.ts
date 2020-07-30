@@ -1,36 +1,23 @@
 import produce from 'immer';
-import { BlockchainAccountBalanceHistory } from 'trezor-connect';
 import { ACCOUNT, GRAPH } from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
-import { WalletAction, Network, Account } from '@wallet-types';
+import { WalletAction, Account } from '@wallet-types';
+import { GraphRange, GraphView, AccountIdentifier, GraphData } from '@wallet-types/graph';
 import { Action as SuiteAction } from '@suite-types';
-import { GraphRange } from '@suite/types/wallet/fiatRates';
 import { SETTINGS } from '@suite-config';
-// import { SETTINGS } from '@suite-config';
-
-interface AccountIdentifier {
-    descriptor: string;
-    deviceState: string;
-    symbol: Network['symbol'];
-}
-
-export interface GraphData {
-    account: AccountIdentifier;
-    error: boolean;
-    isLoading: boolean;
-    data: BlockchainAccountBalanceHistory[] | null;
-}
 
 interface State {
     data: GraphData[];
     error: null | AccountIdentifier[];
     isLoading: boolean;
     selectedRange: GraphRange;
+    selectedView: GraphView;
 }
 
 const initialState: State = {
     data: [],
     selectedRange: SETTINGS.DEFAULT_GRAPH_RANGE,
+    selectedView: 'linear',
     error: null,
     isLoading: false,
     // selectedRange: SETTINGS.DEFAULT_GRAPH_RANGE,
@@ -114,8 +101,12 @@ export default (state: State = initialState, action: WalletAction | SuiteAction)
             case GRAPH.SET_SELECTED_RANGE:
                 draft.selectedRange = action.payload;
                 break;
+            case GRAPH.SET_SELECTED_VIEW:
+                draft.selectedView = action.payload;
+                break;
             case ACCOUNT.REMOVE:
-                return remove(draft, action.payload);
+                remove(draft, action.payload);
+                break;
             // no default
         }
     });

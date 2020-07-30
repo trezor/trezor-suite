@@ -15,7 +15,6 @@ import { Network } from '@wallet-types';
 
 const Col = styled(HiddenPlaceholder)`
     position: sticky;
-    z-index: 1;
     top: 0;
     font-size: ${variables.FONT_SIZE.TINY};
     padding: 20px 0px;

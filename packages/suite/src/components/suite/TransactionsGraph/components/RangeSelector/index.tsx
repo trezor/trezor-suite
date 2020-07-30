@@ -1,22 +1,27 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
-import { GraphRange } from '@suite/types/wallet/fiatRates';
+import { useGraph } from '@suite-hooks';
+import { GraphRange } from '@wallet-types/graph';
+import { getFormattedLabel } from '@wallet-utils/graphUtils';
 
 const Wrapper = styled.div`
     display: flex;
-    margin-bottom: 8px;
+    /* margin-bottom: 8px; */
 `;
 
 const RangeItem = styled.div<{ selected: boolean }>`
     display: flex;
-    font-size: ${variables.FONT_SIZE.TINY};
+    font-size: ${variables.FONT_SIZE.SMALL};
     text-align: center;
-    color: ${props => (props.selected ? colors.BLACK0 : colors.BLACK50)};
+    font-weight: ${props => (props.selected ? 600 : 500)};
+    color: ${props => (props.selected ? colors.NEUE_TYPE_DARK_GREY : colors.NEUE_TYPE_LIGHT_GREY)};
     cursor: pointer;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
 
     & + & {
-        margin-left: 20px;
+        margin-left: 12px;
     }
 `;
 
@@ -44,22 +49,27 @@ const RANGES = [
 ] as const;
 
 interface Props {
-    selectedRange: GraphRange | null;
-    onSelectedRange: (range: GraphRange) => void;
+    onSelectedRange?: (range: GraphRange) => void;
+    className?: string;
 }
 
 const RangeSelector = (props: Props) => {
+    const { selectedRange, setSelectedRange } = useGraph();
+
     return (
-        <Wrapper>
+        <Wrapper className={props.className}>
             {RANGES.map(range => (
                 <RangeItem
                     key={range.label}
-                    selected={range.weeks === props.selectedRange?.weeks}
+                    selected={range.weeks === selectedRange?.weeks}
                     onClick={() => {
-                        props.onSelectedRange(range);
+                        setSelectedRange(range);
+                        if (props.onSelectedRange) {
+                            props.onSelectedRange(range);
+                        }
                     }}
                 >
-                    {range.label}
+                    {getFormattedLabel(range.label)}
                 </RangeItem>
             ))}
         </Wrapper>
