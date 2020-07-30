@@ -54,7 +54,7 @@ const StyledCard = styled(Card)`
 `;
 
 const OutputWrapper = styled.div`
-    padding: 0 12px 12px 12px;
+    padding: 0 12px 0 12px;
     margin-bottom: 20px;
 
     &:last-child {
@@ -62,9 +62,7 @@ const OutputWrapper = styled.div`
     }
 `;
 
-const AdditionalInfoWrapper = styled.div`
-    margin-top: 20px;
-`;
+const AdditionalInfoWrapper = styled.div``;
 
 const AdditionalFormHeader = styled.div`
     padding: 5px 12px;
