@@ -24,7 +24,7 @@ export const useDiscovery = () => {
         return 0;
     }, [discovery]);
 
-    const getStatus = useCallback((): DiscoveryStatus | void => {
+    const getStatus = useCallback((): DiscoveryStatus | undefined => {
         if (!device)
             return {
                 status: 'loading',
@@ -79,6 +79,7 @@ export const useDiscovery = () => {
                 };
             }
         }
+        return undefined;
     }, [device, discovery, running]);
 
     useEffect(() => {
