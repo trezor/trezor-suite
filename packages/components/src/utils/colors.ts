@@ -23,7 +23,7 @@ const getStateColor = (state: InputState | undefined) => {
         case 'error':
             return colors.NEUE_TYPE_RED;
         default:
-            return colors.BLACK50;
+            return colors.NEUE_TYPE_DARK_GREY;
     }
 };
 

@@ -1,9 +1,7 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import FluidSpinner from '../../loaders/FluidSpinner';
-import { Icon } from '../../Icon';
 import { colors, variables } from '../../../config';
-import { InputState, InputVariant, InputButton, TextAlign } from '../../../support/types';
+import { InputState, InputVariant, InputButton } from '../../../support/types';
 import { getStateColor } from '../../../utils';
 
 interface WrappedProps {
@@ -18,17 +16,17 @@ const Wrapper = styled.div<WrappedProps>`
 
 const StyledInput = styled.input<Props>`
     font-family: ${variables.FONT_FAMILY.TTHOVES};
-    padding: 0 10px;
-    font-size: ${props => (props.value ? '16px' : '14px')};
-    border-radius: 3px;
-    box-shadow: inset 0 3px 6px 0 ${colors.BLACK92};
-    border: solid 1px ${props => (props.state ? getStateColor(props.state) : colors.BLACK80)};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    padding: 1px 16px 0 16px; /* 2px from top = input height should be 36px and 48px  */
+    font-size: ${variables.FONT_SIZE.SMALL};
+    border-radius: 4px;
+    border: solid 2px
+        ${props => (props.state ? getStateColor(props.state) : colors.NEUE_STROKE_GREY)};
     background-color: ${colors.WHITE};
     outline: none;
     box-sizing: border-box;
     width: 100%;
-    height: ${props => (props.variant === 'small' ? '36px' : '48px')};
-    text-align: ${props => props.align || 'left'};
+    height: ${props => (props.variant === 'small' ? '32px' : '48px')};
     color: ${props => getStateColor(props.state)};
 
     &:read-only {
@@ -40,7 +38,6 @@ const StyledInput = styled.input<Props>`
     ${props =>
         props.monospace &&
         css`
-            /* same width nums, slashed zero */
             font-variant-numeric: slashed-zero tabular-nums;
         `}
 
@@ -52,18 +49,6 @@ const StyledInput = styled.input<Props>`
             color: ${colors.BLACK50};
             cursor: default;
         `}
-
-    ${props =>
-        !props.disabled &&
-        !props.state &&
-        !props.readOnly &&
-        css`
-            &:hover,
-            &:focus,
-            &:active {
-                border-color: ${colors.BLACK50};
-            }
-        `}
 `;
 
 const InputWrapper = styled.div`
@@ -71,7 +56,30 @@ const InputWrapper = styled.div`
     position: relative;
 `;
 
-const InputIconWrapper = styled.div<Props>`
+const Label = styled.div`
+    display: flex;
+    min-height: 32px;
+    justify-content: space-between;
+`;
+
+const Left = styled.div`
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    padding: 0 0 12px 0;
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+`;
+
+const Right = styled.div`
+    display: flex;
+`;
+
+const LabelAddon = styled.div``;
+
+const VisibleRightLabel = styled.div`
+    padding-left: 5px;
+`;
+
+const InputAddon = styled.div<{ align: 'left' | 'right' }>`
     position: absolute;
     top: 1px;
     bottom: 1px;
@@ -92,56 +100,11 @@ const InputIconWrapper = styled.div<Props>`
         `}
 `;
 
-const SpinnerWrapper = styled.div``;
-
-const Label = styled.label`
-    padding: 0 0 10px 0;
-`;
-
 const BottomText = styled.div<Props>`
-    padding: 10px;
-    font-size: 12px;
+    padding: 10px 10px 0 10px;
+    min-height: 27px;
+    font-size: ${variables.FONT_SIZE.TINY};
     color: ${props => getStateColor(props.state)};
-`;
-
-const Button = styled.button<{ disabled?: boolean }>`
-    font-family: ${variables.FONT_FAMILY.TTHOVES};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.BLACK25};
-    border: none;
-    outline: none;
-    display: flex;
-    align-items: center;
-    padding: 0 0 0 5px;
-    background: ${colors.WHITE};
-
-    ${props =>
-        !props.disabled &&
-        css`
-            cursor: pointer;
-
-            &:hover {
-                color: ${colors.BLACK0};
-            }
-        `}
-
-    ${props =>
-        props.disabled &&
-        css`
-            opacity: 0.7;
-        `}
-`;
-
-const ButtonText = styled.div`
-    font-size: 14px;
-    font-weight: 500;
-    height: 14px;
-    line-height: 16px;
-`;
-
-const StyledIcon = styled(Icon)`
-    margin-right: 5px;
 `;
 
 const Overlay = styled.div<Props>`
@@ -160,7 +123,11 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     innerRef?: React.Ref<HTMLInputElement>;
     variant?: InputVariant;
     button?: InputButton;
-    topLabel?: React.ReactNode;
+    label?: React.ReactElement | string;
+    labelAddon?: React.ReactElement;
+    labelRight?: React.ReactElement;
+    innerAddon?: React.ReactNode;
+    topLabelRight?: React.ReactNode;
     bottomText?: React.ReactNode;
     monospace?: boolean;
     isDisabled?: boolean;
@@ -174,7 +141,10 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     wrapperProps?: Record<string, any>;
     type?: string;
     state?: InputState;
-    align?: TextAlign;
+    addonAlign?: 'left' | 'right';
+    noError?: boolean;
+    noTopLabel?: boolean;
+    labelAddonIsVisible?: boolean;
 }
 
 const Input = ({
@@ -184,7 +154,11 @@ const Input = ({
     variant = 'large',
     width,
     button,
-    topLabel,
+    label,
+    labelAddon,
+    labelRight,
+    innerAddon,
+    topLabelRight,
     bottomText,
     isDisabled,
     autoComplete = 'off',
@@ -192,52 +166,37 @@ const Input = ({
     autoCapitalize = 'off',
     monospace,
     wrapperProps,
+    labelAddonIsVisible,
     isLoading,
     dataTest,
     isPartiallyHidden,
-    align = 'left',
+    addonAlign = 'left',
+    noError = false,
+    noTopLabel = false,
     ...rest
 }: Props) => {
-    const [buttonHover, setButtonHover] = React.useState(false);
-    const handleButtonEnter = () => {
-        setButtonHover(true);
-    };
-    const handleButtonLeave = () => {
-        setButtonHover(false);
-    };
+    const [isHovered, setIsHovered] = React.useState(false);
 
     return (
-        <Wrapper width={width} {...wrapperProps} data-test={dataTest}>
-            {topLabel && <Label>{topLabel}</Label>}
+        <Wrapper
+            width={width}
+            {...wrapperProps}
+            data-test={dataTest}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
+            {!noTopLabel && (
+                <Label>
+                    <Left>{label}</Left>
+                    <Right>
+                        {labelAddonIsVisible && <LabelAddon>{labelAddon}</LabelAddon>}
+                        {isHovered && !labelAddonIsVisible && <LabelAddon>{labelAddon}</LabelAddon>}
+                        {labelRight && <VisibleRightLabel>{labelRight}</VisibleRightLabel>}
+                    </Right>
+                </Label>
+            )}
             <InputWrapper>
-                <InputIconWrapper align={align}>
-                    {isLoading && (
-                        <SpinnerWrapper>
-                            <FluidSpinner size={16} color={colors.GREEN} />
-                        </SpinnerWrapper>
-                    )}
-                    {button && (
-                        <Button
-                            onClick={button.onClick}
-                            onMouseEnter={handleButtonEnter}
-                            onMouseLeave={handleButtonLeave}
-                            disabled={button.isDisabled}
-                        >
-                            {button.icon && (
-                                <StyledIcon
-                                    icon={button.icon}
-                                    size={button.iconSize || 10}
-                                    color={
-                                        buttonHover
-                                            ? button.iconColorHover || colors.BLACK0
-                                            : button.iconColor || colors.BLACK25
-                                    }
-                                />
-                            )}
-                            {button.text && <ButtonText>{button.text}</ButtonText>}
-                        </Button>
-                    )}
-                </InputIconWrapper>
+                <InputAddon align={addonAlign}>{innerAddon}</InputAddon>
                 {isPartiallyHidden && <Overlay />}
                 <StyledInput
                     type={type}
@@ -250,13 +209,12 @@ const Input = ({
                     disabled={isDisabled}
                     width={width}
                     monospace={monospace}
-                    align={align}
                     ref={innerRef}
                     data-lpignore="true"
                     {...rest}
                 />
             </InputWrapper>
-            {bottomText && <BottomText state={state}>{bottomText}</BottomText>}
+            {!noError && <BottomText state={state}>{bottomText}</BottomText>}
         </Wrapper>
     );
 };

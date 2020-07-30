@@ -288,7 +288,8 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                     />
                     <ActionColumn>
                         <ActionInput
-                            variant="small"
+                            noTopLabel
+                            noError
                             value={label}
                             state={label.length > MAX_LABEL_LENGTH ? 'error' : undefined}
                             onChange={(event: React.FormEvent<HTMLInputElement>) =>
