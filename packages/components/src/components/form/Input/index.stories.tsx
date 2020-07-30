@@ -1,5 +1,6 @@
 import { boolean, select, text } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
+import styled from 'styled-components';
 import { Button, Input } from '../../..';
 import { IconProps } from '../../Icon';
 import { variables } from '../../../config';
