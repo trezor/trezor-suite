@@ -3,6 +3,7 @@ suite misc:
     # only:
     #     - schedules
     stage: misc
+    allow_failure: true
     script:
         # tests whether urls in constants return 200 status (shall detect dead links)
         - yarn workspace @trezor/suite test-health
