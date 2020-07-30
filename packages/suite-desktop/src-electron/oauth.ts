@@ -9,7 +9,7 @@ export const openOauthPopup = (url: string) => {
         // height: 480,
         // width: 720,
         useContentSize: true,
-        frame: false,
+        frame: true, // needed to make it closable on linux, as closable prop does not work there,
         show: false,
         webPreferences: {
             nodeIntegration: false,

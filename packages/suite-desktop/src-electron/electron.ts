@@ -88,11 +88,16 @@ const init = async () => {
 
     // open external links in default browser
     const handleExternalLink = (event: Event, url: string) => {
-        if (url.indexOf('dropbox') >= 0) {
+        const oauthUrls = [
+            'https://accounts.google.com',
+            'https://www.dropbox.com/oauth2/authorize',
+        ];
+        if (oauthUrls.some(url => url.startsWith(url))) {
             event.preventDefault();
             openOauthPopup(url);
             return;
         }
+
         // TODO? url.startsWith('http:') || url.startsWith('https:');
         if (url !== mainWindow.webContents.getURL()) {
             event.preventDefault();
