@@ -189,6 +189,8 @@ const PassphraseTypeCard = (props: Props) => {
                             }
                             state={isTooLong ? 'error' : undefined}
                             variant="small"
+                            noTopLabel
+                            noError
                             button={{
                                 iconSize: 18,
                                 iconColor: colors.BLACK70,
