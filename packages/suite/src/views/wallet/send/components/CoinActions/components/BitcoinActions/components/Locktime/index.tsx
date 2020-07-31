@@ -5,7 +5,6 @@ import { Translation } from '@suite-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { Icon, Input, Switch, variables, colors } from '@trezor/components';
 import { getInputState } from '@wallet-utils/sendFormUtils';
-import { BTC_RBF_SEQUENCE } from '@wallet-constants/sendForm';
 
 const Wrapper = styled.div`
     margin-bottom: 25px;
@@ -62,8 +61,6 @@ interface Props {
     setIsActive: (isActive: boolean) => void;
 }
 
-const RBF_VALUE = BTC_RBF_SEQUENCE.toString();
-
 export default ({ setIsActive }: Props) => {
     const {
         register,
@@ -102,11 +99,8 @@ export default ({ setIsActive }: Props) => {
                         }
                     },
                 })}
-                placeholder={bitcoinRBF ? RBF_VALUE : ''}
-                onChange={event => {
-                    const isRBF = event.target.value === RBF_VALUE;
-                    if (!error && isRBF && !bitcoinRBF) setValue('bitcoinRBF', true);
-                    if (!error && !isRBF && bitcoinRBF) setValue('bitcoinRBF', false);
+                onChange={() => {
+                    if (!error && bitcoinRBF) setValue('bitcoinRBF', false);
                     composeTransaction(inputName, !!error);
                 }}
                 bottomText={error && error.message}
