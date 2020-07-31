@@ -17,7 +17,7 @@ atexit.register(cleanup)
 
 PORT = 9001
 DEFAULT_TREZORD_VERSION = '2.0.29'
-DEFAULT_TREZOR_VERSION = '2.3.1'
+DEFAULT_TREZOR_VERSION = '2.3.2'
 
 # todo: add env variable DEFAULT_TREZOR_VERSION which could be url leading to firmware build that
 # should be downloaded and integration-tested 
