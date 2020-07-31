@@ -1,4 +1,10 @@
-import TrezorConnect, { FeeLevel, RipplePayment, PrecomposedTransaction } from 'trezor-connect';
+import TrezorConnect, {
+    FeeLevel,
+    RipplePayment,
+    PrecomposedTransaction,
+    SignTransaction,
+    TransactionInput,
+} from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import { toWei, fromWei } from 'web3-utils';
 import { useForm } from 'react-hook-form';
@@ -7,7 +13,12 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { SendContext } from '@wallet-hooks/useSendContext'; // to remove
 import { SEND } from '@wallet-actions/constants';
-import { ZEC_SIGN_ENHANCEMENT, XRP_FLAG } from '@wallet-constants/sendForm';
+import {
+    ZEC_SIGN_ENHANCEMENT,
+    XRP_FLAG,
+    BTC_RBF_SEQUENCE,
+    BTC_LOCKTIME_SEQUENCE,
+} from '@wallet-constants/sendForm';
 
 import { ParsedURI } from '@wallet-utils/cryptoUriParser';
 import {
@@ -660,10 +671,10 @@ const requestPushTransaction = (payload: any) => (dispatch: Dispatch) => {
     return dispatch(modalActions.openDeferredModal({ type: 'review-transaction' }));
 };
 
-export const sendBitcoinTransaction = (transactionInfo: PrecomposedTransaction) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
+export const signBitcoinTransaction = (
+    formValues: FormState,
+    transactionInfo: PrecomposedTransaction,
+) => async (dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount } = getState().wallet;
     const { device } = getState().suite;
     if (
@@ -682,21 +693,32 @@ export const sendBitcoinTransaction = (transactionInfo: PrecomposedTransaction) 
     const { account } = selectedAccount;
     const { transaction } = transactionInfo;
 
-    const inputs = transaction.inputs.map((input: any) => ({
-        ...input,
-        // sequence: BTC_RBF_SEQUENCE, // TODO: rbf is set
-        // sequence: BTC_LOCKTIME_SEQUENCE, // TODO: locktime is set
-    }));
-
-    let signEnhancement = {};
+    let sequence: number;
+    let signEnhancement: Partial<SignTransaction> = {};
 
     if (account.symbol === 'zec') {
         signEnhancement = ZEC_SIGN_ENHANCEMENT;
     }
 
-    // connect undefined amount hotfix
-    inputs.forEach((input: any) => {
-        if (!input.amount) delete input.amount;
+    if (formValues.bitcoinRBF) {
+        // RBF is set, add sequence to inputs
+        sequence = BTC_RBF_SEQUENCE;
+    } else if (formValues.bitcoinLockTime) {
+        // locktime is set, add sequence to inputs and add enhancement params
+        sequence = BTC_LOCKTIME_SEQUENCE;
+        signEnhancement.locktime = new BigNumber(formValues.bitcoinLockTime).toNumber();
+    }
+
+    const inputs = transaction.inputs
+        .map(input => ({
+            ...input,
+            sequence,
+        }))
+        .filter(input => input.amount !== '0'); // remove '0' amounts
+
+    inputs.forEach(input => {
+        if (!input.amount) delete input.amount; // remove undefined amounts
+        if (!input.sequence) delete input.sequence; // remove undefined sequence
     });
 
     const signPayload = {
@@ -707,7 +729,7 @@ export const sendBitcoinTransaction = (transactionInfo: PrecomposedTransaction) 
         },
         useEmptyPassphrase: device.useEmptyPassphrase,
         outputs: transaction.outputs,
-        inputs: inputs.filter(input => input.amount !== '0'),
+        inputs,
         coin: account.symbol,
         ...signEnhancement,
     };
@@ -734,11 +756,14 @@ export const sendBitcoinTransaction = (transactionInfo: PrecomposedTransaction) 
     );
 };
 
-export const signTransaction = (payload: any) => (dispatch: Dispatch, getState: GetState) => {
+export const signTransaction = (values: FormState, composedTx: any) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     const { selectedAccount } = getState().wallet;
     if (selectedAccount.status !== 'loaded') return;
     if (selectedAccount.account.networkType === 'bitcoin') {
-        return dispatch(sendBitcoinTransaction(payload));
+        return dispatch(signBitcoinTransaction(values, composedTx));
     }
 };
 
@@ -748,7 +773,6 @@ export const cancelSignTx = () => (dispatch: Dispatch, getState: GetState) => {
     dispatch({ type: SEND.REQUEST_PUSH_TRANSACTION });
     // if transaction is not signed yet interrupt signing in TrezorConnect
     if (!signedTx) {
-        // TODO: handle case for trezord lower than 2.0.29 (cancel will not work)
         TrezorConnect.cancel('tx-cancelled');
         return;
     }

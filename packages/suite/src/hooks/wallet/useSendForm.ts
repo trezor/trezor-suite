@@ -47,6 +47,7 @@ const DEFAULT_VALUES = {
     selectedFee: undefined,
     feePerUnit: '',
     feeLimit: '',
+    bitcoinRBF: true,
     bitcoinLockTime: '',
     ethereumGasPrice: '',
     ethereumGasLimit: '',
@@ -174,6 +175,7 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
     useEffect(() => {
         register({ name: 'setMaxOutputId', type: 'custom' });
         register({ name: 'selectedFee', type: 'custom' });
+        register({ name: 'bitcoinRBF', type: 'custom' });
     }, [register]);
 
     // TODO: useEffect on props (check: account change: key||balance, fee change, fiat change)
@@ -411,7 +413,7 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
             : undefined;
         if (composedTx && composedTx.type === 'final') {
             // signTransaction > sign[COIN]Transaction > requestPush (modal with promise)
-            const result = await signTransaction(composedTx);
+            const result = await signTransaction(values, composedTx);
             if (result) {
                 resetContext();
             }
@@ -434,11 +436,11 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
             clearErrors(composeErrors);
         }
         // set field for later use in composedLevels change useEffect
+        // call compose after re-render
+        composeRequest.current = field;
         setComposeField(field);
         // start composing
         updateContext({ isLoading: true });
-        // call compose after re-render
-        composeRequest.current = field;
     };
 
     const addOpReturn = () => {
@@ -468,7 +470,6 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
             reset(
                 {
                     ...values,
-                    opreturnOutputId: undefined,
                     outputs: [
                         {
                             ...DEFAULT_PAYMENT,

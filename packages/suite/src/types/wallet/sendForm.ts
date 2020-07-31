@@ -45,9 +45,10 @@ export type FormState = {
     feePerUnit: string; // bitcoin/ethereum/ripple custom fee field (satB/gasPrice/drops)
     feeLimit: string; // ethereum only (gasLimit)
     // advanced form inputs
-    bitcoinLockTime: string; // bitcoin RBF/schedule
-    ethereumNonce: string; // ethereum RBF
-    rippleDestinationTag: string;
+    bitcoinRBF: boolean;
+    bitcoinLockTime?: string; // bitcoin RBF/schedule
+    ethereumNonce?: string; // ethereum RBF
+    rippleDestinationTag?: string;
 };
 
 // export type PrecomposedLevels = {[key: FeeLevel['label']]: PrecomposedTransaction };

@@ -38,25 +38,59 @@ const StyledButton = styled(Button)`
 `;
 
 export default () => {
-    const { addOutput } = useSendFormContext();
-    const [broadcastActive, setBroadcastActive] = useState<boolean>(false);
-    const [locktimeActive, setLocktimeActive] = useState<boolean>(false);
-    const [rbfActive, setRbfActive] = useState<boolean>(false);
+    const { addOutput, getValues, setValue, composeTransaction } = useSendFormContext();
+
+    const bitcoinRBF = getValues('bitcoinRBF');
+    const locktimeValue = getValues('bitcoinLockTime') || '';
+    const hasLocktime = locktimeValue.length > 0;
+
+    const [broadcastActive, setBroadcastActive] = useState<boolean>(true);
+    const [locktimeActive, setLocktimeActive] = useState<boolean>(hasLocktime);
+
+    const locktimeOpened = hasLocktime || locktimeActive;
+    React.useEffect(() => {
+        // bitcoinLockTime could be loaded later from draft, open additional form
+        if (hasLocktime) setLocktimeActive(true);
+    }, [hasLocktime]);
 
     return (
         <Wrapper>
-            <Top>{locktimeActive && <Locktime setIsActive={setLocktimeActive} />}</Top>
+            <Top>
+                {locktimeOpened && (
+                    <Locktime
+                        setIsActive={() => {
+                            // close additional form
+                            setLocktimeActive(false);
+                            composeTransaction('outputs[0].amount', false);
+                        }}
+                    />
+                )}
+            </Top>
             <Row>
                 <Left>
-                    {!locktimeActive && (
+                    {!locktimeOpened && (
                         <StyledButton
                             variant="tertiary"
                             icon="CALENDAR"
                             onClick={() => {
+                                // open additional form
                                 setLocktimeActive(true);
                             }}
                         >
                             <Translation id="TR_ADD_LOCKTIME" />
+                        </StyledButton>
+                    )}
+                    {!locktimeOpened && (
+                        <StyledButton
+                            variant="tertiary"
+                            icon="RBF"
+                            onClick={() => {
+                                setValue('bitcoinRBF', !bitcoinRBF);
+                                composeTransaction('outputs[0].amount', false);
+                            }}
+                        >
+                            <Translation id="TR_RBF" />
+                            <OnOffSwitcher isOn={bitcoinRBF} />
                         </StyledButton>
                     )}
                     <StyledButton
@@ -68,16 +102,6 @@ export default () => {
                     >
                         <Translation id="TR_BROADCAST" />
                         <OnOffSwitcher isOn={broadcastActive} />
-                    </StyledButton>
-                    <StyledButton
-                        variant="tertiary"
-                        icon="RBF"
-                        onClick={() => {
-                            setRbfActive(!rbfActive);
-                        }}
-                    >
-                        <Translation id="TR_RBF" />
-                        <OnOffSwitcher isOn={rbfActive} />
                     </StyledButton>
                 </Left>
                 <Right>
