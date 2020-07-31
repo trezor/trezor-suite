@@ -14,6 +14,8 @@ import * as routerActions from '@suite-actions/routerActions';
 import { useActions, useSelector } from '@suite-hooks';
 import { Button, Select, Input, colors, H2, SelectInput, CoinLogo } from '@trezor/components';
 import { Translation } from '@suite-components';
+import { BuyTradeQuoteRequest } from '@suite/services/invityAPI/buyTypes';
+import invityAPI from '@suite/services/invityAPI/service';
 
 const Content = styled.div`
     display: flex;
@@ -107,35 +109,42 @@ const CoinmarketBuy = () => {
     const { account } = selectedAccount;
 
     const { buyInfo } = useBuyInfo();
-    const { saveOffers, saveBuyInfo } = useActions({
-        saveOffers: coinmarketActions.saveOffers,
+    const { saveBuyQuoteRequest, saveBuyQuotes, saveBuyInfo } = useActions({
+        saveBuyQuoteRequest: coinmarketActions.saveBuyQuoteRequest,
+        saveBuyQuotes: coinmarketActions.saveBuyQuotes,
         saveBuyInfo: coinmarketActions.saveBuyInfo,
     });
+
+    // TODO - do we really need to store it here? probably better would be in useBuyInfo, where it could skip the load if already set
+    saveBuyInfo(buyInfo);
 
     const { goto } = useActions({
         goto: routerActions.goto,
     });
 
-    const defaultCurrenyInfo = buyInfo.buyInfo?.suggestedFiatCurrency;
-    const defaultCurrency = defaultCurrenyInfo
-        ? buildOption(defaultCurrenyInfo)
+    const defaultCurrencyInfo = buyInfo.buyInfo?.suggestedFiatCurrency;
+    const defaultCurrency = defaultCurrencyInfo
+        ? buildOption(defaultCurrencyInfo)
         : {
               label: 'USD',
               value: 'usd',
           };
 
-    const defaultCountryInfo = buyInfo.buyInfo?.country;
-    const defaultCountry = defaultCountryInfo
-        ? buildOption(defaultCountryInfo)
-        : {
-              label: '🇨🇿 Czech Republic',
-              value: 'CZ',
-          };
+    const country = buyInfo.buyInfo?.country || regional.unknownCountry;
+    const defaultCountry = {
+        label: regional.countriesMap.get(country),
+        value: country,
+    };
 
     console.log('errors', errors);
     console.log('buyInfo', buyInfo);
     console.log('errors.fiatInputName', errors[fiatInput]);
     console.log('buyInfo.buyInfo?.suggestedFiatCurrency', buyInfo.buyInfo?.suggestedFiatCurrency);
+
+    // TODO - handle situation that account is not set
+    if (!account) {
+        return null;
+    }
 
     return (
         <CoinmarketLayout
@@ -247,18 +256,19 @@ const CoinmarketBuy = () => {
                             onClick={async () => {
                                 const formValues = getValues();
                                 console.log('formValues', formValues);
-
-                                // call offers endpoint here
-
-                                // revalidate offers
-
-                                await saveBuyInfo({
+                                const request: BuyTradeQuoteRequest = {
+                                    // TODO - handle crypto amount entry
+                                    wantCrypto: false,
+                                    fiatCurrency: formValues.currencySelect.value.toUpperCase(),
+                                    receiveCurrency: account.symbol.toUpperCase(),
                                     country: formValues.countrySelect.value,
-                                    currency: formValues.currencySelect.value,
-                                    amount: formValues.fiatInput,
-                                });
+                                    fiatStringAmount: formValues.fiatInput,
+                                };
+                                await saveBuyQuoteRequest(request);
+                                const quotes = await invityAPI.getBuyQuotes(request);
+                                await saveBuyQuotes(quotes);
 
-                                await saveOffers({ test: 'testOffer' });
+                                // todo handle no quotes and min/max situation - copy code from invity.io
 
                                 // if success redirect to offers views
                                 goto('wallet-coinmarket-buy-offers');

@@ -1,62 +1,66 @@
-import { ExchangeCoinInfo } from '@suite/services/invityAPI/exchangeTypes';
-import { BuyListResponse, BuyProviderInfo } from '@suite/services/invityAPI/buyTypes';
+import {
+    BuyListResponse,
+    BuyProviderInfo,
+    BuyTradeQuoteRequest,
+    BuyTrade,
+} from '@suite/services/invityAPI/buyTypes';
 import invityAPI from '@suite/services/invityAPI/service';
 import { COINMARKET } from './constants';
 import { Dispatch } from '@suite-types';
+import regional from '@suite/constants/wallet/coinmarket/regional';
 
 export interface BuyInfo {
-    coins: ExchangeCoinInfo[];
     buyInfo?: BuyListResponse;
     providerInfos: { [name: string]: BuyProviderInfo };
 }
 
 export type CoinmarketActions =
-    | { type: typeof COINMARKET.SAVE_BUY_INFO; buyInfo: BuyListResponse }
-    | { type: typeof COINMARKET.SAVE_OFFERS; offers: any }; // todo type
+    | { type: typeof COINMARKET.SAVE_BUY_INFO; buyInfo: BuyInfo }
+    | { type: typeof COINMARKET.SAVE_BUY_QUOTE_REQUEST; request: BuyTradeQuoteRequest }
+    | { type: typeof COINMARKET.SAVE_BUY_QUOTES; quotes: BuyTrade[] }; // todo type
 
-export async function loadBuyInfo(): Promise<{
-    coins: ExchangeCoinInfo[];
-    buyInfo?: BuyListResponse;
-    providerInfos: { [name: string]: BuyProviderInfo };
-}> {
-    let [buyInfo, coins] = await Promise.all([
-        invityAPI.getBuyList(),
-        invityAPI.getExchangeCoins(),
-    ]);
+export async function loadBuyInfo(): Promise<BuyInfo> {
+    let buyInfo = await invityAPI.getBuyList();
 
     if (!buyInfo) {
-        buyInfo = { country: 'unknown', providers: [] };
+        buyInfo = { country: regional.unknownCountry, providers: [] };
     }
 
     if (!buyInfo.providers) {
         buyInfo.providers = [];
     }
 
-    if (!coins) {
-        coins = [];
-    }
-
     const providerInfos: { [name: string]: BuyProviderInfo } = {};
 
     buyInfo.providers.forEach(e => (providerInfos[e.name] = e));
 
+    // TODO - add to BuyInfo fields supported fiat and crypto currencies and available countries (use getAvailableOptions from invity.io)
+
     return {
-        coins,
         buyInfo,
         providerInfos,
     };
 }
 
-export const saveBuyInfo = (buyInfo: BuyListResponse) => async (dispatch: Dispatch) => {
+export const saveBuyInfo = (buyInfo: BuyInfo) => async (dispatch: Dispatch) => {
     dispatch({
         type: COINMARKET.SAVE_BUY_INFO,
         buyInfo,
     });
 };
 
-export const saveOffers = (offers: any) => async (dispatch: Dispatch) => {
+export const saveBuyQuoteRequest = (request: BuyTradeQuoteRequest) => async (
+    dispatch: Dispatch,
+) => {
     dispatch({
-        type: COINMARKET.SAVE_OFFERS,
-        offers,
+        type: COINMARKET.SAVE_BUY_QUOTE_REQUEST,
+        request,
+    });
+};
+
+export const saveBuyQuotes = (quotes: BuyTrade[]) => async (dispatch: Dispatch) => {
+    dispatch({
+        type: COINMARKET.SAVE_BUY_QUOTES,
+        quotes,
     });
 };

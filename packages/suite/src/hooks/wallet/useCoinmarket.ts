@@ -24,7 +24,7 @@ export const useAllAccounts = () => {
 };
 
 export function useBuyInfo() {
-    const [buyInfo, setBuyInfo] = useState<BuyInfo>({ coins: [], providerInfos: {} });
+    const [buyInfo, setBuyInfo] = useState<BuyInfo>({ providerInfos: {} });
 
     useEffect(() => {
         loadBuyInfo().then(bi => {

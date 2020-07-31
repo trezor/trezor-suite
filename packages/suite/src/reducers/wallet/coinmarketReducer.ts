@@ -1,16 +1,21 @@
 import produce from 'immer';
 import { WalletAction } from '@wallet-types';
-import { BuyListResponse } from '@suite/services/invityAPI/buyTypes';
+import { BuyTrade, BuyTradeQuoteRequest } from '@suite/services/invityAPI/buyTypes';
 import { COINMARKET } from '@wallet-actions/constants';
+import { BuyInfo } from '@suite/actions/wallet/coinmarketActions';
+
+// TODO - further split to buy, exchange, spend etc. states
 
 interface State {
-    buyInfo: BuyListResponse | null;
-    offers: any; // todo type
+    buyInfo: BuyInfo | null;
+    quotesRequest: BuyTradeQuoteRequest | null;
+    quotes: BuyTrade[];
 }
 
 const initialState = {
     buyInfo: null,
-    offers: [],
+    quotesRequest: null,
+    quotes: [],
 };
 
 export default (state: State = initialState, action: WalletAction): State => {
@@ -19,8 +24,11 @@ export default (state: State = initialState, action: WalletAction): State => {
             case COINMARKET.SAVE_BUY_INFO:
                 draft.buyInfo = action.buyInfo;
                 break;
-            case COINMARKET.SAVE_OFFERS:
-                draft.offers = action.offers;
+            case COINMARKET.SAVE_BUY_QUOTE_REQUEST:
+                draft.quotesRequest = action.request;
+                break;
+            case COINMARKET.SAVE_BUY_QUOTES:
+                draft.quotes = action.quotes;
                 break;
             // no default
         }
