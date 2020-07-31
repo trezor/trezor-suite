@@ -63,6 +63,7 @@ const graphData2 = {
     isLoading: false,
     data: [
         {
+            balance: '0',
             time: 1561932000,
             txs: 14,
             received: '0.1',
@@ -70,6 +71,7 @@ const graphData2 = {
             rates,
         },
         {
+            balance: '-0.003',
             time: 1580511600,
             txs: 2,
             received: '0.2',
@@ -139,10 +141,10 @@ describe('Graph utils', () => {
         expect(utils.aggregateBalanceHistory([graphData1, graphData1], 'month', 'account')).toEqual(
             [],
         );
-        // @ts-ignore
         expect(utils.aggregateBalanceHistory([graphData1, graphData2], 'month', 'account')).toEqual(
             [
                 {
+                    balance: '0',
                     received: '0.1',
                     receivedFiat: {
                         aaa: '0',
@@ -159,10 +161,18 @@ describe('Graph utils', () => {
                         eur: '11.71',
                         gbp: '10.04',
                     },
+                    balanceFiat: {
+                        aaa: '0',
+                        czk: '0.00',
+                        eos: '0.00',
+                        eur: '0.00',
+                        gbp: '0.00',
+                    },
                     time: 1559347200,
                     txs: 14,
                 },
                 {
+                    balance: '-0.003',
                     received: '0.2',
                     sent: '0.23',
                     receivedFiat: {
@@ -178,6 +188,13 @@ describe('Graph utils', () => {
                         eos: '8.48',
                         eur: '26.94',
                         gbp: '23.10',
+                    },
+                    balanceFiat: {
+                        aaa: '0',
+                        czk: '-9.02',
+                        eos: '-0.11',
+                        eur: '-0.35',
+                        gbp: '-0.30',
                     },
                     time: 1577836800,
                     txs: 2,
@@ -205,6 +222,14 @@ describe('Graph utils', () => {
                 },
                 time: 1561932000,
                 txs: 28,
+                balance: '0',
+                balanceFiat: {
+                    aaa: '0',
+                    czk: '0',
+                    eos: '0',
+                    eur: '0',
+                    gbp: '0',
+                },
             },
             {
                 received: '1.4',
@@ -222,6 +247,14 @@ describe('Graph utils', () => {
                     eos: '52.7',
                     eur: '167.5',
                     gbp: '143.62',
+                },
+                balance: '-0.003',
+                balanceFiat: {
+                    aaa: '0',
+                    czk: '-9.02',
+                    eos: '-0.11',
+                    eur: '-0.35',
+                    gbp: '-0.3',
                 },
                 time: 1580511600,
                 txs: 4,
