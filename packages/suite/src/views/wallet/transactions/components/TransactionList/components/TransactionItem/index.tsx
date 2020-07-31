@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Translation, HiddenPlaceholder, FiatValue, AddressLabeling } from '@suite-components';
+import { AnimatePresence } from 'framer-motion';
+import { Translation } from '@suite-components';
 import { variables, colors, Button, Link } from '@trezor/components';
 import { isTestnet } from '@wallet-utils/accountUtils';
-import { ArrayElement } from '@suite/types/utils';
-
 import { getDateWithTimeZone } from '@suite-utils/date';
 import TransactionTypeIcon from './components/TransactionTypeIcon';
 import { Props } from './Container';
-import { WalletAccountTransaction } from '@wallet-types';
-import Sign from '@suite/components/suite/Sign';
+import TransactionHeading from './components/TransactionHeading';
+import { isTxUnknown } from '@wallet-utils/transactionUtils';
+import { Target, TokenTransfer, FeeRow } from './components/Target';
 
 const Wrapper = styled.div`
     display: flex;
@@ -45,22 +44,6 @@ const Description = styled.span`
     line-height: 1.5;
 `;
 
-const CryptoAmount = styled.span`
-    color: ${colors.NEUE_TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    /* line-height: 1.5; */
-    text-transform: uppercase;
-    white-space: nowrap;
-`;
-
-const FiatAmount = styled.span`
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    line-height: 1.57;
-`;
-
 const NextRow = styled.div`
     display: flex;
     flex: 1;
@@ -74,22 +57,6 @@ const TargetsWrapper = styled.div`
     overflow: hidden;
 `;
 
-const TargetWrapper = styled(motion.div)`
-    display: flex;
-    flex: 1;
-    justify-content: space-between;
-
-    & + & {
-        margin-top: 20px;
-    }
-`;
-
-const TargetAmountsWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-`;
-
 const TimestampLink = styled(Link)`
     display: block;
     font-variant-numeric: tabular-nums;
@@ -101,26 +68,6 @@ const TimestampLink = styled(Link)`
     white-space: nowrap;
 `;
 
-const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
-    /* padding: 8px 0px; row padding */
-    display: block;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-`;
-
-const TargetAddress = styled(motion.div)`
-    display: flex;
-    flex: 1;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    font-variant-numeric: tabular-nums slashed-zero;
-`;
-
 const ExpandButton = styled(Button)`
     justify-content: start;
     align-self: flex-start;
@@ -128,45 +75,12 @@ const ExpandButton = styled(Button)`
 
 const DEFAULT_LIMIT = 3;
 
-const ANIMATION = {
-    variants: {
-        initial: {
-            overflow: 'hidden',
-            height: 0,
-        },
-        visible: {
-            height: 'auto',
-        },
-    },
-    initial: 'initial',
-    animate: 'visible',
-    exit: 'initial',
-    transition: { duration: 0.24, ease: 'easeInOut' },
-};
-
-const getTxDescription = (tx: WalletAccountTransaction, isUnknown: boolean, isPending: boolean) => {
-    // TODO: intl once the structure and all combinations are decided
-    const symbol = tx.symbol.toUpperCase();
-    if (isUnknown) {
-        return <Translation id="TR_UNKNOWN_TRANSACTION" />;
-    }
-    if (tx.type === 'sent') {
-        return isPending ? `Sending ${symbol}` : `Sent ${symbol}`;
-    }
-    if (tx.type === 'recv') {
-        return isPending ? `Receiving ${symbol}` : `Received ${symbol}`;
-    }
-    if (tx.type === 'self') {
-        return isPending ? `Sending ${symbol} to myself` : `Sent ${symbol} to myself`;
-    }
-    return `Unknown ${symbol} transaction`;
-};
-
 export default React.memo((props: Props) => {
     const { transaction } = props;
     const { symbol, type, blockTime, blockHeight, targets, tokens } = transaction;
     const [limit, setLimit] = useState(0);
     const isTokenTransaction = tokens.length > 0;
+    const isUnknown = isTxUnknown(transaction);
     const isExpandable = isTokenTransaction
         ? tokens.length - DEFAULT_LIMIT > 0
         : targets.length - DEFAULT_LIMIT > 0;
@@ -176,95 +90,6 @@ export default React.memo((props: Props) => {
     const useFiatValues = !isTestnet(symbol);
     // blockbook cannot parse some txs
     // eg. tx with eth smart contract that creates a new token has no valid target
-    const isUnknown =
-        (!isTokenTransaction && !targets.find(t => t.addresses)) || type === 'unknown';
-    const operation =
-        (type === 'sent' || type === 'self' ? 'neg' : null) || (type === 'recv' ? 'pos' : null);
-    let key = 0;
-
-    const buildTargetRow = (
-        target: ArrayElement<Props['transaction']['targets']>,
-        useAnimation = false,
-    ) => {
-        const isLocalTarget = (type === 'sent' || type === 'self') && target.isAccountTarget;
-        const addr = isLocalTarget ? (
-            <Translation id="TR_SENT_TO_SELF" />
-        ) : (
-            target.addresses?.map((a, i) =>
-                type === 'sent' ? (
-                    <AddressLabeling key={`${key}${i}`} address={a} />
-                ) : (
-                    <span>{a}</span>
-                ),
-            )
-        );
-
-        const hasAmount =
-            !isLocalTarget && typeof target.amount === 'string' && target.amount !== '0';
-        const targetAmount =
-            (hasAmount ? target.amount : null) ||
-            (target === targets[0] &&
-            typeof transaction.amount === 'string' &&
-            transaction.amount !== '0'
-                ? transaction.amount
-                : null);
-        const animation = useAnimation ? ANIMATION : {};
-        key++;
-
-        return (
-            <TargetWrapper key={key} {...animation}>
-                <TargetAddress>
-                    <StyledHiddenPlaceholder>{addr}</StyledHiddenPlaceholder>
-                </TargetAddress>
-                <TargetAmountsWrapper>
-                    <CryptoAmount>
-                        {targetAmount && (
-                            <StyledHiddenPlaceholder>
-                                {operation && <Sign value={operation} />}
-                                {targetAmount} {symbol}
-                            </StyledHiddenPlaceholder>
-                        )}
-                    </CryptoAmount>
-                    <FiatAmount>
-                        {useFiatValues && targetAmount && (
-                            <FiatValue
-                                amount={targetAmount}
-                                symbol={symbol}
-                                source={transaction.rates}
-                                useCustomSource
-                            />
-                        )}
-                    </FiatAmount>
-                </TargetAmountsWrapper>
-            </TargetWrapper>
-        );
-    };
-
-    const buildTokenRow = (
-        transfer: ArrayElement<Props['transaction']['tokens']>,
-        useAnimation = false,
-    ) => {
-        let addr: JSX.Element | string | typeof undefined = transfer.to;
-        if (type === 'self') addr = <Translation id="TR_SENT_TO_SELF" />;
-        if (type === 'sent') addr = <AddressLabeling address={transfer.to} />;
-        const animation = useAnimation ? ANIMATION : {};
-        key++;
-        return (
-            <TargetWrapper key={key} {...animation}>
-                <TargetAddress>
-                    <StyledHiddenPlaceholder>{addr}</StyledHiddenPlaceholder>
-                </TargetAddress>
-                <TargetAmountsWrapper>
-                    <CryptoAmount>
-                        <StyledHiddenPlaceholder>
-                            {operation && <Sign value={operation} />}
-                            {transfer.amount} {transfer.symbol}
-                        </StyledHiddenPlaceholder>
-                    </CryptoAmount>
-                </TargetAmountsWrapper>
-            </TargetWrapper>
-        );
-    };
 
     return (
         <Wrapper>
@@ -274,7 +99,7 @@ export default React.memo((props: Props) => {
 
             <Content>
                 <Description>
-                    {getTxDescription(transaction, isUnknown, props.isPending)}
+                    <TransactionHeading transaction={transaction} isPending={props.isPending} />
                 </Description>
                 <NextRow>
                     <TimestampLink
@@ -297,24 +122,40 @@ export default React.memo((props: Props) => {
                     <TargetsWrapper>
                         {!isUnknown && !isTokenTransaction && (
                             <>
-                                {targets.slice(0, DEFAULT_LIMIT).map(t => buildTargetRow(t))}
+                                {targets.slice(0, DEFAULT_LIMIT).map(t => (
+                                    <Target target={t} transaction={transaction} />
+                                ))}
                                 <AnimatePresence initial={false}>
                                     {limit > 0 &&
                                         targets
                                             .slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit)
-                                            .map(t => buildTargetRow(t, true))}
+                                            .map(t => (
+                                                <Target
+                                                    target={t}
+                                                    transaction={transaction}
+                                                    useAnimation
+                                                />
+                                            ))}
                                 </AnimatePresence>
                             </>
                         )}
 
                         {!isUnknown && isTokenTransaction && (
                             <>
-                                {tokens.slice(0, DEFAULT_LIMIT).map(t => buildTokenRow(t))}
+                                {tokens.slice(0, DEFAULT_LIMIT).map(t => (
+                                    <TokenTransfer transfer={t} transaction={transaction} />
+                                ))}
                                 <AnimatePresence initial={false}>
                                     {limit > 0 &&
                                         tokens
                                             .slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit)
-                                            .map(t => buildTokenRow(t, true))}
+                                            .map(t => (
+                                                <TokenTransfer
+                                                    transfer={t}
+                                                    transaction={transaction}
+                                                    useAnimation
+                                                />
+                                            ))}
                                 </AnimatePresence>
                             </>
                         )}
@@ -323,29 +164,7 @@ export default React.memo((props: Props) => {
                             isTokenTransaction &&
                             type !== 'recv' &&
                             transaction.fee !== '0' && (
-                                <TargetWrapper>
-                                    <TargetAddress>
-                                        <Translation id="TR_FEE" />
-                                    </TargetAddress>
-                                    <TargetAmountsWrapper>
-                                        <CryptoAmount>
-                                            <StyledHiddenPlaceholder>
-                                                <Sign value="neg" />
-                                                {transaction.fee} {symbol}
-                                            </StyledHiddenPlaceholder>
-                                        </CryptoAmount>
-                                        <FiatAmount>
-                                            {useFiatValues && (
-                                                <FiatValue
-                                                    amount={transaction.fee}
-                                                    symbol={symbol}
-                                                    source={transaction.rates}
-                                                    useCustomSource
-                                                />
-                                            )}
-                                        </FiatAmount>
-                                    </TargetAmountsWrapper>
-                                </TargetWrapper>
+                                <FeeRow transaction={transaction} useFiatValues={useFiatValues} />
                             )}
 
                         {isExpandable && (

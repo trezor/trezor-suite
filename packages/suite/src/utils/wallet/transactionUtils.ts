@@ -207,3 +207,38 @@ export const analyzeTransactions = (
         remove: known.slice(0, sliceIndex),
     });
 };
+
+export const getTxOperation = (transaction: WalletAccountTransaction) => {
+    if (transaction.type === 'sent' || transaction.type === 'self') {
+        return 'neg';
+    }
+    if (transaction.type === 'recv') {
+        return 'pos';
+    }
+    return null;
+};
+
+export const getTargetAmount = (
+    target: WalletAccountTransaction['targets'][number],
+    transaction: WalletAccountTransaction,
+) => {
+    const isLocalTarget =
+        (transaction.type === 'sent' || transaction.type === 'self') && target.isAccountTarget;
+    const hasAmount = !isLocalTarget && typeof target.amount === 'string' && target.amount !== '0';
+    const targetAmount =
+        (hasAmount ? target.amount : null) ||
+        (target === transaction.targets[0] &&
+        typeof transaction.amount === 'string' &&
+        transaction.amount !== '0'
+            ? transaction.amount
+            : null);
+    return targetAmount;
+};
+
+export const isTxUnknown = (transaction: WalletAccountTransaction) => {
+    const isTokenTransaction = transaction.tokens.length > 0;
+    return (
+        (!isTokenTransaction && !transaction.targets.find(t => t.addresses)) ||
+        transaction.type === 'unknown'
+    );
+};
