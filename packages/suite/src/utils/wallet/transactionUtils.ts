@@ -236,6 +236,8 @@ export const getTargetAmount = (
 };
 
 export const isTxUnknown = (transaction: WalletAccountTransaction) => {
+    // blockbook cannot parse some txs
+    // eg. tx with eth smart contract that creates a new token has no valid target
     const isTokenTransaction = transaction.tokens.length > 0;
     return (
         (!isTokenTransaction && !transaction.targets.find(t => t.addresses)) ||

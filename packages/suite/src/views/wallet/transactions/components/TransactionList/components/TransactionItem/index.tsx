@@ -111,8 +111,6 @@ export default React.memo((props: Props) => {
         ? tokens.length - DEFAULT_LIMIT - limit
         : targets.length - DEFAULT_LIMIT - limit;
     const useFiatValues = !isTestnet(symbol);
-    // blockbook cannot parse some txs
-    // eg. tx with eth smart contract that creates a new token has no valid target
 
     if (!isUnknown && !isTokenTransaction && targets.length === 1) {
         // use slightly different layout for 1 targets txs to better match the design
@@ -229,7 +227,7 @@ export default React.memo((props: Props) => {
                                     {limit > 0 &&
                                         tokens
                                             .slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit)
-                                            .map(t => (
+                                            .map((t, i) => (
                                                 <TokenTransfer
                                                     key={i}
                                                     transfer={t}

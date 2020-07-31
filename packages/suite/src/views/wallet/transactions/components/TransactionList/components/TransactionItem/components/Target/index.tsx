@@ -152,7 +152,6 @@ export const Target = ({ target, transaction, useAnimation }: TargetProps) => {
 
 export const OneRowTarget = ({ target, transaction, useAnimation }: TargetProps) => {
     const targetAmount = getTargetAmount(target, transaction);
-    const operation = getTxOperation(transaction);
     const animation = useAnimation ? ANIMATION : {};
 
     return (
