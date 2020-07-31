@@ -1,6 +1,6 @@
 import React from 'react';
-import { Dropdown, SelectBar } from '@trezor/components';
-import { useGraph } from '@suite-hooks';
+import { Dropdown } from '@trezor/components';
+// import { useGraph } from '@suite-hooks';
 
 interface Props {
     isGraphHidden: boolean;
@@ -9,50 +9,47 @@ interface Props {
 }
 
 const TransactionSummaryDropdown = (props: Props) => {
-    const { selectedView, setSelectedView } = useGraph();
+    // const { selectedView, setSelectedView } = useGraph();
 
     // TODO: export transactions to a file
 
     return (
         <Dropdown
             alignMenu="right"
-            // components={{
-            //     DropdownMenuItem,
-            // }}
             items={[
-                {
-                    key: 'group1',
-                    label: 'Graph View',
-                    options: [
-                        {
-                            key: 'graphView',
-                            noHover: true,
-                            label: (
-                                <SelectBar
-                                    onChange={option => setSelectedView(option as 'linear' | 'log')}
-                                    selectedOption={selectedView}
-                                    options={[
-                                        { label: 'Linear', value: 'linear' },
-                                        { label: 'Logarithmic', value: 'log' },
-                                    ]}
-                                />
-                            ),
-                            callback: () => false,
-                        },
-                    ],
-                },
+                // {
+                //     key: 'group1',
+                //     label: 'Graph View',
+                //     options: [
+                //         {
+                //             key: 'graphView',
+                //             noHover: true,
+                //             label: (
+                //                 <SelectBar
+                //                     onChange={option => setSelectedView(option as 'linear' | 'log')}
+                //                     selectedOption={selectedView}
+                //                     options={[
+                //                         { label: 'Linear', value: 'linear' },
+                //                         { label: 'Logarithmic', value: 'log' },
+                //                     ]}
+                //                 />
+                //             ),
+                //             callback: () => false,
+                //         },
+                //     ],
+                // },
                 {
                     key: 'group2',
                     label: undefined,
                     options: [
-                        {
-                            key: 'visibility',
-                            label: props.isGraphHidden ? 'Show graph' : 'Hide graph',
-                            callback: () => props.setIsGraphHidden(!props.isGraphHidden),
-                        },
+                        // {
+                        //     key: 'visibility',
+                        //     label: props.isGraphHidden ? 'Show graph' : 'Hide graph',
+                        //     callback: () => props.setIsGraphHidden(!props.isGraphHidden),
+                        // },
                         {
                             key: 'refresh',
-                            label: 'Refresh graph',
+                            label: 'Refresh',
                             // icon: 'REFRESH',
                             callback: () => props.onRefresh(),
                         },

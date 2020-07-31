@@ -9,14 +9,14 @@ interface Props extends TooltipProps {
     localCurrency: string;
     sentValueFn: FiatGraphProps['sentValueFn'];
     receivedValueFn: FiatGraphProps['receivedValueFn'];
-    balanceValueFn: FiatGraphProps['balanceValueFn'];
+    balanceValueFn?: FiatGraphProps['balanceValueFn'];
 }
 
 const CustomTooltipDashboard = (props: Props) => {
     if (props.active && props.payload) {
         const receivedAmountString = props.receivedValueFn(props.payload[0].payload);
         const sentAmountString = props.sentValueFn(props.payload[0].payload);
-        const balanceString = props.balanceValueFn(props.payload[0].payload);
+        // const balanceString = props.balanceValueFn(props.payload[0].payload);
 
         const receivedAmount = (
             <FormattedNumber currency={props.localCurrency} value={receivedAmountString ?? '0'} />
@@ -26,9 +26,9 @@ const CustomTooltipDashboard = (props: Props) => {
             <FormattedNumber currency={props.localCurrency} value={sentAmountString ?? '0'} />
         );
 
-        const balanceAmount = (
-            <FormattedNumber currency={props.localCurrency} value={balanceString ?? '0'} />
-        );
+        // const balanceAmount = (
+        //     <FormattedNumber currency={props.localCurrency} value={balanceString ?? '0'} />
+        // );
 
         return (
             <CustomTooltipBase
@@ -36,7 +36,7 @@ const CustomTooltipDashboard = (props: Props) => {
                 selectedRange={props.selectedRange}
                 sentAmount={sentAmount}
                 receivedAmount={receivedAmount}
-                balance={balanceAmount}
+                // balance={balanceAmount}
             />
         );
     }

@@ -234,27 +234,26 @@ const TransactionsGraph = React.memo((props: Props) => {
                                             localCurrency={props.localCurrency}
                                             sentValueFn={props.sentValueFn}
                                             receivedValueFn={props.receivedValueFn}
-                                            balanceValueFn={props.balanceValueFn}
+                                            // balanceValueFn={props.balanceValueFn}
                                         />
                                     )
                                 }
                             />
 
                             {/* <ReferenceLine y={0} stroke={colors.BLACK80} /> */}
-                            {/* {props.variant === 'one-asset' && ( */}
-                            {/* // probably doesn't make much sense on dashboard */}
-                            <Line
-                                type="linear"
-                                dataKey={(data: any) => Number(props.balanceValueFn(data))}
-                                stroke={colors.NEUE_TYPE_ORANGE}
-                                data={
-                                    selectedRange.label === 'all' || props.variant === 'all-assets'
-                                        ? data
-                                        : extendedDataForInterval ?? undefined
-                                }
-                                // dot={false}
-                            />
-                            {/* )} */}
+                            {props.variant === 'one-asset' && (
+                                <Line
+                                    type="linear"
+                                    dataKey={(data: any) => Number(props.balanceValueFn(data))}
+                                    stroke={colors.NEUE_TYPE_ORANGE}
+                                    data={
+                                        selectedRange.label === 'all'
+                                            ? data
+                                            : extendedDataForInterval ?? undefined
+                                    }
+                                    dot={false}
+                                />
+                            )}
                             <defs>
                                 <linearGradient
                                     id="greenGradient"

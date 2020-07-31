@@ -26,10 +26,10 @@ const Body = styled.div`
     flex: 1;
 `;
 
-const DropdownMenuItem = styled.div<DropdownMenuItemProps>`
-    display: flex;
-    padding: 6px 16px 16px 16px;
-`;
+// const DropdownMenuItem = styled.div<DropdownMenuItemProps>`
+//     display: flex;
+//     padding: 6px 16px 16px 16px;
+// `;
 
 const PortfolioCard = React.memo(() => {
     const dispatch = useDispatch();
@@ -37,7 +37,7 @@ const PortfolioCard = React.memo(() => {
     const { discovery, getDiscoveryStatus } = useDiscovery();
     const accounts = useFastAccounts();
 
-    const { selectedView, setSelectedView } = useGraph();
+    // const { selectedView, setSelectedView } = useGraph();
 
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
     const portfolioValue = accountUtils
@@ -63,46 +63,47 @@ const PortfolioCard = React.memo(() => {
     const isWalletEmpty = !discoveryStatus && isDeviceEmpty;
     const isWalletLoading = discoveryStatus?.status === 'loading' ?? false;
     const isWalletError = discoveryStatus?.status === 'exception' ?? false;
-    const showGraphControls = !isWalletEmpty && !isWalletLoading && !isWalletError;
+    // const showGraphControls = !isWalletEmpty && !isWalletLoading && !isWalletError;
 
     return (
         <Section
             heading={<Translation id="TR_MY_PORTFOLIO" />}
-            actions={
-                showGraphControls ? (
-                    <Dropdown
-                        alignMenu="right"
-                        components={{
-                            DropdownMenuItem,
-                        }}
-                        items={[
-                            {
-                                key: 'group1',
-                                label: 'Graph View',
-                                options: [
-                                    {
-                                        key: 'graphView',
-                                        label: (
-                                            <SelectBar
-                                                onChange={option => {
-                                                    setSelectedView(option as 'linear' | 'log');
-                                                    return false;
-                                                }}
-                                                selectedOption={selectedView}
-                                                options={[
-                                                    { label: 'Linear', value: 'linear' },
-                                                    { label: 'Logarithmic', value: 'log' },
-                                                ]}
-                                            />
-                                        ),
-                                        callback: () => false,
-                                    },
-                                ],
-                            },
-                        ]}
-                    />
-                ) : undefined
-            }
+            // TODO: enabled once logarithmic scale is implemented
+            // actions={
+            //     showGraphControls ? (
+            //         <Dropdown
+            //             alignMenu="right"
+            //             components={{
+            //                 DropdownMenuItem,
+            //             }}
+            //             items={[
+            //                 {
+            //                     key: 'group1',
+            //                     label: 'Graph View',
+            //                     options: [
+            //                         {
+            //                             key: 'graphView',
+            //                             label: (
+            //                                 <SelectBar
+            //                                     onChange={option => {
+            //                                         setSelectedView(option as 'linear' | 'log');
+            //                                         return false;
+            //                                     }}
+            //                                     selectedOption={selectedView}
+            //                                     options={[
+            //                                         { label: 'Linear', value: 'linear' },
+            //                                         { label: 'Logarithmic', value: 'log' },
+            //                                     ]}
+            //                                 />
+            //                             ),
+            //                             callback: () => false,
+            //                         },
+            //                     ],
+            //                 },
+            //             ]}
+            //         />
+            //     ) : undefined
+            // }
         >
             <StyledCard>
                 <Header
