@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, variables, Loader, Card } from '@trezor/components';
-import { HiddenPlaceholder, FormattedCryptoAmount } from '@suite-components';
+import { HiddenPlaceholder, FormattedCryptoAmount, Sign } from '@suite-components';
 import { Account } from '@wallet-types';
 import BigNumber from 'bignumber.js';
 
@@ -53,12 +53,6 @@ const LoaderWrapper = styled.div`
     align-items: center;
 `;
 
-const Sign = styled.span<{ color: string }>`
-    color: ${props => props.color};
-    width: 1ch;
-    /* margin-right: 4px; */
-`;
-
 const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
     display: flex;
 `;
@@ -88,7 +82,6 @@ const InfoCard = (props: Props) => {
             ? new BigNumber(props.value)
             : null;
     bigValue = bigValue?.isNaN() ? null : bigValue;
-    const isValuePos = bigValue?.gt(0);
 
     return (
         <Wrapper>
@@ -106,11 +99,7 @@ const InfoCard = (props: Props) => {
                             <FormattedCryptoAmount
                                 value={
                                     <Value>
-                                        {isValuePos ? (
-                                            <Sign color={colors.NEUE_TYPE_GREEN}>+</Sign>
-                                        ) : (
-                                            <Sign color={colors.NEUE_TYPE_RED}>-</Sign>
-                                        )}
+                                        <Sign value={bigValue} />
                                         <AmountWrapper>{bigValue.abs().toFixed()}</AmountWrapper>
                                         <SymbolWrapper>{props.symbol.toUpperCase()}</SymbolWrapper>
                                     </Value>
