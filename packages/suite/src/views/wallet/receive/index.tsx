@@ -5,14 +5,7 @@ import FreshAddress from './components/FreshAddress';
 import UsedAddresses from './components/UsedAddresses';
 import { Props } from './Container';
 
-export default ({
-    selectedAccount,
-    receive,
-    device,
-    showAddress,
-    addToast,
-    addMetadata,
-}: Props) => {
+export default ({ selectedAccount, receive, device, showAddress, addToast }: Props) => {
     const { isLocked } = useDevice();
     const isDeviceLocked = isLocked();
     if (!device || selectedAccount.status !== 'loaded') {
@@ -22,15 +15,6 @@ export default ({
     const { account } = selectedAccount;
     const disabled = !!device.authConfirm;
 
-    const changeMetadata = (address: string, currentValue?: string) => {
-        addMetadata({
-            type: 'addressLabel',
-            accountKey: account.key,
-            defaultValue: address,
-            value: currentValue,
-        });
-    };
-
     return (
         <WalletLayout title="Receive" account={selectedAccount}>
             <FreshAddress
@@ -38,7 +22,7 @@ export default ({
                 addresses={receive}
                 showAddress={showAddress}
                 addToast={addToast}
-                // changeMetadata={changeMetadata}
+                accountKey={account.key}
                 disabled={disabled}
                 locked={isDeviceLocked}
             />
@@ -47,7 +31,7 @@ export default ({
                 addresses={receive}
                 showAddress={showAddress}
                 addToast={addToast}
-                changeMetadata={changeMetadata}
+                accountKey={account.key}
                 disabled={disabled}
                 locked={isDeviceLocked}
             />

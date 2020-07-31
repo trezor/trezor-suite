@@ -15,7 +15,6 @@ describe('Metadata', () => {
         suite is watching cloud provider and syncs periodically
     `, () => {
            // prepare test
-
             cy.task('startEmu', { wipe: true });
             cy.task('setupEmu');
             cy.task('startGoogle');
@@ -31,10 +30,10 @@ describe('Metadata', () => {
             cy.log('Wait for discovery to finish. There is "add label" button, but no actual metadata appeared')
             cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 });
             cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 }).should('not.be.visible');
-            cy.getTestElement('@account-menu/btc/normal/0/add-label-button').click();
+            cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click({ force: true });
+            
             cy.task('pressYes');
             cy.getTestElement('@modal/metadata-provider/google-button').click();
-            cy.getTestElement('@modal/add-metadata/submit-button').click();
             cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'label');
     
     
@@ -46,9 +45,7 @@ describe('Metadata', () => {
             cy.tick(METADATA.FETCH_INTERVAL);
             cy.getTestElement('@settings/metadata/connect-provider-button');
 
-            cy.log('In accounts, see that although provider is disconnected now, previously set label remains there (saved locally)');
             cy.getTestElement('@suite/menu/wallet-index').click();
-            cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'label');
-            // todo: ?? shall it erase local labels?
+            cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
     })
 });

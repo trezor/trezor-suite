@@ -18,7 +18,9 @@ const metadata = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
 
     switch (action.type) {
         case DISCOVERY.COMPLETE:
-            api.dispatch(metadataActions.fetchMetadata(action.payload.deviceState));
+            if (api.getState().metadata.enabled) {
+                api.dispatch(metadataActions.fetchMetadata(action.payload.deviceState));
+            }
             break;
         default:
         // no default

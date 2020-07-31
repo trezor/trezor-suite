@@ -1,12 +1,20 @@
 import React, { useState, createRef } from 'react';
 import styled, { css } from 'styled-components';
 import { colors, variables, Button, Icon } from '@trezor/components';
-import { Card, Translation, HiddenPlaceholder, FiatValue, Badge } from '@suite-components';
+import {
+    Card,
+    Translation,
+    HiddenPlaceholder,
+    FiatValue,
+    Badge,
+    AddMetadataLabel,
+} from '@suite-components';
 import { parseBIP44Path, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { copyToClipboard } from '@suite-utils/dom';
 import { ChildProps as Props } from '../../Container';
 import { AccountAddress } from 'trezor-connect';
 import { Network, ReceiveInfo } from '@wallet-types';
+import { MetadataAddPayload } from '@suite-types/metadata';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
 const StyledCard = styled(Card)`
@@ -125,27 +133,31 @@ interface ItemProps {
     addr: AccountAddress;
     symbol: Network['symbol'];
     revealed?: ReceiveInfo;
-    metadata?: string;
+    metadataPayload: MetadataAddPayload;
     onClick: () => void;
     onCopy: () => void;
-    onMetadataClick: () => void;
 }
 
-const Item = ({
-    addr,
-    symbol,
-    onClick,
-    onCopy,
-    revealed,
-    metadata,
-    onMetadataClick,
-    index,
-}: ItemProps) => {
+const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index }: ItemProps) => {
     const amount = formatNetworkAmount(addr.received || '0', symbol, true);
     const [amountF] = amount.split(' ');
     const fresh = addr.transfers < 1;
     const isRevealed = !!revealed;
     const address = revealed ? addr.address : `${addr.address.substring(0, 15)}…`;
+
+    const dropdownOptions = [
+        {
+            callback: onClick,
+            label: 'Confirm on device',
+        },
+    ];
+    if (isRevealed) {
+        dropdownOptions.push({
+            callback: onCopy,
+            label: 'Copy address',
+        });
+    }
+
     return (
         <>
             <GridItem revealed={isRevealed}>/{parseBIP44Path(addr.path)!.addrIndex}</GridItem>
@@ -154,7 +166,14 @@ const Item = ({
                 revealed={isRevealed}
                 onClick={onClick}
             >
-                {address}
+                <AddMetadataLabel
+                    payload={{
+                        ...metadataPayload,
+                    }}
+                    defaultVisibleValue={address}
+                    dropdownOptions={dropdownOptions}
+                />
+                {/* {address} */}
                 {revealed && !revealed.isVerified && (
                     <Icon
                         size={14}
@@ -163,7 +182,6 @@ const Item = ({
                         style={{ marginLeft: '12px' }}
                     />
                 )}
-                {metadata && `(${metadata})`}
             </GridItemAddress>
             <GridItem revealed={isRevealed}>
                 {!fresh && (
@@ -183,9 +201,6 @@ const Item = ({
                 {fresh && <Translation id="RECEIVE_TABLE_NOT_USED" />}
             </GridItem>
             <GridItem>
-                <IconButton variant="tertiary" onClick={onMetadataClick}>
-                    <Icon size={16} icon="LABEL" />
-                </IconButton>
                 <IconButton variant="tertiary" isDisabled={!revealed} onClick={onCopy}>
                     <Icon size={16} icon="COPY" />
                 </IconButton>
@@ -199,8 +214,8 @@ const UsedAddresses = ({
     addresses,
     showAddress,
     addToast,
-    changeMetadata,
     locked,
+    accountKey,
 }: Props) => {
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
     if (account.networkType !== 'bitcoin' || !account.addresses) return null;
@@ -248,10 +263,14 @@ const UsedAddresses = ({
                         key={addr.path}
                         addr={addr}
                         symbol={account.symbol}
-                        metadata={addressLabels[addr.address]}
-                        onMetadataClick={() =>
-                            changeMetadata(addr.address, addressLabels[addr.address])
-                        }
+                        // metadata={addressLabels[addr.address]}
+                        metadataPayload={{
+                            type: 'addressLabel',
+                            accountKey,
+                            defaultValue: addr.address,
+                            value: addressLabels[addr.address],
+                        }}
+                        // metadataPayload={changeMetadata(addr.address, addressLabels[addr.address])}
                         revealed={addresses.find(f => f.address === addr.address)}
                         onClick={() => (!locked ? showAddress(addr.path, addr.address) : undefined)}
                         onCopy={() => copyAddress(addr.address)}

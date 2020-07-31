@@ -6,6 +6,7 @@ import { Icon } from '../Icon';
 
 const Wrapper = styled.div`
     position: relative;
+    z-index: 1;
 `;
 
 const Menu = styled.ul<MenuProps>`
@@ -61,7 +62,7 @@ const MenuItem = styled.li<Pick<DropdownMenuItem, 'isDisabled' | 'noPadding'>>`
         `}
 `;
 
-const DefaultTogglerIcon = styled(Icon)<Pick<Props, 'isDisabled'>>`
+const DefaultTogglerIcon = styled(Icon) <Pick<Props, 'isDisabled'>>`
     cursor: ${props => (!props.isDisabled ? 'pointer' : 'default')};
 `;
 
@@ -139,29 +140,30 @@ const Dropdown = ({
             isDisabled,
             onClick: !isDisabled
                 ? (e: any) => {
-                      e.preventDefault();
-                      if (children.props.onClick) children.props.onClick(e);
-                      setToggled(!toggled);
-                  }
+                    e.stopPropagation();
+                    e.preventDefault();
+                    if (children.props.onClick) children.props.onClick(e);
+                    setToggled(!toggled);
+                }
                 : undefined,
         })
     ) : (
-        <DefaultTogglerIcon
-            ref={toggleRef}
-            size={24}
-            icon="MORE"
-            color={!isDisabled ? colors.NEUE_TYPE_DARK_GREY : colors.NEUE_TYPE_LIGHT_GREY}
-            onClick={
-                !isDisabled
-                    ? () => {
-                          setToggled(!toggled);
-                      }
-                    : undefined
-            }
-            isDisabled={isDisabled}
-            {...rest}
-        />
-    );
+            <DefaultTogglerIcon
+                ref={toggleRef}
+                size={24}
+                icon="MORE"
+                color={!isDisabled ? colors.NEUE_TYPE_DARK_GREY : colors.NEUE_TYPE_LIGHT_GREY}
+                onClick={
+                    !isDisabled
+                        ? () => {
+                            setToggled(!toggled);
+                        }
+                        : undefined
+                }
+                isDisabled={isDisabled}
+                {...rest}
+            />
+        );
 
     return (
         <Wrapper className={className}>
@@ -173,7 +175,11 @@ const Dropdown = ({
                             {group.label && <Group>{group.label}</Group>}
                             {group.options.map(item => (
                                 <MenuItemComponent
-                                    onClick={() => onMenuItemClick(item)}
+
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onMenuItemClick(item)
+                                    }}
                                     isDisabled={item.isDisabled}
                                     data-test={item['data-test']}
                                     noPadding={item.noPadding}

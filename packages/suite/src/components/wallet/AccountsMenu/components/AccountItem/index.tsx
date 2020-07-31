@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { CoinLogo, Button, colors, variables } from '@trezor/components';
+import { CoinLogo, colors, variables } from '@trezor/components';
 import styled, { css } from 'styled-components';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 import { Translation, FiatValue } from '@suite-components';
@@ -86,13 +86,19 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
 
     const dataTestKey = `@account-menu/${account.symbol}/${account.accountType}/${account.index}`;
 
-    const accountLabel = account.metadata.accountLabel ? (
-        <span>{account.metadata.accountLabel}</span>
-    ) : (
+    const DefaultLabel = () => (
         <>
             <Translation {...getTitleForNetwork(account.symbol)} />
             <span>&nbsp;#{account.index + 1}</span>
         </>
+    );
+
+    const accountLabel = account.metadata.accountLabel ? (
+        <span style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
+            {account.metadata.accountLabel}
+        </span>
+    ) : (
+        <DefaultLabel />
     );
 
     return (
@@ -113,21 +119,6 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
                 <Right>
                     <Row>
                         <AccountName data-test={`${dataTestKey}/label`}>{accountLabel}</AccountName>
-
-                        <Button
-                            variant="tertiary"
-                            icon="LABEL"
-                            onClick={event => {
-                                event.preventDefault();
-                                props.addMetadata({
-                                    type: 'accountLabel',
-                                    accountKey: account.key,
-                                    defaultValue: account.path,
-                                    value: account.metadata.accountLabel,
-                                });
-                            }}
-                            data-test={`${dataTestKey}/add-label-button`}
-                        />
                     </Row>
                     <Row>
                         <Balance>

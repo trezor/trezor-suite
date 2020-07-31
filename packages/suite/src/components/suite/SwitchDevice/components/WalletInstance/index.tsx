@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { Button, Switch, colors, variables } from '@trezor/components';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { Props } from './Container';
-import { FormattedNumber, WalletLabeling, Translation } from '@suite-components';
+import { FormattedNumber, WalletLabeling, Translation, AddMetadataLabel } from '@suite-components';
 import { useAnalytics } from '@suite-hooks';
 
 const Wrapper = styled.div<{ selected: boolean }>`
@@ -79,7 +79,6 @@ const WalletInstance = ({
     selectDeviceInstance,
     rememberDevice,
     forgetDevice,
-    // openModal,
     addMetadata,
     accounts,
     fiat,
@@ -104,26 +103,16 @@ const WalletInstance = ({
         return '@switch-device/wallet-instance';
     };
 
-    const changeWalletMetadata = (event: any) => {
-        event.preventDefault();
-        // todo: hmm is this if needed? probably not, shall be handled in action
-        if (!instance.state || instance.metadata.status !== 'enabled') return;
-        // openModal({
-        //     type: 'metadata-add',
-        //     payload: {
-        //         type: 'walletLabel',
-        //         deviceState: instance.state,
-        //         defaultValue: 'TODO: wallet default state',
-        //         value: instance.metadata.walletLabel,
-        //     },
-        // });
-        addMetadata({
-            type: 'walletLabel',
-            deviceState: instance.state,
-            defaultValue: 'TODO: wallet default state',
-            value: instance.metadata.walletLabel,
-        });
-    };
+    // const changeWalletMetadata = (event: any) => {
+    //     if (!instance.state) return; // only ts
+    //     event.preventDefault();
+    //     addMetadata({
+    //         type: 'walletLabel',
+    //         deviceState: instance.state,
+    //         defaultValue: 'TODO: wallet default state',
+    //         value: instance.metadata.status === 'enabled' ? instance.metadata.walletLabel : '',
+    //     });
+    // };
     return (
         <Wrapper
             data-test={getDataTestBase()}
@@ -134,14 +123,32 @@ const WalletInstance = ({
             <Col grow={1} onClick={() => selectDeviceInstance(instance)}>
                 {discoveryProcess && (
                     <InstanceType>
-                        <WalletLabeling device={instance} />
-                        {instance.state && (
+                        {instance.state ? (
+                            <AddMetadataLabel
+                                payload={{
+                                    type: 'walletLabel',
+                                    deviceState: instance.state,
+                                    defaultValue: 'TODO: wallet default state',
+                                    // defaultVisibleValue: <WalletLabeling device={instance} />,
+
+                                    value:
+                                        instance?.metadata.status === 'enabled'
+                                            ? instance.metadata.walletLabel
+                                            : '',
+                                }}
+                            />
+                        ) : (
+                            <WalletLabeling device={instance} />
+                        )}
+
+                        {/* <WalletLabeling device={instance} /> */}
+                        {/* {instance.state && (
                             <Button
                                 variant="tertiary"
                                 icon="LABEL"
                                 onClick={changeWalletMetadata}
                             />
-                        )}
+                        )} */}
                     </InstanceType>
                 )}
                 {!discoveryProcess && (

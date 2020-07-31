@@ -25,7 +25,7 @@ import DeviceInvalidModeLayout from './DeviceInvalidModeLayout';
 import AppNavigationPanel from './AppNavigationPanel';
 import AppNavigation from './AppNavigation';
 import { Translation } from './Translation';
-import { AccountLabeling, AddressLabeling, WalletLabeling } from './Labeling';
+import { AccountLabeling, AddressLabeling, WalletLabeling, AddMetadataLabel } from './Labeling';
 import FormattedCryptoAmount from './FormattedCryptoAmount';
 
 export {
@@ -55,6 +55,7 @@ export {
     AccountLabeling,
     AddressLabeling,
     WalletLabeling,
+    AddMetadataLabel,
     Image,
     QuestionTooltip,
     TransactionsGraph,

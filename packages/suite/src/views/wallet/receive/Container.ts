@@ -35,9 +35,9 @@ export interface ChildProps {
     addresses: Props['receive'];
     showAddress: Props['showAddress'];
     addToast: Props['addToast'];
-    changeMetadata: (address: string, currentValue?: string) => void;
     disabled: boolean;
     locked: boolean;
+    accountKey: string;
 }
 
 export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(SendIndex));

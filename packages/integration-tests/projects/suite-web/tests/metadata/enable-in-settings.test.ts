@@ -31,8 +31,6 @@ describe('Metadata', () => {
         cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 });
         cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 }).should('not.be.visible');
         cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
-        cy.getTestElement('@account-menu/btc/normal/0/add-label-button');
-
 
         cy.log('Go to settings and enable metadata');
         cy.getTestElement('@suite/menu/settings-index').click();

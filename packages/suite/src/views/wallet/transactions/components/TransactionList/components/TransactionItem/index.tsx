@@ -8,6 +8,7 @@ import {
     FiatValue,
     Badge,
     AddressLabeling,
+    AddMetadataLabel,
 } from '@suite-components';
 import { variables, colors, Button, Link } from '@trezor/components';
 import { isTestnet } from '@wallet-utils/accountUtils';
@@ -24,7 +25,7 @@ import * as metadataActions from '@suite-actions/metadataActions';
 const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
     padding: 8px 0px; /* row padding */
     display: block;
-    overflow: hidden;
+    // overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 `;
@@ -46,7 +47,7 @@ const Addr = styled(motion.div)`
     grid-column: target;
     color: ${colors.BLACK0};
     font-size: ${variables.FONT_SIZE.SMALL};
-    overflow: hidden;
+    // overflow: hidden;
     white-space: nowrap;
     padding-left: 5px;
     text-overflow: ellipsis;
@@ -56,9 +57,9 @@ const Addr = styled(motion.div)`
     }
 `;
 
-const AddrInner = styled.div`
-    display: flex;
-`;
+// const AddrInner = styled.div`
+//     display: flex;
+// `;
 
 const Balance = styled(motion.div)<{ partial?: boolean; secondary?: boolean }>`
     grid-column: amount;
@@ -137,21 +138,21 @@ export default React.memo((props: Props) => {
     const operation =
         (type === 'sent' || type === 'self' ? '-' : null) || (type === 'recv' ? '+' : null);
     let key = 0;
-    const { addMetadata, openModal } = useActions({
+    const { openModal } = useActions({
         addMetadata: metadataActions.addMetadata,
         openModal: modalActions.openModal,
     });
 
-    const openMetadataPopup = (outputIndex: number, defaultValue: string, value?: string) => {
-        addMetadata({
-            type: 'outputLabel',
-            accountKey: props.account.key,
-            txid: transaction.txid,
-            outputIndex,
-            defaultValue,
-            value,
-        });
-    };
+    // const openMetadataPopup = (outputIndex: number, defaultValue: string, value?: string) => {
+    //     addMetadata({
+    //         type: 'outputLabel',
+    //         accountKey: props.account.key,
+    //         txid: transaction.txid,
+    //         outputIndex,
+    //         defaultValue,
+    //         value,
+    //     });
+    // };
 
     const buildTargetRow = (
         target: ArrayElement<Props['transaction']['targets']>,
@@ -191,7 +192,18 @@ export default React.memo((props: Props) => {
             <React.Fragment key={key}>
                 <Addr {...animation}>
                     <StyledHiddenPlaceholder>
-                        <AddrInner>
+                        <AddMetadataLabel
+                            defaultVisibleValue={addr}
+                            payload={{
+                                type: 'outputLabel',
+                                accountKey: props.account.key,
+                                txid: transaction.txid,
+                                outputIndex: targetN,
+                                defaultValue: target.addresses!.join(''),
+                                value: targetMetadata,
+                            }}
+                        />
+                        {/* <AddrInner>
                             {addr}
 
                             <Button
@@ -205,7 +217,7 @@ export default React.memo((props: Props) => {
                                     )
                                 }
                             />
-                        </AddrInner>
+                        </AddrInner> */}
                     </StyledHiddenPlaceholder>
                 </Addr>
                 {targetAmount && (
