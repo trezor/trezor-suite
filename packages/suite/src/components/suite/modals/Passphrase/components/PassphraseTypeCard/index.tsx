@@ -1,7 +1,7 @@
 import React, { useState, createRef, useLayoutEffect } from 'react';
 import { useKeyPress } from '@suite-utils/dom';
 import styled, { css } from 'styled-components';
-import { Button, colors, variables, Input, Checkbox } from '@trezor/components';
+import { Button, colors, variables, Input, Checkbox, Icon } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 
 import { MAX_PASSPHRASE_LENGTH } from '@suite-constants/passphrase';
@@ -75,6 +75,10 @@ const ActionButton = styled(Button)`
     & + & {
         margin-top: 8px;
     }
+`;
+
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
 `;
 
 const RetryButton = styled(Button)`
@@ -191,13 +195,15 @@ const PassphraseTypeCard = (props: Props) => {
                             variant="small"
                             noTopLabel
                             noError
-                            button={{
-                                iconSize: 18,
-                                iconColor: colors.BLACK70,
-                                iconColorHover: colors.BLACK70,
-                                icon: showPassword ? 'HIDE' : 'SHOW',
-                                onClick: () => setShowPassword(!showPassword),
-                            }}
+                            innerAddon={
+                                <StyledIcon
+                                    size={18}
+                                    color={colors.BLACK70}
+                                    hoverColor={colors.BLACK70}
+                                    icon={showPassword ? 'HIDE' : 'SHOW'}
+                                    onClick={() => setShowPassword(!showPassword)}
+                                />
+                            }
                         />
                         {!isTooLong && <PasswordStrengthIndicator password={value} />}
                     </InputWrapper>
