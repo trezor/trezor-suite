@@ -5,7 +5,7 @@ const networks = [
         networkType: 'external',
         symbol: 'xem',
         name: 'NEM',
-        url: 'https://nem.io/downloads',
+        url: 'https://nemplatform.com/wallets/',
     },
     {
         networkType: 'external',

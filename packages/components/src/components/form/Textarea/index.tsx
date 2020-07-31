@@ -32,7 +32,7 @@ const StyledTextarea = styled.textarea<StyledTextareaProps>`
     font-family: ${variables.FONT_FAMILY.TTHOVES};
     color: ${props => getStateColor(props.state)};
     background: ${colors.WHITE};
-    font-weight: ${variables.FONT_WEIGHT.REGULAR};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
     white-space: pre-wrap; /* css-3 */
     white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
