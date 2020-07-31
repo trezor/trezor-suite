@@ -22,7 +22,7 @@
     "build": {
         "appId": "io.trezor.TrezorWallet",
         "productName": "Trezor Beta Wallet",
-        "copyright": "Copyright © year ${author}",
+        "copyright": "Copyright © ${author}",
         "asar": true,
         "asarUnpack": [
             "build/static/bridge/**/*"

@@ -112,7 +112,7 @@ class SignVerify extends Component<Props> {
                         </Title>
                         <Row>
                             <Input
-                                topLabel={intl.formatMessage(messages.TR_ADDRESS)}
+                                label={intl.formatMessage(messages.TR_ADDRESS)}
                                 name="signAddress"
                                 value=""
                                 // value={account.descriptor}
@@ -122,7 +122,7 @@ class SignVerify extends Component<Props> {
                         </Row>
                         <Row>
                             <Textarea
-                                topLabel={intl.formatMessage(messages.TR_MESSAGE)}
+                                label={intl.formatMessage(messages.TR_MESSAGE)}
                                 name="signMessage"
                                 value={signMessage}
                                 onChange={this.handleInputChange}
@@ -133,7 +133,7 @@ class SignVerify extends Component<Props> {
                         </Row>
                         <Row>
                             <Textarea
-                                topLabel={intl.formatMessage(messages.TR_SIGNATURE)}
+                                label={intl.formatMessage(messages.TR_SIGNATURE)}
                                 name="signSignature"
                                 value={signSignature}
                                 rows={4}
@@ -167,7 +167,7 @@ class SignVerify extends Component<Props> {
                         </Title>
                         <Row>
                             <Input
-                                topLabel={intl.formatMessage(messages.TR_ADDRESS)}
+                                label={intl.formatMessage(messages.TR_ADDRESS)}
                                 name="verifyAddress"
                                 value={verifyAddress}
                                 onChange={this.handleInputChange}
@@ -178,7 +178,7 @@ class SignVerify extends Component<Props> {
                         </Row>
                         <Row>
                             <Textarea
-                                topLabel={intl.formatMessage(messages.TR_MESSAGE)}
+                                label={intl.formatMessage(messages.TR_MESSAGE)}
                                 name="verifyMessage"
                                 value={verifyMessage}
                                 onChange={this.handleInputChange}
@@ -189,7 +189,7 @@ class SignVerify extends Component<Props> {
                         </Row>
                         <Row>
                             <Textarea
-                                topLabel={intl.formatMessage(messages.TR_SIGNATURE)}
+                                label={intl.formatMessage(messages.TR_SIGNATURE)}
                                 name="verifySignature"
                                 value={verifySignature}
                                 onChange={this.handleInputChange}

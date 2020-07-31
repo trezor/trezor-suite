@@ -51,6 +51,7 @@ const Settings = ({
                     <ActionColumn>
                         <ActionSelect
                             variant="small"
+                            noTopLabel
                             value={{
                                 value: language,
                                 label: LANGUAGES.find(l => l.code === language)!.name,
@@ -77,6 +78,7 @@ const Settings = ({
                     <TextColumn title={<Translation id="TR_PRIMARY_FIAT" />} />
                     <ActionColumn>
                         <ActionSelect
+                            noTopLabel
                             variant="small"
                             onChange={(option: { value: string; label: string }) => {
                                 setLocalCurrency(option.value);
