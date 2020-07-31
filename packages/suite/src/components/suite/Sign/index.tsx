@@ -11,17 +11,20 @@ const StyledSign = styled.span<{ color: string }>`
 
 interface Props {
     value: string | BigNumber | number | 'pos' | 'neg';
+    placeholderOnly?: boolean;
     grayscale?: boolean;
     showMinusSign?: boolean;
     grayscaleColor?: string;
 }
 const Sign = ({
     value,
+    placeholderOnly,
     grayscale,
     showMinusSign = true,
     grayscaleColor = colors.NEUE_TYPE_DARK_GREY,
 }: Props) => {
     let isValuePos = false;
+
     if (value === undefined || value === null) {
         return null;
     }
@@ -32,6 +35,10 @@ const Sign = ({
         isValuePos = false;
     } else {
         isValuePos = new BigNumber(value).gte(0);
+    }
+
+    if (placeholderOnly) {
+        return <StyledSign color="transparent">+</StyledSign>;
     }
 
     if (isValuePos) {

@@ -4,16 +4,12 @@ import { colors, variables, Loader, Card } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
 import { useSelector } from '@suite-hooks';
-import {
-    groupTransactionsByDate,
-    sumTransactions,
-    sumTransactionsFiat,
-} from '@wallet-utils/transactionUtils';
+import { groupTransactionsByDate } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
 import { WalletAccountTransaction } from '@wallet-types';
 import TransactionItem from './components/TransactionItem/Container';
 import Pagination from './components/Pagination';
-import DayHeader from './components/DayHeader';
+import TransactionsGroup from './components/TransactionsGroup';
 
 const StyledCard = styled(Card)<{ isPending: boolean }>`
     flex-direction: column;
@@ -29,15 +25,6 @@ const StyledCard = styled(Card)<{ isPending: boolean }>`
 
 const StyledSection = styled(Section)`
     margin-bottom: 20px;
-`;
-
-const TransactionsGroupWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-
-    & + & {
-        margin-top: 36px;
-    }
 `;
 
 const PaginationWrapper = styled.div`
@@ -113,22 +100,15 @@ const TransactionList = ({
                 </LoaderWrapper>
             ) : (
                 Object.keys(transactionsByDate).map(dateKey => {
-                    const totalAmountPerDay = sumTransactions(transactionsByDate[dateKey]);
-                    const totalFiatAmountPerDay = sumTransactionsFiat(
-                        transactionsByDate[dateKey],
-                        localCurrency,
-                    );
                     const isPending = dateKey === 'pending';
                     return (
-                        <TransactionsGroupWrapper key={dateKey}>
-                            <DayHeader
-                                dateKey={dateKey}
-                                symbol={props.symbol}
-                                totalAmount={totalAmountPerDay}
-                                totalFiatAmountPerDay={totalFiatAmountPerDay}
-                                txsCount={transactionsByDate[dateKey].length}
-                                localCurrency={localCurrency}
-                            />
+                        <TransactionsGroup
+                            key={dateKey}
+                            dateKey={dateKey}
+                            symbol={props.symbol}
+                            transactions={transactionsByDate[dateKey]}
+                            localCurrency={localCurrency}
+                        >
                             <StyledCard isPending={isPending}>
                                 {transactionsByDate[dateKey].map((tx: WalletAccountTransaction) => (
                                     <TransactionItem
@@ -138,7 +118,7 @@ const TransactionList = ({
                                     />
                                 ))}
                             </StyledCard>
-                        </TransactionsGroupWrapper>
+                        </TransactionsGroup>
                     );
                 })
             )}

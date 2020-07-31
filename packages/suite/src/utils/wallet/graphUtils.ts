@@ -67,18 +67,19 @@ export const sumFiatValueMap = (
     return newMap;
 };
 
-export const subFiatValueMap = (
-    valueMap: { [k: string]: string | undefined },
-    obj: { [k: string]: string | undefined },
-) => {
-    const newMap = { ...valueMap };
-    Object.entries(obj).forEach(keyVal => {
-        const [key, val] = keyVal;
-        const previousValue = newMap[key] ?? '0';
-        newMap[key] = new BigNumber(previousValue).minus(val ?? 0).toFixed();
-    });
-    return newMap;
-};
+// Used for dashboard graph, functionality currently disabled
+// export const subFiatValueMap = (
+//     valueMap: { [k: string]: string | undefined },
+//     obj: { [k: string]: string | undefined },
+// ) => {
+//     const newMap = { ...valueMap };
+//     Object.entries(obj).forEach(keyVal => {
+//         const [key, val] = keyVal;
+//         const previousValue = newMap[key] ?? '0';
+//         newMap[key] = new BigNumber(previousValue).minus(val ?? 0).toFixed();
+//     });
+//     return newMap;
+// };
 
 /**
  * Return maximum sent/received crypto or fiat amount from the data
@@ -116,7 +117,6 @@ export const aggregateBalanceHistory = <TType extends TypeName>(
     type: TType,
 ): ObjectType<TType>[] => {
     const groupedByTimestamp: { [key: string]: ObjectType<TType> } = {};
-    console.log('before aggregatedData', graphData);
 
     for (let i = 0; i < graphData.length; i++) {
         // graph data for one account;
@@ -202,7 +202,6 @@ export const aggregateBalanceHistory = <TType extends TypeName>(
             return groupedByTimestamp[timestamp];
         })
         .sort((a, b) => Number(a.time) - Number(b.time)); // sort from older to newer;;
-    console.log('aggregatedData', aggregatedData);
     return aggregatedData;
 };
 
@@ -269,44 +268,6 @@ export const calcFakeGraphDataForTimestamps = (
     const balanceData: CommonAggregatedHistory[] = [];
     const firstDataPoint = data[0];
     const lastDataPoint = data[data.length - 1];
-    console.log('calcFakeGraphDataForTimestamps:data', data);
-    console.log('calcFakeGraphDataForTimestamps:timestamps', timestamps);
-    // if (data) {
-    //     // calc fake data points for first and last label even if there are no real txs for given timestamp (label)
-    //     xTicks.forEach(ts => {
-    //         console.log('------------------', ts, fromUnixTime(ts));
-    //         const existing = data.find(d => d.time === ts);
-    //         if (firstDataPoint && lastDataPoint && existing) {
-    //             balanceData.push(existing);
-    //         }
-    //     });
-    //     balanceData.push({
-    //         time: xTicks[0],
-    //         balance: '0',
-    //         sent: '0',
-    //         received: '0',
-    //         sentFiat: '0',
-    //         receivedFiat: '0',
-    //         txs: 0,
-    //     });
-    //     data.forEach(d => {
-    //         if (!balanceData.includes(d)) {
-    //             console.log('adding and the end of loop', d);
-    //             balanceData.push(d);
-    //         }
-    //     });
-    //     if (lastDataPoint) {
-    //         balanceData.push({
-    //             time: xTicks[xTicks.length - 1],
-    //             balance: lastDataPoint.balance,
-    //             sent: '0',
-    //             received: '0',
-    //             sentFiat: '0',
-    //             receivedFiat: '0',
-    //             txs: 0,
-    //         });
-    //     }
-    // }
 
     // calc fake data points for each label even if there are no real txs for given timestamp (label)
     timestamps.forEach(ts => {
@@ -316,7 +277,6 @@ export const calcFakeGraphDataForTimestamps = (
                 balanceData.push(existing);
             } else if (ts < firstDataPoint.time) {
                 const closestData = firstDataPoint;
-                console.log('closesData', closestData);
                 balanceData.push({
                     time: ts,
                     sent: '0',
@@ -359,13 +319,11 @@ export const calcFakeGraphDataForTimestamps = (
     // workaround
     data.forEach(d => {
         if (!balanceData.includes(d)) {
-            console.log('adding and the end of loop', d);
             balanceData.push(d);
         }
     });
 
     const sortedData = balanceData.sort((a, b) => Number(a.time) - Number(b.time));
-    console.log('sortedData', sortedData);
     return sortedData;
 };
 
@@ -375,7 +333,6 @@ export const enhanceBlockchainAccountHistory = (
 ) => {
     let balance = '0';
     const enhancedResponse = data.map(dataPoint => {
-        console.log('dataPoint', dataPoint);
         // subtract sentToSelf field as we don't want to include amounts received/sent to the same account
         const normalizedReceived = dataPoint.sentToSelf
             ? new BigNumber(dataPoint.received).minus(dataPoint.sentToSelf || 0).toFixed()

@@ -5,7 +5,7 @@ import { colors, variables, Button, Card } from '@trezor/components';
 import { TransactionsGraph, Translation } from '@suite-components';
 import { calcTicks, calcTicksFromData } from '@suite-utils/date';
 import { aggregateBalanceHistory, getMaxValueFromData } from '@wallet-utils/graphUtils';
-import { GraphRange, GraphData } from '@wallet-types/graph';
+import { GraphData } from '@wallet-types/graph';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 import RangeSelector from '@suite-components/TransactionsGraph/components/RangeSelector';
 import { Props } from './Container';
@@ -67,7 +67,7 @@ const TransactionSummary = (props: Props) => {
         updateGraphData([account]);
     };
 
-    const onSelectedRange = (_range: GraphRange) => {
+    const onSelectedRange = () => {
         updateGraphData([account], { newAccountsOnly: true });
     };
 

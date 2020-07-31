@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
-import { SelectBar, Dropdown, DropdownMenuItemProps } from '@trezor/components';
+// import { SelectBar, Dropdown, DropdownMenuItemProps } from '@trezor/components';
 import { Card, Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
 import * as accountUtils from '@wallet-utils/accountUtils';
-import { useDiscovery, useGraph } from '@suite-hooks';
+import { useDiscovery } from '@suite-hooks';
 import { useFastAccounts, useFiatValue } from '@wallet-hooks';
 import { goto } from '@suite-actions/routerActions';
 

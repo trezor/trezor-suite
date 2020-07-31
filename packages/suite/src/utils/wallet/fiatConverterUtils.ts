@@ -22,8 +22,11 @@ export const toFiatCurrency = (
     }
 
     const localAmount = new BigNumber(formattedAmount).times(rate);
+    if (localAmount.isNaN()) {
+        return null;
+    }
 
-    return localAmount.isNaN() ? null : localAmount.toFixed(decimals === -1 ? undefined : decimals);
+    return decimals === -1 ? localAmount.toFixed() : localAmount.toFixed(decimals);
 };
 
 export const fromFiatCurrency = (

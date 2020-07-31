@@ -15,21 +15,22 @@ import { Network } from '@wallet-types';
 
 const Wrapper = styled.div`
     display: flex;
+    position: sticky;
+    background: ${colors.NEUE_BG_GRAY};
+    top: 0;
     align-items: center;
     justify-content: space-between;
     flex: 1;
-    margin-bottom: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
     padding-right: 24px;
 `;
 
 const Col = styled(HiddenPlaceholder)`
-    /* position: sticky;
-    top: 0; */
     font-size: ${variables.FONT_SIZE.SMALL};
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-transform: uppercase;
-    /* line-height: 1.57; */
 `;
 
 const ColDate = styled(Col)`
@@ -56,9 +57,10 @@ interface Props {
     dateKey: string;
     symbol: Network['symbol'];
     totalAmount: BigNumber;
-    totalFiatAmountPerDay?: BigNumber;
+    totalFiatAmountPerDay: BigNumber;
     localCurrency: string;
     txsCount?: number;
+    isHovered?: boolean;
 }
 
 const DayHeader = ({
@@ -68,9 +70,10 @@ const DayHeader = ({
     totalFiatAmountPerDay,
     localCurrency,
     txsCount,
+    isHovered,
 }: Props) => {
     const parsedDate = parseKey(dateKey);
-    const useFiatValues = !isTestnet(symbol);
+    const showFiatValue = !isTestnet(symbol);
     return (
         <Wrapper>
             {dateKey === 'pending' ? (
@@ -87,11 +90,13 @@ const DayHeader = ({
                             year="numeric"
                         />
                     </ColDate>
-                    <ColAmount>
-                        {totalAmount.gte(0) && <span>+</span>}
-                        <FormattedCryptoAmount value={totalAmount.toFixed()} symbol={symbol} />
-                    </ColAmount>
-                    {useFiatValues && totalFiatAmountPerDay && (
+                    {isHovered && (
+                        <ColAmount>
+                            {totalAmount.gte(0) && <span>+</span>}
+                            <FormattedCryptoAmount value={totalAmount.toFixed()} symbol={symbol} />
+                        </ColAmount>
+                    )}
+                    {showFiatValue && (
                         <ColFiat>
                             <HiddenPlaceholder>
                                 {/* {<>≈ </>} */}
