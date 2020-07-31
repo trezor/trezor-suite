@@ -8,7 +8,7 @@ const Value = styled.span`
 const Symbol = styled.span``;
 
 interface Props {
-    value: string | React.ReactNode;
+    value: React.ReactNode;
     symbol?: string;
     disableHiddenPlaceholder?: boolean;
     className?: string;

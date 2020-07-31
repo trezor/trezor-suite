@@ -7,6 +7,7 @@ export const toFiatCurrency = (
     amount: string,
     fiatCurrency: string,
     networkRates: FiatRates | undefined,
+    decimals = 2,
 ) => {
     // calculate amount in local currency
 
@@ -22,7 +23,7 @@ export const toFiatCurrency = (
 
     const localAmount = new BigNumber(formattedAmount).times(rate);
 
-    return localAmount.isNaN() ? null : localAmount.toFixed(2);
+    return localAmount.isNaN() ? null : localAmount.toFixed(decimals === -1 ? undefined : decimals);
 };
 
 export const fromFiatCurrency = (

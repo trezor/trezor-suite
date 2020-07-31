@@ -2,6 +2,7 @@ import { AccountTransaction } from 'trezor-connect';
 import { WalletAccountTransaction } from '@wallet-types';
 import { getDateWithTimeZone } from '../suite/date';
 import BigNumber from 'bignumber.js';
+import { toFiatCurrency } from './fiatConverterUtils';
 
 export const sortByBlockHeight = (a: WalletAccountTransaction, b: WalletAccountTransaction) => {
     // if both are missing the blockHeight don't change their order
@@ -58,10 +59,31 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
     transactions.forEach(tx => {
         // count only recv/sent txs
         if (tx.type === 'sent') {
-            totalAmount = totalAmount.minus(tx.amount);
+            totalAmount = totalAmount.minus(tx.amount).minus(tx.fee);
         }
         if (tx.type === 'recv') {
             totalAmount = totalAmount.plus(tx.amount);
+        }
+    });
+    return totalAmount;
+};
+
+export const sumTransactionsFiat = (
+    transactions: WalletAccountTransaction[],
+    fiatCurrency: string,
+) => {
+    let totalAmount = new BigNumber(0);
+    transactions.forEach(tx => {
+        // count only recv/sent txs
+        if (tx.type === 'sent') {
+            totalAmount = totalAmount
+                .minus(toFiatCurrency(tx.amount, fiatCurrency, tx.rates, -1) ?? 0)
+                .minus(toFiatCurrency(tx.fee, fiatCurrency, tx.rates, -1) ?? 0);
+        }
+        if (tx.type === 'recv') {
+            totalAmount = totalAmount.plus(
+                toFiatCurrency(tx.amount, fiatCurrency, tx.rates, -1) ?? 0,
+            );
         }
     });
     return totalAmount;
