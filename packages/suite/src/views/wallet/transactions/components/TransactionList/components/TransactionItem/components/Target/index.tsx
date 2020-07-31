@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { HiddenPlaceholder, FiatValue, Translation } from '@suite-components';
-import { variables, colors, Button, Link } from '@trezor/components';
+import { variables, colors } from '@trezor/components';
 import { ArrayElement } from '@suite/types/utils';
 import { getTxOperation, getTargetAmount } from '@wallet-utils/transactionUtils';
 import { isTestnet } from '@wallet-utils/accountUtils';
@@ -135,6 +135,34 @@ export const Target = ({ target, transaction, useAnimation }: TargetProps) => {
                         </StyledHiddenPlaceholder>
                     )}
                 </CryptoAmount>
+                <FiatAmount>
+                    {!isTestnet(transaction.symbol) && targetAmount && (
+                        <FiatValue
+                            amount={targetAmount}
+                            symbol={transaction.symbol}
+                            source={transaction.rates}
+                            useCustomSource
+                        />
+                    )}
+                </FiatAmount>
+            </TargetAmountsWrapper>
+        </TargetWrapper>
+    );
+};
+
+export const OneRowTarget = ({ target, transaction, useAnimation }: TargetProps) => {
+    const targetAmount = getTargetAmount(target, transaction);
+    const operation = getTxOperation(transaction);
+    const animation = useAnimation ? ANIMATION : {};
+
+    return (
+        <TargetWrapper {...animation}>
+            <TargetAddress>
+                <StyledHiddenPlaceholder>
+                    <TargetAddressLabel target={target} type={transaction.type} />
+                </StyledHiddenPlaceholder>
+            </TargetAddress>
+            <TargetAmountsWrapper>
                 <FiatAmount>
                     {!isTestnet(transaction.symbol) && targetAmount && (
                         <FiatValue

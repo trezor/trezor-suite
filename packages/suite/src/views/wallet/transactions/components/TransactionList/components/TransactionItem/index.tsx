@@ -1,16 +1,17 @@
+/* eslint-disable react/no-array-index-key */
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { AnimatePresence } from 'framer-motion';
-import { Translation } from '@suite-components';
+import { Translation, HiddenPlaceholder, Sign } from '@suite-components';
 import { variables, colors, Button, Link } from '@trezor/components';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import TransactionTypeIcon from './components/TransactionTypeIcon';
 import { Props } from './Container';
 import TransactionHeading from './components/TransactionHeading';
-import { isTxUnknown } from '@wallet-utils/transactionUtils';
-import { Target, TokenTransfer, FeeRow } from './components/Target';
+import { isTxUnknown, getTargetAmount, getTxOperation } from '@wallet-utils/transactionUtils';
+import { Target, TokenTransfer, FeeRow, OneRowTarget } from './components/Target';
 
 const Wrapper = styled.div`
     display: flex;
@@ -42,6 +43,10 @@ const Description = styled.span`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     line-height: 1.5;
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+    white-space: nowrap;
 `;
 
 const NextRow = styled.div`
@@ -73,6 +78,24 @@ const ExpandButton = styled(Button)`
     align-self: flex-start;
 `;
 
+const CryptoAmount = styled.span`
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    /* line-height: 1.5; */
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex: 0;
+`;
+
+const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
+    /* padding: 8px 0px; row padding */
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+`;
+
 const DEFAULT_LIMIT = 3;
 
 export default React.memo((props: Props) => {
@@ -90,6 +113,62 @@ export default React.memo((props: Props) => {
     const useFiatValues = !isTestnet(symbol);
     // blockbook cannot parse some txs
     // eg. tx with eth smart contract that creates a new token has no valid target
+
+    if (!isUnknown && !isTokenTransaction && targets.length === 1) {
+        // use slightly different layout for 1 targets txs to better match the design
+        // the only difference is that crypto amount is in the same row as tx heading/description
+        // fiat amount is in the second row along with address
+        // could also be used for single token transfers but nobody got time for that
+        // multiple targets txs still use more simple layout
+        const target = targets[0];
+        const targetAmount = getTargetAmount(target, transaction);
+        const operation = getTxOperation(transaction);
+
+        return (
+            <Wrapper>
+                <TxTypeIconWrapper>
+                    <TransactionTypeIcon type={transaction.type} isPending={props.isPending} />
+                </TxTypeIconWrapper>
+
+                <Content>
+                    <Description>
+                        <TransactionHeading transaction={transaction} isPending={props.isPending} />
+                        {/* TODO: copy pasted from Target component, maybe extract to separate component? */}
+                        <CryptoAmount>
+                            {targetAmount && (
+                                <StyledHiddenPlaceholder>
+                                    {operation && <Sign value={operation} />}
+                                    {targetAmount} {transaction.symbol}
+                                </StyledHiddenPlaceholder>
+                            )}
+                        </CryptoAmount>
+                    </Description>
+                    <NextRow>
+                        <TimestampLink
+                            onClick={() => {
+                                props.openModal({
+                                    type: 'transaction-detail',
+                                    tx: transaction,
+                                });
+                            }}
+                        >
+                            {blockHeight !== 0 && blockTime && blockTime > 0 && (
+                                <FormattedDate
+                                    value={getDateWithTimeZone(blockTime * 1000)}
+                                    hour="2-digit"
+                                    minute="2-digit"
+                                    // hour12={false}
+                                />
+                            )}
+                        </TimestampLink>
+                        <TargetsWrapper>
+                            <OneRowTarget target={target} transaction={transaction} />
+                        </TargetsWrapper>
+                    </NextRow>
+                </Content>
+            </Wrapper>
+        );
+    }
 
     return (
         <Wrapper>
@@ -122,15 +201,16 @@ export default React.memo((props: Props) => {
                     <TargetsWrapper>
                         {!isUnknown && !isTokenTransaction && (
                             <>
-                                {targets.slice(0, DEFAULT_LIMIT).map(t => (
-                                    <Target target={t} transaction={transaction} />
+                                {targets.slice(0, DEFAULT_LIMIT).map((t, i) => (
+                                    <Target key={i} target={t} transaction={transaction} />
                                 ))}
                                 <AnimatePresence initial={false}>
                                     {limit > 0 &&
                                         targets
                                             .slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit)
-                                            .map(t => (
+                                            .map((t, i) => (
                                                 <Target
+                                                    key={i}
                                                     target={t}
                                                     transaction={transaction}
                                                     useAnimation
@@ -142,8 +222,8 @@ export default React.memo((props: Props) => {
 
                         {!isUnknown && isTokenTransaction && (
                             <>
-                                {tokens.slice(0, DEFAULT_LIMIT).map(t => (
-                                    <TokenTransfer transfer={t} transaction={transaction} />
+                                {tokens.slice(0, DEFAULT_LIMIT).map((t, i) => (
+                                    <TokenTransfer key={i} transfer={t} transaction={transaction} />
                                 ))}
                                 <AnimatePresence initial={false}>
                                     {limit > 0 &&
@@ -151,6 +231,7 @@ export default React.memo((props: Props) => {
                                             .slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit)
                                             .map(t => (
                                                 <TokenTransfer
+                                                    key={i}
                                                     transfer={t}
                                                     transaction={transaction}
                                                     useAnimation

@@ -1,7 +1,14 @@
 import React from 'react';
+import styled from 'styled-components';
 import { WalletAccountTransaction } from '@wallet-types';
 import { Translation } from '@suite-components';
 import { isTxUnknown } from '@wallet-utils/transactionUtils';
+
+const Wrapper = styled.span`
+    flex: 1 1 auto;
+    text-overflow: ellipsis;
+    overflow: hidden;
+`;
 
 interface Props {
     transaction: WalletAccountTransaction;
@@ -23,7 +30,7 @@ const TransactionHeading = ({ transaction, isPending }: Props) => {
     } else {
         heading = `Unknown ${symbol} transaction`;
     }
-    return <>{heading}</>;
+    return <Wrapper>{heading}</Wrapper>;
 };
 
 export default TransactionHeading;
