@@ -13,7 +13,13 @@ const Wrapper = styled.div`
 storiesOf('Others', module).add('Offer', () => {
     return (
         <Wrapper>
-            <Offer />
+            <Offer
+                getOffer={() => {}}
+                exchange="exchange"
+                receiveStringAmount="0.0231123166623"
+                receiveCurrency="BTC"
+                paymentMethod="paymentMethod"
+            />
         </Wrapper>
     );
 });
