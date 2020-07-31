@@ -26,7 +26,7 @@ const Wrapper = styled.div`
 const TxTypeIconWrapper = styled.div`
     display: flex;
     margin-right: 24px;
-    margin-top: 12px;
+    margin-top: 8px;
     flex: 0;
 `;
 
