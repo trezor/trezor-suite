@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactSwitch, { ReactSwitchProps } from 'react-switch';
 import colors from '../../../config/colors';
 import styled, { css } from 'styled-components';
@@ -51,10 +51,14 @@ const Switch = ({ onChange, isDisabled, isSmall, dataTest, checked, ...rest }: P
         setIsChecked(checked);
     };
 
+    useEffect(() => {
+        setIsChecked(checked);
+    }, [checked]);
+
     return (
         <Wrapper data-test={dataTest}>
             <StyledReactSwitch
-                checked={isChecked || checked}
+                checked={isChecked}
                 disabled={isDisabled}
                 onChange={handleChange}
                 onColor={colors.NEUE_BG_GREEN}
