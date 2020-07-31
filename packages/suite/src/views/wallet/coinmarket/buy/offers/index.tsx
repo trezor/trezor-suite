@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { LayoutContext } from '@suite-components';
-import { variables, P } from '@trezor/components';
+import { variables, Quote, H2 } from '@trezor/components';
 import { useSelector } from '@suite/hooks/suite';
 
 const Wrapper = styled.div`
@@ -11,6 +11,8 @@ const Wrapper = styled.div`
         padding: 16px;
     }
 `;
+
+const Quotes = styled.div``;
 
 const Offers = () => {
     const { setLayout } = React.useContext(LayoutContext);
@@ -22,14 +24,19 @@ const Offers = () => {
     const quotes = useSelector(state => state.wallet.coinmarket.quotes);
 
     return (
-        <Wrapper data-test="@offers/index">
-            Offers:
-            <br />
-            {quotes.map(q => (
-                <P>
-                    {q.exchange}, {q.receiveStringAmount} {q.receiveCurrency}, {q.paymentMethod}
-                </P>
-            ))}
+        <Wrapper data-test="@quotes/index">
+            <H2>Offers:</H2>
+            <Quotes>
+                {quotes.map(quote => (
+                    <Quote
+                        key={`${quote.exchange}-${quote.paymentMethod}-${quote.receiveCurrency}`}
+                        exchange={quote.exchange}
+                        receiveStringAmount={quote.receiveStringAmount}
+                        receiveCurrency={quote.receiveCurrency}
+                        paymentMethod={quote.paymentMethod}
+                    />
+                ))}
+            </Quotes>
         </Wrapper>
     );
 };

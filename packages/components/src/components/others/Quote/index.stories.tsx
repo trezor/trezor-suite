@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { storiesOf } from '@storybook/react';
-import { Offer, colors } from '../../../index';
+import { Quote, colors } from '../../../index';
 
 const Wrapper = styled.div`
     margin: 10px 0;
@@ -10,11 +10,11 @@ const Wrapper = styled.div`
     background: ${colors.NEUE_BG_GRAY};
 `;
 
-storiesOf('Others', module).add('Offer', () => {
+storiesOf('Others', module).add('Quote', () => {
     return (
         <Wrapper>
-            <Offer
-                getOffer={() => {}}
+            <Quote
+                getQuote={() => {}}
                 exchange="exchange"
                 receiveStringAmount="0.0231123166623"
                 receiveCurrency="BTC"
