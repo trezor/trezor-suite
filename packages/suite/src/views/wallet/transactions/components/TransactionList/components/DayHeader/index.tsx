@@ -6,74 +6,76 @@ import { variables, colors } from '@trezor/components';
 import {
     Translation,
     HiddenPlaceholder,
-    FiatValue,
     FormattedCryptoAmount,
+    FormattedNumber,
 } from '@suite-components';
 import { parseKey } from '@wallet-utils/transactionUtils';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import { Network } from '@wallet-types';
 
+const Wrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+    margin-bottom: 8px;
+    padding-right: 24px;
+`;
+
 const Col = styled(HiddenPlaceholder)`
-    position: sticky;
-    top: 0;
-    font-size: ${variables.FONT_SIZE.TINY};
-    padding: 20px 0px;
-    color: ${colors.BLACK50};
-    border-bottom: 2px solid ${colors.BLACK96};
+    /* position: sticky;
+    top: 0; */
+    font-size: ${variables.FONT_SIZE.SMALL};
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-transform: uppercase;
-    background: ${colors.WHITE};
+    /* line-height: 1.57; */
 `;
 
 const ColDate = styled(Col)`
     font-variant-numeric: tabular-nums;
-    grid-column: date / target;
-    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        grid-column: date / target;
-        border: 0px;
-        padding-bottom: 8px;
-    }
+    flex: 1;
 `;
 
 const ColPending = styled(Col)`
-    grid-column: date / fiat;
+    color: ${colors.NEUE_TYPE_ORANGE};
+    font-variant-numeric: tabular-nums;
 `;
 
 const ColAmount = styled(Col)`
-    grid-column: amount;
+    padding-left: 16px;
     text-align: right;
-    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding-top: 8px; /* grid-row-gap */
-        grid-column: date / amount;
-        top: 43px; /* date height */
-        text-align: left;
-    }
 `;
 
 const ColFiat = styled(Col)`
-    grid-column: fiat;
     padding-left: 16px;
     text-align: right;
-    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding-top: 8px; /* grid-row-gap */
-        top: 43px; /* date height */
-    }
 `;
 
 interface Props {
     dateKey: string;
     symbol: Network['symbol'];
     totalAmount: BigNumber;
+    totalFiatAmountPerDay?: BigNumber;
+    localCurrency: string;
+    txsCount?: number;
 }
 
-const DayHeader = ({ dateKey, symbol, totalAmount }: Props) => {
+const DayHeader = ({
+    dateKey,
+    symbol,
+    totalAmount,
+    totalFiatAmountPerDay,
+    localCurrency,
+    txsCount,
+}: Props) => {
     const parsedDate = parseKey(dateKey);
     const useFiatValues = !isTestnet(symbol);
     return (
-        <>
+        <Wrapper>
             {dateKey === 'pending' ? (
                 <ColPending>
-                    <Translation id="TR_PENDING" />
+                    <Translation id="TR_PENDING" /> • {txsCount}
                 </ColPending>
             ) : (
                 <>
@@ -89,14 +91,21 @@ const DayHeader = ({ dateKey, symbol, totalAmount }: Props) => {
                         {totalAmount.gte(0) && <span>+</span>}
                         <FormattedCryptoAmount value={totalAmount.toFixed()} symbol={symbol} />
                     </ColAmount>
-                    {useFiatValues && (
+                    {useFiatValues && totalFiatAmountPerDay && (
                         <ColFiat>
-                            <FiatValue amount={totalAmount.toFixed()} symbol={symbol} />
+                            <HiddenPlaceholder>
+                                {/* {<>≈ </>} */}
+                                {totalFiatAmountPerDay.gte(0) && <span>+</span>}
+                                <FormattedNumber
+                                    currency={localCurrency}
+                                    value={totalFiatAmountPerDay.toFixed()}
+                                />
+                            </HiddenPlaceholder>
                         </ColFiat>
                     )}
                 </>
             )}
-        </>
+        </Wrapper>
     );
 };
 

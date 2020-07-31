@@ -17,6 +17,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
 
 interface OwnProps extends React.HTMLAttributes<HTMLDivElement> {
     transaction: WalletAccountTransaction;
+    isPending: boolean;
 }
 
 export type Props = ReturnType<typeof mapStateToProps> &

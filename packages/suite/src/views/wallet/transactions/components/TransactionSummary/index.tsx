@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { getUnixTime, subWeeks } from 'date-fns';
-import { colors, variables, Button } from '@trezor/components';
-import { Card, TransactionsGraph, Translation } from '@suite-components';
+import { colors, variables, Button, Card } from '@trezor/components';
+import { TransactionsGraph, Translation } from '@suite-components';
 import { calcTicks, calcTicksFromData } from '@suite-utils/date';
 import { aggregateBalanceHistory, getMaxValueFromData } from '@wallet-utils/graphUtils';
 import { GraphRange, GraphData } from '@wallet-types/graph';
@@ -20,11 +20,11 @@ const Wrapper = styled.div`
 const ContentWrapper = styled.div`
     display: flex;
     width: 100%;
-    margin-bottom: 20px;
     flex-direction: column;
 `;
 
 const GraphWrapper = styled(Card)`
+    flex-direction: row;
     display: flex;
     flex: 5 1 auto;
     padding: ${CARD_PADDING_SIZE};
@@ -49,6 +49,13 @@ const ErrorMessage = styled.div`
     color: ${colors.BLACK50};
     font-size: ${variables.FONT_SIZE.SMALL};
     text-align: center;
+`;
+
+const Divider = styled.div`
+    width: 100%;
+    height: 1px;
+    background: ${colors.NEUE_STROKE_GREY};
+    margin: 24px 0px;
 `;
 
 const TransactionSummary = (props: Props) => {
@@ -150,6 +157,7 @@ const TransactionSummary = (props: Props) => {
                     )}
                 </ContentWrapper>
             )}
+            <Divider />
         </Wrapper>
     );
 };
