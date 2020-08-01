@@ -1,15 +1,15 @@
 import React, { Fragment } from 'react';
 import styled, { css } from 'styled-components';
 import { Account } from '@wallet-types';
-import { Card, FiatValue, HiddenPlaceholder, FormattedCryptoAmount } from '@suite-components';
-import { variables, colors, Icon, Link } from '@trezor/components';
+import { FiatValue, HiddenPlaceholder, FormattedCryptoAmount } from '@suite-components';
+import { variables, colors, Icon, Link, Card } from '@trezor/components';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
 const Wrapper = styled(Card)`
     display: grid;
     grid-template-columns: ${(props: { isTestnet?: boolean }) =>
         props.isTestnet ? '4fr 1fr 44px' : '4fr 1fr 1fr 44px'};
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     padding: 12px ${CARD_PADDING_SIZE};
 `;
 

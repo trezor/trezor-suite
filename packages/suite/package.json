@@ -25,7 +25,7 @@
         "@types/zxcvbn": "^4.4.0",
         "bignumber.js": "^9.0.0",
         "color-hash": "^1.0.3",
-        "date-fns": "^2.11.0",
+        "date-fns": "^2.15.0",
         "date-fns-tz": "^1.0.10",
         "debounce": "^1.2.0",
         "ethereumjs-tx": "^2.1.2",

@@ -51,7 +51,7 @@ const CoinNameWrapper = styled(Col)`
     text-overflow: ellipsis;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        grid-column: 1 / 3;
+        grid-column: 1 / 4;
         border-bottom: none;
     }
 `;

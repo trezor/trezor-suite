@@ -1,6 +1,7 @@
 import React, { useRef, useLayoutEffect } from 'react';
+import { colors } from '@trezor/components';
 import { FormattedNumber } from '@suite-components';
-import { formatCoinBalance } from '@suite/utils/wallet/balanceUtils';
+import { formatCoinBalance } from '@wallet-utils/balanceUtils';
 import BigNumber from 'bignumber.js';
 
 interface CommonProps {
@@ -34,7 +35,7 @@ const CustomYAxisTick = (props: CustomProps) => {
                 y={0}
                 dy={2}
                 textAnchor="start"
-                fill="#666"
+                fill={colors.NEUE_TYPE_LIGHT_GREY}
                 style={{ fontVariantNumeric: 'tabular-nums' }}
             >
                 {props.localCurrency && (
@@ -45,7 +46,7 @@ const CustomYAxisTick = (props: CustomProps) => {
                         maximumFractionDigits={0}
                     />
                 )}
-                {props.symbol && cryptoValue}
+                {props.symbol && `${cryptoValue} ${props.symbol.toUpperCase()}`}
             </text>
         </g>
     );
