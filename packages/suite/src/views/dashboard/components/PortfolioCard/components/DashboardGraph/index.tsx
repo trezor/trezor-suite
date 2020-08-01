@@ -114,8 +114,6 @@ const DashboardGraph = React.memo((props: Props) => {
         }
     }, [isLoading, getGraphDataForInterval, selectedDeviceState, selectedRange]);
 
-    console.log('dashboard graph data', data);
-
     return (
         <Wrapper data-test="@dashboard/graph">
             <GraphWrapper>
