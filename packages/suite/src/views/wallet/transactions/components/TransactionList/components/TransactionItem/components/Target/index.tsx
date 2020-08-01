@@ -177,6 +177,33 @@ export const OneRowTarget = ({ target, transaction, useAnimation }: TargetProps)
     );
 };
 
+export const OneRowTokenTarget = ({ transfer, transaction, useAnimation }: TokenTransferProps) => {
+    const targetAmount = transfer.amount;
+    const animation = useAnimation ? ANIMATION : {};
+
+    return (
+        <TargetWrapper {...animation}>
+            <TargetAddress>
+                <StyledHiddenPlaceholder>
+                    <TokenTransferAddressLabel transfer={transfer} type={transaction.type} />
+                </StyledHiddenPlaceholder>
+            </TargetAddress>
+            <TargetAmountsWrapper>
+                <FiatAmount>
+                    {!isTestnet(transaction.symbol) && targetAmount && (
+                        <FiatValue
+                            amount={targetAmount}
+                            symbol={transaction.symbol}
+                            source={transaction.rates}
+                            useCustomSource
+                        />
+                    )}
+                </FiatAmount>
+            </TargetAmountsWrapper>
+        </TargetWrapper>
+    );
+};
+
 export const FeeRow = ({
     transaction,
     useFiatValues,

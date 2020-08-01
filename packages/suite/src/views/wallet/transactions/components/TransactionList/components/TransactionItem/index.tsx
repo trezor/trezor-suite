@@ -11,7 +11,13 @@ import TransactionTypeIcon from './components/TransactionTypeIcon';
 import { Props } from './Container';
 import TransactionHeading from './components/TransactionHeading';
 import { isTxUnknown, getTargetAmount, getTxOperation } from '@wallet-utils/transactionUtils';
-import { Target, TokenTransfer, FeeRow, OneRowTarget } from './components/Target';
+import {
+    Target,
+    TokenTransfer,
+    FeeRow,
+    OneRowTarget,
+    OneRowTokenTarget,
+} from './components/Target';
 
 const Wrapper = styled.div`
     display: flex;
@@ -112,14 +118,22 @@ export default React.memo((props: Props) => {
         : targets.length - DEFAULT_LIMIT - limit;
     const useFiatValues = !isTestnet(symbol);
 
-    if (!isUnknown && !isTokenTransaction && targets.length === 1) {
+    if (
+        !isUnknown &&
+        ((!isTokenTransaction && targets.length === 1) ||
+            (isTokenTransaction && tokens.length === 1))
+    ) {
         // use slightly different layout for 1 targets txs to better match the design
         // the only difference is that crypto amount is in the same row as tx heading/description
         // fiat amount is in the second row along with address
-        // could also be used for single token transfers but nobody got time for that
         // multiple targets txs still use more simple layout
+        // TODO: find a better way to share common code
         const target = targets[0];
-        const targetAmount = getTargetAmount(target, transaction);
+        const transfer = tokens[0];
+        const targetAmount = !isTokenTransaction
+            ? getTargetAmount(target, transaction)
+            : transfer.amount;
+        const symbol = !isTokenTransaction ? transaction.symbol : tokens[0].symbol;
         const operation = getTxOperation(transaction);
 
         return (
@@ -136,7 +150,7 @@ export default React.memo((props: Props) => {
                             {targetAmount && (
                                 <StyledHiddenPlaceholder>
                                     {operation && <Sign value={operation} />}
-                                    {targetAmount} {transaction.symbol}
+                                    {targetAmount} {symbol}
                                 </StyledHiddenPlaceholder>
                             )}
                         </CryptoAmount>
@@ -160,7 +174,22 @@ export default React.memo((props: Props) => {
                             )}
                         </TimestampLink>
                         <TargetsWrapper>
-                            <OneRowTarget target={target} transaction={transaction} />
+                            {isTokenTransaction ? (
+                                <>
+                                    <OneRowTokenTarget
+                                        transfer={transfer}
+                                        transaction={transaction}
+                                    />
+                                    {type !== 'recv' && transaction.fee !== '0' && (
+                                        <FeeRow
+                                            transaction={transaction}
+                                            useFiatValues={useFiatValues}
+                                        />
+                                    )}
+                                </>
+                            ) : (
+                                <OneRowTarget target={target} transaction={transaction} />
+                            )}
                         </TargetsWrapper>
                     </NextRow>
                 </Content>

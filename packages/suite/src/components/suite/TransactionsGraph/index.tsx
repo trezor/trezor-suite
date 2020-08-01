@@ -227,6 +227,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                             localCurrency={props.localCurrency}
                                             sentValueFn={props.sentValueFn}
                                             receivedValueFn={props.receivedValueFn}
+                                            balanceValueFn={props.balanceValueFn}
                                         />
                                     ) : (
                                         <CustomTooltipDashboard
