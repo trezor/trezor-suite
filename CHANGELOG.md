@@ -1,6 +1,16 @@
 # Changelog
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). [YY.MM.MICRO]
 
+## [20.8.1-beta]
+
+### Added
+- Historical account balance
+
+### Changed
+- Design: improved Dashboard, Modal for switching wallets and list of transactions
+
+### Fixed
+- Synchronizing state of multiple remembered devices to local storage
 
 ## [20.7.1-beta]
 
