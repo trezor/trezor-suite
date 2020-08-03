@@ -46,7 +46,7 @@ const SelectedOffer = ({ selectedQuote }: Props) => {
     return (
         <Wrapper>
             <StyledCard>
-                <Input value={`Account # ${account.index + 1}`} />
+                <Input value={`Account #${account.index + 1}`} />
                 <Input value={account.descriptor} />
                 <Button>Review and confirm</Button>
             </StyledCard>

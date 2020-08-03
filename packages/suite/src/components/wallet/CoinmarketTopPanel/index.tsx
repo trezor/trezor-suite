@@ -43,6 +43,7 @@ const Right = styled.div`
 
 const Back = styled.div`
     display: flex;
+    cursor: pointer;
     align-items: center;
 `;
 
@@ -69,8 +70,7 @@ const CoinmarketTopPanel = () => {
                         }
                     >
                         <Icon icon="ARROW_LEFT" />
-                        {/* Account #${account.index} */}
-                        Account
+                        {`Account #${account.index + 1}`}
                     </Back>
                 </Left>
                 <Right>

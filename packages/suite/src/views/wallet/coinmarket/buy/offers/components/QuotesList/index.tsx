@@ -1,7 +1,8 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
-import { Quote, H2 } from '@trezor/components';
+import { Quote, CoinLogo } from '@trezor/components';
 import { BuyTrade } from '@suite/services/invityAPI/buyTypes';
+import { useSelector } from '@suite-hooks';
 
 const Wrapper = styled.div``;
 
@@ -11,15 +12,33 @@ const StyledQuote = styled(Quote)`
     margin-bottom: 20px;
 `;
 
+const Header = styled.div`
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+`;
+
 interface Props {
     selectQuote: Dispatch<SetStateAction<null>>;
     quotes: BuyTrade[];
 }
 
 const Offers = ({ selectQuote, quotes }: Props) => {
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const quotesRequest = useSelector(state => state.wallet.coinmarket.quotesRequest);
+    if (!quotesRequest) return null;
+
+    if (selectedAccount.status !== 'loaded') return null;
+    const { account } = selectedAccount;
+
+    const { fiatStringAmount, fiatCurrency } = quotesRequest;
+
     return (
         <Wrapper>
-            <H2>Offers:</H2>
+            <Header>
+                {fiatStringAmount} {fiatCurrency} {'->'}
+                <CoinLogo size={16} symbol={account.symbol} /> {account.symbol}
+            </Header>
             <Quotes>
                 {quotes.map(quote => (
                     <StyledQuote

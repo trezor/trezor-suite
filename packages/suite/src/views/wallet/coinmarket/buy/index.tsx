@@ -105,8 +105,6 @@ const CoinmarketBuy = () => {
     const fiatInput = 'fiatInput';
     const currencySelect = 'currencySelect';
     const countrySelect = 'countrySelect';
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const { account } = selectedAccount;
 
     const { buyInfo } = useBuyInfo();
     const { saveBuyQuoteRequest, saveBuyQuotes, saveBuyInfo } = useActions({
@@ -122,6 +120,10 @@ const CoinmarketBuy = () => {
         goto: routerActions.goto,
     });
 
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    if (selectedAccount.status !== 'loaded') return null;
+    const { account } = selectedAccount;
+
     const defaultCurrencyInfo = buyInfo.buyInfo?.suggestedFiatCurrency;
     const defaultCurrency = defaultCurrencyInfo
         ? buildOption(defaultCurrencyInfo)
@@ -135,16 +137,6 @@ const CoinmarketBuy = () => {
         label: regional.countriesMap.get(country),
         value: country,
     };
-
-    console.log('errors', errors);
-    console.log('buyInfo', buyInfo);
-    console.log('errors.fiatInputName', errors[fiatInput]);
-    console.log('buyInfo.buyInfo?.suggestedFiatCurrency', buyInfo.buyInfo?.suggestedFiatCurrency);
-
-    // TODO - handle situation that account is not set
-    if (!account) {
-        return null;
-    }
 
     return (
         <CoinmarketLayout
@@ -204,8 +196,8 @@ const CoinmarketBuy = () => {
                         />
                     </Left>
                     <Right>
-                        {account && <StyledCoinLogo size={25} symbol={account.symbol} />}
-                        {account && <Translation {...getTitleForNetwork(account.symbol)} />}
+                        <StyledCoinLogo size={25} symbol={account.symbol} />
+                        <Translation {...getTitleForNetwork(account.symbol)} />
                     </Right>
                 </Top>
                 <Controls>
