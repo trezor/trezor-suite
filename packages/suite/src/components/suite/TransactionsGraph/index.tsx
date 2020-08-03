@@ -152,7 +152,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 top: 10,
                                 bottom: 30,
                                 right: rightMargin,
-                                left: 10,
+                                left: 20,
                             }}
                         >
                             <CartesianGrid vertical={false} stroke={colors.NEUE_BG_GRAY} />
