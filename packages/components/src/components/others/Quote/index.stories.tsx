@@ -14,7 +14,7 @@ storiesOf('Others', module).add('Quote', () => {
     return (
         <Wrapper>
             <Quote
-                getQuote={() => {}}
+                selectQuote={() => {}}
                 exchange="exchange"
                 receiveStringAmount="0.0231123166623"
                 receiveCurrency="BTC"

@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import styled from 'styled-components';
 import { LayoutContext } from '@suite-components';
 import { CoinmarketTopPanel } from '@wallet-components';
-import { variables, Quote, H2 } from '@trezor/components';
-import { useSelector } from '@suite/hooks/suite';
+import { variables } from '@trezor/components';
+import * as routerActions from '@suite-actions/routerActions';
+import OffersList from './components/OffersList';
+import SelectedOffer from './components/SelectedOffer';
+import { useSelector, useActions } from '@suite/hooks/suite';
 
 const Wrapper = styled.div`
     padding: 16px 32px 32px 32px;
@@ -13,35 +16,25 @@ const Wrapper = styled.div`
     }
 `;
 
-const Quotes = styled.div``;
-
-const StyledQuote = styled(Quote)`
-    margin-bottom: 20px;
-`;
-
 const Offers = () => {
-    const { setLayout } = React.useContext(LayoutContext);
+    const { setLayout } = useContext(LayoutContext);
 
-    React.useMemo(() => {
+    useMemo(() => {
         if (setLayout) setLayout('Trezor Suite | Coinmarket', undefined, <CoinmarketTopPanel />);
     }, [setLayout]);
 
+    const [selectedQuote, selectQuote] = useState(null);
     const quotes = useSelector(state => state.wallet.coinmarket.quotes);
+    const { goto } = useActions({ goto: routerActions.goto });
+
+    if (quotes.length === 0) {
+        goto('wallet-coinmarket-buy');
+    }
 
     return (
-        <Wrapper data-test="@quotes/index">
-            <H2>Offers:</H2>
-            <Quotes>
-                {quotes.map(quote => (
-                    <StyledQuote
-                        key={`${quote.exchange}-${quote.paymentMethod}-${quote.receiveCurrency}`}
-                        exchange={quote.exchange}
-                        receiveStringAmount={quote.receiveStringAmount}
-                        receiveCurrency={quote.receiveCurrency}
-                        paymentMethod={quote.paymentMethod}
-                    />
-                ))}
-            </Quotes>
+        <Wrapper>
+            {!selectedQuote && <OffersList selectQuote={selectQuote} quotes={quotes} />}
+            {selectedQuote && <SelectedOffer selectedQuote={selectedQuote} />}
         </Wrapper>
     );
 };

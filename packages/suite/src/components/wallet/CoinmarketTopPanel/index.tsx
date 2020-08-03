@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 import { colors, variables, Icon } from '@trezor/components';
 import { ProvidedByInvity } from '@wallet-components';
-import { Account } from '@wallet-types';
 import React from 'react';
-import { useActions } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import { MAX_WIDTH } from '@suite-constants/layout';
 
@@ -47,14 +46,14 @@ const Back = styled.div`
     align-items: center;
 `;
 
-interface Props {
-    account: Account;
-}
-
-const CoinmarketTopPanel = ({ account }: Props) => {
+const CoinmarketTopPanel = () => {
     const { goto } = useActions({
         goto: routerActions.goto,
     });
+
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    if (selectedAccount.status !== 'loaded') return null;
+    const { account } = selectedAccount;
 
     return (
         <Wrapper>

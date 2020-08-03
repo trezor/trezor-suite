@@ -70,7 +70,7 @@ const Footer = styled.div`
 
 interface Props {
     className?: string;
-    getQuote?: () => void;
+    selectQuote: (quoteData: any) => void;
     exchange?: string;
     receiveStringAmount?: string;
     receiveCurrency?: string;
@@ -80,7 +80,7 @@ interface Props {
 
 const Quote = ({
     className,
-    getQuote,
+    selectQuote,
     exchange,
     receiveStringAmount,
     receiveCurrency,
@@ -94,7 +94,18 @@ const Quote = ({
                 {receiveStringAmount} {receiveCurrency}
             </Left>
             <Right>
-                <Button onClick={getQuote}>Get this offer</Button>
+                <Button
+                    onClick={() =>
+                        selectQuote({
+                            receiveStringAmount,
+                            receiveCurrency,
+                            paymentMethod,
+                            exchange,
+                        })
+                    }
+                >
+                    Get this offer
+                </Button>
             </Right>
         </Main>
         <Details>
