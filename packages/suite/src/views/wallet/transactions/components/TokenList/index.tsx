@@ -5,6 +5,10 @@ import { FiatValue, FormattedCryptoAmount, Translation } from '@suite-components
 import { Section } from '@dashboard-components';
 import { variables, colors, Icon, Link, Card } from '@trezor/components';
 
+const StyledSection = styled(Section)`
+    margin-bottom: 30px;
+`;
+
 const Wrapper = styled(Card)`
     display: grid;
     grid-template-columns: ${(props: { isTestnet?: boolean }) =>
