@@ -2,12 +2,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
-import { Translation, HiddenPlaceholder, Sign } from '@suite-components';
+import { Translation } from '@suite-components';
 import { variables, colors, Button } from '@trezor/components';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import TransactionTypeIcon from './components/TransactionTypeIcon';
 import TransactionHeading from './components/TransactionHeading';
-import { isTxUnknown, getTargetAmount, getTxOperation } from '@wallet-utils/transactionUtils';
+import { isTxUnknown } from '@wallet-utils/transactionUtils';
 import { Target, TokenTransfer, FeeRow } from './components/Target';
 import TransactionTimestamp from './components/TransactionTimestamp';
 import { WalletAccountTransaction } from '@wallet-types';
@@ -66,24 +66,6 @@ const ExpandButton = styled(Button)`
     align-self: flex-start;
 `;
 
-const CryptoAmount = styled.span`
-    color: ${colors.NEUE_TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    /* line-height: 1.5; */
-    text-transform: uppercase;
-    white-space: nowrap;
-    flex: 0;
-`;
-
-const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
-    /* padding: 8px 0px; row padding */
-    display: block;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-`;
-
 const DEFAULT_LIMIT = 3;
 
 interface Props {
@@ -109,14 +91,6 @@ const TransactionItem = React.memo((props: Props) => {
         ((!isTokenTransaction && targets.length === 1) ||
             (isTokenTransaction && tokens.length === 1));
 
-    const target = targets[0];
-    const transfer = tokens[0];
-    const targetAmount = !isTokenTransaction
-        ? getTargetAmount(target, transaction)
-        : transfer.amount;
-    const symbol = !isTokenTransaction ? transaction.symbol : tokens[0].symbol;
-    const operation = getTxOperation(transaction);
-
     // we are using slightly different layout for 1 targets txs to better match the design
     // the only difference is that crypto amount is in the same row as tx heading/description
     // fiat amount is in the second row along with address
@@ -129,17 +103,11 @@ const TransactionItem = React.memo((props: Props) => {
 
             <Content>
                 <Description>
-                    <TransactionHeading transaction={transaction} isPending={props.isPending} />
-                    {hasSingleTargetOrTransfer && (
-                        <CryptoAmount>
-                            {targetAmount && (
-                                <StyledHiddenPlaceholder>
-                                    {operation && <Sign value={operation} />}
-                                    {targetAmount} {symbol}
-                                </StyledHiddenPlaceholder>
-                            )}
-                        </CryptoAmount>
-                    )}
+                    <TransactionHeading
+                        transaction={transaction}
+                        isPending={props.isPending}
+                        useSingleRowLayout={hasSingleTargetOrTransfer}
+                    />
                 </Description>
                 <NextRow>
                     <TransactionTimestamp transaction={transaction} />
