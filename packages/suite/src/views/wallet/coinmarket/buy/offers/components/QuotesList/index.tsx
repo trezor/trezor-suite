@@ -30,7 +30,6 @@ const Offers = ({ selectQuote, quotes }: Props) => {
 
     if (selectedAccount.status !== 'loaded') return null;
     const { account } = selectedAccount;
-
     const { fiatStringAmount, fiatCurrency } = quotesRequest;
 
     return (

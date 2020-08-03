@@ -32,7 +32,7 @@ const Top = styled.div`
 
 const Footer = styled.div`
     display: flex;
-    justify-content: space-between;
+    align-items: center;
 `;
 
 const Left = styled.div`
@@ -43,10 +43,9 @@ const Left = styled.div`
 const Right = styled.div`
     display: flex;
     flex: 1;
-    justify-content: flex-end;
-    align-items: center;
-    padding-left: 10px;
-    padding-top: 10px;
+    justify-content: flex-start;
+    padding-left: 20px;
+    padding-top: 12px;
 `;
 
 const Label = styled.div`
@@ -58,6 +57,7 @@ const Label = styled.div`
 
 const StyledButton = styled(Button)`
     min-width: 200px;
+    margin-left: 20px;
 `;
 
 const Controls = styled.div`
@@ -221,54 +221,52 @@ const CoinmarketBuy = () => {
                     </Control>
                 </Controls>
                 <Footer>
-                    <Left>
-                        <Label>Offers for:</Label>
-                        <Controller
-                            control={control}
-                            defaultValue={defaultCountry}
-                            name={countrySelect}
-                            render={({ onChange, value }) => {
-                                return (
-                                    <Select
-                                        options={regional.countriesOptions}
-                                        isSearchable
-                                        value={value}
-                                        isClearable={false}
-                                        minWidth="45px"
-                                        onChange={(selected: any) => {
-                                            onChange(selected);
-                                        }}
-                                    />
-                                );
-                            }}
-                        />
-                    </Left>
-                    <Right>
-                        <StyledButton
-                            onClick={async () => {
-                                const formValues = getValues();
-                                console.log('formValues', formValues);
-                                const request: BuyTradeQuoteRequest = {
-                                    // TODO - handle crypto amount entry
-                                    wantCrypto: false,
-                                    fiatCurrency: formValues.currencySelect.value.toUpperCase(),
-                                    receiveCurrency: account.symbol.toUpperCase(),
-                                    country: formValues.countrySelect.value,
-                                    fiatStringAmount: formValues.fiatInput,
-                                };
-                                await saveBuyQuoteRequest(request);
-                                const quotes = await invityAPI.getBuyQuotes(request);
-                                await saveBuyQuotes(quotes);
+                    <Label>Offers for:</Label>
+                    <Controller
+                        control={control}
+                        defaultValue={defaultCountry}
+                        name={countrySelect}
+                        render={({ onChange, value }) => {
+                            return (
+                                <Select
+                                    noTopLabel
+                                    options={regional.countriesOptions}
+                                    isSearchable
+                                    value={value}
+                                    isClearable={false}
+                                    minWidth="45px"
+                                    onChange={(selected: any) => {
+                                        onChange(selected);
+                                    }}
+                                />
+                            );
+                        }}
+                    />
 
-                                // todo handle no quotes and min/max situation - copy code from invity.io
+                    <StyledButton
+                        onClick={async () => {
+                            const formValues = getValues();
+                            console.log('formValues', formValues);
+                            const request: BuyTradeQuoteRequest = {
+                                // TODO - handle crypto amount entry
+                                wantCrypto: false,
+                                fiatCurrency: formValues.currencySelect.value.toUpperCase(),
+                                receiveCurrency: account.symbol.toUpperCase(),
+                                country: formValues.countrySelect.value,
+                                fiatStringAmount: formValues.fiatInput,
+                            };
+                            await saveBuyQuoteRequest(request);
+                            const quotes = await invityAPI.getBuyQuotes(request);
+                            await saveBuyQuotes(quotes);
 
-                                // if success redirect to offers views
-                                goto('wallet-coinmarket-buy-offers');
-                            }}
-                        >
-                            Show offers
-                        </StyledButton>
-                    </Right>
+                            // todo handle no quotes and min/max situation - copy code from invity.io
+
+                            // if success redirect to offers views
+                            goto('wallet-coinmarket-buy-offers');
+                        }}
+                    >
+                        Show offers
+                    </StyledButton>
                 </Footer>
             </Content>
         </CoinmarketLayout>

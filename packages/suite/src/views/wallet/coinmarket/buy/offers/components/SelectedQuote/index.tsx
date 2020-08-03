@@ -46,21 +46,25 @@ const SelectedOffer = ({ selectedQuote }: Props) => {
     return (
         <Wrapper>
             <StyledCard>
-                <Input value={`Account #${account.index + 1}`} />
-                <Input value={account.descriptor} />
+                <Input
+                    value={`Account #${account.index + 1} ${account.availableBalance} ${
+                        account.symbol
+                    }`}
+                />
+                <Input isPartiallyHidden value={account.descriptor} />
                 <Button>Review and confirm</Button>
             </StyledCard>
             <Info>
                 <Row>
                     <Left>spend</Left>
                     <Right>
-                        `${selectedQuote.fiatStringAmount} ${selectedQuote.fiatCurrency}`
+                        {`${selectedQuote.fiatStringAmount} ${selectedQuote.fiatCurrency}`}
                     </Right>
                 </Row>
                 <Row>
                     <Left>buy</Left>
                     <Right>
-                        `${selectedQuote.receiveStringAmount} ${selectedQuote.receiveCurrency}`
+                        {`${selectedQuote.receiveStringAmount} ${selectedQuote.receiveCurrency}`}
                     </Right>
                 </Row>
                 <Row>
