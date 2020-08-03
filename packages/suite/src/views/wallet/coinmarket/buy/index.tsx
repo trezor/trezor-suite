@@ -12,7 +12,7 @@ import regional from '@wallet-constants/coinmarket/regional';
 import * as coinmarketActions from '@wallet-actions/coinmarketActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { useActions, useSelector } from '@suite-hooks';
-import { Button, Select, Input, colors, H2, SelectInput, CoinLogo } from '@trezor/components';
+import { Button, Select, Input, colors, H2, SelectInput, CoinLogo, P } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { BuyTradeQuoteRequest } from '@suite/services/invityAPI/buyTypes';
 import invityAPI from '@suite/services/invityAPI/service';
@@ -137,6 +137,26 @@ const CoinmarketBuy = () => {
         label: regional.countriesMap.get(country),
         value: country,
     };
+
+    console.log('errors', errors);
+    console.log('buyInfo', buyInfo, country, defaultCountry);
+    console.log('errors.fiatInputName', errors[fiatInput]);
+    console.log('buyInfo.buyInfo?.suggestedFiatCurrency', buyInfo.buyInfo?.suggestedFiatCurrency);
+
+    // TODO - handle situation that account is not set
+    if (!account) {
+        return null;
+    }
+
+    // do not show the form until buyInfo is initialized
+    if (!buyInfo || !buyInfo.buyInfo) {
+        return <P>Loading</P>;
+    }
+
+    // if there are not providers or there is no provider for the selected coin, show error
+    if (!buyInfo.buyInfo.providers || buyInfo.buyInfo.providers.length === 0) {
+        return <P>There are no providers</P>;
+    }
 
     return (
         <CoinmarketLayout
