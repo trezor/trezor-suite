@@ -3523,6 +3523,10 @@ const definedMessages = defineMessages({
         id: 'TR_ALL_TRANSACTIONS',
         defaultMessage: 'All Transactions',
     },
+    TR_TOKENS: {
+        id: 'TR_TOKENS',
+        defaultMessage: 'Tokens',
+    },
 } as const);
 
 export default definedMessages;
