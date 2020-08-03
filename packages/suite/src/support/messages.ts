@@ -613,10 +613,6 @@ const definedMessages = defineMessages({
         description: 'Display label of device',
         id: 'TR_DEVICE_LABEL',
     },
-    TR_DEVICE_LABEL_IS_DISCONNECTED: {
-        defaultMessage: 'Device {deviceLabel} is disconnected',
-        id: 'TR_DEVICE_LABEL_IS_DISCONNECTED',
-    },
     TR_DEVICE_LABEL_IS_NOT_BACKED_UP: {
         defaultMessage: 'Device {deviceLabel} is not backed up',
         id: 'TR_DEVICE_LABEL_IS_NOT_BACKED_UP',
@@ -3526,6 +3522,10 @@ const definedMessages = defineMessages({
     TR_ALL_TRANSACTIONS: {
         id: 'TR_ALL_TRANSACTIONS',
         defaultMessage: 'All Transactions',
+    },
+    TR_TOKENS: {
+        id: 'TR_TOKENS',
+        defaultMessage: 'Tokens',
     },
 } as const);
 

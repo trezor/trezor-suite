@@ -6,7 +6,6 @@ import { TransactionsGraph, Translation } from '@suite-components';
 import { calcTicks, calcTicksFromData } from '@suite-utils/date';
 import { aggregateBalanceHistory, getMaxValueFromData } from '@wallet-utils/graphUtils';
 import { GraphData } from '@wallet-types/graph';
-import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 import RangeSelector from '@suite-components/TransactionsGraph/components/RangeSelector';
 import { Props } from './Container';
 import TransactionSummaryDropdown from './components/TransactionSummaryDropdown';
@@ -27,7 +26,7 @@ const GraphWrapper = styled(Card)`
     flex-direction: row;
     display: flex;
     flex: 5 1 auto;
-    padding: ${CARD_PADDING_SIZE};
+    padding: 14px 16px;
     height: 320px;
 `;
 
