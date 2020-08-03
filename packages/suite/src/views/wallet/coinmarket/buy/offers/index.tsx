@@ -4,8 +4,8 @@ import { LayoutContext } from '@suite-components';
 import { CoinmarketTopPanel } from '@wallet-components';
 import { variables } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
-import OffersList from './components/OffersList';
-import SelectedOffer from './components/SelectedOffer';
+import QuotesList from './components/QuotesList';
+import SelectedQuote from './components/SelectedQuote';
 import { useSelector, useActions } from '@suite/hooks/suite';
 
 const Wrapper = styled.div`
@@ -33,8 +33,8 @@ const Offers = () => {
 
     return (
         <Wrapper>
-            {!selectedQuote && <OffersList selectQuote={selectQuote} quotes={quotes} />}
-            {selectedQuote && <SelectedOffer selectedQuote={selectedQuote} />}
+            {!selectedQuote && <QuotesList selectQuote={selectQuote} quotes={quotes} />}
+            {selectedQuote && <SelectedQuote selectedQuote={selectedQuote} />}
         </Wrapper>
     );
 };
