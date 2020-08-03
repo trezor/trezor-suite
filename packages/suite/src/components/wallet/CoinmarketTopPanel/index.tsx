@@ -62,7 +62,7 @@ const CoinmarketTopPanel = () => {
                 <Left>
                     <Back
                         onClick={() =>
-                            goto('wallet-index', {
+                            goto('wallet-coinmarket-buy', {
                                 symbol: account.symbol,
                                 accountIndex: account.index,
                                 accountType: account.accountType,
