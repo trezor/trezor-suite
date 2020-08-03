@@ -4,13 +4,12 @@ import { Account } from '@wallet-types';
 import { FiatValue, FormattedCryptoAmount, Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
 import { variables, colors, Icon, Link, Card } from '@trezor/components';
-import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
 const Wrapper = styled(Card)`
     display: grid;
     grid-template-columns: ${(props: { isTestnet?: boolean }) =>
         props.isTestnet ? '4fr 1fr 44px' : '4fr 1fr 1fr 44px'};
-    padding: 12px ${CARD_PADDING_SIZE};
+    padding: 12px 16px;
 `;
 
 interface ColProps {
