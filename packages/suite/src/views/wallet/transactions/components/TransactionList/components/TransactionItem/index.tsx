@@ -1,23 +1,16 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FormattedDate } from 'react-intl';
 import { AnimatePresence } from 'framer-motion';
 import { Translation, HiddenPlaceholder, Sign } from '@suite-components';
-import { variables, colors, Button, Link } from '@trezor/components';
+import { variables, colors, Button } from '@trezor/components';
 import { isTestnet } from '@wallet-utils/accountUtils';
-import { getDateWithTimeZone } from '@suite-utils/date';
 import TransactionTypeIcon from './components/TransactionTypeIcon';
-import { Props } from './Container';
 import TransactionHeading from './components/TransactionHeading';
 import { isTxUnknown, getTargetAmount, getTxOperation } from '@wallet-utils/transactionUtils';
-import {
-    Target,
-    TokenTransfer,
-    FeeRow,
-    OneRowTarget,
-    OneRowTokenTarget,
-} from './components/Target';
+import { Target, TokenTransfer, FeeRow } from './components/Target';
+import TransactionTimestamp from './components/TransactionTimestamp';
+import { WalletAccountTransaction } from '@wallet-types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -68,17 +61,6 @@ const TargetsWrapper = styled.div`
     overflow: hidden;
 `;
 
-const TimestampLink = styled(Link)`
-    display: block;
-    font-variant-numeric: tabular-nums;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    line-height: 1.57;
-    margin-right: 24px;
-    white-space: nowrap;
-`;
-
 const ExpandButton = styled(Button)`
     justify-content: start;
     align-self: flex-start;
@@ -104,9 +86,14 @@ const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
 
 const DEFAULT_LIMIT = 3;
 
-export default React.memo((props: Props) => {
+interface Props {
+    transaction: WalletAccountTransaction;
+    isPending: boolean;
+}
+
+const TransactionItem = React.memo((props: Props) => {
     const { transaction } = props;
-    const { symbol, type, blockTime, blockHeight, targets, tokens } = transaction;
+    const { type, targets, tokens } = transaction;
     const [limit, setLimit] = useState(0);
     const isTokenTransaction = tokens.length > 0;
     const isUnknown = isTxUnknown(transaction);
@@ -116,87 +103,24 @@ export default React.memo((props: Props) => {
     const toExpand = isTokenTransaction
         ? tokens.length - DEFAULT_LIMIT - limit
         : targets.length - DEFAULT_LIMIT - limit;
-    const useFiatValues = !isTestnet(symbol);
-
-    if (
+    const useFiatValues = !isTestnet(transaction.symbol);
+    const hasSingleTargetOrTransfer =
         !isUnknown &&
         ((!isTokenTransaction && targets.length === 1) ||
-            (isTokenTransaction && tokens.length === 1))
-    ) {
-        // use slightly different layout for 1 targets txs to better match the design
-        // the only difference is that crypto amount is in the same row as tx heading/description
-        // fiat amount is in the second row along with address
-        // multiple targets txs still use more simple layout
-        // TODO: find a better way to share common code
-        const target = targets[0];
-        const transfer = tokens[0];
-        const targetAmount = !isTokenTransaction
-            ? getTargetAmount(target, transaction)
-            : transfer.amount;
-        const symbol = !isTokenTransaction ? transaction.symbol : tokens[0].symbol;
-        const operation = getTxOperation(transaction);
+            (isTokenTransaction && tokens.length === 1));
 
-        return (
-            <Wrapper>
-                <TxTypeIconWrapper>
-                    <TransactionTypeIcon type={transaction.type} isPending={props.isPending} />
-                </TxTypeIconWrapper>
+    const target = targets[0];
+    const transfer = tokens[0];
+    const targetAmount = !isTokenTransaction
+        ? getTargetAmount(target, transaction)
+        : transfer.amount;
+    const symbol = !isTokenTransaction ? transaction.symbol : tokens[0].symbol;
+    const operation = getTxOperation(transaction);
 
-                <Content>
-                    <Description>
-                        <TransactionHeading transaction={transaction} isPending={props.isPending} />
-                        {/* TODO: copy pasted from Target component, maybe extract to separate component? */}
-                        <CryptoAmount>
-                            {targetAmount && (
-                                <StyledHiddenPlaceholder>
-                                    {operation && <Sign value={operation} />}
-                                    {targetAmount} {symbol}
-                                </StyledHiddenPlaceholder>
-                            )}
-                        </CryptoAmount>
-                    </Description>
-                    <NextRow>
-                        <TimestampLink
-                            onClick={() => {
-                                props.openModal({
-                                    type: 'transaction-detail',
-                                    tx: transaction,
-                                });
-                            }}
-                        >
-                            {blockHeight !== 0 && blockTime && blockTime > 0 && (
-                                <FormattedDate
-                                    value={getDateWithTimeZone(blockTime * 1000)}
-                                    hour="2-digit"
-                                    minute="2-digit"
-                                    // hour12={false}
-                                />
-                            )}
-                        </TimestampLink>
-                        <TargetsWrapper>
-                            {isTokenTransaction ? (
-                                <>
-                                    <OneRowTokenTarget
-                                        transfer={transfer}
-                                        transaction={transaction}
-                                    />
-                                    {type !== 'recv' && transaction.fee !== '0' && (
-                                        <FeeRow
-                                            transaction={transaction}
-                                            useFiatValues={useFiatValues}
-                                        />
-                                    )}
-                                </>
-                            ) : (
-                                <OneRowTarget target={target} transaction={transaction} />
-                            )}
-                        </TargetsWrapper>
-                    </NextRow>
-                </Content>
-            </Wrapper>
-        );
-    }
-
+    // we are using slightly different layout for 1 targets txs to better match the design
+    // the only difference is that crypto amount is in the same row as tx heading/description
+    // fiat amount is in the second row along with address
+    // multiple targets txs still use more simple layout
     return (
         <Wrapper>
             <TxTypeIconWrapper>
@@ -206,30 +130,29 @@ export default React.memo((props: Props) => {
             <Content>
                 <Description>
                     <TransactionHeading transaction={transaction} isPending={props.isPending} />
+                    {hasSingleTargetOrTransfer && (
+                        <CryptoAmount>
+                            {targetAmount && (
+                                <StyledHiddenPlaceholder>
+                                    {operation && <Sign value={operation} />}
+                                    {targetAmount} {symbol}
+                                </StyledHiddenPlaceholder>
+                            )}
+                        </CryptoAmount>
+                    )}
                 </Description>
                 <NextRow>
-                    <TimestampLink
-                        onClick={() => {
-                            props.openModal({
-                                type: 'transaction-detail',
-                                tx: transaction,
-                            });
-                        }}
-                    >
-                        {blockHeight !== 0 && blockTime && blockTime > 0 && (
-                            <FormattedDate
-                                value={getDateWithTimeZone(blockTime * 1000)}
-                                hour="2-digit"
-                                minute="2-digit"
-                                // hour12={false}
-                            />
-                        )}
-                    </TimestampLink>
+                    <TransactionTimestamp transaction={transaction} />
                     <TargetsWrapper>
                         {!isUnknown && !isTokenTransaction && (
                             <>
                                 {targets.slice(0, DEFAULT_LIMIT).map((t, i) => (
-                                    <Target key={i} target={t} transaction={transaction} />
+                                    <Target
+                                        key={i}
+                                        target={t}
+                                        transaction={transaction}
+                                        singleRowLayout={hasSingleTargetOrTransfer}
+                                    />
                                 ))}
                                 <AnimatePresence initial={false}>
                                     {limit > 0 &&
@@ -250,7 +173,12 @@ export default React.memo((props: Props) => {
                         {!isUnknown && isTokenTransaction && (
                             <>
                                 {tokens.slice(0, DEFAULT_LIMIT).map((t, i) => (
-                                    <TokenTransfer key={i} transfer={t} transaction={transaction} />
+                                    <TokenTransfer
+                                        key={i}
+                                        transfer={t}
+                                        transaction={transaction}
+                                        singleRowLayout={hasSingleTargetOrTransfer}
+                                    />
                                 ))}
                                 <AnimatePresence initial={false}>
                                     {limit > 0 &&
@@ -298,3 +226,5 @@ export default React.memo((props: Props) => {
         </Wrapper>
     );
 });
+
+export default TransactionItem;
