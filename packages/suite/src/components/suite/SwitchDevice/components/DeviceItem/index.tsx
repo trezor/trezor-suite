@@ -45,6 +45,7 @@ const DeviceStatus = styled.span<{ color: string }>`
 const DeviceActions = styled.div`
     display: flex;
     align-items: center;
+    margin-left: 20px;
 `;
 
 const Col = styled.div<{ grow?: number }>`
