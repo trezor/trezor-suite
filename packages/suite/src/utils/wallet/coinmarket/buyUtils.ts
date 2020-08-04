@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { Account } from '@wallet-typess';
 import { BuyTrade, BuyTradeQuoteRequest } from '@suite/services/invityAPI/buyTypes';
 
 export interface AmountLimits {
@@ -70,3 +71,16 @@ export function processQuotes(
     }
     return [undefined, undefined];
 }
+
+export const getAddress = (account: Account) => {
+    switch (account.networkType) {
+        case 'bitcoin': {
+            return account.addresses?.unused[0].address;
+        }
+        case 'ripple':
+        case 'ethereum': {
+            return account.descriptor;
+        }
+        // no default
+    }
+};

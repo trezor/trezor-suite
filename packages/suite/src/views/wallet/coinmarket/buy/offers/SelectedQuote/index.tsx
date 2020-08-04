@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { BuyTrade } from '@suite/services/invityAPI/buyTypes';
 import { useSelector } from '@suite-hooks';
+import { getAddress } from '@wallet-utils/coinmarket/buyUtils';
 import { FiatValue } from '@suite-components';
 import { Input, Card, Button, colors, variables, CoinLogo } from '@trezor/components';
 
@@ -94,7 +95,7 @@ const SelectedOffer = ({ selectedQuote }: Props) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     if (selectedAccount.status !== 'loaded' || !selectedQuote) return null;
     const { account } = selectedAccount;
-    const { symbol, index, descriptor, availableBalance } = account;
+    const { symbol, index, availableBalance } = account;
     const {
         fiatStringAmount,
         fiatCurrency,
@@ -121,7 +122,7 @@ const SelectedOffer = ({ selectedQuote }: Props) => {
                             </Amount>
                         </AccountWrapper>
                     </FakeInput>
-                    <Input label="Receive address" value={descriptor} />
+                    <Input label="Receive address" value={getAddress(account)} />
                 </CardContent>
                 <ButtonWrapper>
                     <Button>Review &amp; confirm</Button>
