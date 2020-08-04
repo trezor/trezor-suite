@@ -1,7 +1,6 @@
 import { WalletLayout } from '@wallet-components';
 import { Card } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
-import { MENU_ITEMS } from '@wallet-config/coinmarket';
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 
@@ -24,7 +23,7 @@ const CoinmarketLayout = ({ children, bottom }: Props) => {
     return (
         <WalletLayout title="Coinmarket" account={selectedAccount}>
             <Card noPadding>
-                <Navigation items={MENU_ITEMS} />
+                <Navigation />
                 <Content>{children}</Content>
             </Card>
             {bottom && <BottomContent>{bottom}</BottomContent>}

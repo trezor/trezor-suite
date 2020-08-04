@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Account } from '@wallet-typess';
+import { Account } from '@wallet-types';
+import BigNumber from 'bignumber.js';
 import { BuyTrade, BuyTradeQuoteRequest } from '@suite/services/invityAPI/buyTypes';
 
 export interface AmountLimits {
@@ -83,4 +84,16 @@ export const getAddress = (account: Account) => {
         }
         // no default
     }
+};
+
+export const buildOption = (currency: string) => {
+    return { value: currency, label: currency.toUpperCase() };
+};
+
+export const addValue = (currentValue = '0', addValue: string) => {
+    const result = new BigNumber(currentValue.length > 1 ? currentValue : '0')
+        .plus(addValue)
+        .toFixed();
+
+    return result;
 };

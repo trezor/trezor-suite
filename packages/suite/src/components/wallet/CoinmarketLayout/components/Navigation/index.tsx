@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import * as routerActions from '@suite-actions/routerActions';
 import { colors, variables } from '@trezor/components';
-import { Route } from '@suite-types';
 import { useSelector, useActions } from '@suite/hooks/suite';
+import { MENU_ITEMS } from '@wallet-config/coinmarket';
 
 const { FONT_WEIGHT, FONT_SIZE } = variables;
 
@@ -41,14 +41,7 @@ const StyledNavLink = styled.div<{ active?: boolean }>`
 
 const Text = styled.div``;
 
-interface Props {
-    items: {
-        route: Route['name'];
-        title: JSX.Element;
-    }[];
-}
-
-const Navigation = ({ items }: Props) => {
+const Navigation = () => {
     const routeName = useSelector(state => state.router.route?.name);
     const { goto } = useActions({
         goto: routerActions.goto,
@@ -56,7 +49,7 @@ const Navigation = ({ items }: Props) => {
 
     return (
         <Wrapper>
-            {items.map(item => {
+            {MENU_ITEMS.map(item => {
                 const { route, title } = item;
                 const active = routeName === route;
                 return (

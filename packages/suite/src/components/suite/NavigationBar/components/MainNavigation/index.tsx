@@ -30,13 +30,11 @@ const MobileWrapper = styled.div`
 const MenuItem = styled.div<ComponentProps>`
     display: flex;
     cursor: ${props => (!props.isDisabled ? 'pointer' : 'auto')};
-    /* font-size: ${props => (props.isActive ? '20px' : '16px')}; */
     font-size: 16px;
 
     ${props =>
         props.isActive &&
         css`
-            /* same as font-size: 20px */
             transform: scale(1.25);
         `}
 
@@ -117,9 +115,6 @@ const MainNavigation = (props: Props) => {
         switch (routeName) {
             case 'suite-index':
                 analytics.report({ type: 'menu/goto/suite-index' });
-                break;
-            case 'exchange-index':
-                analytics.report({ type: 'menu/goto/exchange-index' });
                 break;
             case 'wallet-index':
                 analytics.report({ type: 'menu/goto/wallet-index' });
