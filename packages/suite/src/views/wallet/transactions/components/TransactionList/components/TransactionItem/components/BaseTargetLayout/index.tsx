@@ -86,11 +86,6 @@ const TimelineLine = styled.div<{ show: boolean; top?: boolean }>`
               `}
 `;
 
-const AddressWithTimeline = styled.div`
-    display: flex;
-    align-items: center;
-`;
-
 const ANIMATION = {
     variants: {
         initial: {
@@ -137,14 +132,7 @@ const BaseTargetLayout = ({
                 <TimelineLine show={!singleRowLayout && !isLast} />
             </TimelineDotWrapper>
             <TargetAddress>
-                {/* <AddressWithTimeline>
-                    <TimelineDotWrapper>
-                        <TimelineLine show={!singleRowLayout && !isFirst} />
-                        <TimelineDot />
-                        <TimelineLine show={!singleRowLayout && !isLast} />
-                    </TimelineDotWrapper> */}
                 <StyledHiddenPlaceholder>{addressLabel}</StyledHiddenPlaceholder>
-                {/* </AddressWithTimeline> */}
             </TargetAddress>
             <TargetAmountsWrapper paddingBottom={!isLast}>
                 {amount && !singleRowLayout && <CryptoAmount>{amount}</CryptoAmount>}

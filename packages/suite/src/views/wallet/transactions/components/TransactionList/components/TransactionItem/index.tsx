@@ -134,16 +134,6 @@ const TransactionItem = React.memo((props: Props) => {
                                         }
                                     />
                                 ))}
-                                {console.log('targets.length', targets.length)}
-                                {console.log('limit - DEFAULT_LIMIT', limit - DEFAULT_LIMIT)}
-                                {console.log(
-                                    'targets.length - DEFAULT_LIMIT - 1',
-                                    targets.length - DEFAULT_LIMIT - 1,
-                                )}
-                                {console.log(
-                                    ' targets.slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit)',
-                                    targets.slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit).length,
-                                )}
                                 <AnimatePresence initial={false}>
                                     {limit > 0 &&
                                         targets
