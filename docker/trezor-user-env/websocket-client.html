@@ -75,6 +75,13 @@
             })
         }
 
+        function emulatorAllowUnsafe() {
+            _send({
+                type: 'emulator-allow-unsafe-paths',
+
+            });
+        }
+
         function emulatorDecision() {
             _send({
                 type: 'emulator-decision'
@@ -166,7 +173,9 @@
     <div>
         <h3>Emulator start</h3>
         <button onclick="emulatorStart('2.3.1'); return false;">Start 2.3.1</button>
-        <button onclick="emulatorStart('1.8.3'); return false;">Start 1.8.3</button>
+        <button onclick="emulatorStart('2.3.2'); return false;">Start 2.3.2</button>
+
+        <button onclick="emulatorStart('1.9.0'); return false;">Start 1.9.0</button>
     </div>
     <div>
         <h3>Emulator commands</h3>
@@ -175,6 +184,7 @@
         <button onclick="emulatorStop(); return false;">Stop</button>
         <button onclick="emulatorWipe(); return false;">Wipe</button>
         <button onclick="emulatorResetDevice(); return false;">Reset</button>
+        <button onclick="emulatorApplySettings(); return false;">Apply settings</button>
 
     </div>
     

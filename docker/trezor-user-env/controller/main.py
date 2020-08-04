@@ -90,6 +90,9 @@ def message_received(client, server, message):
                 cmd['passphrase_always_on_device'],
             ) 
             response = {"success": True}
+        elif cmdType == "emulator-allow-unsafe-paths":
+            emulator.allow_unsafe_paths() 
+            response = {"success": True}
         elif cmdType == "emulator-reset-device":
             resp = emulator.reset_device()
             print(resp)
