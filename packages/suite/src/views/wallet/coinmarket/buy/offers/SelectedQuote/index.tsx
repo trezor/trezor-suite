@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BuyTrade } from '@suite/services/invityAPI/buyTypes';
-import { getAddress, getAddressPath } from '@wallet-utils/coinmarket/buyUtils';
+import { getAccountInfo } from '@wallet-utils/coinmarket/buyUtils';
 import { FiatValue } from '@suite-components';
 import * as coinmarketActions from '@wallet-actions/coinmarketActions';
 import { useActions, useSelector } from '@suite-hooks';
@@ -107,8 +107,12 @@ const SelectedOffer = ({ selectedQuote }: Props) => {
         paymentMethod,
     } = selectedQuote;
 
-    const address = getAddress(account);
-    const path = getAddressPath(account);
+    const { path, address } = getAccountInfo(account);
+
+    if (!path || !address) {
+        console.log('handle error');
+        return null;
+    }
 
     return (
         <Wrapper>
@@ -127,7 +131,7 @@ const SelectedOffer = ({ selectedQuote }: Props) => {
                             </Amount>
                         </AccountWrapper>
                     </FakeInput>
-                    <Input label="Receive address" value={getAddress(account)} />
+                    <Input label="Receive address" value={address} />
                 </CardContent>
                 <ButtonWrapper>
                     <Button onClick={() => verifyAddress(path, address)}>

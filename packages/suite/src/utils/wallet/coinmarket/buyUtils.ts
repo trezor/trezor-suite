@@ -69,27 +69,22 @@ export function processQuotes(allQuotes: BuyTrade[]): [BuyTrade[], BuyTrade[]] {
     return [quotes, alternativeQuotes];
 }
 
-export const getAddress = (account: Account) => {
+export const getAccountInfo = (account: Account) => {
     switch (account.networkType) {
         case 'bitcoin': {
-            return account.addresses?.unused[0].address;
-        }
-        case 'ripple':
-        case 'ethereum': {
-            return account.descriptor;
-        }
-        // no default
-    }
-};
+            const firstUnused = account.addresses?.unused[0];
+            if (firstUnused) {
+                return { address: firstUnused.address, path: firstUnused.path };
+            }
 
-export const getAddressPath = (account: Account) => {
-    switch (account.networkType) {
-        case 'bitcoin': {
-            return account.addresses?.unused[0].path;
+            return { address: undefined, path: undefined };
         }
         case 'ripple':
         case 'ethereum': {
-            return account.path;
+            return {
+                address: account.descriptor,
+                path: account.path,
+            };
         }
         // no default
     }
