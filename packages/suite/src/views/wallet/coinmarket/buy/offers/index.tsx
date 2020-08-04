@@ -4,8 +4,8 @@ import { LayoutContext } from '@suite-components';
 import { CoinmarketTopPanel } from '@wallet-components';
 import { variables } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
-import QuotesList from './components/QuotesList';
-import SelectedQuote from './components/SelectedQuote';
+import QuotesList from './QuotesList';
+import SelectedQuote from './SelectedQuote';
 import { useSelector, useActions } from '@suite/hooks/suite';
 
 const Wrapper = styled.div`
