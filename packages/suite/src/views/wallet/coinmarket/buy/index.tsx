@@ -4,6 +4,7 @@ import validator from 'validator';
 import { useForm, Controller } from 'react-hook-form';
 
 import { FIAT } from '@suite-config';
+import { WalletLayout } from '@wallet-components';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 import { CoinmarketLayout, ProvidedByInvity } from '@wallet-components';
 import { useBuyInfo } from '@wallet-hooks/useCoinmarket';
@@ -143,7 +144,10 @@ const CoinmarketBuy = () => {
     }, [amountLimits, trigger]);
 
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    if (selectedAccount.status !== 'loaded') return null;
+
+    if (selectedAccount.status !== 'loaded') {
+        return <WalletLayout title="Coinmarket" account={selectedAccount} />;
+    }
 
     const { account } = selectedAccount;
 
