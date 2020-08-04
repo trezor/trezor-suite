@@ -4,9 +4,8 @@ import validator from 'validator';
 import { useForm, Controller } from 'react-hook-form';
 
 import { FIAT } from '@suite-config';
-import { WalletLayout } from '@wallet-components';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
-import { CoinmarketLayout, ProvidedByInvity } from '@wallet-components';
+import { CoinmarketLayout, ProvidedByInvit, WalletLayout } from '@wallet-components';
 import { useBuyInfo } from '@wallet-hooks/useCoinmarket';
 import regional from '@wallet-constants/coinmarket/regional';
 import * as coinmarketActions from '@wallet-actions/coinmarketActions';
