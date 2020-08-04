@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import validator from 'validator';
 import BigNumber from 'bignumber.js';
@@ -16,6 +16,11 @@ import { Button, Select, Input, colors, H2, SelectInput, CoinLogo, P } from '@tr
 import { Translation } from '@suite-components';
 import { BuyTradeQuoteRequest } from '@suite/services/invityAPI/buyTypes';
 import invityAPI from '@suite/services/invityAPI/service';
+import {
+    AmountLimits,
+    getAmountLimits,
+    processQuotes,
+} from '@suite/utils/wallet/coinmarket/buyUtils';
 
 const Content = styled.div`
     display: flex;
@@ -101,7 +106,9 @@ const buildOption = (currency: string) => {
 };
 
 const CoinmarketBuy = () => {
-    const { register, getValues, setValue, errors, control } = useForm({ mode: 'onChange' });
+    const { register, getValues, setValue, trigger, errors, control } = useForm({
+        mode: 'onChange',
+    });
     const fiatInput = 'fiatInput';
     const currencySelect = 'currencySelect';
     const countrySelect = 'countrySelect';
@@ -113,6 +120,8 @@ const CoinmarketBuy = () => {
         saveBuyInfo: coinmarketActions.saveBuyInfo,
     });
 
+    const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
+
     // TODO - do we really need to store it here? probably better would be in useBuyInfo, where it could skip the load if already set
     saveBuyInfo(buyInfo);
 
@@ -120,8 +129,14 @@ const CoinmarketBuy = () => {
         goto: routerActions.goto,
     });
 
+    useEffect(() => {
+        // when the limits change, trigger revalidation
+        trigger([fiatInput]);
+    }, [amountLimits, trigger]);
+
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     if (selectedAccount.status !== 'loaded') return null;
+
     const { account } = selectedAccount;
 
     const defaultCurrencyInfo = buyInfo.buyInfo?.suggestedFiatCurrency;
@@ -185,6 +200,16 @@ const CoinmarketBuy = () => {
                                     if (!validator.isNumeric(value)) {
                                         return 'TR_ERROR_NOT_NUMBER';
                                     }
+
+                                    if (amountLimits) {
+                                        const amount = Number(value);
+                                        if (amountLimits.minFiat && amount < amountLimits.minFiat) {
+                                            return `Minimum is ${amountLimits.minFiat} ${amountLimits.currency}`;
+                                        }
+                                        if (amountLimits.maxFiat && amount > amountLimits.maxFiat) {
+                                            return `Maximum is ${amountLimits.maxFiat} ${amountLimits.currency}`;
+                                        }
+                                    }
                                 },
                             })}
                             state={errors[fiatInput] ? 'error' : undefined}
@@ -207,6 +232,7 @@ const CoinmarketBuy = () => {
                                                 minWidth="45px"
                                                 onChange={(selected: any) => {
                                                     onChange(selected);
+                                                    setAmountLimits(undefined);
                                                 }}
                                             />
                                         );
@@ -257,6 +283,7 @@ const CoinmarketBuy = () => {
                                     minWidth="45px"
                                     onChange={(selected: any) => {
                                         onChange(selected);
+                                        setAmountLimits(undefined);
                                     }}
                                 />
                             );
@@ -276,13 +303,21 @@ const CoinmarketBuy = () => {
                                 fiatStringAmount: formValues.fiatInput,
                             };
                             await saveBuyQuoteRequest(request);
-                            const quotes = await invityAPI.getBuyQuotes(request);
-                            await saveBuyQuotes(quotes);
-
-                            // todo handle no quotes and min/max situation - copy code from invity.io
-
-                            // if success redirect to offers views
-                            goto('wallet-coinmarket-buy-offers');
+                            const allQuotes = await invityAPI.getBuyQuotes(request);
+                            const [quotes, alternativeQuotes] = processQuotes(allQuotes);
+                            if (!quotes || quotes.length === 0) {
+                                // todo handle no quotes
+                            } else {
+                                const limits = getAmountLimits(request, quotes);
+                                console.log('limits', limits, request);
+                                if (limits) {
+                                    setAmountLimits(limits);
+                                } else {
+                                    await saveBuyQuotes(quotes, alternativeQuotes);
+                                    // if success redirect to offers views
+                                    goto('wallet-coinmarket-buy-offers');
+                                }
+                            }
                         }}
                     >
                         Show offers

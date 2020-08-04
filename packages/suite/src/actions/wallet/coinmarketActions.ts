@@ -17,7 +17,11 @@ export interface BuyInfo {
 export type CoinmarketActions =
     | { type: typeof COINMARKET.SAVE_BUY_INFO; buyInfo: BuyInfo }
     | { type: typeof COINMARKET.SAVE_BUY_QUOTE_REQUEST; request: BuyTradeQuoteRequest }
-    | { type: typeof COINMARKET.SAVE_BUY_QUOTES; quotes: BuyTrade[] }; // todo type
+    | {
+          type: typeof COINMARKET.SAVE_BUY_QUOTES;
+          quotes: BuyTrade[];
+          alternativeQuotes: BuyTrade[] | undefined;
+      };
 
 export async function loadBuyInfo(): Promise<BuyInfo> {
     let buyInfo = await invityAPI.getBuyList();
@@ -58,9 +62,13 @@ export const saveBuyQuoteRequest = (request: BuyTradeQuoteRequest) => async (
     });
 };
 
-export const saveBuyQuotes = (quotes: BuyTrade[]) => async (dispatch: Dispatch) => {
+export const saveBuyQuotes = (
+    quotes: BuyTrade[],
+    alternativeQuotes: BuyTrade[] | undefined,
+) => async (dispatch: Dispatch) => {
     dispatch({
         type: COINMARKET.SAVE_BUY_QUOTES,
         quotes,
+        alternativeQuotes,
     });
 };

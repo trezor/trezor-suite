@@ -10,12 +10,14 @@ interface State {
     buyInfo: BuyInfo | null;
     quotesRequest: BuyTradeQuoteRequest | null;
     quotes: BuyTrade[];
+    alternativeQuotes: BuyTrade[] | undefined;
 }
 
 const initialState = {
     buyInfo: null,
     quotesRequest: null,
     quotes: [],
+    alternativeQuotes: undefined,
 };
 
 export default (state: State = initialState, action: WalletAction): State => {
@@ -29,6 +31,7 @@ export default (state: State = initialState, action: WalletAction): State => {
                 break;
             case COINMARKET.SAVE_BUY_QUOTES:
                 draft.quotes = action.quotes;
+                draft.alternativeQuotes = action.alternativeQuotes;
                 break;
             // no default
         }
