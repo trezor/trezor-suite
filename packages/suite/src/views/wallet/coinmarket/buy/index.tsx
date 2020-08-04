@@ -314,8 +314,13 @@ const CoinmarketBuy = () => {
                                     setAmountLimits(limits);
                                 } else {
                                     await saveBuyQuotes(quotes, alternativeQuotes);
+
                                     // if success redirect to offers views
-                                    goto('wallet-coinmarket-buy-offers');
+                                    goto('wallet-coinmarket-buy-offers', {
+                                        symbol: account.symbol,
+                                        accountIndex: account.index,
+                                        accountType: account.accountType,
+                                    });
                                 }
                             }
                         }}
