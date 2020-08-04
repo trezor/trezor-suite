@@ -56,21 +56,17 @@ export function getAmountLimits(
 }
 
 // split the quotes to base and alternative and assign order and payment ids
-export function processQuotes(
-    allQuotes: BuyTrade[],
-): [BuyTrade[] | undefined, BuyTrade[] | undefined] {
-    if (allQuotes) {
-        allQuotes.forEach(q => {
-            q.orderId = uuidv4();
-            q.paymentId = uuidv4();
-        });
-        const quotes = allQuotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency'));
-        const alternativeQuotes = allQuotes.filter(
-            q => q.tags && q.tags.includes('alternativeCurrency') && !q.error,
-        );
-        return [quotes, alternativeQuotes];
-    }
-    return [undefined, undefined];
+export function processQuotes(allQuotes: BuyTrade[]): [BuyTrade[], BuyTrade[]] {
+    if (!allQuotes) allQuotes = [];
+    allQuotes.forEach(q => {
+        q.orderId = uuidv4();
+        q.paymentId = uuidv4();
+    });
+    const quotes = allQuotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency'));
+    const alternativeQuotes = allQuotes.filter(
+        q => q.tags && q.tags.includes('alternativeCurrency') && !q.error,
+    );
+    return [quotes, alternativeQuotes];
 }
 
 export const getAddress = (account: Account) => {
