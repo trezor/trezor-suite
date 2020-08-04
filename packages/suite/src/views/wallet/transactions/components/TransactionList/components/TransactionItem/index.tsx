@@ -51,7 +51,7 @@ const Description = styled.span`
 const NextRow = styled.div`
     display: flex;
     flex: 1;
-    align-items: baseline;
+    align-items: flex-start;
 `;
 
 const TargetsWrapper = styled.div`
@@ -64,6 +64,10 @@ const TargetsWrapper = styled.div`
 const ExpandButton = styled(Button)`
     justify-content: start;
     align-self: flex-start;
+`;
+
+const StyledFeeRow = styled(FeeRow)`
+    margin-top: 20px;
 `;
 
 const DEFAULT_LIMIT = 3;
@@ -90,6 +94,8 @@ const TransactionItem = React.memo((props: Props) => {
         !isUnknown &&
         ((!isTokenTransaction && targets.length === 1) ||
             (isTokenTransaction && tokens.length === 1));
+    const showFeeRow =
+        !isUnknown && isTokenTransaction && type !== 'recv' && transaction.fee !== '0';
 
     // we are using slightly different layout for 1 targets txs to better match the design
     // the only difference is that crypto amount is in the same row as tx heading/description
@@ -120,8 +126,24 @@ const TransactionItem = React.memo((props: Props) => {
                                         target={t}
                                         transaction={transaction}
                                         singleRowLayout={hasSingleTargetOrTransfer}
+                                        isFirst={i === 0}
+                                        isLast={
+                                            targets.length > DEFAULT_LIMIT
+                                                ? i === DEFAULT_LIMIT - 1
+                                                : i === targets.length - 1
+                                        }
                                     />
                                 ))}
+                                {console.log('targets.length', targets.length)}
+                                {console.log('limit - DEFAULT_LIMIT', limit - DEFAULT_LIMIT)}
+                                {console.log(
+                                    'targets.length - DEFAULT_LIMIT - 1',
+                                    targets.length - DEFAULT_LIMIT - 1,
+                                )}
+                                {console.log(
+                                    ' targets.slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit)',
+                                    targets.slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit).length,
+                                )}
                                 <AnimatePresence initial={false}>
                                     {limit > 0 &&
                                         targets
@@ -132,6 +154,12 @@ const TransactionItem = React.memo((props: Props) => {
                                                     target={t}
                                                     transaction={transaction}
                                                     useAnimation
+                                                    isLast={
+                                                        targets.length > limit + DEFAULT_LIMIT
+                                                            ? i === limit - 1
+                                                            : i ===
+                                                              targets.length - DEFAULT_LIMIT - 1
+                                                    }
                                                 />
                                             ))}
                                 </AnimatePresence>
@@ -146,6 +174,8 @@ const TransactionItem = React.memo((props: Props) => {
                                         transfer={t}
                                         transaction={transaction}
                                         singleRowLayout={hasSingleTargetOrTransfer}
+                                        isFirst={i === 0}
+                                        isLast={i === tokens.length - 1}
                                     />
                                 ))}
                                 <AnimatePresence initial={false}>
@@ -158,18 +188,21 @@ const TransactionItem = React.memo((props: Props) => {
                                                     transfer={t}
                                                     transaction={transaction}
                                                     useAnimation
+                                                    isLast={i === tokens.length - 1}
                                                 />
                                             ))}
                                 </AnimatePresence>
                             </>
                         )}
 
-                        {!isUnknown &&
-                            isTokenTransaction &&
-                            type !== 'recv' &&
-                            transaction.fee !== '0' && (
-                                <FeeRow transaction={transaction} useFiatValues={useFiatValues} />
-                            )}
+                        {showFeeRow && (
+                            <StyledFeeRow
+                                transaction={transaction}
+                                useFiatValues={useFiatValues}
+                                isFirst
+                                isLast
+                            />
+                        )}
 
                         {isExpandable && (
                             <ExpandButton

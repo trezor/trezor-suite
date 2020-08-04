@@ -15,7 +15,7 @@ const TimestampLink = styled(Link)`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     line-height: 1.57;
-    margin-right: 24px;
+    margin-right: 8px;
     white-space: nowrap;
 `;
 

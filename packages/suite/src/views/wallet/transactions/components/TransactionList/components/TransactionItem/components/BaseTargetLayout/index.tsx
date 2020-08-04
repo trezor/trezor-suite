@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
 import { HiddenPlaceholder } from '@suite-components';
 import { variables, colors } from '@trezor/components';
@@ -24,16 +24,18 @@ const TargetWrapper = styled(motion.div)`
     display: flex;
     flex: 1;
     justify-content: space-between;
+    /* align-items: flex-start; */
 
     & + & {
-        margin-top: 20px;
+        /* padding-top: 20px; */
     }
 `;
 
-const TargetAmountsWrapper = styled.div`
+const TargetAmountsWrapper = styled.div<{ paddingBottom?: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    padding-bottom: ${props => (props.paddingBottom ? '20px' : '0px')};
 `;
 
 const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
@@ -54,6 +56,39 @@ const TargetAddress = styled(motion.div)`
     white-space: nowrap;
     text-overflow: ellipsis;
     font-variant-numeric: tabular-nums slashed-zero;
+`;
+
+const TimelineDotWrapper = styled.div`
+    margin-right: 8px;
+    width: 8px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+`;
+
+const TimelineDot = styled.div`
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: ${colors.NEUE_TYPE_LIGHT_GREY};
+`;
+const TimelineLine = styled.div<{ show: boolean; top?: boolean }>`
+    width: 1px;
+    background: ${props => (props.show ? colors.NEUE_STROKE_GREY : 'transparent')};
+
+    ${props =>
+        props.top
+            ? css`
+                  height: 8px;
+              `
+            : css`
+                  flex: 1;
+              `}
+`;
+
+const AddressWithTimeline = styled.div`
+    display: flex;
+    align-items: center;
 `;
 
 const ANIMATION = {
@@ -78,6 +113,9 @@ interface BaseTargetLayoutProps {
     fiatAmount?: React.ReactNode;
     useAnimation?: boolean;
     singleRowLayout?: boolean;
+    isFirst?: boolean;
+    isLast?: boolean;
+    className?: string;
 }
 
 const BaseTargetLayout = ({
@@ -86,14 +124,29 @@ const BaseTargetLayout = ({
     fiatAmount,
     useAnimation,
     singleRowLayout,
+    isFirst,
+    isLast,
+    ...rest
 }: BaseTargetLayoutProps) => {
     const animation = useAnimation ? ANIMATION : {};
     return (
-        <TargetWrapper {...animation}>
+        <TargetWrapper {...animation} {...rest}>
+            <TimelineDotWrapper>
+                <TimelineLine top show={!singleRowLayout && !isFirst} />
+                <TimelineDot />
+                <TimelineLine show={!singleRowLayout && !isLast} />
+            </TimelineDotWrapper>
             <TargetAddress>
+                {/* <AddressWithTimeline>
+                    <TimelineDotWrapper>
+                        <TimelineLine show={!singleRowLayout && !isFirst} />
+                        <TimelineDot />
+                        <TimelineLine show={!singleRowLayout && !isLast} />
+                    </TimelineDotWrapper> */}
                 <StyledHiddenPlaceholder>{addressLabel}</StyledHiddenPlaceholder>
+                {/* </AddressWithTimeline> */}
             </TargetAddress>
-            <TargetAmountsWrapper>
+            <TargetAmountsWrapper paddingBottom={!isLast}>
                 {amount && !singleRowLayout && <CryptoAmount>{amount}</CryptoAmount>}
                 {fiatAmount && <FiatAmount>{fiatAmount}</FiatAmount>}
             </TargetAmountsWrapper>

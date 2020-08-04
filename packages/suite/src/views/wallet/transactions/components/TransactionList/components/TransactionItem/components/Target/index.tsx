@@ -23,22 +23,23 @@ interface TokenTransferProps {
     transaction: WalletAccountTransaction;
     singleRowLayout?: boolean;
     useAnimation?: boolean;
+    isFirst?: boolean;
+    isLast?: boolean;
 }
 
 export const TokenTransfer = ({
     transfer,
     transaction,
-    useAnimation,
-    singleRowLayout,
+
+    ...baseLayoutProps
 }: TokenTransferProps) => {
     const operation = getTxOperation(transaction);
     return (
         <BaseTargetLayout
-            useAnimation={useAnimation}
+            {...baseLayoutProps}
             addressLabel={<TokenTransferAddressLabel transfer={transfer} type={transaction.type} />}
-            singleRowLayout={singleRowLayout}
             amount={
-                !singleRowLayout && (
+                !baseLayoutProps.singleRowLayout && (
                     <StyledHiddenPlaceholder>
                         {operation && <Sign value={operation} />}
                         {transfer.amount} {transfer.symbol}
@@ -54,18 +55,20 @@ interface TargetProps {
     transaction: WalletAccountTransaction;
     singleRowLayout?: boolean;
     useAnimation?: boolean;
+    isFirst?: boolean;
+    isLast?: boolean;
 }
 
-export const Target = ({ target, transaction, useAnimation, singleRowLayout }: TargetProps) => {
+export const Target = ({ target, transaction, ...baseLayoutProps }: TargetProps) => {
     const targetAmount = getTargetAmount(target, transaction);
     const operation = getTxOperation(transaction);
 
     return (
         <BaseTargetLayout
-            useAnimation={useAnimation}
+            {...baseLayoutProps}
             addressLabel={<TargetAddressLabel target={target} type={transaction.type} />}
             amount={
-                targetAmount && !singleRowLayout ? (
+                targetAmount && !baseLayoutProps.singleRowLayout ? (
                     <StyledHiddenPlaceholder>
                         {operation && <Sign value={operation} />}
                         {targetAmount} {transaction.symbol}
@@ -89,12 +92,17 @@ export const Target = ({ target, transaction, useAnimation, singleRowLayout }: T
 export const FeeRow = ({
     transaction,
     useFiatValues,
+    ...baseLayoutProps
 }: {
     transaction: WalletAccountTransaction;
     useFiatValues?: boolean;
+    isFirst?: boolean;
+    isLast?: boolean;
+    className?: string;
 }) => {
     return (
         <BaseTargetLayout
+            {...baseLayoutProps}
             addressLabel={<Translation id="TR_FEE" />}
             amount={
                 <StyledHiddenPlaceholder>
