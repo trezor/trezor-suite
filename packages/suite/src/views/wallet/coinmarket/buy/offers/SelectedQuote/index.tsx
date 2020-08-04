@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BuyTrade } from '@suite/services/invityAPI/buyTypes';
-import { useSelector } from '@suite-hooks';
-import { getAddress } from '@wallet-utils/coinmarket/buyUtils';
+import { getAddress, getAddressPath } from '@wallet-utils/coinmarket/buyUtils';
 import { FiatValue } from '@suite-components';
+import * as coinmarketActions from '@wallet-actions/coinmarketActions';
+import { useActions, useSelector } from '@suite-hooks';
 import { Input, Card, Button, colors, variables, CoinLogo } from '@trezor/components';
 
 const Wrapper = styled.div`
@@ -93,6 +94,7 @@ interface Props {
 
 const SelectedOffer = ({ selectedQuote }: Props) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const { verifyAddress } = useActions({ verifyAddress: coinmarketActions.verifyAddress });
     if (selectedAccount.status !== 'loaded' || !selectedQuote) return null;
     const { account } = selectedAccount;
     const { symbol, index, availableBalance } = account;
@@ -104,6 +106,9 @@ const SelectedOffer = ({ selectedQuote }: Props) => {
         exchange,
         paymentMethod,
     } = selectedQuote;
+
+    const address = getAddress(account);
+    const path = getAddressPath(account);
 
     return (
         <Wrapper>
@@ -125,7 +130,9 @@ const SelectedOffer = ({ selectedQuote }: Props) => {
                     <Input label="Receive address" value={getAddress(account)} />
                 </CardContent>
                 <ButtonWrapper>
-                    <Button>Review &amp; confirm</Button>
+                    <Button onClick={() => verifyAddress(path, address)}>
+                        Review &amp; confirm
+                    </Button>
                 </ButtonWrapper>
             </StyledCard>
             <Info>

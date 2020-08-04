@@ -82,6 +82,19 @@ export const getAddress = (account: Account) => {
     }
 };
 
+export const getAddressPath = (account: Account) => {
+    switch (account.networkType) {
+        case 'bitcoin': {
+            return account.addresses?.unused[0].path;
+        }
+        case 'ripple':
+        case 'ethereum': {
+            return account.path;
+        }
+        // no default
+    }
+};
+
 export const buildOption = (currency: string) => {
     return { value: currency, label: currency.toUpperCase() };
 };
