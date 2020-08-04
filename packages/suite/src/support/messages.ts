@@ -613,10 +613,6 @@ const definedMessages = defineMessages({
         description: 'Display label of device',
         id: 'TR_DEVICE_LABEL',
     },
-    TR_DEVICE_LABEL_IS_DISCONNECTED: {
-        defaultMessage: 'Device {deviceLabel} is disconnected',
-        id: 'TR_DEVICE_LABEL_IS_DISCONNECTED',
-    },
     TR_DEVICE_LABEL_IS_NOT_BACKED_UP: {
         defaultMessage: 'Device {deviceLabel} is not backed up',
         id: 'TR_DEVICE_LABEL_IS_NOT_BACKED_UP',
@@ -861,7 +857,7 @@ const definedMessages = defineMessages({
         id: 'TR_ETH_GAS_PRICE_NOT_NUMBER',
     },
     TR_EXCHANGE_RATE: {
-        defaultMessage: 'Exchange rate (7d)',
+        defaultMessage: 'Exchange rate',
         id: 'TR_EXCHANGE_RATE',
     },
     TR_FAILED_BACKUP: {
@@ -3403,13 +3399,15 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Try a different date range.{newLine}Still nothing? Go ahead and send a transaction.',
     },
-    TR_RECEIVED_AMOUNT: {
-        id: 'TR_RECEIVED_AMOUNT',
-        defaultMessage: 'Received {amount}',
+    TR_RECEIVED: {
+        id: 'TR_RECEIVED',
+        defaultMessage: 'Received',
+        description: 'Used in graph tooltip: Received x USD/BTC',
     },
-    TR_SENT_AMOUNT: {
-        id: 'TR_SENT_AMOUNT',
-        defaultMessage: 'Sent {amount}',
+    TR_SENT: {
+        id: 'TR_SENT',
+        defaultMessage: 'Sent',
+        description: 'Used in graph tooltip: Sent x USD/BTC',
     },
     TR_LANDING_TITLE: {
         id: 'TR_LANDING_TITLE',
@@ -3528,6 +3526,22 @@ const definedMessages = defineMessages({
     TR_NAV_SPEND: {
         id: 'TR_NAV_SPEND',
         defaultMessage: 'Spend',
+    },
+    TR_BALANCE: {
+        id: 'TR_BALANCE',
+        defaultMessage: 'Balance',
+    },
+    TR_MY_PORTFOLIO: {
+        id: 'TR_MY_PORTFOLIO',
+        defaultMessage: 'My Portfolio',
+    },
+    TR_ALL_TRANSACTIONS: {
+        id: 'TR_ALL_TRANSACTIONS',
+        defaultMessage: 'All Transactions',
+    },
+    TR_TOKENS: {
+        id: 'TR_TOKENS',
+        defaultMessage: 'Tokens',
     },
 } as const);
 

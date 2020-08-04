@@ -1,6 +1,6 @@
 {
     "name": "@trezor/suite",
-    "version": "20.7.1-beta",
+    "version": "20.8.1-beta",
     "private": true,
     "scripts": {
         "lint": "yarn lint:styles && yarn lint:js",
@@ -20,12 +20,12 @@
         "@formatjs/intl-pluralrules": "^1.5.3",
         "@formatjs/intl-relativetimeformat": "^4.5.10",
         "@trezor/components": "^1.0.0",
-        "@trezor/suite-data": "20.7.1-beta",
-        "@trezor/suite-storage": "20.7.1-beta",
+        "@trezor/suite-data": "20.8.1-beta",
+        "@trezor/suite-storage": "20.8.1-beta",
         "@types/zxcvbn": "^4.4.0",
         "bignumber.js": "^9.0.0",
         "color-hash": "^1.0.3",
-        "date-fns": "^2.11.0",
+        "date-fns": "^2.15.0",
         "date-fns-tz": "^1.0.10",
         "debounce": "^1.2.0",
         "ethereumjs-tx": "^2.1.2",

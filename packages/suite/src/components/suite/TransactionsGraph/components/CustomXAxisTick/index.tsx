@@ -1,18 +1,32 @@
 import React from 'react';
+import { colors } from '@trezor/components';
 import { FormattedDate } from 'react-intl';
-import { GraphRange } from '@wallet-types/fiatRates';
+import { GraphRange } from '@wallet-types/graph';
 
 interface CustomXAxisProps {
     selectedRange: GraphRange;
     [k: string]: any;
 }
 
+const getFormattedDate = (range: GraphRange['label'], date: Date) => {
+    switch (range) {
+        case 'all':
+            return <FormattedDate value={date} month="2-digit" year="numeric" />;
+        case 'year':
+            return <FormattedDate value={date} month="2-digit" year="numeric" />;
+        case 'month':
+            return <FormattedDate value={date} day="2-digit" month="2-digit" />;
+        case 'week':
+            return <FormattedDate value={date} weekday="short" />;
+        // no default
+    }
+};
+
 const CustomXAxisTick = (props: CustomXAxisProps) => {
     const { x, y, payload } = props;
     const date = new Date(0);
     date.setUTCSeconds(payload.value);
-    const showMMYYFormat =
-        props.selectedRange?.label === 'year' || props.selectedRange?.label === 'all';
+
     return (
         <g transform={`translate(${x},${y})`}>
             <text
@@ -20,16 +34,11 @@ const CustomXAxisTick = (props: CustomXAxisProps) => {
                 y={0}
                 dy={16}
                 textAnchor="end"
-                fill="#666"
+                fill={colors.NEUE_TYPE_LIGHT_GREY}
                 transform="rotate(-50)"
                 style={{ fontVariantNumeric: 'tabular-nums' }}
             >
-                {date && showMMYYFormat && (
-                    <FormattedDate value={date} month="2-digit" year="numeric" />
-                )}
-                {date && !showMMYYFormat && (
-                    <FormattedDate value={date} day="2-digit" month="2-digit" />
-                )}
+                {date && getFormattedDate(props.selectedRange.label, date)}
             </text>
         </g>
     );

@@ -6,9 +6,7 @@ import { Account } from '@wallet-types';
 import Summary from './index';
 
 const mapStateToProps = (state: AppState) => ({
-    selectedAccount: state.wallet.selectedAccount,
     graph: state.wallet.graph,
-    accounts: state.wallet.accounts,
     localCurrency: state.wallet.settings.localCurrency,
 });
 
