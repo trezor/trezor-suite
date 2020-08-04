@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BuyTrade } from '@suite/services/invityAPI/buyTypes';
-import { useSelector } from '@suite-hooks';
 import { Card } from '@trezor/components';
 import VerifyAddress from './VerifyAddress';
 
@@ -14,10 +13,6 @@ const StyledCard = styled(Card)`
     flex: 1;
     justify-content: flex-start;
     padding: 0;
-`;
-
-const CardContent = styled.div`
-    padding: 24px;
 `;
 
 const Info = styled.div`
@@ -60,7 +55,7 @@ const SelectedOffer = ({ selectedQuote }: Props) => {
     return (
         <Wrapper>
             <StyledCard>
-                <VerifyAddress selectedQuote={selectedQuote} />
+                <VerifyAddress />
             </StyledCard>
             <Info>
                 <Row>

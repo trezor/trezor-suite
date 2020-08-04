@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { BuyTrade } from '@suite/services/invityAPI/buyTypes';
 import { getAccountInfo } from '@wallet-utils/coinmarket/buyUtils';
 import { FiatValue } from '@suite-components';
 import * as coinmarketActions from '@wallet-actions/coinmarketActions';
@@ -70,15 +69,11 @@ const Confirmed = styled.div`
     justify-content: center;
 `;
 
-interface Props {
-    selectedQuote: BuyTrade | null;
-}
-
-const VerifyAddress = ({ selectedQuote }: Props) => {
+const VerifyAddress = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const addressVerified = useSelector(state => state.wallet.coinmarket.addressVerified);
     const { verifyAddress } = useActions({ verifyAddress: coinmarketActions.verifyAddress });
-    if (selectedAccount.status !== 'loaded' || !selectedQuote) return null;
+    if (selectedAccount.status !== 'loaded') return null;
     const { account } = selectedAccount;
     const { symbol, index, availableBalance } = account;
 
