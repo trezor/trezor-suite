@@ -88,12 +88,19 @@ const ButtonWrapper = styled.div`
     margin: 20px 0;
 `;
 
+const Confirmed = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
 interface Props {
     selectedQuote: BuyTrade | null;
 }
 
 const SelectedOffer = ({ selectedQuote }: Props) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const addressVerified = useSelector(state => state.wallet.coinmarket.addressVerified);
     const { verifyAddress } = useActions({ verifyAddress: coinmarketActions.verifyAddress });
     if (selectedAccount.status !== 'loaded' || !selectedQuote) return null;
     const { account } = selectedAccount;
@@ -133,10 +140,14 @@ const SelectedOffer = ({ selectedQuote }: Props) => {
                     </FakeInput>
                     <Input label="Receive address" value={address} />
                 </CardContent>
+                {addressVerified && <Confirmed>Confirmed on trezor</Confirmed>}
                 <ButtonWrapper>
-                    <Button onClick={() => verifyAddress(path, address)}>
-                        Review &amp; confirm
-                    </Button>
+                    {!addressVerified && (
+                        <Button onClick={() => verifyAddress(path, address)}>
+                            Review &amp; confirm
+                        </Button>
+                    )}
+                    {addressVerified && <Button onClick={() => {}}>Go to payment</Button>}
                 </ButtonWrapper>
             </StyledCard>
             <Info>

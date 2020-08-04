@@ -8,7 +8,7 @@ import {
     BuyTrade,
 } from '@suite/services/invityAPI/buyTypes';
 import invityAPI from '@suite/services/invityAPI/service';
-import { COINMARKET } from './constants';
+import { COINMARKET, RECEIVE } from './constants';
 import { Dispatch, GetState } from '@suite-types';
 import regional from '@suite/constants/wallet/coinmarket/regional';
 
@@ -20,6 +20,7 @@ export interface BuyInfo {
 export type CoinmarketActions =
     | { type: typeof COINMARKET.SAVE_BUY_INFO; buyInfo: BuyInfo }
     | { type: typeof COINMARKET.SAVE_BUY_QUOTE_REQUEST; request: BuyTradeQuoteRequest }
+    | { type: typeof COINMARKET.VERIFY_ADDRESS; addressVerified: boolean }
     | {
           type: typeof COINMARKET.SAVE_BUY_QUOTES;
           quotes: BuyTrade[];
@@ -84,16 +85,19 @@ export const verifyAddress = (path: string, address: string) => async (
     const { account } = getState().wallet.selectedAccount;
     if (!device || !account) return;
 
+    const { networkType, symbol } = account;
+    const { useEmptyPassphrase, connected, available } = device;
+
     const modalPayload = {
         device,
         address,
+        networkType,
+        symbol,
         addressPath: path,
-        networkType: account.networkType,
-        symbol: account.symbol,
     };
 
     // Show warning when device is not connected
-    if (!device.connected || !device.available) {
+    if (!connected || !available) {
         dispatch(
             modalActions.openModal({
                 type: 'unverified-address',
@@ -106,7 +110,7 @@ export const verifyAddress = (path: string, address: string) => async (
     const params = {
         device,
         path,
-        useEmptyPassphrase: device.useEmptyPassphrase,
+        useEmptyPassphrase,
     };
 
     // catch button request and open modal
@@ -121,7 +125,7 @@ export const verifyAddress = (path: string, address: string) => async (
     };
 
     let fn;
-    switch (account.networkType) {
+    switch (networkType) {
         case 'ethereum':
             fn = TrezorConnect.ethereumGetAddress;
             break;
@@ -144,7 +148,10 @@ export const verifyAddress = (path: string, address: string) => async (
     TrezorConnect.off(UI.REQUEST_BUTTON, buttonRequestHandler);
 
     if (response.success) {
-        console.log('success');
+        dispatch({
+            type: COINMARKET.VERIFY_ADDRESS,
+            addressVerified: true,
+        });
     } else {
         // special case: device no-backup permissions not granted
         if (response.payload.code === 'Method_PermissionsNotGranted') return;
