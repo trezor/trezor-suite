@@ -5,7 +5,7 @@ import { useForm, Controller } from 'react-hook-form';
 
 import { FIAT } from '@suite-config';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
-import { CoinmarketLayout, ProvidedByInvit, WalletLayout } from '@wallet-components';
+import { CoinmarketLayout, ProvidedByInvity, WalletLayout } from '@wallet-components';
 import { useBuyInfo } from '@wallet-hooks/useCoinmarket';
 import regional from '@wallet-constants/coinmarket/regional';
 import * as coinmarketActions from '@wallet-actions/coinmarketActions';
