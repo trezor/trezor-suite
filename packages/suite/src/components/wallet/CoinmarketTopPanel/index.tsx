@@ -32,6 +32,8 @@ const Left = styled.div`
     display: flex;
     flex: 1;
     align-items: center;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
 const Right = styled.div`
@@ -45,6 +47,11 @@ const Back = styled.div`
     display: flex;
     cursor: pointer;
     align-items: center;
+`;
+
+const StyledIcon = styled(Icon)`
+    width: 10px;
+    margin-right: 12px;
 `;
 
 const CoinmarketTopPanel = () => {
@@ -69,7 +76,7 @@ const CoinmarketTopPanel = () => {
                             })
                         }
                     >
-                        <Icon icon="ARROW_LEFT" />
+                        <StyledIcon icon="ARROW_LEFT" />
                         {`Account #${account.index + 1}`}
                     </Back>
                 </Left>

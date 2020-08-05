@@ -30,18 +30,6 @@ const Description = styled.div`
     text-align: center;
 `;
 
-const TransactionIdRow = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
-`;
-
-const Label = styled.div`
-    text-transform: uppercase;
-    font-size: ${variables.FONT_SIZE.TINY};
-    padding-right: 3px;
-`;
-
 const CancelButton = styled(Button)`
     margin-top: 15px;
 `;
