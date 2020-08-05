@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Button, variables, colors } from '@trezor/components';
+import TransactionId from '../TransactionId';
 
 const Wrapper = styled.div`
     display: flex;
@@ -62,10 +63,7 @@ const WaitingForPayment = ({ transactionId, paymentGateUrl }: Props) => {
             <Description>
                 Please click the link bellow to finish the payment through provider.
             </Description>
-            <TransactionIdRow>
-                <Label>trans. id: </Label>
-                {transactionId}
-            </TransactionIdRow>
+            <TransactionId transactionId={transactionId} />
             <Link href={paymentGateUrl}>
                 <Button>Go to Payment Gate</Button>
             </Link>
