@@ -45,7 +45,7 @@ module.exports = {
             statements: 61,
             branches: 53,
             functions: 63,
-            lines: 61.85,
+            lines: 61,
         },
     },
     modulePathIgnorePatterns: [

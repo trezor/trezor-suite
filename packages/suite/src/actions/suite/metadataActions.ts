@@ -683,7 +683,7 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
  */
 export const init = (force = false) => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
-    if (!device?.state) return;
+    if (!device?.state) return false;
 
     // 1. set metadata enabled globally
     if (!getState().metadata.enabled) {
@@ -695,10 +695,14 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
         await dispatch(setDeviceMetadataKey(force));
     }
 
+    if (getState().suite.device?.metadata.status !== 'enabled') return false;
+
     // 3. connect to provider
     if (getState().suite.device?.metadata.status === 'enabled' && !getState().metadata.provider) {
-        await dispatch(initProvider());
+        // returns promise which resolves to true of connection established
+        return dispatch(initProvider());
     }
 
-    return !!getState().metadata.provider;
+    // todo: token might have expired?
+    return true;
 };

@@ -182,6 +182,7 @@ const AddMetadataLabel = (props: Props) => {
         if (editing) {
             const init = async () => {
                 const result = await initMetadata(true);
+                console.warn('result friom init', result);
                 if (!result) {
                     setEditing(false);
                 }
