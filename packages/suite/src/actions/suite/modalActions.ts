@@ -54,6 +54,9 @@ export type UserContextPayload =
           type: 'review-transaction';
       }
     | {
+          type: 'coinmarket-confirm-terms';
+      }
+    | {
           type: 'log';
       }
     | {

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { getAccountInfo } from '@wallet-utils/coinmarket/buyUtils';
 import { FiatValue } from '@suite-components';
 import * as coinmarketActions from '@wallet-actions/coinmarketActions';
+import * as modalActions from '@suite-actions/modalActions';
 import { useActions, useSelector } from '@suite-hooks';
 import { Input, Button, colors, variables, CoinLogo } from '@trezor/components';
 
@@ -72,6 +73,7 @@ const Confirmed = styled.div`
 const VerifyAddress = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const addressVerified = useSelector(state => state.wallet.coinmarket.addressVerified);
+    const { openModal } = useActions({ openModal: modalActions.openModal });
     const { verifyAddress } = useActions({ verifyAddress: coinmarketActions.verifyAddress });
     if (selectedAccount.status !== 'loaded') return null;
     const { account } = selectedAccount;
@@ -108,7 +110,11 @@ const VerifyAddress = () => {
                         Review &amp; confirm
                     </Button>
                 )}
-                {addressVerified && <Button onClick={() => {}}>Go to payment</Button>}
+                {addressVerified && (
+                    <Button onClick={() => openModal({ type: 'coinmarket-confirm-terms' })}>
+                        Go to payment
+                    </Button>
+                )}
             </ButtonWrapper>
         </Wrapper>
     );

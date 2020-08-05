@@ -60,7 +60,7 @@ const PaymentFailed = ({ transactionId, paymentGateUrl }: Props) => {
             <Image src={resolveStaticPath('/images/svg/coinmarket-error.svg')} />
             <Title>Payment Failed</Title>
             <Description>
-                Unfortunatelly, your payment has failed. No funds were taken from your credit card.
+                Unfortunately, your payment has failed. No funds were taken from your credit card.
             </Description>
             <TransactionIdRow>
                 <Label>trans. id: </Label>

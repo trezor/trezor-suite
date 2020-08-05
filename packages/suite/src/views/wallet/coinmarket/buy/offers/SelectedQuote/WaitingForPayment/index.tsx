@@ -54,7 +54,7 @@ interface Props {
     paymentGateUrl: string;
 }
 
-const PaymentSuccessFull = ({ transactionId, paymentGateUrl }: Props) => {
+const WaitingForPayment = ({ transactionId, paymentGateUrl }: Props) => {
     return (
         <Wrapper>
             <Image src={resolveStaticPath('/images/svg/coinmarket-waiting.svg')} />
@@ -76,4 +76,4 @@ const PaymentSuccessFull = ({ transactionId, paymentGateUrl }: Props) => {
     );
 };
 
-export default PaymentSuccessFull;
+export default WaitingForPayment;

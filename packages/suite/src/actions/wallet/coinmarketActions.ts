@@ -8,7 +8,7 @@ import {
     BuyTrade,
 } from '@suite/services/invityAPI/buyTypes';
 import invityAPI from '@suite/services/invityAPI/service';
-import { COINMARKET, RECEIVE } from './constants';
+import { COINMARKET } from './constants';
 import { Dispatch, GetState } from '@suite-types';
 import regional from '@suite/constants/wallet/coinmarket/regional';
 
