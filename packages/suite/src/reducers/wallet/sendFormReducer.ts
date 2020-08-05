@@ -11,6 +11,7 @@ interface SendState {
         };
     };
     precomposedTx?: Extract<PrecomposedTransaction, { type: 'final' }>;
+    precomposedForm?: FormState;
     signedTx?: { tx: string; coin: string }; // payload for TrezorConnect.pushTransaction
     lastUsedFeeLevel: {
         [key: string]: FeeLevel['label'];
@@ -40,9 +41,11 @@ export default (state: SendState = initialState, action: Action) => {
                 break;
             case SEND.REQUEST_SIGN_TRANSACTION:
                 if (action.payload) {
-                    draft.precomposedTx = action.payload;
+                    draft.precomposedTx = action.payload.transactionInfo;
+                    draft.precomposedForm = action.payload.formValues;
                 } else {
                     delete draft.precomposedTx;
+                    delete draft.precomposedForm;
                 }
                 break;
             case SEND.REQUEST_PUSH_TRANSACTION:

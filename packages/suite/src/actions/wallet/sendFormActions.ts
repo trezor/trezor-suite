@@ -57,7 +57,10 @@ export type SendFormActions =
       }
     | {
           type: typeof SEND.REQUEST_SIGN_TRANSACTION;
-          payload?: Extract<PrecomposedTransaction, { type: 'final' }>;
+          payload?: {
+              formValues: FormState;
+              transactionInfo: Extract<PrecomposedTransaction, { type: 'final' }>;
+          };
       }
     | {
           type: typeof SEND.REQUEST_PUSH_TRANSACTION;
@@ -687,7 +690,10 @@ export const signBitcoinTransaction = (
 
     dispatch({
         type: SEND.REQUEST_SIGN_TRANSACTION,
-        payload: transactionInfo,
+        payload: {
+            formValues,
+            transactionInfo,
+        },
     });
 
     const { account } = selectedAccount;
