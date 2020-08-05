@@ -66,9 +66,6 @@ const TransactionList = ({
     account,
     ...props
 }: Props) => {
-    console.log('account', account);
-    console.log('transactions', transactions);
-
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const startIndex = (currentPage - 1) * perPage;
     const stopIndex = startIndex + perPage;

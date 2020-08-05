@@ -26,8 +26,8 @@ describe('Metadata', () => {
 
         cy.passThroughInitialRun();
 
-        // todo: wait for discovery to finish and remove this
         cy.log('Wait for discovery to finish. There is "add label" button, but no actual metadata appeared')
+        // todo: better waiting for discovery (mock it!)
         cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 });
         cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 }).should('not.be.visible');
         cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
@@ -41,7 +41,6 @@ describe('Metadata', () => {
         cy.log('Now metadata is enabled, go to accounts');
         cy.getTestElement('@suite/menu/wallet-index').click();
         cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'label');
-        // todo: check all other label types
 
         cy.log("Now go back to settings, disable metadata and check that we don't see them in app");
 
@@ -49,6 +48,5 @@ describe('Metadata', () => {
         cy.getTestElement('@settings/metadata-switch').click({ force: true });
         cy.getTestElement('@suite/menu/wallet-index').click();
         cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
-        // todo: check all other label types
     });
 });

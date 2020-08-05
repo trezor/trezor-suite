@@ -117,6 +117,7 @@ class DropboxProvider implements AbstractMetadataProvider {
     }
 
     async setFileContent(file: string, content: Buffer) {
+        console.log(content.toString('hex'));
         try {
             const blob = new Blob([content], { type: 'text/plain;charset=UTF-8' });
             await this.client.filesUpload({

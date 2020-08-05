@@ -82,9 +82,7 @@ interface Props {
 
 const TransactionItem = React.memo((props: Props) => {
     const { transaction, txMetadata, accountKey } = props;
-    console.log('txMetadata', txMetadata);
     const { type, targets, tokens } = transaction;
-    // console.log('transaction', transaction)
     const [limit, setLimit] = useState(0);
     const isTokenTransaction = tokens.length > 0;
     const isUnknown = isTxUnknown(transaction);

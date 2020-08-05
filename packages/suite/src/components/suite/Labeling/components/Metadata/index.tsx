@@ -53,6 +53,22 @@ const LabelContainer = styled.div`
     }
 `;
 
+const moveCaretToEndOfContentEditable = (contentEditableElement: HTMLElement) => {
+    // copied from https://stackoverflow.com/questions/36284973/set-cursor-at-the-end-of-content-editable
+    let range;
+    let selection;
+    if (document.createRange) {
+        range = document.createRange(); // Create a range (a range is a like the selection but invisible)
+        range.selectNodeContents(contentEditableElement); // Select the entire contents of the element with the range
+        range.collapse(false); // collapse the range to the end point. false means collapse to end rather than the start
+        selection = window.getSelection(); // get the selection object (allows you to change selection)
+        if (selection) {
+            selection.removeAllRanges(); // remove any selections already made
+            selection.addRange(range); // make the range you have just created the visible selection
+        }
+    }
+};
+
 const EditContainer = (props: {
     originalValue?: string;
     onSubmit: (value: string | undefined | null) => void;
@@ -74,8 +90,9 @@ const EditContainer = (props: {
             if (divRef && divRef.current) {
                 divRef.current.focus();
                 divRef.current.textContent = props.originalValue || null;
+                moveCaretToEndOfContentEditable(divRef.current);
             }
-        }, 1);
+        }, 0);
     }, [props.originalValue]);
 
     useEffect(() => {
@@ -130,7 +147,6 @@ const EditContainer = (props: {
                 icon="CROSS"
                 onClick={e => {
                     e.stopPropagation();
-                    console.log(props);
                     submit(props.originalValue);
                 }}
                 color={colors.NEUE_BG_LIGHT_GREY}
@@ -153,7 +169,6 @@ interface Props {
 }
 
 const AddMetadataLabel = (props: Props) => {
-    console.log(props);
     const [editing, setEditing] = useState(false);
 
     const { addMetadata, initMetadata } = useActions({
@@ -176,7 +191,6 @@ const AddMetadataLabel = (props: Props) => {
     }, [editing, initMetadata]);
 
     const onSubmit = (value: string | undefined | null) => {
-        console.log('on submit', value);
         addMetadata({
             ...props.payload,
             value: value || undefined,
