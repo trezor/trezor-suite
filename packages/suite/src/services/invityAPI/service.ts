@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { createHash } from 'crypto';
 import {
     ExchangeListResponse,
     ExchangeCoinListResponse,
@@ -84,6 +84,8 @@ class InvityAPI {
     private BUY_GET_TRADE_FORM = '/api/buy/tradeform';
     private BUY_WATCH_TRADE = '/api/buy/watch/{{counter}}';
 
+    private static apiKey: string;
+
     constructor() {
         let defaultServer;
         if (isDev()) {
@@ -99,13 +101,16 @@ class InvityAPI {
     }
 
     private getInvityAPIKey() {
-        // TODO - api key is from current account
-        let key = localStorageGetString(this.InvityAPIKey);
-        if (!key) {
-            key = uuidv4();
-            localStorageSetString(this.InvityAPIKey, key);
+        if (!InvityAPI.apiKey) {
+            throw Error('apiKey not created');
         }
-        return key;
+        return InvityAPI.apiKey;
+    }
+
+    createInvityAPIKey(accountDescriptor: string) {
+        const hash = createHash('sha256');
+        hash.update(accountDescriptor);
+        InvityAPI.apiKey = hash.digest('hex');
     }
 
     setInvityAPIServer(server: string) {
@@ -115,7 +120,7 @@ class InvityAPI {
 
     private options(body = {}, method = 'POST'): any {
         // TODO different header for web 'X-SuiteW-Api' and electron suite 'X-SuiteA-Api'
-        const apiHeader = 'X-Invity-Api';
+        const apiHeader = 'X-SuiteW-Api';
         if (method === 'POST') {
             return {
                 method,
