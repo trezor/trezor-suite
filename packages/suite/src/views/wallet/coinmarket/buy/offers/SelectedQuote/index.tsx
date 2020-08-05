@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BuyTrade } from '@suite/services/invityAPI/buyTypes';
-import { Card } from '@trezor/components';
+import { Card, colors, variables } from '@trezor/components';
 
 import VerifyAddress from './VerifyAddress';
 // import PaymentFailed from './PaymentFailed';
@@ -22,13 +22,19 @@ const StyledCard = styled(Card)`
 
 const Info = styled.div`
     min-width: 350px;
-    padding-left: 20px;
+    margin-left: 30px;
+    padding: 18px 0;
+    height: 200px;
+    border: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-radius: 4px;
 `;
 
 const Left = styled.div`
     display: flex;
     flex: 1;
     text-transform: uppercase;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
 `;
 
 const Right = styled.div`
@@ -39,6 +45,21 @@ const Right = styled.div`
 
 const Row = styled.div`
     display: flex;
+    margin: 0 24px;
+`;
+
+const Dark = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    flex: 1;
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+`;
+
+const RowWithBorder = styled(Row)`
+    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    margin-bottom: 10px;
+    padding-bottom: 10px;
 `;
 
 interface Props {
@@ -48,14 +69,7 @@ interface Props {
 const SelectedOffer = ({ selectedQuote }: Props) => {
     if (!selectedQuote) return null;
 
-    const {
-        fiatStringAmount,
-        fiatCurrency,
-        receiveStringAmount,
-        receiveCurrency,
-        exchange,
-        paymentMethod,
-    } = selectedQuote;
+    const { receiveStringAmount, receiveCurrency, exchange, paymentMethod } = selectedQuote;
 
     const activeView = 'verifyAddress';
 
@@ -75,12 +89,16 @@ const SelectedOffer = ({ selectedQuote }: Props) => {
             <Info>
                 <Row>
                     <Left>spend</Left>
-                    <Right>{`${fiatStringAmount} ${fiatCurrency}`}</Right>
+                    <Right>
+                        <Dark>xxxxx</Dark>
+                    </Right>
                 </Row>
-                <Row>
+                <RowWithBorder>
                     <Left>buy</Left>
-                    <Right>{`${receiveStringAmount} ${receiveCurrency}`}</Right>
-                </Row>
+                    <Right>
+                        <Dark>{`${receiveStringAmount} ${receiveCurrency}`}</Dark>
+                    </Right>
+                </RowWithBorder>
                 <Row>
                     <Left>provider</Left>
                     <Right>{exchange}</Right>
