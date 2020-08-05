@@ -24,7 +24,7 @@ const Link = styled.a`
 export default () => (
     <Wrapper>
         Provided by
-        <Link href="https://invity.io/">
+        <Link href="https://invity.io/" target="_blank">
             <Image src={resolveStaticPath('/images/svg/invity-logo.svg')} />
         </Link>
     </Wrapper>
