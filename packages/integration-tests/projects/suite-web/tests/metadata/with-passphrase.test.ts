@@ -30,8 +30,7 @@ describe.skip('Metadata', () => {
         cy.getTestElement('@passphrase/input').type('make metadata gr8 again');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.log('after initial passphrase input starts discovery which also triggers metadata init flow');
-        cy.task('pressYes');
-        cy.getTestElement('@modal/metadata-provider/google-button').click();
+        cy.passThroughInitMetadata();
 
         cy.log('at this moment, metadata is connected and user returns back to passphrase validation');
         cy.getTestElement('@passphrase/input').type('make metadata gr8 again');

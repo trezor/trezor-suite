@@ -150,6 +150,7 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
             callback: onClick,
             label: 'Confirm on device',
             key: 'confirm-on-device',
+            'data-test': '@metadata/confirm-on-device-button',
         },
     ];
     if (isRevealed) {
@@ -157,6 +158,7 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
             callback: onCopy,
             label: 'Copy address',
             key: 'copy-address',
+            'data-test': '@metadata/copy-address-button',
         });
     }
 

@@ -42,6 +42,7 @@ const SubmitIcon = styled(Icon)`
 
 const LabelContainer = styled.div`
     display: flex;
+    white-space: nowrap;
     &:hover {
         ${AddLabelButton} {
             visibility: visible;

@@ -112,12 +112,11 @@ const WalletInstance = ({
                         )}
                         {instance.state ? (
                             <AddMetadataLabel
+                                defaultVisibleValue={<WalletLabeling device={instance} />}
                                 payload={{
                                     type: 'walletLabel',
                                     deviceState: instance.state,
                                     defaultValue: 'TODO: wallet default state',
-                                    // defaultVisibleValue: <WalletLabeling device={instance} />,
-
                                     value:
                                         instance?.metadata.status === 'enabled'
                                             ? instance.metadata.walletLabel

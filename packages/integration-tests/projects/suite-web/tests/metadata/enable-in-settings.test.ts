@@ -35,8 +35,7 @@ describe('Metadata', () => {
         cy.log('Go to settings and enable metadata');
         cy.getTestElement('@suite/menu/settings-index').click();
         cy.getTestElement('@settings/metadata-switch').click({ force: true });
-        cy.task('pressYes');
-        cy.getTestElement('@modal/metadata-provider/google-button').click();
+        cy.passThroughInitMetadata();
         
         cy.log('Now metadata is enabled, go to accounts');
         cy.getTestElement('@suite/menu/wallet-index').click();

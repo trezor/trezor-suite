@@ -6,29 +6,33 @@ export const toggleDeviceMenu = () => {
 };
 
 export const goToOnboarding = () => {
-    return cy
-        // .getTestElement('@landing/continue-in-browser-button')
-        // .click()
-        .getTestElement('@welcome/continue-button')
-        .click()
-        .getTestElement('@analytics/go-to-onboarding-button')
-        .click();
+    return (
+        cy
+            // .getTestElement('@landing/continue-in-browser-button')
+            // .click()
+            .getTestElement('@welcome/continue-button')
+            .click()
+            .getTestElement('@analytics/go-to-onboarding-button')
+            .click()
+    );
 };
 
 export const passThroughInitialRun = () => {
-    return cy
-        // .getTestElement('@landing/continue-in-browser-button')
-        // .click()
-        .getTestElement('@welcome/continue-button')
-        .click()
-        .getTestElement('@analytics/go-to-onboarding-button')
-        .click()
-        .getTestElement('@onboarding/skip-button')
-        .click()
-        .getTestElement('@onboarding/skip-button')
-        .click()
-        .getTestElement('@suite/loading')
-        .should('not.exist');
+    return (
+        cy
+            // .getTestElement('@landing/continue-in-browser-button')
+            // .click()
+            .getTestElement('@welcome/continue-button')
+            .click()
+            .getTestElement('@analytics/go-to-onboarding-button')
+            .click()
+            .getTestElement('@onboarding/skip-button')
+            .click()
+            .getTestElement('@onboarding/skip-button')
+            .click()
+            .getTestElement('@suite/loading')
+            .should('not.exist')
+    );
 };
 
 export const passThroughBackup = () => {
@@ -53,4 +57,11 @@ export const passThroughBackup = () => {
     cy.getTestElement('@backup/check-item/made-no-digital-copy').click();
     cy.getTestElement('@backup/check-item/will-hide-seed').click();
     cy.getTestElement('@backup/close-button').click();
+};
+
+export const passThroughInitMetadata = () => {
+    cy.getConfirmActionOnDeviceModal();
+    cy.task('pressYes');
+    cy.getTestElement('@modal/metadata-provider/google-button').click();
+    cy.getTestElement('@modal/metadata-provider').should('not.exist');
 };

@@ -43,7 +43,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@wallet/menu/wallet-receive').click();
         // click reveal address
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
-        cy.getTestElement('@address-modal/address-field').should('contain', abcAddr);
+        cy.getTestElement('@modal/confirm-address/address-field').should('contain', abcAddr);
         cy.task('pressYes');
 
         cy.log('passphrase def');
@@ -62,7 +62,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@wallet/receive/used-address/0').should('not.exist');
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
 
-        cy.getTestElement('@address-modal/address-field').should('contain', defAddr);
+        cy.getTestElement('@modal/confirm-address/address-field').should('contain', defAddr);
         cy.task('pressYes');
 
         cy.log('passphrase abc again. now it is cached in device');
@@ -76,7 +76,7 @@ describe('Passphrase', () => {
 
         // should display confirm passphrase modal
         cy.getTestElement('@suite/loading').should('not.be.visible');
-        cy.getTestElement('@address-modal/address-field').should('contain', abcAddr);
+        cy.getTestElement('@modal/confirm-address/address-field').should('contain', abcAddr);
         cy.task('pressYes');
     });
 

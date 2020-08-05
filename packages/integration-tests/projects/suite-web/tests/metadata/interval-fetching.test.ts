@@ -40,9 +40,8 @@ describe('Metadata', () => {
         cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click({
             force: true,
         });
+        cy.passThroughInitMetadata();
 
-        cy.task('pressYes');
-        cy.getTestElement('@modal/metadata-provider/google-button').click();
         cy.log('Already existing label gets loaded');
         cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'label');
 

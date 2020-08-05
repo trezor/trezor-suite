@@ -32,10 +32,8 @@ describe('Metadata', () => {
 
         cy.getTestElement('@suite/menu/settings-index').click();
         cy.getTestElement('@settings/metadata-switch').click({ force: true });
-        // cy.log('interesting is that init metadata flow does not start, it is because device is not authorized')
 
-        cy.task('pressYes');
-        cy.getTestElement('@modal/metadata-provider/google-button').click();
+        cy.passThroughInitMetadata();
 
         cy.getTestElement('@suite/menu/wallet-index').click();
 

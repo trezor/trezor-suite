@@ -36,9 +36,7 @@ describe('Metadata', () => {
             cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');  
 
             cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click({ force: true });
-            cy.task('pressYes');
-            cy.getTestElement('@modal/metadata-provider/google-button').click();
-            cy.getTestElement('@modal/metadata-provider').should('not.exist');
+            cy.passThroughInitMetadata();
 
             // normally, after init metadata flow is finished, contenteditable element stays focused, but that does not work
             // (don't know why) when running in cypress

@@ -8,7 +8,7 @@ import { onboardingShouldLoad, dashboardShouldLoad } from './utils/assertions';
 import { connectBootloaderDevice, connectDevice, changeDevice } from './utils/device';
 import { getTestElement, getConfirmActionOnDeviceModal } from './utils/selectors';
 import { resetDb, setState } from './utils/test-env';
-import { toggleDeviceMenu, goToOnboarding, passThroughInitialRun, passThroughBackup } from './utils/shortcuts';
+import { toggleDeviceMenu, goToOnboarding, passThroughInitialRun, passThroughBackup, passThroughInitMetadata } from './utils/shortcuts';
 
 const command = require('cypress-image-snapshot/command');
 
@@ -41,6 +41,7 @@ declare global {
             toggleDeviceMenu: () => Chainable<Subject>;
             passThroughInitialRun: () => Chainable<Subject>;
             passThroughBackup: () => Chainable<Subject>;
+            passThroughInitMetadata: () => Chainable<Subject>;
             goToOnboarding: () => Chainable<Subject>;
         }
     }
@@ -81,3 +82,4 @@ Cypress.Commands.add('toggleDeviceMenu', toggleDeviceMenu);
 Cypress.Commands.add('goToOnboarding', goToOnboarding);
 Cypress.Commands.add('passThroughInitialRun', passThroughInitialRun);
 Cypress.Commands.add('passThroughBackup', passThroughBackup);
+Cypress.Commands.add('passThroughInitMetadata', passThroughInitMetadata);
