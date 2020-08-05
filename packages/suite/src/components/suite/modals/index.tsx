@@ -32,7 +32,6 @@ import Log from './Log';
 import WipeDevice from './WipeDevice';
 import DisconnectDevice from './DisconnectDevice';
 import MetadataProvider from './metadata/MetadataProvider';
-import MetadataAdd from './metadata/MetadataAdd';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -174,8 +173,6 @@ const getUserContextModal = (props: Props) => {
             return (
                 <MetadataProvider onCancel={modalActions.onCancel} decision={payload.decision} />
             );
-        case 'metadata-add':
-            return <MetadataAdd onCancel={modalActions.onCancel} {...payload} />;
         default:
             return null;
     }

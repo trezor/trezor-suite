@@ -107,9 +107,6 @@ const initStore = (state: State) => {
         if (action.type === MODAL.OPEN_USER_CONTEXT) {
             // automatically resolve modal decision
             switch (action.payload.type) {
-                case 'metadata-add':
-                    action.payload.decision.resolve(action.payload.value || 'my label');
-                    break;
                 case 'metadata-provider':
                     await store.dispatch(metadataActions.connectProvider('dropbox'));
                     action.payload.decision.resolve(true);
