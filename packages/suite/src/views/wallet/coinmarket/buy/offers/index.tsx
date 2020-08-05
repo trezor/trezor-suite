@@ -16,6 +16,11 @@ const Wrapper = styled.div`
     }
 `;
 
+const OtherOffersDivider = styled.div`
+    padding: 16px 0;
+    text-align: center;
+`;
+
 const Offers = () => {
     const { setLayout } = useContext(LayoutContext);
 
@@ -25,6 +30,7 @@ const Offers = () => {
 
     const [selectedQuote, selectQuote] = useState(undefined);
     const quotes = useSelector(state => state.wallet.coinmarket.quotes);
+    const alternativeQuotes = useSelector(state => state.wallet.coinmarket.alternativeQuotes);
     const { goto } = useActions({ goto: routerActions.goto });
 
     if (quotes.length === 0) {
@@ -33,7 +39,23 @@ const Offers = () => {
 
     return (
         <Wrapper>
-            {!selectedQuote && <QuotesList selectQuote={selectQuote} quotes={quotes} />}
+            {!selectedQuote && (
+                <>
+                    <QuotesList selectQuote={selectQuote} quotes={quotes} />
+                    {alternativeQuotes && alternativeQuotes.length > 0 && (
+                        <>
+                            <OtherOffersDivider>
+                                Other offers in {alternativeQuotes[0].fiatCurrency}
+                            </OtherOffersDivider>
+                            <QuotesList
+                                selectQuote={selectQuote}
+                                quotes={alternativeQuotes}
+                                isAlternative
+                            />
+                        </>
+                    )}
+                </>
+            )}
             {selectedQuote && <SelectedQuote selectedQuote={selectedQuote} />}
         </Wrapper>
     );

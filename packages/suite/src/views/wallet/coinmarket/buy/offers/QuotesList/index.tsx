@@ -13,17 +13,27 @@ const StyledQuote = styled(Quote)`
 `;
 
 const Header = styled.div`
-    min-height: 50px;
+    margin: 15px 0;
+`;
+
+const SummaryRow = styled.div`
+    min-height: 30px;
     display: flex;
     align-items: center;
+`;
+
+const OrigAmount = styled.div`
+    color: #808080;
+    font-size: smaller;
 `;
 
 interface Props {
     selectQuote: Dispatch<SetStateAction<undefined>>;
     quotes?: BuyTrade[];
+    isAlternative?: boolean;
 }
 
-const Offers = ({ selectQuote, quotes }: Props) => {
+const Offers = ({ selectQuote, quotes, isAlternative }: Props) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const quotesRequest = useSelector(state => state.wallet.coinmarket.quotesRequest);
     if (!quotesRequest || !quotes) return null;
@@ -34,10 +44,26 @@ const Offers = ({ selectQuote, quotes }: Props) => {
 
     return (
         <Wrapper>
-            <Header>
-                {fiatStringAmount} {fiatCurrency} {'->'}
-                <CoinLogo size={16} symbol={account.symbol} /> {account.symbol}
-            </Header>
+            {isAlternative ? (
+                <>
+                    <Header>
+                        <SummaryRow>
+                            {quotes[0].fiatStringAmount} {quotes[0].fiatCurrency} {'->'}
+                            <CoinLogo size={16} symbol={account.symbol} /> {account.symbol}
+                        </SummaryRow>
+                        <OrigAmount>
+                            ≈ {fiatStringAmount} {fiatCurrency}
+                        </OrigAmount>
+                    </Header>
+                </>
+            ) : (
+                <Header>
+                    <SummaryRow>
+                        {fiatStringAmount} {fiatCurrency} {'->'}
+                        <CoinLogo size={16} symbol={account.symbol} /> {account.symbol}
+                    </SummaryRow>
+                </Header>
+            )}
             <Quotes>
                 {quotes.map(quote => (
                     <StyledQuote
