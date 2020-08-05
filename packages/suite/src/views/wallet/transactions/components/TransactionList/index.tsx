@@ -6,7 +6,7 @@ import { Section } from '@dashboard-components';
 import { useSelector } from '@suite-hooks';
 import { groupTransactionsByDate } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
-import { WalletAccountTransaction } from '@wallet-types';
+import { WalletAccountTransaction, Account } from '@wallet-types';
 import TransactionItem from './components/TransactionItem';
 import Pagination from './components/Pagination';
 import TransactionsGroup from './components/TransactionsGroup';
@@ -53,6 +53,7 @@ interface Props {
     symbol: WalletAccountTransaction['symbol'];
     isLoading?: boolean;
     onPageSelected: (page: number) => void;
+    account: Account;
 }
 
 const TransactionList = ({
@@ -62,8 +63,12 @@ const TransactionList = ({
     onPageSelected,
     perPage,
     isLoading,
+    account,
     ...props
 }: Props) => {
+    console.log('account', account);
+    console.log('transactions', transactions);
+
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const startIndex = (currentPage - 1) * perPage;
     const stopIndex = startIndex + perPage;
@@ -114,6 +119,8 @@ const TransactionList = ({
                                         key={tx.txid}
                                         transaction={tx}
                                         isPending={isPending}
+                                        txMetadata={account.metadata.outputLabels[tx.txid]}
+                                        accountKey={account.key}
                                     />
                                 ))}
                             </StyledCard>

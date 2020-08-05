@@ -139,14 +139,16 @@ const EditContainer = (props: {
     );
 };
 
-interface DropdownOption {
-    callback: () => void;
-    label: string;
+interface DropdownMenuItem {
+    key: string;
+    label: React.ReactNode;
+    callback?: () => boolean | void;
     'data-test'?: string;
 }
+
 interface Props {
     defaultVisibleValue?: React.ReactNode;
-    dropdownOptions?: DropdownOption[];
+    dropdownOptions?: DropdownMenuItem[];
     payload: MetadataAddPayload;
 }
 
@@ -182,16 +184,18 @@ const AddMetadataLabel = (props: Props) => {
         setEditing(false);
     };
 
-    let dropdownItems: DropdownOption[] = [
+    let dropdownItems: DropdownMenuItem[] = [
         {
             callback: () => setEditing(true),
             label: 'Edit label',
             'data-test': '@metadata/edit-button',
+            key: 'edit-label',
         },
         {
             callback: () => onSubmit(''),
             label: 'Remove label',
             'data-test': '@metadata/remove-button',
+            key: 'remove-label',
         },
     ];
 
@@ -205,7 +209,10 @@ const AddMetadataLabel = (props: Props) => {
         return (
             <LabelContainer>
                 {props.payload.value ? (
-                    <Dropdown alignMenu="left" items={[{ options: dropdownItems }]}>
+                    <Dropdown
+                        alignMenu="left"
+                        items={[{ options: dropdownItems, key: 'dropdown' }]}
+                    >
                         <Label data-test={dataTestBase}>
                             <LabelValue>{props.payload.value}</LabelValue>
                             {props.defaultVisibleValue && (

@@ -7,11 +7,7 @@ interface Props {
     target: ArrayElement<WalletAccountTransaction['targets']>;
     type: WalletAccountTransaction['type'];
 }
-
 const TargetAddressLabel = ({ target, type }: Props) => {
-    console.log('target', target);
-    console.log('type', type);
-
     const isLocalTarget = (type === 'sent' || type === 'self') && target.isAccountTarget;
     const addressLabel = isLocalTarget ? (
         <Translation id="TR_SENT_TO_SELF" />

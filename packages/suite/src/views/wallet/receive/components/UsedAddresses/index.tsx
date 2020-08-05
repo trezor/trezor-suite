@@ -149,12 +149,14 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
         {
             callback: onClick,
             label: 'Confirm on device',
+            key: 'confirm-on-device',
         },
     ];
     if (isRevealed) {
         dropdownOptions.push({
             callback: onCopy,
             label: 'Copy address',
+            key: 'copy-address',
         });
     }
 

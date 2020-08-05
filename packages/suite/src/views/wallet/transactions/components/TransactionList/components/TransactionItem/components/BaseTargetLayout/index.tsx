@@ -22,9 +22,9 @@ const FiatAmount = styled.span`
 
 const TargetWrapper = styled(motion.div)`
     display: flex;
+    position: relative;
     flex: 1;
     justify-content: space-between;
-    /* align-items: flex-start; */
 
     & + & {
         /* padding-top: 20px; */
@@ -41,7 +41,7 @@ const TargetAmountsWrapper = styled.div<{ paddingBottom?: boolean }>`
 const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
     /* padding: 8px 0px; row padding */
     display: block;
-    overflow: hidden;
+    // overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 `;
@@ -52,7 +52,7 @@ const TargetAddress = styled(motion.div)`
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    overflow: hidden;
+    // overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     font-variant-numeric: tabular-nums slashed-zero;

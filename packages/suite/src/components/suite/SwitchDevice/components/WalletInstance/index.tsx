@@ -127,7 +127,6 @@ const WalletInstance = ({
                         ) : (
                             <WalletLabeling device={instance} />
                         )}
-
                     </InstanceType>
                 )}
                 {!discoveryProcess && (
