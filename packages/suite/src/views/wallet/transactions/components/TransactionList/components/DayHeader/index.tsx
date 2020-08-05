@@ -6,75 +6,79 @@ import { variables, colors } from '@trezor/components';
 import {
     Translation,
     HiddenPlaceholder,
-    FiatValue,
     FormattedCryptoAmount,
+    FormattedNumber,
 } from '@suite-components';
 import { parseKey } from '@wallet-utils/transactionUtils';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import { Network } from '@wallet-types';
 
-const Col = styled(HiddenPlaceholder)`
+const Wrapper = styled.div`
+    display: flex;
     position: sticky;
-    z-index: 1;
+    background: ${colors.NEUE_BG_GRAY};
     top: 0;
-    font-size: ${variables.FONT_SIZE.TINY};
-    padding: 20px 0px;
-    color: ${colors.BLACK50};
-    border-bottom: 2px solid ${colors.BLACK96};
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-right: 24px;
+`;
+
+const Col = styled(HiddenPlaceholder)`
+    font-size: ${variables.FONT_SIZE.SMALL};
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-transform: uppercase;
-    background: ${colors.WHITE};
 `;
 
 const ColDate = styled(Col)`
     font-variant-numeric: tabular-nums;
-    grid-column: date / target;
-    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        grid-column: date / target;
-        border: 0px;
-        padding-bottom: 8px;
-    }
+    flex: 1;
 `;
 
 const ColPending = styled(Col)`
-    grid-column: date / fiat;
+    color: ${colors.NEUE_TYPE_ORANGE};
+    font-variant-numeric: tabular-nums;
 `;
 
 const ColAmount = styled(Col)`
-    grid-column: amount;
+    padding-left: 16px;
     text-align: right;
-    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding-top: 8px; /* grid-row-gap */
-        grid-column: date / amount;
-        top: 43px; /* date height */
-        text-align: left;
-    }
 `;
 
 const ColFiat = styled(Col)`
-    grid-column: fiat;
     padding-left: 16px;
     text-align: right;
-    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding-top: 8px; /* grid-row-gap */
-        top: 43px; /* date height */
-    }
 `;
 
 interface Props {
     dateKey: string;
     symbol: Network['symbol'];
     totalAmount: BigNumber;
+    totalFiatAmountPerDay: BigNumber;
+    localCurrency: string;
+    txsCount?: number;
+    isHovered?: boolean;
 }
 
-export default ({ dateKey, symbol, totalAmount }: Props) => {
+const DayHeader = ({
+    dateKey,
+    symbol,
+    totalAmount,
+    totalFiatAmountPerDay,
+    localCurrency,
+    txsCount,
+    isHovered,
+}: Props) => {
     const parsedDate = parseKey(dateKey);
-    const useFiatValues = !isTestnet(symbol);
+    const showFiatValue = !isTestnet(symbol);
     return (
-        <>
+        <Wrapper>
             {dateKey === 'pending' ? (
                 <ColPending>
-                    <Translation id="TR_PENDING" />
+                    <Translation id="TR_PENDING" /> • {txsCount}
                 </ColPending>
             ) : (
                 <>
@@ -86,17 +90,28 @@ export default ({ dateKey, symbol, totalAmount }: Props) => {
                             year="numeric"
                         />
                     </ColDate>
-                    <ColAmount>
-                        {totalAmount.gte(0) && <span>+</span>}
-                        <FormattedCryptoAmount value={totalAmount.toFixed()} symbol={symbol} />
-                    </ColAmount>
-                    {useFiatValues && (
+                    {isHovered && (
+                        <ColAmount>
+                            {totalAmount.gte(0) && <span>+</span>}
+                            <FormattedCryptoAmount value={totalAmount.toFixed()} symbol={symbol} />
+                        </ColAmount>
+                    )}
+                    {showFiatValue && (
                         <ColFiat>
-                            <FiatValue amount={totalAmount.toFixed()} symbol={symbol} />
+                            <HiddenPlaceholder>
+                                {/* {<>≈ </>} */}
+                                {totalFiatAmountPerDay.gte(0) && <span>+</span>}
+                                <FormattedNumber
+                                    currency={localCurrency}
+                                    value={totalFiatAmountPerDay.toFixed()}
+                                />
+                            </HiddenPlaceholder>
                         </ColFiat>
                     )}
                 </>
             )}
-        </>
+        </Wrapper>
     );
 };
+
+export default DayHeader;

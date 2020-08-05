@@ -38,7 +38,7 @@ const StyledRow = styled(Row)`
     padding-top: 0;
 `;
 
-export default ({ selectedAccount, openModal }: Props) => {
+const Details = ({ selectedAccount, openModal }: Props) => {
     const { device, isLocked } = useDevice();
     if (!device || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Account details" account={selectedAccount} />;
@@ -112,3 +112,5 @@ export default ({ selectedAccount, openModal }: Props) => {
         </WalletLayout>
     );
 };
+
+export default Details;

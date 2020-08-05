@@ -25,31 +25,6 @@ describe('Date utils', () => {
         expect(utils.getDateWithTimeZone(dateInMs)).toEqual(new Date('2019-08-14T15:52:59.000Z'));
     });
 
-    test('get ticks between timestamps', () => {
-        // from 11/09/2019 to 03/04/2020
-        expect(
-            utils.getTicksBetweenTimestamps(
-                new Date(1573313530000),
-                new Date(1583313530000),
-                'month',
-            ),
-        ).toStrictEqual([
-            // new Date('2019-11-09T00:00:00.000Z'),
-            new Date('2019-12-01T00:00:00.000Z'),
-            new Date('2020-01-01T00:00:00.000Z'),
-            new Date('2020-02-01T00:00:00.000Z'),
-            new Date('2020-03-04T00:00:00.000Z'),
-        ]);
-        // end date is before start date
-        expect(
-            utils.getTicksBetweenTimestamps(
-                new Date(1583313530000),
-                new Date(1573313530000),
-                'month',
-            ),
-        ).toStrictEqual([]);
-    });
-
     test('get timestamps between from and to split by hour', () => {
         expect(utils.splitTimestampsByInterval(1584845764, 1584867364, 3600, true)).toStrictEqual([
             1584845764,

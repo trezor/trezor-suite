@@ -4,7 +4,7 @@
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
         - yarn workspace @trezor/suite-desktop build:${platform}
-        - ls -la packages/suite-desktop/build-electron 
+        - ls -la packages/suite-desktop/build-electron
         - mv packages/suite-desktop/build-electron/* .
     artifacts:
         paths:
@@ -70,23 +70,22 @@ suite-desktop build windows manual:
         artifact: ${DESKTOP_APP_NAME}*
     <<: *build
 
-suite-desktop build arm:
-    only:
-        <<: *auto_run_branches
-    variables:
-        platform: arm
-        artifact: ${DESKTOP_APP_NAME}*
-    <<: *build
+# suite-desktop build arm:
+#     only:
+#         <<: *auto_run_branches
+#     variables:
+#         platform: arm
+#         artifact: ${DESKTOP_APP_NAME}*
+#     <<: *build
 
-suite-desktop build arm manual:
-    except:
-        <<: *auto_run_branches
-    when: manual
-    variables:
-        platform: arm
-        artifact: ${DESKTOP_APP_NAME}*
-    <<: *build
-
+# suite-desktop build arm manual:
+#     except:
+#         <<: *auto_run_branches
+#     when: manual
+#     variables:
+#         platform: arm
+#         artifact: ${DESKTOP_APP_NAME}*
+#     <<: *build
 
 suite-desktop deploy dev:
     stage: deploy to dev

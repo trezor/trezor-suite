@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input, Textarea, Select, Checkbox, Switch } from '../../index';
+import { Input, Textarea, Select, Checkbox, Switch, SelectInput, Button } from '../../index';
 import { storiesOf } from '@storybook/react';
 import { StoryColumn } from '../../support/Story';
 
@@ -9,6 +9,8 @@ const Heading = styled.h2``;
 const SubHeading = styled.h4`
     margin: 10px 0;
 `;
+
+const Label = styled.div``;
 
 const SELECT_OPTIONS = [
     {
@@ -33,7 +35,22 @@ storiesOf('Form', module).add(
                 <StoryColumn minWidth={520}>
                     <Heading>Input</Heading>
                     <SubHeading>Default</SubHeading>
-                    <Input value="Default input" dataTest="input-default" />
+                    <Input value="Default input with select" dataTest="input-default" />
+                    <Input
+                        value="Input with select"
+                        dataTest="input-select"
+                        innerAddon={
+                            <SelectInput
+                                value={{ label: 'BTC', value: 'BTC' }}
+                                options={[
+                                    { label: 'ETH', value: 'ETH' },
+                                    { label: 'XRP', value: 'XRP' },
+                                    { label: 'BCT', value: 'BCT' },
+                                    { label: 'UAN', value: 'UAN' },
+                                ]}
+                            />
+                        }
+                    />
                     <Input variant="small" value="Small input" dataTest="input-default-small" />
                     <Input state="error" value="Input with error" dataTest="input-default-error" />
                     <Input
@@ -51,63 +68,63 @@ storiesOf('Form', module).add(
                     <Input
                         value="0x3Ebf31732F5A987b4f130Eb359B0975EBcbd68c8"
                         dataTest="input-block-monospace-button"
-                        button={{
-                            text: 'Scan',
-                            icon: 'QR',
-                            onClick: () => {},
-                        }}
                     />
                     <SubHeading>Partially hidden</SubHeading>
                     <Input
                         value="0x3Ebf31732F5A987b4f130Eb359B0975EBcbd68c8"
                         dataTest="input-block-monospace-hidden"
                         isPartiallyHidden
-                        button={{
-                            text: 'Show full address',
-                            icon: 'TREZOR',
-                            onClick: () => {},
-                        }}
                     />
                     <SubHeading>With label &amp; bottom text</SubHeading>
-                    <Input
-                        value="Input label"
-                        dataTest="input-label"
-                        topLabel="Label"
-                        bottomText="bottom text"
-                    />
+                    <Input value="Input label" dataTest="input-label" bottomText="bottom text" />
                     <Input
                         variant="small"
                         value="Small input label"
                         dataTest="input-small-label"
-                        topLabel="Label"
                         bottomText="bottom text"
                     />
                     <Input
                         state="error"
                         value="Input label with error"
                         dataTest="input-error-label"
-                        topLabel="Label"
                         bottomText="bottom text"
                     />
                     <Input
                         state="warning"
                         value="Input label with warning"
                         dataTest="input-warning-label"
-                        topLabel="Label"
                         bottomText="bottom text"
+                        labelAddon={
+                            <Button variant="tertiary" icon="QR" onClick={() => {}}>
+                                Scan QR code
+                            </Button>
+                        }
                     />
                     <Input
                         state="success"
                         value="Input label with success"
                         dataTest="input-success-label"
-                        topLabel="Label"
                         bottomText="bottom text"
+                        labelAddonIsVisible
+                        label={<Label>Label left</Label>}
+                        labelRight={<Label>Label right</Label>}
+                        labelAddon={
+                            <Button
+                                variant="tertiary"
+                                icon="QR"
+                                onClick={() => {
+                                    console.log('aaa');
+                                }}
+                            >
+                                Scan QR code
+                            </Button>
+                        }
                     />
                     <Input
                         disabled
                         value="Disabled input label"
                         dataTest="input-disabled-label"
-                        topLabel="Label"
+                        label={<Label>label</Label>}
                         bottomText="bottom text"
                     />
                 </StoryColumn>
@@ -122,26 +139,26 @@ storiesOf('Form', module).add(
                         value="test value"
                         state="success"
                         wrapperProps={{ 'data-test': 'textarea-success' }}
-                        topLabel="Top label"
+                        label="Top label"
                         bottomText="bottom text"
                     />
                     <Textarea
                         value="test value"
                         state="warning"
                         wrapperProps={{ 'data-test': 'textarea-warning' }}
-                        topLabel="Top label"
+                        label="Top label"
                         bottomText="bottom text"
                     />
                     <Textarea
                         value="test value"
                         state="error"
                         wrapperProps={{ 'data-test': 'textarea-error' }}
-                        topLabel="Top label"
+                        label="Top label"
                         bottomText="bottom text"
                     />
                     <Textarea
                         wrapperProps={{ 'data-test': 'textarea-label' }}
-                        topLabel="Top label"
+                        label="Top label"
                         bottomText="bottom text"
                     />
                     <Textarea

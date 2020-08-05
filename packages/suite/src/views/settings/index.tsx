@@ -10,7 +10,7 @@ import {
     TextColumn,
 } from '@suite-components/Settings';
 import { FIAT, LANGUAGES } from '@suite-config';
-import { useAnalytics, useDevice } from '@suite-hooks';
+import { useAnalytics } from '@suite-hooks';
 import { Button, Tooltip, Switch } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
@@ -33,7 +33,7 @@ const VersionButton = styled(Button)`
 
 const VersionLink = styled.a``;
 
-export default ({
+const Settings = ({
     language,
     metadata,
     setLocalCurrency,
@@ -47,7 +47,6 @@ export default ({
     // enableMetadata,
     disableMetadata,
 }: Props) => {
-    const { isLocked } = useDevice();
     const analytics = useAnalytics();
 
     return (
@@ -58,6 +57,7 @@ export default ({
                     <ActionColumn>
                         <ActionSelect
                             variant="small"
+                            noTopLabel
                             value={{
                                 value: language,
                                 label: LANGUAGES.find(l => l.code === language)!.name,
@@ -84,6 +84,7 @@ export default ({
                     <TextColumn title={<Translation id="TR_PRIMARY_FIAT" />} />
                     <ActionColumn>
                         <ActionSelect
+                            noTopLabel
                             variant="small"
                             onChange={(option: { value: string; label: string }) => {
                                 setLocalCurrency(option.value);
@@ -96,7 +97,6 @@ export default ({
                             }}
                             value={buildCurrencyOption(localCurrency)}
                             options={FIAT.currencies.map(c => buildCurrencyOption(c))}
-                            isDisabled={isLocked()}
                             data-test="@settings/fiat-select"
                         />
                     </ActionColumn>
@@ -222,3 +222,5 @@ export default ({
         </SettingsLayout>
     );
 };
+
+export default Settings;

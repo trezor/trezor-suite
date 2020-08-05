@@ -1,5 +1,5 @@
 import React from 'react';
-import App, { AppContext } from 'next/app';
+import App from 'next/app';
 import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
 import * as Sentry from '@sentry/browser';
@@ -32,12 +32,6 @@ interface Props {
 }
 
 class TrezorSuiteApp extends App<Props> {
-    static async getInitialProps({ Component, ctx }: AppContext): Promise<any> {
-        return {
-            pageProps: Component.getInitialProps ? await Component.getInitialProps(ctx) : {},
-        };
-    }
-
     componentDidMount() {
         if (!window.Cypress && !isDev()) {
             Sentry.init(SENTRY_CONFIG);

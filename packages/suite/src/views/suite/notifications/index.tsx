@@ -90,7 +90,7 @@ const NotificationView = (props: ViewProps) => {
     );
 };
 
-export default (props: Props) => {
+const Notifications = (props: Props) => {
     // TODO: filter notifications only for selected device
     // TODO: decide which notification should be displayed
     // TODO: decide which notification should have CTA
@@ -130,3 +130,5 @@ export default (props: Props) => {
         </>
     );
 };
+
+export default Notifications;

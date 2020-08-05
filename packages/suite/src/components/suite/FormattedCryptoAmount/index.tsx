@@ -8,15 +8,24 @@ const Value = styled.span`
 const Symbol = styled.span``;
 
 interface Props {
-    value: string;
+    value: React.ReactNode;
     symbol?: string;
+    disableHiddenPlaceholder?: boolean;
+    className?: string;
 }
 
-const FormattedCryptoAmount = ({ value, symbol }: Props) => (
-    <HiddenPlaceholder>
-        <Value>{value}</Value>
-        {symbol && <Symbol>{` ${symbol.toUpperCase()}`}</Symbol>}
-    </HiddenPlaceholder>
-);
+const FormattedCryptoAmount = ({ value, symbol, disableHiddenPlaceholder, className }: Props) => {
+    const content = (
+        <>
+            <Value>{value}</Value>
+            {symbol && <Symbol>{` ${symbol.toUpperCase()}`}</Symbol>}
+        </>
+    );
+
+    if (disableHiddenPlaceholder) {
+        return content;
+    }
+    return <HiddenPlaceholder className={className}>{content}</HiddenPlaceholder>;
+};
 
 export default FormattedCryptoAmount;

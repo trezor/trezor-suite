@@ -6,6 +6,7 @@ const Wrapper = styled.div`
     display: flex;
     color: ${colors.BLACK50};
     align-items: center;
+    justify-content: center;
 `;
 
 const Text = styled.span`
@@ -22,21 +23,18 @@ const StyledIcon = styled(Icon)`
 
 interface Props {
     children?: React.ReactNode;
-    tooltipContent: TooltipProps['content'];
+    tooltipContent?: TooltipProps['content'];
 }
 
 const ColHeader = ({ children, tooltipContent, ...rest }: Props) => {
     return (
         <Wrapper {...rest}>
             <Text>{children}</Text>
-            <Tooltip maxWidth={285} placement="top" content={tooltipContent}>
-                <StyledIcon
-                    icon="INFO"
-                    hoverColor={colors.BLACK0}
-                    color={colors.BLACK50}
-                    size={16}
-                />
-            </Tooltip>
+            {tooltipContent && (
+                <Tooltip maxWidth={285} placement="top" content={tooltipContent}>
+                    <StyledIcon icon="INFO_ACTIVE" color={colors.NEUE_TYPE_LIGHT_GREY} size={16} />
+                </Tooltip>
+            )}
         </Wrapper>
     );
 };

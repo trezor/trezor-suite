@@ -59,6 +59,7 @@ const NavigationActions = (props: Props) => {
                     });
                     setDiscreetMode(!discreetMode);
                 }}
+                isActive={discreetMode}
                 label={<Translation id="TR_DISCREET" />}
                 icon={discreetMode ? 'HIDE' : 'SHOW'}
                 isMobileLayout={props.isMobileLayout}
@@ -73,6 +74,7 @@ const NavigationActions = (props: Props) => {
 
                 return (
                     <ActionItem
+                        key={item.translationId}
                         label={<Translation id={item.translationId} />}
                         data-test={dataTestId}
                         onClick={() => {

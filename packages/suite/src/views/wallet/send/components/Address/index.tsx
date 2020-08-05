@@ -1,6 +1,6 @@
 import { Translation, AddressLabeling, QuestionTooltip } from '@suite-components';
 import styled from 'styled-components';
-import { Input } from '@trezor/components';
+import { Input, Button } from '@trezor/components';
 
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Output } from '@wallet-types/sendForm';
@@ -47,7 +47,21 @@ export default ({ output, account, openModal, sendFormActions, send }: Props) =>
         <Input
             state={getInputState(error, value, showLoadingForCompose, true)}
             monospace
-            topLabel={
+            labelAddon={
+                <Button
+                    variant="tertiary"
+                    icon="QR"
+                    onClick={() => {
+                        openModal({
+                            type: 'qr-reader',
+                            outputId: id,
+                        });
+                    }}
+                >
+                    <Translation id="TR_SCAN" />
+                </Button>
+            }
+            label={
                 <Label>
                     <Text>
                         <Translation id="TR_RECIPIENT_ADDRESS" />
@@ -58,15 +72,6 @@ export default ({ output, account, openModal, sendFormActions, send }: Props) =>
             bottomText={
                 getErrorMessage(error, isComposing) || <AddressLabeling address={value} knownOnly />
             }
-            button={{
-                icon: 'QR',
-                onClick: () =>
-                    openModal({
-                        type: 'qr-reader',
-                        outputId: id,
-                    }),
-                text: <Translation id="TR_SCAN" />,
-            }}
             value={value || ''}
             onChange={e => sendFormActions.handleAddressChange(id, e.target.value)}
         />

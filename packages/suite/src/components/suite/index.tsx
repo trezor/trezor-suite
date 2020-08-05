@@ -24,9 +24,11 @@ import TransactionsGraph from './TransactionsGraph';
 import DeviceInvalidModeLayout from './DeviceInvalidModeLayout';
 import AppNavigationPanel from './AppNavigationPanel';
 import AppNavigation from './AppNavigation';
+import Ticker from './Ticker';
 import { Translation } from './Translation';
 import { AccountLabeling, AddressLabeling, WalletLabeling, AddMetadataLabel } from './Labeling';
 import FormattedCryptoAmount from './FormattedCryptoAmount';
+import Sign from './Sign';
 
 export {
     Backdrop,
@@ -62,4 +64,6 @@ export {
     AppNavigationPanel,
     AppNavigation,
     FormattedCryptoAmount,
+    Ticker,
+    Sign,
 };

@@ -1,11 +1,10 @@
 import { boolean, select, text } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
+import { Button, Input } from '../../..';
 import { IconProps } from '../../Icon';
 import { variables } from '../../../config';
 import React from 'react';
 import { infoOptions } from '../../../support/storybook';
-
-import { Input } from '.';
 
 storiesOf('Form', module).add(
     'Input',
@@ -39,7 +38,8 @@ storiesOf('Form', module).add(
             null
         );
 
-        const topLabel: string = text('Top label', '');
+        const label: string = text('Label', 'Label');
+        const labelAddon = <Button variant="tertiary">Label Addon</Button>;
         const bottomText: string = text('Bottom text', '');
         const placeholder: string = text('Placeholder', '');
         const isLoading = boolean('Loading', false);
@@ -80,7 +80,8 @@ storiesOf('Form', module).add(
                 {...(state ? { state } : {})}
                 {...(variant ? { variant } : {})}
                 {...(display ? { display } : {})}
-                {...(topLabel ? { topLabel } : {})}
+                {...(label ? { label } : {})}
+                {...(labelAddon ? { labelAddon } : {})}
                 {...(bottomText ? { bottomText } : {})}
                 {...(placeholder ? { placeholder } : {})}
                 {...(isLoading ? { isLoading } : {})}

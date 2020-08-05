@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { CoinLogo, H1, H2, colors, Dropdown, variables } from '@trezor/components';
 import {
+    Ticker,
     FiatValue,
     Translation,
     AccountLabeling,
@@ -13,7 +14,6 @@ import { useSelector, useActions } from '@suite-hooks';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import * as routerActions from '@suite-actions/routerActions';
 import AccountNavigation from './components/AccountNavigation';
-import Ticker from './components/Ticker';
 
 const BalanceWrapper = styled.div`
     display: flex;
@@ -42,7 +42,10 @@ const AccountTopPanel = () => {
     const { symbol, formattedBalance } = account;
     const dropdownItems = [
         {
-            callback: () => goto('wallet-details', undefined, true),
+            key: 'account-details',
+            callback: () => {
+                goto('wallet-details', undefined, true);
+            },
             label: <Translation id="TR_NAV_DETAILS" />,
             isHidden: account.networkType !== 'bitcoin',
         },
@@ -65,7 +68,10 @@ const AccountTopPanel = () => {
             navigation={<AccountNavigation account={account} />}
             dropdown={
                 visibleDropdownItems.length > 0 ? (
-                    <Dropdown alignMenu="right" items={[{ options: visibleDropdownItems }]} />
+                    <Dropdown
+                        alignMenu="right"
+                        items={[{ key: 'group1', options: visibleDropdownItems }]}
+                    />
                 ) : undefined
             }
         >
@@ -85,7 +91,7 @@ const AccountTopPanel = () => {
                 </FiatValue>
             </BalanceWrapper>
 
-            {!isTestnet(symbol) && <Ticker symbol={symbol} />}
+            {!isTestnet(symbol) && <Ticker symbol={symbol} tooltipPos="bottom" />}
         </AppNavigationPanel>
     );
 };

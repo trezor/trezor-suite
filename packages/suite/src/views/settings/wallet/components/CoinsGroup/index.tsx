@@ -115,7 +115,7 @@ const Unavailable = ({ type }: { type: UnavailableCapability }) => {
     }
 };
 
-export default ({
+const CoinsGroup = ({
     label,
     description,
     onActivateAll,
@@ -200,3 +200,5 @@ export default ({
         </Wrapper>
     );
 };
+
+export default CoinsGroup;

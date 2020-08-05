@@ -2,7 +2,6 @@ import React from 'react';
 import { AccountWatchOnlyMode } from '@wallet-reducers/selectedAccountReducer';
 
 import AuthConfirmFailed from './AuthConfirmFailed';
-import DeviceDisconnected from './DeviceDisconnected';
 import LoadingOtherAccounts from './LoadingOtherAccounts';
 import BackendDisconnected from './BackendDisconnected';
 import DeviceUnavailable from './DeviceUnavailable';
@@ -21,8 +20,6 @@ export default (props: Props) => {
                         return <AuthConfirmFailed key={m} />;
                     case 'account-loading-others':
                         return <LoadingOtherAccounts key={m} />;
-                    case 'device-disconnected':
-                        return <DeviceDisconnected key={m} />;
                     case 'backend-disconnected':
                         return <BackendDisconnected key={m} />;
                     case 'device-unavailable':

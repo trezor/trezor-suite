@@ -613,10 +613,6 @@ const definedMessages = defineMessages({
         description: 'Display label of device',
         id: 'TR_DEVICE_LABEL',
     },
-    TR_DEVICE_LABEL_IS_DISCONNECTED: {
-        defaultMessage: 'Device {deviceLabel} is disconnected',
-        id: 'TR_DEVICE_LABEL_IS_DISCONNECTED',
-    },
     TR_DEVICE_LABEL_IS_NOT_BACKED_UP: {
         defaultMessage: 'Device {deviceLabel} is not backed up',
         id: 'TR_DEVICE_LABEL_IS_NOT_BACKED_UP',
@@ -861,7 +857,7 @@ const definedMessages = defineMessages({
         id: 'TR_ETH_GAS_PRICE_NOT_NUMBER',
     },
     TR_EXCHANGE_RATE: {
-        defaultMessage: 'Exchange rate (7d)',
+        defaultMessage: 'Exchange rate',
         id: 'TR_EXCHANGE_RATE',
     },
     TR_FAILED_BACKUP: {
@@ -1305,6 +1301,10 @@ const definedMessages = defineMessages({
             '{accountsCount} {accountsCount, plural, one {account} other {accounts}} • {fiatValue}',
         description: 'Used as title for a wallet instance in Switch Device modal',
         id: 'TR_NUM_ACCOUNTS_FIAT_VALUE',
+    },
+    TR_COUNT_WALLETS: {
+        defaultMessage: '{count} {count, plural, one {wallet} other {wallets}}',
+        id: 'TR_COUNT_WALLETS',
     },
     TR_OFFLINE: {
         defaultMessage: 'Offline',
@@ -3217,12 +3217,12 @@ const definedMessages = defineMessages({
     },
     DESKTOP_OUTDATED_TITLE: {
         id: 'DESKTOP_OUTDATED_TITLE',
-        defaultMessage: 'Outdated version',
+        defaultMessage: 'New update is available',
     },
     DESKTOP_OUTDATED_MESSAGE: {
         id: 'DESKTOP_OUTDATED_MESSAGE',
         defaultMessage:
-            'Your version {currentVersion} does not match latest version from github {newVersion}',
+            'Your version {currentVersion} does not match the latest version from GitHub {newVersion}',
     },
     DESKTOP_OUTDATED_BUTTON_DOWNLOAD: {
         id: 'DESKTOP_OUTDATED_BUTTON_DOWNLOAD',
@@ -3404,13 +3404,15 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Try a different date range.{newLine}Still nothing? Go ahead and send a transaction.',
     },
-    TR_RECEIVED_AMOUNT: {
-        id: 'TR_RECEIVED_AMOUNT',
-        defaultMessage: 'Received {amount}',
+    TR_RECEIVED: {
+        id: 'TR_RECEIVED',
+        defaultMessage: 'Received',
+        description: 'Used in graph tooltip: Received x USD/BTC',
     },
-    TR_SENT_AMOUNT: {
-        id: 'TR_SENT_AMOUNT',
-        defaultMessage: 'Sent {amount}',
+    TR_SENT: {
+        id: 'TR_SENT',
+        defaultMessage: 'Sent',
+        description: 'Used in graph tooltip: Sent x USD/BTC',
     },
     TR_LANDING_TITLE: {
         id: 'TR_LANDING_TITLE',
@@ -3505,6 +3507,30 @@ const definedMessages = defineMessages({
     TR_OPEN_IN_MEDIUM: {
         id: 'TR_OPEN_IN_MEDIUM',
         defaultMessage: 'Open in Medium',
+    },
+    TR_MY_ASSETS: {
+        id: 'TR_MY_ASSETS',
+        defaultMessage: 'My Assets',
+    },
+    TR_COULD_NOT_RETRIEVE_CHANGELOG: {
+        id: 'TR_COULD_NOT_RETRIEVE_CHANGELOG',
+        defaultMessage: 'Could not retrieve the changelog',
+    },
+    TR_BALANCE: {
+        id: 'TR_BALANCE',
+        defaultMessage: 'Balance',
+    },
+    TR_MY_PORTFOLIO: {
+        id: 'TR_MY_PORTFOLIO',
+        defaultMessage: 'My Portfolio',
+    },
+    TR_ALL_TRANSACTIONS: {
+        id: 'TR_ALL_TRANSACTIONS',
+        defaultMessage: 'All Transactions',
+    },
+    TR_TOKENS: {
+        id: 'TR_TOKENS',
+        defaultMessage: 'Tokens',
     },
 } as const);
 

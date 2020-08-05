@@ -1,5 +1,5 @@
 export default {
-    BACKGROUND: '#f7f7f7',
+    BACKGROUND: '#f4f4f4',
 
     GREEN: '#30C101',
     GREENER: '#259f2a',
@@ -62,4 +62,5 @@ export default {
     NEUE_TYPE_WHITE: '#ffffff',
 
     NEUE_STROKE_GREY: '#e8e8e8',
+    NEUE_BG_TOOLTIP: '#262742',
 } as const;

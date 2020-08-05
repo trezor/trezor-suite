@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactSwitch, { ReactSwitchProps } from 'react-switch';
 import colors from '../../../config/colors';
 import styled, { css } from 'styled-components';
@@ -9,7 +9,7 @@ const StyledReactSwitch = styled(({ isSmall, ...rest }) => <ReactSwitch {...rest
     .react-switch-handle {
         top: ${props => (props.isSmall ? 2 : 3)}px !important;
         border: solid 1px ${colors.WHITE} !important;
-        background-image: linear-gradient(to top, ${colors.BLACK96}, ${colors.WHITE}) !important;
+        background-color: linear-gradient(to top, ${colors.BLACK96}, ${colors.WHITE}) !important;
 
         ${props =>
             props.checked &&
@@ -51,17 +51,21 @@ const Switch = ({ onChange, isDisabled, isSmall, dataTest, checked, ...rest }: P
         setIsChecked(checked);
     };
 
+    useEffect(() => {
+        setIsChecked(checked);
+    }, [checked]);
+
     return (
         <Wrapper data-test={dataTest}>
             <StyledReactSwitch
-                checked={isChecked || checked}
+                checked={isChecked}
                 disabled={isDisabled}
                 onChange={handleChange}
-                onColor={colors.GREEN}
+                onColor={colors.NEUE_BG_GREEN}
                 checkedIcon={false}
                 uncheckedIcon={false}
-                offColor={colors.BLACK70}
-                color={colors.GREEN}
+                offColor={colors.NEUE_STROKE_GREY}
+                color={colors.NEUE_BG_GREEN}
                 isSmall={isSmall}
                 width={isSmall ? 32 : 42}
                 height={isSmall ? 18 : 24}

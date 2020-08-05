@@ -150,14 +150,18 @@ const ModalWindow = styled.div<ModalWindowProps>`
         `}
 `;
 
-const Heading = styled(H2)`
+const Heading = styled(H2)<{ noPadding: boolean }>`
     text-align: center;
 
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        /* make sure heading doesn't overflow over close button */
-        padding-right: 20px;
-        padding-left: 20px;
-    }
+    ${props =>
+        !props.noPadding &&
+        css`
+            @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+                /* make sure heading doesn't overflow over close button */
+                padding-right: 20px;
+                padding-left: 20px;
+            }
+        `}
 `;
 
 const Content = styled.div`
@@ -261,6 +265,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     padding?: [string, string, string, string]; // [SM, MD, LG, XL]
     noBackground?: boolean;
     onCancel?: () => void;
+    hideCancelButton?: boolean;
 }
 
 const Modal = ({
@@ -279,6 +284,7 @@ const Modal = ({
     fixedWidth = getFixedWidth(size),
     useFixedHeight = false,
     fixedHeight = FIXED_HEIGHT,
+    hideCancelButton = false,
     ...rest
 }: Props) => {
     const escPressed = useKeyPress('Escape');
@@ -303,9 +309,9 @@ const Modal = ({
             }}
             {...rest}
         >
-            {heading && <Heading>{heading}</Heading>}
+            {heading && <Heading noPadding={hideCancelButton}>{heading}</Heading>}
             {description && <Description>{description}</Description>}
-            {cancelable && (
+            {cancelable && !hideCancelButton && (
                 <StyledLink onClick={onCancel}>
                     <Icon size={24} color={colors.BLACK0} icon="CROSS" />
                 </StyledLink>

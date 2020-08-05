@@ -27,7 +27,7 @@ interface Props {
     account: Account;
 }
 
-export default ({ account }: Props) => {
+const NoTransactions = ({ account }: Props) => {
     const network = getNetwork(account.symbol)!;
     const explorerUrl = `${network.explorer.account}${account.descriptor}`;
     return (
@@ -44,3 +44,5 @@ export default ({ account }: Props) => {
         </Wrapper>
     );
 };
+
+export default NoTransactions;

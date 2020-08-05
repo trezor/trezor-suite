@@ -1,35 +1,33 @@
 import React, { useMemo } from 'react';
-import styled from 'styled-components';
-import { colors, variables, Loader } from '@trezor/components';
-import { groupTransactionsByDate, sumTransactions } from '@wallet-utils/transactionUtils';
+import styled, { css } from 'styled-components';
+import { colors, variables, Loader, Card } from '@trezor/components';
+import { Translation } from '@suite-components';
+import { Section } from '@dashboard-components';
+import { useSelector } from '@suite-hooks';
+import { groupTransactionsByDate } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
-import { Account, WalletAccountTransaction } from '@wallet-types';
-import TransactionItem from './components/TransactionItem';
+import { WalletAccountTransaction } from '@wallet-types';
+import TransactionItem from './components/TransactionItem/Container';
 import Pagination from './components/Pagination';
-import { Card, Translation } from '@suite-components';
-import DayHeader from './components/DayHeader';
+import TransactionsGroup from './components/TransactionsGroup';
 
-const StyledCard = styled(Card)`
+const StyledCard = styled(Card)<{ isPending: boolean }>`
     flex-direction: column;
-    margin-bottom: 20px;
-    padding-bottom: 20px;
+    padding: 0px 24px;
+    ${props =>
+        props.isPending &&
+        css`
+            border-left: 6px solid ${colors.NEUE_TYPE_ORANGE};
+            padding-left: 18px;
+        `}
 `;
 
-const Table = styled.div`
-    display: grid;
-    grid-template-areas: 'date type target amount fiat';
-    grid-template-columns: auto auto 1fr auto auto;
-    align-items: center;
-    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        grid-template-areas:
-            'date type target target'
-            'date type amount fiat';
-        grid-template-columns: auto auto 1fr auto;
-    }
+const StyledSection = styled(Section)`
+    margin-bottom: 20px;
 `;
 
 const PaginationWrapper = styled.div`
-    margin: 10px 0px;
+    margin-top: 20px;
 `;
 
 const LoaderWrapper = styled.div`
@@ -48,7 +46,6 @@ const LoaderText = styled.div`
 `;
 
 interface Props {
-    account: Account;
     transactions: WalletAccountTransaction[];
     currentPage: number;
     totalPages?: number;
@@ -59,7 +56,6 @@ interface Props {
 }
 
 const TransactionList = ({
-    account,
     transactions,
     currentPage,
     totalPages,
@@ -68,6 +64,7 @@ const TransactionList = ({
     isLoading,
     ...props
 }: Props) => {
+    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const startIndex = (currentPage - 1) * perPage;
     const stopIndex = startIndex + perPage;
 
@@ -89,7 +86,10 @@ const TransactionList = ({
     const showPagination = totalPages ? totalPages > 1 : shouldShowRipplePagination;
 
     return (
-        <StyledCard noVerticalPadding>
+        <StyledSection
+            heading={<Translation id="TR_ALL_TRANSACTIONS" />}
+            // actions={} // TODO: add Search and Dropdown with export
+        >
             {isLoading ? (
                 <LoaderWrapper>
                     <Loader size={28} />
@@ -98,27 +98,28 @@ const TransactionList = ({
                     </LoaderText>
                 </LoaderWrapper>
             ) : (
-                <Table>
-                    {Object.keys(transactionsByDate).map(dateKey => {
-                        const totalAmountPerDay = sumTransactions(transactionsByDate[dateKey]);
-                        return (
-                            <React.Fragment key={dateKey}>
-                                <DayHeader
-                                    dateKey={dateKey}
-                                    symbol={props.symbol}
-                                    totalAmount={totalAmountPerDay}
-                                />
-                                {transactionsByDate[dateKey].map(tx => (
+                Object.keys(transactionsByDate).map(dateKey => {
+                    const isPending = dateKey === 'pending';
+                    return (
+                        <TransactionsGroup
+                            key={dateKey}
+                            dateKey={dateKey}
+                            symbol={props.symbol}
+                            transactions={transactionsByDate[dateKey]}
+                            localCurrency={localCurrency}
+                        >
+                            <StyledCard isPending={isPending}>
+                                {transactionsByDate[dateKey].map((tx: WalletAccountTransaction) => (
                                     <TransactionItem
                                         key={tx.txid}
                                         transaction={tx}
-                                        account={account}
+                                        isPending={isPending}
                                     />
                                 ))}
-                            </React.Fragment>
-                        );
-                    })}
-                </Table>
+                            </StyledCard>
+                        </TransactionsGroup>
+                    );
+                })
             )}
             {showPagination && (
                 <PaginationWrapper>
@@ -130,7 +131,7 @@ const TransactionList = ({
                     />
                 </PaginationWrapper>
             )}
-        </StyledCard>
+        </StyledSection>
     );
 };
 

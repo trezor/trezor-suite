@@ -27,7 +27,6 @@ const Content = styled.div<{ paddingSize: string }>`
     border-radius: 6px;
     padding: ${props => props.paddingSize};
     background: ${colors.WHITE};
-    box-shadow: 0 6px 14px 0 rgba(0, 0, 0, 0.05);
 `;
 
 const Header = styled.div`

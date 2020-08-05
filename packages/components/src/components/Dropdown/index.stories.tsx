@@ -36,15 +36,18 @@ storiesOf('Dropdown', module).add(
                         //     ],
                         // },
                         {
+                            key: '1',
                             label: 'Group 1',
                             options: [
                                 {
+                                    key: '1',
                                     label: 'item 1',
                                     callback: () => {
                                         console.log('item 1 clicked');
                                     },
                                 },
                                 {
+                                    key: '2',
                                     label: 'item 2',
                                     callback: () => {
                                         console.log('item 2 clicked');
@@ -53,15 +56,18 @@ storiesOf('Dropdown', module).add(
                             ],
                         },
                         {
+                            key: '2',
                             label: 'Group 2',
                             options: [
                                 {
+                                    key: '1',
                                     label: 'item 3 with very long name',
                                     callback: () => {
                                         console.log('item 3 clicked');
                                     },
                                 },
                                 {
+                                    key: '2',
                                     label: 'disabled item',
                                     callback: () => {
                                         console.log('disabled item clicked');
@@ -70,6 +76,7 @@ storiesOf('Dropdown', module).add(
                                 },
 
                                 {
+                                    key: '3',
                                     label: 'item 4',
                                     callback: () => {
                                         console.log('item 4 clicked');

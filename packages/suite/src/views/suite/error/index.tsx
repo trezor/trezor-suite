@@ -14,7 +14,7 @@ const Wrapper = styled.div`
     margin-top: 160px;
 `;
 
-export default () => {
+const ErrorPage = () => {
     return (
         <Wrapper>
             <H1>
@@ -32,3 +32,5 @@ export default () => {
         </Wrapper>
     );
 };
+
+export default ErrorPage;
