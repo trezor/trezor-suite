@@ -13,7 +13,7 @@ const TargetAddressLabel = ({ target, type }: Props) => {
         <Translation id="TR_SENT_TO_SELF" />
     ) : (
         target.addresses?.map((a, i) =>
-            type === 'sent' ? <AddressLabeling key={i} address={a} /> : <span>{a}</span>,
+            type === 'sent' ? <AddressLabeling key={i} address={a} /> : <span key={i}>{a}</span>,
         )
     );
     return <>{addressLabel}</>;

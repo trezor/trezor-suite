@@ -1,20 +1,15 @@
 import React, { useCallback, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { H2, variables, colors, Icon } from '@trezor/components';
-import { Translation } from '@suite-components';
-
-import { DISCOVERY } from '@wallet-actions/constants';
+import { Translation, AddAccountButton } from '@suite-components';
 import { useDiscovery, useLayoutSize } from '@suite-hooks';
-import * as modalActions from '@suite-actions/modalActions';
 import { sortByCoin, getFailedAccounts } from '@wallet-utils/accountUtils';
-import { AppState, Dispatch } from '@suite-types';
+import { AppState } from '@suite-types';
 import { Account } from '@wallet-types';
 
 import AccountGroup from './components/AccountGroup';
 import AccountItem from './components/AccountItem/Container';
-import AddAccountButton from './components/AddAccount';
 
 const Wrapper = styled.div<{ isMobileLayout?: boolean }>`
     display: flex;
@@ -133,13 +128,9 @@ const mapStateToProps = (state: AppState) => ({
     selectedAccount: state.wallet.selectedAccount,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    openModal: bindActionCreators(modalActions.openModal, dispatch),
-});
+type Props = ReturnType<typeof mapStateToProps>;
 
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-
-const AccountsMenu = ({ device, accounts, selectedAccount, openModal }: Props) => {
+const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
     const { discovery } = useDiscovery();
     const { params } = selectedAccount;
     const { isMobileLayout } = useLayoutSize();
@@ -172,7 +163,6 @@ const AccountsMenu = ({ device, accounts, selectedAccount, openModal }: Props) =
         account.accountType === params.accountType &&
         account.index === params.accountIndex;
 
-    const discoveryIsRunning = discovery.status <= DISCOVERY.STATUS.STOPPING;
     const failed = getFailedAccounts(discovery);
 
     const list = sortByCoin(accounts.filter(a => a.deviceState === device.state).concat(failed));
@@ -182,10 +172,6 @@ const AccountsMenu = ({ device, accounts, selectedAccount, openModal }: Props) =
     );
     const segwitAccounts = list.filter(a => a.accountType === 'segwit' && (!a.empty || a.visible));
     const legacyAccounts = list.filter(a => a.accountType === 'legacy' && (!a.empty || a.visible));
-
-    // TODO: add more cases when adding account is not possible
-    const addAccountDisabled =
-        discoveryIsRunning || !device.connected || device.authConfirm || device.authFailed;
 
     const buildGroup = (type: Account['accountType'], accounts: Account[]) => {
         const groupHasBalance = accounts.find(a => a.availableBalance !== '0');
@@ -246,16 +232,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount, openModal }: Props) =
                     <MenuItemsWrapper>
                         <ExpandedMobileWrapper>
                             <Search>
-                                <AddAccountButton
-                                    onClick={() =>
-                                        openModal({
-                                            type: 'add-account',
-                                            device,
-                                        })
-                                    }
-                                    disabled={!!addAccountDisabled}
-                                    device={device}
-                                />
+                                <AddAccountButton device={device} noButtonLabel />
                             </Search>
                             {buildGroup('normal', normalAccounts)}
                             {buildGroup('segwit', segwitAccounts)}
@@ -274,17 +251,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount, openModal }: Props) =
                     <Heading noMargin>
                         <Translation id="TR_MY_ACCOUNTS" />
                     </Heading>
-
-                    <AddAccountButton
-                        onClick={() =>
-                            openModal({
-                                type: 'add-account',
-                                device,
-                            })
-                        }
-                        disabled={!!addAccountDisabled}
-                        device={device}
-                    />
+                    <AddAccountButton device={device} noButtonLabel />
                 </MenuHeader>
 
                 {buildGroup('normal', normalAccounts)}
@@ -295,4 +262,4 @@ const AccountsMenu = ({ device, accounts, selectedAccount, openModal }: Props) =
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountsMenu);
+export default connect(mapStateToProps)(AccountsMenu);
