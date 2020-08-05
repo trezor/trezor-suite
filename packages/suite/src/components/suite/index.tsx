@@ -29,6 +29,7 @@ import { Translation } from './Translation';
 import { AccountLabeling, AddressLabeling, WalletLabeling } from './Labeling';
 import FormattedCryptoAmount from './FormattedCryptoAmount';
 import Sign from './Sign';
+import AddAccountButton from './AddAccountButton';
 
 export {
     Backdrop,
@@ -65,4 +66,5 @@ export {
     FormattedCryptoAmount,
     Ticker,
     Sign,
+    AddAccountButton,
 };

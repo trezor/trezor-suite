@@ -3527,6 +3527,10 @@ const definedMessages = defineMessages({
         id: 'TR_TOKENS',
         defaultMessage: 'Tokens',
     },
+    TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY: {
+        id: 'TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY',
+        defaultMessage: 'Wait for discovery process to complete before adding a new account.',
+    },
 } as const);
 
 export default definedMessages;
