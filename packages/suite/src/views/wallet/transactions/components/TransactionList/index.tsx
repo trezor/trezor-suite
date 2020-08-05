@@ -7,7 +7,7 @@ import { useSelector } from '@suite-hooks';
 import { groupTransactionsByDate } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
 import { WalletAccountTransaction } from '@wallet-types';
-import TransactionItem from './components/TransactionItem/Container';
+import TransactionItem from './components/TransactionItem';
 import Pagination from './components/Pagination';
 import TransactionsGroup from './components/TransactionsGroup';
 
