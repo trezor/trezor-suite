@@ -283,7 +283,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                             </defs>
 
                             <Bar
-                                dataKey={(data: any) => Number(props.receivedValueFn(data))}
+                                dataKey={(data: any) => Number(props.receivedValueFn(data) ?? 0)}
                                 // stackId="stack"
                                 fill="url(#greenGradient)"
                                 barSize={selectedRange.label === 'all' ? 8 : 16}
@@ -291,7 +291,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 // xAxisId="primary"
                             />
                             <Bar
-                                dataKey={(data: any) => Number(props.sentValueFn(data))}
+                                dataKey={(data: any) => Number(props.sentValueFn(data) ?? 0)}
                                 // stackId="stack"
                                 fill="url(#redGradient)"
                                 barSize={selectedRange.label === 'all' ? 8 : 16}
