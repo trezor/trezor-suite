@@ -76,7 +76,6 @@ const VerifyAddress = () => {
     if (selectedAccount.status !== 'loaded') return null;
     const { account } = selectedAccount;
     const { symbol, index, availableBalance } = account;
-
     const { path, address } = getAccountInfo(account);
 
     if (!path || !address) {

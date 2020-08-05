@@ -2,7 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { BuyTrade } from '@suite/services/invityAPI/buyTypes';
 import { Card } from '@trezor/components';
+
 import VerifyAddress from './VerifyAddress';
+// import PaymentFailed from './PaymentFailed';
+// import PaymentProcessing from './PaymentProcessing';
+// import WaitingForPayment from './WaitingForPayment';
+// import PaymentSuccessful from './PaymentSuccessful';
 
 const Wrapper = styled.div`
     display: flex;
@@ -52,10 +57,20 @@ const SelectedOffer = ({ selectedQuote }: Props) => {
         paymentMethod,
     } = selectedQuote;
 
+    const activeView = 'verifyAddress';
+
     return (
         <Wrapper>
             <StyledCard>
-                <VerifyAddress />
+                {activeView === 'verifyAddress' && <VerifyAddress />}
+                {/* {activeView === 'waitingForPayment' && (
+                    <WaitingForPayment transactionId="dbd35574-aa74-49ba-b318-e3c16dbee1d7" />
+                )}
+                {activeView === 'paymentFailed' && (
+                    <PaymentFailed transactionId="dbd35574-aa74-49ba-b318-e3c16dbee1d7" />
+                )}
+                {activeView === 'paymentProcessing' && <PaymentProcessing />}
+                {activeView === 'paymentsuccessful' && <PaymentSuccessful />} */}
             </StyledCard>
             <Info>
                 <Row>

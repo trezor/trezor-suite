@@ -194,6 +194,7 @@ const CoinmarketBuy = () => {
                             <Left>
                                 <Input
                                     noTopLabel
+                                    defaultValue="10000"
                                     innerRef={register({
                                         validate: value => {
                                             if (!value) {
