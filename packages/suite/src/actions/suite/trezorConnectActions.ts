@@ -66,7 +66,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         const connectSrc =
             process.env.SUITE_TYPE === 'desktop'
                 ? resolveStaticPath('connect/')
-                : 'https://connect.corp.sldev.cz/develop/';
+                : 'https://connect.trezor.io/8/';
         // 'https://localhost:8088/';
         // 'https://connect.corp.sldev.cz/develop/';
 
