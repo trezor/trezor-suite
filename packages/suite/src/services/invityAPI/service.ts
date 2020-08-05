@@ -119,8 +119,7 @@ class InvityAPI {
     }
 
     private options(body = {}, method = 'POST'): any {
-        // TODO different header for web 'X-SuiteW-Api' and electron suite 'X-SuiteA-Api'
-        const apiHeader = 'X-SuiteW-Api';
+        const apiHeader = process.env.SUITE_TYPE === 'desktop' ? 'X-SuiteA-Api' : 'X-SuiteW-Api';
         if (method === 'POST') {
             return {
                 method,
