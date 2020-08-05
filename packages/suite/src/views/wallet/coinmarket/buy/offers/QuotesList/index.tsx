@@ -19,14 +19,14 @@ const Header = styled.div`
 `;
 
 interface Props {
-    selectQuote: Dispatch<SetStateAction<null>>;
-    quotes: BuyTrade[];
+    selectQuote: Dispatch<SetStateAction<undefined>>;
+    quotes?: BuyTrade[];
 }
 
 const Offers = ({ selectQuote, quotes }: Props) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const quotesRequest = useSelector(state => state.wallet.coinmarket.quotesRequest);
-    if (!quotesRequest) return null;
+    if (!quotesRequest || !quotes) return null;
 
     if (selectedAccount.status !== 'loaded') return null;
     const { account } = selectedAccount;

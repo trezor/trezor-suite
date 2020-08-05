@@ -6,6 +6,7 @@ const Wrapper = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const Label = styled.div`
@@ -18,11 +19,12 @@ const Value = styled.div``;
 
 interface Props {
     transactionId: string;
+    className?: string;
 }
 
-const TransactionId = ({ transactionId }: Props) => {
+const TransactionId = ({ transactionId, className }: Props) => {
     return (
-        <Wrapper>
+        <Wrapper className={className}>
             <Label>trans. id:</Label>
             <Value>{transactionId}</Value>
         </Wrapper>

@@ -23,7 +23,7 @@ const Offers = () => {
         if (setLayout) setLayout('Trezor Suite | Coinmarket', undefined, <CoinmarketTopPanel />);
     }, [setLayout]);
 
-    const [selectedQuote, selectQuote] = useState(null);
+    const [selectedQuote, selectQuote] = useState(undefined);
     const quotes = useSelector(state => state.wallet.coinmarket.quotes);
     const { goto } = useActions({ goto: routerActions.goto });
 
