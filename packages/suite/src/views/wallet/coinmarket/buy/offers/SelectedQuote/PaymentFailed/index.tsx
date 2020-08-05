@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Button, variables, colors } from '@trezor/components';
+import TransactionId from '../TransactionId';
 
 const Wrapper = styled.div`
     display: flex;
@@ -29,18 +30,6 @@ const Description = styled.div`
     text-align: center;
 `;
 
-const TransactionIdRow = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
-`;
-
-const Label = styled.div`
-    text-transform: uppercase;
-    font-size: ${variables.FONT_SIZE.TINY};
-    padding-right: 3px;
-`;
-
 const CancelButton = styled(Button)`
     margin-top: 15px;
 `;
@@ -62,10 +51,7 @@ const PaymentFailed = ({ transactionId, paymentGateUrl }: Props) => {
             <Description>
                 Unfortunately, your payment has failed. No funds were taken from your credit card.
             </Description>
-            <TransactionIdRow>
-                <Label>trans. id: </Label>
-                {transactionId}
-            </TransactionIdRow>
+            <TransactionId transactionId={transactionId} />
             <Link href={paymentGateUrl}>
                 <Button>Start again</Button>
             </Link>

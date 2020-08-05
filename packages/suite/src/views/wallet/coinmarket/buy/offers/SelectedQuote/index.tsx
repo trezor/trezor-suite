@@ -4,6 +4,7 @@ import { BuyTrade } from '@suite/services/invityAPI/buyTypes';
 import { Card, colors, variables } from '@trezor/components';
 
 import VerifyAddress from './VerifyAddress';
+import TransactionId from './TransactionId';
 // import PaymentFailed from './PaymentFailed';
 // import PaymentProcessing from './PaymentProcessing';
 // import WaitingForPayment from './WaitingForPayment';
@@ -108,6 +109,7 @@ const SelectedOffer = ({ selectedQuote }: Props) => {
                     <Right>{paymentMethod}</Right>
                 </Row>
             </Info>
+            <TransactionId transactionId="dbd35574-aa74-49ba-b318-e3c16dbee1d7" />
         </Wrapper>
     );
 };
