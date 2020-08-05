@@ -64,6 +64,7 @@ export default ({ network, internalNetworks, externalNetworks, setSelectedNetwor
     <Select
         isSearchable
         width={250}
+        maxMenuHeight={250}
         isClearable={false}
         value={buildNetworkOption(network)}
         options={buildNetworkOptions(internalNetworks, externalNetworks)}
