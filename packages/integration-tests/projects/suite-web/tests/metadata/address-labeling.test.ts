@@ -37,7 +37,6 @@ describe('Metadata', () => {
             cy.getTestElement(`${metadataEl}/add-label-button`).click({force: true });
             cy.passThroughInitMetadata();
 
-            cy.getTestElement(`${metadataEl}/add-label-button`).click({force: true });
             cy.getTestElement('@metadata/input').type('meoew address{enter}');
 
             cy.log('Already saved metadata shows dropdown onclick');
@@ -54,13 +53,6 @@ describe('Metadata', () => {
             cy.task('pressYes');
             cy.getTestElement('@modal/confirm-address/address-field').should('not.be.visible');
 
-            // cy.getTestElement(metadataEl).click();
-            // cy.getTestElement(metadataEl).click();
-            cy.getTestElement(metadataEl).click();
             cy.getTestElement('@metadata/copy-address-button').click();
-            // @metadata/copy-address-button
-
-
-    
     });
 });

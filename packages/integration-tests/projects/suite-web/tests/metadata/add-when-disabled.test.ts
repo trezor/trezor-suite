@@ -38,11 +38,6 @@ describe('Metadata', () => {
             cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click({ force: true });
             cy.passThroughInitMetadata();
 
-            // normally, after init metadata flow is finished, contenteditable element stays focused, but that does not work
-            // (don't know why) when running in cypress
-            cy.log('Clicking on label opens dropdown menu');
-            cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'").click();
-            cy.getTestElement('@metadata/edit-button').click();
     
             cy.log('Edit and submit changes by pressing enter key');
             cy.getTestElement('@metadata/input').type('{backspace}{backspace}{backspace}{backspace}{backspace}cool new label{enter}');

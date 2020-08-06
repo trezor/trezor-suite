@@ -147,10 +147,7 @@ const EditContainer = (props: {
                 size={16}
                 data-test="@metadata/submit"
                 icon="CHECK"
-                onClick={e => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('on submittimtiit');
+                onClick={() => {
                     submit(
                         divRef && divRef.current ? divRef.current.textContent : props.originalValue,
                     );
@@ -161,9 +158,7 @@ const EditContainer = (props: {
                 size={16}
                 data-test="@metadata/cancel"
                 icon="CROSS"
-                onClick={e => {
-                    e.preventDefault();
-                    e.stopPropagation();
+                onClick={() => {
                     submit(props.originalValue);
                 }}
                 color={colors.NEUE_BG_LIGHT_GREY}

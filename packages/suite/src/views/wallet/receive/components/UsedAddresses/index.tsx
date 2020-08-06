@@ -147,7 +147,7 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
 
     const dropdownOptions = [
         {
-            callback: onClick,
+            callback: () => onClick(),
             label: 'Confirm on device',
             key: 'confirm-on-device',
             'data-test': '@metadata/confirm-on-device-button',
@@ -274,14 +274,12 @@ const UsedAddresses = ({
                         key={addr.path}
                         addr={addr}
                         symbol={account.symbol}
-                        // metadata={addressLabels[addr.address]}
                         metadataPayload={{
                             type: 'addressLabel',
                             accountKey,
                             defaultValue: addr.address,
                             value: addressLabels[addr.address],
                         }}
-                        // metadataPayload={changeMetadata(addr.address, addressLabels[addr.address])}
                         revealed={addresses.find(f => f.address === addr.address)}
                         onClick={() => (!locked ? showAddress(addr.path, addr.address) : undefined)}
                         onCopy={() => copyAddress(addr.address)}
