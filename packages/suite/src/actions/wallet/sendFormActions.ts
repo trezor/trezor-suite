@@ -3,7 +3,6 @@ import TrezorConnect, {
     RipplePayment,
     PrecomposedTransaction,
     SignTransaction,
-    TransactionInput,
 } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import { toWei, fromWei } from 'web3-utils';
@@ -20,7 +19,6 @@ import {
     BTC_LOCKTIME_SEQUENCE,
 } from '@wallet-constants/sendForm';
 
-import { ParsedURI } from '@wallet-utils/cryptoUriParser';
 import {
     networkAmountToSatoshi,
     formatNetworkAmount,

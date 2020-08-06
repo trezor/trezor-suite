@@ -97,7 +97,7 @@ export default ({ type, state, label, value, symbol }: Props) => {
         outputLabel = <Translation id="TR_ETH_ADD_DATA" />;
     }
     if (type === 'locktime') {
-        outputLabel = <Translation id="TR_SCHEDULE_SEND" />;
+        outputLabel = <Translation id="TR_SCHEDULE_SEND" />; // TODO: blocks or date
     }
     if (type === 'fee') {
         outputLabel = <Translation id="TR_FEE" />;

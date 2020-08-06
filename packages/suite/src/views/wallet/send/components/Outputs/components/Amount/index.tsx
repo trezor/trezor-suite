@@ -74,6 +74,7 @@ export default ({ outputId }: { outputId: number }) => {
         register,
         outputs,
         getValues,
+        clearErrors,
         errors,
         setValue,
         calculateFiat,
@@ -119,6 +120,15 @@ export default ({ outputId }: { outputId: number }) => {
                         <Button
                             icon={isSetMaxActive ? 'CHECK' : 'SEND'}
                             onClick={() => {
+                                // reset errors
+                                if (amountError || fiatError) {
+                                    clearErrors([inputName, `outputs[${outputId}].fiat`]);
+                                }
+                                // reset field values
+                                if (!isSetMaxActive) {
+                                    setValue(inputName, '');
+                                    setValue(`outputs[${outputId}].fiat`, '');
+                                }
                                 setValue('setMaxOutputId', isSetMaxActive ? undefined : outputId);
                                 composeTransaction(inputName);
                             }}
