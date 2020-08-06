@@ -45,7 +45,7 @@ const getState = (index: number, buttonRequests: number) => {
     return undefined;
 };
 
-export default ({ selectedAccount, send, ...props }: Props) => {
+export default ({ selectedAccount, send, decision }: Props) => {
     const { device } = useDevice();
     const { cancelSignTx, pushTransaction } = useActions({
         cancelSignTx: sendFormActions.cancelSignTx,
@@ -126,8 +126,7 @@ export default ({ selectedAccount, send, ...props }: Props) => {
                         isDisabled={!signedTx}
                         onClick={async () => {
                             const result = await pushTransaction();
-                            // @ts-ignore: type modal decision
-                            props.decision.resolve(result);
+                            if (decision) decision.resolve(result);
                         }}
                     >
                         <Translation id="TR_SEND" />

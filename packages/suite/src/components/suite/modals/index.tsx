@@ -95,7 +95,7 @@ const getDeviceContextModal = (props: Props) => {
             return <ConfirmAction device={device} />;
         case 'ButtonRequest_ConfirmOutput':
         case 'ButtonRequest_SignTx':
-            return <ReviewTransaction />;
+            return <ReviewTransaction type="sign-transaction" />;
         default:
             return null;
     }
@@ -156,13 +156,7 @@ const getUserContextModal = (props: Props) => {
         case 'wipe-device':
             return <WipeDevice onCancel={modalActions.onCancel} />;
         case 'qr-reader':
-            return (
-                <QrScanner
-                    outputId={payload.outputId}
-                    setValue={payload.setValue}
-                    onCancel={modalActions.onCancel}
-                />
-            );
+            return <QrScanner decision={payload.decision} onCancel={modalActions.onCancel} />;
         case 'transaction-detail':
             return <TransactionDetail tx={payload.tx} onCancel={modalActions.onCancel} />;
         case 'passphrase-duplicate':

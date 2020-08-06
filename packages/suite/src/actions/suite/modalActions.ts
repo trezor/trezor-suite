@@ -2,12 +2,12 @@ import TrezorConnect, { UI } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
 import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
 import { Account, WalletAccountTransaction } from '@wallet-types';
-import { createDeferred, Deferred } from '@suite-utils/deferred';
+import { createDeferred, Deferred, DeferredResponse } from '@suite-utils/deferred';
 
 export type UserContextPayload =
     | {
           type: 'qr-reader';
-          decision: Deferred<string>;
+          decision: Deferred<{ address: string; amount?: string }>;
       }
     | {
           type: 'unverified-address';
@@ -53,6 +53,7 @@ export type UserContextPayload =
       }
     | {
           type: 'review-transaction';
+          decision: Deferred<boolean>;
       }
     | {
           type: 'log';
@@ -157,14 +158,20 @@ export const openModal = (payload: UserContextPayload): Action => ({
     payload,
 });
 
+// declare all modals with promises
 type DeferredModals = Extract<UserContextPayload, { type: 'qr-reader' | 'review-transaction' }>;
-type DeferredModalsParams = Omit<DeferredModals, 'decision'>;
-// type DeferredDecision<T extends DeferredModals['type']> = Extract<
-//     DeferredModals,
-//     { type: T }
-// >['decision']['promise'];
-export const openDeferredModal = (payload: DeferredModalsParams) => async (dispatch: Dispatch) => {
-    const dfd = createDeferred<any>(); // : DeferredDecision<typeof payload.type>['decision']
+// extract single modal by `type` util
+type DeferredModal<T extends DeferredModals['type']> = Extract<DeferredModals, { type: T }>;
+// extract params except for `type` and 'decision` util
+type DeferredRest<T extends DeferredModals['type']> = Omit<DeferredModal<T>, 'type' | 'decision'>;
+// openDeferredModal params (without `decision` field)
+type DeferredPayload<T extends DeferredModals['type']> = { type: T } & DeferredRest<T>;
+
+// this overload doesn't work when wrapped by `bindActionCreators` (returns union, TODO: investigate...)
+export const openDeferredModal = <T extends DeferredModals['type']>(
+    payload: DeferredPayload<T>,
+) => (dispatch: Dispatch) => {
+    const dfd = createDeferred<DeferredResponse<DeferredModal<T>['decision']>>();
     dispatch({
         type: MODAL.OPEN_USER_CONTEXT,
         payload: {
@@ -173,8 +180,7 @@ export const openDeferredModal = (payload: DeferredModalsParams) => async (dispa
         },
     });
     try {
-        const result = await dfd.promise;
-        return result;
+        return dfd.promise;
     } catch (error) {
         // do nothing, return void
     }

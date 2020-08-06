@@ -2,10 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Input, colors, variables, Icon, Button } from '@trezor/components';
 import { FormattedPlural } from 'react-intl';
-
 import AddLabel from './components/AddLabel';
-import * as modalActions from '@suite-actions/modalActions';
-import { checkRippleEmptyAddress } from '@wallet-actions/sendFormActions';
+import { checkRippleEmptyAddress, scanQrRequest } from '@wallet-actions/sendFormActions';
 import { useActions } from '@suite-hooks';
 import { useSendFormContext } from '@wallet-hooks';
 import { isAddressValid } from '@wallet-utils/validation';
@@ -51,7 +49,7 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
         setValue,
     } = useSendFormContext();
     const { descriptor, networkType, symbol } = account;
-    const { openModal } = useActions({ openModal: modalActions.openModal });
+    const { openQrModal } = useActions({ openQrModal: scanQrRequest });
     const inputName = `outputs[${outputId}].address`;
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const addressError = outputError ? outputError.address : undefined;
@@ -90,13 +88,22 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
                 <Button
                     variant="tertiary"
                     icon="QR"
-                    onClick={() =>
-                        openModal({
-                            type: 'qr-reader',
-                            outputId,
-                            setValue,
-                        })
-                    }
+                    onClick={async () => {
+                        const result = await openQrModal();
+                        if (result) {
+                            setValue(inputName, result.address, { shouldValidate: true });
+                            if (result.amount) {
+                                setValue(`outputs[${outputId}].amount`, result.amount, {
+                                    shouldValidate: true,
+                                });
+                                // if amount is set compose by amount
+                                composeTransaction(`outputs[${outputId}].amount`);
+                            } else {
+                                // otherwise compose by address
+                                composeTransaction(inputName);
+                            }
+                        }
+                    }}
                 >
                     <Translation id="TR_SCAN" />
                 </Button>

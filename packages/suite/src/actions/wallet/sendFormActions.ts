@@ -371,16 +371,10 @@ export const composeTransactionNew = (
     // TODO: return precomposed transactions for multiple levels (will be stored in SendContext)
 };
 
-export const onQrScan = (
-    parsedUri: ParsedURI,
-    outputId: number,
-    setValue: ReturnType<typeof useForm>['setValue'],
-) => {
-    const { address = '', amount } = parsedUri;
-    setValue(`address[${outputId}]`, address);
-    if (amount) {
-        setValue(`amount[${outputId}]`, amount);
-    }
+// this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
+// used in send/Address component
+export const scanQrRequest = () => (dispatch: Dispatch) => {
+    return dispatch(modalActions.openDeferredModal({ type: 'qr-reader' }));
 };
 
 // non-redux action
@@ -665,12 +659,15 @@ export const updateFeeLevelWithData = (
     }
 };
 
+// returned and called automatically after from signTransaction process (called from useSendForm hook)
+// Opens a modal with deferred decision
 const requestPushTransaction = (payload: any) => (dispatch: Dispatch) => {
+    // set signed transaction in reducer
     dispatch({
         type: SEND.REQUEST_PUSH_TRANSACTION,
         payload,
     });
-
+    // display modal and wait for user response
     return dispatch(modalActions.openDeferredModal({ type: 'review-transaction' }));
 };
 

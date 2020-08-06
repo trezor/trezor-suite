@@ -1,10 +1,8 @@
 import { ExternalLink, Translation } from '@suite-components';
 import * as URLS from '@suite-constants/urls';
-import { useActions } from '@suite-hooks';
-import { useForm } from 'react-hook-form';
 import { parseUri } from '@suite-utils/parseUri';
 import { colors, Icon, Modal, P } from '@trezor/components';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
+import { UserContextPayload } from '@suite-actions/modalActions';
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
 import styled from 'styled-components';
@@ -62,9 +60,8 @@ const Actions = styled.div`
 `;
 
 type Props = {
-    outputId: number;
-    setValue: ReturnType<typeof useForm>['setValue'];
     onCancel: () => void;
+    decision: Extract<UserContextPayload, { type: 'qr-reader' }>['decision'];
 };
 
 interface State {
@@ -72,10 +69,9 @@ interface State {
     error: JSX.Element | null;
 }
 
-const QrScanner = ({ onCancel, outputId, setValue }: Props) => {
+const QrScanner = ({ onCancel, decision }: Props) => {
     const [readerLoaded, setReaderLoaded] = useState<State['readerLoaded']>(false);
     const [error, setError] = useState<State['error']>(null);
-    const { onQrScan } = useActions({ onQrScan: sendFormActions.onQrScan });
 
     const onLoad = () => {
         setReaderLoaded(true);
@@ -101,7 +97,7 @@ const QrScanner = ({ onCancel, outputId, setValue }: Props) => {
             try {
                 const parsedUri = parseUri(data);
                 if (parsedUri) {
-                    onQrScan(parsedUri, outputId, setValue);
+                    decision.resolve(parsedUri);
                     setReaderLoaded(true);
                     onCancel();
                 }
