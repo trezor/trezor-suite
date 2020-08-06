@@ -64,74 +64,62 @@ const Heading = styled.div`
 const Value = styled.div``;
 
 const Footer = styled.div`
+    margin: 0 30px;
     padding: 10px 0;
     border-top: 1px solid ${colors.NEUE_STROKE_GREY};
 `;
 
+const ErrorFooter = styled.div`
+    margin: 0 30px;
+    padding: 10px 0;
+    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+    color: ${colors.RED_ERROR};
+`;
+
 interface Props {
     className?: string;
-    selectQuote: (quoteData: any) => void;
-    exchange?: string;
-    receiveStringAmount?: string;
-    receiveCurrency?: string;
-    paymentMethod?: string;
-    hasTag?: boolean;
+    // TODO - change any to BuyQuote
+    selectQuote: (quote: any) => void;
+    quote: any;
+    providers: any;
 }
 
-const Quote = ({
-    className,
-    selectQuote,
-    exchange,
-    receiveStringAmount,
-    receiveCurrency,
-    paymentMethod,
-    hasTag = false,
-}: Props) => (
-    <Wrapper className={className}>
-        <TagRow>{hasTag && <Tag>best offer</Tag>}</TagRow>
-        <Main>
-            <Left>
-                {receiveStringAmount} {receiveCurrency}
-            </Left>
-            <Right>
-                <Button
-                    onClick={() =>
-                        selectQuote({
-                            receiveStringAmount,
-                            receiveCurrency,
-                            paymentMethod,
-                            exchange,
-                        })
-                    }
-                >
-                    Get this offer
-                </Button>
-            </Right>
-        </Main>
-        <Details>
-            <Column>
-                <Heading>Provider</Heading>
-                <Value>{exchange}</Value>
-            </Column>
-            <Column>
-                <Heading>Paid by</Heading>
-                <Value>{paymentMethod}</Value>
-            </Column>
-            <Column>
-                <Heading>Fees</Heading>
-                <Value>All fee included</Value>
-            </Column>
-            <Column>
-                <Heading>KYC</Heading>
-                <Value>Yes</Value>
-            </Column>
-            <Footer>
-                In publishing and graphic design, lorem ipsum is common placeholder text used to
-                demonstrate the graphic elements of a document or visual presentation, such as web
-                pages, typography, and graphical layout. It is a form of "greeking".
-            </Footer>
-        </Details>
-    </Wrapper>
-);
+const Quote = ({ className, selectQuote, quote, providers }: Props) => {
+    const hasTag = false; // TODO - tags are in quote.tags, will need some algorithm to evaluate them and show only one
+    const { receiveStringAmount, receiveCurrency, paymentMethod, exchange } = quote;
+    const provider = providers[exchange];
+    const companyName = provider?.companyName || exchange;
+    return (
+        <Wrapper className={className}>
+            <TagRow>{hasTag && <Tag>best offer</Tag>}</TagRow>
+            <Main>
+                <Left>{quote.error ? 'N/A' : `${receiveStringAmount} ${receiveCurrency}`}</Left>
+                <Right>
+                    <Button onClick={() => selectQuote(quote)}>Get this offer</Button>
+                </Right>
+            </Main>
+            <Details>
+                <Column>
+                    <Heading>Provider</Heading>
+                    <Value>{companyName}</Value>
+                </Column>
+                <Column>
+                    <Heading>Paid by</Heading>
+                    <Value>{paymentMethod}</Value>
+                </Column>
+                <Column>
+                    <Heading>Fees</Heading>
+                    <Value>All fee included</Value>
+                </Column>
+                <Column>
+                    <Heading>KYC</Heading>
+                    <Value>Yes</Value>
+                </Column>
+            </Details>
+            {quote.error && <ErrorFooter>{quote.error}</ErrorFooter>}
+            {quote.infoNote && !quote.error && <Footer>{quote.infoNote}</Footer>}
+        </Wrapper>
+    );
+};
 
 export { Quote, Props as QuoteProps };

@@ -36,6 +36,7 @@ interface Props {
 const Offers = ({ selectQuote, quotes, isAlternative }: Props) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const quotesRequest = useSelector(state => state.wallet.coinmarket.quotesRequest);
+    const providers = useSelector(state => state.wallet.coinmarket.buyInfo?.providerInfos);
     if (!quotesRequest || !quotes) return null;
 
     if (selectedAccount.status !== 'loaded') return null;
@@ -68,10 +69,8 @@ const Offers = ({ selectQuote, quotes, isAlternative }: Props) => {
                 {quotes.map(quote => (
                     <StyledQuote
                         key={`${quote.exchange}-${quote.paymentMethod}-${quote.receiveCurrency}`}
-                        exchange={quote.exchange}
-                        receiveStringAmount={quote.receiveStringAmount}
-                        receiveCurrency={quote.receiveCurrency}
-                        paymentMethod={quote.paymentMethod}
+                        quote={quote}
+                        providers={providers}
                         selectQuote={selectQuote}
                     />
                 ))}
