@@ -24,7 +24,6 @@ describe('Metadata', () => {
             cy.prefixedVisit('/accounts', { onBeforeLoad: (win: Window) => {
                 cy.stub(win, 'open', stubOpen(win));
                 cy.stub(win, 'fetch', stubFetch)
-
             }});
     
             cy.passThroughInitialRun();
