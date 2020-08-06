@@ -7,6 +7,8 @@ import * as routerActions from '@suite-actions/routerActions';
 import QuotesList from './QuotesList';
 import SelectedQuote from './SelectedQuote';
 import { useSelector, useActions } from '@suite/hooks/suite';
+import { BuyTrade } from '@suite/services/invityAPI/buyTypes';
+import * as modalActions from '@suite-actions/modalActions';
 
 const Wrapper = styled.div`
     padding: 16px 32px 32px 32px;
@@ -28,10 +30,19 @@ const Offers = () => {
         if (setLayout) setLayout('Trezor Suite | Coinmarket', undefined, <CoinmarketTopPanel />);
     }, [setLayout]);
 
-    const [selectedQuote, selectQuote] = useState(undefined);
+    const [selectedQuote, setSelectQuote] = useState<BuyTrade>();
     const quotes = useSelector(state => state.wallet.coinmarket.quotes);
     const alternativeQuotes = useSelector(state => state.wallet.coinmarket.alternativeQuotes);
     const { goto } = useActions({ goto: routerActions.goto });
+    const { openModal } = useActions({ openModal: modalActions.openModal });
+    const selectQuote = (quote: BuyTrade) => {
+        openModal({
+            type: 'coinmarket-confirm-terms',
+            onConfirm: () => {
+                setSelectQuote(quote);
+            },
+        });
+    };
 
     if (quotes.length === 0) {
         goto('wallet-coinmarket-buy');

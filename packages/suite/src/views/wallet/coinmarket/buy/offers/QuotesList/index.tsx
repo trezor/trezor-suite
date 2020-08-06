@@ -28,7 +28,7 @@ const OrigAmount = styled.div`
 `;
 
 interface Props {
-    selectQuote: Dispatch<SetStateAction<undefined>>;
+    selectQuote: (quote: BuyTrade) => void;
     quotes?: BuyTrade[];
     isAlternative?: boolean;
 }

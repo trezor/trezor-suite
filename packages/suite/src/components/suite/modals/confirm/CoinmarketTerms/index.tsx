@@ -6,8 +6,13 @@ const Text = styled.div``;
 const ButtonArea = styled.div``;
 const Terms = styled.div``;
 
-const CoinmarketTerms = () => (
-    <Modal size="small">
+export type Props = {
+    onConfirm: () => void;
+    onCancel: () => void;
+};
+
+const CoinmarketTerms = ({ onConfirm, onCancel }: Props) => (
+    <Modal size="small" cancelable onCancel={onCancel}>
         <Terms>
             <Text>
                 I'm here to buy cryptocurrency. If you were directed to this site for any other
@@ -32,7 +37,14 @@ const CoinmarketTerms = () => (
             </Text>
         </Terms>
         <ButtonArea>
-            <Button>Confirm</Button>
+            <Button
+                onClick={() => {
+                    onCancel();
+                    onConfirm();
+                }}
+            >
+                Confirm
+            </Button>
         </ButtonArea>
     </Modal>
 );

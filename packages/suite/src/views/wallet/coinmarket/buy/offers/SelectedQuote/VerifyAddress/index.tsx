@@ -73,7 +73,6 @@ const Confirmed = styled.div`
 const VerifyAddress = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const addressVerified = useSelector(state => state.wallet.coinmarket.addressVerified);
-    const { openModal } = useActions({ openModal: modalActions.openModal });
     const { verifyAddress } = useActions({ verifyAddress: coinmarketActions.verifyAddress });
     if (selectedAccount.status !== 'loaded') return null;
     const { account } = selectedAccount;
@@ -101,7 +100,7 @@ const VerifyAddress = () => {
                         </Amount>
                     </AccountWrapper>
                 </FakeInput>
-                <Input label="Receive address" value={address} />
+                <Input label="Receive address" value={address} readOnly />
                 {addressVerified && <Confirmed>Confirmed on trezor</Confirmed>}
             </CardContent>
             <ButtonWrapper>
@@ -111,9 +110,7 @@ const VerifyAddress = () => {
                     </Button>
                 )}
                 {addressVerified && (
-                    <Button onClick={() => openModal({ type: 'coinmarket-confirm-terms' })}>
-                        Go to payment
-                    </Button>
+                    <Button onClick={() => console.log('send to server')}>Go to payment</Button>
                 )}
             </ButtonWrapper>
         </Wrapper>
