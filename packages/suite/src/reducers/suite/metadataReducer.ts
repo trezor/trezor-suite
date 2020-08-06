@@ -4,7 +4,7 @@ import { Action } from '@suite-types';
 import { MetadataState } from '@suite-types/metadata';
 
 export const initialState: MetadataState = {
-    // is suite trying to load metadata (get master key -> sync cloud)?
+    // is Suite trying to load metadata (get master key -> sync cloud)?
     enabled: false,
 };
 

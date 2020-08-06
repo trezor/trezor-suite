@@ -161,20 +161,27 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
             'data-test': '@metadata/copy-address-button',
         });
     }
-
     return (
         <>
             <GridItem revealed={isRevealed}>/{parseBIP44Path(addr.path)!.addrIndex}</GridItem>
             <GridItemAddress
                 data-test={`@wallet/receive/used-address/${index}`}
                 revealed={isRevealed}
-                onClick={onClick}
             >
                 <AddMetadataLabel
                     payload={{
                         ...metadataPayload,
                     }}
-                    defaultVisibleValue={address}
+                    // if metadata is present, confirm on device option will become available in dropdown
+                    defaultVisibleValue={
+                        // eslint-disable-next-line
+                        <span
+                            style={{ cursor: 'pointer' }}
+                            onClick={!metadataPayload.value ? onClick : () => {}}
+                        >
+                            {address}
+                        </span>
+                    }
                     dropdownOptions={dropdownOptions}
                 />
                 {/* {address} */}

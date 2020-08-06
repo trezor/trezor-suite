@@ -52,9 +52,13 @@ describe('Metadata', () => {
             cy.getTestElement('@metadata/confirm-on-device-button').click();
             cy.getTestElement('@modal/confirm-address/address-field').should('be.visible');
             cy.task('pressYes');
+            cy.getTestElement('@modal/confirm-address/address-field').should('not.be.visible');
+
+            // cy.getTestElement(metadataEl).click();
+            // cy.getTestElement(metadataEl).click();
             cy.getTestElement(metadataEl).click();
             cy.getTestElement('@metadata/copy-address-button').click();
-
+            // @metadata/copy-address-button
 
 
     

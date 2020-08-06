@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useActions, useSelector } from '@suite-hooks';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { MetadataAddPayload } from '@suite-types/metadata';
+// import metadataReducer from '@suite/reducers/suite/metadataReducer';
 
 const LabelDefaultValue = styled.div`
     min-width: 0;
@@ -73,33 +74,45 @@ const moveCaretToEndOfContentEditable = (contentEditableElement: HTMLElement) =>
 const EditContainer = (props: {
     originalValue?: string;
     onSubmit: (value: string | undefined | null) => void;
+    onBlur: () => void;
 }) => {
     const divRef = useRef<HTMLDivElement>(null);
+    console.log('[editing]: render');
 
     const submit = useCallback(
         value => {
+            console.log('submit, value', value);
+            props.onSubmit(value);
+
             if (divRef && divRef.current) {
                 divRef.current.blur();
             }
-            props.onSubmit(value);
         },
         [props, divRef],
     );
 
     useEffect(() => {
-        setTimeout(() => {
-            if (divRef && divRef.current) {
-                divRef.current.focus();
-                divRef.current.textContent = props.originalValue || null;
-                moveCaretToEndOfContentEditable(divRef.current);
-            }
-        }, 0);
-    }, [props.originalValue]);
+        console.log('[editing]: use effect', props.originalValue);
+        // todo: if enabling labeling for the first time, focus is lost. I don't know how  to fix this. Otherwise it works;
+        if (divRef && divRef.current) {
+            divRef.current.textContent = props.originalValue || null;
+            divRef.current.focus();
+            console.log('SETTING FOCUS MDFTK!!!!');
+
+            console.log(divRef);
+            moveCaretToEndOfContentEditable(divRef.current);
+        }
+    }, [props]);
 
     useEffect(() => {
         const keyboardHandler = (event: KeyboardEvent) => {
-            // event.preventDefault();
+            console.log(event.keyCode);
+
             switch (event.keyCode) {
+                // tab
+                case 9:
+                    event.preventDefault();
+                    break;
                 // enter,
                 case 13:
                     if (divRef && divRef.current) {
@@ -125,7 +138,7 @@ const EditContainer = (props: {
         <div style={{ display: 'flex' }}>
             {/* @ts-ignore */}
             <div
-                style={{ minWidth: '40px' }}
+                style={{ minWidth: '40px', paddingLeft: '2px' }}
                 contentEditable
                 ref={divRef}
                 data-test="@metadata/input"
@@ -135,7 +148,9 @@ const EditContainer = (props: {
                 data-test="@metadata/submit"
                 icon="CHECK"
                 onClick={e => {
+                    e.preventDefault();
                     e.stopPropagation();
+                    console.log('on submittimtiit');
                     submit(
                         divRef && divRef.current ? divRef.current.textContent : props.originalValue,
                     );
@@ -147,6 +162,7 @@ const EditContainer = (props: {
                 data-test="@metadata/cancel"
                 icon="CROSS"
                 onClick={e => {
+                    e.preventDefault();
                     e.stopPropagation();
                     submit(props.originalValue);
                 }}
@@ -171,32 +187,36 @@ interface Props {
 
 const AddMetadataLabel = (props: Props) => {
     const [editing, setEditing] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const metadata = useSelector(state => state.metadata);
+    const deviceMetadata = useSelector(state => state.suite.device?.metadata);
 
     const { addMetadata, initMetadata } = useActions({
         addMetadata: metadataActions.addMetadata,
         initMetadata: metadataActions.init,
     });
 
-    const { provider } = useSelector(state => state.metadata);
-
     useEffect(() => {
-        if (editing) {
+        console.log('====use effect');
+        if (editing && !loading && (!metadata.enabled || deviceMetadata?.status !== 'enabled')) {
             const init = async () => {
+                setLoading(true);
                 const result = await initMetadata(true);
-                console.warn('result friom init', result);
-                if (!result) {
-                    setEditing(false);
-                }
+                console.log('=== result', result);
+                if (!result) setEditing(false);
+                setLoading(false);
             };
             init();
         }
-    }, [editing, initMetadata]);
+    }, [metadata, deviceMetadata, editing, loading, initMetadata]);
 
     const onSubmit = (value: string | undefined | null) => {
         addMetadata({
             ...props.payload,
             value: value || undefined,
         });
+
         setEditing(false);
     };
 
@@ -221,44 +241,52 @@ const AddMetadataLabel = (props: Props) => {
 
     const dataTestBase = `@metadata/${props.payload.type}/${props.payload.defaultValue}`;
 
-    if (!editing) {
-        return (
-            <LabelContainer>
-                {props.payload.value ? (
-                    <Dropdown
-                        alignMenu="left"
-                        items={[{ options: dropdownItems, key: 'dropdown' }]}
-                    >
-                        <Label data-test={dataTestBase}>
-                            <LabelValue>{props.payload.value}</LabelValue>
-                            {props.defaultVisibleValue && (
-                                <LabelDefaultValue>{props.defaultVisibleValue}</LabelDefaultValue>
-                            )}
-                        </Label>
-                    </Dropdown>
-                ) : (
-                    props.defaultVisibleValue
-                )}
+    if (loading) return <span>loading...</span>;
 
-                {!props.payload.value && (
-                    <AddLabelButton
-                        data-test={`${dataTestBase}/add-label-button`}
-                        variant="tertiary"
-                        icon="LABEL"
-                        onClick={e => {
-                            e.stopPropagation();
-                            setEditing(true);
-                        }}
-                    >
-                        Add label
-                    </AddLabelButton>
-                )}
-            </LabelContainer>
+    if (editing && !loading && metadata.enabled && deviceMetadata?.status === 'enabled') {
+        return (
+            <EditContainer
+                originalValue={props.payload.value}
+                onSubmit={onSubmit}
+                onBlur={() => {
+                    setEditing(false);
+                }}
+            />
         );
     }
 
-    if (!provider) return <span>loading...</span>;
+    return (
+        <LabelContainer>
+            {props.payload.value ? (
+                <Dropdown alignMenu="left" items={[{ options: dropdownItems, key: 'dropdown' }]}>
+                    <Label data-test={dataTestBase}>
+                        <LabelValue>{props.payload.value}</LabelValue>
+                        {props.defaultVisibleValue && (
+                            <LabelDefaultValue>{props.defaultVisibleValue}</LabelDefaultValue>
+                        )}
+                    </Label>
+                </Dropdown>
+            ) : (
+                props.defaultVisibleValue
+            )}
 
-    return <EditContainer originalValue={props.payload.value} onSubmit={onSubmit} />;
+            {!props.payload.value && (
+                <AddLabelButton
+                    data-test={`${dataTestBase}/add-label-button`}
+                    variant="tertiary"
+                    icon="LABEL"
+                    onClick={e => {
+                        e.stopPropagation();
+                        setEditing(true);
+                    }}
+                >
+                    Add label
+                </AddLabelButton>
+            )}
+        </LabelContainer>
+    );
+
+    // const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
 };
+
 export default AddMetadataLabel;

@@ -125,6 +125,7 @@ export const disconnectProvider = () => async (dispatch: Dispatch, getState: Get
 };
 
 const handleProviderError = (error: Error) => (dispatch: Dispatch, getState: GetState) => {
+    console.log('error', error);
     const { metadata } = getState();
     if (!error) {
         return dispatch(
@@ -312,7 +313,7 @@ const syncMetadataKeys = () => (dispatch: Dispatch, getState: GetState) => {
 
 export const connectProvider = (type: MetadataProviderType) => async (
     dispatch: Dispatch,
-    getState: GetState,
+    // _getState: GetState,
 ) => {
     try {
         // console.warn('connectProvider', type);
@@ -330,16 +331,6 @@ export const connectProvider = (type: MetadataProviderType) => async (
                 type: METADATA.SET_PROVIDER,
                 payload: credentials,
             });
-
-            const { device } = getState().suite;
-
-            if (!device?.state) return;
-
-            const result = dispatch(fetchMetadata(device?.state));
-
-            dispatch(syncMetadataKeys());
-
-            await result;
 
             return true;
         }
@@ -683,8 +674,12 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
  */
 export const init = (force = false) => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
-    if (!device?.state) return false;
+    if (!device?.state) {
+        console.log('returning no device state');
+        return false;
+    }
 
+    let needsUpdate = false;
     // 1. set metadata enabled globally
     if (!getState().metadata.enabled) {
         dispatch(enableMetadata());
@@ -692,15 +687,26 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
 
     // 2. set device metadata key (master key). Sometimes, if state is not present
     if (device.metadata.status !== 'enabled' && force) {
+        needsUpdate = true;
+        console.log('async, dispacht');
         await dispatch(setDeviceMetadataKey(force));
+        console.log('async finish');
     }
 
-    if (getState().suite.device?.metadata.status !== 'enabled') return false;
+    if (getState().suite.device?.metadata.status !== 'enabled') {
+        console.log('returning not enabled');
+        return false;
+    }
+    dispatch(syncMetadataKeys());
 
     // 3. connect to provider
     if (getState().suite.device?.metadata.status === 'enabled' && !getState().metadata.provider) {
-        // returns promise which resolves to true of connection established
-        return dispatch(initProvider());
+        needsUpdate = true;
+        await dispatch(initProvider());
+    }
+
+    if (needsUpdate) {
+        await dispatch(fetchMetadata(device?.state));
     }
 
     // todo: token might have expired?
