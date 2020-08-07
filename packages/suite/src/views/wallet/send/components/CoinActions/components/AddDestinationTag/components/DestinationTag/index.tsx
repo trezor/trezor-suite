@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import validator from 'validator';
+import BigNumber from 'bignumber.js';
 import { useSendFormContext } from '@wallet-hooks';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Input, Icon } from '@trezor/components';
@@ -25,14 +25,15 @@ interface Props {
     setIsActive: (isActive: boolean) => void;
 }
 
-const DestinationTag = ({ setIsActive }: Props) => {
-    const { register, errors } = useSendFormContext();
+export default ({ setIsActive }: Props) => {
+    const { register, getValues, errors, composeTransaction } = useSendFormContext();
     const inputName = 'rippleDestinationTag';
+    const inputValue = getValues(inputName) || '';
     const error = errors[inputName];
 
     return (
         <Input
-            state={getInputState(error)}
+            state={getInputState(error, inputValue)}
             label={
                 <Label>
                     <Text>
@@ -43,24 +44,24 @@ const DestinationTag = ({ setIsActive }: Props) => {
             }
             bottomText={error && error.message}
             name={inputName}
+            data-test={inputName}
+            defaultValue={inputValue}
             labelRight={<StyledIcon size={20} icon="CROSS" onClick={() => setIsActive(false)} />}
             innerRef={register({
-                validate: {
-                    error: (value: string) => {
-                        if (value) {
-                            if (!validator.isNumeric(value)) {
-                                return <Translation id="TR_DESTINATION_TAG_IS_NOT_NUMBER" />;
-                            }
-
-                            if (parseInt(value, 10) > U_INT_32) {
-                                return <Translation id="TR_DESTINATION_TAG_IS_NOT_VALID" />;
-                            }
-                        }
-                    },
+                required: 'TR_DESTINATION_TAG_IS_NOT_SET',
+                validate: (value: string) => {
+                    const amountBig = new BigNumber(value);
+                    if (amountBig.isNaN()) {
+                        return 'TR_LOCKTIME_IS_NOT_NUMBER';
+                    }
+                    if (!amountBig.isInteger() || amountBig.lt(0) || amountBig.gt(U_INT_32)) {
+                        return 'TR_DESTINATION_TAG_IS_NOT_VALID';
+                    }
                 },
             })}
+            onChange={() => {
+                composeTransaction(inputName, !!error);
+            }}
         />
     );
 };
-
-export default DestinationTag;

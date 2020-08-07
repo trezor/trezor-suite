@@ -75,7 +75,7 @@ export type OutputProps =
           value: string;
       }
     | {
-          type: 'opreturn' | 'data' | 'locktime' | 'fee';
+          type: 'opreturn' | 'data' | 'locktime' | 'fee' | 'destination-tag';
           label?: undefined;
           value: string;
       };
@@ -101,6 +101,9 @@ export default ({ type, state, label, value, symbol }: Props) => {
     }
     if (type === 'fee') {
         outputLabel = <Translation id="TR_FEE" />;
+    }
+    if (type === 'destination-tag') {
+        outputLabel = <Translation id="TR_XRP_DESTINATION_TAG" />;
     }
 
     return (

@@ -81,6 +81,12 @@ export default ({ selectedAccount, send, decision }: Props) => {
 
     if (networkType === 'ripple') {
         outputs.unshift({ type: 'fee', value: precomposedTx.fee });
+        if (precomposedForm.rippleDestinationTag) {
+            outputs.unshift({
+                type: 'destination-tag',
+                value: precomposedForm.rippleDestinationTag,
+            });
+        }
     } else {
         outputs.push({ type: 'fee', value: precomposedTx.fee });
     }
