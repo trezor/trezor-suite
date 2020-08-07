@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-
+import { useSendFormContext } from '@wallet-hooks';
 import { Translation } from '@suite-components';
 import { Button } from '@trezor/components';
 import DestinationTag from './components/DestinationTag';
@@ -17,7 +17,15 @@ const Active = styled.div`
 `;
 
 export default () => {
-    const [isActive, setIsActive] = useState(false);
+    const { getValues, composeTransaction } = useSendFormContext();
+    const destinationTagValue = getValues('rippleDestinationTag') || '';
+    const hasDestinationTag = destinationTagValue.length > 0;
+    const [isActive, setIsActive] = useState(hasDestinationTag);
+
+    React.useEffect(() => {
+        // destinationTag could be loaded later from draft, open additional form
+        if (hasDestinationTag) setIsActive(true);
+    }, [hasDestinationTag]);
 
     return (
         <Wrapper>
@@ -26,6 +34,7 @@ export default () => {
                     variant="tertiary"
                     icon="DATA"
                     onClick={() => {
+                        // open additional form
                         setIsActive(true);
                     }}
                 >
@@ -34,7 +43,13 @@ export default () => {
             )}
             {isActive && (
                 <Active>
-                    <DestinationTag setIsActive={setIsActive} />
+                    <DestinationTag
+                        close={() => {
+                            // close additional form
+                            setIsActive(false);
+                            composeTransaction('outputs[0].amount', false);
+                        }}
+                    />
                 </Active>
             )}
         </Wrapper>

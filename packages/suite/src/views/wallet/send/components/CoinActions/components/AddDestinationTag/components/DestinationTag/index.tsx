@@ -22,11 +22,19 @@ const StyledIcon = styled(Icon)`
 `;
 
 interface Props {
-    setIsActive: (isActive: boolean) => void;
+    close: () => void;
 }
 
-export default ({ setIsActive }: Props) => {
-    const { register, getValues, errors, composeTransaction } = useSendFormContext();
+export default ({ close }: Props) => {
+    const {
+        register,
+        control,
+        getValues,
+        setValue,
+        errors,
+        composeTransaction,
+    } = useSendFormContext();
+
     const inputName = 'rippleDestinationTag';
     const inputValue = getValues(inputName) || '';
     const error = errors[inputName];
@@ -46,7 +54,6 @@ export default ({ setIsActive }: Props) => {
             name={inputName}
             data-test={inputName}
             defaultValue={inputValue}
-            labelRight={<StyledIcon size={20} icon="CROSS" onClick={() => setIsActive(false)} />}
             innerRef={register({
                 required: 'TR_DESTINATION_TAG_IS_NOT_SET',
                 validate: (value: string) => {
@@ -62,6 +69,25 @@ export default ({ setIsActive }: Props) => {
             onChange={() => {
                 composeTransaction(inputName, !!error);
             }}
+            labelRight={
+                <StyledIcon
+                    size={20}
+                    icon="CROSS"
+                    onClick={() => {
+                        // Since `rippleDestinationTag` field is registered conditionally
+                        // every time it mounts it will set defaultValue from draft
+                        // to prevent that behavior reset defaultValue in `react-hook-form.control.defaultValuesRef`
+                        const { current } = control.defaultValuesRef;
+                        // @ts-ignore: react-hook-form type returns "unknown" (bug?)
+                        if (current && current.rippleDestinationTag)
+                            current.rippleDestinationTag = '';
+                        // reset current value
+                        setValue(inputName, '');
+                        // callback
+                        close();
+                    }}
+                />
+            }
         />
     );
 };

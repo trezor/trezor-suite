@@ -80,6 +80,10 @@ export default ({ selectedAccount, send, decision }: Props) => {
     }
 
     if (networkType === 'ripple') {
+        // ripple displays requests on device in different order:
+        // 1. destination tag
+        // 2. fee
+        // 3. output
         outputs.unshift({ type: 'fee', value: precomposedTx.fee });
         if (precomposedForm.rippleDestinationTag) {
             outputs.unshift({
