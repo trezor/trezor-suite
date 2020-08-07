@@ -38,7 +38,13 @@ const StyledButton = styled(Button)`
 `;
 
 export default () => {
-    const { addOutput, getValues, setValue, composeTransaction } = useSendFormContext();
+    const {
+        addOutput,
+        getValues,
+        setValue,
+        composeTransaction,
+        resetDefaultValue,
+    } = useSendFormContext();
 
     const bitcoinRBF = getValues('bitcoinRBF');
     const locktimeValue = getValues('bitcoinLockTime') || '';
@@ -58,7 +64,8 @@ export default () => {
             <Top>
                 {locktimeOpened && (
                     <Locktime
-                        setIsActive={() => {
+                        close={() => {
+                            resetDefaultValue('bitcoinLockTime');
                             // close additional form
                             setLocktimeActive(false);
                             composeTransaction('outputs[0].amount', false);

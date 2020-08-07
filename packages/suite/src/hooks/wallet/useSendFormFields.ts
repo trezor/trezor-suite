@@ -8,7 +8,7 @@ type Props = UseFormMethods<FormState> & {
     fiatRates: SendContextProps['fiatRates'];
 };
 
-export const useSendFormFields = ({ getValues, setValue, fiatRates }: Props) => {
+export const useSendFormFields = ({ control, getValues, setValue, fiatRates }: Props) => {
     const calculateFiat = useCallback(
         (outputIndex: number, amount?: string) => {
             const values = getValues();
@@ -62,6 +62,20 @@ export const useSendFormFields = ({ getValues, setValue, fiatRates }: Props) => 
         [setValue],
     );
 
+    const resetDefaultValue = useCallback(
+        (fieldName: string) => {
+            // Since some fields are registered conditionally (locktime, rippleDestinationTag etc..)
+            // they will set defaultValue from draft on every mount
+            // to prevent that behavior reset defaultValue in `react-hook-form.control.defaultValuesRef`
+            const { current } = control.defaultValuesRef;
+            // @ts-ignore: react-hook-form type returns "unknown" (bug?)
+            if (current && current[fieldName]) current[fieldName] = '';
+            // reset current value
+            setValue(fieldName, '');
+        },
+        [control, setValue],
+    );
+
     // // save initial selected fee to reducer
     // useEffect(() => {
     //     setLastUsedFeeLevel(initialSelectedFee.label, symbol);
@@ -71,5 +85,6 @@ export const useSendFormFields = ({ getValues, setValue, fiatRates }: Props) => 
         calculateFiat,
         setAmount,
         changeFeeLevel,
+        resetDefaultValue,
     };
 };

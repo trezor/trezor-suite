@@ -61,16 +61,11 @@ export type SendContextProps = {
     device: TrezorDevice; // from reducer (needed?)
     online: boolean; // from reducer (needed?)
     fiatRates: CoinFiatRates | undefined; // from reducer
-    // locks: AppState['suite']['locks'];
     feeInfo: FeeInfo;
-    // initialSelectedFee: FeeLevel;
     localCurrencyOption: { value: string; label: string };
     destinationAddressEmpty: boolean;
-    // transactionInfo: any; // TODO: type
     token: null | TokenInfo;
     feeOutdated: boolean;
-    // selectedFee: FeeLevel;
-    // advancedForm: boolean;
     isLoading: boolean;
     composedLevels?: PrecomposedLevels;
 };
@@ -89,4 +84,5 @@ export type SendContextState = UseFormMethods<FormState> &
         changeFeeLevel: (currentLevel: FeeLevel, newLevel: FeeLevel['label']) => void;
         addOpReturn: () => void;
         removeOpReturn: (index: number) => void;
+        resetDefaultValue: (field: string) => void;
     };

@@ -58,18 +58,11 @@ const Description = styled.div`
 `;
 
 interface Props {
-    setIsActive: (isActive: boolean) => void;
+    close: () => void;
 }
 
-export default ({ setIsActive }: Props) => {
-    const {
-        register,
-        control,
-        getValues,
-        setValue,
-        errors,
-        composeTransaction,
-    } = useSendFormContext();
+export default ({ close }: Props) => {
+    const { register, getValues, setValue, errors, composeTransaction } = useSendFormContext();
 
     const bitcoinRBF = getValues('bitcoinRBF');
     const inputName = 'bitcoinLockTime';
@@ -103,7 +96,6 @@ export default ({ setIsActive }: Props) => {
                     if (!error && bitcoinRBF) setValue('bitcoinRBF', false);
                     composeTransaction(inputName, !!error);
                 }}
-                bottomText={error && error.message}
                 label={
                     <Label>
                         <Icon size={16} icon="CALENDAR" />
@@ -112,24 +104,8 @@ export default ({ setIsActive }: Props) => {
                         </Text>
                     </Label>
                 }
-                labelRight={
-                    <StyledIcon
-                        size={20}
-                        icon="CROSS"
-                        onClick={() => {
-                            // Since `bitcoinLockTime` field is registered conditionally
-                            // every time it mounts it will set defaultValue from draft
-                            // to prevent that behavior reset defaultValue in `react-hook-form.control.defaultValuesRef`
-                            const { current } = control.defaultValuesRef;
-                            // @ts-ignore: react-hook-form type returns "unknown" (bug?)
-                            if (current && current.bitcoinLockTime) current.bitcoinLockTime = '';
-                            // reset current value
-                            setValue(inputName, '');
-                            // callback
-                            setIsActive(false);
-                        }}
-                    />
-                }
+                labelRight={<StyledIcon size={20} icon="CROSS" onClick={close} />}
+                bottomText={error && error.message}
             />
             <RbfMessage>
                 <Left>

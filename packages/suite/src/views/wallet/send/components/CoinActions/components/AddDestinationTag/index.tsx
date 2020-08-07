@@ -17,7 +17,7 @@ const Active = styled.div`
 `;
 
 export default () => {
-    const { getValues, composeTransaction } = useSendFormContext();
+    const { getValues, composeTransaction, resetDefaultValue } = useSendFormContext();
     const destinationTagValue = getValues('rippleDestinationTag') || '';
     const hasDestinationTag = destinationTagValue.length > 0;
     const [isActive, setIsActive] = useState(hasDestinationTag);
@@ -45,6 +45,7 @@ export default () => {
                 <Active>
                     <DestinationTag
                         close={() => {
+                            resetDefaultValue('rippleDestinationTag');
                             // close additional form
                             setIsActive(false);
                             composeTransaction('outputs[0].amount', false);

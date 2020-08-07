@@ -26,14 +26,7 @@ interface Props {
 }
 
 export default ({ close }: Props) => {
-    const {
-        register,
-        control,
-        getValues,
-        setValue,
-        errors,
-        composeTransaction,
-    } = useSendFormContext();
+    const { register, getValues, errors, composeTransaction } = useSendFormContext();
 
     const inputName = 'rippleDestinationTag';
     const inputValue = getValues(inputName) || '';
@@ -42,15 +35,7 @@ export default ({ close }: Props) => {
     return (
         <Input
             state={getInputState(error, inputValue)}
-            label={
-                <Label>
-                    <Text>
-                        <Translation id="TR_XRP_DESTINATION_TAG" />
-                    </Text>
-                    <QuestionTooltip messageId="TR_XRP_DESTINATION_TAG_EXPLAINED" />
-                </Label>
-            }
-            bottomText={error && error.message}
+            monospace
             name={inputName}
             data-test={inputName}
             defaultValue={inputValue}
@@ -69,25 +54,16 @@ export default ({ close }: Props) => {
             onChange={() => {
                 composeTransaction(inputName, !!error);
             }}
-            labelRight={
-                <StyledIcon
-                    size={20}
-                    icon="CROSS"
-                    onClick={() => {
-                        // Since `rippleDestinationTag` field is registered conditionally
-                        // every time it mounts it will set defaultValue from draft
-                        // to prevent that behavior reset defaultValue in `react-hook-form.control.defaultValuesRef`
-                        const { current } = control.defaultValuesRef;
-                        // @ts-ignore: react-hook-form type returns "unknown" (bug?)
-                        if (current && current.rippleDestinationTag)
-                            current.rippleDestinationTag = '';
-                        // reset current value
-                        setValue(inputName, '');
-                        // callback
-                        close();
-                    }}
-                />
+            label={
+                <Label>
+                    <Text>
+                        <Translation id="TR_XRP_DESTINATION_TAG" />
+                    </Text>
+                    <QuestionTooltip messageId="TR_XRP_DESTINATION_TAG_EXPLAINED" />
+                </Label>
             }
+            labelRight={<StyledIcon size={20} icon="CROSS" onClick={close} />}
+            bottomText={error && error.message}
         />
     );
 };
