@@ -129,11 +129,11 @@ export const useSendFormCompose = ({
             if (nearest) {
                 composed = composedLevels[nearest];
                 selectedFeeRef.current = nearest as FormState['selectedFee'];
-                console.warn('SETIT', selectedFeeRef.current, nearest);
                 setValue('selectedFee', nearest);
                 if (nearest === 'custom') {
                     // @ts-ignore: type = error already filtered above
                     setValue('feePerUnit', composed.feePerByte);
+                    setValue('feeLimit', composed.feeLimit);
                 }
                 setDraftSaveRequest(true);
             }

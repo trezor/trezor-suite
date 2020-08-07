@@ -100,48 +100,45 @@ export default () => {
 
     return (
         <StyledCard>
-            {networkType === 'ethereum' && <EthFees />}
-            {networkType !== 'ethereum' && (
-                <Top>
-                    <Left>
-                        <SelectBar
-                            label={<Translation id="TR_FEE" />}
-                            selectedOption={selectedLabel}
-                            options={buildFeeOptions(feeInfo.levels)}
-                            onChange={value => changeFeeLevel(selectedLevel, value)}
-                        />
-                        <FeeInfo>
-                            {networkType === 'bitcoin' && selectedLabel !== 'custom' && (
-                                <EstimatedMiningTimeWrapper>
-                                    <EstimatedMiningTime
-                                        seconds={feeInfo.blockTime * selectedLevel.blocks * 60}
-                                    />
-                                </EstimatedMiningTimeWrapper>
-                            )}
-                            <FeeUnits>
-                                {selectedLevel.feePerUnit} {getFeeUnits(networkType).label}
-                            </FeeUnits>
-                        </FeeInfo>
-                    </Left>
-                    <Middle>{selectedLabel === 'custom' && <CustomFee />}</Middle>
-                    <Right>
-                        {transactionInfo && transactionInfo.type !== 'error' && (
-                            <RightContent>
-                                <CoinAmount>
-                                    {formatNetworkAmount(transactionInfo.fee, symbol)}
-                                    <Label>{symbol}</Label>
-                                </CoinAmount>
-                                <FiatAmount>
-                                    <FiatValue
-                                        amount={formatNetworkAmount(transactionInfo.fee, symbol)}
-                                        symbol={symbol}
-                                    />
-                                </FiatAmount>
-                            </RightContent>
+            <Top>
+                <Left>
+                    <SelectBar
+                        label={<Translation id="TR_FEE" />}
+                        selectedOption={selectedLabel}
+                        options={buildFeeOptions(feeInfo.levels)}
+                        onChange={value => changeFeeLevel(selectedLevel, value)}
+                    />
+                    <FeeInfo>
+                        {networkType === 'bitcoin' && selectedLabel !== 'custom' && (
+                            <EstimatedMiningTimeWrapper>
+                                <EstimatedMiningTime
+                                    seconds={feeInfo.blockTime * selectedLevel.blocks * 60}
+                                />
+                            </EstimatedMiningTimeWrapper>
                         )}
-                    </Right>
-                </Top>
-            )}
+                        <FeeUnits>
+                            {selectedLevel.feePerUnit} {getFeeUnits(networkType).label}
+                        </FeeUnits>
+                    </FeeInfo>
+                </Left>
+                <Middle>{selectedLabel === 'custom' && <CustomFee />}</Middle>
+                <Right>
+                    {transactionInfo && transactionInfo.type !== 'error' && (
+                        <RightContent>
+                            <CoinAmount>
+                                {formatNetworkAmount(transactionInfo.fee, symbol)}
+                                <Label>{symbol}</Label>
+                            </CoinAmount>
+                            <FiatAmount>
+                                <FiatValue
+                                    amount={formatNetworkAmount(transactionInfo.fee, symbol)}
+                                    symbol={symbol}
+                                />
+                            </FiatAmount>
+                        </RightContent>
+                    )}
+                </Right>
+            </Top>
         </StyledCard>
     );
 };

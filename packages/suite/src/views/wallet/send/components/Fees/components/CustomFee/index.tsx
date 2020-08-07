@@ -6,7 +6,7 @@ import { useSendFormContext } from '@wallet-hooks';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 
 const Wrapper = styled.div`
-    display: 'flex';
+    display: flex;
     padding-left: 11px;
 `;
 
@@ -33,6 +33,7 @@ export default () => {
                 innerAddon={
                     <Units>
                         {network.networkType === 'bitcoin' && 'sat/B'}
+                        {network.networkType === 'ethereum' && 'GWEI'}
                         {network.networkType === 'ripple' && 'drops'}
                     </Units>
                 }
@@ -54,6 +55,33 @@ export default () => {
                 })}
                 bottomText={feePerUnitError && feePerUnitError.message}
             />
+            {network.networkType === 'ethereum' && (
+                <Input
+                    noTopLabel
+                    variant="small"
+                    name="feeLimit"
+                    width={120}
+                    state={getInputState(feePerUnitError)}
+                    innerAddon={<Units>GWEI</Units>}
+                    onChange={() => {
+                        composeTransaction('feeLimit', !!error);
+                    }}
+                    innerRef={register({
+                        required: 'TR_CUSTOM_FEE_IS_NOT_SET',
+                        validate: (value: string) => {
+                            const feeBig = new BigNumber(value);
+                            if (feeBig.isNaN()) {
+                                return 'TR_CUSTOM_FEE_IS_NOT_NUMBER';
+                            }
+
+                            if (feeBig.isGreaterThan(maxFee) || feeBig.isLessThan(minFee)) {
+                                return 'TR_CUSTOM_FEE_NOT_IN_RANGE';
+                            }
+                        },
+                    })}
+                    bottomText={feePerUnitError && feePerUnitError.message}
+                />
+            )}
         </Wrapper>
     );
 };

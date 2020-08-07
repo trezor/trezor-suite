@@ -42,7 +42,8 @@ export default ({ setIsActive }: Props) => {
 
     const inputName = 'ethereumData';
     const { updateFeeLevelWithData } = useActions({
-        updateFeeLevelWithData: sendFormActions.updateFeeLevelWithData,
+        // updateFeeLevelWithData: sendFormActions.updateFeeLevelWithData,
+        updateFeeLevelWithData: () => {},
     });
 
     const error = errors[inputName];
