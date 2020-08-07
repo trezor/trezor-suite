@@ -1,179 +1,201 @@
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect, { FeeLevel, PrecomposedTransaction, SignTransaction } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
-import { SEND } from '@wallet-actions/constants';
-import { ZEC_SIGN_ENHANCEMENT_LEGACY, ZEC_SIGN_ENHANCEMENT } from '@wallet-constants/sendForm'; // BTC_RBF_SEQUENCE, BTC_LOCKTIME_SEQUENCE
+import { FormState, SendContextProps, PrecomposedLevels } from '@wallet-types/sendForm';
+import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import * as notificationActions from '@suite-actions/notificationActions';
-import * as accountActions from '@wallet-actions/accountActions';
-import * as commonActions from './sendFormCommonActions';
-import { formatNetworkAmount, networkAmountToSatoshi } from '@wallet-utils/accountUtils';
-import { getLocalCurrency } from '@wallet-utils/settingsUtils';
+import { requestPushTransaction } from '@wallet-actions/sendFormActions'; // move to common?
+import { SEND } from '@wallet-actions/constants';
+import {
+    ZEC_SIGN_ENHANCEMENT,
+    BTC_RBF_SEQUENCE,
+    BTC_LOCKTIME_SEQUENCE,
+} from '@wallet-constants/sendForm';
 import { Dispatch, GetState } from '@suite-types';
-import { Account } from '@wallet-types';
 
-/*
-    Compose transaction
- */
+export const composeTransaction = async (
+    formValues: FormState,
+    account: SendContextProps['account'],
+    feeInfo: SendContextProps['feeInfo'],
+) => {
+    const { outputs } = formValues;
+    if (!account.addresses || !account.utxo) return;
 
-export const compose = (setMax = false) => async (dispatch: Dispatch, getState: GetState) => {
-    const { send, selectedAccount } = getState().wallet;
-    const account = selectedAccount.account as Account;
-    if (!send || !account.addresses || !account.utxo) return;
-
-    const { outputs } = send;
-
-    const composedOutputs = outputs.map(o => {
-        const amount = networkAmountToSatoshi(o.amount.value, account.symbol);
-
-        // address is set
-        if (o.address.value) {
-            // set max without address
-            if (setMax) {
+    const composedOutputs = outputs
+        .map((output, index) => {
+            if (output.type === 'opreturn') {
                 return {
-                    address: o.address.value,
-                    type: 'send-max',
+                    type: 'opreturn',
+                    dataHex: output.dataHex,
+                } as const;
+            }
+
+            const { address } = output;
+            const isMaxActive = formValues.setMaxOutputId === index;
+            if (isMaxActive) {
+                if (address) {
+                    return {
+                        address,
+                        type: 'send-max',
+                    } as const;
+                }
+
+                return {
+                    type: 'send-max-noaddress',
+                } as const;
+            }
+
+            const amount = networkAmountToSatoshi(output.amount, account.symbol);
+            if (address) {
+                return {
+                    address,
+                    amount,
                 } as const;
             }
 
             return {
-                address: o.address.value,
+                type: 'noaddress',
                 amount,
             } as const;
-        }
+        })
+        .filter(output => !output.amount || output.amount !== '0');
 
-        // set max with address only
-        if (setMax) {
-            return {
-                type: 'send-max-noaddress',
-            } as const;
-        }
+    if (composedOutputs.length < 1) return;
 
-        // set amount without address
-        return {
-            type: 'noaddress',
-            amount,
-        } as const;
-    });
-
-    const resp = await TrezorConnect.composeTransaction({
+    const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
+    // in case when selectedFee is set to 'custom' construct this FeeLevel from values
+    if (formValues.selectedFee === 'custom') {
+        predefinedLevels.push({
+            label: 'custom',
+            feePerUnit: formValues.feePerUnit,
+            blocks: -1,
+        });
+    }
+    const params = {
         account: {
             path: account.path,
             addresses: account.addresses,
-            utxo: account.utxo,
+            // it is technically possible to have utxo with amount '0' see: https://tbtc1.trezor.io/tx/352873fe6cd5a83ca4b02737848d7d839aab864b8223c5ba7150ae35c22f4e38
+            // however they should be excluded to avoid increase fee
+            // TODO: this should be fixed in TrezorConnect + hd-wallet.composeTx? (connect throws: 'Segwit output without amount' error)
+            utxo: account.utxo.filter(input => input.amount !== '0'),
         },
-        feeLevels: [send.selectedFee],
+        feeLevels: predefinedLevels,
         outputs: composedOutputs,
         coin: account.symbol,
-    });
-
-    dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: false });
-
-    if (resp.success) {
-        const tx = resp.payload[0];
-
-        dispatch({
-            type: SEND.BTC_PRECOMPOSED_TX,
-            payload: tx,
-        });
-    } else {
-        dispatch({
-            type: SEND.BTC_PRECOMPOSED_TX,
-            payload: {
-                type: 'error',
-                error: resp.payload.error,
-            },
-        });
-    }
-
-    if (resp.success) {
-        return resp.payload[0];
-    }
-};
-
-/**
- *    Creates new output (address, amount, fiatValue, localCurrency)
- */
-export const addRecipient = () => (dispatch: Dispatch, getState: GetState) => {
-    const { send, settings } = getState().wallet;
-    const { account } = getState().wallet.selectedAccount;
-    if (!send || !account || !settings) return null;
-
-    const { outputs } = send;
-    const outputsCount = outputs.length;
-    const lastOutput = outputs[outputsCount - 1];
-    const lastOutputId = lastOutput.id;
-    const localCurrency = getLocalCurrency(settings.localCurrency);
-
-    const newOutput = {
-        id: lastOutputId + 1,
-        address: { value: null, error: null },
-        amount: { value: null, error: null, isLoading: false },
-        fiatValue: { value: null },
-        localCurrency: { value: localCurrency },
     };
 
-    dispatch({
-        type: SEND.BTC_ADD_RECIPIENT,
-        newOutput,
+    const response = await TrezorConnect.composeTransaction({
+        ...params,
+        account: params.account, // needs to be present in order to correct resolve of trezor-connect params overload
     });
 
-    dispatch(commonActions.cache());
-};
+    if (!response.success) return; // TODO: show toast?
 
-/**
- *    Removes added output (address, amount, fiatValue, localCurrency)
- */
-export const removeRecipient = (outputId: number) => (dispatch: Dispatch, getState: GetState) => {
-    const { send } = getState().wallet;
-    const { account } = getState().wallet.selectedAccount;
-    if (!send || !account) return null;
+    const wrappedResponse: PrecomposedLevels = {};
 
-    dispatch({ type: SEND.BTC_REMOVE_RECIPIENT, outputId });
-    dispatch(commonActions.cache());
-};
+    response.payload.forEach((tx, index) => {
+        const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
+        wrappedResponse[feeLabel] = tx;
+    });
 
-/*
-    Send transaction
- */
-export const send = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { send, selectedAccount, blockchain } = getState().wallet;
-    const selectedDevice = getState().suite.device;
-    const account = selectedAccount.account as Account;
-    if (!send || !send.networkTypeBitcoin.transactionInfo || !selectedDevice) return;
+    const hasAtLeastOneValid = response.payload.find(r => r.type !== 'error');
 
-    const { transactionInfo } = send.networkTypeBitcoin;
+    // there is no valid tx in predefinedLevels and there is no custom level
+    if (!hasAtLeastOneValid && !wrappedResponse.custom) {
+        const { minFee } = feeInfo;
+        console.warn('LEVELS', predefinedLevels);
+        let maxFee = new BigNumber(predefinedLevels[predefinedLevels.length - 1].feePerUnit).minus(
+            1,
+        );
+        const customLevels: any[] = [];
+        while (maxFee.gte(minFee)) {
+            customLevels.push({ feePerUnit: maxFee.toString(), label: 'custom' });
+            maxFee = maxFee.minus(1);
+        }
 
-    if (!transactionInfo || transactionInfo.type !== 'final') return;
-    const { transaction } = transactionInfo;
+        console.warn('CUSTOM LEVELS!', customLevels, wrappedResponse);
 
-    const inputs = transaction.inputs.map(input => ({
-        ...input,
-        // sequence: BTC_RBF_SEQUENCE, // TODO: rbf is set
-        // sequence: BTC_LOCKTIME_SEQUENCE, // TODO: locktime is set
-    }));
+        if (!customLevels.length) return wrappedResponse;
 
-    let signEnhancement = {};
+        const customLevelsResponse = await TrezorConnect.composeTransaction({
+            ...params,
+            account: params.account, // needs to be present in order to correct resolve type of trezor-connect params overload
+            feeLevels: customLevels,
+        });
 
-    if (account.symbol === 'zec') {
-        // todo: remove blockheight check right anytime after zcash fork
-        if (blockchain.zec.blockHeight > 903000) {
-            signEnhancement = ZEC_SIGN_ENHANCEMENT;
-        } else {
-            signEnhancement = ZEC_SIGN_ENHANCEMENT_LEGACY;
+        console.warn('CUSTOM LEVELS RESPONSE', customLevelsResponse);
+
+        if (!customLevelsResponse.success) return wrappedResponse; // TODO: show toast?
+
+        const customValid = customLevelsResponse.payload.findIndex(r => r.type !== 'error');
+        if (customValid >= 0) {
+            wrappedResponse.custom = customLevelsResponse.payload[customValid];
         }
     }
 
-    // connect undefined amount hotfix (not for zcash)
+    return wrappedResponse;
+};
+
+export const signTransaction = (
+    formValues: FormState,
+    transactionInfo: PrecomposedTransaction,
+) => async (dispatch: Dispatch, getState: GetState) => {
+    const { selectedAccount } = getState().wallet;
+    const { device } = getState().suite;
+    if (
+        selectedAccount.status !== 'loaded' ||
+        !device ||
+        !transactionInfo ||
+        transactionInfo.type !== 'final'
+    )
+        return;
+
+    dispatch({
+        type: SEND.REQUEST_SIGN_TRANSACTION,
+        payload: {
+            formValues,
+            transactionInfo,
+        },
+    });
+
+    const { account } = selectedAccount;
+    const { transaction } = transactionInfo;
+
+    let sequence: number;
+    let signEnhancement: Partial<SignTransaction> = {};
+
+    if (account.symbol === 'zec') {
+        signEnhancement = ZEC_SIGN_ENHANCEMENT;
+    }
+
+    if (formValues.bitcoinRBF) {
+        // RBF is set, add sequence to inputs
+        sequence = BTC_RBF_SEQUENCE;
+    } else if (formValues.bitcoinLockTime) {
+        // locktime is set, add sequence to inputs and add enhancement params
+        sequence = BTC_LOCKTIME_SEQUENCE;
+        signEnhancement.locktime = new BigNumber(formValues.bitcoinLockTime).toNumber();
+    }
+
+    const inputs = transaction.inputs
+        .map(input => ({
+            ...input,
+            sequence,
+        }))
+        .filter(input => input.amount !== '0'); // remove '0' amounts
+
     inputs.forEach(input => {
-        if (!input.amount) delete input.amount;
+        if (!input.amount) delete input.amount; // remove undefined amounts
+        if (!input.sequence) delete input.sequence; // remove undefined sequence
     });
 
     const signPayload = {
         device: {
-            path: selectedDevice.path,
-            instance: selectedDevice.instance,
-            state: selectedDevice.state,
+            path: device.path,
+            instance: device.instance,
+            state: device.state,
         },
-        useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
+        useEmptyPassphrase: device.useEmptyPassphrase,
         outputs: transaction.outputs,
         inputs,
         coin: account.symbol,
@@ -183,38 +205,21 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
     const signedTx = await TrezorConnect.signTransaction(signPayload);
 
     if (!signedTx.success) {
+        // catch manual error from cancelSigning
+        if (signedTx.payload.error === 'tx-cancelled') return;
         dispatch(
-            notificationActions.addToast({ type: 'sign-tx-error', error: signedTx.payload.error }),
+            notificationActions.addToast({
+                type: 'sign-tx-error',
+                error: signedTx.payload.error,
+            }),
         );
         return;
     }
 
-    // TODO: add possibility to show serialized tx without pushing (locktime)
-    const sentTx = await TrezorConnect.pushTransaction({
-        tx: signedTx.payload.serializedTx,
-        coin: account.symbol,
-    });
-
-    const spentWithoutFee = new BigNumber(transactionInfo.totalSpent)
-        .minus(transactionInfo.fee)
-        .toString();
-
-    if (sentTx.success) {
-        dispatch(commonActions.clear());
-        dispatch(
-            notificationActions.addToast({
-                type: 'tx-sent',
-                formattedAmount: formatNetworkAmount(spentWithoutFee, account.symbol, true),
-                device: selectedDevice,
-                descriptor: account.descriptor,
-                symbol: account.symbol,
-                txid: sentTx.payload.txid,
-            }),
-        );
-        dispatch(accountActions.fetchAndUpdateAccount(account));
-    } else {
-        dispatch(
-            notificationActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),
-        );
-    }
+    return dispatch(
+        requestPushTransaction({
+            tx: signedTx.payload.serializedTx,
+            coin: account.symbol,
+        }),
+    );
 };
