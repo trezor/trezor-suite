@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { useActions, useSelector } from '@suite-hooks';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { MetadataAddPayload } from '@suite-types/metadata';
-// import metadataReducer from '@suite/reducers/suite/metadataReducer';
 
 const LabelDefaultValue = styled.div`
     min-width: 0;
@@ -34,8 +33,6 @@ const AddLabelButton = styled(Button)`
 const SubmitIcon = styled(Icon)`
     background-color: ${colors.BLACK17};
     color: ${colors.NEUE_BG_LIGHT_GREY};
-    // background-color: ${({ color }) => color || colors.NEUE_BG_LIGHT_GREY};
-    // color: ${colors.NEUE_TYPE_DARK_GREY};
     padding: 0 2px;
     margin: 0 2px;
     border-radius: 4px;
@@ -77,11 +74,8 @@ const EditContainer = (props: {
     onBlur: () => void;
 }) => {
     const divRef = useRef<HTMLDivElement>(null);
-    console.log('[editing]: render');
-
     const submit = useCallback(
         value => {
-            console.log('submit, value', value);
             props.onSubmit(value);
 
             if (divRef && divRef.current) {
@@ -92,22 +86,16 @@ const EditContainer = (props: {
     );
 
     useEffect(() => {
-        console.log('[editing]: use effect', props.originalValue);
         // todo: if enabling labeling for the first time, focus is lost. I don't know how  to fix this. Otherwise it works;
         if (divRef && divRef.current) {
             divRef.current.textContent = props.originalValue || null;
             divRef.current.focus();
-            console.log('SETTING FOCUS MDFTK!!!!');
-
-            console.log(divRef);
             moveCaretToEndOfContentEditable(divRef.current);
         }
     }, [props]);
 
     useEffect(() => {
         const keyboardHandler = (event: KeyboardEvent) => {
-            console.log(event.keyCode);
-
             switch (event.keyCode) {
                 // tab
                 case 9:
@@ -193,12 +181,11 @@ const AddMetadataLabel = (props: Props) => {
     });
 
     useEffect(() => {
-        console.log('====use effect');
         if (editing && !loading && (!metadata.enabled || deviceMetadata?.status !== 'enabled')) {
+            /** when clicking on inline input edit, ensure that everything needed is already ready */
             const init = async () => {
                 setLoading(true);
                 const result = await initMetadata(true);
-                console.log('=== result', result);
                 if (!result) setEditing(false);
                 setLoading(false);
             };
@@ -280,8 +267,6 @@ const AddMetadataLabel = (props: Props) => {
             )}
         </LabelContainer>
     );
-
-    // const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
 };
 
 export default AddMetadataLabel;

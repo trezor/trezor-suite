@@ -234,7 +234,6 @@ export const fetchMetadata = (deviceState: string) => async (
             if (json.version === '1.0.0') {
                 // TODO: migration
             }
-            // console.warn('decrypted', json);
             dispatch({
                 type: METADATA.ACCOUNT_LOADED,
                 payload: {
@@ -675,7 +674,6 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
 export const init = (force = false) => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
     if (!device?.state) {
-        console.log('returning no device state');
         return false;
     }
 
@@ -688,15 +686,13 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
     // 2. set device metadata key (master key). Sometimes, if state is not present
     if (device.metadata.status !== 'enabled' && force) {
         needsUpdate = true;
-        console.log('async, dispacht');
         await dispatch(setDeviceMetadataKey(force));
-        console.log('async finish');
     }
 
     if (getState().suite.device?.metadata.status !== 'enabled') {
-        console.log('returning not enabled');
         return false;
     }
+
     dispatch(syncMetadataKeys());
 
     // 3. connect to provider
