@@ -56,7 +56,7 @@ export default ({ selectedAccount, send, decision }: Props) => {
     if (selectedAccount.status !== 'loaded' || !device || !precomposedTx || !precomposedForm)
         return null;
 
-    const { symbol } = selectedAccount.account;
+    const { symbol, networkType } = selectedAccount.account;
     // const outputSymbol = token ? token.symbol!.toUpperCase() : symbol.toUpperCase();
 
     const outputs: OutputProps[] = [];
@@ -79,7 +79,11 @@ export default ({ selectedAccount, send, decision }: Props) => {
         outputs.push({ type: 'locktime', value: precomposedForm.bitcoinLockTime });
     }
 
-    outputs.push({ type: 'fee', value: precomposedTx.fee });
+    if (networkType === 'ripple') {
+        outputs.unshift({ type: 'fee', value: precomposedTx.fee });
+    } else {
+        outputs.push({ type: 'fee', value: precomposedTx.fee });
+    }
 
     // omit other button requests (like passphrase)
     const buttonRequests = device.buttonRequests.filter(
