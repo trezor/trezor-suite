@@ -1,7 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Account } from '@wallet-types';
 import BigNumber from 'bignumber.js';
-import { BuyTrade, BuyTradeQuoteRequest } from '@suite/services/invityAPI/buyTypes';
+import {
+    BuyTrade,
+    BuyTradeQuoteRequest,
+    BuyTradeFormResponse,
+} from '@suite/services/invityAPI/buyTypes';
 
 export interface AmountLimits {
     currency: string;
@@ -101,3 +105,42 @@ export const addValue = (currentValue = '0', addValue: string) => {
 
     return result;
 };
+
+export function createQuoteLink(request: BuyTradeQuoteRequest): string {
+    let hash: string;
+    if (request.wantCrypto) {
+        hash = `/qc/${request.country}/${request.fiatCurrency}/${request.cryptoStringAmount}/${request.receiveCurrency}`;
+    } else {
+        hash = `/qf/${request.country}/${request.fiatCurrency}/${request.fiatStringAmount}/${request.receiveCurrency}`;
+    }
+    // TODO - it is presumed here that the location already contains anchor
+    return `${window.location.href}${hash}`;
+}
+
+function addHiddenFieldToForm(form: any, fieldName: string, fieldValue: any) {
+    const hiddenField = document.createElement('input');
+    hiddenField.type = 'hidden';
+    hiddenField.name = fieldName;
+    hiddenField.value = fieldValue;
+    form.appendChild(hiddenField);
+}
+
+export function submitRequestForm(tradeForm: BuyTradeFormResponse): void {
+    if (!tradeForm || !tradeForm.form) return;
+    // for IFRAME there is nothing to submit
+    if (tradeForm.form.formMethod === 'IFRAME') return;
+    const form = document.createElement('form');
+    if (tradeForm.form.formMethod === 'GET' && tradeForm.form.formAction) {
+        window.open(tradeForm.form.formAction, '_self');
+        return;
+    }
+    form.method = tradeForm.form.formMethod;
+    form.action = tradeForm.form.formAction;
+    const { fields } = tradeForm.form;
+    Object.keys(fields).forEach(k => {
+        addHiddenFieldToForm(form, k, fields[k]);
+    });
+    if (!document.body) return;
+    document.body.appendChild(form);
+    form.submit();
+}

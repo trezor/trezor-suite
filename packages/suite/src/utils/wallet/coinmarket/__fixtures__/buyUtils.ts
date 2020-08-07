@@ -1,4 +1,19 @@
-import { BuyTrade } from '@suite/services/invityAPI/buyTypes';
+import { BuyTrade, BuyTradeQuoteRequest } from '@suite/services/invityAPI/buyTypes';
+
+export const QUOTE_REQUEST_FIAT: BuyTradeQuoteRequest = {
+    wantCrypto: false,
+    country: 'CZ',
+    fiatCurrency: 'EUR',
+    receiveCurrency: 'BTC',
+    fiatStringAmount: '10',
+};
+export const QUOTE_REQUEST_CRYPTO: BuyTradeQuoteRequest = {
+    wantCrypto: true,
+    country: 'CZ',
+    fiatCurrency: 'EUR',
+    receiveCurrency: 'BTC',
+    cryptoStringAmount: '0.001',
+};
 
 export const MIN_MAX_QUOTES_OK: BuyTrade[] = [
     {
