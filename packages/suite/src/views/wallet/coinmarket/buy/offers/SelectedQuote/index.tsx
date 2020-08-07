@@ -26,12 +26,16 @@ interface Props {
 }
 
 const SelectedOffer = ({ selectedQuote }: Props) => {
+    if (!selectedQuote) {
+        return null;
+    }
+
     const activeView = 'verifyAddress';
 
     return (
         <Wrapper>
             <StyledCard>
-                {activeView === 'verifyAddress' && <VerifyAddress />}
+                {activeView === 'verifyAddress' && <VerifyAddress selectedQuote={selectedQuote} />}
                 {/* {activeView === 'waitingForPayment' && (
                     <WaitingForPayment transactionId="dbd35574-aa74-49ba-b318-e3c16dbee1d7" />
                 )}

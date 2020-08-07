@@ -117,6 +117,11 @@ export function createQuoteLink(request: BuyTradeQuoteRequest): string {
     return `${window.location.href}${hash}`;
 }
 
+export function createTxLink(trade: BuyTrade): string {
+    // TODO - only preliminary - we do not have the return page fixed yet
+    return `${window.location.href}/${trade.paymentId}`;
+}
+
 function addHiddenFieldToForm(form: any, fieldName: string, fieldValue: any) {
     const hiddenField = document.createElement('input');
     hiddenField.type = 'hidden';

@@ -1,10 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { getAccountInfo } from '@wallet-utils/coinmarket/buyUtils';
+import { getAccountInfo, submitRequestForm, createTxLink } from '@wallet-utils/coinmarket/buyUtils';
 import { FiatValue } from '@suite-components';
 import * as coinmarketActions from '@wallet-actions/coinmarketActions';
 import { useActions, useSelector } from '@suite-hooks';
 import { Input, Button, colors, variables, CoinLogo } from '@trezor/components';
+import invityAPI from '@suite/services/invityAPI/service';
+import { BuyTrade } from '@suite/services/invityAPI/buyTypes';
 
 const Wrapper = styled.div`
     display: flex;
@@ -69,7 +71,11 @@ const Confirmed = styled.div`
     justify-content: center;
 `;
 
-const VerifyAddress = () => {
+interface Props {
+    selectedQuote: BuyTrade;
+}
+
+const VerifyAddress = ({ selectedQuote }: Props) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const addressVerified = useSelector(state => state.wallet.coinmarket.addressVerified);
     const { verifyAddress } = useActions({ verifyAddress: coinmarketActions.verifyAddress });
@@ -109,7 +115,30 @@ const VerifyAddress = () => {
                     </Button>
                 )}
                 {addressVerified && (
-                    <Button onClick={() => console.log('send to server')}>Go to payment</Button>
+                    <Button
+                        onClick={async () => {
+                            const quote = { ...selectedQuote, receiveAddress: address };
+                            const response = await invityAPI.doBuyTrade({
+                                trade: quote,
+                                returnUrl: createTxLink(selectedQuote),
+                            });
+                            if (!response || !response.trade || !response.trade.paymentId) {
+                                // TODO - show error, something really bad happened
+                                console.log('invalid response', response);
+                            } else if (response.trade.error) {
+                                // TODO - show error, trade failed, typically timeout
+                                console.log('response error', response.trade.error);
+                            } else {
+                                // TODO - save the response to the storage
+                                // eslint-disable-next-line no-lonely-if
+                                if (response.tradeForm) {
+                                    submitRequestForm(response.tradeForm);
+                                }
+                            }
+                        }}
+                    >
+                        Go to payment
+                    </Button>
                 )}
             </ButtonWrapper>
         </Wrapper>

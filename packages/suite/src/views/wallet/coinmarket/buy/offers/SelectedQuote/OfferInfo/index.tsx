@@ -74,7 +74,7 @@ const StyledTransactionId = styled(TransactionId)`
 `;
 
 interface Props {
-    selectedQuote?: BuyTrade;
+    selectedQuote: BuyTrade;
 }
 
 const OfferInfo = ({ selectedQuote }: Props) => {
