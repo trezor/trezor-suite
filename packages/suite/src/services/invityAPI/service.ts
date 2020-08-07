@@ -1,7 +1,6 @@
 import { createHash } from 'crypto';
 import {
     ExchangeListResponse,
-    ExchangeCoinListResponse,
     ExchangeTradeQuoteResponse,
     ExchangeTradeQuoteRequest,
     ConfirmExchangeTradeRequest,
@@ -22,31 +21,9 @@ import {
 import { CountryInfo, SupportTicketResponse, SupportTicket } from './utilityTypes';
 import { isDev } from '@suite/utils/suite/build';
 
-// import {
-//     localStorageGetString,
-//     localStorageSetString,
-//     localStorageGetCache,
-//     localStorageSetCache,
-// } from '@utils/localstorage';
-
 // TODO - get from constants
 const BitcoinTestnetTicker = 'TEST';
 const EthereumTestnetRopstenTicker = 'tROP';
-
-// TODO - just placeholders, will be handled differently
-function localStorageGetString(_key: string): string | null {
-    return null;
-}
-
-function localStorageSetString(_key: string, _value: string) {
-    return null;
-}
-
-function localStorageGetCache<T>(_key: string, _timeoutSeconds: number = 10 * 60): T | undefined {
-    return undefined;
-}
-
-export function localStorageSetCache<T>(_key: string, _value: T) {}
 
 export interface StringMap {
     [key: string]: string;
@@ -59,12 +36,6 @@ class InvityAPI {
     localhostAPIServer = 'http://localhost:3330';
 
     server: string = this.productionAPIServer;
-
-    private InvityAPIKey = 'InvityAPI';
-    private InvityAPIServerKey = 'InvityAPIServer';
-    private ExchangeListCacheKey = 'ExchangeList';
-    private ExchangeCoinsCacheKey = 'ExchangeCoins';
-    private BuyListCacheKey = 'BuyList';
 
     // info service
     private DETECT_COUNTRY_INFO = '/api/info/country';
@@ -93,7 +64,7 @@ class InvityAPI {
         } else {
             defaultServer = this.productionAPIServer;
         }
-        this.server = localStorageGetString(this.InvityAPIServerKey) || defaultServer;
+        this.server = defaultServer;
         // override for now the production api server
         if (!this.server) {
             this.server = defaultServer;
@@ -115,7 +86,6 @@ class InvityAPI {
 
     setInvityAPIServer(server: string) {
         this.server = server;
-        localStorageSetString(this.InvityAPIServerKey, server);
     }
 
     private options(body = {}, method = 'POST'): any {
@@ -185,13 +155,9 @@ class InvityAPI {
 
     getExchangeList = async (): Promise<ExchangeListResponse | []> => {
         try {
-            let response = localStorageGetCache<ExchangeListResponse>(this.ExchangeListCacheKey);
-            if (!response) {
-                response = await this.request(this.EXCHANGE_LIST, {}, 'GET');
-                if (!response || response.length === 0) {
-                    return [];
-                }
-                localStorageSetCache(this.ExchangeListCacheKey, response);
+            const response = await this.request(this.EXCHANGE_LIST, {}, 'GET');
+            if (!response || response.length === 0) {
+                return [];
             }
             return response;
         } catch (error) {
@@ -202,28 +168,22 @@ class InvityAPI {
 
     getExchangeCoins = async (): Promise<ExchangeCoinInfo[]> => {
         try {
-            let response = localStorageGetCache<ExchangeCoinListResponse>(
-                this.ExchangeCoinsCacheKey,
-            );
-            if (!response) {
-                response = await this.request(this.EXCHANGE_COINS, {}, 'GET');
-                if (!response || response.length === 0) {
-                    return [];
-                }
-                // add BTC and ETH testnet in dev
-                if (isDev()) {
-                    response.push({
-                        ticker: BitcoinTestnetTicker,
-                        name: 'Bitcoin Testnet',
-                        category: 'Testnet',
-                    });
-                    response.push({
-                        ticker: EthereumTestnetRopstenTicker,
-                        name: 'Ethereum Testnet Ropsten',
-                        category: 'Testnet',
-                    });
-                }
-                localStorageSetCache(this.ExchangeCoinsCacheKey, response);
+            const response = await this.request(this.EXCHANGE_COINS, {}, 'GET');
+            if (!response || response.length === 0) {
+                return [];
+            }
+            // add BTC and ETH testnet in dev
+            if (isDev()) {
+                response.push({
+                    ticker: BitcoinTestnetTicker,
+                    name: 'Bitcoin Testnet',
+                    category: 'Testnet',
+                });
+                response.push({
+                    ticker: EthereumTestnetRopstenTicker,
+                    name: 'Ethereum Testnet Ropsten',
+                    category: 'Testnet',
+                });
             }
             return response;
         } catch (error) {
@@ -279,13 +239,7 @@ class InvityAPI {
 
     getBuyList = async (): Promise<BuyListResponse | undefined> => {
         try {
-            let response = localStorageGetCache<BuyListResponse>(this.BuyListCacheKey);
-            if (!response) {
-                response = await this.request(this.BUY_LIST, {}, 'GET');
-                if (response && response.providers && response.providers.length > 0) {
-                    localStorageSetCache(this.BuyListCacheKey, response);
-                }
-            }
+            const response = await this.request(this.BUY_LIST, {}, 'GET');
             return response;
         } catch (error) {
             console.log('[getBuyList]', error);

@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { getAccountInfo } from '@wallet-utils/coinmarket/buyUtils';
 import { FiatValue } from '@suite-components';
 import * as coinmarketActions from '@wallet-actions/coinmarketActions';
-import * as modalActions from '@suite-actions/modalActions';
 import { useActions, useSelector } from '@suite-hooks';
 import { Input, Button, colors, variables, CoinLogo } from '@trezor/components';
 
