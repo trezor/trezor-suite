@@ -170,7 +170,9 @@ const CoinmarketBuy = () => {
     console.log('buyInfo.buyInfo?.suggestedFiatCurrency', buyInfo.buyInfo?.suggestedFiatCurrency);
 
     const isLoading = !buyInfo?.buyInfo;
-    const noProviders = buyInfo.buyInfo?.providers.length === 0;
+    const noProviders =
+        buyInfo.buyInfo?.providers.length === 0 ||
+        !buyInfo.supportedCryptoCurrencies.has(account.symbol);
 
     return (
         <CoinmarketLayout
@@ -233,10 +235,15 @@ const CoinmarketBuy = () => {
                                             render={({ onChange, value }) => {
                                                 return (
                                                     <SelectInput
-                                                        options={FIAT.currencies.map(
-                                                            (currency: string) =>
+                                                        options={FIAT.currencies
+                                                            .filter(c =>
+                                                                buyInfo.supportedFiatCurrencies.has(
+                                                                    c,
+                                                                ),
+                                                            )
+                                                            .map((currency: string) =>
                                                                 buildOption(currency),
-                                                        )}
+                                                            )}
                                                         isSearchable
                                                         value={value}
                                                         isClearable={false}

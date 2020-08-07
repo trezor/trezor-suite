@@ -15,6 +15,8 @@ import regional from '@suite/constants/wallet/coinmarket/regional';
 export interface BuyInfo {
     buyInfo?: BuyListResponse;
     providerInfos: { [name: string]: BuyProviderInfo };
+    supportedFiatCurrencies: Set<string>;
+    supportedCryptoCurrencies: Set<string>;
 }
 
 export type CoinmarketActions =
@@ -42,11 +44,20 @@ export async function loadBuyInfo(): Promise<BuyInfo> {
 
     buyInfo.providers.forEach(e => (providerInfos[e.name] = e));
 
-    // TODO - add to BuyInfo fields supported fiat and crypto currencies and available countries (use getAvailableOptions from invity.io)
+    const tradedFiatCurrencies: string[] = [];
+    const tradedCoins: string[] = [];
+    buyInfo.providers.forEach(p => {
+        tradedFiatCurrencies.push(...p.tradedFiatCurrencies.map(c => c.toLowerCase()));
+        tradedCoins.push(...p.tradedCoins.map(c => c.toLowerCase()));
+    });
+    const supportedFiatCurrencies = new Set(tradedFiatCurrencies);
+    const supportedCryptoCurrencies = new Set(tradedCoins);
 
     return {
         buyInfo,
         providerInfos,
+        supportedFiatCurrencies,
+        supportedCryptoCurrencies,
     };
 }
 

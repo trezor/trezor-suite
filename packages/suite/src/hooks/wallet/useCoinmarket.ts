@@ -25,7 +25,11 @@ export const useAllAccounts = () => {
 };
 
 export function useBuyInfo() {
-    const [buyInfo, setBuyInfo] = useState<BuyInfo>({ providerInfos: {} });
+    const [buyInfo, setBuyInfo] = useState<BuyInfo>({
+        providerInfos: {},
+        supportedFiatCurrencies: new Set<string>(),
+        supportedCryptoCurrencies: new Set<string>(),
+    });
     const selectedAccount = useSelector<AppState, AppState['wallet']['selectedAccount']>(
         state => state.wallet.selectedAccount,
     );
