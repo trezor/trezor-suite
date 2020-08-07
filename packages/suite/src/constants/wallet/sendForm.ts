@@ -24,3 +24,31 @@ export const ZEC_SIGN_ENHANCEMENT = {
 
 export const ERC20_TRANSFER = 'a9059cbb'; // 4 bytes function signature of solidity erc20 `transfer(address,uint256)`
 export const ERC20_GAS_LIMIT = '200000';
+
+export const DEFAULT_PAYMENT = {
+    type: 'payment',
+    address: '',
+    amount: '',
+    fiat: '',
+    currency: { value: 'usd', label: 'USD' },
+} as const;
+
+export const DEFAULT_OPRETURN = {
+    type: 'opreturn',
+    dataAscii: '',
+    dataHex: '',
+} as const;
+
+export const DEFAULT_VALUES = {
+    setMaxOutputId: undefined,
+    selectedFee: undefined,
+    feePerUnit: '',
+    feeLimit: '',
+    bitcoinRBF: true,
+    bitcoinLockTime: '',
+    ethereumGasPrice: '',
+    ethereumGasLimit: '',
+    ethereumData: '',
+    rippleDestinationTag: '',
+    outputs: [],
+} as const;
