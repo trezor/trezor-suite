@@ -37,7 +37,7 @@ describe('Firmware', () => {
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
         cy.getTestElement('@settings/device/update-button')
-            .should('contain.text', 'Up to date')
+            .should('contain.text', 'Update available')
             .click();
         cy.getTestElement('@firmware/close-button').click();
     });
