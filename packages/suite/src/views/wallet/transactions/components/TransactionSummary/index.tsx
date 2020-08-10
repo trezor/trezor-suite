@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { getUnixTime, subWeeks } from 'date-fns';
 import { colors, variables, Button, Card } from '@trezor/components';
-import { TransactionsGraph, Translation } from '@suite-components';
+import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
 import { calcTicks, calcTicksFromData } from '@suite-utils/date';
 import { aggregateBalanceHistory, getMaxValueFromData } from '@wallet-utils/graphUtils';
 import { GraphData } from '@wallet-types/graph';
@@ -25,7 +25,6 @@ const ContentWrapper = styled.div`
 const GraphWrapper = styled(Card)`
     flex-direction: row;
     display: flex;
-    flex: 5 1 auto;
     padding: 14px 16px;
     height: 320px;
 `;
@@ -115,18 +114,18 @@ const TransactionSummary = (props: Props) => {
             </Actions>
             {!isGraphHidden && (
                 <ContentWrapper>
-                    {error && (
-                        <ErrorMessage>
-                            <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
-                            <Button onClick={onRefresh} icon="REFRESH" variant="tertiary">
-                                <Translation id="TR_RETRY" />
-                            </Button>
-                        </ErrorMessage>
-                    )}
-                    {!error && (
-                        <>
+                    {error ? (
+                        <GraphWrapper>
+                            <ErrorMessage>
+                                <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
+                                <Button onClick={onRefresh} icon="REFRESH" variant="tertiary">
+                                    <Translation id="TR_RETRY" />
+                                </Button>
+                            </ErrorMessage>
+                        </GraphWrapper>
+                    ) : (
+                        <HiddenPlaceholder intensity={7}>
                             <GraphWrapper>
-                                {/* <HiddenPlaceholder intensity={5}> */}
                                 <TransactionsGraph
                                     hideToolbar
                                     variant="one-asset"
@@ -142,18 +141,18 @@ const TransactionSummary = (props: Props) => {
                                     sentValueFn={data => data.sent}
                                     balanceValueFn={data => data.balance}
                                 />
-                                {/* </HiddenPlaceholder> */}
                             </GraphWrapper>
-                            <SummaryCards
-                                selectedRange={selectedRange}
-                                dataInterval={dataInterval}
-                                data={data}
-                                localCurrency={props.localCurrency}
-                                symbol={account.symbol}
-                                isLoading={isLoading}
-                            />
-                        </>
+                        </HiddenPlaceholder>
                     )}
+
+                    <SummaryCards
+                        selectedRange={selectedRange}
+                        dataInterval={dataInterval}
+                        data={data}
+                        localCurrency={props.localCurrency}
+                        symbol={account.symbol}
+                        isLoading={isLoading}
+                    />
                 </ContentWrapper>
             )}
             <Divider />
