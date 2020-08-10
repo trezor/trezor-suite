@@ -6408,6 +6408,11 @@
   resolved "https://registry.yarnpkg.com/@types/invariant/-/invariant-2.2.30.tgz#20efa342807606ada5483731a8137cb1561e5fe9"
   integrity sha512-98fB+yo7imSD2F7PF7GIpELNgtLNgo5wjivu0W5V4jx+KVVJxo6p/qN4zdzSTBWy4/sN3pPyXwnhRSD28QX+ag==
 
+"@types/invity-api@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@types/invity-api/-/invity-api-1.0.0.tgz#ac49fe6b05be900acbed5c85c4a51a98e977a3fd"
+  integrity sha512-kSufxL2cXt7B6QUWvWwjpqHXse/ldbuExmoh8YEL2aDgnUc0xlKGmRnQsybQuHku9cV20QE9Quxqzd99v63nFQ==
+
 "@types/is-function@^1.0.0":
   version "1.0.0"
   resolved "https://registry.npmjs.org/@types/is-function/-/is-function-1.0.0.tgz#1b0b819b1636c7baf0d6785d030d12edf70c3e83"

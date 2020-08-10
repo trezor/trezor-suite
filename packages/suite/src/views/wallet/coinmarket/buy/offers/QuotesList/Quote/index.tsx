@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, Button, variables } from '@trezor/components';
+import { BuyTrade } from 'invity-api';
 
 const Wrapper = styled.div`
     display: flex;
@@ -19,6 +20,7 @@ const TagRow = styled.div`
 
 const Tag = styled.div`
     margin-top: 10px;
+    height: 35px;
     margin-left: -20px;
     border: 1px solid tan;
     text-transform: uppercase;
@@ -26,7 +28,7 @@ const Tag = styled.div`
 
 const Main = styled.div`
     display: flex;
-    margin: 10px 30px;
+    margin: 0 30px;
     justify-content: space-between;
     padding-bottom: 20px;
     border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
@@ -67,12 +69,18 @@ const StyledButton = styled(Button)`
     width: 180px;
 `;
 
-const Value = styled.div``;
+const Value = styled.div`
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+`;
 
 const Footer = styled.div`
     margin: 0 30px;
     padding: 10px 0;
+    padding-top: 23px;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
     border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 const ErrorFooter = styled.div`
@@ -84,9 +92,8 @@ const ErrorFooter = styled.div`
 
 interface Props {
     className?: string;
-    // TODO - change any to BuyQuote
-    selectQuote: (quote: any) => void;
-    quote: any;
+    selectQuote: (quote: BuyTrade) => void;
+    quote: BuyTrade;
     providers: any;
 }
 
@@ -95,6 +102,9 @@ const Quote = ({ className, selectQuote, quote, providers }: Props) => {
     const { receiveStringAmount, receiveCurrency, paymentMethod, exchange } = quote;
     const provider = providers[exchange];
     const companyName = provider?.companyName || exchange;
+
+    console.log('quote', quote);
+
     return (
         <Wrapper className={className}>
             <TagRow>{hasTag && <Tag>best offer</Tag>}</TagRow>
@@ -116,10 +126,6 @@ const Quote = ({ className, selectQuote, quote, providers }: Props) => {
                 <Column>
                     <Heading>Fees</Heading>
                     <Value>All fee included</Value>
-                </Column>
-                <Column>
-                    <Heading>KYC</Heading>
-                    <Value>Yes</Value>
                 </Column>
             </Details>
             {quote.error && <ErrorFooter>{quote.error}</ErrorFooter>}

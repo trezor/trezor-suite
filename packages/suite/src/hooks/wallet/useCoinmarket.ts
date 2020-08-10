@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { AppState } from '@suite-types';
 import { useState, useEffect } from 'react';
 import { BuyInfo, loadBuyInfo } from '@wallet-actions/coinmarketBuyActions';
-import invityAPI from '@suite/services/invityAPI/service';
+import invityAPI from '@suite/services/invityAPI';
 
 export const useExchange = () => {
     const router = useSelector<AppState, AppState['router']>(state => state.router);

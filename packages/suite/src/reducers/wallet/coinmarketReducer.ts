@@ -1,12 +1,11 @@
 import produce from 'immer';
 import { WalletAction } from '@wallet-types';
-import { BuyTrade, BuyTradeQuoteRequest } from '@suite/services/invityAPI/buyTypes';
+import { BuyTrade, BuyTradeQuoteRequest, BuyListResponse } from 'invity-api';
 import { COINMARKET_BUY } from '@wallet-actions/constants';
-import { BuyInfo } from '@suite/actions/wallet/coinmarketBuyActions';
 
 interface Buy {
-    buyInfo: BuyInfo | null;
-    quotesRequest: BuyTradeQuoteRequest | null;
+    buyInfo?: BuyListResponse;
+    quotesRequest?: BuyTradeQuoteRequest;
     quotes: BuyTrade[];
     alternativeQuotes: BuyTrade[] | undefined;
     addressVerified: boolean;
@@ -18,8 +17,8 @@ interface State {
 
 const initialState = {
     buy: {
-        buyInfo: null,
-        quotesRequest: null,
+        buyInfo: undefined,
+        quotesRequest: undefined,
         quotes: [],
         alternativeQuotes: undefined,
         addressVerified: false,

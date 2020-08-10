@@ -1,11 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Account } from '@wallet-types';
-import BigNumber from 'bignumber.js';
-import {
-    BuyTrade,
-    BuyTradeQuoteRequest,
-    BuyTradeFormResponse,
-} from '@suite/services/invityAPI/buyTypes';
+import { BuyTrade, BuyTradeQuoteRequest, BuyTradeFormResponse } from 'invity-api';
 
 export interface AmountLimits {
     currency: string;

@@ -1,13 +1,8 @@
 import TrezorConnect, { UI, ButtonRequestMessage } from 'trezor-connect';
 import * as modalActions from '@suite-actions/modalActions';
 import * as notificationActions from '@suite-actions/notificationActions';
-import {
-    BuyListResponse,
-    BuyProviderInfo,
-    BuyTradeQuoteRequest,
-    BuyTrade,
-} from '@suite/services/invityAPI/buyTypes';
-import invityAPI from '@suite/services/invityAPI/service';
+import { BuyListResponse, BuyProviderInfo, BuyTradeQuoteRequest, BuyTrade } from 'invity-api';
+import invityAPI from '@suite/services/invityAPI';
 import { COINMARKET_BUY } from './constants';
 import { Dispatch, GetState } from '@suite-types';
 import regional from '@suite/constants/wallet/coinmarket/regional';
@@ -19,7 +14,7 @@ export interface BuyInfo {
     supportedCryptoCurrencies: Set<string>;
 }
 
-export type CoinmarketActions =
+export type CoinmarketBuyActions =
     | { type: typeof COINMARKET_BUY.SAVE_BUY_INFO; buyInfo: BuyInfo }
     | { type: typeof COINMARKET_BUY.SAVE_QUOTE_REQUEST; request: BuyTradeQuoteRequest }
     | { type: typeof COINMARKET_BUY.VERIFY_ADDRESS; addressVerified: boolean }

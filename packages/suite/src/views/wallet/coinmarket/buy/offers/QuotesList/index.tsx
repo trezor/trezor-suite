@@ -13,11 +13,10 @@ const StyledQuote = styled(Quote)`
 `;
 
 const Header = styled.div`
-    margin: 15px 0;
+    margin: 36px 0 24px 0;
 `;
 
 const SummaryRow = styled.div`
-    min-height: 32px;
     display: flex;
     align-items: center;
     font-size: ${variables.FONT_SIZE.H2};
@@ -63,22 +62,22 @@ const Offers = ({ selectQuote, quotes, isAlternative }: Props) => {
 
     return (
         <Wrapper>
-            {isAlternative ? (
-                <Header>
-                    <SummaryRow>
-                        <Text>
-                            {quotes[0].fiatStringAmount} {quotes[0].fiatCurrency}
-                        </Text>
-                        <StyledIcon icon="ARROW_RIGHT" />
-                        <StyledCoinLogo size={21} symbol={account.symbol} />
-                        <Crypto>{account.symbol}</Crypto>
-                    </SummaryRow>
-                    <OrigAmount>
-                        ≈ {fiatStringAmount} {fiatCurrency}
-                    </OrigAmount>
-                </Header>
-            ) : (
-                <Header>
+            <Header>
+                {isAlternative ? (
+                    <>
+                        <SummaryRow>
+                            <Text>
+                                {quotes[0].fiatStringAmount} {quotes[0].fiatCurrency}
+                            </Text>
+                            <StyledIcon icon="ARROW_RIGHT" />
+                            <StyledCoinLogo size={21} symbol={account.symbol} />
+                            <Crypto>{account.symbol}</Crypto>
+                        </SummaryRow>
+                        <OrigAmount>
+                            ≈ {fiatStringAmount} {fiatCurrency}
+                        </OrigAmount>
+                    </>
+                ) : (
                     <SummaryRow>
                         <Text>
                             {fiatStringAmount} {fiatCurrency}{' '}
@@ -87,8 +86,8 @@ const Offers = ({ selectQuote, quotes, isAlternative }: Props) => {
                         <StyledCoinLogo size={21} symbol={account.symbol} />
                         <Crypto>{account.symbol}</Crypto>
                     </SummaryRow>
-                </Header>
-            )}
+                )}
+            </Header>
             <Quotes>
                 {quotes.map(quote => (
                     <StyledQuote

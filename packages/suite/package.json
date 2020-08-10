@@ -23,6 +23,7 @@
         "@trezor/suite-data": "20.8.1-beta",
         "@trezor/suite-storage": "20.8.1-beta",
         "@types/zxcvbn": "^4.4.0",
+        "@types/invity-api": "^1.0.0",
         "bignumber.js": "^9.0.0",
         "color-hash": "^1.0.3",
         "date-fns": "^2.15.0",

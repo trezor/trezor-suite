@@ -7,8 +7,6 @@ import {
     ExchangeTrade,
     WatchExchangeTradeResponse,
     ExchangeCoinInfo,
-} from './exchangeTypes';
-import {
     BuyListResponse,
     BuyTradeQuoteRequest,
     BuyTradeQuoteResponse,
@@ -17,8 +15,10 @@ import {
     BuyTradeFormResponse,
     BuyTrade,
     WatchBuyTradeResponse,
-} from './buyTypes';
-import { CountryInfo, SupportTicketResponse, SupportTicket } from './utilityTypes';
+    CountryInfo,
+    SupportTicketResponse,
+    SupportTicket,
+} from 'invity-api';
 import { isDev } from '@suite/utils/suite/build';
 
 // TODO - get from constants
