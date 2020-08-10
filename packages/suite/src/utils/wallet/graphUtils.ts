@@ -233,6 +233,29 @@ export const calcYDomain = (maxValue?: number) => {
     return [0, 10] as [number, number];
 };
 
+export const calcXDomain = (ticks: number[], data: { time: number }[], range: GraphRange) => {
+    const start = ticks[0];
+    const lastTick = ticks[ticks.length - 1];
+    const lastData = data[data.length - 1];
+    // if the last data point is after last tick/label use datapoint's timestamp to mark the end of the interval
+    const end = lastData && lastTick < lastData.time ? lastData.time : lastTick;
+
+    let xPadding;
+    switch (range.label) {
+        case 'all':
+            xPadding = 3600 * 24 * 30; // 30 days
+            break;
+        case 'year':
+            xPadding = 3600 * 24 * 14; // 14 days
+            break;
+        default:
+            xPadding = 3600 * 12; // 12 hours
+            break;
+    }
+
+    return [start - xPadding, end + xPadding] as [number, number];
+};
+
 export const getFormattedLabel = (rangeLabel: GraphRange['label']) => {
     switch (rangeLabel) {
         case 'all':
