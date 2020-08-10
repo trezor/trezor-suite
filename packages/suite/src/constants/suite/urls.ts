@@ -1,5 +1,7 @@
 export const CHANGELOG_MARKDOWN_URL =
     'https://raw.githubusercontent.com/trezor/trezor-suite/releases/CHANGELOG.md';
+export const CHANGELOG_MARKDOWN_URL_DEV =
+    'https://raw.githubusercontent.com/trezor/trezor-suite/develop/CHANGELOG.md';
 
 export const TREZOR_URL = 'https://trezor.io';
 export const SUPPORT_URL = 'https://trezor.io/support/';

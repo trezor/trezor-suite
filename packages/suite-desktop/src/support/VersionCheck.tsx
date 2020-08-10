@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Loading, Translation } from '@suite-components';
 import { Modal, Button, Link, colors } from '@trezor/components';
 import { isDev } from '@suite-utils/build';
-import { CHANGELOG_MARKDOWN_URL } from '@suite-constants/urls';
+import { CHANGELOG_MARKDOWN_URL, CHANGELOG_MARKDOWN_URL_DEV } from '@suite-constants/urls';
 
 interface Props {
     children: JSX.Element;
@@ -134,10 +134,14 @@ const VersionCheck = ({ children }: Props) => {
         };
 
         const fetchChangelog = async () => {
+            const isStaging = process.env.ENV === 'staging';
             try {
-                const response = await fetch(CHANGELOG_MARKDOWN_URL, {
-                    signal: abortController.signal,
-                });
+                const response = await fetch(
+                    isStaging ? CHANGELOG_MARKDOWN_URL_DEV : CHANGELOG_MARKDOWN_URL,
+                    {
+                        signal: abortController.signal,
+                    },
+                );
                 if (!response.ok) {
                     throw Error(`Error while fetching changelog: ${response.status}`);
                 }
