@@ -233,7 +233,11 @@ export const calcYDomain = (maxValue?: number) => {
     return [0, 10] as [number, number];
 };
 
-export const calcXDomain = (ticks: number[], data: { time: number }[], range: GraphRange) => {
+export const calcXDomain = (
+    ticks: number[],
+    data: { time: number }[],
+    range: GraphRange,
+): [number, number] => {
     const start = ticks[0];
     const lastTick = ticks[ticks.length - 1];
     const lastData = data[data.length - 1];
@@ -253,7 +257,7 @@ export const calcXDomain = (ticks: number[], data: { time: number }[], range: Gr
             break;
     }
 
-    return [start - xPadding, end + xPadding] as [number, number];
+    return [start - xPadding, end + xPadding];
 };
 
 export const getFormattedLabel = (rangeLabel: GraphRange['label']) => {
