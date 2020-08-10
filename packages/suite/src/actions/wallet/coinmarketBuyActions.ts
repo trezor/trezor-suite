@@ -8,7 +8,7 @@ import {
     BuyTrade,
 } from '@suite/services/invityAPI/buyTypes';
 import invityAPI from '@suite/services/invityAPI/service';
-import { COINMARKET } from './constants';
+import { COINMARKET_BUY } from './constants';
 import { Dispatch, GetState } from '@suite-types';
 import regional from '@suite/constants/wallet/coinmarket/regional';
 
@@ -20,11 +20,11 @@ export interface BuyInfo {
 }
 
 export type CoinmarketActions =
-    | { type: typeof COINMARKET.SAVE_BUY_INFO; buyInfo: BuyInfo }
-    | { type: typeof COINMARKET.SAVE_BUY_QUOTE_REQUEST; request: BuyTradeQuoteRequest }
-    | { type: typeof COINMARKET.VERIFY_ADDRESS; addressVerified: boolean }
+    | { type: typeof COINMARKET_BUY.SAVE_BUY_INFO; buyInfo: BuyInfo }
+    | { type: typeof COINMARKET_BUY.SAVE_QUOTE_REQUEST; request: BuyTradeQuoteRequest }
+    | { type: typeof COINMARKET_BUY.VERIFY_ADDRESS; addressVerified: boolean }
     | {
-          type: typeof COINMARKET.SAVE_BUY_QUOTES;
+          type: typeof COINMARKET_BUY.SAVE_QUOTES;
           quotes: BuyTrade[];
           alternativeQuotes: BuyTrade[] | undefined;
       };
@@ -63,26 +63,23 @@ export async function loadBuyInfo(): Promise<BuyInfo> {
 
 export const saveBuyInfo = (buyInfo: BuyInfo) => async (dispatch: Dispatch) => {
     dispatch({
-        type: COINMARKET.SAVE_BUY_INFO,
+        type: COINMARKET_BUY.SAVE_BUY_INFO,
         buyInfo,
     });
 };
 
-export const saveBuyQuoteRequest = (request: BuyTradeQuoteRequest) => async (
-    dispatch: Dispatch,
-) => {
+export const saveQuoteRequest = (request: BuyTradeQuoteRequest) => async (dispatch: Dispatch) => {
     dispatch({
-        type: COINMARKET.SAVE_BUY_QUOTE_REQUEST,
+        type: COINMARKET_BUY.SAVE_QUOTE_REQUEST,
         request,
     });
 };
 
-export const saveBuyQuotes = (
-    quotes: BuyTrade[],
-    alternativeQuotes: BuyTrade[] | undefined,
-) => async (dispatch: Dispatch) => {
+export const saveQuotes = (quotes: BuyTrade[], alternativeQuotes: BuyTrade[] | undefined) => async (
+    dispatch: Dispatch,
+) => {
     dispatch({
-        type: COINMARKET.SAVE_BUY_QUOTES,
+        type: COINMARKET_BUY.SAVE_QUOTES,
         quotes,
         alternativeQuotes,
     });
@@ -160,7 +157,7 @@ export const verifyAddress = (path: string, address: string) => async (
 
     if (response.success) {
         dispatch({
-            type: COINMARKET.VERIFY_ADDRESS,
+            type: COINMARKET_BUY.VERIFY_ADDRESS,
             addressVerified: true,
         });
     } else {

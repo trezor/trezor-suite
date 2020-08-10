@@ -1,12 +1,10 @@
 import produce from 'immer';
 import { WalletAction } from '@wallet-types';
 import { BuyTrade, BuyTradeQuoteRequest } from '@suite/services/invityAPI/buyTypes';
-import { COINMARKET } from '@wallet-actions/constants';
-import { BuyInfo } from '@suite/actions/wallet/coinmarketActions';
+import { COINMARKET_BUY } from '@wallet-actions/constants';
+import { BuyInfo } from '@suite/actions/wallet/coinmarketBuyActions';
 
-// TODO - further split to buy, exchange, spend etc. states
-
-interface State {
+interface Buy {
     buyInfo: BuyInfo | null;
     quotesRequest: BuyTradeQuoteRequest | null;
     quotes: BuyTrade[];
@@ -14,29 +12,35 @@ interface State {
     addressVerified: boolean;
 }
 
+interface State {
+    buy: Buy;
+}
+
 const initialState = {
-    buyInfo: null,
-    quotesRequest: null,
-    quotes: [],
-    alternativeQuotes: undefined,
-    addressVerified: false,
+    buy: {
+        buyInfo: null,
+        quotesRequest: null,
+        quotes: [],
+        alternativeQuotes: undefined,
+        addressVerified: false,
+    },
 };
 
 export default (state: State = initialState, action: WalletAction): State => {
     return produce(state, draft => {
         switch (action.type) {
-            case COINMARKET.SAVE_BUY_INFO:
-                draft.buyInfo = action.buyInfo;
+            case COINMARKET_BUY.SAVE_BUY_INFO:
+                draft.buy.buyInfo = action.buyInfo;
                 break;
-            case COINMARKET.SAVE_BUY_QUOTE_REQUEST:
-                draft.quotesRequest = action.request;
+            case COINMARKET_BUY.SAVE_QUOTE_REQUEST:
+                draft.buy.quotesRequest = action.request;
                 break;
-            case COINMARKET.SAVE_BUY_QUOTES:
-                draft.quotes = action.quotes;
-                draft.alternativeQuotes = action.alternativeQuotes;
+            case COINMARKET_BUY.SAVE_QUOTES:
+                draft.buy.quotes = action.quotes;
+                draft.buy.alternativeQuotes = action.alternativeQuotes;
                 break;
-            case COINMARKET.VERIFY_ADDRESS:
-                draft.addressVerified = action.addressVerified;
+            case COINMARKET_BUY.VERIFY_ADDRESS:
+                draft.buy.addressVerified = action.addressVerified;
                 break;
             // no default
         }

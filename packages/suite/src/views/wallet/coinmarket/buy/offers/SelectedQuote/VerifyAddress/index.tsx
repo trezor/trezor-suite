@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { getAccountInfo, submitRequestForm, createTxLink } from '@wallet-utils/coinmarket/buyUtils';
 import { FiatValue } from '@suite-components';
-import * as coinmarketActions from '@wallet-actions/coinmarketActions';
+import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import { useActions, useSelector } from '@suite-hooks';
 import { Input, Button, colors, variables, CoinLogo } from '@trezor/components';
 import invityAPI from '@suite/services/invityAPI/service';
@@ -77,8 +77,8 @@ interface Props {
 
 const VerifyAddress = ({ selectedQuote }: Props) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const addressVerified = useSelector(state => state.wallet.coinmarket.addressVerified);
-    const { verifyAddress } = useActions({ verifyAddress: coinmarketActions.verifyAddress });
+    const addressVerified = useSelector(state => state.wallet.coinmarket.buy.addressVerified);
+    const { verifyAddress } = useActions({ verifyAddress: coinmarketBuyActions.verifyAddress });
     if (selectedAccount.status !== 'loaded') return null;
     const { account } = selectedAccount;
     const { symbol, index, availableBalance } = account;

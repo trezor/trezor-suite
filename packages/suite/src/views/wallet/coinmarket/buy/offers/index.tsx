@@ -33,9 +33,9 @@ const Offers = () => {
     }, [setLayout]);
 
     const [selectedQuote, setSelectQuote] = useState<BuyTrade>();
-    const quotesRequest = useSelector(state => state.wallet.coinmarket.quotesRequest);
-    const quotes = useSelector(state => state.wallet.coinmarket.quotes);
-    const alternativeQuotes = useSelector(state => state.wallet.coinmarket.alternativeQuotes);
+    const quotesRequest = useSelector(state => state.wallet.coinmarket.buy.quotesRequest);
+    const quotes = useSelector(state => state.wallet.coinmarket.buy.quotes);
+    const alternativeQuotes = useSelector(state => state.wallet.coinmarket.buy.alternativeQuotes);
     const { goto } = useActions({ goto: routerActions.goto });
     const { openModal } = useActions({ openModal: modalActions.openModal });
 

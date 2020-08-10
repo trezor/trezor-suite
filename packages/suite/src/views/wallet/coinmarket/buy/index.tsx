@@ -8,7 +8,7 @@ import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 import { CoinmarketLayout, ProvidedByInvity, WalletLayout } from '@wallet-components';
 import { useBuyInfo } from '@wallet-hooks/useCoinmarket';
 import regional from '@wallet-constants/coinmarket/regional';
-import * as coinmarketActions from '@wallet-actions/coinmarketActions';
+import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import { buildOption } from '@wallet-utils/coinmarket/buyUtils';
 import * as routerActions from '@suite-actions/routerActions';
 import { useActions, useSelector } from '@suite-hooks';
@@ -119,10 +119,10 @@ const CoinmarketBuy = () => {
     const countrySelect = 'countrySelect';
 
     const { buyInfo } = useBuyInfo();
-    const { saveBuyQuoteRequest, saveBuyQuotes, saveBuyInfo } = useActions({
-        saveBuyQuoteRequest: coinmarketActions.saveBuyQuoteRequest,
-        saveBuyQuotes: coinmarketActions.saveBuyQuotes,
-        saveBuyInfo: coinmarketActions.saveBuyInfo,
+    const { saveQuoteRequest, saveQuotes, saveBuyInfo } = useActions({
+        saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
+        saveQuotes: coinmarketBuyActions.saveQuotes,
+        saveBuyInfo: coinmarketBuyActions.saveBuyInfo,
     });
 
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
@@ -308,7 +308,7 @@ const CoinmarketBuy = () => {
                                             country: formValues.countrySelect.value,
                                             fiatStringAmount: formValues.fiatInput,
                                         };
-                                        await saveBuyQuoteRequest(request);
+                                        await saveQuoteRequest(request);
                                         const allQuotes = await invityAPI.getBuyQuotes(request);
                                         const [quotes, alternativeQuotes] = processQuotes(
                                             allQuotes,
@@ -321,7 +321,7 @@ const CoinmarketBuy = () => {
                                             if (limits) {
                                                 setAmountLimits(limits);
                                             } else {
-                                                await saveBuyQuotes(quotes, alternativeQuotes);
+                                                await saveQuotes(quotes, alternativeQuotes);
 
                                                 // if success redirect to offers views
                                                 goto('wallet-coinmarket-buy-offers', {

@@ -35,8 +35,8 @@ interface Props {
 
 const Offers = ({ selectQuote, quotes, isAlternative }: Props) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const quotesRequest = useSelector(state => state.wallet.coinmarket.quotesRequest);
-    const providers = useSelector(state => state.wallet.coinmarket.buyInfo?.providerInfos);
+    const quotesRequest = useSelector(state => state.wallet.coinmarket.buy.quotesRequest);
+    const providers = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.providerInfos);
     if (!quotesRequest || !quotes) return null;
 
     if (selectedAccount.status !== 'loaded') return null;
