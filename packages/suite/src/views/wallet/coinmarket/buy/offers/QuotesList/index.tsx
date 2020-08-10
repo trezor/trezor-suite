@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Quote, CoinLogo } from '@trezor/components';
+import { CoinLogo, variables, Icon, colors } from '@trezor/components';
+import Quote from './Quote';
 import { BuyTrade } from '@suite/services/invityAPI/buyTypes';
 import { useSelector } from '@suite-hooks';
 
 const Wrapper = styled.div``;
-
 const Quotes = styled.div``;
 
 const StyledQuote = styled(Quote)`
@@ -17,15 +17,33 @@ const Header = styled.div`
 `;
 
 const SummaryRow = styled.div`
-    min-height: 30px;
+    min-height: 32px;
     display: flex;
     align-items: center;
+    font-size: ${variables.FONT_SIZE.H2};
+    text-transform: uppercase;
 `;
 
 const OrigAmount = styled.div`
-    color: #808080;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
     font-size: smaller;
 `;
+
+const StyledIcon = styled(Icon)`
+    padding: 0 10px;
+`;
+
+const Text = styled.div`
+    display: flex;
+    padding-top: 3px;
+    align-items: center;
+`;
+
+const Crypto = styled(Text)`
+    padding-left: 10px;
+`;
+
+const StyledCoinLogo = styled(CoinLogo)``;
 
 interface Props {
     selectQuote: (quote: BuyTrade) => void;
@@ -46,22 +64,28 @@ const Offers = ({ selectQuote, quotes, isAlternative }: Props) => {
     return (
         <Wrapper>
             {isAlternative ? (
-                <>
-                    <Header>
-                        <SummaryRow>
-                            {quotes[0].fiatStringAmount} {quotes[0].fiatCurrency} {'->'}
-                            <CoinLogo size={16} symbol={account.symbol} /> {account.symbol}
-                        </SummaryRow>
-                        <OrigAmount>
-                            ≈ {fiatStringAmount} {fiatCurrency}
-                        </OrigAmount>
-                    </Header>
-                </>
+                <Header>
+                    <SummaryRow>
+                        <Text>
+                            {quotes[0].fiatStringAmount} {quotes[0].fiatCurrency}
+                        </Text>
+                        <StyledIcon icon="ARROW_RIGHT" />
+                        <StyledCoinLogo size={21} symbol={account.symbol} />
+                        <Crypto>{account.symbol}</Crypto>
+                    </SummaryRow>
+                    <OrigAmount>
+                        ≈ {fiatStringAmount} {fiatCurrency}
+                    </OrigAmount>
+                </Header>
             ) : (
                 <Header>
                     <SummaryRow>
-                        {fiatStringAmount} {fiatCurrency} {'->'}
-                        <CoinLogo size={16} symbol={account.symbol} /> {account.symbol}
+                        <Text>
+                            {fiatStringAmount} {fiatCurrency}{' '}
+                        </Text>
+                        <StyledIcon icon="ARROW_RIGHT" />
+                        <StyledCoinLogo size={21} symbol={account.symbol} />
+                        <Crypto>{account.symbol}</Crypto>
                     </SummaryRow>
                 </Header>
             )}

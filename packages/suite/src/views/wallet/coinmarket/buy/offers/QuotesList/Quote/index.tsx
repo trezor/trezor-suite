@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, Button, variables } from '../../../index';
+import { colors, Button, variables } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -122,4 +122,4 @@ const Quote = ({ className, selectQuote, quote, providers }: Props) => {
     );
 };
 
-export { Quote, Props as QuoteProps };
+export default Quote;
