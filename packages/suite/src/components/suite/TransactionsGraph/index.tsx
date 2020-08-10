@@ -9,7 +9,7 @@ import {
 } from '@wallet-types/graph';
 import { ComposedChart, Tooltip, Bar, YAxis, XAxis, Line, CartesianGrid } from 'recharts';
 import { useLayoutSize } from '@suite-hooks';
-import { calcYDomain, calcFakeGraphDataForTimestamps } from '@wallet-utils/graphUtils';
+import { calcYDomain, calcXDomain, calcFakeGraphDataForTimestamps } from '@wallet-utils/graphUtils';
 import { Account } from '@wallet-types';
 
 import RangeSelector from './components/RangeSelector';
@@ -104,11 +104,6 @@ const TransactionsGraph = React.memo((props: Props) => {
         setMaxYTickWidth(prevValue => (prevValue > n ? prevValue : n));
     };
 
-    const xAxisPadding =
-        selectedRange.label === 'year' || selectedRange.label === 'all'
-            ? 3600 * 24 * 14
-            : 3600 * 12; // 14 days for year/all range, 12 hours otherwise
-
     const rightMargin = Math.max(0, maxYTickWidth - 50) + 10; // 50 is the default spacing
 
     // calculate fake data for full interval (eg. 1 year) even for ticks/timestamps without txs
@@ -161,10 +156,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 // xAxisId="primary"
                                 dataKey="time"
                                 type="number"
-                                domain={[
-                                    xTicks[0] - xAxisPadding,
-                                    xTicks[xTicks.length - 1] + xAxisPadding,
-                                ]}
+                                domain={calcXDomain(xTicks, data, selectedRange)}
                                 // width={10}
                                 stroke={colors.NEUE_BG_GRAY}
                                 interval={
