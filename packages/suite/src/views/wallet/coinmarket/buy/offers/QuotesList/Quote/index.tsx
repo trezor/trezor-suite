@@ -59,6 +59,12 @@ const Column = styled.div`
 
 const Heading = styled.div`
     text-transform: uppercase;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+`;
+
+const StyledButton = styled(Button)`
+    width: 180px;
 `;
 
 const Value = styled.div``;
@@ -95,7 +101,7 @@ const Quote = ({ className, selectQuote, quote, providers }: Props) => {
             <Main>
                 <Left>{quote.error ? 'N/A' : `${receiveStringAmount} ${receiveCurrency}`}</Left>
                 <Right>
-                    <Button onClick={() => selectQuote(quote)}>Get this offer</Button>
+                    <StyledButton onClick={() => selectQuote(quote)}>Get this Offer</StyledButton>
                 </Right>
             </Main>
             <Details>

@@ -2,7 +2,7 @@ import React, { useState, useMemo, useContext } from 'react';
 import styled from 'styled-components';
 import { LayoutContext } from '@suite-components';
 import { CoinmarketTopPanel } from '@wallet-components';
-import { variables } from '@trezor/components';
+import { variables, colors } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import QuotesList from './QuotesList';
 import SelectedQuote from './SelectedQuote';
@@ -20,8 +20,38 @@ const Wrapper = styled.div`
     }
 `;
 
-const OtherOffersDivider = styled.div`
-    padding: 16px 0;
+const Divider = styled.div`
+    display: flex;
+    flex: 1;
+    align-items: center;
+    padding: 61px 0;
+`;
+
+const DividerLine = styled.div`
+    height: 1px;
+    flex: 1;
+    background: ${colors.NEUE_STROKE_GREY};
+`;
+
+const DividerLeft = styled(DividerLine)``;
+const DividerRight = styled(DividerLine)``;
+
+const Currency = styled.div`
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+    text-transform: uppercase;
+    padding-left: 3px;
+`;
+
+const DividerMiddle = styled.div`
+    display: flex;
+    align-items: center;
+    padding: 5px 20px;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    border-radius: 25px;
+    border: 1px solid ${colors.NEUE_STROKE_GREY};
+    background: ${colors.WHITE};
     text-align: center;
 `;
 
@@ -83,9 +113,14 @@ const Offers = () => {
                     <QuotesList selectQuote={selectQuote} quotes={quotes} />
                     {alternativeQuotes && alternativeQuotes.length > 0 && (
                         <>
-                            <OtherOffersDivider>
-                                Other offers in {alternativeQuotes[0].fiatCurrency}
-                            </OtherOffersDivider>
+                            <Divider>
+                                <DividerLeft />
+                                <DividerMiddle>
+                                    Other offers in{' '}
+                                    <Currency>{alternativeQuotes[0].fiatCurrency}</Currency>
+                                </DividerMiddle>
+                                <DividerRight />
+                            </Divider>
                             <QuotesList
                                 selectQuote={selectQuote}
                                 quotes={alternativeQuotes}
