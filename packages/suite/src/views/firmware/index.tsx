@@ -77,6 +77,7 @@ const FromVersionToVersion = styled.div`
     display: flex;
     justify-content: center;
     font-size: ${FONT_SIZE.NORMAL};
+    font-variant-numeric: tabular-nums;
 `;
 
 const FromVersion = styled.div`
