@@ -1,6 +1,18 @@
 [
 	{
 		"required": false,
+		"version": [2, 3, 2],
+		"min_bridge_version": [2, 0, 7],
+		"min_firmware_version": [2, 0, 8],
+		"min_bootloader_version": [2, 0, 0],
+		"url": "data/firmware/2/trezor-2.3.2.bin",
+		"url_bitcoinonly": "data/firmware/2/trezor-2.3.2-bitcoinonly.bin",
+		"fingerprint": "f5ccdca0cbe163ecb93df726da72b69abb93f70d24d295db00b3ca2738216160",
+		"fingerprint_bitcoinonly": "389cb54fb6fc75489b788ad669ce51f41d47a67af54b8745a0dfe48da38a777f",
+		"changelog": "* Introduces 'Autolock' feature, which automatically locks the device to enforce the PIN entry after a certain period.\n* Updates the Cardano support to enable staking and other Shelley updates.\n* Reintroduces the ability to spend pre-Overwinter (2018) funds on Zcash-like coins.\n* Fixes compatibility issues with Casa and GreenAddress.\n* Adds support for multiple change outputs in outgoing transactions.\n* Improves some interface elements."
+	},
+	{
+		"required": false,
 		"version": [2, 3, 1],
 		"min_bridge_version": [2, 0, 7],
 		"min_firmware_version": [2, 0, 8],

@@ -119,10 +119,12 @@
         },
         {
             "excludedMethods": [
+                "cardanoGetAddress",
+                "cardanoGetPublicKey",
                 "cardanoSignTransaction"
             ],
-            "min": ["0", "2.1.0"],
-            "comment": ["Since firmware 2.1.0 there is a new protobuf field 'protocol_magic' in CardanoSignTx"]
+            "min": ["0", "2.3.2"],
+            "comment": ["Shelley fork support since firmware 2.3.2"]
         },
         {
             "excludedMethods": [
