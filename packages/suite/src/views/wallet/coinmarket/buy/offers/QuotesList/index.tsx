@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { CoinLogo, variables, Icon, colors } from '@trezor/components';
 import Quote from './Quote';
-import { BuyTrade } from '@suite/services/invityAPI/buyTypes';
+import { BuyTrade } from 'invity-api';
 import { useSelector } from '@suite-hooks';
 
 const Wrapper = styled.div``;

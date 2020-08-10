@@ -5,8 +5,8 @@ import { FiatValue } from '@suite-components';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import { useActions, useSelector } from '@suite-hooks';
 import { Input, Button, colors, variables, CoinLogo } from '@trezor/components';
-import invityAPI from '@suite/services/invityAPI/service';
-import { BuyTrade } from '@suite/services/invityAPI/buyTypes';
+import invityAPI from '@suite/services/invityAPI';
+import { BuyTrade } from 'invity-api';
 
 const Wrapper = styled.div`
     display: flex;

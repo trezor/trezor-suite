@@ -23,8 +23,8 @@ import {
     Icon,
 } from '@trezor/components';
 import { Translation } from '@suite-components';
-import { BuyTradeQuoteRequest } from '@suite/services/invityAPI/buyTypes';
-import invityAPI from '@suite/services/invityAPI/service';
+import { BuyTradeQuoteRequest } from 'invity-api';
+import invityAPI from '@suite/services/invityAPI';
 import {
     AmountLimits,
     getAmountLimits,
