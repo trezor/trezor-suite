@@ -100,7 +100,7 @@ interface Props extends Omit<SelectProps, 'components'> {
     minWidth?: string;
 }
 
-const SelectInput = ({
+const CleanSelect = ({
     isSearchable = true,
     withDropdownIndicator = true,
     className,
@@ -127,4 +127,4 @@ const SelectInput = ({
     );
 };
 
-export { SelectInput, Props as SelectInputProps };
+export { CleanSelect, Props as CleanSelectProps };

@@ -9,18 +9,18 @@ import { CoinmarketLayout, ProvidedByInvity, WalletLayout } from '@wallet-compon
 import { useBuyInfo } from '@wallet-hooks/useCoinmarket';
 import regional from '@wallet-constants/coinmarket/regional';
 import * as coinmarketActions from '@wallet-actions/coinmarketActions';
-import { buildOption, addValue } from '@wallet-utils/coinmarket/buyUtils';
+import { buildOption } from '@wallet-utils/coinmarket/buyUtils';
 import * as routerActions from '@suite-actions/routerActions';
 import { useActions, useSelector } from '@suite-hooks';
 import {
     Button,
-    Select,
     Input,
     colors,
     H2,
-    SelectInput,
+    CleanSelect,
     CoinLogo,
     variables,
+    Icon,
 } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { BuyTradeQuoteRequest } from '@suite/services/invityAPI/buyTypes';
@@ -49,6 +49,8 @@ const Top = styled.div`
 const Footer = styled.div`
     display: flex;
     align-items: center;
+    padding-top: 50px;
+    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
 `;
 
 const Left = styled.div`
@@ -59,9 +61,7 @@ const Left = styled.div`
 const Right = styled.div`
     display: flex;
     flex: 1;
-    justify-content: flex-start;
-    padding-left: 20px;
-    padding-top: 12px;
+    justify-content: flex-end;
 `;
 
 const Label = styled.div`
@@ -76,19 +76,15 @@ const StyledButton = styled(Button)`
     margin-left: 20px;
 `;
 
-const Controls = styled.div`
-    display: flex;
-    margin: 25px 0;
-    padding: 0 0 20px 0;
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
-`;
-
-const Control = styled.div`
-    cursor: pointer;
-    padding: 0 10px 0 0;
-`;
-
 const BottomContent = styled.div``;
+
+const Middle = styled.div`
+    display: flex;
+    min-width: 65px;
+    height: 48px;
+    align-items: center;
+    justify-content: center;
+`;
 
 const InvityFooter = styled.div`
     display: flex;
@@ -115,7 +111,7 @@ const StyledCoinLogo = styled(CoinLogo)`
 `;
 
 const CoinmarketBuy = () => {
-    const { register, getValues, setValue, trigger, errors, control } = useForm({
+    const { register, getValues, trigger, errors, control } = useForm({
         mode: 'onChange',
     });
     const fiatInput = 'fiatInput';
@@ -234,7 +230,7 @@ const CoinmarketBuy = () => {
                                             defaultValue={defaultCurrency}
                                             render={({ onChange, value }) => {
                                                 return (
-                                                    <SelectInput
+                                                    <CleanSelect
                                                         options={FIAT.currencies
                                                             .filter(c =>
                                                                 buyInfo.supportedFiatCurrencies.has(
@@ -259,92 +255,87 @@ const CoinmarketBuy = () => {
                                     }
                                 />
                             </Left>
+                            <Middle>
+                                <Icon icon="TRANSFER" size={16} />
+                            </Middle>
                             <Right>
-                                <StyledCoinLogo size={25} symbol={account.symbol} />
-                                <Translation {...getTitleForNetwork(account.symbol)} />
+                                <Input
+                                    noTopLabel
+                                    innerAddon={
+                                        <>
+                                            <StyledCoinLogo size={18} symbol={account.symbol} />
+                                            <Translation {...getTitleForNetwork(account.symbol)} />
+                                        </>
+                                    }
+                                />
                             </Right>
                         </Top>
-                        <Controls>
-                            <Control
-                                onClick={() => {
-                                    setValue(fiatInput, addValue(getValues(fiatInput), '100'), {
-                                        shouldValidate: true,
-                                    });
-                                }}
-                            >
-                                +100
-                            </Control>
-                            <Control
-                                onClick={() => {
-                                    setValue(fiatInput, addValue(getValues(fiatInput), '1000'), {
-                                        shouldValidate: true,
-                                    });
-                                }}
-                            >
-                                +1000
-                            </Control>
-                        </Controls>
                         <Footer>
-                            <Label>Offers for:</Label>
-                            <Controller
-                                control={control}
-                                defaultValue={defaultCountry}
-                                name={countrySelect}
-                                render={({ onChange, value }) => {
-                                    return (
-                                        <Select
-                                            noTopLabel
-                                            options={regional.countriesOptions}
-                                            isSearchable
-                                            value={value}
-                                            isClearable={false}
-                                            minWidth="45px"
-                                            onChange={(selected: any) => {
-                                                onChange(selected);
-                                                setAmountLimits(undefined);
-                                            }}
-                                        />
-                                    );
-                                }}
-                            />
-
-                            <StyledButton
-                                onClick={async () => {
-                                    const formValues = getValues();
-                                    console.log('formValues', formValues);
-                                    const request: BuyTradeQuoteRequest = {
-                                        // TODO - handle crypto amount entry
-                                        wantCrypto: false,
-                                        fiatCurrency: formValues.currencySelect.value.toUpperCase(),
-                                        receiveCurrency: account.symbol.toUpperCase(),
-                                        country: formValues.countrySelect.value,
-                                        fiatStringAmount: formValues.fiatInput,
-                                    };
-                                    await saveBuyQuoteRequest(request);
-                                    const allQuotes = await invityAPI.getBuyQuotes(request);
-                                    const [quotes, alternativeQuotes] = processQuotes(allQuotes);
-                                    if (!quotes || quotes.length === 0) {
-                                        // todo handle no quotes
-                                    } else {
-                                        const limits = getAmountLimits(request, quotes);
-                                        console.log('limits', limits, request);
-                                        if (limits) {
-                                            setAmountLimits(limits);
+                            <Left>
+                                <Label>Offers for:</Label>
+                                <Controller
+                                    control={control}
+                                    defaultValue={defaultCountry}
+                                    name={countrySelect}
+                                    render={({ onChange, value }) => {
+                                        return (
+                                            <CleanSelect
+                                                noTopLabel
+                                                options={regional.countriesOptions}
+                                                isSearchable
+                                                value={value}
+                                                isClearable={false}
+                                                minWidth="170px"
+                                                onChange={(selected: any) => {
+                                                    onChange(selected);
+                                                    setAmountLimits(undefined);
+                                                }}
+                                            />
+                                        );
+                                    }}
+                                />
+                            </Left>
+                            <Right>
+                                <StyledButton
+                                    onClick={async () => {
+                                        const formValues = getValues();
+                                        console.log('formValues', formValues);
+                                        const request: BuyTradeQuoteRequest = {
+                                            // TODO - handle crypto amount entry
+                                            wantCrypto: false,
+                                            fiatCurrency: formValues.currencySelect.value.toUpperCase(),
+                                            receiveCurrency: account.symbol.toUpperCase(),
+                                            country: formValues.countrySelect.value,
+                                            fiatStringAmount: formValues.fiatInput,
+                                        };
+                                        await saveBuyQuoteRequest(request);
+                                        const allQuotes = await invityAPI.getBuyQuotes(request);
+                                        const [quotes, alternativeQuotes] = processQuotes(
+                                            allQuotes,
+                                        );
+                                        if (!quotes || quotes.length === 0) {
+                                            // todo handle no quotes
                                         } else {
-                                            await saveBuyQuotes(quotes, alternativeQuotes);
+                                            const limits = getAmountLimits(request, quotes);
+                                            console.log('limits', limits, request);
+                                            if (limits) {
+                                                setAmountLimits(limits);
+                                            } else {
+                                                await saveBuyQuotes(quotes, alternativeQuotes);
 
-                                            // if success redirect to offers views
-                                            goto('wallet-coinmarket-buy-offers', {
-                                                symbol: account.symbol,
-                                                accountIndex: account.index,
-                                                accountType: account.accountType,
-                                            });
+                                                // if success redirect to offers views
+                                                goto('wallet-coinmarket-buy-offers', {
+                                                    symbol: account.symbol,
+                                                    accountIndex: account.index,
+                                                    accountType: account.accountType,
+                                                });
+                                            }
                                         }
-                                    }
-                                }}
-                            >
-                                Show offers
-                            </StyledButton>
+                                    }}
+                                >
+                                    Show offers
+                                </StyledButton>
+                            </Right>
                         </Footer>
                     </Content>
                 )}

@@ -98,14 +98,6 @@ export const buildOption = (currency: string) => {
     return { value: currency, label: currency.toUpperCase() };
 };
 
-export const addValue = (currentValue = '0', addValue: string) => {
-    const result = new BigNumber(currentValue.length > 1 ? currentValue : '0')
-        .plus(addValue)
-        .toFixed();
-
-    return result;
-};
-
 export function createQuoteLink(request: BuyTradeQuoteRequest): string {
     let hash: string;
     if (request.wantCrypto) {
