@@ -299,61 +299,44 @@ export const calcFakeGraphDataForTimestamps = (
     const firstDataPoint = data[0];
     const lastDataPoint = data[data.length - 1];
 
-    // calc fake data points for each label even if there are no real txs for given timestamp (label)
-    timestamps.forEach(ts => {
-        if (firstDataPoint && lastDataPoint) {
-            const existing = data.find(d => d.time === ts);
-            if (existing) {
-                balanceData.push(existing);
-            } else if (ts < firstDataPoint.time) {
-                const closestData = firstDataPoint;
-                balanceData.push({
-                    time: ts,
-                    sent: '0',
-                    received: '0',
-                    sentFiat: {},
-                    receivedFiat: {},
-                    balanceFiat: {},
-                    // calculating fake data for dashboard graph doesn't make sense, as we would have to reflect different fiat rates in given time
-                    // balanceFiat: sumFiatValueMap(
-                    //     subFiatValueMap(closestData.balanceFiat, closestData.receivedFiat),
-                    //     closestData.sentFiat,
-                    // ),
-                    txs: 0,
-                    balance: closestData.balance
-                        ? new BigNumber(closestData.balance)
-                              .plus(closestData.sent ?? 0)
-                              .minus(closestData.received ?? 0)
-                              .toFixed()
-                        : undefined,
-                });
-            } else if (ts > lastDataPoint.time) {
-                balanceData.push({
-                    time: ts,
-                    sent: '0',
-                    received: '0',
-                    sentFiat: {},
-                    receivedFiat: {},
-                    balanceFiat: {},
-                    txs: 0,
-                    balance: lastDataPoint.balance,
-                });
-            } else {
-                const toPush = data.filter(d => d.time <= ts && !balanceData.includes(d));
-                balanceData.push(...toPush);
-            }
-        }
-    });
+    const firstTimestamp = timestamps[0];
+    const lastTimestamp = timestamps[timestamps.length - 1];
 
-    // TODO: sometimes the last datapoint[s] are outside of calculated closed range (eg one year range ends on current day 00:00, instead of 23:59)
-    // workaround
-    data.forEach(d => {
-        if (!balanceData.includes(d)) {
-            balanceData.push(d);
+    if (firstDataPoint && lastDataPoint && firstTimestamp && lastTimestamp) {
+        if (firstDataPoint.time !== firstTimestamp) {
+            balanceData.push({
+                time: firstTimestamp,
+                sent: '0',
+                received: '0',
+                sentFiat: {},
+                receivedFiat: {},
+                balanceFiat: {},
+                txs: 0,
+                balance: firstDataPoint.balance
+                    ? new BigNumber(firstDataPoint.balance)
+                          .plus(firstDataPoint.sent ?? 0)
+                          .minus(firstDataPoint.received ?? 0)
+                          .toFixed()
+                    : undefined,
+            });
         }
-    });
+        balanceData.push(...data);
+        if (lastDataPoint.time !== lastTimestamp) {
+            balanceData.push({
+                time: lastTimestamp,
+                sent: '0',
+                received: '0',
+                sentFiat: {},
+                receivedFiat: {},
+                balanceFiat: {},
+                txs: 0,
+                balance: lastDataPoint.balance,
+            });
+        }
+    }
 
     const sortedData = balanceData.sort((a, b) => Number(a.time) - Number(b.time));
+
     return sortedData;
 };
 
