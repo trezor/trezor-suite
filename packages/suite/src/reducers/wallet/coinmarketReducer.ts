@@ -1,13 +1,14 @@
 import produce from 'immer';
 import { WalletAction } from '@wallet-types';
-import { BuyTrade, BuyTradeQuoteRequest, BuyListResponse } from 'invity-api';
+import { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
+import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import { COINMARKET_BUY } from '@wallet-actions/constants';
 
 interface Buy {
-    buyInfo?: BuyListResponse;
+    buyInfo?: BuyInfo;
     quotesRequest?: BuyTradeQuoteRequest;
     quotes: BuyTrade[];
-    alternativeQuotes: BuyTrade[] | undefined;
+    alternativeQuotes?: BuyTrade[];
     addressVerified: boolean;
 }
 

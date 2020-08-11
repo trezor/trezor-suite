@@ -1,4 +1,4 @@
-import { BuyTrade, BuyTradeQuoteRequest } from '@suite/services/invityAPI/buyTypes';
+import { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
 
 export const QUOTE_REQUEST_FIAT: BuyTradeQuoteRequest = {
     wantCrypto: false,
@@ -7,6 +7,7 @@ export const QUOTE_REQUEST_FIAT: BuyTradeQuoteRequest = {
     receiveCurrency: 'BTC',
     fiatStringAmount: '10',
 };
+
 export const QUOTE_REQUEST_CRYPTO: BuyTradeQuoteRequest = {
     wantCrypto: true,
     country: 'CZ',

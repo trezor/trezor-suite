@@ -100,6 +100,7 @@ interface Props {
 const Quote = ({ className, selectQuote, quote, providers }: Props) => {
     const hasTag = false; // TODO - tags are in quote.tags, will need some algorithm to evaluate them and show only one
     const { receiveStringAmount, receiveCurrency, paymentMethod, exchange } = quote;
+    // @ts-ignore
     const provider = providers[exchange];
     const companyName = provider?.companyName || exchange;
 

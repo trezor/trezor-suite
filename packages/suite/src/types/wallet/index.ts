@@ -1,6 +1,6 @@
 import { ReceiveActions } from '@wallet-actions/receiveActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
-import { coinmarketBuyActions } from '@wallet-actions/coinmarketBuyActions';
+import { CoinmarketBuyActions } from '@wallet-actions/coinmarketBuyActions';
 
 import {
     State as SendState,
@@ -73,4 +73,4 @@ export type WalletAction =
     | DiscoveryActions
     | AccountActions
     | SelectedAccountActions
-    | coinmarketBuyActions;
+    | CoinmarketBuyActions;

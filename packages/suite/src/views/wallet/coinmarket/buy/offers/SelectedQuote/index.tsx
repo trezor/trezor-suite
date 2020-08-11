@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { BuyTrade } from '@suite/services/invityAPI/buyTypes';
+import { BuyTrade } from 'invity-api';
 import { Card } from '@trezor/components';
-
 import VerifyAddress from './VerifyAddress';
 import OfferInfo from './OfferInfo';
 // import PaymentFailed from './PaymentFailed';

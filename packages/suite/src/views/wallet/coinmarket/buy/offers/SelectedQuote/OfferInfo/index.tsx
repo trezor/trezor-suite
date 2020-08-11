@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { BuyTrade } from '@suite/services/invityAPI/buyTypes';
+import { BuyTrade } from 'invity-api';
 import { colors, variables, CoinLogo } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
 import TransactionId from '../TransactionId';

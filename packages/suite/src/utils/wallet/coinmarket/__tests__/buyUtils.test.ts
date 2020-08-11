@@ -33,6 +33,7 @@ describe('coinmarket/buy utils', () => {
             maxCrypto: 1.67212968,
         });
     });
+
     it('processQuotes', () => {
         const onlyBaseQuotes = MIN_MAX_QUOTES_OK.map(q => ({ ...q }));
         const withAlternative = ALTERNATIVE_QUOTES.map(q => ({ ...q }));
@@ -45,6 +46,7 @@ describe('coinmarket/buy utils', () => {
             withAlternative.filter(q => q.tags && q.tags.includes('alternativeCurrency')),
         ]);
     });
+
     it('createQuoteLink', () => {
         expect(createQuoteLink(QUOTE_REQUEST_FIAT)).toStrictEqual(
             `${window.location.href}/qf/CZ/EUR/10/BTC`,
