@@ -1,10 +1,9 @@
-import styled from 'styled-components';
-import { colors, variables, Icon } from '@trezor/components';
-import { ProvidedByInvity } from '@wallet-components';
-import React from 'react';
-import { useActions, useSelector } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import { MAX_WIDTH } from '@suite-constants/layout';
+import { useActions, useSelector } from '@suite-hooks';
+import { colors, Icon, variables } from '@trezor/components';
+import React from 'react';
+import styled from 'styled-components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -80,9 +79,7 @@ const CoinmarketTopPanel = () => {
                         {`Account #${account.index + 1}`}
                     </Back>
                 </Left>
-                <Right>
-                    <ProvidedByInvity />
-                </Right>
+                <Right />
             </Content>
         </Wrapper>
     );

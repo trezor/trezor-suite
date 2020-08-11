@@ -1,35 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import validator from 'validator';
-import { useForm, Controller } from 'react-hook-form';
-
-import { FIAT } from '@suite-config';
-import { getTitleForNetwork } from '@wallet-utils/accountUtils';
-import { CoinmarketLayout, ProvidedByInvity, WalletLayout } from '@wallet-components';
-import { useBuyInfo } from '@wallet-hooks/useCoinmarket';
-import regional from '@wallet-constants/coinmarket/regional';
-import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
-import { buildOption } from '@wallet-utils/coinmarket/buyUtils';
 import * as routerActions from '@suite-actions/routerActions';
-import { useActions, useSelector } from '@suite-hooks';
-import {
-    Button,
-    Input,
-    colors,
-    H2,
-    CleanSelect,
-    CoinLogo,
-    variables,
-    Icon,
-} from '@trezor/components';
 import { Translation } from '@suite-components';
-import { BuyTradeQuoteRequest } from 'invity-api';
+import { FIAT } from '@suite-config';
+import { useActions, useSelector } from '@suite-hooks';
 import invityAPI from '@suite/services/invityAPI';
+import { Button, CleanSelect, CoinLogo, colors, Icon, Input, variables } from '@trezor/components';
+import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
+import { CoinmarketFooter, CoinmarketLayout, WalletLayout } from '@wallet-components';
+import regional from '@wallet-constants/coinmarket/regional';
+import { useBuyInfo } from '@wallet-hooks/useCoinmarket';
+import PreviousTransactions from './PreviousTransactions';
+import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 import {
     AmountLimits,
+    buildOption,
     getAmountLimits,
     processQuotes,
-} from '@suite/utils/wallet/coinmarket/buyUtils';
+} from '@wallet-utils/coinmarket/buyUtils';
+import { BuyTradeQuoteRequest } from 'invity-api';
+import React, { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import styled from 'styled-components';
+import validator from 'validator';
 
 const Wrapper = styled.div``;
 
@@ -76,8 +67,6 @@ const StyledButton = styled(Button)`
     margin-left: 20px;
 `;
 
-const BottomContent = styled.div``;
-
 const Middle = styled.div`
     display: flex;
     min-width: 65px;
@@ -85,16 +74,6 @@ const Middle = styled.div`
     align-items: center;
     justify-content: center;
 `;
-
-const InvityFooter = styled.div`
-    display: flex;
-    margin: 20px 0;
-    padding: 0 0 20px 0;
-    justify-content: flex-end;
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
-`;
-
-const PreviousTransactions = styled.div``;
 
 const Loading = styled.div`
     display: flex;
@@ -173,14 +152,10 @@ const CoinmarketBuy = () => {
     return (
         <CoinmarketLayout
             bottom={
-                <BottomContent>
-                    <InvityFooter>
-                        <ProvidedByInvity />
-                    </InvityFooter>
-                    <PreviousTransactions>
-                        <H2>Previous Transactions</H2>
-                    </PreviousTransactions>
-                </BottomContent>
+                <>
+                    <PreviousTransactions />
+                    <CoinmarketFooter />
+                </>
             }
         >
             <Wrapper>
