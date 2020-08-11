@@ -4,13 +4,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [20.8.1-beta]
 
 ### Added
-- Historical account balance
+- Historical balance in account graph
 
 ### Changed
 - Design: improved Dashboard, Modal for switching wallets and list of transactions
+- Update trezor-connect
 
 ### Fixed
 - Synchronizing state of multiple remembered devices to local storage
+- Desktop build now correctly offers latest firmware version
+- Firmware changelog formatting
 
 ## [20.7.1-beta]
 
