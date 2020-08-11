@@ -39,6 +39,7 @@ module.exports = {
         '!**/constants/**',
         '!**/__tests__/**',
         '!<rootDir>/src/actions/wallet/send/**', // TODO write tests
+        '!<rootDir>/src/utils/wallet/coinmarket/**', // TODO write tests
     ],
     coverageThreshold: {
         global: {
