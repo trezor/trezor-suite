@@ -218,10 +218,12 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
         const discovery = await db.getItemsExtended('discovery');
         const walletSettings = await db.getItemByPK('walletSettings', 'wallet');
         const fiatRates = await db.getItemsExtended('fiatRates');
+        const coinmarketBuyTrades = await db.getItemsExtended('coinmarketBuyTrades');
         const walletGraphData = await db.getItemsExtended('graph');
         const analytics = await db.getItemByPK('analytics', 'suite');
         const txs = await db.getItemsExtended('txs', 'order');
         const mappedTxs: AppState['wallet']['transactions']['transactions'] = {};
+
         txs.forEach(item => {
             const k = getAccountKey(item.tx.descriptor, item.tx.symbol, item.tx.deviceState);
             if (!mappedTxs[k]) {
@@ -269,6 +271,13 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                     graph: {
                         ...initialState.wallet.graph,
                         data: walletGraphData || [],
+                    },
+                    coinmarket: {
+                        ...initialState.wallet.coinmarket,
+                        buy: {
+                            ...initialState.wallet.coinmarket.buy,
+                            trades: coinmarketBuyTrades,
+                        },
                     },
                 },
                 analytics: analytics?.instanceId

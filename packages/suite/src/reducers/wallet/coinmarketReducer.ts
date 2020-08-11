@@ -3,6 +3,8 @@ import { WalletAction } from '@wallet-types';
 import { BuyTrade, BuyTradeQuoteRequest, BuyTradeResponse } from 'invity-api';
 import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import { COINMARKET_BUY } from '@wallet-actions/constants';
+import { STORAGE } from '@suite-actions/constants';
+import { Action as SuiteAction } from '@suite-types';
 
 interface Buy {
     buyInfo?: BuyInfo;
@@ -28,7 +30,7 @@ const initialState = {
     },
 };
 
-export default (state: State = initialState, action: WalletAction): State => {
+export default (state: State = initialState, action: WalletAction | SuiteAction): State => {
     return produce(state, draft => {
         switch (action.type) {
             case COINMARKET_BUY.SAVE_BUY_INFO:
@@ -47,6 +49,8 @@ export default (state: State = initialState, action: WalletAction): State => {
             case COINMARKET_BUY.SAVE_TRADE:
                 draft.buy.trades.push(action.buyTradeResponse);
                 break;
+            case STORAGE.LOADED:
+                return action.payload.wallet.coinmarket;
             // no default
         }
     });
