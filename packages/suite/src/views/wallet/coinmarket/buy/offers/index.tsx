@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useContext } from 'react';
 import styled from 'styled-components';
 import { LayoutContext } from '@suite-components';
-import { CoinmarketTopPanel } from '@wallet-components';
+import { CoinmarketTopPanel, CoinmarketFooter } from '@wallet-components';
 import { variables, colors } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import QuotesList from './QuotesList';
@@ -24,6 +24,7 @@ const Divider = styled.div`
     display: flex;
     flex: 1;
     align-items: center;
+    cursor: default;
     padding: 61px 0;
 `;
 
@@ -131,6 +132,7 @@ const Offers = () => {
                 </>
             )}
             {selectedQuote && <SelectedQuote selectedQuote={selectedQuote} />}
+            <CoinmarketFooter />
         </Wrapper>
     );
 };

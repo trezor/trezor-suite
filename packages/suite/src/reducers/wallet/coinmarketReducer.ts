@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { WalletAction } from '@wallet-types';
-import { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
+import { BuyTrade, BuyTradeQuoteRequest, BuyTradeResponse } from 'invity-api';
 import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import { COINMARKET_BUY } from '@wallet-actions/constants';
 
@@ -10,6 +10,7 @@ interface Buy {
     quotes: BuyTrade[];
     alternativeQuotes?: BuyTrade[];
     addressVerified: boolean;
+    trades: BuyTradeResponse[];
 }
 
 interface State {
@@ -23,6 +24,7 @@ const initialState = {
         quotes: [],
         alternativeQuotes: undefined,
         addressVerified: false,
+        trades: [],
     },
 };
 
@@ -41,6 +43,9 @@ export default (state: State = initialState, action: WalletAction): State => {
                 break;
             case COINMARKET_BUY.VERIFY_ADDRESS:
                 draft.buy.addressVerified = action.addressVerified;
+                break;
+            case COINMARKET_BUY.SAVE_TRADE:
+                draft.buy.trades.push(action.buyTradeResponse);
                 break;
             // no default
         }

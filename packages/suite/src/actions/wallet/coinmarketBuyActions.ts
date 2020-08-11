@@ -1,7 +1,13 @@
 import TrezorConnect, { UI, ButtonRequestMessage } from 'trezor-connect';
 import * as modalActions from '@suite-actions/modalActions';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { BuyListResponse, BuyProviderInfo, BuyTradeQuoteRequest, BuyTrade } from 'invity-api';
+import {
+    BuyListResponse,
+    BuyProviderInfo,
+    BuyTradeQuoteRequest,
+    BuyTrade,
+    BuyTradeResponse,
+} from 'invity-api';
 import invityAPI from '@suite/services/invityAPI';
 import { COINMARKET_BUY } from './constants';
 import { Dispatch, GetState } from '@suite-types';
@@ -22,6 +28,10 @@ export type CoinmarketBuyActions =
           type: typeof COINMARKET_BUY.SAVE_QUOTES;
           quotes: BuyTrade[];
           alternativeQuotes: BuyTrade[] | undefined;
+      }
+    | {
+          type: typeof COINMARKET_BUY.SAVE_TRADE;
+          buyTradeResponse: BuyTradeResponse;
       };
 
 export async function loadBuyInfo(): Promise<BuyInfo> {
@@ -60,6 +70,13 @@ export const saveBuyInfo = (buyInfo: BuyInfo) => async (dispatch: Dispatch) => {
     dispatch({
         type: COINMARKET_BUY.SAVE_BUY_INFO,
         buyInfo,
+    });
+};
+
+export const saveTrade = (buyTradeResponse: BuyTradeResponse) => async (dispatch: Dispatch) => {
+    dispatch({
+        type: COINMARKET_BUY.SAVE_TRADE,
+        buyTradeResponse,
     });
 };
 

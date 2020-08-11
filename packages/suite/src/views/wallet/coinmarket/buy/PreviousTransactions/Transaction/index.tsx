@@ -9,9 +9,17 @@ const Wrapper = styled.div`
     border: 1px solid ${colors.NEUE_STROKE_GREY};
     min-height: 81px;
     border-radius: 4px;
+
+    &:hover {
+        background: ${colors.WHITE};
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+    }
 `;
 
 const Column = styled.div`
+    display: flex;
+    flex: 1;
     padding: 17px 24px;
 `;
 

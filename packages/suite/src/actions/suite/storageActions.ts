@@ -11,6 +11,7 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
 import { deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
 import { getAnalyticsRandomId } from '@suite-utils/random';
+import { BuyTradeResponse } from 'invity-api';
 import { setSentryUser } from '@suite-utils/sentry';
 
 export type StorageActions =
@@ -62,6 +63,10 @@ export const forgetDevice = (device: TrezorDevice) => async () => {
 
 export const saveAccounts = async (accounts: Account[]) => {
     return db.addItems('accounts', accounts, true);
+};
+
+export const saveBuyTrade = async (buyTradeResponse: BuyTradeResponse) => {
+    return db.addItem('coinmarketBuyTrades', buyTradeResponse);
 };
 
 export const saveDiscovery = async (discoveries: Discovery[]) => {

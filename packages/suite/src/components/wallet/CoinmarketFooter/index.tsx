@@ -9,6 +9,7 @@ const Wrapper = styled.div`
     justify-content: center;
     align-items: center;
     padding-top: 20px;
+    margin-top: 60px;
     border-top: 1px solid ${colors.NEUE_STROKE_GREY};
 `;
 
@@ -33,7 +34,7 @@ const CoinmarketFooter = () => {
             <Left>
                 <ProvidedByInvity />
             </Left>
-            <Right>learn more</Right>
+            <Right>Learn more</Right>
         </Wrapper>
     );
 };

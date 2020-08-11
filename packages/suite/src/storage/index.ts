@@ -7,9 +7,10 @@ import { State as AnalyticsState } from '@suite-reducers/analyticsReducer';
 import { AcquiredDevice } from '@suite-types';
 import { Account, Discovery, CoinFiatRates, WalletAccountTransaction } from '@wallet-types';
 import { GraphData } from '@wallet-types/graph';
+import { BuyTradeResponse } from 'invity-api';
 import { migrate } from './migrations';
 
-const VERSION = 14;
+const VERSION = 15;
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
@@ -77,6 +78,10 @@ export interface SuiteDBSchema extends DBSchema {
             deviceState: string;
         };
     };
+    coinmarketBuyTrades: {
+        key: string;
+        value: BuyTradeResponse;
+    };
 }
 
 export type SuiteStorageUpdateMessage = StorageUpdateMessage<SuiteDBSchema>;
@@ -87,7 +92,7 @@ export type SuiteStorageUpdateMessage = StorageUpdateMessage<SuiteDBSchema>;
  */
 const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersion, transaction) => {
     let shouldInitDB = oldVersion === 0;
-    if (oldVersion > 0 && oldVersion < 13) {
+    if (oldVersion > 0 && oldVersion < 15) {
         // just delete whole db as migrations from version older than 13 (internal releases) are not implemented
         try {
             await SuiteDB.removeStores(db);
@@ -137,12 +142,16 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
         const graphStore = db.createObjectStore('graph', {
             keyPath: ['account.descriptor', 'account.symbol', 'account.deviceState'],
         });
+
         graphStore.createIndex('accountKey', [
             'account.descriptor',
             'account.symbol',
             'account.deviceState',
         ]);
+
         graphStore.createIndex('deviceState', 'account.deviceState');
+
+        db.createObjectStore('coinmarketBuyTrades', { keyPath: 'trade.quoteId' });
     } else {
         // migrate functions
         migrate(db, oldVersion, newVersion, transaction);

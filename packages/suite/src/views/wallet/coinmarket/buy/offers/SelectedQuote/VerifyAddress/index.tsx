@@ -112,6 +112,7 @@ const VerifyAddress = ({ selectedQuote }: Props) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const addressVerified = useSelector(state => state.wallet.coinmarket.buy.addressVerified);
     const { verifyAddress } = useActions({ verifyAddress: coinmarketBuyActions.verifyAddress });
+    const { saveTrade } = useActions({ saveTrade: coinmarketBuyActions.saveTrade });
     if (selectedAccount.status !== 'loaded') return null;
     const { account } = selectedAccount;
     const { symbol, index, availableBalance } = account;
@@ -184,7 +185,7 @@ const VerifyAddress = ({ selectedQuote }: Props) => {
                                 // TODO - show error, trade failed, typically timeout
                                 console.log('response error', response.trade.error);
                             } else {
-                                // TODO - save the response to the storage
+                                await saveTrade(response);
                                 // eslint-disable-next-line no-lonely-if
                                 if (response.tradeForm) {
                                     submitRequestForm(response.tradeForm);

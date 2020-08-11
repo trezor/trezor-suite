@@ -7,7 +7,14 @@ import * as accountUtils from '@wallet-utils/accountUtils';
 import { SUITE, ANALYTICS } from '@suite-actions/constants';
 import { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import { WalletAction } from '@wallet-types';
-import { ACCOUNT, DISCOVERY, TRANSACTION, FIAT_RATES, GRAPH } from '@wallet-actions/constants';
+import {
+    ACCOUNT,
+    DISCOVERY,
+    TRANSACTION,
+    FIAT_RATES,
+    GRAPH,
+    COINMARKET_BUY,
+} from '@wallet-actions/constants';
 import { getDiscovery } from '@wallet-actions/discoveryActions';
 import { isDeviceRemembered } from '@suite-utils/device';
 import { serializeDiscovery } from '@suite-utils/storage';
@@ -123,6 +130,11 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             }
             break;
         }
+
+        case COINMARKET_BUY.SAVE_TRADE:
+            storageActions.saveBuyTrade(action.buyTradeResponse);
+            break;
+
         default:
             break;
     }
