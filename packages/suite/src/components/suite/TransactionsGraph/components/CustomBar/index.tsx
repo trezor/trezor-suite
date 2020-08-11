@@ -2,11 +2,12 @@ import React from 'react';
 
 interface CustomBarProps {
     variant: 'sent' | 'received';
+    filter?: string;
     [key: string]: any;
 }
 
 const CustomBar = (props: CustomBarProps) => {
-    const { fill, x, y, width, height } = props;
+    const { fill, filter, x, y, width, height } = props;
     let forcedHeightChange = false;
     let minHeight = height;
     if (Math.abs(height) < 1 && props.value !== 0) {
@@ -22,6 +23,7 @@ const CustomBar = (props: CustomBarProps) => {
     return (
         <rect
             fill={fill}
+            filter={filter}
             x={x}
             y={minHeight < 0 ? y + diffPosY + minHeight : y - diffPosY}
             rx={2}
