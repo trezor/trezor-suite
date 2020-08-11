@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { H2 } from '@trezor/components';
+import { useSelector } from '@suite-hooks';
 
 import Transaction from './Transaction';
 
@@ -15,16 +16,16 @@ const Header = styled.div`
     min-height: 50px;
 `;
 
-const data = [{}, {}, {}];
-
 const PreviousTransactions = () => {
+    const previousTransactions = useSelector(state => state.wallet.coinmarket.buy.trades);
+
     return (
         <Wrapper>
             <Header>
-                <H2>Previous transactions • {data.length}</H2>
+                <H2>Previous transactions • {previousTransactions.length}</H2>
             </Header>
             <Content>
-                {data.map(() => (
+                {previousTransactions.map(() => (
                     <Transaction />
                 ))}
             </Content>
