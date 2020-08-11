@@ -2851,6 +2851,14 @@ const definedMessages = defineMessages({
         id: 'TR_HIDE_BUTTON',
         defaultMessage: 'Hide',
     },
+    TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP: {
+        id: 'TR_BUY_RECEIVE_QUESTION_TOOLTIP',
+        defaultMessage: 'TR_BUY_RECEIVE_QUESTION_TOOLTIP',
+    },
+    TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP: {
+        id: 'TR_BUY_RECEIVE_QUESTION_TOOLTIP',
+        defaultMessage: 'TR_BUY_RECEIVE_QUESTION_TOOLTIP',
+    },
     TR_SHOW_BUTTON: {
         id: 'TR_SHOW_BUTTON',
         defaultMessage: 'Show',

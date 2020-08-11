@@ -10,10 +10,11 @@ const StyledIcon = styled(Icon)`
 
 interface Props {
     messageId: keyof typeof messages;
+    className?: string;
 }
 
-export default ({ messageId }: Props) => (
-    <Tooltip placement="top" content={<Translation id={messageId} />}>
+export default ({ messageId, className }: Props) => (
+    <Tooltip className={className} placement="top" content={<Translation id={messageId} />}>
         <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
     </Tooltip>
 );

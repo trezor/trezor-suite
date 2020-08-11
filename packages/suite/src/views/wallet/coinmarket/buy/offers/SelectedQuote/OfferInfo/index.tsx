@@ -83,7 +83,14 @@ const OfferInfo = ({ selectedQuote }: Props) => {
         return null;
     }
     const { account } = selectedAccount;
-    const { receiveStringAmount, receiveCurrency, exchange, paymentMethod } = selectedQuote;
+    const {
+        receiveStringAmount,
+        receiveCurrency,
+        exchange,
+        paymentMethod,
+        fiatCurrency,
+        fiatStringAmount,
+    } = selectedQuote;
 
     return (
         <Wrapper>
@@ -95,7 +102,9 @@ const OfferInfo = ({ selectedQuote }: Props) => {
                 <Row>
                     <LeftColumn>spend</LeftColumn>
                     <RightColumn>
-                        <Dark>xxxxx</Dark>
+                        <Dark>
+                            {fiatStringAmount} {fiatCurrency}
+                        </Dark>
                     </RightColumn>
                 </Row>
                 <RowWithBorder>

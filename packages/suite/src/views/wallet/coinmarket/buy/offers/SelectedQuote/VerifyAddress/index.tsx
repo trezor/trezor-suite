@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { getAccountInfo, submitRequestForm, createTxLink } from '@wallet-utils/coinmarket/buyUtils';
-import { FiatValue } from '@suite-components';
+import { FiatValue, QuestionTooltip } from '@suite-components';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import { useActions, useSelector } from '@suite-hooks';
-import { Input, Button, colors, variables, CoinLogo } from '@trezor/components';
+import { Input, Button, colors, variables, CoinLogo, DeviceImage } from '@trezor/components';
 import invityAPI from '@suite/services/invityAPI';
 import { BuyTrade } from 'invity-api';
 
@@ -23,33 +23,61 @@ const CardContent = styled.div`
 const LogoWrapper = styled.div`
     display: flex;
     align-items: center;
-    padding: 0 0 0 10px;
+    padding: 0 0 0 15px;
 `;
 
 const AccountWrapper = styled.div`
     display: flex;
-    padding: 0 0 0 10px;
+    padding: 0 0 0 15px;
     flex-direction: column;
 `;
 
 const Label = styled.div`
     display: flex;
-    padding-bottom: 10px;
+    align-items: center;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
+const StyledQuestionTooltip = styled(QuestionTooltip)`
+    padding-left: 3px;
+`;
+
+const UpperCase = styled.div`
+    text-transform: uppercase;
+    padding: 0 3px;
+`;
+
+const FiatWrapper = styled.div`
+    padding: 0 0 0 3px;
+`;
+
+const CustomLabel = styled(Label)`
+    padding-bottom: 12px;
+`;
+
+const LabelText = styled.div``;
+
+const StyledDeviceImage = styled(DeviceImage)`
+    padding: 0 10px 0 0;
 `;
 
 const Amount = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const AccountName = styled.div`
     display: flex;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const FakeInput = styled.div`
     display: flex;
     margin-bottom: 20px;
     padding: 5px;
+    min-height: 61px;
     align-items: center;
     border-radius: 4px;
     border: solid 2px ${colors.NEUE_STROKE_GREY};
@@ -67,6 +95,10 @@ const ButtonWrapper = styled.div`
 
 const Confirmed = styled.div`
     display: flex;
+    height: 60px;
+    font-size: ${variables.FONT_SIZE.BIG};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    background: ${colors.NEUE_BG_GRAY};
     align-items: center;
     justify-content: center;
 `;
@@ -76,6 +108,7 @@ interface Props {
 }
 
 const VerifyAddress = ({ selectedQuote }: Props) => {
+    const selectedDevice = useSelector(state => state.suite.device);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const addressVerified = useSelector(state => state.wallet.coinmarket.buy.addressVerified);
     const { verifyAddress } = useActions({ verifyAddress: coinmarketBuyActions.verifyAddress });
@@ -92,7 +125,10 @@ const VerifyAddress = ({ selectedQuote }: Props) => {
     return (
         <Wrapper>
             <CardContent>
-                <Label>Receiving account</Label>
+                <CustomLabel>
+                    <LabelText>Receiving Account</LabelText>
+                    <StyledQuestionTooltip messageId="TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP" />
+                </CustomLabel>
                 <FakeInput>
                     <LogoWrapper>
                         <CoinLogo size={25} symbol={symbol} />
@@ -100,19 +136,38 @@ const VerifyAddress = ({ selectedQuote }: Props) => {
                     <AccountWrapper>
                         <AccountName>Account #{index + 1}</AccountName>
                         <Amount>
-                            {availableBalance} {symbol} •
-                            <FiatValue amount={availableBalance} symbol={symbol} />
+                            {availableBalance} <UpperCase>{symbol}</UpperCase> •
+                            <FiatWrapper>
+                                <FiatValue amount={availableBalance} symbol={symbol} />
+                            </FiatWrapper>
                         </Amount>
                     </AccountWrapper>
                 </FakeInput>
-                <Input label="Receive address" value={address} readOnly />
-                {addressVerified && <Confirmed>Confirmed on trezor</Confirmed>}
+                <Input
+                    label={
+                        <Label>
+                            Receive Address
+                            <StyledQuestionTooltip messageId="TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP" />
+                        </Label>
+                    }
+                    value={address}
+                    readOnly
+                />
+                {addressVerified && (
+                    <Confirmed>
+                        {selectedDevice && (
+                            <StyledDeviceImage
+                                height={25}
+                                trezorModel={selectedDevice.features?.major_version === 1 ? 1 : 2}
+                            />
+                        )}
+                        Confirmed on trezor
+                    </Confirmed>
+                )}
             </CardContent>
             <ButtonWrapper>
                 {!addressVerified && (
-                    <Button onClick={() => verifyAddress(path, address)}>
-                        Review &amp; confirm
-                    </Button>
+                    <Button onClick={() => verifyAddress(path, address)}>Confirm On Trezor</Button>
                 )}
                 {addressVerified && (
                     <Button
