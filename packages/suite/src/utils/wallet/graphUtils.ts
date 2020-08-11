@@ -252,6 +252,9 @@ export const calcXDomain = (
         case 'year':
             xPadding = 3600 * 24 * 14; // 14 days
             break;
+        case 'month':
+            xPadding = 3600 * 24; // 1 day
+            break;
         default:
             xPadding = 3600 * 12; // 12 hours
             break;
