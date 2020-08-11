@@ -303,36 +303,42 @@ export const calcFakeGraphDataForTimestamps = (
     const lastTimestamp = timestamps[timestamps.length - 1];
 
     if (firstDataPoint && lastDataPoint && firstTimestamp && lastTimestamp) {
-        if (firstDataPoint.time !== firstTimestamp) {
-            balanceData.push({
-                time: firstTimestamp,
-                sent: '0',
-                received: '0',
-                sentFiat: {},
-                receivedFiat: {},
-                balanceFiat: {},
-                txs: 0,
-                balance: firstDataPoint.balance
-                    ? new BigNumber(firstDataPoint.balance)
-                          .plus(firstDataPoint.sent ?? 0)
-                          .minus(firstDataPoint.received ?? 0)
-                          .toFixed()
-                    : undefined,
-            });
-        }
+        timestamps.forEach(ts => {
+            if (ts < firstDataPoint.time) {
+                balanceData.push({
+                    time: ts,
+                    sent: '0',
+                    received: '0',
+                    sentFiat: {},
+                    receivedFiat: {},
+                    balanceFiat: {},
+                    txs: 0,
+                    balance: firstDataPoint.balance
+                        ? new BigNumber(firstDataPoint.balance)
+                              .plus(firstDataPoint.sent ?? 0)
+                              .minus(firstDataPoint.received ?? 0)
+                              .toFixed()
+                        : undefined,
+                });
+            }
+        });
+
         balanceData.push(...data);
-        if (lastDataPoint.time !== lastTimestamp) {
-            balanceData.push({
-                time: lastTimestamp,
-                sent: '0',
-                received: '0',
-                sentFiat: {},
-                receivedFiat: {},
-                balanceFiat: {},
-                txs: 0,
-                balance: lastDataPoint.balance,
-            });
-        }
+
+        timestamps.forEach(ts => {
+            if (ts > lastDataPoint.time) {
+                balanceData.push({
+                    time: ts,
+                    sent: '0',
+                    received: '0',
+                    sentFiat: {},
+                    receivedFiat: {},
+                    balanceFiat: {},
+                    txs: 0,
+                    balance: lastDataPoint.balance,
+                });
+            }
+        });
     }
 
     const sortedData = balanceData.sort((a, b) => Number(a.time) - Number(b.time));
