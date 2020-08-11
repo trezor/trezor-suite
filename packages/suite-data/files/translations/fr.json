@@ -792,5 +792,6 @@
 	"TR_BALANCE": "Balance",
 	"TR_MY_PORTFOLIO": "My Portfolio",
 	"TR_ALL_TRANSACTIONS": "All Transactions",
-	"TR_TOKENS": "Tokens"
+	"TR_TOKENS": "Tokens",
+	"TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY": "Wait for discovery process to complete before adding a new account."
 }
