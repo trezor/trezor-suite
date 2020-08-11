@@ -273,20 +273,22 @@ const TransactionsGraph = React.memo((props: Props) => {
                                     <stop offset="1" stopColor="#e75f5f" />
                                 </linearGradient>
                             </defs>
-                            <defs>
+
+                            {/* shadow position is incorrect if there are too many bars, forcing them to be smaller than specified barSize */}
+                            {/* <defs>
                                 <filter id="shadow" x="-20%" y="-20%" width="200%" height="200%">
                                     <feDropShadow
                                         stdDeviation="5"
                                         floodColor="rgba(0, 0, 0, 0.1)"
                                     />
                                 </filter>
-                            </defs>
+                            </defs> */}
 
                             <Bar
                                 dataKey={(data: any) => Number(props.receivedValueFn(data) ?? 0)}
                                 // stackId="stack"
                                 fill="url(#greenGradient)"
-                                filter="url(#shadow)"
+                                // filter="url(#shadow)"
                                 barSize={selectedRange.label === 'all' ? 8 : 16}
                                 shape={<CustomBar variant="received" />}
                                 // xAxisId="primary"
@@ -295,7 +297,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 dataKey={(data: any) => Number(props.sentValueFn(data) ?? 0)}
                                 // stackId="stack"
                                 fill="url(#redGradient)"
-                                filter="url(#shadow)"
+                                // filter="url(#shadow)"
                                 barSize={selectedRange.label === 'all' ? 8 : 16}
                                 shape={<CustomBar variant="sent" />}
                                 // xAxisId="primary"
