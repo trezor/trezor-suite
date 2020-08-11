@@ -16,20 +16,12 @@ const Units = styled.div`
 `;
 
 export default () => {
-    const {
-        network,
-        feeInfo,
-        errors,
-        getValues,
-        register,
-        composeTransaction,
-    } = useSendFormContext();
+    const { network, feeInfo, errors, register, composeTransaction } = useSendFormContext();
     const { maxFee, minFee } = feeInfo;
     const feePerUnitError = errors.feePerUnit;
-    const feeLimitError = errors.feeLimit;
-    const error = feePerUnitError || feeLimitError;
-    const feeLimitDisabled =
-        network.networkType === 'ethereum' && !!getValues('outputs[0].dataHex');
+    // const feeLimitError = errors.feeLimit;
+    // const error = feePerUnitError || feeLimitError;
+    // const feeLimitDisabled = network.networkType === 'ethereum' && !!getValues('ethereumDataHex');
 
     return (
         <Wrapper>
@@ -41,7 +33,7 @@ export default () => {
                 state={getInputState(feePerUnitError)}
                 innerAddon={<Units>{getFeeUnits(network.networkType)}</Units>}
                 onChange={() => {
-                    composeTransaction('feePerUnit', !!error);
+                    composeTransaction('feePerUnit', !!feePerUnitError);
                 }}
                 innerRef={register({
                     required: 'TR_CUSTOM_FEE_IS_NOT_SET',
@@ -58,6 +50,11 @@ export default () => {
                 })}
                 bottomText={feePerUnitError && feePerUnitError.message}
             />
+            <input type="hidden" name="feeLimit" ref={register()} />
+            {/*
+            We've decided not to confuse user with gasLimit input which is not recommended to change anyway
+            especially when it comes to using tokens or data
+            it's working but commended out until we decide otherwise
             {network.networkType === 'ethereum' && (
                 <Input
                     noTopLabel
@@ -85,7 +82,7 @@ export default () => {
                     })}
                     bottomText={feePerUnitError && feePerUnitError.message}
                 />
-            )}
+            )} */}
         </Wrapper>
     );
 };
