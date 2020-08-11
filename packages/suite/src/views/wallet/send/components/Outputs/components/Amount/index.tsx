@@ -192,7 +192,11 @@ export default ({ outputId }: { outputId: number }) => {
                                 return 'TR_AMOUNT_IS_NOT_NUMBER';
                             }
 
-                            if (amountBig.lte(0)) {
+                            if (amountBig.lt(0)) {
+                                return 'TR_AMOUNT_IS_TOO_LOW';
+                            }
+
+                            if (amountBig.eq(0) && !getValues('ethereumDataHex')) {
                                 return 'TR_AMOUNT_IS_TOO_LOW';
                             }
 

@@ -42,10 +42,10 @@ export default ({ outputId }: { outputId: number }) => {
         removeOpReturn,
     } = useSendFormContext();
 
-    const inputTextName = `outputs[${outputId}].dataAscii`;
+    const inputAsciiName = `outputs[${outputId}].dataAscii`;
     const inputHexName = `outputs[${outputId}].dataHex`;
 
-    const asciiValue = outputs[outputId].dataAscii || getValues(inputTextName) || '';
+    const asciiValue = outputs[outputId].dataAscii || getValues(inputAsciiName) || '';
     const hexValue = outputs[outputId].dataHex || getValues(inputHexName) || '';
 
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
@@ -57,8 +57,8 @@ export default ({ outputId }: { outputId: number }) => {
             <Textarea
                 state={getInputState(asciiError, asciiValue)}
                 monospace
-                name={inputTextName}
-                data-test={inputTextName}
+                name={inputAsciiName}
+                data-test={inputAsciiName}
                 defaultValue={asciiValue}
                 innerRef={register({
                     required: 'TR_AMOUNT_IS_NOT_SET',
@@ -69,7 +69,7 @@ export default ({ outputId }: { outputId: number }) => {
                         Buffer.from(event.target.value, 'ascii').toString('hex'),
                         { shouldValidate: true },
                     );
-                    composeTransaction(inputTextName, !!asciiError);
+                    composeTransaction(inputAsciiName, !!asciiError);
                 }}
                 bottomText={asciiError && asciiError.message}
                 label={
@@ -98,7 +98,7 @@ export default ({ outputId }: { outputId: number }) => {
                 })}
                 onChange={event => {
                     setValue(
-                        inputTextName,
+                        inputAsciiName,
                         !hexError ? Buffer.from(event.target.value, 'hex').toString('ascii') : '',
                     );
                     composeTransaction(inputHexName, !!hexError);

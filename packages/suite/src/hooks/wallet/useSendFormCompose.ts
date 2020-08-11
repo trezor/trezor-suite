@@ -160,6 +160,11 @@ export const useSendFormCompose = ({
             return;
         }
 
+        // update feeLimit field if present (calculated from ethereum data size)
+        if (composed.feeLimit) {
+            setValue('ethereumDataFeeLimit', composed.feeLimit);
+        }
+
         // set calculated "max" value to `Amount` input
         if (typeof setMaxOutputId === 'number') {
             const amount = formatNetworkAmount(composed.max, state.account.symbol);

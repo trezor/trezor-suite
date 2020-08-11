@@ -1,26 +1,10 @@
-import TrezorConnect, {
-    FeeLevel,
-    RipplePayment,
-    PrecomposedTransaction,
-    SignTransaction,
-} from 'trezor-connect';
+import TrezorConnect, { FeeLevel, RipplePayment, PrecomposedTransaction } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 
-import {
-    calculateTotal,
-    calculateMax,
-    calculateEthFee,
-    serializeEthereumTx,
-    prepareEthereumTransaction,
-    findValidOutputs,
-} from '@wallet-utils/sendFormUtils';
+import { calculateTotal, calculateMax } from '@wallet-utils/sendFormUtils';
 import { FormState, SendContextProps, PrecomposedLevels } from '@wallet-types/sendForm';
 
-import {
-    networkAmountToSatoshi,
-    formatNetworkAmount,
-    getAccountKey,
-} from '@wallet-utils/accountUtils';
+import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 
 import { XRP_FLAG } from '@wallet-constants/sendForm';
 import { SEND } from '@wallet-actions/constants';
@@ -28,48 +12,6 @@ import { Dispatch, GetState } from '@suite-types';
 
 import * as notificationActions from '@suite-actions/notificationActions';
 import { requestPushTransaction } from '@wallet-actions/sendFormActions'; // move to common?
-
-// export const composeTransaction = (
-//     account: SendContext['account'],
-//     getValues: ReturnType<typeof useForm>['getValues'],
-//     selectedFee: SendContext['selectedFee'],
-// ) => {
-//     const amount = getValues('amount[0]');
-//     const address = getValues('address[0]');
-//     const amountInSatoshi = networkAmountToSatoshi(amount, account.symbol).toString();
-//     const { availableBalance } = account;
-//     const feeInSatoshi = selectedFee.feePerUnit;
-//     const totalSpentBig = new BigNumber(calculateTotal(amountInSatoshi, feeInSatoshi));
-//     const max = new BigNumber(calculateMax(availableBalance, feeInSatoshi));
-//     const formattedMax = max.isLessThan('0')
-//         ? ''
-//         : formatNetworkAmount(max.toString(), account.symbol);
-
-//     const payloadData = {
-//         totalSpent: totalSpentBig.toString(),
-//         fee: feeInSatoshi,
-//         max: formattedMax,
-//     };
-
-//     if (!address && formattedMax !== '0') {
-//         return {
-//             type: 'nonfinal',
-//             ...payloadData,
-//         };
-//     }
-
-//     if (totalSpentBig.isGreaterThan(availableBalance)) {
-//         return {
-//             type: 'error',
-//             error: 'NOT-ENOUGH-FUNDS',
-//         };
-//     }
-
-//     return {
-//         type: 'final',
-//         ...payloadData,
-//     };
-// };
 
 const calc = (availableBalance: string, output: any, feeLevel: FeeLevel, token?: any) => {
     const feeInSatoshi = feeLevel.feePerUnit;
@@ -81,7 +23,7 @@ const calc = (availableBalance: string, output: any, feeLevel: FeeLevel, token?:
     let totalSpent;
     if (isSendMax) {
         max = new BigNumber(calculateMax(availableBalance, feeInSatoshi));
-        totalSpent = new BigNumber(calculateTotal(max, feeInSatoshi));
+        totalSpent = new BigNumber(calculateTotal(max.toString(), feeInSatoshi));
     } else {
         totalSpent = new BigNumber(calculateTotal(output.amount, feeInSatoshi));
     }
@@ -229,7 +171,7 @@ export const signTransaction = (
         transactionInfo.type !== 'final'
     )
         return;
-    const { account, network } = selectedAccount;
+    const { account } = selectedAccount;
     if (account.networkType !== 'ripple') return;
 
     dispatch({
@@ -282,50 +224,4 @@ export const signTransaction = (
             coin: account.symbol,
         }),
     );
-
-    // const { selectedAccount } = getState().wallet;
-    // const { device } = getState().suite;
-    // if (selectedAccount.status !== 'loaded' || !device) return 'error';
-    // const { account } = selectedAccount;
-    // const { symbol } = account;
-    // if (!account || account.networkType !== 'ripple') return 'error';
-    // const amount = getValues('amount[0]');
-    // const address = getValues('address[0]');
-    // const destinationTag = getValues('rippleDestinationTag');
-    // const { path, instance, state, useEmptyPassphrase } = device;
-    // const payment: RipplePayment = {
-    //     destination: address,
-    //     amount: networkAmountToSatoshi(amount, symbol),
-    // };
-    // if (destinationTag) {
-    //     payment.destinationTag = parseInt(destinationTag, 10);
-    // }
-
-    // // TODO: add possibility to show serialized tx without pushing (locktime)
-    // const sentTx = await TrezorConnect.pushTransaction({
-    //     tx: signedTx.payload.serializedTx,
-    //     coin: account.symbol,
-    // });
-    // if (sentTx.success) {
-    //     dispatch(
-    //         notificationActions.addToast({
-    //             type: 'tx-sent',
-    //             formattedAmount: `${amount} ${account.symbol.toUpperCase()}`,
-    //             device,
-    //             descriptor: account.descriptor,
-    //             symbol: account.symbol,
-    //             txid: sentTx.payload.txid,
-    //         }),
-    //     );
-    //     dispatch(accountActions.fetchAndUpdateAccount(account));
-    // } else {
-    //     dispatch(
-    //         notificationActions.addToast({
-    //             type: 'sign-tx-error',
-    //             error: sentTx.payload.error,
-    //         }),
-    //     );
-    //     return 'error';
-    // }
-    // return 'success';
 };

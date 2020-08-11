@@ -48,11 +48,13 @@ export type FormState = {
     bitcoinRBF: boolean;
     bitcoinLockTime?: string; // bitcoin RBF/schedule
     ethereumNonce?: string; // ethereum RBF
+    ethereumDataAscii?: string;
+    ethereumDataHex?: string;
     rippleDestinationTag?: string;
 };
 
 // export type PrecomposedLevels = {[key: FeeLevel['label']]: PrecomposedTransaction };
-export type PrecomposedLevels = { [key: string]: PrecomposedTransaction };
+export type PrecomposedLevels = { [key: string]: PrecomposedTransaction & { feeLimit?: string } };
 
 export type SendContextProps = {
     account: Account; // from reducer

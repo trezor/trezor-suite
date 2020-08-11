@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import { Input, variables, colors } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
-import { getInputState } from '@wallet-utils/sendFormUtils';
+import { getInputState, getFeeUnits } from '@wallet-utils/sendFormUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -16,11 +16,20 @@ const Units = styled.div`
 `;
 
 export default () => {
-    const { network, feeInfo, errors, register, composeTransaction } = useSendFormContext();
+    const {
+        network,
+        feeInfo,
+        errors,
+        getValues,
+        register,
+        composeTransaction,
+    } = useSendFormContext();
     const { maxFee, minFee } = feeInfo;
     const feePerUnitError = errors.feePerUnit;
     const feeLimitError = errors.feeLimit;
     const error = feePerUnitError || feeLimitError;
+    const feeLimitDisabled =
+        network.networkType === 'ethereum' && !!getValues('outputs[0].dataHex');
 
     return (
         <Wrapper>
@@ -30,13 +39,7 @@ export default () => {
                 name="feePerUnit"
                 width={120}
                 state={getInputState(feePerUnitError)}
-                innerAddon={
-                    <Units>
-                        {network.networkType === 'bitcoin' && 'sat/B'}
-                        {network.networkType === 'ethereum' && 'GWEI'}
-                        {network.networkType === 'ripple' && 'drops'}
-                    </Units>
-                }
+                innerAddon={<Units>{getFeeUnits(network.networkType)}</Units>}
                 onChange={() => {
                     composeTransaction('feePerUnit', !!error);
                 }}
@@ -58,6 +61,7 @@ export default () => {
             {network.networkType === 'ethereum' && (
                 <Input
                     noTopLabel
+                    disabled={feeLimitDisabled}
                     variant="small"
                     name="feeLimit"
                     width={120}

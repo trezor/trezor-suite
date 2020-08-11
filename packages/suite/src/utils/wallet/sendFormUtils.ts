@@ -194,12 +194,10 @@ export const buildFeeOptions = (levels: FeeLevel[]) => {
     return result;
 };
 
-export const getFeeUnits = (networkType: 'ripple' | 'bitcoin') => {
-    if (networkType === 'ripple') {
-        return { value: 'drop', label: 'drops' };
-    }
-
-    return { value: 'sat', label: 'sat/B' };
+export const getFeeUnits = (networkType: Network['networkType']) => {
+    if (networkType === 'ethereum') return 'GWEI';
+    if (networkType === 'ripple') return 'Drops';
+    return 'sat/B';
 };
 
 // Find all errors with type='compose' in FormState errors

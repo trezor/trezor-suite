@@ -6,7 +6,6 @@ import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import EstimatedMiningTime from '../EstimatedMiningTime';
 import { buildFeeOptions, getFeeUnits } from '@wallet-utils/sendFormUtils';
 import CustomFee from './components/CustomFee';
-import EthFees from './components/EthFees';
 import { useSendFormContext } from '@wallet-hooks';
 
 const StyledCard = styled(Card)`
@@ -97,6 +96,7 @@ export default () => {
     const selectedLabel = getValues('selectedFee') || 'normal';
     const selectedLevel = feeInfo.levels.find(level => level.label === selectedLabel)!;
     const transactionInfo = composedLevels ? composedLevels[selectedLabel] : undefined;
+    const isCustomLevel = selectedLabel === 'custom';
 
     return (
         <StyledCard>
@@ -109,16 +109,18 @@ export default () => {
                         onChange={value => changeFeeLevel(selectedLevel, value)}
                     />
                     <FeeInfo>
-                        {networkType === 'bitcoin' && selectedLabel !== 'custom' && (
+                        {networkType === 'bitcoin' && !isCustomLevel && (
                             <EstimatedMiningTimeWrapper>
                                 <EstimatedMiningTime
                                     seconds={feeInfo.blockTime * selectedLevel.blocks * 60}
                                 />
                             </EstimatedMiningTimeWrapper>
                         )}
-                        <FeeUnits>
-                            {selectedLevel.feePerUnit} {getFeeUnits(networkType).label}
-                        </FeeUnits>
+                        {!isCustomLevel && (
+                            <FeeUnits>
+                                {selectedLevel.feePerUnit} {getFeeUnits(networkType)}
+                            </FeeUnits>
+                        )}
                     </FeeInfo>
                 </Left>
                 <Middle>{selectedLabel === 'custom' && <CustomFee />}</Middle>

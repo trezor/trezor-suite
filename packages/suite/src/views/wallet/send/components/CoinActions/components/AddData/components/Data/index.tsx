@@ -1,12 +1,9 @@
-import { QuestionTooltip, Translation } from '@suite-components';
-import { useActions } from '@suite-hooks';
-import { useSendFormContext } from '@wallet-hooks';
-import { Textarea, Icon } from '@trezor/components';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
-import { getInputState } from '@wallet-utils/sendFormUtils';
 import React from 'react';
 import styled from 'styled-components';
-import validator from 'validator';
+import { Textarea, Icon } from '@trezor/components';
+import { QuestionTooltip, Translation } from '@suite-components';
+import { useSendFormContext } from '@wallet-hooks';
+import { getInputState } from '@wallet-utils/sendFormUtils';
 
 const Label = styled.div`
     display: flex;
@@ -22,73 +19,97 @@ const StyledIcon = styled(Icon)`
 `;
 
 interface Props {
-    setIsActive: (isActive: boolean) => void;
+    close: () => void;
 }
 
-export default ({ setIsActive }: Props) => {
-    const {
-        token,
-        setSelectedFee,
-        initialSelectedFee,
-        outputs,
-        fiatRates,
-        register,
-        errors,
-        getValues,
-        setValue,
-        clearError,
-        setError,
-    } = useSendFormContext();
+export default ({ close }: Props) => {
+    const { register, errors, getValues, setValue, composeTransaction } = useSendFormContext();
 
-    const inputName = 'ethereumData';
-    const { updateFeeLevelWithData } = useActions({
-        // updateFeeLevelWithData: sendFormActions.updateFeeLevelWithData,
-        updateFeeLevelWithData: () => {},
-    });
+    const inputAsciiName = 'ethereumDataAscii';
+    const inputHexName = 'ethereumDataHex';
 
-    const error = errors[inputName];
+    const asciiValue = getValues(inputAsciiName) || '';
+    const hexValue = getValues(inputHexName) || '';
+    const amount = getValues(`outputs[0].amount`);
+    const asciiError = errors.ethereumDataAscii;
+    const hexError = errors.ethereumDataHex;
 
     return (
-        <Textarea
-            name={inputName}
-            innerRef={register({
-                validate: {
-                    error: (value: string) => {
-                        if (value && !validator.isHexadecimal(value)) {
-                            return <Translation id="TR_ETH_DATA_NOT_HEX" />;
-                        }
-                    },
-                },
-            })}
-            onChange={async event => {
-                if (!error) {
-                    updateFeeLevelWithData(
-                        event.target.value,
-                        setSelectedFee,
-                        initialSelectedFee,
-                        token,
-                        setTransactionInfo,
-                        outputs,
-                        fiatRates,
-                        setValue,
-                        clearError,
-                        setError,
-                        getValues,
+        <>
+            <Textarea
+                state={getInputState(asciiError, asciiValue)}
+                monospace
+                name={inputAsciiName}
+                data-test={inputAsciiName}
+                defaultValue={asciiValue}
+                innerRef={register({
+                    required: 'TR_AMOUNT_IS_NOT_SET',
+                })}
+                onChange={event => {
+                    setValue(
+                        inputHexName,
+                        Buffer.from(event.target.value, 'ascii').toString('hex'),
+                        { shouldValidate: true },
                     );
+                    if (!amount) {
+                        setValue('outputs[0].amount', '0');
+                    }
+                    if ((event.target.value === '' || asciiError) && amount === '0') {
+                        setValue('outputs[0].amount', '');
+                    }
+                    composeTransaction(inputAsciiName, !!asciiError);
+                }}
+                bottomText={asciiError && asciiError.message}
+                label={
+                    <Label>
+                        <Text>
+                            <Translation id="TR_SEND_DATA" />
+                        </Text>
+                        <QuestionTooltip messageId="TR_SEND_DATA_TOOLTIP" />
+                    </Label>
                 }
-            }}
-            state={getInputState(error)}
-            bottomText={error && error.message}
-            disabled={token !== null}
-            label={
-                <Label>
-                    <Text>
-                        <Translation id="TR_SEND_DATA" />
-                    </Text>
-                    <QuestionTooltip messageId="TR_SEND_DATA_TOOLTIP" />
-                </Label>
-            }
-            labelRight={<StyledIcon size={20} icon="CROSS" onClick={() => setIsActive(false)} />}
-        />
+            />
+            <Textarea
+                state={getInputState(hexError, hexValue)}
+                monospace
+                name={inputHexName}
+                data-test={inputHexName}
+                defaultValue={hexValue}
+                innerRef={register({
+                    required: 'TR_AMOUNT_IS_NOT_SET',
+                    validate: (value: string) => {
+                        if (value.length % 2 !== 0) return 'TODO_1';
+                        if (value.length > 80 * 2) return 'TODO_2';
+                        if (!/^[\da-f]+$/.test(value)) return 'TODO_3';
+                    },
+                })}
+                onChange={event => {
+                    setValue(
+                        inputAsciiName,
+                        !hexError ? Buffer.from(event.target.value, 'hex').toString('ascii') : '',
+                    );
+                    if (!amount) {
+                        setValue('outputs[0].amount', '0');
+                    }
+                    if ((event.target.value === '' || hexError) && amount === '0') {
+                        setValue('outputs[0].amount', '');
+                    }
+                    composeTransaction(inputHexName, !!hexError);
+                }}
+                bottomText={hexError && hexError.message}
+                labelRight={
+                    <StyledIcon
+                        size={20}
+                        icon="CROSS"
+                        onClick={() => {
+                            if (amount === '0') {
+                                setValue('outputs[0].amount', '');
+                            }
+                            close();
+                        }}
+                    />
+                }
+            />
+        </>
     );
 };

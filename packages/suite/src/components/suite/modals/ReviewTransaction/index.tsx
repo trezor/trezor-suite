@@ -79,6 +79,10 @@ export default ({ selectedAccount, send, decision }: Props) => {
         outputs.push({ type: 'locktime', value: precomposedForm.bitcoinLockTime });
     }
 
+    if (typeof precomposedForm.ethereumDataHex === 'string') {
+        outputs.push({ type: 'data', value: precomposedForm.ethereumDataHex });
+    }
+
     if (networkType === 'ripple') {
         // ripple displays requests on device in different order:
         // 1. destination tag

@@ -46,9 +46,9 @@ export const DEFAULT_VALUES = {
     feeLimit: '',
     bitcoinRBF: true,
     bitcoinLockTime: '',
-    ethereumGasPrice: '',
-    ethereumGasLimit: '',
-    ethereumData: '',
+    ethereumNonce: '',
+    ethereumDataAscii: '',
+    ethereumDataHex: '',
     rippleDestinationTag: '',
     outputs: [],
 } as const;

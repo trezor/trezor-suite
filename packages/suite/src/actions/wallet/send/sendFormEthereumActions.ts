@@ -35,7 +35,7 @@ const calc = (availableBalance: string, output: any, feeLevel: FeeLevel, token?:
         max = token
             ? new BigNumber(token.balance!)
             : new BigNumber(calculateMax(availableBalance, feeInSatoshi));
-        totalSpent = new BigNumber(calculateTotal(token ? '0' : max, feeInSatoshi));
+        totalSpent = new BigNumber(calculateTotal(token ? '0' : max.toString(), feeInSatoshi));
     } else {
         totalSpent = new BigNumber(calculateTotal(token ? '0' : output.amount, feeInSatoshi));
     }
@@ -76,7 +76,7 @@ const calc = (availableBalance: string, output: any, feeLevel: FeeLevel, token?:
     };
 };
 
-export const composeTransaction = (
+export const composeTransaction = async (
     formValues: FormState,
     account: SendContextProps['account'],
     feeInfo: SendContextProps['feeInfo'],
@@ -114,6 +114,26 @@ export const composeTransaction = (
         });
     }
 
+    let dataFeeLimit: string | undefined;
+
+    if (typeof formValues.ethereumDataHex === 'string' && formValues.ethereumDataHex.length > 0) {
+        const response = await TrezorConnect.blockchainEstimateFee({
+            coin: account.symbol,
+            request: {
+                blocks: [2],
+                specific: {
+                    from: account.descriptor,
+                    to: address || account.descriptor,
+                    data: formValues.ethereumDataHex,
+                },
+            },
+        });
+
+        if (response.success) {
+            dataFeeLimit = response.payload.levels[0].feeLimit;
+        }
+    }
+
     const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
     // in case when selectedFee is set to 'custom' construct this FeeLevel from values
     if (formValues.selectedFee === 'custom') {
@@ -124,15 +144,17 @@ export const composeTransaction = (
             blocks: -1,
         });
     }
-    console.warn('KOMPOSE ITIR', outputs, predefinedLevels);
+
+    // update predefined levels feeLimit (gas limit from data size)
+    if (dataFeeLimit) {
+        predefinedLevels.forEach(l => (l.feeLimit = dataFeeLimit));
+    }
     const wrappedResponse: PrecomposedLevels = {};
     const response = predefinedLevels.map(level => calc(availableBalance, outputs[0], level));
     response.forEach((tx, index) => {
         const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
         wrappedResponse[feeLabel] = tx;
     });
-
-    console.warn('KOMPOSE ITIR2', response, predefinedLevels);
 
     const hasAtLeastOneValid = response.find(r => r.type !== 'error');
     if (!hasAtLeastOneValid && !wrappedResponse.custom) {
@@ -201,7 +223,7 @@ export const signTransaction = (
         chainId: network.chainId,
         to: formValues.outputs[0].address,
         amount: formValues.outputs[0].amount,
-        data: undefined,
+        data: formValues.ethereumDataHex,
         gasLimit: transactionInfo.feeLimit,
         gasPrice: transactionInfo.feePerByte,
         nonce: account.misc.nonce,
