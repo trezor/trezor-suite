@@ -21,7 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Send: Compatibility with Zcash Heartwood upgrade
 
 ### Changed
-- Update trezor-connect, electron dependencies
+- Update trezor-connect and electron dependencies
 - Change Blockbook backends for BTC, BTH, ETH and LTC from the beta back to stable
 - Bump minimal supported chrome/firefox version
 - Design: General layout and navigation overhaul
