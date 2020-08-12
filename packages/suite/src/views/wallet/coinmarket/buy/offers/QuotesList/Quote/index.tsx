@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors, Button, variables } from '@trezor/components';
 import { PaymentType } from '@wallet-components';
+import { QuestionTooltip } from '@suite-components';
 import { BuyTrade } from 'invity-api';
 
 const Wrapper = styled.div`
@@ -61,9 +62,11 @@ const Column = styled.div`
 `;
 
 const Heading = styled.div`
+    display: flex;
     text-transform: uppercase;
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    padding-bottom: 9px;
 `;
 
 const StyledButton = styled(Button)`
@@ -71,7 +74,10 @@ const StyledButton = styled(Button)`
 `;
 
 const Value = styled.div`
+    display: flex;
+    align-items: center;
     color: ${colors.NEUE_TYPE_DARK_GREY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const Footer = styled.div`
@@ -97,6 +103,12 @@ interface Props {
     quote: BuyTrade;
     providers: any;
 }
+
+const StyledQuestionTooltip = styled(QuestionTooltip)`
+    padding-left: 4px;
+    padding-top: 1px;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+`;
 
 const Quote = ({ className, selectQuote, quote, providers }: Props) => {
     const hasTag = false; // TODO - tags are in quote.tags, will need some algorithm to evaluate them and show only one
@@ -126,7 +138,9 @@ const Quote = ({ className, selectQuote, quote, providers }: Props) => {
                     </Value>
                 </Column>
                 <Column>
-                    <Heading>Fees</Heading>
+                    <Heading>
+                        Fees <StyledQuestionTooltip messageId="TR_OFFER_FEE_INFO" />
+                    </Heading>
                     <Value>All fee included</Value>
                 </Column>
             </Details>

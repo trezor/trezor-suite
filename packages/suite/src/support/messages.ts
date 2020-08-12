@@ -2865,7 +2865,11 @@ const definedMessages = defineMessages({
     },
     TR_PAYMENT_METHOD_BANK_TRANSFER: {
         id: 'TR_PAYMENT_METHOD_BANK_TRANSFER',
-        defaultMessage: 'Credit Card',
+        defaultMessage: 'Bank transfer',
+    },
+    TR_OFFER_FEE_INFO: {
+        id: 'TR_OFFER_FEE_INFO',
+        defaultMessage: 'TR_OFFER_FEE_INFO',
     },
     TR_SHOW_BUTTON: {
         id: 'TR_SHOW_BUTTON',
