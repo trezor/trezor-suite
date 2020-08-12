@@ -518,7 +518,7 @@
 	"LABELING_ACCOUNT_WITH_TYPE": "Account #{index} ({type})",
 	"TR_DISCREET_TOOLTIP": "Hides all balances",
 	"TX_CONFIRMATIONS_EXPLAIN": "Number of confirmations by the network through the mining process",
-	"TR_LAST_UPDATE": "Price:",
+	"TR_LAST_UPDATE": "Price: Updated {value}",
 	"TR_UPDATE_AVAILABLE": "Update available",
 	"TR_UP_TO_DATE": "Up to date",
 	"TR_LIVE": "Live",
