@@ -125,13 +125,22 @@ export const composeTransaction = (
 
         console.warn('CUSTOM LEVELS RESPONSE', customLevelsResponse);
 
-        if (!customLevelsResponse.success) return wrappedResponse; // TODO: show toast?
-
-        const customValid = customLevelsResponse.payload.findIndex(r => r.type !== 'error');
-        if (customValid >= 0) {
-            wrappedResponse.custom = customLevelsResponse.payload[customValid];
+        if (customLevelsResponse.success) {
+            const customValid = customLevelsResponse.payload.findIndex(r => r.type !== 'error');
+            if (customValid >= 0) {
+                wrappedResponse.custom = customLevelsResponse.payload[customValid];
+            }
         }
     }
+    // make sure that feePerByte is an integer (trezor-connect may return float)
+    Object.keys(wrappedResponse).forEach(key => {
+        const tx = wrappedResponse[key];
+        if (tx.type !== 'error') {
+            tx.feePerByte = new BigNumber(tx.feePerByte)
+                .integerValue(BigNumber.ROUND_FLOOR)
+                .toString();
+        }
+    });
 
     return wrappedResponse;
 };
