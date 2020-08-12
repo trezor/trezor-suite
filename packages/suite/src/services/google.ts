@@ -3,6 +3,7 @@
 import { Deferred, createDeferred } from '@suite-utils/deferred';
 import { urlHashParams } from '@suite-utils/metadata';
 import { getRandomId } from '@suite-utils/random';
+import { getPrefixedURL } from '@suite-utils/router';
 
 const CLIENT_ID = '842348096891-efhc485636d5t09klvrve0pi4njhq3l8.apps.googleusercontent.com';
 const SCOPES = 'https://www.googleapis.com/auth/drive.appdata';
@@ -99,7 +100,11 @@ class Client {
 
     async authorize() {
         const dfd: Deferred<string> = createDeferred();
-
+        // eslint-disable-next-line
+        const redirect_uri =
+            `${window.location.origin}${getPrefixedURL('/static/oauth/oauth_receiver.html')}`;
+        // eslint-disable-next-line
+        console.log('redirect_uri', redirect_uri);
         const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
         url.search = new URLSearchParams({
             // eslint-disable-next-line
@@ -112,12 +117,18 @@ class Client {
             // todo: add state!!
             state: getRandomId(30),
             // eslint-disable-next-line
-            redirect_uri: 'https://track-suite.herokuapp.com/oauth',
+            redirect_uri,
         }).toString();
 
         const onMessage = (e: MessageEvent) => {
             // filter non oauth messages
-            if (!['https://track-suite.herokuapp.com', window.location.origin].includes(e.origin)) {
+            if (
+                ![
+                    'https://track-suite.herokuapp.com',
+                    'https://wallet.trezor.io',
+                    window.location.origin,
+                ].includes(e.origin)
+            ) {
                 return;
             }
             // console.warn('OnMessage', e, e.data);

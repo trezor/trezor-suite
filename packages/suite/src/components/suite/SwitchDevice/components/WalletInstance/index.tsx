@@ -87,16 +87,6 @@ const WalletInstance = ({
         return '@switch-device/wallet-instance';
     };
 
-    // const changeWalletMetadata = (event: any) => {
-    //     if (!instance.state) return; // only ts
-    //     event.preventDefault();
-    //     addMetadata({
-    //         type: 'walletLabel',
-    //         deviceState: instance.state,
-    //         defaultValue: 'TODO: wallet default state',
-    //         value: instance.metadata.status === 'enabled' ? instance.metadata.walletLabel : '',
-    //     });
-    // };
     return (
         <Wrapper
             data-test={getDataTestBase()}
