@@ -2859,6 +2859,14 @@ const definedMessages = defineMessages({
         id: 'TR_BUY_RECEIVE_QUESTION_TOOLTIP',
         defaultMessage: 'TR_BUY_RECEIVE_QUESTION_TOOLTIP',
     },
+    TR_PAYMENT_METHOD_CARD: {
+        id: 'TR_PAYMENT_METHOD_CARD',
+        defaultMessage: 'Credit Card',
+    },
+    TR_PAYMENT_METHOD_BANK_TRANSFER: {
+        id: 'TR_PAYMENT_METHOD_BANK_TRANSFER',
+        defaultMessage: 'Credit Card',
+    },
     TR_SHOW_BUTTON: {
         id: 'TR_SHOW_BUTTON',
         defaultMessage: 'Show',

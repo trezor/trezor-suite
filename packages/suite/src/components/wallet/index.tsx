@@ -7,6 +7,7 @@ import Title from './Title';
 import WalletLayout from './WalletLayout';
 import CoinBalance from './CoinBalance';
 import ProvidedByInvity from './ProvidedByInvity';
+import PaymentType from './PaymentType';
 
 export {
     Title,
@@ -18,4 +19,5 @@ export {
     CoinmarketTopPanel,
     CoinmarketFooter,
     ProvidedByInvity,
+    PaymentType,
 };

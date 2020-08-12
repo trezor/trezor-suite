@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
 import { BuyTrade } from 'invity-api';
+import { PaymentType } from '@wallet-components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -54,7 +55,9 @@ const Transaction = ({ transaction }: Props) => {
             </Column>
             <Column>
                 <Row>{exchange}</Row>
-                <Row>{paymentMethod}</Row>
+                <Row>
+                    <PaymentType method={paymentMethod} />
+                </Row>
             </Column>
             <BuyColumn>Buy Again</BuyColumn>
         </Wrapper>
