@@ -1,4 +1,4 @@
-import TrezorConnect, { FeeLevel, PrecomposedTransaction } from 'trezor-connect';
+import TrezorConnect, { FeeLevel, PrecomposedTransaction, TokenInfo } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import { toWei, fromWei } from 'web3-utils';
 import {
@@ -7,7 +7,6 @@ import {
     calculateEthFee,
     serializeEthereumTx,
     prepareEthereumTransaction,
-    findValidOutputs,
 } from '@wallet-utils/sendFormUtils';
 import { FormState, SendContextProps, PrecomposedLevels } from '@wallet-types/sendForm';
 import {
@@ -20,7 +19,7 @@ import { requestPushTransaction } from '@wallet-actions/sendFormActions'; // mov
 import { SEND } from '@wallet-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 
-const calc = (availableBalance: string, output: any, feeLevel: FeeLevel, token?: any) => {
+const calc = (availableBalance: string, output: any, feeLevel: FeeLevel, token?: TokenInfo) => {
     const feeInSatoshi = calculateEthFee(
         toWei(feeLevel.feePerUnit, 'gwei'),
         feeLevel.feeLimit || '0',
@@ -76,17 +75,14 @@ const calc = (availableBalance: string, output: any, feeLevel: FeeLevel, token?:
     };
 };
 
-export const composeTransaction = async (
+export const composeTransaction = (
     formValues: FormState,
-    account: SendContextProps['account'],
-    feeInfo: SendContextProps['feeInfo'],
-) => {
+    formState: SendContextProps,
+) => async () => {
+    const { account, feeInfo, token } = formState;
     const { availableBalance } = account;
     const { address, amount } = formValues.outputs[0];
     const amountInSatoshi = networkAmountToSatoshi(amount, account.symbol).toString();
-    // const max = formValues.token
-    //     ? new BigNumber(formValues.token.balance!)
-    //     : new BigNumber(calculateMax(account.availableBalance, feeInSatoshi));
 
     const isMaxActive = typeof formValues.setMaxOutputId === 'number';
     const outputs = [];
@@ -150,7 +146,9 @@ export const composeTransaction = async (
         predefinedLevels.forEach(l => (l.feeLimit = dataFeeLimit));
     }
     const wrappedResponse: PrecomposedLevels = {};
-    const response = predefinedLevels.map(level => calc(availableBalance, outputs[0], level));
+    const response = predefinedLevels.map(level =>
+        calc(availableBalance, outputs[0], level, token),
+    );
     response.forEach((tx, index) => {
         const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
         wrappedResponse[feeLabel] = tx;
@@ -178,7 +176,7 @@ export const composeTransaction = async (
         if (!customLevels.length) return wrappedResponse;
 
         const customLevelsResponse = customLevels.map(level =>
-            calc(availableBalance, outputs[0], level),
+            calc(availableBalance, outputs[0], level, token),
         );
 
         console.warn('CUSTOM LEVELS RESPONSE', customLevelsResponse);

@@ -66,9 +66,9 @@ const calc = (availableBalance: string, output: any, feeLevel: FeeLevel, token?:
 
 export const composeTransaction = (
     formValues: FormState,
-    account: SendContextProps['account'],
-    feeInfo: SendContextProps['feeInfo'],
-) => {
+    formState: SendContextProps,
+) => async () => {
+    const { account, feeInfo } = formState;
     const { availableBalance } = account;
     const { address, amount } = formValues.outputs[0];
     const amountInSatoshi = networkAmountToSatoshi(amount, account.symbol).toString();

@@ -12,12 +12,12 @@ import {
 } from '@wallet-constants/sendForm';
 import { Dispatch, GetState } from '@suite-types';
 
-export const composeTransaction = async (
+export const composeTransaction = (
     formValues: FormState,
-    account: SendContextProps['account'],
-    feeInfo: SendContextProps['feeInfo'],
-) => {
+    formState: SendContextProps,
+) => async () => {
     const { outputs } = formValues;
+    const { account, feeInfo } = formState;
     if (!account.addresses || !account.utxo) return;
 
     const composedOutputs = outputs

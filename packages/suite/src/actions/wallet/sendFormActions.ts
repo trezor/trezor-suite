@@ -11,7 +11,7 @@ import { findValidOutputs } from '@wallet-utils/sendFormUtils';
 
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
-import { FormState, SendContextProps, PrecomposedLevels } from '@wallet-types/sendForm';
+import { FormState, SendContextProps } from '@wallet-types/sendForm';
 import * as sendFormBitcoinActions from './send/sendFormBitcoinActions';
 import * as sendFormEthereumActions from './send/sendFormEthereumActions';
 import * as sendFormRippleActions from './send/sendFormRippleActions';
@@ -99,30 +99,24 @@ export const removeDraft = () => (dispatch: Dispatch, getState: GetState) => {
     }
 };
 
-export const composeTransactionNew = (
-    formValues: FormState,
-    feeInfo: SendContextProps['feeInfo'],
-) => async (_dispatch: Dispatch, getState: GetState) => {
-    const { selectedAccount } = getState().wallet;
-    if (selectedAccount.status !== 'loaded') return;
-
+export const composeTransaction = (formValues: FormState, formState: SendContextProps) => async (
+    dispatch: Dispatch,
+) => {
     const validOutputs = findValidOutputs(formValues);
     if (validOutputs.length === 0) return;
 
     const values = { ...formValues, outputs: validOutputs };
 
-    const { account } = selectedAccount;
+    const { account } = formState;
     if (account.networkType === 'bitcoin') {
-        return sendFormBitcoinActions.composeTransaction(values, account, feeInfo);
+        return dispatch(sendFormBitcoinActions.composeTransaction(values, formState));
     }
     if (account.networkType === 'ethereum') {
-        return sendFormEthereumActions.composeTransaction(values, account, feeInfo);
+        return dispatch(sendFormEthereumActions.composeTransaction(values, formState));
     }
     if (account.networkType === 'ripple') {
-        return sendFormRippleActions.composeTransaction(values, account, feeInfo);
+        return dispatch(sendFormRippleActions.composeTransaction(values, formState));
     }
-    // TODO: translate formValues/sendValues to trezor-connect params
-    // TODO: return precomposed transactions for multiple levels (will be stored in SendContext)
 };
 
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`

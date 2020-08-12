@@ -35,20 +35,19 @@ export const useSendFormCompose = ({
     const { debounce } = useDebounce();
 
     const { composeTransaction } = useActions({
-        composeTransaction: sendFormActions.composeTransactionNew,
+        composeTransaction: sendFormActions.composeTransaction,
     });
 
-    const { feeInfo } = state;
     const composeDraft = useCallback(
         async (values: FormState) => {
             // start composing without debounce
             updateContext({ isLoading: true });
             setComposedLevels(undefined);
-            const result = await composeTransaction(values, feeInfo);
+            const result = await composeTransaction(values, state);
             setComposedLevels(result);
             updateContext({ isLoading: false });
         },
-        [feeInfo, composeTransaction, updateContext],
+        [state, composeTransaction, updateContext],
     );
 
     // called from useEffect
@@ -58,7 +57,7 @@ export const useSendFormCompose = ({
             const values = getValues();
             // save draft (it could be changed later, after composing)
             setDraftSaveRequest(true);
-            return composeTransaction(values, feeInfo);
+            return composeTransaction(values, state);
         };
 
         try {
@@ -72,7 +71,7 @@ export const useSendFormCompose = ({
         } catch (error) {
             // error should be thrown ONLY when response from trezor-connect shouldn't be processes (see composeDebounced hook)
         }
-    }, [feeInfo, updateContext, debounce, errors, getValues, composeTransaction]);
+    }, [state, updateContext, debounce, errors, getValues, composeTransaction]);
 
     // Create a compose request which should be processes in useEffect below
     // This method should be called from the UI (input.onChange, button.click ...)
