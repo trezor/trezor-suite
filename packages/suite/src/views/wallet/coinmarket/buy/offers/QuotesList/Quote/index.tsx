@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, Button, variables } from '@trezor/components';
+import { PaymentType } from '@wallet-components';
 import { BuyTrade } from 'invity-api';
 
 const Wrapper = styled.div`
@@ -104,8 +105,6 @@ const Quote = ({ className, selectQuote, quote, providers }: Props) => {
     const provider = providers[exchange];
     const companyName = provider?.companyName || exchange;
 
-    console.log('quote', quote);
-
     return (
         <Wrapper className={className}>
             <TagRow>{hasTag && <Tag>best offer</Tag>}</TagRow>
@@ -122,7 +121,9 @@ const Quote = ({ className, selectQuote, quote, providers }: Props) => {
                 </Column>
                 <Column>
                     <Heading>Paid by</Heading>
-                    <Value>{paymentMethod}</Value>
+                    <Value>
+                        <PaymentType method={paymentMethod} />
+                    </Value>
                 </Column>
                 <Column>
                     <Heading>Fees</Heading>

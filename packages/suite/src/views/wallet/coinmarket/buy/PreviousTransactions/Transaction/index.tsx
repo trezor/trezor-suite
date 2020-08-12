@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components';
+import { colors, variables, Icon, CoinLogo } from '@trezor/components';
 import { BuyTrade } from 'invity-api';
 import { PaymentType } from '@wallet-components';
+import { useSelector } from '@suite-hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -36,22 +37,66 @@ const BuyColumn = styled(Column)`
     border-left: 1px solid ${colors.NEUE_STROKE_GREY};
 `;
 
-const Row = styled.div``;
+const Row = styled.div`
+    display: flex;
+    align-items: center;
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
+const StatusRow = styled.div`
+    font-size: ${variables.FONT_SIZE.SMALL};
+`;
+
+const Amount = styled.div``;
+
+const StyledCoinLogo = styled(CoinLogo)`
+    display: flex;
+    padding: 3px 5px 0 0;
+    height: 100%;
+`;
+
+const Arrow = styled.div`
+    padding: 0 11px;
+`;
 
 interface Props {
     transaction: BuyTrade;
 }
 
 const Transaction = ({ transaction }: Props) => {
-    const { fiatStringAmount, fiatCurrency, status, exchange, paymentMethod } = transaction;
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    if (selectedAccount.status !== 'loaded') {
+        return null;
+    }
+
+    const {
+        account: { symbol },
+    } = selectedAccount;
+
+    const {
+        fiatStringAmount,
+        fiatCurrency,
+        status,
+        exchange,
+        paymentMethod,
+        receiveCurrency,
+    } = transaction;
 
     return (
         <Wrapper>
             <Column>
                 <Row>
-                    {fiatStringAmount} {fiatCurrency}
+                    <Amount>
+                        {fiatStringAmount} {fiatCurrency}
+                    </Amount>
+                    <Arrow>
+                        <Icon size={13} icon="ARROW_RIGHT" />
+                    </Arrow>
+                    {/* TODO FIX THIS LOGO */}
+                    <StyledCoinLogo size={13} symbol={symbol} /> {receiveCurrency}
                 </Row>
-                <Row>{status}</Row>
+                <StatusRow>{status}</StatusRow>
             </Column>
             <Column>
                 <Row>{exchange}</Row>
