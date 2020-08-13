@@ -13,7 +13,7 @@ const getFormattedDate = (range: GraphRange['label'], date: Date) => {
         case 'all':
             return <FormattedDate value={date} month="2-digit" year="numeric" />;
         case 'year':
-            return <FormattedDate value={date} month="2-digit" year="numeric" />;
+            return <FormattedDate value={date} month="short" />;
         case 'month':
             return <FormattedDate value={date} day="2-digit" month="2-digit" />;
         case 'week':
