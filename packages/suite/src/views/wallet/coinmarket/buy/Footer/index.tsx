@@ -80,6 +80,7 @@ const Footer = ({ buyInfo, setAmountLimits }: Props) => {
                         return (
                             <CleanSelect
                                 noTopLabel
+                                isHovered
                                 options={regional.countriesOptions}
                                 isSearchable
                                 value={value}

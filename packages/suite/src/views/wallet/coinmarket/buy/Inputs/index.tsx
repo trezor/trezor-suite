@@ -50,7 +50,7 @@ interface Props {
 }
 
 const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
-    const { register, errors, trigger, control } = useFormContext();
+    const { register, errors, trigger, control, setValue } = useFormContext();
     const fiatInput = 'fiatInput';
     const cryptoInput = 'cryptoInput';
     const currencySelect = 'currencySelect';
@@ -97,6 +97,7 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
                             }
                         },
                     })}
+                    onChange={() => setValue(cryptoInput, '')}
                     state={errors[fiatInput] ? 'error' : undefined}
                     name={fiatInput}
                     bottomText={errors[fiatInput] && errors[fiatInput].message}
@@ -131,6 +132,7 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
             </Middle>
             <Right>
                 <Input
+                    onChange={() => setValue(fiatInput, '')}
                     state={errors[cryptoInput] ? 'error' : undefined}
                     name={cryptoInput}
                     noTopLabel

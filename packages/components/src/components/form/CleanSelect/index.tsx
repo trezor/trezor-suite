@@ -97,6 +97,7 @@ interface Props extends Omit<SelectProps, 'components'> {
     label?: React.ReactNode;
     wrapperProps?: Record<string, any>;
     variant?: InputVariant;
+    isHoveredByDefault?: boolean;
     minWidth?: string;
 }
 
@@ -104,6 +105,7 @@ const CleanSelect = ({
     isSearchable = true,
     withDropdownIndicator = true,
     className,
+    isHoveredByDefault = false,
     wrapperProps,
     isClean = false,
     label,
@@ -111,7 +113,7 @@ const CleanSelect = ({
     options,
     ...props
 }: Props) => {
-    const [isHovered, setIsHovered] = React.useState(false);
+    const [isHovered, setIsHovered] = React.useState(isHoveredByDefault);
     const optionsLength = options.length;
 
     return (
