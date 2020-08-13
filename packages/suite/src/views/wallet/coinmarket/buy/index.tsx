@@ -1,26 +1,15 @@
-import * as routerActions from '@suite-actions/routerActions';
-import { Translation } from '@suite-components';
-import { FIAT } from '@suite-config';
-import { useActions, useSelector } from '@suite-hooks';
-import invityAPI from '@suite/services/invityAPI';
-import { Button, CleanSelect, CoinLogo, colors, Icon, Input, variables } from '@trezor/components';
-import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
+import { useSelector } from '@suite-hooks';
+import { variables } from '@trezor/components';
 import { CoinmarketFooter, CoinmarketLayout, WalletLayout } from '@wallet-components';
-import regional from '@wallet-constants/coinmarket/regional';
 import { useBuyInfo } from '@wallet-hooks/useCoinmarket';
 import PreviousTransactions from './PreviousTransactions';
-import { getTitleForNetwork } from '@wallet-utils/accountUtils';
-import {
-    AmountLimits,
-    buildOption,
-    getAmountLimits,
-    processQuotes,
-} from '@wallet-utils/coinmarket/buyUtils';
-import { BuyTradeQuoteRequest } from 'invity-api';
-import React, { useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { AmountLimits } from '@wallet-utils/coinmarket/buyUtils';
+import React, { useState } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
 import styled from 'styled-components';
-import validator from 'validator';
+
+import Inputs from './Inputs';
+import Footer from './Footer';
 
 const Wrapper = styled.div``;
 
@@ -29,50 +18,6 @@ const Content = styled.div`
     flex-direction: column;
     padding: 0 25px;
     flex: 1;
-`;
-
-const Top = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: space-between;
-`;
-
-const Footer = styled.div`
-    display: flex;
-    align-items: center;
-    padding-top: 50px;
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
-`;
-
-const Left = styled.div`
-    display: flex;
-    flex: 1;
-`;
-
-const Right = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: flex-end;
-`;
-
-const Label = styled.div`
-    display: flex;
-    align-items: center;
-    padding-right: 10px;
-    white-space: nowrap;
-`;
-
-const StyledButton = styled(Button)`
-    min-width: 200px;
-    margin-left: 20px;
-`;
-
-const Middle = styled.div`
-    display: flex;
-    min-width: 65px;
-    height: 48px;
-    align-items: center;
-    justify-content: center;
 `;
 
 const Loading = styled.div`
@@ -85,38 +30,10 @@ const NoProviders = styled.div`
     font-size: ${variables.FONT_SIZE.BIG};
 `;
 
-const StyledCoinLogo = styled(CoinLogo)`
-    margin-right: 5px;
-`;
-
 const CoinmarketBuy = () => {
-    const { register, getValues, trigger, errors, control } = useForm({
-        mode: 'onChange',
-    });
-    const fiatInput = 'fiatInput';
-    const currencySelect = 'currencySelect';
-    const countrySelect = 'countrySelect';
-
+    const methods = useForm({ mode: 'onChange' });
     const { buyInfo } = useBuyInfo();
-    const { saveQuoteRequest, saveQuotes, saveBuyInfo } = useActions({
-        saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
-        saveQuotes: coinmarketBuyActions.saveQuotes,
-        saveBuyInfo: coinmarketBuyActions.saveBuyInfo,
-    });
-
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
-    // TODO - do we really need to store it here? probably better would be in useBuyInfo, where it could skip the load if already set
-    saveBuyInfo(buyInfo);
-
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
-
-    useEffect(() => {
-        // when the limits change, trigger revalidation
-        trigger([fiatInput]);
-    }, [amountLimits, trigger]);
-
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     if (selectedAccount.status !== 'loaded') {
@@ -124,198 +41,37 @@ const CoinmarketBuy = () => {
     }
 
     const { account } = selectedAccount;
-
-    const defaultCurrencyInfo = buyInfo.buyInfo?.suggestedFiatCurrency;
-    const defaultCurrency = defaultCurrencyInfo
-        ? buildOption(defaultCurrencyInfo)
-        : {
-              label: 'USD',
-              value: 'usd',
-          };
-
-    const country = buyInfo.buyInfo?.country || regional.unknownCountry;
-    const defaultCountry = {
-        label: regional.countriesMap.get(country),
-        value: country,
-    };
-
-    console.log('errors', errors);
-    console.log('buyInfo', buyInfo, country, defaultCountry);
-    console.log('errors.fiatInputName', errors[fiatInput]);
-    console.log('buyInfo.buyInfo?.suggestedFiatCurrency', buyInfo.buyInfo?.suggestedFiatCurrency);
-
     const isLoading = !buyInfo?.buyInfo;
     const noProviders =
         buyInfo.buyInfo?.providers.length === 0 ||
         !buyInfo.supportedCryptoCurrencies.has(account.symbol);
 
     return (
-        <CoinmarketLayout
-            bottom={
-                <>
-                    <PreviousTransactions />
-                    <CoinmarketFooter />
-                </>
-            }
-        >
-            <Wrapper>
-                {isLoading && <Loading>loading</Loading>}
-                {!isLoading && noProviders && <NoProviders>No providers</NoProviders>}
-                {!isLoading && !noProviders && (
-                    <Content>
-                        <Top>
-                            <Left>
-                                <Input
-                                    noTopLabel
-                                    defaultValue="10000"
-                                    innerRef={register({
-                                        validate: value => {
-                                            if (!value) {
-                                                return 'TR_ERROR_EMPTY';
-                                            }
-
-                                            if (!validator.isNumeric(value)) {
-                                                return 'TR_ERROR_NOT_NUMBER';
-                                            }
-
-                                            if (amountLimits) {
-                                                const amount = Number(value);
-                                                if (
-                                                    amountLimits.minFiat &&
-                                                    amount < amountLimits.minFiat
-                                                ) {
-                                                    return `Minimum is ${amountLimits.minFiat} ${amountLimits.currency}`;
-                                                }
-                                                if (
-                                                    amountLimits.maxFiat &&
-                                                    amount > amountLimits.maxFiat
-                                                ) {
-                                                    return `Maximum is ${amountLimits.maxFiat} ${amountLimits.currency}`;
-                                                }
-                                            }
-                                        },
-                                    })}
-                                    state={errors[fiatInput] ? 'error' : undefined}
-                                    name={fiatInput}
-                                    bottomText={errors[fiatInput] && errors[fiatInput].message}
-                                    innerAddon={
-                                        <Controller
-                                            control={control}
-                                            name={currencySelect}
-                                            defaultValue={defaultCurrency}
-                                            render={({ onChange, value }) => {
-                                                return (
-                                                    <CleanSelect
-                                                        options={FIAT.currencies
-                                                            .filter(c =>
-                                                                buyInfo.supportedFiatCurrencies.has(
-                                                                    c,
-                                                                ),
-                                                            )
-                                                            .map((currency: string) =>
-                                                                buildOption(currency),
-                                                            )}
-                                                        isSearchable
-                                                        value={value}
-                                                        isClearable={false}
-                                                        minWidth="45px"
-                                                        onChange={(selected: any) => {
-                                                            onChange(selected);
-                                                            setAmountLimits(undefined);
-                                                        }}
-                                                    />
-                                                );
-                                            }}
-                                        />
-                                    }
-                                />
-                            </Left>
-                            <Middle>
-                                <Icon icon="TRANSFER" size={16} />
-                            </Middle>
-                            <Right>
-                                <Input
-                                    noTopLabel
-                                    innerAddon={
-                                        <>
-                                            <StyledCoinLogo size={18} symbol={account.symbol} />
-                                            <Translation {...getTitleForNetwork(account.symbol)} />
-                                        </>
-                                    }
-                                />
-                            </Right>
-                        </Top>
-                        <Footer>
-                            <Left>
-                                <Label>Offers for:</Label>
-                                <Controller
-                                    control={control}
-                                    defaultValue={defaultCountry}
-                                    name={countrySelect}
-                                    render={({ onChange, value }) => {
-                                        return (
-                                            <CleanSelect
-                                                noTopLabel
-                                                options={regional.countriesOptions}
-                                                isSearchable
-                                                value={value}
-                                                isClearable={false}
-                                                minWidth="170px"
-                                                onChange={(selected: any) => {
-                                                    onChange(selected);
-                                                    setAmountLimits(undefined);
-                                                }}
-                                            />
-                                        );
-                                    }}
-                                />
-                            </Left>
-                            <Right>
-                                <StyledButton
-                                    onClick={async () => {
-                                        const formValues = getValues();
-                                        console.log('formValues', formValues);
-                                        const request: BuyTradeQuoteRequest = {
-                                            // TODO - handle crypto amount entry
-                                            wantCrypto: false,
-                                            fiatCurrency: formValues.currencySelect.value.toUpperCase(),
-                                            receiveCurrency: account.symbol.toUpperCase(),
-                                            country: formValues.countrySelect.value,
-                                            fiatStringAmount: formValues.fiatInput,
-                                        };
-                                        await saveQuoteRequest(request);
-                                        const allQuotes = await invityAPI.getBuyQuotes(request);
-                                        const [quotes, alternativeQuotes] = processQuotes(
-                                            allQuotes,
-                                        );
-                                        if (!quotes || quotes.length === 0) {
-                                            // todo handle no quotes
-                                        } else {
-                                            const limits = getAmountLimits(request, quotes);
-                                            console.log('limits', limits, request);
-                                            if (limits) {
-                                                setAmountLimits(limits);
-                                            } else {
-                                                await saveQuotes(quotes, alternativeQuotes);
-
-                                                // if success redirect to offers views
-                                                goto('wallet-coinmarket-buy-offers', {
-                                                    symbol: account.symbol,
-                                                    accountIndex: account.index,
-                                                    accountType: account.accountType,
-                                                });
-                                            }
-                                        }
-                                    }}
-                                >
-                                    Show offers
-                                </StyledButton>
-                            </Right>
-                        </Footer>
-                    </Content>
-                )}
-            </Wrapper>
-        </CoinmarketLayout>
+        <FormProvider {...methods}>
+            <CoinmarketLayout
+                bottom={
+                    <>
+                        <PreviousTransactions />
+                        <CoinmarketFooter />
+                    </>
+                }
+            >
+                <Wrapper>
+                    {isLoading && <Loading>loading</Loading>}
+                    {!isLoading && noProviders && <NoProviders>No providers</NoProviders>}
+                    {!isLoading && !noProviders && (
+                        <Content>
+                            <Inputs
+                                amountLimits={amountLimits}
+                                setAmountLimits={setAmountLimits}
+                                buyInfo={buyInfo}
+                            />
+                            <Footer buyInfo={buyInfo} setAmountLimits={setAmountLimits} />
+                        </Content>
+                    )}
+                </Wrapper>
+            </CoinmarketLayout>
+        </FormProvider>
     );
 };
 
