@@ -70,7 +70,7 @@ const Offers = () => {
     const { goto } = useActions({ goto: routerActions.goto });
     const { openModal } = useActions({ openModal: modalActions.openModal });
 
-    if (quotesRequest == null) {
+    if (quotesRequest === null) {
         return null;
     }
 
@@ -117,7 +117,7 @@ const Offers = () => {
                             <Divider>
                                 <DividerLeft />
                                 <DividerMiddle>
-                                    Other offers in{' '}
+                                    Other offers in
                                     <Currency>{alternativeQuotes[0].fiatCurrency}</Currency>
                                 </DividerMiddle>
                                 <DividerRight />

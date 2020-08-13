@@ -24,7 +24,7 @@ const Left = styled.div`
 const Right = styled.div`
     display: flex;
     flex: 1;
-
+    font-size: ${variables.FONT_SIZE.SMALL};
     justify-content: flex-end;
 `;
 

@@ -8,7 +8,7 @@ import { AmountLimits, getAmountLimits, processQuotes } from '@wallet-utils/coin
 import { BuyTradeQuoteRequest } from 'invity-api';
 import React from 'react';
 import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
-import { Controller, useForm, useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -54,10 +54,7 @@ const Footer = ({ buyInfo, setAmountLimits }: Props) => {
         saveQuotes: coinmarketBuyActions.saveQuotes,
     });
 
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
-
+    const { goto } = useActions({ goto: routerActions.goto });
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     if (selectedAccount.status !== 'loaded') {
@@ -65,7 +62,6 @@ const Footer = ({ buyInfo, setAmountLimits }: Props) => {
     }
 
     const { account } = selectedAccount;
-
     const country = buyInfo.buyInfo?.country || regional.unknownCountry;
     const defaultCountry = {
         label: regional.countriesMap.get(country),
@@ -102,7 +98,6 @@ const Footer = ({ buyInfo, setAmountLimits }: Props) => {
                 <StyledButton
                     onClick={async () => {
                         const formValues = getValues();
-                        console.log('formValues', formValues);
                         const request: BuyTradeQuoteRequest = {
                             // TODO - handle crypto amount entry
                             wantCrypto: false,
@@ -118,13 +113,12 @@ const Footer = ({ buyInfo, setAmountLimits }: Props) => {
                             // todo handle no quotes
                         } else {
                             const limits = getAmountLimits(request, quotes);
-                            console.log('limits', limits, request);
+
                             if (limits) {
                                 setAmountLimits(limits);
                             } else {
                                 await saveQuotes(quotes, alternativeQuotes);
 
-                                // if success redirect to offers views
                                 goto('wallet-coinmarket-buy-offers', {
                                     symbol: account.symbol,
                                     accountIndex: account.index,

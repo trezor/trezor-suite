@@ -1,7 +1,7 @@
 import { Translation } from '@suite-components';
 import { FIAT } from '@suite-config';
 import { useSelector } from '@suite-hooks';
-import { CleanSelect, CoinLogo, Icon, Input } from '@trezor/components';
+import { CleanSelect, CoinLogo, Icon, Input, variables } from '@trezor/components';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 import { AmountLimits, buildOption } from '@wallet-utils/coinmarket/buyUtils';
 import React, { useEffect } from 'react';
@@ -12,8 +12,8 @@ import validator from 'validator';
 
 const Wrapper = styled.div`
     display: flex;
+    flex-wrap: wrap;
     flex: 1;
-    justify-content: space-between;
 `;
 
 const Left = styled.div`
@@ -39,6 +39,10 @@ const StyledCoinLogo = styled(CoinLogo)`
     margin-right: 5px;
 `;
 
+const AddonText = styled.div`
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
 interface Props {
     amountLimits?: AmountLimits;
     buyInfo: BuyInfo;
@@ -46,30 +50,25 @@ interface Props {
 }
 
 const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
-    const { register, errors, trigger, control, getValues } = useFormContext();
+    const { register, errors, trigger, control } = useFormContext();
     const fiatInput = 'fiatInput';
+    const cryptoInput = 'cryptoInput';
     const currencySelect = 'currencySelect';
 
-    // when the limits change, trigger revalidation
     useEffect(() => {
         trigger([fiatInput]);
     }, [amountLimits, trigger]);
 
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-
     if (selectedAccount.status !== 'loaded') {
         return null;
     }
 
     const { account } = selectedAccount;
-
     const defaultCurrencyInfo = buyInfo.buyInfo?.suggestedFiatCurrency;
     const defaultCurrency = defaultCurrencyInfo
         ? buildOption(defaultCurrencyInfo)
-        : {
-              label: 'USD',
-              value: 'usd',
-          };
+        : { label: 'USD', value: 'usd' };
 
     return (
         <Wrapper>
@@ -107,7 +106,6 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
                             name={currencySelect}
                             defaultValue={defaultCurrency}
                             render={({ onChange, value }) => {
-                                console.log(getValues());
                                 return (
                                     <CleanSelect
                                         options={FIAT.currencies
@@ -133,11 +131,22 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
             </Middle>
             <Right>
                 <Input
+                    state={errors[cryptoInput] ? 'error' : undefined}
+                    name={cryptoInput}
                     noTopLabel
+                    innerRef={register({
+                        validate: value => {
+                            if (!value) {
+                                return 'TR_ERROR_EMPTY';
+                            }
+                        },
+                    })}
                     innerAddon={
                         <>
                             <StyledCoinLogo size={18} symbol={account.symbol} />
-                            <Translation {...getTitleForNetwork(account.symbol)} />
+                            <AddonText>
+                                <Translation {...getTitleForNetwork(account.symbol)} />
+                            </AddonText>
                         </>
                     }
                 />
