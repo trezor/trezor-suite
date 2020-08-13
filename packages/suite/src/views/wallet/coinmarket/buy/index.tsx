@@ -1,8 +1,9 @@
-import { useSelector } from '@suite-hooks';
+import { useSelector, useActions } from '@suite-hooks';
 import { variables } from '@trezor/components';
 import { CoinmarketFooter, CoinmarketLayout, WalletLayout } from '@wallet-components';
 import { useBuyInfo } from '@wallet-hooks/useCoinmarket';
 import PreviousTransactions from './PreviousTransactions';
+import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import { AmountLimits } from '@wallet-utils/coinmarket/buyUtils';
 import React, { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -32,6 +33,7 @@ const NoProviders = styled.div`
 
 const CoinmarketBuy = () => {
     const methods = useForm({ mode: 'onChange' });
+    const { saveBuyInfo } = useActions({ saveBuyInfo: coinmarketBuyActions.saveBuyInfo });
     const { buyInfo } = useBuyInfo();
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
@@ -39,6 +41,8 @@ const CoinmarketBuy = () => {
     if (selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Coinmarket" account={selectedAccount} />;
     }
+
+    saveBuyInfo(buyInfo);
 
     const { account } = selectedAccount;
     const isLoading = !buyInfo?.buyInfo;

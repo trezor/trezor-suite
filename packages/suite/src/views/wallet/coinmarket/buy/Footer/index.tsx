@@ -8,7 +8,7 @@ import { AmountLimits, getAmountLimits, processQuotes } from '@wallet-utils/coin
 import { BuyTradeQuoteRequest } from 'invity-api';
 import React from 'react';
 import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -47,10 +47,8 @@ interface Props {
 }
 
 const Footer = ({ buyInfo, setAmountLimits }: Props) => {
-    const methods = useForm({ mode: 'onChange' });
-    const { getValues, control } = methods;
+    const { getValues, control } = useFormContext();
     const countrySelect = 'countrySelect';
-
     const { saveQuoteRequest, saveQuotes } = useActions({
         saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
         saveQuotes: coinmarketBuyActions.saveQuotes,
@@ -104,6 +102,7 @@ const Footer = ({ buyInfo, setAmountLimits }: Props) => {
                 <StyledButton
                     onClick={async () => {
                         const formValues = getValues();
+                        console.log('formValues', formValues);
                         const request: BuyTradeQuoteRequest = {
                             // TODO - handle crypto amount entry
                             wantCrypto: false,

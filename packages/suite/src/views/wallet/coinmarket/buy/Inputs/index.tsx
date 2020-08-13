@@ -46,7 +46,7 @@ interface Props {
 }
 
 const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
-    const { register, errors, trigger, control } = useFormContext();
+    const { register, errors, trigger, control, getValues } = useFormContext();
     const fiatInput = 'fiatInput';
     const currencySelect = 'currencySelect';
 
@@ -107,6 +107,7 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
                             name={currencySelect}
                             defaultValue={defaultCurrency}
                             render={({ onChange, value }) => {
+                                console.log(getValues());
                                 return (
                                     <CleanSelect
                                         options={FIAT.currencies
