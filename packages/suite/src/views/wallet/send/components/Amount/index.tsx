@@ -120,7 +120,6 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
                             <Text>
                                 <Translation id="TR_AMOUNT" />
                             </Text>
-                            <QuestionTooltip messageId="TR_SEND_AMOUNT_TOOLTIP" />
                         </Label>
                     }
                     labelAddon={
