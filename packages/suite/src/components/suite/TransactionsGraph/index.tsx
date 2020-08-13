@@ -142,6 +142,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                     <CustomResponsiveContainer height="100%" width="100%">
                         <ComposedChart
                             data={data}
+                            barGap={0}
                             // stackOffset="sign"
                             margin={{
                                 top: 10,
