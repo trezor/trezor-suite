@@ -74,7 +74,7 @@ const TransactionHeading = ({ transaction, isPending, useSingleRowLayout }: Prop
     } else if (transaction.type === 'self') {
         heading = isPending ? `Sending ${symbol} to myself` : `Sent ${symbol} to myself`;
     } else {
-        heading = `Unknown ${symbol} transaction`;
+        heading = <Translation id="TR_UNKNOWN_TRANSACTION" />;
     }
 
     return (
