@@ -36,16 +36,18 @@ interface Props {
 }
 
 const TransactionHeading = ({ transaction, isPending, useSingleRowLayout }: Props) => {
+    const isTokenTransaction = transaction.tokens.length > 0;
+    const target = transaction.targets[0];
+    const transfer = transaction.tokens[0];
+    const symbol = !isTokenTransaction
+        ? transaction.symbol.toUpperCase()
+        : transfer.symbol.toUpperCase();
     let amount = null;
 
     if (useSingleRowLayout) {
-        const isTokenTransaction = transaction.tokens.length > 0;
-        const target = transaction.targets[0];
-        const transfer = transaction.tokens[0];
         const targetAmount = !isTokenTransaction
             ? getTargetAmount(target, transaction)
             : transfer.amount;
-        const symbol = !isTokenTransaction ? transaction.symbol : transfer.symbol;
         const operation = getTxOperation(transaction);
         amount = (
             <CryptoAmount>
@@ -61,7 +63,7 @@ const TransactionHeading = ({ transaction, isPending, useSingleRowLayout }: Prop
 
     // TODO: intl once the structure and all combinations are decided
     let heading = null;
-    const symbol = transaction.symbol.toUpperCase();
+    // const symbol = transaction.symbol.toUpperCase();
 
     if (isTxUnknown(transaction)) {
         heading = <Translation id="TR_UNKNOWN_TRANSACTION" />;
