@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, Button, variables } from '@trezor/components';
-import { PaymentType } from '@wallet-components';
+import { PaymentType, ProviderInfo } from '@wallet-components';
 import { QuestionTooltip } from '@suite-components';
 import { BuyTrade } from 'invity-api';
 
@@ -101,7 +101,6 @@ interface Props {
     className?: string;
     selectQuote: (quote: BuyTrade) => void;
     quote: BuyTrade;
-    providers: any;
 }
 
 const StyledQuestionTooltip = styled(QuestionTooltip)`
@@ -110,12 +109,9 @@ const StyledQuestionTooltip = styled(QuestionTooltip)`
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
 `;
 
-const Quote = ({ className, selectQuote, quote, providers }: Props) => {
+const Quote = ({ className, selectQuote, quote }: Props) => {
     const hasTag = false; // TODO - tags are in quote.tags, will need some algorithm to evaluate them and show only one
     const { receiveStringAmount, receiveCurrency, paymentMethod, exchange } = quote;
-    // @ts-ignore
-    const provider = providers[exchange];
-    const companyName = provider?.companyName || exchange;
 
     return (
         <Wrapper className={className}>
@@ -129,7 +125,9 @@ const Quote = ({ className, selectQuote, quote, providers }: Props) => {
             <Details>
                 <Column>
                     <Heading>Provider</Heading>
-                    <Value>{companyName}</Value>
+                    <Value>
+                        <ProviderInfo exchange={exchange} />
+                    </Value>
                 </Column>
                 <Column>
                     <Heading>Paid by</Heading>

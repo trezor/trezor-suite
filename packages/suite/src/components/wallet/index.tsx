@@ -8,6 +8,7 @@ import WalletLayout from './WalletLayout';
 import CoinBalance from './CoinBalance';
 import ProvidedByInvity from './ProvidedByInvity';
 import PaymentType from './PaymentType';
+import ProviderInfo from './ProviderInfo';
 
 export {
     Title,
@@ -20,4 +21,5 @@ export {
     CoinmarketFooter,
     ProvidedByInvity,
     PaymentType,
+    ProviderInfo,
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { BuyTrade } from 'invity-api';
 import { colors, variables, CoinLogo } from '@trezor/components';
-import { PaymentType } from '@wallet-components';
+import { PaymentType, ProviderInfo } from '@wallet-components';
 import { useSelector } from '@suite-hooks';
 import TransactionId from '../TransactionId';
 
@@ -116,7 +116,9 @@ const OfferInfo = ({ selectedQuote }: Props) => {
                 </RowWithBorder>
                 <Row>
                     <LeftColumn>provider</LeftColumn>
-                    <RightColumn>{exchange}</RightColumn>
+                    <RightColumn>
+                        <ProviderInfo exchange={exchange} />
+                    </RightColumn>
                 </Row>
                 <Row>
                     <LeftColumn>paid by</LeftColumn>

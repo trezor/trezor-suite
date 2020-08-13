@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors, variables, Icon, CoinLogo } from '@trezor/components';
 import { BuyTrade } from 'invity-api';
-import { PaymentType } from '@wallet-components';
+import { PaymentType, ProviderInfo } from '@wallet-components';
 import { useSelector } from '@suite-hooks';
 
 const Wrapper = styled.div`
@@ -99,7 +99,9 @@ const Transaction = ({ transaction }: Props) => {
                 <StatusRow>{status}</StatusRow>
             </Column>
             <Column>
-                <Row>{exchange}</Row>
+                <Row>
+                    <ProviderInfo exchange={exchange} />
+                </Row>
                 <Row>
                     <PaymentType method={paymentMethod} />
                 </Row>
