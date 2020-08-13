@@ -1,4 +1,4 @@
-import { FiatValue, QuestionTooltip, Translation } from '@suite-components';
+import { FiatValue, Translation } from '@suite-components';
 import { Input, variables, Button } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Output, CustomFee } from '@wallet-types/sendForm';
