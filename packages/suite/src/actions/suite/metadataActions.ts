@@ -619,6 +619,7 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
         }
 
         provider = await getProvider(getState().metadata.provider);
+        console.log('addMetadata provider', provider);
         // at this point, provider might still be undefined. It means that metadata will be saved only locally.
 
         // // save reference to original value. we need to compare old and new value to determine
@@ -698,7 +699,9 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
     // 3. connect to provider
     if (getState().suite.device?.metadata.status === 'enabled' && !getState().metadata.provider) {
         needsUpdate = true;
-        await dispatch(initProvider());
+        const providerResult = await dispatch(initProvider());
+        console.warn('providerResult', providerResult);
+        if (!providerResult) return;
     }
 
     if (needsUpdate) {

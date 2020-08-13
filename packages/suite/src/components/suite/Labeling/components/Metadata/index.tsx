@@ -132,6 +132,7 @@ const EditContainer = (props: {
                 data-test="@metadata/input"
             />
             <SubmitIcon
+                style={{ cursor: 'pointer' }}
                 size={16}
                 data-test="@metadata/submit"
                 icon="CHECK"
@@ -143,6 +144,7 @@ const EditContainer = (props: {
                 color={colors.NEUE_BG_LIGHT_GREEN}
             />
             <SubmitIcon
+                style={{ cursor: 'pointer' }}
                 size={16}
                 data-test="@metadata/cancel"
                 icon="CROSS"
@@ -181,7 +183,11 @@ const AddMetadataLabel = (props: Props) => {
     });
 
     useEffect(() => {
-        if (editing && !loading && (!metadata.enabled || deviceMetadata?.status !== 'enabled')) {
+        if (
+            editing &&
+            !loading &&
+            (!metadata.enabled || deviceMetadata?.status !== 'enabled' || !metadata.provider)
+        ) {
             /** when clicking on inline input edit, ensure that everything needed is already ready */
             const init = async () => {
                 setLoading(true);
