@@ -70,7 +70,7 @@ const Offers = () => {
     const { goto } = useActions({ goto: routerActions.goto });
     const { openModal } = useActions({ openModal: modalActions.openModal });
 
-    if (quotesRequest === null) {
+    if (!quotesRequest) {
         return null;
     }
 
