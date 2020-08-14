@@ -17,8 +17,8 @@ const Active = styled.div`
 `;
 
 export default () => {
-    const { getValues, composeTransaction, resetDefaultValue } = useSendFormContext();
-    const destinationTagValue = getValues('rippleDestinationTag') || '';
+    const { getDefaultValue, composeTransaction, resetDefaultValue } = useSendFormContext();
+    const destinationTagValue = getDefaultValue('rippleDestinationTag') || '';
     const hasDestinationTag = destinationTagValue.length > 0;
     const [isActive, setIsActive] = useState(hasDestinationTag);
 

@@ -4,6 +4,7 @@ import validator from 'validator';
 import styled from 'styled-components';
 import { Input, Icon, Button, variables, Tooltip, colors } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
+import { InputError } from '@wallet-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { useSendFormContext } from '@wallet-hooks';
@@ -149,7 +150,7 @@ export default ({ outputId }: { outputId: number }) => {
                             </Label>
                         ) : undefined
                     }
-                    bottomText={error && error.message}
+                    bottomText={<InputError error={error} />}
                     onChange={event => {
                         if (isSetMaxActive) {
                             setValue('setMaxOutputId', undefined);
@@ -194,6 +195,7 @@ export default ({ outputId }: { outputId: number }) => {
                                 return 'TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE';
                             }
 
+                            // TODO:
                             if (
                                 networkType === 'ethereum' &&
                                 error &&

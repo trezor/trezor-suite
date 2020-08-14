@@ -2,6 +2,7 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
+import { InputError } from '@wallet-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { Icon, Input, Switch, variables, colors } from '@trezor/components';
 import { getInputState } from '@wallet-utils/sendFormUtils';
@@ -62,11 +63,17 @@ interface Props {
 }
 
 export default ({ close }: Props) => {
-    const { register, getValues, setValue, errors, composeTransaction } = useSendFormContext();
+    const {
+        register,
+        getDefaultValue,
+        setValue,
+        errors,
+        composeTransaction,
+    } = useSendFormContext();
 
-    const bitcoinRBF = getValues('bitcoinRBF');
+    const bitcoinRBF = getDefaultValue('bitcoinRBF');
     const inputName = 'bitcoinLockTime';
-    const inputValue = getValues(inputName) || '';
+    const inputValue = getDefaultValue(inputName) || '';
     const error = errors[inputName];
 
     return (
@@ -105,7 +112,7 @@ export default ({ close }: Props) => {
                     </Label>
                 }
                 labelRight={<StyledIcon size={20} icon="CROSS" onClick={close} />}
-                bottomText={error && error.message}
+                bottomText={<InputError error={error} />}
             />
             <RbfMessage>
                 <Left>

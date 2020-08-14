@@ -1,15 +1,15 @@
 import React from 'react';
+import { FormattedPlural } from 'react-intl';
 import styled from 'styled-components';
 import { Input, colors, variables, Icon, Button } from '@trezor/components';
-import { FormattedPlural } from 'react-intl';
-import AddLabel from './components/AddLabel';
+import { AddressLabeling, QuestionTooltip, Translation } from '@suite-components';
+import { InputError } from '@wallet-components';
 import { checkRippleEmptyAddress, scanQrRequest } from '@wallet-actions/sendFormActions';
 import { useActions } from '@suite-hooks';
 import { useSendFormContext } from '@wallet-hooks';
 import { isAddressValid } from '@wallet-utils/validation';
 import { getInputState } from '@wallet-utils/sendFormUtils';
-
-import { AddressLabeling, QuestionTooltip, Translation } from '@suite-components';
+import AddLabel from './components/AddLabel';
 
 const Label = styled.div`
     display: flex;
@@ -132,7 +132,7 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
             }}
             bottomText={
                 addressError ? (
-                    addressError.message
+                    <InputError error={addressError} />
                 ) : (
                     <AddressLabeling address={addressValue} knownOnly />
                 )

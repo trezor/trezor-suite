@@ -40,14 +40,14 @@ const StyledButton = styled(Button)`
 export default () => {
     const {
         addOutput,
-        getValues,
+        getDefaultValue,
         setValue,
         composeTransaction,
         resetDefaultValue,
     } = useSendFormContext();
 
-    const bitcoinRBF = getValues('bitcoinRBF');
-    const locktimeValue = getValues('bitcoinLockTime') || '';
+    const bitcoinRBF = getDefaultValue('bitcoinRBF');
+    const locktimeValue = getDefaultValue('bitcoinLockTime') || '';
     const hasLocktime = locktimeValue.length > 0;
 
     const [broadcastActive, setBroadcastActive] = useState<boolean>(true);

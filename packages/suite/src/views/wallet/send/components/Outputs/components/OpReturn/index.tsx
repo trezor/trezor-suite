@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { Translation } from '@suite-components';
+import { InputError } from '@wallet-components';
 import { Textarea, Icon } from '@trezor/components';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 
@@ -71,7 +72,7 @@ export default ({ outputId }: { outputId: number }) => {
                     );
                     composeTransaction(inputAsciiName, !!asciiError);
                 }}
-                bottomText={asciiError && asciiError.message}
+                bottomText={<InputError error={asciiError} />}
                 label={
                     <Label>
                         <Icon size={16} icon="ASTERISK" />
@@ -103,7 +104,7 @@ export default ({ outputId }: { outputId: number }) => {
                     );
                     composeTransaction(inputHexName, !!hexError);
                 }}
-                bottomText={hexError && hexError.message}
+                bottomText={<InputError error={hexError} />}
                 labelRight={
                     <StyledIcon size={20} icon="CROSS" onClick={() => removeOpReturn(outputId)} />
                 }

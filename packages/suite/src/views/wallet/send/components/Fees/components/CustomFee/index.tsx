@@ -2,6 +2,7 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import { Input, variables, colors } from '@trezor/components';
+import { InputError } from '@wallet-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { getInputState, getFeeUnits } from '@wallet-utils/sendFormUtils';
 
@@ -16,8 +17,17 @@ const Units = styled.div`
 `;
 
 export default () => {
-    const { network, feeInfo, errors, register, composeTransaction } = useSendFormContext();
+    const {
+        network,
+        feeInfo,
+        errors,
+        register,
+        getDefaultValue,
+        composeTransaction,
+    } = useSendFormContext();
     const { maxFee, minFee } = feeInfo;
+    const inputName = 'feePerUnit';
+    const feePerUnitValue = getDefaultValue(inputName);
     const feePerUnitError = errors.feePerUnit;
     // const feeLimitError = errors.feeLimit;
     // const error = feePerUnitError || feeLimitError;
@@ -28,13 +38,15 @@ export default () => {
             <Input
                 noTopLabel
                 variant="small"
-                name="feePerUnit"
+                monospace
                 width={120}
-                state={getInputState(feePerUnitError)}
+                state={getInputState(feePerUnitError, feePerUnitValue)}
                 innerAddon={<Units>{getFeeUnits(network.networkType)}</Units>}
                 onChange={() => {
                     composeTransaction('feePerUnit', !!feePerUnitError);
                 }}
+                name={inputName}
+                data-test={inputName}
                 innerRef={register({
                     required: 'TR_CUSTOM_FEE_IS_NOT_SET',
                     validate: (value: string) => {
@@ -50,7 +62,7 @@ export default () => {
                         }
                     },
                 })}
-                bottomText={feePerUnitError && feePerUnitError.message}
+                bottomText={<InputError error={feePerUnitError} />}
             />
             <input type="hidden" name="feeLimit" ref={register()} />
             {/*
@@ -82,7 +94,7 @@ export default () => {
                             }
                         },
                     })}
-                    bottomText={feePerUnitError && feePerUnitError.message}
+                    bottomText={<InputError error={feeLimitError} />}
                 />
             )} */}
         </Wrapper>

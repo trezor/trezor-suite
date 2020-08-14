@@ -2,6 +2,7 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import { Input, SelectInput } from '@trezor/components';
+import { InputError } from '@wallet-components';
 import { Controller } from 'react-hook-form';
 import { useSendFormContext } from '@wallet-hooks';
 import { FIAT } from '@suite-config';
@@ -38,7 +39,7 @@ export default ({ outputId }: { outputId: number }) => {
 
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const error = outputError ? outputError.fiat : undefined;
-    const fiatValue = getDefaultValue(inputName, outputs[outputId].fiat);
+    const fiatValue = getDefaultValue(inputName, outputs[outputId].fiat || '');
     const decimals = token ? token.decimals : network.decimals;
 
     return (
@@ -46,7 +47,6 @@ export default ({ outputId }: { outputId: number }) => {
             <Input
                 state={getInputState(error, fiatValue)}
                 monospace
-                bottomText={error && error.message}
                 onChange={event => {
                     if (isSetMaxActive) {
                         setValue('setMaxOutputId', undefined);
@@ -96,6 +96,7 @@ export default ({ outputId }: { outputId: number }) => {
                         }
                     },
                 })}
+                bottomText={<InputError error={error} />}
                 innerAddon={
                     <Controller
                         control={control}

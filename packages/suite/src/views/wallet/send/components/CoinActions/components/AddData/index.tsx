@@ -18,9 +18,9 @@ const Active = styled.div`
 `;
 
 export default () => {
-    const { getValues, composeTransaction, resetDefaultValue } = useSendFormContext();
+    const { getDefaultValue, composeTransaction, resetDefaultValue } = useSendFormContext();
 
-    const dataValue = getValues('ethereumDataHex') || '';
+    const dataValue = getDefaultValue('ethereumDataHex') || '';
     const hasData = dataValue.length > 0;
     const [isActive, setIsActive] = useState(hasData);
 

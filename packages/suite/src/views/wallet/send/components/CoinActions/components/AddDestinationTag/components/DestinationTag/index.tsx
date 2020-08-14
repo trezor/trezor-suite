@@ -6,6 +6,7 @@ import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Input, Icon } from '@trezor/components';
 import { U_INT_32 } from '@wallet-constants/sendForm';
 import { Translation, QuestionTooltip } from '@suite-components';
+import { InputError } from '@wallet-components';
 
 const Label = styled.div`
     display: flex;
@@ -26,10 +27,10 @@ interface Props {
 }
 
 export default ({ close }: Props) => {
-    const { register, getValues, errors, composeTransaction } = useSendFormContext();
+    const { register, getDefaultValue, errors, composeTransaction } = useSendFormContext();
 
     const inputName = 'rippleDestinationTag';
-    const inputValue = getValues(inputName) || '';
+    const inputValue = getDefaultValue(inputName) || '';
     const error = errors[inputName];
 
     return (
@@ -63,7 +64,7 @@ export default ({ close }: Props) => {
                 </Label>
             }
             labelRight={<StyledIcon size={20} icon="CROSS" onClick={close} />}
-            bottomText={error && error.message}
+            bottomText={<InputError error={error} />}
         />
     );
 };

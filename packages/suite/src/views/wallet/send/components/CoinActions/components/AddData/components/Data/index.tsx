@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Textarea, Icon } from '@trezor/components';
 import { QuestionTooltip, Translation } from '@suite-components';
+import { InputError } from '@wallet-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 
@@ -26,7 +27,7 @@ export default ({ close }: Props) => {
     const {
         register,
         errors,
-        getValues,
+        getDefaultValue,
         setValue,
         setAmount,
         composeTransaction,
@@ -35,9 +36,9 @@ export default ({ close }: Props) => {
     const inputAsciiName = 'ethereumDataAscii';
     const inputHexName = 'ethereumDataHex';
 
-    const asciiValue = getValues(inputAsciiName) || '';
-    const hexValue = getValues(inputHexName) || '';
-    const amount = getValues(`outputs[0].amount`);
+    const asciiValue = getDefaultValue(inputAsciiName);
+    const hexValue = getDefaultValue(inputHexName);
+    const { amount } = getDefaultValue('outputs')[0];
     const asciiError = errors.ethereumDataAscii;
     const hexError = errors.ethereumDataHex;
 
@@ -66,7 +67,7 @@ export default ({ close }: Props) => {
                     }
                     composeTransaction(inputAsciiName, !!asciiError);
                 }}
-                bottomText={asciiError && asciiError.message}
+                bottomText={<InputError error={asciiError} />}
                 label={
                     <Label>
                         <Text>
@@ -103,7 +104,7 @@ export default ({ close }: Props) => {
                     }
                     composeTransaction(inputHexName, !!hexError);
                 }}
-                bottomText={hexError && hexError.message}
+                bottomText={<InputError error={hexError} />}
                 labelRight={
                     <StyledIcon
                         size={20}
