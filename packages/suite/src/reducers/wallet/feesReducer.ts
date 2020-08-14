@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { FeeInfo } from '@wallet-hooks/useSendContext';
+import { FeeInfo } from '@wallet-types/sendForm';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
 import { NETWORKS } from '@wallet-config';
 import { Network, WalletAction } from '@wallet-types';

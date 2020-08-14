@@ -1,6 +1,5 @@
 import SuiteDB, { StorageUpdateMessage, OnUpgradeFunc } from '@trezor/suite-storage';
 import { DBSchema } from 'idb';
-import { SendContext } from '@suite/hooks/wallet/useSendContext';
 import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
 import { SuiteState } from '@suite-reducers/suiteReducer';
 import { State as AnalyticsState } from '@suite-reducers/analyticsReducer';

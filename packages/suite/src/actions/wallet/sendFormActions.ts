@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
-import { SendContext } from '@wallet-hooks/useSendContext'; // to remove
 import { SEND } from '@wallet-actions/constants';
 
 import { formatNetworkAmount, getAccountKey } from '@wallet-utils/accountUtils';
@@ -126,10 +125,7 @@ export const scanQrRequest = () => (dispatch: Dispatch) => {
 };
 
 // non-redux action
-export const checkRippleEmptyAddress = async (
-    descriptor: string,
-    coin: SendContext['account']['symbol'],
-) => {
+export const checkRippleEmptyAddress = async (descriptor: string, coin: string) => {
     const response = await TrezorConnect.getAccountInfo({
         descriptor,
         coin,

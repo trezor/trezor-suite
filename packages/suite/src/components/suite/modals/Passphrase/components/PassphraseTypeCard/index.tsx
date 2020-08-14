@@ -3,9 +3,10 @@ import { useKeyPress } from '@suite-utils/dom';
 import styled, { css } from 'styled-components';
 import { Button, colors, variables, Input, Checkbox, Icon } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
-import PasswordStrengthIndicator from '@suite-components/PasswordStrengthIndicator';
+
 import { MAX_PASSPHRASE_LENGTH } from '@suite-constants/passphrase';
 import { countBytesInString } from '@suite-utils/string';
+import PasswordStrengthIndicator from '@suite-components/PasswordStrengthIndicator';
 
 const WalletTitle = styled.div`
     font-size: ${variables.FONT_SIZE.NORMAL};

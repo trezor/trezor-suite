@@ -1,12 +1,11 @@
 import { ERC20_GAS_LIMIT, ERC20_TRANSFER } from '@wallet-constants/sendForm';
-import { SendContext, FeeInfo, EthTransactionData } from '@wallet-hooks/useSendContext';
 import { Network, Account } from '@wallet-types';
 import { amountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import BigNumber from 'bignumber.js';
 import Common from 'ethereumjs-common';
 import { Transaction, TxData } from 'ethereumjs-tx';
 import { FieldError, UseFormMethods } from 'react-hook-form';
-import { FormState } from '@wallet-types/sendForm';
+import { FormState, FeeInfo, EthTransactionData } from '@wallet-types/sendForm';
 import { EthereumTransaction, FeeLevel } from 'trezor-connect';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 
