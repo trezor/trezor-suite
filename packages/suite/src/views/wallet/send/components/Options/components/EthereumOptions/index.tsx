@@ -32,6 +32,7 @@ export default () => {
 
     const options = getDefaultValue('options', []);
     const dataEnabled = options.includes('ethereumData');
+    const tokenValue = getDefaultValue<string, string | undefined>('outputs[0].token', undefined);
     const broadcastEnabled = options.includes('broadcast');
 
     return (
@@ -48,7 +49,7 @@ export default () => {
                 />
             )}
             <Left>
-                {!dataEnabled && (
+                {!dataEnabled && !tokenValue && (
                     <StyledButton
                         variant="tertiary"
                         icon="DATA"

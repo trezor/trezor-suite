@@ -242,12 +242,12 @@ export const findValidOutputs = (values: FormState) => {
 export const buildTokenOptions = (account: Account) => {
     interface Option {
         label: string;
-        value: string;
+        value?: string;
     }
 
     const result: Option[] = [
         {
-            value: account.symbol,
+            value: undefined,
             label: account.symbol.toUpperCase(),
         },
     ];
