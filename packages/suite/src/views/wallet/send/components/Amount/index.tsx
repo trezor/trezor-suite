@@ -1,4 +1,4 @@
-import { FiatValue, QuestionTooltip, Translation } from '@suite-components';
+import { FiatValue, Translation } from '@suite-components';
 import { Input, variables, Button } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Output, CustomFee } from '@wallet-types/sendForm';
@@ -120,7 +120,6 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
                             <Text>
                                 <Translation id="TR_AMOUNT" />
                             </Text>
-                            <QuestionTooltip messageId="TR_SEND_AMOUNT_TOOLTIP" />
                         </Label>
                     }
                     labelAddon={
