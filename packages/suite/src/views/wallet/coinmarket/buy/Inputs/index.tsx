@@ -12,8 +12,11 @@ import validator from 'validator';
 
 const Wrapper = styled.div`
     display: flex;
-    flex-wrap: wrap;
     flex: 1;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        flex-direction: column;
+    }
 `;
 
 const Left = styled.div`
@@ -33,10 +36,20 @@ const Middle = styled.div`
     height: 48px;
     align-items: center;
     justify-content: center;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        padding-bottom: 27px;
+    }
 `;
 
 const StyledCoinLogo = styled(CoinLogo)`
     margin-right: 5px;
+`;
+
+const StyledIcon = styled(Icon)`
+    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        transform: rotate(90deg);
+    }
 `;
 
 const AddonText = styled.div`
@@ -50,7 +63,7 @@ interface Props {
 }
 
 const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
-    const { register, errors, trigger, control, setValue } = useFormContext();
+    const { register, errors, trigger, control, setValue, clearErrors } = useFormContext();
     const fiatInput = 'fiatInput';
     const cryptoInput = 'cryptoInput';
     const currencySelect = 'currencySelect';
@@ -102,6 +115,7 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
                         },
                     })}
                     onChange={() => {
+                        clearErrors(cryptoInput);
                         setValue(cryptoInput, '');
                         setActiveInput(fiatInput);
                     }}
@@ -135,11 +149,12 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
                 />
             </Left>
             <Middle>
-                <Icon icon="TRANSFER" size={16} />
+                <StyledIcon icon="TRANSFER" size={16} />
             </Middle>
             <Right>
                 <Input
                     onChange={() => {
+                        clearErrors(fiatInput);
                         setValue(fiatInput, '');
                         setActiveInput(cryptoInput);
                     }}
@@ -152,9 +167,14 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
                                 if (!value) {
                                     return 'TR_ERROR_EMPTY';
                                 }
+
+                                if (!validator.isNumeric(value)) {
+                                    return 'TR_ERROR_NOT_NUMBER';
+                                }
                             }
                         },
                     })}
+                    bottomText={errors[cryptoInput] && errors[cryptoInput].message}
                     innerAddon={
                         <>
                             <StyledCoinLogo size={18} symbol={account.symbol} />

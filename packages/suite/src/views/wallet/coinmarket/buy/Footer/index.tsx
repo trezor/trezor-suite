@@ -1,7 +1,7 @@
 import * as routerActions from '@suite-actions/routerActions';
 import { useActions, useSelector } from '@suite-hooks';
 import invityAPI from '@suite/services/invityAPI';
-import { Button, CleanSelect, colors } from '@trezor/components';
+import { Button, CleanSelect, colors, variables } from '@trezor/components';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import regional from '@wallet-constants/coinmarket/regional';
 import { AmountLimits, getAmountLimits, processQuotes } from '@wallet-utils/coinmarket/buyUtils';
@@ -32,8 +32,11 @@ const Right = styled.div`
 const Label = styled.div`
     display: flex;
     align-items: center;
-    padding-right: 10px;
+    padding-right: 5px;
     white-space: nowrap;
+    padding-top: 1px;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
 const StyledButton = styled(Button)`
@@ -85,7 +88,7 @@ const Footer = ({ buyInfo, setAmountLimits }: Props) => {
                                 isSearchable
                                 value={value}
                                 isClearable={false}
-                                minWidth="170px"
+                                minWidth="160px"
                                 onChange={(selected: any) => {
                                     onChange(selected);
                                     setAmountLimits(undefined);

@@ -19,6 +19,10 @@ const Content = styled.div`
     flex-direction: column;
     padding: 0 25px;
     flex: 1;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        padding: 0 0 0 0;
+    }
 `;
 
 const Loading = styled.div`
